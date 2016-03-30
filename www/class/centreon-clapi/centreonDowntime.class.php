@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonHost.class.php";

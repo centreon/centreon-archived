@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install script for CentPluginsTraps
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentPlugins Traps Installation")"
+echo -e "\t$(gettext "Starting CentreonTrapD Installation")"
 echo -e "$line"
 
 ###### Check disk space

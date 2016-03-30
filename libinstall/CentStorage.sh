@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install script for CentStorage
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 echo -e "\n$line"
-echo -e "\t$(gettext "Start CentStorage Installation")"
+echo -e "\t$(gettext "Starting CentStorage Installation")"
 echo -e "$line"
 
 ###### Check disk space

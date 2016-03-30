@@ -1,4 +1,5 @@
 <?php
+namespace CentreonClapi;
 
 class CentreonUtils
 {

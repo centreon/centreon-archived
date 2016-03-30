@@ -1,4 +1,5 @@
 <?php
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
@@ -23,7 +24,7 @@ class CentreonNdomodCfg extends CentreonObject
     {
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
-        $this->object = new Centreon_Object_Ndomod();
+        $this->object = new \Centreon_Object_Ndomod();
         $this->params = array(  'output_type'               => 'tcpsocket',
                                 'tcp_port'	                => '5668',
                                 'output_buffer_items'       => '5000',

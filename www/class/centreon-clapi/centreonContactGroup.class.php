@@ -36,6 +36,7 @@
  * SVN : $Id: centreonContact.class.php 25 2010-03-30 05:52:19Z jmathis $
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonACL.class.php";
@@ -66,7 +67,7 @@ class CentreonContactGroup extends CentreonObject {
      */
     public function __construct() {
         parent::__construct();
-        $this->object = new Centreon_Object_Contact_Group();
+        $this->object = new \Centreon_Object_Contact_Group();
         $this->params = array('cg_activate' => '1');
         $this->insertParams = array('cg_name', 'cg_alias');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey()));
@@ -154,8 +155,8 @@ class CentreonContactGroup extends CentreonObject {
         }
         $cgId = $cgIds[0];
         if (preg_match("/^(get|set|add|del)contact$/", $name, $matches)) {
-            $relobj = new Centreon_Object_Relation_Contact_Group_Contact();
-            $obj = new Centreon_Object_Contact();
+            $relobj = new \Centreon_Object_Relation_Contact_Group_Contact();
+            $obj = new \Centreon_Object_Contact();
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $cgIds);
                 echo "id" . $this->delim . "name" . "\n";
@@ -205,7 +206,7 @@ class CentreonContactGroup extends CentreonObject {
      */
     public function export() {
         parent::export();
-        $obj = new Centreon_Object_Relation_Contact_Group_Contact();
+        $obj = new \Centreon_Object_Relation_Contact_Group_Contact();
         $elements = $obj->getMergedParameters(array("cg_name"), array("contact_name"), -1, 0, "cg_name");
         foreach ($elements as $element) {
             echo $this->action . $this->delim . "addcontact" . $this->delim . $element['cg_name'] . $this->delim . $element['contact_name'] . "\n";

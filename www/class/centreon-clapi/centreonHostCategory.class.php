@@ -35,6 +35,7 @@
  * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonSeverityAbstract.class.php";
@@ -63,7 +64,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Host_Category();
+        $this->object = new \Centreon_Object_Host_Category();
         $this->params = array('hc_activate' => '1');
         $this->insertParams = array('hc_name', 'hc_alias');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey(), 'level', 'icon_id'));
@@ -177,8 +178,8 @@ class CentreonHostCategory extends CentreonSeverityAbstract
         }
         $categoryId = $hcIds[0];
         if (preg_match("/^(get|set|add|del)member$/", $name, $matches)) {
-            $relobj = new Centreon_Object_Relation_Host_Category_Host();
-            $obj = new Centreon_Object_Host();
+            $relobj = new \Centreon_Object_Relation_Host_Category_Host();
+            $obj = new \Centreon_Object_Host();
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hcIds);
                 echo "id".$this->delim."name"."\n";
@@ -229,7 +230,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
 	public function export()
 	{
         parent::export();
-        $relobj = new Centreon_Object_Relation_Host_Category_Host();
+        $relobj = new \Centreon_Object_Relation_Host_Category_Host();
         $elements = $relobj->getMergedParameters(array($this->object->getUniqueLabelField()), array("host_name"));
         foreach ($elements as $element) {
             echo $this->action.$this->delim."addmember".$this->delim.$element[$this->object->getUniqueLabelField()].$this->delim.$element['host_name']."\n";

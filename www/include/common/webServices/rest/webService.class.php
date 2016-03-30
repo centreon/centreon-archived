@@ -96,7 +96,7 @@ class CentreonWebService
             case 'DELETE':
                 break;
             default:
-                self::sendJson("Bad request", 400);
+                static::sendJson("Bad request", 400);
                 break;
         }
     }
@@ -111,7 +111,7 @@ class CentreonWebService
         try {
             $httpParams = json_decode(file_get_contents('php://input'), true);
         } catch (Exception $e) {
-            self::sendJson("Bad parameters", 400);
+            static::sendJson("Bad parameters", 400);
         }
         return $httpParams;
     }
@@ -153,7 +153,7 @@ class CentreonWebService
         }
         
         if (count($webServiceClass) === 0) {
-            self::sendJson("Method not found", 404);
+            static::sendJson("Method not found", 404);
         }
 
         return $webServiceClass;
@@ -186,6 +186,9 @@ class CentreonWebService
             case 405:
                 header("HTTP/1.1 405 Method not allowed");
                 break;
+            case 409:
+                header("HTTP/1.1 409 Conflict");
+                break;
         }
         header('Content-type: application/json');
         print json_encode($data);
@@ -204,7 +207,7 @@ class CentreonWebService
             try {
                 $pearDB->query($query);
             } catch (Exception $e) {
-                self::sendJson("Internal error", 500);
+                static::sendJson("Internal error", 500);
             }
         }
     }
@@ -216,12 +219,11 @@ class CentreonWebService
      */
     public static function router()
     {
-        
         global $pearDB;
         
         /* Test if route is defined */
         if (false === isset($_GET['object']) || false === isset($_GET['action'])) {
-            self::sendJson("Bad parameters", 400);
+            static::sendJson("Bad parameters", 400);
         }
         
         $methodPrefix = strtolower($_SERVER['REQUEST_METHOD']);
@@ -243,18 +245,18 @@ class CentreonWebService
         $wsObj = new $webService['class']();
         
         if (false === method_exists($wsObj, $action)) {
-            self::sendJson("Method not found", 404);
+            static::sendJson("Method not found", 404);
         }
         
         /* Execute the action */
         try {
-            self::updateTokenTtl();
+            static::updateTokenTtl();
             $data = $wsObj->$action();
-            self::sendJson($data);
+            $wsObj::sendJson($data);
         } catch (RestException $e) {
-            self::sendJson($e->getMessage(), $e->getCode());
-        } catch (Exeption $e) {
-            self::sendJson("Internal server error", 500);
+            $wsObj::sendJson($e->getMessage(), $e->getCode());
+        } catch (Exception $e) {
+            $wsObj::sendJson($e->getMessage(), 500);
         }
     }
 }

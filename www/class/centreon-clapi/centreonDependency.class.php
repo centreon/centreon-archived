@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonHost.class.php";
@@ -73,7 +74,7 @@ class CentreonDependency extends CentreonObject
     {
         parent::__construct();
         $this->serviceObj = new CentreonService();
-        $this->object = new Centreon_Object_Dependency();
+        $this->object = new \Centreon_Object_Dependency();
         $this->action = "DEP";
         $this->insertParams = array(
             'dep_name', 
@@ -249,8 +250,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addHostDependency($params)
     {
-        $obj = new Centreon_Object_Host();
-        $relObj = new Centreon_Object_Relation_Dependency_Parent_Host();
+        $obj = new \Centreon_Object_Host();
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Host();
         $this->insertDependency(
             $params['dep_name'], 
             $params['dep_description'], 
@@ -267,8 +268,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addHostGroupDependency($params)
     {
-        $obj = new Centreon_Object_Host_Group();
-        $relObj = new Centreon_Object_Relation_Dependency_Parent_Hostgroup();
+        $obj = new \Centreon_Object_Host_Group();
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Hostgroup();
         $this->insertDependency(
             $params['dep_name'], 
             $params['dep_description'], 
@@ -328,8 +329,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addServiceGroupDependency($params)
     {
-        $obj = new Centreon_Object_Service_Group();
-        $relObj = new Centreon_Object_Relation_Dependency_Parent_Servicegroup();
+        $obj = new \Centreon_Object_Service_Group();
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Servicegroup();
         $this->insertDependency(
             $params['dep_name'], 
             $params['dep_description'], 
@@ -346,8 +347,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addMetaDependency($params)
     {
-        $obj = new Centreon_Object_Meta_Service();
-        $relObj = new Centreon_Object_Relation_Dependency_Parent_Metaservice();
+        $obj = new \Centreon_Object_Meta_Service();
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Metaservice();
         $this->insertDependency(
             $params['dep_name'], 
             $params['dep_description'], 
@@ -684,7 +685,7 @@ class CentreonDependency extends CentreonObject
     {
         $table = "dependency_hostgroup" . ucfirst($relType) . "_relation";
         $sql = "INSERT INTO {$table} (dependency_dep_id, hostgroup_hg_id) VALUES (?, ?)";
-        $obj = new Centreon_Object_Host_Group();
+        $obj = new \Centreon_Object_Host_Group();
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find host group %s', $objectToInsert));
@@ -702,7 +703,7 @@ class CentreonDependency extends CentreonObject
     {
         $table = "dependency_servicegroup" . ucfirst($relType) . "_relation";
         $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (?, ?)";
-        $obj = new Centreon_Object_Service_Group();
+        $obj = new \Centreon_Object_Service_Group();
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find service group %s', $objectToInsert));
@@ -721,7 +722,7 @@ class CentreonDependency extends CentreonObject
         $table = "dependency_metaservice" . ucfirst($relType) . "_relation";
        
         $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (?, ?)";
-        $obj = new Centreon_Object_Meta_Service();
+        $obj = new \Centreon_Object_Meta_Service();
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find meta service %s', $objectToInsert));
@@ -739,7 +740,7 @@ class CentreonDependency extends CentreonObject
     {
         if ($relType == 'parent') {
             $sql = "INSERT INTO dependency_hostParent_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
-            $hostObj = new Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host();
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
@@ -757,7 +758,7 @@ class CentreonDependency extends CentreonObject
             $params = array($depId, $idTab[0], $idTab[1]);
         } elseif ($relType == 'child') { // host child
             $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
-            $hostObj = new Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host();
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
@@ -800,7 +801,7 @@ class CentreonDependency extends CentreonObject
         } elseif ($relType == 'child') { // host child
             $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
                 VALUES (?, ?)";
-            $hostObj = new Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host();
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
@@ -866,7 +867,7 @@ class CentreonDependency extends CentreonObject
         $sql = "DELETE FROM {$table} 
             WHERE dependency_dep_id = ?
             AND hostgroup_hg_id = ?";
-        $obj = new Centreon_Object_Host_Group();
+        $obj = new \Centreon_Object_Host_Group();
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToDelete));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find host group %s', $objectToDelete));
@@ -886,7 +887,7 @@ class CentreonDependency extends CentreonObject
         $sql = "DELETE FROM {$table} 
             WHERE dependency_dep_id = ?
             AND servicegroup_sg_id = ?";
-        $obj = new Centreon_Object_Service_Group();
+        $obj = new \Centreon_Object_Service_Group();
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToDelete));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find service group %s', $objectToDelete));
@@ -907,7 +908,7 @@ class CentreonDependency extends CentreonObject
         $sql = "DELETE FROM {$table} 
             WHERE dependency_dep_id = ?
             AND meta_service_meta_id = ?";
-        $obj = new Centreon_Object_Meta_Service();
+        $obj = new \Centreon_Object_Meta_Service();
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToDelete));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find meta service %s', $objectToDelete));
@@ -927,7 +928,7 @@ class CentreonDependency extends CentreonObject
             $sql = "DELETE FROM dependency_hostParent_relation
                 WHERE dependency_dep_id = ?
                 AND host_host_id = ?";
-            $hostObj = new Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host();
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToDelete));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToDelete));
@@ -948,7 +949,7 @@ class CentreonDependency extends CentreonObject
             $sql = "DELETE FROM dependency_hostChild_relation
                 WHERE dependency_dep_id = ?
                 AND host_host_id = ?";
-            $hostObj = new Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host();
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToDelete));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToDelete));
@@ -995,7 +996,7 @@ class CentreonDependency extends CentreonObject
             $sql = "DELETE FROM dependency_hostChild_relation
                 WHERE dependency_dep_id = ?
                 AND host_host_id = ?";
-            $hostObj = new Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host();
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToDelete));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToDelete));

@@ -36,7 +36,7 @@
 /**
  * Include Centreon Class
  */
-
+namespace CentreonClapi;
 
 require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__)."/../centreonXML.class.php");
@@ -81,7 +81,7 @@ class CentreonAPI {
     private $objectTable;
     private $aExport = array();
     
-    public function CentreonAPI($user, $password, $action, $centreon_path, $options) {
+    public function __construct($user, $password, $action, $centreon_path, $options) {
         global $version;
 
         /**
@@ -120,8 +120,8 @@ class CentreonAPI {
         /**
          * Centreon DB Connexion
          */
-        $this->DB = new CentreonDB();
-        $this->DBC = new CentreonDB('centstorage');
+        $this->DB = new \CentreonDB();
+        $this->DBC = new \CentreonDB('centstorage');
         $this->dateStart = time();
 
         $this->relationObject = array();

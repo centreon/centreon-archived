@@ -44,6 +44,7 @@ $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES'] =
             'hidden'        =>array('HTML/QuickForm/hidden.php','HTML_QuickForm_hidden'),
             'reset'         =>array('HTML/QuickForm/reset.php','HTML_QuickForm_reset'),
             'checkbox'      =>array('HTML/QuickForm/checkbox.php','HTML_QuickForm_checkbox'),
+            'customcheckbox'      =>array('HTML/QuickForm/customcheckbox.php','HTML_QuickForm_customcheckbox'),
             'file'          =>array('HTML/QuickForm/file.php','HTML_QuickForm_file'),
             'image'         =>array('HTML/QuickForm/image.php','HTML_QuickForm_image'),
             'password'      =>array('HTML/QuickForm/password.php','HTML_QuickForm_password'),

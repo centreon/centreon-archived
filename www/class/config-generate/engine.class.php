@@ -47,7 +47,6 @@ class Engine extends AbstractObject {
         log_file,
         object_cache_file,
         precached_object_file,
-        temp_path,
         status_file,
         check_result_path,
         use_check_result_path,
@@ -159,8 +158,6 @@ class Engine extends AbstractObject {
         free_child_process_memory,
         child_processes_fork_twice,
         enable_environment_macros,
-        enable_embedded_perl,
-        use_embedded_perl_implicitly,
         use_setpgid
     ';
     protected $attributes_write = array(
@@ -168,7 +165,6 @@ class Engine extends AbstractObject {
         'log_file',
         'object_cache_file',
         'precached_object_file',
-        'temp_path',
         'status_file',
         'check_result_path',
         'use_check_result_path', //cengine
@@ -281,8 +277,6 @@ class Engine extends AbstractObject {
         'free_child_process_memory',
         'child_processes_fork_twice',
         'enable_environment_macros',
-        'enable_embedded_perl',
-        'use_embedded_perl_implicitly',
         'use_setpgid', # cengine
     );
     protected $attributes_array = array(

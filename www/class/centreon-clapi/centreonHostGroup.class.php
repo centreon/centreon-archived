@@ -35,6 +35,7 @@
  * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonACL.class.php";
@@ -70,7 +71,7 @@ class CentreonHostGroup extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Host_Group();
+        $this->object = new \Centreon_Object_Host_Group();
         $this->params = array('hg_activate' => '1');
         $this->insertParams = array('hg_name', 'hg_alias');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey()));
@@ -182,11 +183,11 @@ class CentreonHostGroup extends CentreonObject
         $groupId = $hgIds[0];
         if (preg_match("/^(get|set|add|del)(member|host|servicegroup)$/", $name, $matches)) {
             if ($matches[2] == "host" || $matches[2] == "member") {
-                $relobj = new Centreon_Object_Relation_Host_Group_Host();
-                $obj = new Centreon_Object_Host();
+                $relobj = new \Centreon_Object_Relation_Host_Group_Host();
+                $obj = new \Centreon_Object_Host();
             } elseif ($matches[2] == "servicegroup") {
-                $relobj = new Centreon_Object_Relation_Host_Group_Service_Group();
-                $obj = new Centreon_Object_Service_Group();
+                $relobj = new \Centreon_Object_Relation_Host_Group_Service_Group();
+                $obj = new \Centreon_Object_Service_Group();
             }
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hgIds);
@@ -238,8 +239,8 @@ class CentreonHostGroup extends CentreonObject
     public function export()
     {
         parent::export();
-        $relObj = new Centreon_Object_Relation_Host_Group_Host();
-        $hostObj = new Centreon_Object_Host();
+        $relObj = new \Centreon_Object_Relation_Host_Group_Host();
+        $hostObj = new \Centreon_Object_Host();
         $hgFieldName = $this->object->getUniqueLabelField();
         $hFieldName = $hostObj->getUniqueLabelField();
         $elements = $relObj->getMergedParameters(array($hgFieldName), array($hFieldName), -1, 0, $hgFieldName, null);

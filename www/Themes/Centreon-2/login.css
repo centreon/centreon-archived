@@ -112,7 +112,7 @@
 a			{text-decoration:none;}
 a:hover		{text-decoration:underline;}
 
-body, .msg, #sublogin, #LoginInvitcpy a, #LoginInvitcpy {text-align:center;}
+.LoginInvitVersion, .msg, #sublogin, #LoginInvitcpy a, #LoginInvitcpy {text-align:center;}
 
 table {empty-cells:show; border-spacing:0px; border-collapse:collapse;font-family:'Bitstream Vera Sans', 'arial', 'Tahoma', 'Sans serif';}
 body, input, textarea, checkbox, select, option, td, .msg, input[type="submit"], label, table {font-family:'Open Sans', 'arial', 'Tahoma', 'Sans serif';font-weight: normal;font-size:11px;}

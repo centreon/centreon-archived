@@ -34,6 +34,7 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
@@ -65,13 +66,12 @@ class CentreonNagiosCfg extends CentreonObject
     {
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
-        $this->commandObj = new Centreon_Object_Command();
-        $this->object = new Centreon_Object_Nagios();
-        $this->brokerModuleObj = new Centreon_Object_Nagios_Broker_Module();
+        $this->commandObj = new \Centreon_Object_Command();
+        $this->object = new \Centreon_Object_Nagios();
+        $this->brokerModuleObj = new \Centreon_Object_Nagios_Broker_Module();
         $this->params = array(  'log_file'                           	  => '/var/log/nagios/nagios.log',
                                 'cfg_dir'                                 => '/etc/nagios/',
                                 'temp_file'                               => '/var/log/nagios/nagios.tmp',
-                                'p1_file'                                 => '/usr/sbin/p1.pl',
                                 'nagios_user'                             => 'nagios',
                                 'nagios_group'                            => 'nagios',
                                 'enable_notifications'                    => '0',
@@ -144,8 +144,6 @@ class CentreonNagiosCfg extends CentreonObject
                                 'free_child_process_memory'               => '2',
                                 'child_processes_fork_twice'              => '2',
                                 'enable_environment_macros'               => '2',
-                                'enable_embedded_perl'                    => '2',
-                                'use_embedded_perl_implicitly'            => '2',
                                 'debug_level'                             => '0',
                                 'debug_level_opt'                         => '0',
                                 'debug_verbosity'                         => '2',
@@ -227,7 +225,7 @@ class CentreonNagiosCfg extends CentreonObject
             } elseif (preg_match('/('.implode('|', $commandColumns).')/', $params[1], $matches)) {
                 $commandName = $matches[1];
                 if ($params[2]) {
-                    $commandObj = new Centreon_Object_Command();
+                    $commandObj = new \Centreon_Object_Command();
                     $res = $commandObj->getIdByParameter($commandObj->getUniqueLabelField(), $params[2]);
                     if (count($res)) {
                         $params[2] = $res[0];
@@ -292,7 +290,7 @@ class CentreonNagiosCfg extends CentreonObject
      */
     public function export() {
         $elements = $this->object->getList();
-        $tpObj = new Centreon_Object_Timeperiod();
+        $tpObj = new \Centreon_Object_Timeperiod();
         foreach ($elements as $element) {
 
             /* ADD action */

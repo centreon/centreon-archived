@@ -34,6 +34,8 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
+
 require_once "centreonObject.class.php";
 require_once "Centreon/Object/Acl/Group.php";
 require_once "Centreon/Object/Acl/Menu.php";
@@ -64,9 +66,9 @@ class CentreonACLMenu extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Acl_Menu();
-        $this->aclGroupObj = new Centreon_Object_Acl_Group();
-        $this->relObject = new Centreon_Object_Relation_Acl_Group_Menu();
+        $this->object = new \Centreon_Object_Acl_Menu();
+        $this->aclGroupObj = new \Centreon_Object_Acl_Group();
+        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Menu();
         $this->params = array('acl_topo_activate' => '1');
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_topo_activate";

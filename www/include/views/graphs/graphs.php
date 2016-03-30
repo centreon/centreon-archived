@@ -631,7 +631,24 @@ function insertGraph(nbGraphs, startGraph) {
                graph_4_host($hostsServices, 1, $targetDiv);
            }
        }
-    });
+   });
+       
+       jQuery("#graph_pagination2").jPaginator({
+           nbPages:$nbPages,
+           selectedPage: 1,
+           overBtnLeft:'#test1_o_left2',
+           nbVisible: 10,
+           length:1,
+           withSlider: true,
+           minSlidesForSlider: 2,
+           overBtnRight:'#test1_o_right2',
+           maxBtnLeft:'#test1_m_left2',
+           maxBtnRight:'#test1_m_right2',
+           onPageClicked: function(a,num) {
+               $startGraph = ($nbGraphs * (num-1));
+               insertGraph($nbGraphs,$startGraph);
+           }
+       });
 }
 
 /* Display Status Checkbox */

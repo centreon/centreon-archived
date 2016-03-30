@@ -35,6 +35,7 @@
  * SVN : $Id$
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
@@ -176,7 +177,7 @@ class CentreonConfigPoller {
     protected function restartCentreonBroker() {
         if (file_exists($this->centreon_path."/www/class/centreonBroker.class.php")) {
             require_once $this->centreon_path."/www/class/centreonBroker.class.php";
-            $brk = new CentreonBroker($this->_DB);
+            $brk = new \CentreonBroker($this->_DB);
             if ($brk->getBroker() == 'broker') {
                 $brk->reload();
             }
@@ -399,7 +400,7 @@ class CentreonConfigPoller {
      */
     public function pollerGenerate($variables, $login, $password) {
         
-        $config_generate = new Generate();
+        $config_generate = new \Generate();
         
         $this->testPollerId($variables);
         

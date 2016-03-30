@@ -34,6 +34,7 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "Centreon/Object/Instance/Instance.php";
@@ -59,7 +60,7 @@ class CentreonInstance extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->object = new Centreon_Object_Instance();
+        $this->object = new \Centreon_Object_Instance();
         $this->params = array('localhost'                => '0',
                               'ns_activate'              => '1',
                               'ssh_port'                 => '22',
@@ -187,7 +188,7 @@ class CentreonInstance extends CentreonObject
      */
     public function getHosts($instanceName)
     {
-        $relObj = new Centreon_Object_Relation_Instance_Host();
+        $relObj = new \Centreon_Object_Relation_Instance_Host();
         $fields = array('host_id', 'host_name', 'host_address');
         $elems = $relObj->getMergedParameters(array(), $fields, -1, 0, "host_name", "ASC", array('name' => $instanceName), 'AND');
         foreach ($elems as $elem) {

@@ -34,6 +34,7 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
@@ -65,7 +66,7 @@ class CentreonCentbrokerCfg extends CentreonObject
     {
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
-        $this->object = new Centreon_Object_Broker();
+        $this->object = new \Centreon_Object_Broker();
         $this->params = array(  'config_filename' => 'central-broker.xml',
                                 'config_activate' => '1'
                                 );

@@ -232,7 +232,7 @@ p.description a, p.description a:visited {
 }
 
 
-/* Style for header bar in selection elements whne have multi */
+/* Selected elements  */
 .select2-results-header {
     width: 100%;
     z-index: 5000;
@@ -269,7 +269,6 @@ p.description a, p.description a:visited {
 .clearAllSelect2 img {
     vertical-align: middle;
 }
-
 /* -------- Tooltip ------- */
 #WzTtDiV {
     overflow: visible !important;
@@ -827,7 +826,7 @@ div.menuLeft {
     border: 1px solid #d1d2d4 !important;
     background: #f6f6f6 !important;
     border-radius: 4px !important;
-    text-align: center !important;;
+    text-align: center !important;
 }
 
 .info_box h4 {
@@ -1826,4 +1825,209 @@ td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
 .ui-timepicker .ui-timepicker-next.ui-state-hover {
     border: 0;
     background: #4ccaff !important;
+}
+
+/* --------- Bloc Elements -------------- */
+
+.elemBloc {
+    border: 1px solid #D1D2D4;
+    height: 174px;
+    overflow: hidden;
+}
+
+.elemBloc:not(.advancedForm) label, .elemBloc:not(.advancedFormService) label {
+    cursor: pointer;
+    position: relative;
+    padding-left: 16px;
+    margin-right: 10px;
+}
+
+.elemBloc input[type=checkbox] {
+    display: none;
+    height: 118px;
+    overflow: hidden;
+}
+
+.elemBloc:not(.advancedForm) label:before, .elemBloc:not(.advancedFormService) label:before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    background-color: #fff;
+    border: 1px solid #bcbdc0;
+}
+
+input.included[type=checkbox]:checked + label:before {
+    content: "\2714";
+    color: #fff;
+    text-align: center;
+    line-height: 10px;
+    background-color: #88b917;
+    border: 1px solid #88b917;
+}
+
+input.excluded[type=checkbox]:checked + label:before {
+    content: "\2716";
+    color: #fff;
+    text-align: center;
+    line-height: 10px;
+    background-color: #e00b3d;
+    border: 1px solid #e00b3d;
+}
+
+.advancedForm, .advancedFormService {
+   display: none;
+}
+
+.checkbox-tpl, .checkbox-servicetpl {
+    padding-bottom: 3px ;
+}
+.checkbox-tpl:hover, .checkbox-servicetpl:hover {
+    background-color: #e7e7e8;
+}
+
+.editBt {
+    background: url("../../img/icons/edit_white.png") no-repeat center scroll #009fdf;
+    background-size: 10px 10px;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: bottom;
+    border-radius: 2px;
+    margin-top: 3px;
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+.editBt.disabled {
+    background: url("../../img/icons/edit_white.png") no-repeat center scroll #d1d2d4;
+    background-size: 10px 10px;
+    cursor: no-drop;
+}
+
+.docExport_Textarea {
+    width: 54em;
+    height: 20em;
+}
+
+#htTplExcluded .editBt, #stTplExcluded .editBt{
+   display: none;
+}
+
+.preview_icon {
+    float: left;
+    padding: 4px;
+    border: 2px solid #00ccbf;
+    border-radius: 8px;
+    vertical-align: middle;
+}
+
+.preview_icon img {
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+}
+
+.field-group {
+    float: left;
+    margin-left: 4px;
+    margin-top: 4px;
+}
+
+textarea.default-textarea {
+    width: 100%;
+    min-width: 300px;
+    height: 150px;
+}
+
+.md-preview {
+    width: 300px;
+    min-height: 150px;
+    max-height: 250px;
+    overflow: auto;
+    float: right;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid rgb(187, 187, 187);
+    background-color: #fff;
+}
+
+/* Vertical Tabs */
+
+.vertical-tabs.ui-widget-content{
+    background: none;
+    border: none;
+}
+
+.vertical-tabs.ui-tabs-vertical .ui-tabs-nav {
+    padding: 0em;
+    width: auto;
+    background: transparent !important;
+    position: absolute;
+    border-bottom: 0px !important;
+    top: 10px;
+    left: 10px;
+}
+.ui-tabs-vertical .ui-tabs-nav li {
+    clear: left;
+    width: 100%;
+    border: 0px !important;
+    margin: 0 0 2px 0 !important;
+    position: initial !important;
+}
+.ui-tabs-vertical .ui-tabs-nav li a {
+    display:block;
+    padding: 0 !important;
+}
+
+.ui-tabs-vertical .ico-tab.ui-state-default,
+.ui-tabs-vertical .ui-widget-content .ico-tab.ui-state-default,
+.ui-tabs-vertical .ui-widget-header .ico-tab.ui-state-default {
+    background: #fff;
+}
+.ui-tabs-vertical .ico-tab.ui-state-default a,
+.ui-tabs-vertical .ui-widget-content .ico-tab.ui-state-default a,
+.ui-tabs-vertical .ui-widget-header .ico-tab.ui-state-default a{
+    opacity: 0.5;
+}
+.vertical-tabs.ui-tabs-vertical .ui-tabs-nav .ico-tab.ui-tabs-active {
+    padding-bottom: 0;
+    padding-right: .1em;
+    border-right-width: 1px;
+}
+.vertical-tabs.ui-tabs-vertical .ui-tabs-nav .ico-tab.ui-state-active a{
+    opacity: 1;
+}
+.vertical-tabs.ui-tabs-vertical .ui-tabs-panel {
+    padding: 0em;
+    float: left;
+    width: 100%;
+}
+.vertical-tabs .lang-wrapper:before {
+    position: absolute;
+    top: 10px;
+    left: 3.2em;
+    content: "";
+    width: 1px;
+    height: 80%;
+    background: #e7e7e8;
+}
+.vertical-tabs .lang-abr {
+    display: inline-block;
+    position: absolute;
+    top: 7px;
+    right : 1em;
+    text-transform: capitalize;
+    color: #00a499;
+}
+.vertical-tabs.ui-tabs-vertical .ui-tabs-panel textarea {
+    width: 100%;
+    padding: .5em 2em .5em 3.5em !important;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }

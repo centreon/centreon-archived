@@ -314,6 +314,8 @@ CREATE TABLE `cb_fieldset` (
 CREATE TABLE `cb_fieldgroup` (
   `cb_fieldgroup_id` INT NOT NULL AUTO_INCREMENT,
   `groupname` VARCHAR(100) NOT NULL,
+  `displayname` VARCHAR(255) NOT NULL DEFAULT '',
+  `multiple` TINYINT NOT NULL DEFAULT 0,
   `group_parent_id` INT DEFAULT NULL,
   PRIMARY KEY(`cb_fieldgroup_id`),
   FOREIGN KEY(`group_parent_id`) REFERENCES `cb_fieldgroup` (`cb_fieldgroup_id`) ON DELETE CASCADE
@@ -460,6 +462,7 @@ CREATE TABLE `cfg_centreonbroker_info` (
   `grp_level` INT NOT NULL DEFAULT 0,
   `subgrp_id` INT DEFAULT NULL,
   `parent_grp_id` INT DEFAULT NULL,
+  `fieldIndex` INT DEFAULT NULL,
   KEY `cfg_centreonbroker_info_idx01` (`config_id`),
   KEY `cfg_centreonbroker_info_idx02` (`config_id`,`config_group`),
   CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE
@@ -516,12 +519,10 @@ CREATE TABLE `cfg_nagios` (
   `object_cache_file` varchar(255) DEFAULT NULL,
   `precached_object_file` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
-  `temp_path` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
   `check_result_path` varchar(255) DEFAULT NULL,
   `use_check_result_path` enum('0','1') DEFAULT '0',
   `max_check_result_file_age` varchar(255) DEFAULT NULL,
-  `p1_file` varchar(255) DEFAULT NULL,
   `status_update_interval` int(11) DEFAULT NULL,
   `nagios_user` varchar(255) DEFAULT NULL,
   `nagios_group` varchar(255) DEFAULT NULL,
@@ -635,8 +636,6 @@ CREATE TABLE `cfg_nagios` (
   `enable_environment_macros` enum('0','1','2') DEFAULT NULL,
   `use_setpgid` enum('0','1','2') DEFAULT NULL,
   `additional_freshness_latency` int(11) DEFAULT NULL,
-  `enable_embedded_perl` enum('0','1','2') DEFAULT NULL,
-  `use_embedded_perl_implicitly` enum('0','1','2') DEFAULT NULL,
   `debug_file` varchar(255) DEFAULT NULL,
   `debug_level` int(11) DEFAULT NULL,
   `debug_level_opt` varchar(200) DEFAULT '0',
@@ -2411,7 +2410,13 @@ CREATE TABLE `timezone` (
   UNIQUE KEY `name` (`timezone_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+CREATE TABLE IF NOT EXISTS `locale` (
+  `locale_id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`locale_id`),
+  `locale_short_name` varchar(3) NOT NULL,
+  `locale_long_name` varchar(255) NOT NULL,
+  `locale_img` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

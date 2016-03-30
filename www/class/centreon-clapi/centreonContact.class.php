@@ -36,6 +36,7 @@
  * SVN : $Id$
  *
  */
+namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
@@ -121,8 +122,8 @@ class CentreonContact extends CentreonObject {
     public function __construct($db) {
         parent::__construct();
         $this->tpObject = new CentreonTimePeriod();
-        $this->object = new Centreon_Object_Contact();
-        $this->timezoneObject = new Centreon_Object_Timezone();
+        $this->object = new \Centreon_Object_Contact();
+        $this->timezoneObject = new \Centreon_Object_Timezone();
         $this->params = array('contact_host_notification_options' => 'n',
             'contact_service_notification_options' => 'n',
             'contact_location' => '0',
@@ -347,7 +348,7 @@ class CentreonContact extends CentreonObject {
     protected function setNotificationCmd($type, $contactId, $commands) {
         $cmds = explode("|", $commands);
         $cmdIds = array();
-        $cmdObject = new Centreon_Object_Command();
+        $cmdObject = new \Centreon_Object_Command();
         foreach ($cmds as $commandName) {
             $tmp = $cmdObject->getIdByParameter($cmdObject->getUniqueLabelField(), $commandName);
             if (count($tmp)) {
@@ -357,9 +358,9 @@ class CentreonContact extends CentreonObject {
             }
         }
         if ($type == self::HOST_NOTIF_CMD) {
-            $relObj = new Centreon_Object_Relation_Contact_Command_Host();
+            $relObj = new \Centreon_Object_Relation_Contact_Command_Host();
         } else {
-            $relObj = new Centreon_Object_Relation_Contact_Command_Service();
+            $relObj = new \Centreon_Object_Relation_Contact_Command_Service();
         }
         $relObj->delete($contactId);
         foreach ($cmdIds as $cmdId) {
@@ -376,11 +377,11 @@ class CentreonContact extends CentreonObject {
      * @return void
      */
     private function exportNotifCommands($objType, $contactId, $contactName) {
-        $commandObj = new Centreon_Object_Command();
+        $commandObj = new \Centreon_Object_Command();
         if ($objType == self::HOST_NOTIF_CMD) {
-            $obj = new Centreon_Object_Relation_Contact_Command_Host();
+            $obj = new \Centreon_Object_Relation_Contact_Command_Host();
         } else {
-            $obj = new Centreon_Object_Relation_Contact_Command_Service();
+            $obj = new \Centreon_Object_Relation_Contact_Command_Service();
         }
 
         $cmds = $obj->getMergedParameters(array(), array($commandObj->getUniqueLabelField()), -1, 0, null, null, array($this->object->getPrimaryKey() => $contactId), "AND");

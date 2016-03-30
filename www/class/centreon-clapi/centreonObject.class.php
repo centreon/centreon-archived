@@ -34,6 +34,7 @@
  * SVN : $URL$
  * SVN : $Id$
  */
+namespace CentreonClapi;
 
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once _CLAPI_LIB_."/Centreon/Object/Contact/Contact.php";
@@ -114,7 +115,7 @@ abstract class CentreonObject
      */
     public function __construct()
     {
-        $this->db = Centreon_Db_Manager::factory('centreon');
+        $this->db = \Centreon_Db_Manager::factory('centreon');
         $res = $this->db->query("SELECT `value` FROM informations WHERE `key` = 'version'");
         $row = $res->fetch();
         $this->version = $row['value'];
@@ -390,11 +391,11 @@ abstract class CentreonObject
         }
         $objType = $objectTypes[$objType];
         
-        $contactObj = new Centreon_Object_Contact();
+        $contactObj = new \Centreon_Object_Contact();
         $contact = $contactObj->getIdByParameter('contact_alias', CentreonUtils::getUserName());
         $userId = $contact[0];
 
-        $dbstorage = Centreon_Db_Manager::factory('storage');
+        $dbstorage = \Centreon_Db_Manager::factory('storage');
         $query = 'INSERT INTO log_action
             (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
             VALUES (?, ?, ?, ?, ?, ?)';
@@ -439,7 +440,7 @@ abstract class CentreonObject
                         $actionId
                     )
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw $e;
             }
         }
