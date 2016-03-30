@@ -93,7 +93,8 @@ If you want to change a specific parameter for a contact, use the **SETPARAM** a
 
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifcmd;command name" 
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;svcnotifcmd;command name" 
-  root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifperiod;period name" 
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifperiod;period name"
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setparam -v "contact alias;timezone;Europe/Berlin"
 
 The required parameters are the following:
 
@@ -162,6 +163,8 @@ enable_notifications	   *1* when notification is enable, *0* otherwise
 autologin_key	           Used for auto login
 
 template	           Name of the template to apply to the contact
+
+timezone                   Timezone
 ========================== ============================================================================================
 
 .. note::

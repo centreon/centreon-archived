@@ -4,11 +4,10 @@ Prérequis
 
 L'interface Centreon web est compatible avec les navigateurs web suivants :
 
-* Internet Explorer IE 11+
-* Firefox 41+
-* Chrome 39+
-* Safari 6+
-* Opera 31+
+* Chrome (latest version)
+* Firefox (latest version)
+* Internet Explorer IE 11 (latest version)
+* Safari (latest version)
 
 Votre résolution doit être au minimum à 1280 x 768.
 
@@ -163,4 +162,3 @@ Description des partitions :
 * /var/log (au moins 10 GB)
 * /var/lib/centreon-broker (au moins 5 GB)
 * /var/backup (utilisé pour la sauvegarde)
-
