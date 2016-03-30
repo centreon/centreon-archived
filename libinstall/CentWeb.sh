@@ -530,6 +530,11 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/centreonSyncArchives >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install centreonSyncArchives")"
 
+log "INFO" "$(gettext "Prepare generateSqlLite")"
+cp $TMP_DIR/src/bin/generateSqlLite \
+	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare generateSqlLite")"
+
 log "INFO" "$(gettext "Install generateSqlLite")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 \
