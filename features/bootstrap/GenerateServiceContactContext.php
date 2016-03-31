@@ -1,5 +1,4 @@
 <?php
-
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
@@ -12,6 +11,7 @@ use Centreon\Test\Behat\ConfigurationPollersPage;
  */
 class GenerateServiceContactContext extends CentreonContext
 {
+
     private $pollers_page;
 
     public function __construct()
@@ -29,41 +29,82 @@ class GenerateServiceContactContext extends CentreonContext
         $serviceLink = $this->assertFind('named', array('link', 'Broker-Retention'));
         if (!$serviceLink->isVisible()) {
             throw new \Exception("The service 'Broker-Retention' is not visible.");
-        } 
+        }
         $serviceLink->click();
     }
-    
-    
+
     /**
      * @Given I am on Notifications tab
      */
     public function IAmOnNotificationsTab()
     {
-        $notificationsTab = $this->assertFind('named', array('link', 'Notifications'));
-        if (!$notificationsTab->isVisible()) {
+        $linkNotifications = $this->getSession()->getPage()->findAll('named', array('link', 'Notifications'));
+        foreach ($linkNotifications as $link) {
+            if ($link->getAttribute('href') == "#") {
+                $tabExist = true;
+                $link->click();
+            }
+        }
+
+        if (!isset($tabExist)) {
             throw new \Exception("The notifications tab is not visible.");
-        } 
-        $notificationsTab->click();
+        }
     }
-    
+
     /**
      * @When I check case yes
      */
-    public function ICheckCaseYes()
+    public function iSelectTheRadioButton()
     {
         $name = 'service_use_only_contacts_from_host[service_use_only_contacts_from_host]';
-        $checkedRadio = $this->iSelectTheRadioButton("Yes");
-        
+        $radio_button = $this->getSession()->getPage()->findAll('named', array('radio', $name));
+        foreach ($radio_button as $radio) {
+            if ($radio->getAttribute('value') == 1) {
+                $radio->click();
+                if (!$radio->isChecked()) {
+                    throw new Exception("Radio for $name not checked");
+                }
+            }
+        }
     }
-    
-    private function iSelectTheRadioButton($radio_label) {
-      $radio_button = $this->getSession()->getPage()->findField($radio_label);
-      if (null === $radio_button) {
-        throw new Exception(
-          'form field '. $radio_label
+
+    /**
+     * @Then a case Inherit contacts are disabled
+     */
+    public function aCheckboxInhertAreDisabled()
+    {
+        $sName = "service_inherit_contacts_from_host[service_inherit_contacts_from_host]";        
+        $radio_button = $this->getSession()->getPage()->findAll('named', array('radio', $sName));
+        foreach ($radio_button as $radio) {            
+            if (!$radio->getAttribute('disabled')) {
+                throw new Exception("The case Inherit contacts are disabled");
+            }
+        }
+    }
+
+    /**
+     * @Then the field contact service are disabled
+     */
+    public function theFieldContactServiceAreDisabled()
+    {
+        $sChecked = $this->getSession()->evaluateScript(
+            "return jQuery('#service_cs').prop('disabled').toString();"
         );
-      }
-      $value = $radio_button->getAttribute('value');
-      $this->fillField($radio_label, $value);
+        if ($sChecked != "true") {
+            throw new Exception("The field contact service are not disabled");
+        }
+    }
+
+    /**
+     * @Then the field contact group service are disabled
+     */
+    public function theFieldContactGroupServiceAreDisabled()
+    {
+        $sChecked = $this->getSession()->evaluateScript(
+            "return jQuery('#service_cgs').prop('disabled').toString();"
+        );
+        if ($sChecked != "true") {
+            throw new Exception("The checkbox Inherit contacts group from host are not disabled");
+        }
     }
 }

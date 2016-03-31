@@ -7,16 +7,10 @@ Feature: Generate service contact configuration
         Given a Centreon server
         And I am logged in
 
-    Scenario: Configure checkbox Inherit only contacts/contacts group from host
+    Scenario: Configure checkbox Inherit only contacts and contacts group from host
         Given a one service associated on host
         And I am on Notifications tab
         When I check case yes
-        Then I checkbox "Inherit contacts from host" are disabled
-
-    Scenario: Configure inhertance contact
-        Given a one service associated on host
-        And I am on Notifications tab
-        And a checkbox "Yes" in "Inherit only contacts/contacts group from host" is checked
-        When I click on the button "save"
-        Then I open service
-        Then checkbox "Yes" in "Inherit contacts from host" is checked
+        Then a case Inherit contacts are disabled
+        And the field contact service are disabled
+        And the field contact group service are disabled
