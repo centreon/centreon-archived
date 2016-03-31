@@ -22,7 +22,13 @@ default:
       paths: [ %paths.base%/features/SelectAllSelect2.feature ]
       contexts:
         - SelectAllSelect2Context
+
     empty_default_configuration:
       paths: [ %paths.base%/features/EmptyDefaultConfiguration.feature ]
       contexts:
         - EmptyDefaultConfigurationContext
+
+    generate_service_contact_configuration:
+      paths: [ %paths.base%/features/GenerateServiceContact.feature ]
+      contexts:
+        - GenerateServiceContactContext

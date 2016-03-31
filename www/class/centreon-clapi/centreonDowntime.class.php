@@ -71,7 +71,7 @@ class CentreonDowntime extends CentreonObject
     {
         parent::__construct();
         $this->serviceObj = new CentreonService();
-        $this->object = new Centreon_Object_Downtime();
+        $this->object = new \Centreon_Object_Downtime();
         $this->action = "DOWNTIME";
         $this->insertParams = array('dt_name', 'dt_description');
         $this->exportExcludedParams = array_merge(

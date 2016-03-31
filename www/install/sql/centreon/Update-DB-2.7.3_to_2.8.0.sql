@@ -132,3 +132,4 @@ ALTER TABLE `cfg_nagios`
     DROP COLUMN `enable_embedded_perl`,
     DROP COLUMN `use_embedded_perl_implicitly`;
 
+ALTER TABLE `service` ADD COLUMN `service_use_only_contacts_from_host` enum('0','1') DEFAULT '0' AFTER `service_inherit_contacts_from_host`;
