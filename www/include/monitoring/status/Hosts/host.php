@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
 /*
  * ACL Actions
@@ -70,7 +68,6 @@ include("./include/common/autoNumLimit.php");
 if (isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])) {
     $_SESSION['monitoring_default_hostgroups'] = $_GET["hostgroups"];
 }
-
 
 $problem_sort_type = 'host_name';
 if (!empty($oreon->optGen["problem_sort_type"])) {
