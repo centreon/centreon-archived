@@ -31,106 +31,103 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+	exit();
+}
 
-	include("./include/common/autoNumLimit.php");
+include("./include/common/autoNumLimit.php");
 
-	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
-	!isset($_GET["sort_type"]) ? $sort_type = "service_description" : $sort_type = $_GET["sort_type"];
-	!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
+!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
+!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
+!isset($_GET["sort_type"]) ? $sort_type = "service_description" : $sort_type = $_GET["sort_type"];
+!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
 
-	$tab_class = array("0" => "list_one", "1" => "list_two");
+$tab_class = array("0" => "list_one", "1" => "list_two");
 
-	$rows = 10;
+$rows = 10;
 
-	include_once "./include/monitoring/status/Common/default_poller.php";
-    include_once($meta_path."/metaServiceJS.php");
+include_once "./include/monitoring/status/Common/default_poller.php";
+include_once($meta_path."/metaServiceJS.php");
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($meta_path, $tpl, "/templates/");
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($meta_path, $tpl, "/templates/");
 
-	$tpl->assign("p", $p);
-	$tpl->assign('o', $o);
-	$tpl->assign("sort_types", $sort_types);
-	$tpl->assign("num", $num);
-	$tpl->assign("limit", $limit);
-	$tpl->assign("mon_host", _("Hosts"));
-	$tpl->assign("mon_status", _("Status"));
-	$tpl->assign("mon_ip", _("IP"));
-	$tpl->assign("mon_last_check", _("Last Check"));
-	$tpl->assign("mon_duration", _("Duration"));
-	$tpl->assign("mon_status_information", _("Status information"));
+$tpl->assign("p", $p);
+$tpl->assign('o', $o);
+$tpl->assign("sort_types", $sort_types);
+$tpl->assign("num", $num);
+$tpl->assign("limit", $limit);
+$tpl->assign("mon_host", _("Hosts"));
+$tpl->assign("mon_status", _("Status"));
+$tpl->assign("mon_ip", _("IP"));
+$tpl->assign("mon_last_check", _("Last Check"));
+$tpl->assign("mon_duration", _("Duration"));
+$tpl->assign("mon_status_information", _("Status information"));
 
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
-	$tpl->assign("order", strtolower($order));
-	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
-	$tpl->assign("tab_order", $tab_order);
+$tpl->assign("order", strtolower($order));
+$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
+$tpl->assign("tab_order", $tab_order);
 
-	?>
-	<script type="text/javascript">
-	function setO(_i) {
-		document.forms['form'].elements['cmd'].value = _i;
-		document.forms['form'].elements['o1'].selectedIndex = 0;
-		document.forms['form'].elements['o2'].selectedIndex = 0;
-	}
-	</SCRIPT>
-	<?php
-
-	$attrs = array(	'onchange'=>"javascript: ".
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-            " if (this.form.elements['o1'].selectedIndex != 0) {".
-            " setO(this.form.elements['o1'].value); submit(); }");
-    $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
-													"3"		=>	_("Schedule immediate check"),
-													"4"		=>	_("Schedule immediate check (Forced)"),
-													"70" 	=> 	_("Acknowledge"),
-													"71" 	=> 	_("Disacknowledge"),
-													"80" 	=> 	_("Enable Notification"),
-													"81" 	=> 	_("Disable Notification"),
-													"90" 	=> 	_("Enable Check"),
-													"91" 	=> 	_("Disable Check")), $attrs);
-
-	$form->setDefaults(array('o1' => NULL));
-	$o1 = $form->getElement('o1');
-	$o1->setValue(NULL);
-
-	$attrs = array('onchange'=>"javascript: ".
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-            " if (this.form.elements['o2'].selectedIndex != 0) {".
-            " setO(this.form.elements['o2'].value); submit(); }");
-    $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."),
-													"3"		=>	_("Schedule immediate check"),
-													"4"		=>	_("Schedule immediate check (Forced)"),
-													"70" 	=> 	_("Acknowledge"),
-													"71" 	=> 	_("Disacknowledge"),
-													"80" 	=> 	_("Enable Notification"),
-													"81" 	=> 	_("Disable Notification"),
-													"90" 	=> 	_("Enable Check"),
-													"91" 	=> 	_("Disable Check")), $attrs);
-	$form->setDefaults(array('o2' => NULL));
-	$o2 = $form->getElement('o2');
-	$o2->setValue(NULL);
-	$o2->setSelected(NULL);
-	$tpl->assign('limit', $limit);
-    $tpl->assign('serviceStr', _('Service'));
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
-
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("metaService.ihtml");
 ?>
+<script type="text/javascript">
+function setO(_i) {
+	document.forms['form'].elements['cmd'].value = _i;
+	document.forms['form'].elements['o1'].selectedIndex = 0;
+	document.forms['form'].elements['o2'].selectedIndex = 0;
+}
+</SCRIPT>
+<?php
+
+$attrs = array(	'onchange'=>"javascript: ".
+        " var bChecked = isChecked(); ".
+        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+        " alert('"._("Please select one or more items")."'); return false;} " .
+        " if (this.form.elements['o1'].selectedIndex != 0) {".
+        " setO(this.form.elements['o1'].value); submit(); }");
+$form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
+												"3"		=>	_("Schedule immediate check"),
+												"4"		=>	_("Schedule immediate check (Forced)"),
+												"70" 	=> 	_("Acknowledge"),
+												"71" 	=> 	_("Disacknowledge"),
+												"80" 	=> 	_("Enable Notification"),
+												"81" 	=> 	_("Disable Notification"),
+												"90" 	=> 	_("Enable Check"),
+												"91" 	=> 	_("Disable Check")), $attrs);
+
+$form->setDefaults(array('o1' => NULL));
+$o1 = $form->getElement('o1');
+$o1->setValue(NULL);
+
+$attrs = array('onchange'=>"javascript: ".
+        " var bChecked = isChecked(); ".
+        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+        " alert('"._("Please select one or more items")."'); return false;} " .
+        " if (this.form.elements['o2'].selectedIndex != 0) {".
+        " setO(this.form.elements['o2'].value); submit(); }");
+$form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."),
+												"3"		=>	_("Schedule immediate check"),
+												"4"		=>	_("Schedule immediate check (Forced)"),
+												"70" 	=> 	_("Acknowledge"),
+												"71" 	=> 	_("Disacknowledge"),
+												"80" 	=> 	_("Enable Notification"),
+												"81" 	=> 	_("Disable Notification"),
+												"90" 	=> 	_("Enable Check"),
+												"91" 	=> 	_("Disable Check")), $attrs);
+$form->setDefaults(array('o2' => NULL));
+$o2 = $form->getElement('o2');
+$o2->setValue(NULL);
+$o2->setSelected(NULL);
+$tpl->assign('limit', $limit);
+$tpl->assign('serviceStr', _('Service'));
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+
+$tpl->assign('form', $renderer->toArray());
+$tpl->display("metaService.ihtml");
