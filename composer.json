@@ -9,6 +9,9 @@
             "email": "kduret@centreon.com"
         }
     ],
+    "repositories": [
+      { "type": "composer", "url": "http://ci.int.centreon.com" }
+    ],
     "require-dev": {
         "behat/behat": "^3.0",
         "behat/mink": "^1.7",
