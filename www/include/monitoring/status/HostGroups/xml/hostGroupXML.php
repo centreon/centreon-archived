@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,15 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/HostGroups/xml/hostGroupXML.php $
- * SVN : $Id: hostGroupXML.php 11683 2011-02-14 16:10:44Z jmathis $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
@@ -187,13 +182,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $stats[$ndo["alias"]]["s"][$ndo["state"]] = $ndo["nb"];
     }
 }
-/*
-  if ($order == "DESC") {
-  ksort($stats);
-  } else {
-  krsort($stats);
-  }
- */
+
 /*
  * Get Pagination Rows
  */
@@ -223,7 +212,6 @@ foreach ($stats as $name => $stat) {
             $obj->XML->writeElement("hdc", $obj->colorHost[1]);
             $obj->XML->writeElement("hur", $stat["h"][2]);
             $obj->XML->writeElement("hurc", $obj->colorHost[2]);
-           
             $obj->XML->writeElement("sc", $stat["s"][2]);
             $obj->XML->writeElement("scc", $obj->colorService[2]);
             $obj->XML->writeElement("sw", $stat["s"][1]);
@@ -249,4 +237,3 @@ $obj->XML->endElement();
 
 $obj->header();
 $obj->XML->output();
-?>
