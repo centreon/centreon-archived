@@ -541,8 +541,11 @@ jQuery(function() {
     {
         if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "1") {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").attr('disabled', 'disabled').removeAttr('checked');
-            jQuery("#service_cs").val("").attr('disabled', 'disabled');
-            jQuery("#service_cgs").val("").attr('disabled', 'disabled');
+            jQuery("#service_cs").attr('disabled', 'disabled');
+            jQuery("#service_cs").select2("val", "");
+            jQuery("#service_cgs").attr('disabled', 'disabled');
+            jQuery("#service_cgs").select2("val", "");
+            
         } else {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").removeAttr('disabled');
             jQuery("#service_cs").removeAttr('disabled');
