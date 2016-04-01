@@ -33,7 +33,7 @@
  */
 
 if (!isset($centreon_path)) {
-    die ('Centreon path not set.');
+    die('Centreon path not set.');
 }
 
 set_include_path(implode(PATH_SEPARATOR, array(
@@ -44,8 +44,6 @@ set_include_path(implode(PATH_SEPARATOR, array(
 
 function __autoload($className)
 {
-    
-
     $fileName = $className;
     $fileName{0} = strtolower($fileName{0});
     $fileNameType1 = _CENTREON_PATH_  . "/www/class/" . $fileName . ".class.php";
@@ -53,8 +51,7 @@ function __autoload($className)
 
     if (file_exists($fileNameType1)) {
         require_once $fileNameType1;
-    } else if (file_exists($fileNameType2)) {
+    } elseif (file_exists($fileNameType2)) {
         require_once $fileNameType2;
     }
 }
-
