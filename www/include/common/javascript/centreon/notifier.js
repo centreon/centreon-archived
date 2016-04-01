@@ -6,7 +6,7 @@
             clearTimeout(timeout);
         }
         jQuery.ajax({
-            url: "./include/monitoring/status/Notifications/broker/notifications.php",
+            url: "./include/monitoring/status/Notifications/notifications.php",
             data: {
                 sid: settings.sid,
                 refresh_rate: settings.refresh_rate
