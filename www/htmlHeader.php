@@ -124,7 +124,7 @@ if (isset($_GET["search_service"])) {
         $searchStrSVC = "&".$searchStrSVC;
     }
     $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8");
-} else if (isset($centreon->historySearchService[$url]) && !isset($_GET["search_service"])) {
+} elseif (isset($centreon->historySearchService[$url]) && !isset($_GET["search_service"])) {
     $search_service = $centreon->historySearchService[$url];
     $searchStr .= "search_service=".$centreon->historySearchService[$url];
 }
@@ -155,7 +155,7 @@ $tM = $centreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 ?>
 <script type='text/javascript'>
 <?php
-    require_once ("./include/common/javascript/autologout.php");
+    require_once("./include/common/javascript/autologout.php");
 ?>
 jQuery(function () {
 <?php
@@ -174,7 +174,7 @@ if ($centreon->user->access->admin == 0) {
 
 $res = null;
 $DBRESULT = $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-while ($topology_js = $DBRESULT->fetchRow()){
+while ($topology_js = $DBRESULT->fetchRow()) {
     if ($topology_js['init'] == "initM") {
         if ($o != "hd" && $o != "svcd") {
             $obis = $o;
@@ -186,7 +186,7 @@ while ($topology_js = $DBRESULT->fetchRow()){
             }
             print "\tsetTimeout('initM($tM, \"$sid\", \"$obis\")', 0);";
         }
-    } else if ($topology_js['init']){
+    } elseif ($topology_js['init']) {
         echo "if (typeof ".$topology_js['init']." == 'function') {";
         echo $topology_js['init'] ."();";
         echo "}";
