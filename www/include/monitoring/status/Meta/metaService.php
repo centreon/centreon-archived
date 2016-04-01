@@ -85,45 +85,31 @@ function setO(_i) {
 </SCRIPT>
 <?php
 
-$attrs = array(	'onchange'=>"javascript: ".
-        " var bChecked = isChecked(); ".
-        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-        " alert('"._("Please select one or more items")."'); return false;} " .
-        " if (this.form.elements['o1'].selectedIndex != 0) {".
-        " setO(this.form.elements['o1'].value); submit(); }");
-$form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."),
-												"3"		=>	_("Schedule immediate check"),
-												"4"		=>	_("Schedule immediate check (Forced)"),
-												"70" 	=> 	_("Acknowledge"),
-												"71" 	=> 	_("Disacknowledge"),
-												"80" 	=> 	_("Enable Notification"),
-												"81" 	=> 	_("Disable Notification"),
-												"90" 	=> 	_("Enable Check"),
-												"91" 	=> 	_("Disable Check")), $attrs);
+// Options for the listing actions
+foreach (array('o1', 'o2') as $id => $options) {
 
-$form->setDefaults(array('o1' => NULL));
-$o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-
-$attrs = array('onchange'=>"javascript: ".
+	$attrs = array(	'onchange'=>"javascript: ".
         " var bChecked = isChecked(); ".
-        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+        " if (this.form.elements['$options'].selectedIndex != 0 && !bChecked) {".
         " alert('"._("Please select one or more items")."'); return false;} " .
-        " if (this.form.elements['o2'].selectedIndex != 0) {".
-        " setO(this.form.elements['o2'].value); submit(); }");
-$form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."),
-												"3"		=>	_("Schedule immediate check"),
-												"4"		=>	_("Schedule immediate check (Forced)"),
-												"70" 	=> 	_("Acknowledge"),
-												"71" 	=> 	_("Disacknowledge"),
-												"80" 	=> 	_("Enable Notification"),
-												"81" 	=> 	_("Disable Notification"),
-												"90" 	=> 	_("Enable Check"),
-												"91" 	=> 	_("Disable Check")), $attrs);
-$form->setDefaults(array('o2' => NULL));
-$o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+        " if (this.form.elements['$options'].selectedIndex != 0) {".
+        " setO(this.form.elements['$options'].value); submit(); }");
+	$form->addElement('select', $options, NULL, array(	NULL	=>	_("More actions..."),
+													"3"		=>	_("Schedule immediate check"),
+													"4"		=>	_("Schedule immediate check (Forced)"),
+													"70" 	=> 	_("Acknowledge"),
+													"71" 	=> 	_("Disacknowledge"),
+													"80" 	=> 	_("Enable Notification"),
+													"81" 	=> 	_("Disable Notification"),
+													"90" 	=> 	_("Enable Check"),
+													"91" 	=> 	_("Disable Check")), $attrs);
+
+	$form->setDefaults(array($options => NULL));
+	$tmp_o = $form->getElement($options);
+	$tmp_o->setValue(NULL);
+
+}
+
 $tpl->assign('limit', $limit);
 $tpl->assign('serviceStr', _('Service'));
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
