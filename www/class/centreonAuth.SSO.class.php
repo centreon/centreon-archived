@@ -55,10 +55,7 @@ class CentreonAuthSSO extends CentreonAuth {
                 $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
                 if ($this->check_sso_client()) {
                     $this->sso_mandatory = 1;
-                    $posat = strrpos($this->sso_username,'@');
-                    global $orig_name;
-                    $orig_name = $username;
-                    $username = substr($this->sso_username,0,$posat);
+                    $username = substr($this->sso_username, 0, strrpos($this->sso_username,'@'));
                 }
             }
         }
