@@ -35,41 +35,16 @@
  * SVN : $Id$
  * 
  */
-
-session_start();
-DEFINE('STEP_NUMBER', 8);
-$_SESSION['step'] = STEP_NUMBER;
-
-require_once 'functions.php';
-$template = getTemplate('./templates');
-
-$title = _('Installation finished');
-
-$contents = '<div>'._('The installation is now finished. To get further information regarding Centreon please visit the following links').':</div>';
-$contents .= '
-    <ul>
-        <li>'._('Official website').': <a href="http://www.centreon.com">www.centreon.com</a></li>
-        <li>'._('Forum').': <a href="http://forum.centreon.com">forum.centreon.com</a></li>
-        <li>'._('Documentation').': <a href="http://documentation.centreon.com">documentation.centreon.com</a></li>
-        <li>'._('Bug Tracker').': <a href="https://github.com/centreon/centreon/issues">github.com/centreon/centreon</a></li>
-    </ul>';
-$contents .= _('For professional support subscription please contact the <a href="http://support.centreon.com">Centreon Support Center</a>.');
-
-$centreon_path = realpath(dirname(__FILE__) . '/../../../');
-
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory ' . $centreon_path . '/installDir and give it the rigths to apache user to write.';
-} else {
-    $name = 'install-' . $_SESSION['version'] . '-' . date('Ymd_His');
-    @rename(str_replace('steps', '', getcwd()), $centreon_path . '/installDir/' . $name);
+if (isset($template)) {
+    if (fsockopen("www.centreon.com", 80, $num, $error, 5)) {
+        $pub_content = "http://blog-centreon-wordpress.s3.amazonaws.com/wp-content/uploads/2015/12/custom_view.jpg";
+    } elseif (file_exists("../../img/centreon.png")) {
+        fclose($sock);
+        $pub_content = "../img/centreon.png";
+    }
+    
+    if (isset($pub_content)) {
+        $template->assign('pub_content', $pub_content);
+    }
 }
-
-session_destroy();
-require_once ("process/advertising.php");
-$template->assign('step', STEP_NUMBER);
-$template->assign('title', $title);
-$template->assign('content', $contents);
-$template->assign('finish', 1);
-$template->assign('blockPreview', 1);
-$template->display('content.tpl');
 ?>

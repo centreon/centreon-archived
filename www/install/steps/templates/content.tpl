@@ -15,6 +15,13 @@
             </table>
         </td>
     </tr>
+    {if isset($finish) && $finish == 1 && isset($pub_content)}
+        <tr>
+            <td colspan="2">
+            <img src="{$pub_content}" height='600' width='800'/>
+            </td>
+        </tr>    
+    {/if}
     <tr style='height:40px;'>
         <td align='right' colspan='2'>
         {if ($step-1 && !$blockPreview)}
@@ -28,4 +35,4 @@
         {/if}
         </td>
     </tr>
-</table>
+</table>        
