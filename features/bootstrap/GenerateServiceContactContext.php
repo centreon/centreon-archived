@@ -26,9 +26,9 @@ class GenerateServiceContactContext extends CentreonContext
     public function AOneServiceAssociatedOnHost()
     {
         $this->visit('/main.php?p=60201');
-        $serviceLink = $this->assertFind('named', array('link', 'Broker-Retention'));
+        $serviceLink = $this->assertFind('named', array('link', 'Ping'));
         if (!$serviceLink->isVisible()) {
-            throw new \Exception("The service 'Broker-Retention' is not visible.");
+            throw new \Exception("The service 'Ping' is not visible.");
         }
         $serviceLink->click();
     }
