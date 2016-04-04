@@ -132,4 +132,3 @@ class CentreonBroker
         $this->doAction($name);
     }
 }
-?>
