@@ -32,96 +32,97 @@
  * For more information : contact@centreon.com
  *
  */
-    require_once $centreon_path . "www/autoloader.php";
-    
-    // Adding requirements
-    require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-    
-    /**
-     * Path to the configuration dir
-     */
-    global $path;
 
-    /**
-     * Set login messages (errors)
-     */
-    $loginMessages = array();
-    if (isset($msg_error)) {
-        $loginMessages[] = $msg_error;
-    } elseif (isset($_POST["centreon_token"])) {
-        $loginMessages[] = _('Your credentials are incorrect.');
-    }
+require_once $centreon_path . "www/autoloader.php";
+
+// Adding requirements
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+/**
+ * Path to the configuration dir
+ */
+global $path;
+
+/**
+ * Set login messages (errors)
+ */
+$loginMessages = array();
+if (isset($msg_error)) {
+    $loginMessages[] = $msg_error;
+} elseif (isset($_POST["centreon_token"])) {
+    $loginMessages[] = _('Your credentials are incorrect.');
+}
     
-    if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
-        $loginMessages[] = _('Your session is expired.');
-    }
+if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
+    $loginMessages[] = _('Your session is expired.');
+}
     
-    if ($file_install_acces) {
-        $loginMessages[] = $error_msg;
-    }
+if ($file_install_acces) {
+    $loginMessages[] = $error_msg;
+}
     
-    if (isset($msg) && $msg) {
-        $loginMessages[] = $msg;
-    }
+if (isset($msg) && $msg) {
+    $loginMessages[] = $msg;
+}
     
-    /**
-     * Getting Centreon Version
-     */
-    $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-    $release = $DBRESULT->fetchRow();
+/**
+ * Getting Centreon Version
+ */
+$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+$release = $DBRESULT->fetchRow();
+
+/**
+ * Defining Login Form
+ */
+$form = new HTML_QuickForm('Form', 'post', './index.php');
+$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
+$form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
+$submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
+
+$loginValidate = $form->validate();
+
+/**
+ * Adding hidden value
+ */
+if (isset($_GET['p'])) {
+    $pageElement = $form->addElement('hidden', 'p');
+    $pageElement->setValue($_GET['p']);
+}
     
-    /**
-     * Defining Login Form
-     */
-    $form = new HTML_QuickForm('Form', 'post', './index.php');
-    $form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
-    $form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
-    $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
+/**
+ * Adding validation rule
+ */
+$form->addRule('useralias', _("You must specify a username"), 'required');
+$form->addRule('password', _("You must specify a password"), 'required');
+
+/**
+ * Form parameters
+ */
+if (isset($freeze) && $freeze) {
+    $form->freeze();
+}
+if ($file_install_acces) {
+    $submitLogin->freeze();
+}
     
-    $loginValidate = $form->validate();
-    
-    /**
-     * Adding hidden value
-     */
-    if (isset($_GET['p'])) {
-        $pageElement = $form->addElement('hidden', 'p');
-        $pageElement->setValue($_GET['p']);
-    }
-    
-    /**
-     * Adding validation rule
-     */
-    $form->addRule('useralias', _("You must specify a username"), 'required');
-    $form->addRule('password', _("You must specify a password"), 'required');
-    
-    /**
-     * Form parameters
-     */
-    if (isset($freeze) && $freeze) {
-        $form->freeze();
-    }
-    if ($file_install_acces) {
-        $submitLogin->freeze();
-    }
-    
-    /*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
-    
-    // Initializing variables
-    $tpl->assign('skin', $skin);
-    $tpl->assign('loginMessages', $loginMessages);
-    $tpl->assign('centreonVersion','v. '.$release['value']);
-    $tpl->assign('currentDate', date("d/m/Y"));
-    
-    // Applying and Displaying template
-    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-    $form->accept($renderer);
-    $tpl->assign('form', $renderer->toArray());
-    $tpl->display("login.ihtml");
-    require_once("./processLogin.php");
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
+
+// Initializing variables
+$tpl->assign('skin', $skin);
+$tpl->assign('loginMessages', $loginMessages);
+$tpl->assign('centreonVersion', 'v. '.$release['value']);
+$tpl->assign('currentDate', date("d/m/Y"));
+
+// Applying and Displaying template
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+$form->accept($renderer);
+$tpl->assign('form', $renderer->toArray());
+$tpl->display("login.ihtml");
+require_once("./processLogin.php");

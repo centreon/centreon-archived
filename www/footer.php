@@ -46,23 +46,26 @@ if (!$min) {
 </div> 
 <div id="clearfooter" style="height: 1px;"></div>
 <div id="footer">
-	<table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
-			<tr>
-		    <td>
-		        <?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
-		    </td>
-				<td align='center' class='copyRight'>
-			    <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> |
+    <table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
+            <tr>
+            <td>
+                <?php print _("Generated in ");
+                $time_end = microtime_float();
+                $now = $time_end - $time_start;
+                print round($now, 3) . " " . _("seconds"); ?>
+            </td>
+                <td align='center' class='copyRight'>
+                <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> |
                 <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> | 
                 <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> | 
                 <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a>  
-                 <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
+                    <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
                 | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
-                 <?php } ?>
+                    <?php } ?>
             </td>
             <td>Copyright &copy; 2005 - <?php echo date("Y"); ?></td>
          </tr>
-	</table>
+    </table>
 </div>
 <?php
 }
@@ -74,7 +77,6 @@ width: 100%;
 height: 100%;
 }
  
-
 /* While in fullscreen, hide any children with class 'tohide' */
 :-webkit-full-screen .tohide {
   display: none;
@@ -96,7 +98,7 @@ height: 100%;
 </style>
 <script type="text/javascript">
     function myToggleAll(duration,toggle){
-        if(toggle){
+        if (toggle) {
             //var i = document.getElementsByTagName("html")[0];
             var i = document.documentElement;
             if (
@@ -130,19 +132,6 @@ height: 100%;
                     i.msRequestFullscreen();
                 }
             }
-        } else {
-            /*var i = document.getElementsByTagName("html")[0];
-            jQuery("#actionBar, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_2, #menu_3,#header").hide({duration : duration});
-            // go full-screen
-            if (i.requestFullscreen) {
-                i.requestFullscreen();
-            } else if (i.webkitRequestFullscreen) {
-                i.webkitRequestFullscreen();
-            } else if (i.mozRequestFullScreen) {
-                i.mozRequestFullScreen();
-            } else if (i.msRequestFullscreen) {
-                i.msRequestFullscreen();
-            }*/
         }
     }
     
@@ -164,14 +153,16 @@ height: 100%;
 
 
 <?php
-if ((isset($_GET["mini"]) && $_GET["mini"] == 1) || 
+if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
     (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
 ?>
-	<script type="text/javascript">
+    <script type="text/javascript">
         myToggleAll(0,false);
-	</script>
+    </script>
 <?php } else {
-	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }
+    if (!$centreon->user->showDiv("footer")) {
+?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php
+    }
 }
 
 /*
@@ -194,7 +185,7 @@ jQuery(function() {
  * Init whole page
  */
 function initWholePage() {
-	setQuickSearchPosition();
+    setQuickSearchPosition();
         jQuery().centreon_notify({
             sid: "<?php echo session_id();?>", 
             refresh_rate: <?php echo ($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>

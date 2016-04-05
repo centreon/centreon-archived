@@ -47,11 +47,11 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
     header("Location: ./install/setup.php");
     return;
 } elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
-    require_once ("$etc/centreon.conf.php");
+    require_once("$etc/centreon.conf.php");
     header("Location: ./install/upgrade.php");
 } else {
     if (file_exists("$etc/centreon.conf.php")) {
-        require_once ("$etc/centreon.conf.php");
+        require_once("$etc/centreon.conf.php");
         $freeze = 0;
     } else {
         $freeze = 0;
@@ -88,7 +88,7 @@ $skin = "./Themes/".$generalOptions["template"]."/";
  * detect installation dir
  */
 $file_install_acces = 0;
-if (file_exists("./install/setup.php")){
+if (file_exists("./install/setup.php")) {
     $error_msg = "Installation Directory '". getcwd() ."/install/' is accessible. Delete this directory to prevent security problem.";
     $file_install_acces = 1;
 }
@@ -101,7 +101,6 @@ ini_set("session.gc_maxlifetime", "31536000");
 CentreonSession::start();
 
 if (isset($_GET["disconnect"])) {
-    
     $centreon = & $_SESSION["centreon"];
     
     /*
@@ -132,7 +131,7 @@ if (isset($_SESSION["centreon"])) {
  *  Centreon 2.x doesn't support PHP < 5.3
  *
  */
-if (version_compare(phpversion(), '5.3') < 0){
+if (version_compare(phpversion(), '5.3') < 0) {
     echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
 } else {
     include_once("./login.php");

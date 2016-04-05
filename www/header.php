@@ -40,7 +40,8 @@ if (!defined('SMARTY_DIR')) {
 /*
  * Bench
  */
-function microtime_float()  {
+function microtime_float()
+{
     list($usec, $sec) = explode(" ", microtime());
     return ((float)$usec + (float)$sec);
 }
@@ -100,8 +101,8 @@ if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
         header("Location: index.php?disconnect=1");
     } else {
-        $args = NULL;
-        foreach ($_GET as $key=>$value) { 
+        $args = null;
+        foreach ($_GET as $key => $value) {
             $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
         }
         header("Location: index.php?".$args."");
@@ -132,7 +133,7 @@ if (!$p) {
     if (isset($root_menu["topology_page"])) {
         $p = $root_menu["topology_page"];
     } else {
-        $p = NULL;
+        $p = null;
     }
     if (isset($root_menu["topology_url_opt"])) {
         $tab = preg_split("/\=/", $root_menu["topology_url_opt"]);
@@ -145,17 +146,38 @@ if (!$p) {
 /*
  * Cut Page ID
  */
-$level1 = NULL;
-$level2 = NULL;
-$level3 = NULL;
-$level4 = NULL;
+$level1 = null;
+$level2 = null;
+$level3 = null;
+$level4 = null;
 switch (strlen($p)) {
-    case 1 :  $level1= $p; break;
-    case 3 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
-    case 5 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
-    case 6 :  $level1 = substr($p, 0, 2); $level2 = substr($p, 2, 2); $level3 = substr($p, 3, 2); break;
-    case 7 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); $level4 = substr($p, 5, 2); break;
-    default : $level1= $p; break;
+    case 1:
+        $level1= $p;
+        break;
+    case 3:
+        $level1 = substr($p, 0, 1);
+        $level2 = substr($p, 1, 2);
+        $level3 = substr($p, 3, 2);
+        break;
+    case 5:
+        $level1 = substr($p, 0, 1);
+        $level2 = substr($p, 1, 2);
+        $level3 = substr($p, 3, 2);
+        break;
+    case 6:
+        $level1 = substr($p, 0, 2);
+        $level2 = substr($p, 2, 2);
+        $level3 = substr($p, 3, 2);
+        break;
+    case 7:
+        $level1 = substr($p, 0, 1);
+        $level2 = substr($p, 1, 2);
+        $level3 = substr($p, 3, 2);
+        $level4 = substr($p, 5, 2);
+        break;
+    default:
+        $level1= $p;
+        break;
 }
 
 /*
@@ -169,8 +191,9 @@ $tab_file_css = array();
 $i = 0;
 if ($handle  = @opendir($skin."Color")) {
     while ($file = @readdir($handle)) {
-        if (is_file($skin."Color"."/$file"))
+        if (is_file($skin."Color"."/$file")) {
             $tab_file_css[$i++] = $file;
+        }
     }
     @closedir($handle);
 }

@@ -39,11 +39,6 @@ if (!isset($centreon)) {
 
 $tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 $tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
-    $tFS = 10;
-} else {
-    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-}
 if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
     $tFM = 10;
 } else {
@@ -143,7 +138,6 @@ function goM(_time_reload,_sid,_o){
 	proc.transform("forAjax");
 
 	_lock = 0;
-	viewDebugInfo('--end--');
 
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;

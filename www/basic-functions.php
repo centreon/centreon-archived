@@ -31,76 +31,75 @@
  * 
  * For more information : contact@centreon.com
  * 
- */	
+ */
+
 /*
  * Functions
  */
-function get_path($abs_path){
-	$len = strlen($abs_path);
-	for ($i = 0, $flag = 0; $i < $len; $i++){
-		if ($flag == 3)
-			break;
-		if ($abs_path{$i} == "/")
-			$flag++;
-	}
-	return substr($abs_path, 0, $i);
-}
 
-function get_child($id_page, $lcaTStr){
-	global $pearDB;
-	
-	if ($lcaTStr != "")
-		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+function get_child($id_page, $lcaTStr)
+{
+    global $pearDB;
+    
+    if ($lcaTStr != "") {
+        $rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 				FROM topology 
 				WHERE  topology_page IN ($lcaTStr) 
 				AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
-				ORDER BY topology_order, topology_group "; 
-	else
-		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+				ORDER BY topology_order, topology_group ";
+    } else {
+        $rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 				FROM topology 
 				WHERE  topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
-				ORDER BY topology_order, topology_group "; 
-		
-	$DBRESULT = $pearDB->query($rq);		
-	$redirect = $DBRESULT->fetchRow();
-	return $redirect;
+				ORDER BY topology_order, topology_group ";
+    }
+        
+    $DBRESULT = $pearDB->query($rq);
+    $redirect = $DBRESULT->fetchRow();
+    return $redirect;
 }
 
-function reset_search_page($url){
-	# Clean Vars
-	global $centreon;
-	if (!isset($url))
-		return;
-	if (isset($_GET["search"]) && isset($centreon->historySearch[$url]) && $_GET["search"] != $centreon->historySearch[$url]){		
-		$_POST["num"] = 0;
-		$_GET["num"] = 0;
-	}	
+function reset_search_page($url)
+{
+    # Clean Vars
+    global $centreon;
+    if (!isset($url)) {
+        return;
+    }
+    if (isset($_GET["search"]) && isset($centreon->historySearch[$url]) && $_GET["search"] != $centreon->historySearch[$url]) {
+        $_POST["num"] = 0;
+        $_GET["num"] = 0;
+    }
 }
 
-function get_my_first_allowed_root_menu($lcaTStr){
-	global $pearDB;
-	
-	if ($lcaTStr != "")
-		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+function get_my_first_allowed_root_menu($lcaTStr)
+{
+    global $pearDB;
+    
+    if ($lcaTStr != "") {
+        $rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 				FROM topology 
 				WHERE topology_page IN ($lcaTStr) 
 				AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
-				LIMIT 1"; 
-	else
-		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+				LIMIT 1";
+    } else {
+        $rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 				FROM topology 
 				WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
 				LIMIT 1";
-	$DBRESULT = $pearDB->query($rq);
-	$root_menu = array();
-	if ($DBRESULT->numRows())
-		$root_menu = $DBRESULT->fetchRow();
-	return $root_menu;
+    }
+    $DBRESULT = $pearDB->query($rq);
+    $root_menu = array();
+    if ($DBRESULT->numRows()) {
+        $root_menu = $DBRESULT->fetchRow();
+    }
+    return $root_menu;
 }
 
-function getSkin($pearDB) {
-	$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'template' LIMIT 1");
-	$data = $DBRESULT->fetchRow();
-	$DBRESULT->free();
-	return "./Themes/".$data["value"]."/";
+function getSkin($pearDB)
+{
+    $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'template' LIMIT 1");
+    $data = $DBRESULT->fetchRow();
+    $DBRESULT->free();
+    return "./Themes/".$data["value"]."/";
 }
