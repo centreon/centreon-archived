@@ -26,10 +26,6 @@ default:
       contexts:
         - Behat\MinkExtension\Context\MinkContext
         - SelectAllSelect2Context
-    generate_service_contact_configuration:
-      paths: [ %paths.base%/features/GenerateServiceContact.feature ]
-      contexts:
-        - GenerateServiceContactContext
     centreon_engine_restart:
       paths: [ %paths.base%/features/RestartCentreonEngine.feature ]
       contexts:
