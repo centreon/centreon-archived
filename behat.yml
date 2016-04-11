@@ -32,3 +32,7 @@ default:
       paths: [ %paths.base%/features/GenerateServiceContact.feature ]
       contexts:
         - GenerateServiceContactContext
+    centreon_engine_restart:
+      paths: [ %paths.base%/features/RestartCentreonEngine.feature ]
+      contexts:
+        - RestartCentreonEngineContext
