@@ -1903,4 +1903,20 @@ function getCentreonVersion($pearDB)
     $row = $res->fetchRow();
     return $row['value'];
 }
+
+function cleanString($str) {
+    $sReturn = "";
+    $str = trim($str);
+    if (empty($str)) {
+        return $sReturn;
+    }
+    
+    $str = utf8_decode($str);
+    $str = utf8_encode($str);
+    $str = str_replace(array("“", "„"), '"', $str);
+    
+    return $str;
+}
+
+
 ?>
