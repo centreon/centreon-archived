@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -45,7 +45,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <title>Centreon - IT & Network Monitoring</title>
 <link rel="shortcut icon" href="./img/favicon.ico"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2015 Open Source Matters. All rights reserved."/>
+<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2016 Open Source Matters. All rights reserved."/>
 <meta name="robots" content="index, nofollow"/>
 
 <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
