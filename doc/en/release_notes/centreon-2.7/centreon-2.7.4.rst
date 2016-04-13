@@ -22,8 +22,11 @@ To restore a valid encoding of special and accented characters, it is necessary 
 
 Warning
 =======
-This script should be run once and only once;
+
+This script should be run once and only once.
+
 If an operator has modified/corrected special characters or accented since the 2.7.0 update, processing performed by the script will truncate the string to turn on the first special or accented character. It will then be necessary to change the impacted objects to manually update them. (The script can unfortunately provide the list of impacted objects.
+
 All contents of table type "varchar", "char" or "text" will be updated
 
 Prerequisites
@@ -34,14 +37,16 @@ Don't forget to backup your database before doing any operations.
 Installation
 ============
 
-Download and install the script in "/usr/share/centreon/bin/" with the command: ::
-    wget http://resources.centreon.com/upgrade-2.6-to-2.7/migrate_utf8.php -O /usr/share/centreon/bin/migrate_utf8.php
+Download and install the script in "/usr/share/centreon/bin/" with the command:
+
+wget http://resources.centreon.com/upgrade-2.6-to-2.7/migrate_utf8.php -O /usr/share/centreon/bin/migrate_utf8.php
 
 Execution
 =========
 
-From a shell terminal, perform the script: ::
-    php /usr/share/centreon/bin/migrate_utf8.php
+From a shell terminal, perform the script:
+
+php /usr/share/centreon/bin/migrate_utf8.php
 
 
 *********
