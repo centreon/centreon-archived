@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once "centreonObject.class.php";
@@ -130,6 +127,7 @@ class CentreonContact extends CentreonObject {
             'contact_type_msg' => 'txt',
             'contact_activate' => '1',
             'contact_register' => '1');
+
         $this->insertParams = array('contact_name', 'contact_alias', 'contact_email', 'contact_passwd', 'contact_admin', 'contact_oreon', 'contact_lang', 'contact_auth_type');
         $this->exportExcludedParams = array_merge(
                 $this->insertParams, array(
@@ -179,7 +177,7 @@ class CentreonContact extends CentreonObject {
      * @return bool
      */
     protected function checkLang($locale) {
-        if (!$locale || $locale == "") {
+        if (!$locale || $locale == "" || $locale == "browser") {
             return true;
         }
         if (strtolower($locale) == "en_us") {
