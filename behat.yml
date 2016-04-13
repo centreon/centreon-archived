@@ -26,3 +26,7 @@ default:
       contexts:
         - Behat\MinkExtension\Context\MinkContext
         - SelectAllSelect2Context
+    centreon_engine_restart:
+      paths: [ %paths.base%/features/RestartCentreonEngine.feature ]
+      contexts:
+        - RestartCentreonEngineContext
