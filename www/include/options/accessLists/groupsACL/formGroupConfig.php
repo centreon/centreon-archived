@@ -54,7 +54,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set Contact Childs
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."' AND contact_contact_id NOT IN (SELECT contact_id FROM contact WHERE contact_admin = '1')");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'");
     for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++)
         $group["cg_contacts"][$i] = $contacts["contact_contact_id"];
     $DBRESULT->free();
@@ -98,7 +98,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
  */
 # Contacts comes from DB -> Store in $contacts Array
 $contacts = array();
-$query = "SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' AND contact_register = 1 ORDER BY contact_name";
+$query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = 1 ORDER BY contact_name";
 $DBRESULT = $pearDB->query($query);
 while ($contact = $DBRESULT->fetchRow()) {
     $contacts[$contact["contact_id"]] = $contact["contact_name"];
