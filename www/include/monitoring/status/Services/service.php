@@ -142,8 +142,15 @@ if (isset($_REQUEST['hg'])) {
     }
 }
 
+if (isset($_REQUEST['sg'])) {
+    $_SESSION['monitoring_default_servicegroups'] = $_REQUEST['sg'];
+} elseif (isset($_GET["servicegroup"]) && $_GET["servicegroup"]) {
+	$_SESSION['monitoring_default_servicegroups'] = $_GET["servicegroup"];
+}
+
 include_once("./include/monitoring/status/Common/default_poller.php");
 include_once("./include/monitoring/status/Common/default_hostgroups.php");
+include_once("./include/monitoring/status/Common/default_servicegroups.php");
 include_once($svc_path . "/serviceJS.php");
 
 /*
@@ -177,29 +184,6 @@ if (isset($_GET['output_search']) && $_GET['output_search'] != "") {
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
-if (isset($_REQUEST['hg'])) {
-    $_SESSION['monitoring_default_hostgroups'] = $_REQUEST['hg'];
-}
-include_once("./include/monitoring/status/Common/default_poller.php");
-include_once("./include/monitoring/status/Common/default_hostgroups.php");
-include_once($svc_path . "/serviceJS.php");
-
-/*
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($svc_path, $tpl, "/templates/");
-
-$tpl->assign("p", $p);
-$tpl->assign('o', $o);
-$tpl->assign("num", $num);
-$tpl->assign("limit", $limit);
-$tpl->assign("mon_host", _("Hosts"));
-$tpl->assign("mon_status", _("Status"));
-$tpl->assign("mon_ip", _("IP"));
-$tpl->assign("mon_last_check", _("Last Check"));
-$tpl->assign("mon_duration", _("Duration"));
-$tpl->assign("mon_status_information", _("Status information"));
 $sDefaultOrder = "0";
 
 if (!isset($_GET['o'])) {
@@ -388,6 +372,7 @@ $tpl->assign('outputStr', _('Output'));
 $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 $tpl->assign('pollerStr', _('Poller'));
 $tpl->assign('hgStr', _('Hostgroup'));
+$tpl->assign('sgStr', _('Servicegroup'));
 $criticality = new CentreonCriticality($pearDB);
 $tpl->assign('criticalityUsed', count($criticality->getList()));
 $tpl->assign('form', $renderer->toArray());

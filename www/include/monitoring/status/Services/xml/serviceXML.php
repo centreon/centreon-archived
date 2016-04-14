@@ -86,10 +86,6 @@ $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
 
-$criticality = new CentreonCriticality($obj->DB);
-$instanceObj = new CentreonInstance($obj->DB);
-$media = new CentreonMedia($obj->DB);
-
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     ;
 } else {
@@ -112,6 +108,7 @@ $num = $obj->checkArgument("num", $_GET, 0);
 $limit = $obj->checkArgument("limit", $_GET, 20);
 $instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+$servicegroups = $obj->checkArgument("servicegroups", $_GET, $obj->defaultServicegroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $search_host = $obj->checkArgument("search_host", $_GET, "");
 $search_output = $obj->checkArgument("search_output", $_GET, "");
@@ -132,6 +129,7 @@ CentreonDb::check_injection($num);
 CentreonDb::check_injection($limit);
 CentreonDb::check_injection($instance);
 CentreonDb::check_injection($hostgroups);
+CentreonDb::check_injection($servicegroups);
 CentreonDb::check_injection($search);
 CentreonDb::check_injection($search_host);
 CentreonDb::check_injection($search_output);
@@ -212,6 +210,9 @@ $request .= " FROM hosts h, instances i ";
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
 }
+if (isset($servicegroups) && $servicegroups != 0) {
+    $request .= ", services_servicegroups ssg, servicegroups sg";
+}
 if ($criticality_id) {
     $request .= ", customvariables cvs ";
 }
@@ -287,6 +288,12 @@ $request .= " AND h.name NOT LIKE '_Module_%' ";
  */
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= " AND hg.hostgroup_id = hg2.hostgroup_id AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
+}
+/**
+ * ServiceGroup Filter
+ */
+if (isset($servicegroups) && $servicegroups != 0) {
+    $request .= " AND ssg.servicegroup_id = sg.servicegroup_id AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $servicegroups . ") ";
 }
 
 /**
