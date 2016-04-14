@@ -48,6 +48,10 @@ From a shell terminal, perform the script:
 
 php /usr/share/centreon/bin/migrate_utf8.php
 
+Validation
+==========
+
+Connect to your web interface and check that there are no more bad encoded characters on it.
 
 *********
 CHANGELOG
