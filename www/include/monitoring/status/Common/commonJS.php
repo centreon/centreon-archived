@@ -344,8 +344,8 @@ function construct_HostGroupSelectList(id) {
             }
 		}
 ?>
-		if (typeof(_default_sg) != "undefined") {
-			_select.selectedIndex = select_index[_default_sg];
+		if (typeof(_default_hg) != "undefined") {
+			_select.selectedIndex = select_index[_default_hg];
 		}
 		_select_hostgroups.appendChild(_select);
 	}
@@ -427,8 +427,8 @@ function construct_ServiceGroupSelectList(id) {
             }
 		}
 ?>
-		if (typeof(_default_hg) != "undefined") {
-			_select.selectedIndex = select_index[_default_hg];
+		if (typeof(_default_sg) != "undefined") {
+			_select.selectedIndex = select_index[_default_sg];
 		}
 		_select_servicegroups.appendChild(_select);
 	}
