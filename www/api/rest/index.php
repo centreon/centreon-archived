@@ -33,35 +33,59 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . '/webService.class.php';
+require_once dirname(__FILE__) . '/class/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
 
-
 $pearDB = new CentreonDB();
-ini_set("session.gc_maxlifetime", "31536000");
 
-CentreonSession::start();
+/* Purge old token */
+$pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
 
-if (false === isset($_SESSION["centreon"])) {
+/* Test if the call is for authenticate */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_GET['action']) && $_GET['action'] == 'authenticate') {
+    if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
+        CentreonWebService::sendJson("Bad parameters", 400);
+    }
+    
+    /* @todo Check if user already have valid token */
+    
+    require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
+    require_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
+    
+    /* Authenticate the user */
+    $log = new CentreonUserLog(0, $pearDB);
+    $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log);
+    
+    if (0 === $auth->passwdOk) {
+        CentreonWebService::sendJson("Bad credentials", 403);
+    }
+    $token = base64_encode(uniqid('', true));
+    $pearDB->query("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (" . $auth->userInfos['contact_id'] . ", '" . $token . "', NOW())");
+    
+    CentreonWebService::sendJson(array('authToken' => $token));
+}
+
+/* Test authentication */
+if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
     CentreonWebService::sendJson("Unauthorized", 401);
 }
 
-$pearDB = new CentreonDB();
-
-/*
- * Define Centreon var alias
- */
-if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
+/* Create the default object */
+$res = $pearDB->query("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = '" . $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) . "'");
+if (PEAR::isError($res)) {
+    CentreonWebService::sendJson("Database error", 500);
 }
-
-if (false === isset($centreon) || false === is_object($centreon)) {
+$userInfos = $res->fetchRow();
+if (is_null($userInfos)) {
     CentreonWebService::sendJson("Unauthorized", 401);
 }
+
+$centreon = new Centreon($userInfos);
+$oreon = $centreon;
 
 CentreonWebService::router();
+

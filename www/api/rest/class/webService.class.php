@@ -231,7 +231,7 @@ class CentreonWebService
         $action = $methodPrefix . ucfirst($_GET['action']);
         
         /* Generate path for WebService */
-        self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/include/common/webServices/rest/*.class.php');
+        self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/api/rest/class/*.class.php');
         $res = $pearDB->query("SELECT name FROM modules_informations");
         while ($row = $res->fetchRow()) {
             self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
