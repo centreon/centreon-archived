@@ -33,4 +33,4 @@
  * 
  */
 
-require_once "../../../../api/rest/index.php";
+require_once "../../../../api/index.php";
