@@ -73,17 +73,6 @@ require_once SMARTY_DIR."Smarty.class.php";
 global $pearDB;
 $pearDB = new CentreonDB();
 
-$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-while ($generalOption = $DBRESULT->fetchRow()) {
-    $generalOptions[$generalOption["key"]] = $generalOption["value"];
-}
-$DBRESULT->free();
-
-/*
- * Set Skin For CSS properties
- */
-$skin = "./Themes/".$generalOptions["template"]."/";
-
 /*
  * detect installation dir
  */
@@ -134,5 +123,5 @@ if (isset($_SESSION["centreon"])) {
 if (version_compare(phpversion(), '5.3') < 0) {
     echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
 } else {
-    include_once("./login.php");
+    include_once("./include/core/login/login.php");
 }
