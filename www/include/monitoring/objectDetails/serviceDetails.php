@@ -93,7 +93,7 @@ if (!is_null($host_id)) {
         }
     }
     if ($can_display == 0) {
-        include_once("alt_error.php");
+        include_once("../errors/alt_error.php");
     } else {
 
         // Get Hostgroup List

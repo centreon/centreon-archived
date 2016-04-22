@@ -111,7 +111,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "../errors/alt_error.php";
             }
         } else {
             $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
@@ -132,7 +132,7 @@ if ($acl_page == 1 || $acl_page == 2) {
             } elseif ($ret['topology_url']) {
                 $url = $ret['topology_url'];
             } else {
-                $url = "./alt_error.php";
+                $url = "../errors/alt_error.php";
             }
         }
     } elseif ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
@@ -142,7 +142,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "../errors/alt_error.php";
             }
         } else {
             if ($ret["topology_url_opt"]) {
@@ -156,7 +156,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $ret["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "../errors/alt_error.php";
             }
         }
     } elseif ($redirect["topology_page"] >= 1000) {
@@ -166,14 +166,14 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "../errors/alt_error.php";
             }
         } else {
             if (file_exists($redirect["topology_url"]) && $ret['topology_page']) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "../errors/alt_error.php";
             }
         }
     }
@@ -181,11 +181,11 @@ if ($acl_page == 1 || $acl_page == 2) {
         if ($o == 'c') {
             $o = 'w';
         } elseif ($o == 'a') {
-            $url = "./alt_error.php";
+            $url = "../errors/alt_error.php";
         }
     }
 } else {
-    $url = "./alt_error.php";
+    $url = "../errors/alt_error.php";
 }
 
     /*
