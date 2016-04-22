@@ -41,6 +41,7 @@ require_once("./class/centreonData.class.php");
 
 if (!$min) {
 ?>    
+<!-- Footer -->
 <div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);" >
     <img class="ico-16" id="fullscreenIcon" alt="FullScreen" src="./img/icons/fullscreen.png">
 </div> 
@@ -97,6 +98,12 @@ height: 100%;
     
 </style>
 <script type="text/javascript">
+
+    // Centreon ToolTips
+    var centreonTooltip = new CentreonToolTip();
+    centreonTooltip.setTitle('<?php echo _("Help"); ?>');
+    centreonTooltip.render();
+
     function myToggleAll(duration,toggle){
         if (toggle) {
             //var i = document.getElementsByTagName("html")[0];
@@ -150,9 +157,8 @@ height: 100%;
     }
 
 </script>
-
-
 <?php
+
 if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
     (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
 ?>
