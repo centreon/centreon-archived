@@ -215,7 +215,7 @@ if (!$centreon->user->showDiv("menu_2")) {
  * Display PathWay
  */
 if ($min != 1) {
-    include_once "pathWay.php";
+    include_once "./include/core/pathway/pathway.php";
 }
 
 /*
