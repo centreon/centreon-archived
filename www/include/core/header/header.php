@@ -181,17 +181,14 @@ switch (strlen($p)) {
 }
 
 /*
- * Skin path
+ * Define Skin path
  */
-$DBRESULT = $pearDB->query("SELECT value FROM `options` WHERE `key` = 'template' LIMIT 1");
-$data = $DBRESULT->fetchRow();
-$skin = "./Themes/".$data["value"]."/";
 
 $tab_file_css = array();
 $i = 0;
-if ($handle  = @opendir($skin."Color")) {
+if ($handle  = @opendir("./Themes/Centreon-2/Color")) {
     while ($file = @readdir($handle)) {
-        if (is_file($skin."Color"."/$file")) {
+        if (is_file("./Themes/Centreon-2/Color"."/$file")) {
             $tab_file_css[$i++] = $file;
         }
     }

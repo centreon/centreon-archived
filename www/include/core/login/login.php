@@ -115,7 +115,6 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path.'/include/core/login/template/', $tpl);
 
 // Initializing variables
-$tpl->assign('skin', $skin);
 $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. '.$release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
