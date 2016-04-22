@@ -35,7 +35,9 @@
 
 require_once $centreon_path . "www/autoloader.php";
 
-// Adding requirements
+/*
+ * Adding requirements
+ */
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
@@ -110,7 +112,7 @@ if ($file_install_acces) {
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($path.'/include/core/login/template/', $tpl);
 
 // Initializing variables
 $tpl->assign('skin', $skin);
@@ -124,5 +126,10 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
+
+/*
+ * Display login Page
+ */
 $tpl->display("login.ihtml");
-require_once("./processLogin.php");
+
+require_once("./include/core/login/processLogin.php");
