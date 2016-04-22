@@ -83,10 +83,9 @@ $num = getParameters("num");
 /*
  * Include all func
  */
-
 include_once("./basic-functions.php");
 include_once("./include/common/common-Func.php");
-include_once("./header.php");
+include_once("./include/core/header/header.php");
 
 require_once _CENTREON_PATH_ . "www/autoloader.php";
 
@@ -192,7 +191,7 @@ if ($acl_page == 1 || $acl_page == 2) {
     /*
 	 *  Header HTML
 	 */
-    include_once "./htmlHeader.php";
+    include_once "./include/core/header/htmlHeader.php";
 
     /*
 	 * Display Menu
@@ -215,7 +214,7 @@ if (!$centreon->user->showDiv("menu_2")) {
  * Display PathWay
  */
 if ($min != 1) {
-    include_once "pathWay.php";
+    include_once "./include/core/pathway/pathway.php";
 }
 
 /*

@@ -1,4 +1,3 @@
-<div></div>
 <div id="header">
     <div id="centreon_logo">
 	    <img src='{$urlLogo}' title='Centreon Logo' id="logo" />
@@ -36,14 +35,13 @@
     			{if $displayTopCounter == 1}
     			<td>
     				<table class='Resume_light_table'>
-
     					<tr>
     					    <th>
     					        <span id="hosts">?</span>
     					        {$Hosts}
     					    </th>
                             <td>
-                                <span>&#8593;</span><span id="host_up" class="host_up" >?</span>
+                                <span id="host_up" class="host_up" >?</span>
                             </td>
                             <td>
                                 <span id="host_down" class="host_down" >?</span>
@@ -90,22 +88,13 @@
     	</div>
 	<div id="logli">
         {$loggedlabel}
-            {if $topology[50104]}
-            <a href="./main.php?p=50104&o=c">
-            {/if}
-            {$user_login}
-            {if $topology[50104]}
-            </a>
-            {/if}
-
+            {if $topology[50104]}<a href="./main.php?p=50104&o=c">{/if}{$user_login}{if $topology[50104]}</a>{/if}
             | <a href="{$LogOutUrl}" class="red">{$Logout}</a>
-
             {if $autoLoginEnable }
 				| <a onClick='return false;' href='{$autoLoginUrl}' title='Centreon - IT and Network Monitoring'>
 					<img src='./img/icons/unlocked.png' class="ico-16" title='{$CentreonAutologin}'>
 				</a>
 			{/if}
-
     </div>
     <div class="container">
         <span id="date">{$Date}</span>
@@ -115,16 +104,12 @@
 </div>
 {literal}
 <script type='text/javascript'>
-
 /*
  * Toggle Header
  */
 function toggleHeader()
 {
-	new Effect.toggle('header', 'appear', { afterFinish: function() {
-															setQuickSearchPosition();
-														  }
-										  });
+	new Effect.toggle('header', 'appear', { afterFinish: function() { setQuickSearchPosition(); }});
 }
 </script>
 {/literal}
