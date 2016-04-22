@@ -55,8 +55,6 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
         $freeze = 0;
     } else {
         $freeze = 0;
-        //require_once ("../centreon.conf.php");
-       // $msg = _("You have to move centreon configuration file from temporary directory to final directory");
     }
 }
 
@@ -110,7 +108,7 @@ if (isset($_GET["disconnect"])) {
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = & $_SESSION["centreon"];
-
+    // Get the selected home page
     header('Location: main.php');
 }
 

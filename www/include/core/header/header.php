@@ -86,12 +86,24 @@ $time_limit = time() - ($session_expire["value"] * 60);
 
 $DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
 
+
+$args = "&redirect='";
+        $a = 0;
+        foreach ($_GET as $key => $value) {
+            if ($a) {
+                $args .= '&';
+            }
+            $args .= "$key=$value";
+             $a++;
+        }
+        $args .= "'";
+
 /*
  * Get session and Check if session is not expired
  */
 $DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
 if (!$DBRESULT->numRows()) {
-    header("Location: index.php?disconnect=2");
+    header("Location: index.php?disconnect=2".$args);
 }
 
 /*
@@ -99,7 +111,17 @@ if (!$DBRESULT->numRows()) {
  */
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
-        header("Location: index.php?disconnect=1");
+        $args = "&redirect='";
+        $a = 0;
+        foreach ($_GET as $key => $value) {
+            if ($a) {
+                $args .= '&';
+            }
+            $args .= "$key=$value";
+            $a++;
+        }
+        $args .= "'";
+        header("Location: index.php?disconnect=1".$args);
     } else {
         $args = null;
         foreach ($_GET as $key => $value) {

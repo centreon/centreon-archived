@@ -119,6 +119,9 @@ $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. '.$release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
 
+// Redirect User
+$tpl->assign('redirect', (isset($_GET['redirect']) ? $_GET['redirect'] : ''));
+
 // Applying and Displaying template
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
