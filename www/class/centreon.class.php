@@ -43,7 +43,7 @@ require_once("centreonBroker.class.php");
 
 require_once("centreonHostgroups.class.php");
 
-class Centreon	{
+class Centreon {
 
 	var $Nagioscfg;
 	var $optGen;
