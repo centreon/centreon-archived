@@ -935,8 +935,6 @@ if (!$oreon->user->admin && $o == "a") {
         'multiple' => true
     );
     $form->addElement('select2', 'acl_groups', _("ACL Resource Groups"), array(), $attrAclgroups);
-    $form->addRule('acl_groups', _("Mandatory field for ACL purpose."), 'required');
-    
 }
 
 /*
