@@ -1541,6 +1541,7 @@ CREATE TABLE `host` (
   `cg_additive_inheritance` boolean DEFAULT 0,
   `host_first_notification_delay` int(11) DEFAULT NULL,
   `host_acknowledgement_timeout` int(11) DEFAULT NULL,
+   host_acknowledgement_timeout
   `host_stalking_options` varchar(200) DEFAULT NULL,
   `host_snmp_community` varchar(255) DEFAULT NULL,
   `host_snmp_version` varchar(255) DEFAULT NULL,
