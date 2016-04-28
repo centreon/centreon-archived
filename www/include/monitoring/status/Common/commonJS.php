@@ -383,7 +383,7 @@ function construct_ServiceGroupSelectList(id) {
 				  FROM servicegroup sg, acl_resources_sg_relations arsr
 				  WHERE sg.sg_id = arsr.sg_id
                                   AND arsr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().")
-                                  AND hg.sg_activate = '1'
+                                  AND sg.sg_activate = '1'
 			          AND sg.sg_id in (SELECT servicegroup_sg_id
 			            		   FROM servicegroup_relation
 			            		   WHERE service_service_id IN (".$oreon->user->access->getServicesString("ID", $acldb)."))";
