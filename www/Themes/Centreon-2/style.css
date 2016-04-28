@@ -127,6 +127,26 @@ p.description a, p.description a:visited {
     color: #4ccaff;
 }
 
+/* -------- wrappers ----------*/
+
+.center_box {
+    width: 450px;
+    border: 1px solid #d1d2d4;
+    margin: auto;
+    border-radius: 4px;
+}
+
+.center_box img {
+    text-align: center;
+    border: 0;
+    display: block;
+    margin: 24px auto;
+}
+
+.center_box a {
+    text-align: center;
+}
+
 /* ------ slider ------------*/
 
 #rotation_timer {
