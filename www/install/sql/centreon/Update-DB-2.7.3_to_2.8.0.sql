@@ -133,3 +133,6 @@ ALTER TABLE `cfg_nagios`
     DROP COLUMN `use_embedded_perl_implicitly`;
 
 ALTER TABLE `service` ADD COLUMN `service_use_only_contacts_from_host` enum('0','1') DEFAULT '0' AFTER `service_inherit_contacts_from_host`;
+
+ALTER TABLE `host` ADD COLUMN `host_acknowledgement_timeout` int(11) DEFAULT NULL AFTER `host_first_notification_delay`;
+ALTER TABLE `service` ADD COLUMN `service_acknowledgement_timeout` int(11) DEFAULT NULL AFTER `service_first_notification_delay`;
