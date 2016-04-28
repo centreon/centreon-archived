@@ -641,6 +641,11 @@ $attrTimeperiod1 = array_merge(
 );
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
+/**
+ * Acknowledgement timeout
+ */
+$form->addElement('text', 'host_acknowledgement_timeout', _("Acknowledgement timeout"), $attrsText2);
+
 ##
 ## Notification informations
 ##

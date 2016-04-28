@@ -820,7 +820,7 @@ function insertService($ret = array(), $macro_on_demand = null)
         "service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
         "service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
         "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
-        "service_register, service_activate) " .
+        "service_register, service_activate, service_acknowledgement_timeout) " .
         "VALUES ( ";
     isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
     isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
@@ -862,7 +862,8 @@ function insertService($ret = array(), $macro_on_demand = null)
 
     isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
     isset($ret["service_register"]) && $ret["service_register"] != NULL ? $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
-    isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
+    isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL,";
+    isset($ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"] != NULL ? $rq .= "'".$ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"]."'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(service_id) FROM service");
@@ -935,6 +936,9 @@ function insertService($ret = array(), $macro_on_demand = null)
     }
     if (isset($ret["service_alias"])) {
         $fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
+    }
+    if (isset($ret["service_acknowledgement_timeout"])) {
+        $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
     }
     if (isset($ret["service_is_volatile"]) &&
         isset($ret["service_is_volatile"]['service_is_volatile'])) {
@@ -1162,6 +1166,8 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     }
     $rq .= "service_alias = ";
     isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_alias"])."', ": $rq .= "NULL, ";
+    $rq .= "service_acknowledgement_timeout = ";
+    isset($ret["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"] != NULL ? $rq .= "'".$ret["service_acknowledgement_timeout"]."', ": $rq .= "NULL, ";
     $rq .= "service_is_volatile = ";
     isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
     $rq .= "service_max_check_attempts = ";
@@ -1259,6 +1265,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
         $fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
     $fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
     $fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
+    $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
     $fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
     $fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
     $fields["service_active_checks_enabled"] = $ret["service_active_checks_enabled"]["service_active_checks_enabled"];
@@ -1380,6 +1387,10 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL) {
         $rq .= "service_max_check_attempts = '".$ret["service_max_check_attempts"]."', ";
         $fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
+    }
+    if (isset($ret["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"] != NULL) {
+        $rq .= "service_acknowledgement_timeout = '".$ret["service_acknowledgement_timeout"]."', ";
+        $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
     }
     if (isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL) {
         $rq .= "service_normal_check_interval = '".$ret["service_normal_check_interval"]."', ";
