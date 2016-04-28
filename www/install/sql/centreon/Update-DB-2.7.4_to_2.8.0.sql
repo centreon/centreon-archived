@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.3' LIMIT 1;
+UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.4' LIMIT 1;
 
 -- Add graphite output for centreon-broker
 INSERT INTO cb_module (name, libname, loading_pos, is_activated) 
