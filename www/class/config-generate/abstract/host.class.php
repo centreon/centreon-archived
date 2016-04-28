@@ -49,7 +49,8 @@ abstract class AbstractHost extends AbstractObject {
         ehi_icon_image_alt as icon_image_alt,
         ehi_vrml_image as vrml_image_id,
         ehi_statusmap_image as statusmap_image_id,
-        host_location
+        host_location,
+        host_acknowledgement_timeout as acknowledgement_timeout
     ';
     protected $attributes_write = array(
         'host_name',
@@ -82,7 +83,8 @@ abstract class AbstractHost extends AbstractObject {
         'icon_image_alt',
         'vrml_image',
         'statusmap_image',
-        'timezone'
+        'timezone',
+        'acknowledgement_timeout'
     );
     protected $attributes_default = array(
         'active_checks_enabled',

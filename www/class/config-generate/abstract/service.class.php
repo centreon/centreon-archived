@@ -47,7 +47,8 @@ abstract class AbstractService extends AbstractObject {
         esi_notes_url as notes_url,
         esi_action_url as action_url,
         esi_icon_image as icon_image_id,
-        esi_icon_image_alt as icon_image_alt
+        esi_icon_image_alt as icon_image_alt,
+        service_acknowledgement_timeout as acknowledgement_timeout
     ';
     protected $attributes_write = array(
         'host_name',
@@ -76,7 +77,8 @@ abstract class AbstractService extends AbstractObject {
         'notes_url',
         'action_url',
         'icon_image',
-        'icon_image_alt'
+        'icon_image_alt',
+        'acknowledgement_timeout'
     );
     protected $attributes_default = array(
         'is_volatile',
