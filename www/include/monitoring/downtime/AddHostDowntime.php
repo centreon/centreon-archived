@@ -179,6 +179,11 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		$with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("Yes"), '1');
         $with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("No"), '0');
         $form->addGroup($with_services, 'with_services', _("Set downtime for hosts services"), '&nbsp;');
+        if (isset($oreon->optGen['monitoring_dwt_svc']) && $oreon->optGen['monitoring_dwt_svc']) {
+            $defaultwwithService = $oreon->optGen['monitoring_dwt_svc'];
+        }
+        $form->setDefaults(array('with_services[with_services]' => $defaultwwithService));
+
 
 		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
