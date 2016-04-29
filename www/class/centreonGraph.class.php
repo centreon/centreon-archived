@@ -1180,6 +1180,9 @@ class CentreonGraph {
         foreach ($this->_RRDoptions as $key => $value) {
             $commandLine .= "--".$key;
             if (isset($value)) {
+                if (preg_match('/\'/', $value)) {
+                    $value = "'" . preg_replace('/\'/', ' ', $value) . "'";
+                }
                 $commandLine .= "=".$value;
             }
             $commandLine .= " ";
