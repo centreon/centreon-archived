@@ -9,39 +9,37 @@
 		<xsl:attribute name="id">		
 			<xsl:value-of select="//Menu1Color"/>				
 		</xsl:attribute>
-
-        <ul>
-	<xsl:for-each select="//Menu1">
-		<li>
-			<xsl:element name="div">
-				<xsl:attribute name="style">
-					<xsl:if test="Menu1ClassImg != ''">
-                        background-color: <xsl:value-of select="Menu1ClassImg"/>;
-                    </xsl:if>
-				</xsl:attribute>
-				<xsl:element name="a">
-					<xsl:choose>
-                                            <xsl:when test="Menu1UrlPopup = '1'">
-                                                <xsl:attribute name="target">_blank</xsl:attribute>
-                                                <xsl:attribute name="href"><xsl:value-of select="Menu1UrlPopupOpen"/></xsl:attribute>
-                                                <xsl:attribute name="style"><xsl:value-of select="Menu1UrlPopupOpen"/></xsl:attribute>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <xsl:attribute name="onclick">
-                                                        loadAjax(<xsl:value-of select="Menu1Page"/>); return false;
-                                                </xsl:attribute>
-                                                <xsl:attribute name="href">
-                                                        #
-                                                </xsl:attribute>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-					<xsl:value-of select="Menu1Name"/>			
-				</xsl:element>		
-			</xsl:element>
-		</li>
-	</xsl:for-each>
-
-        </ul>
+		<ul>
+		<xsl:for-each select="//Menu1">
+			<li>
+				<xsl:element name="div">
+					<xsl:attribute name="style">
+						<xsl:if test="Menu1ClassImg != ''">
+		                    background-color: <xsl:value-of select="Menu1ClassImg"/>;
+		                </xsl:if>
+					</xsl:attribute>
+					<xsl:element name="a">
+						<xsl:choose>
+		                    <xsl:when test="Menu1UrlPopup = '1'">
+		                        <xsl:attribute name="target">_blank</xsl:attribute>
+		                        <xsl:attribute name="href"><xsl:value-of select="Menu1UrlPopupOpen"/></xsl:attribute>
+		                        <xsl:attribute name="style"><xsl:value-of select="Menu1UrlPopupOpen"/></xsl:attribute>
+		                    </xsl:when>
+		                    <xsl:otherwise>
+		                        <xsl:attribute name="onclick">
+		                            loadAjax(<xsl:value-of select="Menu1Page"/>); return false;
+		                        </xsl:attribute>
+		                        <xsl:attribute name="href">
+		                            #
+		                        </xsl:attribute>
+		                    </xsl:otherwise>
+		                </xsl:choose>
+						<xsl:value-of select="Menu1Name"/>			
+					</xsl:element>		
+				</xsl:element>
+			</li>
+		</xsl:for-each>
+		</ul>
     </xsl:element>
 </xsl:element>
 <xsl:element name="div">
@@ -57,16 +55,16 @@
 				<xsl:attribute name="class">span2</xsl:attribute>                                
 				<xsl:element name="a">
 					<xsl:choose>
-                                            <xsl:when test="Menu2UrlPopup = '1'">
-                                                <xsl:attribute name="target">_blank</xsl:attribute>
-                                                <xsl:attribute name="href"><xsl:value-of select="Menu2UrlPopupOpen"/></xsl:attribute>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <xsl:attribute name="href"><xsl:value-of select="Menu2Url"/></xsl:attribute>
-                                                <xsl:attribute name="style">white-space:nowrap;</xsl:attribute>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                        <xsl:value-of select="Menu2Name"/>
+                        <xsl:when test="Menu2UrlPopup = '1'">
+                            <xsl:attribute name="target">_blank</xsl:attribute>
+                            <xsl:attribute name="href"><xsl:value-of select="Menu2UrlPopupOpen"/></xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="href"><xsl:value-of select="Menu2Url"/></xsl:attribute>
+                            <xsl:attribute name="style">white-space:nowrap;</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:value-of select="Menu2Name"/>
 				</xsl:element>
 			</xsl:element>
 		</xsl:for-each>
