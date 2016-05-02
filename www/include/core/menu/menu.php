@@ -40,8 +40,8 @@ if (!isset($centreon)) {
 /*
  * Path to the configuration dir
  */
-$path = "./menu/templates";
-$user_update_pref = "./menu/userMenuPreferences.php";
+$path = "./include/core/menu/templates";
+$user_update_pref = "./include/core/menu/userMenuPreferences.php";
 
 
 /*
@@ -62,7 +62,7 @@ $elemArr = array(1 => array(), 2 => array(), 3 => array(), 4 => array());
  */
 $auth = NULL;
 
-require_once("./menu/MenuJS.php");
+require_once("./include/core/menu/menuJS.php");
 require_once _CENTREON_PATH_ . 'www/class/centreonMenu.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 

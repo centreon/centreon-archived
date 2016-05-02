@@ -37,18 +37,14 @@ if (!isset($centreon)) {
 	exit();
 }
 
-$sid = session_id();
-
 ?>
 <script>
 	var _p='<?php echo $p?>';
 	var _o='<?php echo $o?>';
 
-	var _addrXML_menu = "./menu/xml/menuXML.php?";
-	var _addrXSL_menu = "./menu/xsl/menu.xsl";
 	var _timeoutID = 0;
 	var _on = 1;
-	var _resultCache=new Object();
+	var _resultCache = new Object();
 	var _lock_menu = 0;
 	var _previous_click = 0;
 
@@ -56,9 +52,8 @@ $sid = session_id();
 		if (_previous_click != p) {
 			_lock_menu = 1;
 			var proc = new Transformation();
-			_addrXML_menu = "./menu/xml/menuXML.php?menu="+p;
-			proc.setXml(_addrXML_menu)
-			proc.setXslt(_addrXSL_menu)
+			proc.setXml("./include/core/menu/xml/menuXML.php?menu="+p)
+			proc.setXslt("./include/core/menu/xsl/menu.xsl")
 			proc.transform("forMenuAjax");
 			_lock_menu = 0;
 			_previous_click = p;

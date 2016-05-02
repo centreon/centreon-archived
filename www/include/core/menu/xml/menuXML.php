@@ -107,9 +107,7 @@ ob_start();
 if (isset($menu_style['css_name'])){
     require_once _CENTREON_PATH_ . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
 }
-
 ob_end_clean();
-
 
 $buffer->startElement("root");
 $buffer->writeElement("Menu1ID", $menu1_bgcolor);
