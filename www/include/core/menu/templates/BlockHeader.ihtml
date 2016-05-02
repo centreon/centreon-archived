@@ -86,7 +86,7 @@
 	<div id="logli">
 		{t}Welcome{/t}
 			{if $topology[50104]}<a href="./main.php?p=50104&o=c">{/if}{$user_login}{if $topology[50104]}</a>{/if}
-			| <a href="{$LogOutUrl}" class="red">{$Logout}</a>
+			| <a href="{$LogOutUrl}" class="red">{t}Logout{/t}</a>
 			{if $autoLoginEnable}
 				| <a onClick='return false;' href='{$autoLoginUrl}' title='Centreon - IT and Network Monitoring'>
 					<img src='./img/icons/unlocked.png' class="ico-16" title='{$CentreonAutologin}'>

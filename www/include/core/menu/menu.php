@@ -43,7 +43,6 @@ if (!isset($centreon)) {
 $path = "./include/core/menu/templates";
 $user_update_pref = "./include/core/menu/userMenuPreferences.php";
 
-
 /*
  * Smarty template Init
  */
@@ -93,7 +92,6 @@ if ($centreon->user->access->admin == 0) {
 	$tpl->assign("displayPollerStats", 1);
 }
 
-$tpl->assign("Logout", _("Logout"));
 $tpl->assign("Help", _("Help"));
 $tpl->assign("Documentation", _("Documentation"));
 $tpl->assign("p", $p);
@@ -137,7 +135,6 @@ $DBRESULT->free();
 $userUrl = "main.php?p=50104&o=c";
 
 $logDate = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $centreon->user->getMyGMT());
-$logOut = _("Logout");
 $logOutUrl = "index.php?disconnect=1";
 
 /*
@@ -157,6 +154,7 @@ if (isset($centreon->optGen["display_autologin_shortcut"])) {
             $autoLoginUrl .= "?p=".$root_menu["topology_page"];
         }
         $autoLoginUrl .= "&autologin=1&useralias=$userAlias&token=".$centreon->user->getToken();
+        
         $prefix = '';
         if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
             $prefix .= "http://";
@@ -232,7 +230,7 @@ unset($elem);
 /*
  * Grab elements for level 4
  */
-if ($level1 && $level2 && $level3){
+if ($level1 && $level2 && $level3) {
 	$request = "SELECT topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup, topology_modules FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT = $pearDB->query($request);
 	for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
@@ -252,7 +250,6 @@ if ($level1 && $level2 && $level3){
 /*
  * Create Menu Level 1-2-3-4
  */
-$tpl->assign("PageID", $p);
 $tpl->assign("UserInfoUrl", $userUrl);
 $tpl->assign("UserName", $centreon->user->get_alias());
 $tpl->assign("Date", $logDate);
@@ -282,18 +279,6 @@ count($elemArr[2]) ? $tpl->assign("elemArr2", $elemArr[2]) : NULL;
 count($elemArr[3]) ? $tpl->assign("elemArr3", $elemArr[3]) : NULL;
 count($elemArr[4]) ? $tpl->assign("elemArr4", $elemArr[4]) : NULL;
 $tpl->assign("idParent", $level1.$level2.$level3);
-
-/*
- * Legend icon
- */
-$tpl->assign("legend1", _("Help"));
-$tpl->assign("legend2", _("Legend"));
-
-/*
- *  User's preference
- */
-$tpl->assign("user_update_pref_header", $user_update_pref . "?uid=".$centreon->user->user_id."&div=header");
-$tpl->assign("user_update_pref_menu_3", $user_update_pref . "?uid=".$centreon->user->user_id."&div=menu_3");
 
 /*
  * User Online
