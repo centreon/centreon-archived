@@ -60,7 +60,7 @@ if (!$min) {
                 <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> | 
                 <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> | 
                 <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a>  
-                    <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
+                    <?php if (isset($centreon->optGen["centreon_support_email"]) && $centreon->optGen["centreon_support_email"] != "") { ?>
                 | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
                     <?php } ?>
             </td>
@@ -192,10 +192,10 @@ jQuery(function() {
  */
 function initWholePage() {
     setQuickSearchPosition();
-        jQuery().centreon_notify({
-            sid: "<?php echo session_id();?>", 
-            refresh_rate: <?php echo ($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>
-        });
+    jQuery().centreon_notify({
+        sid: "<?php echo session_id();?>", 
+        refresh_rate: <?php echo ($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>
+    });
 }
 
 /*
