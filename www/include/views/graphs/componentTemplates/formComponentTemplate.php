@@ -84,7 +84,7 @@
 	 * List of known data sources
 	 */
 	$datasources = array();
-	$DBRESULT = $pearDBO->query("SELECT DISTINCT `metric_name`, `unit_name` FROM `metrics` ORDER BY `metric_name`");
+	$DBRESULT = $pearDBO->query("SELECT `metric_name`, `unit_name` FROM `metrics` GROUP BY `metric_name` ORDER BY `metric_name`");
 	while ($row = $DBRESULT->fetchRow()){
 		$datasources[$row["metric_name"]] = $row["metric_name"];
 		if (isset($row["unit_name"]) && $row["unit_name"] != "") {
