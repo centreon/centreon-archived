@@ -153,20 +153,6 @@ function initSmartyTplForPopup($path = NULL, $tpl = NULL, $subDir = NULL, $centr
     return $tpl;
 }
 
-function initSmartyTplForLogs($path = NULL, $tpl = NULL) {
-    if (!$tpl)
-        return;
-    $tpl->template_dir = $path;
-    $tpl->compile_dir = "../../../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = "../../../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = "../../../GPL_LIB/SmartyCache/cache";
-
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
-    return $tpl;
-}
-
 /*
  * FORM VALIDATION
  */
