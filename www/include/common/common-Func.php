@@ -1467,17 +1467,6 @@ function getDefaultGraph($service_id = NULL, $rrdType = NULL)
     return NULL;
 }
 
-function getDefaultDS() {
-    global $pearDB;
-    $ds = array();
-    $DBRESULT = $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
-    if ($DBRESULT->numRows()) {
-        $ds = $DBRESULT->fetchRow();
-        return $ds["compo_id"];
-    }
-    return NULL;
-}
-
 # Nagios Images
 
 function return_image_list($mode = 0, $rep = NULL, $full = true, $origin_path = NULL) {
@@ -1532,28 +1521,6 @@ function getLangs() {
     return $langs;
 }
 
-function getLangsByDir($chemintotal) {
-    $langs = "";
-    if ($handle = opendir($chemintotal)) {
-        while ($file = readdir($handle))
-            if (!is_dir("$chemintotal/$file") && strcmp($file, "index.php") && strcmp($file, "index.html") && strcmp($file, "index.ihtml")) {
-                $tab = preg_split('/\./', $file);
-                $langs .= "-" . $tab[0] . " ";
-            }
-        closedir($handle);
-    }
-    return $langs;
-}
-
-function getAllHostgroups() {
-    global $pearDB;
-    $hgs = array();
-    $DBRESULT = $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
-    while ($hg = $DBRESULT->fetchRow())
-        $hgs[$hg["hg_id"]] = $hg["hg_name"];
-    return $hgs;
-}
-
 function service_has_graph($host, $service, $dbo = null) {
     global $pearDBO;
     if(is_null($dbo)){
@@ -1582,29 +1549,6 @@ function host_has_one_or_more_GraphService($host_id, $search = 0) {
         if (service_has_graph($host_id, $svc_id) && ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id]))))
             return true;
     return false;
-}
-
-/**
- * Checks if SG has services
- * 
- * @param int $sg_id
- * @param Centreon_ACL $access | instance of user's acl
- * @return int
- */
-function SGIsNotEmpty($sg_id, $access = null) {
-    global $pearDBO, $pearDBndo;
-
-    $data = getMyServiceGroupServices($sg_id);
-    if (is_null($access) || $access->admin) {
-        return count($data);
-    }
-    $svcIds = $access->getHostServiceIds($pearDBndo);
-    foreach ($data as $key => $value) {
-        if (false !== strpos($svcIds, "'" . $key . "'")) {
-            return 1;
-        }
-    }
-    return 0;
 }
 
 function HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca) {
@@ -1663,18 +1607,6 @@ function getMyHostServiceID($service_id = NULL) {
     return NULL;
 }
 
-if (!function_exists('getNDOInformations')) {
-
-    function getNDOInformations() {
-        global $pearDB;
-        $DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
-        $conf_ndo = $DBRESULT->fetchRow();
-        unset($DBRESULT);
-        return $conf_ndo;
-    }
-
-}
-
 /*
  * function getNDOPrefix()
  * - This function return NDOPrefix tables.
@@ -1704,20 +1636,6 @@ function get_error($motif) {
     header('Content-Type: text/xml');
     echo $buffer;
     exit(0);
-}
-
-/**
- * !!! ATTENTION: This function is not implemented. Do not use it !!!
- * 
- * @deprecated since version 2.3.8
- * @param string $sid
- * @return int
- */
-function check_injection($sid) {
-    /**
-     * This function still exists because there are chances that modules use it
-     */
-    return 0;
 }
 
 /* End Ajax Test */
