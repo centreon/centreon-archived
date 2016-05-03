@@ -326,5 +326,4 @@ class CentreonServiceGroup extends CentreonObject
             }
 	    }
 	}
-}
-?>
+}ÒÒ
