@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,10 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.modules.centreon.com/centreon-clapi/trunk/www/modules/centreon-clapi/core/class/centreonService.class.php $
- * SVN : $Id: centreonService.class.php 286 2012-03-08 10:44:11Z shotamchay $
- *
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";

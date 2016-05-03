@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -162,6 +161,7 @@ class CentreonACLGroup extends CentreonObject
         if (!count($groupIds)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
         }
+
         $groupId = $groupIds[0];
         if (preg_match("/^(get|set|add|del)([a-zA-Z_]+)/", $name, $matches)) {
             $relclass = "Centreon_Object_Relation_Acl_Group_".ucwords($matches[2]);
@@ -179,7 +179,7 @@ class CentreonACLGroup extends CentreonObject
                 if ($matches[1] == "get") {
                     $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $groupIds);
                     echo "id".$this->delim."name"."\n";
-                    foreach($tab as $value) {
+                    foreach ($tab as $value) {
                         $tmp = $obj->getParameters($value, array($obj->getUniqueLabelField()));
                         echo $value . $this->delim . $tmp[$obj->getUniqueLabelField()] . "\n";
                     }
