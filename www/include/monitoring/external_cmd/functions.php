@@ -80,6 +80,26 @@ function schedule_svc_checks($arg, $forced) {
 }
 
 /*
+* SCHEDULE_HOST_CHECK
+*/
+function schedule_host_checks($arg, $forced) {
+	global $pearDB, $is_admin, $oreon;
+	$actions = false;
+	$actions = $oreon->user->access->checkAction("host_schedule_check");
+	if($forced == "1") {
+		$actions = $oreon->user->access->checkAction("host_schedule_forced_check");
+	}
+
+	if ($actions == true || $is_admin) {
+		$tab_forced = array("0" => "", "1" => "_FORCED");
+		$tab_data = preg_split("/\;/", $arg);
+		$flg = send_cmd(" SCHEDULE" . $tab_forced[$forced] . "_HOST_CHECK;" . urldecode($tab_data[0]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
+		return $flg;
+	}
+	return NULL;
+}
+
+/*
  * host check
  */
 
