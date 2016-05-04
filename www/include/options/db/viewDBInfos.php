@@ -58,26 +58,28 @@ function returnProperties($pearDB, $base){
 	if ($res = $pearDB->query("SELECT VERSION() AS mysql_version")){
 		$row = $res->fetchRow();
 		$version = $row['mysql_version'];
-		if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
-			$db_name = (preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$base`" : $base;
+		if (preg_match("/^(3\.23|4\.|5\.|10\.)/", $version)){
 			if ($DBRESULT = $pearDB->query("SHOW TABLE STATUS FROM `$base`")){
 				$dbsize = 0;
 				$rows = 0;
 				$datafree = 0;
+				$indexsize = 0;
 				while ($tabledata_ary = $DBRESULT->fetchRow()) {
 					$dbsize 	+= $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
+					$indexsize  += $tabledata_ary['Index_length'];
 					$rows 		+= $tabledata_ary['Rows'];
 					$datafree	+= $tabledata_ary['Data_free'];
 				}
 				$DBRESULT->free();
 			}
 		} else {
-			$dbsize = NULL;
-			$rows = NULL;
-			$datafree = NULL;
+			$dbsize = null;
+			$rows = null;
+			$datafree = null;
+			$indexsize = null;
 		}
 	}
-	return array($dbsize / 1024 / 1024 , $rows, $datafree);
+	return array($dbsize / 1024 / 1024, $indexsize / 1024 / 1024, $rows, $datafree / 1024 / 1024);
 }
 
 /*
@@ -88,20 +90,30 @@ $dataCentstorage 	= returnProperties($pearDBO, $conf_centreon["dbcstg"]);
 
 ?>
 <table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="3"><img src='./img/icones/16x16/server_network.gif'>&nbsp;<?php print _("Centreon DataBase Statistics"); ?></td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="3"><?php print _("Centreon DataBase Statistics"); ?></td></tr>
 	<tr class="list_lvl_1">
 		<td class="ListColLvl1_name">&nbsp;</td>
 		<td class="ListColLvl1_name"><?php echo $conf_centreon["db"]; ?></td>
 		<td class="ListColLvl1_name"><?php echo $conf_centreon["dbcstg"]; ?></td> 
 	</tr>
  	<tr class="list_one">
- 		<td class="FormRowField"><?php print _("Length") ; ?></td>
+ 		<td class="FormRowField"><?php print _("Data size") ; ?></td>
  		<td class="FormRowValue"><?php print round($dataCentreon[0], 2); ?> Mo</td>
  		<td class="FormRowValue"><?php print round($dataCentstorage[0], 2); ?> Mo</td>
  	</tr>
  	<tr class="list_two">
+ 		<td class="FormRowField"><?php print _("Index size") ; ?></td>
+ 		<td class="FormRowValue"><?php print round($dataCentreon[1], 2); ?> Mo</td>
+ 		<td class="FormRowValue"><?php print round($dataCentstorage[1], 2); ?> Mo</td>
+ 	</tr>
+ 	<tr class="list_one">
 		<td class="FormRowField"><?php print _("Number of entries") ; ?></td>
- 		<td class="FormRowValue"><?php print $dataCentreon[1]; ?></td>
- 		<td class="FormRowValue"><?php print $dataCentstorage[1]; ?></td>
+ 		<td class="FormRowValue"><?php print $dataCentreon[2]; ?></td>
+ 		<td class="FormRowValue"><?php print $dataCentstorage[2]; ?></td>
+	</tr>
+	<tr class="list_two">
+		<td class="FormRowField"><?php print _("Data free") ; ?></td>
+ 		<td class="FormRowValue"><?php print round($dataCentreon[3], 2); ?> Mo</td>
+ 		<td class="FormRowValue"><?php print round($dataCentstorage[3], 2); ?> Mo</td>
 	</tr>
 </table>
