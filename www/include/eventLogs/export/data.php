@@ -38,7 +38,7 @@ ini_set("display_errors", "Off");
 /**
  * Include configuration
  */
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 /**
  * Include Classes / Methods
@@ -78,29 +78,26 @@ $pearDBO 	= new CentreonDB("centstorage");
  */
 $csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
 ob_start();
-require_once _CENTREON_PATH_."www/include/eventLogs/GetXmlLog.php";
+require_once _CENTREON_PATH_."www/include/eventLogs/xml/data.php";
 $flow = ob_get_contents();
 ob_end_clean();
-
-$nom = "EventLog";
 
 /**
  * Send Headers
  */
 
 header("Content-Type: application/csv-tab-delimited-table");
-header("Content-disposition: filename=".$nom.".csv");
+header("Content-disposition: filename=EventLogs.csv");
 header("Cache-Control: cache, must-revalidate");
 header("Pragma: public");
 
 /**
  * Read flow
  */
-
 $xml = new SimpleXMLElement($flow);
-if($engine == "false"){
+if ($engine == "false"){
     echo _("Begin date")."; "._("End date").";\n";
-    echo date('d/m/y (H:i:s)', intval($xml->infos->start)).";".date('d/m/y (H:i:s)', intval($xml->infos->end))."\n";
+    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)).";".date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
     echo "\n";
 
     echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
@@ -119,10 +116,9 @@ if($engine == "false"){
     foreach ($xml->line as $line) {
         echo $line->date.";".$line->time.";".$line->host_name.";".$line->address.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
     }
-
-}else{
+} else {
     echo _("Begin date")."; "._("End date").";\n";
-    echo date('d/m/y (H:i:s)', intval($xml->infos->start)).";".date('d/m/y (H:i:s)', intval($xml->infos->end))."\n";
+    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)).";".date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
     echo "\n";
     echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
     echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";
@@ -132,8 +128,3 @@ if($engine == "false"){
         echo "\"".$line->date."\";\"".$line->time."\";\"".$line->output."\";"."\n";
     }
 }
-
-
-
-
-

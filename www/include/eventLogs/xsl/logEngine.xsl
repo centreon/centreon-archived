@@ -97,7 +97,7 @@
 						</xsl:element>
 					</xsl:element>
 					<xsl:element name='a'>
-						<xsl:attribute name="href">javascript:log_4_host(this, '', 'Xml')</xsl:attribute>
+						<xsl:attribute name="href">javascript:log_4_host(this, '', 'XML')</xsl:attribute>
 						<xsl:element name='img'>
 							<xsl:attribute name="title">{t}Export XML{/t}</xsl:attribute>
 							<xsl:attribute name="alt">Export XML</xsl:attribute>
