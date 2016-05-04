@@ -160,6 +160,11 @@
 					case 91:	autoCheckServiceStop($key);  					break;
 					case 92:	autoCheckHostStart($key); 					 	break;
 					case 93:	autoCheckHostStop($key);  						break;
+
+                    /* Scheduling host */
+                    case 94:     schedule_host_checks($key, 0); break;
+                    case 95:     schedule_host_checks($key, 1); break;
+
 				}
 			}
 		}
