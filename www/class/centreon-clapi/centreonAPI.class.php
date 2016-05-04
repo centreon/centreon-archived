@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,9 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-/**
- * Include Centreon Class
- */
+
 namespace CentreonClapi;
 
 require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
@@ -897,6 +894,7 @@ class CentreonAPI {
         }
         return $this->return_code;
     }
+    
     /**
      * This method sort the objects to export
      */
@@ -939,5 +937,3 @@ class CentreonAPI {
     }
 
 }
-
-?>

@@ -79,7 +79,7 @@ $instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search 	= $obj->checkArgument("search", $_GET, "");
 $order 		= $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "m/d/Y H:i:s");
 
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");

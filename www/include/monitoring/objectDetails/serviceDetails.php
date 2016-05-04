@@ -289,8 +289,8 @@ if (!is_null($host_id)) {
         $service_status[$host_name."_".$svc_description]["status_class"] = $tab_class_service[strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
         
         
-        $service_status[$host_name."_".$svc_description]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"]);
-        $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"]);
+        $service_status[$host_name."_".$svc_description]["last_check"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"]);
+        $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"]);
         !$service_status[$host_name."_".$svc_description]["check_latency"] ? $service_status[$host_name."_".$svc_description]["check_latency"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_latency"] = $service_status[$host_name."_".$svc_description]["check_latency"] . " seconds";
         !$service_status[$host_name."_".$svc_description]["check_execution_time"] ? $service_status[$host_name."_".$svc_description]["check_execution_time"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_execution_time"] = $service_status[$host_name."_".$svc_description]["check_execution_time"] . " seconds";
 
@@ -301,7 +301,7 @@ if (!is_null($host_id)) {
         } else if (!isset($service_status[$host_name."_".$svc_description]["next_notification"])) {
             $service_status[$host_name."_".$svc_description]["next_notification"] = "N/A";
         } else {
-            $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"]);
+            $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"]);
         }
 
         if ($oreon->broker->getBroker() == "broker") {

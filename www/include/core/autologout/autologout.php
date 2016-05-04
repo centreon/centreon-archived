@@ -32,42 +32,49 @@
  * For more information : contact@centreon.com
  *
  */
+?>
 
-if (!isset($centreon)) {
-	exit();
+function check_session() {
+	call_XMLHttpReq2();
 }
 
-$sid = session_id();
+function call_XMLHttpReq2() {
+  	var xhr2=null;
 
-?>
-<script>
-	var _p='<?php echo $p?>';
-	var _o='<?php echo $o?>';
+    if (window.XMLHttpRequest) {
+        xhr2 = new XMLHttpRequest();
+    } else if (window.ActiveXObject) {
+        xhr2 = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    //on d�finit l'appel de la fonction au retour serveur
+    if (xhr2==null)
+     alert("Le web browser ne supporte pas l'AJAX.");
+    xhr2.onreadystatechange = function() { change_status(xhr2); };
 
-	var _addrXML_menu = "./menu/xml/menuXML.php?";
-	var _addrXSL_menu = "./menu/xsl/menu.xsl";
-	var _timeoutID = 0;
-	var _on = 1;
-	var _resultCache=new Object();
-	var _lock_menu = 0;
-	var _previous_click = 0;
+    //on appelle le fichier XMLresponse.php
+    xhr2.open("GET", "./include/core/autologout/autologoutXMLresponse.php", true);
+    xhr2.send(null);
+}
 
-	function loadAjax(p){
-		if (_previous_click != p) {
-			_lock_menu = 1;
-			var proc = new Transformation();
-			_addrXML_menu = "./menu/xml/menuXML.php?menu="+p;
-			proc.setXml(_addrXML_menu)
-			proc.setXslt(_addrXSL_menu)
-			proc.transform("forMenuAjax");
-			_lock_menu = 0;
-			_previous_click = p;
-		} else {
-			window.location.replace("./main.php?p="+p);
-		}
+function change_status(xhr2) {
+	if (xhr2.readyState != 4 && xhr2.readyState != "complete") {
+		return(0);
 	}
+	var docXML= xhr2.responseXML;
+	var items_state = docXML.getElementsByTagName("state");
+	var items_time = docXML.getElementsByTagName("time");
+	var state = items_state.item(0).firstChild.data;
+	var currentTime = items_time.item(0).firstChild.data;
 
-	function mk_paginationFF() {};
-	function mk_pagination() {};
-	function set_header_title() {};
-</script>
+	if (state == "ok") {
+		if (document.getElementById('date')) {
+			document.getElementById('date').innerHTML = currentTime;
+		}
+	} else if (state == "nok") {
+		window.location.replace("./index.php");
+	}
+	setTimeout("check_session()", tm_out);
+}
+
+var sid = '<?php echo session_id(); ?>';
+var tm_out = <?php echo $tM; ?>;

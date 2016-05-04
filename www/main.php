@@ -197,7 +197,7 @@ include_once "./include/core/header/htmlHeader.php";
  * Display Menu
  */
 if (!$min) {
-    include_once "menu/Menu.php";
+    include_once "./include/core/menu/menu.php";
 }
 
 if (!$centreon->user->showDiv("header")) {

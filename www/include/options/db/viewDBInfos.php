@@ -33,15 +33,11 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
 	exit();
 }
 
 require_once './class/centreonDB.class.php';
-
-if ($centreon->broker->getBroker() == "ndo") {
-	$pearDBndo = new CentreonDB("ndo");
-}
 
 /*
  * return database Properties
@@ -85,51 +81,27 @@ function returnProperties($pearDB, $base){
 }
 
 /*
- * Get NDO Properties
- */
-$ndoInformations = getNDOInformations();
-
-/*
  * Get Properties
  */
-
 $dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
 $dataCentstorage 	= returnProperties($pearDBO, $conf_centreon["dbcstg"]);
-if ($oreon->broker->getBroker() == "ndo") {
-	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
-		$dataNDOutils = array(0 => '-', 1 => '-');
-	} else {
-		$dataNDOutils 		= returnProperties($pearDBndo, $ndoInformations["db_name"]);
-	}
-}
+
 ?>
 <table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="<?php print $oreon->broker->getBroker() == "ndo" ? "4" : "3"; ?>"><img src='./img/icones/16x16/server_network.gif'>&nbsp;<?php print _("Centreon DataBase Statistics"); ?></td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="3"><img src='./img/icones/16x16/server_network.gif'>&nbsp;<?php print _("Centreon DataBase Statistics"); ?></td></tr>
 	<tr class="list_lvl_1">
 		<td class="ListColLvl1_name">&nbsp;</td>
 		<td class="ListColLvl1_name"><?php echo $conf_centreon["db"]; ?></td>
-		<td class="ListColLvl1_name"><?php echo $conf_centreon["dbcstg"]; ?></td> <?php
-		if ($oreon->broker->getBroker() == "ndo") { ?>
-		<td class="ListColLvl1_name"><?php echo $ndoInformations["db_name"]; ?></td><?php
-		}
-		?>
+		<td class="ListColLvl1_name"><?php echo $conf_centreon["dbcstg"]; ?></td> 
 	</tr>
  	<tr class="list_one">
  		<td class="FormRowField"><?php print _("Length") ; ?></td>
  		<td class="FormRowValue"><?php print round($dataCentreon[0], 2); ?> Mo</td>
- 		<td class="FormRowValue"><?php print round($dataCentstorage[0], 2); ?> Mo</td> <?php
- 		if ($oreon->broker->getBroker() == "ndo") { ?>
- 		<td class="FormRowValue"><?php print round($dataNDOutils[0], 2); ?> Mo</td><?php
- 		}
-		?>
+ 		<td class="FormRowValue"><?php print round($dataCentstorage[0], 2); ?> Mo</td>
  	</tr>
  	<tr class="list_two">
 		<td class="FormRowField"><?php print _("Number of entries") ; ?></td>
  		<td class="FormRowValue"><?php print $dataCentreon[1]; ?></td>
- 		<td class="FormRowValue"><?php print $dataCentstorage[1]; ?></td> <?php
- 		if ($oreon->broker->getBroker() == "ndo") { ?>
- 		<td class="FormRowValue"><?php print $dataNDOutils[1]; ?></td><?php
- 		}
-		?>
+ 		<td class="FormRowValue"><?php print $dataCentstorage[1]; ?></td>
 	</tr>
 </table>

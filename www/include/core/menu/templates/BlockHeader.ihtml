@@ -1,0 +1,112 @@
+<div id="header">
+	<div id="centreon_logo">
+		<img src='{$urlLogo}' title='Centreon Logo' id="logo" />
+	</div>
+	<!-- stat -->
+	<div id="resume_light">
+		{if $displayTopCounter == 1 || $displayPollerStats == 1}
+		<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			{if $displayPollerStats == 1}
+			<td>
+				<table class='Resume_light_table'>
+					<tr>
+						<th>{t}Poller States{/t}</th>
+						<td>
+							<span id='latency' >
+								<img src='./img/icons/clock.png' class="ico-10" id="img_latency" />
+							</span>
+						</td>
+						<td>
+							<span id="pollingState">
+								<img src='./img/icons/poller.png' class="ico-10" id="img_pollingState"/>
+							</span>
+						</td>
+						<td>
+							<span id="activity">
+								<img src='./img/icons/database.png' class="ico-10" id="img_activity" />
+							</span>
+						</td>
+					</tr>
+				</table>
+			</td>
+			{/if}
+			{if $displayTopCounter == 1}
+			<td>
+				<table class='Resume_light_table'>
+					<tr>
+						<th>
+							<span id="hosts">?</span>{t}Hosts{/t}
+						</th>
+						<td>
+							<span id="host_up" class="host_up" >?</span>
+						</td>
+						<td>
+							<span id="host_down" class="host_down" >?</span>
+						</td>
+						<td>
+							<span id="host_unreachable" class="host_unreachable">?</span>
+						</td>
+						<td>
+							<span id="host_pending" class="pending">?</span>
+						</td>
+
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class='Resume_light_table'>
+					<tr>
+						<th>
+							<span id="service_total">?</span>{t}Services{/t}
+						</th>
+						<td>
+							<span id="service_ok" class="service_ok">?</span>
+						</td>
+						<td>
+							<span id="service_warning" class="service_warning">?</span>
+						</td>
+						<td>
+							<span id="service_critical" class="service_critical">?</span>
+						</td>
+						<td>
+							<span id="service_unknown" class="service_unknown">?</span>
+						</td>
+						<td>
+							<span id="service_pending" class="pending">?</span>
+						</td>
+					</tr>
+				</table>
+			</td>
+			{/if}
+		</tr>
+		</table>
+		{/if}
+	</div>
+	<div id="logli">
+		{t}Welcome{/t}
+		{if $topology[50104]}<a href="./main.php?p=50104&o=c">{/if}{$user_login}{if $topology[50104]}</a>{/if}
+		| <a href="{$LogOutUrl}" class="red">{t}Logout{/t}</a>
+		{if $autoLoginEnable}
+			| <a onClick='return false;' href='{$autoLoginUrl}' title='Centreon - IT and Network Monitoring'>
+				<img src='./img/icons/unlocked.png' class="ico-16" title='{$CentreonAutologin}'>
+			</a>
+		{/if}
+	</div>
+	<div class="container">
+		<span id="date">{$Date}</span>
+		<img id="sound_status" src="./img/icons/speaker_{$sound_status}.png" style="cursor:pointer;vertical-align: bottom;" onClick="{$sound_action}">
+	</div>
+	<div id="centreonMsg"></div>
+</div>
+{literal}
+<script type='text/javascript'>
+/*
+ * Toggle Header
+ */
+function toggleHeader()
+{
+	new Effect.toggle('header', 'appear', { afterFinish: function() { setQuickSearchPosition(); }});
+}
+</script>
+{/literal}

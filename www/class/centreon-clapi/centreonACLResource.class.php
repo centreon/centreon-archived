@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -55,7 +54,6 @@ require_once "Centreon/Object/Relation/Acl/Resource/Service/Group.php";
 require_once "Centreon/Object/Relation/Acl/Resource/Service/Category.php";
 require_once "Centreon/Object/Relation/Acl/Resource/Meta/Service.php";
 require_once "Centreon/Object/Relation/Acl/Resource/Instance.php";
-
 
 /**
  * Class for managing ACL groups
@@ -407,5 +405,4 @@ class CentreonACLResource extends CentreonObject
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
     }
-
 }
