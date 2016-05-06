@@ -168,8 +168,6 @@ if (($o == "c" || $o == "w") && $service_id) {
  * Preset values of macros
  */
 $cdata = CentreonData::getInstance();
-//$macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
-
 
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
                                                          json_encode($aMacros), 
@@ -540,7 +538,7 @@ if ($o == "mc")	{
     $mc_mod_cgs[] = HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Replacement"), '1');
     $form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_cgs'=>'0'));
- }
+}
 
 ##
 ## Host's contact inheritance
@@ -551,7 +549,7 @@ $serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts
 $form->addGroup($serviceIHC, 'service_inherit_contacts_from_host', _("Inherit contacts from host"), '&nbsp;');
 if ($o != "mc") {
     $form->setDefaults(array('service_inherit_contacts_from_host' => '1'));
- }
+}
 
 /*
  * Additive
@@ -569,7 +567,7 @@ if ($o != "mc") {
 } else {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
- }
+}
 
 
 /*
@@ -861,23 +859,7 @@ if (is_array($select)) {
     $select_pear->setValue($select_str);
  }
 
-/**
- * Utilities
- */
-function myReplace()
-{
-    global $form;
-    return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
-}
-
-function myReplaceAlias() {
-    global $form;
-    return (str_replace(" ", "_", $form->getSubmitValue("service_alias")));
-}
-
 $form->applyFilter('__ALL__', 'myTrim');
-$form->applyFilter('service_description', 'myReplace');
-$form->applyFilter('service_alias', 'myReplaceAlias');
 $from_list_menu = false;
 if ($o != "mc")	{
     $form->addRule('service_description', _("Compulsory Name"), 'required');
