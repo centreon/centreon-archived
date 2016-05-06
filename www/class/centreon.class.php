@@ -40,7 +40,6 @@ require_once("centreonExternalCommand.class.php");
 require_once("centreonObjects.class.php");
 require_once("centreonCache.class.php");
 require_once("centreonBroker.class.php");
-
 require_once("centreonHostgroups.class.php");
 
 class Centreon {
@@ -87,7 +86,8 @@ class Centreon {
 	 * @param	object 	$user User objects
 	 * @return	object	objet information
      */
-	function Centreon($userInfos)	{
+	function Centreon($userInfos)	
+	{
 		global $pearDB;
 
 		/*
@@ -151,11 +151,17 @@ class Centreon {
 	 * Create a list of all module installed into Centreon
 	 * @param $pearDB
 	 */
-	function creatModuleList($pearDB) {
+	function creatModuleList($pearDB) 
+	{
 		$this->modules = array();
 		$DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
 		while ($result = $DBRESULT->fetchRow()){
-			$this->modules[$result["name"]] = array("name"=>$result["name"], "gen"=>false, "restart"=>false, "sql"=>$result["sql_files"], "lang"=>$result["lang_files"]);
+			$this->modules[$result["name"]] = array("name"=>$result["name"], 
+													"gen"=>false, 
+													"restart"=>false, 
+													"sql"=>$result["sql_files"], 
+													"lang"=>$result["lang_files"]);
+			
 			if (is_dir("./modules/".$result["name"]."/generate_files/")) {
 				$this->modules[$result["name"]]["gen"] = true;
 			}
@@ -171,7 +177,8 @@ class Centreon {
 	 *
 	 * Create history list
 	 */
-	function createHistory() {
+	function createHistory() 
+	{
   		$this->historyPage = array();
   		$this->historySearch = array();
   		$this->historySearchService = array();
@@ -186,13 +193,17 @@ class Centreon {
   	 * Initiate nagios option list
   	 * @param $pearDB
   	 */
-	function initNagiosCFG($pearDB = NULL) {
+	function initNagiosCFG($pearDB = NULL) 
+	{
 
-		if (!$pearDB)
+		if (!$pearDB) {
 			return;
+		}
 
 		$this->Nagioscfg = array();
-        # We don't check activate because we can a server without a engine on localhost running (but we order to get if we have one)
+        /*
+         * We don't check activate because we can a server without a engine on localhost running (but we order to get if we have one)
+         */
 		$DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios, nagios_server
 								    WHERE nagios_server.id = cfg_nagios.nagios_server_id
 								    AND nagios_server.localhost = '1' ORDER BY cfg_nagios.nagios_activate DESC LIMIT 1");
@@ -205,10 +216,12 @@ class Centreon {
 	 * initiate general option list
 	 * @param $pearDB
 	 */
-	function initOptGen($pearDB = NULL)	{
+	function initOptGen($pearDB = NULL)	
+	{
 
-		if (!$pearDB)
+		if (!$pearDB) {
 			return;
+		}
 
 		$this->optGen = array();
 		$DBRESULT = $pearDB->query("SELECT * FROM `options`");
@@ -238,4 +251,3 @@ class Centreon {
 		return $name;
  	}
 }
-?>
