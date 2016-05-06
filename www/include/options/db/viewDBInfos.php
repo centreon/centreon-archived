@@ -40,53 +40,10 @@ if (!isset($centreon)) {
 require_once './class/centreonDB.class.php';
 
 /*
- * return database Properties
- *
- * <code>
- * $dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
- * </code>
- *
- * @param{TAB}int{TAB}$pearDB{TAB}Database connexion
- * @param{TAB}string{TAB}$base{TAB}db name
- * @return{TAB}array{TAB}dbsize, numberOfRow, freeSize
- */
-
-function returnProperties($pearDB, $base){
-	/*
-	 * Get Version
-	 */
-	if ($res = $pearDB->query("SELECT VERSION() AS mysql_version")){
-		$row = $res->fetchRow();
-		$version = $row['mysql_version'];
-		if (preg_match("/^(3\.23|4\.|5\.|10\.)/", $version)){
-			if ($DBRESULT = $pearDB->query("SHOW TABLE STATUS FROM `$base`")){
-				$dbsize = 0;
-				$rows = 0;
-				$datafree = 0;
-				$indexsize = 0;
-				while ($tabledata_ary = $DBRESULT->fetchRow()) {
-					$dbsize 	+= $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
-					$indexsize  += $tabledata_ary['Index_length'];
-					$rows 		+= $tabledata_ary['Rows'];
-					$datafree	+= $tabledata_ary['Data_free'];
-				}
-				$DBRESULT->free();
-			}
-		} else {
-			$dbsize = null;
-			$rows = null;
-			$datafree = null;
-			$indexsize = null;
-		}
-	}
-	return array($dbsize / 1024 / 1024, $indexsize / 1024 / 1024, $rows, $datafree / 1024 / 1024);
-}
-
-/*
  * Get Properties
  */
-$dataCentreon 		= returnProperties($pearDB, $conf_centreon["db"]);
-$dataCentstorage 	= returnProperties($pearDBO, $conf_centreon["dbcstg"]);
+$dataCentreon = $pearDB->getProperties();
+$dataCentstorage = $pearDBO->getProperties();
 
 ?>
 <table class="ListTable">
