@@ -200,6 +200,35 @@ $form->addElement('button', 'graph', _("Apply Period"), array("onclick"=>"apply_
 $form->addElement('text', 'search', _('Host'));
 $form->addElement('text', 'search_service', _('Service'));
 
+/* Service Group Selector */
+$attrServicegroups = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
+    'multiple' => true
+);
+
+$attrServicegroup1 = array_merge(
+    $attrServicegroups,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=service&field=service_sgs&id=')
+);
+$serviceGroupSelector = $form->addElement('select2', 'service_group_filter', _("Services Groups"), array(), $attrServicegroup1);
+$serviceGroupSelector->setDefaultFixedDatas();
+
+/* Host Group Selector */
+$attrHostGroup = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'multiple' => true
+);
+$attrHostGroup1 = array_merge(
+    $attrHostGroup,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=host&field=host_parents&id=')
+);
+$hostGroupSelector = $form->addElement('select2', 'host_group_filter', _("Hosts Groups"), array(), $attrHostGroup1);
+$hostGroupSelector->setDefaultFixedDatas();
+
 /* Service Selector */
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
@@ -210,6 +239,7 @@ $attrServices = array(
 $serviceSelector = $form->addElement('select2', 'service_selector', _("Services"), array(), $attrServices);
 $serviceSelector->setDefaultFixedDatas();
 
+/* Host Selector */
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
@@ -219,6 +249,7 @@ $attrHosts = array(
 $hostSelector = $form->addElement('select2', 'host_selector', _("Hosts"), array(), $attrHosts);
 $hostSelector->setDefaultFixedDatas();
 
+/* Meta Service Selector */
 $attrMetas = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_meta&action=list',
@@ -663,7 +694,12 @@ function getListOfServices() {
     if ($selectedOptions !== null) {
         jQuery.each($selectedOptions, function(index, value) {
             $splittedValue = value.split('-');
-            finalValue = 'HS_' + $splittedValue[1] + '_' + $splittedValue[0];
+            if ($splittedValue[1] != undefined) {
+                finalValue = 'HS_' + $splittedValue[1] + '_' + $splittedValue[0];
+            } else {
+                $splittedValue = value.split('_');
+                finalValue = 'HS_' + $splittedValue[1] + '_' + $splittedValue[0];
+            }
             if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
                 $hostsServicesForGraph.push(finalValue);
             }
@@ -705,6 +741,76 @@ function getListOfMetaservices() {
         });
     }
 }
+
+jQuery("#setHostGroup").click(function(){
+	var hg_value = jQuery("#host_group_filter").val();
+	var host_value = jQuery("#host_selector").val();
+	if(host_value === null){
+		host_value = new Array();
+	}
+	jQuery.ajax({
+		url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=hostList",
+		type: "GET",
+		dataType : "json",
+		data: "hgid="+hg_value,
+		success : function(json){
+			json.items.each(function(elem){
+				if(jQuery.inArray(elem.id,host_value) === -1){
+					var existingOptions = jQuery("#host_selector").find('option');
+					var existFlag = false;
+					existingOptions.each(function(el){
+						if(jQuery(this).val() == elem.id){
+							existFlag = true;
+						}
+					});
+					if(!existFlag){
+						jQuery("#host_selector").append(jQuery('<option>').val(elem.id).html(elem.text));
+					}
+					host_value.push(elem.id);
+				}
+			});
+			jQuery("#host_selector").val(host_value).trigger("change",[{origin:"select2defaultinit"}]);
+			jQuery("#host_group_filter").val('');
+			jQuery("#host_group_filter").empty().append(jQuery('<option>'));
+			jQuery("#host_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
+		}
+	});
+});
+
+jQuery("#setServiceGroup").click(function(){
+	var service_value = jQuery("#service_selector").val();
+	var sg_value = jQuery("#service_group_filter").val();
+	if(service_value === null){
+		service_value = new Array();
+	}
+	jQuery.ajax({
+		url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
+		type: "GET",
+		dataType : "json",
+		data: "sgid="+sg_value,
+		success : function(json){
+			json.items.each(function(elem){
+				if(jQuery.inArray(elem.id,service_value) === -1){
+					var existingOptions = jQuery("#service_selector").find("option");
+					var existFlag = false;
+					existingOptions.each(function(){
+						if(jQuery(this).val() == elem.id){
+							existFlag = true;
+						}
+					});
+					if(!existFlag){
+						jQuery("#service_selector").append(jQuery('<option>').val(elem.id).html(elem.text));
+					}
+					service_value.push(elem.id);
+				}
+			});
+			jQuery("#service_selector").val(service_value).trigger("change",[{origin:"select2defaultinit"}]);
+			jQuery("#service_group_filter").val('');
+			jQuery("#service_group_filter").empty().append(jQuery('<option>'));
+			jQuery("#service_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
+		}
+	});
+});
 
 jQuery("#service_selector").on("change", function() {
     launchGraph();
