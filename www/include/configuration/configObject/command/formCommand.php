@@ -54,7 +54,6 @@ require_once _CENTREON_PATH_ . "www/include/configuration/configObject/command/j
 /*
  * Database retrieve information for Command
  */
-
 $plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
 $cmd = array();
 
@@ -69,6 +68,7 @@ if (($o == "c" || $o == "w") && $command_id) {
 
     # Set base value
     $cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
+
     $DBRESULT = $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");
     $strArgDesc = "";
     $nbRow = 0;
@@ -105,10 +105,11 @@ if (count($aMacroDescription) > 0) {
  */
 $resource = array();
 $DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
-while ($row = $DBRESULT->fetchRow()){
+while ($row = $DBRESULT->fetchRow()) {
     $resource[$row["resource_name"]] = $row["resource_name"];
-    if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
+    if (isset($row["resource_comment"]) && $row["resource_comment"] != "") {
         $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
+    }
 }
 unset($row);
 $DBRESULT->free();
@@ -116,11 +117,11 @@ $DBRESULT->free();
 /*
  * Connectors
  */
-
 $connectors = array();
 $DBRESULT = $pearDB->query("SELECT `id`, `name` FROM `connector` WHERE `enabled` = '1' ORDER BY `name`");
-while ($row = $DBRESULT->fetchRow())
+while ($row = $DBRESULT->fetchRow()) {
     $connectors[$row["id"]] = $row["name"];
+}
 unset($row);
 $DBRESULT->free();
 
@@ -141,13 +142,13 @@ $DBRESULT->free();
 $macros = array();
 $DBRESULT = $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
 while ($row = $DBRESULT->fetchRow()) {
-        $macros[$row["macro_name"]] = $row["macro_name"];    
+    $macros[$row["macro_name"]] = $row["macro_name"];    
 }
 unset($row);
 $DBRESULT->free();
 
 $attrsText 	    = array("size"=>"35");
-$attrsTextarea  = array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
+$attrsTextarea  = array("rows"=>"9", "cols"=>"80", "id"=>"command_line");
 $attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
 $attrsTextarea3 = array("rows"=>"5", "cols"=>"50", "id"=>"command_comment");
 $attrsTextarea4 = array("rows"=>"$nbRowMacro", "cols"=>"100", "id"=>"listOfMacros");
@@ -200,19 +201,13 @@ $form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsTex
 $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
 $form->addElement('checkbox', 'enable_shell', _("Enable shell"), null , $attrsText);
 
-$argListObj = $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2);
-$argListObj->setAttribute("readonly");
+$form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2)->setAttribute("readonly");
 $form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
-
 $form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
 $form->addElement('button', 'clear_arg', _("Clear arguments"), array("onClick"=>"clearArgs();"));
-
 $form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
-
 $form->addElement('button', 'desc_macro', _("Describe macros"), array("onClick"=>"manageMacros();"));
-
-$macrosListObj = $form->addElement('textarea', 'listOfMacros', _("Macros Descriptions"), $attrsTextarea4);
-$macrosListObj->setAttribute("readonly");
+$form->addElement('textarea', 'listOfMacros', _("Macros Descriptions"), $attrsTextarea4)->setAttribute("readonly");
 
 $form->setDefaults(array("listOfArg" => $strArgDesc));
 $form->setDefaults(array("listOfMacros" => $sStrMcro));
@@ -299,7 +294,6 @@ if ($form->validate()) {
 }
 
 ?><script type='text/javascript'>
-<!--
 
 function insertValueQuery(elem) {
     var myQuery = document.Form.command_line;
@@ -340,12 +334,11 @@ function insertValueQuery(elem) {
     }
 }
 
-//-->
 </script><?php
 
-if ($valid)
+if ($valid) {
     require_once($path."listCommand.php");
-else {
+} else {
     /*
      * Apply a template definition
      */

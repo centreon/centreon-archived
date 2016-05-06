@@ -52,14 +52,14 @@ if (!function_exists("myDecodeCommand")) {
 }
 
 function testCmdExistence($name = null) {
-    global $pearDB, $form, $oreon;
+    global $pearDB, $form, $centreon;
     $id = null;
 
     if (isset($form)) {
         $id = $form->getSubmitValue('command_id');
     }
 
-    $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '" . $pearDB->escape($oreon->checkIllegalChar($name)) . "'");
+    $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '" . $pearDB->escape($centreon->checkIllegalChar($name)) . "'");
     $command = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id) {
         /*
@@ -77,18 +77,18 @@ function testCmdExistence($name = null) {
 }
 
 function deleteCommandInDB($commands = array()) {
-    global $pearDB, $oreon;
+    global $pearDB, $centreon;
 
     foreach ($commands as $key => $value) {
         $DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE `command_id` = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
         $DBRESULT = $pearDB->query("DELETE FROM `command` WHERE `command_id` = '" . intval($key) . "'");
-        $oreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
+        $centreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
     }
 }
 
 function multipleCommandInDB($commands = array(), $nbrDup = array()) {
-    global $pearDB, $oreon;
+    global $pearDB, $centreon;
 
     foreach ($commands as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . intval($key) . "' LIMIT 1");
@@ -119,7 +119,7 @@ function multipleCommandInDB($commands = array(), $nbrDup = array()) {
                  */
                 $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
                 $cmd_id = $DBRESULT->fetchRow();
-                $oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
+                $centreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
             }
 
             /*
@@ -138,7 +138,7 @@ function updateCommandInDB($cmd_id = null) {
 }
 
 function updateCommand($cmd_id = null, $params = array()) {
-    global $form, $pearDB, $oreon;
+    global $form, $pearDB, $centreon;
 
 
     if (!$cmd_id) {
@@ -152,7 +152,7 @@ function updateCommand($cmd_id = null, $params = array()) {
         $ret = $form->getSubmitValues();
     }
 
-    $ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+    $ret["command_name"] = $centreon->checkIllegalChar($ret["command_name"]);
     if (!isset($ret['enable_shell'])) {
         $ret['enable_shell'] = 0;
     }
@@ -177,7 +177,7 @@ function updateCommand($cmd_id = null, $params = array()) {
 
     $fields["graph_id"] = $ret["graph_id"];
     $fields["connector_id"] = $ret["connectors"];
-    $oreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
+    $centreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
     insertArgDesc($cmd_id, $ret);
     
     insertMacrosDesc($cmd_id, $ret);
@@ -189,13 +189,13 @@ function insertCommandInDB($ret = array()) {
 }
 
 function insertCommand($ret = array()) {
-    global $form, $pearDB, $oreon;
+    global $form, $pearDB, $centreon;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
 
-    $ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+    $ret["command_name"] = $centreon->checkIllegalChar($ret["command_name"]);
     if (!isset($ret['enable_shell'])) {
         $ret['enable_shell'] = 0;
     }
@@ -210,7 +210,11 @@ function insertCommand($ret = array()) {
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
 
+    /* 
+     * Buffer for changelog
+     */
     $fields["command_name"] = $pearDB->escape($ret["command_name"]);
+    $fields["command_comment"] = $pearDB->escape($ret["command_comment"]);
     $fields["command_line"] = $pearDB->escape($ret["command_line"]);
     $fields['enable_shell'] = $pearDB->escape($ret['enable_shell']);
     $fields["command_example"] = $pearDB->escape($ret["command_example"]);
@@ -221,19 +225,25 @@ function insertCommand($ret = array()) {
     /*
      * Get Max ID
      */
-    $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
-    $cmd_id = $DBRESULT->fetchRow();
-
-    $oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $pearDB->escape($ret["command_name"]), "a", $fields);
-    insertArgDesc($cmd_id["MAX(command_id)"], $ret);
+    $max_id = getMaxID();
+    $centreon->CentreonLogAction->insertLog("command", $max_id, $pearDB->escape($ret["command_name"]), "a", $fields);
     
+    insertArgDesc($cmd_id["MAX(command_id)"], $ret);
     insertMacrosDesc($cmd_id["MAX(command_id)"], $ret);
     
-    return ($cmd_id["MAX(command_id)"]);
+    return ($max_id);
+}
+
+function getMaxID() {
+    global $pearDB;
+
+    $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
+    $row = $DBRESULT->fetchRow();
+    return $row;
 }
 
 function return_plugin($rep) {
-    global $oreon;
+    global $centreon;
 
     $plugins = array();
     $is_not_a_plugin = array("." => 1, ".." => 1, "oreon.conf" => 1, "oreon.pm" => 1, "utils.pm" => 1, "negate" => 1, "centreon.conf" => 1, "centreon.pm" => 1);
@@ -245,7 +255,7 @@ function return_plugin($rep) {
                 $plugins = array_merge($plugins, $plg_tmp);
                 unset($plg_tmp);
             } elseif (!isset($is_not_a_plugin[$filename]) && substr($filename, -1) != "~" && substr($filename, -1) != "#") {
-                $key = substr($rep . "/" . $filename, strlen($oreon->optGen["nagios_path_plugins"]));
+                $key = substr($rep . "/" . $filename, strlen($centreon->optGen["nagios_path_plugins"]));
                 $plugins[$key] = $key;
             }
         }
@@ -259,7 +269,7 @@ function return_plugin($rep) {
  */
 
 function insertArgDesc($cmd_id, $ret = null) {
-    global $oreon, $pearDB;
+    global $centreon, $pearDB;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
