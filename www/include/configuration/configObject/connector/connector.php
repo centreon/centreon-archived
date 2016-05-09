@@ -59,6 +59,9 @@ if (isset($_REQUEST['id']))
 if (isset($_REQUEST['options']))
     $options = $_REQUEST['options'];
 
+/* Access level */
+($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+
 switch ($o)
 {
     case "a":
@@ -74,30 +77,39 @@ switch ($o)
     break;
 
     case "s":
-        $myConnector = $connectorObj->read($connector_id);
-        $myConnector['enabled'] = '1';
-        $connectorObj->update($connector_id, $myConnector);
+        if ($lvl_access == "w") {
+            $myConnector = $connectorObj->read($connector_id);
+            $myConnector['enabled'] = '1';
+            $connectorObj->update($connector_id, $myConnector);
+        }
         require_once($path.'listConnector.php');
     break;
 
     case "u":
-        $myConnector = $connectorObj->read($connector_id);
-        $myConnector['enabled'] = '0';
-        $connectorObj->update($connector_id, $myConnector);
+        if ($lvl_access == "w") {
+            $myConnector = $connectorObj->read($connector_id);
+            $myConnector['enabled'] = '0';
+            $connectorObj->update($connector_id, $myConnector);
+        }
         require_once($path.'listConnector.php');
     break;
 
     case "m":
-        $selectedConnectors = array_keys($select);
-        foreach($selectedConnectors as $connectorId)
-            $connectorObj->copy($connectorId, (int)$options[$connectorId]);
+        if ($lvl_access == "w") {
+            $selectedConnectors = array_keys($select);
+            foreach ($selectedConnectors as $connectorId) {
+                $connectorObj->copy($connectorId, (int)$options[$connectorId]);
+            }
+        }
         require_once($path.'listConnector.php');
     break;
 
     case "d":
-        $selectedConnectors = array_keys($select);
-        foreach($selectedConnectors as $connectorId)
-            $connectorObj->delete($connectorId);
+        if ($lvl_access == "w") {
+            $selectedConnectors = array_keys($select);
+            foreach($selectedConnectors as $connectorId)
+                $connectorObj->delete($connectorId);
+        }
         require_once($path.'listConnector.php');
     break;
 
