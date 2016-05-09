@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 /*
  *  Get Poller List
  */
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
                                                   'order'      => array('name'),
                                                   'keys'       => array('id'),
