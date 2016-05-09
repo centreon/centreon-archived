@@ -1,4 +1,3 @@
-<?php
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,23 +31,23 @@
  * For more information : contact@centreon.com
  *
  */
-?>
 
 function check_session() {
 	call_XMLHttpReq2();
 }
 
 function call_XMLHttpReq2() {
-  	var xhr2=null;
+  	var xhr2 = null;
 
     if (window.XMLHttpRequest) {
         xhr2 = new XMLHttpRequest();
     } else if (window.ActiveXObject) {
         xhr2 = new ActiveXObject("Microsoft.XMLHTTP");
     }
-    //on d�finit l'appel de la fonction au retour serveur
-    if (xhr2==null)
-     alert("Le web browser ne supporte pas l'AJAX.");
+    
+    if (xhr2 == null) {
+    	alert("Le web browser ne supporte pas l'AJAX.");
+    }
     xhr2.onreadystatechange = function() { change_status(xhr2); };
 
     //on appelle le fichier XMLresponse.php
