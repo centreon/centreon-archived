@@ -1,3 +1,8 @@
+## Centreon Web 2.8.0
+* Re-organization of sources
+* Move API from /include/webServices/rest to /api/
+
+
 ## Centreon 2.7.3
 
 * Fix Recurent downtimes starting at 00:00

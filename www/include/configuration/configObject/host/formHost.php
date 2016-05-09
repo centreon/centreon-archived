@@ -448,7 +448,7 @@ $attrHostgroups = array(
 );
 $attrHostcategories = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list&t=c',
     'multiple' => true,
     'linkedObject' => 'centreonHostcategories'
 );
@@ -640,6 +640,11 @@ $attrTimeperiod1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id&id=' . $host_id)
 );
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
+
+/**
+ * Acknowledgement timeout
+ */
+$form->addElement('text', 'host_acknowledgement_timeout', _("Acknowledgement timeout"), $attrsText2);
 
 ##
 ## Notification informations

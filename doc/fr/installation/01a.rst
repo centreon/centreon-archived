@@ -203,6 +203,8 @@ L'assistant de fin d'installation configure les bases de données, cliquez sur *
 
 L'installation est terminée, cliquez sur **Finish**.
 
+À cette étape une publicité permet de connaitre les dernières nouveautés de Centreon. Si votre plate-forme est connectée à Internet vous disposez des dernières informations, sinon l’information présente dans cette version sera proposée. 
+
 .. image :: /images/guide_utilisateur/aendinstall.png
    :align: center
    :scale: 65%

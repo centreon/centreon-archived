@@ -68,6 +68,7 @@ var _p='<?php echo $p?>';
 var _timeoutID = 0;
 var _counter = 0;
 var _hostgroup_enable = 1;
+var _servicegroup_enable = 1;
 var _on = 1;
 var _time_reload = <?php echo $tM?>;
 var _time_live = <?php echo $tFM?>;
@@ -81,6 +82,7 @@ var _first = 1;
 var _lock = 0;
 var _instance = "-1";
 var _default_hg = "<?php if (isset($default_hg)) { echo htmlentities($default_hg, ENT_QUOTES, "UTF-8"); } ?>";
+var _default_sg = "<?php if (isset($default_sg)) { echo htmlentities($default_sg, ENT_QUOTES, "UTF-8"); } ?>";
 var _default_instance = "<?php echo $default_poller?>";
 var _nc = 0;
 var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
@@ -346,6 +348,89 @@ function construct_HostGroupSelectList(id) {
 			_select.selectedIndex = select_index[_default_hg];
 		}
 		_select_hostgroups.appendChild(_select);
+	}
+}
+
+function construct_ServiceGroupSelectList(id) {
+	if (!document.getElementById("servicegroups")) {
+		var select_index = new Array();
+		var _select_servicegroups = document.getElementById(id);
+		if (_select_servicegroups == null) {
+			return;
+		}
+		var _select = document.createElement("select");
+		_select.name = "servicegroups";
+		_select.id = "servicegroups";
+		_select.onchange = function() {
+			_default_sg = this.value;
+			xhr = new XMLHttpRequest();
+			xhr.open('GET','./include/monitoring/status/Common/updateContactParamServiceGroups.php?uid=<?php echo $oreon->user->user_id; ?>&servicegroups='+this.value, true);
+			xhr.send(null);
+			xhr.onreadystatechange = function() {
+				monitoring_refresh();
+			};
+		};
+		var k = document.createElement('option');
+		k.value= "0";
+		_select.appendChild(k);
+		var i = 1;
+<?php
+		$sgNdo = array();
+		$sgBrk = array();
+        $acldb = $pearDBO;
+		if (!$oreon->user->access->admin) {
+			$query = "SELECT DISTINCT sg.sg_alias, sg.sg_name AS name
+				  FROM servicegroup sg, acl_resources_sg_relations arsr
+				  WHERE sg.sg_id = arsr.sg_id
+                                  AND arsr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().")
+                                  AND sg.sg_activate = '1'
+			          AND sg.sg_id in (SELECT servicegroup_sg_id
+			            		   FROM servicegroup_relation
+			            		   WHERE service_service_id IN (".$oreon->user->access->getServicesString("ID", $acldb)."))";
+			$DBRESULT = $pearDB->query($query);
+			while ($data = $DBRESULT->fetchRow()) {
+				$sgNdo[$data["name"]] = 1;
+				$sgBrk[$data["name"]] = 1;
+			}
+			$DBRESULT->free();
+			unset($data);
+		}
+
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT sg.name, sg.servicegroup_id FROM servicegroups sg, services_servicegroups ssg WHERE sg.servicegroup_id = ssg.servicegroup_id AND sg.name NOT LIKE 'meta\_%' ORDER BY sg.name");
+		while ($servicegroups = $DBRESULT->fetchRow()) {
+			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$servicegroups["name"]]))) {
+			    if (!isset($tabSG)) {
+			        $tabSG = array();
+			    }
+			    if (!isset($tabSG[$servicegroups["name"]])) {
+			        $tabSG[$servicegroups["name"]] = "";
+			    } else {
+			        $tabSG[$servicegroups["name"]] .= ",";
+			    }
+                $tabSG[$servicegroups["name"]] .= $servicegroups["servicegroup_id"];
+ 		    }
+		
+		}
+
+		if (isset($tabSG)) {
+			foreach ($tabSG as $name => $id) {
+                ?>
+                var m = document.createElement('option');
+					m.value= "<?php echo $id; ?>";
+					_select.appendChild(m);
+					var n = document.createTextNode("<?php echo $name; ?>   ");
+					m.appendChild(n);
+					_select.appendChild(m);
+					select_index["<?php echo $id; ?>"] = i;
+					i++;
+				<?php
+            }
+		}
+?>
+		if (typeof(_default_sg) != "undefined") {
+			_select.selectedIndex = select_index[_default_sg];
+		}
+		_select_servicegroups.appendChild(_select);
 	}
 }
 
@@ -931,6 +1016,9 @@ function initM(_time_reload, _sid, _o) {
 	construct_selecteList_ndo_instance('instance_selected');
 	if (_hostgroup_enable == 1) {
 		construct_HostGroupSelectList('hostgroups_selected');
+	}
+	if (_servicegroup_enable == 1) {
+		construct_ServiceGroupSelectList('servicegroups_selected');
 	}
 	if (!document.getElementById('debug')) {
 		var _divdebug = document.createElement("div");

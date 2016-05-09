@@ -65,7 +65,7 @@ if (false === is_dir($centreon_path . '/installDir')) {
 }
 
 session_destroy();
-
+require_once ("process/advertising.php");
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
 $template->assign('content', $contents);

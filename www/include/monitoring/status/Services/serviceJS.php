@@ -181,6 +181,7 @@ var _criticality_id = 0;
 		// INIT Select objects
 		construct_selecteList_ndo_instance('instance_selected');
 		construct_HostGroupSelectList('hostgroups_selected');
+		construct_ServiceGroupSelectList('servicegroups_selected');
 
 		if (document.getElementById("host_search") && document.getElementById("host_search").value) {
 			_host_search = document.getElementById("host_search").value;

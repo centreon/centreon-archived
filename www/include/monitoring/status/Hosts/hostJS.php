@@ -65,7 +65,7 @@ if (isset($_GET["acknowledge"])) {
 
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/Hosts/xml/<?php print $centreon->broker->getBroker(); ?>/hostXML.php";
+var _addrXML = "./include/monitoring/status/Hosts/xml/hostXML.php";
 var _addrXSL = "./include/monitoring/status/Hosts/xsl/host.xsl";
 var _criticality_id = 0;
 

@@ -91,7 +91,8 @@ In order to change parameters on a host configuration, use the **SETPARAM** acti
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;alias;Development test " 
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;address;192.168.1.68" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;check_period;24x7" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;check_period;24x7"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;timezone;Europe/Berlin"
 
 
 You may edit the following parameters:
@@ -186,6 +187,8 @@ statusmap_image	                     Status map image (used by statusmap
 vrml_image	                     VRML image
 
 host_notification_options            Notification options (d,u,r,f,s)
+
+timezone                   Timezone
 ==================================== =================================================================================
 
 

@@ -30,12 +30,14 @@
         <td><h4>{$hostStr}</h4></td>
         <td><h4>{$serviceStr}</h4></td>
         <td><h4>{$hgStr}</h4></td>
+        <td><h4>{$sgStr}</h4></td>
         <td><h4>{$outputStr}</h4></td>
     </tr>
     <tr>
         <td><input type='text' name='host_search' id='host_search'></td>
         <td><input type='text' name='search' id='input_search'></td>
         <td id="hostgroups_selected"></td>
+        <td id="servicegroups_selected"></td>
         <td><input type='text' name='output_search' id='output_search'></td>
     </tr>
 </table>

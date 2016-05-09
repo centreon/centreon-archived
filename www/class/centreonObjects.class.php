@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
  /*
@@ -47,19 +44,16 @@
 	public $servicegroups;
 	public $commandes;
 
-
  	/**
  	 *
  	 * Constructor
  	 * @param $pearDB
  	 */
- 	function __construct($pearDB) {
+ 	function __construct($pearDB) 
+ 	{
  		$this->DB = $pearDB;
 
 		$this->hostgroups = new CentreonHostGroups($pearDB);
 
  	}
-
 }
-
-?>

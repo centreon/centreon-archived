@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
 /*
  * ACL Actions
@@ -70,7 +68,6 @@ include("./include/common/autoNumLimit.php");
 if (isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])) {
     $_SESSION['monitoring_default_hostgroups'] = $_GET["hostgroups"];
 }
-
 
 $problem_sort_type = 'host_name';
 if (!empty($oreon->optGen["problem_sort_type"])) {
@@ -203,23 +200,27 @@ $action_list[] = _("More actions...");
  * Showing actions allowed for current user
  */
 if (isset($authorized_actions) && $allActions == false) {
-    foreach ($authorized_actions as $action_name) {
-        if ($action_name == "host_acknowledgement")
-            $action_list[72] = _("Hosts : Acknowledge");
-        if ($action_name == "host_disacknowledgement")
-            $action_list[73] = _("Hosts : Disacknowledge");
-        if ($action_name == "host_notifications")
-            $action_list[82] = _("Hosts : Enable Notification");
-        if ($action_name == "host_notifications")
-            $action_list[83] = _("Hosts : Disable Notification");
-        if ($action_name == "host_checks")
-            $action_list[92] = _("Hosts : Enable Check");
-        if ($action_name == "host_checks")
-            $action_list[93] = _("Hosts : Disable Check");
-        if ($action_name == "host_schedule_downtime")
-            $action_list[75] = _("Hosts : Set Downtime");
-    }
+    if (isset($authorized_actions) && $allActions == false) {
+        $action_list[94] = _("Hosts : Schedule immediate check");
+    if (isset($authorized_actions["host_schedule_forced_check"]))
+        $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
+	if (isset($authorized_actions["host_acknowledgement"]))
+		$action_list[72] = _("Hosts : Acknowledge");
+    if (isset($authorized_actions["host_disacknowledgement"]))
+        $action_list[73] = _("Hosts : Disacknowledge");
+    if (isset($authorized_actions["host_notifications"]))
+        $action_list[82] = _("Hosts : Enable Notification");
+    if (isset($authorized_actions["host_notifications"]))
+        $action_list[83] = _("Hosts : Disable Notification");
+    if (isset($authorized_actions["host_checks"]))
+        $action_list[92] = _("Hosts : Enable Check");
+    if (isset($authorized_actions["host_checks"]))
+        $action_list[93] = _("Hosts : Disable Check");
+    if (isset($authorized_actions["host_schedule_downtime"]))
+        $action_list[75] = _("Hosts : Set Downtime");
 } else {
+    $action_list[94] = _("Hosts : Schedule immediate check");
+    $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
     $action_list[82] = _("Hosts : Enable Notification");

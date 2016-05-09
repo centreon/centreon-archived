@@ -592,7 +592,7 @@ function updateHostInDB($host_id = NULL, $from_MC = false, $cfg = NULL) {
     else if (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && !$ret["mc_mod_hhc"]["mc_mod_hhc"])
         updateHostHostCategory_MC($host_id);
     else
-        updateHostHostCategory($host_id);
+        updateHostHostCategory($host_id, $ret);
 
 # Function for updating host template
 # 1 - MC with deletion of existing template
@@ -696,7 +696,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
             "host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
             "host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
             "host_notification_options, host_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community, " .
-            "host_snmp_version, host_location, host_comment, host_register, host_activate) " .
+            "host_snmp_version, host_location, host_comment, host_register, host_activate, host_acknowledgement_timeout) " .
             "VALUES ( ";
     isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'" . $ret["host_template_model_htm_id"] . "', " : $rq .= "NULL, ";
     isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'" . $ret["command_command_id"] . "', " : $rq .= "NULL, ";
@@ -737,6 +737,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
     isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', " : $rq .= "NULL, ";
     isset($ret["host_register"]) && $ret["host_register"] != NULL ? $rq .= "'" . $ret["host_register"] . "', " : $rq .= "NULL, ";
     isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'" . $ret["host_activate"]["host_activate"] . "'" : $rq .= "NULL";
+    isset($ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] != NULL ? $rq .= "'" . $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] . "'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(host_id) FROM host");
@@ -895,6 +896,8 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
         $fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
     if (isset($ret["host_snmp_community"]))
         $fields["host_snmp_community"] = CentreonDB::escape($ret["host_snmp_community"]);
+    if (isset($ret["host_acknowledgement_timeout"]))
+        $fields["host_acknowledgement_timeout"] = CentreonDB::escape($ret["host_acknowledgement_timeout"]);
     if (isset($ret["host_snmp_version"]))
         $fields["host_snmp_version"] = CentreonDB::escape($ret["host_snmp_version"]);
     if (isset($ret["host_location"]))
@@ -1158,6 +1161,8 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
     isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL ? $rq .= "'" . $ret["host_max_check_attempts"] . "', " : $rq .= "NULL, ";
     $rq .= "host_check_interval = ";
     isset($ret["host_check_interval"]) && $ret["host_check_interval"] != NULL ? $rq .= "'" . $ret["host_check_interval"] . "', " : $rq .= "NULL, ";
+    $rq .= "host_acknowledgement_timeout = ";
+    isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != NULL ? $rq .= "'" . $ret["host_acknowledgement_timeout"] . "', " : $rq .= "NULL, ";
     $rq .= "host_retry_check_interval = ";
     isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != NULL ? $rq .= "'" . $ret["host_retry_check_interval"] . "', " : $rq .= "NULL, ";
     $rq .= "host_active_checks_enabled = ";
@@ -1297,6 +1302,8 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
         $fields["host_name"] = CentreonDB::escape($ret["host_name"]);
     if (isset($ret["host_alias"]))
         $fields["host_alias"] = CentreonDB::escape($ret["host_alias"]);
+    if (isset($ret["host_acknowledgement_timeout"]))
+        $fields["host_acknowledgement_timeout"] = CentreonDB::escape($ret["host_acknowledgement_timeout"]);
     if (isset($ret["host_address"]))
         $fields["host_address"] = CentreonDB::escape($ret["host_address"]);
     if (isset($ret["host_max_check_attempts"]))
@@ -1452,6 +1459,10 @@ function updateHost_MC($host_id = null) {
     if (isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != NULL) {
         $rq .= "host_max_check_attempts = '" . $ret["host_max_check_attempts"] . "', ";
         $fields["host_max_check_attempts"] = $ret["host_max_check_attempts"];
+    }
+    if (isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != NULL) {
+        $rq .= "host_acknowledgement_timeout = '" . $ret["host_acknowledgement_timeout"] . "', ";
+        $fields["host_acknowledgement_timeout"] = $ret["host_acknowledgement_timeout"];
     }
     if (isset($ret["host_check_interval"]) && $ret["host_check_interval"] != NULL) {
         $rq .= "host_check_interval = '" . $ret["host_check_interval"] . "', ";

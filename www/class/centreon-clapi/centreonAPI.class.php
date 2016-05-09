@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,9 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-/**
- * Include Centreon Class
- */
+
 namespace CentreonClapi;
 
 require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
@@ -587,7 +584,7 @@ class CentreonAPI {
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "centreon" . $this->relationObject[$this->object]['class'];
+                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
             } else {
                 $objName = "";
             }
@@ -679,7 +676,7 @@ class CentreonAPI {
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "centreon" . $this->relationObject[$this->object]['class'];
+                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
             } else {
                 $objName = "";
             }
@@ -735,7 +732,7 @@ class CentreonAPI {
      * @param unknown_type $objname
      */
     private function iniObject($objname) {
-        $className = 'centreon' . $this->relationObject[$objname]['class'];
+        $className = '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
         $this->requireLibs($objname);
         $this->objectTable[$objname] = new $className($this->DB, $objname);
     }
@@ -897,6 +894,7 @@ class CentreonAPI {
         }
         return $this->return_code;
     }
+    
     /**
      * This method sort the objects to export
      */
@@ -939,5 +937,3 @@ class CentreonAPI {
     }
 
 }
-
-?>

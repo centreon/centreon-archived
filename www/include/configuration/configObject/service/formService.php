@@ -76,7 +76,6 @@ if (!$oreon->user->admin) {
     }
 }
 
-
 /* notification contacts */
 $notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
     'get_row' => 'contact_name',
@@ -268,15 +267,10 @@ if (($o == "c" || $o == "w") && $service_id) {
 if (($o == "c" || $o == "w") && $service_id) {
     $aListTemplate = getListTemplates($pearDB, $service_id);
 
-
-
     if (!isset($cmdId)) {
         $cmdId = "";
     }
-    
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
-
-
 }
 
 $cdata = CentreonData::getInstance();
@@ -411,7 +405,7 @@ $attrServicegroups = array(
 );
 $attrServicecategories = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list&t=c',
     'multiple' => true,
     'linkedObject' => 'centreonServicecategories'
 );
@@ -567,10 +561,14 @@ $cloneSetMacro[] = $form->addElement(
     )
 );
 
-
 $cloneSetMacro[] = $form->addElement(
     'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
+
+/**
+ * Acknowledgement timeout
+ */
+$form->addElement('text', 'service_acknowledgement_timeout', _("Acknowledgement timeout"), $attrsText2);
 
 
 ##
@@ -593,6 +591,16 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_cgs' => '0'));
 }
 
+##
+## Use only contacts/contacts group of host and host template
+##
+$form->addElement('header', 'use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"));
+$serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("Yes"), '1');
+$serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("No"), '0');
+$form->addGroup($serviceIOHC, 'service_use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"), '&nbsp;');
+if ($o != "mc") {
+    $form->setDefaults(array('service_use_only_contacts_from_host' => '0'));
+}
 
 ##
 ## Host's contact inheritance
@@ -632,7 +640,6 @@ $attrContact1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=service&field=service_cs&id=' . $service_id)
 );
 $form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
-
 
 /*
  *  Contact groups
@@ -779,7 +786,6 @@ if ($sgReadOnly === true) {
     $ams3->freeze();
 }
 
-
 $form->addElement('header', 'traps', _("SNMP Traps"));
 if ($o == "mc") {
     $mc_mod_traps = array();
@@ -882,7 +888,6 @@ $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
 $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id" => "esi_icon_image", "onChange" => "showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
-
 /*
  * Criticality
  */
@@ -901,8 +906,6 @@ $attrGraphtemplate1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=defaultValues&target=service&field=graph_id&id=' . $service_id)
 );
 $form->addElement('select2', 'graph_id', _("Graph Template"), array(), $attrGraphtemplate1);
-
-
 
 if ($o == "mc") {
     $mc_mod_sc = array();
@@ -962,10 +965,6 @@ if (is_array($select)) {
 #
 ## Form Rules
 #
-function myReplace() {
-    global $form;
-    return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
-}
 
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;

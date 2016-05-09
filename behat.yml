@@ -5,6 +5,7 @@ default:
       sessions:
         default:
           selenium2: ~
+    Centreon\Test\Behat\Extensions\ContainerExtension:
   suites:
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
@@ -22,3 +23,17 @@ default:
       paths: [ %paths.base%/features/SelectAllSelect2.feature ]
       contexts:
         - SelectAllSelect2Context
+
+    empty_default_configuration:
+      paths: [ %paths.base%/features/EmptyDefaultConfiguration.feature ]
+      contexts:
+        - EmptyDefaultConfigurationContext
+
+    generate_service_contact_configuration:
+      paths: [ %paths.base%/features/GenerateServiceContact.feature ]
+      contexts:
+        - GenerateServiceContactContext
+    centreon_engine_restart:
+      paths: [ %paths.base%/features/RestartCentreonEngine.feature ]
+      contexts:
+        - RestartCentreonEngineContext

@@ -274,9 +274,9 @@ function testServiceExistence ($name = null, $hPars = array(), $hgPars = array()
         $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
         $service = $DBRESULT->fetchRow();
         #Duplicate entry
-			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
-                return (false == $returnId) ? false : $service['service_id'];
-			}
+		if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
+            return (false == $returnId) ? false : $service['service_id'];
+		}
         $DBRESULT->free();
     }
     return (false == $returnId) ? true : 0;
@@ -819,8 +819,8 @@ function insertService($ret = array(), $macro_on_demand = null)
         "service_passive_checks_enabled, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
         "service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
         "service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
-        "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
-        "service_register, service_activate) " .
+        "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
+        "service_register, service_activate, service_acknowledgement_timeout) " .
         "VALUES ( ";
     isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
     isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
@@ -851,6 +851,7 @@ function insertService($ret = array(), $macro_on_demand = null)
     $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
     $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
     isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "'NULL', ";
+    isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', " : $rq .= "'NULL', ";
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
 
@@ -861,7 +862,8 @@ function insertService($ret = array(), $macro_on_demand = null)
 
     isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
     isset($ret["service_register"]) && $ret["service_register"] != NULL ? $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
-    isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
+    isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL,";
+    isset($ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"] != NULL ? $rq .= "'".$ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"]."'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(service_id) FROM service");
@@ -934,6 +936,9 @@ function insertService($ret = array(), $macro_on_demand = null)
     }
     if (isset($ret["service_alias"])) {
         $fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
+    }
+    if (isset($ret["service_acknowledgement_timeout"])) {
+        $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
     }
     if (isset($ret["service_is_volatile"]) &&
         isset($ret["service_is_volatile"]['service_is_volatile'])) {
@@ -1161,6 +1166,8 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     }
     $rq .= "service_alias = ";
     isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_alias"])."', ": $rq .= "NULL, ";
+    $rq .= "service_acknowledgement_timeout = ";
+    isset($ret["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"] != NULL ? $rq .= "'".$ret["service_acknowledgement_timeout"]."', ": $rq .= "NULL, ";
     $rq .= "service_is_volatile = ";
     isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
     $rq .= "service_max_check_attempts = ";
@@ -1198,7 +1205,10 @@ function updateService($service_id = null, $from_MC = false, $params = array())
 		
     $rq .= "service_inherit_contacts_from_host = ";
     isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "NULL, ";
-
+    
+    $rq .= "service_use_only_contacts_from_host = ";
+    isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', " : $rq .= "NULL, ";
+  
     $rq.= "contact_additive_inheritance = ";
     $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
     $rq.= "cg_additive_inheritance = ";
@@ -1255,6 +1265,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
         $fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
     $fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
     $fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
+    $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
     $fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
     $fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
     $fields["service_active_checks_enabled"] = $ret["service_active_checks_enabled"]["service_active_checks_enabled"];
@@ -1377,6 +1388,10 @@ function updateService_MC($service_id = null, $params = array())
         $rq .= "service_max_check_attempts = '".$ret["service_max_check_attempts"]."', ";
         $fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
     }
+    if (isset($ret["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"] != NULL) {
+        $rq .= "service_acknowledgement_timeout = '".$ret["service_acknowledgement_timeout"]."', ";
+        $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
+    }
     if (isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL) {
         $rq .= "service_normal_check_interval = '".$ret["service_normal_check_interval"]."', ";
         $fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
@@ -1449,6 +1464,10 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
         $rq .= "service_inherit_contacts_from_host = '".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', ";
         $fields["service_inherit_contacts_from_host"] = $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"];
+    }
+    if (isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"])) {
+        $rq .= "service_use_only_contacts_from_host = '".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', ";
+        $fields["service_use_only_contacts_from_host"] = $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"];
     }
     if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL) {
         $rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";

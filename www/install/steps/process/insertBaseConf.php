@@ -51,7 +51,8 @@ if (false === $link) {
 mysql_select_db($_SESSION['CONFIGURATION_DB']);
 
 splitQueries('../../insertMacros.sql', ';', null, '../../tmp/insertMacros');
-splitQueries('../../insertCmd-Tps.sql', ';', null, '../../tmp/insertCmd-Tps.sql');
+splitQueries('../../insertCommands.sql', ';', null, '../../tmp/insertCommands.sql');
+splitQueries('../../insertTimeperiods.sql', ';', null, '../../tmp/insertTimeperiods.sql');
 if (isset($_SESSION['MONITORING_ENGINE']) && is_file('../../var/baseconf/'.$_SESSION['MONITORING_ENGINE'].'.sql')) {
     splitQueries('../../var/baseconf/'.$_SESSION['MONITORING_ENGINE'].'.sql', ';', null, '../../tmp/'.$_SESSION['MONITORING_ENGINE']);
 }

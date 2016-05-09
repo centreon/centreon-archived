@@ -39,11 +39,6 @@ if (!isset($centreon)) {
 
 $tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 $tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
-    $tFS = 10;
-} else {
-    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-}
 if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
     $tFM = 10;
 } else {
@@ -136,14 +131,13 @@ function goM(_time_reload,_sid,_o){
 		_counter++;
 	}
 
-	var _addrXML = "./include/monitoring/status/Meta/xml/<?php print $centreon->broker->getBroker(); ?>/metaServiceXML.php?"+'search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
+	var _addrXML = "./include/monitoring/status/Meta/xml/index.php?"+'search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
 	proc.setCallback(monitoringCallBack);
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
 	_lock = 0;
-	viewDebugInfo('--end--');
 
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;

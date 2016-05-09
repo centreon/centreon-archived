@@ -119,7 +119,8 @@ $sort_type = array(	"last_state_change" => _("Duration"),
                     "service_description" => _("Services"),
                     "current_state" => _("Status"),
                     "last_check" => _("Last check"),
-                    "plugin_output" => _("Output"));
+                    "plugin_output" => _("Output"),
+					"criticality_id" => _("Criticality"));
 
 $form->addElement('select', 'global_sort_type', _("Sort by  "), $global_sort_type);
 $global_sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));

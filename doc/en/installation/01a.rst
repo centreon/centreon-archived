@@ -206,6 +206,8 @@ The End of installation wizard configures the databases, click on **Next**.
 
 The installation is finished, click on Finish.
 
+At this stage a publicity allows to know the latest Centreon . If your platform is connected to the Internet you have the latest information , if the information present in this version will be offered.
+
 .. image :: /images/user/aendinstall.png
    :align: center
    :scale: 65%

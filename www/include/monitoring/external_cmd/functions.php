@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
 $tab = array("1" => "ENABLE", "0" => "DISABLE");
 
@@ -49,9 +46,9 @@ include_once("./include/monitoring/external_cmd/extcmd.php");
  */
 
 function schedule_host_svc_checks($arg, $forced) {
-    global $pearDB, $is_admin, $oreon;
+    global $pearDB, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_checks_for_services");
+    $actions = $centreon->user->access->checkAction("host_checks_for_services");
 
     if ($actions == true || $is_admin) {
         $tab_forced = array("0" => "", "1" => "_FORCED");
@@ -66,11 +63,11 @@ function schedule_host_svc_checks($arg, $forced) {
  */
 
 function schedule_svc_checks($arg, $forced) {
-    global $pearDB, $is_admin, $oreon;
+    global $pearDB, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_schedule_check");
-    if($forced == "1"){
-        $actions = $oreon->user->access->checkAction("service_schedule_forced_check");
+    $actions = $centreon->user->access->checkAction("service_schedule_check");
+    if ($forced == "1"){
+        $actions = $centreon->user->access->checkAction("service_schedule_forced_check");
     }
     
     if ($actions == true || $is_admin) {
@@ -83,13 +80,33 @@ function schedule_svc_checks($arg, $forced) {
 }
 
 /*
+* SCHEDULE_HOST_CHECK
+*/
+function schedule_host_checks($arg, $forced) {
+	global $pearDB, $is_admin, $oreon;
+	$actions = false;
+	$actions = $oreon->user->access->checkAction("host_schedule_check");
+	if($forced == "1") {
+		$actions = $oreon->user->access->checkAction("host_schedule_forced_check");
+	}
+
+	if ($actions == true || $is_admin) {
+		$tab_forced = array("0" => "", "1" => "_FORCED");
+		$tab_data = preg_split("/\;/", $arg);
+		$flg = send_cmd(" SCHEDULE" . $tab_forced[$forced] . "_HOST_CHECK;" . urldecode($tab_data[0]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
+		return $flg;
+	}
+	return NULL;
+}
+
+/*
  * host check
  */
 
 function host_check($arg, $type) {
-    global $tab, $pearDB, $is_admin, $oreon;
+    global $tab, $pearDB, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_checks");
+    $actions = $centreon->user->access->checkAction("host_checks");
 
     if ($actions == true || $is_admin) {
         $flg = send_cmd(" " . $tab[$type] . "_HOST_CHECK;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
@@ -104,9 +121,9 @@ function host_check($arg, $type) {
  */
 
 function host_notification($arg, $type) {
-    global $tab, $pearDB, $is_admin, $oreon;
+    global $tab, $pearDB, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_notifications");
+    $actions = $centreon->user->access->checkAction("host_notifications");
 
     if ($actions == true || $is_admin) {
         $flg = send_cmd(" " . $tab[$type] . "_HOST_NOTIFICATIONS;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
@@ -120,9 +137,9 @@ function host_notification($arg, $type) {
  */
 
 function host_svc_notifications($arg, $type) {
-    global $tab, $pearDB, $is_admin, $oreon;
+    global $tab, $pearDB, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_notifications_for_services");
+    $actions = $centreon->user->access->checkAction("host_notifications_for_services");
 
     if ($actions == true || $is_admin) {
         $flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
@@ -136,9 +153,9 @@ function host_svc_notifications($arg, $type) {
  */
 
 function host_svc_checks($arg, $type) {
-    global $tab, $pearDB, $is_admin, $oreon;
+    global $tab, $pearDB, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_checks_for_services");
+    $actions = $centreon->user->access->checkAction("host_checks_for_services");
 
     if ($actions == true || $is_admin) {
         $flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_CHECKS;" . urldecode($arg) . ";" . time(), GetMyHostPoller($pearDB, urldecode($arg)));
@@ -152,9 +169,9 @@ function host_svc_checks($arg, $type) {
  */
 
 function svc_check($arg, $type) {
-    global $tab, $pearDB, $is_admin, $oreon;
+    global $tab, $pearDB, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_checks");
+    $actions = $centreon->user->access->checkAction("service_checks");
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
@@ -169,9 +186,9 @@ function svc_check($arg, $type) {
  */
 
 function passive_svc_check($arg, $type) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_passive_checks");
+    $actions = $centreon->user->access->checkAction("service_passive_checks");
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
@@ -186,9 +203,9 @@ function passive_svc_check($arg, $type) {
  */
 
 function svc_notifications($arg, $type) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_notifications");
+    $actions = $centreon->user->access->checkAction("service_notifications");
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
@@ -203,9 +220,9 @@ function svc_notifications($arg, $type) {
  */
 
 function svc_event_handler($arg, $type) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_event_handler");
+    $actions = $centreon->user->access->checkAction("service_event_handler");
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
@@ -220,9 +237,9 @@ function svc_event_handler($arg, $type) {
  */
 
 function host_event_handler($arg, $type) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_event_handler");
+    $actions = $centreon->user->access->checkAction("host_event_handler");
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
@@ -237,9 +254,9 @@ function host_event_handler($arg, $type) {
  */
 
 function svc_flapping_enable($arg, $type) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_flap_detection");
+    $actions = $centreon->user->access->checkAction("service_flap_detection");
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
@@ -254,9 +271,9 @@ function svc_flapping_enable($arg, $type) {
  */
 
 function host_flapping_enable($arg, $type) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_flap_detection");
+    $actions = $centreon->user->access->checkAction("host_flap_detection");
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
@@ -282,10 +299,10 @@ function notifi_host_hostgroup($arg, $type) {
  */
 
 function acknowledgeHost($param) {
-    global $pearDB, $tab, $key, $is_admin, $oreon;
+    global $pearDB, $tab, $key, $is_admin, $centreon;
 
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_acknowledgement");
+    $actions = $centreon->user->access->checkAction("host_acknowledgement");
 
     if ($actions == true || $is_admin) {
         $key = $param["host_name"];
@@ -301,10 +318,10 @@ function acknowledgeHost($param) {
                 }
             }
         }
-        set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
-        set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
-        set_user_param($oreon->user->user_id, $pearDB, "ack_services", $param["ackhostservice"]);
-        set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_services", $param["ackhostservice"]);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
         return _("Your command has been sent");
     }
     return NULL;
@@ -315,9 +332,9 @@ function acknowledgeHost($param) {
  */
 
 function acknowledgeHostDisable() {
-    global $pearDB, $tab, $_GET, $is_admin, $oreon;
+    global $pearDB, $tab, $_GET, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_disacknowledgement");
+    $actions = $centreon->user->access->checkAction("host_disacknowledgement");
 
     if ($actions == true || $is_admin) {
         $flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;" . urldecode($_GET["host_name"]), GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
@@ -332,9 +349,9 @@ function acknowledgeHostDisable() {
  */
 
 function acknowledgeServiceDisable() {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_disacknowledgement");
+    $actions = $centreon->user->access->checkAction("service_disacknowledgement");
 
     if ($actions == true || $is_admin) {
         $flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;" . urldecode($_GET["host_name"]) . ";" . urldecode($_GET["service_description"]), GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
@@ -348,10 +365,10 @@ function acknowledgeServiceDisable() {
  */
 
 function acknowledgeService($param) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
 
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_acknowledgement");
+    $actions = $centreon->user->access->checkAction("service_acknowledgement");
 
     if ($actions == true || $is_admin) {
         $param["comment"] = $param["comment"];
@@ -359,22 +376,22 @@ function acknowledgeService($param) {
         isset($param['sticky']) && $param['sticky'] == "1" ? $sticky = "2" : $sticky = "1";
         $flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;" . urldecode($param["host_name"]) . ";" . urldecode($param["service_description"]) . ";" . $sticky . ";" . $param["notify"] . ";" . $param["persistent"] . ";" . $param["author"] . ";" . $param["comment"], GetMyHostPoller($pearDB, urldecode($param["host_name"])));
         isset($param['force_check']) && $param['force_check'] ? $force_check = 1 : $force_check = 0;
-        if ($force_check == 1 && $oreon->user->access->checkAction("service_schedule_forced_check") == true) {
+        if ($force_check == 1 && $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
             send_cmd(" SCHEDULE_FORCED_SVC_CHECK;" . urldecode($param["host_name"]) . ";" . urldecode($param["service_description"]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($param["host_name"])));
         }
-        set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
-        set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
-        set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
-        set_user_param($oreon->user->user_id, $pearDB, "force_check", $force_check);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
+        set_user_param($centreon->user->user_id, $pearDB, "force_check", $force_check);
         return $flg;
     }
     return NULL;
 }
 
 function submitPassiveCheck() {
-    global $pearDB, $key, $is_admin, $oreon;
+    global $pearDB, $key, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_submit_result");
+    $actions = $centreon->user->access->checkAction("service_submit_result");
 
     if ($actions == true || $is_admin) {
         $key = $_GET["host_name"];
@@ -385,9 +402,9 @@ function submitPassiveCheck() {
 }
 
 function submitHostPassiveCheck() {
-    global $pearDB, $key, $is_admin, $oreon;
+    global $pearDB, $key, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_submit_result");
+    $actions = $centreon->user->access->checkAction("host_submit_result");
 
     if ($actions == true || $is_admin) {
         $key = $_GET["host_name"];
@@ -427,25 +444,25 @@ function checks_svc_host_hostgroup($arg, $type) {
  */
 
 function autoAcknowledgeServiceStart($key) {
-    global $pearDB, $tab, $oreon, $is_admin;
+    global $pearDB, $tab, $centreon, $is_admin;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_acknowledgement");
+    $actions = $centreon->user->access->checkAction("service_acknowledgement");
 
     if ($actions == true || $is_admin) {
-        $comment = "Service Auto Acknowledge by " . $oreon->user->alias . "\n";
+        $comment = "Service Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]) . ";1;1;1;" . $oreon->user->alias . ";" . $comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]) . ";1;1;1;" . $centreon->user->alias . ";" . $comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
         return $flg;
     }
 }
 
 function autoAcknowledgeServiceStop($key) {
-    global $pearDB, $tab, $oreon, $is_admin;
+    global $pearDB, $tab, $centreon, $is_admin;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_disacknowledgement");
+    $actions = $centreon->user->access->checkAction("service_disacknowledgement");
 
     if ($actions == true || $is_admin) {
-        $comment = "Service Auto Acknowledge by " . $oreon->user->alias . "\n";
+        $comment = "Service Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
         $flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
         return $flg;
@@ -457,25 +474,25 @@ function autoAcknowledgeServiceStop($key) {
  */
 
 function autoAcknowledgeHostStart($key) {
-    global $pearDB, $tab, $oreon, $is_admin;
+    global $pearDB, $tab, $centreon, $is_admin;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_acknowledgement");
+    $actions = $centreon->user->access->checkAction("host_acknowledgement");
 
     if ($actions == true || $is_admin) {
-        $comment = "Host Auto Acknowledge by " . $oreon->user->alias . "\n";
+        $comment = "Host Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ACKNOWLEDGE_HOST_PROBLEM;" . urldecode($ressource[0]) . ";1;1;1;" . $oreon->user->alias . ";" . $comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(" ACKNOWLEDGE_HOST_PROBLEM;" . urldecode($ressource[0]) . ";1;1;1;" . $centreon->user->alias . ";" . $comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
         return $flg;
     }
 }
 
 function autoAcknowledgeHostStop($key) {
-    global $pearDB, $tab, $oreon, $is_admin;
+    global $pearDB, $tab, $centreon, $is_admin;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_disacknowledgement");
+    $actions = $centreon->user->access->checkAction("host_disacknowledgement");
 
     if ($actions == true || $is_admin) {
-        $comment = "Host Auto Acknowledge by " . $oreon->user->alias . "\n";
+        $comment = "Host Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
         $flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;" . urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
         return $flg;
@@ -487,9 +504,9 @@ function autoAcknowledgeHostStop($key) {
  */
 
 function autoNotificationServiceStart($key) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_notifications");
+    $actions = $centreon->user->access->checkAction("host_notifications");
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
@@ -499,9 +516,9 @@ function autoNotificationServiceStart($key) {
 }
 
 function autoNotificationServiceStop($key) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_notifications");
+    $actions = $centreon->user->access->checkAction("service_notifications");
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
@@ -515,9 +532,9 @@ function autoNotificationServiceStop($key) {
  */
 
 function autoNotificationHostStart($key) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_notifications");
+    $actions = $centreon->user->access->checkAction("host_notifications");
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
@@ -527,9 +544,9 @@ function autoNotificationHostStart($key) {
 }
 
 function autoNotificationHostStop($key) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_notifications");
+    $actions = $centreon->user->access->checkAction("host_notifications");
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
@@ -543,9 +560,9 @@ function autoNotificationHostStop($key) {
  */
 
 function autoCheckServiceStart($key) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_checks");
+    $actions = $centreon->user->access->checkAction("service_checks");
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
@@ -555,9 +572,9 @@ function autoCheckServiceStart($key) {
 }
 
 function autoCheckServiceStop($key) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("service_checks");
+    $actions = $centreon->user->access->checkAction("service_checks");
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
@@ -571,9 +588,9 @@ function autoCheckServiceStop($key) {
  */
 
 function autoCheckHostStart($key) {
-    global $pearDB, $tab, $is_admin, $oreon;
+    global $pearDB, $tab, $is_admin, $centreon;
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_checks");
+    $actions = $centreon->user->access->checkAction("host_checks");
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
@@ -583,10 +600,10 @@ function autoCheckHostStart($key) {
 }
 
 function autoCheckHostStop($key) {
-    global $oreon;
+    global $centreon;
 
     $actions = false;
-    $actions = $oreon->user->access->checkAction("host_checks");
+    $actions = $centreon->user->access->checkAction("host_checks");
 
     if ($actions == true || $is_admin) {
         global $pearDB, $tab, $is_admin;

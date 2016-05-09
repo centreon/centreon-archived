@@ -29,10 +29,7 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
- * SVN : $URL
- * SVN : $Id
- * 
+ *
  */
 
 body {background-color:#FFF;}
@@ -128,6 +125,33 @@ p.description {
 
 p.description a, p.description a:visited {
     color: #4ccaff;
+}
+
+/* -------- wrappers ----------*/
+
+.center_box {
+    width: 450px;
+    border: 1px solid #d1d2d4;
+    margin: auto;
+    border-radius: 4px;
+}
+
+.center_box img {
+    text-align: center;
+    border: 0;
+    display: block;
+    margin: 24px auto;
+}
+
+.center_box a {
+    text-align: center;
+}
+
+.border-radius {
+    border: 1px solid #d1d2d4;
+    padding: 2px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 /* ------ slider ------------*/
@@ -336,16 +360,15 @@ p.description a, p.description a:visited {
 /* ----------- States --------------- */
 
 .default_badge 		{background-color: #00a499;}
-.host_down,
-.service_critical 	{background-color: #e00b3d;}
+.host_down, .danger, .service_critical 	{background-color: #e00b3d;}
 .host_unreachable 	{background-color: #818285;}
 .host_downtime 		{background-color: #cc99ff;}
 
-.service_ok,.host_up		{background-color: #88b917;}
-.service_warning	{background-color: #ff9a13;}
+.service_ok,.host_up, .success	{background-color: #88b917;}
+.service_warning, .warning	{background-color: #ff9a13;}
 .pending    {background-color: #2AD1D4;}
 .service_unknown    {background-color: #bcbdc0;}
-
+.info {background-color: #00bfb3;}
 
 .bdg_dtm:before {
     padding: 2px 4px;
@@ -1405,6 +1428,7 @@ table.ListTableSmallArg td {
 .ToolbarTR select {
     line-height: 25px;
     float: left;
+    height: 28px;
 }
 .ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 28px; padding: 0 10px; }
 
