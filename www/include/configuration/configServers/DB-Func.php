@@ -314,19 +314,12 @@ function checkChangeState($poller_id, $last_restart) {
 	$request = "SELECT *
 					FROM log_action
 					WHERE
-						action_log_date > $last_restart AND
-						((object_type = 'host' AND
-						object_id IN (
-							SELECT host_host_id
-							FROM ".$conf_centreon['db'].".ns_host_relation
-							WHERE nagios_server_id = '$poller_id'
-						)) OR
-						(object_type = 'service') AND
-						object_id IN (
-							SELECT service_service_id
-							FROM ".$conf_centreon['db'].".ns_host_relation nhr, ".$conf_centreon['db'].".host_service_relation hsr
-							WHERE nagios_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id
-					))";
+					action_log_date > $last_restart AND
+					(
+					(object_type = 'host' AND (action_type = 'd' OR object_id IN (SELECT host_host_id FROM ".$conf_centreon['db'].".ns_host_relation WHERE nagios_server_id = '$poller_id')))
+					OR
+					(object_type = 'service' AND (action_type = 'd' OR object_id IN (SELECT service_service_id FROM ".$conf_centreon['db'].".ns_host_relation nhr, ".$conf_centreon['db'].".host_service_relation hsr WHERE nagios_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id)))
+					)";
 	$DBRESULT = $pearDBO->query($request);
 	if ($DBRESULT->numRows()) {
 		return 1;
