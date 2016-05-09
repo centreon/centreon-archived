@@ -1,6 +1,5 @@
 <?php
-
-/**
+/*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -33,6 +32,7 @@
  * For more information : command@centreon.com
  *
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -308,10 +308,9 @@ class CentreonCommand extends CentreonObject {
     }
     
     
-        /**
+    /**
      * 
      * @param type $iIdCmd
-
      * @return string
      */
     public function getMacroDescription($iIdCmd)
@@ -332,21 +331,5 @@ class CentreonCommand extends CentreonObject {
         
         return $aReturn;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
 }
-
-?>

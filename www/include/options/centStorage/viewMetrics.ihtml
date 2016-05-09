@@ -17,25 +17,27 @@
 	<table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-	 		<td class="ListColLeft">{$Metric}</td>
-	 		<td class="ListColCenter">{$Unit}</td>
-	 		<td class="ListColCenter">{$Warning}</td>
-	 		<td class="ListColCenter">{$Critical}</td>
-	 		<td class="ListColCenter">{$Min}</td>
-	 		<td class="ListColCenter">{$Max}</td>
-			<td class="ListColCenter">{$DataSourceType}</td>
-	 		<td class="ListColCenter">{$Hidden}</td>
-	 		<td class="ListColCenter">{$Locked}</td>
+	 		<td class="ListColLeft">{t}Metric Name{/t}</td>
+	 		<td class="ListColCenter">{t}Unit{/t}</td>
+	 		<td class="ListColCenter">{t}Warning{/t}</td>
+	 		<td class="ListColCenter">{t}Critical{/t}</td>
+	 		<td class="ListColCenter">{t}Min{/t}</td>
+	 		<td class="ListColCenter">{t}Max{/t}</td>
+			<td class="ListColCenter">{t}File Path{/t}</td>
+			<td class="ListColCenter">{t}Data Source Type{/t}</td>
+	 		<td class="ListColCenter">{t}Hidden{/t}</td>
+	 		<td class="ListColCenter">{t}Locked{/t}</td>
 	 	</tr>
 		{foreach item=d from=$data}
 		<tr class="{$d.class}">
 		 	<td class="ListColCenter"><input name="select[{$d.metric_id}]" value="1" type="checkbox"></td>
 			<td class="ListColLeft">{$d.metric_name}</td>
-	 		<td class="ListColRight">{$d.unit_name}</td>
+	 		<td class="ListColCenter">{$d.unit_name}</td>
 	 		<td class="ListColCenter">{$d.warn}</td>
 	 		<td class="ListColCenter">{$d.crit}</td>
 	 		<td class="ListColCenter">{$d.min}</td>
 	 		<td class="ListColCenter">{$d.max}</td>
+	 		<td class="ListColCenter">{$d.path}</td>
 			<td class="ListColCenter">{$d.data_source_type}</td>
 	 		<td class="ListColCenter">{$d.hidden}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>

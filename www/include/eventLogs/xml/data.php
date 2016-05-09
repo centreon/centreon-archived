@@ -42,7 +42,7 @@ header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"
 /** ****************************
  * Include configurations files
  */
-include_once "../../../config/centreon.config.php";
+include_once "../../../../config/centreon.config.php";
 
 /*
  * Require Classes
@@ -154,8 +154,6 @@ if ($engine == "false"){
 (isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 (isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
 
-
-
 $start = 0;
 $end = 0;
 if ($contact_id){
@@ -205,7 +203,7 @@ if ($contact_id){
     $warning = $user_params["log_filter_svc_warning"];
     $critical = $user_params["log_filter_svc_critical"];
     $oh = $user_params["log_filter_oh"];
-    if($engine == "true"){
+    if ($engine == "true") {
         $ok = "false";
         $up = "false";
         $unknown = "false";
@@ -588,8 +586,6 @@ if (isset($req) && $req) {
     $buffer->writeElement("limit", $limit);
     $buffer->endElement();
     
-    
-    
     require_once _CENTREON_PATH_ . "www/include/common/checkPagination.php";
     /*
      * pagination
@@ -704,8 +700,9 @@ if (isset($req) && $req) {
         /*
          * Variable initialisation to color "INITIAL STATE" on envent logs
          */
-        if ($log["output"] == "" && $log["status"] != "")
+        if ($log["output"] == "" && $log["status"] != "") {
             $log["output"] = "INITIAL STATE";
+        }
         
         $buffer->startElement("status");
         $buffer->writeAttribute("color", $color);
@@ -720,7 +717,7 @@ if (isset($req) && $req) {
         
         if (!strncmp($log["host_name"], "_Module_Meta", strlen("_Module_Meta"))) {
             preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
-            $DBRESULT2 = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
+            $DBRESULT2 = $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$matches[1]."'");
             $meta = $DBRESULT2->fetchRow();
             $DBRESULT2->free();
             $buffer->writeElement("host_name", $log["host_name"], false);
@@ -756,6 +753,7 @@ if (isset($req) && $req) {
 /*
  * Translation for Menu.
  */
+/*
 $buffer->startElement("lang");
 $buffer->writeElement("ty", _("Message Type"), 0);
 $buffer->writeElement("n", _("Notifications"), 0);
@@ -771,6 +769,7 @@ $buffer->writeElement("cr", _("Critical"), 0);
 $buffer->writeElement("uk", _("Unknown"), 0);
 $buffer->writeElement("oh", _("Hard Only"), 0);
 $buffer->writeElement("sch", _("Search"), 0);
+*/
 
 /*
  * Translation for tables.

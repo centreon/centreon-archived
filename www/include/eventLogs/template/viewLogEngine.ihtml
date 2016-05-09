@@ -22,10 +22,10 @@
         <tr>
             <td>{$form.period.html}</td>
             <td>
-                <h4>{$From}</h4>
+                <h4>{t}From{/t}</h4>
                 {$form.StartDate.html}
                 {$form.StartTime.html} 
-                <h4>{$To}</h4>
+                <h4>{t}To{/t}</h4>
                 {$form.EndDate.html}
                 {$form.EndTime.html}
             </td>			

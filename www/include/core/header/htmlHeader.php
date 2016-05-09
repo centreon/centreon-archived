@@ -155,7 +155,7 @@ $tM = $centreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 ?>
 <script type='text/javascript'>
 <?php
-    require_once("./include/common/javascript/autologout.php");
+    require_once("./include/core/autologout/autologout.php");
 ?>
 jQuery(function () {
 <?php

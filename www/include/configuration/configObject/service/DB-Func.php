@@ -274,9 +274,9 @@ function testServiceExistence ($name = null, $hPars = array(), $hgPars = array()
         $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
         $service = $DBRESULT->fetchRow();
         #Duplicate entry
-			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
-                return (false == $returnId) ? false : $service['service_id'];
-			}
+		if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
+            return (false == $returnId) ? false : $service['service_id'];
+		}
         $DBRESULT->free();
     }
     return (false == $returnId) ? true : 0;

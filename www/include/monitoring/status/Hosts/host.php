@@ -200,6 +200,10 @@ $action_list[] = _("More actions...");
  * Showing actions allowed for current user
  */
 if (isset($authorized_actions) && $allActions == false) {
+    if (isset($authorized_actions) && $allActions == false) {
+        $action_list[94] = _("Hosts : Schedule immediate check");
+    if (isset($authorized_actions["host_schedule_forced_check"]))
+        $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
 	if (isset($authorized_actions["host_acknowledgement"]))
 		$action_list[72] = _("Hosts : Acknowledge");
     if (isset($authorized_actions["host_disacknowledgement"]))
@@ -215,6 +219,8 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["host_schedule_downtime"]))
         $action_list[75] = _("Hosts : Set Downtime");
 } else {
+    $action_list[94] = _("Hosts : Schedule immediate check");
+    $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
     $action_list[82] = _("Hosts : Enable Notification");

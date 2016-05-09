@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
  /**
@@ -56,7 +53,8 @@
  		$this->hostgroups = $this->initHostGroupCache($pearDB);
  	}
 
- 	public function initHostGroupCache($DB) {
+ 	public function initHostGroupCache($DB) 
+ 	{
 		$hg = new CentreonHostGroups($DB);
 
 		$hg->getAllHostgroupsInCache($DB);
@@ -65,5 +63,3 @@
  	}
 
 }
-
-?>
