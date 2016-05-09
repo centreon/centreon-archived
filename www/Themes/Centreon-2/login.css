@@ -140,7 +140,7 @@ input[type="submit"] {
     margin-top: .5em;
 }
 
-input[type="submit"]:hover {
+input[type="submit"].bt_info:hover {
     background-color: #00a499 !important;
     transition: .7s all ease;
 }
