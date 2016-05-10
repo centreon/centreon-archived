@@ -852,6 +852,7 @@ CREATE TABLE `contact` (
   `ar_id` int(11) DEFAULT NULL,
   `contact_acl_group_list` varchar(255) DEFAULT NULL,
   `contact_autologin_key` varchar(255) DEFAULT NULL,
+  `default_page` int(11) DEFAULT NULL,
   `contact_charset` varchar(255) DEFAULT NULL,
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   PRIMARY KEY (`contact_id`),

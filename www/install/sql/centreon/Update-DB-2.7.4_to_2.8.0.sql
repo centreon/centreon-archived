@@ -136,3 +136,9 @@ ALTER TABLE `service` ADD COLUMN `service_use_only_contacts_from_host` enum('0',
 
 ALTER TABLE `host` ADD COLUMN `host_acknowledgement_timeout` int(11) DEFAULT NULL AFTER `host_first_notification_delay`;
 ALTER TABLE `service` ADD COLUMN `service_acknowledgement_timeout` int(11) DEFAULT NULL AFTER `service_first_notification_delay`;
+
+-- Ticket #2425
+UPDATE topology SET topology_url = './include/Administration/myAccount/formMyAccount.php' WHERE topology_page = 50104;
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (50104,NULL,'./include/common/javascript/changetab.js','initChangeTab');
+ALTER TABLE contact ADD COLUMN `default_page` int(11) DEFAULT NULL AFTER `contact_autologin_key`;
+

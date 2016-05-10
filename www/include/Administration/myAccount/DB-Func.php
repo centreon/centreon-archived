@@ -62,9 +62,9 @@ function testAliasExistence ($alias = NULL)	{
 	/*
 	 * Modif case
 	 */
-	if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id()) 
+	if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id()) {
 		return true;
-	} else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
+	} else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id()) {
 		/*
 		 * Duplicate entry
 		 */
@@ -132,6 +132,8 @@ function updateContact($contact_id = null)	{
 	isset($ret["contact_email"]) && $ret["contact_email"] != NULL ? $rq .= "'".htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 	$rq .= "contact_pager = ";
 	isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+	$rq .=	"default_page = ";
+	isset($ret["default_page"]) && $ret["default_page"] != NULL ? $rq .= "'".htmlentities($ret["default_page"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 	$rq .= "contact_js_effects = ";
 	isset($ret["contact_js_effects"]) ? $rq .= "'1', ": $rq .= "'0', ";
     $rq .= "contact_autologin_key = ";
