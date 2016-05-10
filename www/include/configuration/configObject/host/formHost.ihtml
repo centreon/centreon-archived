@@ -57,12 +57,10 @@
 			    <td class="FormRowValue">{$form.nagios_server_id.html}</td>
 			</tr>
             {/if}
-			{if $tpl == 0 && $tzUsed}
 			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="host_location"> {$form.host_location.label}</td>
 				<td class="FormRowValue">{$form.host_location.html}</td>
 			</tr>
-			{/if}
 			{if $o == "mc"}
 			<tr class="list_two">	
 				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_tplp.label}</td>

@@ -110,20 +110,20 @@ if (($o == "c" || $o == "w") && $host_id)	{
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
         $DBRESULT->free();
                     
-                    /*
-                     * Set criticality
-                     */
-                    $res = $pearDB->query("SELECT hc.hc_id 
-                        FROM hostcategories hc, hostcategories_relation hcr
-                        WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
-                        AND hcr.hostcategories_hc_id = hc.hc_id
-                        AND hc.level IS NOT NULL
-                        ORDER BY hc.level ASC
-                        LIMIT 1");
-                    if ($res->numRows()) {
-                        $cr = $res->fetchRow();
-                        $host['criticality_id'] = $cr['hc_id'];
-                    }
+        /*
+         * Set criticality
+         */
+        $res = $pearDB->query("SELECT hc.hc_id 
+            FROM hostcategories hc, hostcategories_relation hcr
+            WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
+            AND hcr.hostcategories_hc_id = hc.hc_id
+            AND hc.level IS NOT NULL
+            ORDER BY hc.level ASC
+            LIMIT 1");
+        if ($res->numRows()) {
+            $cr = $res->fetchRow();
+            $host['criticality_id'] = $cr['hc_id'];
+        }
 	}
     
     /*
@@ -361,7 +361,15 @@ $form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
 $form->addElement('select', 'host_snmp_version', _("Version"), array(null=>null, 1=>"1", "2c"=>"2c", 3=>"3"));
 $form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 
-$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=host&field=host_location&id=' . $host_id,
+    'multiple' => false,
+    'linkedObject' => 'centreonGMT'
+);
+$form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
+
 $form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
 
 if ($o == "mc")	{
@@ -462,9 +470,6 @@ $eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Eve
 $eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
 
 $form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
-
-# Nagios 2
-
 $form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
 $form->addElement('text', 'host_retry_check_interval', _("Retry Check Interval"), $attrsText2);
 

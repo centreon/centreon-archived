@@ -49,6 +49,7 @@ class HostTemplate extends AbstractHost {
         command_command_id_arg2 as event_handler_arg,
         host_name as name,
         host_alias as alias,
+        host_location,
         display_name,
         host_max_check_attempts as max_check_attempts,
         host_check_interval as check_interval,
@@ -92,6 +93,7 @@ class HostTemplate extends AbstractHost {
         'name',
         'alias',
         'display_name',
+        'timezone',
         'contacts',
         'contact_groups',
         'check_command',
@@ -162,6 +164,12 @@ class HostTemplate extends AbstractHost {
             return $this->hosts[$host_id]['name'];
         }
         
+        $oTimezone = Timezone::getInstance();
+        $sTimezone = $oTimezone->getTimezoneFromId($this->hosts[$host_id]['host_location']);
+        if (!is_null($sTimezone)) {
+            $this->hosts[$host_id]['timezone'] = ":". $sTimezone;
+        }
+
         # Avoid infinite loop!
         if (isset($this->loop_htpl[$host_id])) {
             return $this->hosts[$host_id]['name'];
