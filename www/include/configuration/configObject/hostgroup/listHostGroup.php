@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -62,7 +62,7 @@ if (isset($_POST['searchHg']) && $_POST['searchHg']) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$centreon->cache->initHostGroupCache($pearDB);
+//$centreon->cache->initHostGroupCache($pearDB);
 
 /* Access level */
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
@@ -84,7 +84,6 @@ $tpl->assign("headerMenu_options", _("Options"));
 /*
  * Hostgroup list
  */
-
 $rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image
            FROM hostgroup
            WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) ".
@@ -130,10 +129,10 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
 
     $aclFrom = "";
     $aclCond = "";
-    if (!$oreon->user->admin) {
+    if (!$centreon->user->admin) {
         $aclFrom = ", $aclDbName.centreon_acl acl ";
         $aclCond = " AND h.host_id = acl.host_id
-                         AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
     }
     $rq = "SELECT h.host_id, h.host_activate
                FROM hostgroup_relation hgr, host h $aclFrom
@@ -153,6 +152,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $nbrhostAct = count($nbrhostActArr);
     $nbrhostDeact = count($nbrhostDeactArr);
 
+    /*
     $rq = "SELECT COUNT(*) as nbr FROM hostgroup_hg_relation hgr, hostgroup WHERE hg_parent_id = '".$hg['hg_id']."' AND hostgroup.hg_id = hgr.hg_child_id AND hostgroup.hg_activate = '1'";
     $DBRESULT2 = $pearDB->query($rq);
     $nbrhostgroupAct = $DBRESULT2->fetchRow();
@@ -160,6 +160,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $rq = "SELECT COUNT(*) as nbr FROM hostgroup_hg_relation hgr, hostgroup WHERE hg_parent_id = '".$hg['hg_id']."' AND hostgroup.hg_id = hgr.hg_child_id AND hostgroup.hg_activate = '0'";
     $DBRESULT2 = $pearDB->query($rq);
     $nbrhostgroupDeact = $DBRESULT2->fetchRow();
+    */ 
 
     if ($hg['hg_icon_image'] != "") {
         $hgIcone = "./img/media/" . $mediaObj->getFilename($hg['hg_icon_image']);
@@ -175,8 +176,10 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
                          "RowMenu_hostAct"=>$nbrhostAct,
                          "RowMenu_icone" => $hgIcone,
                          "RowMenu_hostDeact"=>$nbrhostDeact,
+/*
                          "RowMenu_hostgroupAct"=>$nbrhostgroupAct["nbr"],
                          "RowMenu_hostgroupDeact"=>$nbrhostgroupDeact["nbr"],
+*/
                          "RowMenu_options"=>$moptions);
     /*
      * Switch color line
@@ -197,11 +200,10 @@ function setO(_i) {
 }
 </SCRIPT>
 <?php
-$attrs1 = array(
-                'onchange'=>"javascript: " .
-                                " var bChecked = isChecked(); ".
-                                " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-                                " alert('"._("Please select one or more items")."'); return false;} " .
+$attrs1 = array('onchange'=>"javascript: " .
+                " var bChecked = isChecked(); ".
+                " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -214,11 +216,10 @@ $attrs1 = array(
 $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
 $form->setDefaults(array('o1' => NULL));
 
-$attrs2 = array(
-                'onchange'=>"javascript: " .
-                                " var bChecked = isChecked(); ".
-                                " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-                                " alert('"._("Please select one or more items")."'); return false;} " .
+$attrs2 = array('onchange'=>"javascript: " .
+                " var bChecked = isChecked(); ".
+                " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+                " alert('"._("Please select one or more items")."'); return false;} " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -250,5 +251,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listHostGroup.ihtml");
-
-?>
