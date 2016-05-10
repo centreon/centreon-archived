@@ -102,24 +102,31 @@ $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null
 $pages = array();
 $DBRESULT1 = $pearDB->query("SELECT topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order, topology_group");
 while ($topo1 = $DBRESULT1->fetchRow()) {
-    $pages[$topo1["topology_page"]] = _($topo1["topology_name"]);
+    if ($centreon->user->access->page($topo1["topology_page"]) == 1) { 
+        $pages[$topo1["topology_page"]] = _($topo1["topology_name"]);
+    }
 
     $DBRESULT2 = $pearDB->query("SELECT topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_show = '1' ORDER BY topology_order");
     while ($topo2 = $DBRESULT2->fetchRow()) {
-        $pages[$topo2["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]);
-        
+        if ($centreon->user->access->page($topo2["topology_page"]) == 1) {
+            $pages[$topo2["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]);
+        }
+
         $DBRESULT3 = $pearDB->query("SELECT topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_group, topology_order");
-        while ($topo3 = $DBRESULT3->fetchRow()){
-            $pages[$topo3["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]);
+        while ($topo3 = $DBRESULT3->fetchRow()) {
+            if ($centreon->user->access->page($topo3["topology_page"]) == 1) {
+                $pages[$topo3["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]);
+            }
 
             $DBRESULT4 = $pearDB->query("SELECT topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_order");
             while ($topo4 = $DBRESULT4->fetchRow()) {
-                $pages[$topo4["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]) . " > ". _($topo4["topology_name"]);
+                if ($centreon->user->access->page($topo4["topology_page"]) == 1) {
+                    $pages[$topo4["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]) . " > ". _($topo4["topology_name"]);
+                }
             }
         }
     }        
 }
-
 $form->addElement('select', 'default_page', _("Default page"), $pages);
 
 $form->addElement('checkbox', 'monitoring_host_notification_0', _('Show Up status'));
