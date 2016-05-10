@@ -104,11 +104,10 @@ if (isset($_GET["disconnect"])) {
 }
 
 /*
- * already connected
+ * Already connected
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = & $_SESSION["centreon"];
-    // Get the selected home page
     header('Location: main.php');
 }
 

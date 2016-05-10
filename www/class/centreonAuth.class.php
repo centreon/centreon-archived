@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonAuth {
@@ -59,6 +56,7 @@ class CentreonAuth {
     protected $authType;
     protected $ldap_auto_import;
     protected $ldap_store_password;
+    protected $default_page;
 
     /*
      * keep log class
@@ -82,7 +80,8 @@ class CentreonAuth {
      * @param string $token | for autologin
      * @return void
      */
-    function CentreonAuth($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "") {
+    function CentreonAuth($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "") 
+    {
         global $centreon_crypt;
 
         $this->cryptPossibilities = array('MD5', 'SHA1');
@@ -95,6 +94,7 @@ class CentreonAuth {
         $this->debug = $this->getLogFlag();
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
+        $this->default_page = 1;
 
         $query = "SELECT ar.ar_id, ari.ari_value, ari.ari_name
                   FROM auth_ressource_info ari, auth_ressource ar
@@ -117,7 +117,8 @@ class CentreonAuth {
      *
      * @return int
      */
-    protected function getLogFlag() {
+    protected function getLogFlag() 
+    {
         $res = $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
         $data = $res->fetchRow();
         if (isset($data["value"])) {
@@ -134,9 +135,8 @@ class CentreonAuth {
      * @param boolean $autoimport
      * @return void
      */
-    protected function checkPassword($password, $token = "", $autoimport = false) {
-        
-
+    protected function checkPassword($password, $token = "", $autoimport = false) 
+    {
         if ((strlen($password) == 0 || $password == "") && $token == "") {
             $this->passwdOk = 0;
             return;
@@ -223,14 +223,15 @@ class CentreonAuth {
      * @return void
      */
     protected function checkUser($username, $password, $token) {
-        $usernameForQuery = $this->pearDB->escape($username, true);
+        
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
-            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '" . $usernameForQuery . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
+            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
         } else {
-            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '" . $usernameForQuery . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
+            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '" . $this->pearDB->escape($username, true) . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
         }
         if ($DBRESULT->numRows()) {
             $this->userInfos = $DBRESULT->fetchRow();
+
             if ($this->userInfos["contact_oreon"]) {
                 /*
                  * Check password matching
@@ -280,7 +281,6 @@ class CentreonAuth {
     /*
      * Check crypt system
      */
-
     protected function getCryptFunction() {
         if (isset($this->cryptEngine)) {
             switch ($this->cryptEngine) {
@@ -302,7 +302,6 @@ class CentreonAuth {
     /*
      * Crypt String
      */
-
     protected function myCrypt($str) {
         switch ($this->cryptEngine) {
             case 1 :
@@ -338,5 +337,3 @@ class CentreonAuth {
     }
 
 }
-
-?>
