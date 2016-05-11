@@ -2054,14 +2054,3 @@ textarea.default-textarea {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-/* PPM */
-.ppm-filter {
-    position:relative;
-    float: right;
-    margin-top: 3px;
-    margin-right: 3px;
-}
-
-.ppm-filter input{
-    height: 10px;
-}
