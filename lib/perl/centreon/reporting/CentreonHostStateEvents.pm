@@ -159,7 +159,7 @@ sub updateEventEndTime {
         $centstorage->query($query);
     } else {
         if ($updateTime) {
-            my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), , `in_ack` = '$inAck', `last_update`= 0".
+            my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), `in_ack` = '$inAck', `last_update`= 0".
                 " WHERE `hoststateevent_id` = ".$eventId;
             $centstorage->query($query);
         }
