@@ -47,19 +47,6 @@ if (!$centreon->user->admin && $server_id  && count($serverResult)) {
     }
 }
 
-$monitoring_engines =
-    array("CENGINE" => array("name" => "Centreon Engine",
-                             "nagios_bin" => "/usr/sbin/centengine",
-                             "nagiostats_bin" => "/usr/sbin/centenginestats",
-                             "init_script" => "/etc/init.d/centengine",
-                             "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata")
-        );
-          
-
-function monitoring_engine_names($me) {
-    return $me["name"];
-}
-
 /*
  * Database retrieve information for Nagios
  */
@@ -87,7 +74,7 @@ $cdata->addJsData('clone-count-pollercmd', count($cmdArray));
  */
 $nagios_servers = array();
 $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
-while($nagios_server = $DBRESULT->fetchRow()) {
+while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
 $DBRESULT->free();
@@ -118,18 +105,18 @@ $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
 
 /*
- * Nagios Configuration basic information
+ * Poller Configuration basic information
  */
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 $form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText);
+$form->addElement('select', 'init_system', _("Init System"), array('systemv' => "systemv", "systemd" => "systemd"));
 
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
 $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
-$form->addElement('text', 'ssh_private_key', _("SSH Private key"), $attrsText2);
 $form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 
 $Tab = array();
@@ -186,21 +173,33 @@ $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database
  * Set Default Values
  */
 if (isset($_GET["o"]) && $_GET["o"] == 'a'){
-    $me = $monitoring_engines[$centreon->optGen["monitoring_engine"]];
+    $monitoring_engines = array( "nagios_bin" => "/usr/sbin/centengine",
+                                 "nagiostats_bin" => "/usr/sbin/centenginestats",
+                                 "init_script" => "/etc/init.d/centengine",
+                                 "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata")
+            );
+    $scriptD = str_replace("/etc/init.d/", '', $cfg_server['init_script']);
+    if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
+        $monitoring_engines['init_system'] = 'systemd';
+    } else {
+        $monitoring_engines['init_system'] = 'systemv';
+    }
+
     $form->setDefaults(array(
     "name" => '',
     "localhost" => '0',
     "ns_ip_address" => "127.0.0.1",
     "description" => "",
-    "nagios_bin" => $me["nagios_bin"],
-    "nagiostats_bin" => $me["nagiostats_bin"],
+    "nagios_bin" => $monitoring_engines["nagios_bin"],
+    "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
     "monitoring_engine"  => $centreon->optGen["monitoring_engine"],
-    "init_script" => $me["init_script"],
+    "init_script" => $monitoring_engines["init_script"],
+    "init_system" => $monitoring_engines["init_system"],
     "ns_activate" => '1',
     "is_default"  =>  '0',
     "ssh_port"  =>  '22',
     "ssh_private_key"  =>  '~/.ssh/rsa.id',
-    "nagios_perfdata"  => $me["nagios_perfdata"],
+    "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
     "centreonbroker_cfg_path" => "/etc/centreon-broker",
     "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
     "init_script_centreontrapd" => "/etc/init.d/centreontrapd",
@@ -255,10 +254,11 @@ if ($o == "w")  {
 $valid = false;
 if ($form->validate())  {
     $nagiosObj = $form->getElement('id');
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         insertServerInDB();
-    else if ($form->getSubmitValue("submitC"))
+    } else if ($form->getSubmitValue("submitC")) {
         updateServerInDB($nagiosObj->getValue());
+    }
     $o = NULL;
     $valid = true;
 }

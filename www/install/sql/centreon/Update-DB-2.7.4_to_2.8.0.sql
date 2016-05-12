@@ -142,3 +142,7 @@ UPDATE topology SET topology_url = './include/Administration/myAccount/formMyAcc
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (50104,NULL,'./include/common/javascript/changetab.js','initChangeTab');
 ALTER TABLE contact ADD COLUMN `default_page` int(11) DEFAULT NULL AFTER `contact_autologin_key`;
 
+-- Ticket #4401
+ALTER TABLE nagios_server ADD COLUMN `init_system` varchar(255) DEFAULT 'sytemv' AFTER `init_script`;
+UPDATE TABLE `nagios_server` SET `init_system` = 'systemv';
+

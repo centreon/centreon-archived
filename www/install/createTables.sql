@@ -1697,6 +1697,7 @@ CREATE TABLE `nagios_server` (
   `ns_activate` enum('1','0') DEFAULT '1',
   `ns_status` enum('0','1','2','3','4') DEFAULT '0',
   `init_script` varchar(255) DEFAULT NULL,
+  `init_system` varchar(255) DEFAULT 'systemv',
   `monitoring_engine` varchar(20) DEFAULT NULL,
   `nagios_bin` varchar(255) DEFAULT NULL,
   `nagiostats_bin` varchar(255) DEFAULT NULL,
