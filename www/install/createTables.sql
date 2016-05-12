@@ -1982,7 +1982,6 @@ CREATE TABLE `timeperiod_include_relations` (
 CREATE TABLE `topology` (
   `topology_id` int(11) NOT NULL AUTO_INCREMENT,
   `topology_name` varchar(255) DEFAULT NULL,
-  `topology_icone` varchar(255) DEFAULT NULL,
   `topology_parent` int(11) DEFAULT NULL,
   `topology_page` int(11) DEFAULT NULL,
   `topology_order` int(11) DEFAULT NULL,
