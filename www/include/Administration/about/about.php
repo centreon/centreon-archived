@@ -45,7 +45,7 @@ $release = $DBRESULT->fetchRow();
 			<table class="table">
 				<tr>
 					<td>
-						<h3>Centreon <?php print $release["value"]; ?></h3> <br>
+					<h3>Centreon <?php print $release["value"]; ?></h3> <br>
 
 					</td>
 					<td>
