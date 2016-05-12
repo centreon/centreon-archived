@@ -491,8 +491,6 @@ $form->addElement('select', 'host_snmp_version', _("Version"), array(NULL => NUL
 /*
  * Include GMT Class
  */
-require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
-
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
