@@ -62,34 +62,24 @@ if (isset($_GET["acknowledge"])) {
 <script type="text/javascript">
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/serviceGridBySGXML.php";
-var _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
+var _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceSummaryBySGXML.php";
+var _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
-//Service Groups view hasn't got HG filters
+// Service Groups view hasn't got HG filters
 _hostgroup_enable = 0;
 
 function set_header_title(){
-
 	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if (document.getElementById('host_name')){
+	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?php echo addslashes(_("Servicegroups / Hosts"))?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-
-		if (document.getElementById('host_state')){
-			var h = document.getElementById('host_state');
-			h.innerHTML = '<?php echo addslashes(_("Status"))?>';
-		  	h.indice = 'host_state';
-		  	h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
-		  	h.onclick=function(){change_type_order(this.indice)};
-			h.style.cursor = "pointer";
-		}
 
 		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo addslashes(_("Services informations"))?>';
@@ -97,7 +87,7 @@ function set_header_title(){
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
-		if (_order == 'ASC')
+		if(_order == 'ASC')
 			_linkaction_asc.appendChild(_img_asc);
 		else
 			_linkaction_asc.appendChild(_img_desc);
@@ -118,7 +108,8 @@ function mainLoopLocal() {
   	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
     	if (!_lock) {
     		set_search_host(escapeURI(_currentInputFieldValue));
-			_search = _currentInputFieldValue;
+			_host_search = _currentInputFieldValue;
+			_sg_search = _currentInputFieldValue;
 
 			monitoring_refresh();
 
@@ -149,7 +140,7 @@ function initM(_time_reload, _sid, _o ){
     if (document.getElementById("sg_search") && document.getElementById("sg_search").value) {
 		_sg_search = document.getElementById("sg_search").value;
 		viewDebugInfo('search: '+document.getElementById("sg_search").value);
-	} else if (document.getElementById("sg_search").value.length === 0) {
+	} else if (document.getElementById("sg_search").value.length == 0) {
 		_sg_search = "";
 	}
     
