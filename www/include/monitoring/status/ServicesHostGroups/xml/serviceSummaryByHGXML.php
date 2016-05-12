@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/ServicesHostGroups/xml/serviceSummaryByHGXML.php $
- * SVN : $Id: serviceSummaryByHGXML.php 11683 2011-02-14 16:10:44Z jmathis $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");

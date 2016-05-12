@@ -118,10 +118,10 @@
             {
                 _o = val;
                 if (_o == 'svcOVHG') { 
-                    _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceGridByHGXML.php";
+                    _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
                     _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceGridByHG.xsl";
                 } else {
-                    _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceSummaryByHGXML.php";
+                    _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceSummaryByHGXML.php";
                    _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceSummaryByHG.xsl";
                 }
                 monitoring_refresh();
