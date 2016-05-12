@@ -9,53 +9,50 @@ use Centreon\Test\Behat\ConfigurationPollersPage;
 /**
  * Defines application features from the specific context.
  */
-class RestartCentreonEngineContext extends CentreonContext
+class ExpireAckContext extends CentreonContext
 {
-
-    private $pollers_page;
 
     public function __construct()
     {
         parent::__construct();
-        $this->pollers_page = new ConfigurationPollersPage($this);
     }
 
     /**
-     * @Given I am on the Central poller page
+     * @Given A service configured with expirations
      */
-    public function iAmOnTheCentralPollerWebpage()
+    public function aServiceConfiguredWithExpirations()
     {
         $this->visit('/main.php?p=60902&poller=1');
     }
 
     /**
-     * @Given I check Restart Monitoring Engine
+     * @Given In a critical state
      */
-    public function iCheckRestartMonitoringEngine()
+    public function inACriticalState()
     {
         $this->assertFind('named', array('id', 'nrestart'))->check();
     }
 
     /**
-     * @Given I select the Method Restart
+     * @Given Acknowledged
      */
-    public function iSelectTheMethodRestart()
-    {
-        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Restart');
-    }
-
-    /**
-     * @Given I select the Method Reload
-     */
-    public function iSelectTheMethodReload()
+    public function acknowledged()
     {
         $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Reload');
     }
 
     /**
-     * @When I export Centreon Engine
+     * @When I wait the time limit set for expirations
      */
-    public function iExportCentreonEngine()
+    public function iWaitTheTimeLimitSetForExpirations()
+    {
+        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Restart');
+    }
+
+    /**
+     * @Then The acknowledgement disappears
+     */
+    public function theAcknowledgementDisappears()
     {
         $this->assertFind('named', array('id', 'exportBtn'))->click();
     }
