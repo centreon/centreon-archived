@@ -33,15 +33,14 @@
  *
  */
 
-
 /*
  * Get all hosts from DB
  */
 function getAllHostsForReporting($is_admin, $lcaHoststr, $search = NULL) {
-	global $oreon;
+	global $centreon;
 
     $hosts = array("NULL" => "");
-    $hosts += $oreon->user->access->getHostAclConf($search, $oreon->broker->getBroker());
+    $hosts += $centreon->user->access->getHostAclConf($search, 'broker');
     return $hosts;
 }
 
@@ -152,7 +151,7 @@ function getLogInDbForHost($host_id, $start_date, $end_date, $reportTimePeriod){
  * and alerts (the sum of alerts of all hosts from hostgroup) for given hostgroup defined by $hostgroup_id
  */
 function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTimePeriod){
-	global $oreon;
+	global $centreon;
 
 	$hostStatsLabels = getHostStatsValueName();
 
@@ -160,7 +159,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 	foreach ($hostStatsLabels as $name)
 		$hostgroupStats["average"][$name] = 0;
 
-    $hosts_id = $oreon->user->access->getHostHostGroupAclConf($hostgroup_id, $oreon->broker->getBroker());
+    $hosts_id = $centreon->user->access->getHostHostGroupAclConf($hostgroup_id, 'broker');
     if (count($hosts_id) == 0) {
         return $hostgroupStats;
     }
@@ -224,7 +223,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
  * Return a table a (which reference is given in parameter) that contains stats on services for a given host defined by $host_id
  */
 function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod){
-	global $oreon, $pearDBO;
+	global $centreon, $pearDBO;
 
 	$hostServiceStats = array();
 	$services_ids = array();
@@ -232,14 +231,14 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
 	/*
 	 * Getting authorized services
 	 */
-    $services_ids = $oreon->user->access->getHostServiceAclConf($host_id, $oreon->broker->getBroker());
+    $services_ids = $centreon->user->access->getHostServiceAclConf($host_id, 'broker');
 	$svcStr = "";
 	if (count($services_ids) > 0) {
-			foreach ($services_ids as $id => $description){
-				if ($svcStr)
-					$svcStr .= ", ";
-				$svcStr .= $id;
-			}
+		foreach ($services_ids as $id => $description){
+			if ($svcStr)
+				$svcStr .= ", ";
+			$svcStr .= $id;
+		}
     } else {
         return ($hostServiceStats);
     }
@@ -267,7 +266,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
 				"sum(`MaintenanceTime`) as MAINTENANCE_T ".
 		  "FROM `log_archive_service` ".
 		  "WHERE `host_id` = ".$host_id." ".
-		  $oreon->user->access->queryBuilder("AND", "service_id", $svcStr) .
+		  $centreon->user->access->queryBuilder("AND", "service_id", $svcStr) .
 		  "AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
 		 		 "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 		  "GROUP BY `service_id` ";
@@ -510,12 +509,12 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
  * Returns all activated services from a servicegroup including services by host and services by hostgroup
  */
 function getServiceGroupActivateServices($sg_id = NULL)	{
-	global $oreon;
+	global $centreon;
 
 	if (!$sg_id)
 		return;
 
-	$svs = $oreon->user->access->getServiceServiceGroupAclConf($sg_id, $oreon->broker->getBroker());
+	$svs = $centreon->user->access->getServiceServiceGroupAclConf($sg_id, 'broker');
     return $svs;
 }
 
@@ -564,10 +563,10 @@ function getreportingTimePeriod() {
  * Get all hostgroups linked with at least one host
  */
 function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search = NULL){
-	global $oreon;
+	global $centreon;
 
     $hgs = array("NULL" => "");
-    $hgs += $oreon->user->access->getHostGroupAclConf($search, $oreon->broker->getBroker());
+    $hgs += $centreon->user->access->getHostGroupAclConf($search, 'broker');
     return $hgs;
 }
 
@@ -575,10 +574,10 @@ function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search = NUL
  * Get all servicesgroup with at least one service
  */
  function getAllServicesgroupsForReporting($search = NULL) {
-	global $oreon;
+	global $centreon;
 
     $sg_array = array("NULL" => "");
-    $sg_array += $oreon->user->access->getServiceGroupAclConf($search, $oreon->broker->getBroker());
+    $sg_array += $centreon->user->access->getServiceGroupAclConf($search, 'broker');
     return $sg_array;
 }
 
