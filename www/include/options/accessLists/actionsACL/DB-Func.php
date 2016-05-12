@@ -314,5 +314,8 @@ function listActions() {
 	$actions[] = "global_host_obsess";
 	$actions[] = "global_perf_data";
 
+	$actions[] = "generate_cfg";
+	$actions[] = "generate_trap";
+
 	return $actions;
 }

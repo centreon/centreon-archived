@@ -145,6 +145,10 @@ $form->addElement('checkbox', 'top_counter', _("Display Top Counter"));
 $form->addElement('checkbox', 'poller_stats', _("Display Top Counter pollers statistics"));
 $form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
 
+// Configuration Actions
+$form->addElement('checkbox', 'generate_cfg', _("Generate Configuration Files"));
+$form->addElement('checkbox', 'generate_trap', _("Generate SNMP Trap configuration"));
+
 $form->addElement('checkbox', 'all_service', "");
 $form->addElement('checkbox', 'all_host', "");
 $form->addElement('checkbox', 'all_engine', "");
@@ -171,12 +175,6 @@ $groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate
 $groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate', null, _("Disabled"), '0');
 $form->addGroup($groupActivation, 'acl_action_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('acl_action_activate' => '1'));
-
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'acl_action_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -234,7 +232,7 @@ if ($form->validate()) {
 	$valid = true;
 }
 
-    // prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
@@ -243,7 +241,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"]) {
+if ($valid) {
 	require_once($path."listsActionsAccess.php");
 } else {
 	// Apply a template definition

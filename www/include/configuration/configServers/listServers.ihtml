@@ -12,7 +12,6 @@
 
 </script>
 {/literal}
-
 <form name='form' method='POST'>
     <table class="ajaxOption table">
     <tbody>
@@ -30,17 +29,17 @@
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-                        <td>
-			    { if $mode_access == 'w' }
+            <td>
+			    {if $mode_access == 'w'}
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-			    { else }
+			    {else}
 			    &nbsp;
-			    { /if }
-                            {if $mode_generate > 0}
-                            {$form.apply_configuration.html}
-                            { /if }
+			    {/if}
+			    {if $is_admin == 1 || $can_generate == 1}
+                	{$form.apply_configuration.html}
+                {/if}
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 			{php}
@@ -68,8 +67,8 @@
 		{section name=elem loop=$elemArr}
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
-			<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_ip_address}</a></td>
+			<td class="ListColLeft">{if $mode_access == w}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == w}</a>{/if}</td>
+			<td class="ListColCenter">{if $mode_access == w}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == w}</a>{/if}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
 			<td class="ListColCenter">
               <span class="badge {if $elemArr[elem].RowMenu_is_runningFlag}service_ok{else}service_critical{/if}">
