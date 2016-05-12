@@ -564,11 +564,16 @@ sub initEngine($$){
 
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
-        $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => 120
-                                                              );
+        if ($conf->{init_system} eq 'systemd') {
+            my $initSystem = $conf->{init_script};
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemct $options ".$conf->{init_script};
+        } else if ($conf->{init_system} eq 'systemv') {
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$initSystem." ".$options;
+        } else {
+           $self->{logger}->writeLogError("Unknown init system for poller $id");
+           return;
+        }
+        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd, logger => $self->{logger}, timeout => 120);
     } else {
         $self->{logger}->writeLogError("Cannot $options Engine for poller $id");
     }

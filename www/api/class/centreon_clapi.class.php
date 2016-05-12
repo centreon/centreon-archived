@@ -123,9 +123,11 @@ class CentreonClapi extends CentreonWebService
         $tmpLines = explode("\n", $contents);
         $lines = array();
         
-        /* Remove empty lines and Return end line */
+        /* Get object attribute name */
+        $headers = explode(';', $tmpLines[0]);
         
-        for ($i = 0; $i < count($tmpLines); $i++) {
+        /* Remove empty lines and Return end line */
+        for ($i = 1; $i < count($tmpLines); $i++) {
             if (trim($tmpLines[$i]) !== '' && strpos($tmpLines[$i], 'Return code end :') !== 0) {
                 $lines[] = $tmpLines[$i];
             }
@@ -134,9 +136,10 @@ class CentreonClapi extends CentreonWebService
         $return['result'] = array();
         for ($i = 0; $i < count($lines); $i++) {
             if (strpos($lines[$i], ';') !== false) {
-                $return['result'][] = explode(';', $lines[$i]);
+                
+                $return['result'][] = array_combine($headers, explode(';', $lines[$i]));
             } elseif (strpos($lines[$i], "\t") !== false) {
-                $return['result'][] = explode("\t", $lines[$i]);
+                $return['result'][] = array_combine($headers, explode("\t", $lines[$i]));
             } else {
                 $return['result'][] = $lines[$i];
             }

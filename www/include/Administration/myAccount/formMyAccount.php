@@ -34,7 +34,7 @@
  */
 
 if (!isset ($centreon)) {
-	exit ();
+	exit();
 }
 
 // Pear library
@@ -46,8 +46,10 @@ require_once "./include/common/common-Func.php";
 
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	
-// Path to the configuration dir
-$path = "./include/options/oreon/myAccount/";
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/Administration/myAccount/";
 
 // PHP Functions
 require_once $path."DB-Func.php";
@@ -57,8 +59,7 @@ require_once $path."DB-Func.php";
  */
 $cct = array();
 if ($o == "c")	{	
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, 
-                                            contact_email, contact_pager, contact_js_effects, contact_autologin_key 
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager, contact_js_effects, contact_autologin_key, default_page
                                         FROM contact 
                                         WHERE contact_id = '".$centreon->user->get_id()."' LIMIT 1");
 	// Set base value
@@ -75,10 +76,10 @@ if ($o == "c")	{
  * Database retrieve information for differents elements list we need on the page
  *
  * Langs -> $langs Array
-     */
+ */
 $langs = array();
 $langs = getLangs();	
-$attrsText 		= array("size"=>"35");
+$attrsText = array("size"=>"35");
 
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 $form->addElement('header', 'title', _("Change my settings"));
@@ -97,6 +98,37 @@ $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 
 
+/* ------------------------ Topoogy ---------------------------- */
+$pages = array();
+$DBRESULT1 = $pearDB->query("SELECT topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order, topology_group");
+while ($topo1 = $DBRESULT1->fetchRow()) {
+    if ($centreon->user->access->page($topo1["topology_page"]) == 1) { 
+        $pages[$topo1["topology_page"]] = _($topo1["topology_name"]);
+    }
+
+    $DBRESULT2 = $pearDB->query("SELECT topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_show = '1' ORDER BY topology_order");
+    while ($topo2 = $DBRESULT2->fetchRow()) {
+        if ($centreon->user->access->page($topo2["topology_page"]) == 1) {
+            $pages[$topo2["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]);
+        }
+
+        $DBRESULT3 = $pearDB->query("SELECT topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_group, topology_order");
+        while ($topo3 = $DBRESULT3->fetchRow()) {
+            if ($centreon->user->access->page($topo3["topology_page"]) == 1) {
+                $pages[$topo3["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]);
+            }
+
+            $DBRESULT4 = $pearDB->query("SELECT topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_order");
+            while ($topo4 = $DBRESULT4->fetchRow()) {
+                if ($centreon->user->access->page($topo4["topology_page"]) == 1) {
+                    $pages[$topo4["topology_page"]] = "  "._($topo1["topology_name"]) . " > " . _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]) . " > ". _($topo4["topology_name"]);
+                }
+            }
+        }
+    }        
+}
+$form->addElement('select', 'default_page', _("Default page"), $pages);
+
 $form->addElement('checkbox', 'monitoring_host_notification_0', _('Show Up status'));
 $form->addElement('checkbox', 'monitoring_host_notification_1', _('Show Down status'));
 $form->addElement('checkbox', 'monitoring_host_notification_2', _('Show Unreachable status'));
@@ -108,7 +140,7 @@ $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown s
 $sound_files = scandir(_CENTREON_PATH_."www/sounds/");
 $sounds = array(null => null);
 foreach ($sound_files as $f) {
-    if($f == "." || $f == "..") {
+    if ($f == "." || $f == "..") {
         continue;
     }
     $info = pathinfo($f);

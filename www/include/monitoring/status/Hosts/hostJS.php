@@ -37,16 +37,16 @@ if (!isset($centreon)) {
 	exit();		
 }
 
-if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
     $tFM = 10;
 } else {
-    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+    $tFM = $centreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 }
 
-if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
+if (!isset($centreon->optGen["AjaxFirstTimeReloadStatistic"]) || $centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
     $tFS = 10;
 } else {
-    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+    $tFS = $centreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
 }
 
 $sid = session_id();

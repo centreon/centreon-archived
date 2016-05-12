@@ -38,7 +38,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     if ($host_id && false === strpos($aclHostString, "'" . $host_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
@@ -181,7 +181,7 @@ if (($o == "c" || $o == "w") && $host_id) {
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation, host WHERE host_id = host_parent_hp_id AND host_host_id = '" . $host_id . "' ORDER BY host_name");
     for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && false === strpos($aclHostString, "'" . $parent['host_parent_hp_id'] . "'")) {
+        if (!$centreon->user->admin && false === strpos($aclHostString, "'" . $parent['host_parent_hp_id'] . "'")) {
             $initialValues['host_parents'][] = $parent['host_parent_hp_id'];
         } else {
             $host["host_parents"][$i] = $parent["host_parent_hp_id"];
@@ -194,7 +194,7 @@ if (($o == "c" || $o == "w") && $host_id) {
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation, host WHERE host_id = host_host_id AND host_parent_hp_id = '" . $host_id . "' ORDER BY host_name");
     for ($i = 0; $child = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && false === strpos($aclHostString, "'" . $child['host_host_id'] . "'")) {
+        if (!$centreon->user->admin && false === strpos($aclHostString, "'" . $child['host_host_id'] . "'")) {
             $initialValues['host_childs'][] = $child['host_host_id'];
         } else {
             $host["host_childs"][$i] = $child["host_host_id"];
@@ -222,7 +222,7 @@ if (($o == "c" || $o == "w") && $host_id) {
                     AND hc.level IS NULL
                     AND hcr.host_host_id = \'' . $host_id . '\'');
     for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && false === strpos($hcString, "'" . $hc['hostcategories_hc_id'] . "'")) {
+        if (!$centreon->user->admin && false === strpos($hcString, "'" . $hc['hostcategories_hc_id'] . "'")) {
             $initialValues['host_hcs'][] = $hc['hostcategories_hc_id'];
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
         } else {
@@ -359,7 +359,7 @@ $DBRESULT->free();
  */
 $aclFrom = "";
 $aclCond = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclFrom = ", $aclDbName.centreon_acl acl ";
     $aclCond = " AND h.host_id = acl.host_id
                       AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
@@ -491,12 +491,6 @@ $form->addElement('select', 'host_snmp_version', _("Version"), array(NULL => NUL
 /*
  * Include GMT Class
  */
-require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
-
-$CentreonGMT = new CentreonGMT($pearDB);
-
-$GMTList = $CentreonGMT->getGMTList($pearDB);
-
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
@@ -504,8 +498,6 @@ $attrTimezones = array(
     'multiple' => false,
     'linkedObject' => 'centreonGMT'
 );
-
-
 $form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
@@ -932,7 +924,7 @@ $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extIm
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
-if (!$oreon->user->admin && $o == "a") {
+if (!$centreon->user->admin && $o == "a") {
     $attrAclgroups = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
@@ -1006,7 +998,7 @@ if ($o != "mc") {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
-    if (isset($oreon->optGen["strict_hostParent_poller_management"]) && $centreon->optGen["strict_hostParent_poller_management"] == 1) {
+    if (isset($centreon->optGen["strict_hostParent_poller_management"]) && $centreon->optGen["strict_hostParent_poller_management"] == 1) {
         $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
         $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
         $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
@@ -1094,7 +1086,7 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));
+$tpl->assign('msg', array("nagios" => $centreon->user->get_version(), "tpl" => 0));
 $tpl->assign('min', $min);
 $tpl->assign("sort1", _("Host Configuration"));
 $tpl->assign("sort2", _("Notification"));
@@ -1119,12 +1111,12 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 if ($o != "a" && $o != "c") {
-    $tpl->assign('time_unit', " * " . $oreon->optGen["interval_length"] . " " . _("seconds"));
+    $tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _("seconds"));
 } else {
     /*
      * Get interval for the good poller.
      */
-    $tpl->assign('time_unit', " * " . $oreon->optGen["interval_length"] . " " . _("seconds"));
+    $tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _("seconds"));
 }
 
 $valid = false;
@@ -1179,7 +1171,6 @@ if ($valid) {
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign("k", $k);
     $tpl->assign("tpl", 0);
-    $tpl->assign("tzUsed", $CentreonGMT->used());
     $tpl->display("formHost.ihtml");
     ?>
     <script type="text/javascript">

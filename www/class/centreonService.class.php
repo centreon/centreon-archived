@@ -1198,9 +1198,6 @@ class CentreonService
         return false;
     }
     
-    
-    
-    
     /**
      * 
      * @param type $ret

@@ -373,6 +373,8 @@ INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./in
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./include/common/javascript/centreon/doClone.js',NULL);
 
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (50104,NULL,'./include/common/javascript/changetab.js','initChangeTab');
+
 -- Host Details 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (NULL,20202,NULL,'./include/common/javascript/changetab.js','initChangeTab');
 

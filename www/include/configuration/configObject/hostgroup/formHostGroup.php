@@ -60,11 +60,12 @@ if (($o == "c" || $o == "w") && $hg_id)	{
      */
     $hg = array_map("myDecode", $DBRESULT->fetchRow());
 
+
     /*
      * Get Parent Groups
      */
     $hostGroupParents = array();
-    $hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
+    //$hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
 
     /*
      *  Set HostGroup Childs
@@ -84,12 +85,14 @@ if (($o == "c" || $o == "w") && $hg_id)	{
     /*
      *  Set HostGroup Childs
      */
+    /*
     $DBRESULT = $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
     for ($i = 0; $hgs = $DBRESULT->fetchRow(); $i++) {
         $hg["hg_hg"][$i] = $hgs["hg_child_id"];
     }
     $DBRESULT->free();
     unset($hgs);
+    */
 }
 
 /*
@@ -97,7 +100,7 @@ if (($o == "c" || $o == "w") && $hg_id)	{
  */
 $aclFrom = "";
 $aclCond = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclFrom = ", $aclDbName.centreon_acl acl ";
     $aclCond = " AND h.host_id = acl.host_id
                  AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
@@ -191,8 +194,6 @@ $form->addElement('text', 		'hg_alias', _("Alias"), $attrsText);
 /*
  * Hosts Selection
  */
-
-
 $attrHost1 = array_merge(
     $attrHosts,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . $hg_id)

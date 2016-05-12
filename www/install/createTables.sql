@@ -470,47 +470,6 @@ CREATE TABLE `cfg_centreonbroker_info` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cfg_cgi` (
-  `cgi_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cgi_name` varchar(255) DEFAULT NULL,
-  `instance_id` int(11) DEFAULT NULL,
-  `main_config_file` varchar(255) DEFAULT NULL,
-  `physical_html_path` varchar(255) DEFAULT NULL,
-  `url_html_path` varchar(255) DEFAULT NULL,
-  `nagios_check_command` varchar(255) DEFAULT NULL,
-  `use_authentication` enum('0','1') DEFAULT NULL,
-  `default_user_name` varchar(255) DEFAULT NULL,
-  `authorized_for_system_information` text,
-  `authorized_for_system_commands` text,
-  `authorized_for_configuration_information` text,
-  `authorized_for_all_hosts` text,
-  `authorized_for_all_host_commands` text,
-  `authorized_for_all_services` text,
-  `authorized_for_all_service_commands` text,
-  `statusmap_background_image` varchar(255) DEFAULT NULL,
-  `default_statusmap_layout` enum('0','1','2','3','4','5','6') DEFAULT '2',
-  `statuswrl_include` varchar(255) DEFAULT NULL,
-  `default_statuswrl_layout` enum('0','1','2','3','4') DEFAULT '2',
-  `refresh_rate` int(11) DEFAULT NULL,
-  `host_unreachable_sound` varchar(255) DEFAULT NULL,
-  `host_down_sound` varchar(255) DEFAULT NULL,
-  `service_critical_sound` varchar(255) DEFAULT NULL,
-  `service_warning_sound` varchar(255) DEFAULT NULL,
-  `service_unknown_sound` varchar(255) DEFAULT NULL,
-  `ping_syntax` text,
-  `cgi_comment` text,
-  `cgi_activate` enum('0','1') DEFAULT NULL,
-  `action_url_target` varchar(255) DEFAULT NULL,
-  `escape_html_tags` enum('0','1','2') DEFAULT '2',
-  `lock_author_names` enum('0','1','2') DEFAULT '2',
-  `notes_url_target` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`cgi_id`),
-  KEY `fk_cgi_instance_id` (`instance_id`),
-  CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cfg_nagios` (
   `nagios_id` int(11) NOT NULL AUTO_INCREMENT,
   `nagios_name` varchar(255) DEFAULT NULL,
@@ -679,62 +638,6 @@ CREATE TABLE `cfg_nagios_broker_module` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cfg_ndo2db` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `ndo2db_user` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `ndo2db_group` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `local` enum('0','1') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT '0',
-  `ns_nagios_server` int(11) DEFAULT NULL,
-  `socket_type` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `socket_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `tcp_port` int(11) DEFAULT NULL,
-  `db_servertype` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `db_host` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `db_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `db_port` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `db_prefix` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `db_user` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `db_pass` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `max_timedevents_age` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `max_systemcommands_age` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `max_servicechecks_age` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `max_hostchecks_age` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `max_eventhandlers_age` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `activate` enum('0','1') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ns_nagios_server` (`ns_nagios_server`),
-  CONSTRAINT `cfg_ndo2db_ibfk_1` FOREIGN KEY (`ns_nagios_server`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='configuration base for ndo daemon';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cfg_ndomod` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `local` enum('0','1') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `ns_nagios_server` int(11) DEFAULT NULL,
-  `instance_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `output_type` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `output` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `tcp_port` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `output_buffer_items` int(11) DEFAULT NULL,
-  `buffer_file` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  `file_rotation_interval` int(11) DEFAULT NULL,
-  `file_rotation_command` int(11) DEFAULT NULL,
-  `file_rotation_timeout` int(11) DEFAULT NULL,
-  `reconnect_interval` int(11) DEFAULT NULL,
-  `reconnect_warning_interval` int(11) DEFAULT NULL,
-  `data_processing_options` int(11) DEFAULT NULL,
-  `config_output_options` int(11) DEFAULT NULL,
-  `activate` enum('0','1') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ns_nagios_server` (`ns_nagios_server`),
-  CONSTRAINT `cfg_ndomod_ibfk_1` FOREIGN KEY (`ns_nagios_server`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ndomog table config';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cfg_resource` (
   `resource_id` int(11) NOT NULL AUTO_INCREMENT,
   `resource_name` varchar(255) DEFAULT NULL,
@@ -852,6 +755,7 @@ CREATE TABLE `contact` (
   `ar_id` int(11) DEFAULT NULL,
   `contact_acl_group_list` varchar(255) DEFAULT NULL,
   `contact_autologin_key` varchar(255) DEFAULT NULL,
+  `default_page` int(11) DEFAULT NULL,
   `contact_charset` varchar(255) DEFAULT NULL,
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   PRIMARY KEY (`contact_id`),
@@ -1793,6 +1697,7 @@ CREATE TABLE `nagios_server` (
   `ns_activate` enum('1','0') DEFAULT '1',
   `ns_status` enum('0','1','2','3','4') DEFAULT '0',
   `init_script` varchar(255) DEFAULT NULL,
+  `init_system` varchar(255) DEFAULT 'systemv',
   `monitoring_engine` varchar(20) DEFAULT NULL,
   `nagios_bin` varchar(255) DEFAULT NULL,
   `nagiostats_bin` varchar(255) DEFAULT NULL,

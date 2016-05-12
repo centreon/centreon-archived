@@ -89,7 +89,7 @@ $access = new CentreonACL($user_id, $is_admin);
 (isset($_GET["search"])) ? $search = CentreonDB::escape($_GET["search"]) : $search = "";
 (isset($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "service_description";
 (isset($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $order = "ASC";
-(isset($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
+(isset($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "m/d/Y H:i:s";
 (isset($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 (isset($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 (isset($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";

@@ -37,12 +37,12 @@ if (!isset($centreon)) {
 	exit();		
 }
 
-$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+$tS = $centreon->optGen["AjaxTimeReloadStatistic"] * 1000;
+$tM = $centreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
+if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
     $tFM = 10;
 } else {
-    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+    $tFM = $centreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 }
 
 $sid = session_id();

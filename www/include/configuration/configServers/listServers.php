@@ -52,6 +52,15 @@ if (isset($_POST['searchP']) && $_POST['searchP']) {
   $LCASearch = " name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 }
 
+// Get Authorized Actions
+if ($is_admin == 0) {
+    if ($centreon->user->access->checkAction('generate_cfg')) {
+    	$can_generate = 1; 
+    } else {
+    	$can_generate = 0;
+    }
+}
+
 /*
  * nagios servers comes from DB
  */
@@ -94,9 +103,6 @@ $tpl = initSmartyTpl($path, $tpl);
 /* Access level */
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
-$generatePageId = 60902;
-$tpl->assign('mode_generate', $centreon->user->access->page($generatePageId));
-
 
 /*
  * start header menu
@@ -213,17 +219,6 @@ $tpl->assign("notice", _("Only services and hosts are taken in account in order 
 $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 /*
-$tpl->assign(
-    'applyConfiguration',
-    array(
-        "link" => "?p=60902",
-        "label" => _("Apply configuration"),
-        "js" => "console.log('toto');"
-    )
-);
-*/
-
-/*
  * Toolbar select
  */
 ?>
@@ -235,10 +230,10 @@ function setO(_i) {
 <?php
 $attrs = array(
 	'onchange'=>"javascript: " .
-                            " var bChecked = isChecked(); ".
-                            " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-                            " alert('"._("Please select one or more items")."'); return false;} " .
-                            " if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+            " var bChecked = isChecked(); ".
+            " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
+            " alert('"._("Please select one or more items")."'); return false;} " .
+            " if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 			" 	setO(this.form.elements['o1'].value); submit();} " .
 			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 			" 	setO(this.form.elements['o1'].value); submit();} " .
@@ -255,9 +250,9 @@ $form->addElement('button', 'apply_configuration', _("Apply configuration"), arr
 
 $attrs = array(
 	'onchange'=>"javascript: " .
-                            " var bChecked = isChecked(); ".
-                            " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-                            " alert('"._("Please select one or more items")."'); return false;} " .
+            " var bChecked = isChecked(); ".
+            " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
+            " alert('"._("Please select one or more items")."'); return false;} " .
 			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 			" 	setO(this.form.elements['o2'].value); submit();} " .
 			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
@@ -273,6 +268,8 @@ $o2->setValue(NULL);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchP', $search);
+$tpl->assign("can_generate", $can_generate);
+$tpl->assign("is_admin", $is_admin);
 
 /*
  * Apply a template definition

@@ -137,13 +137,15 @@ class Centreon {
 
 		/*
 		 * Cache
+		 * Not Used
 		 */
-		$this->cache = new CentreonCache($pearDB);
+		//$this->cache = new CentreonCache($pearDB);
 
 		/*
 		 * Engine
+		 * Not Used 
 		 */
-		$this->broker = new CentreonBroker($pearDB);
+		//$this->broker = new CentreonBroker($pearDB);
 	}
 
 	/**
