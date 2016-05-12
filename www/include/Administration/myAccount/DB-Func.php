@@ -34,16 +34,16 @@
  */
 
 function testExistence ($name = NULL)	{
-	global $pearDB, $form, $oreon;
+	global $pearDB, $form, $centreon;
 	
 	$DBRESULT = $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 	$contact = $DBRESULT->fetchRow();
 	/*
 	 * Modif case
 	 */
-	if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id()) {
+	if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
 		return true;
-	} else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id()) {
+	} else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
 		/*
 		 * Duplicate entry
 		 */
@@ -54,7 +54,7 @@ function testExistence ($name = NULL)	{
 }	
 
 function testAliasExistence ($alias = NULL)	{
-	global $pearDB, $form, $oreon;
+	global $pearDB, $form, $centreon;
 	
 	$DBRESULT = $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES, "UTF-8")."'");
 	$contact = $DBRESULT->fetchRow();
@@ -62,9 +62,9 @@ function testAliasExistence ($alias = NULL)	{
 	/*
 	 * Modif case
 	 */
-	if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id()) {
+	if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
 		return true;
-	} else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id()) {
+	} else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
 		/*
 		 * Duplicate entry
 		 */
@@ -100,7 +100,7 @@ function updateContactInDB ($contact_id = NULL)	{
 }
 
 function updateContact($contact_id = null)	{
-	global $form, $pearDB, $oreon, $encryptType;
+	global $form, $pearDB, $centreon, $encryptType;
 	
 	if (!$contact_id) {
 		return;
@@ -144,9 +144,9 @@ function updateContact($contact_id = null)	{
 	/*
 	 * Update user object..
 	 */
-	$oreon->user->name = $ret["contact_name"];
-	$oreon->user->alias = $ret["contact_alias"];
-	$oreon->user->lang = $ret["contact_lang"];
-	$oreon->user->email = $ret["contact_email"];
-    $oreon->user->setToken(isset($ret["contact_autologin_key"]) ? $ret['contact_autologin_key'] : "''");
+	$centreon->user->name = $ret["contact_name"];
+	$centreon->user->alias = $ret["contact_alias"];
+	$centreon->user->lang = $ret["contact_lang"];
+	$centreon->user->email = $ret["contact_email"];
+    $centreon->user->setToken(isset($ret["contact_autologin_key"]) ? $ret['contact_autologin_key'] : "''");
 }
