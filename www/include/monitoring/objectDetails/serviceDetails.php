@@ -290,7 +290,7 @@ if (!is_null($host_id)) {
             $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"]);
         }
 
-        if ($oreon->broker->getBroker() == "broker") {
+        if ($centreon->broker->getBroker() == "broker") {
             $hskey = $host_name."_".$svc_description;
             $service_status[$hskey]["long_plugin_output"] = "";
             $service_status[$hskey]["plugin_output2"] = str_replace("\n", '\n', $service_status[$hskey]["plugin_output2"]);

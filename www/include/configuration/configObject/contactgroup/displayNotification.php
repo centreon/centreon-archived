@@ -45,7 +45,7 @@
 	/*
 	 * Connect to Database
 	 */
-	$broker = $oreon->broker->getBroker();
+	$broker = $centreon->broker->getBroker();
 	if ($broker == "broker") {
 	    $pearDBNdo = new CentreonDB("centstorage");
 	} elseif ($broker == "ndo") {

@@ -164,7 +164,7 @@ $form->addElement('text', 'sg_alias', _("Description"), $attrsText);
 $hostFilter = array(null => null,
         0    => sprintf('__%s__', _('ALL')));
 $hostFilter = ($hostFilter + $acl->getHostAclConf(null,
-                                                 $oreon->broker->getBroker(),
+                                                 $centreon->broker->getBroker(),
                                                  array('fields'  => array('host.host_id', 'host.host_name'),
                                                        'keys'    => array('host_id'),
                                                        'get_row' => 'host_name',

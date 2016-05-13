@@ -66,7 +66,7 @@ $trapObj = new CentreonTraps($pearDB, $oreon);
 $acl = $oreon->user->access;
 $aclDbName = $acl->getNameDBAcl();
 $dbmon = new CentreonDB('centstorage');
-$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
+$sgs = $acl->getServiceGroupAclConf(null, $centreon->broker->getBroker());
 $severityObj = new CentreonCriticality($pearDB);
 
 /* Set the real page */

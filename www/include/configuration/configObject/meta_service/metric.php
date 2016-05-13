@@ -65,7 +65,7 @@
 	 * Host comes from DB -> Store in $hosts Array
 	 */
     $hosts = array(null => null) + $acl->getHostAclConf(null,
-                                                        $oreon->broker->getBroker(),
+                                                        $centreon->broker->getBroker(),
                                                         array('fields'  => array('host.host_id', 'host.host_name'),
                                                               'keys'    => array('host_id'),
                                                               'get_row' => 'host_name',
@@ -76,7 +76,7 @@
 	$services2 = array(NULL => NULL);
 	if ($host_id)	{
         $services = array(null => null) + $acl->getHostServiceAclConf($host_id,
-                                                                      $oreon->broker->getBroker(),
+                                                                      $centreon->broker->getBroker(),
                                                                       array('fields'  => array('service_id', 'service_description'),
                                                                             'keys'    => array('service_id'),
                                                                             'get_row' => 'service_description',

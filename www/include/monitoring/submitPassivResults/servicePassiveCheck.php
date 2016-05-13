@@ -50,7 +50,7 @@
 
 	$hObj = new CentreonHost($pearDB);
 	$path = "./include/monitoring/submitPassivResults/";
-	$broker = $oreon->broker->getBroker();
+	$broker = $centreon->broker->getBroker();
 	if ($broker == "ndo") {
 	    $pearDBndo = new CentreonDB("ndo");
 	} elseif ($broker == "broker") {

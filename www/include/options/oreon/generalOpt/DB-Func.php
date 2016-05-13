@@ -133,8 +133,8 @@ function updateNagiosConfigData($gopt_id = null) {
     }
 
     updateOption($pearDB, "broker", $brokerOpt);
-    if ($oreon->broker->getBroker() != $brokerOpt) {
-        $oreon->broker = new CentreonBroker($pearDB);
+    if ($centreon->broker->getBroker() != $brokerOpt) {
+        $centreon->broker = new CentreonBroker($pearDB);
         $pearDB->query("UPDATE acl_resources SET changed = 1");
     }
 

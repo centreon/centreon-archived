@@ -238,12 +238,12 @@ $lang['temporary recovery mode'] = _('Temporary recovery mode');
 
 $tpl->assign('lang', $lang);
 $tpl->assign('poller_name', $pollerName);
-$tpl->assign('broker', $oreon->broker->getBroker());
+$tpl->assign('broker', $centreon->broker->getBroker());
 
 /*
  * If broker is Centreon Broker
  */
-if ($oreon->broker->getBroker() == 'broker') {
+if ($centreon->broker->getBroker() == 'broker') {
     /*
      * Get the stats file name
      */

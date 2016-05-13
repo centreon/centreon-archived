@@ -87,8 +87,8 @@ if ($ret2 && $ret2['topology_page'] != "" && $p != $ret2['topology_page']) {
 
 $acl = $oreon->user->access;
 $dbmon = new CentreonDB('centstorage');
-$aclDbName = $acl->getNameDBAcl($oreon->broker->getBroker());
-$hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
+$aclDbName = $acl->getNameDBAcl($centreon->broker->getBroker());
+$hgs = $acl->getHostGroupAclConf(null, $centreon->broker->getBroker());
 $aclHostString = $acl->getHostsString('ID', $dbmon);
 $aclPollerString = $acl->getPollerString();
 
