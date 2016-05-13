@@ -197,17 +197,14 @@ if ($pollerList != "") {
 		 */
 		if ($status != 2 && ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 5))) {
 			$status = 1;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
-			}
 			$pollerInError = $ndo["name"];
 		}
 		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 10)) {
 			$status = 2;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
-			}
 			$pollerInError = $ndo["name"];
+		}
+		if ($pollerListInError != "") {
+			$pollerListInError .= ", ";
 		}
 		$pollerListInError .= $pollerInError;
 		
