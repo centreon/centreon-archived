@@ -190,6 +190,7 @@ if ($pollerList != "") {
 	$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	$inactivInstance = "";
+	$pollerInError = "";
 	while ($ndo = $DBRESULT->fetchRow()) {
 		/*
 		 * Running
@@ -199,15 +200,17 @@ if ($pollerList != "") {
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
 			}
-			$pollerListInError .= $ndo["name"];
+			$pollerInError = $ndo["name"];
 		}
 		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 10)) {
 			$status = 2;
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
 			}
-			$pollerListInError .= $ndo["name"];
+			$pollerInError = $ndo["name"];
 		}
+		$pollerListInError .= $pollerInError;
+		
 		/*
 		 * Activity
 		 */
