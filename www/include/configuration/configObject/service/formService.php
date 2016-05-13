@@ -98,19 +98,19 @@ if ($oreon->user->admin) {
 }
 
 /* hosts */
-$hosts = $acl->getHostAclConf(null, $centreon->broker->getBroker(), array('fields' => array('host.host_id', 'host.host_name'),
+$hosts = $acl->getHostAclConf(null, 'broker', array('fields' => array('host.host_id', 'host.host_name'),
     'keys' => array('host_id'),
     'get_row' => 'host_name',
     'order' => array('host_name')));
 
 /* hostgroups */
-$hgs = $acl->getHostGroupAclConf(null, $centreon->broker->getBroker(), array('fields' => array('hg_id', 'hg_name'),
+$hgs = $acl->getHostGroupAclConf(null, 'broker', array('fields' => array('hg_id', 'hg_name'),
     'keys' => array('hg_id'),
     'get_row' => 'hg_name',
     'order' => array('hg_name')));
 
 /* service groups */
-$sgs = $acl->getServiceGroupAclConf(null, $centreon->broker->getBroker(), array('fields' => array('sg_id', 'sg_name'),
+$sgs = $acl->getServiceGroupAclConf(null, 'broker', array('fields' => array('sg_id', 'sg_name'),
     'keys' => array('sg_id'),
     'get_row' => 'sg_name',
     'order' => array('sg_name')));
