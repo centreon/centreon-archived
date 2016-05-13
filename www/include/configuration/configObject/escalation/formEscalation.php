@@ -47,7 +47,7 @@ $brk = new CentreonBroker($pearDB);
 /* hosts */
 $hosts = $acl->getHostAclConf(
     null,
-    $centreon->broker->getBroker(),
+    'broker',
     array(
         'fields'  => array('host.host_id', 'host.host_name'),
         'keys'    => array('host_id'),

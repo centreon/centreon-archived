@@ -47,7 +47,6 @@ if (!$centreon->user->admin) {
     }
 }
 
-
 /*
  * Database retrieve information for differents elements list we need on the page
  *
@@ -164,7 +163,7 @@ $form->addElement('text', 'sg_alias', _("Description"), $attrsText);
 $hostFilter = array(null => null,
         0    => sprintf('__%s__', _('ALL')));
 $hostFilter = ($hostFilter + $acl->getHostAclConf(null,
-                                                 $centreon->broker->getBroker(),
+                                                 'broker',
                                                  array('fields'  => array('host.host_id', 'host.host_name'),
                                                        'keys'    => array('host_id'),
                                                        'get_row' => 'host_name',
