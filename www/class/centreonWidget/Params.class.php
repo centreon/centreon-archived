@@ -34,7 +34,6 @@
  */
 
 require_once "class/centreonWidget/Params/Interface.class.php";
-require_once "class/centreonBroker.class.php";
 
 class CentreonWidgetParamsException extends Exception {}
 
@@ -73,12 +72,7 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
             $this->userGroups[$row['contactgroup_cg_id']] = $row['contactgroup_cg_id'];
         }
         $this->acl = new CentreonACL($userId);
-        $brk = new CentreonBroker($db);
-        if ($brk->getBroker() == 'broker') {
-            $this->monitoringDb = new CentreonDB('centstorage');
-        } else {
-            $this->monitoringDb = new CentreonDB('ndo');
-        }
+        $this->monitoringDb = new CentreonDB('centstorage');
     }
 
     /**

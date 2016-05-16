@@ -126,13 +126,7 @@ function updateNagiosConfigData($gopt_id = null) {
     updateOption($pearDB, "broker_correlator_script", isset($ret["broker_correlator_script"]) && $ret["broker_correlator_script"] != NULL ? $pearDB->escape($ret["broker_correlator_script"]) : "NULL");
     updateOption($pearDB, "broker_socket_path", isset($ret["broker_socket_path"]) && $ret["broker_socket_path"] != NULL ? $pearDB->escape($ret["broker_socket_path"]) : "NULL");
     updateOption($pearDB, "interval_length", isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $pearDB->escape($ret["interval_length"]) : "NULL");
-    $brokerOpt = "ndo";
-
-    if (isset($ret['broker']) && $ret['broker']) {
-        $brokerOpt = $pearDB->escape($ret['broker']);
-    }
-
-    updateOption($pearDB, "broker", $brokerOpt);
+    updateOption($pearDB, "broker", $pearDB->escape($ret['broker']));
     if ($centreon->broker->getBroker() != $brokerOpt) {
         $centreon->broker = new CentreonBroker($pearDB);
         $pearDB->query("UPDATE acl_resources SET changed = 1");
