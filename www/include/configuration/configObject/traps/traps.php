@@ -66,12 +66,13 @@ $trapObj = new CentreonTraps($pearDB, $oreon);
 $acl = $oreon->user->access;
 $aclDbName = $acl->getNameDBAcl();
 $dbmon = new CentreonDB('centstorage');
-$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
+$sgs = $acl->getServiceGroupAclConf(null, 'broker');
 $severityObj = new CentreonCriticality($pearDB);
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 	$p = $ret['topology_page'];
+}
 
 switch ($o)	{
 	case "a" : require_once($path."formTraps.php"); break; #Add a Trap

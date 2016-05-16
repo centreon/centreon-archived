@@ -62,9 +62,6 @@ require_once "./include/common/common-Func.php";
  * Create DB connexion
  */
 $pearDBO = new CentreonDB("centstorage");
-if ($oreon->broker->getBroker() == "ndo") {
-	$pearDBndo 	= new CentreonDB("ndo");
-}
 
 $debug = 0;
 
@@ -224,9 +221,9 @@ $reportingTimePeriod = getreportingTimePeriod();
 /*
  * LCA
  */
-$lcaHoststr = $oreon->user->access->getHostsString("ID", $pearDBO);
-$lcaHostGroupstr = $oreon->user->access->getHostGroupsString();
-$lcaSvcstr 	= $oreon->user->access->getServicesString("ID", $pearDBO);
+$lcaHoststr = $centreon->user->access->getHostsString("ID", $pearDBO);
+$lcaHostGroupstr = $centreon->user->access->getHostGroupsString();
+$lcaSvcstr 	= $centreon->user->access->getServicesString("ID", $pearDBO);
 
 /*
  * setting variables for link with services

@@ -72,11 +72,11 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 	$p = $ret['topology_page'];
 
     $acl = $centreon->user->access;
-    $dbmon = $acl->getNameDBAcl($oreon->broker->getBroker());
+    $dbmon = $acl->getNameDBAcl('broker');
     
-    $hgs = $acl->getHostGroupAclConf(null, $centreon->broker->getBroker());
+    $hgs = $acl->getHostGroupAclConf(null, 'broker');
     $hgString = CentreonUtils::toStringWithQuotes($hgs);            
-    $sgs = $acl->getServiceGroupAclConf(null, $centreon->broker->getBroker());
+    $sgs = $acl->getServiceGroupAclConf(null, 'broker');
     $sgString = CentreonUtils::toStringWithQuotes($sgs);
     
 switch ($o)	{

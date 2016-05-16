@@ -200,7 +200,7 @@ $action_list[] = _("More actions...");
  * Showing actions allowed for current user
  */
 if (isset($authorized_actions) && $allActions == false) {
-    if (isset($authorized_actions) && $allActions == false) {
+    if (isset($authorized_actions) && $allActions == false)
         $action_list[94] = _("Hosts : Schedule immediate check");
     if (isset($authorized_actions["host_schedule_forced_check"]))
         $action_list[95] = _("Hosts : Schedule immediate check (Forced)");

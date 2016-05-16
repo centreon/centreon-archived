@@ -26,6 +26,37 @@ LOCK TABLES `centreon_acl` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `RRDdatabase_path` varchar(255) DEFAULT NULL,
+  `RRDdatabase_status_path` varchar(255) DEFAULT NULL,
+  `RRDdatabase_nagios_stats_path` varchar(255) DEFAULT NULL,
+  `len_storage_rrd` int(11) DEFAULT NULL,
+  `len_storage_mysql` int(11) DEFAULT NULL,
+  `autodelete_rrd_db` enum('0','1') DEFAULT NULL,
+  `sleep_time` int(11) DEFAULT '10',
+  `purge_interval` int(11) DEFAULT '2',
+  `storage_type` int(11) DEFAULT '2',
+  `average` int(11) DEFAULT NULL,
+  `archive_log` enum('0','1') NOT NULL DEFAULT '0',
+  `archive_retention` int(11) DEFAULT '31',
+  `reporting_retention` int(11) DEFAULT '365',
+  `nagios_log_file` varchar(255) DEFAULT NULL,
+  `last_line_read` int(11) DEFAULT '31',
+  `audit_log_option` enum('0','1') NOT NULL DEFAULT '1',
+  `len_storage_downtimes` int(11) DEFAULT NULL,
+  `len_storage_comments` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+LOCK TABLES `config` WRITE;
+/*!40000 ALTER TABLE `config` DISABLE KEYS */;
+INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1', '0', '0');
+/*!40000 ALTER TABLE `config` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_bin` (
   `id_metric` int(11) DEFAULT NULL,
   `ctime` int(11) DEFAULT NULL,

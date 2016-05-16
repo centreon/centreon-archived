@@ -76,7 +76,7 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 $acl = $centreon->user->access;
 $dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl();
-$hgs = $acl->getHostGroupAclConf(null, $centreon->broker->getBroker());
+$hgs = $acl->getHostGroupAclConf(null, 'broker');
 
 function mywrap ($el) {
     return "'".$el."'";

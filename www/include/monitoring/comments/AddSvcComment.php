@@ -46,10 +46,10 @@ include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$hostStr = $oreon->user->access->getHostsString("ID", $pearDBO);
+$hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 
 
-if ($oreon->user->access->checkAction("service_comment")) {
+if ($centreon->user->access->checkAction("service_comment")) {
 	$LCA_error = 0;
 
 	isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
@@ -67,8 +67,9 @@ if ($oreon->user->access->checkAction("service_comment")) {
 	}
 
 	$data = array();
-	if (isset($host_id) && isset($service_id))
+	if (isset($host_id) && isset($service_id)) {
 		$data = array("host_id" => $host_id, "service_id" => $service_id);
+	}
 
 	/*
 	 * Database retrieve information for differents
@@ -85,7 +86,7 @@ if ($oreon->user->access->checkAction("service_comment")) {
 
 	$services = array();
 	if (isset($host_id)) {
-		$services = $centreon->user->access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), $host_id);
+		$services = $centreon->user->access->getHostServices($pearDBO, $host_id);
 	}
 
 	$debug = 0;
@@ -99,10 +100,9 @@ if ($oreon->user->access->checkAction("service_comment")) {
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Add a comment for Service"));
 
-	#
-	## Indicator basic information
-	#
-
+	/*
+	 * Indicator basic information
+	 */ 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
@@ -154,4 +154,3 @@ if ($oreon->user->access->checkAction("service_comment")) {
 		$tpl->display("AddSvcComment.ihtml");
     }
 }
-?>

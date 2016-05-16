@@ -45,9 +45,9 @@ include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
  */
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-$hostStr = $oreon->user->access->getHostsString("ID", $pearDBO);
+$hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 
-if ($oreon->user->access->checkAction("host_schedule_downtime")) {
+if ($centreon->user->access->checkAction("host_schedule_downtime")) {
 	/*
 	 * Init
 	 */
@@ -75,7 +75,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		$query = "SELECT host_id, host_name " .
 				"FROM `host` " .
 				"WHERE host_register = '1' " .
-				$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
+				$centreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
 				"ORDER BY host_name";
 		$DBRESULT = $pearDB->query($query);
 		while ($host = $DBRESULT->fetchRow()){
@@ -86,9 +86,8 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		/*
 		 * Get the list of hostgroup
 		 */
-		$acldb = $oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO;
 		$hg = array();
-        if ($oreon->user->access->admin) {
+        if ($centreon->user->access->admin) {
             $query = "SELECT hg_id, hg_name
                       FROM hostgroup
                       WHERE hg_activate = '1' 
@@ -97,11 +96,11 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
             $query = "SELECT DISTINCT hg.hg_id, hg.hg_name " .
                      "FROM hostgroup hg, acl_resources_hg_relations arhr " .
                      "WHERE hg.hg_id = arhr.hg_hg_id " .
-                     "AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
+                     "AND arhr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().") " .
                      "AND hg.hg_activate = '1' ".
                      "AND hg.hg_id in (SELECT hostgroup_hg_id
 	                   FROM hostgroup_relation
-                       WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) " .
+                       WHERE host_host_id IN (".$centreon->user->access->getHostsString("ID", "broker").")) " .
 	                 "ORDER BY hg.hg_name";
         }
 		$res = $pearDB->query($query);
@@ -142,12 +141,10 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
         $form->setDefaults(array('host_or_centreon_time' => '0'));   
         */
         
-        
-        
 	    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
 	    $selHg = $form->addElement('select', 'hostgroup_id', _("Hostgroup"), $hg);
 	    $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
-	    if (isset($oreon->optGen['monitoring_dwt_fixed']) && $oreon->optGen['monitoring_dwt_fixed']) {
+	    if (isset($centreon->optGen['monitoring_dwt_fixed']) && $centreon->optGen['monitoring_dwt_fixed']) {
 	        $chbx->setChecked(true);
 	    }
 		$form->addElement('text', 'start', _("Start Time"), array('size' => 10, 'class' => 'datepicker'));
@@ -159,8 +156,8 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
         $defaultDuration = 3600;
         
-        if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
-            $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
+        if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {
+            $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
         }
         $form->setDefaults(array('duration' => $defaultDuration));
         
@@ -171,8 +168,8 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
                     );
         $form->addElement('select', 'duration_scale', _("Scale of time"), $scaleChoices);
         $defaultScale = 's';
-        if (isset($oreon->optGen['monitoring_dwt_duration_scale']) && $oreon->optGen['monitoring_dwt_duration_scale']) {
-            $defaultScale = $oreon->optGen['monitoring_dwt_duration_scale'];
+        if (isset($centreon->optGen['monitoring_dwt_duration_scale']) && $centreon->optGen['monitoring_dwt_duration_scale']) {
+            $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
         }
         $form->setDefaults(array('duration_scale' => $defaultScale));
 
@@ -257,7 +254,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		        $hostlist = $hg->getHostGroupHosts($_POST['hostgroup_id']);
 		        $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
 		        foreach ($hostlist as $host_id) {
-		            if ($oreon->user->access->admin || in_array($host_id, $host_acl_id)) {
+		            if ($centreon->user->access->admin || in_array($host_id, $host_acl_id)) {
 						$ecObj->AddHostDowntime(
 							$host_id, 
 							$_POST["comment"], 

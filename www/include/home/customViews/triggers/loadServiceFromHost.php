@@ -51,15 +51,12 @@ $centreon = $_SESSION['centreon'];
 $data = $_POST['data'];
 $db = new CentreonDB();
 $pearDB = $db;
+
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
-    exit;
+    exit();
 }
 $brk = new CentreonBroker($db);
-if ($brk->getBroker() == 'broker') {
-    $monitoringDb = new CentreonDB('centstorage');
-} else {
-    $monitoringDb = new CentreonDB('ndo');
-}
+$monitoringDb = new CentreonDB('centstorage');
 
 $xml = new CentreonXML();
 
@@ -98,9 +95,10 @@ try {
     $xml->writeElement('error', $e->getMessage());
 }
 $xml->endElement();
+
 header('Content-Type: text/xml');
 header('Pragma: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
+
 $xml->output();
-?>
