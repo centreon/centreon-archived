@@ -71,6 +71,12 @@ require_once SMARTY_DIR."Smarty.class.php";
 global $pearDB;
 $pearDB = new CentreonDB();
 
+$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+while ($generalOption = $DBRESULT->fetchRow()) {
+    $generalOptions[$generalOption["key"]] = $generalOption["value"];
+}
+$DBRESULT->free();
+
 /*
  * detect installation dir
  */
