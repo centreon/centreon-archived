@@ -589,7 +589,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
-    margin-bottom: 36px;
+    /*margin-bottom: 36px;*/
 }
 
 .GlobalContainer tr {
