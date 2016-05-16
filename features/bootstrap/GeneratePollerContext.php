@@ -86,17 +86,22 @@ class GeneratePollerContext extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) != 0;
+                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 2;
             },
             30
         );
 
         $chosenResults = $this->getSession()->getPage()->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
+        $found = FALSE;
         foreach ($chosenResults as $result) {
             if ($result->getText() == "Central_1") {
                 $result->click();
+                $found = TRUE;
                 break;
             }
+        }
+        if (!$found) {
+            throw new \Exception('Could not find Central_1 in select2 list.');
         }
     }
 
