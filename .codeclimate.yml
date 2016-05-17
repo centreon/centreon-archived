@@ -4,9 +4,10 @@ engines:
     config:
       file_extensions: "php,inc,lib"
       standard: "PSR2"
-      exclude_paths:
-      - GPL_LIB/
-      - features/
 ratings:
   paths:
   - "**.php"
+
+exclude_paths:
+- GPL_LIB/**/*
+- features/**/*
