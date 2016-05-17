@@ -39,6 +39,6 @@ default:
         - RestartCentreonEngineContext
 
     expire_ack:
-      paths [ %paths.base%/features/ExpireAck.feature ]
+      paths: [ %paths.base%/features/ExpireAck.feature ]
       contexts:
         - ExpireAckContext

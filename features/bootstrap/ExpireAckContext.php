@@ -11,18 +11,29 @@ use Centreon\Test\Behat\ConfigurationPollersPage;
  */
 class ExpireAckContext extends CentreonContext
 {
-
+    private $hostName;
+    private $serviceName;
+    
     public function __construct()
     {
         parent::__construct();
+        $this->hostName = 'ExpireAckTestHost';
+        $this->serviceName = 'ExpireAckTestService';
     }
 
     /**
-     * @Given A service configured with expirations
+     * @Given a service with a host configured with expirations
      */
     public function aServiceConfiguredWithExpirations()
     {
-        $this->visit('/main.php?p=60902&poller=1');
+        $hostPage = $this->getHostServiceConfigurationPage();
+        $hostPage->toHostCreationPage($this->hostName);
+        // TODO: configure expiration
+        $hostPage->saveHost();
+        $servicePage = $this->getServiceConfigurationPage();
+        $servicePage->toServiceCreationPage($this->hostName, $this->serviceName);
+        // Enable passive checks
+        $servicePage->saveService();
     }
 
     /**

@@ -8,14 +8,7 @@ Feature: Expire Ack
         And I am logged in
 
     Scenario: Check Service Acknowledgement Expiration
-        Given a service configured with expirations
-        And in a critical state
-        And acknowledged
-        When I wait the time limit set for expirations
-        Then the acknowledgement disappears
-
-    Scenario: Check Host Acknowledgement Expiration
-        Given a host configured with expirations
+        Given a service with a host configured with expirations
         And in a critical state
         And acknowledged
         When I wait the time limit set for expirations
