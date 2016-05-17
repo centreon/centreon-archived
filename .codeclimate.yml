@@ -3,7 +3,7 @@ engines:
     enabled: true
     config:
       file_extensions: "php,inc,lib"
-      standard: "PSR1,PSR2"
+      standard: "PSR2"
       exclude_paths:
       - GPL_LIB/
       - features/
