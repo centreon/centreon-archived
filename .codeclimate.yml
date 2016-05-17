@@ -1,12 +1,22 @@
 engines:
+  csslint:
+    enabled: true
+    ratings:
+      paths:
+      - "**.css" 
+  eslint:
+    enabled: true
+    ratings:
+      paths:
+      - "**.js"
   phpcodesniffer:
     enabled: true
     config:
       file_extensions: "php,inc,lib"
       standard: "PSR2"
-ratings:
-  paths:
-  - "**.php"
+    ratings:
+      paths:
+      - "**.php"
 
 exclude_paths:
 - GPL_LIB/**/*
