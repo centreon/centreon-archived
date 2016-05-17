@@ -11,3 +11,10 @@ ratings:
 exclude_paths:
 - GPL_LIB/**/*
 - features/**/*
+- doc/**/*
+- tmpl/**/*
+- log/**/*
+- config/**/*
+- logrotate/**/*
+- snmptrapd/**/*
+- varinstall/**/*
