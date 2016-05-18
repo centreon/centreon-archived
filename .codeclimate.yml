@@ -1,25 +1,9 @@
 engines:
-  csslint:
-    enabled: true
-
-  ratings:
-    paths:
-      - "**.css"
-engines: 
-  eslint:
-    enabled: true
-
-ratings:
-   paths:
-   - "**.js"
-
-engines:
   phpcodesniffer:
     enabled: true
     config:
-      file_extensions: "php"
+      file_extensions: "php,inc,lib"
       standard: "PSR2"
-
 ratings:
   paths:
   - "**.php"
