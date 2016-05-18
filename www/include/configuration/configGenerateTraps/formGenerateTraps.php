@@ -42,7 +42,7 @@ if (!isset($centreon)) {
  */
 if (defined('_CENTREON_VARLIB_')) {
     $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
-} else  {
+} else {
     $centcore_pipe = "/var/lib/centreon/centcore.cmd";
 }
 
@@ -84,11 +84,11 @@ $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 /*
  * Init Header for tables in template
  */
-$form->addElement('header', 'title',    _("SNMP Trap Generation"));
-$form->addElement('header', 'opt',      _("Export Options"));
-$form->addElement('header', 'result',   _("Actions"));
-$form->addElement('header', 'infos',    _("Implied Server"));
-$form->addElement('select', 'host',     _("Poller"), $tab_nagios_server, $attrSelect);
+$form->addElement('header', 'title', _("SNMP Trap Generation"));
+$form->addElement('header', 'opt', _("Export Options"));
+$form->addElement('header', 'result', _("Actions"));
+$form->addElement('header', 'infos', _("Implied Server"));
+$form->addElement('select', 'host', _("Poller"), $tab_nagios_server, $attrSelect);
     
 /*
  * Add checkbox for enable restart
@@ -96,12 +96,11 @@ $form->addElement('select', 'host',     _("Poller"), $tab_nagios_server, $attrSe
 $form->addElement('checkbox', 'generate', _("Generate trap database "));
 $form->addElement('checkbox', 'apply', _("Apply configurations"));
 
-$form->addElement('select', 'signal', _('Send signal'), array(
-        null=>null,
-        'RELOADCENTREONTRAPD' => _('Reload'),
-        'RESTARTCENTREONTRAPD' => _('Restart')
-    )
-);
+$options = array(null => null,
+                'RELOADCENTREONTRAPD' => _('Reload'),
+                'RESTARTCENTREONTRAPD' => _('Restart')
+                );
+$form->addElement('select', 'signal', _('Send signal'), $options);
     
 /*
  * Set checkbox checked.
@@ -118,12 +117,12 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $sub = $form->addElement('submit', 'submit', _("Generate"), array("class" => "btc bt_success"));
-$msg = NULL;
-$stdout = NULL;
+$msg = null;
+$stdout = null;
 $msg_generate = "";
 $trapdPath = "/etc/snmp/centreon_traps/";
 
-if ($form->validate())  {
+if ($form->validate()) {
     $ret = $form->getSubmitValues();
     $host_list = array();
     foreach ($tab_nagios_server as $key => $value) {
@@ -137,7 +136,7 @@ if ($form->validate())  {
          */
         $tab_server = array();
         $DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `snmp_trapd_path_conf`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
-        while ($tab = $DBRESULT_Servers->fetchRow()){
+        while ($tab = $DBRESULT_Servers->fetchRow()) {
             if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
                 $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
             }
@@ -161,7 +160,7 @@ if ($form->validate())  {
                     break;
                 }
             }
-            $msg_generate .= str_replace ("\n", "<br/>", $stdout)."<br/>";
+            $msg_generate .= str_replace("\n", "<br/>", $stdout)."<br/>";
         }
         if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"] && $returnVal == 0) {
             $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Centcore commands'));
