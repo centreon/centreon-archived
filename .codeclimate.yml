@@ -14,7 +14,8 @@ engines:
       checks:
         PSR2 Classes ClassDeclaration MissingNamespace:
           enabled: false
-
+	Squiz Classes ValidClassName NotCamelCaps:
+          enabled: false
 ratings:
   paths:
   - "**.php"
