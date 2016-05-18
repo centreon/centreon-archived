@@ -11,6 +11,9 @@ engines:
       file_extensions: "php,inc,lib"
       ignore_warnings: true
       standard: "PSR2"
+      checks:
+        PSR1 Classes ClassDeclaration MissingNamespace:
+          enabled: false
 
 ratings:
   paths:
