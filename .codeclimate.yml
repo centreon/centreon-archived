@@ -1,20 +1,27 @@
 engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+      - php
   phpcodesniffer:
     enabled: true
     config:
       file_extensions: "php,inc,lib"
+      ignore_warnings: true
       standard: "PSR2"
-      exclude_paths:
-      - GPL_LIB/**/*
-      - features/**/*
-      - doc/**/*
-      - tmpl/**/*
-      - log/**/*
-      - config/**/*
-      - logrotate/**/*
-      - snmptrapd/**/*
-      - varinstall/**/*
+
 ratings:
   paths:
   - "**.php"
-
+exclude_paths:
+- GPL_LIB/**/*
+- features/**/*
+- doc/**/*
+- tmpl/**/*
+- log/**/*
+- config/**/*
+- logrotate/**/*
+- snmptrapd/**/*
+- varinstall/**/*
