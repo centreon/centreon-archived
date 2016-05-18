@@ -12,7 +12,7 @@ engines:
       ignore_warnings: true
       standard: "PSR2"
       checks:
-        PSR1 Classes ClassDeclaration MissingNamespace:
+        PSR2 Classes ClassDeclaration MissingNamespace:
           enabled: false
 
 ratings:
