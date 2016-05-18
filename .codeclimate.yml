@@ -4,17 +4,17 @@ engines:
     config:
       file_extensions: "php,inc,lib"
       standard: "PSR2"
+      exclude_paths:
+      - GPL_LIB/**/*
+      - features/**/*
+      - doc/**/*
+      - tmpl/**/*
+      - log/**/*
+      - config/**/*
+      - logrotate/**/*
+      - snmptrapd/**/*
+      - varinstall/**/*
 ratings:
   paths:
   - "**.php"
 
-exclude_paths:
-- GPL_LIB/**/*
-- features/**/*
-- doc/**/*
-- tmpl/**/*
-- log/**/*
-- config/**/*
-- logrotate/**/*
-- snmptrapd/**/*
-- varinstall/**/*
