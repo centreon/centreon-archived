@@ -192,5 +192,4 @@ if ($api->login == "" || $api->password == "") {
         $api->setReturnCode(1);
     }
 }
-	$api->close();
-?>
+$api->close();
