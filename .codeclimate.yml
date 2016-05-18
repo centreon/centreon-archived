@@ -28,3 +28,4 @@ exclude_paths:
 - logrotate/**/*
 - snmptrapd/**/*
 - varinstall/**/*
+- lib/Zend/**/*
