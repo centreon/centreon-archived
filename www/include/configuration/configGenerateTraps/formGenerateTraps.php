@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 	if (!isset($oreon))
@@ -51,7 +48,7 @@
 	/*
 	 *  Get Poller List
 	 */
-	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY name ASC");
 	$n = $DBRESULT->numRows();
 
 	/*
