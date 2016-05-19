@@ -29,7 +29,7 @@ In this file, delete lines starting by **HWADDR** and **UUID**.
 
 The reboot the server, using:
 
-    ::
+   ::
 
     reboot
 
@@ -45,7 +45,7 @@ Exchange SSH keys
 
 On your central server:
 
-    ::
+   ::
 
     su - centreon
     ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
