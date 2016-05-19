@@ -30,6 +30,7 @@ In this file, delete lines starting by **HWADDR** and **UUID**.
 The reboot the server, using:
 
     ::
+
     reboot
 
 After reboot is done, your server have now an IP Adress. You can go on the web interface using it. Centreon is operational !
@@ -45,6 +46,7 @@ Exchange SSH keys
 On your central server:
 
     ::
+
     su - centreon
     ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
 
