@@ -8,9 +8,9 @@ engines:
   phpcodesniffer:
     enabled: true
     config:
-      file_extensions: "php,inc,lib"
+      file_extensions: "php"
       ignore_warnings: true
-      standard: "PSR2"
+      standard: "PSR1"
       checks:
         PSR2 Classes ClassDeclaration MissingNamespace:
           enabled: false
@@ -28,3 +28,4 @@ exclude_paths:
 - snmptrapd/**/*
 - varinstall/**/*
 - lib/Zend/**/*
+- www/lib/HTML/**/*
