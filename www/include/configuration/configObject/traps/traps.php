@@ -49,21 +49,20 @@ isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
 isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-#Pear library
+/* Pear library */
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-#Path to the configuration dir
+/* Path to the configuration dir */
 $path = "./include/configuration/configObject/traps/";
 
-#PHP functions
-//require_once $path."DB-Func.php";
+/* PHP functions */
 require_once './class/centreonTraps.class.php';
 require_once "./include/common/common-Func.php";
 
 $trapObj = new CentreonTraps($pearDB, $oreon);
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $aclDbName = $acl->getNameDBAcl();
 $dbmon = new CentreonDB('centstorage');
 $sgs = $acl->getServiceGroupAclConf(null, 'broker');
