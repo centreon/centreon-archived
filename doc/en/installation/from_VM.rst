@@ -59,4 +59,4 @@ On Web interface
 #. In **Configuration > Poller > Engine configuration**, Activate Poller-template
 #. In **Configuration > Poller > Broker configuration**, Activate Poller-template-module and in **Output** tab, replace IP_CENTRAL by the central IP address.
 
-The you can configure and add ressources on your poller. The poller is operational !
+Then you can configure and add ressources on your poller. The poller is operational !
