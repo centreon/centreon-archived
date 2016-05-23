@@ -144,6 +144,6 @@ ALTER TABLE contact ADD COLUMN `default_page` int(11) DEFAULT NULL AFTER `contac
 
 -- Ticket #4401
 ALTER TABLE nagios_server ADD COLUMN `init_system` varchar(255) DEFAULT 'sytemv' AFTER `init_script`;
-UPDATE TABLE `nagios_server` SET `init_system` = 'systemv';
+UPDATE `nagios_server` SET `init_system` = 'systemv';
 
 ALTER TABLE topology DROP COLUMN topology_icone;
