@@ -7,6 +7,8 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\MonitoringServicesPage;
 use Centreon\Test\Behat\MonitoringHostsPage;
+use Centreon\Test\Behat\HostConfigurationPage;
+use Centreon\Test\Behat\ServiceConfigurationPage;
 
 /**
  * Defines application features from the specific context.
@@ -34,12 +36,13 @@ class ExpireAckContext extends CentreonContext
      */
     public function aHostConfiguredWithExpirations()
     {
-        $hostPage = $this->getHostServiceConfigurationPage();
+        $hostPage = new HostConfigurationPage($this);
         $hostPage->toHostCreationPage($this->hostName);
         $hostPage->switchToTab('Data Processing');
-        $this->assertFind('named', array('name', 'host_acknowledgement_timeout'))->setValue(1);
-        $this->checkRadioButton('Yes', 'named', array('name', 'host_passive_checks_enabled[host_passive_checks_enabled]'));
-        $this->checkRadioButton('No', 'named', array('name', 'host_active_checks_enabled[host_active_checks_enabled]'));
+        $this->assertFind('named', array('id_or_name', 'host_acknowledgement_timeout'))->setValue(1);
+        $hostPage->switchToTab('Host Configuration');
+        $this->checkRadioButtonByValue('1', 'named', array('id_or_name', 'host_passive_checks_enabled[host_passive_checks_enabled]'));
+        $this->checkRadioButtonByValue('0', 'named', array('id_or_name', 'host_active_checks_enabled[host_active_checks_enabled]'));
         $hostPage->saveHost();
         $this->configurationPollersPage->restartEngine();
     }
@@ -49,10 +52,10 @@ class ExpireAckContext extends CentreonContext
      */
     public function aServiceAssociatedWithThisHost()
     {
-        $servicePage = $this->getServiceConfigurationPage();
+        $servicePage = new ServiceConfigurationPage($this);
         $servicePage->toServiceCreationPage($this->hostName, $this->serviceName);
-        $this->checkRadioButton('Yes', 'named', array('name', 'service_passive_checks_enabled[service_passive_checks_enabled]'));
-        $this->checkRadioButton('No', 'named', array('name', 'service_active_checks_enabled[service_active_checks_enabled]'));
+        $this->checkRadioButtonByValue('1', 'named', array('id_or_name', 'service_passive_checks_enabled[service_passive_checks_enabled]'));
+        $this->checkRadioButtonByValue('0', 'named', array('id_or_name', 'service_active_checks_enabled[service_active_checks_enabled]'));
         $servicePage->saveService();
         $this->configurationPollersPage->restartEngine();
     }
@@ -70,7 +73,7 @@ class ExpireAckContext extends CentreonContext
      */
     public function serviceInACriticalState()
     {
-        $this->submitServiceResult($this->hostName, $this->service_name, 'CRITICAL');
+        $this->submitServiceResult($this->hostName, $this->serviceName, 'CRITICAL');
     }
 
     /**
