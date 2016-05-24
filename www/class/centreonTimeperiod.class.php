@@ -88,6 +88,26 @@ class CentreonTimeperiod
 
         return $items;
     }
+    
+    /**
+     * 
+     * @param string $name
+     * @return string
+     */
+    public function getTimperiodIdByName($name)
+    {
+        $query = "SELECT tp_id FROM timeperiod 
+                WHERE tp_name = '".$this->_db->escape($name)."'";
+
+        $res = $this->_db->query($query);
+
+        if (!$res->numRows()) {
+            return null;
+        }
+        $row = $res->fetchRow();
+        
+        return $row['tp_id'];
+    }
 }
 
 ?>
