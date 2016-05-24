@@ -368,4 +368,24 @@ class CentreonCommand
         return $arr;
     }
     
+    /**
+     * 
+     * @param string $name
+     * @return string
+     */
+    public function getCommandIdByName($name)
+    {
+        $query = "SELECT command_id FROM command 
+                WHERE command_name = '".$this->_db->escape($name)."'";
+
+        $res = $this->_db->query($query);
+
+        if (!$res->numRows()) {
+            return null;
+        }
+        $row = $res->fetchRow();
+        
+        return $row['command_id'];
+    }
+    
 }
