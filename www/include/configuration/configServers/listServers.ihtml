@@ -75,8 +75,10 @@
                 {$elemArr[elem].RowMenu_is_running}
               </span>
             </td>
-			<td class="ListColCenter" class="{if $elemArr[elem].RowMenu_hasChangedFlag}{else}service_critical{/if}">
-              {$elemArr[elem].RowMenu_hasChanged}
+			<td class="ListColCenter">
+				<span class="badge {if $elemArr[elem].RowMenu_hasChangedFlag == 0}service_ok{else}service_critical{/if}">
+               		{$elemArr[elem].RowMenu_hasChanged}
+              	</span>
             </td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
