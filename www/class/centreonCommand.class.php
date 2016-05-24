@@ -345,5 +345,27 @@ class CentreonCommand
 
         return $arr;
     }
+
+    /**
+     * 
+     * 
+     * @param $name
+     * @return array
+     * @throws Exception
+     */
+    public function getCommandByName($name)
+    {
+        $arr = array();
+        $query = "SELECT * FROM command 
+                WHERE command_name = '".$this->_db->escape($name)."'";
+
+        $res = $this->_db->query($query);
+
+        if ($res->numRows()) {
+            $arr = $res->fetchRow();
+        }
+
+        return $arr;
+    }
     
 }
