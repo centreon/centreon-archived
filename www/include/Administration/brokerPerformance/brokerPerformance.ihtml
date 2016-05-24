@@ -77,17 +77,17 @@
  		<tr class="ListHeader">
 	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$poller_name}</td>
 	 	</tr>
-                {foreach from=$perf_info_array item=perf_info key=conf_name}
+        {foreach from=$perf_info_array item=perf_info key=conf_name}
 	 	<tr>
-                    <td class='list_lvl_1' colspan='2'>
-                        {$conf_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}:&nbsp;{$perf_info.lastmodif}</span>
-                    </td>
-                </tr>
-                <tr>
-                    {if $perf_err.conf_name}
-                    <td style="vertical-align: top; font-weight: bold;" colspan="2">{$perf_err.conf_name}</td>
-                    {else}
-                    <td style="vertical-align: top;">
+	        <td class='list_lvl_1' colspan='2'>
+	            {$conf_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}:&nbsp;{$perf_info.lastmodif}</span>
+	        </td>
+	    </tr>
+	    <tr>
+	        {if $perf_err.conf_name}
+	        <td style="vertical-align: top; font-weight: bold;" colspan="2">{$perf_err.conf_name}</td>
+	        {else}
+	        <td style="vertical-align: top;">
 	 		<div id="modules" class="broker_stats">
 	 		<p class="title">{$lang.modules}</p>
 	 		<ul class="module_list">{foreach from=$perf_info.modules key=m_name item=m_status}
@@ -102,18 +102,18 @@
 	 		<div class="info"><span class="info_name">{$lang.state}</span><span>{$io_infos.state}</span></div>
 	 		{foreach from=$io_infos key=info_key item=info_value}
 	 		{if $info_key != 'state' && $info_key != 'type' && $info_key != 'peers' && $info_key != 'filters'}
-                        <div class="info">
-                                <span class="info_name">
-                                        {if $lang[$info_key]}
-                                                {$lang[$info_key]}
-                                        {else}
-                                                {$info_key}
-                                        {/if}
-                                </span>
-                                <span>
-                                        {$info_value}
-                                </span>
-                        </div>
+            <div class="info">
+                    <span class="info_name">
+                            {if $lang[$info_key]}
+                                    {$lang[$info_key]}
+                            {else}
+                                    {$info_key}
+                            {/if}
+                    </span>
+                    <span>
+                            {$info_value}
+                    </span>
+            </div>
 	 		{/if}
 	 		{/foreach}
 	 		{if count($io_infos.peers)}

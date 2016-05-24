@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
 require_once ("DB.php");
@@ -102,12 +99,6 @@ class CentreonDB
                     break;
                 case "centstorage" :
                     $this->connectToCentstorage($conf_centreon);
-                    $this->connect();
-                    break;
-                case "ndo" :
-                    $this->connectToCentreon($conf_centreon);
-                    $this->connect();
-                    $this->connectToNDO($conf_centreon);
                     $this->connect();
                     break;
                 case "default" :
@@ -478,6 +469,38 @@ class CentreonDB
         }
         */
         return 0;
-   }
+    }
+
+    /*
+     * return database Properties
+     *
+     * <code>
+     * $dataCentreon = getProperties();
+     * </code>
+     *
+     * @return{TAB}array{TAB}dbsize, numberOfRow, freeSize
+     */
+    function getProperties()
+    {
+        $info = array('version' => null, 'dbsize' => 0, 'rows' => 0, 'datafree' => 0, 'indexsize' => 0);
+        /*
+         * Get Version
+         */
+        if ($res = $this->do->query("SELECT VERSION() AS mysql_version")){
+            $row = $res->fetchRow();
+            $version = $row['mysql_version'];
+            $info['version'] = $row['mysql_version'];
+            if ($DBRESULT = $this->db->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")){
+                while ($tabledata_ary = $DBRESULT->fetchRow()) {
+                    $info['dbsize'] += $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
+                    $info['indexsize'] += $tabledata_ary['Index_length'];
+                    $info['rows'] += $tabledata_ary['Rows'];
+                    $info['datafree'] += $tabledata_ary['Data_free'];
+                }
+                $DBRESULT->free();
+            }
+        }
+        return $info;
+    }
 
 }

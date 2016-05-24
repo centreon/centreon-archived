@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -47,7 +44,6 @@ require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 
 session_start();
 
@@ -74,7 +70,7 @@ $pearDB = $db;
 $aclFrom = "";
 $aclCond = "";
 if (!$centreon->user->admin) {
-    $dbmon = $acl->getNameDBAcl($centreon->broker->getBroker());
+    $dbmon = $acl->getNameDBAcl('broker');
     $aclFrom = ", $dbmon.centreon_acl acl ";
     $aclCond = " WHERE res.host_id = acl.host_id 
                  AND acl.service_id = res.service_id 
@@ -143,5 +139,3 @@ header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
 
 $xml->output();
-
-?>

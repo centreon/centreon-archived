@@ -558,10 +558,11 @@ class CentreonAPI {
     }
 
     /**
-     *
      * Main function : Launch action
+     *
+     * @param boolean $exit If exit or return the return code
      */
-    public function launchAction() {
+    public function launchAction($exit = true) {
         $action = strtoupper($this->action);
         
         /**
@@ -608,7 +609,11 @@ class CentreonAPI {
                 $this->return_code = 1;
             }
         }
-        exit($this->return_code);
+        if ($exit) {
+            exit($this->return_code);    
+        } else {
+            return $this->return_code;
+        }
     }
 
     /**

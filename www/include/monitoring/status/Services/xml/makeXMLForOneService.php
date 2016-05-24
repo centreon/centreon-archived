@@ -80,7 +80,7 @@ $centreonlang->bindLang();
 $svc_id 		= $obj->checkArgument("svc_id", $_GET, 0);
 $enable 		= $obj->checkArgument("enable", $_GET, "");
 $disable 		= $obj->checkArgument("disable", $_GET, "disable");
-$dateFormat		= $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+$dateFormat		= $obj->checkArgument("date_time_format_status", $_GET, "m/d/Y H:i:s");
 
 $tab = preg_split('/\_/', $svc_id);
 $host_id = $tab[0];

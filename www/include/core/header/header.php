@@ -88,15 +88,15 @@ $DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time
 
 
 $args = "&redirect='";
-        $a = 0;
-        foreach ($_GET as $key => $value) {
-            if ($a) {
-                $args .= '&';
-            }
-            $args .= "$key=$value";
-             $a++;
-        }
-        $args .= "'";
+$a = 0;
+foreach ($_GET as $key => $value) {
+    if ($a) {
+        $args .= '&';
+    }
+    $args .= "$key=$value";
+     $a++;
+}
+$args .= "'";
 
 /*
  * Get session and Check if session is not expired

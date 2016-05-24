@@ -69,13 +69,14 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 	$p = $ret['topology_page'];
+}
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl();
-$hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
+$hgs = $acl->getHostGroupAclConf(null, 'broker');
 
 function mywrap ($el) {
     return "'".$el."'";

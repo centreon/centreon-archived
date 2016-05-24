@@ -71,6 +71,12 @@ require_once SMARTY_DIR."Smarty.class.php";
 global $pearDB;
 $pearDB = new CentreonDB();
 
+$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+while ($generalOption = $DBRESULT->fetchRow()) {
+    $generalOptions[$generalOption["key"]] = $generalOption["value"];
+}
+$DBRESULT->free();
+
 /*
  * detect installation dir
  */
@@ -104,11 +110,10 @@ if (isset($_GET["disconnect"])) {
 }
 
 /*
- * already connected
+ * Already connected
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = & $_SESSION["centreon"];
-    // Get the selected home page
     header('Location: main.php');
 }
 

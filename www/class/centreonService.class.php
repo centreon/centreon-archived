@@ -219,10 +219,6 @@ class CentreonService
      */
     public function getServicesDescr($sid = array())
     {
-
-        
-        
-        
         $arrayReturn = array();
         
         if (!empty($sid)) {
@@ -1201,9 +1197,6 @@ class CentreonService
         }
         return false;
     }
-    
-    
-    
     
     /**
      * 

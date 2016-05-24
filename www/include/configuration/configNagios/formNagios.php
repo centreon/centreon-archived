@@ -36,7 +36,7 @@
  *
  */
 
-    if (!$oreon->user->admin && isset($nagios_id)
+    if (!$centreon->user->admin && isset($nagios_id)
         && count($allowedMainConf) && !isset($allowedMainConf[$nagios_id])) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");

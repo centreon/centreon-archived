@@ -33,74 +33,78 @@
  *
  */
 
-if (!isset($centreon))
-	exit();
+if (!isset($centreon)) {
+    exit();
+}
 
 /**
  * Database retrieve information for Trap
  */
-    function testTrapExistence() {
-        global $trapObj;
+function testTrapExistence() {
+    global $trapObj;
 
-        return $trapObj->testTrapExistence();
-    }
-
-function myDecodeTrap($arg)	{
-	$arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
-	return($arg);
+    return $trapObj->testTrapExistence();
 }
 
-function myReplace()	{
-	global $form;
-	return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
+function myDecodeTrap($arg) {
+    $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
+    return($arg);
+}
+
+function myReplace() {
+    global $form;
+    return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
 }
 
 $trap = array();
-$mnftr = array(NULL=>NULL);
+$mnftr = array(NULL => NULL);
 $mnftr_id = -1;
-    $initialValues = array();
-    $hServices = array();
+$initialValues = array();
+$hServices = array();
+
 if (($o == "c" || $o == "w") && $traps_id) {
-	$DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
-	# Set base value
-	$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
+    $DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
+    # Set base value
+    $trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
             $trap['severity'] = $trap['severity_id'];
-	$DBRESULT->free();
+    $DBRESULT->free();
             
-            $cdata = CentreonData::getInstance();
-            /*
-             * Preset values of preexec commands
-             */
-            $preexecArray = $trapObj->getPreexecFromTrapId($traps_id);
-            $cdata->addJsData('clone-values-preexec', htmlspecialchars(
-                    json_encode($preexecArray), 
-                    ENT_QUOTES
-                )
-            );
-            $cdata->addJsData('clone-count-preexec', count($preexecArray));
-            
-            /*
-             * Preset values of matching rules
-             */
-            $mrulesArray = $trapObj->getMatchingRulesFromTrapId($traps_id);
-            $cdata->addJsData('clone-values-matchingrules', htmlspecialchars(
-                    json_encode($mrulesArray), 
-                    ENT_QUOTES
-                )
-            );
-            $cdata->addJsData('clone-count-matchingrules', count($mrulesArray));
+    $cdata = CentreonData::getInstance();
+    
+    /*
+     * Preset values of preexec commands
+     */
+    $preexecArray = $trapObj->getPreexecFromTrapId($traps_id);
+    $cdata->addJsData('clone-values-preexec', htmlspecialchars(
+            json_encode($preexecArray), 
+            ENT_QUOTES
+        )
+    );
+    $cdata->addJsData('clone-count-preexec', count($preexecArray));
+    
+    /*
+     * Preset values of matching rules
+     */
+    $mrulesArray = $trapObj->getMatchingRulesFromTrapId($traps_id);
+    $cdata->addJsData('clone-values-matchingrules', htmlspecialchars(
+            json_encode($mrulesArray), 
+            ENT_QUOTES
+        )
+    );
+    $cdata->addJsData('clone-count-matchingrules', count($mrulesArray));
 }
+
 $DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
-while ($rmnftr = $DBRESULT->fetchRow()){
-        $mnftr[$rmnftr["id"]] = $rmnftr["alias"];
+while ($rmnftr = $DBRESULT->fetchRow()) {
+    $mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 }
 $DBRESULT->free();
 
-$attrsText 		= array("size"=>"50");
-$attrsLongText 	= array("size"=>"120");
-$attrsTextarea 	= array("rows"=>"10", "cols"=>"120");
-$attrsAdvSelect 	= array("style" => "width: 270px; height: 100px;");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsText      = array("size"=>"50");
+$attrsLongText  = array("size"=>"120");
+$attrsTextarea  = array("rows"=>"10", "cols"=>"120");
+$attrsAdvSelect     = array("style" => "width: 270px; height: 100px;");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrManufacturer= array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=list',
@@ -126,11 +130,11 @@ $attrServicetemplates = array(
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
     $trapObj->setForm($form);
 if ($o == "a") {
-	$form->addElement('header', 'title', _("Add a Trap definition"));
-} else if ($o == "c") {
-	$form->addElement('header', 'title', _("Modify a Trap definition"));
-} else if ($o == "w") {
-	$form->addElement('header', 'title', _("View a Trap definition"));
+    $form->addElement('header', 'title', _("Add a Trap definition"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title', _("Modify a Trap definition"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title', _("View a Trap definition"));
 }
 
 /**
@@ -155,7 +159,6 @@ $attrManufacturer1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=defaultValues&target=traps&field=manufacturer_id&id=' . $traps_id)
 );
 $form->addElement('select2', 'manufacturer_id', _("Vendor Name"), array(), $attrManufacturer1);
-
 $form->addElement('textarea', 'traps_comments', _("Comments"), $attrsTextarea);
 
 /**
@@ -174,9 +177,9 @@ $form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching m
 $form->setDefaults(0);
 
 /* *******************************************************************
- * Three possibilities : 	- submit result
- * 							- execute a special command
- * 							- resubmit a scheduling force
+ * Three possibilities :    - submit result
+ *                          - execute a special command
+ *                          - resubmit a scheduling force
  */
 
 /*
@@ -329,19 +332,19 @@ $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("
 $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("History"), '2');
 $form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
     
-    /*
-     * Pre exec 
-     */
-    $cloneSet = array();
-    $cloneSet[] = $form->addElement(
-            'text', 
-            'preexec[#index#]', 
-            _("Preexec definition"), 
-            array(
-                "size"=>"50", 
-                "id" => "preexec_#index#"
-                )
-            );
+/*
+ * Pre exec 
+ */
+$cloneSet = array();
+$cloneSet[] = $form->addElement(
+        'text', 
+        'preexec[#index#]', 
+        _("Preexec definition"), 
+        array(
+            "size"=>"50", 
+            "id" => "preexec_#index#"
+            )
+        );
     
 /*
  * Form Rules
@@ -364,63 +367,66 @@ $tpl = initSmartyTpl($path, $tpl);
 $tpl->assign('trap_adv_args', _("Advanced matching rules"));
 
 $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-# prepare help texts
+
+/* prepare help texts */
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w")	{
-	# Just watch a Command information
-	if ($centreon->user->access->page($p) != 2)
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
+if ($o == "w") {
+    # Just watch a Command information
+    if ($centreon->user->access->page($p) != 2) {
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
+    }
     $form->setDefaults($trap);
-	$form->freeze();
-} else if ($o == "c")	{
-	# Modify a Command information
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->freeze();
+} else if ($o == "c") {
+    # Modify a Command information
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($trap);
-} else if ($o == "a")	{
-	# Add a Command information
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+} else if ($o == "a") {
+    # Add a Command information
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
-if ($form->validate())	{
-	$trapObj = new CentreonTraps($pearDB, $centreon, $form);
-            $trapParam = $form->getElement('traps_id');
-	if ($form->getSubmitValue("submitA"))
-		$trapParam->setValue($trapObj->insert());
-	else if ($form->getSubmitValue("submitC"))
-		$trapObj->update($trapParam->getValue());
-	$o = NULL;
-	$valid = true;
+if ($form->validate()) {
+    $trapObj = new CentreonTraps($pearDB, $centreon, $form);
+    $trapParam = $form->getElement('traps_id');
+    if ($form->getSubmitValue("submitA")) {
+        $trapParam->setValue($trapObj->insert());
+    } elseif ($form->getSubmitValue("submitC")) {
+        $trapObj->update($trapParam->getValue());
+    }
+    $o = NULL;
+    $valid = true;
 }
 
 if ($valid) {
-	require_once($path."listTraps.php");
+    require_once($path."listTraps.php");
 } else {
-	# Apply a template definition
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
+    /* prepare help texts */
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
 
     $tpl->assign('tabTitle_1', _('Main'));
     $tpl->assign('tabTitle_2', _('Relations'));
     $tpl->assign('tabTitle_3', _('Advanced'));
-	$tpl->assign('subtitle0', _("Main information"));
-	$tpl->assign('subtitle0', _("Convert Trap information"));
-	$tpl->assign('subtitle1', _("Action 1 : Submit result to Monitoring Engine"));
-	$tpl->assign('subtitle2', _("Action 2 : Force rescheduling of service check"));
-	$tpl->assign('subtitle3', _("Action 3 : Execute a Command"));
-	$tpl->assign('subtitle4', _("Trap description"));
+    $tpl->assign('subtitle0', _("Main information"));
+    $tpl->assign('subtitle0', _("Convert Trap information"));
+    $tpl->assign('subtitle1', _("Action 1 : Submit result to Monitoring Engine"));
+    $tpl->assign('subtitle2', _("Action 2 : Force rescheduling of service check"));
+    $tpl->assign('subtitle3', _("Action 3 : Execute a Command"));
+    $tpl->assign('subtitle4', _("Trap description"));
     $tpl->assign('routingDefTxt', _('Route parameters'));
     $tpl->assign('resourceTxt', _('Resources'));
     $tpl->assign('preexecTxt', _('Pre execution commands'));
@@ -431,7 +437,5 @@ if ($valid) {
     $tpl->assign('cloneSet', $cloneSet);
     $tpl->assign('cloneSetMaching', $cloneSetMaching);
     $tpl->assign('preexeccmd_str', _('PREEXEC command'));
-	$tpl->display("formTraps.ihtml");
+    $tpl->display("formTraps.ihtml");
 }
-
-?>

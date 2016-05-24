@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
 	exit;
 }
 
@@ -56,7 +56,7 @@ isset($_POST["item"]) ? $service_id = $_POST["item"] : $service_id;
 $form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 
 $host_name = getMyHostName($host_id);
-$items  = $oreon->user->access->getHostServices(($oreon->broker->getBroker() == "broker" ? $pearDBO : $pearDBndo), $host_id);
+$items  = $centreon->user->access->getHostServices($pearDBO, $host_id);
 
 $itemsForUrl = array();
 foreach ($items as $key => $value) {
@@ -151,9 +151,9 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
 	/*
 	 * status colors
 	 */
-	$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).
-					':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"], 1).
-					':'.substr($oreon->optGen["color_maintenance"],1);
+	$color = substr($centreon->optGen["color_up"],1).':'.substr($centreon->optGen["color_down"],1).
+					':'.substr($centreon->optGen["color_unreachable"],1).':'.substr($centreon->optGen["color_undetermined"], 1).
+					':'.substr($centreon->optGen["color_maintenance"],1);
 
 	/*
 	 * Ajax timeline

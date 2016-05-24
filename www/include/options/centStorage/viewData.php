@@ -125,10 +125,7 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
 			$pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
             $pearDBO->query("UPDATE index_data SET to_delete = 1 WHERE id IN (" . join(', ', array_keys($selected)) . ")");
 			$pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
-            $brk = new CentreonBroker($pearDB);
-            if ($brk->getBroker() == 'broker') {
-                $brk->reload();
-            }
+           	$brk->reload();
 		}
 	} else if ($_POST["o"] == "hg" && isset($_POST["select"])){
 		$selected = $_POST["select"];
@@ -192,7 +189,7 @@ for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
 		if ($im) {
 			$metric .= " - ";
 		}
-		$metric .= $metrics["metric_name"]; // "<a href='./main.php?p=50119&o=mmtrc&index_id=".$index_data["id"]."'>".$metrics["metric_name"]."</a>";
+		$metric .= $metrics["metric_name"];
 		if (isset($metrics["unit_name"]) && $metrics["unit_name"]) {
 			$metric .= "(".$metrics["unit_name"].")";
 		}

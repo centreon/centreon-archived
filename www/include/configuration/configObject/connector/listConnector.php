@@ -46,8 +46,6 @@ try
     $tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-    /* Access level */
-    ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
     $tpl->assign('mode_access', $lvl_access);
 
     $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
@@ -101,31 +99,28 @@ try
     $j = 0;
     $attrsText = array("size"=>"2");
     $nbConnectors = count($connectorsList);
-    for ($i = 0; $i < $nbConnectors; $i++)
-    {
+    for ($i = 0; $i < $nbConnectors; $i++) {
         $result = $connectorsList[$i];
         $moptions = "";
         $MyOption = $form->addElement('text', "options[".$result['id']."]", _("Options"), $attrsText);
         $form->setDefaults(array("options[".$result['id']."]" => '1'));
         $selectedElements = $form->addElement('checkbox', "select[".$result['id']."]");
-        if ($result)
-        {
-            if ($result['enabled'])
-            {
-                $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=u&limit=".$limit."&num=".$num."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
-                $result['enabled'] = "enabled";
-            }
-            else
-            {
-                $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=s&limit=".$limit."&num=".$num."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        if ($result) {
+            if ($lvl_access == "w") {
+                if ($result['enabled']) {
+                    $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=u&limit=".$limit."&num=".$num."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+                    $result['enabled'] = "enabled";
+                } else {
+                    $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=s&limit=".$limit."&num=".$num."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+                    $result['enabled'] = "disabled";
+                }
+                $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='options[".$result['id']."]'></input>";
+                $moptions .= "&nbsp;&nbsp;";
+            } else {
+                $moptions = "&nbsp;";
                 $result['enabled'] = "disabled";
             }
 
-			$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='options[".$result['id']."]'></input>";
-            $moptions .= "&nbsp;&nbsp;";
-            //$moptions .= $MyOption->toHtml();
-
-            //echo $moptions;
 
             $elemArr[$j] = array("RowMenu_select"         => $selectedElements->toHtml(),
                                  "RowMenu_link"           => "?p=".$p."&o=c&id=".$result['id'],
@@ -154,11 +149,6 @@ try
 	$tpl->assign('form', $renderer->toArray());
     $tpl->assign('limit', $limit);
     $tpl->display("listConnector.ihtml");
+} catch (Exception $e) {
+    echo "Erreur n°".$e->getCode()." : ".$e->getMessage();
 }
- catch (Exception $e)
- {
-     echo "Erreur n°".$e->getCode().
-          " : ".$e->getMessage();
- }
-
-?>

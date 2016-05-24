@@ -138,7 +138,12 @@ try {
     foreach ($poller as $host) {
     	if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " reload");
+                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
+                if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
+                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl reload $scriptD"); 
+                } else {
+                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " reload");
+                }
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
                     fwrite($fh, "RELOAD:".$host["id"]."\n");
@@ -146,8 +151,7 @@ try {
                 } else {
                     throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
                 }
-                // OLD SYSTEM : system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe", $return);
-
+                
                 // Manage Error Message
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
@@ -160,7 +164,12 @@ try {
             }
         } else if ($ret["restart_mode"] == 2) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " restart");
+                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
+                if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
+                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl restart $scriptD"); 
+                } else {
+                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " restart");
+                }
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
                     fwrite($fh, "RESTART:".$host["id"]."\n");
@@ -168,7 +177,6 @@ try {
                 } else {
                     throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
                 }
-                // OLD SYSTEM : system("echo \"RESTART:".$host["id"]."\" >> $centcore_pipe", $return);
 
                 // Manage error Message
                 if (!isset($msg_restart[$host["id"]])) {

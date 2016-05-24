@@ -83,7 +83,6 @@ $num = getParameters("num");
 /*
  * Include all func
  */
-include_once("./basic-functions.php");
 include_once("./include/common/common-Func.php");
 include_once("./include/core/header/header.php");
 

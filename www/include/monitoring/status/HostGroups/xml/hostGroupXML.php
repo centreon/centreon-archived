@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
@@ -82,7 +82,7 @@ $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
 $order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "m/d/Y H:i:s");
 
 $groupStr = $obj->access->getAccessGroupsString();
 /*

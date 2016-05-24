@@ -147,6 +147,13 @@ p.description a, p.description a:visited {
     text-align: center;
 }
 
+.border-radius {
+    border: 1px solid #d1d2d4;
+    padding: 2px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
 /* ------ slider ------------*/
 
 #rotation_timer {
@@ -353,16 +360,15 @@ p.description a, p.description a:visited {
 /* ----------- States --------------- */
 
 .default_badge 		{background-color: #00a499;}
-.host_down,
-.service_critical 	{background-color: #e00b3d;}
+.host_down, .danger, .service_critical 	{background-color: #e00b3d;}
 .host_unreachable 	{background-color: #818285;}
 .host_downtime 		{background-color: #cc99ff;}
 
-.service_ok,.host_up		{background-color: #88b917;}
-.service_warning	{background-color: #ff9a13;}
+.service_ok,.host_up, .success	{background-color: #88b917;}
+.service_warning, .warning	{background-color: #ff9a13;}
 .pending    {background-color: #2AD1D4;}
 .service_unknown    {background-color: #bcbdc0;}
-
+.info {background-color: #00bfb3;}
 
 .bdg_dtm:before {
     padding: 2px 4px;
@@ -583,7 +589,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
-    margin-bottom: 36px;
+    /*margin-bottom: 36px;*/
 }
 
 .GlobalContainer tr {

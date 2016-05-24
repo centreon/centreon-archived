@@ -76,7 +76,6 @@ if (!$oreon->user->admin) {
     }
 }
 
-
 /* notification contacts */
 $notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
     'get_row' => 'contact_name',
@@ -99,19 +98,19 @@ if ($oreon->user->admin) {
 }
 
 /* hosts */
-$hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields' => array('host.host_id', 'host.host_name'),
+$hosts = $acl->getHostAclConf(null, 'broker', array('fields' => array('host.host_id', 'host.host_name'),
     'keys' => array('host_id'),
     'get_row' => 'host_name',
     'order' => array('host_name')));
 
 /* hostgroups */
-$hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker(), array('fields' => array('hg_id', 'hg_name'),
+$hgs = $acl->getHostGroupAclConf(null, 'broker', array('fields' => array('hg_id', 'hg_name'),
     'keys' => array('hg_id'),
     'get_row' => 'hg_name',
     'order' => array('hg_name')));
 
 /* service groups */
-$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker(), array('fields' => array('sg_id', 'sg_name'),
+$sgs = $acl->getServiceGroupAclConf(null, 'broker', array('fields' => array('sg_id', 'sg_name'),
     'keys' => array('sg_id'),
     'get_row' => 'sg_name',
     'order' => array('sg_name')));
@@ -268,15 +267,10 @@ if (($o == "c" || $o == "w") && $service_id) {
 if (($o == "c" || $o == "w") && $service_id) {
     $aListTemplate = getListTemplates($pearDB, $service_id);
 
-
-
     if (!isset($cmdId)) {
         $cmdId = "";
     }
-    
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
-
-
 }
 
 $cdata = CentreonData::getInstance();
@@ -567,7 +561,6 @@ $cloneSetMacro[] = $form->addElement(
     )
 );
 
-
 $cloneSetMacro[] = $form->addElement(
     'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
@@ -597,7 +590,6 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_cgs' => '0'));
 }
-
 
 ##
 ## Use only contacts/contacts group of host and host template
@@ -648,7 +640,6 @@ $attrContact1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=service&field=service_cs&id=' . $service_id)
 );
 $form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
-
 
 /*
  *  Contact groups
@@ -795,7 +786,6 @@ if ($sgReadOnly === true) {
     $ams3->freeze();
 }
 
-
 $form->addElement('header', 'traps', _("SNMP Traps"));
 if ($o == "mc") {
     $mc_mod_traps = array();
@@ -898,7 +888,6 @@ $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
 $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id" => "esi_icon_image", "onChange" => "showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
-
 /*
  * Criticality
  */
@@ -917,8 +906,6 @@ $attrGraphtemplate1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=defaultValues&target=service&field=graph_id&id=' . $service_id)
 );
 $form->addElement('select2', 'graph_id', _("Graph Template"), array(), $attrGraphtemplate1);
-
-
 
 if ($o == "mc") {
     $mc_mod_sc = array();
@@ -978,10 +965,6 @@ if (is_array($select)) {
 #
 ## Form Rules
 #
-function myReplace() {
-    global $form;
-    return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
-}
 
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;

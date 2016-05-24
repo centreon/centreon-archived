@@ -41,7 +41,7 @@ if (!isset($centreon)) {
  * ACL Actions
  */
 $GroupListofUser = array();
-$GroupListofUser = $oreon->user->access->getAccessGroups();
+$GroupListofUser = $centreon->user->access->getAccessGroups();
 
 $allActions = false;
 /*
@@ -49,7 +49,7 @@ $allActions = false;
  */
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
-    $authorized_actions = $oreon->user->access->getActions();
+    $authorized_actions = $centreon->user->access->getActions();
 } else {
     /*
      * if user is admin, or without ACL, he cans perform all actions
@@ -70,12 +70,12 @@ if (isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])) {
 }
 
 $problem_sort_type = 'host_name';
-if (!empty($oreon->optGen["problem_sort_type"])) {
-    $problem_sort_type = $oreon->optGen["problem_sort_type"];
+if (!empty($centreon->optGen["problem_sort_type"])) {
+    $problem_sort_type = $centreon->optGen["problem_sort_type"];
 }
 $problem_sort_order = 'asc';
-if (!empty($oreon->optGen["problem_sort_type"])) {
-    $problem_sort_order = $oreon->optGen["problem_sort_order"];
+if (!empty($centreon->optGen["problem_sort_type"])) {
+    $problem_sort_order = $centreon->optGen["problem_sort_order"];
 }
 $global_sort_type = 'host_name';
 if (!empty($_SESSION['centreon']->optGen["global_sort_type"])) {
@@ -89,12 +89,12 @@ if (!empty($_SESSION['centreon']->optGen["global_sort_order"])) {
 
 if ($o == "hpb" || $o == "h_unhandled" || empty($o)) {
     if (!isset($_GET["sort_type"])) {
-        $sort_type = $oreon->optGen["problem_sort_type"];
+        $sort_type = $centreon->optGen["problem_sort_type"];
     } else {
         $sort_type = $_GET["sort_type"];
     }
     if (!isset($_GET["order"])) {
-        $order = $oreon->optGen["problem_sort_order"];
+        $order = $centreon->optGen["problem_sort_order"];
     } else {
         $order = $_GET["order"];
     }
@@ -200,6 +200,10 @@ $action_list[] = _("More actions...");
  * Showing actions allowed for current user
  */
 if (isset($authorized_actions) && $allActions == false) {
+    if (isset($authorized_actions) && $allActions == false)
+        $action_list[94] = _("Hosts : Schedule immediate check");
+    if (isset($authorized_actions["host_schedule_forced_check"]))
+        $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
 	if (isset($authorized_actions["host_acknowledgement"]))
 		$action_list[72] = _("Hosts : Acknowledge");
     if (isset($authorized_actions["host_disacknowledgement"]))
@@ -215,6 +219,8 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["host_schedule_downtime"]))
         $action_list[75] = _("Hosts : Set Downtime");
 } else {
+    $action_list[94] = _("Hosts : Schedule immediate check");
+    $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
     $action_list[82] = _("Hosts : Enable Notification");
@@ -289,7 +295,7 @@ $form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $
 $tpl->assign('limit', $limit);
 $tpl->assign('hostStr', _('Host'));
 $tpl->assign('pollerStr', _('Poller'));
-$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
+$tpl->assign('poller_listing', $centreon->user->access->checkAction('poller_listing'));
 $tpl->assign('hgStr', _('Hostgroup'));
 $criticality = new CentreonCriticality($pearDB);
 $tpl->assign('criticalityUsed', count($criticality->getList()));

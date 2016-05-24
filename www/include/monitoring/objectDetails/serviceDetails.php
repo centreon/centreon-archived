@@ -121,7 +121,7 @@ if (!is_null($host_id)) {
             $query = "SELECT DISTINCT sg.sg_name
                     FROM servicegroup sg, servicegroup_relation sgr
                     WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
-                    $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
+                    $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", $pearDBO));
             $DBRESULT = $pearDB->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 $serviceGroups[] = $row['sg_name'];
@@ -235,42 +235,28 @@ if (!is_null($host_id)) {
          * Get comments for service
          */
         $tabCommentServices = array();
-        if ($oreon->broker->getBroker() == "ndo") {
-            $rq2 =	" SELECT DISTINCT cmt.comment_time as entry_time, cmt.comment_id, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-                " FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-                " WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 = '".$pearDBndo->escape($svc_description)."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
-            $DBRESULT = $pearDBndo->query($rq2);
+        if (isset($host_id) && isset($service_id)){
+            $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
+                " FROM comments cmt, hosts h, services s " .
+                " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
+                                      AND s.service_id = ".$pearDBO->escape($service_id)." 
+                                      AND h.host_id = cmt.host_id 
+                                      AND s.service_id = cmt.service_id 
+                                      AND cmt.expires = 0 
+                                      AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
+                                      ORDER BY cmt.entry_time DESC";
+            $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-                $data = array_map(array("CentreonUtils","escapeSecure"),$data);
                 $tabCommentServices[$i] = $data;
+                $tabCommentServices[$i]['host_name'] = $data['host_name'];
+                $tabCommentServices[$i]['service_description'] = $data['service_description'];
+                $tabCommentServices[$i]['comment_data'] = $data['comment_data'];
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
             $DBRESULT->free();
             unset($data);
-        } else {
-            if(isset($host_id) && isset($service_id)){
-                $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
-                    " FROM comments cmt, hosts h, services s " .
-                    " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
-                                          AND s.service_id = ".$pearDBO->escape($service_id)." 
-                                          AND h.host_id = cmt.host_id 
-                                          AND s.service_id = cmt.service_id 
-                                          AND cmt.expires = 0 
-                                          AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
-                                          ORDER BY cmt.entry_time DESC";
-                $DBRESULT = $pearDBO->query($rq2);
-                for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-                    $tabCommentServices[$i] = $data;
-                    $tabCommentServices[$i]['host_name'] = $data['host_name'];
-                    $tabCommentServices[$i]['service_description'] = $data['service_description'];
-                    $tabCommentServices[$i]['comment_data'] = $data['comment_data'];
-                    $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
-                }
-                $DBRESULT->free();
-                unset($data);
-            }
         }
-
+    
         $en_acknowledge_text= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
         $en_acknowledge 	= array("1" => "0", "0" => "1");
         $en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
@@ -294,7 +280,7 @@ if (!is_null($host_id)) {
         !$service_status[$host_name."_".$svc_description]["check_latency"] ? $service_status[$host_name."_".$svc_description]["check_latency"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_latency"] = $service_status[$host_name."_".$svc_description]["check_latency"] . " seconds";
         !$service_status[$host_name."_".$svc_description]["check_execution_time"] ? $service_status[$host_name."_".$svc_description]["check_execution_time"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_execution_time"] = $service_status[$host_name."_".$svc_description]["check_execution_time"] . " seconds";
 
-        !$service_status[$host_name."_".$svc_description]["last_notification"] ? $service_status[$host_name."_".$svc_description]["notification"] = "": $service_status[$host_name."_".$svc_description]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_notification"]);
+        !$service_status[$host_name."_".$svc_description]["last_notification"] ? $service_status[$host_name."_".$svc_description]["notification"] = "": $service_status[$host_name."_".$svc_description]["last_notification"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $service_status[$host_name."_".$svc_description]["last_notification"]);
 
         if (isset($service_status[$host_name."_".$svc_description]["next_notification"]) && !$service_status[$host_name."_".$svc_description]["next_notification"]) {
             $service_status[$host_name."_".$svc_description]["next_notification"] = "";
@@ -304,21 +290,19 @@ if (!is_null($host_id)) {
             $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"]);
         }
 
-        if ($oreon->broker->getBroker() == "broker") {
-            $hskey = $host_name."_".$svc_description;
-            $service_status[$hskey]["long_plugin_output"] = "";
-            $service_status[$hskey]["plugin_output2"] = str_replace("\n", '\n', $service_status[$hskey]["plugin_output2"]);
-            $outputTmp = explode('\n', $service_status[$hskey]["plugin_output2"]);
-            if (count($outputTmp)) {
-                $i = 0;
-                while (isset($outputTmp[$i])) {
-                    if (!$i) {
-                        $service_status[$hskey]["plugin_output"] = htmlentities($outputTmp[$i]) . "<br />";
-                    } else {
-                        $service_status[$hskey]["long_plugin_output"] .= htmlentities($outputTmp[$i]) . "<br />";
-                    }
-                    $i++;
+        $hskey = $host_name."_".$svc_description;
+        $service_status[$hskey]["long_plugin_output"] = "";
+        $service_status[$hskey]["plugin_output2"] = str_replace("\n", '\n', $service_status[$hskey]["plugin_output2"]);
+        $outputTmp = explode('\n', $service_status[$hskey]["plugin_output2"]);
+        if (count($outputTmp)) {
+            $i = 0;
+            while (isset($outputTmp[$i])) {
+                if (!$i) {
+                    $service_status[$hskey]["plugin_output"] = htmlentities($outputTmp[$i]) . "<br />";
+                } else {
+                    $service_status[$hskey]["long_plugin_output"] .= htmlentities($outputTmp[$i]) . "<br />";
                 }
+                $i++;
             }
         }
 
@@ -396,9 +380,9 @@ if (!is_null($host_id)) {
         if (isset($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])])) {
             !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = CentreonDuration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = centreonDuration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
         }
-        !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"]);
-        $service_status[$host_name."_".$svc_description]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
-        !$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"]);
+        !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"]);
+        $service_status[$host_name."_".$svc_description]["last_update"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), time());
+        !$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"]);
 
 
         if ($service_status[$host_name."_".$svc_description]["problem_has_been_acknowledged"]) {

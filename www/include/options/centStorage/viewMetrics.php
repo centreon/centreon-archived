@@ -127,6 +127,9 @@ for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++) {
     $metric["max"] = $metrics["max"];
     $metric["warn"] = $metrics["warn"];
     $metric["crit"] = $metrics["crit"];
+
+    $metric["path"] = _CENTREON_VARLIB_.'/metrics/'.$metric["metric_id"].".rrd";
+
     $data[$im] = $metric;
     unset($metric);
 }

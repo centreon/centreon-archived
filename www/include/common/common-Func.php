@@ -52,13 +52,11 @@ function isUserAdmin($sid = NULL) {
     $admin = $DBRESULT->fetchRow();
     $DBRESULT->free();
 
-    $DBRESULT = $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = ? ", $admin["contact_id"]);
-    $admin2 = $DBRESULT->fetchRow();
-    $DBRESULT->free();
-
-    if ($admin["contact_admin"])
+    if ($admin["contact_admin"]) {
         return 1;
-    return 0;
+    } else {
+        return 0;
+    }
 }
 
 /*

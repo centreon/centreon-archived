@@ -176,9 +176,7 @@ class CentreonConfigPoller {
         if (file_exists($this->centreon_path."/www/class/centreonBroker.class.php")) {
             require_once $this->centreon_path."/www/class/centreonBroker.class.php";
             $brk = new \CentreonBroker($this->_DB);
-            if ($brk->getBroker() == 'broker') {
-                $brk->reload();
-            }
+            $brk->reload();
         }
     }
 

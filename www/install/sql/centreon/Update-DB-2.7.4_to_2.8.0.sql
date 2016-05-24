@@ -2,26 +2,26 @@
 UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.4' LIMIT 1;
 
 -- Add graphite output for centreon-broker
-INSERT INTO cb_module (name, libname, loading_pos, is_activated) 
+INSERT IGNORE INTO cb_module (name, libname, loading_pos, is_activated)
 VALUES ('Graphite', 'graphite.so', 21, 1);
 
-INSERT INTO cb_type (type_name, type_shortname, cb_module_id)
+INSERT IGNORE INTO cb_type (type_name, type_shortname, cb_module_id)
 VALUES ('Storage - Graphite', 'graphite',
     (SELECT MAX(cb_module_id) FROM cb_module)
 );
 
-INSERT INTO cb_tag_type_relation (cb_tag_id, cb_type_id) 
+INSERT IGNORE INTO cb_tag_type_relation (cb_tag_id, cb_type_id)
 VALUES (
     (SELECT cb_tag_id FROM cb_tag WHERE tagname = 'output' LIMIT 1),
     (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'graphite' LIMIT 1)
 );
 
-INSERT INTO cb_field (fieldname, displayname, description, fieldtype)
-VALUES 
+INSERT IGNORE INTO cb_field (fieldname, displayname, description, fieldtype)
+VALUES
     ('metric_naming', 'Metric naming', 'How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text'),
     ('status_naming', 'Status naming', 'How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text');
 
-INSERT INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_display)
+INSERT IGNORE INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_display)
     (SELECT (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'graphite' LIMIT 1), 0, cb_field_id, @rownum := @rownum + 1
     FROM cb_field CROSS JOIN (SELECT @rownum := 0) r
     WHERE fieldname IN ('db_host', 'db_port', 'db_user', 'db_password',
@@ -94,7 +94,7 @@ VALUES
     ((SELECT cbl.cb_list_id FROM cb_list cbl, cb_field cbf, cb_fieldgroup cbfg WHERE cbl.cb_field_id = cbf.cb_field_id AND cbf.fieldname = 'type' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'Number', 'number'),
     ((SELECT cbl.cb_list_id FROM cb_list cbl, cb_field cbf, cb_fieldgroup cbfg WHERE cbl.cb_field_id = cbf.cb_field_id AND cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'True', 'true'),
     ((SELECT cbl.cb_list_id FROM cb_list cbl, cb_field cbf, cb_fieldgroup cbfg WHERE cbl.cb_field_id = cbf.cb_field_id AND cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'False', 'false');
-    
+
 INSERT INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_display)
     (SELECT (SELECT cbt.cb_type_id FROM cb_type cbt WHERE cbt.type_shortname = 'influxdb' LIMIT 1), 0, cbf1.cb_field_id, @rownum := @rownum + 1
     FROM cb_field cbf1 CROSS JOIN (SELECT @rownum := 0) r
@@ -136,3 +136,14 @@ ALTER TABLE `service` ADD COLUMN `service_use_only_contacts_from_host` enum('0',
 
 ALTER TABLE `host` ADD COLUMN `host_acknowledgement_timeout` int(11) DEFAULT NULL AFTER `host_first_notification_delay`;
 ALTER TABLE `service` ADD COLUMN `service_acknowledgement_timeout` int(11) DEFAULT NULL AFTER `service_first_notification_delay`;
+
+-- Ticket #2425
+UPDATE topology SET topology_url = './include/Administration/myAccount/formMyAccount.php' WHERE topology_page = 50104;
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (50104,NULL,'./include/common/javascript/changetab.js','initChangeTab');
+ALTER TABLE contact ADD COLUMN `default_page` int(11) DEFAULT NULL AFTER `contact_autologin_key`;
+
+-- Ticket #4401
+ALTER TABLE nagios_server ADD COLUMN `init_system` varchar(255) DEFAULT 'sytemv' AFTER `init_script`;
+UPDATE `nagios_server` SET `init_system` = 'systemv';
+
+ALTER TABLE topology DROP COLUMN topology_icone;
