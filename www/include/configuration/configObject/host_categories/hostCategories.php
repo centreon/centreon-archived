@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset ($oreon))
-	exit ();
+if (!isset($centreon)) {
+	exit();
+}
 
 isset($_GET["hc_id"]) ? $hG = $_GET["hc_id"] : $hG = NULL;
 isset($_POST["hc_id"]) ? $hP = $_POST["hc_id"] : $hP = NULL;
@@ -71,10 +69,11 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 	$p = $ret['topology_page'];
+}
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl();
 $hcString = $acl->getHostCategoriesString();

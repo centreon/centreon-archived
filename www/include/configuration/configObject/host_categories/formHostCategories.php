@@ -115,13 +115,15 @@ if (($o == "c" || $o == "w") && $hc_id)	{
  * hostcategories comes from DB -> Store in $hosts Array
  */
 $EDITCOND = "";
-if ($o == "w" || $o == "c")
+if ($o == "w" || $o == "c") {
     $EDITCOND = " WHERE `hc_id` != '".$hc_id."' ";
+}
 
 $hostCategories = array();
 $DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories $EDITCOND ORDER BY hc_name");
-while ($hcs = $DBRESULT->fetchRow())
+while ($hcs = $DBRESULT->fetchRow()) {
     $hostGroups[$hcs["hc_id"]] = $hcs["hc_name"];
+}
 $DBRESULT->free();
 unset($hcs);
 
@@ -130,8 +132,9 @@ unset($hcs);
  */
 $cgs = array();
 $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-while ($cg = $DBRESULT->fetchRow())
+while ($cg = $DBRESULT->fetchRow()) {
     $cgs[$cg["cg_id"]] = $cg["cg_name"];
+}
 $DBRESULT->free();
 unset($cg);
 
