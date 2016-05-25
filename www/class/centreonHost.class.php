@@ -718,7 +718,7 @@ class CentreonHost
         $str = "";
         $i = 1;
         foreach ($templates as $templateId) {
-            if (!isset($templateId) || !$templateId || isset($stored[$templateId]) || !hasNoInfiniteLoop($hostId, $templateId)) {
+            if (!isset($templateId) || !$templateId || isset($stored[$templateId]) || !$this->hasNoInfiniteLoop($hostId, $templateId)) {
                 continue;
             }
             if ($str != "") {
@@ -731,6 +731,43 @@ class CentreonHost
         if ($str) {
             $this->db->query("INSERT INTO host_template_relation (host_host_id, host_tpl_id, `order`) VALUES $str");
         }
+    }
+
+    /**
+     * Checks if the insertion can be made
+     *
+     * @return bool
+     */
+    public function hasNoInfiniteLoop($hostId, $templateId) {
+        $antiTplLoop = array();
+
+        if ($hostId === $templateId) {
+            return false;
+        }
+
+        if (!count($antiTplLoop)) {
+            $query = "SELECT host_host_id, host_tpl_id FROM host_template_relation";
+            $res = $this->db->query($query);
+            while ($row = $res->fetchRow()) {
+                if (!isset($antiTplLoop[$row['host_tpl_id']])) {
+                    $antiTplLoop[$row['host_tpl_id']] = array();
+                }
+                $antiTplLoop[$row['host_tpl_id']][$row['host_host_id']] = $row['host_host_id'];
+            }
+        }
+
+        if (isset($antiTplLoop[$hostId])) {
+            foreach ($antiTplLoop[$hostId] as $hId) {
+                if ($hId == $templateId) {
+                    return false;
+                }
+                if (false === hasNoInfiniteLoop($hId, $templateId)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -1559,10 +1596,18 @@ class CentreonHost
         $DBRESULT = $this->db->query("SELECT MAX(host_id) AS host_id FROM host");
         $host_id = $DBRESULT->fetchRow();
 
+        $ret['host_id'] = $host_id['host_id'];
+        $this->insertExtendedInfos($ret);
+
         return $host_id['host_id'];
     }
 
-    function insertExtendedInfos($ret) {
+    /**
+     *
+     * Insert host extended informations in DB
+     *
+     */
+    public function insertExtendedInfos($ret) {
         if (empty($ret['host_id'])) {
             return;
         }
