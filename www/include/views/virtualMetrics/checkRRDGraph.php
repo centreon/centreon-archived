@@ -31,12 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: $
- * SVN : $Id: $
- *
  */
-if (!isset($oreon))
-    exit;
+
+if (!isset($centreon)) {
+    exit();
+}
 
 function checkRRDGraphData($v_id = null, $force = 0) {
     if (!isset($v_id)) null;
@@ -80,4 +79,3 @@ function checkRRDGraphData($v_id = null, $force = 0) {
     }
     return null;
 }
-?>
