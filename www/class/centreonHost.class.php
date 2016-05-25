@@ -738,9 +738,7 @@ class CentreonHost
      *
      * @return bool
      */
-    public function hasNoInfiniteLoop($hostId, $templateId) {
-        $antiTplLoop = array();
-
+    public function hasNoInfiniteLoop($hostId, $templateId, $antiTplLoop = array()) {
         if ($hostId === $templateId) {
             return false;
         }
@@ -761,7 +759,7 @@ class CentreonHost
                 if ($hId == $templateId) {
                     return false;
                 }
-                if (false === hasNoInfiniteLoop($hId, $templateId)) {
+                if (false === $this->hasNoInfiniteLoop($hId, $templateId, $antiTplLoop)) {
                     return false;
                 }
             }
