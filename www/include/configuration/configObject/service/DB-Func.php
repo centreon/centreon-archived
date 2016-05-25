@@ -33,8 +33,8 @@
  *
  */
 
-if (!isset($oreon) && !isset($centreon)) {
-    exit ();
+if (!isset($centreon)) {
+    exit();
 }
 
 /**
