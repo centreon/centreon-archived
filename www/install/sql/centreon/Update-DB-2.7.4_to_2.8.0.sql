@@ -147,3 +147,5 @@ ALTER TABLE nagios_server ADD COLUMN `init_system` varchar(255) DEFAULT 'sytemv'
 UPDATE `nagios_server` SET `init_system` = 'systemv';
 
 ALTER TABLE topology DROP COLUMN topology_icone;
+
+ALTER TABLE host_service_relation DROP INDEX `host_host_id`;

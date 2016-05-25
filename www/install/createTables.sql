@@ -1496,7 +1496,6 @@ CREATE TABLE `host_service_relation` (
   KEY `servicegroup_index` (`servicegroup_sg_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_service_index` (`host_host_id`,`service_service_id`),
-  KEY `host_host_id` (`host_host_id`,`service_service_id`),
   CONSTRAINT `host_service_relation_ibfk_1` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE,
   CONSTRAINT `host_service_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `host_service_relation_ibfk_3` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE,
