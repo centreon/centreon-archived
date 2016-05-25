@@ -31,16 +31,13 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
 require_once _CENTREON_PATH_.'www/class/centreonLDAP.class.php';
 $tpl = new Smarty();
 
 if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
-    include _CENTREON_PATH_.'www/include/options/oreon/generalOpt/ldap/form.php';
+    include _CENTREON_PATH_.'www/include/Administration/parameters/ldap/form.php';
 } else {
     $ldapAction = isset($_REQUEST['a']) ? $_REQUEST['a'] : null;
     if (!is_null($ldapAction) && isset($_REQUEST['select']) && is_array($_REQUEST['select'])) {
@@ -60,6 +57,6 @@ if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
                 break;
         }
     }
-    include _CENTREON_PATH_.'www/include/options/oreon/generalOpt/ldap/list.php';
+    include _CENTREON_PATH_.'www/include/Administration/parameters/ldap/list.php';
 }
 ?>
