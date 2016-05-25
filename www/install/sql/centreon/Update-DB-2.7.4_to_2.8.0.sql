@@ -160,3 +160,10 @@ UPDATE topology SET topology_url = './include/Administration/parameters/paramete
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=css' WHERE topology_page = 50116;
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=storage' WHERE topology_page = 50118;
 UPDATE topology SET topology_url = './include/Administration/performance/manageData.php' WHERE topology_page = 50119;
+
+UPDATE topology SET topology_url = './include/views/componentTemplates/componentTemplates.php' WHERE topology_page = 20405;
+UPDATE topology SET topology_url = './include/views/graphTemplates/graphTemplates.php' WHERE topology_page = 20404;
+UPDATE topology SET topology_url = './include/views/virtualMetrics/virtualMetrics.php' WHERE topology_page = 20408;
+
+
+
