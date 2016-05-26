@@ -160,3 +160,6 @@ UPDATE topology SET topology_url = './include/Administration/parameters/paramete
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=css' WHERE topology_page = 50116;
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=storage' WHERE topology_page = 50118;
 UPDATE topology SET topology_url = './include/Administration/performance/manageData.php' WHERE topology_page = 50119;
+
+-- OPTIMIZE Monitoring
+ALTER TABLE services ADD INDEX last_hard_state_change (last_hard_state_change);
