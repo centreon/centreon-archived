@@ -5,7 +5,7 @@
     <form {$form.attributes}>
         <table class="ajaxOption table">
             <tr>
-              <th><h5>{t}Filters{/t}</h5></th>
+                <th><h5>{t}Filters{/t}</h5></th>
             </tr>
             <tr>
 			    <td class="log-select">{$form.host_group_filter.html}</td>
