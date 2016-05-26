@@ -78,7 +78,6 @@ $locale = $centreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
 bindtextdomain("messages", _CENTREON_PATH_ . "www/locale/");
-;
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
@@ -179,7 +178,7 @@ if ($search_host) {
 
 $searchService = "";
 if ($search) {
-    $searchService .= " AND s.description LIKE '%$search%' ";
+    $searchService .= " AND (s.description LIKE '%$search%' OR s.display_name LIKE '%$search%')";
 }
 $searchOutput = "";
 if ($search_output) {
@@ -390,6 +389,10 @@ if (!PEAR::isError($DBRESULT)) {
         }
         $obj->XML->writeAttribute("class", $trClass);
         $obj->XML->writeElement("o", $ct++);
+
+        if (!strncmp($data["name"], "_Module_Meta", strlen("_Module_Meta"))) {
+            $data["name"] = "Meta";
+        }
 
         if ($host_prev == $data["name"]) {
             $obj->XML->writeElement("hc", "transparent");
