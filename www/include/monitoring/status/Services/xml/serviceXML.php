@@ -199,13 +199,13 @@ $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description"
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
 $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
-				s.icon_image, s.display_name, s.process_perfdata, s.state, s.output as plugin_output,
-				s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
-				s.last_hard_state_change, s.last_check, s.next_check,
-				s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
-				s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged, h.scheduled_downtime_depth AS h_scheduled_downtime_depth,
-				h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
-				h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull ";
+                s.icon_image, s.display_name, s.process_perfdata, s.state, s.output as plugin_output,
+                s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
+                s.last_hard_state_change, s.last_check, s.next_check,
+                s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
+                s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged, h.scheduled_downtime_depth AS h_scheduled_downtime_depth,
+                h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
+                h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull ";
 $request .= " FROM hosts h, instances i ";
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
@@ -221,16 +221,14 @@ if (!$obj->is_admin) {
 }
 $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
 $request .= " WHERE h.host_id = s.host_id
-				  AND s.service_id IS NOT NULL
-				  AND s.service_id != 0
-				  AND s.enabled = 1
-				  AND h.enabled = 1
-				  AND h.instance_id = i.instance_id ";
+                AND s.enabled = 1
+                AND h.enabled = 1
+                AND h.instance_id = i.instance_id ";
 if ($criticality_id) {
     $request .= " AND s.service_id = cvs. service_id
-                          AND cvs.host_id = h.host_id
-                          AND cvs.name = 'CRITICALITY_ID'
-                          AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
+                  AND cvs.host_id = h.host_id
+                  AND cvs.name = 'CRITICALITY_ID'
+                  AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
 }
 
 if ($searchHost) {
@@ -247,16 +245,16 @@ $request .= $instance_filter;
 if (preg_match("/^svc_unhandled/", $statusService)) {
     if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $statusService, $matches)) {
         if (isset($matches[1]) && $matches[1] == 'warning') {
-            $request .= " AND s.state = '1' ";
+            $request .= " AND s.state = 1 ";
         }
         if (isset($matches[1]) && $matches[1] == "critical") {
-            $request .= " AND s.state = '2' ";
+            $request .= " AND s.state = 2 ";
         } elseif (isset($matches[1]) && $matches[1] == "unknown") {
-            $request .= " AND s.state = '3' ";
+            $request .= " AND s.state = 3 ";
         } elseif (isset($matches[1]) && $matches[1] == "pending") {
-            $request .= " AND s.state = '4' ";
+            $request .= " AND s.state = 4 ";
         } else {
-            $request .= " AND s.state != '0' ";
+            $request .= " AND s.state != 0 ";
         }
     } else {
         $request .= " AND (s.state != 0 AND s.state != 4) ";
@@ -280,8 +278,6 @@ if ($statusFilter == "ok") {
 } else if ($statusFilter == "pending") {
     $request .= " AND s.state = 4";
 }
-
-$request .= " AND h.name NOT LIKE '_Module_%' ";
 
 /**
  * HostGroup Filter
@@ -315,10 +311,7 @@ $numRows = $obj->DBC->numberRows();
 /**
  * Get criticality ids
  */
-$critRes = $obj->DBC->query("SELECT value, service_id 
-                                       FROM customvariables
-                                       WHERE name = 'CRITICALITY_ID'
-                                       AND service_id IS NOT NULL");
+$critRes = $obj->DBC->query("SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL");
 $criticalityUsed = 0;
 $critCache = array();
 if ($critRes->numRows()) {
@@ -622,4 +615,3 @@ $obj->header();
  * Send XML
  */
 $obj->XML->output();
-?>
