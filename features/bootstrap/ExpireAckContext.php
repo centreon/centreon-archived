@@ -66,6 +66,11 @@ class ExpireAckContext extends CentreonContext
     public function hostInACriticalState()
     {
         $this->submitHostResult($this->hostName, 'DOWN');
+        $hostName = $this->hostName;
+        $this->spin(function($ctx) use ($hostName) {
+            return ((new MonitoringHostsPage($ctx))->getStatus($hostName)
+                    == "DOWN");
+        });
     }
 
     /**
@@ -74,6 +79,12 @@ class ExpireAckContext extends CentreonContext
     public function serviceInACriticalState()
     {
         $this->submitServiceResult($this->hostName, $this->serviceName, 'CRITICAL');
+        $hostName = $this->hostName;
+        $serviceName = $this->serviceName;
+        $this->spin(function($ctx) use ($hostName, $serviceName) {
+            return ((new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName)
+                    == "CRITICAL");
+        });
     }
 
     /**
@@ -89,6 +100,10 @@ class ExpireAckContext extends CentreonContext
           true,
           false,
           false);
+        $hostName = $this->hostName;
+        $this->spin(function($ctx) use ($hostName) {
+            return ((new MonitoringHostsPage($ctx))->isHostAcknowledged($hostName));
+        });
     }
     
     /**
@@ -104,6 +119,12 @@ class ExpireAckContext extends CentreonContext
          true,
          true,
          false);
+        $hostName = $this->hostName;
+        $serviceName = $this->serviceName;
+        $this->spin(function($ctx) use ($hostName, $serviceName) {
+            return ((new MonitoringServicesPage($ctx))->isServiceAcknowledged($hostName, $serviceName));
+        });
+
     }
 
     /**
