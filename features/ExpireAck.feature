@@ -9,7 +9,7 @@ Feature: Expire Ack
 
     Scenario: Check Host Acknowledgement Expiration
         Given a host configured with expirations
-        And the host in a critical state
+        And the host is in a critical state
         And the host is acknowledged
         When I wait the time limit set for expirations
         Then the host acknowledgement disappears
