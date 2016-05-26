@@ -317,4 +317,46 @@ function enableVirtualMetric($v_id, $v_name = null, $index_id = null) {
     return $v_ena;
 }
 
-?>
+function checkRRDGraphData($v_id = null, $force = 0) {
+    global $pearDB, $oreon;
+    if (!isset($v_id)) {
+        null;
+    }
+
+    /* Check if already Valid */
+    $l_pqy = $pearDB->query("SELECT vmetric_id, def_type FROM virtual_metrics WHERE vmetric_id = '$v_id' AND ( ck_state <> '1' OR ck_state IS NULL );");
+    if ($l_pqy->numRows() == 1) {
+        /**
+         * Create XML Request Objects
+         */
+        $centreon = & $_SESSION["centreon"];
+        $obj = new CentreonGraph($centreon->user->get_id(), NULL, 0, 1);
+
+        /**
+         * We check only one curve
+         **/
+        $obj->onecurve = true;
+        $obj->checkcurve = true;
+
+        $obj->init();
+        /**
+         * Init Curve list
+         */
+        $obj->setMetricList("v$v_id");
+        $obj->initCurveList();
+
+        /**
+         * Create Legend
+         */
+        $obj->createLegend();
+
+        /**
+         * Display Images Binary Data
+         */
+        $lastline = exec($oreon->optGen["rrdtool_path_bin"] . $obj->displayImageFlow() . " 2>&1", $result, $rc);
+        $ckstate = (!$rc) ? '1' : '2';
+        $pearDB->query("UPDATE `virtual_metrics` SET `ck_state` = '$ckstate' WHERE `vmetric_id` ='$v_id';");
+        return array($rc, $lastline);
+    }
+    return null;
+}
