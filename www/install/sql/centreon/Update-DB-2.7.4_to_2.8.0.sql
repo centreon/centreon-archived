@@ -163,3 +163,8 @@ UPDATE topology SET topology_url = './include/Administration/performance/manageD
 
 -- OPTIMIZE Monitoring
 ALTER TABLE services ADD INDEX last_hard_state_change (last_hard_state_change);
+
+-- Remove meta service page in the monitoring
+DELETE FROM topology WHERE  topology_name = 'Meta Services' AND topology_parent = 202 AND (topology_page IS NULL OR topology_page = 20206);
+
+
