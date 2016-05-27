@@ -230,6 +230,9 @@ if ($criticality_id) {
                   AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
 }
 
+$request .= " AND h.name NOT LIKE '_Module_BAM%' ";
+
+
 if ($searchHost) {
     $request .= $searchHost;
 }
