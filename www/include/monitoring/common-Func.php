@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,19 +31,17 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
-if (!isset($oreon))
+if (!isset($centreon))
     exit();
 
 function getMyHostRow($host_id = NULL, $rowdata)
 {
+    global $pearDB;
+
     if (!$host_id)
         exit();
-    global $pearDB;
     while (1) {
         $DBRESULT = $pearDB->query("SELECT host_" . $rowdata . ", host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
@@ -332,5 +329,3 @@ function get_contacts_for_services($service_list, &$contacts, $withTpl = false) 
     }
     $DBRESULT->free();
 }
-
-?>
