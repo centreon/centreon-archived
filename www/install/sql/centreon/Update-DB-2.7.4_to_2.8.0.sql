@@ -148,7 +148,7 @@ UPDATE `nagios_server` SET `init_system` = 'systemv';
 
 ALTER TABLE topology DROP COLUMN topology_icone;
 
-ALTER TABLE host_service_relation DROP INDEX `host_host_id`;
+-- ALTER TABLE host_service_relation DROP INDEX `host_host_id`;
 
 -- Change option Path
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=general' WHERE topology_page = 50110; 
