@@ -271,33 +271,33 @@ $obj->XML->writeElement("use_criticality", $criticalityUsed);
 $obj->XML->endElement();
 
 $delimInit = 0;
-while ($ndo = $DBRESULT->fetchRow()) {
+while ($data = $DBRESULT->fetchRow()) {
     
-    if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
-        $duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
+    if ($data["last_state_change"] > 0 && time() > $data["last_state_change"]) {
+        $duration = CentreonDuration::toString(time() - $data["last_state_change"]);
     } else {
         $duration = "N/A";
     }
 
-    if (($ndo["last_hard_state_change"] > 0) && ($ndo["last_hard_state_change"] >= $ndo["last_state_change"])) {
-        $hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
-    } else if ($ndo["last_hard_state_change"] > 0) {
+    if (($data["last_hard_state_change"] > 0) && ($data["last_hard_state_change"] >= $data["last_state_change"])) {
+        $hard_duration = CentreonDuration::toString(time() - $data["last_hard_state_change"]);
+    } else if ($data["last_hard_state_change"] > 0) {
         $hard_duration = " N/A ";
     } else {
         $hard_duration = "N/A";
     }
 
-    if ($ndo['is_parent']) {
+    if ($data['is_parent']) {
         $delimInit = 1;
     }
 
     $class = null;
-    if ($ndo["scheduled_downtime_depth"] > 0) {
+    if ($data["scheduled_downtime_depth"] > 0) {
         $class = "line_downtime";
-    } else if ($ndo["state"] == 1) {
-        $ndo["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
+    } else if ($data["state"] == 1) {
+        $data["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
     } else {
-        if ($ndo["acknowledged"] == 1)
+        if ($data["acknowledged"] == 1)
             $class = "line_ack";
     }
 
@@ -308,47 +308,47 @@ while ($ndo = $DBRESULT->fetchRow()) {
     }
     $obj->XML->writeAttribute("class", $trClass);
     $obj->XML->writeElement("o", 	$ct++);
-    $obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["state"]]);
+    $obj->XML->writeElement("hc", 	$obj->colorHost[$data["state"]]);
     $obj->XML->writeElement("f", 	$flag);
-    $obj->XML->writeElement("hid",	$ndo["host_id"]);
-    $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($ndo["name"]), false);
-    $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($ndo["name"])));
-    $obj->XML->writeElement("a", 	($ndo["address"] ? CentreonUtils::escapeSecure($ndo["address"]) : "N/A"));
-    $obj->XML->writeElement("ou", 	($ndo["output"] ? CentreonUtils::escapeSecure($ndo["output"]) : "N/A"));
-    $obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? CentreonUtils::escapeSecure($obj->GMT->getDate($dateFormat, $ndo["last_check"])) : "N/A"));
-    $obj->XML->writeElement("cs", 	_($obj->statusHost[$ndo["state"]]), false);
-    $obj->XML->writeElement("pha", 	$ndo["acknowledged"]);
-    $obj->XML->writeElement("pce", 	$ndo["passive_checks"]);
-    $obj->XML->writeElement("ace", 	$ndo["active_checks"]);
+    $obj->XML->writeElement("hid",	$data["host_id"]);
+    $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($data["name"]), false);
+    $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
+    $obj->XML->writeElement("a", 	($data["address"] ? CentreonUtils::escapeSecure($data["address"]) : "N/A"));
+    $obj->XML->writeElement("ou", 	($data["output"] ? CentreonUtils::escapeSecure($data["output"]) : "N/A"));
+    $obj->XML->writeElement("lc", 	($data["last_check"] != 0 ? CentreonDuration::toString(time() - $data["last_check"])) : "N/A"));
+    $obj->XML->writeElement("cs", 	_($obj->statusHost[$data["state"]]), false);
+    $obj->XML->writeElement("pha", 	$data["acknowledged"]);
+    $obj->XML->writeElement("pce", 	$data["passive_checks"]);
+    $obj->XML->writeElement("ace", 	$data["active_checks"]);
     $obj->XML->writeElement("lsc", 	($duration ? $duration : "N/A"));
     $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
-    $obj->XML->writeElement("ha", 	$ndo["acknowledged"]);
-    $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
-    $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=".$ndo['host_id']);
+    $obj->XML->writeElement("ha", 	$data["acknowledged"]);
+    $obj->XML->writeElement("hdtm", $data["scheduled_downtime_depth"]);
+    $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=".$data['host_id']);
     $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-    $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=".$ndo['host_id']);
+    $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=".$data['host_id']);
     $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
-    $obj->XML->writeElement("hae", 	$ndo["active_checks"]);
-    $obj->XML->writeElement("hpe", 	$ndo["passive_checks"]);
-    $obj->XML->writeElement("ne", 	$ndo["notify"]);
-    $obj->XML->writeElement("tr", 	$ndo["check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
+    $obj->XML->writeElement("hae", 	$data["active_checks"]);
+    $obj->XML->writeElement("hpe", 	$data["passive_checks"]);
+    $obj->XML->writeElement("ne", 	$data["notify"]);
+    $obj->XML->writeElement("tr", 	$data["check_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
 
-    if (isset($ndo['criticality']) && $ndo['criticality'] != '' && isset($critCache[$ndo['host_id']])) {
+    if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['host_id']])) {
         $obj->XML->writeElement("hci", 1); // has criticality
-        $critData = $criticality->getData($critCache[$ndo['host_id']]);                    
+        $critData = $criticality->getData($critCache[$data['host_id']]);                    
         $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
         $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
     } else {
         $obj->XML->writeElement("hci", 0); // has no criticality
     }
-    $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
-    $obj->XML->writeElement("isp", 	$ndo["is_parent"] ? 1 : 0);
-    $obj->XML->writeElement("isf",  $ndo["flapping"]);
+    $obj->XML->writeElement("ico", 	$data["icon_image"]);
+    $obj->XML->writeElement("isp", 	$data["is_parent"] ? 1 : 0);
+    $obj->XML->writeElement("isf",  $data["flapping"]);
     $parenth = 0;
-    if ($ct === 1 && $ndo['is_parent']) {
+    if ($ct === 1 && $data['is_parent']) {
         $parenth = 1;
     }
-    if (!$sort_type && $delimInit && !$ndo['is_parent']) {
+    if (!$sort_type && $delimInit && !$data['is_parent']) {
         $delim = 1;
         $delimInit = 0;
     } else {
@@ -358,40 +358,40 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("delim", $delim);
 
     $hostObj = new CentreonHost($obj->DB);
-    if ($ndo["notes"] != "") {
-        $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["notes"])))));
+    if ($data["notes"] != "") {
+        $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], str_replace("\$HOSTNAME\$", $data["name"], str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"])))));
     } else {
         $obj->XML->writeElement("hnn", "none");
     }
 
-    if ($ndo["notes_url"] != "") {
-        $str = $ndo['notes_url'];
-        $str = str_replace("\$HOSTNAME\$", $ndo['name'], $str);
-        $str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
-        $str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
-        $str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+    if ($data["notes_url"] != "") {
+        $str = $data['notes_url'];
+        $str = str_replace("\$HOSTNAME\$", $data['name'], $str);
+        $str = str_replace("\$HOSTADDRESS\$", $data['address'], $str);
+        $str = str_replace("\$HOSTNOTES\$", $data['notes'], $str);
+        $str = str_replace("\$INSTANCENAME\$", $data['instance_name'], $str);
 
-        $str = str_replace("\$HOSTSTATEID\$", $ndo['state'], $str);
-        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['state']], $str);
+        $str = str_replace("\$HOSTSTATEID\$", $data['state'], $str);
+        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data['state']], $str);
 
-        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], $str)));
+        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $str);
+        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], $str)));
     } else {
         $obj->XML->writeElement("hnu", "none");
     }
 
-    if ($ndo["action_url"] != "") {
-        $str = $ndo['action_url'];
-        $str = str_replace("\$HOSTNAME\$", $ndo['name'], $str);
-        $str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
-        $str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
-        $str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+    if ($data["action_url"] != "") {
+        $str = $data['action_url'];
+        $str = str_replace("\$HOSTNAME\$", $data['name'], $str);
+        $str = str_replace("\$HOSTADDRESS\$", $data['address'], $str);
+        $str = str_replace("\$HOSTNOTES\$", $data['notes'], $str);
+        $str = str_replace("\$INSTANCENAME\$", $data['instance_name'], $str);
 
-        $str = str_replace("\$HOSTSTATEID\$", $ndo['state'], $str);
-        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['state']], $str);
+        $str = str_replace("\$HOSTSTATEID\$", $data['state'], $str);
+        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data['state']], $str);
 
-        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($ndo["name"], $str)));
+        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $str);
+        $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], $str)));
     } else {
         $obj->XML->writeElement("hau", "none");
     }
