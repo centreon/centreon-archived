@@ -4,20 +4,18 @@ Feature: Expire Ack
     To set a time limit to acknowledgements
 
     Background:
-        Given a Centreon server
-        And I am logged in
+        Given I am logged in a Centreon server
 
     Scenario: Check Host Acknowledgement Expiration
-        Given a host configured with expirations
-        And the host is in a critical state
+        Given a host configured with acknowledgement expiration
+        And the host is down
         And the host is acknowledged
-        When I wait the time limit set for expirations
+        When I wait the time limit set for expiration
         Then the host acknowledgement disappears
 
     Scenario: Check Service Acknowledgement Expiration
-        Given a host configured with expirations
-        And a service associated with this host
+        Given a service configured with acknowledgement expiration
         And the service is in a critical state
         And the service is acknowledged
-        When I wait the time limit set for expirations
+        When I wait the time limit set for expiration
         Then the service acknowledgement disappears

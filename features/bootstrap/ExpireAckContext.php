@@ -17,53 +17,51 @@ class ExpireAckContext extends CentreonContext
 {
     private $hostName;
     private $serviceName;
-    private $configurationPollersPage;
-    private $monitoringServicesPage;
-    private $monitoringHostsPage;
-    
+
     public function __construct()
     {
         parent::__construct();
         $this->hostName = 'ExpireAckTestHost';
+        $this->serviceHostName = 'Centreon-Server';
         $this->serviceName = 'ExpireAckTestService';
-        $this->configurationPollersPage = new ConfigurationPollersPage($this);
-        $this->monitoringServicesPage = new MonitoringServicesPage($this);
-        $this->monitoringHostsPage = new MonitoringHostsPage($this);
     }
 
     /**
-     * @Given a host configured with expirations
+     * @Given a host configured with acknowledgement expiration
      */
-    public function aHostConfiguredWithExpirations()
+    public function aHostConfiguredWithAckExpiration()
     {
         $hostPage = new HostConfigurationPage($this);
         $hostPage->toHostCreationPage($this->hostName);
         $hostPage->switchToTab('Data Processing');
-        $this->assertFind('named', array('id_or_name', 'host_acknowledgement_timeout'))->setValue(1);
+        $this->assertFindField('host_acknowledgement_timeout')->setValue(1);
         $hostPage->switchToTab('Host Configuration');
         $this->checkRadioButtonByValue('1', 'named', array('id_or_name', 'host_passive_checks_enabled[host_passive_checks_enabled]'));
         $this->checkRadioButtonByValue('0', 'named', array('id_or_name', 'host_active_checks_enabled[host_active_checks_enabled]'));
         $hostPage->saveHost();
         $this->configurationPollersPage->restartEngine();
     }
-    
+
     /**
-     * @Given a service associated with this host
+     * @Given a service configured with acknowledgement expiration
      */
-    public function aServiceAssociatedWithThisHost()
+    public function aServiceConfiguredWithAckExpiration()
     {
         $servicePage = new ServiceConfigurationPage($this);
-        $servicePage->toServiceCreationPage($this->hostName, $this->serviceName);
+        $servicePage->toServiceCreationPage($this->serviceHostName, $this->serviceName);
+        $servicePage->switchToTab('Data Processing');
+        $this->assertFindField('service_acknowledgement_timeout')->setValue(1);
+        $servicePage->switchToTab('General Information');
         $this->checkRadioButtonByValue('1', 'named', array('id_or_name', 'service_passive_checks_enabled[service_passive_checks_enabled]'));
         $this->checkRadioButtonByValue('0', 'named', array('id_or_name', 'service_active_checks_enabled[service_active_checks_enabled]'));
         $servicePage->saveService();
-        $this->configurationPollersPage->restartEngine();
+        (new ConfigurationPollersPage($this))->restartEngine();
     }
-    
+
     /**
-     * @Given the host is in a critical state
+     * @Given the host is down
      */
-    public function hostInACriticalState()
+    public function theHostIsDown()
     {
         $this->submitHostResult($this->hostName, 'DOWN');
         $hostName = $this->hostName;
@@ -78,12 +76,23 @@ class ExpireAckContext extends CentreonContext
      */
     public function serviceInACriticalState()
     {
-        $this->submitServiceResult($this->hostName, $this->serviceName, 'CRITICAL');
-        $hostName = $this->hostName;
+        $hostName = $this->serviceHostName;
         $serviceName = $this->serviceName;
+        (new MonitoringServicesPage($this))->listServices();
         $this->spin(function($ctx) use ($hostName, $serviceName) {
-            return ((new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName)
-                    == "CRITICAL");
+            try {
+                (new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName);
+                $found = TRUE;
+            }
+            catch (\Exception $e) {
+                $found = FALSE;
+            }
+            return $found;
+        });
+        $this->submitServiceResult($hostName, $serviceName, 'CRITICAL');
+        $this->spin(function($ctx) use ($hostName, $serviceName) {
+            $status = (new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName);
+            return ($status == 'CRITICAL');
         });
     }
 
@@ -92,7 +101,8 @@ class ExpireAckContext extends CentreonContext
      */
     public function hostAcknowledged()
     {
-        $this->monitoringServicesPage->addAcknowledgementOnHost(
+        $page = new MonitoringHostsPage($this);
+        $page->addAcknowledgementOnHost(
           $this->hostName,
           'Unit test',
           true,
@@ -105,32 +115,32 @@ class ExpireAckContext extends CentreonContext
             return ((new MonitoringHostsPage($ctx))->isHostAcknowledged($hostName));
         });
     }
-    
+
     /**
      * @Given the service is acknowledged
      */
     public function serviceAcknowledged()
     {
-       $this->monitoringServicesPage->addAcknowledgementOnService(
-         $this->hostName,
-         $this->serviceName,
-         'Unit test',
-         true,
-         true,
-         true,
-         false);
-        $hostName = $this->hostName;
+        $hostName = $this->serviceHostName;
         $serviceName = $this->serviceName;
+        $page = new MonitoringServicesPage($this);
+        $page->addAcknowledgementOnService(
+            $hostName,
+            $serviceName,
+            'Unit test',
+            true,
+            true,
+            true,
+            false);
         $this->spin(function($ctx) use ($hostName, $serviceName) {
             return ((new MonitoringServicesPage($ctx))->isServiceAcknowledged($hostName, $serviceName));
         });
-
     }
 
     /**
-     * @When I wait the time limit set for expirations
+     * @When I wait the time limit set for expiration
      */
-    public function iWaitTheTimeLimitSetForExpirations()
+    public function iWaitTheTimeLimitSetForExpiration()
     {
        $this->getSession()->wait(60000, '');
     }
@@ -142,23 +152,25 @@ class ExpireAckContext extends CentreonContext
     {
        $hostName = $this->hostName;
        $this->spin(function($ctx) use ($hostName) {
-         return (new MonitoringHostsPage($ctx))->isHostAcknowledged(
+         return !(new MonitoringHostsPage($ctx))->isHostAcknowledged(
            $hostName);
-       }, 20);
+       },
+       20);
     }
 
-    
+
     /**
      * @Then The service acknowledgement disappears
      */
     public function theServiceAcknowledgementDisappears()
     {
-       $hostName = $this->hostName;
+       $hostName = $this->serviceHostName;
        $serviceName = $this->serviceName;
        $this->spin(function($ctx) use ($hostName, $serviceName) {
-         return (new MonitoringServicesPage($ctx))->isServiceAcknowledged(
+         return !(new MonitoringServicesPage($ctx))->isServiceAcknowledged(
            $hostName,
            $serviceName);
-       }, 20);
+       },
+       20);
     }
 }
