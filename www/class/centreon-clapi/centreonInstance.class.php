@@ -36,6 +36,7 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
+require_once "centreon.Config.Poller.class.php";
 require_once "Centreon/Object/Instance/Instance.php";
 require_once "Centreon/Object/Host/Host.php";
 require_once "Centreon/Object/Relation/Instance/Host.php";
@@ -60,17 +61,17 @@ class CentreonInstance extends CentreonObject
     {
         parent::__construct();
         $this->object = new \Centreon_Object_Instance();
-        $this->params = array('localhost'                => '0',
-                              'ns_activate'              => '1',
-                              'ssh_port'                 => '22',
-                              'monitoring_engine'        => 'CENGINE',
-                              'nagios_bin'               => '/usr/sbin/centengine',
-                              'nagiostats_bin'           => '/usr/bin/centenginestats',
-                              'nagios_perfdata'          => '/var/log/centreon-engine/service-perfdata',
-                              'init_script'              => '/etc/init.d/centengine',
-                              'centreonbroker_cfg_path'  => '/etc/centreon-broker',
+        $this->params = array('localhost'                   => '0',
+                              'ns_activate'                 => '1',
+                              'ssh_port'                    => '22',
+                              'monitoring_engine'           => 'CENTGINE',
+                              'nagios_bin'                  => '/usr/sbin/centengine',
+                              'nagiostats_bin'              => '/usr/bin/centenginestats',
+                              'nagios_perfdata'             => '/var/log/centreon-engine/service-perfdata',
+                              'init_script'                 => '/etc/init.d/centengine',
+                              'centreonbroker_cfg_path'     => '/etc/centreon-broker',
                               'centreonbroker_module_path'  => '/usr/share/centreon/lib/centreon-broker',
-                              'centreonconnector_path'  => '/usr/lib64/centreon-connector');
+                              'centreonconnector_path'      => '/usr/lib64/centreon-connector');
         $this->insertParams = array('name', 'ns_ip_address', 'ssh_port', 'monitoring_engine');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey(), 'last_restart'));
         $this->action = "INSTANCE";
@@ -135,6 +136,9 @@ class CentreonInstance extends CentreonObject
         if (isset($parameters)) {
             $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
         }
+
+        $pollerState = CentreonConfigPoller::getPollerState();
+
         $params = array('id', 'name', 'localhost', 'ns_ip_address', 'ns_activate', 'ns_status', 'init_script',
                            'monitoring_engine', 'nagios_bin', 'nagiostats_bin', 'nagios_perfdata', 'ssh_port');
         $paramString = str_replace("_", " ", implode($this->delim, $params));
@@ -144,6 +148,11 @@ class CentreonInstance extends CentreonObject
         echo $paramString . "\n";
         $elements = $this->object->getList($params, -1, 0, null, null, $filters);
         foreach ($elements as $tab) {
+            if (isset($poller[$tab[1]])) {
+                $tab[5] = $poller[$tab[1]];
+            } else {
+                $tab[5] = '-';
+            }
             echo implode($this->delim, $tab) . "\n";
         }
     }
