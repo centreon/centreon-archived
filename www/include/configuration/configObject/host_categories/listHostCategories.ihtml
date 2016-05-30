@@ -9,7 +9,7 @@
           <td><h4>{t}Host category{/t}</h4></td>
         </tr>
         <tr>
-          <td><input name="searchHC" value="{$searchHC}"></td>
+          <td><input name="searchH" value="{$searchHC}"></td>
           <td><input type='submit' value='{t}Search{/t}' class="btc bt_success"/></td>
         </tr>
       </tbody>
@@ -49,7 +49,7 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostAct}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostDeact}</td>
-                        <td class="ListColCenter">{$elemArr[elem].RowMenu_hc_type}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_hc_type}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>

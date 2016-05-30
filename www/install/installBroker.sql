@@ -653,6 +653,7 @@ CREATE TABLE `services` (
   UNIQUE KEY `host_id` (`host_id`,`service_id`),
   KEY `service_id` (`service_id`),
   KEY `service_description` (`description`),
+  KEY `last_hard_state_change` (`last_hard_state_change`),
   CONSTRAINT `services_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

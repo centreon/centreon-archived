@@ -131,11 +131,20 @@ $obj->XML->startElement("reponse");
 $DBRESULT = $obj->DBC->query($rq1);
 if ($data = $DBRESULT->fetchRow()) {
     /* Split the plugin_output */
-    $outputLines = explode('\n', $data['output']);
+    $outputLines = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A|\n/', $data['output']);
     if (strlen($outputLines[0]) > 100) {
 	    $pluginShortOuput = sprintf("%.100s", $outputLines[0])."...";
     } else {
 	    $pluginShortOuput = $outputLines[0];
+    }
+    $longOutput = array();
+    if (isset($outputLines[1])) {
+    	for ($x = 1; isset($outputLines[$x]) && $x < 5; $x++) {
+    		$longOutput[] = $outputLines[$x];
+    	}
+    	if (isset($outputLines[5])) {
+    		$longOutput[] = "...";	
+    	}
     }
 
 	$obj->XML->writeElement("svc_name", CentreonUtils::escapeSecure($data["description"]), false);
@@ -184,6 +193,18 @@ if ($data = $DBRESULT->fetchRow()) {
 	$obj->XML->writeAttribute("name", _("Status Information"));
     $obj->XML->text(CentreonUtils::escapeSecure($pluginShortOuput), 0);
 	$obj->XML->endElement();
+
+	/*
+	 * Long Output
+	 */
+	$obj->XML->writeElement("long_name", _("Extended Status Information"), 0);
+   	foreach ($longOutput as $val) {
+    	if ($val != "") {
+			$obj->XML->startElement("long_output_data");
+            $obj->XML->writeElement("lo_data", $val);
+            $obj->XML->endElement();
+        }
+    }
 
 	$tab_perf = preg_split("/\ /", $data["perfdata"]);
 	foreach ($tab_perf as $val) {

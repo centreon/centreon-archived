@@ -33,8 +33,8 @@
  *
  */
 
-if (!isset($oreon) && !isset($centreon)) {
-    exit ();
+if (!isset($centreon)) {
+    exit();
 }
 
 /**
@@ -862,7 +862,7 @@ function insertService($ret = array(), $macro_on_demand = null)
 
     isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
     isset($ret["service_register"]) && $ret["service_register"] != NULL ? $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
-    isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL,";
+    isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'," : $rq .= "NULL,";
     isset($ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"] != NULL ? $rq .= "'".$ret["service_acknowledgement_timeout"]["service_acknowledgement_timeout"]."'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);

@@ -33,46 +33,31 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
-require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
-require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
-
-$pearDB = new CentreonDB();
-
-session_start();
-$centreon = $_SESSION['centreon'];
-
-$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
-$centreonLang->bindLang();
-
-if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
-	exit();
-}
-$sid = session_id();
-if (isset($sid)){
-	$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-	if (!$session = $res->fetchRow()) {
-		exit();
-	}
-} else {
-	exit;
+if (!isset($centreon)) {
+    exit();
 }
 
-define('SMARTY_DIR', _CENTREON_PATH_ . 'GPL_LIB/Smarty/libs/');
+require_once './class/centreonDuration.class.php';
+include_once("./include/monitoring/common-Func.php");
+include_once("./include/monitoring/external_cmd/cmd.php");
 
-require_once SMARTY_DIR . "Smarty.class.php";
+$continue = true;
 
-$o = htmlentities($_GET['o'], ENT_QUOTES, "UTF-8");
-$p = htmlentities($_GET['p'], ENT_QUOTES, "UTF-8");
-$cmd = htmlentities($_GET['cmd'], ENT_QUOTES, "UTF-8");
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-if ($cmd == 70 || $cmd == 72) {
-	require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_ack.php';
-} else if ($cmd == 74 || $cmd == 75) {
-	require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_downtime.php';
+$path_hg = "./include/monitoring/status/HostGroups/";
+
+$pathDetails = "./include/monitoring/objectDetails/";
+
+include_once("./class/centreonDB.class.php");
+
+switch ($o) {
+    case "hg"   : require_once($path_hg."hostGroup.php"); break;
+    case "hgpb" : require_once($path_hg."hostGroup.php"); break;
+    case "hgd"  : require_once($pathDetails."hostgroupDetails.php"); break;
+    default     : require_once($path_hg."hostGroup.php"); break;
 }
-exit();

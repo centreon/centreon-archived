@@ -147,3 +147,24 @@ ALTER TABLE nagios_server ADD COLUMN `init_system` varchar(255) DEFAULT 'sytemv'
 UPDATE `nagios_server` SET `init_system` = 'systemv';
 
 ALTER TABLE topology DROP COLUMN topology_icone;
+
+-- ALTER TABLE host_service_relation DROP INDEX `host_host_id`;
+
+-- Change option Path
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=general' WHERE topology_page = 50110; 
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=engine' WHERE topology_page = 50111; 
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=centcore' WHERE topology_page = 50117; 
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=ldap' WHERE topology_page = 50113; 
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=rrdtool' WHERE topology_page = 50114;
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=debug' WHERE topology_page = 50115; 
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=css' WHERE topology_page = 50116;
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=storage' WHERE topology_page = 50118;
+UPDATE topology SET topology_url = './include/Administration/performance/manageData.php' WHERE topology_page = 50119;
+
+-- OPTIMIZE Monitoring
+ALTER TABLE services ADD INDEX last_hard_state_change (last_hard_state_change);
+
+-- Remove meta service page in the monitoring
+DELETE FROM topology WHERE  topology_name = 'Meta Services' AND topology_parent = 202 AND (topology_page IS NULL OR topology_page = 20206);
+
+

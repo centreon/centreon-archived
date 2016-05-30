@@ -51,12 +51,12 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 /* 
  * Path to the option dir
  */
-$path = "./include/options/centStorage/";
+$path = "./include/Administration/performance/";
 
 /*
  * PHP functions
  */
-require_once("./include/options/oreon/generalOpt/DB-Func.php");
+require_once("./include/Administration/parameters/DB-Func.php");
 require_once("./include/common/common-Func.php");
 require_once("./class/centreonDB.class.php");
 

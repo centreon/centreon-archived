@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -52,7 +52,8 @@ function updateOption($pearDB, $key, $value) {
     $DBRESULT = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
 }
 
-function is_valid_path_images($path) {
+function is_valid_path_images($path)
+{
     if (trim($path) == '') {
         return true;
     }
@@ -62,41 +63,47 @@ function is_valid_path_images($path) {
     return false;
 }
 
-function is_valid_path($path) {
+function is_valid_path($path)
+{
     if (is_dir($path))
         return true;
     else
         return false;
 }
 
-function is_readable_path($path) {
+function is_readable_path($path)
+{
     if (is_dir($path) && is_readable($path))
         return true;
     return false;
 }
 
-function is_executable_binary($path) {
+function is_executable_binary($path)
+{
     if (is_file($path) && is_executable($path)) {
         return true;
     }
     return false;
 }
 
-function is_writable_path($path) {
+function is_writable_path($path)
+{
     if (is_dir($path) && is_writable($path)) {
         return true;
     }
     return false;
 }
 
-function is_writable_file($path) {
+function is_writable_file($path)
+{
     if (is_file($path) && is_writable($path)) {
         return true;
     }
     return false;
 }
 
-function is_writable_file_if_exist($path = NULL) {
+function is_writable_file_if_exist($path = NULL)
+{
     if (!$path) {
         return true;
     }
@@ -106,15 +113,17 @@ function is_writable_file_if_exist($path = NULL) {
     return false;
 }
 
-function updateGeneralOptInDB ($gopt_id = NULL)	{
+function updateGeneralOptInDB ($gopt_id = NULL)
+{
     if (!$gopt_id) {
         return;
     }
     updateGeneralOpt($gopt_id);
 }
 
-function updateNagiosConfigData($gopt_id = null) {
-    global $form, $pearDB, $oreon;
+function updateNagiosConfigData($gopt_id = null)
+{
+    global $form, $pearDB, $centreon;
 
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -127,11 +136,8 @@ function updateNagiosConfigData($gopt_id = null) {
     updateOption($pearDB, "broker_socket_path", isset($ret["broker_socket_path"]) && $ret["broker_socket_path"] != NULL ? $pearDB->escape($ret["broker_socket_path"]) : "NULL");
     updateOption($pearDB, "interval_length", isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $pearDB->escape($ret["interval_length"]) : "NULL");
     updateOption($pearDB, "broker", $pearDB->escape($ret['broker']));
-    if ($centreon->broker->getBroker() != $brokerOpt) {
-        $centreon->broker = new CentreonBroker($pearDB);
-        $pearDB->query("UPDATE acl_resources SET changed = 1");
-    }
-
+    $pearDB->query("UPDATE acl_resources SET changed = 1");
+    
     /*
      * Correlation engine
      */
@@ -173,10 +179,11 @@ function updateNagiosConfigData($gopt_id = null) {
     updateOption($pearDB, 'monitoring_svc_notification_2', isset($ret["monitoring_svc_notification_2"]) && $ret['monitoring_svc_notification_2'] ? 1 : 0);
     updateOption($pearDB, 'monitoring_svc_notification_3', isset($ret["monitoring_svc_notification_3"]) && $ret['monitoring_svc_notification_3'] ? 1 : 0);
         
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
 }
 
-function updateCentcoreConfigData($db, $form, $centreon) {
+function updateCentcoreConfigData($db, $form, $centreon)
+{
     $ret = $form->getSubmitValues();
     updateOption($db, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
     updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
@@ -185,8 +192,9 @@ function updateCentcoreConfigData($db, $form, $centreon) {
     $centreon->initOptGen($db);
 }
 
-function updateSNMPConfigData($gopt_id = null) {
-    global $form, $pearDB, $oreon;
+function updateSNMPConfigData($gopt_id = null)
+{
+    global $form, $pearDB, $centreon;
 
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -198,11 +206,12 @@ function updateSNMPConfigData($gopt_id = null) {
     updateOption($pearDB, "snmpttconvertmib_path_bin", isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $ret["snmpttconvertmib_path_bin"] : "NULL");
     updateOption($pearDB, "perl_library_path", isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $ret["perl_library_path"] : "NULL");
 
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
 }
 
-function updateDebugConfigData($gopt_id = null)	{
-    global $form, $pearDB, $oreon;
+function updateDebugConfigData($gopt_id = null)
+{
+    global $form, $pearDB, $centreon;
 
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -217,11 +226,12 @@ function updateDebugConfigData($gopt_id = null)	{
     updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
     updateOption($pearDB, "debug_centreontrapd", isset($ret["debug_centreontrapd"]) && $ret['debug_centreontrapd'] ? 1 : 0);
 
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
 }
 
-function updateLdapConfigData($gopt_id = null) {
-    global $form, $pearDB, $oreon;
+function updateLdapConfigData($gopt_id = null)
+{
+    global $form, $pearDB, $centreon;
 
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -239,11 +249,12 @@ function updateLdapConfigData($gopt_id = null) {
     updateOption($pearDB, "ldap_search_limit", isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8"): "NULL");
     updateOption($pearDB, "ldap_protocol_version", isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != NULL ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES, "UTF-8"): "NULL");
 
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
 }
 
-function updateGeneralConfigData($gopt_id = null) {
-    global $form, $pearDB, $oreon;
+function updateGeneralConfigData($gopt_id = null)
+{
+    global $form, $pearDB, $centreon;
 
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -276,11 +287,12 @@ function updateGeneralConfigData($gopt_id = null) {
     updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
     updateOption($pearDB, "centreon_support_email", isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != NULL ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL");
         
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
 }
 
-function updateRRDToolConfigData($gopt_id = null) {
-    global $form, $pearDB, $oreon;
+function updateRRDToolConfigData($gopt_id = null)
+{
+    global $form, $pearDB, $centreon;
 
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -301,10 +313,11 @@ function updateRRDToolConfigData($gopt_id = null) {
     updateOption($pearDB, "rrdcached_port", isset($ret['rrdcached_port']) ? $ret['rrdcached_port'] : '');
     updateOption($pearDB, "rrdcached_unix_path", isset($ret['rrdcached_unix_path']) ? htmlentities($ret['rrdcached_unix_path'], ENT_QUOTES, "UTF-8") : '');
 
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
 }
 
-function updateODSConfigData() {
+function updateODSConfigData()
+{
     global $form, $pearDBO, $pearDB;
 
     $ret = array();
@@ -352,8 +365,9 @@ function updateODSConfigData() {
     updateOption($pearDB, "centstorage_drop_file", isset($ret['centstorage_drop_file']) ? $pearDB->escape($ret['centstorage_drop_file']) : '');
 }
 
-function updateCASConfigData($gopt_id = null) {
-    global $form, $pearDB, $oreon;
+function updateCASConfigData($gopt_id = null)
+{
+    global $form, $pearDB, $centreon;
 
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -364,36 +378,5 @@ function updateCASConfigData($gopt_id = null) {
     updateOption($pearDB, "cas_url", isset($ret["cas_url"]) && $ret["cas_url"] != NULL ? $ret["cas_url"] : "NULL");
     updateOption($pearDB, "cas_version", isset($ret["cas_version"]) && $ret["cas_version"] != NULL ? $ret["cas_version"] : "NULL");
 
-    $oreon->initOptGen($pearDB);
+    $centreon->initOptGen($pearDB);
 }
-
-function updateReportingTimePeriodInDB() {
-    global $form, $pearDB;
-
-    $ret = $form->getSubmitValues();
-    (isset($ret["dayList"]["report_Monday"])) ? $ret["dayList"]["report_Monday"] = 1  : $ret["dayList"]["report_Monday"] = 0;
-    (isset($ret["dayList"]["report_Tuesday"])) ? $ret["dayList"]["report_Tuesday"] = 1  : $ret["dayList"]["report_Tuesday"] = 0;
-    (isset($ret["dayList"]["report_Wednesday"])) ? $ret["dayList"]["report_Wednesday"] = 1  : $ret["dayList"]["report_Wednesday"] = 0;
-    (isset($ret["dayList"]["report_Thursday"])) ? $ret["dayList"]["report_Thursday"] = 1  : $ret["dayList"]["report_Thursday"] = 0;
-    (isset($ret["dayList"]["report_Friday"])) ? $ret["dayList"]["report_Friday"] = 1  : $ret["dayList"]["report_Friday"] = 0;
-    (isset($ret["dayList"]["report_Saturday"])) ? $ret["dayList"]["report_Saturday"] = 1  : $ret["dayList"]["report_Saturday"] = 0;
-    (isset($ret["dayList"]["report_Sunday"])) ? $ret["dayList"]["report_Sunday"] = 1  : $ret["dayList"]["report_Sunday"] = 0;
-
-    foreach ($ret["dayList"] as $key => $value){
-        $query = "UPDATE `contact_param` SET `cp_value` = '".$ret["dayList"][$key]."' WHERE `cp_contact_id` IS NULL AND `cp_key` = '$key'";
-        $DBRESULT = $pearDB->query($query);
-    }
-
-    $query = "UPDATE `contact_param` SET cp_value = '".$ret["report_hour_start"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_hour_start'";
-    $DBRESULT = $pearDB->query($query);
-
-    $query = "UPDATE `contact_param` SET cp_value = '".$ret["report_minute_start"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_minute_start'";
-    $DBRESULT = $pearDB->query($query);
-
-    $query = "UPDATE `contact_param` SET cp_value = '".$ret["report_hour_end"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_hour_end'";
-    $DBRESULT = $pearDB->query($query);
-
-    $query = "UPDATE `contact_param` SET cp_value = '".$ret["report_minute_end"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_minute_end'";
-    $DBRESULT = $pearDB->query($query);
-}
-

@@ -166,8 +166,8 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	$hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
 
 	/*
-             * Manage flag for update time
-             */
+     * Manage flag for update time
+     */
 	$lastUpdateTimeFlag = 0;
 	if (!isset($nagiosInfo[$config["name"]]["last_alive"])) {
 	  $lastUpdateTimeFlag = 0;
