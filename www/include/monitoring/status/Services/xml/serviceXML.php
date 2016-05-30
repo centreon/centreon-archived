@@ -571,7 +571,7 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeElement("hpe", $data["h_passive_checks"]);
         $obj->XML->writeElement("nc", $obj->GMT->getDate($dateFormat, $data["next_check"]));
         if ($data["last_check"] != 0) {
-            $obj->XML->writeElement("lc", $obj->GMT->getDate($dateFormat, $data["last_check"]));
+            $obj->XML->writeElement("lc", CentreonDuration::toString(time() - $data["last_check"]));
         } else {
             $obj->XML->writeElement("lc", "N/A");
         }
