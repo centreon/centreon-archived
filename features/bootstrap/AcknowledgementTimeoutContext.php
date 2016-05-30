@@ -13,7 +13,7 @@ use Centreon\Test\Behat\ServiceConfigurationPage;
 /**
  * Defines application features from the specific context.
  */
-class ExpireAckContext extends CentreonContext
+class AcknowledgementTimeoutContext extends CentreonContext
 {
     private $hostName;
     private $serviceName;
@@ -39,7 +39,7 @@ class ExpireAckContext extends CentreonContext
         $this->checkRadioButtonByValue('1', 'named', array('id_or_name', 'host_passive_checks_enabled[host_passive_checks_enabled]'));
         $this->checkRadioButtonByValue('0', 'named', array('id_or_name', 'host_active_checks_enabled[host_active_checks_enabled]'));
         $hostPage->saveHost();
-        $this->configurationPollersPage->restartEngine();
+        (new ConfigurationPollersPage($this))->restartEngine();
     }
 
     /**

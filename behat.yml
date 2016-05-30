@@ -38,7 +38,7 @@ default:
       contexts:
         - RestartCentreonEngineContext
 
-    expire_ack:
-      paths: [ %paths.base%/features/ExpireAck.feature ]
+    acknowledgement_timeout:
+      paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
       contexts:
-        - ExpireAckContext
+        - AcknowledgementTimeoutContext
