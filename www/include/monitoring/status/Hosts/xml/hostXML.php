@@ -315,7 +315,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
     $obj->XML->writeElement("a", 	($data["address"] ? CentreonUtils::escapeSecure($data["address"]) : "N/A"));
     $obj->XML->writeElement("ou", 	($data["output"] ? CentreonUtils::escapeSecure($data["output"]) : "N/A"));
-    $obj->XML->writeElement("lc", 	($data["last_check"] != 0 ? CentreonDuration::toString(time() - $data["last_check"])) : "N/A"));
+    $obj->XML->writeElement("lc", 	($data["last_check"] != 0 ? CentreonDuration::toString(time() - $data["last_check"]) : "N/A"));
     $obj->XML->writeElement("cs", 	_($obj->statusHost[$data["state"]]), false);
     $obj->XML->writeElement("pha", 	$data["acknowledged"]);
     $obj->XML->writeElement("pce", 	$data["passive_checks"]);
