@@ -399,14 +399,14 @@ class CentreonCommand
         $sQuery = "INSERT INTO command "
             . "(command_name, command_line, command_type) "
             . "VALUES (";
-        ​
-        isset($parameters['command_name'] && $parameters['command_name'] != "") ? $sQuery .= $this->db->escape($parameters['command_name']) . ', ' : throw new \Exception('Command name is mandatory.');
-        isset($parameters['command_line'] && $parameters['command_line'] != "") ? $sQuery .= $this->db->escape($parameters['command_line']) . ', ' : throw new \Exception('Command line is mandatory.');
-        isset($parameters['command_type'] && $parameters['command_type'] != "") ? $sQuery .= $this->db->escape($parameters['command_type']) . ', ' : $sQuery .= "'2' ";
-​
+
+        (isset($parameters['command_name']) && $parameters['command_name'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_name']) . '", ' : '"", ';
+        (isset($parameters['command_line']) && $parameters['command_line'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_line']) . '", ' : '"", ';
+        (isset($parameters['command_type']) && $parameters['command_type'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_type']) . '"' : $sQuery .= "'2' ";
+
         $sQuery .= ")";
 
-        $res = $this->db->query($sQuery);
+        $res = $this->_db->query($sQuery);
         if (\PEAR::isError($res)) {
             throw new \Exception('Error while insert command '.$parameters['command_name']);
         }
@@ -422,12 +422,12 @@ class CentreonCommand
     public function update($command_id, $command)
     {
         $sQuery = "UPDATE `command` SET ";
-        $sQuery .= "`command_line` = '".$this->db->escape($command['command_line'])."', `command_type` = '".$this->db->escape($command['command_type']);
+        $sQuery .= "`command_line` = '".$this->_db->escape($command['command_line'])."', `command_type` = '".$this->_db->escape($command['command_type']);
         $sQuery .= "' WHERE `command_id` = ".$command_id;
 
-        $res = $this->db->query($sQuery);
+        $res = $this->_db->query($sQuery);
         if (\PEAR::isError($res)) {
-            throw new \Exception('Error while update command '.command['command_name']);
+            throw new \Exception('Error while update command ' . $command['command_name']);
         }
     }
     
