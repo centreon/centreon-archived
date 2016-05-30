@@ -131,18 +131,18 @@ $obj->XML->startElement("reponse");
 $DBRESULT = $obj->DBC->query($rq1);
 if ($data = $DBRESULT->fetchRow()) {
     /* Split the plugin_output */
-    preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $data['output'], $outputLines);
-    if (strlen($outputLines[1]) > 100) {
-	    $pluginShortOuput = sprintf("%.100s", $outputLines[1])."...";
+    $outputLines = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A|\n/', $data['output']);
+    if (strlen($outputLines[0]) > 100) {
+	    $pluginShortOuput = sprintf("%.100s", $outputLines[0])."...";
     } else {
-	    $pluginShortOuput = $outputLines[1];
+	    $pluginShortOuput = $outputLines[0];
     }
     $longOutput = array();
-    if (isset($outputLines[2])) {
-    	for ($x = 2; isset($outputLines[$x] && $x < 6); $x++) {
+    if (isset($outputLines[1])) {
+    	for ($x = 1; isset($outputLines[$x]) && $x < 5; $x++) {
     		$longOutput[] = $outputLines[$x];
     	}
-    	if (isset($outputLines[6]) {
+    	if (isset($outputLines[5])) {
     		$longOutput[] = "...";	
     	}
     }
@@ -197,12 +197,12 @@ if ($data = $DBRESULT->fetchRow()) {
 	/*
 	 * Long Output
 	 */
-	$buffer->writeElement("long_name", _("Extended Status Information"), 0);
+	$obj->XML->writeElement("long_name", _("Extended Status Information"), 0);
    	foreach ($longOutput as $val) {
     	if ($val != "") {
-			$buffer->startElement("long_output_data");
-            $buffer->writeElement("lo_data", $val);
-            $buffer->endElement();
+			$obj->XML->startElement("long_output_data");
+            $obj->XML->writeElement("lo_data", $val);
+            $obj->XML->endElement();
         }
     }
 

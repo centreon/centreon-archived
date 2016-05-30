@@ -169,7 +169,7 @@ abstract class AbstractObject {
         foreach ($this->attributes_array as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && is_array($object[$attr])) {
                 foreach ($object[$attr] as $v) {
-                    fwrite($this->fp, $this->toUTF8($attr . "=" . $v . " \n"));
+                    fwrite($this->fp, $this->toUTF8($attr . "=" . $v . "\n"));
                 }
             }
         }
@@ -179,19 +179,19 @@ abstract class AbstractObject {
                 continue;
             }
             foreach ($object[$attr] as $key => &$value) {
-                fwrite($this->fp, $this->toUTF8($key . "=" . $value . " \n"));
+                fwrite($this->fp, $this->toUTF8($key . "=" . $value . "\n"));
             }
         }
         
         foreach ($this->attributes_write as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && $object[$attr] != '') {
-                fwrite($this->fp, $this->toUTF8($attr . "=" . $object[$attr] . " \n"));
+                fwrite($this->fp, $this->toUTF8($attr . "=" . $object[$attr] . "\n"));
             }
         }
         
         foreach ($this->attributes_default as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && $object[$attr] != 2) {
-                fwrite($this->fp, $this->toUTF8($attr . "=" . $object[$attr] . " \n"));
+                fwrite($this->fp, $this->toUTF8($attr . "=" . $object[$attr] . "\n"));
             }
         }
     }

@@ -9,16 +9,16 @@
                     <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="criticality_id"></td>
                 </xsl:if>
                 <td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
-		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
-		<xsl:for-each select="//i">
-			<xsl:if test="o = 'svc_unhandled' or o = 'svcpb' or o = 'svc_warning' or o = 'svc_critical' or o = 'svc_unknown' or o = 'svc_unhandled_warning' or o = 'svc_unhandled_critical' or o = 'svc_unhandled_unknown'">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
-					<xsl:value-of select="hard_state_label"/>
-				</td>
-			</xsl:if>
-		</xsl:for-each>
+				<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
+				<xsl:for-each select="//i">
+					<xsl:if test="o = 'svc_unhandled' or o = 'svcpb' or o = 'svc_warning' or o = 'svc_critical' or o = 'svc_unknown' or o = 'svc_unhandled_warning' or o = 'svc_unhandled_critical' or o = 'svc_unhandled_unknown'">
+						<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
+							<xsl:value-of select="hard_state_label"/>
+						</td>
+					</xsl:if>
+				</xsl:for-each>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>                
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>

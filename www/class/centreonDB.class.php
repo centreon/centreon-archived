@@ -486,7 +486,7 @@ class CentreonDB
         /*
          * Get Version
          */
-        if ($res = $this->do->query("SELECT VERSION() AS mysql_version")){
+        if ($res = $this->db->query("SELECT VERSION() AS mysql_version")){
             $row = $res->fetchRow();
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];

@@ -125,7 +125,7 @@ class CentreonUtils
         if (isset($row['img_id']) && $row['img_id']) {
             $img_id = $row['img_id'];
         }
-	return $img_id;
+        return $img_id;
     }
     
     /**
