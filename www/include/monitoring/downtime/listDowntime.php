@@ -164,8 +164,8 @@ for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
 	$tab_downtime_svc[$i]['host_name'] = $data['host_name'];
 	$tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
 	$tab_downtime_svc[$i]['service_description'] = ($data['service_description'] != '' ? $data['service_description'] : '-');
-	$tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(_("m/d/Y H:i") , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
-	$tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(_("m/d/Y H:i") , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
+	$tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(_("Y/m/d H:i") , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
+	$tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(_("Y/m/d H:i") , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
         if ($data['service_description'] != '') {
             $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
             $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
@@ -193,7 +193,7 @@ foreach ($tab_downtime_svc as $key => $value) {
 	            $tab_downtime_svc[$key]["actual_end_time"] = _("Never Started");
 	        }
 	    } else {
-	        $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(_("m/d/Y H:i") , $tab_downtime_svc[$key]["actual_end_time"])." ";
+	        $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(_("Y/m/d H:i") , $tab_downtime_svc[$key]["actual_end_time"])." ";
 	    }
 	    $tab_downtime_svc[$key]["was_cancelled"] = $en[$tab_downtime_svc[$key]["was_cancelled"]];
 	}
