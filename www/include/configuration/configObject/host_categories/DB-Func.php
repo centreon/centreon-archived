@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($$centreon)) {
+if (!isset($centreon)) {
 	exit ();
 }
 
