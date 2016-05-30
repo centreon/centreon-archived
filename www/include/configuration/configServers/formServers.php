@@ -176,8 +176,8 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
     $monitoring_engines = array( "nagios_bin" => "/usr/sbin/centengine",
                                  "nagiostats_bin" => "/usr/sbin/centenginestats",
                                  "init_script" => "/etc/init.d/centengine",
-                                 "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata")
-            );
+                                 "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata");
+    
     $scriptD = str_replace("/etc/init.d/", '', $cfg_server['init_script']);
     if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
         $monitoring_engines['init_system'] = 'systemd';
