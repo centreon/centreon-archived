@@ -35,6 +35,7 @@
 
 namespace CentreonClapi;
 
+require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once "centreonUtils.class.php";
 
 /**
@@ -56,7 +57,7 @@ class CentreonACL
      */
     public function __construct()
     {
-        $this->db = Centreon_Db_Manager::factory('centreon');
+        $this->db = \Centreon_Db_Manager::factory('centreon');
     }
 
     /**
