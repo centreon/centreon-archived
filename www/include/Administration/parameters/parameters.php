@@ -60,8 +60,8 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
-    case "nagios" : 
-        require_once $path."nagios/form.php" ; 
+    case "engine" : 
+        require_once $path."engine/form.php" ; 
         break;
     case "snmp" : 
         require_once $path."snmp/form.php" ; 

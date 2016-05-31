@@ -131,8 +131,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $aclCond = "";
     if (!$centreon->user->admin) {
         $aclFrom = ", $aclDbName.centreon_acl acl ";
-        $aclCond = " AND h.host_id = acl.host_id
-                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+        $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
     }
     $rq = "SELECT h.host_id, h.host_activate
                FROM hostgroup_relation hgr, host h $aclFrom

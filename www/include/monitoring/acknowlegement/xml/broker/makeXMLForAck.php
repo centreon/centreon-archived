@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/xml/ndo/makeXMLForOneHost.php $
- * SVN : $Id: makeXMLForOneHost.php 12188 2011-05-04 15:45:01Z shotamchay $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
@@ -114,7 +111,7 @@ while ($row = $res->fetchRow()) {
     $xml->startElement('ack');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author']);
-    $xml->writeElement('entrytime', $centreonGMT->getDate('d/m/Y H:i:s', $row['entry_time']));
+    $xml->writeElement('entrytime', $centreonGMT->getDate('Y/m/d H:i:s', $row['entry_time']));
     $xml->writeElement('comment', $row['comment_data']);
     $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
     $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));

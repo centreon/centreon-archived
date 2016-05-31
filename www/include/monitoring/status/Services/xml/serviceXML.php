@@ -113,7 +113,7 @@ $search_host = $obj->checkArgument("search_host", $_GET, "");
 $search_output = $obj->checkArgument("search_output", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
 $order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 $search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 $search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
@@ -571,7 +571,7 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeElement("hpe", $data["h_passive_checks"]);
         $obj->XML->writeElement("nc", $obj->GMT->getDate($dateFormat, $data["next_check"]));
         if ($data["last_check"] != 0) {
-            $obj->XML->writeElement("lc", $obj->GMT->getDate($dateFormat, $data["last_check"]));
+            $obj->XML->writeElement("lc", CentreonDuration::toString(time() - $data["last_check"]));
         } else {
             $obj->XML->writeElement("lc", "N/A");
         }

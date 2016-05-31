@@ -158,7 +158,7 @@ $form->addRule('interval_length', _("This value must be a numerical value."), 'i
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path."/nagios", $tpl);
+$tpl = initSmartyTpl($path."/engine", $tpl);
 
 if (!isset($gopt["monitoring_engine"])) {
 	$gopt["monitoring_engine"] = "CENGINE";
