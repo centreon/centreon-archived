@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
 	exit();
 }
 
@@ -58,7 +58,6 @@ while ($data = $DBRESULT2->fetchRow()) {
         $gopt[$data['key']] = $data['value'];
     }
 }
-
 
 /*
  * Get insert_data state
@@ -158,14 +157,14 @@ if ($form->validate())	{
 	$centreon->initOptGen($pearDB);
 
 	$o = NULL;
-		$valid = true;
+	$valid = true;
 	$form->freeze();
 }
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'", 'class' => 'btc bt_info'));
+$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=storage'", 'class' => 'btc bt_info'));
 
 /*
  * Apply a template definition
@@ -177,7 +176,9 @@ $form->accept($renderer);
 
 $tpl->assign("ods_log_retention_unit", _("days"));
 
-    // prepare help texts
+/*
+ * prepare help texts
+ */
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
