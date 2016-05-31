@@ -129,10 +129,13 @@ if ($obj->is_admin) {
             "GROUP BY hg.name, h.state";
 }
 $DBRESULT = $obj->DBC->query($rq1);
-while ($ndo = $DBRESULT->fetchRow()) {
-    if (!isset($stats[$ndo["alias"]]))
-        $stats[$ndo["alias"]] = array("h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0), "s" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 3 => 0, 4 => 0));
-    $stats[$ndo["alias"]]["h"][$ndo["state"]] = $ndo["nb"];
+while ($data = $DBRESULT->fetchRow()) {
+    if (!isset($stats[$data["alias"]])) {
+        $stats[$data["alias"]] = array(
+                "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0), 
+                "s" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 3 => 0, 4 => 0));
+    }
+    $stats[$data["alias"]]["h"][$data["state"]] = $data["nb"];
 }
 $DBRESULT->free();
 
@@ -174,12 +177,14 @@ if ($obj->is_admin) {
 }
 
 $DBRESULT = $obj->DBC->query($rq2);
-while ($ndo = $DBRESULT->fetchRow()) {
-    if (!isset($stats[$ndo["alias"]])) {
-        $stats[$ndo["alias"]] = array("h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0), "s" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 3 => 0, 4 => 0));
+while ($data = $DBRESULT->fetchRow()) {
+    if (!isset($stats[$data["alias"]])) {
+        $stats[$data["alias"]] = array(
+                "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0), 
+                "s" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 3 => 0, 4 => 0));
     }
-    if ($stats[$ndo["alias"]]) {
-        $stats[$ndo["alias"]]["s"][$ndo["state"]] = $ndo["nb"];
+    if ($stats[$data["alias"]]) {
+        $stats[$data["alias"]]["s"][$data["state"]] = $data["nb"];
     }
 }
 
@@ -198,36 +203,39 @@ $obj->XML->endElement();
 
 $i = 0;
 $ct = 0;
-foreach ($stats as $name => $stat) {
-    if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
-        $class = $obj->getNextLineClass();
-        if (isset($stat["h"]) && count($stat["h"])) {
-            $obj->XML->startElement("l");
-            $obj->XML->writeAttribute("class", $class);
-            $obj->XML->writeElement("o", $ct++);
-            $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($convertTable[$name] . " (" . $name . ")"), false);
-            $obj->XML->writeElement("hu", $stat["h"][0]);
-            $obj->XML->writeElement("huc", $obj->colorHost[0]);
-            $obj->XML->writeElement("hd", $stat["h"][1]);
-            $obj->XML->writeElement("hdc", $obj->colorHost[1]);
-            $obj->XML->writeElement("hur", $stat["h"][2]);
-            $obj->XML->writeElement("hurc", $obj->colorHost[2]);
-            $obj->XML->writeElement("sc", $stat["s"][2]);
-            $obj->XML->writeElement("scc", $obj->colorService[2]);
-            $obj->XML->writeElement("sw", $stat["s"][1]);
-            $obj->XML->writeElement("swc", $obj->colorService[1]);
-            $obj->XML->writeElement("su", $stat["s"][3]);
-            $obj->XML->writeElement("suc", $obj->colorService[3]);
-            $obj->XML->writeElement("sk", $stat["s"][0]);
-            $obj->XML->writeElement("skc", $obj->colorService[0]);
-            $obj->XML->writeElement("sp", $stat["s"][4]);
-            $obj->XML->writeElement("spc", $obj->colorService[4]);
-            $obj->XML->writeElement("hgurl", CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]]));
-            $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]);
-            $obj->XML->endElement();
+
+if (isset($stats)) {
+    foreach ($stats as $name => $stat) {
+        if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
+            $class = $obj->getNextLineClass();
+            if (isset($stat["h"]) && count($stat["h"])) {
+                $obj->XML->startElement("l");
+                $obj->XML->writeAttribute("class", $class);
+                $obj->XML->writeElement("o", $ct++);
+                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($convertTable[$name] . " (" . $name . ")"), false);
+                $obj->XML->writeElement("hu", $stat["h"][0]);
+                $obj->XML->writeElement("huc", $obj->colorHost[0]);
+                $obj->XML->writeElement("hd", $stat["h"][1]);
+                $obj->XML->writeElement("hdc", $obj->colorHost[1]);
+                $obj->XML->writeElement("hur", $stat["h"][2]);
+                $obj->XML->writeElement("hurc", $obj->colorHost[2]);
+                $obj->XML->writeElement("sc", $stat["s"][2]);
+                $obj->XML->writeElement("scc", $obj->colorService[2]);
+                $obj->XML->writeElement("sw", $stat["s"][1]);
+                $obj->XML->writeElement("swc", $obj->colorService[1]);
+                $obj->XML->writeElement("su", $stat["s"][3]);
+                $obj->XML->writeElement("suc", $obj->colorService[3]);
+                $obj->XML->writeElement("sk", $stat["s"][0]);
+                $obj->XML->writeElement("skc", $obj->colorService[0]);
+                $obj->XML->writeElement("sp", $stat["s"][4]);
+                $obj->XML->writeElement("spc", $obj->colorService[4]);
+                $obj->XML->writeElement("hgurl", CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]]));
+                $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]);
+                $obj->XML->endElement();
+            }
         }
+        $i++;
     }
-    $i++;
 }
 
 if (!$ct) {
