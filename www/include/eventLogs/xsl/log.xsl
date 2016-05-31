@@ -154,7 +154,7 @@
             </td>
             <td style="padding-left:5px;">
                 <xsl:element name="a">
-                    <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="real_name" />&amp;service_description=<xsl:value-of select="service_description"/></xsl:attribute>
+                    <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="real_name" />&amp;service_description=<xsl:value-of select="real_service_name"/></xsl:attribute>
                     <xsl:attribute name="target">_blank</xsl:attribute>
                     <xsl:value-of select="service_description"/>
                 </xsl:element>
