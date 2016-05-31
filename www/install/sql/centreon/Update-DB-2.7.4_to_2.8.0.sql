@@ -164,4 +164,6 @@ UPDATE topology SET topology_url = './include/Administration/performance/manageD
 -- Remove meta service page in the monitoring
 DELETE FROM topology WHERE  topology_name = 'Meta Services' AND topology_parent = 202 AND (topology_page IS NULL OR topology_page = 20206);
 
-
+ALTER TABLE cfg_nagios DROP COLUMN `free_child_process_memory`;
+ALTER TABLE cfg_nagios DROP COLUMN `child_processes_fork_twice`;
+  
