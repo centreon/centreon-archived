@@ -155,8 +155,6 @@ class Engine extends AbstractObject {
         enable_predictive_host_dependency_checks,
         enable_predictive_service_dependency_checks,
         use_large_installation_tweaks,
-        free_child_process_memory,
-        child_processes_fork_twice,
         enable_environment_macros,
         use_setpgid
     ';
@@ -274,8 +272,6 @@ class Engine extends AbstractObject {
         'enable_predictive_host_dependency_checks',
         'enable_predictive_service_dependency_checks',
         'use_large_installation_tweaks',
-        'free_child_process_memory',
-        'child_processes_fork_twice',
         'enable_environment_macros',
         'use_setpgid', # cengine
     );
@@ -289,7 +285,8 @@ class Engine extends AbstractObject {
     protected $stmt_interval_length = null;
     protected $add_cfg_files = array();
     
-    private function buildCfgFile($poller_id) {
+    private function buildCfgFile($poller_id)
+    {
         $this->engine['cfg_dir'] = preg_replace('/\/$/', '', $this->engine['cfg_dir']);
         $this->cfg_file = array(
             'target' => array(
@@ -327,7 +324,8 @@ class Engine extends AbstractObject {
         }
     }
     
-    private function getBrokerModules() {
+    private function getBrokerModules()
+    {
         if (is_null($this->stmt_broker)) {
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
               broker_module
@@ -341,7 +339,8 @@ class Engine extends AbstractObject {
         $this->engine['broker_module'] = $this->stmt_broker->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    private function getIntervalLength() {
+    private function getIntervalLength()
+    {
         if (is_null($this->stmt_interval_length)) {
             $this->stmt_interval_length = $this->backend_instance->db->prepare("SELECT
 				`value`
@@ -353,7 +352,8 @@ class Engine extends AbstractObject {
         $this->engine['interval_length'] = $this->stmt_interval_length->fetchAll(PDO::FETCH_COLUMN);
     }
     
-    private function generate($poller_id) {
+    private function generate($poller_id)
+    {
         if (is_null($this->stmt_engine)) {
             $this->stmt_engine = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
@@ -406,7 +406,8 @@ class Engine extends AbstractObject {
         $this->close_file();
     }
     
-    public function generateFromPoller($poller) {
+    public function generateFromPoller($poller)
+    {
         if (!is_null($poller['monitoring_engine']) && $poller['monitoring_engine'] == 'CENGINE') {
             Connector::getInstance()->generateObjects($poller['centreonconnector_path']);
         }
@@ -416,11 +417,13 @@ class Engine extends AbstractObject {
         $this->generate($poller['id']);
     }
 
-    public function addCfgPath($cfg_path) {
+    public function addCfgPath($cfg_path)
+    {
         $this->add_cfg_files[] = $cfg_path;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->add_cfg_files = array();
     }
 }
