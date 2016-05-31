@@ -140,8 +140,6 @@ class CentreonNagiosCfg extends CentreonObject
                                 'enable_predictive_host_dependency_checks'=> '2',
                                 'enable_predictive_service_dependency_checks'=> '2',
                                 'use_large_installation_tweaks'           => '2',
-                                'free_child_process_memory'               => '2',
-                                'child_processes_fork_twice'              => '2',
                                 'enable_environment_macros'               => '2',
                                 'debug_level'                             => '0',
                                 'debug_level_opt'                         => '0',
