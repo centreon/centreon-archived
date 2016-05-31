@@ -74,7 +74,7 @@ $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "alias");
 $order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "m/d/Y H:i:s");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 $grouplistStr = $obj->access->getAccessGroupsString();
 
 
@@ -230,4 +230,3 @@ $obj->header();
  * Send XML
  */
 $obj->XML->output();
-?>

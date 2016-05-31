@@ -181,7 +181,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $graphs = array();
         while ($ndo = $DBRESULT->fetchRow()) {
             if (isset($lcaHost["LcaHost"][$host_name][$ndo['service_description']]) || $is_admin) {
-                $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $ndo["last_check"]);
+                $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
                 $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
                 $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
                 $ndo['line_class'] = $class;
@@ -323,13 +323,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
 
         $host_status[$host_name]["status_class"] = $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
-        $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $host_status[$host_name]["last_check"]);
-        $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $host_status[$host_name]["next_check"]) : "";
-        !$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $host_status[$host_name]["last_notification"]);
-        !$host_status[$host_name]["next_notification"] ? $host_status[$host_name]["next_notification"] = "": $host_status[$host_name]["next_notification"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), $host_status[$host_name]["next_notification"]);
+        $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
+        $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
+        !$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
+        !$host_status[$host_name]["next_notification"] ? $host_status[$host_name]["next_notification"] = "": $host_status[$host_name]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_notification"]);
         !$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = CentreonDuration::toString(time() - $host_status[$host_name]["last_state_change"]);
-        !$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"),$host_status[$host_name]["last_state_change"]);
-        $host_status[$host_name]["last_update"] = $oreon->CentreonGMT->getDate(_("m/d/Y - H:i:s"), time());
+        !$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"]);
+        $host_status[$host_name]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
 
         if ($host_status[$host_name]["problem_has_been_acknowledged"]) {
             $host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>("._("ACKNOWLEDGED").")</b>";

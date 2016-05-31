@@ -387,5 +387,48 @@ class CentreonCommand
         
         return $row['command_id'];
     }
+
+    /**
+     * Insert in database a command
+     *
+     * @param array $parameters Values to insert (command_name and command_line is mandatory)
+     * @throws Exception
+     */
+    public function insert($parameters)
+    {
+        $sQuery = "INSERT INTO command "
+            . "(command_name, command_line, command_type) "
+            . "VALUES (";
+
+        (isset($parameters['command_name']) && $parameters['command_name'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_name']) . '", ' : '"", ';
+        (isset($parameters['command_line']) && $parameters['command_line'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_line']) . '", ' : '"", ';
+        (isset($parameters['command_type']) && $parameters['command_type'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_type']) . '"' : $sQuery .= "'2' ";
+
+        $sQuery .= ")";
+
+        $res = $this->_db->query($sQuery);
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while insert command '.$parameters['command_name']);
+        }
+    }
+
+    /**
+     * Update in database a command
+     *
+     * @param int $command_id Id of command
+     * @param array $command Values to set
+     * @throws Exception
+     */
+    public function update($command_id, $command)
+    {
+        $sQuery = "UPDATE `command` SET ";
+        $sQuery .= "`command_line` = '".$this->_db->escape($command['command_line'])."', `command_type` = '".$this->_db->escape($command['command_type']);
+        $sQuery .= "' WHERE `command_id` = ".$command_id;
+
+        $res = $this->_db->query($sQuery);
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while update command ' . $command['command_name']);
+        }
+    }
     
 }

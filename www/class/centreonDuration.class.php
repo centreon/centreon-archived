@@ -31,20 +31,20 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
 class CentreonDuration
 {
-	function toString ($duration, $periods = null){
-        if (!is_array($duration))
+	function toString ($duration, $periods = null)
+    {
+        if (!is_array($duration)) {
             $duration = CentreonDuration::int2array($duration, $periods);
+        }
         return CentreonDuration::array2string($duration);
     }
  
-    function int2array ($seconds, $periods = null){        
+    function int2array ($seconds, $periods = null)
+    {        
         // Define time periods
         if (!is_array($periods)) {
             $periods = array (
@@ -63,27 +63,34 @@ class CentreonDuration
         foreach ($periods as $period => $value) {
             $count = floor($seconds / $value);
  
-            if ($count == 0)
+            if ($count == 0) {
                 continue;
+            }
  
             $values[$period] = $count;
             $seconds = $seconds % $value;
         }
  
         // Return
-        if (empty($values))
+        if (empty($values)) {
             $values = null;
- 
+        }
         return $values;
     }
  
-    function array2string ($duration){
-        if (!is_array($duration))
+    function array2string ($duration)
+    {
+        if (!is_array($duration)) {
             return false;
+        }
 
+        $i = 0;
         foreach ($duration as $key => $value) {
-            $segment = $value . '' . $key;
-            $array[] = $segment;
+            if ($i < 2) {
+                $segment = $value . '' . $key;
+                $array[] = $segment;
+                $i++;
+            }
         }
         $str = implode(' ', $array);
         return $str;
@@ -126,7 +133,8 @@ class Duration_hours_minutes
         return $values;
     }
  
-    function array2string ($duration)	{
+    function array2string ($duration)
+    {
         if (!is_array($duration))
             return false;
 
@@ -138,4 +146,3 @@ class Duration_hours_minutes
         return $str;
     }
 }
-?>
