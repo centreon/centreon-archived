@@ -565,10 +565,9 @@ sub initEngine($$){
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
         if ($conf->{init_system} eq 'systemd') {
-            my $initSystem = $conf->{init_script};
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemct $options ".$conf->{init_script};
-        } else if ($conf->{init_system} eq 'systemv') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$initSystem." ".$options;
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemctl $options ".$conf->{init_script};
+        } elsif ($conf->{init_system} eq 'systemv') {
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
         } else {
            $self->{logger}->writeLogError("Unknown init system for poller $id");
            return;
