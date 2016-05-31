@@ -34,13 +34,12 @@
  *
  */
 
-
 $aDefaultBrokerDirective = array(
     'ui' => '/usr/lib64/centreon-engine/externalcmd.so',
     'wizard' => '/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml'
 );
 
- $aInstanceDefaultValues = array(
+$aInstanceDefaultValues = array(
 	'log_file' => '/var/log/centreon-engine/centengine.log',
 	'cfg_dir' => '/etc/centreon-engine/', 
 	'object_cache_file' => '/var/log/centreon-engine/objects.cache', 
@@ -134,12 +133,9 @@ $aDefaultBrokerDirective = array(
 	'max_debug_file_size' => '1000000000',
 	'daemon_dumps_core' => '0',
 	'cfg_file' => 'centengine.cfg',
-        'use_check_result_path' => '0',
+    'use_check_result_path' => '0',
     'cached_host_check_horizon' => '60'
 );
- 
- 
- 
 
 function insertBrokerDefaultDirectives($iId, $source)
 {
