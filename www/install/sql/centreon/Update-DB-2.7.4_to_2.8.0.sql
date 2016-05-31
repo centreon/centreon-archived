@@ -166,4 +166,6 @@ DELETE FROM topology WHERE  topology_name = 'Meta Services' AND topology_parent 
 
 ALTER TABLE cfg_nagios DROP COLUMN `free_child_process_memory`;
 ALTER TABLE cfg_nagios DROP COLUMN `child_processes_fork_twice`;
+
+UPDATE topology set readonly = '0' WHERE topology_page = 60901;
   
