@@ -41,7 +41,7 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function iSelectTheMethodRestart()
     {
-        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Reload');
+        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Restart');
     }
 
     /**
@@ -49,7 +49,7 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function iSelectTheMethodReload()
     {
-        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Restart');
+        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Reload');
     }
 
     /**
