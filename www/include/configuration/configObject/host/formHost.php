@@ -346,8 +346,7 @@ $DBRESULT->free();
  * Host Categories comes from DB -> Store in $hcs Array
  */
 $hcs = array();
-$DBRESULT = $pearDB->query("SELECT hc_id, hc_name
-                                FROM hostcategories WHERE level IS NULL " .
+$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories WHERE level IS NULL " .
         ($hcString != "''" ? $acl->queryBuilder('AND', 'hc_id', $hcString) : "") .
         " ORDER BY hc_name");
 while ($hc = $DBRESULT->fetchRow())
@@ -362,7 +361,7 @@ $aclCond = "";
 if (!$centreon->user->admin) {
     $aclFrom = ", $aclDbName.centreon_acl acl ";
     $aclCond = " AND h.host_id = acl.host_id
-                      AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
+                 AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 $hostPs = array();
 $DBRESULT = $pearDB->query("SELECT h.host_id, h.host_name, host_template_model_htm_id
@@ -1032,13 +1031,13 @@ if ($o != "mc") {
     }
     if ($mustApplyFormRule) {
         $form->addRule('host_alias', _("Compulsory Alias"), 'required');
-        //$form->addRule('host_max_check_attempts', _("Required Field"), 'required');
     }
 } else if ($o == "mc") {
-    if ($form->getSubmitValue("submitMC"))
+    if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
-    else
+    } else {
         $from_list_menu = true;
+    }
 }
 
 $form->setRequiredNote("<i style='color: red;'>*</i>&nbsp;" . _("Required fields"));
