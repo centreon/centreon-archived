@@ -482,6 +482,8 @@ class CentreonDB
      */
     function getProperties()
     {
+        $unitMultiple = 1024*1024;
+
         $info = array('version' => null, 'dbsize' => 0, 'rows' => 0, 'datafree' => 0, 'indexsize' => 0);
         /*
          * Get Version
@@ -491,16 +493,20 @@ class CentreonDB
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
             if ($DBRESULT = $this->db->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")){
-                while ($tabledata_ary = $DBRESULT->fetchRow()) {
-                    $info['dbsize'] += $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
-                    $info['indexsize'] += $tabledata_ary['Index_length'];
-                    $info['rows'] += $tabledata_ary['Rows'];
-                    $info['datafree'] += $tabledata_ary['Data_free'];
+                while ($data = $DBRESULT->fetchRow()) {
+                    $info['dbsize'] += $data['Data_length'] + $data['Index_length'];
+                    $info['indexsize'] += $data['Index_length'];
+                    $info['rows'] += $data['Rows'];
+                    $info['datafree'] += $data['Data_free'];
                 }
                 $DBRESULT->free();
+            }
+            foreach ($info as $key => $value) {
+                if ($key != "rows") {
+                   $info[$key] = round($value / $unitMultiple, 2); 
+                }
             }
         }
         return $info;
     }
-
 }

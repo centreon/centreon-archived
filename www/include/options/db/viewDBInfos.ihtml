@@ -1,0 +1,53 @@
+<h2>DataBase Informations</h2>
+<hr>
+<table width='100%'>
+	<tr>
+		<td width='60%'>
+			<table class="ListTable">
+			 	<tr class="ListHeader"><td class="FormHeader" colspan="3">{t}Centreon DataBase Statistics{/t}</td></tr>
+				<tr class="list_lvl_1">
+					<td class="ListColLvl1_name">&nbsp;</td>
+					<td class="ListColLvl1_name">{$conf_centreon.db}</td>
+					<td class="ListColLvl1_name">{$conf_centreon.dbcstg}</td> 
+				</tr>
+			 	<tr class="list_one">
+			 		<td class="FormRowField">{t}Data size{/t}</td>
+			 		<td class="FormRowValue">{$dataCentreon.dbsize} Mo</td>
+			 		<td class="FormRowValue">{$dataCentstorage.dbsize} Mo</td>
+			 	</tr>
+			 	<tr class="list_two">
+			 		<td class="FormRowField">{t}Index size{/t}</td>
+			 		<td class="FormRowValue">{$dataCentreon.indexsize} Mo</td>
+			 		<td class="FormRowValue">{$dataCentstorage.indexsize} Mo</td>
+			 	</tr>
+			 	<tr class="list_one">
+					<td class="FormRowField">{t}Number of entries{/t}</td>
+			 		<td class="FormRowValue">{$dataCentreon.rows}</td>
+			 		<td class="FormRowValue">{$dataCentstorage.rows}</td>
+				</tr>
+				<tr class="list_two">
+					<td class="FormRowField">{t}Data free{/t}</td>
+			 		<td class="FormRowValue">{$dataCentreon.datafree} Mo</td>
+			 		<td class="FormRowValue">{$dataCentstorage.datafree} Mo</td>
+				</tr>
+			</table>
+		</td>
+		<td width='2%' style='vertical-align:top;'>&nbsp;</td>
+		<td width='38%' style='vertical-align:top;'>
+			<table class="ListTable">
+			 	<tr class="ListHeader"><td class="FormHeader" colspan="3">{t}Database Engine{/t}</td></tr>
+				<tr class="list_one">
+					<td class="FormRowField">{t}Name{/t}</td>
+			 		<td class="FormRowValue">{$dataCentreon.version}</td>
+				</tr>
+			 	<tr class="list_one">			 		
+					<td class="FormRowField">{t}Version{/t}</td>
+			 		<td class="FormRowValue">{$dataCentreon.version}</td>
+			 	</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br>
+<h2>Database partitioning</h2>
+<hr>

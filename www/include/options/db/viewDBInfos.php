@@ -45,32 +45,12 @@ require_once './class/centreonDB.class.php';
 $dataCentreon = $pearDB->getProperties();
 $dataCentstorage = $pearDBO->getProperties();
 
-?>
-<table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="3"><?php print _("Centreon DataBase Statistics"); ?></td></tr>
-	<tr class="list_lvl_1">
-		<td class="ListColLvl1_name">&nbsp;</td>
-		<td class="ListColLvl1_name"><?php echo $conf_centreon["db"]; ?></td>
-		<td class="ListColLvl1_name"><?php echo $conf_centreon["dbcstg"]; ?></td> 
-	</tr>
- 	<tr class="list_one">
- 		<td class="FormRowField"><?php print _("Data size") ; ?></td>
- 		<td class="FormRowValue"><?php print round($dataCentreon[0], 2); ?> Mo</td>
- 		<td class="FormRowValue"><?php print round($dataCentstorage[0], 2); ?> Mo</td>
- 	</tr>
- 	<tr class="list_two">
- 		<td class="FormRowField"><?php print _("Index size") ; ?></td>
- 		<td class="FormRowValue"><?php print round($dataCentreon[1], 2); ?> Mo</td>
- 		<td class="FormRowValue"><?php print round($dataCentstorage[1], 2); ?> Mo</td>
- 	</tr>
- 	<tr class="list_one">
-		<td class="FormRowField"><?php print _("Number of entries") ; ?></td>
- 		<td class="FormRowValue"><?php print $dataCentreon[2]; ?></td>
- 		<td class="FormRowValue"><?php print $dataCentstorage[2]; ?></td>
-	</tr>
-	<tr class="list_two">
-		<td class="FormRowField"><?php print _("Data free") ; ?></td>
- 		<td class="FormRowValue"><?php print round($dataCentreon[3], 2); ?> Mo</td>
- 		<td class="FormRowValue"><?php print round($dataCentstorage[3], 2); ?> Mo</td>
-	</tr>
-</table>
+// Smarty template Init
+$tpl = new Smarty();
+$tpl = initSmartyTpl("./include/options/db/", $tpl);
+
+$tpl->assign('conf_centreon', $conf_centreon);
+$tpl->assign('dataCentreon', $dataCentreon);
+$tpl->assign('dataCentstorage', $dataCentstorage);
+
+$tpl->display("viewDBInfos.ihtml");
