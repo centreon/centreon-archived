@@ -879,13 +879,6 @@ $form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), 
 $form->addElement('text', 'host_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
 $form->addElement('text', 'host_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
-$hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, _("Yes"), '1');
-$hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, _("No"), '0');
-$hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, _("Default"), '2');
-$form->addGroup($hostPPD, 'host_process_perf_data', _("Process Perf Data"), '&nbsp;');
-if ($o != "mc")
-    $form->setDefaults(array('host_process_perf_data' => '2'));
-
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("Yes"), '1');
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("No"), '0');
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("Default"), '2');
@@ -1156,7 +1149,6 @@ if ($valid) {
     $tpl->assign('p', $p);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));
-    $tpl->assign("Perfdata_Options", _("Perfdata Options"));
     $tpl->assign("History_Options", _("History Options"));
     $tpl->assign("Event_Handler", _("Event Handler"));
     $tpl->assign("topdoc", _("Documentation"));

@@ -694,7 +694,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
             "host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_retry_check_interval, host_active_checks_enabled, " .
             "host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
             "host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
-            "host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
+            "host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
             "host_notification_options, host_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community, " .
             "host_snmp_version, host_location, host_comment, host_register, host_activate, host_acknowledgement_timeout) " .
             "VALUES ( ";
@@ -721,7 +721,6 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
     isset($ret["host_low_flap_threshold"]) && $ret["host_low_flap_threshold"] != NULL ? $rq .= "'" . $ret["host_low_flap_threshold"] . "', " : $rq .= "NULL, ";
     isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != NULL ? $rq .= "'" . $ret["host_high_flap_threshold"] . "', " : $rq .= "NULL, ";
     isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"]) && $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] != 2 ? $rq .= "'" . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', " : $rq .= "'2', ";
-    isset($ret["host_process_perf_data"]["host_process_perf_data"]) && $ret["host_process_perf_data"]["host_process_perf_data"] != 2 ? $rq .= "'" . $ret["host_process_perf_data"]["host_process_perf_data"] . "', " : $rq .= "'2', ";
     isset($ret["host_retain_status_information"]["host_retain_status_information"]) && $ret["host_retain_status_information"]["host_retain_status_information"] != 2 ? $rq .= "'" . $ret["host_retain_status_information"]["host_retain_status_information"] . "', " : $rq .= "'2', ";
     isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]) && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2 ? $rq .= "'" . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', " : $rq .= "'2', ";
     isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL ? $rq .= "'" . $ret["host_notification_interval"] . "', " : $rq .= "NULL, ";
@@ -870,8 +869,6 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
         $fields["host_high_flap_threshold"] = $ret["host_high_flap_threshold"];
     if (isset($ret["host_flap_detection_enabled"]))
         $fields["host_flap_detection_enabled"] = $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"];
-    if (isset($ret["host_process_perf_data"]))
-        $fields["host_process_perf_data"] = $ret["host_process_perf_data"]["host_process_perf_data"];
     if (isset($ret["host_retain_status_information"]))
         $fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
     if (isset($ret["host_retain_nonstatus_information"]))
@@ -1185,8 +1182,6 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
     isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != NULL ? $rq .= "'" . $ret["host_high_flap_threshold"] . "', " : $rq .= "NULL, ";
     $rq .= "host_flap_detection_enabled = ";
     isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"]) && $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] != 2 ? $rq .= "'" . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', " : $rq .= "'2', ";
-    $rq .= "host_process_perf_data = ";
-    isset($ret["host_process_perf_data"]["host_process_perf_data"]) && $ret["host_process_perf_data"]["host_process_perf_data"] != 2 ? $rq .= "'" . $ret["host_process_perf_data"]["host_process_perf_data"] . "', " : $rq .= "'2', ";
     $rq .= "host_retain_status_information = ";
     isset($ret["host_retain_status_information"]["host_retain_status_information"]) && $ret["host_retain_status_information"]["host_retain_status_information"] != 2 ? $rq .= "'" . $ret["host_retain_status_information"]["host_retain_status_information"] . "', " : $rq .= "'2', ";
     $rq .= "host_retain_nonstatus_information = ";
@@ -1332,8 +1327,6 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
         $fields["host_high_flap_threshold"] = $ret["host_high_flap_threshold"];
     if (isset($ret["host_flap_detection_enabled"]))
         $fields["host_flap_detection_enabled"] = $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"];
-    if (isset($ret["host_process_perf_data"]))
-        $fields["host_process_perf_data"] = $ret["host_process_perf_data"]["host_process_perf_data"];
     if (isset($ret["host_retain_status_information"]))
         $fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
     if (isset($ret["host_retain_nonstatus_information"]))
@@ -1512,10 +1505,6 @@ function updateHost_MC($host_id = null) {
         $rq .= "host_flap_detection_enabled = '" . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', ";
         $fields["host_flap_detection_enabled"] = $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"];
     }
-    if (isset($ret["host_process_perf_data"]["host_process_perf_data"])) {
-        $rq .= "host_process_perf_data = '" . $ret["host_process_perf_data"]["host_process_perf_data"] . "', ";
-        $fields["host_process_perf_data"] = $ret["host_process_perf_data"]["host_process_perf_data"];
-    }
     if (isset($ret["host_retain_status_information"]["host_retain_status_information"])) {
         $rq .= "host_retain_status_information = '" . $ret["host_retain_status_information"]["host_retain_status_information"] . "', ";
         $fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
@@ -1528,12 +1517,10 @@ function updateHost_MC($host_id = null) {
         $rq .= "host_notifications_enabled = '" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', ";
         $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
     }
-    
     if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
         $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
         $fields["contact_additive_inheritance"] = $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"];
     }
-
     if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"]) && in_array($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"], array('0', '1'))) {
         $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
         $fields["cg_additive_inheritance"] = $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"];
@@ -1567,7 +1554,7 @@ function updateHost_MC($host_id = null) {
         $fields["host_activate"] = $ret["host_activate"]["host_activate"];
     }
     if (strcmp("UPDATE host SET ", $rq)) {
-# Delete last ',' in request
+        # Delete last ',' in request
         $rq[strlen($rq) - 2] = " ";
         $rq .= "WHERE host_id = '" . $host_id . "'";
         $DBRESULT = $pearDB->query($rq);

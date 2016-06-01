@@ -347,12 +347,7 @@
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
-	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$Perfdata_Options}</h4>
-      </td>
-    </tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="process_perf_data"> {$form.host_process_perf_data.label}</td><td class="FormRowValue">{$form.host_process_perf_data.html}</td></tr>
+	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
       <h4>{$History_Options}</h4>
     </td></tr>
