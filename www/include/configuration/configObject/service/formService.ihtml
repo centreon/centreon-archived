@@ -243,7 +243,7 @@
           </td>
         </tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_service"> {$form.service_obsess_over_service.label}</td><td class="FormRowValue">{$form.service_obsess_over_service.html}</td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_acknowledgement_timeout"> {$form.service_acknowledgement_timeout.label}</td><td class="FormRowValue">{$form.service_acknowledgement_timeout.html}&nbsp;{$seconds}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_acknowledgement_timeout"> {$form.service_acknowledgement_timeout.label}</td><td class="FormRowValue">{$form.service_acknowledgement_timeout.html}&nbsp;{$time_unit}</td></tr>
 
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
@@ -261,13 +261,6 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.service_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.service_flap_detection_enabled.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}&nbsp;%</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}&nbsp;%</td></tr>
-
-        <tr class="list_lvl_1">
-          <td class="ListColLvl1_name" colspan="2">
-            <h4>{$Perfdata_Options}</h4>
-          </td>
-        </tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="process_perf_data"> {$form.service_process_perf_data.label}</td><td class="FormRowValue">{$form.service_process_perf_data.html}</td></tr>
 
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">

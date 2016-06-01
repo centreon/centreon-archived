@@ -843,14 +843,6 @@ $form->addElement('text', 'service_freshness_threshold', _("Freshness Threshold"
 $form->addElement('text', 'service_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
 $form->addElement('text', 'service_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Yes"), '1');
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("No"), '0');
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Default"), '2');
-$form->addGroup($servicePPD, 'service_process_perf_data', _("Process Perf Data"), '&nbsp;');
-if ($o != "mc") {
-    $form->setDefaults(array('service_process_perf_data' => '2'));
-}
-
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Yes"), '1');
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("No"), '0');
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Default"), '2');
@@ -1120,7 +1112,6 @@ if ($valid) {
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));
-    $tpl->assign("Perfdata_Options", _("Perfdata Options"));
     $tpl->assign("History_Options", _("History Options"));
     $tpl->assign("Event_Handler", _("Event Handler"));
     $tpl->assign("topdoc", _("Documentation"));
