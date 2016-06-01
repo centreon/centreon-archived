@@ -35,7 +35,7 @@
 
 if (!isset($centreon)) {
 	exit();
-}Ò
+}
 
 /**
  * Get host icones
@@ -121,7 +121,6 @@ $query = "SELECT DISTINCT h.name, s.description, acl.host_id, acl.service_id "
      $DBRESULT = $pearDBO->query($query);
 
 for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
-
 	if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
 	    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$resources["host_id"]]);
 	} elseif ($icone = $host_method->replaceMacroInString($resources["host_id"], getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1))) {
