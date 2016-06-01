@@ -88,7 +88,7 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 	$p = $ret['topology_page'];
 }
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $acldbname = $acl->getNameDBAcl();
 
 switch ($o)	{

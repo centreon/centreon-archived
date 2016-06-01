@@ -139,13 +139,13 @@ $tmp_search_h = '';
 
 if (isset($_GET['search_h'])) {
 	$tmp_search_h = $_GET['search_h'];
-    $oreon->svc_host_search = $tmp_search_h;
+    $centreon->svc_host_search = $tmp_search_h;
 }
 if (isset($_POST["searchH"])) {
 	$tmp_search_h = $_POST["searchH"];
-    $oreon->svc_host_search = $tmp_search_h;
-} elseif (isset($oreon->svc_host_search) && $oreon->svc_host_search != '')
-    $tmp_search_h = $oreon->svc_host_search;
+    $centreon->svc_host_search = $tmp_search_h;
+} elseif (isset($centreon->svc_host_search) && $centreon->svc_host_search != '')
+    $tmp_search_h = $centreon->svc_host_search;
 
 if ($tmp_search_h != '') {
     $searchH = $tmp_search_h;
@@ -159,12 +159,12 @@ $searchS_GET = '';
 $tmp_search_s = '';
 if (isset($_GET['search_s'])) {
 	$tmp_search_s = $_GET['search_s'];
-    $oreon->svc_svc_search = $tmp_search_s;
+    $centreon->svc_svc_search = $tmp_search_s;
 } elseif (isset($_POST["searchS"])) {
 	$tmp_search_s = $_POST["searchS"];
-    $oreon->svc_svc_search = $tmp_search_s;
-} elseif (isset($oreon->svc_svc_search))
-	$tmp_search_s = $oreon->svc_svc_search;
+    $centreon->svc_svc_search = $tmp_search_s;
+} elseif (isset($centreon->svc_svc_search))
+	$tmp_search_s = $centreon->svc_svc_search;
 
 if ($tmp_search_s != '') {
     $searchS = $tmp_search_s;
@@ -197,7 +197,7 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 $aclfilter = "";
 $distinct = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclfilter = " AND host.host_id = acl.host_id
                    AND acl.service_id = sv.service_id
                    AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
@@ -212,7 +212,7 @@ $rq_body = 	"esi.esi_icon_image, sv.service_id, sv.service_description, sv.servi
 		"sv.service_retry_check_interval, sv.service_max_check_attempts " .
 		"FROM service sv, host" .
         ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
-        ($oreon->user->admin ? "" : $acldbname.".centreon_acl acl, ").
+        ($centreon->user->admin ? "" : $acldbname.".centreon_acl acl, ").
         "host_service_relation hsr " .
         "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
 		"WHERE host.host_register = '1' $searchH_SQL AND host.host_activate = '1' AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
@@ -243,7 +243,7 @@ $style = "one";
 $elemArr = array();
 $fgHost = array("value"=>NULL, "print"=>NULL);
 
-$interval_length = $oreon->optGen['interval_length'];
+$interval_length = $centreon->optGen['interval_length'];
 
 for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 	/*

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -60,7 +59,7 @@ function myDecodeService($arg) {
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     if ($service_id) {
         $checkres = $pearDB->query("SELECT service_id
                                         FROM $acldbname.centreon_acl
@@ -86,7 +85,7 @@ $notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contac
 /* notification contact groups */
 $notifCgs = array();
 $cg = new CentreonContactgroup($pearDB);
-if ($oreon->user->admin) {
+if ($centreon->user->admin) {
     $notifCgs = $cg->getListContactgroup(true);
 } else {
     $cgAcl = $acl->getContactGroupAclConf(array('fields' => array('cg_id', 'cg_name'),
@@ -1051,13 +1050,13 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));
+$tpl->assign('msg', array("nagios" => $centreon->user->get_version(), "tpl" => 0));
 $tpl->assign('javascript',
     '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>'
 );
-$tpl->assign('time_unit', " * " . $oreon->optGen["interval_length"] . " " . _("seconds"));
+$tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _("seconds"));
 $tpl->assign("p", $p);
 $tpl->assign(
     "helpattr",
@@ -1128,7 +1127,7 @@ if ($valid) {
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign("service_type", $form_service_type);
 
-    $tpl->assign('v', $oreon->user->get_version());
+    $tpl->assign('v', $centreon->user->get_version());
     $tpl->display("formService.ihtml");
     ?>
     <script type="text/javascript">

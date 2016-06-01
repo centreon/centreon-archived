@@ -49,7 +49,7 @@ if (isset($_POST["searchH"])) {
 		$centreon->search_type_host = 1;
 	}
 } else {
-	if (isset($oreon->svc_host_search) && $oreon->svc_host_search)
+	if (isset($centreon->svc_host_search) && $centreon->svc_host_search)
 		$searchH = $centreon->svc_host_search;
 	else
 		$searchH = NULL;
@@ -63,7 +63,7 @@ if (isset($_POST["searchS"])) {
 		$centreon->search_type_service = 1;
 	}
 } else {
-	if (isset($oreon->svc_svc_search) && $oreon->svc_svc_search)
+	if (isset($centreon->svc_svc_search) && $centreon->svc_svc_search)
 		$searchS = $centreon->svc_svc_search;
 	else
 		$searchS = NULL;
@@ -122,7 +122,7 @@ $searchS = $pearDB->escape($searchS);
 $aclfrom = "";
 $aclcond = "";
 $distinct = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclfrom = ", $acldbname.centreon_acl acl ";
     $aclcond = " AND sv.service_id = acl.service_id
                  AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
