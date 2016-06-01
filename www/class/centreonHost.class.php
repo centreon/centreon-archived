@@ -1810,6 +1810,24 @@ class CentreonHost
 
         return $items;
     }
+
+    /**
+     * Delete host in database
+     *
+     * @param string $host_name Hostname
+     * @throws Exception
+     */
+    public function deleteHostByName($host_name)
+    {
+        $sQuery = 'DELETE FROM host '
+            . 'WHERE host_name = "' . $this->db->escape($host_name) . '"';
+
+        $res = $this->db->query($sQuery);
+
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while delete host ' . $host_name);
+        }
+    }
 }
 
 ?>

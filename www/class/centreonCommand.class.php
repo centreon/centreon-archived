@@ -430,5 +430,22 @@ class CentreonCommand
             throw new \Exception('Error while update command ' . $command['command_name']);
         }
     }
-    
+
+    /**
+     * Delete command in database
+     *
+     * @param string $command_name Command name
+     * @throws Exception
+     */
+    public function deleteCommandByName($command_name)
+    {
+        $sQuery = 'DELETE FROM command '
+            . 'WHERE command_name = "' . $this->_db->escape($command_name) . '"';
+
+        $res = $this->_db->query($sQuery);
+
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while delete command ' . $command_name);
+        }
+    }
 }
