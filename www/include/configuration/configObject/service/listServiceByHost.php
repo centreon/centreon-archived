@@ -360,43 +360,26 @@ function setO(_i) {
 }
 </SCRIPT>
 <?php
-$attrs1 = array(
-	'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 6 && confirm('"._("Are you sure you want to detach the service ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach")), $attrs1);
 
-$attrs2 = array(
-	'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 6 && confirm('"._("Are you sure you want to detach the service ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach")), $attrs2);
-
-$o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(NULL);
+foreach (array('o1', 'o2') as $option) {
+	$attrs1 = array(
+		'onchange'=>"javascript: " .
+	            " var bChecked = isChecked(); ".
+	            " if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
+	            " alert('"._("Please select one or more items")."'); return false;} " .
+				"if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+				" 	setO(this.form.elements['".$option."'].value); submit();} " .
+				"else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['".$option."'].value); submit();} " .
+				"else if (this.form.elements['".$option."'].selectedIndex == 6 && confirm('"._("Are you sure you want to detach the service ?")."')) {" .
+				" 	setO(this.form.elements['".$option."'].value); submit();} " .
+				"else if (this.form.elements['".$option."'].selectedIndex == 3 || this.form.elements['".$option."'].selectedIndex == 4 ||this.form.elements['".$option."'].selectedIndex == 5){" .
+				" 	setO(this.form.elements['".$option."'].value); submit();} " .
+				"this.form.elements['".$option."'].selectedIndex = 0");
+	$form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach")), $attrs1);
+	$o1 = $form->getElement($option);
+	$o1->setValue(NULL);
+} 
 
 $tpl->assign('limit', $limit);
 

@@ -197,7 +197,6 @@ include("./include/common/checkPagination.php");
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("HostGroup"));
 $tpl->assign("headerMenu_desc", _("Service"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
@@ -236,12 +235,12 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 	$fgHostgroup["value"] != $service["hg_name"] ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"]) : $fgHostgroup["print"] = false;
 	$selectedElements = $form->addElement('checkbox', "select[".$service['service_id']."]");
 
-	if ($service["service_activate"])
-		$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."&template=$template&status=".$status."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
-	else
-		$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."&template=$template&status=".$status."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
-
-	$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	if ($service["service_activate"]) {
+		$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."&template=$template&status=".$status."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'>";
+	} else {
+		$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."&template=$template&status=".$status."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
+	}
+	$moptions .= "&nbsp;";
 	$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
 
 	/*
