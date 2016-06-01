@@ -198,7 +198,7 @@ $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description"
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
 $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
-                s.icon_image, s.display_name, s.process_perfdata, s.state, s.output as plugin_output,
+                s.icon_image, s.display_name, s.state, s.output as plugin_output,
                 s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
                 s.last_hard_state_change, s.last_check, s.next_check,
                 s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
@@ -229,9 +229,7 @@ if ($criticality_id) {
                   AND cvs.name = 'CRITICALITY_ID'
                   AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
 }
-
 $request .= " AND h.name NOT LIKE '_Module_BAM%' ";
-
 
 if ($searchHost) {
     $request .= $searchHost;
@@ -381,8 +379,9 @@ if (!PEAR::isError($DBRESULT)) {
         } else if ($data["state"] == 2) {
             $data["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
         } else {
-            if ($data["acknowledged"] == 1)
+            if ($data["acknowledged"] == 1) {
                 $class = "line_ack";
+            }
         }
 
         $obj->XML->startElement("l");
@@ -453,7 +452,6 @@ if (!PEAR::isError($DBRESULT)) {
             $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
             $obj->XML->writeElement("hid", $data["host_id"]);
         }
-        $obj->XML->writeElement("ppd", $data["process_perfdata"]);
         $obj->XML->writeElement("hs", $data["host_state"]);
 
         /*
@@ -583,7 +581,7 @@ if (!PEAR::isError($DBRESULT)) {
          * Get Service Graph index
          */
         if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
-            $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $data["host_id"] . "' AND service_id = '" . $data["service_id"] . "' AND index_data.hidden = '0'";
+            $request2 = "SELECT DISTINCT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = ".$data["host_id"]." AND service_id = ".$data["service_id"]." AND index_data.hidden = '0'";
             $DBRESULT2 = $obj->DBC->query($request2);
             while ($dataG = $DBRESULT2->fetchRow()) {
                 if (!isset($graphs[$data["host_id"]])) {
@@ -596,7 +594,6 @@ if (!PEAR::isError($DBRESULT)) {
             }
         }
         $obj->XML->writeElement("svc_index", (isset($graphs[$data["host_id"]][$data["service_id"]]) ? $graphs[$data["host_id"]][$data["service_id"]] : 0));
-
         $obj->XML->endElement();
     }
     $DBRESULT->free();
