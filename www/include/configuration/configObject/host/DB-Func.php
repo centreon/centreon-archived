@@ -736,7 +736,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
     isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', " : $rq .= "NULL, ";
     isset($ret["host_register"]) && $ret["host_register"] != NULL ? $rq .= "'" . $ret["host_register"] . "', " : $rq .= "NULL, ";
     isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'" . $ret["host_activate"]["host_activate"] . "'," : $rq .= "NULL,";
-    isset($ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] != NULL ? $rq .= "'" . $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] . "'" : $rq .= "NULL";
+    isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != NULL ? $rq .= "'" . $ret["host_acknowledgement_timeout"] . "'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(host_id) FROM host");
