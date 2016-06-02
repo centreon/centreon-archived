@@ -38,6 +38,10 @@ if (!isset($centreon)) {
 }
 
 require_once './class/centreonDB.class.php';
+require_once './class/centreon-partition/partEngine.class.php';
+require_once './class/centreon-partition/config.class.php';
+require_once './class/centreon-partition/mysqlTable.class.php';
+require_once './class/centreon-partition/options.class.php';
 
 /*
  * Get Properties
