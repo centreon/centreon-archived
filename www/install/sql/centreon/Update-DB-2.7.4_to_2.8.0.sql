@@ -168,4 +168,7 @@ ALTER TABLE cfg_nagios DROP COLUMN `free_child_process_memory`;
 ALTER TABLE cfg_nagios DROP COLUMN `child_processes_fork_twice`;
 
 UPDATE topology set readonly = '0' WHERE topology_page = 60901;
-  
+
+-- Add an API Access configuration page
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (122,'API',501,50120,100,1,'./include/Administration/parameters/parameters.php','&o=api','0','0','1',NULL,NULL,NULL,'1');
+
