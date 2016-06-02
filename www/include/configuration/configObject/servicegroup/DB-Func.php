@@ -187,7 +187,6 @@ function insertServiceGroup($ret = array())
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("servicegroup", $sg_id["MAX(sg_id)"], htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
-    
 
     return ($sg_id["MAX(sg_id)"]);
 }
