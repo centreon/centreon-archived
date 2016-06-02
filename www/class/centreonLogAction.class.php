@@ -36,6 +36,7 @@
 class CentreonLogAction {
 
     var $logUser;
+    protected $uselessKey;
 
     /*
      * Initializes variables
@@ -44,6 +45,11 @@ class CentreonLogAction {
     public function __construct($usr)
     {
         $this->logUser = $usr;
+        $this->uselessKey = array();
+        $this->uselessKey['submitA'] = 1;
+        $this->uselessKey['o'] = 1;
+        $this->uselessKey['initialValues'] = 1;
+        $this->uselessKey['centreon_token'] = 1;
     }
 
     /*
@@ -277,5 +283,38 @@ class CentreonLogAction {
         $object_type_tab[17] = "broker configuration file";
 
         return $object_type_tab;
+    }
+
+    public function prepareChanges($ret)
+    {
+        global $pearDB;
+
+        $uselessKey = array();
+        $uselessKey['submitA'] = 1;
+        $uselessKey['o'] = 1;
+        $uselessKey['initialValues'] = 1;
+        $uselessKey['centreon_token'] = 1;
+
+        if (!isset($ret)) {
+            return array();
+        } else {
+            $info = array();
+            foreach ($ret as $key => $value) {
+                if (!isset($uselessKey[$key])) {
+                    if (is_array($value)) {
+                        print_r($value);
+                        if (isset($value[$key])) {
+                            $info[$key] = $value[$key];
+                        } else {
+                            print_r(implode(",", $value));
+                            $info[$key] = implode(",", $value);
+                        }
+                    } else {
+                        $info[$key] = CentreonDB::escape($value);
+                    }
+                }
+            }
+        }
+        return $info;
     }
 }
