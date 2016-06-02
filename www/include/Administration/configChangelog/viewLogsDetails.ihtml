@@ -1,10 +1,9 @@
 <form name='form' method='POST'>
-<table class="ajaxOption">
-	<tr>
-		<td>{$search_object_str} : <input type='text' name='searchO' value='{$searchO}' /></td>
-		<td>{$search_user_str} : <input type='text' name='searchU' value='{$searchU}' /></td>
-		<td>&nbsp;&nbsp;&nbsp;{$obj_str} : <select name='otype' />{$obj_type}</select></td>
-		<td><input type='submit' name='SearchB' value='Search' /></td>
+<table class="ToolbarTable table">
+	<tr class="ToolbarTR">
+		<td>
+			<a href="./main.php?p=508" class="btc bt_success">{t}Back{/t}</a>
+		</td>
 	</tr>
 </table>
 <table class="ListTable">
