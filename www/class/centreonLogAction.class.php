@@ -302,11 +302,9 @@ class CentreonLogAction {
             foreach ($ret as $key => $value) {
                 if (!isset($uselessKey[$key])) {
                     if (is_array($value)) {
-                        print_r($value);
                         if (isset($value[$key])) {
                             $info[$key] = $value[$key];
                         } else {
-                            print_r(implode(",", $value));
                             $info[$key] = implode(",", $value);
                         }
                     } else {
