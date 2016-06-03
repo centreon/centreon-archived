@@ -484,7 +484,7 @@ class CentreonDB
     {
         $unitMultiple = 1024*1024;
 
-        $info = array('version' => null, 'dbsize' => 0, 'rows' => 0, 'datafree' => 0, 'indexsize' => 0);
+        $info = array('version' => null, 'engine' => null, 'dbsize' => 0, 'rows' => 0, 'datafree' => 0, 'indexsize' => 0);
         /*
          * Get Version
          */
@@ -502,8 +502,13 @@ class CentreonDB
                 $DBRESULT->free();
             }
             foreach ($info as $key => $value) {
-                if ($key != "rows") {
+                if ($key != "rows" && $key != "version" && $key != "engine") {
                    $info[$key] = round($value / $unitMultiple, 2); 
+                }
+                if ($key == "version") {
+                    $tab = split('-', $value);
+                    $info["version"] = $tab[0];
+                    $info["engine"] = $tab[1];
                 }
             }
         }

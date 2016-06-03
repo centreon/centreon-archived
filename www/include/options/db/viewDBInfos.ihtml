@@ -37,12 +37,12 @@
 			<table class="ListTable">
 			 	<tr class="ListHeader"><td class="FormHeader" colspan="3">{t}Database Engine{/t}</td></tr>
 				<tr class="list_one">
-					<td class="FormRowField">{t}Name{/t}</td>
-			 		<td class="FormRowValue">{$dataCentreon.version}</td>
+					<td class="FormRowField">{t}Engine Name{/t}</td>
+			 		<td class="FormRowValue">{$dataCentreon.engine}</td>
 				</tr>
-			 	<tr class="list_one">			 		
+			 	<tr class="list_two">			 		
 					<td class="FormRowField">{t}Version{/t}</td>
-			 		<td class="FormRowValue">{$dataCentreon.version}</td>
+			 		<td class="FormRowValue">{$dataCentstorage.version}</td>
 			 	</tr>
 			</table>
 		</td>
@@ -51,3 +51,37 @@
 <br>
 <h2>Database partitioning</h2>
 <hr>
+<div  class="headerTabContainer">
+	<ul id="mainnav">
+	    <li class="a" id='c1'><a href="#"  style='cursor:pointer' onclick="javascript:montre('1');">Table "data_bin"</a></li>
+	    <li class="b" id='c2'><a href="#" style='cursor:pointer' onclick="javascript:montre('2');">Table logs</a></li>
+	</ul>
+</div>
+<div id='tab1' class='tab'>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader"><h3>| Proprietes du partitionnement</h3></td>
+             <td style="text-align:right;">
+                <a href="./main.php?p={$p}&min=1&doc=1&page=configobject.html" target="_blank"  style='cursor:help' alt='{$topdoc}'>
+             </td>
+        </tr>
+        <tr class="list_one">
+	        <td class="FormRowField">{$form.host_name.label}</td>
+	        <td class="FormRowValue">{$form.host_name.html}</td>
+	    </tr>
+	</table>
+</div>
+<div id='tab2' class='tab'>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader"><h3>| Proprietes du partitionnement</h3></td>
+             <td style="text-align:right;">
+                <a href="./main.php?p={$p}&min=1&doc=1&page=configobject.html" target="_blank"  style='cursor:help' alt='{$topdoc}'>
+             </td>
+        </tr>
+        <tr class="list_one">
+	        <td class="FormRowField">{$form.host_name.label}</td>
+	        <td class="FormRowValue">{$form.host_name.html}</td>
+	    </tr>
+	</table>
+</div>
