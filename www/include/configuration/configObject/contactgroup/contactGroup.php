@@ -34,8 +34,8 @@
  */
  
 if (!isset($centreon)) {
-	exit ();		
-}	
+    exit();
+}   
 
 isset($_GET["cg_id"]) ? $cG = $_GET["cg_id"] : $cG = NULL;
 isset($_POST["cg_id"]) ? $cP = $_POST["cg_id"] : $cP = NULL;
@@ -69,15 +69,14 @@ require_once "./include/common/common-Func.php";
 
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+    $p = $ret['topology_page'];
 
-    $acl = $oreon->user->access;
-    $allowedContacts = $acl->getContactAclConf(array('fields'  => array('contact_id', 
-                                                                        'contact_name'),
+    $acl = $centreon->user->access;
+    $allowedContacts = $acl->getContactAclConf(array('fields'  => array('contact_id', 'contact_name'),
                                                      'keys'    => array('contact_id'),
                                                      'get_row' => 'contact_name',
-													 'order'   => 'contact_name'));
-	$allowedAclGroups = $acl->getAccessGroups();
+                                                     'order'   => 'contact_name'));
+    $allowedAclGroups = $acl->getAccessGroups();
     $contactstring = "";
     if (count($allowedContacts)) {
         $first = true;
@@ -93,59 +92,59 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
         $contactstring = "''";
     }
     
-switch ($o)	{
-	case "a" : 
-		/*
-		 * Add a contactgroup
-		 */
-		require_once($path."formContactGroup.php"); 
-		break; 
-	case "w" : 
-		/*
-		 * Watch a contactgroup
-		 */
-		require_once($path."formContactGroup.php"); 
-		break;
-	case "c" : 
-		/*
-		 * Modify a contactgroup
-		 */
-		require_once($path."formContactGroup.php"); 
-		break;
-	case "s" : 
-		/*
-		 * Activate a contactgroup
-		 */
-		enableContactGroupInDB($cg_id); 
-		require_once($path."listContactGroup.php"); 
-		break;
-	case "u" : 
-		/*
-		 * Desactivate a contactgroup
-		 */
-		disableContactGroupInDB($cg_id); 
-		require_once($path."listContactGroup.php"); 
-		break;
-	case "m" : 
-		/*
-		 * Duplicate n contact group
-		 */
-		multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr); 
-		require_once($path."listContactGroup.php"); 
-		break;
-	case "d" : 
-		/*
-		 * 
-		 */
-		deleteContactGroupInDB(isset($select) ? $select : array()); 
-		require_once($path."listContactGroup.php"); 
-		break;
+switch ($o) {
+    case "a" : 
+        /*
+         * Add a contactgroup
+         */
+        require_once($path."formContactGroup.php"); 
+        break; 
+    case "w" : 
+        /*
+         * Watch a contactgroup
+         */
+        require_once($path."formContactGroup.php"); 
+        break;
+    case "c" : 
+        /*
+         * Modify a contactgroup
+         */
+        require_once($path."formContactGroup.php"); 
+        break;
+    case "s" : 
+        /*
+         * Activate a contactgroup
+         */
+        enableContactGroupInDB($cg_id); 
+        require_once($path."listContactGroup.php"); 
+        break;
+    case "u" : 
+        /*
+         * Desactivate a contactgroup
+         */
+        disableContactGroupInDB($cg_id); 
+        require_once($path."listContactGroup.php"); 
+        break;
+    case "m" : 
+        /*
+         * Duplicate n contact group
+         */
+        multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr); 
+        require_once($path."listContactGroup.php"); 
+        break;
+    case "d" : 
+        /*
+         * 
+         */
+        deleteContactGroupInDB(isset($select) ? $select : array()); 
+        require_once($path."listContactGroup.php"); 
+        break;
     case "dn" : require_once $path . 'displayNotification.php';
         break;
-	default : 
-		/*
-		 * Delete n contact group
-		 */
-		require_once($path."listContactGroup.php"); 
-		break;
+    default : 
+        /*
+         * Delete n contact group
+         */
+        require_once($path."listContactGroup.php"); 
+        break;
 }
