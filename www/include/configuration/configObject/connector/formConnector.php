@@ -166,7 +166,6 @@ try {
         $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     }
     
-    
     $form->addRule('connector_name', _("Name"), 'required');
     $form->addRule('command_line', _("Command Line"), 'required');
     $form->registerRule('exist', 'callback', 'testConnectorExistence');
@@ -195,7 +194,6 @@ try {
         }
         $valid = true;
     }
-
 
     if ($valid) {
         require_once($path."listConnector.php");

@@ -31,9 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
 
@@ -109,9 +106,9 @@
 		$rq .= "description = '".htmlentities($ret["description"], ENT_QUOTES, "UTF-8")."' ";
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT = $pearDB->query($rq);
-		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES, "UTF-8");
-		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES, "UTF-8");
-		$fields["description"] = htmlentities($ret["description"], ENT_QUOTES, "UTF-8");
+		
+		/* Prepare value for changelog */
+    	$fields = CentreonLogAction::prepareChanges($ret);
 		$oreon->CentreonLogAction->insertLog("manufacturer", $id, $fields["name"], "c", $fields);
 	}
 	
@@ -136,11 +133,9 @@
 		$DBRESULT = $pearDB->query("SELECT MAX(id) FROM traps_vendor");
 		$mnftr_id = $DBRESULT->fetchRow();
 		
-		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES, "UTF-8");
-		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES, "UTF-8");
-		$fields["description"] = htmlentities($ret["description"], ENT_QUOTES, "UTF-8");
+		/* Prepare value for changelog */
+    	$fields = CentreonLogAction::prepareChanges($ret);
 		$oreon->CentreonLogAction->insertLog("manufacturer", $mnftr_id["MAX(id)"], $fields["name"], "a", $fields);
 		
 		return ($mnftr_id["MAX(id)"]);
 	}
-?>

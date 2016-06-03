@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit ();		
+    exit ();        
 }
 
 isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
@@ -69,21 +69,21 @@ require_once "./include/common/common-Func.php";
 
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
-        $p = $ret['topology_page'];
+    $p = $ret['topology_page'];
 }
 
-    $contactObj = new CentreonContact($pearDB);
+$contactObj = new CentreonContact($pearDB);
     
-switch ($o)	{
-	case "mc" : require_once($path."formContactTemplateModel.php"); break; // Massive Change
-	case "a" : require_once($path."formContactTemplateModel.php"); break; // Add a contact template
-            case "w" : require_once($path."formContactTemplateModel.php"); break; // Watch a contact template
-	case "c" : require_once($path."formContactTemplateModel.php"); break; // Modify a contact template
-	case "s" : enableContactInDB($contact_id); require_once($path."listContactTemplateModel.php"); break; // Activate a contact template
-	case "ms" : enableContactInDB(NULL, isset($select) ? $select : array()); require_once($path."listContactTemplateModel.php"); break;
-	case "u" : disableContactInDB($contact_id); require_once($path."listContactTemplateModel.php"); break; // Desactivate a contact
-	case "mu" : disableContactInDB(NULL, isset($select) ? $select : array()); require_once($path."listContactTemplateModel.php"); break;
-            case "m" : multipleContactInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listContactTemplateModel.php"); break; // Duplicate n contacts
-	case "d" : deleteContactInDB(isset($select) ? $select : array()); require_once($path."listContactTemplateModel.php"); break; // Delete n contacts
-	default : require_once($path."listContactTemplateModel.php"); break;
+switch ($o) {
+    case "mc" : require_once($path."formContactTemplateModel.php"); break; // Massive Change
+    case "a" : require_once($path."formContactTemplateModel.php"); break; // Add a contact template
+    case "w" : require_once($path."formContactTemplateModel.php"); break; // Watch a contact template
+    case "c" : require_once($path."formContactTemplateModel.php"); break; // Modify a contact template
+    case "s" : enableContactInDB($contact_id); require_once($path."listContactTemplateModel.php"); break; // Activate a contact template
+    case "ms" : enableContactInDB(NULL, isset($select) ? $select : array()); require_once($path."listContactTemplateModel.php"); break;
+    case "u" : disableContactInDB($contact_id); require_once($path."listContactTemplateModel.php"); break; // Desactivate a contact
+    case "mu" : disableContactInDB(NULL, isset($select) ? $select : array()); require_once($path."listContactTemplateModel.php"); break;
+    case "m" : multipleContactInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listContactTemplateModel.php"); break; // Duplicate n contacts
+    case "d" : deleteContactInDB(isset($select) ? $select : array()); require_once($path."listContactTemplateModel.php"); break; // Delete n contacts
+    default : require_once($path."listContactTemplateModel.php"); break;
 }
