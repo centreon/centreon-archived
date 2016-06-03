@@ -64,9 +64,9 @@ function testExistence($name = NULL)
     }
 }
 
-function enableServerInDB ($id = null)
+function enableServerInDB($id = null)
 {
-    global $pearDB;
+    global $pearDB, $centreon;
 
     if (!$id) {
         return;
@@ -82,7 +82,7 @@ function enableServerInDB ($id = null)
 
 function disableServerInDB ($id = null)
 {
-    global $pearDB;
+    global $pearDB, $centreon;
     
     if (!$id) {
         return;
@@ -98,7 +98,7 @@ function disableServerInDB ($id = null)
 
 function deleteServerInDB ($server = array())
 {
-    global $pearDB, $pearDBO;
+    global $pearDB, $pearDBO, $centreon;
 
     foreach ($server as $key => $value) {
         $DBRESULT2 = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
