@@ -107,7 +107,6 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_ip_address", _("IP Address"));
 $tpl->assign("headerMenu_localisation", _("Localhost"));
@@ -228,43 +227,28 @@ function setO(_i) {
 }
 </SCRIPT>
 <?php
-$attrs = array(
-	'onchange'=>"javascript: " .
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-            " if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
-$form->setDefaults(array('o1' => NULL));
-$o1 = $form->getElement('o1');
-$o1->setValue(NULL);
+
+foreach (array('o1', 'o2') as $option) {
+	$attrs = array(
+		'onchange'=>"javascript: " .
+	            " var bChecked = isChecked(); ".
+	            " if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
+	            " alert('"._("Please select one or more items")."'); return false;} " .
+	            " if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+				" 	setO(this.form.elements['".$option."'].value); submit();} " .
+				"else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['".$option."'].value); submit();} " .
+				"else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['".$option."'].value); submit();} " .
+				"");
+	$form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
+	$form->setDefaults(array($option => NULL));
+	$o1 = $form->getElement($option);
+	$o1->setValue(NULL);
+}
 
 # Apply configuration button
 $form->addElement('button', 'apply_configuration', _("Apply configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
-
-$attrs = array(
-	'onchange'=>"javascript: " .
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
-$form->setDefaults(array('o2' => NULL));
-
-$o2 = $form->getElement('o2');
-$o2->setValue(NULL);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchP', $search);

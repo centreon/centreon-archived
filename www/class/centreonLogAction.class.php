@@ -47,9 +47,12 @@ class CentreonLogAction {
         $this->logUser = $usr;
         $this->uselessKey = array();
         $this->uselessKey['submitA'] = 1;
+        $this->uselessKey['submitC'] = 1;
         $this->uselessKey['o'] = 1;
         $this->uselessKey['initialValues'] = 1;
         $this->uselessKey['centreon_token'] = 1;
+        $this->uselessKey['resource'] = 1;
+        $this->uselessKey['plugins'] = 1;
     }
 
     /*
@@ -82,14 +85,14 @@ class CentreonLogAction {
         $auditLog = $optLogs->fetchRow();
 
         if (($auditLog) && ($auditLog['audit_log_option'] == '1')) {
-            $now = time();
-            $str_query = "INSERT INTO `log_action` (action_log_date, object_type, object_id, object_name, action_type, log_contact_id) VALUES ('" . $now . "', '" . CentreonDB::escape($object_type) . "', '" . CentreonDB::escape($object_id) . "', '" . CentreonDB::escape($object_name) . "', '" . CentreonDB::escape($action_type) . "', '" . CentreonDB::escape($this->logUser->user_id) . "')";
-            $DBRESULT = $pearDBO->query($str_query);
+            $str_query = "INSERT INTO `log_action` (action_log_date, object_type, object_id, object_name, action_type, log_contact_id) VALUES ('".time()."', '" . CentreonDB::escape($object_type) . "', '" . CentreonDB::escape($object_id) . "', '" . CentreonDB::escape($object_name) . "', '" . CentreonDB::escape($action_type) . "', '" . CentreonDB::escape($this->logUser->user_id) . "')";
+            $pearDBO->query($str_query);
 
             $DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");
             $logId = $DBRESULT2->fetchRow();
-            if ($fields)
+            if ($fields) {
                 $this->insertFieldsNameValue($logId["MAX(action_log_id)"], $fields);
+            }
         }
     }
 
@@ -191,10 +194,7 @@ class CentreonLogAction {
             return $info['host_name'];
         }
 
-        $query = "SELECT object_id, object_name 
-                    FROM log_action 
-                    WHERE object_type = 'service' 
-                    AND object_id = $host_id";
+        $query = "SELECT object_id, object_name FROM log_action WHERE object_type = 'service' AND object_id = $host_id";
         $DBRESULT2 = $pearDBO->query($query);
         $info = $DBRESULT2->fetchRow();
         if (isset($info['object_name'])) {
@@ -279,8 +279,10 @@ class CentreonLogAction {
         $object_type_tab[13] = "service dependency";
         $object_type_tab[14] = "servicegroup dependency";
         $object_type_tab[15] = "poller";
-        $object_type_tab[16] = "centengine.cfg";
-        $object_type_tab[17] = "broker configuration file";
+        $object_type_tab[16] = "engine";
+        $object_type_tab[17] = "broker";
+        $object_type_tab[18] = "resources";
+        $object_type_tab[19] = "meta";
 
         return $object_type_tab;
     }
@@ -300,7 +302,7 @@ class CentreonLogAction {
         } else {
             $info = array();
             foreach ($ret as $key => $value) {
-                if (!isset($uselessKey[$key])) {
+                if (!isset($uselessKey[trim($key)])) {
                     if (is_array($value)) {
                         if (isset($value[$key])) {
                             $info[$key] = $value[$key];

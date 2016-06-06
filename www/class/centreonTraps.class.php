@@ -261,25 +261,13 @@ class CentreonTraps
         $rq .= "WHERE `traps_id` = '".$traps_id."'";
         $this->_db->query($rq);
 
-        /*
-         * Logs
-         */
-        $fields["traps_name"] = $this->_db->escape($ret["traps_name"]);
-        $fields["traps_args"] = $this->_db->escape($ret["traps_args"]);
-        $fields["traps_status"] = $this->_db->escape($ret["traps_status"]);
-        $fields["traps_submit_result_enable"] = $this->_db->escape($ret["traps_submit_result_enable"]);
-        $fields["traps_reschedule_svc_enable"] = $this->_db->escape($ret["traps_reschedule_svc_enable"]);
-        $fields["traps_execution_command"] = $this->_db->escape($ret["traps_execution_command"]);
-        $fields["traps_execution_command_enable"] = $this->_db->escape($ret["traps_execution_command_enable"]);
-        $fields["traps_comments"] = $this->_db->escape($ret["traps_comments"]);
-        $fields["traps_routing_mode"] = $this->_db->escape($ret["traps_routing_mode"]);
-        $fields["traps_routing_value"] = $this->_db->escape($ret["traps_routing_value"]);
-        $fields["manufacturer_id"] = $this->_db->escape($ret["manufacturer_id"]);
-
         $this->_setMatchingOptions($traps_id, $_POST);
         $this->_setServiceRelations($traps_id);
         $this->_setServiceTemplateRelations($traps_id);
         $this->_setPreexec($traps_id);
+
+        /* Prepare value for changelog */
+        $fields = CentreonLogAction::prepareChanges($ret);
         $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id, $fields["traps_name"], "c", $fields);
 	}
 
@@ -455,20 +443,8 @@ class CentreonTraps
         $res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
         $traps_id = $res->fetchRow();
 
-        /*
-         * logs
-         */
-        $fields["traps_name"] = $this->_db->escape($ret["traps_name"]);
-        $fields["traps_args"] = $this->_db->escape($ret["traps_args"]);
-        $fields["traps_status"] = $this->_db->escape($ret["traps_status"]);
-        $fields["traps_submit_result_enable"] = $this->_db->escape($ret["traps_submit_result_enable"]);
-        $fields["traps_reschedule_svc_enable"] = $this->_db->escape($ret["traps_reschedule_svc_enable"]);
-        $fields["traps_execution_command"] = $this->_db->escape($ret["traps_execution_command"]);
-        $fields["traps_execution_command_enable"] = $this->_db->escape($ret["traps_execution_command_enable"]);
-        $fields["traps_advanced_treatment"] = $this->_db->escape($ret["traps_advanced_treatment"]);
-        $fields["traps_comments"] = $this->_db->escape($ret["traps_comments"]);
-        $fields["traps_routing_mode"] = $this->_db->escape($ret["traps_routing_mode"]);
-        $fields["manufacturer_id"] = $this->_db->escape($ret["manufacturer_id"]);
+        /* Prepare value for changelog */
+        $fields = CentreonLogAction::prepareChanges($ret);
         $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
 
         $this->_setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
@@ -478,6 +454,10 @@ class CentreonTraps
         if ($this->_centreon->user->admin) {
             $this->_setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
         }
+
+        /* Prepare value for changelog */
+        $fields = CentreonLogAction::prepareChanges($ret);
+        $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
 
         return ($traps_id["MAX(traps_id)"]);
 	}
@@ -610,4 +590,3 @@ class CentreonTraps
         return $items;
     }
 }
-?>

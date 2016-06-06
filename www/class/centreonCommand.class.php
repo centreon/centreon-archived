@@ -448,4 +448,80 @@ class CentreonCommand
             throw new \Exception('Error while delete command ' . $command_name);
         }
     }
+    
+    /**
+     * 
+     * @param type $sCommandName
+     * @param type $aHost
+     * @param type $bTpl
+     * @return array
+     */
+    public function checkCommandUsedInHost($sCommandName, $aHost, $bTpl = false)
+    {
+        $aReturn = array();
+        if (empty($sCommandName) || count($aHost) == 0) {
+            return $aReturn;
+        }
+        $sQuery = "select host_name from command "
+            . " join host on (command_id in (command_command_id, command_command_id2)) "
+            . " where command_name = '".$this->_db->escape($sCommandName)."'";
+        
+        if ($bTpl) {
+            $sQuery .= " AND host_register = '1' ";
+        } else {
+            $sQuery .= " AND host_register = '0' ";
+        }
+        
+        $sQuery .= " AND host_name not in ('".  implode("'", $aHost)."')";
+        
+        $res = $this->_db->query($sQuery);
+        if (PEAR::isError($res)) {
+            return $aReturn;
+        }
+        while ($row = $res->fetchRow()) {
+            if (!empty($row['host_name'])) {
+                $aReturn[] = $row['host_name'];
+            }
+        }
+        
+        return $aReturn;
+    }
+    
+    /**
+     * 
+     * @param type $sCommandName
+     * @param type $aervice
+     * @param type $bTpl
+     * @return array
+     */
+    public function checkCommandUsedInService($sCommandName, $aService, $bTpl = false)
+    {
+        $aReturn = array();
+        if (empty($sCommandName) || count($aService) == 0) {
+            return $aReturn;
+        }
+        $sQuery = "select service_description from command "
+            . " join service on (command_id in (command_command_id, command_command_id2)) "
+            . " where command_name = '".$this->_db->escape($sCommandName)."'";
+        
+        if ($bTpl) {
+            $sQuery .= " AND service_register = '1' ";
+        } else {
+            $sQuery .= " AND service_register = '0' ";
+        }
+        
+        $sQuery .= " AND service_description not in ('".  implode("'", $aService)."')";
+        
+        $res = $this->_db->query($sQuery);
+        if (PEAR::isError($res)) {
+            return $aReturn;
+        }
+        while ($row = $res->fetchRow()) {
+            if (!empty($row['service_description'])) {
+                $aReturn[] = $row['service_description'];
+            }
+        }
+        
+        return $aReturn;
+    }
 }

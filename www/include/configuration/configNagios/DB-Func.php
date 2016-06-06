@@ -346,14 +346,19 @@ function insertNagios($ret = array(), $brokerTab = array())
         $centreon->Nagioscfg = $DBRESULT->fetchRow();
         $DBRESULT->free();
     }
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("engine", $nagios_id["MAX(nagios_id)"], $pearDB->escape($ret["nagios_name"]), "a", $fields);
     return ($nagios_id["MAX(nagios_id)"]);
 }
 
 function updateNagios($nagios_id = null) {
     global $form, $pearDB;
 
-    if (!$nagios_id)
+    if (!$nagios_id) {
         return;
+    }
 
     if (isset($ret["nagios_server_id"])) {
         $DBRESULT = $pearDB->query("UPDATE cfg_nagios SET `nagios_server_id` != '".$ret["nagios_server_id"]."'");
@@ -511,4 +516,8 @@ function updateNagios($nagios_id = null) {
     if ($ret["nagios_activate"]["nagios_activate"]) {
         enableNagiosInDB($nagios_id);
     }
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("engine", $nagios_id, $pearDB->escape($ret["nagios_name"]), "c", $fields);
 }

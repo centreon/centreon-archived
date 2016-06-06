@@ -235,9 +235,6 @@ function insertHostGroup($ret = array())	{
 	$pearDB->query($rq);
 	$DBRESULT = $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
 	$hg_id = $DBRESULT->fetchRow();
-
-	/* Prepare value for changelog */
-	$fields = CentreonLogAction::prepareChanges($ret);
 	
 	if (!$centreon->user->admin) {
 		$resource_list = $centreon->user->access->getResourceGroups();
@@ -248,6 +245,9 @@ function insertHostGroup($ret = array())	{
 			unset($resource_list);
 		}
 	}
+	
+	/* Prepare value for changelog */
+	$fields = CentreonLogAction::prepareChanges($ret);
 	$centreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], CentreonDB::escape($ret["hg_name"]), "a", $fields);
 
 	return ($hg_id["MAX(hg_id)"]);
