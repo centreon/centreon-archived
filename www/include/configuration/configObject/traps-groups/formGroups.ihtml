@@ -15,7 +15,11 @@
             <h3>| {$form.header.title}</h3>
           </td>
         </tr>
-
+		<tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}General Information{/t}</h4>
+            </td>
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="traps">{$form.traps.label}</td><td class="FormRowValue">{$form.traps.html}</td></tr>	
 	</table>
