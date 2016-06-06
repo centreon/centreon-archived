@@ -31,9 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
 
@@ -123,7 +120,8 @@
             }
         }
         
-		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES, "UTF-8");
+		/* Prepare value for changelog */
+    	$fields = CentreonLogAction::prepareChanges($ret);
 		$oreon->CentreonLogAction->insertLog("traps_group", $id, $fields["name"], "c", $fields);
 	}
 	
@@ -154,7 +152,8 @@
             }
         }
 		
-		$fields['name'] = htmlentities($ret['name'], ENT_QUOTES, "UTF-8");
+		/* Prepare value for changelog */
+    	$fields = CentreonLogAction::prepareChanges($ret);
 		$oreon->CentreonLogAction->insertLog("traps_group", $trap_group_id['max_id'], $fields['name'], 'a', $fields);
 		
 		return ($trap_group_id["max_id"]);

@@ -147,7 +147,7 @@ if (isset($svcEscResources)) {
     			$host_icone = "./img/icones/16x16/server_network.gif";
     		}
     		$moptions = "";
-    		$elemArrSvcEsc[] = array("MenuClass"       => "list_".$style,
+    		$elemArrSvcEsc[] = array("MenuClass"    => "list_".$style,
     						   	  "RowMenu_hico"    => $host_icone,
     						   	  "RowMenu_host"    => myDecode($tab['host_name']),
     							  "RowMenu_service" => myDecode($tab['service_description']));
