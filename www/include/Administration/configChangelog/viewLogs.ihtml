@@ -43,21 +43,32 @@
     {/if}
     <tr class='{$classStyle}'>
         <td class='ListColCenter'>{$elem.date}</td>
-        <td class='ListColCenter' style='width:120px;'>
-            <span class="badge service_{$elem.badge}">{$elem.modification_type}</span></td>
+        <td class='ListColCenter' style='width:120px;'><span class="badge service_{$elem.badge}">{$elem.modification_type}</span></td>
         <td class='ListColCenter'>{$elem.type}</td>
         <td class='ListColLeft'>
-            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
-        {if $elem.host != ''}{$elem.host} / {/if}{$elem.object_name}</a> 
+        {if $elem.host != ''}<a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">[[{$elem.host}]] / {$elem.object_name}</a>{/if} 
+        {if $elem.hostgroup != ''}<a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.hostgroup} / {$elem.object_name}</a>{/if} 
         {if $elem.hosts}
+        <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
         (
         {assign var=flag value=0}
         {foreach key=key2 item=item2 from=$elem.hosts}
              {if $flag == 1} / {/if}
+             [{$item2}]
+             {assign var=flag value=1}
+        {/foreach}
+        ) {$elem.object_name}</a>
+        {/if}
+        {if $elem.hostgroups}
+        <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
+        (
+        {assign var=flag value=0}
+        {foreach key=key2 item=item2 from=$elem.hostgroups}
+             {if $flag == 1} / {/if}
              {$item2}
              {assign var=flag value=1}
         {/foreach}
-        )
+        ) {$elem.object_name}</a>
         {/if}
         </td>
         <td class='ListColCenter'>{$elem.author}</td>
