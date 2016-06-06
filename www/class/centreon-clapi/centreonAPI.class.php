@@ -151,7 +151,6 @@ class CentreonAPI {
             'class' => 'HostGroupService',
             'export' => true
         );
-
         $this->relationObject["VENDOR"] = array(
             'module' => 'core',
             'class' => 'Manufacturer',
@@ -162,7 +161,6 @@ class CentreonAPI {
             'class' => 'Trap',
             'export' => true
         );
-
         $this->relationObject["HG"] = array(
             'module' => 'core',
             'class' => 'HostGroup',
@@ -173,7 +171,6 @@ class CentreonAPI {
             'class' => 'HostCategory',
             'export' => true
         );
-
         $this->relationObject["SG"] = array(
             'module' => 'core',
             'class' => 'ServiceGroup',
@@ -184,7 +181,6 @@ class CentreonAPI {
             'class' => 'ServiceCategory',
             'export' => true
         );
-
         $this->relationObject["CONTACT"] = array(
             'module' => 'core',
             'class' => 'Contact',
@@ -203,21 +199,18 @@ class CentreonAPI {
             'class' => 'ContactGroup',
             'export' => true
         );
-
         /* Dependencies */
         $this->relationObject["DEP"] = array(
             'module' => 'core',
             'class' => 'Dependency',
             'export' => true
         );
-
         /* Downtimes */
         $this->relationObject["DOWNTIME"] = array(
             'module' => 'core',
             'class' => 'Downtime',
             'export' => true
         );
-
         /* Templates */
         $this->relationObject["HTPL"] = array(
             'module' => 'core',
@@ -229,7 +222,6 @@ class CentreonAPI {
             'class' => 'ServiceTemplate',
             'export' => true
         );
-
         $this->relationObject["TIMEPERIOD"] = array(
             'module' => 'core',
             'class' => 'TimePeriod',
@@ -240,7 +232,6 @@ class CentreonAPI {
             'class' => 'TimePeriod',
             'export' => true
         );
-
         $this->relationObject["INSTANCE"] = array(
             'module' => 'core',
             'class' => 'Instance',
@@ -251,32 +242,16 @@ class CentreonAPI {
             'class' => 'NagiosCfg',
             'export' => true
         );
-        $this->relationObject["NDO2DBCFG"] = array(
-            'module' => 'core',
-            'class' => 'Ndo2dbCfg',
-            'export' => false
-        );
         $this->relationObject["CENTBROKERCFG"] = array(
             'module' => 'core',
             'class' => 'CentbrokerCfg',
             'export' => true
-        );
-        $this->relationObject["NDOMODCFG"] = array(
-            'module' => 'core',
-            'class' => 'NdomodCfg',
-            'export' => false
-        );
-        $this->relationObject["CGICFG"] = array(
-            'module' => 'core',
-            'class' => 'CgiCfg',
-            'export' => false
         );
         $this->relationObject["RESOURCECFG"] = array(
             'module' => 'core',
             'class' => 'ResourceCfg',
             'export' => true
         );
-
         $this->relationObject["ACL"] = array(
             'module' => 'core',
             'class' => 'ACL',
@@ -302,19 +277,16 @@ class CentreonAPI {
             'class' => 'ACLResource',
             'export' => false
         );
-
         $this->relationObject["LDAP"] = array(
             'module' => 'core',
             'class' => 'LDAP',
             'export' => false
         );
-
         $this->relationObject["SETTINGS"] = array(
             'module' => 'core',
             'class' => 'Settings',
             'export' => false
         );
-
          
         /* Get objects from modules */
         $objectsPath = array();
@@ -372,14 +344,13 @@ class CentreonAPI {
             }
         } else {
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
-                    if (isset($oObjet['class']) && isset($oObjet['module']) && !class_exists("Centreon" . $oObjet['class'])) {
+                if (isset($oObjet['class']) && isset($oObjet['module']) && !class_exists("Centreon" . $oObjet['class'])) {
                     if ($oObjet['module'] == 'core') {
                         require_once _CENTREON_PATH_."www/class/centreon-clapi/centreon" . $oObjet['class'] . ".class.php";
                     } else {
                         require_once _CENTREON_PATH_."/www/modules/" . $oObjet['module'] . "/centreon-clapi/class/centreon" . $oObjet['class'] . ".class.php";
                     }
                 }
-
                 if (isset($oObjet['libs']) && !array_walk($oObjet['libs'], 'class_exists')) {
                     array_walk($oObjet['libs'], 'require_once');
                 }
@@ -496,12 +467,12 @@ class CentreonAPI {
         print "This software comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
         print "and you are welcome to modify and redistribute it under the GPL license\n\n";
         print "usage: ./centreon -u <LOGIN> -p <PASSWORD> [-s] -o <OBJECT> -a <ACTION> [-v]\n";
-        print "  -s 	Use SHA1 on password (default is MD5)\n";
-        print "  -v 	variables \n";
-        print "  -h 	Print help \n";
-        print "  -V 	Print version \n";
-        print "  -o 	Object type \n";
-        print "  -a 	Launch action on Centreon\n";
+        print "  -s     Use SHA1 on password (default is MD5)\n";
+        print "  -v     variables \n";
+        print "  -h     Print help \n";
+        print "  -V     Print version \n";
+        print "  -o     Object type \n";
+        print "  -a     Launch action on Centreon\n";
         print "     Actions are the followings :\n";
         print "       - POLLERGENERATE: Build nagios configuration for a poller (poller id in -v parameters)\n";
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a POLLERGENERATE -v 1 \n";

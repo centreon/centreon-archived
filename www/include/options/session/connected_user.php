@@ -74,7 +74,7 @@ for ($cpt = 0;$r = $res->fetchRow();$cpt++){
 	$session_data[$cpt]["ip_address"] = $r["ip_address"];
 	$session_data[$cpt]["last_reload"] = date("H:i:s", $r["last_reload"]);
 	
-	$resCP = $pearDB->query("SELECT topology_name, topology_icone, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
+	$resCP = $pearDB->query("SELECT topology_name, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
 	$rCP = $resCP->fetchRow();
 	
 	$session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
@@ -83,12 +83,7 @@ for ($cpt = 0;$r = $res->fetchRow();$cpt++){
     } else {
 	    $session_data[$cpt]["topology_name"] = $rCP["topology_name"];
     }
-	if ($rCP["topology_icone"]) {
-		$session_data[$cpt]["topology_icone"] = "<img src='".$rCP["topology_icone"]."'>";
-    } else {
-		$session_data[$cpt]["topology_icone"] = "&nbsp;";
-    }
-    if ($centreon->user->admin) {
+	if ($centreon->user->admin) {
 	  $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session=" . $r['session_id'] . "'><img src='./img/icons/delete.png' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
     } else {
         $session_data[$cpt]["actions"] = "";

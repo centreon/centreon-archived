@@ -387,5 +387,141 @@ class CentreonCommand
         
         return $row['command_id'];
     }
+
+    /**
+     * Insert in database a command
+     *
+     * @param array $parameters Values to insert (command_name and command_line is mandatory)
+     * @throws Exception
+     */
+    public function insert($parameters)
+    {
+        $sQuery = "INSERT INTO command "
+            . "(command_name, command_line, command_type) "
+            . "VALUES (";
+
+        (isset($parameters['command_name']) && $parameters['command_name'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_name']) . '", ' : '"", ';
+        (isset($parameters['command_line']) && $parameters['command_line'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_line']) . '", ' : '"", ';
+        (isset($parameters['command_type']) && $parameters['command_type'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_type']) . '"' : $sQuery .= "'2' ";
+
+        $sQuery .= ")";
+
+        $res = $this->_db->query($sQuery);
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while insert command '.$parameters['command_name']);
+        }
+    }
+
+    /**
+     * Update in database a command
+     *
+     * @param int $command_id Id of command
+     * @param array $command Values to set
+     * @throws Exception
+     */
+    public function update($command_id, $command)
+    {
+        $sQuery = "UPDATE `command` SET ";
+        $sQuery .= "`command_line` = '".$this->_db->escape($command['command_line'])."', `command_type` = '".$this->_db->escape($command['command_type']);
+        $sQuery .= "' WHERE `command_id` = ".$command_id;
+
+        $res = $this->_db->query($sQuery);
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while update command ' . $command['command_name']);
+        }
+    }
+
+    /**
+     * Delete command in database
+     *
+     * @param string $command_name Command name
+     * @throws Exception
+     */
+    public function deleteCommandByName($command_name)
+    {
+        $sQuery = 'DELETE FROM command '
+            . 'WHERE command_name = "' . $this->_db->escape($command_name) . '"';
+
+        $res = $this->_db->query($sQuery);
+
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while delete command ' . $command_name);
+        }
+    }
     
+    /**
+     * 
+     * @param type $sCommandName
+     * @param type $aHost
+     * @param type $bTpl
+     * @return array
+     */
+    public function checkCommandUsedInHost($sCommandName, $aHost, $bTpl = false)
+    {
+        $aReturn = array();
+        if (empty($sCommandName) || count($aHost) == 0) {
+            return $aReturn;
+        }
+        $sQuery = "select host_name from command "
+            . " join host on (command_id in (command_command_id, command_command_id2)) "
+            . " where command_name = '".$this->_db->escape($sCommandName)."'";
+        
+        if ($bTpl) {
+            $sQuery .= " AND host_register = '1' ";
+        } else {
+            $sQuery .= " AND host_register = '0' ";
+        }
+        
+        $sQuery .= " AND host_name not in ('".  implode("'", $aHost)."')";
+        
+        $res = $this->_db->query($sQuery);
+        if (PEAR::isError($res)) {
+            return $aReturn;
+        }
+        while ($row = $res->fetchRow()) {
+            if (!empty($row['host_name'])) {
+                $aReturn[] = $row['host_name'];
+            }
+        }
+        
+        return $aReturn;
+    }
+    
+    /**
+     * 
+     * @param type $sCommandName
+     * @param type $aervice
+     * @param type $bTpl
+     * @return array
+     */
+    public function checkCommandUsedInService($sCommandName, $aService, $bTpl = false)
+    {
+        $aReturn = array();
+        if (empty($sCommandName) || count($aService) == 0) {
+            return $aReturn;
+        }
+        $sQuery = "select service_description from command "
+            . " join service on (command_id in (command_command_id, command_command_id2)) "
+            . " where command_name = '".$this->_db->escape($sCommandName)."'";
+        
+        if ($bTpl) {
+            $sQuery .= " AND service_register = '1' ";
+        } else {
+            $sQuery .= " AND service_register = '0' ";
+        }
+        
+        $sQuery .= " AND service_description not in ('".  implode("'", $aService)."')";
+        
+        $res = $this->_db->query($sQuery);
+        if (PEAR::isError($res)) {
+            return $aReturn;
+        }
+        while ($row = $res->fetchRow()) {
+            if (!empty($row['service_description'])) {
+                $aReturn[] = $row['service_description'];
+            }
+        }
+        
+        return $aReturn;
+    }
 }

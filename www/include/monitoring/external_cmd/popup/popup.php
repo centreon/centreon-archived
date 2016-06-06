@@ -46,18 +46,18 @@ $pearDB = new CentreonDB();
 session_start();
 $centreon = $_SESSION['centreon'];
 
-
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
 if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
-	exit;
+	exit();
 }
 $sid = session_id();
 if (isset($sid)){
 	$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-	if (!$session = $res->fetchRow())
+	if (!$session = $res->fetchRow()) {
 		exit();
+	}
 } else {
 	exit;
 }

@@ -1,3 +1,4 @@
+<?php 
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,6 +32,8 @@
  * For more information : contact@centreon.com
  *
  */
+
+?>
 
 function check_session() {
 	call_XMLHttpReq2();

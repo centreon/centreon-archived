@@ -33,35 +33,31 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+if (!isset($centreon)) {
+    exit();
+}
 
-if (isset($_POST["sid"])){
+require_once './class/centreonDuration.class.php';
+include_once("./include/monitoring/common-Func.php");
+include_once("./include/monitoring/external_cmd/cmd.php");
 
-	$path = _CENTREON_PATH_."/www";
+$continue = true;
 
-	require_once("$path/class/centreon.class.php");
-	require_once("$path/class/centreonSession.class.php");
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	session_id($_POST["sid"]);
+$path_hg = "./include/monitoring/status/HostGroups/";
 
-	CentreonSession::start();
+$pathDetails = "./include/monitoring/objectDetails/";
 
-	$centreon = $_SESSION['centreon'];
+include_once("./class/centreonDB.class.php");
 
-	if (isset($_POST["limit"]) && isset($_POST["url"]))
-		$centreon->historyLimit[$_POST["url"]] = $_POST["limit"];
-
-	if (isset($_POST["page"]) && isset($_POST["url"]))
-		$centreon->historyPage[$_POST["url"]] = $_POST["page"];
-
-	if (isset($_POST["search"]) && isset($_POST["url"]))
-		$centreon->historySearchService[$_POST["url"]] = addslashes($_POST["search"]);
-
-	if (isset($_POST["search_host"]) && isset($_POST["url"]))
-		$centreon->historySearch[$_POST["url"]] = addslashes($_POST["search_host"]);
-
-	if (isset($_POST["search_output"]) && isset($_POST["url"]))
-		$centreon->historySearchOutput[$_POST["url"]] = addslashes($_POST["search_output"]);
-} else {
-	echo "Can't find SID !";
+switch ($o) {
+    case "hg"   : require_once($path_hg."hostGroup.php"); break;
+    case "hgpb" : require_once($path_hg."hostGroup.php"); break;
+    case "hgd"  : require_once($pathDetails."hostgroupDetails.php"); break;
+    default     : require_once($path_hg."hostGroup.php"); break;
 }

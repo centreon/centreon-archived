@@ -46,7 +46,7 @@ $tab_file_css = array();
 $i = 0;
 if ($handle  = @opendir("./Themes/Centreon-2/Color"))	{
 	while ($file = @readdir($handle)){
-		if (is_file($skin."Color"."/$file"))	{
+		if (is_file("./Themes/Centreon-2/Color"."/$file"))	{
 			$tab_file_css[$i++] = $file;
 		}
 	}
@@ -60,10 +60,7 @@ $tab_css = array();
 for ($i = 0; $DBRESULT->numRows() && $elem = $DBRESULT->fetchRow();$i++){
 	$tab_css[$elem["menu_nb"]] = $elem;
 	if (isset($_GET["css_color_".$elem["id_css_color_menu"]])){
-		$name = $_GET["css_color_".$elem["id_css_color_menu"]];			
-		$id = $elem["id_css_color_menu"];
-		$rq = "UPDATE `css_color_menu` SET `css_name` = '".$name."' WHERE `id_css_color_menu` = $id";
-		$res = $pearDB->query($rq);
+		$pearDB->query("UPDATE `css_color_menu` SET `css_name` = '".$_GET["css_color_".$elem["id_css_color_menu"]]."' WHERE `id_css_color_menu` = ".$elem["id_css_color_menu"]);
 	}		
 }
 

@@ -98,7 +98,7 @@ class Command extends AbstractObject {
         $command_line = html_entity_decode($this->commands[$command_id]['command_line_base']);
         $command_line = str_replace('#BR#', "\\n", $command_line);
         $command_line = str_replace("@MAILER@", $this->mail_bin, $command_line);
-        $command_line = str_replace("\n", "\\\n", $command_line);
+        $command_line = str_replace("\n", " \\\n", $command_line);
         $command_line = str_replace("\r", "", $command_line);
 
         if (!is_null($this->commands[$command_id]['enable_shell']) && $this->commands[$command_id]['enable_shell'] == 1) {

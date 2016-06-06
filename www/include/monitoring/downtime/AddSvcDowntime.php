@@ -65,8 +65,8 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 	}
 	$data = array();
 	$data = array(
-                    "start" => $centreonGMT->getDate("m/d/Y" , time() + 120), 
-                    "end" => $centreonGMT->getDate("m/d/Y", time() + 7320),
+                    "start" => $centreonGMT->getDate("Y/m/d" , time() + 120), 
+                    "end" => $centreonGMT->getDate("Y/m/d", time() + 7320),
                     "start_time" => $centreonGMT->getDate("G:i" , time() + 120),
                     "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
                 );

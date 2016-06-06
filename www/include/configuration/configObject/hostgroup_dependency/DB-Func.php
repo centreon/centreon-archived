@@ -166,18 +166,10 @@
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
 		$dep_id = $DBRESULT->fetchRow();
-		$fields["dep_name"] = CentreonDB::escape($ret["dep_name"]);
-		$fields["dep_description"] = CentreonDB::escape($ret["dep_description"]);
-		$fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-		$fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
-		$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
-		$fields["dep_comment"] = CentreonDB::escape($ret["dep_comment"]);
-		$fields["dep_hgParents"] = "";
-		if (isset($ret["dep_hgParents"]))
-			$fields["dep_hgParents"] = implode(",", $ret["dep_hgParents"]);
-		$fields["dep_hgChilds"] = "";
-		if (isset($ret["dep_hgChilds"]))
-			$fields["dep_hgChilds"] = implode(",", $ret["dep_hgChilds"]);
+		
+		/* Prepare value for changelog */
+    	$fields = CentreonLogAction::prepareChanges($ret);
+
 		$oreon->CentreonLogAction->insertLog("hostgroup dependency", $dep_id["MAX(dep_id)"], CentreonDB::escape($ret["dep_name"]), "a", $fields);
 		return ($dep_id["MAX(dep_id)"]);
 	}
@@ -203,18 +195,9 @@
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["dep_comment"])."' " : $rq .= "NULL ";
 		$rq .= "WHERE dep_id = '".$dep_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		$fields["dep_name"] = CentreonDB::escape($ret["dep_name"]);
-		$fields["dep_description"] = CentreonDB::escape($ret["dep_description"]);
-		$fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-		$fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
-		$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
-		$fields["dep_comment"] = CentreonDB::escape($ret["dep_comment"]);
-		$fields["dep_hgParents"] = "";
-		if (isset($ret["dep_hgParents"]))
-			$fields["dep_hgParents"] = implode(",", $ret["dep_hgParents"]);
-		$fields["dep_hgChilds"] = "";
-		if (isset($ret["dep_hgChilds"]))
-			$fields["dep_hgChilds"] = implode(",", $ret["dep_hgChilds"]);
+		
+		/* Prepare value for changelog */
+    	$fields = CentreonLogAction::prepareChanges($ret);
 		$oreon->CentreonLogAction->insertLog("hostgroup dependency", $dep_id, CentreonDB::escape($ret["dep_name"]), "c", $fields);
 	}
 
@@ -257,4 +240,4 @@
 			$DBRESULT = $pearDB->query($rq);
 		}
 	}
-?>
+

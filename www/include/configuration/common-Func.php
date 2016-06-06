@@ -34,13 +34,12 @@
  *
  */
 
-
 $aDefaultBrokerDirective = array(
     'ui' => '/usr/lib64/centreon-engine/externalcmd.so',
     'wizard' => '/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml'
 );
 
- $aInstanceDefaultValues = array(
+$aInstanceDefaultValues = array(
 	'log_file' => '/var/log/centreon-engine/centengine.log',
 	'cfg_dir' => '/etc/centreon-engine/', 
 	'object_cache_file' => '/var/log/centreon-engine/objects.cache', 
@@ -125,10 +124,8 @@ $aDefaultBrokerDirective = array(
 	'enable_predictive_service_dependency_checks' => '0',
 	'passive_host_checks_are_soft' => '2',
 	'use_large_installation_tweaks' => '1',
-	'free_child_process_memory' => '2',
-	'child_processes_fork_twice' => '2',
 	'enable_environment_macros' => '2',
-     'use_setpgid' => '2',
+	'use_setpgid' => '2',
 	'debug_file' => '/var/log/centreon-engine/centengine.debug',
 	'debug_level' => '0',
 	'debug_level_opt' => '0',
@@ -136,12 +133,9 @@ $aDefaultBrokerDirective = array(
 	'max_debug_file_size' => '1000000000',
 	'daemon_dumps_core' => '0',
 	'cfg_file' => 'centengine.cfg',
-        'use_check_result_path' => '0',
+    'use_check_result_path' => '0',
     'cached_host_check_horizon' => '60'
 );
- 
- 
- 
 
 function insertBrokerDefaultDirectives($iId, $source)
 {
@@ -197,7 +191,7 @@ function insertServerInCfgNagios($iId, $sName)
         `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`, 
         `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, 
         `event_broker_options`, `translate_passive_host_checks`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, 
-        `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `use_setpgid`, 
+        `use_large_installation_tweaks`, `enable_environment_macros`, `use_setpgid`,
         `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, `cfg_file`, `use_check_result_path`) ";
         $rq .= "VALUES (";
 
@@ -284,8 +278,6 @@ function insertServerInCfgNagios($iId, $sName)
         $aInstanceDefaultValues['enable_predictive_service_dependency_checks'] ."', '" .
         $aInstanceDefaultValues['passive_host_checks_are_soft'] ."', '" .
         $aInstanceDefaultValues['use_large_installation_tweaks'] ."', '" .
-        $aInstanceDefaultValues['free_child_process_memory'] ."', '" .
-        $aInstanceDefaultValues['child_processes_fork_twice'] ."', '" .
         $aInstanceDefaultValues['enable_environment_macros'] ."', '" .
         $aInstanceDefaultValues['use_setpgid'] ."', '" .
         $aInstanceDefaultValues['debug_file'] ."', '" .

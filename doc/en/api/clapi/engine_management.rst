@@ -8,11 +8,9 @@ List available pollers
 In order to list available pollers, use the **POLLERLIST** command::
 
   [root@centreon core]# ./centreon -u admin -p centreon -a POLLERLIST
-  1       Local Poller
-  2       Remote Poller
-
-Where 1 is the id of "Local Poller" and 2 is the id of "Remote Poller".
-
+  poller_id;name
+  1;Local Poller
+  2;Remote Poller
 
 Generate local configuration files for a poller
 -----------------------------------------------
@@ -42,7 +40,6 @@ You can test the configuration using the poller name::
   Warning: Nagios Poller poller can restart but configuration is not optimal. Please see debug bellow :
   ---------------------------------------------------------------------------------------------------
   [1440681047] [15559] Reading main configuration file '/usr/share/centreon//filesGeneration/nagiosCFG/5/nagiosCFG.DEBUG'.
-  [1440681047] [15559] Warning: temp_path variable ignored
   [1440681047] [15559] Processing object config file '/usr/share/centreon/filesGeneration/nagiosCFG/5/hosts.cfg'
   [1440681047] [15559] Processing object config file '/usr/share/centreon/filesGeneration/nagiosCFG/5/hostTemplates.cfg'
   [1440681047] [15559] Processing object config file '/usr/share/centreon/filesGeneration/nagiosCFG/5/serviceTemplates.cfg'

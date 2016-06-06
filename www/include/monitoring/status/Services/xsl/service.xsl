@@ -9,16 +9,16 @@
                     <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="criticality_id"></td>
                 </xsl:if>
                 <td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
-		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
-		<xsl:for-each select="//i">
-			<xsl:if test="o = 'svc_unhandled' or o = 'svcpb' or o = 'svc_warning' or o = 'svc_critical' or o = 'svc_unknown' or o = 'svc_unhandled_warning' or o = 'svc_unhandled_critical' or o = 'svc_unhandled_unknown'">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
-					<xsl:value-of select="hard_state_label"/>
-				</td>
-			</xsl:if>
-		</xsl:for-each>
+				<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
+				<xsl:for-each select="//i">
+					<xsl:if test="o = 'svc_unhandled' or o = 'svcpb' or o = 'svc_warning' or o = 'svc_critical' or o = 'svc_unknown' or o = 'svc_unhandled_warning' or o = 'svc_unhandled_critical' or o = 'svc_unhandled_unknown'">
+						<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
+							<xsl:value-of select="hard_state_label"/>
+						</td>
+					</xsl:if>
+				</xsl:for-each>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>                
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>
@@ -284,21 +284,18 @@
 			</xsl:if>
 		</td>
 		<td class="ListColRight">
-			<xsl:if test="ppd &gt; 0">
-				<xsl:if test="svc_index &gt; 0">
-					<xsl:element name="a">
-				  		<xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
-							<xsl:element name="img">
-					  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
-                                <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
-                                <xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
-							</xsl:element>					
-					</xsl:element>
-				</xsl:if>
+			<xsl:if test="svc_index &gt; 0">
+				<xsl:element name="a">
+			  		<xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
+						<xsl:element name="img">
+				  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
+                            <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
+                            <xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
+						</xsl:element>					
+				</xsl:element>
 			</xsl:if>
 		</td>
 		<td class="ListColCenter">
-
 			<xsl:element name="span">
 				<xsl:attribute name="style">
 					<xsl:if test="ssc = 3">
@@ -309,7 +306,6 @@
 				<xsl:attribute name="class">badge <xsl:value-of select="sc"/></xsl:attribute>
 				<xsl:value-of select="cs"/>
 			</xsl:element>
-
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:value-of select="d"/>

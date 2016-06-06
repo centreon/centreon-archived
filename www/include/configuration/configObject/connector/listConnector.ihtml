@@ -58,11 +58,11 @@
     <input type='hidden' id='limit' name='limit' value='{$limit}' />
     {$form.hidden}
 </form>
-
 <script type="text/javascript">
 {literal}
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
+    setDisabledRowStyle();
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
 {/literal}
 </script>

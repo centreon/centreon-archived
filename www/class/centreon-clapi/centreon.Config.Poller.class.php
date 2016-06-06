@@ -76,7 +76,8 @@ class CentreonConfigPoller {
     /**
      * Get General option of Centreon
      */
-    private function getOptGen() {
+    private function getOptGen()
+    {
         $DBRESULT = $this->_DB->query("SELECT * FROM options");
         while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
@@ -97,9 +98,9 @@ class CentreonConfigPoller {
         }
         
         $DBRESULT = $this->_DB->query($sQuery);
-        if ($DBRESULT->numRows() != 0)
+        if ($DBRESULT->numRows() != 0) {
             return;
-        else {
+        } else {
             print "ERROR: Unknown poller...\n";
             $this->getPollerList($this->format);
             exit(1);
@@ -162,8 +163,9 @@ class CentreonConfigPoller {
         if ($format == "xml") {
             print "";
         }
+        print "poller_id;name\n";
         while ($data = $DBRESULT->fetchRow()) {
-            print $data["id"]."\t".$data["name"]."\n";
+            print $data["id"].";".$data["name"]."\n";
         }
         $DBRESULT->free();
         return 0;
@@ -394,8 +396,8 @@ class CentreonConfigPoller {
      * @param $login
      * @param $password
      */
-    public function pollerGenerate($variables, $login, $password) {
-        
+    public function pollerGenerate($variables, $login, $password)
+    {    
         $config_generate = new \Generate();
         
         $this->testPollerId($variables);
@@ -451,7 +453,8 @@ class CentreonConfigPoller {
      * Move configuration files to servers
      * @param unknown_type $variables
      */
-    public function cfgMove($variables) {
+    public function cfgMove($variables)
+    {
         global $pearDB, $pearDBO;
 
         $pearDB = $this->_DB;
@@ -561,7 +564,8 @@ class CentreonConfigPoller {
      *
      * @return string
      */
-    function getApacheUser() {
+    function getApacheUser()
+    {
         /* Change files owner */
         $setFilesOwner = 1;
         $installFile = "/etc/centreon/instCentWeb.conf";
@@ -608,7 +612,8 @@ class CentreonConfigPoller {
      * @param unknown_type $filename
      * @param unknown_type $status
      */
-    private function display_copying_file($filename = NULL, $status){
+    private function display_copying_file($filename = NULL, $status)
+    {
         if (!isset($filename)) {
             return ;
         }
@@ -635,6 +640,18 @@ class CentreonConfigPoller {
         } else {
             throw new CentreonClapiException(self::UNKNOWN_POLLER_ID);
         }
+    }
 
+    public function getPollerState() 
+    {
+        $pollerState = array();
+
+        $this->_DBC = new \CentreonDB('centstorage');
+
+        $DBRESULT = $this->_DBC->query("SELECT instance_id, running, name FROM instances");
+        while ($row = $DBRESULT->fetchRow()) {
+            $pollerState[$row['instance_id']] = $row['running'];
+        }
+        return $pollerState;
     }
 }

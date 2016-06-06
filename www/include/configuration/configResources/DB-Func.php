@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 	if (!isset($centreon))
@@ -125,6 +122,10 @@
 				"resource_activate= '".$ret["resource_activate"]["resource_activate"]."' " .
 				"WHERE resource_id = '".$resource_id."'";
 		$DBRESULT = $pearDB->query($rq);
+
+		/* Prepare value for changelog */
+		$fields = CentreonLogAction::prepareChanges($ret);
+		$centreon->CentreonLogAction->insertLog("resource", $resource_id["MAX(resource_id)"], CentreonDB::escape($ret["resource_name"]), "c", $fields);
 	}
 
 	function insertResourceInDB ()	{
@@ -148,6 +149,11 @@
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");
 		$resource_id = $DBRESULT->fetchRow();
+
+		/* Prepare value for changelog */
+		$fields = CentreonLogAction::prepareChanges($ret);
+		$centreon->CentreonLogAction->insertLog("resource", $resource_id["MAX(resource_id)"], CentreonDB::escape($ret["resource_name"]), "a", $fields);
+
 		return ($resource_id["MAX(resource_id)"]);
 	}
 
@@ -185,4 +191,3 @@
         unset($DBRESULT);
         return $str;
     }
-?>

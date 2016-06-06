@@ -493,7 +493,7 @@ $str_unitH = "";
 $str_unitH_append = "";
 $host_search_sql = "";
 if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
-    if($engine == "false") {
+    if ($engine == "false") {
         $req .= " AND `msg_type` NOT IN ('4','5') ";
     }
 } else {
@@ -545,6 +545,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     } else {
         $req .= "AND 0 ";
     }
+    $req .= " AND logs.host_name NOT LIKE '_Module_BAM%'";
     $req .= $host_search_sql . $service_search_sql;
 }
 
@@ -720,7 +721,8 @@ if (isset($req) && $req) {
             $DBRESULT2 = $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$matches[1]."'");
             $meta = $DBRESULT2->fetchRow();
             $DBRESULT2->free();
-            $buffer->writeElement("host_name", $log["host_name"], false);
+            $buffer->writeElement("host_name", "Meta", false);
+            $buffer->writeElement("real_service_name", $log["service_description"], false);
             $buffer->writeElement("service_description", $meta["meta_name"], false);
             unset($meta);
         } else {
@@ -729,7 +731,9 @@ if (isset($req) && $req) {
                 $buffer->writeElement("address", $HostCache[$log["host_name"]], false);                
             }
             $buffer->writeElement("service_description", $log["service_description"], false);
+            $buffer->writeElement("real_service_name", $log["service_description"], false);
         }
+        $buffer->writeElement("real_name", $log["host_name"], false);
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
         $buffer->writeElement("poller", $log["instance_name"]);
         $buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
@@ -774,6 +778,7 @@ $buffer->writeElement("sch", _("Search"), 0);
 /*
  * Translation for tables.
  */
+$buffer->startElement("lang");
 $buffer->writeElement("d", _("Day"), 0);
 $buffer->writeElement("t", _("Time"), 0);
 $buffer->writeElement("O", _("Object name"), 0);

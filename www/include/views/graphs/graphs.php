@@ -745,7 +745,7 @@ function getListOfMetaservices() {
 jQuery("#setHostGroup").click(function(){
 	var hg_value = jQuery("#host_group_filter").val();
 	var host_value = jQuery("#host_selector").val();
-	if(host_value === null){
+	if (host_value === null){
 		host_value = new Array();
 	}
 	jQuery.ajax({
@@ -780,7 +780,7 @@ jQuery("#setHostGroup").click(function(){
 jQuery("#setServiceGroup").click(function(){
 	var service_value = jQuery("#service_selector").val();
 	var sg_value = jQuery("#service_group_filter").val();
-	if(service_value === null){
+	if (service_value === null){
 		service_value = new Array();
 	}
 	jQuery.ajax({

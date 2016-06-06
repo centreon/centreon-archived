@@ -97,9 +97,9 @@ class CentreonTimeperiod
     public function getTimperiodIdByName($name)
     {
         $query = "SELECT tp_id FROM timeperiod 
-                WHERE tp_name = '".$this->_db->escape($name)."'";
+                WHERE tp_name = '".$this->db->escape($name)."'";
 
-        $res = $this->_db->query($query);
+        $res = $this->db->query($query);
 
         if (!$res->numRows()) {
             return null;

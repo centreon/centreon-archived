@@ -590,8 +590,6 @@ CREATE TABLE `cfg_nagios` (
   `cached_service_check_horizon` int(11) DEFAULT NULL,
   `passive_host_checks_are_soft` int(11) DEFAULT NULL,
   `use_large_installation_tweaks` enum('0','1','2') DEFAULT NULL,
-  `free_child_process_memory` enum('0','1','2') DEFAULT NULL,
-  `child_processes_fork_twice` enum('0','1','2') DEFAULT NULL,
   `enable_environment_macros` enum('0','1','2') DEFAULT NULL,
   `use_setpgid` enum('0','1','2') DEFAULT NULL,
   `additional_freshness_latency` int(11) DEFAULT NULL,

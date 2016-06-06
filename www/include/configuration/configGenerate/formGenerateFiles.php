@@ -63,25 +63,16 @@ foreach ($tab_nagios_server as $key => $name) {
 $attrSelect = array("style" => "width: 220px;");
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-$form->addElement('header', 'title', _("Configuration Files Export"));
-$form->addElement('header', 'infos', _("Implied Server"));
-$form->addElement('header', 'opt', _("Export Options"));
-$form->addElement('header', 'result', _("Actions"));
 
 $form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
-
 $form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug'));
 $form->setDefaults(array('debug' => '1'));
-
 $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));
 $form->setDefaults(array('gen' => '1'));
-
 $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
-
-$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"));
-$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
+$form->addElement('select', 'restart_mode', _("Method"), array(2 => _("Restart"), 1 => _("Reload")), array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 $form->setDefaults(array('restart_mode' => '1'));
 
 /* Add multiselect for pollers */
@@ -91,7 +82,8 @@ $attrPoller = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
     'multiple' => true
 );
-$form->addElement('select2', 'nhost', _("Pollers"), array(), $attrPoller);
+$form->addElement('select2', 'nhost', _("Pollers"), array("class" => "required"), $attrPoller);
+$form->addRule('nhost', _("You need to select a least one polling instance."), 'required', null, 'client');
 
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -109,10 +101,10 @@ $stdout = NULL;
 $tpl->assign("consoleLabel", _("Console"));
 $tpl->assign("progressLabel", _("Progress"));
 $tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
-$helptext = "";
 
 include_once("help.php");
 
+$helptext = "";
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }

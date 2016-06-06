@@ -83,6 +83,7 @@ class CentreonClapi extends CentreonWebService
           $db->getConnection();
           $db_storage->getConnection();
         } catch (Exception $e) {
+
         }
         
         $username = $centreon->user->alias;
@@ -136,7 +137,6 @@ class CentreonClapi extends CentreonWebService
         $return['result'] = array();
         for ($i = 0; $i < count($lines); $i++) {
             if (strpos($lines[$i], ';') !== false) {
-                
                 $return['result'][] = array_combine($headers, explode(';', $lines[$i]));
             } elseif (strpos($lines[$i], "\t") !== false) {
                 $return['result'][] = array_combine($headers, explode("\t", $lines[$i]));

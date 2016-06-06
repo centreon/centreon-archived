@@ -1478,6 +1478,24 @@ class CentreonService
             return $svcTmpl;
         }
     }
+
+    /**
+     * Delete service in database
+     *
+     * @param string $service_description Hostname
+     * @throws Exception
+     */
+    public function deleteServiceByDescription($service_description)
+    {
+        $sQuery = 'DELETE FROM service '
+            . 'WHERE service_description = "' . $this->db->escape($service_description) . '"';
+
+        $res = $this->db->query($sQuery);
+
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while delete service ' . $service_description);
+        }
+    }
 }
 
 ?>

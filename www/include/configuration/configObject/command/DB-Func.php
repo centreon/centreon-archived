@@ -37,8 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!function_exists("myDecodeCommand")) {
-
+if (!function_exists("myDecodeCommand"))
+{
     function myDecodeCommand($arg) {
         $arg = str_replace('#BR#', "\\n", $arg);
         $arg = str_replace('#T#', "\\t", $arg);
@@ -140,7 +140,6 @@ function updateCommandInDB($cmd_id = null) {
 function updateCommand($cmd_id = null, $params = array()) {
     global $form, $pearDB, $centreon;
 
-
     if (!$cmd_id) {
         return;
     }
@@ -168,19 +167,12 @@ function updateCommand($cmd_id = null, $params = array()) {
             "WHERE `command_id` = '" . intval($cmd_id) . "'";
     $DBRESULT = $pearDB->query($rq);
 
-    $fields["command_name"] = $pearDB->escape($ret["command_name"]);
-    $fields["command_line"] = $pearDB->escape($ret["command_line"]);
-    $fields["enable_shell"] = $pearDB->escape($ret["enable_shell"]);
-    $fields["command_example"] = $pearDB->escape($ret["command_example"]);
-    $fields["command_comment"] = $pearDB->escape($ret["command_comment"]);
-    $fields["command_type"] = $ret["command_type"]["command_type"];
-
-    $fields["graph_id"] = $ret["graph_id"];
-    $fields["connector_id"] = $ret["connectors"];
-    $centreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
-    insertArgDesc($cmd_id, $ret);
-    
+    insertArgDesc($cmd_id, $ret);    
     insertMacrosDesc($cmd_id, $ret);
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
 }
 
 function insertCommandInDB($ret = array()) {
@@ -210,26 +202,17 @@ function insertCommand($ret = array()) {
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
 
-    /* 
-     * Buffer for changelog
-     */
-    $fields["command_name"] = $pearDB->escape($ret["command_name"]);
-    $fields["command_comment"] = $pearDB->escape($ret["command_comment"]);
-    $fields["command_line"] = $pearDB->escape($ret["command_line"]);
-    $fields['enable_shell'] = $pearDB->escape($ret['enable_shell']);
-    $fields["command_example"] = $pearDB->escape($ret["command_example"]);
-    $fields["command_type"] = $ret["command_type"]["command_type"];
-    $fields["graph_id"] = $ret["graph_id"];
-    $fields["connector_id"] = $ret["connectors"];
-
     /*
      * Get Max ID
      */
     $max_id = getMaxID();
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("command", $max_id, $pearDB->escape($ret["command_name"]), "a", $fields);
     
-    insertArgDesc($cmd_id["MAX(command_id)"], $ret);
-    insertMacrosDesc($cmd_id["MAX(command_id)"], $ret);
+    insertArgDesc($max_id, $ret);
+    insertMacrosDesc($max_id, $ret);
     
     return ($max_id);
 }
@@ -239,7 +222,7 @@ function getMaxID() {
 
     $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
     $row = $DBRESULT->fetchRow();
-    return $row;
+    return $row['MAX(command_id)'];
 }
 
 function return_plugin($rep) {
