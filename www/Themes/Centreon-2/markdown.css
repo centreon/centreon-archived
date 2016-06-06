@@ -3,12 +3,13 @@
  */
 
 .full-page {
-    width: 80%;
-    max-height: 100%;
+    width: 90%;
+    max-height: none;
     margin: 10px auto;
     display: block;
     float: none;
     padding: 10px;
+    border: 0;
 }
 
 .md-preview p {
