@@ -187,7 +187,6 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Host"));
 $tpl->assign("headerMenu_desc", _("Service"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
