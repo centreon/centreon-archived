@@ -32,10 +32,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
 require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 
@@ -149,5 +147,3 @@ class CentreonServicetemplates extends CentreonService
         return $arr;
     }
 }
-
-?>

@@ -190,7 +190,6 @@ class CentreonCommand
     /**
      * 
      * @param type $iIdCmd
-
      * @return string
      */
     public function getMacroDescription($iIdCmd)

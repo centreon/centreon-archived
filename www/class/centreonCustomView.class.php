@@ -598,7 +598,4 @@ class CentreonCustomView
             unset($customView);
         }
     }
-    
-    
-    
 }

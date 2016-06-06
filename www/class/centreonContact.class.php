@@ -230,7 +230,6 @@ class CentreonContact
                 'hide' => $hide
             );
         }
-
         return $items;
     }
 }

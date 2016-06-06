@@ -1163,4 +1163,3 @@ class CentreonConfigCentreonBroker
     }
     
 }
-?>

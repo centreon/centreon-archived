@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2005-2014 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -2406,7 +2405,4 @@ class CentreonACL {
             $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
         }
     }
-
 }
-
-?>
