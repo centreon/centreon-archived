@@ -350,9 +350,7 @@ $form->addElement('select', 'contact_type_msg', _("Mail Type"), array(NULL => NU
 
 if ($centreon->user->admin) {
     $tab = array();
-    if ($centreon->user->admin) {
-        $tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
-    }
+    $tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
     $tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
     $form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
 
