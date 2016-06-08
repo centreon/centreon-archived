@@ -394,7 +394,7 @@ function insertContact($ret = array()) {
 
     isset($ret["contact_register"]) && $ret["contact_register"] != NULL ? $rq .= "'" . $ret["contact_register"] . "', " : $rq .= " '1', ";
     isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != NULL ? $rq .= "'" . $ret["contact_enable_notifications"]["contact_enable_notifications"] . "', " : $rq .= "NULL, ";
-    isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL ? $rq .= "'" . $ret["contact_admin"]["contact_admin"] . "', " : $rq .= "NULL, ";
+    isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL ? $rq .= "'" . $ret["contact_admin"]["contact_admin"] . "', " : $rq .= "'0', ";
     isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'" . $ret["contact_type_msg"] . "', " : $rq .= "NULL, ";
     isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL ? $rq .= "'" . $ret["contact_activate"]["contact_activate"] . "', " : $rq .= "NULL, ";
     isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL ? $rq .= "'" . $ret["contact_auth_type"] . "', " : $rq .= "'local', ";
