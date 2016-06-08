@@ -355,6 +355,11 @@ if ($centreon->user->admin) {
     }
     $tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
     $form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
+
+    $tab = array();
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("Yes"), '1');
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("No"), '0');
+    $form->addGroup($tab, 'reach_api', _("Reach API"), '&nbsp;');
 }
 
 /**
