@@ -1,6 +1,5 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
-<script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=dragdrop" type="text/javascript"></script>
-<script language='javascript' src='./include/views/graphs/javascript/cropper/cropper.uncompressed.js'></script>
 <div id="div1" style="position:relative;">
     <form {$form.attributes}>
         <table class="ajaxOption table">
@@ -42,43 +41,274 @@
 			</tr>
         </table>
     </form>
+    <div class="graph-options">
+      <a href="javascript:switchCols(1)">
+        <img alt="{t}One column{/t}" class="ico-16 margin_right" src="./img/icons/picture.png">
+      </a>
+      <a href="javascript:switchCols(2)">
+        <img alt="{t}Two columns{/t}" class="ico-16 margin_right" src="./img/icons/picture.png">
+      </a>
+      <a href="javascript:switchCols(3)">
+        <img alt="{t}Three columns{/t}" class="ico-16 margin_right" src="./img/icons/picture.png">
+      </a>
+    </div>
     <div id="graphs" class="graph_content">
-        <div id="StatusAction">
-             <div id="graph_pagination">
-                <!-- optional left control buttons -->
-                <div id="test1_m_left"></div><div id="test1_o_left"></div>
-
-                <div class='paginator_p_wrap'>
-                    <div class='paginator_p_bloc'></div>
-                </div>
-
-                <!-- optional right control buttons -->
-                <div id="test1_o_right"></div><div id="test1_m_right"></div>
-
-                <!-- slider -->
-                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
-                    <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
-                </div>
-            </div>
-         </div>
         <div class="graphZone"></div>
-        <div id="StatusAction2">
-            <div id="graph_pagination2">
-                <!-- optional left control buttons -->
-                <div id="test1_m_left2"></div><div id="test1_o_left2"></div>
-
-                <div class='paginator_p_wrap'>
-                    <div class='paginator_p_bloc'></div>
-                </div>
-
-                <!-- optional right control buttons -->
-                <div id="test1_o_right2"></div><div id="test1_m_right2"></div>
-
-                <!-- slider -->
-                <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
-                    <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/handlebars-v4.0.5.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+
+{literal}
+<style>
+  .graph-options {
+    display: flex; 
+    justify-content: flex-end;
+    margin-bottom: 2px;
+  }
+  
+  .graphZone {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .graphZone.col2 .graph {
+    width: 49%;
+  }
+  
+  .graphZone.col3 .graph {
+    width: 32%;
+  }
+  
+  .graph {
+    height: 300px;
+    border: 1px solid #bfd0e2;
+    width: 100%;
+    position: relative;
+  }
+  
+  .graph .title {
+    background-color: #cfedf9;
+    height: 20px;
+    display: inline-block;
+    line-height: 20px;
+    font-weight: bold;
+    width: calc(100% - 4px);
+    padding: 0 2px;
+  }
+  
+  .graph .title .actions {
+    float: right;
+    margin-top: 2px;
+  }
+  
+  .graph .content {
+    height: 280px;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .graph .action {
+    position: absolute;
+    padding: 0 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 280px;
+    top: 0;
+  }
+  
+  .graph .action.left {
+    left: 0;
+  }
+  
+  .graph .action.right {
+    right: 0;
+  }
+  
+  .graph .action .bt_action {
+    z-index: 50;
+    padding: 4px;
+    opacity: 0.2;
+    transition: opacity .25s ease-in-out;
+  }
+  
+  .graph .action .bt_action:hover {
+    opacity: 1;
+  }
+  
+  .graph .chart {
+    flex: 1;
+    overflow: hidden;
+  }
+</style>
+
+<script id="graph-line" type="text/x-handlebars-template">
+<div id="graph_wrapper_{{graphId}}" class="graph">
+  <div class="title">
+    {{graphTitle}}
+    <a class="actions">
+      <img alt="Export graph" src="./img/icons/picture.png" class="ico-16 margin_right">
+    </a>
+    <a class="actions">
+      <img alt="Export CSV" src="./img/icons/csv.png" class="ico-16 margin_right">
+    </a>
+  </div>
+  <div class="content">
+    <div class="action left">
+      <button class="bt_action">&lt;&lt;</button>
+    </div>
+    <div class="chart" id="graph-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="{{graphType}}">
+    </div>
+    <div class="action right">
+      <button class="bt_action">&gt;&gt;</button>
+    </div>
+  </div>
+</div>
+</script>
+<script>
+var charts = [];
+var source = jQuery('#graph-line').html();
+var templateGraph = Handlebars.compile(source);
+  
+function addChart(id, name, times) {
+  if (charts.indexOf(id) !== -1) {
+    return;
+  }
+  times.height = 250;
+  charts.push(id);
+  jQuery('.graphZone').append(
+    templateGraph({
+      graphId: id,
+      graphType: 'service',
+      graphTitle: name
+    })
+  );
+  jQuery('#graph-' + id).centreonGraph(times);
+}
+
+function loadChart() {
+  var i = 0;
+  var exclude = [
+    'StartDate',
+    'StartTime',
+    'EndDate',
+    'EndTime',
+    'period',
+    'displayStatus'
+  ];
+  var dataForm = jQuery('#FormPeriod').serializeArray();
+  var postData = {};
+  var times = {};
+  
+  if (jQuery('select[name="period"]').val() === '') {
+    times = {
+      period: {
+        start: jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val(),
+        end: jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val()
+      }
+    };
+  } else {
+    times = {
+      interval: jQuery('select[name="period"]').val()
+    };
+  }
+  
+  for (i = 0; i < dataForm.length; i++) {
+    if (exclude.indexOf(dataForm[i].name) !== -1) {
+      postData[dataForm[i].name] = dataForm[i].value;
+    }
+  }
+  jQuery.ajax({
+    url: './include/views/graphs/getGraphAjax.php',
+    type: 'post',
+    dataType: 'json',
+    data: dataForm,
+    success: function (data) {
+      var newListHost = [];
+      var tmpChartsList = [];
+      var i = 0;
+      for (i = 0; i < data.length; i++) {
+        addChart(data[i].id, data[i].title, times);
+        newListHost.push(data[i].id);
+      }
+      for (i = 0; i < charts.length; i++) {
+        if (newListHost.indexOf(charts[i]) === -1) {
+          jQuery('#graph_wrapper_' + charts[i]).remove();
+        } else {
+          tmpChartsList.push(charts[i]);
+        }
+      }
+      charts = tmpChartsList;
+    }
+  });
+}
+  
+function switchCols(number) {
+  var className = null;
+  jQuery('.graphZone').removeClass(function (index, css) {
+    return (css.match(/\bcol\S+/g) || []).join(' ');
+  });
+  if (number === 2 || number === 3) {
+    jQuery('.graphZone').addClass('col' + number);
+  }
+  jQuery('.graphZone .chart').centreonGraph('resize');
+}
+  
+function changePeriod() {
+  var start;
+  var end;
+  jQuery('select[name="period"]').val('');
+  start = jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val();
+  end = jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val();
+  /* Test If all period field are not empty */
+  if (start.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) && end.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)) {
+    /* Test if date start is lower of date end */
+    if (moment(start).isBefore(end)) {
+      jQuery('.graphZone .chart').centreonGraph(
+        'setPeriod',
+        start,
+        end
+      );
+    } else {
+      // @todo change
+      alert('The start date must be before the date end.');
+    }
+  }
+}
+  
+function changeInterval() {
+  if (jQuery('select[name="period"]').val() === '') {
+    return;
+  }
+  jQuery('.datepicker-iso').datepicker('setDate', null);
+  jQuery('.timepicker').val('');
+  jQuery('.graphZone .chart').centreonGraph(
+    'setInterval',
+    jQuery('select[name="period"]').val()
+  );
+}
+  
+jQuery(function () {
+  loadChart();
+  
+  /* Add events */
+  jQuery('#service_selector').on('change', loadChart);
+  jQuery('#host_selector').on('change', loadChart);
+  jQuery('#metaservice_selector').on('change', loadChart);
+  jQuery('#service_group_filter').on('change', loadChart);
+  jQuery('#host_group_filter').on('change', loadChart);
+  
+  jQuery('.datepicker-iso').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+});
+</script>
+{/literal}
