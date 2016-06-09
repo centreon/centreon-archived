@@ -203,6 +203,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 			     "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag,
 			     "RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
 			     "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
+			     "RowMenu_badge" => $config["ns_activate"] ? "service_ok" : "service_critical",
 			     "RowMenu_statusVal" => $config["ns_activate"],
                  "RowMenu_cfg_id" => ($cfg_id == -1) ? "" : $cfg_id['nagios_id'],
 			     "RowMenu_options" => $moptions);
