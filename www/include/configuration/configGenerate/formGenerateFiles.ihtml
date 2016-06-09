@@ -15,7 +15,10 @@
         </tr>	 	
 		<tr class="list_one">
           <td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{$form.nhost.label}</td>
-          <td class="FormRowValue">{$form.nhost.html}</td>
+          <td class="FormRowValue">
+              <i id="noSelectedPoller" style="color:red;margin-left:20px;" hidden>{$noPollerSelectedLabel}</i>
+              {$form.nhost.html}
+          </td>
         </tr>
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2"><h4>{t}Actions{/t}</h4></td>

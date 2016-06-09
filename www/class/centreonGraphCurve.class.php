@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -115,4 +112,3 @@ class CentreonGraphCurve
         return $graphCurveList;
     }
 }
-?>

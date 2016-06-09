@@ -154,17 +154,6 @@ foreach ($objects_type_tab as $key => $name) {
 
 $tpl->assign("obj_type", $options);
 
-/*
- * Init Data table
- */
-$tabz_obj_type = array();
-$tabz_obj_name = array();
-$tabz_obj_id = array();
-$tabz_event_type = array();
-$tabz_obj_time = array();
-$tabz_contact = array();
-$tabz_host = array();
-
 $query = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, action_log_date, action_type, log_contact_id, action_log_id FROM log_action";
 
 $where_flag = 1;
@@ -209,8 +198,6 @@ while ($res = $DBRESULT->fetchRow()) {
     if ($res['object_id']) { 
         $objectName = str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"]);
 
-        $host_name = '';
-        $hosts = array();
         if ($res['object_type'] == "service") {
             $tmp = $centreon->CentreonLogAction->getHostId($res['object_id']);
             if ($tmp != -1) {
@@ -226,7 +213,16 @@ while ($res = $DBRESULT->fetchRow()) {
                         }
                     }
                 } elseif (isset($tmp['hg'])) {
-
+                    $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
+                    $tabHost = split(',', $tmp2["hg"]);
+                    if (count($tabHost) == 1) {
+                        $hg_name = $centreon->CentreonLogAction->getHostGroupName($tmp2["hg"]);
+                    } elseif (count($tabHost) > 1) {
+                        $hostgroups = array();
+                        foreach ($tabHost as $key => $value) {
+                            $hostgroups[] = $centreon->CentreonLogAction->getHostGroupName($value);
+                        }
+                    }
                 }
             }
         }
@@ -236,7 +232,7 @@ while ($res = $DBRESULT->fetchRow()) {
                 $elemArray[] = array(
                     "date" => date('Y/m/d H:i:s', $res['action_log_date']),
                     "type" => $res['object_type'],
-                    "object_name" => str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"]),
+                    "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
                     "object_id" => $res['object_id'],
                     "modification_type" => $tabAction[$res['action_type']],
@@ -245,11 +241,11 @@ while ($res = $DBRESULT->fetchRow()) {
                     "host" => $host_name,
                     "badge" => $badge[$tabAction[$res['action_type']]]
                 );
-            } else if (isset($hosts)) {
+            } elseif (isset($hosts) && count($hosts) != 1) {
                 $elemArray[] = array(
                     "date" => date('Y/m/d H:i:s', $res['action_log_date']),
                     "type" => $res['object_type'],
-                    "object_name" => str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"]),
+                    "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
                     "object_id" => $res['object_id'],
                     "modification_type" => $tabAction[$res['action_type']],
@@ -258,15 +254,42 @@ while ($res = $DBRESULT->fetchRow()) {
                     "hosts" => $hosts,
                     "badge" => $badge[$tabAction[$res['action_type']]]
                 );
+            } elseif (isset($hg_name) && $hg_name != '') {
+                $elemArray[] = array(
+                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "type" => $res['object_type'],
+                    "object_name" => $objectName,
+                    "action_log_id" => $res['action_log_id'],
+                    "object_id" => $res['object_id'],
+                    "modification_type" => $tabAction[$res['action_type']],
+                    "author" => $contactList[$res['log_contact_id']],
+                    "change" => $tabAction[$res['action_type']],
+                    "hostgroup" => $hg_name,
+                    "badge" => $badge[$tabAction[$res['action_type']]]
+                );
+            } elseif (isset($hostgroups) && count($hostgroups) != 1) {
+                $elemArray[] = array(
+                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "type" => $res['object_type'],
+                    "object_name" => $objectName,
+                    "action_log_id" => $res['action_log_id'],
+                    "object_id" => $res['object_id'],
+                    "modification_type" => $tabAction[$res['action_type']],
+                    "author" => $contactList[$res['log_contact_id']],
+                    "change" => $tabAction[$res['action_type']],
+                    "hostgroups" => $hostgroups,
+                    "badge" => $badge[$tabAction[$res['action_type']]]
+                );
             }
-            if (isset($hgs)) {
-
-            }
+            unset($host_name);
+            unset($hg_name);
+            unset($hosts);
+            unset($hostgroups);
         } else {
             $elemArray[] = array(
                 "date" => date('Y/m/d H:i:s', $res['action_log_date']),
                 "type" => $res['object_type'],
-                "object_name" => str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"]),
+                "object_name" => $objectName,
                 "action_log_id" => $res['action_log_id'],
                 "object_id" => $res['object_id'],
                 "modification_type" => $tabAction[$res['action_type']],
@@ -278,7 +301,6 @@ while ($res = $DBRESULT->fetchRow()) {
     }
 }
 
-//print_r($elemArray);
 /*
  * Apply a template definition
  */

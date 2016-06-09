@@ -201,7 +201,27 @@ class CentreonLogAction {
             return $info['object_name'];
         }        
         return -1;
-    }   
+    }
+
+    public function getHostGroupName($hg_id) 
+    {
+        global $pearDB, $pearDBO;
+        
+        $query = "SELECT hg_name FROM hostgroup WHERE hg_id = ".$hg_id;
+        $DBRESULT2 = $pearDB->query($query);
+        $info = $DBRESULT2->fetchRow();
+        if (isset($info['hg_name'])) {
+            return $info['hg_name'];
+        }
+
+        $query = "SELECT object_id, object_name FROM log_action WHERE object_type = 'service' AND object_id = $hg_id";
+        $DBRESULT2 = $pearDBO->query($query);
+        $info = $DBRESULT2->fetchRow();
+        if (isset($info['object_name'])) {
+            return $info['object_name'];
+        }        
+        return -1;
+    }
 
     /*
      *  returns list of modifications

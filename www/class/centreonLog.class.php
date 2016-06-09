@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonUserLog {
@@ -175,7 +172,4 @@ class CentreonLog {
          */
         file_put_contents($this->errorType[$id], $string . "\n", FILE_APPEND);
     }
-
 }
-
-?>

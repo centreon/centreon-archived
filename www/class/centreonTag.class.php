@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonTag
@@ -47,8 +44,6 @@ class CentreonTag
     {
         $this->_db = $pearDB;
     }
-    
-    
 
     /**
      *
@@ -82,4 +77,3 @@ class CentreonTag
         return $items;
     }
 }
-?>
