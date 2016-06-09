@@ -555,10 +555,17 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $confirmBox.centreonPopin("close");
                     $confirmBox.remove();
                 });
-                
-                jQuery(document).on("click", "#confirm'  . $this->getName() . ' .btc.bt_default", function (e) {
+
+                jQuery("#confirm'  . $this->getName() . ' .btc.bt_default, #confirm'  . $this->getName() . ' a.close").on("click", function () {
                     $confirmBox.centreonPopin("close");
                     $confirmBox.remove();
+                });
+
+                jQuery("#centreonPopinOverlay").on("click", function (e) {
+                    if (jQuery(e.target).parents(".centreon-popin").length === 0) {
+                        $confirmBox.centreonPopin("close");
+                        $confirmBox.remove();
+                    }
                 });
             };';
 
