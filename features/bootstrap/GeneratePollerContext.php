@@ -56,6 +56,15 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
+     * @Given no one poller is selected
+     */
+    public function noOnePollerIsSelected()
+    {
+        $clearAllSpan = $this->assertFind('css', '.clearAllSelect2');
+        $this->assertFindIn($clearAllSpan, 'css', 'img')->click();
+    }
+
+    /**
      * @When I am redirected to generate page
      */
     public function iAmRedirectedToGeneratePage()
@@ -132,6 +141,21 @@ class GeneratePollerContext extends CentreonContext
                 return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
             },
             30
+        );
+    }
+    /**
+     * @Then an error message is displayed to inform that no one poller is selected
+     */
+    public function noPollerErrorMessage() {
+        /* Wait error message is displayed */
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has(
+                    'css',
+                    '#noSelectedPoller[style*="display: inline"]'
+                );
+            },
+            5
         );
     }
 }
