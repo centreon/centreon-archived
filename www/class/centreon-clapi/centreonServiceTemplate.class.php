@@ -479,8 +479,7 @@ class CentreonServiceTemplate extends CentreonObject {
         if (!isset($severity[0])) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[1]);
         }
-        $k = $severityObj->getPrimaryKey();
-        $severityId = $severity[0][$k];
+        $severityId = $severity[0];
         $severity = $severityObj->getParameters(
                 $severityId, array('level')
         );
