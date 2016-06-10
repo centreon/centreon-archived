@@ -126,6 +126,7 @@ for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
 					"RowMenu_link"=>"?p=".$p."&o=c&nagios_id=".$nagios['nagios_id'],
 					"RowMenu_desc"=>substr($nagios["nagios_comment"], 0, 40),
 					"RowMenu_status"=>$nagios["nagios_activate"] ? _("Enabled") : _("Disabled"),
+					"RowMenu_badge" => $nagios["nagios_activate"] ? "service_ok" : "service_critical",
 					"RowMenu_options"=>$moptions);
 	$style != "two" ? $style = "two" : $style = "one";
 }

@@ -303,6 +303,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 							"RowMenu_attempts" => CentreonUtils::escapeSecure(getMyServiceField($service['service_id'], "service_max_check_attempts")),
 							"RowMenu_desc" => CentreonUtils::escapeSecure($service["service_description"]),
 							"RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
+							"RowMenu_badge" 	=> $service["service_activate"] ? "service_ok" : "service_critical",
 							"RowMenu_options" => $moptions);
 
 	$fgHostgroup["print"] ? NULL : $elemArr[$i]["RowMenu_name"] = NULL;

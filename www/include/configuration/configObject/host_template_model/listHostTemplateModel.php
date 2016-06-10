@@ -170,6 +170,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 					"RowMenu_svChilds" => count($svArr),
 					"RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
 					"RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
+					"RowMenu_badge" => $host["host_activate"] ? "service_ok" : "service_critical",
 					"RowMenu_options" => $moptions);
 	$style != "two" ? $style = "two" : $style = "one";
 }
