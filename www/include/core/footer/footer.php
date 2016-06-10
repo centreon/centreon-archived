@@ -89,7 +89,7 @@ if (!$min) {
                 document.mozFullScreenElement ||
                 document.msFullscreenElement
             ) {
-                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #imp_subscription_button").removeClass('tohide');
                 jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
                 jQuery('#contener').css({
                     'height' : 'calc(100% - 170px)'
@@ -107,7 +107,7 @@ if (!$min) {
                    document.webkitExitFullscreen();
                 }
             } else {
-                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #imp_subscription_button").addClass('tohide');
                 jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen_off.png");
                 jQuery('#contener').css({
                     'height' : '100%'
@@ -139,7 +139,7 @@ if (!$min) {
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
         if (event === 'FullscreenOff') {
             jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
-            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #imp_subscription_button").removeClass('tohide');
         }
     }
 
