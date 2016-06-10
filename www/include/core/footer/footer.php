@@ -110,7 +110,7 @@ if (!$min) {
                 jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
                 jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen_off.png");
                 jQuery('#contener').css({
-                    'height' : '96%'
+                    'height' : '100%'
                 });
                 jQuery('#Tcontener').css({
                     'margin-bottom' : '0px'
