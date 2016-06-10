@@ -163,12 +163,12 @@ jQuery(function () {
 if ($centreon->user->access->admin == 0) {
     $tabActionACL = $centreon->user->access->getActions();
     if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-        print "setTimeout('reloadStatusCounter($tS, \"$sid\")', 0);\n";
+        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
     }
     unset($tabActionACL);
 } else {
     if ($min != 1) {
-        print "setTimeout('reloadStatusCounter($tS, \"$sid\")', 0);\n";
+        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
     }
 }
 
