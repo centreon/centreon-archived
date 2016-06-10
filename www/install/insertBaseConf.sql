@@ -794,7 +794,9 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('poller', 1), 
                                            ('hostCategories',1), 
                                            ('serviceCategories',1),
-                                           ('metric',1); 	  
+                                           ('metric',1), 
+                                           ('ba', 1),
+                                           ('bv', 1); 	  
 
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
     if (!$centreon->user->admin && isset($nagios_id)
@@ -576,24 +573,12 @@
 	$form->addGroup($nagTab, 'use_large_installation_tweaks', _("Use large installation tweaks"), '&nbsp;');
 
 	$nagTab = array();
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Yes"), '1');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("No"), '0');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'free_child_process_memory', _("Free child process memory"), '&nbsp;');
-
-	$nagTab = array();
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Yes"), '1');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("No"), '0');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'child_processes_fork_twice', _("Child processes fork twice"), '&nbsp;');
-
-	$nagTab = array();
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Yes"), '1');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("No"), '0');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'enable_environment_macros', _("Enable environment macros"), '&nbsp;');
         
-        $nagTab = array();
+    $nagTab = array();
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("Yes"), '1');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("No"), '0');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("Default"), '2');

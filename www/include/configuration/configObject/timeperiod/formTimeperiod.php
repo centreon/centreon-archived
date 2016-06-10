@@ -292,11 +292,11 @@ else {
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign('gmtUsed', $oreon->CentreonGMT->used());
+	$tpl->assign('gmtUsed', $centreon->CentreonGMT->used());
 	$tpl->assign('noExceptionMessage', _('GMT is activated on your system. Exceptions will not be generated.'));
 	$tpl->assign('exceptionLabel', _('Exceptions'));
 	$tpl->display("formTimeperiod.ihtml");
 }
 ?><script type="text/javascript">
-		displayExistingExceptions(<?php echo $k;?>);
+	displayExistingExceptions(<?php echo $k;?>);
 </script>

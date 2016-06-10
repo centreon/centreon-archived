@@ -161,10 +161,17 @@ UPDATE topology SET topology_url = './include/Administration/parameters/paramete
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=storage' WHERE topology_page = 50118;
 UPDATE topology SET topology_url = './include/Administration/performance/manageData.php' WHERE topology_page = 50119;
 
--- OPTIMIZE Monitoring
-ALTER TABLE services ADD INDEX last_hard_state_change (last_hard_state_change);
-
 -- Remove meta service page in the monitoring
 DELETE FROM topology WHERE  topology_name = 'Meta Services' AND topology_parent = 202 AND (topology_page IS NULL OR topology_page = 20206);
 
+ALTER TABLE cfg_nagios DROP COLUMN `free_child_process_memory`;
+ALTER TABLE cfg_nagios DROP COLUMN `child_processes_fork_twice`;
+
+UPDATE topology set readonly = '0' WHERE topology_page = 60901;
+
+-- Add an API Access configuration page
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (122,'API',501,50120,100,1,'./include/Administration/parameters/parameters.php','&o=api','0','0','1',NULL,NULL,NULL,'1');
+
+-- Add possibility to limit access to API
+ALTER TABLE contact ADD COLUMN `reach_api` int(11) DEFAULT '0' AFTER `contact_oreon`;
 

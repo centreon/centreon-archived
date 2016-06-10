@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -52,5 +51,32 @@ class CentreonHosttemplates extends CentreonHost
     public function getObjectForSelect2($values = array(), $options = array())
     {
         return parent::getObjectForSelect2($values, $options, '0');
+    }
+    
+    /**
+     * Returns array of host linked to the template
+     *
+     * @return array
+     */
+    public function getHostLinkedToTpl($sTplName)
+    {
+        $arr = array();
+        if (!empty($sTplName)) {
+            $sQuery = "SELECT DISTINCT hh.host_name FROM `host_template_relation` "
+                . " JOIN `host` as tpl on (host_tpl_id = tpl.host_id AND tpl.host_register = '0') "
+                . " JOIN `host` as hh on (host_host_id = hh.host_id AND hh.host_register = '1') "
+                . " WHERE tpl.host_alias = '".$sTplName."'";
+ 
+            $res = $this->db->query($sQuery);
+            if (PEAR::isError($res)) {
+                return array();
+            }
+            while ($row = $res->fetchRow()) {
+                if (!empty($row['host_name'])) {
+                    $arr[] = $row['host_name'];
+                }
+            }
+        }
+        return $arr;
     }
 }

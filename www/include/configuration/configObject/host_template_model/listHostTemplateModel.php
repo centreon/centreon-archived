@@ -82,7 +82,6 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Host Templates name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_svChilds", _("Linked Services Templates"));
@@ -171,6 +170,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 					"RowMenu_svChilds" => count($svArr),
 					"RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
 					"RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
+					"RowMenu_badge" => $host["host_activate"] ? "service_ok" : "service_critical",
 					"RowMenu_options" => $moptions);
 	$style != "two" ? $style = "two" : $style = "one";
 }

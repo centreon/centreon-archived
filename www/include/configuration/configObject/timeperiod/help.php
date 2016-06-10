@@ -14,6 +14,3 @@ $help["exception"] = dgettext("help", "You can specify several different types o
  */
 $help["include"] = dgettext("help", "This directive is used to specify other timeperiod definitions whose time ranges should be included in this timeperiod.");
 $help["exclude"] = dgettext("help", "This directive is used to specify other timeperiod definitions whose time ranges should be excluded from this timeperiod.");
-
-?>
-

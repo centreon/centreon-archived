@@ -18,10 +18,9 @@
 		<tr class="ToolbarTR">
 			{ if $mode_access == 'w' }
 			<td>
-				{$msg.options} {$form.o1.html}
-				&nbsp;&nbsp;&nbsp;
+				{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-                                <a href='#' class="btc bt_info" onclick="window.open('?p=60302&o=dn&min=1', '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.view_notif}</a>
+                <a href='#' class="btc bt_info" onclick="window.open('?p=60302&o=dn&min=1', '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.view_notif}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
@@ -47,7 +46,7 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_contacts}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
+			<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
 			<td class="ListColRight" align="right">{ if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{/section}	
@@ -56,12 +55,10 @@
 		<tr class="ToolbarTR">
 			{ if $mode_access == 'w' }
 			<td>
-				{$msg.options} {$form.o2.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+				{$msg.options} {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
 			{ else }
-			<td>&nbsp;</td>
+				<td>&nbsp;</td>
 			{ /if }
 			<input name="p" value="{$p}" type="hidden">
 			{php}

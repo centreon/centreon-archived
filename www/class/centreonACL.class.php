@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2005-2014 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -2052,8 +2051,8 @@ class CentreonACL {
                 . "AND h.host_activate = '1' "
                 . "AND h.host_register = '1' "
                 . "AND h.host_id = hgr.host_host_id "
-                . "AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id"
-                . "AND hsr.service_service_id = s.service_id"
+                . "AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id "
+                . "AND hsr.service_service_id = s.service_id "
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
                 . "AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") "
@@ -2406,7 +2405,4 @@ class CentreonACL {
             $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
         }
     }
-
 }
-
-?>

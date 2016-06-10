@@ -34,37 +34,35 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 include_once("./class/centreonUtils.class.php");
-
 include("./include/common/autoNumLimit.php");
 
 /*
  * Search
  */
 if (isset($_POST["searchH"])) {
-	$search = $_POST["searchH"];
-	$_POST["search"] = $_POST["searchH"];
-	$centreon->historySearch[$url] = $search;
-} else if (isset($centreon->historySearch[$url]))
-	$search = $centreon->historySearch[$url];
-else
-	$search = NULL;
+    $search = $_POST["searchH"];
+    $_POST["search"] = $_POST["searchH"];
+    $centreon->historySearch[$url] = $search;
+} else if (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+} else {
+    $search = NULL;
+}
 
 $SearchTool = NULL;
 $search = "";
 if (isset($_POST['searchH']) && $_POST['searchH']) {
     $search = $_POST['searchH'];
-	$SearchTool = " WHERE (hc_name LIKE '%".$pearDB->escape($search)."%' OR hc_alias LIKE '%".$pearDB->escape($search)."%')";
+    $SearchTool = " WHERE (hc_name LIKE '%".$pearDB->escape($search)."%' OR hc_alias LIKE '%".$pearDB->escape($search)."%')";
 }
 
 $hcFilter = "";
 if (!$centreon->user->admin && $hcString != "''") {
-    $hcFilter = $acl->queryBuilder(is_null($SearchTool) ? 'WHERE' : 'AND',
-                                   'hc_id',
-                                   $hcString);
+    $hcFilter = $acl->queryBuilder(is_null($SearchTool) ? 'WHERE' : 'AND', 'hc_id', $hcString);
 }
 
 $request = "SELECT COUNT(*) FROM hostcategories $SearchTool $hcFilter";
@@ -115,36 +113,35 @@ $style = "one";
  */
 $elemArr = array();
 for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
-	$selectedElements = $form->addElement('checkbox', "select[".$hc['hc_id']."]");
-	$moptions = "";
-	if ($hc["hc_activate"])
-		$moptions .= "<a href='main.php?p=".$p."&hc_id=".$hc['hc_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
-	else
-		$moptions .= "<a href='main.php?p=".$p."&hc_id=".$hc['hc_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
+    $selectedElements = $form->addElement('checkbox', "select[".$hc['hc_id']."]");
+    $moptions = "";
+    if ($hc["hc_activate"]) {
+        $moptions .= "<a href='main.php?p=".$p."&hc_id=".$hc['hc_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
+    } else {
+        $moptions .= "<a href='main.php?p=".$p."&hc_id=".$hc['hc_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
+    }
+    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$hc['hc_id']."]'></input>";
 
-	$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$hc['hc_id']."]'></input>";
-
-	/*
-	 * Check Nbr of Host / hc
-	 */
-	$nbrhostAct = array();
-	$nbrhostDeact = array();
-	$nbrhostgroupAct = array();
-	$nbrhostgroupDeact = array();
+    /*
+     * Check Nbr of Host / hc
+     */
+    $nbrhostAct = array();
+    $nbrhostDeact = array();
+    $nbrhostgroupAct = array();
+    $nbrhostgroupDeact = array();
 
     $aclFrom = "";
     $aclCond = "";
     if (!$centreon->user->admin) {
         $aclFrom = ", $aclDbName.centreon_acl acl ";
-        $aclCond = " AND h.host_id = acl.host_id
-                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+        $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
     }
-	$rq = "SELECT h.host_id, h.host_activate
+    $rq = "SELECT h.host_id, h.host_activate
            FROM hostcategories_relation hcr, host h $aclFrom
            WHERE hostcategories_hc_id = '".$hc['hc_id']."'
            AND h.host_id = hcr.host_host_id $aclCond
            AND h.host_register = '1' ";
-	$DBRESULT2 = $pearDB->query($rq);
+    $DBRESULT2 = $pearDB->query($rq);
     $nbrhostActArr = array();
     $nbrhostDeactArr = array();
     while ($row = $DBRESULT2->fetchRow()) {
@@ -154,23 +151,24 @@ for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
             $nbrhostDeactArr[$row['host_id']] = true;
         }
     }
-	$nbrhostAct = count($nbrhostActArr);
-	$nbrhostDeact = count($nbrhostDeactArr);
+    $nbrhostAct = count($nbrhostActArr);
+    $nbrhostDeact = count($nbrhostDeactArr);
 
-	$elemArr[$i] = array("MenuClass"=>"list_".$style,
-					"RowMenu_select"=>$selectedElements->toHtml(),
-					"RowMenu_name"=>CentreonUtils::escapeSecure($hc["hc_name"]),
-					"RowMenu_link"=>"?p=".$p."&o=c&hc_id=".$hc['hc_id'],
-					"RowMenu_desc"=>CentreonUtils::escapeSecure($hc["hc_alias"]),
-                                            "RowMenu_hc_type"=>($hc["level"] ? _('Severity') . ' ('.$hc['level'].')' : _('Regular')),
-					"RowMenu_status"=>$hc["hc_activate"] ? _("Enabled") : _("Disabled"),
-					"RowMenu_hostAct"=>$nbrhostAct,
-					"RowMenu_hostDeact"=>$nbrhostDeact,
-					"RowMenu_options"=>$moptions);
-	/*
-	 * Switch color line
-	 */
-	$style != "two" ? $style = "two" : $style = "one";
+    $elemArr[$i] = array("MenuClass"=>"list_".$style,
+                        "RowMenu_select"=>$selectedElements->toHtml(),
+                        "RowMenu_name"=>CentreonUtils::escapeSecure($hc["hc_name"]),
+                        "RowMenu_link"=>"?p=".$p."&o=c&hc_id=".$hc['hc_id'],
+                        "RowMenu_desc"=>CentreonUtils::escapeSecure($hc["hc_alias"]),
+                        "RowMenu_hc_type"=>($hc["level"] ? _('Severity') . ' ('.$hc['level'].')' : _('Regular')),
+                        "RowMenu_status"=>$hc["hc_activate"] ? _("Enabled") : _("Disabled"),
+                        "RowMenu_badge" => $hc["hc_activate"] ? "service_ok" : "service_critical",
+                        "RowMenu_hostAct"=>$nbrhostAct,
+                        "RowMenu_hostDeact"=>$nbrhostDeact,
+                        "RowMenu_options"=>$moptions);
+    /*
+     * Switch color line
+     */
+    $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
@@ -182,51 +180,31 @@ $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfir
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </SCRIPT>
 <?php
-$attrs1 = array(
-	'onchange'=>"javascript: " .
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 4) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
-
-$attrs2 = array(
-	'onchange'=>"javascript: " .
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 4) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o2', NULL, array(NULL => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
-
-$o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange'=>"javascript: " .
+                "var bChecked = isChecked(); ".
+                "if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
+                " alert('"._("Please select one or more items")."'); return false;} " .
+                "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 4) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "this.form.elements['".$option."'].selectedIndex = 0");
+    $form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
+    $form->setDefaults(array($option => NULL));
+    $o1 = $form->getElement($option);
+    $o1->setValue(NULL);
+    $o1->setSelected(NULL);    
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchHC', $search);

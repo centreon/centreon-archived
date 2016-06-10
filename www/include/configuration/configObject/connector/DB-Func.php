@@ -45,5 +45,3 @@ function testConnectorExistence($name = null)
     
     return $connectorObj->isNameAvailable($name, $id);
 }
-
-?>

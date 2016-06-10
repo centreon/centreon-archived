@@ -32,10 +32,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
 require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 
@@ -122,6 +120,30 @@ class CentreonServicetemplates extends CentreonService
         
         return $serviceList;
     }
+    
+    /**
+     * Returns array of Service linked to the template
+     *
+     * @return array
+     */
+    public function getServiceLinkedToTpl($sTplName)
+    {
+        $arr = array();
+        if (!empty($sTplName)) {
+            $sQuery = "SELECT DISTINCT ss.service_description FROM `service` as ss "
+                . " JOIN `service` as tpl on (ss.service_template_model_stm_id = tpl.service_id AND ss.service_register = '1') "
+                . " WHERE tpl.service_alias = '".$sTplName."' AND tpl.service_register = '0'";
+ 
+            $res = $this->db->query($sQuery);
+            if (PEAR::isError($res)) {
+                return array();
+            }
+            while ($row = $res->fetchRow()) {
+                if (!empty($row['service_description'])) {
+                    $arr[] = $row['service_description'];
+                }
+            }
+        }
+        return $arr;
+    }
 }
-
-?>

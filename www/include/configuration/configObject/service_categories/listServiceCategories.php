@@ -127,8 +127,9 @@
 							"sc_link" => "?p=".$p."&o=c&sc_id=".$sc['sc_id'],
 							"sc_description" => htmlentities($sc["sc_description"], ENT_QUOTES, "UTF-8"),
 							"svc_linked" => $nb_svc["COUNT(*)"],
-                                                        "sc_type" => ($sc['level'] ? _('Severity') . ' ('.$sc['level'].')' : _('Regular')),
+                            "sc_type" => ($sc['level'] ? _('Severity') . ' ('.$sc['level'].')' : _('Regular')),
 							"sc_activated" => $sc["sc_activate"] ? _("Enabled") : _("Disabled"),
+							"RowMenu_badge" 	=> $sc["sc_activate"] ? "service_ok" : "service_critical",
 							"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}

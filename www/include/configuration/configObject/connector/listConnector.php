@@ -31,7 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
 include_once("./class/centreonUtils.class.php");
@@ -55,45 +54,26 @@ try
     /*
 	 * Toolbar select
 	 */
-	$attrs1 = array(
-		'onchange'=>"javascript: " .
-                                " var bChecked = isChecked(); ".
-                                " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-                                " alert('"._("Please select one or more items")."'); return false;} " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"this.form.elements['o1'].selectedIndex = 0");
+    foreach (array('o1', 'o2') as $option) {
+        $attrs1 = array(
+            'onchange'=>"javascript: " .
+                    " var bChecked = isChecked(); ".
+                    " if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
+                    " alert('"._("Please select one or more items")."'); return false;} " .
+                    "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                    "   setO(this.form.elements['".$option."'].value); submit();} " .
+                    "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                    "   setO(this.form.elements['".$option."'].value); submit();} " .
+                    "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
+                    "   setO(this.form.elements['".$option."'].value); submit();} " .
+                    "this.form.elements['".$option."'].selectedIndex = 0");
 
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-	$form->setDefaults(array('o1' => NULL));
-
-	$attrs2 = array(
-		'onchange'=>"javascript: " .
-                                " var bChecked = isChecked(); ".
-                                " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-                                " alert('"._("Please select one or more items")."'); return false;} " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"this.form.elements['o2'].selectedIndex = 0");
-
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
-	$form->setDefaults(array('o2' => NULL));
-
-	$o1 = $form->getElement('o1');
-	$o1->setValue(NULL);
-	$o1->setSelected(NULL);
-
-	$o2 = $form->getElement('o2');
-	$o2->setValue(NULL);
-	$o2->setSelected(NULL);
+        $form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+        $form->setDefaults(array($option => NULL));
+        $o1 = $form->getElement($option);
+        $o1->setValue(NULL);
+        $o1->setSelected(NULL);        
+    }
 
     $elemArr = array();
     $j = 0;
@@ -109,25 +89,22 @@ try
             if ($lvl_access == "w") {
                 if ($result['enabled']) {
                     $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=u&limit=".$limit."&num=".$num."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
-                    $result['enabled'] = "enabled";
                 } else {
                     $moptions = "<a href='main.php?p=".$p."&id=".$result['id']."&o=s&limit=".$limit."&num=".$num."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
-                    $result['enabled'] = "disabled";
                 }
                 $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='options[".$result['id']."]'></input>";
                 $moptions .= "&nbsp;&nbsp;";
             } else {
                 $moptions = "&nbsp;";
-                $result['enabled'] = "disabled";
             }
-
 
             $elemArr[$j] = array("RowMenu_select"         => $selectedElements->toHtml(),
                                  "RowMenu_link"           => "?p=".$p."&o=c&id=".$result['id'],
                                  "RowMenu_name"           => CentreonUtils::escapeSecure($result["name"]),
                                  "RowMenu_description"    => CentreonUtils::escapeSecure($result['description']),
                                  "RowMenu_command_line"   => CentreonUtils::escapeSecure($result['command_line']),
-                                 "RowMenu_enabled"        => $result['enabled'],
+                                 "RowMenu_enabled"        => $result['enabled'] ? _("Enabled") : _("Disabled"),
+                                 "RowMenu_badge"          => $result['enabled'] ? "service_ok" : "service_critical",
                                  "RowMenu_options"        => $moptions
                                 );
         }

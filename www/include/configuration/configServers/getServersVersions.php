@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /*
@@ -51,4 +48,3 @@ foreach ($select as $poller) {
 }
 
 require_once($path."listServers.php");
-?>

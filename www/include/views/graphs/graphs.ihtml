@@ -8,6 +8,11 @@
               <th><h5>{t}Filters{/t}</h5></th>
             </tr>
             <tr>
+                <td class="log-select"><h4>{$form.host_group_filter.label} <img id="setHostGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
+                <td class="log-select"><h4>{$form.host_selector.label}</h4></td>
+                <td colspan='2'><h4>{$from}</h4></td>
+            </tr>
+            <tr>
 			    <td class="log-select">{$form.host_group_filter.html}</td>
 			    <td class="log-select">{$form.host_selector.html}</td>
 			    <td>{$form.StartDate.html} {$form.StartTime.html}</td>
@@ -58,9 +63,7 @@
          </div>
         <div class="graphZone"></div>
         <div id="StatusAction2">
-
             <div id="graph_pagination2">
-                
                 <!-- optional left control buttons -->
                 <div id="test1_m_left2"></div><div id="test1_o_left2"></div>
 
@@ -71,12 +74,10 @@
                 <!-- optional right control buttons -->
                 <div id="test1_o_right2"></div><div id="test1_m_right2"></div>
 
-
                 <!-- slider -->
                 <div class='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all slider'>
                     <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
                 </div>
-
             </div>
         </div>
     </div>

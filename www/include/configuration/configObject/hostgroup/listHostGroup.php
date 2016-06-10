@@ -71,7 +71,6 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_status", _("Status"));
@@ -131,8 +130,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $aclCond = "";
     if (!$centreon->user->admin) {
         $aclFrom = ", $aclDbName.centreon_acl acl ";
-        $aclCond = " AND h.host_id = acl.host_id
-                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+        $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
     }
     $rq = "SELECT h.host_id, h.host_activate
                FROM hostgroup_relation hgr, host h $aclFrom
@@ -173,6 +171,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
                          "RowMenu_link"=>"?p=".$p."&o=c&hg_id=".$hg['hg_id'],
                          "RowMenu_desc"=>CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"])),
                          "RowMenu_status"=>$hg["hg_activate"] ? _("Enabled") : _("Disabled"),
+                         "RowMenu_badge" => $hg["hg_activate"] ? "service_ok" : "service_critical",
                          "RowMenu_hostAct"=>$nbrhostAct,
                          "RowMenu_icone" => $hgIcone,
                          "RowMenu_hostDeact"=>$nbrhostDeact,

@@ -116,7 +116,7 @@ function disableHostCategoriesInDB ($hc_id = NULL, $hc_arr = array())	{
 function deleteHostCategoriesInDB ($hostcategoriess = array())	{
 	global $pearDB, $centreon;
 
-	foreach ($hostcategoriess as $key=>$value)	{
+	foreach ($hostcategoriess as $key => $value)	{
 		$DBRESULT3 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '".$key."' LIMIT 1");
 		$row = $DBRESULT3->fetchRow();
 		$DBRESULT = $pearDB->query("DELETE FROM hostcategories WHERE hc_id = '".$key."'");
@@ -163,8 +163,8 @@ function multipleHostCategoriesInDB ($hostcategories = array(), $nbrDup = array(
 			}
 		}
 	}
-            CentreonACL::duplicateHcAcl($hcAcl);
-            $centreon->user->access->updateACL();
+    CentreonACL::duplicateHcAcl($hcAcl);
+    $centreon->user->access->updateACL();
 }
 
 function insertHostCategoriesInDB ($ret = array())	{
@@ -206,17 +206,9 @@ function insertHostCategories($ret = array())	{
 	$DBRESULT = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
 	$hc_id = $DBRESULT->fetchRow();
 
-	$fields["hc_name"] = $pearDB->escape($ret["hc_name"]);
-	$fields["hc_alias"] = $pearDB->escape($ret["hc_alias"]);
-    $fields["level"] = $pearDB->escape($ret["hc_severity_level"]);
-    $fields["icon_id"] = $pearDB->escape($ret["hc_severity_icon"]);
-	$fields["hc_comment"] = $pearDB->escape($ret["hc_comment"]);
-	$fields["hc_activate"] = $ret["hc_activate"]["hc_activate"];
-	if (isset($ret["hc_hosts"]))
-		$fields["hc_hosts"] = implode(",", $ret["hc_hosts"]);
-	if (isset($ret["hc_hg"]))
-		$fields["hc_hg"] = implode(",", $ret["hc_hg"]);
-
+	/* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    
 	$centreon->CentreonLogAction->insertLog("hostcategories", $hc_id["MAX(hc_id)"], CentreonDB::escape($ret["hc_name"]), "a", $fields);
 	return ($hc_id["MAX(hc_id)"]);
 }
@@ -244,18 +236,9 @@ function updateHostCategories($hc_id)	{
 	$rq .= "WHERE hc_id = '".$hc_id."'";
 	$DBRESULT = $pearDB->query($rq);
 
-	$fields["hc_name"] = $pearDB->escape($ret["hc_name"]);
-	$fields["hc_alias"] = $pearDB->escape($ret["hc_alias"]);
-    $fields["level"] = $pearDB->escape($ret["hc_severity_level"]);
-    $fields["icon_id"] = $pearDB->escape($ret["hc_severity_icon"]);
-	$fields["hc_comment"] = $pearDB->escape($ret["hc_comment"]);
-	$fields["hc_activate"] = $ret["hc_activate"]["hc_activate"];
-
-	if (isset( $ret["hc_hosts"]))
-		$fields["hc_hosts"] = implode(",", $ret["hc_hosts"]);
-	if (isset( $ret["hc_hostsTemplate"]))
-		$fields["hc_hostsTemplate"] = implode(",", $ret["hc_hostsTemplate"]);
-
+	/* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    
 	$centreon->CentreonLogAction->insertLog("hostcategories", $hc_id, CentreonDB::escape($ret["hc_name"]), "c", $fields);
 }
 

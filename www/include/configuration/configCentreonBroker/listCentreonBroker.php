@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
  }
 
@@ -64,7 +64,6 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Requester"));
 $tpl->assign("headerMenu_outputs", _("Outputs"));
@@ -81,7 +80,7 @@ $search = '';
 if (isset($_POST['searchCB']) && $_POST['searchCB']) {
     $search = $_POST['searchCB'];
 }
-if (!$oreon->user->admin && count($allowedBrokerConf)) {
+if (!$centreon->user->admin && count($allowedBrokerConf)) {
     if ($search) {
         $aclCond = " AND ";
     } else {
@@ -165,6 +164,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
                          "RowMenu_outputs" => $outputNumber,
                          "RowMenu_loggers" => $loggerNumber,
                          "RowMenu_status" => $config["config_activate"] ? _("Enabled") : _("Disabled"),
+                         "RowMenu_badge" => $config["config_activate"] ? "service_ok" : "service_critical",
                          "RowMenu_options" => $moptions);
     $style != "two" ? $style = "two" : $style = "one";
  }

@@ -52,17 +52,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     }
     
     /* @todo Check if user already have valid token */
-    
     require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
     require_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
     
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);
     $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log);
-    
-    if (0 === $auth->passwdOk) {
+    if ($auth->passwdOk == 0) {
         CentreonWebService::sendJson("Bad credentials", 403);
+        exit();
     }
+    
+    /* Check if user exists in contact table */
+    $reachAPI = 0;
+    $res = $pearDB->query("SELECT contact_id, contact_alias FROM contact WHERE contact_activate = '1' AND contact_register = '1' AND reach_api = 1");
+    while ($data = $res->fetchRow()) {
+        if (isset($data['contact_alias']) && $data['contact_alias'] == $_POST['username']) {
+            $reachAPI = 1;
+        }
+    }
+
+    if ($reachAPI == 0) {
+        CentreonWebService::sendJson("Unauthorized - Account not enabled", 401);
+        exit();
+    }
+
+    /* Insert Token in API webservice session table */
     $token = base64_encode(uniqid('', true));
     $pearDB->query("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (" . $auth->userInfos['contact_id'] . ", '" . $token . "', NOW())");
     

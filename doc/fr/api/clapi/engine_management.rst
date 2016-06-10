@@ -8,11 +8,9 @@ List available pollers
 In order to list available pollers, use the **POLLERLIST** command::
 
   [root@centreon core]# ./centreon -u admin -p centreon -a POLLERLIST
-  1       Local Poller
-  2       Remote Poller
-
-Where 1 is the id of "Local Poller" and 2 is the id of "Remote Poller".
-
+  poller_id;name
+  1;Local Poller
+  2;Remote Poller
 
 Generate local configuration files for a poller
 -----------------------------------------------

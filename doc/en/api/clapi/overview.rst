@@ -20,7 +20,7 @@ Basic usage
 
 All actions in Centreon CLAPI will require authentication, so your commands will always start like this::
 
-  # cd /usr/share/centreon/www/modules/centreon-clapi/core
+  # cd /usr/share/centreon/bin
   # ./centreon -u admin -p centreon [...]
 
 Obviously, the **-u** option is for the username and the **-p** option is for the password. If your passwords 

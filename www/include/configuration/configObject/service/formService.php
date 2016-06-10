@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -60,7 +59,7 @@ function myDecodeService($arg) {
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     if ($service_id) {
         $checkres = $pearDB->query("SELECT service_id
                                         FROM $acldbname.centreon_acl
@@ -86,7 +85,7 @@ $notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contac
 /* notification contact groups */
 $notifCgs = array();
 $cg = new CentreonContactgroup($pearDB);
-if ($oreon->user->admin) {
+if ($centreon->user->admin) {
     $notifCgs = $cg->getListContactgroup(true);
 } else {
     $cgAcl = $acl->getContactGroupAclConf(array('fields' => array('cg_id', 'cg_name'),
@@ -844,14 +843,6 @@ $form->addElement('text', 'service_freshness_threshold', _("Freshness Threshold"
 $form->addElement('text', 'service_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
 $form->addElement('text', 'service_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Yes"), '1');
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("No"), '0');
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Default"), '2');
-$form->addGroup($servicePPD, 'service_process_perf_data', _("Process Perf Data"), '&nbsp;');
-if ($o != "mc") {
-    $form->setDefaults(array('service_process_perf_data' => '2'));
-}
-
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Yes"), '1');
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("No"), '0');
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Default"), '2');
@@ -1051,13 +1042,13 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));
+$tpl->assign('msg', array("nagios" => $centreon->user->get_version(), "tpl" => 0));
 $tpl->assign('javascript',
     '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>'
 );
-$tpl->assign('time_unit', " * " . $oreon->optGen["interval_length"] . " " . _("seconds"));
+$tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _("seconds"));
 $tpl->assign("p", $p);
 $tpl->assign(
     "helpattr",
@@ -1121,14 +1112,13 @@ if ($valid) {
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));
-    $tpl->assign("Perfdata_Options", _("Perfdata Options"));
     $tpl->assign("History_Options", _("History Options"));
     $tpl->assign("Event_Handler", _("Event Handler"));
     $tpl->assign("topdoc", _("Documentation"));
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign("service_type", $form_service_type);
 
-    $tpl->assign('v', $oreon->user->get_version());
+    $tpl->assign('v', $centreon->user->get_version());
     $tpl->display("formService.ihtml");
     ?>
     <script type="text/javascript">
