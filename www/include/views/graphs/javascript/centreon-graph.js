@@ -6,7 +6,6 @@
     var times;
     this.settings = settings;
     this.$elem = $elem;
-    this.refresh = settings.refresh;
     this.chart = null;
     this.refreshEvent = null;
     parseInterval = settings.interval.match(/(\d+)([a-z]+)/i);
@@ -36,11 +35,7 @@
       self.initGraph(data);
     });
     
-    if (this.refresh > 0) {
-      this.refreshEvent = setInterval(function () {
-        self.refreshData();
-      }, self.refresh * 1000);
-    }
+    this.setRefresh(this.settings.refresh);
   }
 
   CentreonGraph.prototype = {
@@ -230,6 +225,19 @@
         end: end
       };
       this.refreshData();
+    },
+    setRefresh: function (interval) {
+      var self = this;
+      this.refresh = interval;
+      
+      if (this.refresh > 0) {
+        this.refreshEvent = setInterval(function () {
+          self.refreshData();
+        }, self.refresh * 1000);
+      } else if (this.refreshEvent !== null) {
+        clearInterval(this.refreshEvent);
+        this.refreshEvent = null;
+      }
     }
   };
   
