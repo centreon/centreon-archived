@@ -88,6 +88,7 @@
   }
   
   .graph {
+    margin-top: 4px;
     height: 300px;
     border: 1px solid #bfd0e2;
     width: 100%;
@@ -110,7 +111,8 @@
   }
   
   .graph .content {
-    height: 280px;
+    margin: 5px;
+    height: 270px;
     display: flex;
     flex-direction: row;
   }
@@ -138,6 +140,11 @@
     padding: 4px;
     opacity: 0.2;
     transition: opacity .25s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .graph .action .bt_action:disabled {
+    cursor: not-allowed;
   }
   
   .graph .action .bt_action:hover {
@@ -182,7 +189,7 @@ function addChart(id, name, times) {
   if (charts.indexOf(id) !== -1) {
     return;
   }
-  times.height = 250;
+  times.height = 240;
   charts.push(id);
   jQuery('.graphZone').append(
     templateGraph({
@@ -207,6 +214,7 @@ function loadChart() {
   var dataForm = jQuery('#FormPeriod').serializeArray();
   var postData = {};
   var times = {};
+  var end;
   
   if (jQuery('select[name="period"]').val() === '') {
     times = {
@@ -215,10 +223,12 @@ function loadChart() {
         end: jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val()
       }
     };
+    end = end;
   } else {
     times = {
       interval: jQuery('select[name="period"]').val()
     };
+    end = moment();
   }
   
   for (i = 0; i < dataForm.length; i++) {
@@ -247,6 +257,7 @@ function loadChart() {
         }
       }
       charts = tmpChartsList;
+      displayNav(end);
     }
   });
 }
@@ -277,6 +288,7 @@ function changePeriod() {
         start,
         end
       );
+      displayNav(end);
     } else {
       // @todo change
       alert('The start date must be before the date end.');
@@ -294,6 +306,16 @@ function changeInterval() {
     'setInterval',
     jQuery('select[name="period"]').val()
   );
+  displayNav(moment());
+}
+  
+function displayNav(end) {
+  var now = moment().subtract(10, 's');
+  if (now.isBefore(end)) {
+    jQuery('.action.right > .bt_action').prop('disabled', true);
+  } else {
+    jQuery('.action.right > .bt_action').prop('disabled', false);
+  }
 }
   
 jQuery(function () {
@@ -305,6 +327,48 @@ jQuery(function () {
   jQuery('#metaservice_selector').on('change', loadChart);
   jQuery('#service_group_filter').on('change', loadChart);
   jQuery('#host_group_filter').on('change', loadChart);
+  
+  jQuery('.graphZone').delegate('.action > .bt_action', 'click', function () {
+    var $elem = jQuery(this);
+    var text = $elem.text();
+    var duration;
+    var parseInterval;
+    var start;
+    var end;
+    
+    if (jQuery('select[name="period"]').val() === '') {
+      start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
+      end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+      duration = moment.duration(end.diff(start));
+    } else {
+      parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
+      duration = moment.duration(
+        parseInt(parseInterval[1], 10),
+        parseInterval[2]
+      );
+      start = moment();
+      end = moment();
+      start.subtract(parseInterval[1], parseInterval[2]);
+    }
+    
+    jQuery('select[name="period"]').val('');
+    if (text === '<<') {
+      end = start;
+      jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+      jQuery('#EndTime').val(end.format('HH:mm'));
+      start.subtract(duration);
+      jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+      jQuery('#StartTime').val(start.format('HH:mm'));
+    } else {
+      start = end;
+      jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+      jQuery('#StartTime').val(start.format('HH:mm'));
+      end.add(duration);
+      jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+      jQuery('#EndTime').val(end.format('HH:mm'));
+    }
+    changePeriod();
+  });
   
   jQuery('.datepicker-iso').datepicker({
     dateFormat: 'yy-mm-dd'

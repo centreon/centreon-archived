@@ -15,6 +15,18 @@
       unit: parseInterval[2]
     };
     
+    /* Define tick for timeseries */
+    this.timeFormat = d3.time.format.multi([
+      [".%L", function(d) { return d.getMilliseconds(); }],
+      [":%S", function(d) { return d.getSeconds(); }],
+      ["%H:%M", function(d) { return d.getMinutes(); }],
+      ["%H", function(d) { return d.getHours(); }],
+      ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
+      ["%m-%d", function(d) { return d.getDate() !== 1; }],
+      ["%Y-%m", function(d) { return d.getMonth(); }],
+      ["%Y", function() { return true; }]
+    ]);
+    
     this.loadGraphId();
     
     /* Get start time and end time */
@@ -59,7 +71,10 @@
     initGraph: function (data) {
       var axis = {
         x: {
-          type: 'timeseries'
+          type: 'timeseries',
+          tick: {
+            format: this.timeFormat
+          }
         }
       };
       var parsedData = this.buildData(data);
@@ -72,6 +87,13 @@
           format: {
             title: function (x) {
               return moment(x).format('YYYY-MM-DD HH:mm:ss');
+            },
+            value: function (value) {
+              var floatValue = value.toFixed(3);
+              if (floatValue == value) {
+                return value;
+              }
+              return value.toFixed(3);
             }
           }
         },
