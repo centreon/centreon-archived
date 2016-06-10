@@ -114,7 +114,7 @@ height: 100%;
                 document.mozFullScreenElement ||
                 document.msFullscreenElement
             ) {
-                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #subscription").removeClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #imp_subscription_button").removeClass('tohide');
                 jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
@@ -126,7 +126,7 @@ height: 100%;
                    document.webkitExitFullscreen();
                 }
             } else {
-                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #subscription").addClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #imp_subscription_button").addClass('tohide');
                 jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen_off.png");
                 // go full-screen
                 if (i.requestFullscreen) {
@@ -152,7 +152,7 @@ height: 100%;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
         if (event === 'FullscreenOff') {
             jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
-            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #subscription").removeClass('tohide');
+            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, #imp_subscription_button").removeClass('tohide');
         }
     }
 
