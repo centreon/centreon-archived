@@ -7,6 +7,7 @@
     this.settings = settings;
     this.$elem = $elem;
     this.chart = null;
+    this.chartSvg = null;
     this.refreshEvent = null;
     parseInterval = settings.interval.match(/(\d+)([a-z]+)/i);
     this.interval = {
@@ -19,7 +20,7 @@
       [".%L", function(d) { return d.getMilliseconds(); }],
       [":%S", function(d) { return d.getSeconds(); }],
       ["%H:%M", function(d) { return d.getMinutes(); }],
-      ["%H", function(d) { return d.getHours(); }],
+      ["%H:%M", function(d) { return d.getHours(); }],
       ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
       ["%m-%d", function(d) { return d.getDate() !== 1; }],
       ["%Y-%m", function(d) { return d.getMonth(); }],
@@ -172,8 +173,7 @@
             return callback(data[0]);
           }
           if (self.type === 'status') {
-            console.log(this.chartSvg);
-            this.chartSvg.datum(self.buildStatusData(data[0]));
+            self.chartSvg.datum(self.buildStatusData(data[0]));
           } else {
             self.chart.load(
               self.buildMetricData(data[0]).data
@@ -265,7 +265,6 @@
         if (dataRaw.data.hasOwnProperty(status)) {
           if (dataRaw.data[status].length > 0) {
             data.push({
-              label: status,
               status: status,
               times: dataRaw.data[status].map(function (values) {
                 return {
@@ -277,7 +276,6 @@
           }
         }
       }
-      console.log(data);
       return data;
     },
     /**
