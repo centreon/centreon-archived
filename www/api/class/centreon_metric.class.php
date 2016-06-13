@@ -35,6 +35,7 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGraphStatus.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonMetric extends CentreonWebService {
@@ -182,6 +183,96 @@ class CentreonMetric extends CentreonWebService {
                 'service_id' => $id,
                 'data' => $serviceData,
                 'times' => $times,
+                'size' => $rows
+            );
+        }
+        
+        return $result;
+    }
+    
+    public function getStatusByService()
+    {
+        global $centreon;
+        
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+        }
+        
+        /* Validate options */
+        if (false === isset($this->arguments['start']) ||
+            false === is_numeric($this->arguments['start']) ||
+            false === isset($this->arguments['end']) ||
+            false === is_numeric($this->arguments['end'])) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        $start = $this->arguments['start'];
+        $end = $this->arguments['end'];
+        
+        /* Get the numbers of points */
+        $rows = 200;
+        if (isset($this->arguments['rows'])) {
+            if (false === is_numeric($this->arguments['rows'])) {
+                throw new RestBadRequestException("Bad parameters");
+            }
+            $rows = $this->arguments['rows'];
+        }
+        if ($rows < 10) {
+            throw new RestBadRequestException("The rows must be greater as 10");
+        }
+        
+        if (false === isset($this->arguments['ids'])) {
+            self::sendJson(array());
+        }
+        
+        /* Get the list of service ID */
+        $ids = explode(',', $this->arguments['ids']);
+        $result = array();
+        
+        /* Get the list of service ID */
+        $ids = explode(',', $this->arguments['ids']);
+        $result = array();
+        
+        foreach ($ids as $id) {
+            list($hostId, $serviceId) = explode('_', $id);
+            if (false === is_numeric($hostId) ||
+                false === is_numeric($serviceId)) {
+                throw new RestBadRequestException("Bad parameters");
+            }
+
+            /* Check ACL is not admin */
+            if (!$isAdmin) {
+                $query = "SELECT service_id
+                    FROM centreon_acl
+                    WHERE host_id = " . $hostId . "
+                        AND service_id = " . $serviceId . "
+                        AND group_id IN (" . $aclGroups . ")";
+                $res = $this->pearDBMonitoring->query($query);
+                if (0 == $res->numRows()) {
+                    throw new RestForbiddenException("Access denied");
+                }
+            }
+
+            $data = array();
+            
+            /* Prepare graph */
+            try {
+                /* Get index data */
+                $indexData = CentreonGraphStatus::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
+                $graph = new CentreonGraphStatus($indexData, $start, $end);
+            } catch (Exception $e) {
+                throw new RestNotFoundException("Graph not found");
+            }
+            
+            $statusData = $graph->getData($rows);
+            $result[] = array(
+                'service_id' => $id,
+                'data' => $statusData,
                 'size' => $rows
             );
         }

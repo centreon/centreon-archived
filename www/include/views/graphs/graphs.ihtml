@@ -61,6 +61,7 @@
 <script src="./include/common/javascript/handlebars-v4.0.5.js"></script>
 <script src="./include/common/javascript/charts/d3.min.js"></script>
 <script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/common/javascript/charts/d3-timeline.js"></script>
 <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
 
 {literal}
@@ -114,7 +115,8 @@
     margin: 5px;
     height: 270px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: space-around;
   }
   
   .graph .action {
@@ -152,7 +154,6 @@
   }
   
   .graph .chart {
-    flex: 1;
     overflow: hidden;
   }
 </style>
@@ -177,6 +178,10 @@
     <div class="action right">
       <button class="bt_action">&gt;&gt;</button>
     </div>
+    {{#if status}}
+    <div class="chart" id="graph-status-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="status">
+    </div>
+    {{/if}}
   </div>
 </div>
 </script>
@@ -184,21 +189,29 @@
 var charts = [];
 var source = jQuery('#graph-line').html();
 var templateGraph = Handlebars.compile(source);
+var autoRefresh = false;
   
 function addChart(id, name, times) {
   if (charts.indexOf(id) !== -1) {
     return;
   }
   times.height = 240;
+  if (autoRefresh) {
+    times.refresh = 300;
+  }
   charts.push(id);
   jQuery('.graphZone').append(
     templateGraph({
       graphId: id,
       graphType: 'service',
-      graphTitle: name
+      graphTitle: name,
+      status: true
     })
   );
   jQuery('#graph-' + id).centreonGraph(times);
+  if (true) {
+    jQuery('#graph-status-' + id).centreonGraph(times);
+  }
 }
 
 function loadChart() {

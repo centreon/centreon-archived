@@ -26,6 +26,19 @@
       ["%Y", function() { return true; }]
     ]);
     
+    /* Color for status graph */
+    this.colorScale = d3.scale.ordinal().range([
+      '#88b917',
+      '#ff9a13',
+      '#e00b3d',
+      '#bcbdc0'
+    ]).domain([
+      'ok',
+      'warning',
+      'critical',
+      'unknown'
+    ]);
+    
     this.loadGraphId();
     
     /* Get start time and end time */
@@ -63,7 +76,43 @@
         throw new Error('The graph configuration is missing.');
       }
     },
+    /**
+     * Initialize the graph
+     *
+     * Call the method by graph type
+     *
+     * @param {Object} data - The graph data
+     */
     initGraph: function (data) {
+      if (this.type === 'status') {
+        this.initGraphStatus(data);
+      } else {
+        this.initGraphMetrics(data);
+      }
+    },
+    /**
+     * Initialize the status graph
+     *
+     * @param {Object} data - The graph data
+     */
+    initGraphStatus: function (data) {
+      this.chart = d3.timeline()
+        .tickFormat({
+          format: this.timeFormat
+        })
+        .colors(this.colorScale)
+        .colorProperty('status');
+      this.chartSvg = d3.select('#' + this.$elem.attr('id')).append('svg');
+      this.chartSvg.attr('width', this.$elem.width())
+        .datum(this.buildStatusData(data))
+        .call(this.chart);
+    },
+    /**
+     * Initialize the metrics graph
+     *
+     * @param {Object} data - The graph data
+     */
+    initGraphMetrics: function (data) {
       var axis = {
         x: {
           type: 'timeseries',
@@ -72,7 +121,7 @@
           }
         }
       };
-      var parsedData = this.buildData(data);
+      var parsedData = this.buildMetricData(data);
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
         height: this.settings.height,
@@ -97,9 +146,21 @@
         }
       });
     },
+    /**
+     * Load data from rest api in ajax
+     *
+     * @param {Number} start - The start time in unixtimestamp
+     * @param {Number} end - The end time in unixtimestamp
+     * @param {Function} [callback] - The callback when receive the datas
+     */
     loadData: function (start, end, callback) {
       var self = this;
-      var url = './api/internal.php?object=centreon_metric&action=metricsDataByService';
+      var action = {
+        status: 'statusByService',
+        service: 'metricsDataByService'
+      };
+      var url = './api/internal.php?object=centreon_metric';
+      url += '&action=' + action[this.type] ;
       url += '&ids=' + this.id;
       url += '&start=' + start + '&end=' + end;
       $.ajax({
@@ -110,13 +171,24 @@
           if (typeof callback === 'function') {
             return callback(data[0]);
           }
-          self.chart.load(
-            self.buildData(data[0]).data
-          );
+          if (self.type === 'status') {
+            console.log(this.chartSvg);
+            this.chartSvg.datum(self.buildStatusData(data[0]));
+          } else {
+            self.chart.load(
+              self.buildMetricData(data[0]).data
+            );
+          }
         }
       });
     },
-    buildData: function (dataRaw) {
+    /**
+     * Build data for metrics graph
+     *
+     * @param {Object} dataRaw - The raw data
+     * @return {Object} - The converted data 
+     */
+    buildMetricData: function (dataRaw) {
       var convertType = {
         line: 'spline',
         area: 'area-spline'
@@ -180,10 +252,46 @@
         axis: axis
       };
     },
+    /**
+     * Build data for status graph
+     *
+     * @param {Object} dataRaw - The raw data
+     * @return {Object} - The converted data 
+     */
+    buildStatusData: function (dataRaw) {
+      var status;
+      var data = [];
+      for (status in dataRaw.data) {
+        if (dataRaw.data.hasOwnProperty(status)) {
+          if (dataRaw.data[status].length > 0) {
+            data.push({
+              label: status,
+              status: status,
+              times: dataRaw.data[status].map(function (values) {
+                return {
+                  starting_time: values['start'] * 1000,
+                  ending_time: values['end'] * 1000
+                };
+              })
+            });
+          }
+        }
+      }
+      console.log(data);
+      return data;
+    },
+    /**
+     * Refresh data of graph
+     */
     refreshData: function () {
       var times = this.getTimes();
       this.loadData(times.start, times.end);
     },
+    /**
+     * Get time start and end in unixtimestamp
+     *
+     * @return {Object} - The object with date start and end
+     */
     getTimes: function () {
       var start;
       var end;
@@ -201,12 +309,26 @@
         end: end.unix()
       }
     },
+    /**
+     * Resize the graph
+     */
     resize: function () {
-      this.chart.resize({
-        width: this.$elem.width(),
-        height: null
-      });
+      if (this.type === 'status') {
+        this.chartSvg.attr('width', this.$elem.width());
+      } else {
+        this.chart.resize({
+          width: this.$elem.width(),
+          height: null
+        });
+      }
     },
+    /**
+     * Set an interval string for graph
+     *
+     * Format : see momentjs
+     * 
+     * @param {String} interval - A interval string
+     */
     setInterval: function (interval) {
       var parseInterval = interval.match(/(\d+)([a-z]+)/i);
       this.settings.period = {
@@ -219,6 +341,12 @@
       };
       this.refreshData();
     },
+    /**
+     * Set a period with start and end time
+     *
+     * @param {String} start - The start time
+     * @param {String} end - The end time
+     */
     setPeriod: function (start, end) {
       this.settings.period = {
         start: start,
@@ -226,6 +354,11 @@
       };
       this.refreshData();
     },
+    /**
+     * Set auto refresh interval
+     *
+     * @param {Number} interval - The number of seconds to refresh, 0 stop the auto refresh
+     */
     setRefresh: function (interval) {
       var self = this;
       this.refresh = interval;
