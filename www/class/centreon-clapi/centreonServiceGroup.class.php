@@ -149,17 +149,21 @@ class CentreonServiceGroup extends CentreonObject
 	 */
 	public function __call($name, $arg)
 	{
-	    $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $sgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($sgIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
-        }
-        $sgId = $sgIds[0];
+	    /* Get the method name */
+        $name = strtolower($name);
+        /* Get the action and the object */
         if (preg_match("/^(get|add|del|set)(service|hostgroupservice)\$/", $name, $matches)) {
+            /* Parse arguments */
+            if (!isset($arg[0])) {
+                throw new CentreonClapiException(self::MISSINGPARAMETER);
+            }
+            $args = explode($this->delim, $arg[0]);
+            $sgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+            if (!count($sgIds)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+            }
+            $sgId = $sgIds[0];
+            
             if ($matches[2] == "service") {
                 $relobj = new \Centreon_Object_Relation_Service_Group_Service();
                 $obj = new \Centreon_Object_Relation_Host_Service();

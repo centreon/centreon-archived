@@ -152,17 +152,9 @@ class CentreonACLGroup extends CentreonObject
      */
     public function __call($name, $arg)
     {
+        /* Get the method name */
         $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $groupIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($groupIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
-        }
-
-        $groupId = $groupIds[0];
+        /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)([a-zA-Z_]+)/", $name, $matches)) {
             $relclass = "Centreon_Object_Relation_Acl_Group_".ucwords($matches[2]);
             if (class_exists("Centreon_Object_Acl_".ucwords($matches[2]))) {
@@ -174,6 +166,17 @@ class CentreonACLGroup extends CentreonObject
                 $class = "Centreon_Object_".ucwords($matches[2]);
             }
             if (class_exists($relclass) && class_exists($class)) {
+                /* Parse arguments */
+                if (!isset($arg[0])) {
+                    throw new CentreonClapiException(self::MISSINGPARAMETER);
+                }
+                $args = explode($this->delim, $arg[0]);
+                $groupIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+                if (!count($groupIds)) {
+                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                }
+                $groupId = $groupIds[0];
+                
                 $relobj = new $relclass();
                 $obj = new $class();
                 if ($matches[1] == "get") {
