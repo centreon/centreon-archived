@@ -156,18 +156,19 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " s.last_check," .
             " s.notify AS notifications_enabled," .
             " s.next_check," .
-            " s.acknowledged AS problem_has_been_acknowledged," .
-            " s.passive_checks AS passive_checks_enabled," .
-            " s.active_checks AS active_checks_enabled," .
+            " s.acknowledged," .
+            " s.passive_checks," .
+            " s.active_checks," .
             " s.event_handler_enabled," .
             " s.flapping AS is_flapping," .
             " s.latency as check_latency," .
             " s.execution_time as check_execution_time," .
             " s.last_notification as last_notification," .
             " s.process_perfdata, " .
+            " s.service_id as service_id," .
             " h.name AS host_name," .
             " h.host_id AS host_id," .
-            " s.service_id as service_id," .
+            " s.scheduled_downtime_depth as in_downtime," .
             " s.description as service_description" .
             " FROM services s, hosts h" . ((!$is_admin) ? ', centreon_acl acl' : '') .
             " WHERE s.host_id = h.host_id AND h.host_id = ".$host_id." " .
@@ -185,16 +186,18 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
                 $row["current_state"] = $tab_status_service[$row['current_state']];
                 $row["status_class"] = $tab_color_service[$row['current_state']];
                 $row['line_class'] = $class;
+                
                 /* Split the plugin_output */
                 $outputLines = explode("\n", $row['plugin_output']);
                 $row['short_output'] = $outputLines[0]; 
                 $row["hnl"] = CentreonUtils::escapeSecure(urlencode($row["host_name"]));
                 $row["sdl"] = CentreonUtils::escapeSecure(urlencode($row["service_description"]));
                 $row["svc_id"] = $row["service_id"];
+                
                 /**
-                * Get Service Graph index
-                */
-               if (!isset($graphs[$row["host_id"]]) || !isset($graphs[$row["host_id"]][$row["service_id"]])) {
+                 * Get Service Graph index
+                 */
+                if (!isset($graphs[$row["host_id"]]) || !isset($graphs[$row["host_id"]][$row["service_id"]])) {
                    $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $row["host_id"] . "' AND service_id = '" . $row["service_id"] . "' AND index_data.hidden = '0'";
                    $DBRESULT2 = $pearDBO->query($request2);
                    while ($dataG = $DBRESULT2->fetchRow()) {
@@ -206,22 +209,22 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
                    if (!isset($graphs[$row["host_id"]])) {
                        $graphs[$row["host_id"]] = array();
                    }
-               }
-               $row["svc_index"] = (isset($graphs[$row["host_id"]][$row["service_id"]]) ? $graphs[$row["host_id"]][$row["service_id"]] : 0);
-               $row["ppd"] = $row["process_perfdata"];
+                }
+                $row["svc_index"] = (isset($graphs[$row["host_id"]][$row["service_id"]]) ? $graphs[$row["host_id"]][$row["service_id"]] : 0);
+                $row["ppd"] = $row["process_perfdata"];
                
-               $duration = "";
-               if ($row["last_state_change"] > 0 && time() > $row["last_state_change"]) {
+                $duration = "";
+                if ($row["last_state_change"] > 0 && time() > $row["last_state_change"]) {
                    $duration = CentreonDuration::toString(time() - $row["last_state_change"]);
-               } else if ($row["last_state_change"] > 0) {
+                } else if ($row["last_state_change"] > 0) {
                    $duration = " - ";
-               }
-               $row["duration"] = $duration;
+                }
+                $row["duration"] = $duration;
                
-               ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
+                ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
 
-               // Set Data 
-               $services[] = $row;
+                // Set Data 
+                $services[] = $row;
             }
         }
         $DBRESULT->free();

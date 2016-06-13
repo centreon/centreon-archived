@@ -52,6 +52,12 @@
 	                                        <img id="{$hs.svc_index}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
 	                                    </a>
 	                                    {/if}
+	                                    {if $hs.acknowledged != 0}
+	                                    <img src="./img/icons/technician.png" class="ico-20" title="{t}Acknowledged{/t}" />
+	                                    {/if}
+	                                    {if $hs.in_downtime > 0}
+										<img src="./img/icons/warning.png" class="ico-18" title="{t}In Downtime{/t}" />
+										{/if}
 	                                    <!--
 	                                    <a href="main.php?p=203&amp;svc={$hs.host_id}_{$hs.svc_id}">
 	                                        Log
