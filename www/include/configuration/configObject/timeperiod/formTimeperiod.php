@@ -143,7 +143,7 @@ $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=timeperiodRenderer&field=tp_include&id=' . $tp_id)
 );
-$form->addElement('select2', 'tp_include', _("Include Timeperiods"), array(), $attrTimeperiod1);
+$form->addElement('select2', 'tp_include', _("Timeperiod templates"), array(), $attrTimeperiod1);
 
 /*
  *  Multiple exceptions relations stored in DB
