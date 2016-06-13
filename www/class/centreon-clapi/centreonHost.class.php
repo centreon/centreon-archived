@@ -452,15 +452,14 @@ class CentreonHost extends CentreonObject {
         }
         $severityObj = new \Centreon_Object_Host_Category();
         $severity = $severityObj->getIdByParameter(
-                $severityObj->getUniqueLabelField(), $params[1]
+            $severityObj->getUniqueLabelField(), $params[1]
         );
         if (!isset($severity[0])) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[1]);
         }
-        $k = $severityObj->getPrimaryKey();
-        $severityId = $severity[0][$k];
+        $severityId = $severity[0];
         $severity = $severityObj->getParameters(
-                $severityId, array('level')
+            $severityId, array('level')
         );
         if ($severity['level']) {
             // can't delete with generic method

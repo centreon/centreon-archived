@@ -373,7 +373,6 @@ function hostIsAuthorized($host_id, $group_id) {
 /*
  * Retreive service description
  */
-
 function getMyHostServicesByName($host_id = NULL) {
     global $pearDB, $hsRelation, $svcCache;
 
@@ -415,4 +414,3 @@ function getMetaServices($resId, $db, $metaObj) {
     return $arr;
 }
 
-?>

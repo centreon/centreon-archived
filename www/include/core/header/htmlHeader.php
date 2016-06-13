@@ -88,6 +88,7 @@ foreach ($centreon->modules as $module_name => $infos) {
 <script type="text/javascript" src="./include/common/javascript/centreon/popin.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jquery.nicescroll.min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
+<script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
 <?php
@@ -163,12 +164,12 @@ jQuery(function () {
 if ($centreon->user->access->admin == 0) {
     $tabActionACL = $centreon->user->access->getActions();
     if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-        print "setTimeout('reloadStatusCounter($tS, \"$sid\")', 0);\n";
+        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
     }
     unset($tabActionACL);
 } else {
     if ($min != 1) {
-        print "setTimeout('reloadStatusCounter($tS, \"$sid\")', 0);\n";
+        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
     }
 }
 
@@ -193,6 +194,7 @@ while ($topology_js = $DBRESULT->fetchRow()) {
     }
 }
 ?>
+        initChangeTab();
         check_session();
     });
 </script>

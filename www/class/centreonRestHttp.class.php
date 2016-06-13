@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
+
 /**
  * Utils class for call HTTP JSON REST
  *
