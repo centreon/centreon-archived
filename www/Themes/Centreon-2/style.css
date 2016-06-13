@@ -589,7 +589,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
-    /*margin-bottom: 36px;*/
+    margin-bottom: 36px;
 }
 
 .GlobalContainer tr {
@@ -2053,4 +2053,15 @@ textarea.default-textarea {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+
+/* While in fullscreen, hide any children with class 'tohide' */
+.tohide {
+    display: none;
+}
+:fullscreen .tohide,
+:-webkit-full-screen .tohide,
+:-moz-full-screen .tohide,
+:-ms-fullscreen .tohide{
+    display: none;
 }

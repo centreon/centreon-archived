@@ -71,32 +71,7 @@ if (!$min) {
 <?php
 }
 ?>
-<style>
-html, body {
-margin: 0;
-width: 100%;
-height: 100%;
-}
- 
-/* While in fullscreen, hide any children with class 'tohide' */
-:-webkit-full-screen .tohide {
-  display: none;
-}
-:-moz-full-screen .tohide {
-  display: none;
-}
-:-ms-fullscreen .tohide {
-  display: none;
-}
-:fullscreen .tohide {
-  display: none;
-}
-    
-.tohide{
-    display: none;    
-}
-    
-</style>
+
 <script type="text/javascript">
 
     // Centreon ToolTips
@@ -114,8 +89,14 @@ height: 100%;
                 document.mozFullScreenElement ||
                 document.msFullscreenElement
             ) {
-                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen").removeClass('tohide');
                 jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
+                jQuery('#contener').css({
+                    'height' : 'calc(100% - 170px)'
+                });
+                jQuery('#Tcontener').css({
+                   'margin-bottom': '0px'
+                });
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.msExitFullscreen) {
@@ -126,8 +107,14 @@ height: 100%;
                    document.webkitExitFullscreen();
                 }
             } else {
-                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").addClass('tohide');
+                jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen").addClass('tohide');
                 jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen_off.png");
+                jQuery('#contener').css({
+                    'height' : '100%'
+                });
+                jQuery('#Tcontener').css({
+                    'margin-bottom' : '0px'
+                });
                 // go full-screen
                 if (i.requestFullscreen) {
                     i.requestFullscreen();
@@ -152,7 +139,7 @@ height: 100%;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
         if (event === 'FullscreenOff') {
             jQuery("#fullscreenIcon").attr("src","./img/icons/fullscreen.png");
-            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header").removeClass('tohide');
+            jQuery("#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen").removeClass('tohide');
         }
     }
 

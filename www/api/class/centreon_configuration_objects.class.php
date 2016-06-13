@@ -147,7 +147,6 @@ class CentreonConfigurationObjects extends CentreonWebService
                 . "FROM $externalObject[table] "
                 . "WHERE $externalObject[comparator] "
                 . "IN ($explodedValues)";
-
             $resRetrieval = $this->pearDB->query($query);
             while ($row = $resRetrieval->fetchRow()) {
                 $tmpValues[] = array(
@@ -222,7 +221,6 @@ class CentreonConfigurationObjects extends CentreonWebService
                 $tmpValues[] = $tmpValue;
             }
         }
-        
         return $tmpValues;
     }
 }

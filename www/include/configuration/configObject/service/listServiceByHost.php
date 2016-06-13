@@ -338,6 +338,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
                             "RowMenu_retry"		=> CentreonUtils::escapeSecure("$normal_check_interval $normal_units / $retry_check_interval $retry_units"),
                             "RowMenu_desc"		=> CentreonUtils::escapeSecure($service["service_description"]),
                             "RowMenu_status"	=> $service["service_activate"] ? _("Enabled") : _("Disabled"),
+                            "RowMenu_badge" 	=> $service["service_activate"] ? "service_ok" : "service_critical",
                             "RowMenu_options"	=> $moptions);
 	$fgHost["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;
 	$style != "two" ? $style = "two" : $style = "one";

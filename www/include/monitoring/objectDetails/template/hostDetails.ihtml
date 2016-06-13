@@ -117,26 +117,30 @@
 									<td class="ListColLeft ListColNoWrap">{$host_data.next_check}</td>
 								</tr>
 								<tr class='list_two'>
+									<td class="ListColLeft ColPopup">{$m_mon_last_change}</td>
+									<td class="ListColLeft ListColNoWrap">{$host_data.last_state_change}</td>
+								</tr>
+								<tr class='list_one'>
 									<td class="ListColLeft ColPopup">{$m_mon_current_state_duration}</td>
 									<td class="ListColLeft ListColNoWrap">{$host_data.duration}</td>
 								</tr>
-								<tr class='list_one'>
+								<tr class='list_two'>
 									<td class="ListColLeft ColPopup">{$m_mon_last_notification}</td>
 									<td class="ListColLeft ListColNoWrap">{$host_data.last_notification}</td>
 								</tr>
-								<tr class='list_two'>
+								<tr class='list_one'>
 									<td class="ListColLeft ColPopup">{$m_mon_next_notification}</td>
 									<td class="ListColLeft ListColNoWrap">{if ($host_data.next_notification == 0)} N/A {else}{$host_data.next_notification}{/if}</td>
 								</tr>
-								<tr class='list_one'>
+								<tr class='list_two'>
 									<td class="ListColLeft ColPopup">{$m_mon_notification_nb}</td>
 									<td class="ListColLeft ListColNoWrap">{$host_data.current_notification_number}</td>
 								</tr>
-								<tr class='list_two'>
+								<tr class='list_one'>
 									<td class="ListColLeft ColPopup">{$m_mon_host_flapping}</td>
 									<td class="ListColLeft ListColNoWrap">{$host_data.is_flapping} ({$host_data.percent_state_change} %)</td>
 								</tr>
-								<tr class='list_one'>
+								<tr class='list_two'>
 									<td class="ListColLeft ColPopup">{$m_mon_downtime_sc}</td>
 				                    <td class="ListColLeft ListColNoWrap">
 				                        <span >{$en[$host_data.scheduled_downtime_depth]}</span>

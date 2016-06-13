@@ -30,3 +30,12 @@ Feature: Generate poller configuration
         And I select an other poller
         When I click on the button "submit"
         Then poller configuration is generated
+
+    Scenario: No poller selected
+        Given a Centreon platform with multiple pollers
+        And I click on the button "apply_configuration"
+        And I am redirected to generate page
+        And no one poller is selected
+        When I click on the button "submit"
+        Then an error message is displayed to inform that no one poller is selected
+

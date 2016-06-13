@@ -440,13 +440,7 @@ class CentreonTraps
         $rq .= "'".$this->_db->escape($ret["traps_timeout"])."', ";
         $rq .= "'".$this->_db->escape($ret["traps_customcode"])."') ";
         $this->_db->query($rq);
-        $res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
-        $traps_id = $res->fetchRow();
-
-        /* Prepare value for changelog */
-        $fields = CentreonLogAction::prepareChanges($ret);
-        $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
-
+        
         $this->_setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
         $this->_setServiceRelations($traps_id['MAX(traps_id)']);
         $this->_setServiceTemplateRelations($traps_id['MAX(traps_id)']);
@@ -454,6 +448,9 @@ class CentreonTraps
         if ($this->_centreon->user->admin) {
             $this->_setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
         }
+
+        $res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
+        $traps_id = $res->fetchRow();
 
         /* Prepare value for changelog */
         $fields = CentreonLogAction::prepareChanges($ret);

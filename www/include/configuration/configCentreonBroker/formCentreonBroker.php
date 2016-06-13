@@ -33,11 +33,11 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
-if (!$oreon->user->admin && isset($_GET['id'])
+if (!$centreon->user->admin && isset($_GET['id'])
     && count($allowedBrokerConf) && !isset($allowedBrokerConf[$_GET['id']])) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
@@ -53,7 +53,7 @@ $cbObj = new CentreonConfigCentreonBroker($pearDB);
  */
 $nagios_servers = array();
 $serverAcl = "";
-if (!$oreon->user->admin && $serverString != "''") {
+if (!$centreon->user->admin && $serverString != "''") {
     $serverAcl = " WHERE id IN ($serverString) ";
 }
 $DBRESULT = $pearDB->query("SELECT * FROM nagios_server $serverAcl ORDER BY name");

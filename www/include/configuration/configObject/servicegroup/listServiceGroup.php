@@ -116,6 +116,7 @@ for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
 							"RowMenu_link"=>"?p=".$p."&o=c&sg_id=".$sg['sg_id'],
 							"RowMenu_desc"=>CentreonUtils::escapeSecure($sg["sg_alias"]),
 							"RowMenu_status"=>$sg["sg_activate"] ? _("Enabled") : _("Disabled"),
+							"RowMenu_badge" 	=> $sg["sg_activate"] ? "service_ok" : "service_critical",
 							"RowMenu_options"=>$moptions);
 
 	$style != "two" ? $style = "two" : $style = "one";

@@ -171,6 +171,7 @@ foreach ($contacts as $contact) {
                     "RowMenu_access" => $contact["contact_oreon"] ? _("Enabled") : _("Disabled"),
                     "RowMenu_admin" => $contact["contact_admin"] ? _("Yes") : _("No"),
                     "RowMenu_status" => $contact["contact_activate"] ? _("Enabled") : _("Disabled"), 
+                    "RowMenu_badge" => $contact["contact_activate"] ? "service_ok" : "service_critical",
                     "RowMenu_options" => $moptions);
     $style != "two" ? $style = "two" : $style = "one";
 }

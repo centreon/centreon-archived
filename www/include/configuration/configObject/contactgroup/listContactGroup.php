@@ -120,6 +120,7 @@ foreach ($cgs as $cg) {
 						"RowMenu_desc"=>$cg["cg_alias"],
 						"RowMenu_contacts"=>$ctNbr["nbr"],
 						"RowMenu_status"=>$cg["cg_activate"] ? _("Enabled") : _("Disabled"),
+						"RowMenu_badge" => $cg["cg_activate"] ? "service_ok" : "service_critical",
 						"RowMenu_options"=>$moptions);
 	$style != "two" ? $style = "two" : $style = "one";
 }

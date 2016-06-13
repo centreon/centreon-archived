@@ -129,6 +129,7 @@ for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
 							"RowMenu_comment"=>CentreonUtils::escapeSecure(substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40)),
                             "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
 							"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
+							"RowMenu_badge" => $resource["resource_activate"] ? "service_ok" : "service_critical",
 							"RowMenu_options"=>$moptions);
 	$style != "two" ? $style = "two" : $style = "one";
 }

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once ("centreonACL.class.php");
@@ -412,4 +409,3 @@ class CentreonUser
         $this->token = $token;
     }
 }
-?>

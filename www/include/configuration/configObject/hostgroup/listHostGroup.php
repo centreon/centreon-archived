@@ -171,6 +171,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
                          "RowMenu_link"=>"?p=".$p."&o=c&hg_id=".$hg['hg_id'],
                          "RowMenu_desc"=>CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"])),
                          "RowMenu_status"=>$hg["hg_activate"] ? _("Enabled") : _("Disabled"),
+                         "RowMenu_badge" => $hg["hg_activate"] ? "service_ok" : "service_critical",
                          "RowMenu_hostAct"=>$nbrhostAct,
                          "RowMenu_icone" => $hgIcone,
                          "RowMenu_hostDeact"=>$nbrhostDeact,

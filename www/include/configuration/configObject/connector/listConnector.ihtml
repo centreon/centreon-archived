@@ -31,7 +31,7 @@
                 <td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
                 <td class="ListColLeft">{$elemArr[elem].RowMenu_description}</td>
                 <td class="ListColLeft">{$elemArr[elem].RowMenu_command_line}</td>
-                <td class="ListColCenter">{$elemArr[elem].RowMenu_enabled}</td>
+                <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_enabled}</span></td>
                 <td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
             </tr>
             {sectionelse}

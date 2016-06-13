@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -31,9 +30,6 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
@@ -414,7 +410,4 @@ class CentreonExternalCommand {
         $this->set_process_command("SCHEDULE_SVC_DOWNTIME;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
         $this->write();
     }
-
 }
-
-?>

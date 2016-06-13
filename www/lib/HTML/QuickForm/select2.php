@@ -508,6 +508,14 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     " </div>" +
                     "</div>"
                 ).appendTo("body");
+
+                jQuery(document).bind("keyup.centreonPopin", function (e) {
+                    if (e.keyCode === 27) {
+                       jQuery(document).unbind("keyup.centreonPopin");
+                       $confirmBox.centreonPopin("close");
+                       $confirmBox.remove();
+                   }
+                });
                 
                 $confirmBox.centreonPopin({open: true});
                 
@@ -552,13 +560,23 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                         // Close select2
                         $currentSelect2Object'.$this->getName().'.select2("close");
                     });
+                    jQuery(document).unbind("keyup.centreonPopin");
                     $confirmBox.centreonPopin("close");
                     $confirmBox.remove();
                 });
-                
-                jQuery(document).on("click", "#confirm'  . $this->getName() . ' .btc.bt_default", function (e) {
+
+                jQuery("#confirm'  . $this->getName() . ' .btc.bt_default, #confirm'  . $this->getName() . ' a.close").on("click", function () {
+                    jQuery(document).unbind("keyup.centreonPopin");
                     $confirmBox.centreonPopin("close");
                     $confirmBox.remove();
+                });
+
+                jQuery("#centreonPopinOverlay").on("click", function (e) {
+                    if (jQuery(e.target).parents(".centreon-popin").length === 0) {
+                        jQuery(document).unbind("keyup.centreonPopin");
+                        $confirmBox.centreonPopin("close");
+                        $confirmBox.remove();
+                    }
                 });
             };';
 

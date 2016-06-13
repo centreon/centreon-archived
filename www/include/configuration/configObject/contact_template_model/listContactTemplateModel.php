@@ -152,6 +152,7 @@ foreach ($contacts as $contact) {
         "RowMenu_hostNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id"]) ? $contact["timeperiod_tp_id"] : "")], ENT_QUOTES, "UTF-8") . " (" . (isset($contact["contact_host_notification_options"]) ? $contact["contact_host_notification_options"] : "") . ")",
         "RowMenu_svNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id2"]) ? $contact["timeperiod_tp_id2"] : "")], ENT_QUOTES, "UTF-8") . " (" . (isset($contact["contact_service_notification_options"]) ? $contact["contact_service_notification_options"] : "") . ")",
         "RowMenu_status" => $contact["contact_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $contact["contact_activate"] ? "service_ok" : "service_critical",
         "RowMenu_options" => $moptions
     );
     $style != "two" ? $style = "two" : $style = "one";

@@ -155,15 +155,16 @@ for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
     $nbrhostDeact = count($nbrhostDeactArr);
 
     $elemArr[$i] = array("MenuClass"=>"list_".$style,
-                    "RowMenu_select"=>$selectedElements->toHtml(),
-                    "RowMenu_name"=>CentreonUtils::escapeSecure($hc["hc_name"]),
-                    "RowMenu_link"=>"?p=".$p."&o=c&hc_id=".$hc['hc_id'],
-                    "RowMenu_desc"=>CentreonUtils::escapeSecure($hc["hc_alias"]),
-                    "RowMenu_hc_type"=>($hc["level"] ? _('Severity') . ' ('.$hc['level'].')' : _('Regular')),
-                    "RowMenu_status"=>$hc["hc_activate"] ? _("Enabled") : _("Disabled"),
-                    "RowMenu_hostAct"=>$nbrhostAct,
-                    "RowMenu_hostDeact"=>$nbrhostDeact,
-                    "RowMenu_options"=>$moptions);
+                        "RowMenu_select"=>$selectedElements->toHtml(),
+                        "RowMenu_name"=>CentreonUtils::escapeSecure($hc["hc_name"]),
+                        "RowMenu_link"=>"?p=".$p."&o=c&hc_id=".$hc['hc_id'],
+                        "RowMenu_desc"=>CentreonUtils::escapeSecure($hc["hc_alias"]),
+                        "RowMenu_hc_type"=>($hc["level"] ? _('Severity') . ' ('.$hc['level'].')' : _('Regular')),
+                        "RowMenu_status"=>$hc["hc_activate"] ? _("Enabled") : _("Disabled"),
+                        "RowMenu_badge" => $hc["hc_activate"] ? "service_ok" : "service_critical",
+                        "RowMenu_hostAct"=>$nbrhostAct,
+                        "RowMenu_hostDeact"=>$nbrhostDeact,
+                        "RowMenu_options"=>$moptions);
     /*
      * Switch color line
      */
@@ -183,47 +184,27 @@ function setO(_i) {
 }
 </SCRIPT>
 <?php
-$attrs1 = array(
-    'onchange'=>"javascript: " .
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-            "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            "   setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            "   setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 3) {" .
-            "   setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 4) {" .
-            "   setO(this.form.elements['o1'].value); submit();} " .
-            "this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
-
-$attrs2 = array(
-    'onchange'=>"javascript: " .
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
-            "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            "   setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            "   setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 3) {" .
-            "   setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 4) {" .
-            "   setO(this.form.elements['o2'].value); submit();} " .
-            "this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o2', NULL, array(NULL => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
-
-$o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange'=>"javascript: " .
+                "var bChecked = isChecked(); ".
+                "if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
+                " alert('"._("Please select one or more items")."'); return false;} " .
+                "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 4) {" .
+                "   setO(this.form.elements['".$option."'].value); submit();} " .
+                "this.form.elements['".$option."'].selectedIndex = 0");
+    $form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
+    $form->setDefaults(array($option => NULL));
+    $o1 = $form->getElement($option);
+    $o1->setValue(NULL);
+    $o1->setSelected(NULL);    
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchHC', $search);
