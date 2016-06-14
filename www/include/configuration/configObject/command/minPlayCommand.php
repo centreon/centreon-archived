@@ -36,9 +36,6 @@
  *
  */
 
- 	if (!isset($oreon))
- 		exit();
-
   	if (!isset ($oreon))
 		exit ();
 
@@ -49,6 +46,8 @@
 	$command = $_GET["command_line"];
 	$example = $_GET["command_example"];
 	$args = preg_split("/\!/", $example);
+
+	$command = str_replace(array('&#39;', '&#34;'), array("'", '"'), $command);
 
 	for ($i = 0; $i < count($args); $i++)
 	    $args[$i] = escapeshellarg ($args[$i]);
