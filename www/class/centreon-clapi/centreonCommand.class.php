@@ -222,7 +222,6 @@ class CentreonCommand extends CentreonObject {
                     $v = CentreonUtils::convertLineBreak($v);
 
                     echo $this->action . $this->delim . "setparam" . $this->delim . $element[$this->object->getUniqueLabelField()] . $this->delim . $this->getClapiActionName($parameter) . $this->delim . $v . "\n";
-                    
                 }
             }
         }
@@ -282,9 +281,7 @@ class CentreonCommand extends CentreonObject {
         
         if ($iWithFormatData == 1) {
              while ($row = $res->fetch()) {
-                 
                 preg_match_all($this->aTypeCommand[$sType]['preg'], $row['command_line'], $matches, PREG_SET_ORDER);
-                
                 foreach ($matches as $match) {
                     if(!in_array($match[1], $macroToFilter)){
                         $sName = $match[1];
@@ -302,9 +299,7 @@ class CentreonCommand extends CentreonObject {
                 $arr[$row['command_id']] = $row['command_name'];
             }
         }
-
         return $arr;
-        
     }
     
     
@@ -327,8 +322,6 @@ class CentreonCommand extends CentreonObject {
             
             $aReturn[$row['command_macro_name']] = $arr;
         }
-        //$DBRESULT->free();
-        
         return $aReturn;
     }
 

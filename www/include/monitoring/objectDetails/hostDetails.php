@@ -156,18 +156,19 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             " s.last_check," .
             " s.notify AS notifications_enabled," .
             " s.next_check," .
-            " s.acknowledged AS problem_has_been_acknowledged," .
-            " s.passive_checks AS passive_checks_enabled," .
-            " s.active_checks AS active_checks_enabled," .
+            " s.acknowledged," .
+            " s.passive_checks," .
+            " s.active_checks," .
             " s.event_handler_enabled," .
             " s.flapping AS is_flapping," .
             " s.latency as check_latency," .
             " s.execution_time as check_execution_time," .
             " s.last_notification as last_notification," .
             " s.process_perfdata, " .
+            " s.service_id as service_id," .
             " h.name AS host_name," .
             " h.host_id AS host_id," .
-            " s.service_id as service_id," .
+            " s.scheduled_downtime_depth as in_downtime," .
             " s.description as service_description" .
             " FROM services s, hosts h" . ((!$is_admin) ? ', centreon_acl acl' : '') .
             " WHERE s.host_id = h.host_id AND h.host_id = ".$host_id." " .
@@ -179,49 +180,51 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $services = array();
         $class = 'list_one';
         $graphs = array();
-        while ($ndo = $DBRESULT->fetchRow()) {
-            if (isset($lcaHost["LcaHost"][$host_name][$ndo['service_description']]) || $is_admin) {
-                $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
-                $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
-                $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
-                $ndo['line_class'] = $class;
+        while ($row = $DBRESULT->fetchRow()) {
+            if (isset($lcaHost["LcaHost"][$host_name][$row['service_description']]) || $is_admin) {
+                $row["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $row["last_check"]);
+                $row["current_state"] = $tab_status_service[$row['current_state']];
+                $row["status_class"] = $tab_color_service[$row['current_state']];
+                $row['line_class'] = $class;
+                
                 /* Split the plugin_output */
-                $outputLines = explode("\n", $ndo['plugin_output']);
-                $ndo['short_output'] = $outputLines[0]; 
-                $ndo["hnl"] = CentreonUtils::escapeSecure(urlencode($ndo["host_name"]));
-                $ndo["sdl"] = CentreonUtils::escapeSecure(urlencode($ndo["service_description"]));
-                $ndo["svc_id"] = $ndo["service_id"];
+                $outputLines = explode("\n", $row['plugin_output']);
+                $row['short_output'] = $outputLines[0]; 
+                $row["hnl"] = CentreonUtils::escapeSecure(urlencode($row["host_name"]));
+                $row["sdl"] = CentreonUtils::escapeSecure(urlencode($row["service_description"]));
+                $row["svc_id"] = $row["service_id"];
+                
                 /**
-                * Get Service Graph index
-                */
-               if (!isset($graphs[$ndo["host_id"]]) || !isset($graphs[$ndo["host_id"]][$ndo["service_id"]])) {
-                   $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $ndo["host_id"] . "' AND service_id = '" . $ndo["service_id"] . "' AND index_data.hidden = '0'";
+                 * Get Service Graph index
+                 */
+                if (!isset($graphs[$row["host_id"]]) || !isset($graphs[$row["host_id"]][$row["service_id"]])) {
+                   $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $row["host_id"] . "' AND service_id = '" . $row["service_id"] . "' AND index_data.hidden = '0'";
                    $DBRESULT2 = $pearDBO->query($request2);
                    while ($dataG = $DBRESULT2->fetchRow()) {
-                       if (!isset($graphs[$ndo["host_id"]])) {
-                           $graphs[$ndo["host_id"]] = array();
+                       if (!isset($graphs[$row["host_id"]])) {
+                           $graphs[$row["host_id"]] = array();
                        }
-                       $graphs[$ndo["host_id"]][$dataG["service_id"]] = $dataG["id"];
+                       $graphs[$row["host_id"]][$dataG["service_id"]] = $dataG["id"];
                    }
-                   if (!isset($graphs[$ndo["host_id"]])) {
-                       $graphs[$ndo["host_id"]] = array();
+                   if (!isset($graphs[$row["host_id"]])) {
+                       $graphs[$row["host_id"]] = array();
                    }
-               }
-               $ndo["svc_index"] = (isset($graphs[$ndo["host_id"]][$ndo["service_id"]]) ? $graphs[$ndo["host_id"]][$ndo["service_id"]] : 0);
-               $ndo["ppd"] = $ndo["process_perfdata"];
+                }
+                $row["svc_index"] = (isset($graphs[$row["host_id"]][$row["service_id"]]) ? $graphs[$row["host_id"]][$row["service_id"]] : 0);
+                $row["ppd"] = $row["process_perfdata"];
                
-               $duration = "";
-               if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
-                   $duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-               } else if ($ndo["last_state_change"] > 0) {
+                $duration = "";
+                if ($row["last_state_change"] > 0 && time() > $row["last_state_change"]) {
+                   $duration = CentreonDuration::toString(time() - $row["last_state_change"]);
+                } else if ($row["last_state_change"] > 0) {
                    $duration = " - ";
-               }
-               $ndo["duration"] = $duration;
+                }
+                $row["duration"] = $duration;
                
-               ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
+                ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
 
-               // Set Data 
-               $services[] = $ndo;
+                // Set Data 
+                $services[] = $row;
             }
         }
         $DBRESULT->free();
@@ -269,7 +272,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $data = $DBRESULT->fetchRow();
 
         $host_status[$host_name] = $data;
-        $host_status[$host_name]["plugin_output"] = htmlentities($host_status[$host_name]["plugin_output"]);
+        $host_status[$host_name]["plugin_output"] = htmlentities($host_status[$host_name]["plugin_output"], ENT_QUOTES, "UTF-8");
         $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]];
         if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
             $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
@@ -323,13 +326,13 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
 
         $host_status[$host_name]["status_class"] = $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
-        $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
-        $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
-        !$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
-        !$host_status[$host_name]["next_notification"] ? $host_status[$host_name]["next_notification"] = "": $host_status[$host_name]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_notification"]);
+        $host_status[$host_name]["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
+        $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
+        !$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
+        !$host_status[$host_name]["next_notification"] ? $host_status[$host_name]["next_notification"] = "": $host_status[$host_name]["next_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_notification"]);
         !$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = CentreonDuration::toString(time() - $host_status[$host_name]["last_state_change"]);
-        !$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"]);
-        $host_status[$host_name]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
+        !$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"]);
+        $host_status[$host_name]["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
 
         if ($host_status[$host_name]["problem_has_been_acknowledged"]) {
             $host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>("._("ACKNOWLEDGED").")</b>";
@@ -474,7 +477,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("en_acknowledge_text", $en_acknowledge_text);
         $tpl->assign("en_acknowledge", $en_acknowledge);
         $tpl->assign("admin", $is_admin);
-        $tpl->assign("lcaTopo", $oreon->user->access->topology);
+        $tpl->assign("lcaTopo", $centreon->user->access->topology);
         $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
         $tpl->assign("url_id", $url_id);
         $tpl->assign("host_id", $host_id);

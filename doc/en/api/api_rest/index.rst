@@ -2033,11 +2033,19 @@ Code errors
 +---------------------------+---------------------------------------------------+
 |  200                      | Successful                                        |
 +---------------------------+---------------------------------------------------+
+|  400                      | * Missing parameter                               |
+|                           | * Missing name parameter                          |
+|                           | * Unknown parameter                               |
+|                           | * Objects are not linked                          |
++---------------------------+---------------------------------------------------+
 |  401                      | Unauthorized                                      |
 +---------------------------+---------------------------------------------------+
-|  500                      | * Method not implemented                          |
-|                           | * Object already exists                           |
-|                           | * Object not found                                |
-|                           | * Missing parameter                               |
-|                           | * Bad parameter                                   |
+|  404                      | * Object not found                                |
+|                           | * Method not implemented into Centreon API        |
++---------------------------+---------------------------------------------------+
+|  409                      | * Object already exists                           |
+|                           | * Name is already in use                          |
+|                           | * Objects already linked                          |
++---------------------------+---------------------------------------------------+
+|  500                      | Internal server error (custom message)            |
 +---------------------------+---------------------------------------------------+
