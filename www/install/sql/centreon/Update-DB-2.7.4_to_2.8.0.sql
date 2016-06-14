@@ -175,3 +175,5 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 -- Add possibility to limit access to API
 ALTER TABLE contact ADD COLUMN `reach_api` int(11) DEFAULT '0' AFTER `contact_oreon`;
 
+-- INITCHANGETAB js is defined by default
+DELETE FROM topology_JS WHERE Init = 'initChangeTab';

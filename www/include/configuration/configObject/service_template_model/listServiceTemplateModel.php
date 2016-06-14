@@ -204,6 +204,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
             "RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
             "RowMenu_link" => "?p=".$p."&o=c&service_id=".$service['service_id'],
             "RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
+            "RowMenu_badge" 	=> $service["service_activate"] ? "service_ok" : "service_critical",
             "RowMenu_options" => $moptions
         );
 	$style != "two" ? $style = "two" : $style = "one";

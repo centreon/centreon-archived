@@ -559,18 +559,9 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function __call($name, $arg)
     {
+        /* Get the method name */
         $name = strtolower($name);
-        if (!isset($arg[0]) || !$arg[0]) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $relObject = new \Centreon_Object_Relation_Host_Group_Service();
-        $elements = $relObject->getMergedParameters(array('hg_id'), array('service_id'), -1, 0, null, null, array("hg_name" => $args[0],
-                                                                                                                    "service_description" => $args[1]), "AND");
-        if (!count($elements)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$args[0]."/".$args[1]);
-        }
-        $serviceId = $elements[0]['service_id'];
+        /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)([a-zA-Z_]+)/", $name, $matches)) {
             switch ($matches[2]) {
                 case "hostgroup":
@@ -590,6 +581,19 @@ class CentreonHostGroupService extends CentreonObject
                     break;
             }
             if (class_exists($relclass) && class_exists($class)) {
+                /* Parse arguments */
+                if (!isset($arg[0]) || !$arg[0]) {
+                    throw new CentreonClapiException(self::MISSINGPARAMETER);
+                }
+                $args = explode($this->delim, $arg[0]);
+                $relObject = new \Centreon_Object_Relation_Host_Group_Service();
+                $elements = $relObject->getMergedParameters(array('hg_id'), array('service_id'), -1, 0, null, null, array("hg_name" => $args[0],
+                                                                                                                            "service_description" => $args[1]), "AND");
+                if (!count($elements)) {
+                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$args[0]."/".$args[1]);
+                }
+                $serviceId = $elements[0]['service_id'];
+                
                 $relobj = new $relclass();
                 $obj = new $class();
                 if ($matches[1] == "get") {

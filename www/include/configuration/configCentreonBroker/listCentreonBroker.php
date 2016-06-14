@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
  }
 
@@ -80,7 +80,7 @@ $search = '';
 if (isset($_POST['searchCB']) && $_POST['searchCB']) {
     $search = $_POST['searchCB'];
 }
-if (!$oreon->user->admin && count($allowedBrokerConf)) {
+if (!$centreon->user->admin && count($allowedBrokerConf)) {
     if ($search) {
         $aclCond = " AND ";
     } else {
@@ -164,6 +164,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
                          "RowMenu_outputs" => $outputNumber,
                          "RowMenu_loggers" => $loggerNumber,
                          "RowMenu_status" => $config["config_activate"] ? _("Enabled") : _("Disabled"),
+                         "RowMenu_badge" => $config["config_activate"] ? "service_ok" : "service_critical",
                          "RowMenu_options" => $moptions);
     $style != "two" ? $style = "two" : $style = "one";
  }

@@ -135,6 +135,7 @@ for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
 					"RowMenu_levelw"=>isset($ms["warning"]) && $ms["warning"] ? $ms["warning"] : "-",
 					"RowMenu_levelc"=>isset($ms["critical"]) && $ms["critical"] ? $ms["critical"] : "-",
 					"RowMenu_status"=>$ms["meta_activate"] ? _("Enabled") : _("Disabled"),
+					"RowMenu_badge" 	=> $ms["meta_activate"] ? "service_ok" : "service_critical",
 					"RowMenu_options"=>$moptions);
 	$style != "two" ? $style = "two" : $style = "one";
 }

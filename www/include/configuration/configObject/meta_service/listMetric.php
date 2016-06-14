@@ -129,6 +129,7 @@ if ($in_statement != "")  {
                                                         "RowMenu_service"=>htmlentities($metric["service_description"], ENT_QUOTES, "UTF-8"),
                                                         "RowMenu_metric"=>CentreonUtils::escapeSecure($metric["metric_name"]." (".$metric["unit_name"].")"),
                                                         "RowMenu_status"=>$relation["activate"] ? _("Enabled") : _("Disabled"),
+                                                        "RowMenu_badge" => $relation["activate"] ? "service_ok" : "service_critical",
                                                         "RowMenu_options"=>$moptions);
                 $style != "two" ? $style = "two" : $style = "one";
                 $i++;

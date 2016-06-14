@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
  
 echo _("Time in seconds to wait before launching failover.");
@@ -88,4 +85,3 @@ echo _("It should be enabled to control whether or not Centreon Broker should in
 echo _("Enable TLS encryption.");
 echo _("This can be used to disable graph update and therefore reduce I/O");
 echo _("This can be used to disable graph update and therefore reduce I/O");
-?>

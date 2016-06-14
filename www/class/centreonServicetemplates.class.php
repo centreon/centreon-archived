@@ -146,4 +146,33 @@ class CentreonServicetemplates extends CentreonService
         }
         return $arr;
     }
+
+    /**
+     * @param string $serviceTemplateName linked service template
+     * @param string $hostTemplateName linked host template
+     *
+     * @return array service ids
+     */
+    public function getServiceIdsLinkedToSTAndCreatedByHT($serviceTemplateName, $hostTemplateName)
+    {
+        $serviceIds = array();
+
+        $query = 'SELECT DISTINCT(s.service_id) '
+            . 'FROM service s, service st, host h, host ht, host_service_relation hsr, host_service_relation hsrt, host_template_relation htr '
+            . 'WHERE st.service_description = "' . $this->db->escape($serviceTemplateName) . '" '
+            . 'AND s.service_template_model_stm_id = st.service_id '
+            . 'AND st.service_id = hsrt.service_service_id '
+            . 'AND hsrt.host_host_id = ht.host_id '
+            . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" '
+            . 'AND ht.host_id = htr.host_tpl_id '
+            . 'AND htr.host_host_id = h.host_id '
+            . 'AND h.host_id = hsr.host_host_id '
+            . 'AND hsr.service_service_id = s.service_id ';
+        $result = $this->db->query($query);
+        while ($row = $result->fetchRow()) {
+            $serviceIds[] = $row['service_id'];
+        }
+
+        return $serviceIds;
+    }
 }

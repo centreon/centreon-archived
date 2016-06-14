@@ -1495,4 +1495,24 @@ class CentreonService
             throw new \Exception('Error while delete service ' . $service_description);
         }
     }
+
+    /**
+     * Set service description
+     *
+     * @param int $serviceId service id
+     * @param string $serviceDescription service description
+     * @throws Exception
+     */
+    public function setServiceDescription($serviceId, $serviceDescription)
+    {
+        $query = 'UPDATE service '
+            . 'SET service_description = "' .  $this->db->escape($serviceDescription) . '" '
+            . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
+
+        $result = $this->db->query($query);
+
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while updating service ' . $serviceId);
+        }
+    }
 }
