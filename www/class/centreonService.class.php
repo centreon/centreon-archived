@@ -1512,4 +1512,24 @@ class CentreonService
             throw new \Exception('Error while updating service ' . $serviceId);
         }
     }
+
+    /**
+     * Set service alias
+     *
+     * @param int $serviceId service id
+     * @param string $serviceAlias service alias
+     * @throws Exception
+     */
+    public function setServiceAlias($serviceId, $serviceAlias)
+    {
+        $query = 'UPDATE service '
+            . 'SET service_alias = "' .  $this->db->escape($serviceAlias) . '" '
+            . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
+
+        $result = $this->db->query($query);
+
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while updating service ' . $serviceId);
+        }
+    }
 }

@@ -167,7 +167,8 @@ class CentreonServicetemplates extends CentreonService
             . 'AND ht.host_id = htr.host_tpl_id '
             . 'AND htr.host_host_id = h.host_id '
             . 'AND h.host_id = hsr.host_host_id '
-            . 'AND hsr.service_service_id = s.service_id ';
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND s.service_register = "1" ';
         $result = $this->db->query($query);
         while ($row = $result->fetchRow()) {
             $serviceIds[] = $row['service_id'];
