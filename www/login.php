@@ -43,28 +43,6 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  * Path to the configuration dir
  */
 global $path;
-
-/**
- * Set login messages (errors)
- */
-$loginMessages = array();
-if (isset($msg_error)) {
-    $loginMessages[] = $msg_error;
-} elseif (isset($_POST["centreon_token"])) {
-    $loginMessages[] = _('Your credentials are incorrect.');
-}
-    
-if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
-    $loginMessages[] = _('Your session is expired.');
-}
-    
-if ($file_install_acces) {
-    $loginMessages[] = $error_msg;
-}
-    
-if (isset($msg) && $msg) {
-    $loginMessages[] = $msg;
-}
     
 /**
  * Getting Centreon Version
@@ -81,6 +59,30 @@ $form->addElement('password', 'password', _("Password"), array('class' => 'input
 $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
 
 $loginValidate = $form->validate();
+
+require_once("./processLogin.php");
+
+/**
+ * Set login messages (errors)
+ */
+$loginMessages = array();
+if (isset($msg_error) && $msg_error != '') {
+    $loginMessages[] = $msg_error;
+} elseif (isset($_POST["centreon_token"])) {
+    $loginMessages[] = _('Your credentials are incorrect.');
+}
+    
+if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
+    $loginMessages[] = _('Your session is expired.');
+}
+    
+if ($file_install_acces) {
+    $loginMessages[] = $error_msg;
+}
+    
+if (isset($msg) && $msg) {
+    $loginMessages[] = $msg;
+}
 
 /**
  * Adding hidden value
@@ -126,4 +128,3 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("login.ihtml");
-require_once("./processLogin.php");

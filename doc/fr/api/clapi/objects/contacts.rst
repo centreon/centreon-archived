@@ -48,7 +48,7 @@ Add
 
 In order to add a contact, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_EN;local" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_US;local" 
 
 
 The required parameters are the following:
@@ -68,7 +68,7 @@ Admin                      *1* (admin) or *0* (non admin)
 
 GUI Access                 *1* (can access UI) or *0* (cannot access UI)
 
-Language                   Language pack has to be installed on Centreon
+Language                   Language pack has to be installed on Centreon (it can be browser)
 
 Authentication type        *local* or *ldap*
 ========================== ================================================

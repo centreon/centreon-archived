@@ -74,7 +74,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         
         $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
             . "FROM nagios_server "
-            . "WHERE name LIKE '%$q%' "
+            . "WHERE name LIKE '%$q%' AND ns_activate=1 "
             . "ORDER BY name "
             . $range;
         
