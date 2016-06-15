@@ -116,7 +116,9 @@ sub reload {
         $self->{cdb}->disconnect();
         $self->{cdb}->connect();
     }
-    centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd logdb process");
+    if ($self->{centreontrapd_config}->{mode} == 0) {
+        centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd logdb process");
+    }
 
     $self->{reload} = 1;
 }
