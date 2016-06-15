@@ -395,7 +395,7 @@ class CentreonService
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
                 $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `is_password`, `description`, `svc_svc_id`, `macro_order`) 
-                                VALUES ('\$_SERVICE" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($serviceId) . ", " . $cnt . " )");
+                                VALUES ('\$_SERVICE" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? $macroPassword[$key] : 'NULL') . ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($serviceId) . ", " . $cnt . " )");
                 $stored[strtolower($value)] = true;
                 $cnt ++;
             }
@@ -1514,5 +1514,63 @@ class CentreonService
         if (\PEAR::isError($result)) {
             throw new \Exception('Error while updating service ' . $serviceId);
         }
+    }
+
+    /**
+     * Set service alias
+     *
+     * @param int $serviceId service id
+     * @param string $serviceAlias service alias
+     * @throws Exception
+     */
+    public function setServiceAlias($serviceId, $serviceAlias)
+    {
+        $query = 'UPDATE service '
+            . 'SET service_alias = "' .  $this->db->escape($serviceAlias) . '" '
+            . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
+
+        $result = $this->db->query($query);
+
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while updating service ' . $serviceId);
+        }
+    }
+
+    /**
+     * Return the list of linked hosts or host templates
+     *
+     * @param int $serviceDescription The service description
+     * @param bool $getHostNmae Defined method return (id or name)
+     * @return array
+     */
+    public function getLinkedHostsByServiceDescription($serviceDescription, $getHostName = false)
+    {
+        $hosts = array();
+
+        $select = 'SELECT h.host_id ';
+        if ($getHostName) {
+            $select .= ', h.host_name ';
+        }
+
+        $from = 'FROM host_service_relation hsr, host h, service s ';
+
+        $where = 'WHERE hsr.host_host_id = h.host_id '
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND s.service_description = "' . $this->db->escape($serviceDescription) . '" ';
+
+        $query = $select . $from . $where;
+
+        $result = $this->db->query($query);
+
+        while ($row = $result->fetchRow()) {
+            if ($getHostName) {
+                $hosts[] = $row['host_name'];
+            } else {
+                $hosts[] = $row['host_id'];
+            }
+        }
+        $hosts = array_unique($hosts);
+
+        return $hosts;
     }
 }

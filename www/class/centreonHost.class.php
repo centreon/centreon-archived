@@ -581,7 +581,7 @@ class CentreonHost
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
                 $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `description`, `host_host_id`, `macro_order`) 
-                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '".$this->db->escape($macroDescription[$key])."', ". $this->db->escape($hostId) . ", " . $cnt. ")");
+                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? $macroPassword[$key] : 'NULL') . ", '".$this->db->escape($macroDescription[$key])."', ". $this->db->escape($hostId) . ", " . $cnt. ")");
                 $cnt ++;
                 $stored[strtolower($value)] = true;
             }
@@ -1432,7 +1432,6 @@ class CentreonHost
      * Get list of services template for a host template
      *
      * @param int $hostTplId The host template id
-
      * @return array
      */
     public function getServicesTplInHostTpl($hostTplId)
@@ -1752,6 +1751,16 @@ class CentreonHost
 
     }
 
+
+    /**
+     * 
+     * @param int host_id
+     * @param int poller_id
+     */
+    public function setPollerInstance($host_id, $poller_id)
+    {
+        $this->db->query("INSERT INTO ns_host_relation (host_host_id, nagios_server_id) VALUES ($host_id, $poller_id)");
+    }
 
     /**
      * 
