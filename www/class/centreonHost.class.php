@@ -581,7 +581,7 @@ class CentreonHost
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
                 $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `description`, `host_host_id`, `macro_order`) 
-                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '".$this->db->escape($macroDescription[$key])."', ". $this->db->escape($hostId) . ", " . $cnt. ")");
+                                VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? $macroPassword[$key] : 'NULL') . ", '".$this->db->escape($macroDescription[$key])."', ". $this->db->escape($hostId) . ", " . $cnt. ")");
                 $cnt ++;
                 $stored[strtolower($value)] = true;
             }
