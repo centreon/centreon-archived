@@ -471,7 +471,8 @@ class CentreonCommand
             $sQuery .= " AND host_register = '0' ";
         }
         
-        $sQuery .= " AND host_name not in ('".  implode("'", $aHost)."')";
+        
+        $sQuery .= " AND host_name not in ('".  implode("','", $aHost)."')";
         
         $res = $this->_db->query($sQuery);
         if (PEAR::isError($res)) {
@@ -509,7 +510,7 @@ class CentreonCommand
             $sQuery .= " AND service_register = '0' ";
         }
         
-        $sQuery .= " AND service_description not in ('".  implode("'", $aService)."')";
+        $sQuery .= " AND service_description not in ('".  implode("','", $aService)."')";
         
         $res = $this->_db->query($sQuery);
         if (PEAR::isError($res)) {

@@ -150,6 +150,28 @@ class CentreonDB
         return $this->db->execute($stmt,$arrayValues);
     }
     
+    public function rollback()
+    {
+        $this->db->rollback();
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getMessage()
+    {
+        return $this->db->getMessage();
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getCode()
+    {
+        return $this->db->getCode();
+    }
 
     /**
      * Display error page
