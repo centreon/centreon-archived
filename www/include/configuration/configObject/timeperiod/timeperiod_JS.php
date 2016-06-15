@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 ?><script type="text/javascript">
@@ -75,7 +72,8 @@ function addBlankInput() {
 	valueElem.value = "";
 	tdElem2.appendChild(valueElem);
 
-	imgElem.src = "./img/icones/16x16/delete.gif";
+	imgElem.src = "./img/icons/circle-cross.png";
+	imgElem.class = 'ico-14';
 	imgElem.id = globalj;
 	imgElem.onclick = function(){
 		var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
@@ -142,7 +140,8 @@ function displayExistingExceptions(max){
 			valueElem.disabled = true;
 		}
 
-		imgElem.src = "./img/icones/16x16/delete.gif";
+		imgElem.src = "./img/icons/circle-cross.png";
+		imgElem.class = 'ico-14';
 		imgElem.id = globalj;
 		imgElem.onclick = function(){
 			var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
