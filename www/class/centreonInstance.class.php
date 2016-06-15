@@ -216,7 +216,7 @@ class CentreonInstance {
         if (empty($explodedValues)) {
             $explodedValues = "''";
         } else {
-            $selectedInstances .= "AND r.resource_id IN ($explodedValues) ";
+            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
         }
         
         $queryInstance = "SELECT DISTINCT p.name as name, p.id  as id"
@@ -225,7 +225,6 @@ class CentreonInstance {
             . " AND p.id = rel.instance_id "
             . $selectedInstances
             . " ORDER BY p.name";
-        
         $DBRESULT = $this->db->query($queryInstance);
         while ($data = $DBRESULT->fetchRow()) {
             $aInstanceList[] = array(

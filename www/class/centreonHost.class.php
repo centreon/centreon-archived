@@ -1432,7 +1432,6 @@ class CentreonHost
      * Get list of services template for a host template
      *
      * @param int $hostTplId The host template id
-
      * @return array
      */
     public function getServicesTplInHostTpl($hostTplId)
@@ -1744,6 +1743,16 @@ class CentreonHost
 
     }
 
+
+    /**
+     * 
+     * @param int host_id
+     * @param int poller_id
+     */
+    public function setPollerInstance($host_id, $poller_id)
+    {
+        $this->db->query("INSERT INTO ns_host_relation (host_host_id, nagios_server_id) VALUES ($host_id, $poller_id)");
+    }
 
     /**
      * 

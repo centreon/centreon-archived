@@ -1263,7 +1263,6 @@ class CentreonService
         $rq .= ")";
         
         $DBRESULT = $this->db->query($rq);
-        
         $DBRESULT   = $this->db->query("SELECT MAX(service_id) as id FROM service");
         $service_id = $DBRESULT->fetchRow();
         
@@ -1491,5 +1490,83 @@ class CentreonService
         if (\PEAR::isError($res)) {
             throw new \Exception('Error while delete service ' . $service_description);
         }
+    }
+
+    /**
+     * Set service description
+     *
+     * @param int $serviceId service id
+     * @param string $serviceDescription service description
+     * @throws Exception
+     */
+    public function setServiceDescription($serviceId, $serviceDescription)
+    {
+        $query = 'UPDATE service '
+            . 'SET service_description = "' .  $this->db->escape($serviceDescription) . '" '
+            . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
+
+        $result = $this->db->query($query);
+
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while updating service ' . $serviceId);
+        }
+    }
+
+    /**
+     * Set service alias
+     *
+     * @param int $serviceId service id
+     * @param string $serviceAlias service alias
+     * @throws Exception
+     */
+    public function setServiceAlias($serviceId, $serviceAlias)
+    {
+        $query = 'UPDATE service '
+            . 'SET service_alias = "' .  $this->db->escape($serviceAlias) . '" '
+            . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
+
+        $result = $this->db->query($query);
+
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while updating service ' . $serviceId);
+        }
+    }
+
+    /**
+     * Return the list of linked hosts or host templates
+     *
+     * @param int $serviceDescription The service description
+     * @param bool $getHostNmae Defined method return (id or name)
+     * @return array
+     */
+    public function getLinkedHostsByServiceDescription($serviceDescription, $getHostName = false)
+    {
+        $hosts = array();
+
+        $select = 'SELECT h.host_id ';
+        if ($getHostName) {
+            $select .= ', h.host_name ';
+        }
+
+        $from = 'FROM host_service_relation hsr, host h, service s ';
+
+        $where = 'WHERE hsr.host_host_id = h.host_id '
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND s.service_description = "' . $this->db->escape($serviceDescription) . '" ';
+
+        $query = $select . $from . $where;
+
+        $result = $this->db->query($query);
+
+        while ($row = $result->fetchRow()) {
+            if ($getHostName) {
+                $hosts[] = $row['host_name'];
+            } else {
+                $hosts[] = $row['host_id'];
+            }
+        }
+        $hosts = array_unique($hosts);
+
+        return $hosts;
     }
 }

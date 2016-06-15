@@ -439,6 +439,12 @@ $attrHosts = array(
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
+$attrHostTpls = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonHosttemplates'
+);
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
@@ -509,9 +515,6 @@ $DBRESULT->free();
 if (isset($defaultServer) && $defaultServer && $o != "mc") {
     $form->setDefaults(array('nagios_server_id' => $defaultServer["id"]));
 }
-
-$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
-$form->addElement('text', 'host_parallel_template', _("Host Templates"), $hTpls);
 
 if ($o == "mc") {
     $mc_mod_tplp = array();
