@@ -1532,4 +1532,42 @@ class CentreonService
             throw new \Exception('Error while updating service ' . $serviceId);
         }
     }
+
+    /**
+     * Return the list of linked hosts or host templates
+     *
+     * @param int $serviceDescription The service description
+     * @param bool $getHostNmae Defined method return (id or name)
+     * @return array
+     */
+    public function getLinkedHostsByServiceDescription($serviceDescription, $getHostName = false)
+    {
+        $hosts = array();
+
+        $select = 'SELECT h.host_id ';
+        if ($getHostName) {
+            $select .= ', h.host_name ';
+        }
+
+        $from = 'FROM host_service_relation hsr, host h, service s ';
+
+        $where = 'WHERE hsr.host_host_id = h.host_id '
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND s.service_description = "' . $this->db->escape($serviceDescription) . '" ';
+
+        $query = $select . $from . $where;
+
+        $result = $this->db->query($query);
+
+        while ($row = $result->fetchRow()) {
+            if ($getHostName) {
+                $hosts[] = $row['host_name'];
+            } else {
+                $hosts[] = $row['host_id'];
+            }
+        }
+        $hosts = array_unique($hosts);
+
+        return $hosts;
+    }
 }
