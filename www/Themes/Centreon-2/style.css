@@ -361,7 +361,7 @@ p.description a, p.description a:visited {
 
 .default_badge 		{background-color: #00a499;}
 .host_down, .danger, .service_critical 	{background-color: #e00b3d;}
-.host_unreachable 	{background-color: #818285;}
+.host_unreachable, .unknown 	{background-color: #818285;}
 .host_downtime 		{background-color: #cc99ff;}
 
 .service_ok,.host_up, .success	{background-color: #88b917;}
