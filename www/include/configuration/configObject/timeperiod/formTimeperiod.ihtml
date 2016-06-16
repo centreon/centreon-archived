@@ -62,13 +62,14 @@
         <tr class="list_two">
             <td class='FormRowField'><img class="helpTooltip" name="exception"> {$exceptionLabel}<input type="hidden" name="nbOfExceptions" id="hiddenExInput" style='display:none'></td>
             <td class='FormRowValue'>
-                <table id="exceptionTable" class="ListTableSmall" style='padding-top:0px'>
-                    <tr class="ListHeader">
-                        <td class="ListColLeft">{$tRDay}</td>
-                        <td class="ListColLeft">{$tRHours}</td>
-                        {if $o != "w"}
-                            <td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBlankInput();"></td>            
-                        {/if}
+            {if $o != "w"}
+                <span style='cursor:pointer' onClick="javascript:addBlankInput();">+ {t}Add new entry{/t}</span>
+            {/if}
+                <table id="exceptionTable" class="ListTableSmall" style='padding-top:0px' width="400px">
+                    <tr class="ListColHeader">
+                        <td class="ListColLeft" with='45%'>{$tRDay}</td>
+                        <td class="ListColLeft" with='45%'>{$tRHours}</td>
+                        <td class="ListColLeft">&nbsp;</td>
                     </tr>
                 </table>
             </td>

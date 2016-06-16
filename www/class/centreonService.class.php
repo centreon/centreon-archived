@@ -1263,6 +1263,10 @@ class CentreonService
         $rq .= ")";
         
         $DBRESULT = $this->db->query($rq);
+        if (\PEAR::isError($DBRESULT)) {
+            throw new \Exception('Error while insert service '.$ret['service_description']);
+        }
+        
         $DBRESULT   = $this->db->query("SELECT MAX(service_id) as id FROM service");
         $service_id = $DBRESULT->fetchRow();
         

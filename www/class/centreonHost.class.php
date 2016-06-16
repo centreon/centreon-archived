@@ -1589,6 +1589,11 @@ class CentreonHost
         isset($ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] != NULL ? $rq .= "'" . $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] . "'" : $rq .= "NULL";
         $rq .= ")";
         $DBRESULT = $this->db->query($rq);
+        
+        if (\PEAR::isError($DBRESULT)) {
+            throw new \Exception('Error while insert host '.$ret['host_name']);
+        }
+        
         $DBRESULT = $this->db->query("SELECT MAX(host_id) AS host_id FROM host");
         $host_id = $DBRESULT->fetchRow();
 
@@ -1625,6 +1630,9 @@ class CentreonHost
         isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["ehi_3d_coords"]) . "' " : $rq .= "NULL ";
         $rq .= ")";
         $DBRESULT = $this->db->query($rq);
+        if (\PEAR::isError($DBRESULT)) {
+            throw new \Exception('Error while insert host extended info '.$ret['host_name']);
+        }
 }
 
     /**
