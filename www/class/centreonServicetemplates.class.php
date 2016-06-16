@@ -126,25 +126,33 @@ class CentreonServicetemplates extends CentreonService
      *
      * @return array
      */
-    public function getServiceLinkedToTpl($sTplName)
+    public function getLinkedServicesByName($serviceTemplateName, $checkTemplates = true)
     {
-        $arr = array();
-        if (!empty($sTplName)) {
-            $sQuery = "SELECT DISTINCT ss.service_description FROM `service` as ss "
-                . " JOIN `service` as tpl on (ss.service_template_model_stm_id = tpl.service_id AND ss.service_register = '1') "
-                . " WHERE tpl.service_alias = '".$sTplName."' AND tpl.service_register = '0'";
- 
-            $res = $this->db->query($sQuery);
-            if (PEAR::isError($res)) {
-                return array();
-            }
-            while ($row = $res->fetchRow()) {
-                if (!empty($row['service_description'])) {
-                    $arr[] = $row['service_description'];
-                }
-            }
+        if ($checkTemplates) {
+            $register = 0;
+        } else {
+            $register = 1;
         }
-        return $arr;
+
+        $linkedServices = array();
+        $query = 'SELECT DISTINCT s.service_description '
+            . 'FROM service s, service st '
+            . 'WHERE s.service_template_model_stm_id = st.service_id '
+            . 'AND st.service_register = "0" '
+            . 'AND s.service_register = "' . $register . '" '
+            . 'AND st.service_description = "' . $this->db->escape($serviceTemplateName) . '" ';
+
+        $result = $this->db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked services of ' . $serviceTemplateName);
+        }
+
+        while ($row = $result->fetchRow()) {
+            $linkedServices[] = $row['service_description'];
+        }
+
+        return $linkedServices;
     }
 
     /**
