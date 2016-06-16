@@ -64,7 +64,7 @@ splitQueries('../../insertBaseConf.sql', ';', null, '../../tmp/insertBaseConf');
 
 # Manage timezone
 $timezone = date_default_timezone_get();
-$resTimezone = mysql_query("select timezone_id from timezone where timezone_name= '" . $timezone . "'", $link);
+$resTimezone = mysql_query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'", $link);
 if ($row = mysql_fetch_assoc($resTimezone)) {
     $timezoneId = $row['timezone_id'];
 } else {

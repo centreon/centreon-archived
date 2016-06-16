@@ -47,4 +47,4 @@ if (isset($template)) {
         $template->assign('pub_content', $pub_content);
     }
 }
-?>
+
