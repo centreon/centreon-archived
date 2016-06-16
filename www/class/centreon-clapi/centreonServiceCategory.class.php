@@ -144,17 +144,21 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
 	 */
 	public function __call($name, $arg)
 	{
-	    $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $hcIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($hcIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
-        }
-        $categoryId = $hcIds[0];
+	    /* Get the method name */
+        $name = strtolower($name);
+        /* Get the action and the object */
         if (preg_match("/^(get|add|del)(service|servicetemplate)\$/", $name, $matches)) {
+            /* Parse arguments */
+            if (!isset($arg[0])) {
+                throw new CentreonClapiException(self::MISSINGPARAMETER);
+            }
+            $args = explode($this->delim, $arg[0]);
+            $hcIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+            if (!count($hcIds)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+            }
+            $categoryId = $hcIds[0];
+            
             $obj = new \Centreon_Object_Service();
             $relobj = new \Centreon_Object_Relation_Service_Category_Service();
             $hostServiceRel = new \Centreon_Object_Relation_Host_Service();

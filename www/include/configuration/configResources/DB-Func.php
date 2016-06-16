@@ -128,7 +128,7 @@ function updateResourceInDB ($resource_id = NULL)
 
 function updateResource($resource_id)
 {
-    global $form, $pearDB;
+    global $form, $pearDB, $centreon;
 
     if (!$resource_id) {
         return;
@@ -157,7 +157,7 @@ function insertResourceInDB()
 
 function insertResource($ret = array())
 {
-    global $form, $pearDB;
+    global $form, $pearDB, $centreon;
     
     if (!count($ret)) {
         $ret = $form->getSubmitValues();

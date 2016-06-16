@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
  }
 
@@ -74,7 +74,7 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
  }
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $serverString = trim($acl->getPollerString());
 $allowedBrokerConf = array();
 

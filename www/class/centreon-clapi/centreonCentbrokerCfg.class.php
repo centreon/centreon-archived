@@ -190,18 +190,23 @@ class CentreonCentbrokerCfg extends CentreonObject
      */
     public function __call($name, $arg)
     {
+        /* Get the method name */
         $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $configIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($configIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
-        }
-        $configId = $configIds[0];
+        /* Get the action and the object */
         if (preg_match("/^(list|get|set|add|del)(correlation|input|output|logger|temporary|stats)/", $name, $matches)) {
             $tagName = $matches[2];
+            
+            /* Parse arguments */
+            if (!isset($arg[0])) {
+                throw new CentreonClapiException(self::MISSINGPARAMETER);
+            }
+            $args = explode($this->delim, $arg[0]);
+            $configIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+            if (!count($configIds)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+            }
+            $configId = $configIds[0];
+            
             if ($matches[1] == "list") {
                 $sql = "SELECT config_group_id as id, config_value as name
                 		FROM cfg_centreonbroker_info

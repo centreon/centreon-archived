@@ -55,7 +55,7 @@ function getXhrC(){
 	return xhrC;
 }
 
-function reloadStatusCounter(_reload_time, _sid) {
+function reloadStatusCounter(_reload_time) {
 
 	var xhrC = getXhrC();
 	// On defini ce qu'on va faire quand on aura la reponse
@@ -216,8 +216,8 @@ function reloadStatusCounter(_reload_time, _sid) {
 		}
 	}
 
-	xhrC.open("POST",_adrrsearchC,true);
-	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	xhrC.open("POST", _adrrsearchC, true);
+	xhrC.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhrC.send("&session_expire="+(_reload_time/1000));
-	setTimeout('reloadStatusCounter("'+ _reload_time +'","'+ _sid +'")', _reload_time);
+	setTimeout('reloadStatusCounter("'+ _reload_time +'")', _reload_time);
 }

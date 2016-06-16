@@ -449,78 +449,68 @@ class CentreonCommand
     }
     
     /**
-     * 
-     * @param type $sCommandName
-     * @param type $aHost
-     * @param type $bTpl
+     * Returns array of Service linked to the command
+     *
      * @return array
      */
-    public function checkCommandUsedInHost($sCommandName, $aHost, $bTpl = false)
+    public function getLinkedServicesByName($commandName, $checkTemplates = true)
     {
-        $aReturn = array();
-        if (empty($sCommandName) || count($aHost) == 0) {
-            return $aReturn;
-        }
-        $sQuery = "select host_name from command "
-            . " join host on (command_id in (command_command_id, command_command_id2)) "
-            . " where command_name = '".$this->_db->escape($sCommandName)."'";
-        
-        if ($bTpl) {
-            $sQuery .= " AND host_register = '1' ";
+        if ($checkTemplates) {
+            $register = 0;
         } else {
-            $sQuery .= " AND host_register = '0' ";
+            $register = 1;
         }
-        
-        $sQuery .= " AND host_name not in ('".  implode("'", $aHost)."')";
-        
-        $res = $this->_db->query($sQuery);
-        if (PEAR::isError($res)) {
-            return $aReturn;
+
+        $linkedCommands = array();
+        $query = 'SELECT DISTINCT s.service_description '
+            . 'FROM service s, command c '
+            . 'WHERE s.command_command_id = c.command_id '
+            . 'AND s.service_register = "' . $register . '" '
+            . 'AND c.command_name = "' . $this->_db->escape($commandName) . '" ';
+
+        $result = $this->_db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked services of ' . $commandName);
         }
-        while ($row = $res->fetchRow()) {
-            if (!empty($row['host_name'])) {
-                $aReturn[] = $row['host_name'];
-            }
+
+        while ($row = $result->fetchRow()) {
+            $linkedCommands[] = $row['service_description'];
         }
-        
-        return $aReturn;
+
+        return $linkedCommands;
     }
-    
+
     /**
-     * 
-     * @param type $sCommandName
-     * @param type $aervice
-     * @param type $bTpl
+     * Returns array of Host linked to the command
+     *
      * @return array
      */
-    public function checkCommandUsedInService($sCommandName, $aService, $bTpl = false)
+    public function getLinkedHostsByName($commandName, $checkTemplates = true)
     {
-        $aReturn = array();
-        if (empty($sCommandName) || count($aService) == 0) {
-            return $aReturn;
-        }
-        $sQuery = "select service_description from command "
-            . " join service on (command_id in (command_command_id, command_command_id2)) "
-            . " where command_name = '".$this->_db->escape($sCommandName)."'";
-        
-        if ($bTpl) {
-            $sQuery .= " AND service_register = '1' ";
+        if ($checkTemplates) {
+            $register = 0;
         } else {
-            $sQuery .= " AND service_register = '0' ";
+            $register = 1;
         }
-        
-        $sQuery .= " AND service_description not in ('".  implode("'", $aService)."')";
-        
-        $res = $this->_db->query($sQuery);
-        if (PEAR::isError($res)) {
-            return $aReturn;
+
+        $linkedCommands = array();
+        $query = 'SELECT DISTINCT h.host_name '
+            . 'FROM host h, command c '
+            . 'WHERE h.command_command_id = c.command_id '
+            . 'AND h.host_register = "' . $register . '" '
+            . 'AND c.command_name = "' . $this->_db->escape($commandName) . '" ';
+
+        $result = $this->_db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked hosts of ' . $commandName);
         }
-        while ($row = $res->fetchRow()) {
-            if (!empty($row['service_description'])) {
-                $aReturn[] = $row['service_description'];
-            }
+
+        while ($row = $result->fetchRow()) {
+            $linkedCommands[] = $row['host_name'];
         }
-        
-        return $aReturn;
+
+        return $linkedCommands;
     }
 }

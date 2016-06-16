@@ -141,19 +141,24 @@ class CentreonContactGroup extends CentreonObject {
      * @throws CentreonClapiException
      */
     public function __call($name, $arg) {
+        /* Get the method name */
         $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $cgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($cgIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
-        }
-        $cgId = $cgIds[0];
+        /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)contact$/", $name, $matches)) {
             $relobj = new \Centreon_Object_Relation_Contact_Group_Contact();
             $obj = new \Centreon_Object_Contact();
+            
+            /* Parse arguments */
+            if (!isset($arg[0])) {
+                throw new CentreonClapiException(self::MISSINGPARAMETER);
+            }
+            $args = explode($this->delim, $arg[0]);
+            $cgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+            if (!count($cgIds)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
+            }
+            $cgId = $cgIds[0];
+            
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $cgIds);
                 echo "id" . $this->delim . "name" . "\n";

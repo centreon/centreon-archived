@@ -58,7 +58,6 @@ if (($o == "c" || $o == "w") && $resource_id) {
     $DBRESULT->free();
 }
 
-
 /**
  * Var information to format the element
  */
@@ -80,7 +79,6 @@ else if ($o == "c")
 else if ($o == "w")
     $form->addElement('header', 'title', _("View Resource"));
 
-
 /**
  * Resources CFG basic information
  */
@@ -91,13 +89,13 @@ $form->addElement('text', 'resource_line', _("MACRO Expression"), $attrsText);
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
+    'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=list',
     'multiple' => true,
     'linkedObject' => 'centreonInstance'
 );
 /* Host Parents */
 $attrPoller1 = array_merge(
-        $attrPoller, array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=defaultValues&target=resources&field=instance_id&id='.$resource_id)
+    $attrPoller, array('defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=defaultValues&target=resources&field=instance_id&id='.$resource_id)
 );
 $form->addElement('select2', 'instance_id', _("Linked Instances"), array(), $attrPoller1);
 

@@ -111,14 +111,51 @@ class CentreonClapi extends CentreonWebService
         }
         
         /* Load and execute clapi option */
-        $clapi = new \CentreonClapi\CentreonAPI($username, '', $action, _CENTREON_PATH_, $options);
-        ob_start();
-        $retCode = $clapi->launchAction(false);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        if ($retCode !== 0) {
-            /* @todo Throw exception */
+        try {
+            $clapi = new \CentreonClapi\CentreonAPI($username, '', $action, _CENTREON_PATH_, $options);
+            ob_start();
+            $retCode = $clapi->launchAction(false);
+            $contents = ob_get_contents();
+            ob_end_clean();
+        } catch (\CentreonClapi\CentreonClapiException $e) {
+            $message = $e->getMessage();
+            if (strpos($message, \CentreonClapi\CentreonObject::UNKNOWN_METHOD) === 0) {
+                throw new RestNotFoundException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::MISSINGPARAMETER) === 0) {
+                throw new RestBadRequestException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::MISSINGNAMEPARAMETER) === 0) {
+                throw new RestBadRequestException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::OBJECTALREADYEXISTS) === 0) {
+                throw new RestConflictException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::OBJECT_NOT_FOUND) === 0) {
+                throw new RestNotFoundException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::NAMEALREADYINUSE) === 0) {
+                throw new RestConflictException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::UNKNOWNPARAMETER) === 0) {
+                throw new RestBadRequestException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::OBJECTALREADYLINKED) === 0) {
+                throw new RestConflictException($message);
+            }
+            if (strpos($message, \CentreonClapi\CentreonObject::OBJECTNOTLINKED) === 0) {
+                throw new RestBadRequestException($message);
+            }
+            throw new RestInternalServerErrorException($message);
         }
+        if ($retCode != 0) {
+            $contents = trim($contents);
+            if (preg_match('/^Object ([\w\d ]+) not found in Centreon API.$/', $contents)) {
+                throw new RestBadRequestException($contents);
+            }
+            throw new RestInternalServerErrorException($contents);
+        }
+        
         
         $return = array();
         $tmpLines = explode("\n", $contents);
