@@ -207,15 +207,15 @@
             <h4>{$form.header.links}</h4>
           </td>
         </tr>
-        {if $o == "mc"}
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
-        {/if}
         {if !$msg.tpl}
-        {if $o == "mc"}
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sgs.label}</td><td class="FormRowValue">{$form.mc_mod_sgs.html}</td></tr>
-        {/if}
+            {if $o == "mc"}
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sgs.label}</td><td class="FormRowValue">{$form.mc_mod_sgs.html}</td></tr>
+            {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
         {else}
+            {if $o == "mc"}
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
+            {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_templates"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
         {/if}
         <tr class="list_lvl_1">

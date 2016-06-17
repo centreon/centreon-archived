@@ -1847,12 +1847,15 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
 }
 
 // For massive change. We just add the new list if the elem doesn't exist yet
-function updateServiceServiceGroup_MC($service_id = null)   {
-    if (!$service_id) return;
-    global $form;
-    global $pearDB;
-    $rq = "SELECT * FROM servicegroup_relation ";
-    $rq .= "WHERE service_service_id = '".$service_id."'";
+function updateServiceServiceGroup_MC($service_id = null)
+{
+    global $form, $pearDB;
+    
+    if (!$service_id) {
+        return;
+    }
+    $rq = "SELECT * FROM servicegroup_relation WHERE service_service_id = '".$service_id."'";
+
     $DBRESULT = $pearDB->query($rq);
     $hsgs = array();
     $hgsgs = array();
@@ -1863,7 +1866,7 @@ function updateServiceServiceGroup_MC($service_id = null)   {
             $hgsgs[$arr["hostgroup_hg_id"]] = $arr["hostgroup_hg_id"];
     }
     $ret = $form->getSubmitValue("service_sgs");
-    for($i = 0; $i < count($ret); $i++) {
+    for ($i = 0; $i < count($ret); $i++) {
         /* We need to record each relation for host / hostgroup selected */
         $ret1 = getMyServiceHosts($service_id);
         $ret2 = getMyServiceHostGroups($service_id);
