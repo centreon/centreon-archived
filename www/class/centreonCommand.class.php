@@ -374,8 +374,7 @@ class CentreonCommand
      */
     public function getCommandIdByName($name)
     {
-        $query = "SELECT command_id FROM command 
-                WHERE command_name = '".$this->_db->escape($name)."'";
+        $query = "SELECT command_id FROM command WHERE command_name = '".$this->_db->escape($name)."'";
 
         $res = $this->_db->query($query);
 
@@ -393,16 +392,18 @@ class CentreonCommand
      * @param array $parameters Values to insert (command_name and command_line is mandatory)
      * @throws Exception
      */
-    public function insert($parameters)
+    public function insert($parameters, $locked = false)
     {
         $sQuery = "INSERT INTO command "
-            . "(command_name, command_line, command_type) "
+            . "(command_name, command_line, command_type, command_locked) "
             . "VALUES (";
 
         (isset($parameters['command_name']) && $parameters['command_name'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_name']) . '", ' : '"", ';
         (isset($parameters['command_line']) && $parameters['command_line'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_line']) . '", ' : '"", ';
-        (isset($parameters['command_type']) && $parameters['command_type'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_type']) . '"' : $sQuery .= "'2' ";
+        (isset($parameters['command_type']) && $parameters['command_type'] != "") ? $sQuery .= '"' . $this->_db->escape($parameters['command_type']) . '", ' : $sQuery .= "'2', ";
 
+        ($locked === true) ? $sQuery.= '1' : $sQuery .= '0';
+        
         $sQuery .= ")";
 
         $res = $this->_db->query($sQuery);

@@ -48,17 +48,43 @@ class CentreonMedia {
     /*
      *  Constructor
      */
-
-    function __construct($db) {
+    function __construct($db)
+    {
         $this->_db = $db;
         $this->_filenames = array();
     }
 
     /*
+     *  Get media directory path
+     */
+    public function getMediaDirectory()
+    {
+        $query = "SELECT options.value FROM options WHERE options.key = 'nagios_path_img'";
+        $result = $this->_db->query($query);
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while getting media directory ');
+        }
+
+        $mediaDirectory = '';
+        if ($result->numRows()) {
+            $row = $result->fetchRow();
+            $mediaDirectory = $row['value'];
+        }
+
+        if (trim($mediaDirectory) == '') {
+            throw new \Exception('Error while getting media directory ');
+        }
+
+        return $mediaDirectory;        
+    }
+
+    /*
      *  Returns ID of target directory
      */
+    public function getDirectoryId($dirname)
+    {
+        $dirname = $this->sanitizePath($dirname);
 
-    function getDirectoryId($dirname) {
         $query = "SELECT dir_id FROM view_img_dir WHERE dir_name = '" . $dirname . "' LIMIT 1";
         $RES = $this->_db->query($query);
         $dir_id = null;
@@ -70,10 +96,45 @@ class CentreonMedia {
     }
 
     /*
+     *  Add directory
+     */
+    public function addDirectory($dirname)
+    {
+        $dirname = $this->sanitizePath($dirname);
+
+        if (is_null($this->getDirectoryId($dirname))) {
+            $query = "INSERT INTO view_img_dir (dir_name) VALUES ('" . $dirname . "')";
+            $result = $this->_db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while creating directory ' . $dirname);
+            }
+        }
+
+        $this->createDirectory($dirname);
+
+        return $this->getDirectoryId($dirname);
+    }
+
+    /*
+     *  Add directory
+     */
+    private function createDirectory($dirname, $comments = '')
+    {
+        $mediaDirectory = $this->getMediaDirectory();
+
+        $fullPath = $mediaDirectory . '/' . $dirname;
+
+        // Create directory
+        if (!is_dir($fullPath)) {
+            mkdir($fullPath);
+        }
+    }
+
+    /*
      *  Returns ID of target Image
      */
-
-    function getImageId($imagename, $dirname = null) {
+    function getImageId($imagename, $dirname = null)
+    {
         if (!isset($dirname)) {
             $tab = preg_split("/\//", $imagename);
             isset($tab[0]) ? $dirname = $tab[0] : $dirname = null;
@@ -106,7 +167,8 @@ class CentreonMedia {
      * @param int $imgId
      * @return string
      */
-    public function getFilename($imgId = null) {
+    public function getFilename($imgId = null)
+    {
         if (!isset($imgId)) {
             return "";
         }
@@ -176,4 +238,12 @@ class CentreonMedia {
         return $files;
     }
 
+    private function sanitizePath($path)
+    {
+        $cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8");
+        $cleanstr = str_replace("/", "_", $cleanstr);
+        $cleanstr = str_replace("\\", "_", $cleanstr);
+
+        return $cleanstr;
+    }
 }
