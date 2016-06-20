@@ -179,4 +179,4 @@ ALTER TABLE contact ADD COLUMN `reach_api` int(11) DEFAULT '0' AFTER `contact_or
 DELETE FROM topology_JS WHERE Init = 'initChangeTab';
 
 -- Insert Macro for PP
-INSERT INTO `cfg_resource` (`resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES ('$CENTREONPLUGINS$', '@CENTREONPLUGIN@', 'Centreon Plugin Path', '1');
+INSERT INTO `cfg_resource` (`resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES ('$CENTREONPLUGINS$', '@CENTREONPLUGINs@', 'Centreon Plugin Path', '1');
