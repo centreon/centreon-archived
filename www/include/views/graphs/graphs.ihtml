@@ -178,10 +178,10 @@
     <div class="action right">
       <button class="bt_action">&gt;&gt;</button>
     </div>
-    {{#if status}}
+    <!--
     <div class="chart" id="graph-status-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="status">
     </div>
-    {{/if}}
+    --?
   </div>
 </div>
 </script>
@@ -209,9 +209,7 @@ function addChart(id, name, times) {
     })
   );
   jQuery('#graph-' + id).centreonGraph(times);
-  if (true) {
-    jQuery('#graph-status-' + id).centreonGraph(times);
-  }
+  //jQuery('#graph-status-' + id).centreonGraph(times);
 }
 
 function loadChart() {
