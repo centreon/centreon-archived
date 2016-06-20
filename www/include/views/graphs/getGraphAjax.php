@@ -98,7 +98,7 @@ function getServiceGraphByHost($host, $isAdmin, $lca)
  */
 function getGraphByService($host, $svcId, $svcName, $isAdmin, $lca)
 {
-    if (service_has_graph($host, $svcId) && ($isAdmin || (!$isAdmin && isset($lca[$host][$svcName])))) {
+    if (service_has_graph($host, $svcId) && ($isAdmin || (!$isAdmin && isset($lca[$host][$svcId])))) {
         return array(
             'type' => 'service',
             'id' => $host . '_' . $svcId,
@@ -139,7 +139,10 @@ if (isset($_POST['service_group_filter'])) {
 if (isset($_POST['service_selector'])) {
     foreach ($_POST['service_selector'] as $hostSvcId) {
         list($hostId, $svcId) = explode('-', $hostSvcId);
-        $servicesReturn[] = getGraphByService($hostId, $svcId, getMyServiceName($svcId), $isAdmin, $lca);
+        $svcGraph = getGraphByService($hostId, $svcId, getMyServiceName($svcId), $isAdmin, $lca);
+        if ($svcGraph === false) {
+          $servicesReturn[] = $svcGraph;
+        }
     }
 }
 
