@@ -8,7 +8,7 @@ INSERT INTO `cfg_nagios_broker_module` (`cfg_nagios_id`, `broker_module`) VALUES
 
 INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES
 (1, '$USER1$', '@MONITORINGENGINE_PLUGIN@', 'Centreon Nagios Plugins Path', '1'),
-(2, '$CENTREONPLUGINS$', '@CENTREONPLUGIN@', 'Centreon Plugin Path', '1');
+(2, '$CENTREONPLUGINS$', '@CENTREONPLUGINS@', 'Centreon Plugin Path', '1');
 
 INSERT INTO `cfg_resource_instance_relations` (`resource_id`, `instance_id` ) VALUES (1, 1), (2, 1);
 INSERT INTO `options` (`key`, `value`) VALUES ('cengine_path_connectors','@CENTREON_ENGINE_CONNECTORS@/');
