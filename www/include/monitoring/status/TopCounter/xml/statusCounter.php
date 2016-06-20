@@ -189,17 +189,17 @@ if ($pollerList != "") {
 	$DBRESULT = $obj->DBC->query($request);
 	$inactivInstance = "";
 	$pollerInError = "";
-	while ($ndo = $DBRESULT->fetchRow()) {
+	while ($data = $DBRESULT->fetchRow()) {
 		/*
 		 * Running
 		 */
 		if ($status != 2 && ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 5))) {
 			$status = 1;
-			$pollerInError = $ndo["name"];
+			$pollerInError = $data["name"];
 		}
 		if ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 10)) {
 			$status = 2;
-			$pollerInError = $ndo["name"];
+			$pollerInError = $data["name"];
 		}
 		if ($pollerListInError != "") {
 			$pollerListInError .= ", ";
@@ -226,7 +226,7 @@ if ($pollerList != "") {
 	}
 	$DBRESULT->free();
 
-	$error = "Pollers $pollerListInError not running.";
+	$error = "$pollerListInError not running";
 
 	$request = 	" SELECT stat_value, i.instance_id, name " .
 				" FROM `nagios_stats` ns, instances i " .
@@ -318,3 +318,4 @@ $obj->header();
  * Display XML data
  */
 $obj->XML->output();
+
