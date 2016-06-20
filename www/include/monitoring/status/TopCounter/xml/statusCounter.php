@@ -102,7 +102,6 @@ while ($data = $DBRESULT->fetchRow()) {
 	$hostCounter += $host_stat[$data["state"]];
 }
 $DBRESULT->free();
-unset($data);
 
 /* *********************************************
  * Get Service stats
@@ -189,24 +188,24 @@ if ($pollerList != "") {
 	$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	$inactivInstance = "";
-	while ($data = $DBRESULT->fetchRow()) {
+	$pollerInError = "";
+	while ($ndo = $DBRESULT->fetchRow()) {
 		/*
 		 * Running
 		 */
 		if ($status != 2 && ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 5))) {
 			$status = 1;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
-			}
-			$pollerListInError .= $data["name"];
+			$pollerInError = $ndo["name"];
 		}
 		if ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 10)) {
 			$status = 2;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
-			}
-			$pollerListInError .= $data["name"];
+			$pollerInError = $ndo["name"];
 		}
+		if ($pollerListInError != "") {
+			$pollerListInError .= ", ";
+		}
+		$pollerListInError .= $pollerInError;
+		
 		/*
 		 * Activity
 		 */
