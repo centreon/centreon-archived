@@ -31,10 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
+
 if (isset($template)) {
     if (fsockopen("www.centreon.com", 80, $num, $error, 5)) {
         $pub_content = "http://blog-centreon-wordpress.s3.amazonaws.com/wp-content/uploads/2015/12/custom_view.jpg";

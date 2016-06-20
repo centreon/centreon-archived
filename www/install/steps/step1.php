@@ -30,7 +30,7 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 session_start();
