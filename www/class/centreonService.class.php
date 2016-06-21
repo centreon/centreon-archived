@@ -1267,10 +1267,13 @@ class CentreonService
             throw new \Exception('Error while insert service '.$ret['service_description']);
         }
         
-        $DBRESULT   = $this->db->query("SELECT MAX(service_id) as id FROM service");
+        $DBRESULT   = $this->db->query("SELECT MAX(service_id) as service_id FROM service");
         $service_id = $DBRESULT->fetchRow();
+
+        $ret['service_service_id'] = $service_id['service_id'];
+        $this->insertExtendInfo($ret);
         
-        return $service_id['id'];
+        return $service_id['service_id'];
     }
     
     /**
