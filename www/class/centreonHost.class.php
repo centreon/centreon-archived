@@ -1608,7 +1608,8 @@ class CentreonHost
      * Insert host extended informations in DB
      *
      */
-    public function insertExtendedInfos($ret) {
+    public function insertExtendedInfos($ret)
+    {
         if (empty($ret['host_id'])) {
             return;
         }
@@ -1633,7 +1634,7 @@ class CentreonHost
         if (\PEAR::isError($DBRESULT)) {
             throw new \Exception('Error while insert host extended info '.$ret['host_name']);
         }
-}
+    }
 
     /**
      * 

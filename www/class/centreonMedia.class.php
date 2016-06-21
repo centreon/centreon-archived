@@ -223,7 +223,8 @@ class CentreonMedia {
      * @return array
      * @throws Exception
      */
-    public static function getFilesFromArchive($archiveFile) {
+    public static function getFilesFromArchive($archiveFile)
+    {
         $fileName = basename($archiveFile);
         $position = strrpos($fileName, ".");
         if (false === $position) {
@@ -260,6 +261,11 @@ class CentreonMedia {
         return $files;
     }
 
+    /**
+     * 
+     * @param type $path
+     * @return type
+     */
     private function sanitizePath($path)
     {
         $cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8");
@@ -269,8 +275,17 @@ class CentreonMedia {
         return $cleanstr;
     }
 
+    /**
+     * 
+     * @param string $parameters
+     * @param type $binary
+     * @return type
+     * @throws \Exception
+     */
     public function addImage($parameters, $binary = null)
     {
+        $imageId = null;
+        
         if (!isset($parameters['img_name']) || !isset($parameters['img_path']) || !isset($parameters['dir_name'])) {
             throw new \Exception('Cannot add media : missing parameters');
         }
@@ -334,6 +349,8 @@ class CentreonMedia {
             if (\PEAR::isError($result)) {
                 throw new \Exception('Error while inserting relation between' . $imageName . ' and ' . $directoryName);
             }
+        } else {
+            $imageId = $this->getImageId($imageName, $directoryName);
         }
 
         // Create binary file if specified
@@ -345,6 +362,12 @@ class CentreonMedia {
         return $imageId;
     }
 
+    /**
+     * 
+     * @param type $directoryPath
+     * @param type $imagePath
+     * @param type $binary
+     */
     private function createImage($directoryPath, $imagePath, $binary)
     {
         $fullPath = $directoryPath . '/' . $imagePath;
