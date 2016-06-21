@@ -393,11 +393,13 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeElement("o", $ct++);
 
         if (!strncmp($data["name"], "_Module_Meta", strlen("_Module_Meta"))) {
+            $data["real_name"] = $data["name"];
             $data["name"] = "Meta";
         }
 
         if ($host_prev == $data["name"]) {
             $obj->XML->writeElement("hc", "transparent");
+            $obj->XML->writeElement("hrn", (isset($data["real_name"]) ? $data["real_name"] : 0));
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "1");
             $obj->XML->text(CentreonUtils::escapeSecure($data["name"]));
@@ -413,6 +415,7 @@ if (!PEAR::isError($DBRESULT)) {
             }
 
             $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
+            $obj->XML->writeElement("hrn", (isset($data["real_name"]) ? $data["real_name"] : 0));
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "0");
             $obj->XML->text(CentreonUtils::escapeSecure($data["name"]), true, false);
@@ -462,6 +465,7 @@ if (!PEAR::isError($DBRESULT)) {
         } else {
             $obj->XML->writeElement("sd", CentreonUtils::escapeSecure($data["description"]), false);
         }
+
         $obj->XML->writeElement("sico", $data["icon_image"]);
         $obj->XML->writeElement("sdl", CentreonUtils::escapeSecure(urlencode($data["description"])));
         $obj->XML->writeElement("svc_id", $data["service_id"]);
@@ -507,7 +511,6 @@ if (!PEAR::isError($DBRESULT)) {
         } else {
             $obj->XML->writeElement("snn", 'none');
         }
-
 
         if ($data["notes_url"] != "") {
             $data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);
