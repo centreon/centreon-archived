@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
  }
 
@@ -44,7 +44,7 @@ $search = '';
 if (isset($_POST['searchACLG']) && $_POST['searchACLG']) {
     $search = $_POST['searchACLG'];
     $SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
- }
+}
 $rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
 $DBRESULT = $pearDB->query($rq);
 $tmp = $DBRESULT->fetchRow();
@@ -119,6 +119,7 @@ for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
                          "RowMenu_contacts" => $ctNbr["nbr"],
                          "RowMenu_contactgroups" => $cgNbr["nbr"],
                          "RowMenu_status" => $group["acl_group_activate"] ? _("Enabled") : _("Disabled"),
+                         "RowMenu_badge" => $group["acl_group_activate"] ? "service_ok" : "service_critical",
                          "RowMenu_options" => $moptions);
 
     $style != "two" ? $style = "two" : $style = "one";
