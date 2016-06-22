@@ -61,3 +61,7 @@ Configuration de l'interface Web
 #. Dans le menu **Configuration > Poller > Broker configuration**, activez **Poller-template-module** et dans l'onglet **Output** remplacez **IP_CENTRAL** par l'adresse IP de votre serveur central.
 
 Vous pouvez maintenant ajouter des éléments à superviser sur votre collecteur, il est fonctionnel !
+
+.. warning::
+
+    La premiére fois que vous exportez la configuration, il sera nécessaire de choisir le choix restart.
