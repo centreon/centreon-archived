@@ -555,8 +555,7 @@ class CentreonHost
     ) {
         
         if (false === $isMassiveChange) {
-            $this->db->query("DELETE FROM on_demand_macro_host 
-                WHERE host_host_id = " . $this->db->escape($hostId));
+            $this->db->query("DELETE FROM on_demand_macro_host WHERE host_host_id = " . $this->db->escape($hostId));
         } else {
             $macroList = "";
             foreach ($macroInput as $v) {
@@ -564,10 +563,7 @@ class CentreonHost
             }
             if ($macroList) {
                 $macroList = rtrim($macroList, ",");
-                $this->db->query("DELETE FROM on_demand_macro_host
-                    WHERE host_host_id = " . $this->db->escape($hostId) . "
-                    AND host_macro_name IN ({$macroList})"
-                );
+                $this->db->query("DELETE FROM on_demand_macro_host WHERE host_host_id = " . $this->db->escape($hostId) . " AND host_macro_name IN ({$macroList})");
             }
         }
 
@@ -804,7 +800,7 @@ class CentreonHost
         }
     }   
     
-    public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,&$macroPassword,$cmdId = false)
+    public function hasMacroFromHostChanged($host_id, &$macroInput, &$macroValue, &$macroPassword, $cmdId = false)
     {
         $aTemplates = $this->getTemplateChain($host_id, array(), -1, true,"host_name,host_id,command_command_id");
 
@@ -812,10 +808,9 @@ class CentreonHost
             $cmdId = "";
         }
         $aMacros = $this->getMacros($host_id, false, $aTemplates, $cmdId);
-        foreach($aMacros as $macro){
-            foreach($macroInput as $ind=>$input){
-                
-                if($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"] && $macroPassword[$ind] == $macro['macroPassword_#index#']){
+        foreach($aMacros as $macro) {
+            foreach($macroInput as $ind=>$input) {
+                if ($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"] && $macroPassword[$ind] == $macro['macroPassword_#index#']){
                     unset($macroInput[$ind]);
                     unset($macroValue[$ind]);
                 }
@@ -823,12 +818,12 @@ class CentreonHost
         }
     }
     
-    public function getMacroFromForm($form,$fromKey){
+    public function getMacroFromForm($form, $fromKey) {
      
         $Macros = array();
-        if(!empty($form['macroInput'])){
-            foreach($form['macroInput'] as $key=>$macroInput){
-                if($form['macroFrom'][$key] == $fromKey){
+        if (!empty($form['macroInput'])) {
+            foreach ($form['macroInput'] as $key => $macroInput) {
+                if ($form['macroFrom'][$key] == $fromKey){
                     $macroTmp = array();
                     $macroTmp['macroInput_#index#'] = $macroInput;
                     $macroTmp['macroValue_#index#'] = $form['macroValue'][$key];
