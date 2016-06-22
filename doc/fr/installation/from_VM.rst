@@ -15,27 +15,6 @@ Il est dans un premier temps nécessaire d'importer le ficher OVF. Pour cela, su
 Il est alors nécessaire de suivre les différents menus. Les différents choix sont trés liés à l'infrastructure VMWare en place, il est difficile d'être rééllement spécifique dans cette documentation.
 Il est important de noter que les bonnes pratiques sont de choisir le mode **Thin Provision** qui vous permettra d'économiser de l'espace disque sur vos datastores.
 
-Premier pas
------------
-
-Une fois le fichier correctement importé et la machine virtuelle démarrée, vous pourrez vous rendre compte que la machine virtuelle créée ne comporte pas d'addresse IP. Pour régler cela, il est nécessaire de suivre la procédure suivante :
-
-   ::
-
-    rm -f /etc/udev/rules.d/70-persistent-net.rules
-    vim /etc/sysconfig/network-scripts/ifcfg-eth0
-
-Dans le fichier, supprimez les lignes démarrant par **HWADDR** et **UUID**.
-
-redémarrez ensuite la machine virtuelle, vous pouvez pour cela utiliser la commande :
-
-   ::
-
-    reboot
-
-Une fois le redémarrage effectué, votre machine virtuelle dispose alors d'une adrese IP. Vous pouvez vous rendre sur l'interface Web en utilisant cette adresse. Votre serveur Centreon est fonctionnel !
-
-
 Collecteur
 ----------
 
