@@ -450,6 +450,7 @@ jQuery(function() {
         }
 
     });
+
     jQuery(".onemacro").each(function(idx,elem){
         var from = jQuery(elem).find('input[name^=macroFrom]').val();
         if (from === "direct") {
@@ -527,6 +528,7 @@ jQuery(function() {
         setListener(el.find('select[name^=tpSelect]'));
     }
 
+{/literal}{if $o != "mc"}{literal}    
     function doAjaxLoad(elems){
             jQuery.ajax({
                 url: "./include/configuration/configObject/host/refreshMacroAjax.php",
@@ -555,6 +557,7 @@ jQuery(function() {
                         }
                     );
 
+                    
                     jQuery(".onemacro").each(function(idx,elem){
                         var from = jQuery(elem).find('input[name^=macroFrom]').val();
                         if (from === "direct") {
@@ -606,9 +609,11 @@ jQuery(function() {
                         });
 
                     });
+                    
                 }
             });
     }
+ {/literal}{/if}{literal}
 
 {/literal}
 </script>
