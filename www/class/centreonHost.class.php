@@ -1745,6 +1745,44 @@ class CentreonHost
 
         $DBRESULT = $this->db->query($rq);
 
+        $this->updateExtendedInfos($host_id, $ret);
+    }
+
+    /**
+     *
+     * Insert host extended informations in DB
+     *
+     */
+    public function updateExtendedInfos($host_id, $ret)
+    {
+        $fields = array(
+            'ehi_notes' => 'ehi_notes',
+            'ehi_notes_url' => 'ehi_notes_url', 
+            'ehi_action_url' => 'ehi_action_url',
+            'ehi_icon_image' => 'ehi_icon_image',
+            'ehi_icon_image_alt' => 'ehi_icon_image_alt',
+            'ehi_vrml_image' => 'ehi_vrml_image',
+            'ehi_statusmap_image' => 'ehi_statusmap_image',
+            'ehi_2d_coords' => 'ehi_2d_coords',
+            'ehi_3d_coords' => 'ehi_3d_coords'
+        );
+
+        $query = "UPDATE extended_host_information SET ";
+        $updateFields = array();
+        foreach ($ret as $key => $value) {
+            if (isset($fields[$key])) {
+                $updateFields[] = '`' . $fields[$key] . '` = "' . CentreonDB::escape($value) . '" ';
+            }
+        }
+
+        if (count($updateFields)) {
+            $query .= implode(',', $updateFields)
+                . 'WHERE host_host_id = "' . $host_id . '" ';
+            $result = $this->db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while updating extendeded infos of host ' . $host_id);
+            }
+        }
     }
 
 

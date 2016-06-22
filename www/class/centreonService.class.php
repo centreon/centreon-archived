@@ -1390,6 +1390,52 @@ class CentreonService
         $rq .= "WHERE service_id = '".$service_id."'";
         
         $DBRESULT = $this->db->query($rq);
+
+        $this->updateExtendedInfos($service_id, $ret);
+    }
+
+    /**
+     *
+     * update service extended informations in DB
+     *
+     */
+    public function updateExtendedInfos($service_id, $ret)
+    {
+        $fields = array(
+            'esi_notes' => 'esi_notes',
+            'esi_notes_url' => 'esi_notes_url',
+            'esi_action_url' => 'esi_action_url',
+            'esi_icon_image' => 'esi_icon_image',
+            'esi_icon_image_alt' => 'esi_icon_image_alt',
+            'graph_id' => 'graph_id'
+        );
+
+        $query = "UPDATE extended_service_information SET ";
+        $updateFields = array();
+        foreach ($ret as $key => $value) {
+            if (isset($fields[$key])) {
+                $updateFields[] = '`' . $fields[$key] . '` = "' . CentreonDB::escape($value) . '" ';
+            }
+        }
+
+        if (count($updateFields)) {
+            $query .= implode(',', $updateFields)
+                . 'WHERE service_service_id = "' . $service_id . '" ';
+            $result = $this->db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while updating extendeded infos of service ' . $service_id);
+            }
+        }
+
+        $rq .= "(service_service_id, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt, graph_id) ";
+        $rq .= "VALUES ";
+        $rq .= "('".$aDatas['service_service_id']."', ";
+        isset($aDatas["esi_notes"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes"])."'," : $rq .="NULL, ";
+        isset($aDatas["esi_notes_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes_url"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_action_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_action_url"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_icon_image"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_icon_image_alt"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image_alt"])."'," : $rq .= "NULL, ";
+        isset($aDatas["graph_id"]) ? $rq .= CentreonDB::escape($aDatas["graph_id"]) : $rq .= "NULL ";
     }
     
     /**
