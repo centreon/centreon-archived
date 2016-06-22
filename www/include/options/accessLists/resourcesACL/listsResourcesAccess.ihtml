@@ -41,7 +41,7 @@
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_all_hosts}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_all_hostgroups}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_all_servicegroups}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
+			<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}

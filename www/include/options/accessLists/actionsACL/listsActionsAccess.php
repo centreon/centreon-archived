@@ -96,6 +96,7 @@ for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
 					"RowMenu_link"=>"?p=".$p."&o=c&acl_action_id=".$topo['acl_action_id'],
 					"RowMenu_alias"=>myDecode($topo["acl_action_description"]),
 					"RowMenu_status"=>$topo["acl_action_activate"] ? _("Enabled") : _("Disabled"),
+					"RowMenu_badge" => $topo["acl_action_activate"] ? "service_ok" : "service_critical",
 					"RowMenu_options"=>$moptions);
 					
 	$style != "two" ? $style = "two" : $style = "one";	}
@@ -155,4 +156,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);	
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listsActionsAccess.ihtml");
-?>
