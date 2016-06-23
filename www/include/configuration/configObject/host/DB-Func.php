@@ -1335,11 +1335,9 @@ function updateHost_MC($host_id = null) {
             }
         }
     }
-    if (isset($_REQUEST['macroInput']) &&
-            isset($_REQUEST['macroValue'])) {
-        $hostObj->insertMacro(
-                $host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, true
-        );
+
+    if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
+        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, true);
     }
 
     if (isset($ret['criticality_id']) && $ret['criticality_id']) {
