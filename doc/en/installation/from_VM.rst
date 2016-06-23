@@ -15,26 +15,6 @@ The first step is to import the OVF FIle. To do that go in **File > Deploy OVF T
 You can then follow diffrents menus. Choices you made are linked to your VMWare configuration so it's difficult to be more specific.
 Just be noticed that best practice are to used **Thin Provision** to keep some spaces in disk.
 
-First Step
-----------
-
-When the File is succesfully imported, you can connect using VMWare console, you will see that the VM have no IP Adress. To fix it, follow procedures :
-
-   ::
-
-    rm -f /etc/udev/rules.d/70-persistent-net.rules
-    vim /etc/sysconfig/network-scripts/ifcfg-eth0
-
-In this file, delete lines starting by **HWADDR** and **UUID**.
-
-The reboot the server, using:
-
-   ::
-
-    reboot
-
-After reboot is done, your server have now an IP Adress. You can go on the web interface using it. Centreon is operational !
-
 Poller
 ------
 
@@ -60,3 +40,7 @@ On Web interface
 #. In **Configuration > Poller > Broker configuration**, Activate Poller-template-module and in **Output** tab, replace IP_CENTRAL by the central IP address.
 
 Then you can configure and add ressources on your poller. The poller is operational !
+
+.. warning::
+
+    When you export your configuration for the first time, you have to choose "restart".
