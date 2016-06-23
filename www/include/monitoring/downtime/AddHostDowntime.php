@@ -163,10 +163,6 @@ if ($centreon->user->access->checkAction("host_schedule_downtime")) {
             array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=service&field=service_hgPars&id=' . $service_id)
         );
         $form->addElement('select2', 'hostgroup_id', _("Hostgroup"), array(), $attrHostgroup1);
-        /*
-        $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
-        $selHg = $form->addElement('select', 'hostgroup_id', _("Hostgroup"), $hg);
-        */
 
         $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
         if (isset($centreon->optGen['monitoring_dwt_fixed']) && $centreon->optGen['monitoring_dwt_fixed']) {
