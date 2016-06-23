@@ -145,8 +145,6 @@ if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
     $_SESSION['monitoring_service_status_filter'] = $statusFilter;
 }
 
-
-
 /** * *************************************************
  * Backup poller selection
  */
@@ -173,7 +171,8 @@ if ($instance != -1) {
 $searchHost = "";
 if ($search_host) {
     $searchHost .= " AND (h.name LIKE '%$search_host%' ";
-    $searchHost .= " OR h.alias LIKE '%$search_host%') ";
+    $searchHost .= " OR h.alias LIKE '%$search_host%' ";
+    $searchHost .= " OR h.address LIKE '%$search_host%' ) ";
 }
 
 $searchService = "";
@@ -197,7 +196,7 @@ $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name
 $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
-$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
+$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
                 s.icon_image, s.display_name, s.state, s.output as plugin_output,
                 s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
                 s.last_hard_state_change, s.last_check, s.next_check,
