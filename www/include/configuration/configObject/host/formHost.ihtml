@@ -528,6 +528,7 @@ jQuery(function() {
         setListener(el.find('select[name^=tpSelect]'));
     }
 
+{/literal}{if $o != "mc"}{literal} 
     function doAjaxLoad(elems){
             jQuery.ajax({
                 url: "./include/configuration/configObject/host/refreshMacroAjax.php",
@@ -610,6 +611,6 @@ jQuery(function() {
                 }
             });
     }
-
+{/literal}{/if}{literal}
 {/literal}
 </script>
