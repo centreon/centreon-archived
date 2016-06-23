@@ -3,7 +3,7 @@
 	<form {$form.attributes}>
 		<table class="ListTableMedium">
 			<tr class="ListHeader">
-				<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icons/warning.png' class="ico-14">&nbsp;{$form.header.title}</td>
+				<td class="FormHeader" colspan="2">{$form.header.title}</td>
 			<tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.host_id.label}</td>
