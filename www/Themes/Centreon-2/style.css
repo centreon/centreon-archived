@@ -1627,11 +1627,8 @@ span.state_badge {
 
 .popin-wrapper a.close {
     position: absolute;
-    top: -2em;
-    right: -2em;
-    z-index: 1020;
-    background-color: #fff;
-    border-radius: 30px;
+    top: -0.3em;
+    right: -0.3em;
 }
 
 .centreon-popin-overlay {
