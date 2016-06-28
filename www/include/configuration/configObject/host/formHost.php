@@ -918,6 +918,7 @@ $form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("i
 $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array("id" => "ehi_statusmap_image", "onChange" => "showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText2);
 
 if (!$centreon->user->admin && $o == "a") {
     $attrAclgroups = array(

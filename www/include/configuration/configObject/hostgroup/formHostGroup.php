@@ -220,6 +220,7 @@ $form->addElement('select', 	'hg_map_icon_image', _("Map Icon"), $extImg, array(
  * Further informations
  */
 $form->addElement('text', 'hg_rrd_retention', _('RRD retention'), array('size' => 5));
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 

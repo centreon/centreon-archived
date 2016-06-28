@@ -33,8 +33,9 @@
  *
  */
 
-if (!isset($centreon))
+if (!isset($centreon)) {
 	exit();
+}
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
@@ -290,6 +291,8 @@ $msActivation[] = HTML_QuickForm::createElement('radio', 'meta_activate', null, 
 $form->addGroup($msActivation, 'meta_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('meta_activate' => '1'));
 $form->addElement('textarea', 'meta_comment', _("Comments"), $attrsTextarea);
+
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 $form->addElement('hidden', 'meta_id');
 $redirect = $form->addElement('hidden', 'o');

@@ -171,11 +171,12 @@ function insertServiceGroup($ret = array())
 
     $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
 
-    $rq = "INSERT INTO servicegroup (sg_name, sg_alias, sg_comment, sg_activate) ";
+    $rq = "INSERT INTO servicegroup (sg_name, sg_alias, sg_comment, geo_coords, sg_activate) ";
     $rq .= "VALUES (";
     isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "'".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
@@ -209,6 +210,7 @@ function updateServiceGroup($sg_id, $ret = array())
     isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_name = NULL,";
     isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq.= "sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_alias = NULL";
     isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_comment = NULL,";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "geo_coords = '".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "geo_coords = NULL,";
     isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
     $rq .= "WHERE sg_id = '".$sg_id."'";
     $DBRESULT = $pearDB->query($rq);

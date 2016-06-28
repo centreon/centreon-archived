@@ -878,6 +878,7 @@ $form->addElement('text', 'esi_notes_url', _("URL"), $attrsTextURL);
 $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
 $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id" => "esi_icon_image", "onChange" => "showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 /*
  * Criticality
