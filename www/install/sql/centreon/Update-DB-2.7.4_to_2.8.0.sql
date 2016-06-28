@@ -180,3 +180,10 @@ DELETE FROM topology_JS WHERE Init = 'initChangeTab';
 
 -- Insert Macro for PP
 INSERT INTO `cfg_resource` (`resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES ('$CENTREONPLUGINS$', '@CENTREONPLUGINs@', 'Centreon Plugin Path', '1');
+
+-- Insert geo_coords
+ALTER TABLE host ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `host_comment`;
+ALTER TABLE hostgroup ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `hg_rrd_retention`;
+ALTER TABLE meta_service ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `meta_comment`;
+ALTER TABLE service ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `service_comment`;
+ALTER TABLE servicegroup ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `sg_comment`;
