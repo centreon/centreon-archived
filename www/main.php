@@ -94,7 +94,9 @@ require_once _CENTREON_PATH_ . "www/autoloader.php";
 global $is_admin;
 $is_admin = $centreon->user->admin;
 
-$DBRESULT = $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
+$query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page " .
+            " FROM topology WHERE topology_page = '".$p."'";
+$DBRESULT = $pearDB->query($query);
 $redirect = $DBRESULT->fetchRow();
 
 /*
@@ -200,13 +202,21 @@ if (!$min) {
 }
 
 if (!$centreon->user->showDiv("header")) {
-?> <script type="text/javascript">new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { setQuickSearchPosition(); } });</script> <?php
+?><script type="text/javascript">
+    new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { 
+        setQuickSearchPosition(); } 
+    });
+</script> <?php
 }
 if (!$centreon->user->showDiv("menu_3")) {
-?> <script type="text/javascript">new Effect.toggle('menu_3', 'appear', { duration : 0 });</script> <?php
+?><script type="text/javascript">
+    new Effect.toggle('menu_3', 'appear', { duration : 0 });
+</script> <?php
 }
 if (!$centreon->user->showDiv("menu_2")) {
-?> <script type="text/javascript">new Effect.toggle('menu_2', 'appear', { duration : 0 });</script> <?php
+?><script type="text/javascript">
+    new Effect.toggle('menu_2', 'appear', { duration : 0 });
+</script> <?php
 }
 
 /*
