@@ -603,11 +603,16 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
+                        
                         jQuery(elem).find("input[name^='macroValue']").on("input",function(){
                             jQuery(elem).find('input[name^=macroFrom]').val("direct");
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
+
+                        if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+                        	jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                    	} 
 
                     });
                     
