@@ -36,27 +36,42 @@
 /**
  * Class for REST API exception
  */
-class RestException extends Exception {}
+class RestException extends Exception 
+{
 
+}
 
-class RestBadRequestException extends RestException {
+class RestBadRequestException extends RestException
+{
     protected $code = 400;
 }
-class RestUnauthorizedException extends RestException {
+
+class RestUnauthorizedException extends RestException
+{
     protected $code = 401;
 }
-class RestForbiddenException extends RestException {
+
+class RestForbiddenException extends RestException
+{
     protected $code = 403;
 }
-class RestNotFoundException extends RestException {
+
+class RestNotFoundException extends RestException
+{
     protected $code = 404;
 }
-class RestMethodNotAllowedException extends RestException {
+
+class RestMethodNotAllowedException extends RestException
+{
     protected $code = 405;
 }
-class RestConflictException extends RestException {
+
+class RestConflictException extends RestException
+{
     protected $code = 409;
 }
-class RestInternalServerErrorException extends RestException {
+
+class RestInternalServerErrorException extends RestException
+{
     protected $code = 500;
 }
