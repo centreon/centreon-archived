@@ -106,6 +106,7 @@ $sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportB
 $msg = NULL;
 $stdout = NULL;
 
+$tpl->assign("noPollerSelectedLabel", _("Compulsory Poller"));
 $tpl->assign("consoleLabel", _("Console"));
 $tpl->assign("progressLabel", _("Progress"));
 $tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
@@ -210,13 +211,37 @@ $tpl->display("formGenerateFiles.ihtml");
     }
 
     /**
+      * Display error if no poller is selected
+      *
+      * @returns boolean
+      */
+    function checkSelectedPoller() {
+        var countSelectedPoller = jQuery('#nhost').next('span').find('.select2-selection__choice').length;
+        if (countSelectedPoller > 0) {
+            jQuery('#noSelectedPoller').hide();
+            jQuery('#noSelectedPoller').next('br').remove();
+            return true;
+        } else {
+            jQuery('#noSelectedPoller').show();
+            if (!jQuery('#noSelectedPoller').next('br').length) {
+                jQuery('#noSelectedPoller').after('<br>');
+            }
+            return false;
+        }
+    }
+ 
+    /**
      * Generation process
      *
      * @return void
      */
     function generationProcess()
     {
-	curProgress = 0;
+        if (!checkSelectedPoller()) {
+            return null;
+        }
+
+	    curProgress = 0;
         stepProgress = 0;
         updateProgress();
         cleanErrorPhp();
