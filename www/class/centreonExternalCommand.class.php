@@ -339,10 +339,10 @@ class CentreonExternalCommand {
             $persistant = '0';
         }
 
-        if($host_or_centreon_time == "0"){
-            $start_time = $this->GMT->getUTCDateFromString($start);
-            $end_time = $this->GMT->getUTCDateFromString($end);
-        }else{
+        if ($host_or_centreon_time == "0") {
+            $start_time = $this->GMT->getUTCDateFromString($start, , $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
+            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
+        } else {
             $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
             $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
         }    
@@ -388,10 +388,10 @@ class CentreonExternalCommand {
             $persistant = '0';
         }
 
-        if($host_or_centreon_time == "0"){
-            $start_time = $this->GMT->getUTCDateFromString($start);
-            $end_time = $this->GMT->getUTCDateFromString($end);
-        }else{
+        if ($host_or_centreon_time == "0") {
+            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
+            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
+        } else {
             $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
             $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
         }   
