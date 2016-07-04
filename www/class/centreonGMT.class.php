@@ -245,7 +245,7 @@ class CentreonGMT {
      * @param type $gmt
      * @return string
      */
-    function getUTCDateFromString($date, $gmt = NULL)
+    function getUTCDateFromString($date, $gmt = NULL, $reverseOffset = 1)
     {
         $return = "";
         if (!isset($gmt)) {
@@ -261,7 +261,9 @@ class CentreonGMT {
             
             $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($gmt)));
             
-            $return = $sDate->getTimestamp();
+            $iTimestamp = $sDate->getTimestamp();
+            $sOffset = $sDate->getOffset();
+            $return = $iTimestamp + ($sOffset * $reverseOffset);
         }
         
         return $return;
