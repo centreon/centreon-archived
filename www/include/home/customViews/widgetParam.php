@@ -54,12 +54,23 @@ $viewObj = new CentreonCustomView($centreon, $db);
 $widgetObj = new CentreonWidget($centreon, $db);
 $title = "";
 $defaultTab = array();
-if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] &&
-    isset($_REQUEST['widget_id']) && $_REQUEST['widget_id']) {
+if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] && isset($_REQUEST['widget_id']) && $_REQUEST['widget_id']) {
     $viewId = $_REQUEST['view_id'];
     $widgetId = $_REQUEST['widget_id'];
     $action = "setPreferences";
-    $title = sprintf(_("Widget Preferences for %s"), $widgetObj->getWidgetTitle($widgetId));
+
+    $widgetTitle = $widgetObj->getWidgetTitle($widgetId);
+    if ($widgetTitle != '') {
+        $title = sprintf(_("Widget Preferences for %s"), $widgetTitle);
+    } else {
+        $title = _("Widget Preferences");
+    }
+
+    $info = $widgetObj->getWidgetInfo($widgetObj->getWidgetType($widgetId));
+
+    $title .= " [".$info['description']."]";
+    
+
     $defaultTab['custom_view_id'] = $viewId;
     $defaultTab['widget_id'] = $widgetId;
     $defaultTab['action'] = $action;

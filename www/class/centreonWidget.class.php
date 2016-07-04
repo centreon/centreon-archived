@@ -97,25 +97,33 @@ class CentreonWidget
         return $tab;
     }
 
+    
     /**
      * Get Widget Title
      *
      * @param int $widgetId
      * @return string
      */
+    public function getWidgetType($widgetId)
+    {
+        $res = $this->db->query("SELECT widget_model_id, widget_id FROM widgets WHERE widget_id = $widgetId");
+        while ($row = $res->fetchRow()) {
+            return $row['widget_model_id'];
+        }
+        return null;
+    }
+
+    /**
+     * Get Widget Type
+     *
+     * @param int $widgetId
+     * @return string
+     */
     public function getWidgetTitle($widgetId)
     {
-        static $tab;
-
-        if (!isset($tab)) {
-            $tab = array();
-            $res = $this->db->query("SELECT title, widget_id FROM widgets");
-            while ($row = $res->fetchRow()) {
-                $tab[$row['widget_id']] = $row['title'];
-            }
-        }
-        if (isset($tab[$widgetId])) {
-            return $tab[$widgetId];
+        $res = $this->db->query("SELECT title, widget_id FROM widgets WHERE widget_id = $widgetId");
+        while ($row = $res->fetchRow()) {
+            return $row['title'];
         }
         return null;
     }
