@@ -12,3 +12,4 @@ Vous trouverez ici la liste des notes de versions pour les versions 2.7.x
     centreon-2.7.2
     centreon-2.7.3
     centreon-2.7.4
+    centreon-2.7.5
