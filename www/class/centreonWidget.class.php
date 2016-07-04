@@ -129,6 +129,21 @@ class CentreonWidget
     }
 
     /**
+     * Get Widget Model Name
+     *
+     * @param int id
+     * @return mixed
+     */
+    public function getWidgetDirectory($id)
+    {
+        $query = "SELECT directory FROM widget_models WHERE widget_model_id = $id";
+        $res = $this->db->query($query);
+        while ($row = $res->fetchRow()) {
+            return $row["directory"];
+        }
+    }
+
+    /**
      * Get Parameter Id By Name
      *
      * @param int $widgetModelId
@@ -161,7 +176,7 @@ class CentreonWidget
      * @param mixed $param
      * @return mixed
      */
-    protected function getWidgetInfo($type = "id", $param)
+    public function getWidgetInfo($type = "id", $param)
     {
         static $tabDir;
         static $tabId;
@@ -179,6 +194,8 @@ class CentreonWidget
                 }
             }
         }
+
+        //print_r($tabDir);
         if ($type == "directory" && isset($tabDir[$param])) {
             return $tabDir[$param];
         }
