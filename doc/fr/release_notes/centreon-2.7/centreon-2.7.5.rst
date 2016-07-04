@@ -19,4 +19,13 @@ CHANGELOG
 Features and Bug Fixes
 ======================
 
-
+- Fix: Flapping configuration was not exported to Centreon Engine configuration files
+- Fix: Option "test the plugin" didn't working with special characters
+- Fix: It was possible to select Meta Service or BA in performance page filters
+- Fix: With non admin users, it was impossible to select services in Performances page
+- Fix: Non admin users could not seen services in Reporting page
+- Fix: Number of hosts in Hostgroups was not good for non admin users
+- Fix: Max and Min was not correct for inverted curves
+- Enh: Add an error message when no pollers are selected in configuration genration page
+- Fix: It was impossible to create Virtual metrics with web UI in french language
+- Fix: Exclude Desactivate poller in configuration generation page filter
