@@ -16,6 +16,7 @@
 		<tr class="list_one">
           <td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{$form.nhost.label}</td>
           <td class="FormRowValue">
+	        <i id="noSelectedPoller" style="color:red;margin-left:20px;" hidden>{$noPollerSelectedLabel}</i>
             {$form.nhost.html}
           </td>
         </tr>
