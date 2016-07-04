@@ -2056,10 +2056,10 @@ class CentreonACL {
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
                 . "AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") "
-                . ") as t ";
+                . ") as t)";
         }
 
-        $query .= $request['order'] . $request['pages'] . ")";
+        $query .= $request['order'] . $request['pages'];
 
         $services = $this->constructResult($query, $options);
 
