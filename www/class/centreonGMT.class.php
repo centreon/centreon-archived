@@ -262,12 +262,13 @@ class CentreonGMT {
                 $sDate = new DateTime();
                 $sDate->setTimestamp($date);
             }
-            
-            $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($gmt)));
 
+            $localDate = new DateTime();            
+            $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($gmt)));
             $iTimestamp = $sDate->getTimestamp();
             $sOffset = $sDate->getOffset();
-            $return = $iTimestamp + ($sOffset * $reverseOffset);
+            $sLocalOffset = $localDate->getOffset();
+            $return = $iTimestamp + (($sOffset - $sLocalOffset)* $reverseOffset);
         }
         
         return $return;
