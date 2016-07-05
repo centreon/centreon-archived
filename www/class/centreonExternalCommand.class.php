@@ -340,7 +340,7 @@ class CentreonExternalCommand {
         }
 
         if ($host_or_centreon_time == "0") {
-            $start_time = $this->GMT->getUTCDateFromString($start, , $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
+            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
             $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
         } else {
             $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
