@@ -157,6 +157,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		$form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
                     
 		$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
+        $form->addElement('text','timezone_warning', _("*The timezone used is configured on your user settings"));
         $defaultDuration = 3600;
         
         if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
