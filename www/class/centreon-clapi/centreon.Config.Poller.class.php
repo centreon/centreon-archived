@@ -304,7 +304,7 @@ class CentreonConfigPoller {
         if (isset($host['localhost']) && $host['localhost'] == 1) {
             $msg_restart = exec(escapeshellcmd("sudo " . $nagios_init_script . " restart"), $lines, $return_code);
         } else {
-            exec("echo 'RESTART:".$variables."' >> ". $this->centcore_pipe, $stdout, $return_code);
+            exec("echo 'RESTART:".$poller_id."' >> ". $this->centcore_pipe, $stdout, $return_code);
             $msg_restart = _("OK: A restart signal has been sent to '".$host["name"]."'");
         }
         print $msg_restart."\n";
@@ -411,6 +411,8 @@ class CentreonConfigPoller {
         $apacheUser = $this->getApacheUser();
         $centreonGroup = $this->getCentreonGroup();
 
+        $oldMask = umask(0113);
+
         $setFilesOwner = 1;
         if ($apacheUser != "" && $centreonGroup != "") {
     	    
@@ -445,6 +447,8 @@ class CentreonConfigPoller {
             print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/\n";
             print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/$poller_id/\n";
         }
+
+        umask($oldMask);
 
         print "Configuration files generated for poller '".$variables."'\n";
         return 0;
