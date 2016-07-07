@@ -411,8 +411,6 @@ class CentreonConfigPoller {
         $apacheUser = $this->getApacheUser();
         $centreonGroup = $this->getCentreonGroup();
 
-        $oldMask = umask(0113);
-
         $setFilesOwner = 1;
         if ($apacheUser != "" && $centreonGroup != "") {
     	    
@@ -447,8 +445,6 @@ class CentreonConfigPoller {
             print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/\n";
             print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/$poller_id/\n";
         }
-
-        umask($oldMask);
 
         print "Configuration files generated for poller '".$variables."'\n";
         return 0;
