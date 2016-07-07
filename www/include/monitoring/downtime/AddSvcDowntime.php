@@ -123,6 +123,7 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
     $form->addElement('text', 'start_time', '', array('size' => 5, 'class' => 'timepicker'));
 	$form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
 	$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
+        $form->addElement('text','timezone_warning', _("*The timezone used is configured on your user settings"));
 
     // uncomment this section : the user can choose to set a downtime based on the host time or the centreon user time.
     /*
