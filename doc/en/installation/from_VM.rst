@@ -19,7 +19,8 @@ Connection
 ----------
 
 The server has default password.
-To connect to the web UI use : admin/centreon. You can also connect to the server using SSH with the account : root/centreon
+
+To connect to the web UI use : **admin/centreon**. You can also connect to the server using SSH with the account : **root/centreon**
 
 .. note::
 

@@ -19,7 +19,8 @@ Connexion
 ---------
 
 La machine est configurée avec des comptes par défaut.
-Vous pourrez donc vous connecter à l'interface web avec le compte : admin/centreon. Vous pourez aussi vous connecter en SSH avec le compte root/centreon
+
+Vous pourrez donc vous connecter à l'interface web avec le compte : **admin/centreon**. Vous pourez aussi vous connecter en SSH avec le compte **root/centreon**
 
 .. note::
 
