@@ -15,6 +15,16 @@ The first step is to import the OVF FIle. To do that go in **File > Deploy OVF T
 You can then follow diffrents menus. Choices you made are linked to your VMWare configuration so it's difficult to be more specific.
 Just be noticed that best practice are to used **Thin Provision** to keep some spaces in disk.
 
+Connection
+----------
+
+The server has default password.
+To connect to the web UI use : admin/centreon. You can also connect to the server using SSH with the account : root/centreon
+
+.. note::
+
+    For security reasons, we highly recommand you to change this passwords after installation.
+
 Poller
 ------
 

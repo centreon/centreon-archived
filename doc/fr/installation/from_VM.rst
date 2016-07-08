@@ -15,6 +15,17 @@ Il est dans un premier temps nécessaire d'importer le ficher OVF. Pour cela, su
 Il est alors nécessaire de suivre les différents menus. Les différents choix sont trés liés à l'infrastructure VMWare en place, il est difficile d'être rééllement spécifique dans cette documentation.
 Il est important de noter que les bonnes pratiques sont de choisir le mode **Thin Provision** qui vous permettra d'économiser de l'espace disque sur vos datastores.
 
+Connexion
+---------
+
+La machine est configurée avec des comptes par défaut.
+Vous pourrez donc vous connecter à l'interface web avec le compte : admin/centreon. Vous pourez aussi vous connecter en SSH avec le compte root/centreon
+
+.. note::
+
+    Pour des raisons de sécurité, il est recommandé de chnager ces deux mots de passe aprés l'installation
+
+
 Collecteur
 ----------
 
