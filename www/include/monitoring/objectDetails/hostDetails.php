@@ -97,15 +97,19 @@ if (isset($_GET["host_name"]) && $_GET["host_name"]) {
 /*
  * ACL
  */
+$haveAccess = 0;
 if (!$is_admin) {
-    $lcaHost["LcaHost"] = $centreon->user->access->getHostsServicesName($pearDBO);
+    $DBRESULT = $pearDBO->query("SELECT host_id FROM centreon_acl WHERE host_id = '".getMyHostId($host_name)."' AND group_id IN (".$centreon->user->access->getAccessGroupsString().")");
+    if ($DBRESULT->numRows()) {
+        $haveAccess = 1;
+    }
 }
 
-$tab_status = array();
-
-if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
-    include_once("../errors/alt_error.php");
+if (!$is_admin && !$haveAccess) {
+    include_once("alt_error.php");
 } else {
+
+    $tab_status = array();
 
     $path = "./include/monitoring/objectDetails/";
 
@@ -181,51 +185,49 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $class = 'list_one';
         $graphs = array();
         while ($row = $DBRESULT->fetchRow()) {
-            if (isset($lcaHost["LcaHost"][$host_name][$row['service_description']]) || $is_admin) {
-                $row["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $row["last_check"]);
-                $row["current_state"] = $tab_status_service[$row['current_state']];
-                $row["status_class"] = $tab_color_service[$row['current_state']];
-                $row['line_class'] = $class;
-                
-                /* Split the plugin_output */
-                $outputLines = explode("\n", $row['plugin_output']);
-                $row['short_output'] = $outputLines[0]; 
-                $row["hnl"] = CentreonUtils::escapeSecure(urlencode($row["host_name"]));
-                $row["sdl"] = CentreonUtils::escapeSecure(urlencode($row["service_description"]));
-                $row["svc_id"] = $row["service_id"];
-                
-                /**
-                 * Get Service Graph index
-                 */
-                if (!isset($graphs[$row["host_id"]]) || !isset($graphs[$row["host_id"]][$row["service_id"]])) {
-                   $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $row["host_id"] . "' AND service_id = '" . $row["service_id"] . "' AND index_data.hidden = '0'";
-                   $DBRESULT2 = $pearDBO->query($request2);
-                   while ($dataG = $DBRESULT2->fetchRow()) {
-                       if (!isset($graphs[$row["host_id"]])) {
-                           $graphs[$row["host_id"]] = array();
-                       }
-                       $graphs[$row["host_id"]][$dataG["service_id"]] = $dataG["id"];
-                   }
+            $row["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $row["last_check"]);
+            $row["current_state"] = $tab_status_service[$row['current_state']];
+            $row["status_class"] = $tab_color_service[$row['current_state']];
+            $row['line_class'] = $class;
+            
+            /* Split the plugin_output */
+            $outputLines = explode("\n", $row['plugin_output']);
+            $row['short_output'] = $outputLines[0]; 
+            $row["hnl"] = CentreonUtils::escapeSecure(urlencode($row["host_name"]));
+            $row["sdl"] = CentreonUtils::escapeSecure(urlencode($row["service_description"]));
+            $row["svc_id"] = $row["service_id"];
+            
+            /**
+             * Get Service Graph index
+             */
+            if (!isset($graphs[$row["host_id"]]) || !isset($graphs[$row["host_id"]][$row["service_id"]])) {
+               $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $row["host_id"] . "' AND service_id = '" . $row["service_id"] . "' AND index_data.hidden = '0'";
+               $DBRESULT2 = $pearDBO->query($request2);
+               while ($dataG = $DBRESULT2->fetchRow()) {
                    if (!isset($graphs[$row["host_id"]])) {
                        $graphs[$row["host_id"]] = array();
                    }
-                }
-                $row["svc_index"] = (isset($graphs[$row["host_id"]][$row["service_id"]]) ? $graphs[$row["host_id"]][$row["service_id"]] : 0);
-                $row["ppd"] = $row["process_perfdata"];
-               
-                $duration = "";
-                if ($row["last_state_change"] > 0 && time() > $row["last_state_change"]) {
-                   $duration = CentreonDuration::toString(time() - $row["last_state_change"]);
-                } else if ($row["last_state_change"] > 0) {
-                   $duration = " - ";
-                }
-                $row["duration"] = $duration;
-               
-                ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
-
-                // Set Data 
-                $services[] = $row;
+                   $graphs[$row["host_id"]][$dataG["service_id"]] = $dataG["id"];
+               }
+               if (!isset($graphs[$row["host_id"]])) {
+                   $graphs[$row["host_id"]] = array();
+               }
             }
+            $row["svc_index"] = (isset($graphs[$row["host_id"]][$row["service_id"]]) ? $graphs[$row["host_id"]][$row["service_id"]] : 0);
+            $row["ppd"] = $row["process_perfdata"];
+           
+            $duration = "";
+            if ($row["last_state_change"] > 0 && time() > $row["last_state_change"]) {
+               $duration = CentreonDuration::toString(time() - $row["last_state_change"]);
+            } else if ($row["last_state_change"] > 0) {
+               $duration = " - ";
+            }
+            $row["duration"] = $duration;
+           
+            ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
+
+            // Set Data 
+            $services[] = $row;
         }
         $DBRESULT->free();
         
