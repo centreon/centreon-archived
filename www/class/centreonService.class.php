@@ -1426,16 +1426,6 @@ class CentreonService
                 throw new \Exception('Error while updating extendeded infos of service ' . $service_id);
             }
         }
-
-        $rq .= "(service_service_id, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt, graph_id) ";
-        $rq .= "VALUES ";
-        $rq .= "('".$aDatas['service_service_id']."', ";
-        isset($aDatas["esi_notes"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes"])."'," : $rq .="NULL, ";
-        isset($aDatas["esi_notes_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes_url"])."'," : $rq .= "NULL, ";
-        isset($aDatas["esi_action_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_action_url"])."'," : $rq .= "NULL, ";
-        isset($aDatas["esi_icon_image"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image"])."'," : $rq .= "NULL, ";
-        isset($aDatas["esi_icon_image_alt"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image_alt"])."'," : $rq .= "NULL, ";
-        isset($aDatas["graph_id"]) ? $rq .= CentreonDB::escape($aDatas["graph_id"]) : $rq .= "NULL ";
     }
     
     /**
