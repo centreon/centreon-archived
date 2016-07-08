@@ -94,18 +94,23 @@ if (isset($_GET["host_name"]) && $_GET["host_name"]) {
     }
 }
 
+$tab_status = array();
 /*
  * ACL
  */
+$haveAccess = 0;
 if (!$is_admin) {
-    $lcaHost["LcaHost"] = $centreon->user->access->getHostsServicesName($pearDBO);
+    $DBRESULT = $pearDBO->query("SELECT host_id FROM centreon_acl WHERE host_id = '".getMyHostId($host_name)."' AND group_id IN (".$centreon->user->access->getAccessGroupsString().")");
+    if ($DBRESULT->numRows()) {
+        $haveAccess = 1;
+    }
 }
 
-$tab_status = array();
-
-if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
+if (!$is_admin && !$haveAccess) {
     include_once("alt_error.php");
 } else {
+    
+    $tab_status = array();
 
     $path = "./include/monitoring/objectDetails/";
 
@@ -180,49 +185,47 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $class = 'list_one';
         $graphs = array();
         while ($ndo = $DBRESULT->fetchRow()) {
-            if (isset($lcaHost["LcaHost"][$host_name][$ndo['service_description']]) || $is_admin) {
-                $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
-                $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
-                $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
-                $ndo['line_class'] = $class;
-                /* Split the plugin_output */
-                $outputLines = explode("\n", $ndo['plugin_output']);
-                $ndo['short_output'] = $outputLines[0]; 
-                $ndo["hnl"] = CentreonUtils::escapeSecure(urlencode($ndo["host_name"]));
-                $ndo["sdl"] = CentreonUtils::escapeSecure(urlencode($ndo["service_description"]));
-                $ndo["svc_id"] = $ndo["service_id"];
-                /**
-                * Get Service Graph index
-                */
-               if (!isset($graphs[$ndo["host_id"]]) || !isset($graphs[$ndo["host_id"]][$ndo["service_id"]])) {
-                   $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $ndo["host_id"] . "' AND service_id = '" . $ndo["service_id"] . "' AND index_data.hidden = '0'";
-                   $DBRESULT2 = $pearDBO->query($request2);
-                   while ($dataG = $DBRESULT2->fetchRow()) {
-                       if (!isset($graphs[$ndo["host_id"]])) {
-                           $graphs[$ndo["host_id"]] = array();
-                       }
-                       $graphs[$ndo["host_id"]][$dataG["service_id"]] = $dataG["id"];
-                   }
-                   if (!isset($graphs[$ndo["host_id"]])) {
-                       $graphs[$ndo["host_id"]] = array();
-                   }
-               }
-               $ndo["svc_index"] = (isset($graphs[$ndo["host_id"]][$ndo["service_id"]]) ? $graphs[$ndo["host_id"]][$ndo["service_id"]] : 0);
-               $ndo["ppd"] = $ndo["process_perfdata"];
-               
-               $duration = "";
-               if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
-                   $duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-               } else if ($ndo["last_state_change"] > 0) {
-                   $duration = " - ";
-               }
-               $ndo["duration"] = $duration;
-               
-               ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
-
-               // Set Data 
-               $services[] = $ndo;
+            $ndo["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $ndo["last_check"]);
+            $ndo["current_state"] = $tab_status_service[$ndo['current_state']];
+            $ndo["status_class"] = $tab_color_service[$ndo['current_state']];
+            $ndo['line_class'] = $class;
+            /* Split the plugin_output */
+            $outputLines = explode("\n", $ndo['plugin_output']);
+            $ndo['short_output'] = $outputLines[0]; 
+            $ndo["hnl"] = CentreonUtils::escapeSecure(urlencode($ndo["host_name"]));
+            $ndo["sdl"] = CentreonUtils::escapeSecure(urlencode($ndo["service_description"]));
+            $ndo["svc_id"] = $ndo["service_id"];
+            /**
+             * Get Service Graph index
+             */
+            if (!isset($graphs[$ndo["host_id"]]) || !isset($graphs[$ndo["host_id"]][$ndo["service_id"]])) {
+                $request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '" . $ndo["host_id"] . "' AND service_id = '" . $ndo["service_id"] . "' AND index_data.hidden = '0'";
+                $DBRESULT2 = $pearDBO->query($request2);
+                while ($dataG = $DBRESULT2->fetchRow()) {
+                    if (!isset($graphs[$ndo["host_id"]])) {
+                        $graphs[$ndo["host_id"]] = array();
+                    }
+                    $graphs[$ndo["host_id"]][$dataG["service_id"]] = $dataG["id"];
+                }
+                if (!isset($graphs[$ndo["host_id"]])) {
+                    $graphs[$ndo["host_id"]] = array();
+                }
             }
+            $ndo["svc_index"] = (isset($graphs[$ndo["host_id"]][$ndo["service_id"]]) ? $graphs[$ndo["host_id"]][$ndo["service_id"]] : 0);
+            $ndo["ppd"] = $ndo["process_perfdata"];
+           
+            $duration = "";
+            if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
+                $duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
+            } else if ($ndo["last_state_change"] > 0) {
+                $duration = " - ";
+            }
+            $ndo["duration"] = $duration;
+           
+            ($class == 'list_one') ? $class = 'list_two' : $class = 'list_one';
+
+            // Set Data 
+            $services[] = $ndo;
         }
         $DBRESULT->free();
         
