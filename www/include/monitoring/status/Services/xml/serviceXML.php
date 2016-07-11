@@ -68,7 +68,7 @@ $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
 } else {
-    exit;
+    exit();
 }
 
 /*
@@ -147,8 +147,6 @@ if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
     $_SESSION['monitoring_service_status'] = $statusService;
     $_SESSION['monitoring_service_status_filter'] = $statusFilter;
 }
-
-
 
 /** * *************************************************
  * Backup poller selection
