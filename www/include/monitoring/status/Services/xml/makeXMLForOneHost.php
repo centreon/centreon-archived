@@ -88,7 +88,7 @@ $dateFormat		= $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:
 $rq1 =  " SELECT state," .
 		" address," .
 		" name," .
-                    " alias," .
+        " alias," .
 		" perfdata," .
 		" check_attempt," .
 		" state_type," .
