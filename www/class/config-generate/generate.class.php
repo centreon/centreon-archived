@@ -230,9 +230,7 @@ class Generate {
 
     public function getModuleObjects() {
         $this->getInstalledModules();
-
         
-
         foreach ($this->installed_modules as $module) {
             if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files/*.class.php')) {
                 foreach ($files as $full_file) {
@@ -257,7 +255,7 @@ class Generate {
         }
     }
 
-    public function resetModuleObjects() {
+    public function resetModuleObjects(){
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
