@@ -531,7 +531,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (65, 'storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
 (66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
 (67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
-(68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL)
+(68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
