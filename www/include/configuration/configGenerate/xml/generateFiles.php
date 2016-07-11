@@ -31,13 +31,17 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL:$
- * SVN : $Id:$
- *
  */
 
 ini_set("display_errors", "Off");
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+
+/* Check Session */
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+    print "Bad Session";
+    exit();
+}
 
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit;
