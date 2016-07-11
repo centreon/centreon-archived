@@ -75,14 +75,23 @@ VALUES
     ('name', 'Name', 'Name of the column (macros accepted)', 'text', (SELECT cb_fieldgroup_id FROM cb_fieldgroup WHERE groupname = 'status_column')),
     ('value', 'Value', 'Value of the column (macros accepted)', 'text', (SELECT cb_fieldgroup_id FROM cb_fieldgroup WHERE groupname = 'status_column')),
     ('type', 'Type', 'Type of the column', 'select', (SELECT cb_fieldgroup_id FROM cb_fieldgroup WHERE groupname = 'status_column')),
-    ('is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', (SELECT cb_fieldgroup_id FROM cb_fieldgroup WHERE groupname = 'status_column'));
+    ('is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', (SELECT cb_fieldgroup_id FROM cb_fieldgroup WHERE groupname = 'status_column')),
+    ('cache', 'Cache', 'Enable caching', 'radio', NULL),
+    ('storage_db_host', 'Storage DB host', 'IP address or hostname of the database server.', 'text', NULL),
+    ('storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
+    ('storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
+    ('storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
+    ('storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
+    ('storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL);
 
 INSERT INTO cb_list (cb_list_id, cb_field_id, default_value)
 VALUES
     ((SELECT MAX(cbl1.cb_list_id) + 1 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'type' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'metrics_column' LIMIT 1), 'string'),
     ((SELECT MAX(cbl1.cb_list_id) + 2 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'metrics_column' LIMIT 1), 'false'),
     ((SELECT MAX(cbl1.cb_list_id) + 3 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'type' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'string'),
-    ((SELECT MAX(cbl1.cb_list_id) + 4 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'false');
+    ((SELECT MAX(cbl1.cb_list_id) + 4 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'false'),
+    (1, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'cache' LIMIT 1), 'yes');
+    (3, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'storage_db_type' LIMIT 1), NULL);
 
 INSERT INTO cb_list_values (cb_list_id, value_name, value_value)
 VALUES

@@ -525,7 +525,14 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
 (50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL),
 (51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
-(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL);
+(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL),
+(63, 'cache', "Cache", "Enable caching", 'radio', NULL),
+(64, 'storage_db_host', 'Storage DB host', 'IP address or hostname of the database server.', 'text', NULL),
+(65, 'storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
+(66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
+(67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
+(68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL)
+(69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -558,6 +565,7 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (5, 25, 'no'),
 (2, 12, NULL),
 (3, 15, NULL),
+(3, 69, NULL),
 (4, 24, NULL),
 (1, 39, 'no'),
 (1, 42, 'yes'),
@@ -569,7 +577,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (7, 57, 'string'),
 (8, 58, 'false'),
 (9, 61, 'string'),
-(10, 62, 'false');
+(10, 62, 'false'),
+(1, 63, 'yes');
 
 --
 -- Contenu de la table `cb_list_values`
