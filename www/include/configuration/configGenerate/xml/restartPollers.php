@@ -103,10 +103,6 @@ try {
     require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
     require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 
-    session_start();
-    if ($_POST['sid'] != session_id()) {
-        exit;
-    }
     $centreon = $_SESSION['centreon'];
 
     /*  Set new error handler */

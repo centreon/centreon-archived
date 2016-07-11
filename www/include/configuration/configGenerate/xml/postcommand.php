@@ -35,6 +35,13 @@
 
 ini_set("display_errors", "Off");
 
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_.'/www/class/centreonXML.class.php';
+require_once _CENTREON_PATH_.'/www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
+
+
 /* Check Session */
 CentreonSession::start();
 if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
@@ -46,10 +53,6 @@ if (!isset($_POST['poller'])) {
     exit;
 }
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonXML.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonInstance.class.php';
 
 $pollers = explode(',', $_POST['poller']);
 $db = new CentreonDB();

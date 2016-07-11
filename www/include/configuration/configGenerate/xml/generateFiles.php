@@ -34,7 +34,17 @@
  */
 
 ini_set("display_errors", "Off");
+
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 
 /* Check Session */
 CentreonSession::start();
@@ -59,13 +69,6 @@ $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/nagiosCFG/";
 
 chdir(_CENTREON_PATH_ . "www");
-require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
-require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
-require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 
 session_start();
 if ($_POST['sid'] != session_id()) {
