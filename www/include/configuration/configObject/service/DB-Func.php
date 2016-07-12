@@ -1206,6 +1206,10 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     $rq .= "service_comment = ";
     isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
+    
+    $rq .= "geo_coords = ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
+
     $ret["command_command_id_arg"] = getCommandArgs($_POST, $ret);
     $rq .= "command_command_id_arg = ";
     isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
@@ -1289,6 +1293,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     $fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
     $fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
     $fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
+    $fields["geo_coords"] = CentreonDB::escape($ret["geo_coords"]);
     $fields["graph_id"] = $ret["graph_id"];
     $fields["service_cs"] = "";
     if (isset($ret["service_cs"]))
@@ -1470,6 +1475,10 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_register"]) && $ret["service_register"] != NULL) {
         $rq .= "service_register = '".$ret["service_register"]."', ";
         $fields["service_register"] = $ret["service_register"];
+    }
+    if (isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL) {
+        $rq .= "geo_coords = '".$ret["geo_coords"]."', ";
+        $fields["geo_coords"] = $ret["geo_coords"];
     }
     if (isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL) {
         $rq .= "service_activate = '".$ret["service_activate"]["service_activate"]."', ";
