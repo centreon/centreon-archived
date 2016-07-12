@@ -289,7 +289,7 @@ try {
          * Get all included Hosts
          */
         $hostIncCache = array();
-        $DBRESULT = $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_host_relations` WHERE acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
+        $DBRESULT = $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_host_relations` WHERE acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1'");
         while ($h = $DBRESULT->fetchRow()) {
             if (!isset($hostIncCache[$h["acl_res_id"]])) {
                 $hostIncCache[$h["acl_res_id"]] = array();
@@ -302,7 +302,7 @@ try {
          * Get all excluded Hosts
          */
         $hostExclCache = array();
-        $DBRESULT = $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_resources_hostex_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
+        $DBRESULT = $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_resources_hostex_relations.host_host_id = host.host_id AND host.host_register = '1'");
         while ($h = $DBRESULT->fetchRow()) {
             if (!isset($hostExclCache[$h["acl_res_id"]])) {
                 $hostExclCache[$h["acl_res_id"]] = array();
