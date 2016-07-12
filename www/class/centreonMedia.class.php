@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,17 +36,26 @@
 require_once("Archive/Tar.php");
 require_once("Archive/Zip.php");
 
-/*
+/**
  *  Class used for managing images
  */
-
-class CentreonMedia {
-
+class CentreonMedia
+{
+    /**
+     *
+     * @var type 
+     */
     protected $_db;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $_filenames;
 
-    /*
-     *  Constructor
+    /**
+     * Constructor
+     * @param type $db
      */
     function __construct($db)
     {
@@ -54,8 +63,10 @@ class CentreonMedia {
         $this->_filenames = array();
     }
 
-    /*
-     *  Get media directory path
+    /**
+     * Get media directory path
+     * @return string
+     * @throws \Exception
      */
     public function getMediaDirectory()
     {
@@ -78,8 +89,10 @@ class CentreonMedia {
         return $mediaDirectory;        
     }
 
-    /*
-     *  Returns ID of target directory
+    /**
+     * Returns ID of target directory
+     * @param string $dirname
+     * @return int
      */
     public function getDirectoryId($dirname)
     {
@@ -95,8 +108,10 @@ class CentreonMedia {
         return $dir_id;
     }
 
-    /*
-     *  Returns name of target directory
+    /**
+     * Returns name of target directory
+     * @param int $directoryId
+     * @return string
      */
     public function getDirectoryName($directoryId)
     {
@@ -113,8 +128,12 @@ class CentreonMedia {
         return $directoryName;
     }
 
-    /*
-     *  Add directory
+    /**
+     * Add directory
+     * @param string $dirname
+     * @param string $dirAlias
+     * @return int
+     * @throws \Exception
      */
     public function addDirectory($dirname, $dirAlias = null)
     {
@@ -137,14 +156,17 @@ class CentreonMedia {
         return $this->getDirectoryId($dirname);
     }
 
-    /*
-     *  Add directory
+    /**
+     * Add directory
+     * @param string $dirname
      */
     private function createDirectory($dirname)
     {
         $mediaDirectory = $this->getMediaDirectory();
 
         $fullPath = $mediaDirectory . '/' . $dirname;
+        
+        file_put_contents('/tmp/test.txt', $fullPath);
 
         // Create directory
         if (!is_dir($fullPath)) {
@@ -152,8 +174,11 @@ class CentreonMedia {
         }
     }
 
-    /*
-     *  Returns ID of target Image
+    /**
+     * Returns ID of target Image
+     * @param string $imagename
+     * @param string $dirname
+     * @return mixed
      */
     function getImageId($imagename, $dirname = null)
     {
@@ -263,8 +288,8 @@ class CentreonMedia {
 
     /**
      * 
-     * @param type $path
-     * @return type
+     * @param string $path
+     * @return string
      */
     private function sanitizePath($path)
     {
@@ -278,8 +303,8 @@ class CentreonMedia {
     /**
      * 
      * @param string $parameters
-     * @param type $binary
-     * @return type
+     * @param string $binary
+     * @return mixed
      * @throws \Exception
      */
     public function addImage($parameters, $binary = null)
@@ -364,9 +389,9 @@ class CentreonMedia {
 
     /**
      * 
-     * @param type $directoryPath
-     * @param type $imagePath
-     * @param type $binary
+     * @param string $directoryPath
+     * @param string $imagePath
+     * @param string $binary
      */
     private function createImage($directoryPath, $imagePath, $binary)
     {
