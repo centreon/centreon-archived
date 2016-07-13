@@ -37,9 +37,11 @@ ini_set("display_errors", "Off");
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
+$pearDB = new CentreonDB();
+
 /* Check Session */
 CentreonSession::start();
-if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
@@ -115,7 +117,6 @@ try {
     }
 
     $xml = new CentreonXML();
-    $pearDB = new CentreonDB();
 
     $stdout = "";
     if (!isset($msg_restart)) {
