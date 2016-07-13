@@ -20,6 +20,16 @@
 			&nbsp;&nbsp;&nbsp;{$from} {$date_start} {$to} {$date_end} - {$infosTitle}
 			</form>
 		</td>
+		<td style='padding:5px;vertical-align:top;'>
+			<form {$formPeriod.attributes} style="padding-bottom : 0px;">
+			<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
+					{$periodTitle} : {$formPeriod.period.html}{$formPeriod.hidden}{$periodORlabel}
+					<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
+							{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
+							{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
+					{$formPeriod.button.html}{$formPeriod.hidden}
+			</form>
+		</td>
 		<td>
 			<a href="{$link_csv_url}"><img src="./img/icons/csv.png" class="ico-20" alt="Export CSV" title="{t}Export CSV{/t}" target="_blank"/></a>
 		</td>
@@ -33,27 +43,10 @@
 						<tr class='ListHeader'></tr>
 						<tr>
 							<td class="ListColCenter">
-                                                            <div id="chart"></div>
+                                <div id="chart"></div>
 							</td>					
 						</tr>
 					</table>
-				</td>
-			</tr>
-			<tr>
-			<td style='padding:5px;vertical-align:top;'><form {$formPeriod.attributes}>
-					<table class="ajaxOption">
-						<tr>
-							<td>&nbsp;{$periodTitle} : </td>
-							<td>{$formPeriod.period.html}{$formPeriod.hidden}</td>
-							<td>&nbsp;{$periodORlabel}&nbsp;</td>
-							<td>
-								{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
-								{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
-							</td>
-							<td>{$formPeriod.button.html}{$formPeriod.hidden}</td>
-						</tr>
-					</table>
-					</form>
 				</td>
 			</tr>
 			<tr>
