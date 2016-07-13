@@ -39,9 +39,11 @@ require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.confi
 
 require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
 
+  $pearDB = new CentreonDB();
+
 /* Check Session */
 CentreonSession::start();
-if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
@@ -121,7 +123,6 @@ try {
     }
 
     $xml = new CentreonXML();
-    $pearDB = new CentreonDB();
 
     $stdout = "";
     if (!isset($msg_restart)) {

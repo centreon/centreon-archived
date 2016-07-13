@@ -43,15 +43,17 @@ require_once _CENTREON_PATH_.'/www/class/centreonXML.class.php';
 require_once _CENTREON_PATH_.'/www/class/centreonInstance.class.php';
 require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
 
+$db = new CentreonDB();
+
 /* Check Session */
 CentreonSession::start();
-if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+if (!CentreonSession::checkSession(session_id(), $db)) {
     print "Bad Session";
     exit();
 }
 
 $pollers = explode(',', $_POST['poller']);
-$db = new CentreonDB();
+
 $xml = new CentreonXML();
 
 $res = $db->query("SELECT `name`, `id`, `localhost` 
