@@ -95,12 +95,12 @@ $form->setDefaults(
                 "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
     )
 );
-
+/*
 $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
 $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
 $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
 $form->setDefaults(array('host_or_centreon_time' => '0'));   
-
+*/
 $form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
 $defaultDuration = 3600;
 if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {
