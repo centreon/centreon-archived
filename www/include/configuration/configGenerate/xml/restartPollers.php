@@ -36,6 +36,14 @@
 ini_set("display_errors", "Off");
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 
 $pearDB = new CentreonDB();
 
@@ -96,14 +104,6 @@ try {
     chdir(_CENTREON_PATH_ . "www");
     $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
     $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
-    require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 
     $centreon = $_SESSION['centreon'];
 
