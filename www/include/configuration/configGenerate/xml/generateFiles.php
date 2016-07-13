@@ -46,9 +46,11 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
 
+$pearDB = new CentreonDB();
+
 /* Check Session */
 CentreonSession::start();
-if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
@@ -77,7 +79,7 @@ if ($_POST['sid'] != session_id()) {
 $centreon = $_SESSION['centreon'];
 $centreon = $centreon;
 $xml = new CentreonXML();
-$pearDB = new CentreonDB();
+
 
 $config_generate = new Generate();
 
