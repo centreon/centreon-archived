@@ -48,7 +48,6 @@ sub new {
     );
 
     bless $self, $class;
-    $self->{broker} = "ndo";
     return $self;
 }
 
@@ -60,12 +59,6 @@ FROM config
 EOQ
     die "Failed to retrieve configuration from database" if $status == -1;
     $self->{config} = $sth->fetchrow_hashref();
-
-    ($status, $sth) = $self->{cdb}->query(<<"EOQ");
-SELECT `value` FROM `options` WHERE `key` = 'broker'
-EOQ
-    die "Failed to retrieve the broker type from database" if $status == -1;
-    $self->{broker} = $sth->fetchrow_hashref()->{value};
 }
 
 sub run {
@@ -74,29 +67,19 @@ sub run {
     $self->SUPER::run();
     $self->read_config();
 
-    if (defined $self->{config}->{len_storage_mysql} && 
-        $self->{config}->{len_storage_mysql} != 0) {
+    if (defined $self->{config}->{len_storage_mysql} && $self->{config}->{len_storage_mysql} != 0) {
         my $delete_limit = time() - 60 * 60 * 24 * $self->{config}->{len_storage_mysql};
 
         $self->{logger}->writeLogInfo("Purging centstorage.data_bin table...");
-        $self->{csdb}->do("DELETE FROM data_bin WHERE ctime < '$delete_limit'");
+        $self->{csdb}->do("DELETE FROM data_bin WHERE ctime < $delete_limit");
         $self->{logger}->writeLogInfo("Done");
     }
 
-    if (defined($self->{config}->{archive_retention}) 
-        && $self->{config}->{archive_retention} != 0) {
+    if (defined($self->{config}->{archive_retention}) && $self->{config}->{archive_retention} != 0) {
         my $last_log = time() - ($self->{config}->{archive_retention} * 24 * 60 * 60);
-        my $table = ($self->{broker} eq "broker") ? "logs" : "log";
-
-        $self->{logger}->writeLogInfo("Purging centstorage.$table table...");
-        eval {
-            my $lock = undef;
-            if ($self->{broker} eq "ndo") {
-                $lock = centreon::common::lock::sql->new("logAnalyser", dbc => $self->{cdb});
-                $lock->set();
-            }
-            $self->{csdb}->do("DELETE FROM `$table` WHERE `ctime` < '$last_log'");
-        };
+        
+        $self->{logger}->writeLogInfo("Purging centstorage.logs table...");
+        $self->{csdb}->do("DELETE FROM `logs` WHERE `ctime` < $last_log");
         if ($@) {
             $self->{logger}->writeLogError("Failed: $@");
         } else {
@@ -104,31 +87,28 @@ sub run {
         }
     }
 
-    if (defined($self->{config}->{reporting_retention}) 
-        && $self->{config}->{reporting_retention} != 0) {
+    if (defined($self->{config}->{reporting_retention}) && $self->{config}->{reporting_retention} != 0) {
         my $last_log = time() - ($self->{config}->{reporting_retention} * 24 * 60 * 60);
 
         $self->{logger}->writeLogInfo("Purging log archive tables...");
-        $self->{csdb}->do("DELETE FROM `log_archive_host` WHERE `date_end` < '$last_log'");
-        $self->{csdb}->do("DELETE FROM `log_archive_service` WHERE `date_end` < '$last_log'");
+        $self->{csdb}->do("DELETE FROM `log_archive_host` WHERE `date_end` < $last_log");
+        $self->{csdb}->do("DELETE FROM `log_archive_service` WHERE `date_end` < $last_log");
         $self->{logger}->writeLogInfo("Done");
     }
 
-    if (defined $self->{config}->{len_storage_downtimes} && 
-        $self->{config}->{len_storage_downtimes} != 0) {
+    if (defined $self->{config}->{len_storage_downtimes} && $self->{config}->{len_storage_downtimes} != 0) {
         my $delete_limit = time() - 60 * 60 * 24 * $self->{config}->{len_storage_downtimes};
 
         $self->{logger}->writeLogInfo("Purging centstorage.downtimes table...");
-        $self->{csdb}->do("DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time < '$delete_limit') or (deletion_time is not null and deletion_time < '$delete_limit')");
+        $self->{csdb}->do("DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time < $delete_limit) OR (deletion_time is not null and deletion_time < $delete_limit)");
         $self->{logger}->writeLogInfo("Done");
     }
     
-    if (defined $self->{config}->{len_storage_comments} && 
-        $self->{config}->{len_storage_comments} != 0) {
+    if (defined $self->{config}->{len_storage_comments} && $self->{config}->{len_storage_comments} != 0) {
         my $delete_limit = time() - 60 * 60 * 24 * $self->{config}->{len_storage_comments};
 
         $self->{logger}->writeLogInfo("Purging centstorage.comments table...");
-        $self->{csdb}->do("DELETE FROM comments WHERE (deletion_time is not null and deletion_time < '$delete_limit') or (expire_time < '$delete_limit')");
+        $self->{csdb}->do("DELETE FROM comments WHERE (deletion_time is not null and deletion_time < $delete_limit) OR (expire_time < $delete_limit AND expire_time <> 0)");
         $self->{logger}->writeLogInfo("Done");
     }
     
