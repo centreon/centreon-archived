@@ -241,13 +241,10 @@ if ($numRows > 0) {
             foreach ($hostInfos['states'] as $state => $count) {
                 $obj->XML->writeElement($state, $count);
             }
-
             $obj->XML->endElement();
         }
-
         $obj->XML->endElement();
     }
-    
 }
 
 $obj->XML->endElement();

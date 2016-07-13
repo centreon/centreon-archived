@@ -241,10 +241,8 @@ if ($numRows > 0) {
                 "svc_id" => $tab['service_id']
              );
         }
-        
         $ct++;
     }
-    
 }
 
 foreach ($aTab as $key => $element) {

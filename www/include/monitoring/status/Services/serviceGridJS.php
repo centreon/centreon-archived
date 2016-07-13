@@ -37,24 +37,21 @@ if (!isset($centreon)) {
 	exit();		
 }
 
-if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
-    $tFS = 10;
-} else {
-    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-}
-if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
     $tFM = 10;
 } else {
-    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+    $tFM = $centreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 }
+$tFS = 10;
+
 $sid = session_id();
 $time = time();
 
 $obis = $o;
-if(isset($_GET["problem"])) {
+if (isset($_GET["problem"])) {
 	$obis .= '_pb';
 }
-if(isset($_GET["acknowledge"])) {
+if (isset($_GET["acknowledge"])) {
 	$obis .= '_ack_' . $_GET["acknowledge"];
 }
 
@@ -148,7 +145,7 @@ function initM(_time_reload, _sid, _o ){
 		_first = 0;
 	}
 
-	_time=<?php echo $time; ?>;
+	_time = <?php echo $time; ?>;
 	if (_on) {
 		goM(_time_reload,_sid,_o);
 	}

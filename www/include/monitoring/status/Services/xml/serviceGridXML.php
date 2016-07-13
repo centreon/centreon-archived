@@ -52,9 +52,7 @@ $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-	;
-} else {
+if (!CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 	print "Bad Session ID";
 	exit();
 }
@@ -175,7 +173,7 @@ if (isset($tab_svc)) {
 
 $ct = 0;
 if (isset($tab_svc)) {
-	foreach ($tab_final as $host_name => $tab){
+	foreach ($tab_final as $host_name => $tab) {
 		$obj->XML->startElement("l");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		if (isset($tab["tab_svc"])) {
