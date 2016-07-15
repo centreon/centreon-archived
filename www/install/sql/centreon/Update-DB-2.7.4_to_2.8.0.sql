@@ -90,7 +90,7 @@ VALUES
     ((SELECT MAX(cbl1.cb_list_id) + 2 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'metrics_column' LIMIT 1), 'false'),
     ((SELECT MAX(cbl1.cb_list_id) + 3 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'type' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'string'),
     ((SELECT MAX(cbl1.cb_list_id) + 4 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'false'),
-    (1, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'cache' LIMIT 1), 'yes');
+    (1, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'cache' LIMIT 1), 'yes'),
     (3, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'storage_db_type' LIMIT 1), NULL);
 
 INSERT INTO cb_list_values (cb_list_id, value_name, value_value)
@@ -160,12 +160,12 @@ ALTER TABLE topology DROP COLUMN topology_icone;
 -- ALTER TABLE host_service_relation DROP INDEX `host_host_id`;
 
 -- Change option Path
-UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=general' WHERE topology_page = 50110; 
-UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=engine' WHERE topology_page = 50111; 
-UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=centcore' WHERE topology_page = 50117; 
-UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=ldap' WHERE topology_page = 50113; 
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=general' WHERE topology_page = 50110;
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=engine' WHERE topology_page = 50111;
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=centcore' WHERE topology_page = 50117;
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=ldap' WHERE topology_page = 50113;
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=rrdtool' WHERE topology_page = 50114;
-UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=debug' WHERE topology_page = 50115; 
+UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=debug' WHERE topology_page = 50115;
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=css' WHERE topology_page = 50116;
 UPDATE topology SET topology_url = './include/Administration/parameters/parameters.php', topology_url_opt = '&o=storage' WHERE topology_page = 50118;
 UPDATE topology SET topology_url = './include/Administration/performance/manageData.php' WHERE topology_page = 50119;
