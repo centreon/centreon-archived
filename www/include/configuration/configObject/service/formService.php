@@ -954,10 +954,9 @@ if (is_array($select)) {
     $select_pear->setValue($select_str);
 }
 
-#
-## Form Rules
-#
-
+/* 
+ * Form Rules
+ */
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;
 if ($o != "mc") {
@@ -965,11 +964,6 @@ if ($o != "mc") {
     # If we are using a Template, no need to check the value, we hope there are in the Template
     if (!$form->getSubmitValue("service_template_model_stm_id")) {
         $form->addRule('command_command_id', _("Compulsory Command"), 'required');
-        $form->addRule('service_max_check_attempts', _("Required Field"), 'required');
-        $form->addRule('service_normal_check_interval', _("Required Field"), 'required');
-        $form->addRule('service_retry_check_interval', _("Required Field"), 'required');
-        $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-        $form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
         if (!$form->getSubmitValue("service_hPars")) {
             $form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
         }

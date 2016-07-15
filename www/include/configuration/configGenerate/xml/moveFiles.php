@@ -38,10 +38,20 @@ ini_set("display_errors", "Off");
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
 require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
+
+$pearDB = new CentreonDB();
 
 /* Check Session */
 CentreonSession::start();
-if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
@@ -95,14 +105,6 @@ try {
     chdir(_CENTREON_PATH_ . "www");
     $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
     $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
-    require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -118,7 +120,6 @@ try {
     $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
 
     $xml = new CentreonXML();
-    $pearDB = new CentreonDB();
 
     /*
      * Copying image in logos directory
