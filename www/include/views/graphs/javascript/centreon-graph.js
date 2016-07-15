@@ -8,6 +8,7 @@
     this.$elem = $elem;
     this.chart = null;
     this.chartSvg = null;
+    this.chartData = null;
     this.refreshEvent = null;
     parseInterval = settings.interval.match(/(\d+)([a-z]+)/i);
     this.interval = {
@@ -85,6 +86,7 @@
      * @param {Object} data - The graph data
      */
     initGraph: function (data) {
+      this.chartData = data;
       if (this.type === 'status') {
         this.initGraphStatus(data);
       } else {
@@ -114,31 +116,43 @@
      * @param {Object} data - The graph data
      */
     initGraphMetrics: function (data) {
+      var self = this;
       var axis = {
         x: {
           type: 'timeseries',
           tick: {
             format: this.timeFormat
           }
+        },
+        y: {
+          tick: {
+            format: this.roundTick
+          }
         }
       };
       var parsedData = this.buildMetricData(data);
+      axis = jQuery.extend({}, axis, parsedData.axis);
+      if (axis.hasOwnProperty('y2')) {
+        axis.y2.tick = {
+          format: this.roundTick
+        };
+      }
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
         height: this.settings.height,
         data: parsedData.data,
-        axis: jQuery.extend({}, axis, parsedData.axis),
+        axis: axis,
         tooltip: {
           format: {
             title: function (x) {
               return moment(x).format('YYYY-MM-DD HH:mm:ss');
             },
-            value: function (value) {
-              var floatValue = value.toFixed(3);
-              if (floatValue == value) {
-                return value;
+            value: function (value, ratio, id) {
+              /* Test if the curse is inversed */
+              if (self.isInversed(id)) {
+                return self.inverseRoundTick(value);
               }
-              return value.toFixed(3);
+              return self.roundTick(value);
             }
           }
         },
@@ -369,6 +383,35 @@
         clearInterval(this.refreshEvent);
         this.refreshEvent = null;
       }
+    },
+    /**
+     * Round the value of a point and transform to humanreadable
+     *
+     * @param {Float} value - The value to transform
+     * @return {Float} - The value transformed
+     */
+    roundTick: function (value) {
+      return d3.format('.3s')(value);
+    },
+    /**
+     * Round the value of a point and transform to humanreadable
+     * and inverse the value if the curve is inversed
+     *
+     * @param {Float} value - The value to transform
+     * @return {Float} - The value transformed
+     */
+    inverseRoundTick: function (value) {
+      return this.roundTick(value * -1);
+    },
+    /**
+     * Return is the curve is inversed / negative
+     *
+     * @param {String} id - The curve id
+     * @return {Boolean} - If the curve is inversed
+     */
+    isInversed: function (id) {
+      var pos = parseInt(id.replace('data', ''), 10) - 1;
+      return this.chartData.data[pos].negative;
     }
   };
   
