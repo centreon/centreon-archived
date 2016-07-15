@@ -82,7 +82,8 @@ $DBRESULT->free();
  */
 $file_install_acces = 0;
 if (file_exists("./install/setup.php")) {
-    $error_msg = "Installation Directory '". getcwd() ."/install/' is accessible. Delete this directory to prevent security problem.";
+    $error_msg = "Installation Directory '". getcwd() .
+        "/install/' is accessible. Delete this directory to prevent security problem.";
     $file_install_acces = 1;
 }
 

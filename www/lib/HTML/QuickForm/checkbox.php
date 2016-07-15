@@ -123,6 +123,12 @@ class HTML_QuickForm_checkbox extends HTML_QuickForm_input
      */
     function toHtml()
     {
+        if ($this->_flagFrozen) {
+            $parent_value = $this->getFrozenHtml();
+        } else {
+            $parent_value = $this->_getTabs() . '<input' . $this->_getAttrString($this->_attributes) . ' />';
+        }
+
         if (0 == strlen((string)$this->_text)) {
             $label = '';
         } elseif ($this->_flagFrozen) {
@@ -130,7 +136,8 @@ class HTML_QuickForm_checkbox extends HTML_QuickForm_input
         } else {
             $label = '<label for="' . $this->getAttribute('id') . '">' . $this->_text . '</label>';
         }
-        return HTML_QuickForm_input::toHtml() . $label;
+
+        return $parent_value . $label;
     } //end func toHtml
     
     // }}}
@@ -146,11 +153,11 @@ class HTML_QuickForm_checkbox extends HTML_QuickForm_input
     function getFrozenHtml()
     {
         if ($this->getChecked()) {
-            return '<tt>[x]</tt>' .
-                   $this->_getPersistantData();
+            $str = '[x]' . $this->_getPersistantData();
         } else {
-            return '<tt>[ ]</tt>';
+            $str = '[ ]';
         }
+        return '<span class="frozenCheckboxIsCheckedInformation">'.$str.'</span>';
     } //end func getFrozenHtml
 
     // }}}

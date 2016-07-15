@@ -156,6 +156,7 @@ $form->addElement('header', 'title', _("View a Service Group"));
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('text', 'sg_name', _("Service Group Name"), $attrsText);
 $form->addElement('text', 'sg_alias', _("Description"), $attrsText);
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 ##
 ## Services Selection

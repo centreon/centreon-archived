@@ -361,7 +361,7 @@ p.description a, p.description a:visited {
 
 .default_badge 		{background-color: #00a499;}
 .host_down, .danger, .service_critical 	{background-color: #e00b3d;}
-.host_unreachable 	{background-color: #818285;}
+.host_unreachable, .unknown 	{background-color: #818285;}
 .host_downtime 		{background-color: #cc99ff;}
 
 .service_ok,.host_up, .success	{background-color: #88b917;}
@@ -1608,7 +1608,7 @@ span.state_badge {
     position: absolute;
     z-index: 1053;
     background-color: white;
-    padding: 1em;
+    padding: 1em 3em 1em 1em;
     border-radius: 4px;
     border: 1px solid #a7a8ac;
 }
@@ -1627,11 +1627,8 @@ span.state_badge {
 
 .popin-wrapper a.close {
     position: absolute;
-    top: -2em;
-    right: -2em;
-    z-index: 1020;
-    background-color: #fff;
-    border-radius: 30px;
+    top: -0.3em;
+    right: -2.3em;
 }
 
 .centreon-popin-overlay {

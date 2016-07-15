@@ -878,6 +878,7 @@ $form->addElement('text', 'esi_notes_url', _("URL"), $attrsTextURL);
 $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
 $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id" => "esi_icon_image", "onChange" => "showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 /*
  * Criticality
@@ -953,10 +954,9 @@ if (is_array($select)) {
     $select_pear->setValue($select_str);
 }
 
-#
-## Form Rules
-#
-
+/* 
+ * Form Rules
+ */
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;
 if ($o != "mc") {
@@ -964,11 +964,6 @@ if ($o != "mc") {
     # If we are using a Template, no need to check the value, we hope there are in the Template
     if (!$form->getSubmitValue("service_template_model_stm_id")) {
         $form->addRule('command_command_id', _("Compulsory Command"), 'required');
-        $form->addRule('service_max_check_attempts', _("Required Field"), 'required');
-        $form->addRule('service_normal_check_interval', _("Required Field"), 'required');
-        $form->addRule('service_retry_check_interval', _("Required Field"), 'required');
-        $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-        $form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
         if (!$form->getSubmitValue("service_hPars")) {
             $form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
         }

@@ -48,13 +48,19 @@ class AcknowledgementTimeoutContext extends CentreonContext
     public function aServiceConfiguredWithAckExpiration()
     {
         $servicePage = new ServiceConfigurationPage($this);
-        $servicePage->toServiceCreationPage($this->serviceHostName, $this->serviceName);
-        $servicePage->switchToTab('Data Processing');
-        $this->assertFindField('service_acknowledgement_timeout')->setValue(1);
-        $servicePage->switchToTab('General Information');
-        $this->checkRadioButtonByValue('1', 'named', array('id_or_name', 'service_passive_checks_enabled[service_passive_checks_enabled]'));
-        $this->checkRadioButtonByValue('0', 'named', array('id_or_name', 'service_active_checks_enabled[service_active_checks_enabled]'));
-        $servicePage->saveService();
+        $servicePage->setProperties(array(
+            'hosts' => $this->serviceHostName,
+            'description' => $this->serviceName,
+            'templates' => 'generic-service',
+            'check_command' => 'check_centreon_dummy',
+            'check_period' => '24x7',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1,
+            'acknowledgement_timeout' => 1));
+        $servicePage->save();
         (new ConfigurationPollersPage($this))->restartEngine();
     }
 

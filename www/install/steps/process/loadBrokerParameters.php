@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -63,7 +60,7 @@ foreach ($lines as $line) {
                     <tr>
                     <td class='formlabel'>".$label.$star."</td>
                     <td class='formvalue'>
-                        <input type='text' name='".$key."' value='".$val."' />
+                        <input type='text' name='".$key."' value='".$val."' size='40' />
                         <label class='field_msg'></label>
                     </td>
                     </star>";

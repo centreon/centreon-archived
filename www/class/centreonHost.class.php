@@ -555,8 +555,7 @@ class CentreonHost
     ) {
         
         if (false === $isMassiveChange) {
-            $this->db->query("DELETE FROM on_demand_macro_host 
-                WHERE host_host_id = " . $this->db->escape($hostId));
+            $this->db->query("DELETE FROM on_demand_macro_host WHERE host_host_id = " . $this->db->escape($hostId));
         } else {
             $macroList = "";
             foreach ($macroInput as $v) {
@@ -564,10 +563,7 @@ class CentreonHost
             }
             if ($macroList) {
                 $macroList = rtrim($macroList, ",");
-                $this->db->query("DELETE FROM on_demand_macro_host
-                    WHERE host_host_id = " . $this->db->escape($hostId) . "
-                    AND host_macro_name IN ({$macroList})"
-                );
+                $this->db->query("DELETE FROM on_demand_macro_host WHERE host_host_id = " . $this->db->escape($hostId) . " AND host_macro_name IN ({$macroList})");
             }
         }
 
@@ -804,7 +800,7 @@ class CentreonHost
         }
     }   
     
-    public function hasMacroFromHostChanged($host_id,&$macroInput,&$macroValue,&$macroPassword,$cmdId = false)
+    public function hasMacroFromHostChanged($host_id, &$macroInput, &$macroValue, &$macroPassword, $cmdId = false)
     {
         $aTemplates = $this->getTemplateChain($host_id, array(), -1, true,"host_name,host_id,command_command_id");
 
@@ -812,10 +808,9 @@ class CentreonHost
             $cmdId = "";
         }
         $aMacros = $this->getMacros($host_id, false, $aTemplates, $cmdId);
-        foreach($aMacros as $macro){
-            foreach($macroInput as $ind=>$input){
-                
-                if($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"] && $macroPassword[$ind] == $macro['macroPassword_#index#']){
+        foreach($aMacros as $macro) {
+            foreach($macroInput as $ind=>$input) {
+                if ($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"] && $macroPassword[$ind] == $macro['macroPassword_#index#']){
                     unset($macroInput[$ind]);
                     unset($macroValue[$ind]);
                 }
@@ -823,12 +818,12 @@ class CentreonHost
         }
     }
     
-    public function getMacroFromForm($form,$fromKey){
+    public function getMacroFromForm($form, $fromKey) {
      
         $Macros = array();
-        if(!empty($form['macroInput'])){
-            foreach($form['macroInput'] as $key=>$macroInput){
-                if($form['macroFrom'][$key] == $fromKey){
+        if (!empty($form['macroInput'])) {
+            foreach ($form['macroInput'] as $key => $macroInput) {
+                if ($form['macroFrom'][$key] == $fromKey){
                     $macroTmp = array();
                     $macroTmp['macroInput_#index#'] = $macroInput;
                     $macroTmp['macroValue_#index#'] = $form['macroValue'][$key];
@@ -1432,7 +1427,6 @@ class CentreonHost
      * Get list of services template for a host template
      *
      * @param int $hostTplId The host template id
-
      * @return array
      */
     public function getServicesTplInHostTpl($hostTplId)
@@ -1590,6 +1584,11 @@ class CentreonHost
         isset($ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] != NULL ? $rq .= "'" . $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] . "'" : $rq .= "NULL";
         $rq .= ")";
         $DBRESULT = $this->db->query($rq);
+        
+        if (\PEAR::isError($DBRESULT)) {
+            throw new \Exception('Error while insert host '.$ret['host_name']);
+        }
+        
         $DBRESULT = $this->db->query("SELECT MAX(host_id) AS host_id FROM host");
         $host_id = $DBRESULT->fetchRow();
 
@@ -1604,7 +1603,8 @@ class CentreonHost
      * Insert host extended informations in DB
      *
      */
-    public function insertExtendedInfos($ret) {
+    public function insertExtendedInfos($ret)
+    {
         if (empty($ret['host_id'])) {
             return;
         }
@@ -1626,7 +1626,10 @@ class CentreonHost
         isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["ehi_3d_coords"]) . "' " : $rq .= "NULL ";
         $rq .= ")";
         $DBRESULT = $this->db->query($rq);
-}
+        if (\PEAR::isError($DBRESULT)) {
+            throw new \Exception('Error while insert host extended info '.$ret['host_name']);
+        }
+    }
 
     /**
      * 
@@ -1742,8 +1745,56 @@ class CentreonHost
 
         $DBRESULT = $this->db->query($rq);
 
+        $this->updateExtendedInfos($host_id, $ret);
     }
 
+    /**
+     *
+     * Insert host extended informations in DB
+     *
+     */
+    public function updateExtendedInfos($host_id, $ret)
+    {
+        $fields = array(
+            'ehi_notes' => 'ehi_notes',
+            'ehi_notes_url' => 'ehi_notes_url', 
+            'ehi_action_url' => 'ehi_action_url',
+            'ehi_icon_image' => 'ehi_icon_image',
+            'ehi_icon_image_alt' => 'ehi_icon_image_alt',
+            'ehi_vrml_image' => 'ehi_vrml_image',
+            'ehi_statusmap_image' => 'ehi_statusmap_image',
+            'ehi_2d_coords' => 'ehi_2d_coords',
+            'ehi_3d_coords' => 'ehi_3d_coords'
+        );
+
+        $query = "UPDATE extended_host_information SET ";
+        $updateFields = array();
+        foreach ($ret as $key => $value) {
+            if (isset($fields[$key])) {
+                $updateFields[] = '`' . $fields[$key] . '` = "' . CentreonDB::escape($value) . '" ';
+            }
+        }
+
+        if (count($updateFields)) {
+            $query .= implode(',', $updateFields)
+                . 'WHERE host_host_id = "' . $host_id . '" ';
+            $result = $this->db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while updating extendeded infos of host ' . $host_id);
+            }
+        }
+    }
+
+
+    /**
+     * 
+     * @param int host_id
+     * @param int poller_id
+     */
+    public function setPollerInstance($host_id, $poller_id)
+    {
+        $this->db->query("INSERT INTO ns_host_relation (host_host_id, nagios_server_id) VALUES ($host_id, $poller_id)");
+    }
 
     /**
      * 

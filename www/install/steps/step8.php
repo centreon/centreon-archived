@@ -31,9 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
 session_start();
@@ -72,4 +69,4 @@ $template->assign('content', $contents);
 $template->assign('finish', 1);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
-?>
+

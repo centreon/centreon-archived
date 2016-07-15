@@ -218,7 +218,7 @@ function insertHostGroup($ret = array())	{
 	$ret["hg_name"] = $centreon->checkIllegalChar($ret["hg_name"]);
 
 	$rq = "INSERT INTO hostgroup ";
-	$rq .= "(hg_name, hg_alias, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image, hg_rrd_retention, hg_comment, hg_activate) ";
+	$rq .= "(hg_name, hg_alias, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image, hg_rrd_retention, hg_comment, geo_coords, hg_activate) ";
 	$rq .= "VALUES (";
 	isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "'".$pearDB->escape($ret["hg_name"])."', " : $rq .= "NULL,";
 	isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".$pearDB->escape($ret["hg_alias"])."', " : $rq .= "NULL,";
@@ -229,6 +229,7 @@ function insertHostGroup($ret = array())	{
 	isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] ? $rq .= "'".$pearDB->escape($ret["hg_map_icon_image"])."', " : $rq .= "NULL,";
     isset($ret["hg_rrd_retention"]) && $ret["hg_rrd_retention"] ? $rq .= "'".$pearDB->escape($ret["hg_rrd_retention"])."', " : $rq .= "NULL,";
 	isset($ret["hg_comment"]) && $ret["hg_comment"] ? $rq .= "'".$pearDB->escape($ret["hg_comment"])."', " : $rq .= "NULL, ";
+	isset($ret["geo_coords"]) && $ret["geo_coords"] ? $rq .= "'".$pearDB->escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
 	isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "'0'";
 	$rq .= ")";
 
@@ -283,6 +284,8 @@ function updateHostGroup($hg_id, $ret = array()) {
 	isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] != NULL ? $rq .= "'".$pearDB->escape($ret["hg_map_icon_image"])."', " : $rq .= "NULL, ";
     $rq .= "hg_rrd_retention = ";
     $rq .= isset($ret["hg_rrd_retention"]) && $ret["hg_rrd_retention"] ? "'".$pearDB->escape($ret["hg_rrd_retention"])."', " : "NULL, ";
+	$rq .= "geo_coords = ";
+	isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".$pearDB->escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
 	$rq .= "hg_comment = ";
 	isset($ret["hg_comment"]) && $ret["hg_comment"] != NULL ? $rq .= "'".$pearDB->escape($ret["hg_comment"])."', " : $rq .= "NULL, ";
 	$rq .= "hg_activate = ";

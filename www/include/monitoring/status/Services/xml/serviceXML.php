@@ -145,8 +145,6 @@ if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
     $_SESSION['monitoring_service_status_filter'] = $statusFilter;
 }
 
-
-
 /** * *************************************************
  * Backup poller selection
  */
@@ -173,7 +171,8 @@ if ($instance != -1) {
 $searchHost = "";
 if ($search_host) {
     $searchHost .= " AND (h.name LIKE '%$search_host%' ";
-    $searchHost .= " OR h.alias LIKE '%$search_host%') ";
+    $searchHost .= " OR h.alias LIKE '%$search_host%' ";
+    $searchHost .= " OR h.address LIKE '%$search_host%' ) ";
 }
 
 $searchService = "";
@@ -197,7 +196,7 @@ $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name
 $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
-$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
+$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
                 s.icon_image, s.display_name, s.state, s.output as plugin_output,
                 s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
                 s.last_hard_state_change, s.last_check, s.next_check,
@@ -393,11 +392,13 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeElement("o", $ct++);
 
         if (!strncmp($data["name"], "_Module_Meta", strlen("_Module_Meta"))) {
+            $data["real_name"] = $data["name"];
             $data["name"] = "Meta";
         }
 
         if ($host_prev == $data["name"]) {
             $obj->XML->writeElement("hc", "transparent");
+            $obj->XML->writeElement("hrn", (isset($data["real_name"]) ? $data["real_name"] : 0));
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "1");
             $obj->XML->text(CentreonUtils::escapeSecure($data["name"]));
@@ -413,6 +414,7 @@ if (!PEAR::isError($DBRESULT)) {
             }
 
             $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
+            $obj->XML->writeElement("hrn", (isset($data["real_name"]) ? $data["real_name"] : 0));
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "0");
             $obj->XML->text(CentreonUtils::escapeSecure($data["name"]), true, false);
@@ -462,6 +464,7 @@ if (!PEAR::isError($DBRESULT)) {
         } else {
             $obj->XML->writeElement("sd", CentreonUtils::escapeSecure($data["description"]), false);
         }
+
         $obj->XML->writeElement("sico", $data["icon_image"]);
         $obj->XML->writeElement("sdl", CentreonUtils::escapeSecure(urlencode($data["description"])));
         $obj->XML->writeElement("svc_id", $data["service_id"]);
@@ -507,7 +510,6 @@ if (!PEAR::isError($DBRESULT)) {
         } else {
             $obj->XML->writeElement("snn", 'none');
         }
-
 
         if ($data["notes_url"] != "") {
             $data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -53,18 +50,14 @@ mysql_select_db($_SESSION['CONFIGURATION_DB']);
 splitQueries('../../insertMacros.sql', ';', null, '../../tmp/insertMacros');
 splitQueries('../../insertCommands.sql', ';', null, '../../tmp/insertCommands.sql');
 splitQueries('../../insertTimeperiods.sql', ';', null, '../../tmp/insertTimeperiods.sql');
-if (isset($_SESSION['MONITORING_ENGINE']) && is_file('../../var/baseconf/'.$_SESSION['MONITORING_ENGINE'].'.sql')) {
-    splitQueries('../../var/baseconf/'.$_SESSION['MONITORING_ENGINE'].'.sql', ';', null, '../../tmp/'.$_SESSION['MONITORING_ENGINE']);
-}
-if (isset($_SESSION['BROKER_MODULE']) && is_file('../../var/baseconf/'.$_SESSION['BROKER_MODULE'].'.sql')) {
-    splitQueries('../../var/baseconf/'.$_SESSION['BROKER_MODULE'].'.sql', ';', null, '../../tmp/'.$_SESSION['BROKER_MODULE']);
-}
+splitQueries('../../var/baseconf/centreon-engine.sql', ';', null, '../../tmp/centrepn-engine.sql');
+splitQueries('../../var/baseconf/centreon-broker.sql', ';', null, '../../tmp/centreon-broker.sql');
 splitQueries('../../insertTopology.sql', ';', null, '../../tmp/insertTopology');
 splitQueries('../../insertBaseConf.sql', ';', null, '../../tmp/insertBaseConf');
 
 # Manage timezone
 $timezone = date_default_timezone_get();
-$resTimezone = mysql_query("select timezone_id from timezone where timezone_name= '" . $timezone . "'", $link);
+$resTimezone = mysql_query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'", $link);
 if ($row = mysql_fetch_assoc($resTimezone)) {
     $timezoneId = $row['timezone_id'];
 } else {

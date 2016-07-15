@@ -45,43 +45,40 @@ class CentreonSession
 
 	}
 
-	function start() {
+	public function start() {
 		session_start();
 	}
 
-	function stop() {
+	public function stop() {
 		session_unset();
 		session_destroy();
 	}
 
-	function restart() {
+	public function restart() {
 		self::stop();
 		self::start();
         session_regenerate_id(true);
 	}
 
-	function s_unset() {
+	public function s_unset() {
 		session_unset();
 	}
 
-	function unregister_var($register_var) {
+	public function unregister_var($register_var) {
 		unset($_SESSION[$register_var]);
 	}
 
-	function register_var($register_var) {
+	public function register_var($register_var) {
 		if (!isset($_SESSION[$register_var])) {
             $_SESSION[$register_var] = $$register_var;
 		}
 	}
 
-	function checkSession($session_id, $pearDB) {
-		$DBRESULT = $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
-        $i = 0;
-        while ($a = $DBRESULT->fetchRow()) {
-        	$i++;
-        }
-
-        if ($i) {
+	public function checkSession($session_id, $pearDB)
+	{
+		$session_id = str_replace(array('_', '%'), array('', ''), $session_id);
+		$DBRESULT = $pearDB->query("SELECT id FROM session WHERE `session_id` = '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
+        if ($DBRESULT->numRows()) {
         	return 1;
         } else {
         	return 0;
@@ -90,13 +87,13 @@ class CentreonSession
     
     public static function getUser($sessionId, $pearDB)
     {
-        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
+    	$session_id = str_replace(array('_', '%'), array('', ''), $session_id);
+        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
         $row = $DBRESULT->fetchRow();
         if (!$row) {
             return 0;
         }
         return $row['user_id'];
     }
-
-} /* end class Session */
+}
 

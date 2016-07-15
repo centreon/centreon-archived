@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,29 +36,68 @@
 require_once("Archive/Tar.php");
 require_once("Archive/Zip.php");
 
-/*
+/**
  *  Class used for managing images
  */
-
-class CentreonMedia {
-
+class CentreonMedia
+{
+    /**
+     *
+     * @var type 
+     */
     protected $_db;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $_filenames;
 
-    /*
-     *  Constructor
+    /**
+     * Constructor
+     * @param type $db
      */
-
-    function __construct($db) {
+    function __construct($db)
+    {
         $this->_db = $db;
         $this->_filenames = array();
     }
 
-    /*
-     *  Returns ID of target directory
+    /**
+     * Get media directory path
+     * @return string
+     * @throws \Exception
      */
+    public function getMediaDirectory()
+    {
+        $query = "SELECT options.value FROM options WHERE options.key = 'nagios_path_img'";
+        $result = $this->_db->query($query);
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while getting media directory ');
+        }
 
-    function getDirectoryId($dirname) {
+        $mediaDirectory = '';
+        if ($result->numRows()) {
+            $row = $result->fetchRow();
+            $mediaDirectory = $row['value'];
+        }
+
+        if (trim($mediaDirectory) == '') {
+            throw new \Exception('Error while getting media directory ');
+        }
+
+        return $mediaDirectory;        
+    }
+
+    /**
+     * Returns ID of target directory
+     * @param string $dirname
+     * @return int
+     */
+    public function getDirectoryId($dirname)
+    {
+        $dirname = $this->sanitizePath($dirname);
+
         $query = "SELECT dir_id FROM view_img_dir WHERE dir_name = '" . $dirname . "' LIMIT 1";
         $RES = $this->_db->query($query);
         $dir_id = null;
@@ -69,11 +108,80 @@ class CentreonMedia {
         return $dir_id;
     }
 
-    /*
-     *  Returns ID of target Image
+    /**
+     * Returns name of target directory
+     * @param int $directoryId
+     * @return string
      */
+    public function getDirectoryName($directoryId)
+    {
+        $query = "SELECT dir_name FROM view_img_dir WHERE dir_id = " . $directoryId . " LIMIT 1";
 
-    function getImageId($imagename, $dirname = null) {
+        $result = $this->_db->query($query);
+
+        $directoryName = null;
+        if ($result->numRows()) {
+            $row = $result->fetchRow();
+            $directoryName = $row['dir_name'];
+        }
+
+        return $directoryName;
+    }
+
+    /**
+     * Add directory
+     * @param string $dirname
+     * @param string $dirAlias
+     * @return int
+     * @throws \Exception
+     */
+    public function addDirectory($dirname, $dirAlias = null)
+    {
+        $dirname = $this->sanitizePath($dirname);
+
+        if (is_null($this->getDirectoryId($dirname))) {
+
+            if (is_null($dirAlias)) {
+                $dirAlias = $dirname;
+            }
+            $query = "INSERT INTO view_img_dir (dir_name, dir_alias) VALUES ('" . $dirname . "', '" . $dirAlias . "')";
+            $result = $this->_db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while creating directory ' . $dirname);
+            }
+        }
+
+        $this->createDirectory($dirname);
+
+        return $this->getDirectoryId($dirname);
+    }
+
+    /**
+     * Add directory
+     * @param string $dirname
+     */
+    private function createDirectory($dirname)
+    {
+        $mediaDirectory = $this->getMediaDirectory();
+
+        $fullPath = $mediaDirectory . '/' . $dirname;
+        
+        file_put_contents('/tmp/test.txt', $fullPath);
+
+        // Create directory
+        if (!is_dir($fullPath)) {
+            mkdir($fullPath);
+        }
+    }
+
+    /**
+     * Returns ID of target Image
+     * @param string $imagename
+     * @param string $dirname
+     * @return mixed
+     */
+    function getImageId($imagename, $dirname = null)
+    {
         if (!isset($dirname)) {
             $tab = preg_split("/\//", $imagename);
             isset($tab[0]) ? $dirname = $tab[0] : $dirname = null;
@@ -106,7 +214,8 @@ class CentreonMedia {
      * @param int $imgId
      * @return string
      */
-    public function getFilename($imgId = null) {
+    public function getFilename($imgId = null)
+    {
         if (!isset($imgId)) {
             return "";
         }
@@ -139,7 +248,8 @@ class CentreonMedia {
      * @return array
      * @throws Exception
      */
-    public static function getFilesFromArchive($archiveFile) {
+    public static function getFilesFromArchive($archiveFile)
+    {
         $fileName = basename($archiveFile);
         $position = strrpos($fileName, ".");
         if (false === $position) {
@@ -176,4 +286,120 @@ class CentreonMedia {
         return $files;
     }
 
+    /**
+     * 
+     * @param string $path
+     * @return string
+     */
+    private function sanitizePath($path)
+    {
+        $cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8");
+        $cleanstr = str_replace("/", "_", $cleanstr);
+        $cleanstr = str_replace("\\", "_", $cleanstr);
+
+        return $cleanstr;
+    }
+
+    /**
+     * 
+     * @param string $parameters
+     * @param string $binary
+     * @return mixed
+     * @throws \Exception
+     */
+    public function addImage($parameters, $binary = null)
+    {
+        $imageId = null;
+        
+        if (!isset($parameters['img_name']) || !isset($parameters['img_path']) || !isset($parameters['dir_name'])) {
+            throw new \Exception('Cannot add media : missing parameters');
+        }
+
+        if (!isset($parameters['img_comment'])) {
+            $parameters['img_comment'] = '';
+        }
+
+        $directoryName = $this->sanitizePath($parameters['dir_name']);
+        $directoryId = $this->addDirectory($directoryName);
+
+        $imageName = htmlentities($parameters['img_name'], ENT_QUOTES, "UTF-8");
+        $imagePath = htmlentities($parameters['img_path'], ENT_QUOTES, "UTF-8");
+        $imageComment = htmlentities($parameters['img_comment'], ENT_QUOTES, "UTF-8");
+
+        // Check if image already exists
+        $query = 'SELECT vidr.vidr_id '
+            . 'FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr '
+            . 'WHERE vi.img_id = vidr.img_img_id '
+            . 'AND vid.dir_id = vidr.dir_dir_parent_id '
+            . 'AND vi.img_name = "' . $imageName . '" '
+            . 'AND vid.dir_name = "' . $directoryName . '" ';
+
+        $result = $this->_db->query($query);
+
+        if (!$result->numRows()) {
+            // Insert image in database
+            $query = 'INSERT INTO view_img '
+                . '(img_name, img_path, img_comment) '
+                . 'VALUES ( '
+                . '"' . $imageName . '", '
+                . '"' . $imagePath . '", '
+                . '"' . $imageComment . '" '
+                . ') ';
+
+            $result = $this->_db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while creating image ' . $imageName);
+            }
+
+            // Get image id
+            $query = 'SELECT MAX(img_id) AS img_id '
+                . 'FROM view_img '
+                . 'WHERE img_name = "' . $imageName . '" '
+                . 'AND img_path = "' . $imagePath . '" ';
+            $result = $this->_db->query($query);
+            if (\PEAR::isError($result) || !$result->numRows()) {
+                throw new \Exception('Error while creating image ' . $imageName);
+            }
+            $row = $result->fetchRow();
+            $imageId = $row['img_id'];
+
+            // Insert relation between directory and image
+            $query = 'INSERT INTO view_img_dir_relation '
+                . '(dir_dir_parent_id, img_img_id) '
+                . 'VALUES ('
+                . $directoryId . ', '
+                . $imageId . ' '
+                . ') ';
+            $result = $this->_db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while inserting relation between' . $imageName . ' and ' . $directoryName);
+            }
+        } else {
+            $imageId = $this->getImageId($imageName, $directoryName);
+        }
+
+        // Create binary file if specified
+        if (!is_null($binary)) {
+            $directoryPath = $this->getMediaDirectory() . '/' . $directoryName . '/';
+            $this->createImage($directoryPath, $imagePath, $binary);
+        }
+
+        return $imageId;
+    }
+
+    /**
+     * 
+     * @param string $directoryPath
+     * @param string $imagePath
+     * @param string $binary
+     */
+    private function createImage($directoryPath, $imagePath, $binary)
+    {
+        $fullPath = $directoryPath . '/' . $imagePath;
+        $decodedBinary = base64_decode($binary);
+
+        if (!file_exists($fullPath)) {
+            file_put_contents($fullPath, $decodedBinary);
+        }
+    }
 }

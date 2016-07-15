@@ -156,52 +156,6 @@ if (isset($_GET['poller'])) {
 }
 
 /*
- * From Monitoring
- */
-if (isset($_POST["svc_id"])) {
-	$id = "";
-    $services = preg_split("/\,/", $_POST["svc_id"]);
-	foreach ($services as $str) {
-		$buf_svc = preg_split("/\;/", urldecode($str));
-        $lhost_id = getMyHostID($buf_svc[0]);
-		$id .= "HS_" . getMyServiceID($buf_svc[1], $lhost_id)."_" . $lhost_id . ",";
-	}
-}
-
-/*
- * From Graphs
- */
-if (!strncmp("MS", $id, 2)) {
-	$meta = 0;
-	if (isset($id) && $id) {
-		$id = "";
-		$id_svc = $id;
-		$tab_svcs = explode(",", $id_svc);
-		foreach ($tab_svcs as $svc) {
-			$tmp = explode(";", urldecode($svc));
-            $lhost_id = getMyHostID($tmp[0]);
-			$id .= "HS_" . getMyServiceID($tmp[1], $lhost_id)."_" . $lhost_id . ",";
-		}
-	}
-} else {
-	$meta = 1;
-}
-
-$id_log = "'RR_0'";
-$multi = 0;
-$lockTree = 0;
-$focusUrl = "";
-if (isset($_GET["mode"]) && $_GET["mode"] == "0") {
-	$mode = 0;
-	$lockTree = 1;
-	$id_log = "'".$id."'";
-	$multi =1;
-} else {
-	$mode = 1;
-	$id = 1;
-}
-
-/*
  * Form begin
  */
 $form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);

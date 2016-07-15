@@ -33,8 +33,9 @@
  *
  */
 
-if (!isset($centreon))
+if (!isset($centreon)) {
 	exit();
+}
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
@@ -291,6 +292,8 @@ $form->addGroup($msActivation, 'meta_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('meta_activate' => '1'));
 $form->addElement('textarea', 'meta_comment', _("Comments"), $attrsTextarea);
 
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+
 $form->addElement('hidden', 'meta_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -311,15 +314,6 @@ $form->addRule('meta_name', _("Compulsory Name"), 'required');
 $form->addRule('max_check_attempts', _("Required Field"), 'required');
 $form->addRule('calcul_type', _("Required Field"), 'required');
 $form->addRule('meta_select_mode', _("Required Field"), 'required');
-$form->addRule('normal_check_interval', _("Required Field"), 'required');
-$form->addRule('retry_check_interval', _("Required Field"), 'required');
-$form->addRule('check_period', _("Compulsory Period"), 'required');
-$form->addRule('ms_cgs', _("Compulsory Contact Group"), 'required');
-$form->addRule('notification_interval', _("Required Field"), 'required');
-$form->addRule('notification_period', _("Compulsory Period"), 'required');
-$form->addRule('notifications_enabled', _("Required Field"), 'required');
-$form->addRule('ms_notifOpts', _("Required Field"), 'required');
-$form->addRule('notifOpts', _("Compulsory Option"), 'required');
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('meta_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
@@ -376,9 +370,9 @@ if ($form->validate())	{
 	$valid = true;
 }
 
-if ($valid)
+if ($valid) {
 	require_once($path."listMetaService.php");
-else	{
+} else	{
 	/*
 	 * Apply a template definition
 	 */

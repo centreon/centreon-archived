@@ -210,7 +210,7 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);	
 $tpl->assign('form', $renderer->toArray());	
-$tpl->assign('o', $o);		
+$tpl->assign('o', $o);
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>

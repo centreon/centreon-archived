@@ -207,15 +207,15 @@
             <h4>{$form.header.links}</h4>
           </td>
         </tr>
-        {if $o == "mc"}
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
-        {/if}
         {if !$msg.tpl}
-        {if $o == "mc"}
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sgs.label}</td><td class="FormRowValue">{$form.mc_mod_sgs.html}</td></tr>
-        {/if}
+            {if $o == "mc"}
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sgs.label}</td><td class="FormRowValue">{$form.mc_mod_sgs.html}</td></tr>
+            {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
         {else}
+            {if $o == "mc"}
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
+            {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_templates"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
         {/if}
         <tr class="list_lvl_1">
@@ -327,6 +327,7 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.esi_icon_image.label}</td><td class="FormRowValue">{$form.esi_icon_image.html}&nbsp;&nbsp;<img id='esi_icon_image_img' src='./img/blank.gif'></td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="icon_image_alt"> {$form.esi_icon_image_alt.label}</td><td class="FormRowValue">{$form.esi_icon_image_alt.html}</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.furtherInfos}</h4>
@@ -352,106 +353,15 @@
 var alert_check_interval = "{$alert_check_interval}";
 
 {literal}
-jQuery('input[name=service_normal_check_interval]').change(function(){
-    if(parseInt(jQuery(this).val()) >= 1440){
+jQuery('input[name=service_normal_check_interval]').change(function() {
+    if (parseInt(jQuery(this).val()) >= 1440) {
         alert(alert_check_interval);
     }
 });
 
 jQuery(function() {
-    jQuery('select[name=service_template_model_stm_id], select[name=command_command_id]' ).on('change',function(event,data){
-        if(typeof data != "undefined" && typeof data.origin !=undefined 
-            && data.origin == "select2defaultinit"){
-            return false;
-        }
-        jQuery.ajax({
-            url: "./include/configuration/configObject/service/refreshMacroAjax.php",
-            type: "POST",
-            dataType : "json",
-            data: this.form.serialize(),
-            success : function(json){
-                /*if(typeof sheepIt != "undefined"){
-                    sheepIt.removeAllForms();
-                }*/
-                //jQuery('#macro_add').unbind();
-                //jQuery('.cloneremove').unbind();
-                jQuery("#clone-count-macro").data("clone-count-macro",json.count);
-                jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
-                sheepIt.removeAllForms();
-                for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
-                    sheepIt.addForm();  
-                }
-
-                sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
-
-                jQuery(".macroclone").sortable(
-                    {
-                       handle: ".clonehandle",
-                       axis: "y",
-                       helper: "clone",
-                       opacity: 0.5,
-                       placeholder: "clone-placeholder",
-                       tolerance: "pointer"
-                    }
-                );
-
-                jQuery(".onemacro").each(function(idx,elem){
-                    var from = jQuery(elem).find('input[name^=macroFrom]').val();
-                    if (from === "direct") {
-                        jQuery(elem).find("input[name^='macroInput']").css("background","white");
-                        jQuery(elem).find("input[name^='macroValue']").css("background","white");
-                    } else if (from === "fromTpl"){
-                        jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-                        jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-                    } else {
-                        jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
-                        jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
-                    }
-
-                    if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
-                        jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
-                    }
-
-                    {/literal}{if $form.frozen == false}{literal}
-                    // Display undo button on template macro
-                    if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
-                        if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
-                            var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
-                            var tplValue = tplValueField.val();
-                            
-                            var tplInputField = jQuery(elem).find("input[name^='macroInput']");
-                            var tplInput = tplInputField.val();
-
-                            // Reset macro value on click on undo button
-                            tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function(){
-                                jQuery(elem).find("input[name^='macroValue']").val(tplValue);
-                                jQuery(elem).find("input[name^='macroInput']").val(tplInput);
-                                jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
-                                jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-                                jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-                            }));
-                        }
-                    }
-                    {/literal}{/if}{literal}
-
-                    jQuery(elem).find("input[name^='macroInput']").on("input",function(){
-                        jQuery(elem).find('input[name^=macroFrom]').val("direct");
-                        jQuery(elem).find("input[name^='macroInput']").css("background","white");
-                        jQuery(elem).find("input[name^='macroValue']").css("background","white");
-                    });
-                    jQuery(elem).find("input[name^='macroValue']").on("input",function(){
-                        jQuery(elem).find('input[name^=macroFrom]').val("direct");
-                        jQuery(elem).find("input[name^='macroInput']").css("background","white");
-                        jQuery(elem).find("input[name^='macroValue']").css("background","white");
-                    });
-
-                    if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
-                        jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
-                    } 
-                });
-            }
-        });
-    });
+    // Data for all macros
+    var macros_datas = jQuery("#clone-values-macro").data("clone-values-macro");
 
     sheepIt = jQuery("#macro").sheepIt({
         separator: '',
@@ -461,39 +371,51 @@ jQuery(function() {
         minFormsCount: 0,
         maxFormsCount: 200,
         continuousIndex : false,
-        iniFormsCount: jQuery("#clone-count-macro").data("clone-count-macro"),
+        iniFormsCount: macros_datas,
         data: jQuery("#clone-values-macro").data("clone-values-macro"),
         afterAdd: function(source, newForm) {
             jQuery(newForm).find("input[id^='macroPassword_']").parent().show();
         }
     });
 
-    jQuery(".onemacro").each(function(idx,elem){
+    jQuery(".onemacro").each(function(idx,elem) {
         var from = jQuery(elem).find('input[name^=macroFrom]').val();
         if (from === "direct") {
-            jQuery(elem).find("input[name^='macroInput']").css("background","white");
-            jQuery(elem).find("input[name^='macroValue']").css("background","white");
-        } else if (from === "fromTpl"){
+            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+        } else if (from === "fromTpl") {
             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
         } else {
             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
         }
-        
+
+        // Set a 'Macro value' field as password field, on edit mode
         if (jQuery(elem).find("input[id^='macroPassword']").is(':checked')) {
             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
         }
 
+        // for 'consultation only' mode
+
+        // Display [x] if the macro value is a password
+        var macroValueFieldIsAPassword = macros_datas[idx]["macroPassword_#index#"];
+        jQuery(elem).find(".frozenCheckboxIsCheckedInformation").html(macroValueFieldIsAPassword ? '[x]' : '[&nbsp;]');
+
+        // Set a 'Macro value' field as password field, on 'consultation only' mode
+        if (macroValueFieldIsAPassword) {
+             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+        }
+
         {/literal}{if $form.frozen == false}{literal}
         // Display undo button on template macro
-        if(typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined'){
-            if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
+        if (typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined') {
+            if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1") {
                 var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
                 var tplValue = tplValueField.val();
 
                 // Reset macro value on click on undo button
-                tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function(){
+                tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function() {
                     jQuery(elem).find("input[name^='macroValue']").val(tplValue);
                     jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
                     jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
@@ -503,21 +425,20 @@ jQuery(function() {
         }
         {/literal}{/if}{literal}
 
-        jQuery(elem).find("input[name^='macroInput']").on("input",function(){
+        jQuery(elem).find("input[name^='macroInput']").on("input",function() {
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
-            jQuery(elem).find("input[name^='macroInput']").css("background","white");
-            jQuery(elem).find("input[name^='macroValue']").css("background","white");
+            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
         });
-        jQuery(elem).find("input[name^='macroValue']").on("input",function(){
+        jQuery(elem).find("input[name^='macroValue']").on("input",function() {
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
-            jQuery(elem).find("input[name^='macroInput']").css("background","white");
-            jQuery(elem).find("input[name^='macroValue']").css("background","white");
+            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
         });
 
     });
 
-    jQuery(".macroclone").sortable(
-        {
+    jQuery(".macroclone").sortable({
            handle: ".clonehandle",
            axis: "y",
            helper: "clone",
@@ -526,16 +447,14 @@ jQuery(function() {
            tolerance: "pointer"
         }
     );
-    
-    function bindInhertance()
-    {
+
+    function bindInhertance() {
         if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "1") {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").attr('disabled', 'disabled').removeAttr('checked');
             jQuery("#service_cs").attr('disabled', 'disabled');
             jQuery("#service_cs").select2("val", "");
             jQuery("#service_cgs").attr('disabled', 'disabled');
             jQuery("#service_cgs").select2("val", "");
-            
         } else {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").removeAttr('disabled');
             jQuery("#service_cs").removeAttr('disabled');
@@ -544,10 +463,99 @@ jQuery(function() {
     }
     
     bindInhertance();
-    jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']").on('click',function(){
+    jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']").on('click',function() {
         bindInhertance();
     });
+
     
+    jQuery('select[name=service_template_model_stm_id], select[name=command_command_id]').on('change',function(event,data) {
+        if (typeof data != "undefined" && typeof data.origin != undefined && data.origin == "select2defaultinit") {
+            return false;
+    }
+    {/literal}{if $o != "mc"}{literal} 
+    jQuery.ajax({
+        url: "./include/configuration/configObject/service/refreshMacroAjax.php",
+        type: "POST",
+        dataType : "json",
+        data: this.form.serialize(),
+        success : function(json) {
+            jQuery("#clone-count-macro").data("clone-count-macro",json.count);
+            jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
+            sheepIt.removeAllForms();
+            for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
+                sheepIt.addForm();  
+            }
+
+            sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
+
+            jQuery(".macroclone").sortable({
+                   handle: ".clonehandle",
+                   axis: "y",
+                   helper: "clone",
+                   opacity: 0.5,
+                   placeholder: "clone-placeholder",
+                   tolerance: "pointer"
+                }
+            );
+
+            jQuery(".onemacro").each(function(idx, elem) {
+                var from = jQuery(elem).find('input[name^=macroFrom]').val();
+                if (from === "direct") {
+                    jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+                    jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+                } else if (from === "fromTpl") {
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                } else {
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+                }
+
+                if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+                    jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                }
+
+                {/literal}{if $form.frozen == false}{literal}
+                // Display undo button on template macro
+                if (typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined') {
+                    if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1") {
+                        var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
+                        var tplValue = tplValueField.val();
+                        
+                        var tplInputField = jQuery(elem).find("input[name^='macroInput']");
+                        var tplInput = tplInputField.val();
+
+                        // Reset macro value on click on undo button
+                        tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function() {
+                            jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                            jQuery(elem).find("input[name^='macroInput']").val(tplInput);
+                            jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
+                            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                        }));
+                    }
+                }
+                {/literal}{/if}{literal}
+
+                jQuery(elem).find("input[name^='macroInput']").on("input",function() {
+                    jQuery(elem).find('input[name^=macroFrom]').val("direct");
+                    jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+                    jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+                });
+                jQuery(elem).find("input[name^='macroValue']").on("input",function() {
+                    jQuery(elem).find('input[name^=macroFrom]').val("direct");
+                    jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+                    jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+                });
+
+                if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+                    jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                } 
+            });
+        }
+        });
+    {/literal}{/if}{literal}
+    });
 });
 
 {/literal}

@@ -840,7 +840,7 @@ class CentreonAPI {
 
     /**
      *
-     * Apply configuration Generation + move + restart
+     * Apply configuration Generation + move + reload
      */
     public function APPLYCFG() {
         /**
@@ -863,7 +863,7 @@ class CentreonAPI {
             $this->endOfLine();
         }
         if ($this->return_code == 0) {
-            $this->return_code = $poller->pollerRestart($this->variables);
+            $this->return_code = $poller->pollerReload($this->variables);
         }
         if ($this->return_code == 0) {
             $this->return_code = $poller->execCmd($this->variables);

@@ -255,7 +255,7 @@ function insertServer($ret = array())   {
 }
 
 function addUserRessource($serverId) {
-    global $pearDB;
+    global $pearDB, $centreon;
 
     $queryInsert = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES (%s, %s)";
     $queryGetResources = "SELECT resource_id, resource_name FROM cfg_resource ORDER BY resource_id";

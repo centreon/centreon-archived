@@ -102,7 +102,6 @@ while ($data = $DBRESULT->fetchRow()) {
 	$hostCounter += $host_stat[$data["state"]];
 }
 $DBRESULT->free();
-unset($data);
 
 /* *********************************************
  * Get Service stats
@@ -135,7 +134,6 @@ while ($data = $DBRESULT->fetchRow()) {
 	$serviceCounter += $svc_stat[$data["state"]];
 }
 $DBRESULT->free();
-unset($ndo);
 
 /* ********************************************
  *  Get Real non-ok Status
@@ -190,45 +188,45 @@ if ($pollerList != "") {
 	$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	$inactivInstance = "";
-	while ($ndo = $DBRESULT->fetchRow()) {
+	$pollerInError = "";
+	while ($data = $DBRESULT->fetchRow()) {
 		/*
 		 * Running
 		 */
-		if ($status != 2 && ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 5))) {
+		if ($status != 2 && ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 5))) {
 			$status = 1;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
-			}
-			$pollerListInError .= $ndo["name"];
+			$pollerInError = $data["name"];
 		}
-		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 10)) {
+		if ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 10)) {
 			$status = 2;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
-			}
-			$pollerListInError .= $ndo["name"];
+			$pollerInError = $data["name"];
 		}
+		if ($pollerListInError != "") {
+			$pollerListInError .= ", ";
+		}
+		$pollerListInError .= $pollerInError;
+		
 		/*
 		 * Activity
 		 */
-		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 5)) {
+		if ($activity != 2 && (time() - $data["last_update"] >= $timeUnit * 5)) {
 			$activity = 2;
 			if ($inactivInstance != "") {
             	$inactivInstance .= ",";
             }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 5)."s]";
-		} else if ((time() - $ndo["last_update"] >= $timeUnit * 10)) {
+            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 5)."s]";
+		} else if ((time() - $data["last_update"] >= $timeUnit * 10)) {
 			$activity = 1;
 			if ($inactivInstance != "") {
             	$inactivInstance .= ",";
             }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 10)."s]";
+            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 10)."s]";
 		}
 
 	}
 	$DBRESULT->free();
 
-	$error = "Pollers $pollerListInError not running.";
+	$error = "$pollerListInError not running";
 
 	$request = 	" SELECT stat_value, i.instance_id, name " .
 				" FROM `nagios_stats` ns, instances i " .
@@ -238,18 +236,18 @@ if ($pollerList != "") {
 				"	AND i.deleted = 0" .
                 "   AND i.name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
-	while ($ndo = $DBRESULT->fetchRow()) {
-		if (!$latency && $ndo["stat_value"] >= 60) {
+	while ($data = $DBRESULT->fetchRow()) {
+		if (!$latency && $data["stat_value"] >= 60) {
 			$latency = 1;
-            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+            $pollersWithLatency[$data['instance_id']] = $data['name'];
 		}
-		if ($ndo["stat_value"] >= 120) {
+		if ($data["stat_value"] >= 120) {
 			$latency = 2;
-            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+            $pollersWithLatency[$data['instance_id']] = $data['name'];
 		}
 	}
 	$DBRESULT->free();
-	unset($ndo);
+	unset($data);
 
 } else {
 	$pollerListInError = "";
@@ -320,3 +318,4 @@ $obj->header();
  * Display XML data
  */
 $obj->XML->output();
+

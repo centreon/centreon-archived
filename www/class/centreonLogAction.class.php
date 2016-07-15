@@ -130,7 +130,7 @@ class CentreonLogAction {
             $list_actions[$i]["object_id"] = $data["object_id"];
             $list_actions[$i]["object_name"] = $data["object_name"];
             $list_actions[$i]["action_type"] = $this->replaceActiontype($data["action_type"]);
-            if ($data["log_contact_id"] == 0) {
+            if ($data["log_contact_id"] != 0) {
                 $list_actions[$i]["log_contact_id"] = $this->getContactname($data["log_contact_id"]);
             } else {
                 $list_actions[$i]["log_contact_id"] = "System";

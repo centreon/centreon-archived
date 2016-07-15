@@ -696,7 +696,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
             "host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
             "host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
             "host_notification_options, host_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community, " .
-            "host_snmp_version, host_location, host_comment, host_register, host_activate, host_acknowledgement_timeout) " .
+            "host_snmp_version, host_location, host_comment, geo_coords, host_register, host_activate, host_acknowledgement_timeout) " .
             "VALUES ( ";
     isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'" . $ret["host_template_model_htm_id"] . "', " : $rq .= "NULL, ";
     isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'" . $ret["command_command_id"] . "', " : $rq .= "NULL, ";
@@ -734,6 +734,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
     isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_version"]) . "', " : $rq .= "NULL, ";
     isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["host_location"]) . "', " : $rq .= "NULL, ";
     isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', " : $rq .= "NULL, ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["geo_coords"]) . "', " : $rq .= "NULL, ";
     isset($ret["host_register"]) && $ret["host_register"] != NULL ? $rq .= "'" . $ret["host_register"] . "', " : $rq .= "NULL, ";
     isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'" . $ret["host_activate"]["host_activate"] . "'," : $rq .= "NULL,";
     isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != NULL ? $rq .= "'" . $ret["host_acknowledgement_timeout"] . "'" : $rq .= "NULL";
@@ -1087,6 +1088,8 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
     isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["host_location"]) . "', " : $rq .= "NULL, ";
     $rq .= "host_comment = ";
     isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', " : $rq .= "NULL, ";
+    $rq .= "geo_coords = ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'" . CentreonDB::escape($ret["geo_coords"]) . "', " : $rq .= "NULL, ";
     $rq .= "host_register = ";
     isset($ret["host_register"]) && $ret["host_register"] != NULL ? $rq .= "'" . $ret["host_register"] . "', " : $rq .= "NULL, ";
     $rq .= "host_activate = ";
@@ -1297,6 +1300,9 @@ function updateHost_MC($host_id = null) {
     if (isset($ret["host_comment"]) && $ret["host_comment"] != NULL) {
         $rq .= "host_comment = '" . CentreonDB::escape($ret["host_comment"]) . "', ";
     }
+    if (isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL) {
+        $rq .= "geo_coords = '" . CentreonDB::escape($ret["geo_coords"]) . "', ";
+    }
     if (isset($ret["host_register"]) && $ret["host_register"] != NULL) {
         $rq .= "host_register = '" . $ret["host_register"] . "', ";
     }
@@ -1335,11 +1341,9 @@ function updateHost_MC($host_id = null) {
             }
         }
     }
-    if (isset($_REQUEST['macroInput']) &&
-            isset($_REQUEST['macroValue'])) {
-        $hostObj->insertMacro(
-                $host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, true
-        );
+
+    if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
+        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword'], $macroDescription, true);
     }
 
     if (isset($ret['criticality_id']) && $ret['criticality_id']) {

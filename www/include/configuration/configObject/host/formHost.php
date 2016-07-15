@@ -439,6 +439,12 @@ $attrHosts = array(
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
+$attrHostTpls = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates&action=list',
+    'multiple' => true,
+    'linkedObject' => 'centreonHosttemplates'
+);
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
@@ -509,9 +515,6 @@ $DBRESULT->free();
 if (isset($defaultServer) && $defaultServer && $o != "mc") {
     $form->setDefaults(array('nagios_server_id' => $defaultServer["id"]));
 }
-
-$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
-$form->addElement('text', 'host_parallel_template', _("Host Templates"), $hTpls);
 
 if ($o == "mc") {
     $mc_mod_tplp = array();
@@ -915,6 +918,7 @@ $form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("i
 $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array("id" => "ehi_statusmap_image", "onChange" => "showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText2);
 
 if (!$centreon->user->admin && $o == "a") {
     $attrAclgroups = array(

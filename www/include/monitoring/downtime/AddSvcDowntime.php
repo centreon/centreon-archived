@@ -46,9 +46,9 @@ include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$hostStr = $oreon->user->access->getHostsString("ID", $pearDBO);
+$hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 
-if ($oreon->user->access->checkAction("service_schedule_downtime")) {
+if ($centreon->user->access->checkAction("service_schedule_downtime")) {
 	isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
 	isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;
 	$cG ? $host_id = $cG : $host_id = $cP;
@@ -64,16 +64,17 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 		$host_name = NULL;
 	}
 	$data = array();
-	$data = array(
-                    "start" => $centreonGMT->getDate("Y/m/d" , time() + 120), 
+	$data = array(  "start" => $centreonGMT->getDate("Y/m/d" , time() + 120), 
                     "end" => $centreonGMT->getDate("Y/m/d", time() + 7320),
                     "start_time" => $centreonGMT->getDate("G:i" , time() + 120),
                     "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
                 );
-	if (isset($host_id))
+	if (isset($host_id)) {
 		$data["host_id"] = $host_id;
-	if (isset($service_id))
+	}
+	if (isset($service_id)) {
 		$data["service_id"] = $service_id;
+	}
 
 	/*
 	 * Database retrieve information for differents elements list we need on the page
@@ -82,7 +83,7 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 	$query = "SELECT host_id, host_name " .
 			"FROM `host` " .
 			"WHERE host_register = '1' " .
-			$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
+			$centreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
 			"ORDER BY host_name";
 	$DBRESULT = $pearDB->query($query);
 	while ($host = $DBRESULT->fetchRow()){
@@ -91,8 +92,9 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
 	$DBRESULT->free();
 
 	$services = array(NULL => NULL);
-	if (isset($host_id))
-		$services = $oreon->user->access->getHostServices($pearDBO, $host_id);
+	if (isset($host_id)) {
+		$services = $centreon->user->access->getHostServices($pearDBO, $host_id);
+	}
 
 	$debug = 0;
 	$attrsTextI		= array("size"=>"3");
@@ -114,7 +116,7 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
     $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
 	$form->addElement('select', 'service_id', _("Service"), $services);
     $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
-    if (isset($oreon->optGen['monitoring_dwt_fixed']) && $oreon->optGen['monitoring_dwt_fixed']) {
+    if (isset($centreon->optGen['monitoring_dwt_fixed']) && $centreon->optGen['monitoring_dwt_fixed']) {
         $chbx->setChecked(true);
     }
 	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
@@ -133,8 +135,8 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
     */
     
 	$defaultDuration = 3600;
-    if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
-        $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
+    if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {
+        $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
     }
     $form->setDefaults(array('duration' => $defaultDuration));
     
@@ -145,8 +147,8 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
                 );
     $form->addElement('select', 'duration_scale', _("Scale of time"), $scaleChoices);
     $defaultScale = 's';
-    if (isset($oreon->optGen['monitoring_dwt_duration_scale']) && $oreon->optGen['monitoring_dwt_duration_scale']) {
-        $defaultScale = $oreon->optGen['monitoring_dwt_duration_scale'];
+    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) && $centreon->optGen['monitoring_dwt_duration_scale']) {
+        $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
     }
     $form->setDefaults(array('duration_scale' => $defaultScale));
     
@@ -173,47 +175,47 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
             
         if (!isset($_POST["comment"]))
             $_POST["comment"] = 0;
-	    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
-	    $duration = null;
+	    	$_POST["comment"] = str_replace("'", " ", $_POST['comment']);
+	    	$duration = null;
             if (isset($_POST['duration'])) {
             
-            if (isset($_POST['duration_scale'])) {
-                $duration_scale = $_POST['duration_scale'];
-            } else {
-                $duration_scale = 's';
-            }
-            
-            switch ($duration_scale)
-            {
-                default:
-                case 's':
-                    $duration = $_POST['duration'];
-                    break;
-                
-                case 'm':
-                    $duration = $_POST['duration'] * 60;
-                    break;
-                
-                case 'h':
-                    $duration = $_POST['duration'] * 60 * 60;
-                    break;
-                
-                case 'd':
-                    $duration = $_POST['duration'] * 60 * 60 * 24;
-                    break;
-            }
-	    }
-        $ecObj->AddSvcDowntime(
-            $_POST["host_id"], 
-            $_POST["service_id"],  
-            $_POST["comment"], 
-            $_POST["start"] . ' ' . $_POST['start_time'], 
-            $_POST["end"] . ' ' . $_POST['end_time'], 
-            $_POST["persistant"], 
-            $duration,
-            $host_or_centreon_time
-        );
-    	require_once("listDowntime.php");
+	            if (isset($_POST['duration_scale'])) {
+	                $duration_scale = $_POST['duration_scale'];
+	            } else {
+	                $duration_scale = 's';
+	            }
+	            
+	            switch ($duration_scale)
+	            {
+	                default:
+	                case 's':
+	                    $duration = $_POST['duration'];
+	                    break;
+	                
+	                case 'm':
+	                    $duration = $_POST['duration'] * 60;
+	                    break;
+	                
+	                case 'h':
+	                    $duration = $_POST['duration'] * 60 * 60;
+	                    break;
+	                
+	                case 'd':
+	                    $duration = $_POST['duration'] * 60 * 60 * 24;
+	                    break;
+	            }
+		    }
+	        $ecObj->AddSvcDowntime(
+	            $_POST["host_id"], 
+	            $_POST["service_id"],  
+	            $_POST["comment"], 
+	            $_POST["start"] . ' ' . $_POST['start_time'], 
+	            $_POST["end"] . ' ' . $_POST['end_time'], 
+	            $_POST["persistant"], 
+	            $duration,
+	            $host_or_centreon_time
+	        );
+	    	require_once("listDowntime.php");
 	} else {
 		/*
 		 * Smarty template Init

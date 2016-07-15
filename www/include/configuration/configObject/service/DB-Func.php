@@ -819,7 +819,9 @@ function insertService($ret = array(), $macro_on_demand = null)
         "service_passive_checks_enabled, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
         "service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
         "service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
-        "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
+        "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, " .
+        "service_inherit_contacts_from_host, service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay, " .
+        "service_comment, geo_coords, command_command_id_arg, command_command_id_arg2, " .
         "service_register, service_activate, service_acknowledgement_timeout) " .
         "VALUES ( ";
     isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
@@ -854,6 +856,7 @@ function insertService($ret = array(), $macro_on_demand = null)
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
     isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
     $ret['command_command_id_arg'] = getCommandArgs($_POST, $ret);
     isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
     isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
@@ -1203,6 +1206,10 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     $rq .= "service_comment = ";
     isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
+    
+    $rq .= "geo_coords = ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
+
     $ret["command_command_id_arg"] = getCommandArgs($_POST, $ret);
     $rq .= "command_command_id_arg = ";
     isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
@@ -1286,6 +1293,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     $fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
     $fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
     $fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
+    $fields["geo_coords"] = CentreonDB::escape($ret["geo_coords"]);
     $fields["graph_id"] = $ret["graph_id"];
     $fields["service_cs"] = "";
     if (isset($ret["service_cs"]))
@@ -1467,6 +1475,10 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_register"]) && $ret["service_register"] != NULL) {
         $rq .= "service_register = '".$ret["service_register"]."', ";
         $fields["service_register"] = $ret["service_register"];
+    }
+    if (isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL) {
+        $rq .= "geo_coords = '".$ret["geo_coords"]."', ";
+        $fields["geo_coords"] = $ret["geo_coords"];
     }
     if (isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL) {
         $rq .= "service_activate = '".$ret["service_activate"]["service_activate"]."', ";
@@ -1847,12 +1859,15 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
 }
 
 // For massive change. We just add the new list if the elem doesn't exist yet
-function updateServiceServiceGroup_MC($service_id = null)   {
-    if (!$service_id) return;
-    global $form;
-    global $pearDB;
-    $rq = "SELECT * FROM servicegroup_relation ";
-    $rq .= "WHERE service_service_id = '".$service_id."'";
+function updateServiceServiceGroup_MC($service_id = null)
+{
+    global $form, $pearDB;
+    
+    if (!$service_id) {
+        return;
+    }
+    $rq = "SELECT * FROM servicegroup_relation WHERE service_service_id = '".$service_id."'";
+
     $DBRESULT = $pearDB->query($rq);
     $hsgs = array();
     $hgsgs = array();
@@ -1863,7 +1878,7 @@ function updateServiceServiceGroup_MC($service_id = null)   {
             $hgsgs[$arr["hostgroup_hg_id"]] = $arr["hostgroup_hg_id"];
     }
     $ret = $form->getSubmitValue("service_sgs");
-    for($i = 0; $i < count($ret); $i++) {
+    for ($i = 0; $i < count($ret); $i++) {
         /* We need to record each relation for host / hostgroup selected */
         $ret1 = getMyServiceHosts($service_id);
         $ret2 = getMyServiceHostGroups($service_id);

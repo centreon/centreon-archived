@@ -151,4 +151,3 @@ $tpl->assign('p', $p);
 $tpl->assign('i', $i);
 $tpl->assign('contact', $contact_id);
 $tpl->display("showUsersAccess.ihtml");
-
