@@ -123,6 +123,10 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function noRecoveryNotificationIsSent()
     {
+        $retval = $this->execute('ls /tmp/acceptance_notification.tmp', 'web', false);
+        if ($retval['exit_code'] == 0) {
+            throw new \Exception('Notification was sent out.');
+        }
     }
 
     /**
@@ -130,6 +134,10 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function aRecoveryNotificationIsSent()
     {
+        $retval = $this->execute('ls /tmp/acceptance_notification.tmp', 'web', false);
+        if ($retval['exit_code'] != 0) {
+            throw new \Exception('No notification was sent out.');
+        }
     }
 
     private function createNotificationCommand()
