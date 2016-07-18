@@ -137,6 +137,7 @@
           format: this.roundTick
         };
       }
+      
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
         height: this.settings.height,
@@ -158,7 +159,8 @@
         },
         point: {
           show: false
-        }
+        },
+        regions: self.buildRegions(data)
       });
     },
     /**
@@ -192,6 +194,7 @@
             self.chart.load(
               self.buildMetricData(data[0]).data
             );
+            self.chart.regions(self.buildRegions(data[0]));
           }
         }
       });
@@ -291,6 +294,32 @@
         }
       }
       return data;
+    },
+    /**
+     * Build regions
+     *
+     * @param {Object} data - The chart datas
+     * @return {Array} - The list of regions
+     */
+    buildRegions: function (data) {
+      var regions = [];
+      var i;
+      for (i = 0; i < data.acknowledge.length; i++) {
+        regions.push({
+          start: data.acknowledge['start'] * 1000,
+          end: data.acknowledge['end'] * 1000,
+          class: 'region-ack'
+        });
+      }
+      for (i = 0; i < data.downtime.length; i++) {
+        regions.push({
+          start: data.downtime[i]['start'] * 1000,
+          end: data.downtime[i]['end'] * 1000,
+          class: 'region-downtime'
+        });
+      }
+
+      return regions;
     },
     /**
      * Refresh data of graph

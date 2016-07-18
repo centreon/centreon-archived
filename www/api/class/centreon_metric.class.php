@@ -179,17 +179,28 @@ class CentreonMetric extends CentreonWebService {
                 $serviceData[$i]['type'] = $serviceData[$i]['graph_type'];
                 unset($serviceData[$i]['graph_type']);
             }
+            
+            $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
+            $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
+            
             $result[] = array(
                 'service_id' => $id,
                 'data' => $serviceData,
                 'times' => $times,
-                'size' => $rows
+                'size' => $rows,
+                'acknowledge' => $acks,
+                'downtime' => $downtimes
             );
         }
         
         return $result;
     }
     
+    /**
+     * Get the status for a service
+     *
+     * @return array
+     */
     public function getStatusByService()
     {
         global $centreon;
@@ -293,6 +304,69 @@ class CentreonMetric extends CentreonWebService {
             return null;
         }
         return $element;
+    }
+    
+    /**
+     * Get the list of a acknowlegment for a service during a period
+     *
+     * @return array The list of ack
+     */
+    protected function getAcknowlegePeriods($hostId, $serviceId, $start, $end)
+    {
+        $query = 'SELECT entry_time as start, deletion_time as end
+            FROM acknowledgements
+            WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . ' AND
+                (
+                    (entry_time <= ' . $end . ' AND ' . $end . ' <= deletion_time) OR
+                    (entry_time <= ' . $start . ' AND ' . $start . ' <= deletion_time) OR
+                    (entry_time >= ' . $start . ' AND ' . $end . ' >= deletion_time) OR
+                    (deletion_time IS NULL)
+                )';
+        return $this->executeQueryPeriods($query, $start, $end);
+    }
+    
+    /**
+     * Get the list of a downtime for a service during a period
+     *
+     * @return array The list of downtimes
+     */
+    protected function getDowntimePeriods($hostId, $serviceId, $start, $end)
+    {
+        $query = 'SELECT actual_start_time as start, actual_end_time as end
+            FROM downtimes
+            WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . ' AND
+                (
+                    (actual_start_time <= ' . $end . ' AND ' . $end . ' <= actual_end_time) OR
+                    (actual_start_time <= ' . $start . ' AND ' . $start . ' <= actual_end_time) OR
+                    (actual_start_time >= ' . $start . ' AND ' . $end . ' >= actual_end_time) OR
+                    (actual_start_time IS NOT NULL AND actual_end_time IS NULL)
+                )';
+        return $this->executeQueryPeriods($query, $start, $end);
+    }
+    
+    /**
+     * Execute a query for a period
+     *
+     * @return array The list of periods
+     */
+    protected function executeQueryPeriods($query, $start, $end)
+    {
+        $periods = array();
+        $res = $this->pearDBMonitoring->query($query);
+        while ($row = $res->fetchRow()) {
+            $period = array(
+                'start' => $row['start'],
+                'end' => $row['end']
+            );
+            if ($start > $row['start']) {
+                $period['start'] = $start;
+            }
+            if ($end < $row['end']) {
+                $period['end'] = $end;
+            }
+            $periods[] = $period;
+        }
+        return $periods;
     }
 }
 ?>

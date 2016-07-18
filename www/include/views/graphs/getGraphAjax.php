@@ -140,7 +140,7 @@ if (isset($_POST['service_selector'])) {
     foreach ($_POST['service_selector'] as $hostSvcId) {
         list($hostId, $svcId) = explode('-', $hostSvcId);
         $svcGraph = getGraphByService($hostId, $svcId, getMyServiceName($svcId), $isAdmin, $lca);
-        if ($svcGraph === false) {
+        if ($svcGraph !== false) {
           $servicesReturn[] = $svcGraph;
         }
     }

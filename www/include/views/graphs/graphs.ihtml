@@ -156,6 +156,14 @@
   .graph .chart {
     overflow: hidden;
   }
+  
+  .graph .c3-region.region-downtime {
+    fill: #cc99ff;
+  }
+  
+  .graph .c3-region.region-ack {
+    fill: #ae9500;
+  }
 </style>
 
 <script id="graph-line" type="text/x-handlebars-template">

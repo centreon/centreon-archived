@@ -178,35 +178,52 @@
                 </td>
               </tr>
               <tr>
-                <td class="FormRowValue" colspan="2" style="text-align: center;">{$formAddWidget.widget_title.label} {$formAddWidget.widget_title.html}</td>
+                <td class="FormRowValue" colspan="2">{$formAddWidget.widget_title.label} {$formAddWidget.widget_title.html}</td>
+              </tr>
+              <tr>
+                <td class="FormRowValue" colspan="2">
+                  {t}Filter title{/t}: <input type="text" id="widgetSearch">
+                </td>
               </tr>
               <tr>
                 <td colspan="2">
-                  <table class="subTable ListTable">
-                  <tr class="ListHeader">
-                    <th class="ListColHeaderPicker"></th>
-                    <th class="ListColHeaderLeft">{t}Title{/t}</th>
-                    <th class="ListColHeaderLeft">{t}Version{/t}</th>
-                    <th class="ListColHeaderLeft">{t}Description{/t}</th>
-                    <th class="ListColHeaderLeft">{t}Author{/t}</th>
-                  </tr>
+                  <table class="subTable ListTable widget-list">
+                    <tbody>
                   {foreach item=elem from=$widgetModels}
                   {cycle values='list_one,list_two' assign=rowStyle}
-                  <tr class={$rowStyle}>
-                    <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
-
-                    <!--<td clss="ListColLeft">
-                        {if $elem.thumbnail}
-                            <img src='{$elem.thumbnail}'/>
-                        {/if}
-                    </td>-->
-
-                    <td class="ListColLeft">{$elem.title}</td>
-                    <td class="ListColLeft">{$elem.version}</td>
-                    <td class="ListColLeft">{$elem.description}</td>
-                    <td class="ListColLeft">{$elem.author}</td>
-                  </tr>
+                    <tr class={$rowStyle}>
+                      <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
+                      <td class="ListColLeft"
+                          data-description="{$elem.description}"
+                          data-author="{$elem.author}"
+                          data-version="{$elem.version}">{$elem.title}</td>
+                    </tr>
                   {/foreach}
+                    </tbody>
+                  <!-- <thead>
+                    <tr class="ListHeader">
+                      <th class="ListColHeaderPicker"></th>
+                      <th class="ListColHeaderLeft">
+                        <div>{t}Title{/t}</div>
+                        <div><input class="search" id="widgetSearch"></div>
+                      </th>
+                      <th class="ListColHeaderLeft">{t}Version{/t}</th>
+                      <th class="ListColHeaderLeft">{t}Description{/t}</th>
+                      <th class="ListColHeaderLeft">{t}Author{/t}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {foreach item=elem from=$widgetModels}
+                  {cycle values='list_one,list_two' assign=rowStyle}
+                    <tr class={$rowStyle}>
+                      <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
+                      <td class="ListColLeft">{$elem.title}</td>
+                      <td class="ListColLeft">{$elem.version}</td>
+                      <td class="ListColLeft">{$elem.description}</td>
+                      <td class="ListColLeft">{$elem.author}</td>
+                    </tr>
+                  {/foreach}
+                  </tbody> -->
                 </table>
               </td>
             </tr>
@@ -907,8 +924,30 @@ jQuery(function () {
       }
       return false;
     }).hide();
+    
     jQuery(this).parents('.cntn').find('.error-msg').hide();
-    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle();
+    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle(0, function () {
+      var $table = jQuery(this).find('.widget-list');
+      var $bodyCells;
+      var bodyWidth = 618;
+      var totalWidth = 0;
+      var colWidth;
+      /* Resize table widget if exists */
+      /*if ($table.length > 0) {
+        $bodyCells = $table.find('tbody tr:first').children();
+        colWidth = $bodyCells.map(function () {
+          totalWidth += jQuery(this).width();
+          return jQuery(this).width();
+        }).get();
+        if (totalWidth < bodyWidth) {
+          colWidth[3] += bodyWidth - totalWidth;
+          $table.find('tbody tr td:nth-child(4)').width(colWidth[3]);
+        }
+        $table.find('thead tr').children().each(function (i, elem) {
+          jQuery(elem).width(colWidth[i]);
+        });
+      }*/
+    });
   });
   
   infoEmptyTab();
@@ -937,6 +976,50 @@ jQuery(function () {
       jQuery("#tabs").tabs('select', getTabPos(data.current));
       infoEmptyTab();
     }
+  });
+  
+  /* Widget information */
+  jQuery('.widget-list tr td:nth-child(2)').on('mouseenter', function () {
+    var $td = jQuery(this);
+    var position = $td.offset();
+    var $popin = jQuery('<div></div>')
+      .addClass('widget-description')
+      
+      .appendTo('body');
+    jQuery('<div></div>').text($td.data('description')).appendTo($popin);
+    
+    /* Bottom footer */
+    var $bottom = jQuery('<div></div>');
+    jQuery('<div></div>').css('float', 'left')
+      .text('Version ' + $td.data('version')).appendTo($bottom);
+    jQuery('<div></div>').css('float', 'right')
+      .text($td.data('author')).appendTo($bottom);
+    $popin.append($bottom);
+    
+    $popin.show()
+      .css({
+        left: position.left - $popin.width() - 10,
+        top: position.top
+      });
+  });
+  
+  jQuery('.widget-list tr td:nth-child(2)').on('mouseout', function () {
+    jQuery('.widget-description').hide().remove();
+  });
+  
+  /* Add filters on widget */
+  jQuery('#widgetSearch').on('keydown', function () {
+    var searchValue = jQuery(this).val();
+    jQuery('.widget-list tbody tr').show();
+    jQuery('.widget-list tbody tr').filter(function () {
+      var regexp = new RegExp(searchValue, 'i');
+      var $tr = jQuery(this);
+      var $td = jQuery($tr.children()[1]);
+      if ($td.text().search(regexp) === -1) {
+        return true;
+      }
+      return false;
+    }).hide();
   });
     
   /* Toggle edit mode or view mode */
