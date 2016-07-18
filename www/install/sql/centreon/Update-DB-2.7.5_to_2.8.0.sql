@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.4' LIMIT 1;
+UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.5' LIMIT 1;
 
 -- Add graphite output for centreon-broker
 INSERT IGNORE INTO cb_module (name, libname, loading_pos, is_activated)
@@ -90,7 +90,7 @@ VALUES
     ((SELECT MAX(cbl1.cb_list_id) + 2 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'metrics_column' LIMIT 1), 'false'),
     ((SELECT MAX(cbl1.cb_list_id) + 3 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'type' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'string'),
     ((SELECT MAX(cbl1.cb_list_id) + 4 FROM cb_list cbl1), (SELECT cbf.cb_field_id FROM cb_field cbf, cb_fieldgroup cbfg WHERE cbf.fieldname = 'is_tag' AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id AND cbfg.groupname = 'status_column' LIMIT 1), 'false'),
-    (1, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'cache' LIMIT 1), 'yes');
+    (1, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'cache' LIMIT 1), 'yes'),
     (3, (SELECT cbf.cb_field_id FROM cb_field cbf WHERE cbf.fieldname = 'storage_db_type' LIMIT 1), NULL);
 
 INSERT INTO cb_list_values (cb_list_id, value_name, value_value)
