@@ -32,13 +32,17 @@ class AcknowledgementTimeoutContext extends CentreonContext
     public function aHostConfiguredWithAckExpiration()
     {
         $hostPage = new HostConfigurationPage($this);
-        $hostPage->toHostCreationPage($this->hostName);
-        $hostPage->switchToTab('Data Processing');
-        $this->assertFindField('host_acknowledgement_timeout')->setValue(1);
-        $hostPage->switchToTab('Host Configuration');
-        $this->checkRadioButtonByValue('1', 'named', array('id_or_name', 'host_passive_checks_enabled[host_passive_checks_enabled]'));
-        $this->checkRadioButtonByValue('0', 'named', array('id_or_name', 'host_active_checks_enabled[host_active_checks_enabled]'));
-        $hostPage->saveHost();
+        $hostPage->setProperties(array(
+            'name' => $this->hostName,
+            'alias' => $this->hostName,
+            'address' => 'localhost',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1,
+            'acknowledgement_timeout' => 1));
+        $hostPage->save();
         (new ConfigurationPollersPage($this))->restartEngine();
     }
 
