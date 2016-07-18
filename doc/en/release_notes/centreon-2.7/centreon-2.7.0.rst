@@ -82,6 +82,7 @@ Known Bugs
  * Monitoring > Downtimes
  * Monitoring > Comments
  * Monitoring > Eventlogs > System logs
+ * Configuration > Pollers
 * Graph slip not working
 * Pagination is broker when you go on the last page, change the number of line to the Max. Page become empty.
 * If you have timeperiods used in exception or inclusion of timeperiod and now deleted, their ids stays in the database in relation table. During the sql update process, this blocks an addition of constraint on this relation table. To fix it, you have to remove old timeperiod id.
