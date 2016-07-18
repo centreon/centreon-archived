@@ -42,3 +42,8 @@ default:
       paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
       contexts:
         - AcknowledgementTimeoutContext
+
+    recovery_notification_delay:
+      paths: [ %paths.base%/features/RecoveryNotificationDelay.feature ]
+      contexts:
+        - RecoveryNotificationDelayContext
