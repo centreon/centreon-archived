@@ -36,6 +36,8 @@
       <formatter type="checkstyle" outfile="${builddir}/checkstyle.xml"/>
       <fileset dir="www">
         <include name="**/*.php"/>
+	<exclude name="lib/HTML/QuickForm.php"/>
+	<exclude name="lib/HTML/QuickForm/**/*.php"/>
       </fileset>
     </phpcodesniffer>
   </target>
