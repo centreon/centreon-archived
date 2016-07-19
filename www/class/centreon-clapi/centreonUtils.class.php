@@ -32,7 +32,7 @@
  * For more information : command@centreon.com
  *
  */
- 
+
 namespace CentreonClapi;
 
 class CentreonUtils
@@ -108,7 +108,7 @@ class CentreonUtils
         isset($tab[1]) ? $imagename = $tab[1] : $imagename = null;
 
         if (!isset($imagename) || !isset($dirname)) {
-                return null;
+            return null;
         }
 
         $query = "SELECT img.img_id ".
@@ -127,14 +127,15 @@ class CentreonUtils
         }
         return $img_id;
     }
-    
+
     /**
      * Convert Line Breaks \n or \r\n to <br/>
-     * 
+     *
      * @param string $str | string to convert
      * @return string
      */
-    public static function convertLineBreak($str) {
+    public static function convertLineBreak($str)
+    {
         $str = str_replace("\r\n", "<br/>", $str);
         $str = str_replace("\n", "<br/>", $str);
         return $str;

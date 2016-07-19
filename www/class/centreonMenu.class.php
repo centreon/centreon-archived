@@ -35,7 +35,7 @@
 
 class CentreonMenu
 {
-    protected $_centreonLang;
+    protected $centreonLang;
 
     /**
      * Constructor
@@ -45,7 +45,7 @@ class CentreonMenu
      */
     public function __construct($centreonLang)
     {
-        $this->_centreonLang = $centreonLang;
+        $this->centreonLang = $centreonLang;
     }
 
     /**
@@ -59,19 +59,19 @@ class CentreonMenu
     public function translate($isModule, $url, $menuName)
     {
         $moduleName = "";
-	    if ($isModule && $url) {
+        if ($isModule && $url) {
             if (preg_match("/\.\/modules\/([a-zA-Z-_]+)/", $url, $matches)) {
                 if (isset($matches[1])) {
                     $moduleName = $matches[1];
                 }
             }
-		}
-		$name = _($menuName);
-		if ($moduleName) {
-            $this->_centreonLang->bindLang('messages', 'www/modules/'.$moduleName.'/locale/');
+        }
+        $name = _($menuName);
+        if ($moduleName) {
+            $this->centreonLang->bindLang('messages', 'www/modules/'.$moduleName.'/locale/');
             $name = _($menuName);
-            $this->_centreonLang->bindLang();
-		}
+            $this->centreonLang->bindLang();
+        }
         return $name;
     }
 }

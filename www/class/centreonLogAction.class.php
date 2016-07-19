@@ -33,9 +33,10 @@
  *
  */
 
-class CentreonLogAction {
+class CentreonLogAction
+{
 
-    var $logUser;
+    protected $logUser;
     protected $uselessKey;
 
     /*
@@ -59,14 +60,15 @@ class CentreonLogAction {
      *  Inserts configuration into DB
      */
 
-    function insertFieldsNameValue($logId, $fields)
+    public function insertFieldsNameValue($logId, $fields)
     {
         global $pearDBO;
 
         $query = "INSERT INTO `log_action_modification` (field_name, field_value, action_log_id) VALUES ";
         $append = "";
         foreach ($fields as $key => $value) {
-            $query .= $append . "('" . CentreonDB::escape($key) . "', '" . CentreonDB::escape($value) . "', '" . CentreonDB::escape($logId) . "')";
+            $query .= $append . "('" . CentreonDB::escape($key) . "', '" . CentreonDB::escape($value) . "', '" .
+                CentreonDB::escape($logId) . "')";
             $append = ", ";
         }
         $DBRESULT = $pearDBO->query($query);
@@ -76,7 +78,7 @@ class CentreonLogAction {
      *  Inserts logs : add, delete or modification of an object
      */
 
-    function insertLog($object_type, $object_id, $object_name, $action_type, $fields = null)
+    public function insertLog($object_type, $object_id, $object_name, $action_type, $fields = null)
     {
         global $pearDBO;
 
@@ -85,7 +87,11 @@ class CentreonLogAction {
         $auditLog = $optLogs->fetchRow();
 
         if (($auditLog) && ($auditLog['audit_log_option'] == '1')) {
-            $str_query = "INSERT INTO `log_action` (action_log_date, object_type, object_id, object_name, action_type, log_contact_id) VALUES ('".time()."', '" . CentreonDB::escape($object_type) . "', '" . CentreonDB::escape($object_id) . "', '" . CentreonDB::escape($object_name) . "', '" . CentreonDB::escape($action_type) . "', '" . CentreonDB::escape($this->logUser->user_id) . "')";
+            $str_query = "INSERT INTO `log_action`
+                (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
+                VALUES ('".time()."', '" . CentreonDB::escape($object_type) . "', '" .
+                CentreonDB::escape($object_id) . "', '" . CentreonDB::escape($object_name) . "', '" .
+                    CentreonDB::escape($action_type) . "', '" . CentreonDB::escape($this->logUser->user_id) . "')";
             $pearDBO->query($str_query);
 
             $DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");
@@ -100,11 +106,13 @@ class CentreonLogAction {
      * returns the contact name
      */
 
-    function getContactname($id)
+    public function getContactname($id)
     {
         global $pearDB;
 
-        $DBRESULT = $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id = '" . CentreonDB::escape($id) . "' LIMIT 1");
+        $DBRESULT = $pearDB->query(
+            "SELECT contact_name FROM `contact` WHERE contact_id = '" . CentreonDB::escape($id) . "' LIMIT 1"
+        );
         while ($data = $DBRESULT->fetchRow()) {
             $name = $data["contact_name"];
         }
@@ -116,13 +124,18 @@ class CentreonLogAction {
      * returns the list of actions ("create","delete","change","massive change", "enable", "disable")
      */
 
-    function listAction($id, $object_type)
+    public function listAction($id, $object_type)
     {
         global $pearDBO;
         $list_actions = array();
         $i = 0;
 
-        $DBRESULT = $pearDBO->query("SELECT * FROM log_action WHERE object_id ='" . CentreonDB::escape($id) . "' AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date DESC");
+        $DBRESULT = $pearDBO->query(
+            "SELECT *
+                FROM log_action
+                WHERE object_id ='" . CentreonDB::escape($id) . "'
+                AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date DESC"
+        );
         while ($data = $DBRESULT->fetchRow()) {
             $list_actions[$i]["action_log_id"] = $data["action_log_id"];
             $list_actions[$i]["action_log_date"] = date("Y/m/d H:i", $data["action_log_date"]);
@@ -145,7 +158,7 @@ class CentreonLogAction {
     /*
      *  returns list of modifications
      */
-    function getHostId($service_id)
+    public function getHostId($service_id)
     {
         global $pearDBO;
         
@@ -183,7 +196,7 @@ class CentreonLogAction {
         return -1;
     }
 
-    public function getHostName($host_id) 
+    public function getHostName($host_id)
     {
         global $pearDB, $pearDBO;
         
@@ -199,11 +212,11 @@ class CentreonLogAction {
         $info = $DBRESULT2->fetchRow();
         if (isset($info['object_name'])) {
             return $info['object_name'];
-        }        
+        }
         return -1;
     }
 
-    public function getHostGroupName($hg_id) 
+    public function getHostGroupName($hg_id)
     {
         global $pearDB, $pearDBO;
         
@@ -219,30 +232,39 @@ class CentreonLogAction {
         $info = $DBRESULT2->fetchRow();
         if (isset($info['object_name'])) {
             return $info['object_name'];
-        }        
+        }
         return -1;
     }
 
     /*
      *  returns list of modifications
      */
-    function listModification($id, $object_type)
+    public function listModification($id, $object_type)
     {
         global $pearDBO;
         $list_modifications = array();
         $ref = array();
         $i = 0;
 
-        $DBRESULT = $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '" . CentreonDB::escape($id) . "' AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date ASC");
+        $DBRESULT = $pearDBO->query(
+            "SELECT action_log_id, action_log_date, action_type
+                FROM log_action
+                WHERE object_id = '" . CentreonDB::escape($id) . "'
+                    AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date ASC"
+        );
         while ($row = $DBRESULT->fetchRow()) {
-            $DBRESULT2 = $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='" . CentreonDB::escape($row['action_log_id']) . "'");
+            $DBRESULT2 = $pearDBO->query(
+                "SELECT action_log_id,field_name,field_value
+                    FROM `log_action_modification`
+                    WHERE action_log_id='" . CentreonDB::escape($row['action_log_id']) . "'"
+            );
             while ($field = $DBRESULT2->fetchRow()) {
                 if (!isset($ref[$field["field_name"]]) && $field["field_value"] != "") {
                     $list_modifications[$i]["action_log_id"] = $field["action_log_id"];
                     $list_modifications[$i]["field_name"] = $field["field_name"];
                     $list_modifications[$i]["field_value_before"] = "";
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
-                } else if (isset($ref[$field["field_name"]]) && $ref[$field["field_name"]] != $field["field_value"]) {
+                } elseif (isset($ref[$field["field_name"]]) && $ref[$field["field_name"]] != $field["field_value"]) {
                     $list_modifications[$i]["action_log_id"] = $field["action_log_id"];
                     $list_modifications[$i]["field_name"] = $field["field_name"];
                     $list_modifications[$i]["field_value_before"] = $ref[$field["field_name"]];
@@ -258,7 +280,7 @@ class CentreonLogAction {
     /*
      *  Display clear action labels
      */
-    function replaceActiontype($action)
+    public function replaceActiontype($action)
     {
         $actionList = array();
         $actionList["d"] = "Delete";
@@ -279,7 +301,7 @@ class CentreonLogAction {
     /*
      *  list object types
      */
-    function listObjecttype()
+    public function listObjecttype()
     {
         $object_type_tab = array();
 
