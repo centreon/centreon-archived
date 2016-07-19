@@ -95,7 +95,7 @@ class CentreonGraphStatus
             2 => array('pipe', 'a'),
         );
 
-        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
+        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, null, null);
         if (false === is_resource($process)) {
             throw new RuntimeException();
         }
@@ -138,9 +138,9 @@ class CentreonGraphStatus
                     $value = floatval((string)$info);
                     if ($value < 75) {
                         $currentStatus = 'critical';
-                    } else if ($value == 100) {
+                    } elseif ($value == 100) {
                         $currentStatus = 'ok';
-                    } else if ($value > 74) {
+                    } elseif ($value > 74) {
                         $currentStatus = 'warning';
                     } else {
                         $currentStatus = 'unknown';
@@ -151,7 +151,7 @@ class CentreonGraphStatus
                             'end' => null
                         );
                         $lastStatus = $currentStatus;
-                    } else if ($lastStatus !== $currentStatus) {
+                    } elseif ($lastStatus !== $currentStatus) {
                         $interval['end'] = $time;
                         $metrics[$lastStatus][] = $interval;
                         $lastStatus = $currentStatus;
@@ -273,7 +273,7 @@ class CentreonGraphStatus
         if ($row === null) {
             throw new RuntimeException('Missing status directory configuration');
         }
-        return $row['RRDdatabase_status_path'];    
+        return $row['RRDdatabase_status_path'];
     }
 
     /**
