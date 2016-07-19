@@ -35,7 +35,7 @@
 
 /**
  *
- * Class that checks program options 
+ * Class that checks program options
  * @author msugumaran
  *
  */
@@ -67,7 +67,7 @@ class Options
         $this->shortopts .= "s:"; /** Schema for table which table partitions will be listed */
         $this->shortopts .= "h"; /** Help */
         $this->options = getopt($this->shortopts);
-        $this->_updateVerboseLevel();
+        $this->updateVerboseLevel();
     }
     
     /*
@@ -191,7 +191,7 @@ class Options
     /*
      * Update verbose level of program
      */
-    private function _updateVerboseLevel()
+    private function updateVerboseLevel()
     {
         if (isset($this->options) && isset($this->options["v"])) {
             $this->verbosity = $verbosity;

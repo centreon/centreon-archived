@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit;
+    exit;
 }
 
 /*
@@ -56,11 +56,11 @@ isset($_POST["item"]) ? $service_id = $_POST["item"] : $service_id;
 $form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 
 $host_name = getMyHostName($host_id);
-$items  = $centreon->user->access->getHostServices($pearDBO, $host_id);
+$items = $centreon->user->access->getHostServices($pearDBO, $host_id);
 
 $itemsForUrl = array();
 foreach ($items as $key => $value) {
-	$itemsForUrl[str_replace(":", "%3A", $key)] = str_replace(":", "%3A", $value);
+    $itemsForUrl[str_replace(":", "%3A", $key)] = str_replace(":", "%3A", $value);
 }
 $service_name = $itemsForUrl[$service_id];
 
@@ -76,32 +76,32 @@ $redirect->setValue($o);
  * Set service id with period selection form
  */
 if ($service_id != "NULL" && $host_id != "NULL") {
-	$formPeriod->addElement('hidden', 'item', $service_id);
-	$formPeriod->addElement('hidden', 'host_id', $host_id);
-	$form->addElement('hidden', 'host_id', $host_id);
-	$form->setDefaults(array('item' => $service_id));
+    $formPeriod->addElement('hidden', 'item', $service_id);
+    $formPeriod->addElement('hidden', 'host_id', $host_id);
+    $form->addElement('hidden', 'host_id', $host_id);
+    $form->setDefaults(array('item' => $service_id));
 }
 
 /*
  * Stats Display for selected service
  */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL"){
-	/*
-	 * Getting periods values
-	 */
-	$dates = getPeriodToReport();
-	$start_date = $dates[0];
-	$end_date = $dates[1];
+if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
+    /*
+     * Getting periods values
+     */
+    $dates = getPeriodToReport();
+    $start_date = $dates[0];
+    $end_date = $dates[1];
 
-	/*
-	 * Getting hostgroup and his hosts stats
-	 */
-	$serviceStats = array();
-	$serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod) ;
+    /*
+     * Getting hostgroup and his hosts stats
+     */
+    $serviceStats = array();
+    $serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod);
 
-	/*
-	 * Chart datas
-	 */
+    /*
+     * Chart datas
+     */
     $tpl->assign('service_ok', $serviceStats["OK_TP"]);
     $tpl->assign('service_warning', $serviceStats["WARNING_TP"]);
     $tpl->assign('service_critical', $serviceStats["CRITICAL_TP"]);
@@ -109,20 +109,20 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
     $tpl->assign('service_undetermined', $serviceStats["UNDETERMINED_TP"]);
     $tpl->assign('service_maintenance', $serviceStats["MAINTENANCE_TP"]);
 
-	/*
-	 * Exporting variables for ihtml
-	 */
-	$tpl->assign('host_name', $host_name);
-	$tpl->assign('name', $itemsForUrl[$service_id]);
-	$tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
-	$tpl->assign('totalTime',  $serviceStats["TOTAL_TIME_F"]);
-	$tpl->assign('summary',  $serviceStats);
-	$tpl->assign('from', _("From"));
-	$tpl->assign('date_start', date(_("d/m/Y H:i"), $start_date));
-	$tpl->assign('to', _("to"));
-	$tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
-	$formPeriod->setDefaults(array('period' => $period));
-	$tpl->assign('id', $service_id);
+    /*
+     * Exporting variables for ihtml
+     */
+    $tpl->assign('host_name', $host_name);
+    $tpl->assign('name', $itemsForUrl[$service_id]);
+    $tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
+    $tpl->assign('totalTime', $serviceStats["TOTAL_TIME_F"]);
+    $tpl->assign('summary', $serviceStats);
+    $tpl->assign('from', _("From"));
+    $tpl->assign('date_start', date(_("d/m/Y H:i"), $start_date));
+    $tpl->assign('to', _("to"));
+    $tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
+    $formPeriod->setDefaults(array('period' => $period));
+    $tpl->assign('id', $service_id);
 }
 $tpl->assign('resumeTitle', _("Service state"));
 $tpl->assign('p', $p);
@@ -141,28 +141,32 @@ $tpl->assign('formItem', $renderer->toArray());
 /*
  * Ajax timeline and CSV export initialization
  */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL"){
-	/*
-	 * CSV Export
-	 */
-	$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?host=".$host_id."&service=".$service_id."&start=".$start_date."&end=".$end_date);
-	$tpl->assign("link_csv_name", _("Export in CSV format"));
+if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
+    /*
+     * CSV Export
+     */
+    $tpl->assign(
+        "link_csv_url",
+        "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?host="
+        .$host_id."&service=".$service_id."&start=".$start_date."&end=".$end_date
+    );
+    $tpl->assign("link_csv_name", _("Export in CSV format"));
 
-	/*
-	 * status colors
-	 */
-	$color = substr($centreon->optGen["color_up"],1).':'.substr($centreon->optGen["color_down"],1).
-					':'.substr($centreon->optGen["color_unreachable"],1).':'.substr($centreon->optGen["color_undetermined"], 1).
-					':'.substr($centreon->optGen["color_maintenance"],1);
+    /*
+     * status colors
+     */
+    $color = substr($centreon->optGen["color_up"], 1).':'.substr($centreon->optGen["color_down"], 1)
+        . ':'.substr($centreon->optGen["color_unreachable"], 1).':'.substr($centreon->optGen["color_undetermined"], 1)
+        . ':'.substr($centreon->optGen["color_maintenance"], 1);
 
-	/*
-	 * Ajax timeline
-	 */
-	$type = 'Service';
-	include("./include/reporting/dashboard/ajaxReporting_js.php");
-
+    /*
+     * Ajax timeline
+     */
+    $type = 'Service';
+    include("./include/reporting/dashboard/ajaxReporting_js.php");
 } else {
-	?><script type="text/javascript"> function initTimeline() {;} </script> <?php
+    ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
+
 }
 
 $tpl->display("template/viewServicesLog.ihtml");

@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="root">
 <div>
-    <div id="div2"   valign="top" align='left'></div>
+    <div id="div2" valign="top" align='left'></div>
 </div>
 <div>
     <div>
@@ -88,7 +88,7 @@
                          </td>  
                          <td class="Toolbar_pagelimit">
                             <xsl:element name='a'>
-                                <xsl:attribute name="href">javascript:log_4_host(this, '', 'CSV')</xsl:attribute>
+                                <xsl:attribute name="href">javascript:logs(this, '', 'CSV')</xsl:attribute>
                                 <xsl:element name='img'>
                                     <xsl:attribute name="title">{t}Export CSV{/t}</xsl:attribute>
                                     <xsl:attribute name="alt">Export CSV</xsl:attribute>
@@ -97,7 +97,7 @@
                                 </xsl:element>
                             </xsl:element>
                             <xsl:element name='a'>
-                                <xsl:attribute name="href">javascript:log_4_host(this, '', 'XML')</xsl:attribute>
+                                <xsl:attribute name="href">javascript:logs(this, '', 'XML')</xsl:attribute>
                                 <xsl:element name='img'>
                                     <xsl:attribute name="title">{t}Export XML{/t}</xsl:attribute>
                                     <xsl:attribute name="alt">Export XML</xsl:attribute>
@@ -106,7 +106,7 @@
                                 </xsl:element>
                             </xsl:element>
                             <xsl:element name='select'>
-                                <xsl:attribute name="onChange">setL(this.value); log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                                <xsl:attribute name="onChange">setL(this.value); logs('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
                                 <xsl:attribute name="name">l</xsl:attribute>
                                     <xsl:for-each select="//limitValue">
                                         <xsl:element name='option'>
@@ -257,7 +257,7 @@
                  </td>  
                  <td class="Toolbar_pagelimit">   
                     <xsl:element name='select'>
-                        <xsl:attribute name="onChange">setL(this.value); log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                        <xsl:attribute name="onChange">setL(this.value); logs('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
                         <xsl:attribute name="name">l</xsl:attribute>
                             <xsl:for-each select="//limitValue">
                                 <xsl:element name='option'>
