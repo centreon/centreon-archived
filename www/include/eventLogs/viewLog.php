@@ -202,9 +202,9 @@ $form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepi
 $form->addElement('text', 'output', _("Output"),  array("id"=>"output", "style"=>"width: 203px;", "size"=>15, "value" => $user_params['output']));
 
 if ($engine == "false") {
-    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period()","class"=>"btc bt_success"));
+    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
 } else {
-    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period_engine()","class"=>"btc bt_success"));
+    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period_engine()", "class"=>"btc bt_success"));
 }
 
 $attrHosts = array(
@@ -291,21 +291,14 @@ if ($engine == 'false') {
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
-var multi = <?php echo $multi; ?>;
-
-// it's fake methode for using ajax system by default
-function mk_pagination() {;}
-function mk_paginationFF() {;}
-function set_header_title() {;}
-
 function apply_period() {
 	var openid = document.getElementById('openid').innerHTML;
-	log_4_host(openid,'','');
+	logs(openid,'','');
 }
 
 function apply_period_engine() {
 	var openid = document.getElementById('openid').innerHTML;
-	log_4_engine();
+	logEngine();
 }
 
 var _limit = 30;
@@ -316,12 +309,12 @@ function setL(_this) {
 var _num = 0;
 function log_4_host_page(id, formu, num)	{
 	_num = num;
-	log_4_host(id, formu, '');
+	logs(id, formu, '');
 }
 
 function log_4_engine_page(id,formu,num) {
 	_num = num;
-	log_4_engine();
+	logsEngine();
 }
 
 var _host 		= <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"]: 'false'; ?>;
@@ -369,7 +362,7 @@ if (document.FormPeriod && document.FormPeriod.period.value == "") {
 	document.FormPeriod.EndTime.value = EndTime;
 }
 
-function log_4_engine(type) {
+function logsEngine(type) {
     _output = jQuery( "#output" ).val();
     var poller_value = jQuery("#poller_filter").val();
     var args = "";
@@ -445,7 +438,7 @@ function controlTimePeriod() {
 		EndTime = document.FormPeriod.EndTime.value;
 }
 
-function log_4_host(id, formu, type) {
+function logs(id, formu, type) {
     opid = id;
     if (jQuery( "#output" ) !== "undefined") {
         _output = jQuery( "#output" ).val();
@@ -471,16 +464,16 @@ function log_4_host(id, formu, type) {
 	var _addrXSL = "./include/eventLogs/xsl/log.xsl";
 
 	if (!type) {
-		var _addr = './include/eventLogs/xml/data.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
+		var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
 		proc.setXml(_addr)
 		proc.setXslt(_addrXSL)
 		proc.transform("logView4xml");
 	} else {
 		var openid = document.getElementById('openid').innerHTML;
 		if (type == 'CSV') {
-			var _addr = './include/eventLogs/export/data.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
+			var _addr = './include/eventLogs/export/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
 		} else if (type == 'XML') {
-			var _addr = './include/eventLogs/xml/data.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
+			var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
 		}
 		document.location.href = _addr;
 	}
@@ -655,7 +648,7 @@ jQuery(function () {
                window.history.pushState("", "", "main.php?p=20301"+urlargs);
            }
            document.getElementById('openid').innerHTML = args;
-           log_4_host(args, '', false);
+           logs(args, '', false);
         });
         //setServiceGroup
         jQuery("#setHostGroup").click(function() {
@@ -739,7 +732,7 @@ jQuery(function () {
                 var argArray = getArgsForHost();
                 args = argArray[0];
                 urlargs = argArray[1];
-                log_4_host(args, '', false);
+                logs(args, '', false);
                event.preventDefault();
             }
         });
@@ -758,12 +751,12 @@ jQuery(function () {
         	if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
             	return false;
            	}
-           	log_4_engine();
+           	logsEngine();
         });
         jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
         jQuery( "#output" ).keypress(function(  event ) {
             if ( event.which == 13 ) {
-            	log_4_engine();
+            	logsEngine();
                	event.preventDefault();
             }
         });
