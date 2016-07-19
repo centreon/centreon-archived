@@ -117,8 +117,6 @@
                                                                                  'get_row' => 'sg_name',
                                                                                  'order'   => array('sg_name')));
 
-    print_r($sgs);
-
     /* service categories */
     $service_categories = array();
     $scstring = $acl->getServiceCategoriesString();
