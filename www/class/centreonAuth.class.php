@@ -81,7 +81,7 @@ class CentreonAuth
      * @param string $token | for autologin
      * @return void
      */
-    public function __contruct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "")
+    public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "")
     {
         global $centreon_crypt;
 

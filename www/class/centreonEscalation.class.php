@@ -34,22 +34,22 @@
  */
 
 /**
- * 
+ *
  */
 class CentreonEscalation
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -136,7 +136,7 @@ class CentreonEscalation
             . "WHERE hc_id IN (" . $explodedValues . ") "
             . "ORDER BY hc_name ";
 
-        $resRetrieval = $this->_db->query($query);
+        $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized host categories
             $hide = false;

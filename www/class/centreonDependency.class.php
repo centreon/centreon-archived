@@ -41,10 +41,10 @@ class CentreonDependency
     protected $db = null;
 
     /**
- 	 * Constructor
- 	 *
- 	 * @param CentreonDB $db
- 	 */
+     * Constructor
+     *
+     * @param CentreonDB $db
+     */
     public function __construct($db)
     {
         $this->db = $db;
@@ -58,7 +58,8 @@ class CentreonDependency
      */
     public function getServiceService($withSg = false)
     {
-        $query = 'SELECT dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
+        $query = 'SELECT dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
+            dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
         	FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc
         	WHERE dsp.dependency_dep_id = dsc.dependency_dep_id';
         $res = $this->db->query($query);
@@ -83,10 +84,12 @@ class CentreonDependency
                 $sgcs = $sgObj->getServiceGroupServices($row['child_sg']);
                 foreach ($sgps as $sgp) {
                     foreach ($sgcs as $sgc) {
-                        $listServices[$sgp[0] . ";" . $sgp[1] . ";" . $sgc[0] . ";" . $sgc[1]] = array('parent_host_id' => $sgp[0],
-                                                'parent_service_id' => $sgp[1],
-                                                'child_host_id' => $sgc[0],
-                                                'child_service_id' => $sgc[1]);
+                        $listServices[$sgp[0] . ";" . $sgp[1] . ";" . $sgc[0] . ";" . $sgc[1]] = array(
+                            'parent_host_id' => $sgp[0],
+                            'parent_service_id' => $sgp[1],
+                            'child_host_id' => $sgc[0],
+                            'child_service_id' => $sgc[1]
+                        );
                     }
                 }
             }
@@ -144,9 +147,10 @@ class CentreonDependency
      */
     public function getHostService()
     {
-        $query = "SELECT dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
-        		  FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc
-        		  WHERE dhp.dependency_dep_id = dsc.dependency_dep_id";
+        $query = "SELECT dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id,
+            dsc.service_service_id as child_service_id
+        	FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc
+            WHERE dhp.dependency_dep_id = dsc.dependency_dep_id";
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
             return array();
@@ -166,9 +170,10 @@ class CentreonDependency
      */
     public function getServiceHost()
     {
-        $query = "SELECT dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dhc.host_host_id as child_host_id
-        		  FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc
-        		  WHERE dsp.dependency_dep_id = dhc.dependency_dep_id";
+        $query = "SELECT dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
+            dhc.host_host_id as child_host_id
+            FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc
+            WHERE dsp.dependency_dep_id = dhc.dependency_dep_id";
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
             return array();
@@ -214,7 +219,7 @@ class CentreonDependency
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
