@@ -27,7 +27,7 @@ Command ID
 
 Command name
 
-Command type   *check*, *notif* or *misc*
+Command type   *check*, *notif*, *misc* or *discovery*
 
 Command line   System command line that will be run on execution
 ============== =================================================
@@ -46,7 +46,7 @@ Column         Description
 ============== =================================================
 Command name
 
-Command type   *check*, *notif* or *misc*
+Command type   *check*, *notif*, *misc* or *discovery*
 
 Command line   System command line that will be run on execution
 ============== =================================================
@@ -82,7 +82,7 @@ name        Name of command
 
 line        Command line
 
-type        *check*, *notif*, *misc*
+type        *check*, *notif*, *misc* or *discovery*
 
 graph       Graph template applied on command
 
