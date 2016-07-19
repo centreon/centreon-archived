@@ -34,10 +34,13 @@
  */
 
 /**
+ * Class that handles XML properties file
  *
- * Class that handles XML properties file 
- * @author msugumaran
- *
+ * @category Database
+ * @package  Centreon
+ * @author   qgarnier <qgarnier@centreon.com>
+ * @license  GPL http://www.gnu.org/licenses
+ * @link     http://www.centreon.com
  */
 class Config
 {
@@ -47,8 +50,10 @@ class Config
     public $db;
 
     /**
-     *
      * Class constructor
+     *
+     * @param CentreonDB $db   the centreon database
+     * @param string     $file the xml file name
      */
     public function __construct($db, $file)
     {
@@ -60,12 +65,20 @@ class Config
     
     /**
      * Parse XML configuration file to get properties of table to process
+     *
+     * @param string $xmlfile the xml file name
+     *
+     * @return null
      */
     public function parseXML($xmlfile)
     {
         $node = new SimpleXMLElement(file_get_contents($xmlfile));
         foreach ($node->table as $table_config) {
-            $table = new MysqlTable($this->db, (string) $table_config["name"], (string) $table_config["schema"]);
+            $table = new MysqlTable(
+                $this->db,
+                (string) $table_config["name"],
+                (string) $table_config["schema"]
+            );
             if (!is_null($table->getName()) && !is_null($table->getSchema())) {
                 $table->setActivate((string) $table_config->activate);
                 $table->setColumn((string) $table_config->column);
@@ -83,7 +96,9 @@ class Config
     }
     
     /**
-     * return all tables partitioning properties
+     * Return all tables partitioning properties
+     *
+     * @return array
      */
     public function getTables()
     {
@@ -92,6 +107,10 @@ class Config
     
     /**
      * Return partitioning properties for a specific table
+     *
+     * @param string $name the table name
+     *
+     * @return string
      */
     public function getTable($name)
     {
@@ -105,7 +124,9 @@ class Config
     }
     
     /**
-     * Check if each table property is set 
+     * Check if each table property is set
+     *
+     * @return boolean
      */
     public function isValid()
     {
