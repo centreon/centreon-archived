@@ -35,42 +35,62 @@
  * SVN : $Id$
  * 
  */
-	if (!isset ($oreon))
-		exit ();
-	
-	isset($_GET["lca_id"]) ? $cG = $_GET["lca_id"] : $cG = NULL;
-	isset($_POST["lca_id"]) ? $cP = $_POST["lca_id"] : $cP = NULL;
-	$cG ? $lca_id = $cG : $lca_id = $cP;
+if (!isset($oreon)) {
+    exit();
+}
 
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-	$cG ? $select = $cG : $select = $cP;
+isset($_GET["lca_id"]) ? $cG = $_GET["lca_id"] : $cG = null;
+isset($_POST["lca_id"]) ? $cP = $_POST["lca_id"] : $cP = null;
+$cG ? $lca_id = $cG : $lca_id = $cP;
 
-	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
+$cG ? $select = $cG : $select = $cP;
 
-		
-	#Pear library
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
-	#Path to the configuration dir
-	$path = "./include/options/LCA/define/";
-	
-	#PHP functions
-	require_once $path."DB-Func.php";
-	require_once "./include/common/common-Func.php";
-	
-	switch ($o)	{
-		case "a" : require_once($path."formLCA.php"); break; #Add a LCA
-		case "w" : require_once($path."formLCA.php"); break; #Watch a LCA
-		case "c" : require_once($path."formLCA.php"); break; #Modify a LCA
-		case "s" : enableLCAInDB($lca_id); require_once($path."listLCA.php"); break; #Activate a LCA
-		case "u" : disableLCAInDB($lca_id); require_once($path."listLCA.php"); break; #Desactivate a LCA
-		case "m" : multipleLCAInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listLCA.php"); break; #Duplicate n LCAs
-		case "d" : deleteLCAInDB(isset($select) ? $select : array()); require_once($path."listLCA.php"); break; #Delete n LCAs
-		default : require_once($path."listLCA.php"); break;
-	}
-?>
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
+
+#Pear library
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+#Path to the configuration dir
+$path = "./include/options/LCA/define/";
+
+#PHP functions
+require_once $path."DB-Func.php";
+require_once "./include/common/common-Func.php";
+
+switch ($o) {
+    case "a":
+        require_once($path."formLCA.php");
+        break; #Add a LCA
+    case "w":
+        require_once($path."formLCA.php");
+        break; #Watch a LCA
+    case "c":
+        require_once($path."formLCA.php");
+        break; #Modify a LCA
+    case "s":
+        enableLCAInDB($lca_id);
+        require_once($path."listLCA.php");
+        break; #Activate a LCA
+    case "u":
+        disableLCAInDB($lca_id);
+        require_once($path."listLCA.php");
+        break; #Desactivate a LCA
+    case "m":
+        multipleLCAInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listLCA.php");
+        break; #Duplicate n LCAs
+    case "d":
+        deleteLCAInDB(isset($select) ? $select : array());
+        require_once($path."listLCA.php");
+        break; #Delete n LCAs
+    default:
+        require_once($path."listLCA.php");
+        break;
+}
