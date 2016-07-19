@@ -134,7 +134,7 @@ class CentreonCfgWriter
      *  @param string $type
      *  @return void
      */
-    public function start_cfg($type)
+    public function startCfg($type)
     {
         $this->writeText("define " . $type . "{\n");
         $this->xmlBuffer->startElement($type);
@@ -145,7 +145,7 @@ class CentreonCfgWriter
      *
      *  @return void
      */
-    public function end_cfg()
+    public function endCfg()
     {
         $this->writeText("\t}\n\n");
         $this->xmlBuffer->endElement();
