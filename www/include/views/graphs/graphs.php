@@ -34,14 +34,14 @@
 */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 $gmtObj = new CentreonGMT($pearDB);
 /**
  * Notice that this timestamp is actually the server's time and not the UNIX time
  * In the future this behaviour should be changed and UNIX timestamps should be used
- * 
+ *
  * date('Z') is the offset in seconds between the server's time and UTC
  * The problem remains that on some servers that do not use UTC based timezone, leap seconds are taken in
  * considerations while all other dates are in comparison wirh GMT so there will be an offset of some seconds
@@ -86,32 +86,35 @@ $defaultServicesForGraph = array();
 $defaultHostsForGraph = array();
 $defaultMetasForGraph = array();
 
-if (isset($_GET["openid"])){
-	$openid = $_GET["openid"];
-	$open_id_type = substr($openid, 0, 2);
-	$open_id_sub = substr($openid, 3, strlen($openid));
+if (isset($_GET["openid"])) {
+    $openid = $_GET["openid"];
+    $open_id_type = substr($openid, 0, 2);
+    $open_id_sub = substr($openid, 3, strlen($openid));
 }
 
 (isset($_GET["host_id"]) && $open_id_type == "HH") ? $_GET["host_id"] = $open_id_sub : $_GET["host_id"] = null;
 
 $id = 1;
 
-function getGetPostValue($str){
-	$value = NULL;
-	if (isset($_GET[$str]) && $_GET[$str])
-		$value = $_GET[$str];
-	if (isset($_POST[$str]) && $_POST[$str])
-		$value = $_POST[$str];
-	return urldecode($value);
+function getGetPostValue($str)
+{
+    $value = null;
+    if (isset($_GET[$str]) && $_GET[$str]) {
+        $value = $_GET[$str];
+    }
+    if (isset($_POST[$str]) && $_POST[$str]) {
+        $value = $_POST[$str];
+    }
+    return urldecode($value);
 }
 
 /*
  * Get Arguments
  */
 
-$id 	= getGetPostValue("id");
+$id    = getGetPostValue("id");
 $id_svc = getGetPostValue("svc_id");
-$meta 	= getGetPostValue("meta");
+$meta    = getGetPostValue("meta");
 $search = getGetPostValue("search");
 $search_service = getGetPostValue("search_service");
 
@@ -122,11 +125,11 @@ if (empty($graphsPerPage)) {
     $graphsPerPage = '5';
 }
 
-if (isset($id_svc) && $id_svc){
+if (isset($id_svc) && $id_svc) {
     $id = "";
     $grId = '';
     $tab_svcs = explode(",", $id_svc);
-    foreach($tab_svcs as $svc){
+    foreach ($tab_svcs as $svc) {
         $tmp = explode(";", $svc);
         if (!isset($tmp[1])) {
             $id .= "HH_" . getMyHostID($tmp[0]).",";
@@ -146,7 +149,7 @@ if (isset($id_svc) && $id_svc){
                 $grId .= getMyHostID($tmp[0]) . '-' .  getMyServiceID($tmp[1], getMyHostID($tmp[0]));
             }
         }
-        
+
         if (strpos($grId, '-')) {
             $defaultServicesForGraph[$svc] = $grId;
         } elseif ($meta == 1) {
@@ -173,36 +176,68 @@ if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
 $form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
 $form->addElement('header', 'title', _("Choose the source to graph"));
 
-$periods = array(	""=>"",
-					"3h"		=> _("Last 3 Hours"),
-					"6h"		=> _("Last 6 Hours"),
-					"12h"		=> _("Last 12 Hours"),
-					"1d"		=> _("Last 24 Hours"),
-					"2d"       	=> _("Last 2 Days"),
-					"3d"	    => _("Last 3 Days"),
-					"4d"       	=> _("Last 4 Days"),
-					"5d"       	=> _("Last 5 Days"),
-					"7d"       	=> _("Last 7 Days"),
-					"14d"      	=> _("Last 14 Days"),
-					"28d"      	=> _("Last 28 Days"),
-					"30d"      	=> _("Last 30 Days"),
-					"31d"      	=> _("Last 31 Days"),
-					"2M"       	=> _("Last 2 Months"),
-					"4M"       	=> _("Last 4 Months"),
-					"6M"       	=> _("Last 6 Months"),
-					"1y"       	=> _("Last Year"));
+$periods = array(    ""=>"",
+                    "3h"        => _("Last 3 Hours"),
+                    "6h"        => _("Last 6 Hours"),
+                    "12h"        => _("Last 12 Hours"),
+                    "1d"        => _("Last 24 Hours"),
+                    "2d"           => _("Last 2 Days"),
+                    "3d"        => _("Last 3 Days"),
+                    "4d"           => _("Last 4 Days"),
+                    "5d"           => _("Last 5 Days"),
+                    "7d"           => _("Last 7 Days"),
+                    "14d"          => _("Last 14 Days"),
+                    "28d"          => _("Last 28 Days"),
+                    "30d"          => _("Last 30 Days"),
+                    "31d"          => _("Last 31 Days"),
+                    "2M"           => _("Last 2 Months"),
+                    "4M"           => _("Last 4 Months"),
+                    "6M"           => _("Last 6 Months"),
+                    "1y"           => _("Last Year"));
 $sel = $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"changeInterval()"));
-$form->addElement('text', 'StartDate', '', 
-    array("id"=>"StartDate", "class" => "datepicker-iso", "size"=>10, "onchange" => "changePeriod()")
+$form->addElement(
+    'text',
+    'StartDate',
+    '',
+    array(
+        "id" => "StartDate",
+        "class" => "datepicker-iso",
+        "size" => 10,
+        "onchange" => "changePeriod()"
+    )
 );
-$form->addElement('text', 'StartTime', '',
-    array("id"=>"StartTime", "class"=>"timepicker", "size"=>5, "onchange" => "changePeriod()")
+$form->addElement(
+    'text',
+    'StartTime',
+    '',
+    array(
+        "id" => "StartTime",
+        "class" => "timepicker",
+        "size" => 5,
+        "onchange" => "changePeriod()"
+    )
 );
-$form->addElement('text', 'EndDate', '',
-    array("id"=>"EndDate", "class" => "datepicker-iso", "size"=>10, "onchange" => "changePeriod()")
+$form->addElement(
+    'text',
+    'EndDate',
+    '',
+    array(
+        "id" => "EndDate",
+        "class" => "datepicker-iso",
+        "size" => 10,
+        "onchange" => "changePeriod()"
+    )
 );
-$form->addElement('text', 'EndTime', '',
-    array("id"=>"EndTime", "class"=>"timepicker", "size"=>5, "onchange" => "changePeriod()")
+$form->addElement(
+    'text',
+    'EndTime',
+    '',
+    array(
+        "id" => "EndTime",
+        "class" => "timepicker",
+        "size" => 5,
+        "onchange" => "changePeriod()"
+    )
 );
 $form->addElement('button', 'graph', _("Apply Period"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
 $form->addElement('text', 'search', _('Host'));
@@ -220,7 +255,13 @@ $attrServicegroup1 = array_merge(
     $attrServicegroups,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=service&field=service_sgs&id=')
 );
-$serviceGroupSelector = $form->addElement('select2', 'service_group_filter', _("Services Groups"), array(), $attrServicegroup1);
+$serviceGroupSelector = $form->addElement(
+    'select2',
+    'service_group_filter',
+    _("Services Groups"),
+    array(),
+    $attrServicegroup1
+);
 $serviceGroupSelector->setDefaultFixedDatas();
 
 /* Host Group Selector */
