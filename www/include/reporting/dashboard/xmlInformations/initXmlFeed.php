@@ -33,27 +33,58 @@
  * 
  */
 
-$stateType = 'host';
-require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-if (isset($_GET["id"]) && isset($_GET["color"])) {
-    $color = array();
-    foreach ($_GET["color"] as $key => $value) {
-        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-    }
-    
-    $DBRESULT = $pearDBO->query(
-        "SELECT  * FROM `log_archive_host` WHERE host_id = "
-        . $pearDBO->escape($_GET["id"])
-        . " order by date_start desc"
-    );
-    while ($row = $DBRESULT->fetchRow()) {
-        fillBuffer($statesTab, $row, $color);
-    }
+session_start();
+
+require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
+require_once _CENTREON_PATH_."www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_."www/include/reporting/dashboard/DB-Func.php";
+require_once _CENTREON_PATH_."www/include/reporting/dashboard/common-Func.php";
+require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
+
+if (isset($_SESSION['centreon'])) {
+    $centreon = $_SESSION['centreon'];
 } else {
-    $buffer->writeElement("error", "error");
+    exit();
 }
 
-$buffer->endElement();
-header('Content-Type: text/xml');
-$buffer->output();
+$buffer = new CentreonXML();
+$buffer->startElement("data");
+
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
+
+$sid = session_id();
+
+$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
+if (!$DBRESULT->numRows()) {
+    exit();
+}
+
+/*
+ * Definition of status
+ */
+$state = array();
+$statesTab = array();
+if ($stateType == 'host') {
+    $state["UP"] = _("UP");
+    $state["DOWN"] = _("DOWN");
+    $state["UNREACHABLE"] = _("UNREACHABLE");
+    $state["UNDETERMINED"] = _("UNDETERMINED");
+    $statesTab[] = "UP";
+    $statesTab[] = "DOWN";
+    $statesTab[] = "UNREACHABLE";
+} elseif ($stateType == 'service') {
+    $state["OK"] = _("OK");
+    $state["WARNING"] = _("WARNING");
+    $state["CRITICAL"] = _("CRITICAL");
+    $state["UNKNOWN"] = _("UNKNOWN");
+    $state["UNDETERMINED"] = _("UNDETERMINED");
+    $statesTab[] = "OK";
+    $statesTab[] = "WARNING";
+    $statesTab[] = "CRITICAL";
+    $statesTab[] = "UNKNOWN";
+}

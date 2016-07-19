@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -32,69 +32,35 @@
  * For more information : contact@centreon.com
  * 
  */
+$stateType = 'host';
+require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
-require_once _CENTREON_PATH_."www/include/reporting/dashboard/common-Func.php";
-require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
-require_once _CENTREON_PATH_."www/class/centreonACL.class.php";
-require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
-require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
-
-if (isset($_SESSION['centreon'])) {
-    $centreon = $_SESSION['centreon'];
-} else {
-    exit();
-}
-	
-$buffer = new CentreonXML();
-$buffer->startElement("data");	
-
-$pearDB 	= new CentreonDB();
-$pearDBO 	= new CentreonDB("centstorage");
-
-$sid = session_id();
-
-$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
-if (!$DBRESULT->numRows()) {
-	exit();
-}
-
-/*
- * Definition of status
- */
-$state 		= array("UP" => _("UP"), "DOWN" => _("DOWN"), "UNREACHABLE" => _("UNREACHABLE"), "UNDETERMINED" => _("UNDETERMINED"));
-$statesTab 	= array("UP", "DOWN", "UNREACHABLE");
-
-$buffer = new CentreonXML();
-$buffer->startElement("data");	
-
-if (isset($_GET["id"]) && isset($_GET["color"])){
-	
-	$color = array();
-	foreach ($_GET["color"] as $key => $value) {
-		$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-	}
-	
-	$hosts_id = $centreon->user->access->getHostHostGroupAclConf($_GET["id"], "broker");
+if (isset($_GET["id"]) && isset($_GET["color"])) {
+    $color = array();
+    foreach ($_GET["color"] as $key => $value) {
+        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
+    }
+    
+    $hosts_id = $centreon->user->access->getHostHostGroupAclConf($_GET["id"], "broker");
     if (count($hosts_id) > 0) {
-        $rq = 'SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, ' .
-                'avg( `UPTimeScheduled` ) as "UPTimeScheduled", '.
-                'avg( `DOWNTimeScheduled` ) as "DOWNTimeScheduled", ' .
-                'avg( `UNREACHABLETimeScheduled` ) as "UNREACHABLETimeScheduled", ' .
-                'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
-                'FROM `log_archive_host` WHERE `host_id` IN (' . implode(',', array_keys($hosts_id)) . ') GROUP BY date_end, date_start ORDER BY date_start desc';
+        $rq = 'SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, '
+            . 'sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, '
+            . 'avg( `UPTimeScheduled` ) as "UPTimeScheduled", '
+            . 'avg( `DOWNTimeScheduled` ) as "DOWNTimeScheduled", '
+            . 'avg( `UNREACHABLETimeScheduled` ) as "UNREACHABLETimeScheduled", '
+            . 'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" '
+            . 'FROM `log_archive_host` WHERE `host_id` IN ('
+            . implode(',', array_keys($hosts_id)) . ') GROUP BY date_end, date_start ORDER BY date_start desc';
         $DBRESULT = $pearDBO->query($rq);
         while ($row = $DBRESULT->fetchRow()) {
             fillBuffer($statesTab, $row, $color);
         }
         $DBRESULT->free();
-	}
-} else	{
-	$buffer->writeElement("error", "error");
+    }
+} else {
+    $buffer->writeElement("error", "error");
 }
-$buffer->endElement();	
+$buffer->endElement();
 
 header('Content-Type: text/xml');
 
