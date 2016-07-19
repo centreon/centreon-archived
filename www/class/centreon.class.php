@@ -33,16 +33,19 @@
  *
  */
 
-require_once("centreonUser.class.php");
-require_once("centreonGMT.class.php");
-require_once("centreonLogAction.class.php");
-require_once("centreonExternalCommand.class.php");
-require_once("centreonObjects.class.php");
-require_once("centreonCache.class.php");
-require_once("centreonBroker.class.php");
-require_once("centreonHostgroups.class.php");
+require_once dirname(__FILE__) . '/centreonUser.class.php';
+require_once dirname(__FILE__) . '/centreonGMT.class.php';
+require_once dirname(__FILE__) . '/centreonLogAction.class.php';
+require_once dirname(__FILE__) . '/centreonExternalCommand.class.php';
+require_once dirname(__FILE__) . '/centreonObjects.class.php';
+require_once dirname(__FILE__) . '/centreonCache.class.php';
+require_once dirname(__FILE__) . '/centreonBroker.class.php';
+require_once dirname(__FILE__) . '/centreonHostgroups.class.php';
 
-class Centreon 
+/**
+ * Class for load application Centreon
+ */
+class Centreon
 {
 
     public $Nagioscfg;
@@ -80,14 +83,12 @@ class Centreon
     public $cache;
     public $broker;
 
-    /** **************************************
+    /**
      * Class constructor
      *
-     * @access public
-     * @param   object  $user User objects
-     * @return  object  objet information
+     * @param object $user User objects
      */
-    public function Centreon($userInfos)   
+    public function __construct($userInfos)
     {
         global $pearDB;
 
@@ -150,20 +151,20 @@ class Centreon
     }
 
     /**
-     *
      * Create a list of all module installed into Centreon
-     * @param $pearDB
+     *
+     * @param $pearDB The database connection to centreon database
      */
     public function creatModuleList($pearDB)
     {
         $this->modules = array();
         $DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
         while ($result = $DBRESULT->fetchRow()) {
-            $this->modules[$result["name"]] = array(    "name" => $result["name"], 
-                                                        "gen" => false, "restart" => false, 
-                                                        "sql" => $result["sql_files"], 
-                                                        "lang" => $result["lang_files"], 
-                                                        "license" => false);
+            $this->modules[$result["name"]] = array("name" => $result["name"],
+                                                    "gen" => false, "restart" => false,
+                                                    "sql" => $result["sql_files"],
+                                                    "lang" => $result["lang_files"],
+                                                    "license" => false);
 
             if (is_dir("./modules/".$result["name"]."/generate_files/")) {
                 $this->modules[$result["name"]]["gen"] = true;
@@ -182,7 +183,6 @@ class Centreon
     }
 
     /**
-     *
      * Create history list
      */
     public function createHistory()
@@ -197,9 +197,9 @@ class Centreon
     }
 
     /**
-     *
      * Initiate nagios option list
-     * @param $pearDB
+     *
+     * @param $pearDB The database connection to centreon database
      */
     public function initNagiosCFG($pearDB = null)
     {
@@ -223,9 +223,9 @@ class Centreon
     }
 
     /**
+     * Initiate general option list
      *
-     * initiate general option list
-     * @param $pearDB
+     * @param $pearDB The database connection to centreon database
      */
     public function initOptGen($pearDB = null)
     {
@@ -243,9 +243,10 @@ class Centreon
     }
 
     /**
-     *
      * Check illegal char defined into nagios.cfg file
-     * @param varchar $name
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
      */
     public function checkIllegalChar($name)
     {
