@@ -1267,16 +1267,6 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
     padding:1px 3px;
 }
 
-/*.row_disabled:hover {background-color: #D8D8D8;padding:1px 3px;}*/
-
-/*.row_disabled {background-repeat: repeat !important;}
-.row_disabled a:hover {color: #333333 !important;}*/
-
-/*
-.limitPage 	{background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-left:4px;padding-top:1px;text-align:left;width:160px;}
-.pageNumber {background-color:#BFD0E2;border:1px;border-color:#eff1f6;border-style:solid;color:#fff;font-weight:700;padding-bottom:3px;padding-right:3px;padding-top:4px;text-align:right;width:80px;}
-*/
-
 .ListHeader 			{
     font-weight:700;vertical-align:top;
 
@@ -1494,8 +1484,6 @@ form label { margin-left: 3px; }
     padding-right: 3px;
     vertical-align: middle;
 }
-
-/*p.oreonbutton input {padding:0px 15px;}*/
 
 .pull-left {
     float: left;
