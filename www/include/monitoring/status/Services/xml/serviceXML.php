@@ -121,23 +121,23 @@ $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCritica
 $statusService = $obj->checkArgument("statusService", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
 
-CentreonDb::check_injection($o);
-CentreonDb::check_injection($p);
-CentreonDb::check_injection($nc);
-CentreonDb::check_injection($num);
-CentreonDb::check_injection($limit);
-CentreonDb::check_injection($instance);
-CentreonDb::check_injection($hostgroups);
-CentreonDb::check_injection($servicegroups);
-CentreonDb::check_injection($search);
-CentreonDb::check_injection($search_host);
-CentreonDb::check_injection($search_output);
-CentreonDb::check_injection($sort_type);
-CentreonDb::check_injection($order);
-CentreonDb::check_injection($dateFormat);
-CentreonDb::check_injection($search_type_host);
-CentreonDb::check_injection($search_type_service);
-CentreonDb::check_injection($criticality_id);
+CentreonDb::checkInjection($o);
+CentreonDb::checkInjection($p);
+CentreonDb::checkInjection($nc);
+CentreonDb::checkInjection($num);
+CentreonDb::checkInjection($limit);
+CentreonDb::checkInjection($instance);
+CentreonDb::checkInjection($hostgroups);
+CentreonDb::checkInjection($servicegroups);
+CentreonDb::checkInjection($search);
+CentreonDb::checkInjection($search_host);
+CentreonDb::checkInjection($search_output);
+CentreonDb::checkInjection($sort_type);
+CentreonDb::checkInjection($order);
+CentreonDb::checkInjection($dateFormat);
+CentreonDb::checkInjection($search_type_host);
+CentreonDb::checkInjection($search_type_service);
+CentreonDb::checkInjection($criticality_id);
 
 /* Store in session the last type of call */
 if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
