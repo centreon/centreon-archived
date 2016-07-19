@@ -40,23 +40,25 @@ class CentreonContact
     /**
      * Constructor
      */
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
     
     /**
      * Get contact templates
-     * 
+     *
      * @param array $fields | columns to return
      * @param array $filters
      * @param array $order | i.e: array('contact_name', 'ASC')
      * @param array $limit | i.e: array($limit, $offset)
      * @return array
      */
-    public function getContactTemplates($fields = array(), $filters = array(), $order = array(), $limit = array()) {
+    public function getContactTemplates($fields = array(), $filters = array(), $order = array(), $limit = array())
+    {
         $fieldStr = "*";
         if (count($fields)) {
-            $fieldStr = implode(', ', $fields);    
+            $fieldStr = implode(', ', $fields);
         }
         $filterStr = " WHERE contact_register = '0' ";
         foreach ($filters as $k => $v) {
@@ -104,7 +106,7 @@ class CentreonContact
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -155,7 +157,7 @@ class CentreonContact
                 $parameters['relationObject']['field'] = 'contactgroup_cg_id';
                 $parameters['relationObject']['comparator'] = 'contact_contact_id';
                 break;
-             case 'contact_location':
+            case 'contact_location':
                 $parameters['type'] = 'simple';
                 $parameters['externalObject']['table'] = 'timezone';
                 $parameters['externalObject']['id'] = 'timezone_id';

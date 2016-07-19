@@ -58,7 +58,11 @@ class CentreonConfigCentreonBroker
     private $listValues = array();
     private $defaults = array();
     private $attrsAdvSelect = array("style" => "width: 270px; height: 70px;");
-    private $advMultiTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>{javascript}';
+    private $advMultiTemplate = '<table><tr>
+        <td><div class="ams">{label_2}</div>{unselected}</td>
+        <td align="center">{add}<br><br><br>{remove}</td>
+        <td><div class="ams">{label_3}</div>{selected}</td>
+        </tr></table>{javascript}';
 
     const CORRELATION_STRING = 'correlation_file';
 
@@ -75,7 +79,17 @@ class CentreonConfigCentreonBroker
     public function __sleep()
     {
         $this->db = null;
-        return array('attrText', 'attrInt', 'tagsCache', 'typesCache', 'blockCache', 'blockInfoCache', 'listValues', 'defaults', 'fieldtypeCache');
+        return array(
+            'attrText',
+            'attrInt',
+            'tagsCache',
+            'typesCache',
+            'blockCache',
+            'blockInfoCache',
+            'listValues',
+            'defaults',
+            'fieldtypeCache'
+        );
     }
 
     /**
@@ -237,11 +251,18 @@ class CentreonConfigCentreonBroker
 
         $qf = new HTML_QuickForm('form_' . $formId, 'post', '?p=' . $page);
 
-        $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), array_merge($this->attrText, array(
-                                                                                                                'id' => $tag . '[' . $formId . '][name]',
-                                                                                                                'class' => 'v_required'
-                                                                                                                )));
-        //$qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
+        $qf->addElement(
+            'text',
+            $tag . '[' . $formId . '][name]',
+            _('Name'),
+            array_merge(
+                $this->attrText,
+                array(
+                    'id' => $tag . '[' . $formId . '][name]',
+                    'class' => 'v_required'
+                )
+            )
+        );
 
         $type = $this->getTypeShortname($typeId);
         $qf->addElement('hidden', $tag . '[' . $formId . '][type]');
@@ -260,7 +281,7 @@ class CentreonConfigCentreonBroker
             $elementName = $this->getElementName($tag, $formId, $field, $isMultiple);
             if ($isMultiple && $field['group'] !== '') {
                 $displayNameGroup = "";
-                $parentGroup = $this->getParentGroups($field['group'],$isMultiple,$displayNameGroup);
+                $parentGroup = $this->getParentGroups($field['group'], $isMultiple, $displayNameGroup);
                 $parentGroup = $parentGroup."_".$formId;
             }
             
@@ -289,7 +310,14 @@ class CentreonConfigCentreonBroker
                     }
 
                     foreach ($this->getListValues($field['id']) as $key => $value) {
-                        $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['fieldname'], null, _($value), $key, $elementAttr);
+                        $tmpRadio[] = HTML_QuickForm::createElement(
+                            'radio',
+                            $field['fieldname'],
+                            null,
+                            _($value),
+                            $key,
+                            $elementAttr
+                        );
                     }
                     $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
                     $default = $this->getDefaults($field['id']);
@@ -337,7 +365,7 @@ class CentreonConfigCentreonBroker
             
             $elementAttrSelect = array();
             if ($isMultiple && $parentGroup != "") {
-                if($elementType != 'select') {
+                if ($elementType != 'select') {
                     $elementAttr = array_merge($elementAttr, array(
                                                'parentGroup' => $parentGroup,
                                                'displayNameGroup' => $displayNameGroup
@@ -352,12 +380,19 @@ class CentreonConfigCentreonBroker
              */
             if (!is_null($elementType)) {
                 if ($elementType == 'advmultiselect') {
-                    $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr, $this->attrsAdvSelect, SORT_ASC);
+                    $el = $qf->addElement(
+                        $elementType,
+                        $elementName,
+                        $displayName,
+                        $elementAttr,
+                        $this->attrsAdvSelect,
+                        SORT_ASC
+                    );
                     $el->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
                     $el->setButtonAttributes('remove', array('value' =>  _("Remove"), "class" => "btc bt_danger"));
                     $el->setElementTemplate($this->advMultiTemplate);
                 } else {
-                    $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr,$elementAttrSelect);
+                    $el = $qf->addElement($elementType, $elementName, $displayName, $elementAttr, $elementAttrSelect);
                 }
             }
 
@@ -385,11 +420,11 @@ class CentreonConfigCentreonBroker
     {
         $cdata = CentreonData::getInstance();
         if (isset($this->arrayMultiple)) {
-            foreach ($this->arrayMultiple as $key=>$multipleGroup) {
+            foreach ($this->arrayMultiple as $key => $multipleGroup) {
                 $cdata->addJsData('clone-values-'.$key, htmlspecialchars(
-                            json_encode($multipleGroup), ENT_QUOTES
-                    )
-                );
+                    json_encode($multipleGroup),
+                    ENT_QUOTES
+                ));
                 $cdata->addJsData('clone-count-'.$key, count($multipleGroup));
             }
         }
@@ -411,14 +446,16 @@ class CentreonConfigCentreonBroker
          * Get the list of fields for a block
          */
         $fields = array();
-        $query = "SELECT f.cb_field_id, f.fieldname, f.displayname, f.fieldtype, f.description, f.external, tfr.is_required, tfr.order_display, f.cb_fieldgroup_id
+        $query = "SELECT f.cb_field_id, f.fieldname, f.displayname, f.fieldtype, f.description, f.external,
+            tfr.is_required, tfr.order_display, f.cb_fieldgroup_id
             FROM cb_field f, cb_type_field_relation tfr
                 WHERE f.cb_field_id = tfr.cb_field_id AND (tfr.cb_type_id = %d
                     OR tfr.cb_type_id IN (SELECT t.cb_type_id
                         FROM cb_type t, cb_module_relation mr
                         WHERE mr.inherit_config = 1 AND t.cb_module_id IN (SELECT mr2.module_depend_id
                             FROM cb_type t2, cb_module_relation mr2
-                            WHERE t2.cb_module_id = mr2.cb_module_id AND mr2.inherit_config = 1 AND t2.cb_type_id = %d)))
+                            WHERE t2.cb_module_id = mr2.cb_module_id AND
+                                mr2.inherit_config = 1 AND t2.cb_type_id = %d)))
             ORDER BY tfr.order_display";
         $res = $this->db->query(sprintf($query, $typeId, $typeId));
         if (PEAR::isError($res)) {
@@ -458,7 +495,9 @@ class CentreonConfigCentreonBroker
          * Insert the Centreon Broker configuration
          */
         $query = "INSERT INTO cfg_centreonbroker "
-                . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, config_write_thread_id, stats_activate, correlation_activate, retention_path, event_queue_max_size) "
+                . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, "
+                . "config_write_thread_id, stats_activate, correlation_activate, retention_path, "
+                . "event_queue_max_size) "
                 . "VALUES (
                 '" . $this->db->escape($values['name']) . "', 
                 '" . $this->db->escape($values['filename']) . "', 
@@ -514,9 +553,11 @@ class CentreonConfigCentreonBroker
                 config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                correlation_activate = '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
+                correlation_activate = '" .
+                $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
                 retention_path = '" . $this->db->escape($values['retention_path']) . "',
-                event_queue_max_size = ".(int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))."
+                event_queue_max_size = " .
+                (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . "
             WHERE config_id = " . $id;
         if (PEAR::isError($this->db->query($query))) {
             return false;
@@ -552,10 +593,10 @@ class CentreonConfigCentreonBroker
                         $groups_infos[$group] = array();
                     }
                     $newArray = array();
-                    foreach($infos as $key=>$info){
+                    foreach ($infos as $key => $info) {
                         $is_multiple = preg_match('/(.+?)_(\d+)$/', $key, $result);
-                        if($is_multiple){
-                            if(!isset($groups_infos_multiple[$group])){
+                        if ($is_multiple) {
+                            if (!isset($groups_infos_multiple[$group])) {
                                 $groups_infos_multiple[$group] = array();
                             }
                             $newArray[$result[1]][$result[2]] = $infos[$key];
@@ -563,7 +604,7 @@ class CentreonConfigCentreonBroker
                             unset($infos[$key]);
                         }
                     }
-                    if(!empty($newArray)){
+                    if (!empty($newArray)) {
                         $newArray['blockId'] = $infos['blockId'];
                         $groups_infos_multiple[$group][] = $newArray;
                     }
@@ -581,9 +622,9 @@ class CentreonConfigCentreonBroker
                         $lvl = 0;
                         $grp_id = 'NULL';
                         $parent_id = 'NULL';
-                                    if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
-                                        $fieldvalue = $fieldvalue[$fieldname];
-                                    }
+                        if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
+                            $fieldvalue = $fieldvalue[$fieldname];
+                        }
                         if (false === is_array($fieldvalue)) {
                                 $fieldvalue = array($fieldvalue);
                         }
@@ -594,8 +635,11 @@ class CentreonConfigCentreonBroker
                             $info = explode('__', $fieldname, 3);
                             $grp_name = $info[0];
                             $grp_id = $info[1];
-                                        $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)
-                                            VALUES (" . $id . ", '" . $grp_name . "', '', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
+                                        $query = "INSERT INTO cfg_centreonbroker_info
+                                        (config_id, config_key, config_value, config_group, config_group_id, grp_level,
+                                        subgrp_id, parent_grp_id)
+                                        VALUES (" . $id . ", '" . $grp_name . "', '', '" . $group . "', " .
+                                            $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
                                         $this->db->query($query);
                             $lvl++;
                             $parent_id = $grp_id;
@@ -603,8 +647,12 @@ class CentreonConfigCentreonBroker
                         }
                         $grp_id = 'NULL';
                         foreach ($fieldvalue as $value) {
-                                       $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)
-                                        VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
+                                       $query = "INSERT INTO cfg_centreonbroker_info
+                                        (config_id, config_key, config_value, config_group, config_group_id, grp_level,
+                                        subgrp_id, parent_grp_id)
+                                        VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" .
+                                           $group . "', " . $gid . ", " . $lvl . ", " .
+                                           $grp_id . ", " . $parent_id . ")";
                                        $this->db->query($query);
                         }
                     }
@@ -620,8 +668,8 @@ class CentreonConfigCentreonBroker
                     list($tagId, $typeId) = explode('_', $infos['blockId']);
                     $fieldtype = $this->getFieldtypes($typeId);
                     foreach ($infos as $fieldname => $fieldvalueArray) {
-                        if(is_array($fieldvalueArray)){
-                            foreach($fieldvalueArray as $index=>$fieldvalue){
+                        if (is_array($fieldvalueArray)) {
+                            foreach ($fieldvalueArray as $index => $fieldvalue) {
                                 $lvl = 0;
                                 $grp_id = 'NULL';
                                 $parent_id = 'NULL';
@@ -632,8 +680,12 @@ class CentreonConfigCentreonBroker
                                     $fieldvalue = array($fieldvalue);
                                 }
                                 foreach ($fieldvalue as $value) {
-                                    $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id, grp_level, subgrp_id, parent_grp_id, fieldIndex)
-                                     VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ", " . $index . ") ";
+                                    $query = "INSERT INTO cfg_centreonbroker_info
+                                        (config_id, config_key, config_value, config_group, config_group_id,
+                                        grp_level, subgrp_id, parent_grp_id, fieldIndex)
+                                        VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" .
+                                            $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " .
+                                            $parent_id . ", " . $index . ") ";
                                     $this->db->query($query);
                                 }
                             }
@@ -670,20 +722,25 @@ class CentreonConfigCentreonBroker
         $formsInfos = array();
         $arrayMultipleValues = array();
         while ($row = $res->fetchRow()) {
-            $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $this->getConfigFieldName($config_id, $tag, $row) . ']';
+            $fieldname = $tag . '[' . $row['config_group_id'] . '][' .
+                $this->getConfigFieldName($config_id, $tag, $row) . ']';
         /* Multi value for a multiselect */
-            if(isset($row['fieldIndex']) && !is_null($row['fieldIndex']) && $row['fieldIndex'] != ""){
-                $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $this->getConfigFieldName($config_id, $tag, $row) . '_#index#]';
-                $arrayMultipleValues[$fieldname][] = $row['config_value'];    
-            }else{
+            if (isset($row['fieldIndex']) && !is_null($row['fieldIndex']) && $row['fieldIndex'] != "") {
+                $fieldname = $tag . '[' . $row['config_group_id'] . '][' .
+                    $this->getConfigFieldName($config_id, $tag, $row) . '_#index#]';
+                $arrayMultipleValues[$fieldname][] = $row['config_value'];
+            } else {
                 if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
-                        if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
-                            $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = array($formsInfos[$row['config_group_id']]['defaults'][$fieldname]);
-                        }
+                    if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
+                        $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = array(
+                            $formsInfos[$row['config_group_id']]['defaults'][$fieldname]
+                        );
+                    }
                         $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] = $row['config_value'];
                 } else {
                         $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
-                        $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] = $row['config_value']; // Radio button
+                        $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] =
+                            $row['config_value']; // Radio button
                 }
                 if ($row['config_key'] == 'blockId') {
                     $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];
@@ -706,8 +763,8 @@ class CentreonConfigCentreonBroker
                     unset($formsInfos[$key]['defaults'][$elementName]); // = $this->getInfoDb($field['value']);
                 }
                 if (isset($arrayMultipleValues[$elementName])) {
-                    if($isMultiple && $field['group'] !== '') {
-                        $parentGroup = $this->getParentGroups($field['group'],$isMultiple);
+                    if ($isMultiple && $field['group'] !== '') {
+                        $parentGroup = $this->getParentGroups($field['group'], $isMultiple);
                         $parentGroup = $parentGroup."_".$key;
                         $arrayMultiple[$parentGroup][$elementName] = $arrayMultipleValues[$elementName];
                     }
@@ -721,10 +778,10 @@ class CentreonConfigCentreonBroker
             $forms[] = $renderer->toArray();
         }
         if (isset($arrayMultiple)) {
-             foreach ($arrayMultiple as $key=>$arrayMultipleS){
-                foreach($arrayMultipleS as $key2=>$oneElemArray){
+            foreach ($arrayMultiple as $key => $arrayMultipleS) {
+                foreach ($arrayMultipleS as $key2 => $oneElemArray) {
                     $cnt = 0;
-                    foreach($oneElemArray as $oneElem){
+                    foreach ($oneElemArray as $oneElem) {
                         $this->arrayMultiple[$key][$cnt][$key2] = $oneElem;
                         $cnt++;
                     }
@@ -825,7 +882,10 @@ class CentreonConfigCentreonBroker
                     $fieldname .= $this->getParentGroups($field['group']);
                 }
                 $fieldname .= $field['fieldname'];
-                $help[] = array('name' => $tag . '[' . $pos . '][' . $fieldname . ']', 'desc' => _($field['description']));
+                $help[] = array(
+                    'name' => $tag . '[' . $pos . '][' . $fieldname . ']',
+                    'desc' => _($field['description'])
+                );
             }
             $helps[] = $help;
             $pos++;
@@ -910,27 +970,27 @@ class CentreonConfigCentreonBroker
         foreach ($configs as $config) {
             list($key, $value) = explode('=', $config);
             switch ($key) {
-            case 'D':
-                $s_db = $value;
-                break;
-            case 'T':
-                $s_table = $value;
-                break;
-            case 'C':
-                $s_column = $value;
-                break;
-            case 'F':
-                $s_filter = $value;
-                break;
-            case 'K':
-                $s_key = $value;
-                break;
-            case 'CK':
-                $s_column_key = $value;
-                break;
-            case 'RPN':
-                $s_rpn = $value;
-                break;
+                case 'D':
+                    $s_db = $value;
+                    break;
+                case 'T':
+                    $s_table = $value;
+                    break;
+                case 'C':
+                    $s_column = $value;
+                    break;
+                case 'F':
+                    $s_filter = $value;
+                    break;
+                case 'K':
+                    $s_key = $value;
+                    break;
+                case 'CK':
+                    $s_column_key = $value;
+                    break;
+                case 'RPN':
+                    $s_rpn = $value;
+                    break;
             }
         }
         /*
@@ -948,12 +1008,12 @@ class CentreonConfigCentreonBroker
          * Execute the query
          */
         switch ($s_db) {
-        case 'centreon':
-            $res = $this->db->query($query);
-            break;
-        case 'centreon_storage':
-            $res = $pearDBO->query($query);
-            break;
+            case 'centreon':
+                $res = $this->db->query($query);
+                break;
+            case 'centreon_storage':
+                $res = $pearDBO->query($query);
+                break;
         }
         if (PEAR::isError($res)) {
             return false;
@@ -969,7 +1029,7 @@ class CentreonConfigCentreonBroker
         }
         if (count($infos) == 0) {
             return "";
-        } else if (count($infos) == 1) {
+        } elseif (count($infos) == 1) {
             return $infos[0];
         }
         return $infos;
@@ -991,9 +1051,9 @@ class CentreonConfigCentreonBroker
         }
         try {
             $val = array_reduce(
-                                preg_split('/\s+/', $val . ' ' . $rpn),
-                                array($this, 'rpnOperation')
-                                );
+                preg_split('/\s+/', $val . ' ' . $rpn),
+                array($this, 'rpnOperation')
+            );
             return $val[0];
         } catch (InvalidArgumentException $e) {
             return $val;
@@ -1028,16 +1088,17 @@ class CentreonConfigCentreonBroker
     
     /**
      * Check event max queue size value
-     * 
+     *
      * if the value is too small, centreon broker will spend time
-     * to write information directly to hard drive. So we prefer to 
+     * to write information directly to hard drive. So we prefer to
      * use more memory in order to avoid IO.
-     * 
+     *
      * @param int maximum number of event in the queue
      * @return int maximum number of event in the queue
-     * 
+     *
      */
-    private function checkEventMaxQueueSizeValue($value) {
+    private function checkEventMaxQueueSizeValue($value)
+    {
         if (!isset($value) || $value == "" || $value < 50000) {
             $value = 50000;
         }
@@ -1052,10 +1113,11 @@ class CentreonConfigCentreonBroker
      * @param array $field The field information
      * @return string
      */
-    private function getElementName($tag, $formId, $field, &$isMultiple = false) { 
+    private function getElementName($tag, $formId, $field, &$isMultiple = false)
+    {
         $elementName = $tag . '[' . $formId . '][';
         if ($field['group'] !== '') {
-            $elementName .= $this->getParentGroups($field['group'],$isMultiple);
+            $elementName .= $this->getParentGroups($field['group'], $isMultiple);
         }
         $elementName .= $field['fieldname']. (($isMultiple) ? "_#index#" : "") . ']';
         return $elementName;
@@ -1067,30 +1129,37 @@ class CentreonConfigCentreonBroker
      * @param int $groupId The group id
      * @return string
      */
-    public function getParentGroups($groupId, &$isMultiple = false, &$displayName = "") {
+    public function getParentGroups($groupId, &$isMultiple = false, &$displayName = "")
+    {
         $elemStr = '';
-        $res = $this->db->query(sprintf("SELECT groupname, group_parent_id, multiple, displayname FROM cb_fieldgroup WHERE cb_fieldgroup_id = %d", $groupId));
+        $res = $this->db->query(
+            sprintf(
+                "SELECT groupname, group_parent_id, multiple, displayname
+                FROM cb_fieldgroup WHERE cb_fieldgroup_id = %d",
+                $groupId
+            )
+        );
         if (PEAR::isError($res)) {
             return '';
         }
         $row = $res->fetchRow();
         if ($row['group_parent_id'] !== '') {
-            $elemStr .= $this->getParentGroups($row['group_parent_id'],$isMultiple,$displayName);
+            $elemStr .= $this->getParentGroups($row['group_parent_id'], $isMultiple, $displayName);
         }
-        if($row['multiple'] !== '' && $row['multiple'] == 1){
+        if ($row['multiple'] !== '' && $row['multiple'] == 1) {
             $isMultiple = true;
         }
-        if(!$isMultiple){
+        if (!$isMultiple) {
             $elemStr .=  $row['groupname'] . '__' . $this->nbSubGroup++ . '__';
-        }else{
-            if($elemStr != ""){
+        } else {
+            if ($elemStr != "") {
                 $elemStr .=   '__'.$row['groupname']. '__' ;
-            }else{
+            } else {
                 $elemStr .=   $row['groupname']. '__' ;
             }
             
         }
-        if(!empty($row['displayname'])){
+        if (!empty($row['displayname'])) {
             $displayName = $row['displayname'];
         }
         return $elemStr;
@@ -1104,23 +1173,35 @@ class CentreonConfigCentreonBroker
      * @param array $info The information
      * @return string
      */
-    private function getConfigFieldName($configId, $configGroup, $info) {
-       $elemStr = $info['config_key'];
-       if ($info['grp_level'] != 0) {
-           $res = $this->db->query(sprintf("SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
+    private function getConfigFieldName($configId, $configGroup, $info)
+    {
+        $elemStr = $info['config_key'];
+        if ($info['grp_level'] != 0) {
+            $res = $this->db->query(sprintf(
+                "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
                FROM cfg_centreonbroker_info
                WHERE config_id = %d 
                    AND config_group = '%s'
            AND subgrp_id = %d
            AND grp_level = %d
-           AND config_group_id = %d", $configId,  $configGroup, $info['parent_grp_id'], $info['grp_level'] - 1, $info['config_group_id']));
-       if (PEAR::isError($res) || $res->numRows() == 0) {
-               return $elemStr;
-       }
-           $row = $res->fetchRow();
-       $elemStr = $this->getConfigFieldName($configId, $configGroup, $row) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
-       }
-       return $elemStr;
+           AND config_group_id = %d",
+                $configId,
+                $configGroup,
+                $info['parent_grp_id'],
+                $info['grp_level'] - 1,
+                $info['config_group_id']
+            ));
+            if (PEAR::isError($res) || $res->numRows() == 0) {
+                return $elemStr;
+            }
+            $row = $res->fetchRow();
+            $elemStr = $this->getConfigFieldName(
+                $configId,
+                $configGroup,
+                $row
+            ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
+        }
+        return $elemStr;
     }
     
     /**
@@ -1137,12 +1218,13 @@ class CentreonConfigCentreonBroker
         } else {
             $this->globalCommandFile = "NULL";
         }
-        $query = "UPDATE cfg_centreonbroker SET command_file = " . $this->globalCommandFile . " WHERE config_id = " . $configId;
+        $query = "UPDATE cfg_centreonbroker
+            SET command_file = " . $this->globalCommandFile . " WHERE config_id = " . $configId;
         $this->db->query($query);
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function isExist($sName)
@@ -1152,7 +1234,8 @@ class CentreonConfigCentreonBroker
             return $bExist;
         }
         
-        $query = "SELECT COUNT(config_id) as nb FROm cfg_centreonbroker WHERE config_name = '".$this->db->escape($sName)."'";
+        $query = "SELECT COUNT(config_id) as nb FROm cfg_centreonbroker
+            WHERE config_name = '" . $this->db->escape($sName) . "'";
         $res = $this->db->query($query);
         $row = $res->fetchRow();
         if ($row['nb'] > 0) {
@@ -1161,5 +1244,4 @@ class CentreonConfigCentreonBroker
 
         return $bExist;
     }
-    
 }
