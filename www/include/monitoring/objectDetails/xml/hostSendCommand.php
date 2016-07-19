@@ -74,7 +74,7 @@ $command = new CentreonExternalCommand($centreon);
 $cmd_list = $command->getExternalCommandList();
 $send_cmd = $cmd_list[$cmd][$act_type];
 $send_cmd .= ";" . $hostObj->getHostName($host_id) . ";" . time();
-$command->set_process_command($send_cmd, $poller);
+$command->setProcessCommand($send_cmd, $poller);
 $act_type ? $return_type = 1 : $return_type = 0;
 $result = $command->write();
 $buffer = new CentreonXML();

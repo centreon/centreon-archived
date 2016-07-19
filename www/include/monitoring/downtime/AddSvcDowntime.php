@@ -205,7 +205,7 @@ if ($centreon->user->access->checkAction("service_schedule_downtime")) {
 	                    break;
 	            }
 		    }
-	        $ecObj->AddSvcDowntime(
+	        $ecObj->addSvcDowntime(
 	            $_POST["host_id"], 
 	            $_POST["service_id"],  
 	            $_POST["comment"], 
