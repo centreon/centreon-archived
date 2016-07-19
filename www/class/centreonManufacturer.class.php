@@ -34,13 +34,13 @@
  */
 
 /**
- *  
+ *
  */
 class CentreonManufacturer
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -55,7 +55,7 @@ class CentreonManufacturer
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */

@@ -37,86 +37,89 @@
  *  Class that displays any kind of information between the html header containing logo
  *  and the horizontal menu
  */
-class CentreonMsg {
- 	public $div;
+class CentreonMsg
+{
+    public $div;
 
- 	/* Constructor */
- 	public function __construct($div_str = null)
- 	{
- 		if (!isset($div_str) && !$div_str)
- 			$this->div = "centreonMsg";
- 		else
- 			$this->div = $div_str;
- 		$this->color = "#FFFFFF";
- 	}
+    /* Constructor */
+    public function __construct($div_str = null)
+    {
+        if (!isset($div_str) && !$div_str) {
+            $this->div = "centreonMsg";
+        } else {
+            $this->div = $div_str;
+        }
+        $this->color = "#FFFFFF";
+    }
 
- 	/*
+    /*
  	 *  Sets style of text inside Div
  	 */
- 	public function setTextStyle($style)
- 	{
- 		echo "<script type=\"text/javascript\">_setTextStyle(\"$this->div\", \"$style\")</script>";
- 	}
+    public function setTextStyle($style)
+    {
+        echo "<script type=\"text/javascript\">_setTextStyle(\"$this->div\", \"$style\")</script>";
+    }
 
- 	/*
+    /*
  	 *  Sets text color
  	 */
- 	public function setTextColor($color)
- 	{
- 		echo "<script type=\"text/javascript\">_setTextColor(\"$this->div\", \"$color\")</script>";
- 	}
+    public function setTextColor($color)
+    {
+        echo "<script type=\"text/javascript\">_setTextColor(\"$this->div\", \"$color\")</script>";
+    }
 
- 	/*
+    /*
  	 *  Sets text align
  	 */
- 	public function setAlign($align)
- 	{
- 		echo "<script type=\"text/javascript\">_setAlign(\"$this->div\", \"$align\")</script>";
- 	}
+    public function setAlign($align)
+    {
+        echo "<script type=\"text/javascript\">_setAlign(\"$this->div\", \"$align\")</script>";
+    }
 
- 	/*
+    /*
  	 *  Sets vertical align
  	 */
- 	public function setValign($align)
- 	{
- 		echo "<script type=\"text/javascript\">_setValign(\"$this->div\", \"$align\")</script>";
- 	}
+    public function setValign($align)
+    {
+        echo "<script type=\"text/javascript\">_setValign(\"$this->div\", \"$align\")</script>";
+    }
 
- 	/* Sets background color of Div */
- 	public function setBackgroundColor($color)
- 	{
- 		echo "<script type=\"text/javascript\">_setBackgroundColor(\"$this->div\", \"$color\")</script>";
- 	}
+    /* Sets background color of Div */
+    public function setBackgroundColor($color)
+    {
+        echo "<script type=\"text/javascript\">_setBackgroundColor(\"$this->div\", \"$color\")</script>";
+    }
 
- 	/* Sets text in Div */
- 	public function setText($str)
- 	{
- 		echo "<script type=\"text/javascript\">_setText(\"$this->div\", \"$str\")</script>";
- 	}
+    /* Sets text in Div */
+    public function setText($str)
+    {
+        echo "<script type=\"text/javascript\">_setText(\"$this->div\", \"$str\")</script>";
+    }
 
- 	/* Sets image in Div */
- 	public function setImage($img_url)
- 	{
- 		echo "<script type=\"text/javascript\">_setImage(\"$this->div\", \"$img_url\")</script>";
- 	}
+    /* Sets image in Div */
+    public function setImage($img_url)
+    {
+        echo "<script type=\"text/javascript\">_setImage(\"$this->div\", \"$img_url\")</script>";
+    }
 
- 	/* If you want to display your message for a limited time period, just call this function */
- 	public function setTimeOut($sec)
- 	{
- 		$sec *= 1000;
- 		echo "<script type=\"text/javascript\">setTimeout(function(){new Effect.toggle(\"$this->div\")}, $sec)</script>";
- 	}
+    /* If you want to display your message for a limited time period, just call this function */
+    public function setTimeOut($sec)
+    {
+        $sec *= 1000;
+        echo "<script type=\"text/javascript\">setTimeout(function(){new Effect.toggle(\"" . 
+            $this->div . "\")}, " . $sec . ")</script>";
+    }
 
- 	/* Clear message box */
- 	public function clear()
- 	{
- 		echo "<script type=\"text/javascript\">_clear(\"$this->div\")</script>";
- 	}
+    /* Clear message box */
+    public function clear()
+    {
+        echo "<script type=\"text/javascript\">_clear(\"$this->div\")</script>";
+    }
 
- 	public function nextLine() {
- 		echo "<script type=\"text/javascript\">_nextLine(\"$this->div\")</script>";
- 	}
-
+    public function nextLine()
+    {
+        echo "<script type=\"text/javascript\">_nextLine(\"$this->div\")</script>";
+    }
 }
 ?>
 <script type="text/javascript">
