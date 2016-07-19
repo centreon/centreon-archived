@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -32,49 +32,27 @@
  * For more information : contact@centreon.com
  * 
  */
-	
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+$stateType = 'service';
+require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
-require_once _CENTREON_PATH_."www/include/reporting/dashboard/common-Func.php";
-require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
-require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
-require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
-	
-$buffer = new CentreonXML();
-$buffer->startElement("data");	
 
-$pearDB 	= new CentreonDB();
-$pearDBO 	= new CentreonDB("centstorage");
+if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
+    $color = array();
+    foreach ($_GET["color"] as $key => $value) {
+        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
+    }
 
-$sid = session_id();
-
-$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
-if (!$DBRESULT->numRows()) {
-	exit();
-}
-
-/*
- * Initiate Table
- */
-$state 		= array("OK" => _("OK"), "WARNING" => _("WARNING"), "CRITICAL" => _("CRITICAL"), "UNKNOWN" => _("UNKNOWN"), "UNDETERMINED" => _("UNDETERMINED"));
-$statesTab 	= array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-
-if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])){
-	
-	$color = array();
-	foreach ($_GET["color"] as $key => $value) {
-		$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-	}
-
-	$DBRESULT = $pearDBO->query("SELECT  * FROM `log_archive_service` WHERE host_id = '".$pearDBO->escape($_GET["host_id"])."' AND service_id = ".$pearDBO->escape($_GET["id"])." ORDER BY `date_start` DESC");
-	while ($row = $DBRESULT->fetchRow()) {
-		fillBuffer($statesTab, $row, $color);
-	}
-	$DBRESULT->free();
-	
+    $DBRESULT = $pearDBO->query(
+        "SELECT  * FROM `log_archive_service` WHERE host_id = '".
+        $pearDBO->escape($_GET["host_id"])."' AND service_id = ".
+        $pearDBO->escape($_GET["id"])." ORDER BY `date_start` DESC"
+    );
+    while ($row = $DBRESULT->fetchRow()) {
+        fillBuffer($statesTab, $row, $color);
+    }
+    $DBRESULT->free();
 } else {
-	$buffer->writeElement("error", "error");		
+    $buffer->writeElement("error", "error");
 }
 $buffer->endElement();
 
