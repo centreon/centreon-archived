@@ -89,8 +89,8 @@ if (count($aMacroDescription) > 0) {
         $nbRowMacro++;
     }
 } else {
-    $macrosHostDesc = $oCommande->match_object($command_id, $cmd['command_line'], '1');
-    $macrosServiceDesc = $oCommande->match_object($command_id, $cmd['command_line'], '2');
+    $macrosHostDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '1');
+    $macrosServiceDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '2');
    
     $aMacroDescription = array_merge($macrosServiceDesc, $macrosHostDesc);
 

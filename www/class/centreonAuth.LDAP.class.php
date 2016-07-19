@@ -38,15 +38,16 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 /**
  * Class for Ldap authentication
  */
-class CentreonAuthLDAP {
+class CentreonAuthLDAP
+{
 
-    var $pearDB;
-    var $ldap;
-    var $CentreonLog;
-    var $contactInfos;
-    var $typePassword;
-    var $debug;
-    var $firstCheck = true;
+    protected $pearDB;
+    protected $ldap;
+    protected $CentreonLog;
+    protected $contactInfos;
+    protected $typePassword;
+    protected $debug;
+    protected $firstCheck = true;
     protected $arId;
 
     /**
@@ -60,7 +61,8 @@ class CentreonAuthLDAP {
      * @param int $arId | Auth Ressource ID
      * @return void
      */
-    function CentreonAuthLDAP($pearDB, $CentreonLog, $login, $password, $contactInfos, $arId) {
+    public function __construct($pearDB, $CentreonLog, $login, $password, $contactInfos, $arId)
+    {
         $this->arId = $arId;
         $this->pearDB = $pearDB;
 
@@ -88,7 +90,8 @@ class CentreonAuthLDAP {
      *
      * @return int 1 enable 0 disable
      */
-    private function getLogFlag() {
+    private function getLogFlag()
+    {
         global $pearDB;
 
         $res = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
@@ -103,7 +106,8 @@ class CentreonAuthLDAP {
      * Check the user pass
      *
      */
-    function checkPassword() {
+    public function checkPassword()
+    {
 
         /*
          * Check if it's a new user
@@ -113,9 +117,11 @@ class CentreonAuthLDAP {
             $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
             $newUser = true;
         /* Validate if user exists in this resource */
-        } else if (isset($this->contactInfos['contact_ldap_dn'])
+        } elseif (isset($this->contactInfos['contact_ldap_dn'])
             && $this->contactInfos['contact_ldap_dn'] != ''
-            && $this->ldap->findUserDn($this->contactInfos['contact_alias']) !== $this->contactInfos['contact_ldap_dn']) {
+            && $this->ldap->findUserDn(
+                $this->contactInfos['contact_alias']
+            ) !== $this->contactInfos['contact_ldap_dn']) {
             return 2;
         }
 
@@ -127,7 +133,8 @@ class CentreonAuthLDAP {
         }
         @ldap_bind($this->ds, $this->contactInfos['contact_ldap_dn'], $this->typePassword);
         if ($this->debug) {
-            $this->CentreonLog->insertLog(3, "Connexion = " . $this->contactInfos['contact_ldap_dn'] . " :: " . ldap_error($this->ds));
+            $this->CentreonLog->insertLog(3, "Connexion = " . $this->contactInfos['contact_ldap_dn'] . " :: " .
+                                          ldap_error($this->ds));
         }
 
         /*
@@ -142,37 +149,43 @@ class CentreonAuthLDAP {
         if (isset($this->ds) && $this->ds) {
             switch (ldap_errno($this->ds)) {
                 case 0:
-                    if ($this->debug)
+                    if ($this->debug) {
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
+                    }
                     if (false == $this->updateUserDn()) {
                         return 0;
                     }
                     return 1;
                     break;
                 case 2:
-                    if ($this->debug)
+                    if ($this->debug) {
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : Protocol Error ");
+                    }
                     return 2;
                     break;
                 case -1:
                 case 51:
-                    if ($this->debug)
+                    if ($this->debug) {
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
+                    }
                     return -1;
                     break;
                 case 52:
-                    if ($this->debug)
+                    if ($this->debug) {
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
+                    }
                     return -1;
                     break;
                 case 81:
-                    if ($this->debug)
+                    if ($this->debug) {
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Fallback to Local AUTH");
+                    }
                     return 2;
                     break;
                 default:
-                    if ($this->debug)
+                    if ($this->debug) {
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
+                    }
                     /*if ($this->firstCheck && $this->updateUserDn()) {
                         $this->firstCheck = false;
                         return $this->checkPassword();
@@ -181,8 +194,9 @@ class CentreonAuthLDAP {
                     break;
             }
         } else {
-            if ($this->debug)
+            if ($this->debug) {
                 $this->CentreonLog->insertLog(3, "DS empty");
+            }
             return 0; /* 2 ?? */
         }
     }
@@ -192,12 +206,16 @@ class CentreonAuthLDAP {
      *
      * @return bool If the DN is modified
      */
-    function updateUserDn() {
+    public function updateUserDn()
+    {
         if ($this->ldap->rebind()) {
-            $userDn = $this->ldap->findUserDn(html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
+            $userDn = $this->ldap->findUserDn(
+                html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8')
+            );
 
             if (false === $userDn) {
-                $this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " . html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
+                $this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " .
+                    html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                 return false;
             }
 
@@ -221,7 +239,8 @@ class CentreonAuthLDAP {
              */
             $userDisplay = str_replace(array('(', ')'), '', $userDisplay);
             $userEmail = "'".$this->contactInfos['contact_email']."'";
-            if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
+            if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) &&
+                trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
                     /*
                      * Get the first if there are multiple entries
@@ -234,7 +253,8 @@ class CentreonAuthLDAP {
                 }
             }
             $userPager = "'".$this->contactInfos['contact_pager']."'";
-            if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
+            if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) &&
+                trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
                     /*
                      * Get the first if there are multiple entries
@@ -250,7 +270,8 @@ class CentreonAuthLDAP {
                 /*
                  * Update the user dn and extended informations for user
                  */
-                $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
+                $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " .
+                    html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                 $queryUpdateExtInfos = "UPDATE contact SET
 					contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "',
 					contact_name = '" . $this->pearDB->escape($userDisplay, false) . "',
@@ -261,7 +282,8 @@ class CentreonAuthLDAP {
 
                 $ret = $this->pearDB->query($queryUpdateExtInfos);
                 if (PEAR::isError($ret)) {
-                    $this->CentreonLog->insertLog(3, 'Error in update ldap informations for user ' . html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
+                    $this->CentreonLog->insertLog(3, 'Error in update ldap informations for user ' .
+                       html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                     return false;
                 }
                 $this->contactInfos['contact_ldap_dn'] = $userDn;
@@ -285,13 +307,20 @@ class CentreonAuthLDAP {
                 /*
                  * Insert user in database
                  */
-                $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, ar_id, contact_email, contact_pager, contact_oreon, contact_activate, contact_register, contact_enable_notifications)
-		        	VALUES (" . $tmplId . ", '" . htmlentities($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8') . "', '" . htmlentities($userDisplay, ENT_QUOTES, 'UTF-8') . "', 'ldap', '" . $userDn . "', ".$this->arId.", " . $userEmail . ", " . $userPager . ", '1', '1', '1', '2')";
+                $query = "INSERT INTO contact
+                    (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, ar_id,
+                    contact_email, contact_pager, contact_oreon, contact_activate, contact_register,
+                    contact_enable_notifications)
+		        	VALUES (" . $tmplId . ", '" .
+                    htmlentities($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8') . "', '" .
+                    htmlentities($userDisplay, ENT_QUOTES, 'UTF-8') . "', 'ldap', '" . $userDn . "', " . $this->arId .
+                    ", " . $userEmail . ", " . $userPager . ", '1', '1', '1', '2')";
                 if (false === PEAR::isError($this->pearDB->query($query))) {
                     /*
                      * Get the contact_id
                      */
-                    $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "'";
+                    $query = "SELECT contact_id FROM contact
+                        WHERE contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "'";
                     $res = $this->pearDB->query($query);
                     $row = $res->fetchRow();
                     $contact_id = $row['contact_id'];
