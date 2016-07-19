@@ -43,24 +43,24 @@ class CentreonMedia
 {
     /**
      *
-     * @var type 
+     * @var type
      */
-    protected $_db;
+    protected $db;
     
     /**
      *
-     * @var type 
+     * @var type
      */
-    protected $_filenames;
+    protected $filenames;
 
     /**
      * Constructor
      * @param type $db
      */
-    function __construct($db)
+    public function __construct($db)
     {
-        $this->_db = $db;
-        $this->_filenames = array();
+        $this->db = $db;
+        $this->filenames = array();
     }
 
     /**
@@ -71,7 +71,7 @@ class CentreonMedia
     public function getMediaDirectory()
     {
         $query = "SELECT options.value FROM options WHERE options.key = 'nagios_path_img'";
-        $result = $this->_db->query($query);
+        $result = $this->db->query($query);
         if (\PEAR::isError($result)) {
             throw new \Exception('Error while getting media directory ');
         }
@@ -86,7 +86,7 @@ class CentreonMedia
             throw new \Exception('Error while getting media directory ');
         }
 
-        return $mediaDirectory;        
+        return $mediaDirectory;
     }
 
     /**
@@ -99,7 +99,7 @@ class CentreonMedia
         $dirname = $this->sanitizePath($dirname);
 
         $query = "SELECT dir_id FROM view_img_dir WHERE dir_name = '" . $dirname . "' LIMIT 1";
-        $RES = $this->_db->query($query);
+        $RES = $this->db->query($query);
         $dir_id = null;
         if ($RES->numRows()) {
             $row = $RES->fetchRow();
@@ -117,7 +117,7 @@ class CentreonMedia
     {
         $query = "SELECT dir_name FROM view_img_dir WHERE dir_id = " . $directoryId . " LIMIT 1";
 
-        $result = $this->_db->query($query);
+        $result = $this->db->query($query);
 
         $directoryName = null;
         if ($result->numRows()) {
@@ -145,7 +145,7 @@ class CentreonMedia
                 $dirAlias = $dirname;
             }
             $query = "INSERT INTO view_img_dir (dir_name, dir_alias) VALUES ('" . $dirname . "', '" . $dirAlias . "')";
-            $result = $this->_db->query($query);
+            $result = $this->db->query($query);
             if (\PEAR::isError($result)) {
                 throw new \Exception('Error while creating directory ' . $dirname);
             }
@@ -180,7 +180,7 @@ class CentreonMedia
      * @param string $dirname
      * @return mixed
      */
-    function getImageId($imagename, $dirname = null)
+    public function getImageId($imagename, $dirname = null)
     {
         if (!isset($dirname)) {
             $tab = preg_split("/\//", $imagename);
@@ -199,7 +199,7 @@ class CentreonMedia
                 "AND img.img_path = '" . $imagename . "' " .
                 "AND dir.dir_name = '" . $dirname . "' " .
                 "LIMIT 1";
-        $RES = $this->_db->query($query);
+        $RES = $this->db->query($query);
         $img_id = null;
         if ($RES->numRows()) {
             $row = $RES->fetchRow();
@@ -219,9 +219,9 @@ class CentreonMedia
         if (!isset($imgId)) {
             return "";
         }
-        if (count($this->_filenames)) {
-            if (isset($this->_filenames[$imgId])) {
-                return $this->_filenames[$imgId];
+        if (count($this->filenames)) {
+            if (isset($this->filenames[$imgId])) {
+                return $this->filenames[$imgId];
             } else {
                 return "";
             }
@@ -230,20 +230,20 @@ class CentreonMedia
 	    		  FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr
 	    		  WHERE vidr.img_img_id = vi.img_id
 	    		  AND vid.dir_id = vidr.dir_dir_parent_id";
-        $res = $this->_db->query($query);
-        $this->_filenames[0] = 0;
+        $res = $this->db->query($query);
+        $this->filenames[0] = 0;
         while ($row = $res->fetchRow()) {
-            $this->_filenames[$row['img_id']] = $row["dir_alias"] . "/" . $row["img_path"];
+            $this->filenames[$row['img_id']] = $row["dir_alias"] . "/" . $row["img_path"];
         }
-        if (isset($this->_filenames[$imgId])) {
-            return $this->_filenames[$imgId];
+        if (isset($this->filenames[$imgId])) {
+            return $this->filenames[$imgId];
         }
         return "";
     }
 
     /**
      * Extract files from archive file and returns filenames
-     * 
+     *
      * @param string $archiveFile
      * @return array
      * @throws Exception
@@ -287,7 +287,7 @@ class CentreonMedia
     }
 
     /**
-     * 
+     *
      * @param string $path
      * @return string
      */
@@ -301,7 +301,7 @@ class CentreonMedia
     }
 
     /**
-     * 
+     *
      * @param string $parameters
      * @param string $binary
      * @return mixed
@@ -334,7 +334,7 @@ class CentreonMedia
             . 'AND vi.img_name = "' . $imageName . '" '
             . 'AND vid.dir_name = "' . $directoryName . '" ';
 
-        $result = $this->_db->query($query);
+        $result = $this->db->query($query);
 
         if (!$result->numRows()) {
             // Insert image in database
@@ -346,7 +346,7 @@ class CentreonMedia
                 . '"' . $imageComment . '" '
                 . ') ';
 
-            $result = $this->_db->query($query);
+            $result = $this->db->query($query);
             if (\PEAR::isError($result)) {
                 throw new \Exception('Error while creating image ' . $imageName);
             }
@@ -356,7 +356,7 @@ class CentreonMedia
                 . 'FROM view_img '
                 . 'WHERE img_name = "' . $imageName . '" '
                 . 'AND img_path = "' . $imagePath . '" ';
-            $result = $this->_db->query($query);
+            $result = $this->db->query($query);
             if (\PEAR::isError($result) || !$result->numRows()) {
                 throw new \Exception('Error while creating image ' . $imageName);
             }
@@ -370,7 +370,7 @@ class CentreonMedia
                 . $directoryId . ', '
                 . $imageId . ' '
                 . ') ';
-            $result = $this->_db->query($query);
+            $result = $this->db->query($query);
             if (\PEAR::isError($result)) {
                 throw new \Exception('Error while inserting relation between' . $imageName . ' and ' . $directoryName);
             }
@@ -388,7 +388,7 @@ class CentreonMedia
     }
 
     /**
-     * 
+     *
      * @param string $directoryPath
      * @param string $imagePath
      * @param string $binary
