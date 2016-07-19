@@ -307,7 +307,9 @@ class CentreonContact
         unset($res);
 
         if (count($hostTab)) {
-            $sql2 = "SELECT host_id, host_name FROM host WHERE host_id NOT IN (".implode(',', array_keys($hostTab)).") AND host_register = '1'";
+            $sql2 = "SELECT host_id, host_name
+                FROM host
+                WHERE host_id NOT IN (" . implode(',', array_keys($hostTab)) . ") AND host_register = '1'";
         } else {
             $sql2 = "SELECT host_id, host_name FROM host WHERE host_register = '1'";
         }
@@ -383,15 +385,18 @@ class CentreonContact
         		AND hgr.host_host_id = h.host_id ";
         if (count($contactgroups)) {
             $sql .= " UNION
-        			  SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register, 2 as notif_type
+        			  SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register,
+                      2 as notif_type
         			  FROM contactgroup_service_relation csr, service s
         			  LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
         			  LEFT JOIN host h ON h.host_id = hsr.host_host_id
         			  WHERE csr.contactgroup_cg_id IN (" . implode(',', array_keys($contactgroups)) . ")
         			  AND csr.service_service_id = s.service_id
         			  UNION
-        			  SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register, 2 as notif_type
-        			  FROM contactgroup_service_relation csr, service s, host h, host_service_relation hsr, hostgroup_relation hgr
+        			  SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register,
+                      2 as notif_type
+        			  FROM contactgroup_service_relation csr, service s, host h, host_service_relation hsr,
+                      hostgroup_relation hgr
         			  WHERE csr.contactgroup_cg_id IN (" . implode(',', array_keys($contactgroups)) . ")
         			  AND csr.service_service_id = s.service_id
         			  AND s.service_id = hsr.service_service_id
@@ -501,4 +506,3 @@ class CentreonContact
         return false;
     }
 }
-?>

@@ -71,19 +71,19 @@ class CentreonGraphService extends CentreonGraph
 
         /* Build command line */
         $commandLine .= " xport ";
-        $commandLine .= " --start " . $this->_RRDoptions['start'];
-        $commandLine .= " --end " . $this->_RRDoptions['end'];
+        $commandLine .= " --start " . $this->RRDoptions['start'];
+        $commandLine .= " --end " . $this->RRDoptions['end'];
         $commandLine .= " --maxrows " . $rows;
 
         
         $metrics = array();
         $vname = array();
-        $vituals = array();
+        $virtuals = array();
         $i = 0;
         
         /* Parse metrics */
         foreach ($this->metrics as $metric) {
-            if ($metric['virtual'] == 1) {
+            if (isset($metric['virtual']) && $metric['virtual'] == 1) {
                 $virtuals[] = $metric;
                 $vname[$metric['metric']] = 'vv' . $i;
             } else {
@@ -143,7 +143,7 @@ class CentreonGraphService extends CentreonGraph
             2 => array('pipe', 'a'),
         );
 
-        $process = proc_open($this->general_opt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
+        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, null, null);
         if (false === is_resource($process)) {
             throw new RuntimeException();
         }

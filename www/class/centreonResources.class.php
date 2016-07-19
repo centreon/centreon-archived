@@ -34,22 +34,22 @@
  */
 
 /**
- * 
+ *
  */
 class CentreonResources
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -75,7 +75,7 @@ class CentreonResources
     }
     
     /**
-     * 
+     *
      * @param type $db
      * @param string $name
      * @return array

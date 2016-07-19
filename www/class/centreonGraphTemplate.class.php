@@ -44,19 +44,19 @@
  *
  * @author bsauveton
  */
-class centreonGraphTemplate
+class CentreonGraphTemplate
 {
     
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $instanceObj;
     
@@ -67,13 +67,13 @@ class centreonGraphTemplate
      * @param CentreonDB $db
      * @return void
      */
-    function __construct($db)
+    public function __construct($db)
     {
         $this->db = $db;
         $this->instanceObj = new CentreonInstance($db);
     }
         /**
-     * 
+     *
      * @param array $values
      * @return array
      */
@@ -86,7 +86,8 @@ class centreonGraphTemplate
             $explodedValues = "''";
         }
         
-        $query = "SELECT graph_id, name FROM giv_graphs_template WHERE graph_id IN (" . $explodedValues . ") ORDER BY name";
+        $query = "SELECT graph_id, name FROM giv_graphs_template
+            WHERE graph_id IN (" . $explodedValues . ") ORDER BY name";
         $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
