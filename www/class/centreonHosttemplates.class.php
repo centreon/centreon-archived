@@ -44,7 +44,7 @@ require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
 class CentreonHosttemplates extends CentreonHost
 {
     /**
-     * 
+     *
      * @param array $values
      * @return array
      */
