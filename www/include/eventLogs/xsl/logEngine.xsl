@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="root">
 <div>
-	<div id="div2"   valign="top" align='left'></div>
+	<div id="div2" valign="top" align='left'></div>
 </div>
 <div>
 	<div>
@@ -106,7 +106,7 @@
 						</xsl:element>
 					</xsl:element>
                     <xsl:element name='select'>
-                        <xsl:attribute name="onChange">setL(this.value); log_4_engine('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                        <xsl:attribute name="onChange">setL(this.value); logsEngine('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
                         <xsl:attribute name="name">l</xsl:attribute>
                             <xsl:for-each select="//limitValue">
                                 <xsl:element name='option'>
@@ -224,7 +224,7 @@
                 </td>  
                 <td class="Toolbar_pagelimit">   
                     <xsl:element name='select'>
-                        <xsl:attribute name="onChange">setL(this.value); log_4_engine('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+                        <xsl:attribute name="onChange">setL(this.value); logsEngine('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
                         <xsl:attribute name="name">l</xsl:attribute>
                             <xsl:for-each select="//limitValue">
                                 <xsl:element name='option'>
