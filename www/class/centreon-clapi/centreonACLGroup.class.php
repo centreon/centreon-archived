@@ -58,7 +58,7 @@ class CentreonACLGroup extends CentreonObject
     const ORDER_UNIQUENAME        = 0;
     const ORDER_ALIAS             = 1;
 
- 	/**
+    /**
      * Constructor
      *
      * @return void
@@ -68,7 +68,7 @@ class CentreonACLGroup extends CentreonObject
         parent::__construct();
         $this->object = new \Centreon_Object_Acl_Group();
         $this->params = array(  'acl_group_changed'                         => '1',
-                                'acl_group_activate'	                    => '1'
+                                'acl_group_activate'                        => '1'
                             );
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_group_activate";
@@ -176,7 +176,7 @@ class CentreonACLGroup extends CentreonObject
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
                 }
                 $groupId = $groupIds[0];
-                
+
                 $relobj = new $relclass();
                 $obj = new $class();
                 if ($matches[1] == "get") {
@@ -193,7 +193,7 @@ class CentreonACLGroup extends CentreonObject
                     $relation = $args[1];
                     $relations = explode("|", $relation);
                     $relationTable = array();
-                    foreach($relations as $rel) {
+                    foreach ($relations as $rel) {
                         $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                         if (!count($tab)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
@@ -203,8 +203,12 @@ class CentreonACLGroup extends CentreonObject
                     if ($matches[1] == "set") {
                         $relobj->delete($groupId);
                     }
-                    $existingRelationIds = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), array($groupId));
-                    foreach($relationTable as $relationId) {
+                    $existingRelationIds = $relobj->getTargetIdFromSourceId(
+                        $relobj->getSecondKey(),
+                        $relobj->getFirstKey(),
+                        array($groupId)
+                    );
+                    foreach ($relationTable as $relationId) {
                         if ($matches[1] == "del") {
                             $relobj->delete($groupId, $relationId);
                         } elseif ($matches[1] == "set" || $matches[1] == "add") {

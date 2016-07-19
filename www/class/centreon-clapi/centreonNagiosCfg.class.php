@@ -68,84 +68,85 @@ class CentreonNagiosCfg extends CentreonObject
         $this->commandObj = new \Centreon_Object_Command();
         $this->object = new \Centreon_Object_Nagios();
         $this->brokerModuleObj = new \Centreon_Object_Nagios_Broker_Module();
-        $this->params = array(  'log_file'                           	  => '/var/log/nagios/nagios.log',
-                                'cfg_dir'                                 => '/etc/nagios/',
-                                'temp_file'                               => '/var/log/nagios/nagios.tmp',
-                                'nagios_user'                             => 'nagios',
-                                'nagios_group'                            => 'nagios',
-                                'enable_notifications'                    => '0',
-                                'execute_service_checks'                  => '1',
-                                'accept_passive_service_checks'           => '1',
-                                'execute_host_checks'                     => '2',
-                                'accept_passive_host_checks'              => '2',
-                                'enable_event_handlers'                   => '1',
-                                'log_rotation_method'                     => 'd',
-                                'log_archive_path'                        => '/var/log/nagios/archives/',
-                                'check_external_commands'                 => '1',
-                                'command_check_interval'                  => '1s',
-                                'command_file'                            => '/var/log/nagios/rw/nagios.cmd',
-                                'lock_file'                               => '/var/log/nagios/nagios.lock',
-                                'retain_state_information'                => '1',
-                                'state_retention_file'                    => '/var/log/nagios/status.sav',
-                                'retention_update_interval'               => '60',
-                                'use_retained_program_state'              => '1',
-                                'use_retained_scheduling_info'            => '1',
-                                'use_syslog'                              => '0',
-                                'log_notifications'                       => '1',
-                                'log_service_retries'                     => '1',
-                                'log_host_retries'                        => '1',
-                                'log_event_handlers'                      => '1',
-                                'log_initial_states'                      => '1',
-                                'log_external_commands'                   => '1',
-                                'log_passive_checks'                      => '2',
-                                'sleep_time'                              => '0.2',
-                                'service_inter_check_delay_method'        => 's',
-                                'service_interleave_factor'               => 's',
-                                'max_concurrent_checks'                   => '400',
-                                'max_service_check_spread'                => '5',
-                                'check_result_reaper_frequency'           => '5',
-                                'interval_length'                         => '60',
-                                'auto_reschedule_checks'                  => '2',
-                                'enable_flap_detection'                   => '0',
-                                'low_service_flap_threshold'              => '25.0',
-                                'high_service_flap_threshold'             => '50.0',
-                                'low_host_flap_threshold'                 => '25.0',
-                                'high_host_flap_threshold'                => '50.0',
-                                'soft_state_dependencies'                 => '0',
-                                'service_check_timeout'                   => '60',
-                                'host_check_timeout'                      => '10',
-                                'event_handler_timeout'                   => '30',
-                                'notification_timeout'                    => '30',
-                                'ocsp_timeout'                            => '5',
-                                'ochp_timeout'                            => '5',
-                                'perfdata_timeout'                        => '5',
-        			'obsess_over_services'                    => '0',
-                                'obsess_over_hosts'                       => '2',
-                                'process_performance_data'                => '0',
-                                'host_perfdata_file_mode'                 => '2',
-                                'service_perfdata_file_mode'              => '2',
-                                'check_for_orphaned_services'             => '0',
-                                'check_for_orphaned_hosts'                => '',
-                                'check_service_freshness'                 => '2',
-                                'check_host_freshness'                    => '2',
-                                'date_format'                             => 'euro',
-                                'illegal_object_name_chars'               => "~!$%^&*\"|'<>?,()=",
-                                'illegal_macro_output_chars'              => "`~$^&\"|'<>",
-                                'use_regexp_matching'                     => '2',
-                                'use_true_regexp_matching'                => '2',
-                                'admin_email'                             => 'admin@localhost',
-                                'admin_pager'                             => 'admin',
-                                'nagios_activate'                         => '1',
-                                'event_broker_options'                    => '-1',
-                                'enable_predictive_host_dependency_checks'=> '2',
-                                'enable_predictive_service_dependency_checks'=> '2',
-                                'use_large_installation_tweaks'           => '2',
-                                'enable_environment_macros'               => '2',
-                                'debug_level'                             => '0',
-                                'debug_level_opt'                         => '0',
-                                'debug_verbosity'                         => '2',
-                                'cached_host_check_horizon'               => '60'
-                            );
+        $this->params = array(
+            'log_file'                                 => '/var/log/nagios/nagios.log',
+            'cfg_dir'                                 => '/etc/nagios/',
+            'temp_file'                               => '/var/log/nagios/nagios.tmp',
+            'nagios_user'                             => 'nagios',
+            'nagios_group'                            => 'nagios',
+            'enable_notifications'                    => '0',
+            'execute_service_checks'                  => '1',
+            'accept_passive_service_checks'           => '1',
+            'execute_host_checks'                     => '2',
+            'accept_passive_host_checks'              => '2',
+            'enable_event_handlers'                   => '1',
+            'log_rotation_method'                     => 'd',
+            'log_archive_path'                        => '/var/log/nagios/archives/',
+            'check_external_commands'                 => '1',
+            'command_check_interval'                  => '1s',
+            'command_file'                            => '/var/log/nagios/rw/nagios.cmd',
+            'lock_file'                               => '/var/log/nagios/nagios.lock',
+            'retain_state_information'                => '1',
+            'state_retention_file'                    => '/var/log/nagios/status.sav',
+            'retention_update_interval'               => '60',
+            'use_retained_program_state'              => '1',
+            'use_retained_scheduling_info'            => '1',
+            'use_syslog'                              => '0',
+            'log_notifications'                       => '1',
+            'log_service_retries'                     => '1',
+            'log_host_retries'                        => '1',
+            'log_event_handlers'                      => '1',
+            'log_initial_states'                      => '1',
+            'log_external_commands'                   => '1',
+            'log_passive_checks'                      => '2',
+            'sleep_time'                              => '0.2',
+            'service_inter_check_delay_method'        => 's',
+            'service_interleave_factor'               => 's',
+            'max_concurrent_checks'                   => '400',
+            'max_service_check_spread'                => '5',
+            'check_result_reaper_frequency'           => '5',
+            'interval_length'                         => '60',
+            'auto_reschedule_checks'                  => '2',
+            'enable_flap_detection'                   => '0',
+            'low_service_flap_threshold'              => '25.0',
+            'high_service_flap_threshold'             => '50.0',
+            'low_host_flap_threshold'                 => '25.0',
+            'high_host_flap_threshold'                => '50.0',
+            'soft_state_dependencies'                 => '0',
+            'service_check_timeout'                   => '60',
+            'host_check_timeout'                      => '10',
+            'event_handler_timeout'                   => '30',
+            'notification_timeout'                    => '30',
+            'ocsp_timeout'                            => '5',
+            'ochp_timeout'                            => '5',
+            'perfdata_timeout'                        => '5',
+            'obsess_over_services'                    => '0',
+            'obsess_over_hosts'                       => '2',
+            'process_performance_data'                => '0',
+            'host_perfdata_file_mode'                 => '2',
+            'service_perfdata_file_mode'              => '2',
+            'check_for_orphaned_services'             => '0',
+            'check_for_orphaned_hosts'                => '',
+            'check_service_freshness'                 => '2',
+            'check_host_freshness'                    => '2',
+            'date_format'                             => 'euro',
+            'illegal_object_name_chars'               => "~!$%^&*\"|'<>?,()=",
+            'illegal_macro_output_chars'              => "`~$^&\"|'<>",
+            'use_regexp_matching'                     => '2',
+            'use_true_regexp_matching'                => '2',
+            'admin_email'                             => 'admin@localhost',
+            'admin_pager'                             => 'admin',
+            'nagios_activate'                         => '1',
+            'event_broker_options'                    => '-1',
+            'enable_predictive_host_dependency_checks'=> '2',
+            'enable_predictive_service_dependency_checks'=> '2',
+            'use_large_installation_tweaks'           => '2',
+            'enable_environment_macros'               => '2',
+            'debug_level'                             => '0',
+            'debug_level_opt'                         => '0',
+            'debug_verbosity'                         => '2',
+            'cached_host_check_horizon'               => '60'
+        );
         $this->nbOfCompulsoryParams = 3;
         $this->activateField = "nagios_activate";
         $this->action = 'NAGIOSCFG';
@@ -167,7 +168,10 @@ class CentreonNagiosCfg extends CentreonObject
         $this->db->query($query, array($objectId));
         $brokerModuleArray = explode("|", $brokerModule);
         foreach ($brokerModuleArray as $bkModule) {
-            $this->db->query("INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES (?, ?)", array($objectId, $bkModule));
+            $this->db->query(
+                "INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES (?, ?)",
+                array($objectId, $bkModule)
+            );
         }
     }
 
@@ -206,14 +210,16 @@ class CentreonNagiosCfg extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            $commandColumns = array('global_host_event_handler',
-            			    'global_service_event_handler',
-            			    'host_perfdata_command',
-            			    'service_perfdata_command',
-                                    'host_perfdata_file_processing_command',
-                                    'service_perfdata_file_processing_command',
-                                    'ocsp_command',
-                                    'ochp_command');
+            $commandColumns = array(
+                'global_host_event_handler',
+                'global_service_event_handler',
+                'host_perfdata_command',
+                'service_perfdata_command',
+                'host_perfdata_file_processing_command',
+                'service_perfdata_file_processing_command',
+                'ocsp_command',
+                'ochp_command'
+            );
             if ($params[1] == "instance" || $params[1] == "nagios_server_id") {
                 $params[1] = "nagios_server_id";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
@@ -230,7 +236,7 @@ class CentreonNagiosCfg extends CentreonObject
                         throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[2]);
                     }
                 } else {
-                    $params[2] = NULL;
+                    $params[2] = null;
                 }
             }
             if ($params[1] != "broker_module") {
@@ -239,13 +245,12 @@ class CentreonNagiosCfg extends CentreonObject
                     if (isset($this->params[$p]) && $this->params[$p] == 2) {
                         $params[2] = $this->params[$p];
                     } else {
-                        $params[2] = NULL;
+                        $params[2] = null;
                     }
                 }
                 $updateParams = array($params[1] => $params[2]);
                 parent::setparam($objectId, $updateParams);
             }
-
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
         }
@@ -285,11 +290,11 @@ class CentreonNagiosCfg extends CentreonObject
      *
      * @return void
      */
-    public function export() {
+    public function export()
+    {
         $elements = $this->object->getList();
         $tpObj = new \Centreon_Object_Timeperiod();
         foreach ($elements as $element) {
-
             /* ADD action */
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -305,29 +310,47 @@ class CentreonNagiosCfg extends CentreonObject
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     if ($parameter == 'global_host_event_handler' || $parameter == 'global_service_event_handler'
-                    || $parameter == 'host_perfdata_command' || $parameter == 'service_perfdata_command'
-                    || $parameter == 'host_perfdata_file_processing_command' || $parameter == 'service_perfdata_file_processing_command'
-                    || $parameter == 'ochp_command' || $parameter == 'ocsp_command') {
+                        || $parameter == 'host_perfdata_command' || $parameter == 'service_perfdata_command'
+                        || $parameter == 'host_perfdata_file_processing_command'
+                        || $parameter == 'service_perfdata_file_processing_command'
+                        || $parameter == 'ochp_command' || $parameter == 'ocsp_command') {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
-                    } else if ($parameter == 'illegal_object_name_chars' || $parameter == 'illegal_macro_output_chars') {
+                    } elseif ($parameter == 'illegal_object_name_chars'
+                        || $parameter == 'illegal_macro_output_chars') {
                         $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML401);
                     }
 
                     $value = str_replace("\n", "<br/>", $value);
                     $value = CentreonUtils::convertLineBreak($value);
-                    echo $this->action . $this->delim . "setparam" . $this->delim . $element[$this->object->getUniqueLabelField()] . $this->delim . $parameter . $this->delim . $value . "\n";
+                    echo $this->action . $this->delim
+                        . "setparam" . $this->delim
+                        . $element[$this->object->getUniqueLabelField()] . $this->delim
+                        . $parameter . $this->delim
+                        . $value . "\n";
                 }
             }
-            $modules = $this->brokerModuleObj->getList("broker_module", -1, 0, null, "ASC", array('cfg_nagios_id' => $element[$this->object->getPrimaryKey()]), "AND");
+            $modules = $this->brokerModuleObj->getList(
+                "broker_module",
+                -1,
+                0,
+                null,
+                "ASC",
+                array('cfg_nagios_id' => $element[$this->object->getPrimaryKey()]),
+                "AND"
+            );
             $moduleList = array();
             foreach ($modules as $module) {
                 array_push($moduleList, $module['broker_module']);
             }
-            echo $this->action . $this->delim . "setparam" . $this->delim . $element[$this->object->getUniqueLabelField()] . $this->delim . 'broker_module' . $this->delim . implode('|', $moduleList) . "\n";
+            echo $this->action . $this->delim
+                . "setparam" . $this->delim
+                . $element[$this->object->getUniqueLabelField()] . $this->delim
+                . 'broker_module' . $this->delim
+                . implode('|', $moduleList) . "\n";
         }
     }
-    
+
     public function addbrokermodule($parameters)
     {
         $params = explode($this->delim, $parameters);
@@ -340,7 +363,7 @@ class CentreonNagiosCfg extends CentreonObject
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
         }
     }
-    
+
     /**
      * Set Broker Module
      *
@@ -353,16 +376,23 @@ class CentreonNagiosCfg extends CentreonObject
     {
         $brokerModuleArray = explode("|", $brokerModule);
         foreach ($brokerModuleArray as $bkModule) {
-            $$res = $this->db->query('SELECT COUNT(*) as nbBroker FROM cfg_nagios_broker_module WHERE cfg_nagios_id = ? AND broker_module = ?', array($objectId, $bkModule));
+            $$res = $this->db->query(
+                'SELECT COUNT(*) as nbBroker FROM cfg_nagios_broker_module '
+                . 'WHERE cfg_nagios_id = ? AND broker_module = ?',
+                array($objectId, $bkModule)
+            );
             $row = $res->fetch();
             if ($row['nbBroker'] > 0) {
                 throw new CentreonClapiException(self::OBJECTALREADYEXISTS.":".$bkModule);
             } else {
-                $this->db->query("INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES (?, ?)", array($objectId, $bkModule));
+                $this->db->query(
+                    "INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES (?, ?)",
+                    array($objectId, $bkModule)
+                );
             }
         }
     }
-    
+
     public function delbrokermodule($parameters)
     {
         $params = explode($this->delim, $parameters);
@@ -375,7 +405,7 @@ class CentreonNagiosCfg extends CentreonObject
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
         }
     }
-    
+
     /**
      * Set Broker Module
      *
@@ -390,9 +420,12 @@ class CentreonNagiosCfg extends CentreonObject
 
         foreach ($brokerModuleArray as $bkModule) {
             $tab = $this->brokerModuleObj->getIdByParameter('broker_module', array($bkModule));
-            
+
             if (count($tab)) {
-                $this->db->query("DELETE FROM cfg_nagios_broker_module WHERE cfg_nagios_id = ? and broker_module = ?", array($objectId, $bkModule));
+                $this->db->query(
+                    "DELETE FROM cfg_nagios_broker_module WHERE cfg_nagios_id = ? and broker_module = ?",
+                    array($objectId, $bkModule)
+                );
             } else {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$bkModule);
             }
