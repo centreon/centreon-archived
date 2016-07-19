@@ -1365,7 +1365,7 @@ class CentreonGraph {
      * @param unknown_type $vname
      * @param unknown_type $suffix
      */
-    private function subsRPN($rpn, $vname, $suffix = null) {
+    protected function subsRPN($rpn, $vname, $suffix = null) {
         $l_list = preg_split("/\,/",$rpn);
         $l_rpn = "";
         foreach ($l_list as $l_m) {

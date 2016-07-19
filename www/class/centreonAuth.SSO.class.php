@@ -33,14 +33,25 @@
  *
  */
 
-include_once (_CENTREON_PATH_."/www/class/centreonAuth.class.php");
+include_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
 
-class CentreonAuthSSO extends CentreonAuth {
+class CentreonAuthSSO extends CentreonAuth
+{
 
     protected $options_sso = array();
     protected $sso_mandatory = 0;
 
-    public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "", $generalOptions) {
+    public function __construct(
+        $username,
+        $password,
+        $autologin,
+        $pearDB,
+        $CentreonLog,
+        $encryptType = 1,
+        $token = "",
+        $generalOptions = array()
+    ) {
+    
         $this->options_sso = $generalOptions;
         
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1) {
@@ -48,7 +59,7 @@ class CentreonAuthSSO extends CentreonAuth {
                 $this->options_sso['sso_enable'] = 0;
             } else {
                 $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
-                if ($this->check_sso_client()) {
+                if ($this->checkSsoClient()) {
                         $this->sso_mandatory = 1;
                         $username = $this->sso_username;
                 }
@@ -63,7 +74,8 @@ class CentreonAuthSSO extends CentreonAuth {
         
     }
 
-    protected function check_sso_client() {
+    protected function checkSsoClient()
+    {
         if (isset($this->options_sso['sso_mode']) && $this->options_sso['sso_mode'] == 1) {
             # Mixed. Only trusted site for sso.
             if (preg_match('/' . $_SERVER['REMOTE_ADDR'] . '(\s|,|$)/', $this->options_sso['sso_trusted_clients'])) {
@@ -77,18 +89,19 @@ class CentreonAuthSSO extends CentreonAuth {
         }
     }
 
-    protected function checkPassword($password, $token, $autoimport = false) {
+    protected function checkPassword($password, $token, $autoimport = false)
+    {
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
            $this->login) {
            # Mode LDAP autoimport. Need to call it
-           if ($autoimport) {
+            if ($autoimport) {
                 # Password is only because it needs one...
                 parent::checkPassword('test', $token, $autoimport);
-           }
+            }
            # We delete old sessions with same SID
-           global $pearDB;
-           $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
-           $this->passwdOk = 1;
+            global $pearDB;
+            $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+            $this->passwdOk = 1;
         } else {
             # local connect (when sso not enabled and 'sso_mode' == 1
             return parent::checkPassword($password, $token);

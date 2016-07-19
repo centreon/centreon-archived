@@ -72,8 +72,8 @@ if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
     
     $oCommande = new CentreonCommand($pearDB);
     
-    $macrosHostDesc = $oCommande->match_object($iIdCmd, $str, '1');
-    $macrosServiceDesc = $oCommande->match_object($iIdCmd, $str, '2');
+    $macrosHostDesc = $oCommande->matchObject($iIdCmd, $str, '1');
+    $macrosServiceDesc = $oCommande->matchObject($iIdCmd, $str, '2');
     
     $nb_arg = count($macrosHostDesc) + count($macrosServiceDesc);
     

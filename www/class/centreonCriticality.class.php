@@ -35,27 +35,30 @@
 
 /**
  * Class for managing criticality object
- * 
- * @author Sylvestre Ho 
+ *
+ * @author Sylvestre Ho
  */
-class CentreonCriticality {
+class CentreonCriticality
+{
     /**
      * @var CentreonDB
      */
     protected $db;
     protected $tree;
     
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
     
     /**
      * Get data of a criticality object
-     * 
-     * @param int $critId 
+     *
+     * @param int $critId
      * @return array
      */
-    public function getData($critId, $service = false) {
+    public function getData($critId, $service = false)
+    {
         if ($service === false) {
             return $this->getDataForHosts($critId);
         }
@@ -64,11 +67,12 @@ class CentreonCriticality {
 
     /**
      * Get data of a criticality object for hosts
-     * 
-     * @param int $critId 
+     *
+     * @param int $critId
      * @return array
      */
-    public function getDataForHosts($critId) {
+    public function getDataForHosts($critId)
+    {
         static $data = array();
         
         if (!isset($data[$critId])) {
@@ -81,8 +85,8 @@ class CentreonCriticality {
                 if (!isset($data[$row['hc_id']])) {
                     $row['name'] = $row['hc_name'];
                     $data[$row['hc_id']] = $row;
-                }                
-            }            
+                }
+            }
         }
         if (isset($data[$critId])) {
             return $data[$critId];
@@ -92,11 +96,12 @@ class CentreonCriticality {
     
     /**
      * Get data of a criticality object for services
-     * 
-     * @param int $critId 
+     *
+     * @param int $critId
      * @return array
      */
-    public function getDataForServices($critId) {
+    public function getDataForServices($critId)
+    {
         static $data = array();
         
         if (!isset($data[$critId])) {
@@ -109,8 +114,8 @@ class CentreonCriticality {
                 if (!isset($data[$row['sc_id']])) {
                     $row['name'] = $row['sc_name'];
                     $data[$row['sc_id']] = $row;
-                }                
-            }            
+                }
+            }
         }
         if (isset($data[$critId])) {
             return $data[$critId];
@@ -120,7 +125,7 @@ class CentreonCriticality {
     
     /**
      * Get list of criticality
-     * 
+     *
      * @param string $searchString
      * @param string $orderBy
      * @param string $sort
@@ -129,23 +134,30 @@ class CentreonCriticality {
      * @paaram bool $service
      * @return array
      */
-    public function getList($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null, $service = false) {
+    public function getList(
+        $searchString = null,
+        $orderBy = "level",
+        $sort = 'ASC',
+        $offset = null,
+        $limit = null,
+        $service = false
+    ) {
         if ($service === false) {
             $elements = $this->getListForHosts(
-                    $searchString, 
-                    $orderBy, 
-                    $sort, 
-                    $offset, 
-                    $limit
-                    );
+                $searchString,
+                $orderBy,
+                $sort,
+                $offset,
+                $limit
+            );
         } else {
             $elements = $this->getListForServices(
-                    $searchString, 
-                    $orderBy, 
-                    $sort, 
-                    $offset, 
-                    $limit
-                    );
+                $searchString,
+                $orderBy,
+                $sort,
+                $offset,
+                $limit
+            );
         }
         return $elements;
     }
@@ -199,11 +211,11 @@ class CentreonCriticality {
             return $ids[$serviceId];
         }
         return 0;
-    } 
+    }
 
     /**
      * Get list of host criticalities
-     * 
+     *
      * @param type $searchString
      * @param type $orderBy
      * @param type $sort
@@ -211,7 +223,13 @@ class CentreonCriticality {
      * @param type $limit
      * @return type
      */
-    protected function getListForHosts($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null) {
+    protected function getListForHosts(
+        $searchString = null,
+        $orderBy = "level",
+        $sort = 'ASC',
+        $offset = null,
+        $limit = null
+    ) {
         $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
                 FROM hostcategories 
                 WHERE level IS NOT NULL ";
@@ -238,7 +256,7 @@ class CentreonCriticality {
     
     /**
      * Get list of service criticalities
-     * 
+     *
      * @param type $searchString
      * @param type $orderBy
      * @param type $sort
@@ -246,7 +264,13 @@ class CentreonCriticality {
      * @param type $limit
      * @return type
      */
-    protected function getListForServices($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null) {
+    protected function getListForServices(
+        $searchString = null,
+        $orderBy = "level",
+        $sort = 'ASC',
+        $offset = null,
+        $limit = null
+    ) {
         $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description
                 FROM service_categories 
                 WHERE level IS NOT NULL ";
@@ -277,11 +301,13 @@ class CentreonCriticality {
      * @param type service_id
      * return array
      */
-    public function criticitiesConfigOnSTpl($service_id) {
+    public function criticitiesConfigOnSTpl($service_id)
+    {
         global $pearDB, $critCache;
 
         if (!count($this->tree)) {
-            $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' ORDER BY service_template_model_stm_id ASC";
+            $request = "SELECT service_id, service_template_model_stm_id FROM service
+                WHERE service_register = '0' AND service_activate = '1' ORDER BY service_template_model_stm_id ASC";
             $RES = $pearDB->query($request);
             while ($data = $RES->fetchRow()) {
                 $this->tree[$data['service_id']] = $this->getServiceCriticality($data["service_id"]);
@@ -299,18 +325,24 @@ class CentreonCriticality {
      * @param type service_id
      * return array
      */
-    protected function getServiceCriticality($service_id) {
+    protected function getServiceCriticality($service_id)
+    {
         global $pearDB;
 
         if (!isset($service_id) || $service_id == 0) {
             return 0;
         }
 
-        $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' AND service_id = $service_id ORDER BY service_template_model_stm_id ASC";
+        $request = "SELECT service_id, service_template_model_stm_id FROM service
+            WHERE service_register = '0' AND service_activate = '1'
+                AND service_id = $service_id ORDER BY service_template_model_stm_id ASC";
         $RES = $pearDB->query($request);
         if (isset($RES) && $RES->numRows()) {
-           while ($data = $RES->fetchRow()) {
-               $request2 = "select sr.* FROM service_categories_relation sr, service_categories sc WHERE sr.sc_id = sc.sc_id AND sr.service_service_id = '".$data['service_id']."' AND sc.level IS NOT NULL";
+            while ($data = $RES->fetchRow()) {
+                $request2 = "select sr.* FROM service_categories_relation sr, service_categories sc
+                    WHERE sr.sc_id = sc.sc_id
+                        AND sr.service_service_id = '".$data['service_id']."'
+                        AND sc.level IS NOT NULL";
                 $RES2 = $pearDB->query($request2);
                 if ($RES2->numRows() != 0) {
                     $criticity = $RES2->fetchRow();
@@ -327,11 +359,12 @@ class CentreonCriticality {
         return 0;
     }
 
-    function getHostTplCriticities($host_id, $cache) {
+    public function getHostTplCriticities($host_id, $cache)
+    {
         global $pearDB;
         
-        if (!$host_id) { 
-            return NULL;
+        if (!$host_id) {
+            return null;
         }
         
         $rq = "SELECT host_tpl_id " .
@@ -348,6 +381,6 @@ class CentreonCriticality {
                 }
             }
         }
-        return NULL;
+        return null;
     }
 }

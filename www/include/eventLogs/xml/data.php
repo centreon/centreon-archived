@@ -52,7 +52,19 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 
+/**
+ * Connect to DB
+ */
+$pearDB     = new CentreonDB();
+$pearDBO    = new CentreonDB("centstorage");
+
+/* Check Session */
 CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    print "Bad Session";
+    exit();
+}
+
 $centreon = $_SESSION["centreon"];
 
 /**
@@ -65,11 +77,6 @@ bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
-/**
- * Connect to DB
- */
-$pearDB 	= new CentreonDB();
-$pearDBO 	= new CentreonDB("centstorage");
 
 define("STATUS_OK", 0);
 define("STATUS_WARNING", 1);
@@ -128,7 +135,6 @@ if (isset($sid) && $sid){
 (isset($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
 (isset($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
 (isset($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
-(isset($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
 (isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
 
 if ($engine == "false"){
@@ -274,7 +280,6 @@ $logs = array();
  * Print infos..
  */
 $buffer->startElement("infos");
-$buffer->writeElement("multi", $multi);
 $buffer->writeElement("sid", $sid);
 $buffer->writeElement("opid", $openid);
 $buffer->writeElement("start", $start);
@@ -753,27 +758,6 @@ if (isset($req) && $req) {
     $buffer->writeElement("label_page", "");
     $buffer->endElement();    
 }
-
-/*
- * Translation for Menu.
- */
-/*
-$buffer->startElement("lang");
-$buffer->writeElement("ty", _("Message Type"), 0);
-$buffer->writeElement("n", _("Notifications"), 0);
-$buffer->writeElement("a", _("Alerts"), 0);
-$buffer->writeElement("e", _("Errors"), 0);
-$buffer->writeElement("s", _("Status"), 0);
-$buffer->writeElement("do", _("Down"), 0);
-$buffer->writeElement("up", _("Up"), 0);
-$buffer->writeElement("un", _("Unreachable"), 0);
-$buffer->writeElement("w", _("Warning"), 0);
-$buffer->writeElement("ok", _("Ok"), 0);
-$buffer->writeElement("cr", _("Critical"), 0);
-$buffer->writeElement("uk", _("Unknown"), 0);
-$buffer->writeElement("oh", _("Hard Only"), 0);
-$buffer->writeElement("sch", _("Search"), 0);
-*/
 
 /*
  * Translation for tables.

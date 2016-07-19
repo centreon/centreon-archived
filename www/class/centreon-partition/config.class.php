@@ -34,79 +34,108 @@
  */
 
 /**
+ * Class that handles XML properties file
  *
- * Class that handles XML properties file 
- * @author msugumaran
- *
+ * @category Database
+ * @package  Centreon
+ * @author   qgarnier <qgarnier@centreon.com>
+ * @license  GPLv2 http://www.gnu.org/licenses
+ * @link     http://www.centreon.com
  */
+class Config
+{
+    
+    public $XMLfile;
+    public $tables;
+    public $db;
 
-class Config {
-	
-	var $XMLfile;
-	var $tables;
-	var $db;
-	/**
-	 *
-	 * Class constructor
-	 */
-	public function __construct($db, $file) {
-		$this->XMLFile = $file;
-		$this->db = $db;
-		$this->tables = array();
-		$this->parseXML($this->XMLFile);
-	}
-	
-	/**
-	 * Parse XML configuration file to get properties of table to process
-	 */
-	public function parseXML($xmlfile) {
-		$node = new SimpleXMLElement(file_get_contents($xmlfile));
-		foreach ($node->table as $table_config) {
-		  	$table = new MysqlTable($this->db, (string) $table_config["name"], (string) $table_config["schema"]);
-			if (!is_null($table->getName()) && !is_null($table->getSchema())) {
-					$table->setActivate((string) $table_config->activate);
-					$table->setColumn((string) $table_config->column);
-					$table->setType((string) $table_config->type);
-					$table->setDuration((string) $table_config->duration);
-                    $table->setTimezone((string) $table_config->timezone);
-			  		$table->setRetention((string) $table_config->retention);
-                    $table->setRetentionForward((string) $table_config->retentionforward); // Only for 'date' type
-			  		$table->setBackupFolder((string) $table_config->backup->folder);
-			  		$table->setBackupFormat((string) $table_config->backup->format);
-                    $table->setCreateStmt((string) $table_config->createstmt);
-			  		$this->tables[$table->getName()] = $table;			
-			  	}
-		}
-	}
-	
-	/**
-	 * return all tables partitioning properties
-	 */
-	public function getTables() {
-		return ($this->tables);
-	}
-	
-	/**
-	 * Return partitioning properties for a specific table
-	 */
-	public function getTable($name) {
-		foreach($this->tables as $key => $instance) {
-			if ($key == $name) {
-				return ($instance);
-			}
-		}
-		return (null);
-	}
-	
-	/**
-	 * Check if each table property is set 
-	 */
-	public function isValid() {
-		foreach ($this->tables as $key => $inst) { 
-			if (!$inst->isValid()) {
-				return (false);	
-			}
-		}
-		return (true);
-	}
+    /**
+     * Class constructor
+     *
+     * @param CentreonDB $db   the centreon database
+     * @param string     $file the xml file name
+     */
+    public function __construct($db, $file)
+    {
+        $this->XMLFile = $file;
+        $this->db = $db;
+        $this->tables = array();
+        $this->parseXML($this->XMLFile);
+    }
+    
+    /**
+     * Parse XML configuration file to get properties of table to process
+     *
+     * @param string $xmlfile the xml file name
+     *
+     * @return null
+     */
+    public function parseXML($xmlfile)
+    {
+        $node = new SimpleXMLElement(file_get_contents($xmlfile));
+        foreach ($node->table as $table_config) {
+            $table = new MysqlTable(
+                $this->db,
+                (string) $table_config["name"],
+                (string) $table_config["schema"]
+            );
+            if (!is_null($table->getName()) && !is_null($table->getSchema())) {
+                $table->setActivate((string) $table_config->activate);
+                $table->setColumn((string) $table_config->column);
+                $table->setType((string) $table_config->type);
+                $table->setDuration((string) $table_config->duration);
+                $table->setTimezone((string) $table_config->timezone);
+                $table->setRetention((string) $table_config->retention);
+                $table->setRetentionForward((string) $table_config->retentionforward); // Only for 'date' type
+                $table->setBackupFolder((string) $table_config->backup->folder);
+                $table->setBackupFormat((string) $table_config->backup->format);
+                $table->setCreateStmt((string) $table_config->createstmt);
+                $this->tables[$table->getName()] = $table;
+            }
+        }
+    }
+    
+    /**
+     * Return all tables partitioning properties
+     *
+     * @return array
+     */
+    public function getTables()
+    {
+        return ($this->tables);
+    }
+    
+    /**
+     * Return partitioning properties for a specific table
+     *
+     * @param string $name the table name
+     *
+     * @return string
+     */
+    public function getTable($name)
+    {
+        foreach ($this->tables as $key => $instance) {
+            if ($key == $name) {
+                return ($instance);
+            }
+        }
+
+        return (null);
+    }
+    
+    /**
+     * Check if each table property is set
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+        foreach ($this->tables as $key => $inst) {
+            if (!$inst->isValid()) {
+                return (false);
+            }
+        }
+
+        return (true);
+    }
 }

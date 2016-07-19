@@ -360,6 +360,9 @@ jQuery('input[name=service_normal_check_interval]').change(function() {
 });
 
 jQuery(function() {
+    // Data for all macros
+    var macros_datas = jQuery("#clone-values-macro").data("clone-values-macro");
+
     sheepIt = jQuery("#macro").sheepIt({
         separator: '',
         allowRemoveLast: true,
@@ -368,7 +371,7 @@ jQuery(function() {
         minFormsCount: 0,
         maxFormsCount: 200,
         continuousIndex : false,
-        iniFormsCount: jQuery("#clone-count-macro").data("clone-count-macro"),
+        iniFormsCount: macros_datas,
         data: jQuery("#clone-values-macro").data("clone-values-macro"),
         afterAdd: function(source, newForm) {
             jQuery(newForm).find("input[id^='macroPassword_']").parent().show();
@@ -387,9 +390,21 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
         }
-        
+
+        // Set a 'Macro value' field as password field, on edit mode
         if (jQuery(elem).find("input[id^='macroPassword']").is(':checked')) {
             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+        }
+
+        // for 'consultation only' mode
+
+        // Display [x] if the macro value is a password
+        var macroValueFieldIsAPassword = macros_datas[idx]["macroPassword_#index#"];
+        jQuery(elem).find(".frozenCheckboxIsCheckedInformation").html(macroValueFieldIsAPassword ? '[x]' : '[&nbsp;]');
+
+        // Set a 'Macro value' field as password field, on 'consultation only' mode
+        if (macroValueFieldIsAPassword) {
+             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
         }
 
         {/literal}{if $form.frozen == false}{literal}
