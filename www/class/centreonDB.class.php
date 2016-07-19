@@ -33,7 +33,7 @@
  *
  */
 include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
-require_once ("DB.php");
+require_once("DB.php");
 
 class CentreonDB
 {
@@ -55,14 +55,15 @@ class CentreonDB
     protected $lineRead;
     protected $debug;
     
-    static $aForbiden = array('UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
+    protected static $aForbiden = array('UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
 
     /**
      * Constructor
-     * 
+     *
      * @param string $db | centreon, centstorage, or ndo
      * @param int $retry
-     * @param bool $silent | when silent is set to false, it will display an HTML error msg, otherwise it will throw an Exception
+     * @param bool $silent | when silent is set to false, it will display an HTML error msg,
+     *                       otherwise it will throw an Exception
      * @return void
      */
     public function __construct($db = "centreon", $retry = 3, $silent = false)
@@ -93,15 +94,15 @@ class CentreonDB
             }
 
             switch (strtolower($db)) {
-                case "centreon" :
+                case "centreon":
                     $this->connectToCentreon($conf_centreon);
                     $this->connect();
                     break;
-                case "centstorage" :
+                case "centstorage":
                     $this->connectToCentstorage($conf_centreon);
                     $this->connect();
                     break;
-                case "default" :
+                case "default":
                     $this->connectToCentreon($conf_centreon);
                     $this->connect();
                     break;
@@ -126,28 +127,34 @@ class CentreonDB
         }
     }
     
-    public function autoCommit($val){
+    public function autoCommit($val)
+    {
         $this->db->autoCommit($val);
     }
     
-    public function prepare($query){
+    public function prepare($query)
+    {
         return $this->db->prepare($query);
     }
     
-    public function executeMultiple($stmt,$arrayValues){
-        return $this->db->executeMultiple($stmt,$arrayValues);
+    public function executeMultiple($stmt, $arrayValues)
+    {
+        return $this->db->executeMultiple($stmt, $arrayValues);
     }
     
-    public function autoPrepare($query){
+    public function autoPrepare($query)
+    {
         return $this->db->autoPrepare($query);
     }
     
-    public function commit(){
+    public function commit()
+    {
         $this->db->commit();
     }
     
-    public function execute($stmt,$arrayValues){
-        return $this->db->execute($stmt,$arrayValues);
+    public function execute($stmt, $arrayValues)
+    {
+        return $this->db->execute($stmt, $arrayValues);
     }
     
     public function rollback()
@@ -156,7 +163,7 @@ class CentreonDB
     }
     
     /**
-     * 
+     *
      * @return type
      */
     public function getMessage()
@@ -165,7 +172,7 @@ class CentreonDB
     }
     
     /**
-     * 
+     *
      * @return type
      */
     public function getCode()
@@ -177,14 +184,15 @@ class CentreonDB
      * Display error page
      *
      * @access protected
-     * @return	void
+     * @return  void
      */
     protected function displayConnectionErrorPage($msg = null)
     {
         if (!$msg) {
             $msg = _("Connection failed, please contact your administrator");
         }
-        echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
               <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
                 <head>
                 <style type="text/css">
@@ -213,7 +221,7 @@ class CentreonDB
      * estrablish centreon DB connector
      *
      * @access protected
-     * @return	void
+     * @return  void
      */
     protected function connectToCentreon($conf_centreon)
     {
@@ -234,7 +242,7 @@ class CentreonDB
      * estrablish Centstorage DB connector
      *
      * @access protected
-     * @return	void
+     * @return  void
      */
     protected function connectToCentstorage($conf_centreon)
     {
@@ -255,11 +263,14 @@ class CentreonDB
      * estrablish NDO DB connector
      *
      * @access protected
-     * @return	void
+     * @return  void
      */
     protected function connectToNDO($conf_centreon)
     {
-        $DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+        $DBRESULT = $this->db->query(
+            "SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db
+                WHERE activate = '1' LIMIT 1"
+        );
         if (PEAR::isError($DBRESULT)) {
             print "DB Error : " . $DBRESULT->getDebugInfo() . "<br />";
         }
@@ -302,7 +313,9 @@ class CentreonDB
             if ($this->debug) {
                 $this->log->insertLog(2, $this->db->getMessage() . " (retry : $i)");
             }
-            throw new Exception('Database Error: Could not connect to database. <br />Please contact your administrator.');
+            throw new Exception(
+                'Database Error: Could not connect to database. <br />Please contact your administrator.'
+            );
         } else {
             $this->db->setFetchMode(DB_FETCHMODE_ASSOC);
         }
@@ -312,7 +325,7 @@ class CentreonDB
      * Disconnect DB connector
      *
      * @access public
-     * @return	void
+     * @return  void
      */
     public function disconnect()
     {
@@ -348,10 +361,8 @@ class CentreonDB
      * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
      * @return string
      */
-    static public function escape($str, $htmlSpecialChars = false)
+    public static function escape($str, $htmlSpecialChars = false)
     {
-        //self::check_injection($str);
-        
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
         }
@@ -365,8 +376,8 @@ class CentreonDB
      * launch a query
      *
      * @access public
-     * @param	string	$query_string	query
-     * @return	object	query result
+     * @param   string  $query_string   query
+     * @return  object  query result
      */
     public function query($query_string = null, $placeHolders = array())
     {
@@ -394,8 +405,8 @@ class CentreonDB
      * launch a getAll
      *
      * @access public
-     * @param	string	$query_string	query
-     * @return	object	getAll result
+     * @param   string  $query_string   query
+     * @return  object  getAll result
      */
     public function getAll($query_string = null, $placeHolders = array())
     {
@@ -420,10 +431,11 @@ class CentreonDB
      * Check if user is able to modify schema.
      *
      * @access protected
-     * @param	char	$grant	User Name
-     * @return	int		result flag
+     * @param   char    $grant  User Name
+     * @return  int     result flag
      */
-    public function hasGrants($grant = "") {
+    public function hasGrants($grant = "")
+    {
         if ($grant == "") {
             return 0;
         }
@@ -434,8 +446,8 @@ class CentreonDB
 
         $DBRESULT = $this->query("show grants");
         while ($result = $DBRESULT->fetchRow()) {
-            foreach ($result as $key => $value)
-                ;
+            foreach ($result as $key => $value) {
+            }
             $expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `" . $db_name . "`.\*/";
             $expr2 = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `" . $db_nameSec . "`.\*/";
             if (preg_match($expr, $value, $matches) || preg_match($expr2, $value, $matches)) {
@@ -482,7 +494,7 @@ class CentreonDB
     /*
      * checks if there is malicious injection 
      */
-    public static function check_injection($sString)
+    public static function checkInjection($sString)
     {
        /*
         if (preg_match('/\s'.implode('|', self::$aForbiden) . '\s/i', $sString)) {
@@ -500,21 +512,28 @@ class CentreonDB
      * $dataCentreon = getProperties();
      * </code>
      *
-     * @return{TAB}array{TAB}dbsize, numberOfRow, freeSize
+     * @return array dbsize, numberOfRow, freeSize
      */
-    function getProperties()
+    public function getProperties()
     {
         $unitMultiple = 1024*1024;
 
-        $info = array('version' => null, 'engine' => null, 'dbsize' => 0, 'rows' => 0, 'datafree' => 0, 'indexsize' => 0);
+        $info = array(
+            'version' => null,
+            'engine' => null,
+            'dbsize' => 0,
+            'rows' => 0,
+            'datafree' => 0,
+            'indexsize' => 0
+        );
         /*
          * Get Version
          */
-        if ($res = $this->db->query("SELECT VERSION() AS mysql_version")){
+        if ($res = $this->db->query("SELECT VERSION() AS mysql_version")) {
             $row = $res->fetchRow();
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
-            if ($DBRESULT = $this->db->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")){
+            if ($DBRESULT = $this->db->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")) {
                 while ($data = $DBRESULT->fetchRow()) {
                     $info['dbsize'] += $data['Data_length'] + $data['Index_length'];
                     $info['indexsize'] += $data['Index_length'];
@@ -525,7 +544,7 @@ class CentreonDB
             }
             foreach ($info as $key => $value) {
                 if ($key != "rows" && $key != "version" && $key != "engine") {
-                   $info[$key] = round($value / $unitMultiple, 2); 
+                    $info[$key] = round($value / $unitMultiple, 2);
                 }
                 if ($key == "version") {
                     $tab = split('-', $value);
