@@ -38,23 +38,23 @@
   * Servicegroups objects
   *
   */
- class CentreonServicegroups
+class CentreonServicegroups
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     private $DB;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     private $relationCache;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     private $dataTree;
 
@@ -63,7 +63,7 @@
      * Constructor
      * @param $pearDB
      */
-    function __construct($pearDB)
+    public function __construct($pearDB)
     {
         $this->DB = $pearDB;
     }
@@ -73,10 +73,10 @@
      * Enter description here ...
      * @param unknown_type $sg_id
      */
-    public function getServiceGroupServices($sg_id = NULL)
+    public function getServiceGroupServices($sg_id = null)
     {
         if (!$sg_id) {
-	    return;
+            return;
         }
 
         $services = array();
@@ -98,7 +98,7 @@
         }
         $res->free();
 
-	return $services;
+        return $services;
     }
     
     public function getServicesGroups($sg_id = array())
@@ -108,9 +108,9 @@
         if (!empty($sg_id)) {
             $query = "SELECT sg_id, sg_name "
                 . "FROM servicegroup "
-                . "WHERE sg_id IN (" . $this->DB->escape(implode(",",$sg_id))." ) ";
+                . "WHERE sg_id IN (" . $this->DB->escape(implode(",", $sg_id))." ) ";
             $res = $this->DB->query($query);
-            while($row = $res->fetchRow()){
+            while ($row = $res->fetchRow()) {
                 $arrayReturn[] = array(
                     "id" => $row['sg_id'],
                     "name" => $row['sg_name']
@@ -123,7 +123,7 @@
     
     
     /**
-     * 
+     *
      * @param type $field
      * @return string
      */
