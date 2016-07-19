@@ -201,3 +201,8 @@ ALTER TABLE hostgroup ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `hg
 ALTER TABLE meta_service ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `meta_comment`;
 ALTER TABLE service ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `service_comment`;
 ALTER TABLE servicegroup ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER `sg_comment`;
+
+-- Move Template and curve templace in another location
+UPDATE topology SET topology_url = './include/views/graphTemplates/graphTemplates.php' WHERE topology_page = 20404;
+UPDATE topology SET topology_url = './include/views/componentTemplates/componentTemplates.php' WHERE topology_page = 20405;
+UPDATE topology SET topology_url = './include/views/virtualMetrics/virtualMetrics.php' WHERE topology_page = 20408;

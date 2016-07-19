@@ -39,301 +39,344 @@
  * @author msugumaran
  *
  */
-class MysqlTable {
+class MysqlTable
+{
 
-	private $db;
-	private $name;
-	private $schema;
-	private $schemaFile;
-	private $activate;
-	private $column;
-	private $duration;
+    private $db;
+    private $name;
+    private $schema;
+    private $schemaFile;
+    private $activate;
+    private $column;
+    private $duration;
     private $timezone;
-	private $retention;
+    private $retention;
     private $retentionforward;
-	private $createstmt;
-	private $backupFolder;
-	private $backupFormat;
+    private $createstmt;
+    private $backupFolder;
+    private $backupFormat;
 
-	/**
-	 *
-	 * Class constructor
-	 */
-	public function __construct($DBobj, $tableName, $schema) {
-		$this->db = $DBobj;
-		$this->setName($tableName);
-		$this->activate = 1;
-		$this->column = null;
-		$this->type = null;
-		$this->duration = null;
+    /**
+     *
+     * Class constructor
+     */
+    public function __construct($DBobj, $tableName, $schema)
+    {
+        $this->db = $DBobj;
+        $this->setName($tableName);
+        $this->activate = 1;
+        $this->column = null;
+        $this->type = null;
+        $this->duration = null;
         $this->timezone = null;
-		$this->schema = null;
-		$this->retention = null;
+        $this->schema = null;
+        $this->retention = null;
         $this->retentionforward = null;
-		$this->createstmt = null;
-		$this->backupFolder = null;
-		$this->backupFormat = null;
-		$this->setSchema($schema);
-	}
-	
-	/*
-	 * 
-	 * Set table name
-	 */
-	private function setName($name) {
-		if (isset($name) && $name != "") {
-			$this->name = $name;
-		}else {
-			$this->name = null;
-		}
-	}
-	
-	/*
-	 * 
-	 * Get table name
-	 */
-	public function getName() {
-		return $this->name;
-	}
-	
-	/*
-	 * 
-	 * Set table schema
-	 */
-	private function setSchema($schema) {
-		if (isset($schema) && $schema != "") {
-			$this->schema = $schema;
-		}else {
-			$this->schema = null;
-		}
-	}
-	
-	/* 
-	 * Get table schema
-	 */
-	public function getSchema() {
-		return $this->schema;
-	}
-	
-	/* 
-	 * Set partitioning activation flag
-	 */
-	public function setActivate($activate) {
-		if (isset($activate) && is_numeric($activate)) {
-			$this->activate = $activate;
-		}
-	}
-	
-	/* 
-	 * Get activate value
-	 */
-	public function getActivate() {
-		return $this->activate;
-	}
-	
-	/* 
-	 * Set partitioning column name
-	 */
-	public function setColumn($column) {
-		if (isset($column) && $column != "") {
-			$this->column = $column;
-		}
-	}
-	
-	/* 
-	 * Get column value
-	 */
-	public function getColumn() {
-		return $this->column;
-	}
-	
-    /* 
-	 * Set partitioning timezone
-	 */
-	public function setTimezone($timezone) {
-		if (isset($timezone) && $timezone != "") {
-			$this->timezone = $timezone;
-		}
-	}
-	
-	/* 
-	 * Get timezone value
-	 */
-	public function getTimezone() {
-		return $this->timezone;
-	}
+        $this->createstmt = null;
+        $this->backupFolder = null;
+        $this->backupFormat = null;
+        $this->setSchema($schema);
+    }
     
-	/* 
-	 * Set partitioning column type
-	 */
-	public function setType($type) {
-		if (isset($type) && ($type == "date")) {		
-			$this->type = $type;
-		} else {
-            throw new Exception("Config Error: Wrong type format for table ".$this->schema.".".$this->name."\n");
+    /*
+     * 
+     * Set table name
+     */
+    private function setName($name)
+    {
+        if (isset($name) && $name != "") {
+            $this->name = $name;
+        } else {
+            $this->name = null;
         }
-	}
-	
-	/* 
-	 * Get partitioning column type
-	 */
-	public function getType() {
-		return $this->type;
-	}
-	
-	/* 
-	 * Set partition range
-	 */
-	public function setDuration($duration) {
-		if (isset($duration) && ($duration != 'daily')) {
-			throw new Exception("Config Error: Wrong duration format for table ".$this->schema.".".$this->name."\n");
-		} else {
+    }
+    
+    /*
+     * 
+     * Get table name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    /*
+     * 
+     * Set table schema
+     */
+    private function setSchema($schema)
+    {
+        if (isset($schema) && $schema != "") {
+            $this->schema = $schema;
+        } else {
+            $this->schema = null;
+        }
+    }
+    
+    /* 
+     * Get table schema
+     */
+    public function getSchema()
+    {
+        return $this->schema;
+    }
+    
+    /* 
+     * Set partitioning activation flag
+     */
+    public function setActivate($activate)
+    {
+        if (isset($activate) && is_numeric($activate)) {
+            $this->activate = $activate;
+        }
+    }
+    
+    /* 
+     * Get activate value
+     */
+    public function getActivate()
+    {
+        return $this->activate;
+    }
+    
+    /* 
+     * Set partitioning column name
+     */
+    public function setColumn($column)
+    {
+        if (isset($column) && $column != "") {
+            $this->column = $column;
+        }
+    }
+    
+    /* 
+     * Get column value
+     */
+    public function getColumn()
+    {
+        return $this->column;
+    }
+    
+    /* 
+     * Set partitioning timezone
+     */
+    public function setTimezone($timezone)
+    {
+        if (isset($timezone) && $timezone != "") {
+            $this->timezone = $timezone;
+        }
+    }
+    
+    /* 
+     * Get timezone value
+     */
+    public function getTimezone()
+    {
+        return $this->timezone;
+    }
+    
+    /* 
+     * Set partitioning column type
+     */
+    public function setType($type)
+    {
+        if (isset($type) && ($type == "date")) {
+            $this->type = $type;
+        } else {
+            throw new Exception("Config Error: Wrong type format for table "
+                . $this->schema . "." . $this->name . "\n");
+        }
+    }
+    
+    /* 
+     * Get partitioning column type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    /* 
+     * Set partition range
+     */
+    public function setDuration($duration)
+    {
+        if (isset($duration) && ($duration != 'daily')) {
+            throw new Exception("Config Error: Wrong duration format for table "
+                . $this->schema . "." . $this->name . "\n");
+        } else {
             $this->duration = $duration;
-		}
-	}
-	
-	/* 
-	 * Get partition range
-	 */
-	public function getDuration() {
-		return $this->duration;
-	}
+        }
+    }
     
     /* 
-	 * Set partitioning create table
-	 */
-	public function setCreateStmt($createstmt) {
-		if (isset($createstmt) && $createstmt != "") {
-			$this->createstmt = str_replace(";", "", $createstmt);
-		}
-	}
-	
-	/* 
-	 * Get create table value
-	 */
-	public function getCreateStmt() {   
-		return $this->createstmt;
-	}
-	
-	/* 
-	 * Set partition backup folder
-	 */
-	public function setBackupFolder($backupFolder) {
-		if (isset($backupFolder) || $backupFolder != "") {
-				$this->backupFolder = $backupFolder;
-		}
-	}
-	
-	/* 
-	 * Get partition backup folder
-	 */
-	public function getBackupFolder() {
-		return $this->backupFolder;
-	}
-	
-	/* 
-	 * Set partition backup file name format
-	 */
-	public function setBackupFormat($backupFormat) {
-		if (isset($backupFormat) || $backupFormat != "") {
-				$this->backupFormat = $backupFormat;
-		}
-	}
-	
-	/* 
-	 * Get partition backup file name format
-	 */
-	public function getBackupFormat() {
-		return $this->backupFormat;
-	}
-	
-	/* 
-	 * Set partitions retention value
-	 */
-	public function setRetention($retention) {
-		if (isset($retention) && is_numeric($retention)) {
-			$this->retention = $retention;
-		} else {
-			throw new Exception("Config Error: Wrong format of retention value for table ".$this->schema.".".$this->name."\n");
-		}
-	}
-	
-	/* 
-	 * Get retention value
-	 */
-	public function getRetention() {
-		return $this->retention;
-	}
+     * Get partition range
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
     
     /* 
-	 * Set partitions retention forward value
-	 */
-	public function setRetentionForward($retentionforward) {
-		if (isset($retentionforward) && is_numeric($retentionforward)) {
-			$this->retentionforward = $retentionforward;
-		} else {
-			throw new Exception("Config Error: Wrong format of retention forward value for table ".$this->schema.".".$this->name."\n");
-		}
-	}
-	
-	/* 
-	 * Get retention forward value
-	 */
-	public function getRetentionForward() {
-		return $this->retentionforward;
-	}
-	
-	/*
-	 * verify if table properties are all set
-	 */
-	public function isValid() {
+     * Set partitioning create table
+     */
+    public function setCreateStmt($createstmt)
+    {
+        if (isset($createstmt) && $createstmt != "") {
+            $this->createstmt = str_replace(";", "", $createstmt);
+        }
+    }
+    
+    /* 
+     * Get create table value
+     */
+    public function getCreateStmt()
+    {
+        return $this->createstmt;
+    }
+    
+    /* 
+     * Set partition backup folder
+     */
+    public function setBackupFolder($backupFolder)
+    {
+        if (isset($backupFolder) || $backupFolder != "") {
+            $this->backupFolder = $backupFolder;
+        }
+    }
+    
+    /* 
+     * Get partition backup folder
+     */
+    public function getBackupFolder()
+    {
+        return $this->backupFolder;
+    }
+    
+    /* 
+     * Set partition backup file name format
+     */
+    public function setBackupFormat($backupFormat)
+    {
+        if (isset($backupFormat) || $backupFormat != "") {
+            $this->backupFormat = $backupFormat;
+        }
+    }
+    
+    /* 
+     * Get partition backup file name format
+     */
+    public function getBackupFormat()
+    {
+        return $this->backupFormat;
+    }
+    
+    /* 
+     * Set partitions retention value
+     */
+    public function setRetention($retention)
+    {
+        if (isset($retention) && is_numeric($retention)) {
+            $this->retention = $retention;
+        } else {
+            throw new Exception("Config Error: Wrong format of retention value for table "
+                . $this->schema . "." . $this->name . "\n");
+        }
+    }
+    
+    /* 
+     * Get retention value
+     */
+    public function getRetention()
+    {
+        return $this->retention;
+    }
+    
+    /* 
+     * Set partitions retention forward value
+     */
+    public function setRetentionForward($retentionforward)
+    {
+        if (isset($retentionforward) && is_numeric($retentionforward)) {
+            $this->retentionforward = $retentionforward;
+        } else {
+            throw new Exception("Config Error: Wrong format of retention forward value for table "
+                . $this->schema . "." . $this->name . "\n");
+        }
+    }
+    
+    /* 
+     * Get retention forward value
+     */
+    public function getRetentionForward()
+    {
+        return $this->retentionforward;
+    }
+    
+    /*
+     * verify if table properties are all set
+     */
+    public function isValid()
+    {
         # Condition to mod with new version
-		if (is_null($this->name) || is_null($this->column) ||
-			is_null($this->activate) || is_null($this->duration) ||
-			is_null($this->schema) || is_null($this->retention)
-			|| is_null($this->type) || is_null($this->createstmt))
-			return false;
-		return true;
-	}
-	
-	/*
-	 * Check if table exists in database
-	 */
-	public function exists() {
-		$DBRESULT = $this->db->query("use ".$this->schema);
-		if (PEAR::isError($DBRESULT)) {
-			throw new Exception("SQL Error: Cannot use database ".$this->schema.",".$DBRESULT->getDebugInfo()."\n");
-			return(false);
-		}
-		$DBRESULT = $this->db->query("show tables like '".$this->name."'");
-		if (PEAR::isError($DBRESULT)) {
-			throw new Exception("SQL Error: Cannot execute query,".$DBRESULT->getDebugInfo()."\n");
-			return(false);
-		}
-		if (!$DBRESULT->numRows()) {
-			return(false);
-		}
-		return (true);
-	}
-	
-	/*
-	 * Check of column exists in table
-	 */
-	public function columnExists() {
-		$DBRESULT = $this->db->query("describe ".$this->schema.".".$this->name);
-		if (PEAR::isError($DBRESULT)) {
-			throw new Exception("SQL query error : ".$DBRESULT->getDebugInfo()."\n");
-		}
-		$found = false;
-		while($row = $DBRESULT->fetchRow()) {
-			if ($row["Field"] == $this->column) {
-				$found = true;
-				break;
-			}
-		}
-		if (!$found) {
-			return (false);
-		}
-		return (true);
-	} 
+        if (is_null($this->name) || is_null($this->column) ||
+            is_null($this->activate) || is_null($this->duration) ||
+            is_null($this->schema) || is_null($this->retention)
+            || is_null($this->type) || is_null($this->createstmt)) {
+            return false;
+        }
+        return true;
+    }
+    
+    /*
+     * Check if table exists in database
+     */
+    public function exists()
+    {
+        $DBRESULT = $this->db->query("use " . $this->schema);
+
+        if (PEAR::isError($DBRESULT)) {
+            throw new Exception("SQL Error: Cannot use database " . $this->schema . "," . $DBRESULT->getDebugInfo() . "\n");
+            return(false);
+        }
+
+        $DBRESULT = $this->db->query("show tables like '" . $this->name . "'");
+
+        if (PEAR::isError($DBRESULT)) {
+            throw new Exception("SQL Error: Cannot execute query," . $DBRESULT->getDebugInfo() . "\n");
+            return(false);
+        }
+
+        if (!$DBRESULT->numRows()) {
+            return(false);
+        }
+
+        return (true);
+    }
+    
+    /*
+     * Check of column exists in table
+     */
+    public function columnExists()
+    {
+        $DBRESULT = $this->db->query("describe " . $this->schema . "." . $this->name);
+
+        if (PEAR::isError($DBRESULT)) {
+            throw new Exception("SQL query error : " . $DBRESULT->getDebugInfo() . "\n");
+        }
+
+        $found = false;
+        while ($row = $DBRESULT->fetchRow()) {
+            if ($row["Field"] == $this->column) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            return (false);
+        }
+
+        return (true);
+    }
 }
