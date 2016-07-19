@@ -514,7 +514,6 @@ class PartEngine
         if (PEAR::isError($DBRESULT)) {
             throw new Exception("FATAL : Cannot dump table " . $tableName . " into file " . $filename . ", " . $DBRESULT->getDebugInfo() . "\n");
         }
-
     }
     /**
      *
