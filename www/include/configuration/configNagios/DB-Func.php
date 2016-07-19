@@ -159,9 +159,10 @@ function insertNagios($ret = array(), $brokerTab = array())
 {
     global $form, $pearDB, $centreon;
 
-    if (!count($ret))
+    if (!count($ret)) {
         $ret = $form->getSubmitValues();
-
+    }
+    
     $rq = "INSERT INTO cfg_nagios (" .
             "`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `precached_object_file`, `object_cache_file` , `temp_file` , " .
             "`check_result_path`, `max_check_result_file_age`, " .
@@ -339,6 +340,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         $mainCfg->insertBrokerDirectives($nagios_id["MAX(nagios_id)"], $_REQUEST['in_broker']);
     }
     
+    /* Manage the case where you have to main.cfg on the same poller */
     if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"])    {
         $DBRESULT = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."' AND nagios_server_id = '".$ret['nagios_server_id']."'");
         $centreon->Nagioscfg = array();
@@ -354,7 +356,7 @@ function insertNagios($ret = array(), $brokerTab = array())
 }
 
 function updateNagios($nagios_id = null) {
-    global $form, $pearDB;
+    global $form, $pearDB, $centreon;
 
     if (!$nagios_id) {
         return;
