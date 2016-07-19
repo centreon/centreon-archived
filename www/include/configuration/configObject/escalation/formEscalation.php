@@ -36,7 +36,7 @@
 if (!isset($centreon)) {
     exit();
 }
-		
+
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
@@ -73,24 +73,24 @@ if ($oreon->user->admin) {
     $cgLdap = $cg->getListContactgroup(true, true);
     $notifCgs = array_intersect_key($cgLdap, $cgAcl);
 }
-    
+
 /*
  * Database retrieve information for Escalation
  */
 $initialValues = array();
 $esc = array();
 if (($o == "c" || $o == "w") && $esc_id) {
-	$DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
 
-	# Set base value
-	$esc = array_map("myDecode", $DBRESULT->fetchRow());
-    
+    # Set base value
+    $esc = array_map("myDecode", $DBRESULT->fetchRow());
+
     # Set Host Options
     $esc["escalation_options1"] = explode(',', $esc["escalation_options1"]);
     foreach ($esc["escalation_options1"] as $key => $value) {
         $esc["escalation_options1"][trim($value)] = 1;
     }
-    
+
     # Set Service Options
     $esc["escalation_options2"] = explode(',', $esc["escalation_options2"]);
     foreach ($esc["escalation_options2"] as $key => $value) {
@@ -106,21 +106,21 @@ if (($o == "c" || $o == "w") && $esc_id) {
 # Host comes from DB -> Store in $hosts Array
 $hosts = array();
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-while($host = $DBRESULT->fetchRow()) {
-	$hosts[$host["host_id"]] = $host["host_name"];
+while ($host = $DBRESULT->fetchRow()) {
+    $hosts[$host["host_id"]] = $host["host_name"];
 }
 $DBRESULT->free();
 
 # Meta Services comes from DB -> Store in $metas Array
 $metas = array();
 $DBRESULT = $pearDB->query(
-    "SELECT meta_id, meta_name 
+    "SELECT meta_id, meta_name
     FROM meta_service ".
     $acl->queryBuilder("WHERE", "meta_id", $acl->getMetaServiceString()).
     " ORDER BY meta_name"
 );
 while ($meta = $DBRESULT->fetchRow()) {
-	$metas[$meta["meta_id"]] = $meta["meta_name"];
+    $metas[$meta["meta_id"]] = $meta["meta_name"];
 }
 $DBRESULT->free();
 
@@ -133,7 +133,7 @@ $cgs = $cg->getListContactgroup(true);
 $tps = array();
 $DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 while ($tp = $DBRESULT->fetchRow()) {
-	$tps[$tp["tp_id"]] = $tp["tp_name"];
+    $tps[$tp["tp_id"]] = $tp["tp_name"];
 }
 $DBRESULT->free();
 
@@ -143,23 +143,26 @@ $DBRESULT->free();
 ##########################################################
 # Var information to format the element
 #
-$attrsText 		= array("size"=>"30");
-$attrsText2 	= array("size"=>"10");
+$attrsText        = array("size"=>"30");
+$attrsText2    = array("size"=>"10");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
 $attrsAdvSelect2 = array("style" => "width: 300px; height: 400px;");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"80");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea    = array("rows"=>"5", "cols"=>"80");
+$eTemplate    = '<table><tr><td><div class="ams">{label_2}</div>' .
+    '{unselected}</td><td align="center">{add}<br /><br /><br />' .
+    '{remove}</td><td><div class="ams">{label_3}</div>{selected}' .
+    '</td></tr></table>';
 
 #
 ## Form begin
 #
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 if ($o == "a") {
-	$form->addElement('header', 'title', _("Add an Escalation"));
+    $form->addElement('header', 'title', _("Add an Escalation"));
 } elseif ($o == "c") {
-	$form->addElement('header', 'title', _("Modify an Escalation"));
+    $form->addElement('header', 'title', _("Modify an Escalation"));
 } elseif ($o == "w") {
-	$form->addElement('header', 'title', _("View an Escalation"));
+    $form->addElement('header', 'title', _("View an Escalation"));
 }
 
 #
@@ -256,10 +259,10 @@ $form->addElement('select2', 'esc_sgs', _("Service Group"), array(), $attrServic
 $form->addElement('hidden', 'esc_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
-    
+
 $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
-    
+
 #
 ## Form Rules
 #
@@ -279,9 +282,9 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 # Just watch an Escalation information
-if ($o == "w")	{
-	if ($centreon->user->access->page($p) != 2) {
-		$form->addElement(
+if ($o == "w") {
+    if ($centreon->user->access->page($p) != 2) {
+        $form->addElement(
             "button",
             "change",
             _("Modify"),
@@ -289,14 +292,14 @@ if ($o == "w")	{
         );
     }
     $form->setDefaults($esc);
-	$form->freeze();
+    $form->freeze();
 } elseif ($o == "c") { # Modify an Escalation information
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($esc);
 } elseif ($o == "a") { # Add an Escalation information
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $tpl->assign('time_unit', " * ".$centreon->optGen["interval_length"]." "._("seconds"));
@@ -312,31 +315,31 @@ $helptext = "";
 include_once("help.php");
 
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
-if ($form->validate())	{
-	$escObj = $form->getElement('esc_id');
-	if ($form->getSubmitValue("submitA")) {
-		$escObj->setValue(insertEscalationInDB());
+if ($form->validate()) {
+    $escObj = $form->getElement('esc_id');
+    if ($form->getSubmitValue("submitA")) {
+        $escObj->setValue(insertEscalationInDB());
     } elseif ($form->getSubmitValue("submitC")) {
-		updateEscalationInDB($escObj->getValue("esc_id"));
+        updateEscalationInDB($escObj->getValue("esc_id"));
     }
-	$o = NULL;
-	$valid = true;
+    $o = null;
+    $valid = true;
 }
 
 if ($valid) {
-	require_once("listEscalation.php");
+    require_once("listEscalation.php");
 } else {
-	#Apply a template definition
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-	$tpl->display("formEscalation.ihtml");
+    #Apply a template definition
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formEscalation.ihtml");
 }
