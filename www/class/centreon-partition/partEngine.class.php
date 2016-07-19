@@ -61,7 +61,10 @@ class PartEngine
         
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error : Cannot get partition maxvalue information for table ".$tableName.", ".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "Error : Cannot get partition maxvalue information for table "
+                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
         
         if (!($row = $DBRESULT->fetchRow())) {
@@ -69,7 +72,10 @@ class PartEngine
             $request .= " ADD PARTITION (PARTITION `pmax` VALUES LESS THAN MAXVALUE)";
             $DBRESULT = $db->query($request);
             if (PEAR::isError($DBRESULT)) {
-                throw new Exception("Error: cannot add a maxvalue partition for table ".$tableName.", ".$DBRESULT->getDebugInfo()."\n");
+                throw new Exception(
+                    "Error: cannot add a maxvalue partition for table "
+                    . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                );
             }
             print "[".date(DATE_RFC822)."][createParts] Create new part : MAXVALUE\n";
         }
@@ -130,7 +136,13 @@ class PartEngine
         }
         $num_days_forward = $table->getRetentionForward();
         while ($how_much_forward < $num_days_forward) {
-            $this->updateAddDailyPartitions($db, $tableName, $ltime[4]+1, $ltime[3]+$how_much_forward+1, $ltime[5]+1900);
+            $this->updateAddDailyPartitions(
+                $db,
+                $tableName,
+                $ltime[4] + 1,
+                $ltime[3] + $how_much_forward + 1,
+                $ltime[5] + 1900
+            );
             $how_much_forward++;
         }
         
@@ -158,7 +170,8 @@ class PartEngine
             if ($day < 10) {
                 $day = "0" . $day;
             }
-            $createPart .= $append . "PARTITION p" . ($ntime[5] + 1900) . $month . $day . " VALUES LESS THAN (" . $current_time. ")";
+            $createPart .= $append . "PARTITION p" . ($ntime[5] + 1900)
+                . $month . $day . " VALUES LESS THAN (" . $current_time. ")";
             $num_days--;
             $append = ',';
         }
@@ -175,7 +188,8 @@ class PartEngine
             if ($day < 10) {
                 $day = "0" . $day;
             }
-            $createPart .= $append . "PARTITION p" . ($ntime[5] + 1900) . $month . $day . " VALUES LESS THAN (" . $current_time. ")";
+            $createPart .= $append . "PARTITION p" . ($ntime[5] + 1900)
+                . $month . $day . " VALUES LESS THAN (" . $current_time. ")";
             $append = ',';
             $count++;
         }
@@ -201,17 +215,26 @@ class PartEngine
         }
         
         if (is_null($partition_part)) {
-            throw new Exception("SQL Error: Cannot build partition part ".$table->getSchema().",".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "SQL Error: Cannot build partition part "
+                . $table->getSchema() . "," . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
         
         $DBRESULT = $db->query("use ".$table->getSchema());
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("SQL Error: Cannot use database ".$table->getSchema().",".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "SQL Error: Cannot use database "
+                . $table->getSchema() . "," . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
 
         $DBRESULT = $db->query($table->getCreateStmt().$partition_part);
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error : Cannot create table ".$tableName." with partitions, ".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "Error : Cannot create table " . $tableName . " with partitions, "
+                . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
         if ($table->getType() == 'date') {
             $this->createMaxvaluePartition($db, $tableName, $table);
@@ -231,8 +254,10 @@ class PartEngine
 
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT) || !$DBRESULT->numRows()) {
-            throw new Exception("Error: cannot get table " . $table->getSchema() . "." . $table->getName()
-                . " last partition range, " . $DBRESULT->getDebugInfo() . "\n");
+            throw new Exception(
+                "Error: cannot get table " . $table->getSchema() . "." . $table->getName()
+                . " last partition range, " . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
         $row = $DBRESULT->fetchRow();
 
@@ -241,7 +266,7 @@ class PartEngine
     }
 
     /**
-     * 
+     *
      * Drop partitions that are older than the retention duration
      * @param MysqlTable $table
      */
@@ -307,7 +332,11 @@ class PartEngine
         echo "[".date(DATE_RFC822)."][migrate] Renaming table ".$tableName." TO ".$tableName."_old\n";
         $DBRESULT = $db->query("RENAME TABLE ".$tableName." TO ".$tableName."_old");
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error: Cannot rename table ".$tableName." to ".$tableName."_old, ".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "Error: Cannot rename table " . $tableName
+                . " to " . $tableName . "_old, "
+                . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
         
         /*
@@ -321,7 +350,10 @@ class PartEngine
         $request = "INSERT INTO " . $tableName . " SELECT * FROM " . $tableName."_old";
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error: Cannot copy ".$tableName."_old data to new table ".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "Error: Cannot copy " . $tableName . "_old data to new table "
+                . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
     }
 
@@ -382,15 +414,20 @@ class PartEngine
         $DBRESULT = $db->query($request);
 
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error : Cannot get table schema information  for ".$tableName.", ".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "Error : Cannot get table schema information  for "
+                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
 
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE ".$tableName." OPTIMIZE PARTITION `".$row["PARTITION_NAME"]."`;";
             $DBRESULT2 = $db->query($request);
             if (PEAR::isError($DBRESULT2)) {
-                throw new Exception("Optimize error : Cannot optimize partition ".$row["PARTITION_NAME"].
-                                    " of table ".$tableName. ", ".$DBRESULT2->getDebugInfo()."\n");
+                throw new Exception(
+                    "Optimize error : Cannot optimize partition " . $row["PARTITION_NAME"]
+                    . " of table " . $tableName . ", " . $DBRESULT2->getDebugInfo() . "\n"
+                );
             }
         }
 
@@ -412,13 +449,17 @@ class PartEngine
         } else {
             $request = "SELECT PARTITION_DESCRIPTION as PART_RANGE, ";
         }
-        $request .= "PARTITION_NAME, PARTITION_ORDINAL_POSITION as partOrder, INDEX_LENGTH, DATA_LENGTH, CREATE_TIME, TABLE_ROWS ";
+        $request .= "PARTITION_NAME, PARTITION_ORDINAL_POSITION as partOrder, "
+            . "INDEX_LENGTH, DATA_LENGTH, CREATE_TIME, TABLE_ROWS ";
         $request .= "FROM information_schema.`PARTITIONS` ";
         $request .= "WHERE `TABLE_NAME`='".$table->getName()."' ";
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error : Cannot get table schema information  for ".$tableName. ", ".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "Error : Cannot get table schema information  for "
+                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
         $found = false;
         $partTitle= "|PARTITION NAME";
@@ -475,14 +516,18 @@ class PartEngine
             $format = "date_format(FROM_UNIXTIME(PARTITION_DESCRIPTION), '".$table->getBackupFormat()."')";
         }
         
-        $request = "SELECT PARTITION_NAME, PARTITION_DESCRIPTION, ".$format." as filename FROM information_schema.`PARTITIONS` ";
+        $request = "SELECT PARTITION_NAME, PARTITION_DESCRIPTION, "
+            . $format . " as filename FROM information_schema.`PARTITIONS` ";
         $request .= "WHERE `TABLE_NAME`='".$table->getName()."' ";
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $request .= "ORDER BY  PARTITION_ORDINAL_POSITION desc ";
         $request .= "LIMIT 2";
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error : Cannot get table schema information  for " . $tableName . ", ".$DBRESULT->getDebugInfo()."\n");
+            throw new Exception(
+                "Error : Cannot get table schema information  for "
+                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
         $count = 0;
         $filename = $table->getBackupFolder()."/".$tableName;
@@ -512,7 +557,11 @@ class PartEngine
         $DBRESULT = $db->query($request);
 
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception("FATAL : Cannot dump table " . $tableName . " into file " . $filename . ", " . $DBRESULT->getDebugInfo() . "\n");
+            throw new Exception(
+                "FATAL : Cannot dump table " . $tableName
+                . " into file " . $filename . ", "
+                . $DBRESULT->getDebugInfo() . "\n"
+            );
         }
     }
     /**

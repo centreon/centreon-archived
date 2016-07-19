@@ -39,7 +39,7 @@
  * @category Database
  * @package  Centreon
  * @author   qgarnier <qgarnier@centreon.com>
- * @license  GPL http://www.gnu.org/licenses
+ * @license  GPLv2 http://www.gnu.org/licenses
  * @link     http://www.centreon.com
  */
 class Config

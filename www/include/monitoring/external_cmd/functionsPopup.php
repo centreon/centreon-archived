@@ -234,7 +234,7 @@ function massiveHostDowntime($key)
 		}
         
         $extCmdObj = new CentreonExternalCommand($centreon);
-        $extCmdObj->AddHostDowntime($host, $comment, $start, $end, $fixed, $duration, $with_services,$host_or_centreon_time);
+        $extCmdObj->addHostDowntime($host, $comment, $start, $end, $fixed, $duration, $with_services,$host_or_centreon_time);
     }
     
     return null;
@@ -299,7 +299,7 @@ function massiveServiceDowntime($key) {
         $service = getMyServiceID($svc_description, $host);
         
         $extCmdObj = new CentreonExternalCommand($centreon);
-        $extCmdObj->AddSvcDowntime($host, $service, $comment, $start, $end, $fixed, $duration, $host_or_centreon_time);
+        $extCmdObj->addSvcDowntime($host, $service, $comment, $start, $end, $fixed, $duration, $host_or_centreon_time);
     }
     return null;
 }
