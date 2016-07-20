@@ -23,4 +23,5 @@ Features and Bug Fixes
 - Fix: Correction of some typos
 - Fix: contact_location default value incorrent
 - Fix: Security fix linked to the configuration export
+- Fix: Problem with custom view style when user was not able to edit the view then old style was used
 - Enh: SQL Optimisation in handling service templates
