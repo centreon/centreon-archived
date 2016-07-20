@@ -34,6 +34,18 @@
  *
  */
 
+
+/*
+ * Form Rules
+ */
+function slash($elem = null)
+{
+    if ($elem) {
+        return rtrim($elem, "/")."/";
+    }
+}
+
+
 /*
  * function table_not_exists()
  * - This function test if a table exist in database.

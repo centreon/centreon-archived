@@ -81,13 +81,3 @@ function rrdcached_has_option($values)
     }
     return true;
 }
-
-/*
- * Form Rules
- */
-function slash($elem = null)
-{
-    if ($elem) {
-        return rtrim($elem, "/")."/";
-    }
-}
