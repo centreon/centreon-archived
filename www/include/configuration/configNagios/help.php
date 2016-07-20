@@ -300,17 +300,97 @@ $help["log_notifications"] = dgettext(
     . "grow relatively quickly. Use this option to keep contact notifications "
     . "from being logged."
 );
-$help["log_service_retries"] = dgettext("help", "This option determines whether or not service check retries are logged. Service check retries occur when a service check results in a non-OK state, but you have configured Monitoring Engine to retry the service more than once before responding to the error. Services in this situation are considered to be in \"soft\" states. Logging service check retries is mostly useful when attempting to debug Monitoring Engine or test out service event handlers.");
-$help["log_host_retries"] = dgettext("help", "This option determines whether or not host check retries are logged. Logging host check retries is mostly useful when attempting to debug Monitoring Engine or test out host event handlers.");
-$help["log_event_handlers"] = dgettext("help", "This option determines whether or not service and host event handlers are logged. Event handlers are optional commands that can be run whenever a service or hosts changes state. Logging event handlers is most useful when debugging Monitoring Engine or first trying out your event handler scripts.");
-$help["log_initial_states"] = dgettext("help", "This option determines whether or not Monitoring Engine will force all initial host and service states to be logged, even if they result in an OK state. Initial service and host states are normally only logged when there is a problem on the first check. This option is disabled by default. Enabling it is useful if you are using an application that scans the log file to determine long-term state statistics for services and hosts. This option must be enabled to use reporting with Centreon.");
-$help["log_external_commands"] = dgettext("help", "This option determines whether or not Monitoring Engine will log external commands that it receives from the external command file. This option is enabled by default.");
-$help["log_passive_checks"] = dgettext("help", "This option determines whether or not Monitoring Engine will log passive host and service checks that it receives from the external command file. This option is enabled by default. If you are setting up a distributed monitoring environment or plan on handling a large number of passive checks on a regular basis, you may wish to disable this option so your log file doesn't get too large.");
-$help["global_host_event_handler"] = dgettext("help", "This option allows you to specify a host event handler command that is to be run for every host state change. The global event handler is executed immediately prior to the event handler that you have optionally specified in each host definition. The maximum amount of time that this command can run is controlled by the event_handler_timeout option.");
-$help["global_service_event_handler"] = dgettext("help", "This option allows you to specify a service event handler command that is to be run for every service state change. The global event handler is executed immediately prior to the event handler that you have optionally specified in each service definition. The maximum amount of time that this command can run is controlled by the event_handler_timeout option.");
-$help["sleep_time"] = dgettext("help", "This is the number of seconds that Monitoring Engine will sleep before checking to see if the next service or host check in the scheduling queue should be executed. Note that Monitoring Engine will only sleep after it \"catches up\" with queued service checks that have fallen behind.");
-$help["max_concurrent_checks"] = dgettext("help", "This option allows you to specify the maximum number of service checks that can be run in parallel at any given time. Specifying a value of 1 for this variable essentially prevents any service checks from being run in parallel. Specifying a value of 0 (the default) does not place any restrictions on the number of concurrent checks. You'll have to modify this value based on the system resources you have available on the machine that runs Monitoring Engine, as it directly affects the maximum load that will be imposed on the system (processor utilization, memory, etc.).");
-$help["max_host_check_spread"] = dgettext("help", "This option determines the maximum number of minutes from when Monitoring Engine starts that all hosts (that are scheduled to be regularly checked) are checked. This option will automatically adjust the host inter-check delay method (if necessary) to ensure that the initial checks of all hosts occur within the timeframe you specify. In general, this option will not have an effect on host check scheduling if scheduling information is being retained using the use_retained_scheduling_info option. Default value is 30 (minutes).");
+$help["log_service_retries"] = dgettext(
+    "help",
+    "This option determines whether or not service check retries are logged. "
+    . "Service check retries occur when a service check results in a non-OK state, "
+    . "but you have configured Monitoring Engine to retry the service more than once "
+    . "before responding to the error. Services in this situation are considered "
+    . "to be in \"soft\" states. Logging service check retries is mostly useful "
+    . "when attempting to debug Monitoring Engine or test out service event handlers."
+);
+$help["log_host_retries"] = dgettext(
+    "help",
+    "This option determines whether or not host check retries are logged. Logging host "
+    . "check retries is mostly useful when attempting to debug Monitoring Engine "
+    . "or test out host event handlers."
+);
+$help["log_event_handlers"] = dgettext(
+    "help",
+    "This option determines whether or not service and host event handlers are logged. "
+    . "Event handlers are optional commands that can be run whenever a service or hosts "
+    . "changes state. Logging event handlers is most useful when debugging Monitoring "
+    . "Engine or first trying out your event handler scripts."
+);
+$help["log_initial_states"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will force all initial "
+    . "host and service states to be logged, even if they result in an OK state. "
+    . "Initial service and host states are normally only logged when there is a "
+    . "problem on the first check. This option is disabled by default. Enabling "
+    . "it is useful if you are using an application that scans the log file to "
+    . "determine long-term state statistics for services and hosts. This option "
+    . "must be enabled to use reporting with Centreon."
+);
+$help["log_external_commands"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will log external "
+    . "commands that it receives from the external command file. This option is "
+    . "enabled by default."
+);
+$help["log_passive_checks"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will log passive host "
+    . "and service checks that it receives from the external command file. "
+    . "This option is enabled by default. If you are setting up a distributed "
+    . "monitoring environment or plan on handling a large number of passive checks "
+    . "on a regular basis, you may wish to disable this option so your log file "
+    . "doesn't get too large."
+);
+$help["global_host_event_handler"] = dgettext(
+    "help",
+    "This option allows you to specify a host event handler command that is to be "
+    . "run for every host state change. The global event handler is executed "
+    . "immediately prior to the event handler that you have optionally specified "
+    . "in each host definition. The maximum amount of time that this command can "
+    . "run is controlled by the event_handler_timeout option."
+);
+$help["global_service_event_handler"] = dgettext(
+    "help",
+    "This option allows you to specify a service event handler command that is to "
+    . "be run for every service state change. The global event handler is executed "
+    . "immediately prior to the event handler that you have optionally specified "
+    . "in each service definition. The maximum amount of time that this command "
+    . "can run is controlled by the event_handler_timeout option."
+);
+$help["sleep_time"] = dgettext(
+    "help",
+    "This is the number of seconds that Monitoring Engine will sleep before "
+    . "checking to see if the next service or host check in the scheduling queue "
+    . "should be executed. Note that Monitoring Engine will only sleep after "
+    . "it \"catches up\" with queued service checks that have fallen behind."
+);
+$help["max_concurrent_checks"] = dgettext(
+    "help",
+    "This option allows you to specify the maximum number of service checks that "
+    . "can be run in parallel at any given time. Specifying a value of 1 for "
+    . "this variable essentially prevents any service checks from being run in parallel. "
+    . "Specifying a value of 0 (the default) does not place any restrictions on "
+    . "the number of concurrent checks. You'll have to modify this value based on "
+    . "the system resources you have available on the machine that runs Monitoring Engine, "
+    . "as it directly affects the maximum load that will be imposed on the "
+    . "system (processor utilization, memory, etc.)."
+);
+$help["max_host_check_spread"] = dgettext(
+    "help",
+    "This option determines the maximum number of minutes from when Monitoring Engine "
+    . "starts that all hosts (that are scheduled to be regularly checked) are checked. "
+    . "This option will automatically adjust the host inter-check delay method "
+    . "(if necessary) to ensure that the initial checks of all hosts occur within "
+    . "the timeframe you specify. In general, this option will not have an effect "
+    . "on host check scheduling if scheduling information is being retained using "
+    . "the use_retained_scheduling_info option. Default value is 30 (minutes)."
+);
 $help["max_service_check_spread"] = dgettext("help", "This option determines the maximum number of minutes from when Monitoring Engine starts that all services (that are scheduled to be regularly checked) are checked. This option will automatically adjust the service inter-check delay method (if necessary) to ensure that the initial checks of all services occur within the timeframe you specify. In general, this option will not have an effect on service check scheduling if scheduling information is being retained using the use_retained_scheduling_info option. Default value is 30 (minutes).");
 $help["service_interleave_factor"] = dgettext("help", "This option determines how service checks are interleaved. Interleaving allows for a more even distribution of service checks, reduced load on remote hosts, and faster overall detection of host problems. By default this value is set to s (smart) for automatic calculation of the interleave factor. Don't change unless you have a specific reason to change it. Setting this value to a number greater than or equal to 1 specifies the interleave factor to use. A value of 1 is equivalent to not interleaving the service checks.");
 $help["service_inter_check_delay_method"] = dgettext("help", "This option allows you to control how service checks are initially \"spread out\" in the event queue. Enter \"s\" for using a \"smart\" delay calculation (the default), which will cause Monitoring Engine to calculate an average check interval and spread initial checks of all services out over that interval, thereby helping to eliminate CPU load spikes. Using no delay (\"n\") is generally not recommended, as it will cause all service checks to be scheduled for execution at the same time. This means that you will generally have large CPU spikes when the services are all executed in parallel. Use a \"d\" for a \"dumb\" delay of 1 second between service checks or supply a fixed value of x.xx seconds for the inter-check delay.");
@@ -383,7 +463,11 @@ $help["daemon_dumps_core"] = dgettext("help", "This option allows dumping core i
 $help["debug_verbosity"] = dgettext("help", "This option determines how much debugging information Monitoring Engine should write to the debug_file. By default the verbosity is set to level 1.");
 $help["Monitoring Engine_debug_level"] = dgettext("help", "This option determines what type of information Monitoring Engine should write to the debug_file.");
 $help["Monitoring Engine_name"] = dgettext("help", "Description or name used to identify this configuration set.");
-$help["Monitoring Engine_activate"] = dgettext("help", "Specify whether this configuration is currently active or not. This way you can test different configuration sets for one monitoring node.");
+$help["Monitoring Engine_activate"] = dgettext(
+    "help",
+    "Specify whether this configuration is currently active or not. "
+    . "This way you can test different configuration sets for one monitoring node."
+);
 $help["Monitoring Engine_server_id"] = dgettext("help", "Choose the Monitoring Engine server instance this configuration is defined for.");
 $help["log_pid"] = dgettext("help", "Enable the possibility to log pid information in engine log file (option only for Centreon Engine)");
 $help["use_check_result_path"] = dgettext("help", "This option enable or disable compatibility mode to use check result path.");

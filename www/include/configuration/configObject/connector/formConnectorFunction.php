@@ -33,51 +33,39 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+function return_plugin($rep)
+{
+    global $centreon;
 
-header("Content-type: text/css");
-
-$color1 = "#F2F2F2";
-$color2 = "#666666";
-$color3 = "#E3A385";
-$color4 = "#d5dfeb";
-$color5 = "#ced3ed";
-$color6 = "#BFD0E2";
-$color7 = "#AAAAAA";
-$color8 = "#D1DCEB";
-$color9 = "#FFFFFF";
-$color10 = "#AAAAEE";
-$color11 = "#592bed";
-$color12 = "#242af6";
-
-$color13 = "#5e5e5e";
-$color14 = "#E8AB5C";
-
-$menu1_bgcolor = "#009fdf";
-$menu2_bgcolor = "#009fdf";
-
-$colorHeader_1 = "#cfedf9";
-$colorGradient_2 = "#02bbff";
-
-$footerline2 = "#dedede";
-
-$color_list_1 = "#f8fdff";
-$color_list_1_hover = "#FFF";
-
-$color_list_2 = "#f0fbff";
-$color_list_2_hover = "#FFF";
-$color_list_3 = "#fada83";
-$color_list_3_hover = "#bada83";
-$color_list_4 = "#fdc11e";
-$color_list_4_hover = "#bdc11e";
-$color_list_up = "#B2F867";
-$color_list_up_hover = "#B2A867";
-$color_list_down = "#ffbbbb";
-$color_list_down_hover = "#dfbbbb";
-
-$menu1_bgimg = "#009fdf";
-
-$menu2_color = "#c1ecff";
-$bg_image_header = "../../Images/bg_header_grayblue.gif";
-
-require_once _CENTREON_PATH_ . "www/Themes/Centreon-2/color_css.php";
+    $availableConnectors = array();
+    $is_not_a_plugin = array(
+        "." => 1,
+        ".." => 1,
+        "oreon.conf" => 1,
+        "oreon.pm" => 1,
+        "utils.pm" => 1,
+        "negate" => 1,
+        "centreon.conf" => 1,
+        "centreon.pm" => 1
+    );
+    if (is_readable($rep)) {
+        $handle[$rep] = opendir($rep);
+        while (false != ($filename = readdir($handle[$rep]))) {
+            if ($filename != "." && $filename != "..") {
+                if (is_dir($rep.$filename)) {
+                    $plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
+                    $availableConnectors = array_merge($availableConnectors, $plg_tmp);
+                    unset($plg_tmp);
+                } elseif (!isset($is_not_a_plugin[$filename])
+                    && substr($filename, -1)!= "~"
+                    && substr($filename, -1) != "#"
+                ) {
+                    $key = substr($rep."/".$filename, strlen($oreon->optGen["cengine_path_connectors"]));
+                    $availableConnectors[$key] = $key;
+                }
+            }
+        }
+        closedir($handle[$rep]);
+    }
+    return ($availableConnectors);
+}

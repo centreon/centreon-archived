@@ -736,12 +736,6 @@ $form->addElement('hidden', 'nagios_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-function slash($elem = null)
-{
-    if ($elem) {
-        return rtrim($elem, "/")."/";
-    }
-}
 
 function isNum($value)
 {

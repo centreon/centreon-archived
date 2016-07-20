@@ -34,11 +34,11 @@
  */
  
 if (!isset($centreon)) {
-    exit();     
-} 
+    exit();
+}
 
-isset($_GET["gopt_id"]) ? $cG = $_GET["gopt_id"] : $cG = NULL;
-isset($_POST["lca_id"]) ? $cP = $_POST["gopt_id"] : $cP = NULL;
+isset($_GET["gopt_id"]) ? $cG = $_GET["gopt_id"] : $cG = null;
+isset($_POST["lca_id"]) ? $cP = $_POST["gopt_id"] : $cP = null;
 $cG ? $gopt_id = $cG : $gopt_id = $cP;
     
 /*
@@ -60,37 +60,37 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
-    case "engine" : 
-        require_once $path."engine/form.php" ; 
+    case "engine":
+        require_once $path."engine/form.php" ;
         break;
-    case "snmp" : 
-        require_once $path."snmp/form.php" ; 
+    case "snmp":
+        require_once $path."snmp/form.php" ;
         break;
-    case "rrdtool" : 
-        require_once $path."rrdtool/form.php" ; 
+    case "rrdtool":
+        require_once $path."rrdtool/form.php" ;
         break;
-    case "ldap" : 
-        require_once $path."ldap/ldap.php" ; 
+    case "ldap":
+        require_once $path."ldap/ldap.php" ;
         break;
-    case "debug" : 
-        require_once $path."debug/form.php" ; 
+    case "debug":
+        require_once $path."debug/form.php" ;
         break;
-    case "general" : 
-        require_once $path."general/form.php" ; 
+    case "general":
+        require_once $path."general/form.php" ;
         break;
-    case "css" : 
-        require_once $path."css/form.php" ; 
+    case "css":
+        require_once $path."css/form.php" ;
         break;
-    case "storage" : 
-        require_once $path."centstorage/form.php" ; 
+    case "storage":
+        require_once $path."centstorage/form.php" ;
         break;
-    case "centcore" :
+    case "centcore":
         require_once $path.'centcore/centcore.php';
         break;
-    case "api" :
+    case "api":
         require_once $path.'api/api.php';
         break;
-    default : 
-        require_once $path."general/form.php" ; 
+    default:
+        require_once $path."general/form.php" ;
         break;
 }

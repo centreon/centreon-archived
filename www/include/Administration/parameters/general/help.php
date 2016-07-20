@@ -13,7 +13,10 @@ $help['tip_centreon_web_directory'] = dgettext('help', 'Centreon Web URI.');
  */
 
 $help['tip_limit_per_page'] = dgettext('help', 'Default number of displayed elements in listing pages.');
-$help['tip_limit_per_page_for_monitoring'] = dgettext('help', 'Default number of displayed elements in monitoring consoles.');
+$help['tip_limit_per_page_for_monitoring'] = dgettext(
+    'help',
+    'Default number of displayed elements in monitoring consoles.'
+);
 $help['tip_graph_per_page_for_performances'] = dgettext('help', 'Number of performance graphs displayed per page.');
 $help['tip_select_paginagion_size'] = dgettext('help', 'The number elements loaded in async select.');
 
@@ -32,7 +35,10 @@ $help['tip_sessions_expiration_time'] = dgettext('help', 'Life duration of sessi
 $help['tip_refresh_interval'] = dgettext('help', 'Refresh interval.');
 $help['tip_refresh_interval_for_statistics'] = dgettext('help', 'Refresh interval used for statistics (top counters).');
 $help['tip_refresh_interval_for_monitoring'] = dgettext('help', 'Refresh interval used in monitoring consoles.');
-$help['tip_first_refresh_delay_for_statistics'] = dgettext('help', 'First refresh delay for statistics (top counters).');
+$help['tip_first_refresh_delay_for_statistics'] = dgettext(
+    'help',
+    'First refresh delay for statistics (top counters).'
+);
 $help['tip_first_refresh_delay_for_monitoring'] = dgettext('help', 'First refresh delay for monitoring.');
 
 /**
@@ -65,17 +71,41 @@ $help['tip_default_timezone'] = dgettext('help', 'Default host timezone.');
 /**
  * SSO
  */
-$help['sso_enable'] = dgettext('help', 'Whether SSO authentication is enabled. SSO feature have only to be enabled in a secured and dedicated environment for SSO. Direct access to Centreon UI from users have to be disabled.');
-$help['sso_mode'] = dgettext('help', 'Authentication can be solely based on SSO or it can work with both SSO and local authentication systems.');
-$help['sso_trusted_clients'] = dgettext('help', 'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.');
-$help['sso_header_username'] = dgettext('help', 'The header variable that will be used as login. i.e: $_SERVER[\'HTTP_AUTH_USER\']');
+$help['sso_enable'] = dgettext(
+    'help',
+    'Whether SSO authentication is enabled. SSO feature have only to be enabled in a secured and dedicated environment'
+    . ' for SSO. Direct access to Centreon UI from users have to be disabled.'
+);
+$help['sso_mode'] = dgettext(
+    'help',
+    'Authentication can be solely based on SSO or it can work with both SSO and local authentication systems.'
+);
+$help['sso_trusted_clients'] = dgettext(
+    'help',
+    'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['sso_header_username'] = dgettext(
+    'help',
+    'The header variable that will be used as login. i.e: $_SERVER[\'HTTP_AUTH_USER\']'
+);
 
 /**
  * UI bahvior
  */
-$help['strict_hostParent_poller_management'] = dgettext('help', 'This option enable a strict mode for the management of parent links between hosts on different pollers. Some hosts can have a parent link between them even if they are not monitored by the same poller. Select yes if you want to block the UI in order to oblige user to let host with a declared relation on the same poller. if you select No, during the generation process, relation will be broken and not generated but kept with Centreon Broker Correlation module.');
+$help['strict_hostParent_poller_management'] = dgettext(
+    'help',
+    'This option enable a strict mode for the management of parent links between hosts on different pollers.'
+    . ' Some hosts can have a parent link between them even if they are not monitored by the same poller.'
+    . ' Select yes if you want to block the UI in order to oblige user to let host with a declared relation on the'
+    . ' same poller. if you select No, during the generation process, relation will be broken and not generated'
+    . ' but kept with Centreon Broker Correlation module.'
+);
 
 /*
  * Support Informations
  */
-$help['tip_centreon_support_email'] = dgettext('help', 'Centreon Support email: this email is uses in the Centreon footer in order to have a quick link in order to open an issue to your help desk.');
+$help['tip_centreon_support_email'] = dgettext(
+    'help',
+    'Centreon Support email: this email is uses in the Centreon footer in order to have a quick'
+    . ' link in order to open an issue to your help desk.'
+);

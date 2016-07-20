@@ -12,15 +12,15 @@
 
 <table class="ListTable">
 	<tr class="ListHeader">
-		<td class="ListColHeaderLeft">{$headerMenu_name}</td>
-		<td class="ListColHeaderLeft">{$headerMenu_rname}</td>
-		<td class="ListColHeaderCenter">{$headerMenu_infos}</td>
-		<td class="ListColHeaderCenter">{$headerMenu_release}</td>
-		<td class="ListColHeaderCenter">{$headerMenu_author}</td>
-		<td class="ListColHeaderCenter">{$headerMenu_licenseExpire}</td>
-		<td class="ListColHeaderCenter">{$headerMenu_isinstalled}</td>
-        <td class="ListColHeaderCenter">{$headerMenu_moduleStatus}</td>
-		<td class="ListColHeaderRight">{$headerMenu_action}</td>
+		<td class="ListColHeaderLeft">{t}Name{/t}</td>
+		<td class="ListColHeaderLeft">{t}Real Name{/t}</td>
+		<td class="ListColHeaderCenter">{t}Description{/t}</td>
+		<td class="ListColHeaderCenter">{t}Version{/t}</td>
+		<td class="ListColHeaderCenter">{t}Author{/t}</td>
+		<td class="ListColHeaderCenter">{t}Expiration date{/t}</td>
+		<td class="ListColHeaderCenter">{t}Installed{/t}</td>
+        <td class="ListColHeaderCenter">{t}Status{/t}</td>
+		<td class="ListColHeaderRight">{t}Actions{/t}</td>
 	</tr>
 	{section name=elem loop=$elemArr}
 	<tr class={$elemArr[elem].MenuClass}>
@@ -46,13 +46,13 @@
         <td id="{$elemArr[elem].RowMenu_name}" class="ListColCenter"></td>
 		<td id="action_{$elemArr[elem].RowMenu_name}" class="ListColRight">
 			{if $elemArr[elem].RowMenu_link_install}
-				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icons/generate_conf.png' class='ico-16 margin_right' title='{$action_install}' alt='{$action_install}'></a>
+				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icons/generate_conf.png' class='ico-16 margin_right' title='{t}Install Module{/t}' alt='{t}Install Module{/t}'></a>
 			{/if}
 			{if $elemArr[elem].RowMenu_link_delete}
-				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{$confirm_removing}')"><img src='./img/icons/delete.png' class='ico-16 margin_right' title='{$action_delete}' alt='{$action_delete}'></a>
+				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{t}Do you confirm the deletion?{/t}')"><img src='./img/icons/delete.png' class='ico-16 margin_right' title='{t}Uninstall Module{/}' alt='{t}Uninstall Module{/}'></a>
 			{/if}
 			{if $elemArr[elem].RowMenu_link_upgrade && $elemArr[elem].RowMenu_upgrade == 1}
-				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icons/upgrade.png' class='ico-16 margin_right' title='{$action_upgrade}' alt='{$action_upgrade}'></a>
+				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icons/upgrade.png' class='ico-16 margin_right' title='{t}Upgrade{/t}' alt='{t}Upgrade{/t}'></a>
 			{/if}
 		</td>
 	</tr>

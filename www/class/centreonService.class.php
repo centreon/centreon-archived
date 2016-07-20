@@ -648,7 +648,7 @@ class CentreonService
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
                 # Don't override macros on massive change if there is not direct inheritance
-                if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"]) ||
+                if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
                     || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
                         isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')) {
                     unset($macroInput[$ind]);

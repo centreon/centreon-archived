@@ -34,12 +34,14 @@
  */
 
 if (!isset($oreon)) {
-	exit();		
+    exit();
 }
+
+require_once dirname(__FILE__) . "/formFunction.php";
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
-	$gopt[$opt["key"]] = myDecode($opt["value"]);
+    $gopt[$opt["key"]] = myDecode($opt["value"]);
 }
 $DBRESULT->free();
 
@@ -47,16 +49,16 @@ $DBRESULT->free();
  * Check value for interval_length
  */
 if (!isset($gopt["interval_length"])) {
-	$gopt["interval_length"] = 60;
+    $gopt["interval_length"] = 60;
 }
 
 if (!isset($gopt["nagios_path_img"])) {
-	$gopt["nagios_path_img"] = _CENTREON_PATH_ . 'www/img/media/';
+    $gopt["nagios_path_img"] = _CENTREON_PATH_ . 'www/img/media/';
 }
 
 
-$attrsText 		= array("size"=>"40");
-$attrsText2		= array("size"=>"5");
+$attrsText        = array("size"=>"40");
+$attrsText2        = array("size"=>"5");
 $attrsAdvSelect = null;
 
 /*
@@ -122,18 +124,6 @@ $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
- * Form Rules
- */
-function slash($elem = NULL)	{
-	if ($elem)
-		return rtrim($elem, "/")."/";
-}
-
-function isNum($value) {
-	return is_numeric($value);
-}
-
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('nagios_path', 'slash');
 $form->applyFilter('nagios_path_img', 'slash');
@@ -161,7 +151,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path."/engine", $tpl);
 
 if (!isset($gopt["monitoring_engine"])) {
-	$gopt["monitoring_engine"] = "CENGINE";
+    $gopt["monitoring_engine"] = "CENGINE";
 }
 
 $form->setDefaults($gopt);
@@ -173,31 +163,36 @@ $DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "bt
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
-if ($form->validate())	{
-	/*
-	 * Update in DB
-	 */
-	updateNagiosConfigData($form->getSubmitValue("gopt_id"));
+if ($form->validate()) {
+    /*
+     * Update in DB
+     */
+    updateNagiosConfigData($form->getSubmitValue("gopt_id"));
 
-	/*
-	 * Update in Oreon Object
-	 */
-	$oreon->initOptGen($pearDB);
+    /*
+     * Update in Oreon Object
+     */
+    $oreon->initOptGen($pearDB);
 
-	$o = NULL;
-		$valid = true;
-	$form->freeze();
+    $o = null;
+    $valid = true;
+    $form->freeze();
 }
-if (!$form->validate() && isset($_POST["gopt_id"]))	{
+if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'", 'class' => 'btc bt_info'));
+$form->addElement(
+    "button",
+    "change",
+    _("Modify"),
+    array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'", 'class' => 'btc bt_info')
+);
 
 /*
  * Apply a template definition
