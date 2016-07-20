@@ -49,23 +49,22 @@ while ($res = $DBRESULT->fetchRow()) {
 unset($res);
 
 ?>
-
-.ListTable a:link, #ListTable a:link            {color:<?php print $color2; ?>;}
-.ListTable a:visited, #ListTable a:visited      {color:<?php print $color2; ?>;}
+.ListTable a:link, #ListTable a:link , .ListTable a:visited, #ListTable a:visited {
+    color:<?php print $color2; ?>;
+}
 
 .list_lvl_1{    background-color:<?php print $color4; ?>;}
 .list_lvl_2{    background-color:<?php print $color5; ?>;}
 
 .ListHeader{
-                background:<?php print $colorHeader_1; ?> ;
+    background:<?php print $colorHeader_1; ?> ;
 }
 
 .ListSubHeader{
-                background-color:#A9C5F2;
-                font-weight:bold;
-                background-position:top left;
+    background-color:#A9C5F2;
+    font-weight:bold;
+    background-position:top left;
 }
-
 
 .ListTable, .ListTableMedium, .ListTableSmall {border-color: <?php print $color6; ?>;}
 
@@ -143,29 +142,38 @@ unset($res);
 /* Menu */
 #menu1_bgimg    {
     background-color: <?php print $menu1_bgimg; ?>;
-    }
-#menu1_bgcolor  {   background-color: <?php print $menu1_bgcolor; ?>;}
-#menu2_bgcolor  {   background-color: <?php print $menu2_bgcolor; ?>;}
-#menu2_bgcolor a {    color: <?php print $menu2_color; ?>;}
+}
+#menu1_bgcolor  {
+    background-color: <?php print $menu1_bgcolor; ?>;
+}
+#menu2_bgcolor  {
+    background-color: <?php print $menu2_bgcolor; ?>;
+}
+#menu2_bgcolor a {
+    color: <?php print $menu2_color; ?>;
+}
 
-.Tmenu3 .top .left      {   background-color:  <?php print $color1; ?>;}
-.Tmenu3 .top .right     {   background-color:  <?php print $color1; ?>;}
-.Tmenu3 .bottom .left   {   background-color:  <?php print $color1; ?>;}
-.Tmenu3 .bottom .right  {   background-color:  <?php print $color1; ?>;}
+.Tmenu3 .top .left {
+    background-color:  <?php print $color1; ?>;
+}
+.Tmenu3 .top .right     {
+    background-color:  <?php print $color1; ?>;
+}
+.Tmenu3 .bottom .left   {
+    background-color:  <?php print $color1; ?>;
+}
+.Tmenu3 .bottom .right  {
+    background-color:  <?php print $color1; ?>;
+}
 
 #Tmenu  {   border-right: 0px solid <?php print $menu1_bgcolor; ?>;}
 #footerline1    {   background-color:<?php print $menu1_bgcolor; ?>;}
 #footerline2    {   background-color:<?php print $footerline2; ?>;}
 
-input, textarea {   font-size: 10px; border:1px solid #BBBBBB;}
-
-/*input[type="submit"],input[type="button"],input[type="reset"]{
-    background : white;
-    color : <?php print $menu1_bgcolor; ?>;
-    border-color : <?php print $menu1_bgcolor; ?>;
-    cursor: pointer;
-    }*/
-
+input, textarea {
+    font-size: 10px;
+    border:1px solid #BBBBBB;
+}
 input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
     background : <?php print $menu1_bgcolor; ?>;
     color : <?php print $color9; ?>;
@@ -186,9 +194,9 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
     background-color:<?php print $color6; ?> ;
     }
 
-.a, .b{
+.a, .b {
     border-color:<?php print $color10; ?>;
-    }
+}
 
 
 .msg_loading{
@@ -200,8 +208,7 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
     font-size:18px;
     width:100%;
     height:100%;
-    }
-
+}
 .msg_isloading{
     font-size:14px;
     position:absolute;
@@ -210,19 +217,34 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
     background-color:red;
     color:white;
     width:200px;
-    }
+}
 
-.Toolbar_TDSelectAction_Top a { font-family:Arial, Helvetica, Sans-Serif;font-size:11px;color:<?php print $color13; ?>;}
-.Toolbar_TDSelectAction_Top a:hover {color:<?php print $color14; ?>;}
+.Toolbar_TDSelectAction_Top a { 
+    font-family:Arial, Helvetica, Sans-Serif;
+    font-size:11px;
+    color:<?php print $color13; ?>;
+}
+.Toolbar_TDSelectAction_Top a:hover {
+    color:<?php print $color14; ?>;
+}
+.Toolbar_TableBottom {
+    border-color:<?php print $menu1_bgcolor; ?>;
+}
 
-/*.Toolbar_TDSelectAction_Bottom a {font-family:Arial, Helvetica, Sans-Serif;font-size:11px;color:<?php print $color13; ?>;}
-.Toolbar_TDSelectAction_Bottom a:hover {color:<?php print $color14; ?>;}*/
-
-.Toolbar_TableBottom {border-color:<?php print $menu1_bgcolor; ?>;}
-
-.headerTabContainer {border-bottom: 1px solid <?php print $menu2_bgcolor ?>;}
-#mainnav li{    background-color: <?php print $menu2_bgcolor ?>;border: 1px solid <?php print $menu2_bgcolor ?>;}
-#mainnav li.a a{    color: <?php print $menu2_bgcolor ?>; }
-#mainnav li.b a{    color: <?php print $menu2_color ?>;}
-#mainnav li.b a{    color: <?php print $menu2_color ?>;}
+.headerTabContainer {
+    border-bottom: 1px solid <?php print $menu2_bgcolor ?>;
+}
+#mainnav li {
+    background-color: <?php print $menu2_bgcolor ?>;
+    border: 1px solid <?php print $menu2_bgcolor ?>;
+}
+#mainnav li.a a {
+    color: <?php print $menu2_bgcolor ?>;
+}
+#mainnav li.b a {
+    color: <?php print $menu2_color ?>;
+}
+#mainnav li.b a {
+    color: <?php print $menu2_color ?>;
+}
 
