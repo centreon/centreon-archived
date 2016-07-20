@@ -2050,3 +2050,138 @@ textarea.default-textarea {
 :-ms-fullscreen .tohide{
     display: none;
 }
+
+/* -- Views Performance page -- */
+.graph-options {
+  display: flex; 
+  justify-content: flex-end;
+  margin-bottom: 2px;
+}
+
+.graphZone {
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.graphZone.col2 .graph {
+  width: 49%;
+}
+
+.graphZone.col3 .graph {
+  width: 32%;
+}
+
+.graph {
+  margin-top: 4px;
+  height: 300px;
+  border: 1px solid #bfd0e2;
+  width: 100%;
+  position: relative;
+}
+
+.graph .title {
+  background-color: #cfedf9;
+  height: 20px;
+  display: inline-block;
+  line-height: 20px;
+  font-weight: bold;
+  width: calc(100% - 4px);
+  padding: 0 2px;
+}
+
+.graph .title .actions {
+  float: right;
+  margin-top: 2px;
+}
+
+.graph .content {
+  margin: 5px;
+  height: 270px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.graph .action {
+  position: absolute;
+  padding: 0 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 280px;
+  top: 0;
+}
+
+.graph .action.left {
+  left: 0;
+}
+
+.graph .action.right {
+  right: 0;
+}
+
+.graph .action .bt_action {
+  z-index: 50;
+  padding: 4px;
+  opacity: 0.2;
+  transition: opacity .25s ease-in-out;
+  cursor: pointer;
+}
+
+.graph .action .bt_action:disabled {
+  cursor: not-allowed;
+}
+
+.graph .action .bt_action:hover {
+  opacity: 1;
+}
+
+.graph .chart {
+  overflow: hidden;
+}
+
+.graph .c3-region.region-downtime {
+  fill: #cc99ff;
+}
+
+.graph .c3-region.region-ack {
+  fill: #ae9500;
+}
+
+.ico-col.active {
+  border: 1px #4ccaff solid;
+  border-radius: 2px;
+}
+
+.ico-col.ico-col-1 {
+  background-image: url('../../img/icons/1-col-gray.png');
+  background-size: cover;
+}
+
+.ico-col.ico-col-1.active {
+  background-image: url('../../img/icons/1-col-blue.png');
+  background-size: cover;
+}
+
+.ico-col.ico-col-2 {
+  background-image: url('../../img/icons/2-col-gray.png');
+  background-size: cover;
+}
+
+.ico-col.ico-col-2.active {
+  background-image: url('../../img/icons/2-col-blue.png');
+  background-size: cover;
+}
+
+.ico-col.ico-col-3 {
+  background-image: url('../../img/icons/3-col-gray.png');
+  background-size: cover;
+}
+
+.ico-col.ico-col-3.active {
+  background-image: url('../../img/icons/3-col-blue.png');
+  background-size: cover;
+}
