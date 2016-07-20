@@ -34,7 +34,7 @@
  */
  
 if (!isset ($centreon)) {
-	exit ();
+    exit ();
 }
 
 isset($_GET["command_id"]) ? $cmdG = $_GET["command_id"] : $cmdG = NULL;
@@ -77,10 +77,10 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 if (isset($_POST["o1"]) && isset($_POST["o2"])){
-	if ($_POST["o1"] != "")
-		$o = $_POST["o1"];
-	if ($_POST["o2"] != "")
-		$o = $_POST["o2"];
+    if ($_POST["o1"] != "")
+        $o = $_POST["o1"];
+    if ($_POST["o2"] != "")
+        $o = $_POST["o2"];
 }
 
 $commandObj = new CentreonCommand($pearDB);
@@ -88,62 +88,62 @@ $lockedElements = $commandObj->getLockedCommands();
 
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+    $p = $ret['topology_page'];
 
 if ($min) {
-	switch ($o)	{
-		case "h" 	:
-			/*
-			 * Show Help Command
-			 */ 
-			require_once($path."minHelpCommand.php"); 
-			break; 
-		case "p" 	: 
-			/*
-			 * Test the plugin
-			 */
-			require_once($path."minPlayCommand.php"); 
-			break; 
-		default 	: 
-			require_once($path."minCommand.php"); 
-			break;
-	}
+    switch ($o) {
+        case "h"    :
+            /*
+             * Show Help Command
+             */ 
+            require_once($path."minHelpCommand.php"); 
+            break; 
+        case "p"    : 
+            /*
+             * Test the plugin
+             */
+            require_once($path."minPlayCommand.php"); 
+            break; 
+        default     : 
+            require_once($path."minCommand.php"); 
+            break;
+    }
 } else {
-	switch ($o)	{
-		case "a" 	: 
-			/*
-			 * Add a Command
-			 */
-			require_once($path."formCommand.php"); 
-			break;
-		case "w" 	: 
-			/*
-			 * Watch a Command
-			 */
-			require_once($path."formCommand.php"); 
-			break;
-		case "c" 	:
-			/*
-			 * Modify a Command
-			 */ 
-			require_once($path."formCommand.php"); 
-			break; 
-		case "m" 	:
-			/*
-			 * Duplicate n Commands
-			 */ 
-			multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); 
-			require_once($path."listCommand.php"); 
-			break; 
-		case "d" 	:
-			/*
-			 * Delete n Commands
-			 */ 
-			deleteCommandInDB(isset($select) ? $select : array()); 
-			require_once($path."listCommand.php"); 
-			break;
-		default 	: 
-			require_once($path."listCommand.php"); 
-			break;
-	}
+    switch ($o) {
+        case "a"    : 
+            /*
+             * Add a Command
+             */
+            require_once($path."formCommand.php"); 
+            break;
+        case "w"    : 
+            /*
+             * Watch a Command
+             */
+            require_once($path."formCommand.php"); 
+            break;
+        case "c"    :
+            /*
+             * Modify a Command
+             */ 
+            require_once($path."formCommand.php"); 
+            break; 
+        case "m"    :
+            /*
+             * Duplicate n Commands
+             */ 
+            multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); 
+            require_once($path."listCommand.php"); 
+            break; 
+        case "d"    :
+            /*
+             * Delete n Commands
+             */ 
+            deleteCommandInDB(isset($select) ? $select : array()); 
+            require_once($path."listCommand.php"); 
+            break;
+        default     : 
+            require_once($path."listCommand.php"); 
+            break;
+    }
 }

@@ -32,55 +32,53 @@
  * For more information : contact@centreon.com
  *
  */
-?>
-<script type="text/javascript">
-var listArea;
+?><script type="text/javascript">
 
+var listArea;
 var macroSvc  = new Array();
 var macroHost = new Array();
 
 function goPopup() {
-	var cmd_line;
-	var tmpStr;
-	var reg = new RegExp("(\n)", "g");
+    var cmd_line;
+    var tmpStr;
+    var reg = new RegExp("(\n)", "g");
 
-	listArea = document.getElementById('listOfArg');
-	tmpStr = listArea.value;
-	tmpStr = tmpStr.replace(reg, ";;;");
-	cmd_line = document.getElementById('command_line').value;
+    listArea = document.getElementById('listOfArg');
+    tmpStr = listArea.value;
+    tmpStr = tmpStr.replace(reg, ";;;");
+    cmd_line = document.getElementById('command_line').value;
 
-	Modalbox.show('./include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line + '&textArea=' + tmpStr, {title: 'Argument description', width:800});
+    Modalbox.show('./include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line + '&textArea=' + tmpStr, {title: 'Argument description', width:800});
 }
 
 function setDescriptions() {
-	var i;
-	var tmpStr2;
-	var listDiv;
+    var i;
+    var tmpStr2;
+    var listDiv;
 
-	tmpStr2 = "";
-	listArea = document.getElementById('listOfArg');
-	listDiv = document.getElementById('listOfArgDiv');
-	for (i=1; document.getElementById('desc_'+i); i++) {
-		tmpStr2 += "ARG" + document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
-	}
-	listArea.cols=100;
-	listArea.rows=i;
-	listArea.value = tmpStr2;
-	listDiv.style.visibility = "visible";
-	Modalbox.hide();
+    tmpStr2 = "";
+    listArea = document.getElementById('listOfArg');
+    listDiv = document.getElementById('listOfArgDiv');
+    for (i = 1; document.getElementById('desc_'+i); i++) {
+        tmpStr2 += "ARG" + document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
+    }
+    listArea.cols=100;
+    listArea.rows=i;
+    listArea.value = tmpStr2;
+    listDiv.style.visibility = "visible";
+    Modalbox.hide();
 }
 
 function closeBox() {
-	Modalbox.hide();
+    Modalbox.hide();
 }
 
 function clearArgs() {
-	listArea = document.getElementById('listOfArg');
-	listArea.value = "";
+    listArea = document.getElementById('listOfArg');
+    listArea.value = "";
 }
 
-function manageMacros()
-{
+function manageMacros() {
     var commandLine = document.Form.command_line.value;
     var commandId = document.Form.command_id.value;
     var tmpStr = "";
@@ -89,27 +87,27 @@ function manageMacros()
 }
 
 function setMacrosDescriptions() {
-	var i;
-	var tmpStr2;
-	var listDiv;
+    var i;
+    var tmpStr2;
+    var listDiv;
 
-	tmpStr2 = "";
-	listArea = document.getElementById('listOfMacros');
-	listDiv = document.getElementById('listOfMacros');
-	for (i=0; document.getElementById('desc_'+i); i++) {
+    tmpStr2 = "";
+    listArea = document.getElementById('listOfMacros');
+    listDiv = document.getElementById('listOfMacros');
+    for (i = 0; document.getElementById('desc_'+i); i++) {
             var type = "HOST";
             if (document.getElementById('type_'+i).value == 2) {
                 type = "SERVICE";
             }
             tmpStr2 += "MACRO ("+ type +") "+ document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
-	}
+    }
         
-	listArea.cols= 100;
-	listArea.rows= i;
+    listArea.cols= 100;
+    listArea.rows= i;
         
-	listArea.value = tmpStr2;
-	listDiv.style.visibility = "visible";
-	Modalbox.hide();
+    listArea.value = tmpStr2;
+    listDiv.style.visibility = "visible";
+    Modalbox.hide();
 }
 
 </script>
