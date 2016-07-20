@@ -31,18 +31,41 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-function testConnectorExistence($name = null)
+function return_plugin($rep)
 {
-    global $connectorObj, $form;
-    
-    if (isset($form)) {
-        $id = $form->getSubmitValue('connector_id');
-    } else {
-        $id = null;
+    global $centreon;
+
+    $availableConnectors = array();
+    $is_not_a_plugin = array(
+        "." => 1,
+        ".." => 1,
+        "oreon.conf" => 1,
+        "oreon.pm" => 1,
+        "utils.pm" => 1,
+        "negate" => 1,
+        "centreon.conf" => 1,
+        "centreon.pm" => 1
+    );
+    if (is_readable($rep)) {
+        $handle[$rep] = opendir($rep);
+        while (false != ($filename = readdir($handle[$rep]))) {
+            if ($filename != "." && $filename != "..") {
+                if (is_dir($rep.$filename)) {
+                    $plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
+                    $availableConnectors = array_merge($availableConnectors, $plg_tmp);
+                    unset($plg_tmp);
+                } elseif (!isset($is_not_a_plugin[$filename])
+                    && substr($filename, -1)!= "~"
+                    && substr($filename, -1) != "#"
+                ) {
+                    $key = substr($rep."/".$filename, strlen($oreon->optGen["cengine_path_connectors"]));
+                    $availableConnectors[$key] = $key;
+                }
+            }
+        }
+        closedir($handle[$rep]);
     }
-    
-    return $connectorObj->isNameAvailable($name, $id);
+    return ($availableConnectors);
 }
