@@ -328,7 +328,7 @@
     </tr>
 
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_host"> {$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_acknowledgement_timeout"> {$form.host_acknowledgement_timeout.label}</td><td class="FormRowValue">{$form.host_acknowledgement_timeout.html}&nbsp;{$seconds}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_acknowledgement_timeout"> {$form.host_acknowledgement_timeout.label}</td><td class="FormRowValue">{$form.host_acknowledgement_timeout.html}&nbsp;{$time_unit}</td></tr>
 
     <tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">
