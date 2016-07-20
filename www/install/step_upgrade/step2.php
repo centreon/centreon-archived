@@ -37,7 +37,7 @@
  */
 
 session_start();
-DEFINE('STEP_NUMBER', 2);
+define('STEP_NUMBER', 2);
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once '../steps/functions.php';
@@ -45,7 +45,7 @@ $template = getTemplate('../steps/templates');
 
 $title = _('Dependency check up');
 $requiredLib = explode("\n", file_get_contents('../var/phplib'));
-/**
+/*
  * PHP Libraries 
  */
 $contents = "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>";
@@ -63,7 +63,7 @@ foreach ($requiredLib as $line) {
     list($name, $lib) = explode(":", $line);
     $contents .= "<td>".$name."</td>";
     $contents .= "<td>".$lib."</td>";
-    $contents .= "<td>";    
+    $contents .= "<td>";
     if (extension_loaded($lib)) {
         $libMessage = '<span style="color:#10CA31; font-weight:bold;">'._('Loaded').'</span>';
     } else {
@@ -80,7 +80,7 @@ if (!ini_get('date.timezone')) {
     $contents .= "<tr>";
     $contents .= "<td>Timezone</td>";
     $contents .= "<td>"._("Set the default timezone in php.ini file") ."</td>";
-    $contents .= "<td>";    
+    $contents .= "<td>";
 
     $libMessage = '<span style="color:#f91e05; font-weight:bold;">'._('Not initialized').'</span>';
     $allClear = 0;
@@ -90,7 +90,7 @@ if (!ini_get('date.timezone')) {
 }
 $contents .= "</table>";
 
-/**
+/*
  * PEAR Libraries 
  */
 //@todo

@@ -163,4 +163,3 @@ header('Pragma: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
 $xml->output();
-?>

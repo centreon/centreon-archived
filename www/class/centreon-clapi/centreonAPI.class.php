@@ -55,7 +55,8 @@ require_once "centreon.Config.Poller.class.php";
  * Declare Centreon API
  *
  */
-class CentreonAPI {
+class CentreonAPI
+{
 
     public $dateStart;
     public $login;
@@ -77,8 +78,9 @@ class CentreonAPI {
     private $relationObject;
     private $objectTable;
     private $aExport = array();
-    
-    public function __construct($user, $password, $action, $centreon_path, $options) {
+
+    public function __construct($user, $password, $action, $centreon_path, $options)
+    {
         global $version;
 
         /**
@@ -287,17 +289,19 @@ class CentreonAPI {
             'class' => 'Settings',
             'export' => false
         );
-         
+
         /* Get objects from modules */
         $objectsPath = array();
         $DBRESULT = $this->DB->query("SELECT name FROM modules_informations");
         while ($row = $DBRESULT->fetchRow()) {
-            $objectsPath = array_merge($objectsPath, glob(_CENTREON_PATH_.'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php'));
+            $objectsPath = array_merge(
+                $objectsPath,
+                glob(_CENTREON_PATH_.'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php')
+            );
         }
 
         foreach ($objectsPath as $objectPath) {
             if (preg_match('/([\w-]+)\/centreon-clapi\/class\/centreon(\w+).class.php/', $objectPath, $matches)) {
-               
                 if (isset($matches[1]) && isset($matches[2])) {
                     $this->relationObject[strtoupper($matches[2])] = array(
                         'module' => $matches[1],
@@ -307,7 +311,7 @@ class CentreonAPI {
                 }
             }
         }
-  
+
         /*
          * Manage version
          */
@@ -322,33 +326,49 @@ class CentreonAPI {
      * @param int $returnCode
      * @return void
      */
-    public function setReturnCode($returnCode) {
+    public function setReturnCode($returnCode)
+    {
         $this->return_code = $returnCode;
     }
 
     /**
      * Centreon Object Management
      */
-    protected function requireLibs($object) {
+    protected function requireLibs($object)
+    {
         if ($object != "") {
-            if (isset($this->relationObject[$object]['class']) && isset($this->relationObject[$object]['module']) && !class_exists("Centreon" . $this->relationObject[$object])) {
+            if (isset($this->relationObject[$object]['class'])
+                && isset($this->relationObject[$object]['module'])
+                && !class_exists("Centreon" . $this->relationObject[$object])) {
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
                 } else {
-                    require_once _CENTREON_PATH_."/www/modules/" . $this->relationObject[$object]['module'] . "/centreon-clapi/class/centreon" . $this->relationObject[$object]['class'] . ".class.php";
+                    require_once _CENTREON_PATH_."/www/modules/"
+                        . $this->relationObject[$object]['module']
+                        . "/centreon-clapi/class/centreon"
+                        . $this->relationObject[$object]['class']
+                        . ".class.php";
                 }
             }
 
-            if (isset($this->relationObject[$object]['libs']) && !array_walk($this->relationObject[$object]['libs'], 'class_exists')) {
+            if (isset($this->relationObject[$object]['libs'])
+                && !array_walk($this->relationObject[$object]['libs'], 'class_exists')) {
                 array_walk($this->relationObject[$object]['libs'], 'require_once');
             }
         } else {
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
-                if (isset($oObjet['class']) && isset($oObjet['module']) && !class_exists("Centreon" . $oObjet['class'])) {
+                if (isset($oObjet['class'])
+                    && isset($oObjet['module'])
+                    && !class_exists("Centreon" . $oObjet['class'])) {
                     if ($oObjet['module'] == 'core') {
-                        require_once _CENTREON_PATH_."www/class/centreon-clapi/centreon" . $oObjet['class'] . ".class.php";
+                        require_once _CENTREON_PATH_
+                            . "www/class/centreon-clapi/centreon"
+                            . $oObjet['class'] . ".class.php";
                     } else {
-                        require_once _CENTREON_PATH_."/www/modules/" . $oObjet['module'] . "/centreon-clapi/class/centreon" . $oObjet['class'] . ".class.php";
+                        require_once _CENTREON_PATH_
+                            . "/www/modules/" . $oObjet['module']
+                            . "/centreon-clapi/class/centreon"
+                            . $oObjet['class'] . ".class.php";
                     }
                 }
                 if (isset($oObjet['libs']) && !array_walk($oObjet['libs'], 'class_exists')) {
@@ -367,7 +387,8 @@ class CentreonAPI {
     /**
      * Get General option of Centreon
      */
-    private function getOptGen() {
+    private function getOptGen()
+    {
         $DBRESULT = $this->DB->query("SELECT * FROM options");
         while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
@@ -380,7 +401,8 @@ class CentreonAPI {
      * Set user login
      * @param varchar $login
      */
-    public function setLogin($login) {
+    public function setLogin($login)
+    {
         $this->login = $login;
     }
 
@@ -389,7 +411,8 @@ class CentreonAPI {
      * Set password of the user
      * @param varchar $password
      */
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = trim($password);
     }
 
@@ -399,7 +422,8 @@ class CentreonAPI {
      * @param boolean $useSha1
      * @return return bool 1 if user can login
      */
-    public function checkUser($useSha1 = false) {
+    public function checkUser($useSha1 = false)
+    {
         if (!isset($this->login) || $this->login == "") {
             print "ERROR: Can not connect to centreon without login.\n";
             $this->printHelp();
@@ -418,11 +442,11 @@ class CentreonAPI {
         } else {
             $pass = md5($this->password);
         }
-        $DBRESULT = $this->DB->query("SELECT contact_id, contact_admin 
-                 FROM contact 
-                 WHERE contact_alias = '" . $this->login . "' 
-                 AND contact_passwd = '" . $pass . "' 
-                 AND contact_activate = '1' 
+        $DBRESULT = $this->DB->query("SELECT contact_id, contact_admin
+                 FROM contact
+                 WHERE contact_alias = '" . $this->login . "'
+                 AND contact_passwd = '" . $pass . "'
+                 AND contact_activate = '1'
                  AND contact_oreon = '1'");
         if ($DBRESULT->numRows()) {
             $row = $DBRESULT->fetchRow();
@@ -441,7 +465,8 @@ class CentreonAPI {
      *
      * return (print) a "\n"
      */
-    public function endOfLine() {
+    public function endOfLine()
+    {
         print "\n";
     }
 
@@ -449,7 +474,8 @@ class CentreonAPI {
      *
      * close the current action
      */
-    public function close() {
+    public function close()
+    {
         print "\n";
         exit($this->return_code);
     }
@@ -460,7 +486,8 @@ class CentreonAPI {
      * @param boolean $dbOk | whether db is ok
      * @param int $returnCode
      */
-    public function printHelp($dbOk = true, $returnCode = 0) {
+    public function printHelp($dbOk = true, $returnCode = 0)
+    {
         if ($dbOk) {
             $this->printLegals();
         }
@@ -502,7 +529,8 @@ class CentreonAPI {
      * Get variable passed in parameters
      * @param varchar $str
      */
-    public function getVar($str) {
+    public function getVar($str)
+    {
         $res = explode("=", $str);
         return $res[1];
     }
@@ -512,7 +540,8 @@ class CentreonAPI {
      * Check that parameters are not empty
      * @param varchar $str
      */
-    private function checkParameters($str) {
+    private function checkParameters($str)
+    {
         if (!isset($this->options["v"]) || $this->options["v"] == "") {
             print "No options defined.\n";
             $this->return_code = 1;
@@ -524,7 +553,8 @@ class CentreonAPI {
      *
      * Init XML Flow
      */
-    public function initXML() {
+    public function initXML()
+    {
         $this->xmlObj = new CentreonXML();
     }
 
@@ -533,9 +563,10 @@ class CentreonAPI {
      *
      * @param boolean $exit If exit or return the return code
      */
-    public function launchAction($exit = true) {
+    public function launchAction($exit = true)
+    {
         $action = strtoupper($this->action);
-        
+
         /**
          * Debug
          */
@@ -551,7 +582,7 @@ class CentreonAPI {
              * Require needed class
              */
             $this->requireLibs($this->object);
-            
+
             /**
              * Check class declaration
              */
@@ -581,7 +612,7 @@ class CentreonAPI {
             }
         }
         if ($exit) {
-            exit($this->return_code);    
+            exit($this->return_code);
         } else {
             return $this->return_code;
         }
@@ -590,7 +621,8 @@ class CentreonAPI {
     /**
      * Import Scenario file
      */
-    public function import($filename) {
+    public function import($filename)
+    {
         $globalReturn = 0;
 
         $this->fileExists($filename);
@@ -630,7 +662,8 @@ class CentreonAPI {
         return $globalReturn;
     }
 
-    public function launchActionForImport() {
+    public function launchActionForImport()
+    {
         $action = strtoupper($this->action);
         /**
          * Debug
@@ -682,21 +715,20 @@ class CentreonAPI {
      * Export All configuration
      */
     public function export()
-    {    
+    {
         $this->requireLibs("");
 
         $this->sortClassExport();
-        
+
         $this->initAllObjects();
-        
+
         // header
-        echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";        
+        echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
         if (count($this->aExport) > 0) {
             foreach ($this->aExport as $oObjet) {
                 if (method_exists($this->objectTable[$oObjet], 'export')) {
                     $this->objectTable[$oObjet]->export();
                 }
-                
             }
         }
     }
@@ -707,7 +739,8 @@ class CentreonAPI {
      * @param unknown_type $DB
      * @param unknown_type $objname
      */
-    private function iniObject($objname) {
+    private function iniObject($objname)
+    {
         $className = '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
         $this->requireLibs($objname);
         $this->objectTable[$objname] = new $className($this->DB, $objname);
@@ -716,7 +749,8 @@ class CentreonAPI {
     /**
      * Init All object instance in order to export all informations
      */
-    private function initAllObjects() {
+    private function initAllObjects()
+    {
         if (count($this->aExport) > 0) {
             foreach ($this->aExport as $oObjet) {
                 $this->iniObject($oObjet);
@@ -727,7 +761,8 @@ class CentreonAPI {
     /**
      * Check if file exists
      */
-    private function fileExists($filename) {
+    private function fileExists($filename)
+    {
         if (!file_exists($filename)) {
             print "$filename : File doesn't exists\n";
             exit(1);
@@ -738,7 +773,8 @@ class CentreonAPI {
      *
      * Print centreon version and legal use
      */
-    public function printLegals() {
+    public function printLegals()
+    {
         $DBRESULT = & $this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
         $data = & $DBRESULT->fetchRow();
         print "Centreon version " . $data["value"] . " - ";
@@ -750,7 +786,8 @@ class CentreonAPI {
      *
      * Print centreon version
      */
-    public function printVersion() {
+    public function printVersion()
+    {
         $res = $this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
         $data = $res->fetchRow();
         print "Centreon version " . $data["value"] . "\n";
@@ -772,7 +809,8 @@ class CentreonAPI {
      *
      * List all poller declared in Centreon
      */
-    public function POLLERLIST() {
+    public function POLLERLIST()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->getPollerList($this->format);
     }
@@ -781,7 +819,8 @@ class CentreonAPI {
      *
      * Launch poller restart
      */
-    public function POLLERRESTART() {
+    public function POLLERRESTART()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->pollerRestart($this->variables);
     }
@@ -790,7 +829,8 @@ class CentreonAPI {
      *
      * Launch poller reload
      */
-    public function POLLERRELOAD() {
+    public function POLLERRELOAD()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->pollerReload($this->variables);
     }
@@ -799,7 +839,8 @@ class CentreonAPI {
      *
      * Launch poller configuration files generation
      */
-    public function POLLERGENERATE() {
+    public function POLLERGENERATE()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->pollerGenerate($this->variables, $this->login, $this->password);
     }
@@ -808,7 +849,8 @@ class CentreonAPI {
      *
      * Launch poller configuration test
      */
-    public function POLLERTEST() {
+    public function POLLERTEST()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->pollerTest($this->format, $this->variables);
     }
@@ -816,7 +858,8 @@ class CentreonAPI {
     /**
      * Execute the post generation command
      */
-    public function POLLEREXECCMD() {
+    public function POLLEREXECCMD()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->execCmd($this->variables);
     }
@@ -825,7 +868,8 @@ class CentreonAPI {
      *
      * move configuration files into final directory
      */
-    public function CFGMOVE() {
+    public function CFGMOVE()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->cfgMove($this->variables);
     }
@@ -833,7 +877,8 @@ class CentreonAPI {
     /**
      * Send trap configuration file to poller
      */
-    public function SENDTRAPCFG() {
+    public function SENDTRAPCFG()
+    {
         $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
         return $poller->sendTrapCfg($this->variables);
     }
@@ -842,7 +887,8 @@ class CentreonAPI {
      *
      * Apply configuration Generation + move + reload
      */
-    public function APPLYCFG() {
+    public function APPLYCFG()
+    {
         /**
          * Display time for logs
          */
@@ -870,7 +916,7 @@ class CentreonAPI {
         }
         return $this->return_code;
     }
-    
+
     /**
      * This method sort the objects to export
      */
@@ -880,10 +926,12 @@ class CentreonAPI {
             $aObject = $this->relationObject;
             while ($oObjet = array_slice($aObject, -1, 1, true)) {
                 $key = key($oObjet);
-                if (isset($oObjet[$key]['class']) && $oObjet[$key]['export'] === true && !in_array($key, $this->aExport)) {
+                if (isset($oObjet[$key]['class'])
+                    && $oObjet[$key]['export'] === true
+                    && !in_array($key, $this->aExport)) {
                     $objName = "centreon" . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
-                   
+
                     if (isset($objVars['aDepends'])) {
                         $bInsert = true;
                         foreach ($objVars['aDepends'] as $oDependence) {
@@ -894,22 +942,19 @@ class CentreonAPI {
                         }
 
                         if ($bInsert) {
-                             $this->aExport[] = $key;
-                             array_pop($aObject);
+                            $this->aExport[] = $key;
+                            array_pop($aObject);
                         } else {
                             $aObject = array_merge($oObjet, $aObject);
-
                         }
                     } else {
                         $this->aExport[] = $key;
                         array_pop($aObject);
                     }
-
                 } else {
                     array_pop($aObject);
                 }
             }
         }
     }
-
 }

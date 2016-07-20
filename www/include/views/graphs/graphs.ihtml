@@ -42,14 +42,11 @@
         </table>
     </form>
     <div class="graph-options">
-      <a href="javascript:switchCols(1)">
-        <img alt="{t}One column{/t}" class="ico-16 margin_right" src="./img/icons/picture.png">
+      <a href="javascript:switchCols(1)" class="ico-16 margin_right ico-col ico-col-1 active" alt="{t}One column{/t}">
       </a>
-      <a href="javascript:switchCols(2)">
-        <img alt="{t}Two columns{/t}" class="ico-16 margin_right" src="./img/icons/picture.png">
+      <a href="javascript:switchCols(2)" class="ico-16 margin_right ico-col ico-col-2" alt="{t}Two columns{/t}">
       </a>
-      <a href="javascript:switchCols(3)">
-        <img alt="{t}Three columns{/t}" class="ico-16 margin_right" src="./img/icons/picture.png">
+      <a href="javascript:switchCols(3)" class="ico-16 margin_right ico-col ico-col-3" alt="{t}Three columns{/t}">
       </a>
     </div>
     <div id="graphs" class="graph_content">
@@ -63,109 +60,9 @@
 <script src="./include/common/javascript/charts/c3.min.js"></script>
 <script src="./include/common/javascript/charts/d3-timeline.js"></script>
 <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
 
 {literal}
-<style>
-  .graph-options {
-    display: flex; 
-    justify-content: flex-end;
-    margin-bottom: 2px;
-  }
-  
-  .graphZone {
-    margin-bottom: 40px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .graphZone.col2 .graph {
-    width: 49%;
-  }
-  
-  .graphZone.col3 .graph {
-    width: 32%;
-  }
-  
-  .graph {
-    margin-top: 4px;
-    height: 300px;
-    border: 1px solid #bfd0e2;
-    width: 100%;
-    position: relative;
-  }
-  
-  .graph .title {
-    background-color: #cfedf9;
-    height: 20px;
-    display: inline-block;
-    line-height: 20px;
-    font-weight: bold;
-    width: calc(100% - 4px);
-    padding: 0 2px;
-  }
-  
-  .graph .title .actions {
-    float: right;
-    margin-top: 2px;
-  }
-  
-  .graph .content {
-    margin: 5px;
-    height: 270px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-  }
-  
-  .graph .action {
-    position: absolute;
-    padding: 0 3px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 280px;
-    top: 0;
-  }
-  
-  .graph .action.left {
-    left: 0;
-  }
-  
-  .graph .action.right {
-    right: 0;
-  }
-  
-  .graph .action .bt_action {
-    z-index: 50;
-    padding: 4px;
-    opacity: 0.2;
-    transition: opacity .25s ease-in-out;
-    cursor: pointer;
-  }
-  
-  .graph .action .bt_action:disabled {
-    cursor: not-allowed;
-  }
-  
-  .graph .action .bt_action:hover {
-    opacity: 1;
-  }
-  
-  .graph .chart {
-    overflow: hidden;
-  }
-  
-  .graph .c3-region.region-downtime {
-    fill: #cc99ff;
-  }
-  
-  .graph .c3-region.region-ack {
-    fill: #ae9500;
-  }
-</style>
-
 <script id="graph-line" type="text/x-handlebars-template">
 <div id="graph_wrapper_{{graphId}}" class="graph">
   <div class="title">
@@ -207,6 +104,19 @@ function addChart(id, name, times) {
   if (autoRefresh) {
     times.refresh = 300;
   }
+  /* Add zoom */
+  times.zoom = {
+    enabled: true,
+    onzoom: function (period) {
+      var start = moment(period[0]);
+      var end = moment(period[1]);
+      jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+      jQuery('#StartTime').val(start.format('HH:mm'));
+      jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+      jQuery('#EndTime').val(end.format('HH:mm'));
+      changePeriod();
+    }
+  };
   charts.push(id);
   jQuery('.graphZone').append(
     templateGraph({
@@ -290,6 +200,8 @@ function switchCols(number) {
     jQuery('.graphZone').addClass('col' + number);
   }
   jQuery('.graphZone .chart').centreonGraph('resize');
+  jQuery('.ico-col').removeClass('active');
+  jQuery('.ico-col-' + number).addClass('active');
 }
   
 function changePeriod() {

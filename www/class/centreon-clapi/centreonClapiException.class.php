@@ -40,5 +40,4 @@ namespace CentreonClapi;
  */
 class CentreonClapiException extends \Exception
 {
-
 }

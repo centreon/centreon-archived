@@ -77,8 +77,22 @@ $ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', n
 $ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', null, _("No"), '0');
 $form->addGroup($ldapAutoImport, 'ldap_auto_import', _("Auto import users"), '&nbsp;');
 
-$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("Yes"), '1', array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);"));
-$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("No"), '0', array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true, false);"));
+$ldapUseDns[] = HTML_QuickForm::createElement(
+    'radio',
+    'ldap_srv_dns',
+    null,
+    _("Yes"),
+    '1',
+    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);")
+);
+$ldapUseDns[] = HTML_QuickForm::createElement(
+    'radio',
+    'ldap_srv_dns',
+    null,
+    _("No"),
+    '0',
+    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true, false);")
+);
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
 $ldapDnsUseSsl[] = HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');
@@ -109,7 +123,13 @@ $form->addElement('header', 'ldapserver', _('LDAP Servers'));
 $form->addElement('text', 'bind_dn', _("Bind user"), array("size" => "40", "autocomplete" => "off"));
 $form->addElement('password', 'bind_pass', _("Bind password"), array("size" => "40", "autocomplete" => "off"));
 $form->addElement('select', 'protocol_version', _("Protocol version"), array('2' => 2, '3' => 3));
-$form->addElement('select', 'ldap_template', _("Template"), array('0' => "", 'Posix' => _("Posix"), 'Active Directory' => _("Active Directory")), array('id' => 'ldap_template', 'onchange' => 'applyTemplate(this.value);'));
+$form->addElement(
+    'select',
+    'ldap_template',
+    _("Template"),
+    array('0' => "", 'Posix' => _("Posix"), 'Active Directory' => _("Active Directory")),
+    array('id' => 'ldap_template', 'onchange' => 'applyTemplate(this.value);')
+);
 $form->addElement('text', 'user_base_search', _("Search user base DN"), $attrsText);
 $form->addElement('text', 'group_base_search', _("Search group base DN"), $attrsText);
 $form->addElement('text', 'user_filter', _("User filter"), $attrsText);
@@ -131,13 +151,6 @@ $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/**
- * Form rules
- */
-function slash($elem = NULL) {
-    if ($elem)
-        return rtrim($elem, "/") . "/";
-}
 
 /**
  * Smarty
@@ -162,7 +175,9 @@ $gopt = array();
 
 if ($arId) {
     $gopt = $ldapAdmin->getGeneralOptions($arId);
-    $res = $pearDB->query("SELECT `ar_name`, `ar_description`, `ar_enable` FROM `auth_ressource` WHERE ar_id = " .$pearDB->escape($arId));
+    $res = $pearDB->query("SELECT `ar_name`, `ar_description`, `ar_enable`
+                            FROM `auth_ressource`
+                            WHERE ar_id = " .$pearDB->escape($arId));
     while ($row = $res->fetchRow()) {
         $gopt['ar_name'] = $row['ar_name'];
         $gopt['ar_description'] = $row['ar_description'];
@@ -175,11 +190,7 @@ if ($arId) {
      */
     $cdata = CentreonData::getInstance();
     $serversArray = $ldapAdmin->getServersFromResId($arId);
-    $cdata->addJsData('clone-values-ldapservers', htmlspecialchars(
-                        json_encode($serversArray), 
-                        ENT_QUOTES
-                    )
-                );
+    $cdata->addJsData('clone-values-ldapservers', htmlspecialchars(json_encode($serversArray), ENT_QUOTES));
     $cdata->addJsData('clone-count-ldapservers', count($serversArray));
 }
 
@@ -188,40 +199,40 @@ if ($arId) {
  */
 $cloneSet = array();
 $cloneSet[] = $form->addElement(
-                'text', 
-                'address[#index#]', 
-                _("Host address"), 
-                array(
-                    "size"=>"30", 
-                    "id" => "address_#index#"
-                    )
-                );
+    'text',
+    'address[#index#]',
+    _("Host address"),
+    array(
+        "size"=>"30",
+        "id" => "address_#index#"
+    )
+);
 $cloneSet[] = $form->addElement(
-                'text', 
-                'port[#index#]', 
-                _("Port"), 
-                array(
-                    "size"=>"10", 
-                    "id" => "port_#index#"
-                    )
-                );
+    'text',
+    'port[#index#]',
+    _("Port"),
+    array(
+        "size"=>"10",
+        "id" => "port_#index#"
+    )
+);
 $cbssl = $form->addElement(
-                'checkbox', 
-                'ssl[#index#]', 
-                _("SSL"), 
-                "",
-                array("id" => "ssl_#index#")
-                );
+    'checkbox',
+    'ssl[#index#]',
+    _("SSL"),
+    "",
+    array("id" => "ssl_#index#")
+);
 $cbssl->setText('');
 $cloneSet[] = $cbssl;
 
 $cbtls = $form->addElement(
-                'checkbox', 
-                'tls[#index#]', 
-                _("TLS"), 
-                "",
-                array("id" => "tls_#index#")
-                );
+    'checkbox',
+    'tls[#index#]',
+    _("TLS"),
+    "",
+    array("id" => "tls_#index#")
+);
 $cbtls->setText('');
 $cloneSet[] = $cbtls;
 
@@ -244,7 +255,9 @@ if ($arId) {
 
 $maxHostId = 1;
 if ($arId) {
-    $query = "SELECT MAX(ldap_host_id) as cnt FROM auth_ressource_host WHERE auth_ressource_id = " . $pearDB->escape($arId);
+    $query = "SELECT MAX(ldap_host_id) as cnt 
+              FROM auth_ressource_host 
+              WHERE auth_ressource_id = " . $pearDB->escape($arId);
     $res = $pearDB->query($query);
     if ($res->numRows()) {
         $row = $res->fetchRow();
@@ -280,7 +293,7 @@ if ($form->validate()) {
             $values['ldap_contact_tmpl'] = "";
         }
 
-        $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);        
+        $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);
         $o = "w";
         $valid = true;
 
@@ -296,12 +309,18 @@ if ($form->validate()) {
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 } elseif (false === $filterValid) {
-    print("<div class='msg' align='center'>" . _("Bad ldap filter: missing %s pattern. Check user or group filter") . "</div>");
+    print("<div class='msg' align='center'>"
+        . _("Bad ldap filter: missing %s pattern. Check user or group filter") . "</div>");
 } elseif (false === $allHostsOk) {
     print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId ."'"));
+$form->addElement(
+    "button",
+    "change",
+    _("Modify"),
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId ."'")
+);
 
 /*
  * Prepare help texts

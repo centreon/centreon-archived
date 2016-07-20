@@ -36,7 +36,8 @@
 /**
  * Class for handling Instances
  */
-class CentreonInstance {
+class CentreonInstance
+{
     protected $db;
     protected $dbo;
     protected $params;
@@ -48,10 +49,10 @@ class CentreonInstance {
      * @param CentreonDB $db
      * @return void
      */
-    public function __construct($db,$dbo = null)
+    public function __construct($db, $dbo = null)
     {
         $this->db = $db;
-        if(!empty($dbo)){
+        if (!empty($dbo)) {
             $this->dbo = $dbo;
         }
         $this->instances = array();
@@ -83,16 +84,17 @@ class CentreonInstance {
         }
     }
     
-    public function getInstancesMonitoring($poller_id = array()){
+    public function getInstancesMonitoring($poller_id = array())
+    {
         $pollers = array();
-        if(!empty($poller_id)){
+        if (!empty($poller_id)) {
             $query = "SELECT instance_id, instance_name
                 FROM instance
-                WHERE instance_id IN (".$this->dbo->escape(implode(",",$poller_id)).") ";
+                WHERE instance_id IN (".$this->dbo->escape(implode(",", $poller_id)).") ";
             $res = $this->dbo->query($query);
             while ($row = $res->fetchRow()) {
                 $pollers[] = array('id' => $row['instance_id'], 'name' => $row['instance_name']);
-            }  
+            }
         }
         
         return $pollers;
@@ -132,11 +134,12 @@ class CentreonInstance {
     
     /**
      * Get command data from poller id
-     * 
+     *
      * @param int $pollerId
      * @return array
      */
-    public function getCommandData($pollerId) {
+    public function getCommandData($pollerId)
+    {
         $sql = "SELECT c.command_id, c.command_name, c.command_line 
             FROM command c, poller_command_relations pcr
             WHERE pcr.poller_id = ?
@@ -152,11 +155,12 @@ class CentreonInstance {
     
     /**
      * Return list of commands used by poller
-     * 
+     *
      * @param int $pollerId
      * @return array
      */
-    public function getCommandsFromPollerId($pollerId = null) {
+    public function getCommandsFromPollerId($pollerId = null)
+    {
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['pollercmd']) && $pollerId) {
@@ -170,7 +174,7 @@ class CentreonInstance {
                 $i++;
             }
         } elseif (isset($_REQUEST['pollercmd'])) {
-            foreach($_REQUEST['pollercmd'] as $val) {
+            foreach ($_REQUEST['pollercmd'] as $val) {
                 $arr[$i]['pollercmd_#index#'] = $val;
                 $i++;
             }
@@ -180,22 +184,24 @@ class CentreonInstance {
     
     /**
      * Set post-restart commands
-     * 
+     *
      * @param int $pollerId
      * @param array $commands
      * @return void
      */
-    public function setCommands($pollerId, $commands) {
+    public function setCommands($pollerId, $commands)
+    {
         $this->db->query("DELETE FROM poller_command_relations
                 WHERE poller_id = ".$this->db->escape($pollerId));
             
         $stored = array();
         $i = 1;
         foreach ($commands as $value) {
-            if ($value != "" && 
+            if ($value != "" &&
                 !isset($stored[$value])) {
-                    $this->db->query("INSERT INTO poller_command_relations (`poller_id`, `command_id`, `command_order`) 
-                                VALUES (". $this->db->escape($pollerId) .", ". $this->db->escape($value) .", ". $i .")");
+                    $this->db->query("INSERT INTO poller_command_relations
+                        (`poller_id`, `command_id`, `command_order`) 
+                        VALUES (" . $this->db->escape($pollerId) . ", " . $this->db->escape($value) . ", " . $i . ")");
                     $stored[$value] = true;
                     $i++;
             }
@@ -203,7 +209,7 @@ class CentreonInstance {
     }
     
     /**
-     * 
+     *
      * @param array $values
      * @return array
      */

@@ -157,6 +157,7 @@
             }
           }
         },
+        zoom_select: self.settings.zoom,
         point: {
           show: false
         },
@@ -467,6 +468,10 @@
   $.fn.centreonGraph.defaults = {
     refresh: 0,
     height: 230,
+    zoom: {
+      enabled: false,
+      onzoom: null 
+    },
     graph: {
       id: null,
       type: null

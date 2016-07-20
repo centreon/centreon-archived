@@ -40,7 +40,7 @@ class CentreonMeta
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -55,7 +55,7 @@ class CentreonMeta
     
     /**
      * Return host id
-     * 
+     *
      * @return int
      */
     public function getRealHostId()
@@ -80,7 +80,7 @@ class CentreonMeta
     
     /**
      * Return service id
-     * 
+     *
      * @param int $metaId
      * @return int
      */
@@ -109,7 +109,7 @@ class CentreonMeta
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -156,7 +156,7 @@ class CentreonMeta
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */

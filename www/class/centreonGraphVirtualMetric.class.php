@@ -41,18 +41,18 @@
  */
 class CentreonGraphVirtualMetric
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */

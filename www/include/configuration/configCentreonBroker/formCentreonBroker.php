@@ -57,7 +57,7 @@ if (!$centreon->user->admin && $serverString != "''") {
     $serverAcl = " WHERE id IN ($serverString) ";
 }
 $DBRESULT = $pearDB->query("SELECT * FROM nagios_server $serverAcl ORDER BY name");
-while($nagios_server = $DBRESULT->fetchRow()) {
+while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
 $DBRESULT->free();
@@ -76,9 +76,9 @@ $attrsTextarea  = array("rows"=>"5", "cols"=>"40");
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p, '', array('onsubmit' => 'return formValidate()'));
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Centreon-Broker Configuration"));
-} else if ($o == "c") {
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a Centreon-Broker Configuration"));
-} else if ($o == "w") {
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a Centreon-Broker Configuration"));
 }
 
@@ -142,10 +142,10 @@ foreach ($tags as $tagId => $tag) {
                     'forms' => array());
 }
 
-/*
+/**
  * Default values
  */
-if (isset($_GET["o"]) && $_GET["o"] == 'a'){
+if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     $form->setDefaults(array(
         "name" => '',
         "retention_path" => '/var/lib/centreon-broker/',
@@ -178,7 +178,7 @@ $form->addElement('hidden', 'id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
+/**
  * Form Rules
  */
 $form->registerRule('exist', 'callback', 'testExistence');
@@ -188,39 +188,44 @@ $form->addRule('filename', _("Mandatory filename"), 'required');
 $form->addRule('retention_path', _("Mandatory retention path"), 'required');
 $form->addRule('event_queue_max_size', _('Value must be numeric'), 'numeric');
 
-if ($o == "w")  {
+if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'")
+        );
     }
     $form->freeze();
- } else if ($o == "c")   {
+} elseif ($o == "c") {
     /*
      * Modify a Centreon Broker information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
- } else if ($o == "a")   {
+} elseif ($o == "a") {
     /*
      * Add a nagios information
      */
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
- }
+}
 
 $valid = false;
-if ($form->validate())  {
+if ($form->validate()) {
     $nagiosObj = $form->getElement('id');
     if ($form->getSubmitValue("submitA")) {
         $cbObj->insertConfig($_POST);
-    } else if ($form->getSubmitValue("submitC")) {
+    } elseif ($form->getSubmitValue("submitC")) {
         $cbObj->updateConfig($_POST['id'], $_POST);
     }
-    $o = NULL;
+    $o = null;
     $valid = true;
 }
 if ($valid) {
     require_once($path."listCentreonBroker.php");
- } else {
+} else {
     /*
      * Apply a template definition
      */
@@ -235,4 +240,3 @@ if ($valid) {
     $tpl->assign('tabs', $tabs);
     $tpl->display("formCentreonBroker.ihtml");
 }
-?>

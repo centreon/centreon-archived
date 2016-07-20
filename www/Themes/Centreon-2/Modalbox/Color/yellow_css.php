@@ -31,9 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL:  $
- * SVN : $Id:  $
- * 
  */
 
 
@@ -44,4 +41,3 @@ header("Content-type: text/css");
 $bg_image_header = "../../Images/bg_header_yellow.gif";
 
 require_once _CENTREON_PATH_ . "www/Themes/Centreon-2/Modalbox/modalbox_css.php";
-?>

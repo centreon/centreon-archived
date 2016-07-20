@@ -48,18 +48,18 @@ $transcoKey = array(
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
-  if (isset($transcoKey[$opt["key"]])) {
-    $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
-  } else {
-    $gopt[$opt["key"]] = myDecode($opt["value"]);
-  }
+    if (isset($transcoKey[$opt["key"]])) {
+        $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
+    } else {
+        $gopt[$opt["key"]] = myDecode($opt["value"]);
+    }
 }
 
 /*
  * Style
  */
-$attrsText 		= array("size"=>"40");
-$attrsText2		= array("size"=>"5");
+$attrsText        = array("size"=>"40");
+$attrsText2        = array("size"=>"5");
 $attrsAdvSelect = null;
 
 /*
@@ -93,34 +93,38 @@ $GMTList = $CentreonGMT->getGMTList();
 $form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 
 $templates = array();
-if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
+if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/")) {
     while ($file = @readdir($handle)) {
-        if (!is_file($oreon->optGen["oreon_path"]."www/Themes/".$file) && $file != "." && $file != ".." && $file != ".svn") {
+        if (!is_file($oreon->optGen["oreon_path"]."www/Themes/".$file)
+            && $file != "."
+            && $file != ".."
+            && $file != ".svn"
+        ) {
             $templates[$file] = $file;
         }
     }
     @closedir($handle);
- }
+}
 $form->addElement('select', 'template', _("Display Template"), $templates);
 
 $global_sort_type = array(
                         "host_name" => _("Hosts"),
                         "last_state_change" => _("Duration"),
-						"service_description" => _("Services"),
-						"current_state" => _("Status"),
-						"last_check" => _("Last check"),
-						"output" => _("Output"),
+                        "service_description" => _("Services"),
+                        "current_state" => _("Status"),
+                        "last_check" => _("Last check"),
+                        "output" => _("Output"),
                         "criticality_id" => _("Criticality"),
                         "current_attempt" => _("Attempt"),
                     );
 
-$sort_type = array(	"last_state_change" => _("Duration"),
+$sort_type = array(    "last_state_change" => _("Duration"),
                     "host_name" => _("Hosts"),
                     "service_description" => _("Services"),
                     "current_state" => _("Status"),
                     "last_check" => _("Last check"),
                     "plugin_output" => _("Output"),
-					"criticality_id" => _("Criticality"));
+                    "criticality_id" => _("Criticality"));
 
 $form->addElement('select', 'global_sort_type', _("Sort by  "), $global_sort_type);
 $global_sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
@@ -141,7 +145,15 @@ $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin sh
 /*
  * SSO
  */
-$sso_enable[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '', array("onchange" => "javascript:confirm('Are you sure you want to change this parameter ? Please read the help before.')"));
+$sso_enable[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'yes',
+    '&nbsp;',
+    '',
+    array("onchange" => "javascript:confirm("
+        . "'Are you sure you want to change this parameter ? Please read the help before.')"
+    )
+);
 $form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');
 
 $sso_mode = array();
@@ -163,14 +175,7 @@ $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp
  */
 $form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText);
 
-/*
- * Form Rules
- */
-function slash($elem = NULL)	{
-    if ($elem) {
-        return rtrim($elem, "/")."/";
-    }
-}
+
 
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('nagios_path', 'slash');
@@ -207,22 +212,27 @@ if ($form->validate()) {
      * Update in DB
      */
     updateGeneralConfigData(1);
-    
+
     /*
      * Update in Oreon Object
      */
     $centreon->initOptGen($pearDB);
-    
-    $o = NULL;
+
+    $o = null;
     $valid = true;
     $form->freeze();
 }
 
-if (!$form->validate() && isset($_POST["gopt_id"]))	{
+if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'", 'class' => 'btc bt_info'));
+$form->addElement(
+    "button",
+    "change",
+    _("Modify"),
+    array("onClick"=>"javascript:window.location.href='?p=".$p."'", 'class' => 'btc bt_info')
+);
 
 /*
  * Send variable to template

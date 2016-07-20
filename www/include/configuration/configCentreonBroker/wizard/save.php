@@ -48,19 +48,19 @@ $central_module_configuration = array(
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
     'retention_path' => '/var/lib/centreon-broker',
     'logger' => array(
-        array (
+        array(
             'name' => '/var/log/centreon-broker/central-module.log',
-            'config' => array ('config' => 'yes'),
-            'debug' => array ('debug' => 'no'),
-            'error' => array ('error' => 'yes'),
-            'info' => array ('info' => 'no'),
+            'config' => array('config' => 'yes'),
+            'debug' => array('debug' => 'no'),
+            'error' => array('error' => 'yes'),
+            'info' => array('info' => 'no'),
             'level' => 'low',
             'type' => 'file',
             'blockId' => '3_17',
         )
     ),
     'output' => array(
-        array (
+        array(
             'name' => 'Central',
             'port' => '5669',
             'failover' => '',
@@ -69,11 +69,11 @@ $central_module_configuration = array(
             'host' => '127.0.0.1',
             'protocol' => 'bbdo',
             'negociation' => array('negociation' => 'yes'),
-            'tls' => array ('tls' => 'no'),
+            'tls' => array('tls' => 'no'),
             'private_key' => '',
             'public_cert' => '',
             'ca_certificate' => '',
-            'compression' => array ('compression' => 'auto'),
+            'compression' => array('compression' => 'auto'),
             'compression_level' => '',
             'compression_buffer' => '',
             'type' => 'ipv4',
@@ -91,19 +91,19 @@ $poller_module_configuration = array(
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
     'retention_path' => '/var/lib/centreon-broker',
     'logger' => array(
-        array (
+        array(
             'name' => '/var/log/centreon-broker/poller-module.log',
-            'config' => array ('config' => 'yes'),
-            'debug' => array ('debug' => 'no'),
-            'error' => array ('error' => 'yes'),
-            'info' => array ('info' => 'no'),
+            'config' => array('config' => 'yes'),
+            'debug' => array('debug' => 'no'),
+            'error' => array('error' => 'yes'),
+            'info' => array('info' => 'no'),
             'level' => 'low',
             'type' => 'file',
             'blockId' => '3_17',
         )
     ),
     'output' => array(
-        array (
+        array(
             'name' => 'Central',
             'port' => '5669',
             'failover' => '',
@@ -112,11 +112,11 @@ $poller_module_configuration = array(
             'host' => $wizard->getValue(2, 'central_address'),
             'protocol' => 'bbdo',
             'negociation' => array('negociation' => 'yes'),
-            'tls' => array ('tls' => 'no'),
+            'tls' => array('tls' => 'no'),
             'private_key' => '',
             'public_cert' => '',
             'ca_certificate' => '',
-            'compression' => array ('compression' => 'auto'),
+            'compression' => array('compression' => 'auto'),
             'compression_level' => '',
             'compression_buffer' => '',
             'type' => 'ipv4',
@@ -135,12 +135,12 @@ $central_broker_configuration = array(
     'retention_path' => '/var/lib/centreon-broker',
     'event_queue_max_size' => '50000',
     'logger' => array(
-        array (
+        array(
             'name' => '/var/log/centreon-broker/central-broker-master.log',
-            'config' => array ('config' => 'yes'),
-            'debug' => array ('debug' => 'no'),
-            'error' => array ('error' => 'yes'),
-            'info' => array ('info' => 'no'),
+            'config' => array('config' => 'yes'),
+            'debug' => array('debug' => 'no'),
+            'error' => array('error' => 'yes'),
+            'info' => array('info' => 'no'),
             'level' => 'low',
             'type' => 'file',
             'blockId' => '3_17',
@@ -155,11 +155,11 @@ $central_broker_configuration = array(
             'host' => '',
             'protocol' => 'bbdo',
             'negociation' => array('negociation' => 'yes'),
-            'tls' => array ('tls' => 'no'),
+            'tls' => array('tls' => 'no'),
             'private_key' => '',
             'public_cert' => '',
             'ca_certificate' => '',
-            'compression' => array ('compression' => 'auto'),
+            'compression' => array('compression' => 'auto'),
             'compression_level' => '',
             'compression_buffer' => '',
             'type' => 'ipv4',
@@ -167,7 +167,7 @@ $central_broker_configuration = array(
         )
     ),
     'output' => array(
-        array (
+        array(
             'name' => $wizard->getValue(2, 'prefix_configname') . '-broker-master-sql',
             'db_type' => 'mysql',
             'failover' => '',
@@ -183,7 +183,7 @@ $central_broker_configuration = array(
             'type' => 'sql',
             'blockId' => '1_16',
         ),
-        array (
+        array(
             'name' =>  $wizard->getValue(2, 'prefix_configname') . '-broker-master-perfdata',
             'interval' => '300',
             'length' => '15552000',
@@ -201,7 +201,7 @@ $central_broker_configuration = array(
             'type' => 'storage',
             'blockId' => '1_14',
         ),
-        array (
+        array(
             'name' => $wizard->getValue(2, 'prefix_configname') . '-broker-master-rrd',
             'port' => '5670',
             'failover' => '',
@@ -210,11 +210,11 @@ $central_broker_configuration = array(
             'host' => '127.0.0.1',
             'protocol' => 'bbdo',
             'negociation' => array('negociation' => 'yes'),
-            'tls' => array ('tls' => 'no'),
+            'tls' => array('tls' => 'no'),
             'private_key' => '',
             'public_cert' => '',
             'ca_certificate' => '',
-            'compression' => array ('compression' => 'auto'),
+            'compression' => array('compression' => 'auto'),
             'compression_level' => '',
             'compression_buffer' => '',
             'type' => 'ipv4',
@@ -233,12 +233,12 @@ $central_rrd_configuration = array(
     'retention_path' => '/var/lib/centreon-broker',
     'event_queue_max_size' => '50000',
     'logger' => array(
-        array (
+        array(
             'name' => '/var/log/centreon-broker/central-rrd-master.log',
-            'config' => array ('config' => 'yes'),
-            'debug' => array ('debug' => 'no'),
-            'error' => array ('error' => 'yes'),
-            'info' => array ('info' => 'no'),
+            'config' => array('config' => 'yes'),
+            'debug' => array('debug' => 'no'),
+            'error' => array('error' => 'yes'),
+            'info' => array('info' => 'no'),
             'level' => 'low',
             'type' => 'file',
             'blockId' => '3_17',
@@ -253,11 +253,11 @@ $central_rrd_configuration = array(
             'host' => '',
             'protocol' => 'bbdo',
             'negociation' => array('negociation' => 'yes'),
-            'tls' => array ('tls' => 'no'),
+            'tls' => array('tls' => 'no'),
             'private_key' => '',
             'public_cert' => '',
             'ca_certificate' => '',
-            'compression' => array ('compression' => 'auto'),
+            'compression' => array('compression' => 'auto'),
             'compression_level' => '',
             'compression_buffer' => '',
             'type' => 'ipv4',
@@ -265,7 +265,7 @@ $central_rrd_configuration = array(
         )
     ),
     'output' => array(
-        array (
+        array(
             'name' => 'RRD',
             'metrics_path' => '/var/lib/centreon/metrics',
             'status_path' => '/var/lib/centreon/status',
@@ -284,7 +284,7 @@ $central_rrd_configuration = array(
  * Get values
  */
 $cBroker = new CentreonConfigCentreonBroker($pearDB);
-switch ($wizard->getValue(1, 'configtype'))  {
+switch ($wizard->getValue(1, 'configtype')) {
     case 'central':
         $sName = $central_module_configuration['name'];
         $iExist = $cBroker->isExist($sName);

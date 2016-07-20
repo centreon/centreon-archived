@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit;
+    exit;
 }
 
 /*
@@ -63,68 +63,70 @@ $form->addElement('hidden', 'EndDate', $get_date_end);
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 if (isset($id)) {
-	$form->setDefaults(array('item' => $id));
+    $form->setDefaults(array('item' => $id));
 }
 
 /*
  * Set servicegroup id with period selection form
  */
-if ($id != "NULL")
-	$formPeriod->addElement('hidden', 'item', $id);
+if ($id != "NULL") {
+    $formPeriod->addElement('hidden', 'item', $id);
+}
 
 /*
  * Stats Display for selected services group
  */
-if (isset($id) && $id != "NULL"){
+if (isset($id) && $id != "NULL") {
 
-	/*
-	 * Getting periods values
-	 */
-	$dates = getPeriodToReport();
-	$start_date = $dates[0];
-	$end_date = $dates[1];
+    /*
+     * Getting periods values
+     */
+    $dates = getPeriodToReport();
+    $start_date = $dates[0];
+    $end_date = $dates[1];
 
-	/*
-	 * Getting hostgroup and his hosts stats
-	 */
-	$servicesgroupStats = array();
-	$servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod) ;
+    /*
+     * Getting hostgroup and his hosts stats
+     */
+    $servicesgroupStats = array();
+    $servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod);
 
-	/*
-	 * Chart datas
-	 */
+    /*
+     * Chart datas
+     */
             $tpl->assign('servicegroup_ok', $servicesgroupStats["average"]["OK_TP"]);
-            $tpl->assign('servicegroup_warning', $servicesgroupStats["average"]["WARNING_TP"]);
-            $tpl->assign('servicegroup_critical', $servicesgroupStats["average"]["CRITICAL_TP"]);
-            $tpl->assign('servicegroup_unknown', $servicesgroupStats["average"]["UNKNOWN_TP"]);
-            $tpl->assign('servicegroup_undetermined', $servicesgroupStats["average"]["UNDETERMINED_TP"]);
-            $tpl->assign('servicegroup_maintenance', $servicesgroupStats["average"]["MAINTENANCE_TP"]);
+    $tpl->assign('servicegroup_warning', $servicesgroupStats["average"]["WARNING_TP"]);
+    $tpl->assign('servicegroup_critical', $servicesgroupStats["average"]["CRITICAL_TP"]);
+    $tpl->assign('servicegroup_unknown', $servicesgroupStats["average"]["UNKNOWN_TP"]);
+    $tpl->assign('servicegroup_undetermined', $servicesgroupStats["average"]["UNDETERMINED_TP"]);
+    $tpl->assign('servicegroup_maintenance', $servicesgroupStats["average"]["MAINTENANCE_TP"]);
 
-	/*
-	 * Exporting variables for ihtml
-	 */
-	$tpl->assign('name', $items[$id]);
-	$tpl->assign('totalAlert', $servicesgroupStats["average"]["TOTAL_ALERTS"]);
-	$tpl->assign('summary',  $servicesgroupStats["average"]);
+    /*
+     * Exporting variables for ihtml
+     */
+    $tpl->assign('name', $items[$id]);
+    $tpl->assign('totalAlert', $servicesgroupStats["average"]["TOTAL_ALERTS"]);
+    $tpl->assign('summary', $servicesgroupStats["average"]);
 
-	/*
-	 * Removing average infos from table
-	 */
-	$servicesgroupFinalStats = array();
-	foreach ($servicesgroupStats as $key => $value) {
-		if ($key != "average")
-			$servicesgroupFinalStats[$key] = $value;
-	}
+    /*
+     * Removing average infos from table
+     */
+    $servicesgroupFinalStats = array();
+    foreach ($servicesgroupStats as $key => $value) {
+        if ($key != "average") {
+            $servicesgroupFinalStats[$key] = $value;
+        }
+    }
 
-	$tpl->assign("components", $servicesgroupFinalStats);
-	$tpl->assign('period_name', _("From"));
-	$tpl->assign('date_start', date(_("d/m/Y H:i"),$start_date));
-	$tpl->assign('to', _("to"));
-	$tpl->assign('date_end', date(_("d/m/Y H:i"),$end_date));
-	$tpl->assign('period', $period);
-	$formPeriod->setDefaults(array('period' => $period));
-	$tpl->assign('id', $id);
-	$tpl->assign('Alert', _("Alert"));
+    $tpl->assign("components", $servicesgroupFinalStats);
+    $tpl->assign('period_name', _("From"));
+    $tpl->assign('date_start', date(_("d/m/Y H:i"), $start_date));
+    $tpl->assign('to', _("to"));
+    $tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
+    $tpl->assign('period', $period);
+    $formPeriod->setDefaults(array('period' => $period));
+    $tpl->assign('id', $id);
+    $tpl->assign('Alert', _("Alert"));
 }
 $tpl->assign('resumeTitle', _("Service group state"));
 $tpl->assign('p', $p);
@@ -143,30 +145,34 @@ $tpl->assign('formItem', $renderer->toArray());
 /*
  * Ajax timeline and CSV export initialization
  */
-if (isset($id) && $id != "NULL"){
-	/*
-	 * CSV export
-	 */
-	$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php?servicegroup=".$id."&start=".$start_date."&end=".$end_date);
-	$tpl->assign("link_csv_name", _("Export in CSV format"));
+if (isset($id) && $id != "NULL") {
+    /*
+     * CSV export
+     */
+    $tpl->assign(
+        "link_csv_url",
+        "./include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php?servicegroup="
+        . $id."&start=".$start_date."&end=".$end_date
+    );
+    $tpl->assign("link_csv_name", _("Export in CSV format"));
 
-	/*
-	 * Status colors
-	 */
-	$color = substr($oreon->optGen["color_up"],1).
-			':'.substr($oreon->optGen["color_down"],1).
-			':'.substr($oreon->optGen["color_unreachable"],1).
-			':'.substr($oreon->optGen["color_maintenance"],1).
-			':'.substr($oreon->optGen["color_undetermined"],1);
+    /*
+     * Status colors
+     */
+    $color = substr($oreon->optGen["color_up"], 1)
+        . ':'.substr($oreon->optGen["color_down"], 1)
+        . ':'.substr($oreon->optGen["color_unreachable"], 1)
+        . ':'.substr($oreon->optGen["color_maintenance"], 1)
+        . ':'.substr($oreon->optGen["color_undetermined"], 1);
 
-	/*
-	 * Ajax timeline
-	 */
-	$type = 'ServiceGroup';
-	include("./include/reporting/dashboard/ajaxReporting_js.php");
-
+    /*
+     * Ajax timeline
+     */
+    $type = 'ServiceGroup';
+    include("./include/reporting/dashboard/ajaxReporting_js.php");
 } else {
-	?><script type="text/javascript"> function initTimeline() {;} </script> <?php
+    ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
+
 }
 
 $tpl->display("template/viewServicesGroupLog.ihtml");

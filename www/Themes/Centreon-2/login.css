@@ -30,9 +30,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id
- * 
  */
 
 .login_wrapper {
@@ -62,7 +59,7 @@
     top: -60px;
 }
 
-.msg 	{
+.msg    {
     background-color: #ffe6ec;
     border: 1px solid #e00b3d;
     color: #e00b3d;
@@ -109,8 +106,8 @@
 
 
 /* Link */
-a			{text-decoration:none;}
-a:hover		{text-decoration:underline;}
+a           {text-decoration:none;}
+a:hover     {text-decoration:underline;}
 
 .LoginInvitVersion, .msg, #sublogin, #LoginInvitcpy a, #LoginInvitcpy {text-align:center;}
 
@@ -122,8 +119,8 @@ label {
 }
 
 input, textarea, checkbox, select, option, input[type="submit"],body {font-size: 11px;}
-.msg 		{font-size:12px;}
-img 		{border:0;}
+.msg        {font-size:12px;}
+img         {border:0;}
 input, select {
     padding: 4px;
     font-size: 11px !important;
@@ -131,10 +128,10 @@ input, select {
     line-height: 18px;
     width: 100%;
 }
-checkbox	{padding:2px;}
-select		{border-style:none;}
-td			{padding:3px;color:#525252;white-space:nowrap;}
-form		{padding:0px;margin:0px;}
+checkbox    {padding:2px;}
+select      {border-style:none;}
+td          {padding:3px;color:#525252;white-space:nowrap;}
+form        {padding:0px;margin:0px;}
 
 input[type="submit"] {
     margin-top: .5em;
@@ -146,11 +143,11 @@ input[type="submit"].bt_info:hover {
 }
 
 #LoginInvit{
-	margin-top: 50px;
-	margin-left: auto;
-	margin-right: auto;
-	width:200px;
-	text-align: center;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width:200px;
+    text-align: center;
 }
 
 .LoginInvitLogo {
@@ -159,13 +156,13 @@ input[type="submit"].bt_info:hover {
     position: relative;
 }
 
-#logintab2		{width:290px;}
-#logintab2 td	{border:1px;padding:7px;background-color:#eaeaee;}
-#sublogin		{width:200px;}
+#logintab2      {width:290px;}
+#logintab2 td   {border:1px;padding:7px;background-color:#eaeaee;}
+#sublogin       {width:200px;}
 
-.LoginInvitDate		{text-align:right;}
+.LoginInvitDate     {text-align:right;}
 
 #LoginInvitcpy a,  #LoginInvitcpy {color:gray;}
  
-.grayLine					{padding-top:15px;}
+.grayLine                   {padding-top:15px;}
 

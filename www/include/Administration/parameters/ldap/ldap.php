@@ -44,7 +44,7 @@ if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
         $select = $_REQUEST['select'];
         $ldapConf = new CentreonLdapAdmin($pearDB);
         switch ($ldapAction) {
-            case "d": 
+            case "d":
                 $ldapConf->deleteConfiguration($select);
                 break;
             case "ms":
@@ -59,4 +59,3 @@ if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
     }
     include _CENTREON_PATH_.'www/include/Administration/parameters/ldap/list.php';
 }
-?>

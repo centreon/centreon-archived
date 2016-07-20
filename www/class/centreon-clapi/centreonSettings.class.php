@@ -104,9 +104,9 @@ class CentreonSettings extends CentreonObject
         $res = $stmt->fetchAll();
         echo "parameter".$this->delim."value\n";
         foreach ($res as $row) {
-           if (isset($this->authorizedOptions[$row['key']])) {
-               echo $row['key'].$this->delim.$row['value']."\n";
-           }
+            if (isset($this->authorizedOptions[$row['key']])) {
+                echo $row['key'].$this->delim.$row['value']."\n";
+            }
         }
     }
 
