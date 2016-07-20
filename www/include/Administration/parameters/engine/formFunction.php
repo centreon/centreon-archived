@@ -36,12 +36,6 @@
 /*
 * Form Rules
 */
-function slash($elem = null)
-{
-    if ($elem) {
-        return rtrim($elem, "/") . "/";
-    }
-}
 
 function isNum($value)
 {

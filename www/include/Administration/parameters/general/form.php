@@ -33,7 +33,6 @@
  *
  */
 require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
-require_once dirname(__FILE__) . "/formFunction.php";
 
 if (!isset($centreon)) {
     exit();
