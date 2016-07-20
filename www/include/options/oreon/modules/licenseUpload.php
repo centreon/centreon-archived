@@ -73,8 +73,15 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
             $licenseHasAdmin = true;
             $licenseExpired = true;
 
-            if ($zend_info['Product-Name'] == 'merethis_'.$filename) {
-                $licenseMatchedProduct = true;
+            if ($filename == "centreon-bi-server") {
+                if ($zend_info['Product-Name'] == 'merethis_'.$filename 
+                    || $zend_info['Product-Name'] == 'merethis_'.$filename."-2") {
+                    $licenseMatchedProduct = true;
+                }
+            } else {
+                if ($zend_info['Product-Name'] == 'merethis_'.$filename) {
+                    $licenseMatchedProduct = true;
+                }                
             }
 
             // Check ZendId
