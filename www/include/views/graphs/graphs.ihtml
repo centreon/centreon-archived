@@ -63,6 +63,7 @@
 <script src="./include/common/javascript/charts/c3.min.js"></script>
 <script src="./include/common/javascript/charts/d3-timeline.js"></script>
 <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
 
 {literal}
 <style>
@@ -207,6 +208,19 @@ function addChart(id, name, times) {
   if (autoRefresh) {
     times.refresh = 300;
   }
+  /* Add zoom */
+  times.zoom = {
+    enabled: true,
+    onzoom: function (period) {
+      var start = moment(period[0]);
+      var end = moment(period[1]);
+      jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+      jQuery('#StartTime').val(start.format('HH:mm'));
+      jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+      jQuery('#EndTime').val(end.format('HH:mm'));
+      changePeriod();
+    }
+  };
   charts.push(id);
   jQuery('.graphZone').append(
     templateGraph({

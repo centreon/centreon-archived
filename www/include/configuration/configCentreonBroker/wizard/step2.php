@@ -33,41 +33,10 @@
  *
  */
 
+require_once dirname(__FILE__) . "/step2Function.php";
+
 if (!isset($centreon)) {
     exit();
-}
-
-function getLocalRequester() {
-    global $pearDB;
-    $query = 'SELECT id, name
-    	FROM nagios_server
-    	WHERE localhost = "1"
-    		AND ns_activate = "1"';
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
-        return array();
-    }
-    $row = $res->fetchRow();
-    return $row;
-}
-
-function getListRequester($withLocal = false) {
-    global $pearDB;
-    $query = 'SELECT id, name
-    	FROM nagios_server
-    	WHERE ns_activate = "1"';
-    if ($withLocal === false) {
-        $query .= ' AND localhost != "1"';
-    }
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
-        return array();
-    }
-    $list = array();
-    while ($row = $res->fetchRow()) {
-        $list[] = $row;
-    }
-    return $list;
 }
 
 if ($wizard->getValue(1, 'configtype') == 'central') {

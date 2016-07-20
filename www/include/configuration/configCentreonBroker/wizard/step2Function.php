@@ -33,37 +33,38 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
+
+function getLocalRequester()
+{
+    global $pearDB;
+    $query = 'SELECT id, name
+    	FROM nagios_server
+    	WHERE localhost = "1"
+    	AND ns_activate = "1"';
+    $res = $pearDB->query($query);
+    if (PEAR::isError($res)) {
+        return array();
+    }
+    $row = $res->fetchRow();
+    return $row;
 }
 
-/*
- * Path to the configuration dir
- */
-$path = "./include/configuration/configCentreonBroker/";
-
-/*
- * PHP functions
- */
-require_once "./include/common/common-Func.php";
-
-require_once "./class/centreonWizard.php";
-
-/*
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
-$wizardId = uniqid();
-
-/*
- * Initialize the Wizard
- */
-$wizard = new Centreon_Wizard('broker', $wizardId);
-
-$_SESSION['wizard']['broker'][$wizardId] = serialize($wizard);
-
-$tpl->assign('wizardId', $wizardId);
-
-$tpl->display("wizard.ihtml");
+function getListRequester($withLocal = false)
+{
+    global $pearDB;
+    $query = 'SELECT id, name
+    	FROM nagios_server
+    	WHERE ns_activate = "1"';
+    if ($withLocal === false) {
+        $query .= ' AND localhost != "1"';
+    }
+    $res = $pearDB->query($query);
+    if (PEAR::isError($res)) {
+        return array();
+    }
+    $list = array();
+    while ($row = $res->fetchRow()) {
+        $list[] = $row;
+    }
+    return $list;
+}

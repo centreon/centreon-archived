@@ -33,64 +33,51 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
-}
 
-if (!isset($_GET['tag']) || !isset($_GET['pos']) || !isset($_GET['blockId'])) {
-    exit();
-}
-
-/*
- * Cast the block id in int
+/**
+ * Get the version of rrdtool
+ *
+ * @param string $rrdtoolBin The full path of rrdtool
+ * @return string
  */
-try {
-    $id = (string)$_GET['blockId'];
-    $tag = (string)$_GET['tag'];
-    $pos = (int)$_GET['pos'];
-} catch (Exception $e) {
-    exit();
-}
-
-$cbObj = new CentreonConfigCentreonBroker($pearDB);
-
-$form = $cbObj->quickFormById($id, $_GET['p'], $pos, "new_".rand(100, 1000));
-
-$helps = array();
-list($tagId, $typeId) = explode('_', $id);
-$typeName = $cbObj->getTypeName($typeId);
-$fields = $cbObj->getBlockInfos($typeId);
-$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
-$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
-$cbObj->nbSubGroup = 1;
-textdomain('help');
-foreach ($fields as $field) {
-    $fieldname = '';
-    if ($field['group'] !== '') {
-        $fieldname .= $cbObj->getParentGroups($field['group']);
+function getRrdtoolVersion($rrdtoolBin = null)
+{
+    if (is_null($rrdtoolBin) || !is_executable($rrdtoolBin)) {
+        return '';
     }
-    $fieldname .= $field['fieldname'];
-    $helps[] = array('name' => $tag . '[' . $pos . '][' . $fieldname . ']', 'desc' => _($field['description']));
+    $output = array();
+    $retval = 0;
+    @exec($rrdtoolBin, $output, $retval);
+    if ($retval != 0) {
+        return '';
+    }
+    $ret = preg_match('/^RRDtool ((\d\.?)+).*$/', $output[0], $matches);
+    if ($ret === false || $ret === 0) {
+        return '';
+    }
+    return $matches[1];
 }
-textdomain('messages');
 
-/*
- * Smarty template Init
+/**
+ * Validate if only one rrdcached options is set
+ *
+ * @param array $values rrdcached_port and rrdcached_unix_path
+ * @return bool
  */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+function rrdcached_valid($values)
+{
+    if (trim($values[0]) != '' && trim($values[1]) != '') {
+        return false;
+    }
+    return true;
+}
 
-/*
- * Apply a template definition
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-$form->accept($renderer);
-$tpl->assign('formBlock', $renderer->toArray());
-$tpl->assign('typeName', $typeName);
-$tpl->assign('tagBlock', $tag);
-$tpl->assign('posBlock', $pos);
-$tpl->assign('helps', $helps);
-
-$tpl->display("blockConfig.ihtml");
+function rrdcached_has_option($values)
+{
+    if (isset($values[0]['rrdcached_enable']) && $values[0]['rrdcached_enable'] == 1) {
+        if (trim($values[1]) == '' && trim($values[2]) == '') {
+            return false;
+        }
+    }
+    return true;
+}

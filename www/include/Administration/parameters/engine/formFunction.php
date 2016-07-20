@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2012 Centreon
+ * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,37 +33,11 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
+/*
+* Form Rules
+*/
+
+function isNum($value)
+{
+    return is_numeric($value);
 }
-
-/*
- * Path to the configuration dir
- */
-$path = "./include/configuration/configCentreonBroker/";
-
-/*
- * PHP functions
- */
-require_once "./include/common/common-Func.php";
-
-require_once "./class/centreonWizard.php";
-
-/*
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
-$wizardId = uniqid();
-
-/*
- * Initialize the Wizard
- */
-$wizard = new Centreon_Wizard('broker', $wizardId);
-
-$_SESSION['wizard']['broker'][$wizardId] = serialize($wizard);
-
-$tpl->assign('wizardId', $wizardId);
-
-$tpl->display("wizard.ihtml");

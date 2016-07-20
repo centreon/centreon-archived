@@ -33,29 +33,28 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
-}
-
 /**
-*
-* Test broker file config existance
-* @param $name
-*/
-function testExistence ($name = NULL)   {
+ *
+ * Test broker file config existance
+ * @param $name
+ */
+function testExistence($name = null)
+{
     global $pearDB, $form;
-    
-    $id = NULL;
-    
-    if (isset($form)){
+
+    $id = null;
+
+    if (isset($form)) {
         $id = $form->getSubmitValue('id');
     }
-    
-    $DBRESULT = $pearDB->query("SELECT config_name, config_id FROM `cfg_centreonbroker` WHERE `config_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+
+    $DBRESULT = $pearDB->query("SELECT config_name, config_id 
+                                FROM `cfg_centreonbroker` 
+                                WHERE `config_name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'");
     $ndomod = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] == $id) {
         return true;
-    } else if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] != $id) {
+    } elseif ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] != $id) {
         return false;
     } else {
         return true;
@@ -67,7 +66,8 @@ function testExistence ($name = NULL)   {
  *
  * @param int $id The Centreon Broker configuration in database
  */
-function enableCentreonBrokerInDB($id) {
+function enableCentreonBrokerInDB($id)
+{
     global $pearDB;
 
     if (!$id) {
@@ -83,7 +83,8 @@ function enableCentreonBrokerInDB($id) {
  *
  * @param int $id The Centreon Broker configuration in database
  */
-function disablCentreonBrokerInDB($id) {
+function disablCentreonBrokerInDB($id)
+{
     global $pearDB;
 
     if (!$id) {
@@ -99,11 +100,12 @@ function disablCentreonBrokerInDB($id) {
  *
  * @param array $id The Centreon Broker configuration in database
  */
-function deleteCentreonBrokerInDB($ids = array())   {
+function deleteCentreonBrokerInDB($ids = array())
+{
     global $pearDB;
 
-    foreach ($ids as $key => $value)    {
-        $pearDB->query("DELETE FROM cfg_centreonbroker WHERE config_id = ".$key);
+    foreach ($ids as $key => $value) {
+        $pearDB->query("DELETE FROM cfg_centreonbroker WHERE config_id = " . $key);
     }
 }
 
@@ -113,15 +115,17 @@ function deleteCentreonBrokerInDB($ids = array())   {
  * @param int $id
  * @return array
  */
-function getCentreonBrokerInformation($id) {
+function getCentreonBrokerInformation($id)
+{
     global $pearDB;
 
     $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate, correlation_activate,
-                    config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size, retention_path
+                    config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
+                    retention_path
                   FROM cfg_centreonbroker 
                   WHERE config_id = " . $id;
     $res = $pearDB->query($query);
-    
+
     if (PEAR::isError($res)) {
         return array(
             "name" => '',
@@ -135,16 +139,16 @@ function getCentreonBrokerInformation($id) {
     $row = $res->fetchRow();
     return array(
         "id" => $id,
-            "name" => $row['config_name'],
-            "filename" => $row['config_filename'],
-            "ns_nagios_server" => $row['ns_nagios_server'],
-            "activate" => $row['config_activate'],
-            "stats_activate" => $row['stats_activate'],
-            "correlation_activate" => $row['correlation_activate'],
-            "write_timestamp" => $row['config_write_timestamp'],
-            "write_thread_id" => $row['config_write_thread_id'],
-            "event_queue_max_size" => $row['event_queue_max_size'],
-            "retention_path" => $row['retention_path']
+        "name" => $row['config_name'],
+        "filename" => $row['config_filename'],
+        "ns_nagios_server" => $row['ns_nagios_server'],
+        "activate" => $row['config_activate'],
+        "stats_activate" => $row['stats_activate'],
+        "correlation_activate" => $row['correlation_activate'],
+        "write_timestamp" => $row['config_write_timestamp'],
+        "write_thread_id" => $row['config_write_thread_id'],
+        "event_queue_max_size" => $row['event_queue_max_size'],
+        "retention_path" => $row['retention_path']
     );
 }
 
@@ -154,18 +158,20 @@ function getCentreonBrokerInformation($id) {
  * @param array $ids List of id CentreonBroker configuration
  * @param array $nbr List of number a duplication
  */
-function multipleCentreonBrokerInDB($ids, $nbrDup) {
-global $pearDB;
+function multipleCentreonBrokerInDB($ids, $nbrDup)
+{
+    global $pearDB;
     foreach ($ids as $id => $value) {
         $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-        $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size, retention_path "
+        $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server,
+            event_queue_max_size, retention_path "
             . "FROM cfg_centreonbroker "
             . "WHERE config_id = " . $id . " ";
         $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         $DBRESULT->free();
-        
+
         # Prepare values
         $values = array();
         $values['activate']['activate'] = '0';
@@ -182,15 +188,16 @@ global $pearDB;
         while ($rowOpt = $DBRESULT->fetchRow()) {
             if ($rowOpt['config_key'] == 'filters') {
                 continue;
-            } else if ($rowOpt['config_key'] == 'category') {
+            } elseif ($rowOpt['config_key'] == 'category') {
                 $config_key = 'filters__' . $rowOpt['config_group_id'] . '__category';
                 $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$config_key] = $rowOpt['config_value'];
             } else {
-                $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$rowOpt['config_key']] = $rowOpt['config_value'];
+                $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$rowOpt['config_key']] =
+                    $rowOpt['config_value'];
             }
         }
         $DBRESULT->free();
-        
+
         # Convert values radio button
         foreach ($values as $group => $groups) {
             foreach ($groups as $gid => $infos) {

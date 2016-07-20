@@ -9,7 +9,7 @@
  * Foundation ; either version 2 of the License.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * WARRANTY; without even 7the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
@@ -33,37 +33,24 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
+/**
+ * Get toolbar action list
+ *
+ * @param string $domName
+ * @return array
+ */
+function getActionList($domName)
+{
+    $tab = array(
+        'onchange' => "javascript: " .
+            "if (this.form.elements['$domName'].selectedIndex == 1 && confirm('"
+            . _("Do you confirm the deletion ?") . "')) {" .
+            " 	setA(this.form.elements['$domName'].value); submit();} " .
+            "else if (this.form.elements['$domName'].selectedIndex == 2) {" .
+            " 	setA(this.form.elements['$domName'].value); submit();} " .
+            "else if (this.form.elements['$domName'].selectedIndex == 3) {" .
+            " 	setA(this.form.elements['$domName'].value); submit();} " .
+            "this.form.elements['$domName'].selectedIndex = 0"
+    );
+    return $tab;
 }
-
-/*
- * Path to the configuration dir
- */
-$path = "./include/configuration/configCentreonBroker/";
-
-/*
- * PHP functions
- */
-require_once "./include/common/common-Func.php";
-
-require_once "./class/centreonWizard.php";
-
-/*
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
-$wizardId = uniqid();
-
-/*
- * Initialize the Wizard
- */
-$wizard = new Centreon_Wizard('broker', $wizardId);
-
-$_SESSION['wizard']['broker'][$wizardId] = serialize($wizard);
-
-$tpl->assign('wizardId', $wizardId);
-
-$tpl->display("wizard.ihtml");

@@ -37,7 +37,7 @@
  */
 
 session_start();
-DEFINE('STEP_NUMBER', 1);
+define('STEP_NUMBER', 1);
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once '../steps/functions.php';
@@ -47,10 +47,15 @@ $title = _('Centreon Upgrade');
 
 if (is_file('../install.conf.php')) {
     $status = 0;
-    $content = sprintf("<p>%s%s</p>",
-                  _('You are about to upgrade Centreon.'),
-                  _('The entire process should take around ten minutes.'));
-    $content .= sprintf("<p>%s</p>", _('It is strongly recommended to make a backup of your databases before going any further.'));
+    $content = sprintf(
+        "<p>%s%s</p>",
+        _('You are about to upgrade Centreon.'),
+        _('The entire process should take around ten minutes.')
+    );
+    $content .= sprintf(
+        "<p>%s</p>",
+        _('It is strongly recommended to make a backup of your databases before going any further.')
+    );
     require_once '../install.conf.php';
     setSessionVariables($conf_centreon);
 } else {
