@@ -13,3 +13,4 @@ Please find here the release notes dedicated to the last 2.7.x version of Centre
     centreon-2.7.3
     centreon-2.7.4
     centreon-2.7.5
+    centreon-2.7.6
