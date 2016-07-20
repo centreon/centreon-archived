@@ -34,7 +34,7 @@
  */
 
 if (!isset($oreon)) {
-    exit();    
+    exit();
 }
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
@@ -92,7 +92,7 @@ if ($form->validate()) {
      */
     updateCentcoreConfigData($pearDB, $form, $oreon);
 
-    $o = NULL;
+    $o = null;
     $valid = true;
     $form->freeze();
 }
@@ -100,7 +100,12 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("impossible to validate, one or more field is incorrect") . "</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=centcore'", 'class' => 'btc bt_info'));
+$form->addElement(
+    "button",
+    "change",
+    _("Modify"),
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=centcore'", 'class' => 'btc bt_info')
+);
 
 /*
  * Apply a template definition

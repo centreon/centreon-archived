@@ -34,70 +34,37 @@
  */
 
 if (!isset($oreon)) {
-	exit();		
+    exit();
 }
 
-/**
- * Get the version of rrdtool
- *
- * @param string $rrdtoolBin The full path of rrdtool
- * @return string
- */
-function getRrdtoolVersion($rrdtoolBin = null) {
-    if (is_null($rrdtoolBin) || !is_executable($rrdtoolBin)) {
-        return '';
-    }
-    $output = array();
-    $retval = 0;
-    @exec($rrdtoolBin, $output, $retval);
-    if ($retval != 0) {
-        return '';
-    }
-    $ret = preg_match('/^RRDtool ((\d\.?)+).*$/', $output[0], $matches);
-    if ($ret === false || $ret === 0) {
-        return '';
-    }
-    return $matches[1];
-}
-
-/**
- * Validate if only one rrdcached options is set
- *
- * @param array $values rrdcached_port and rrdcached_unix_path
- * @return bool
- */
-function rrdcached_valid($values) {
-    if (trim($values[0]) != '' && trim($values[1]) != '') {
-        return false;
-    }
-    return true;
-}
-
-function rrdcached_has_option($values) {
-    if (isset($values[0]['rrdcached_enable']) && $values[0]['rrdcached_enable'] == 1) {
-        if (trim($values[1]) == '' && trim($values[2]) == '') {
-            return false;
-        }
-    }
-    return true;
-}
+require_once dirname(__FILE__) . "/formFunction.php";
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
-	$gopt[$opt["key"]] = myDecode($opt["value"]);
+    $gopt[$opt["key"]] = myDecode($opt["value"]);
 }
 $DBRESULT->free();
 
 $fontList = array('Arial' => 'Arial', 'Times' => 'Times', 'Verdana' => 'Verdana');
-$fontSize = array('5' => '5', '6' => '6', '7' => '7', '8' => '8', '9' => '9', '10' => '10', '11' => '11', '12' => '12', '13' => '13');
+$fontSize = array(
+    '5' => '5',
+    '6' => '6',
+    '7' => '7',
+    '8' => '8',
+    '9' => '9',
+    '10' => '10',
+    '11' => '11',
+    '12' => '12',
+    '13' => '13'
+);
 
 /*
  * Var information to format the element
  */
-$attrsText 		= array("size"=>"40");
-$attrsText2		= array("size"=>"5");
-$attrSelect 	= array("style" => "width: 220px;");
-$attrSelect2 	= array("style" => "width: 50px;");
+$attrsText        = array("size"=>"40");
+$attrsText2        = array("size"=>"5");
+$attrSelect    = array("style" => "width: 220px;");
+$attrSelect2    = array("style" => "width: 50px;");
 
 /*
  * Form begin
@@ -161,13 +128,7 @@ $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
- * Form Rules
- */
-function slash($elem = NULL)	{
-	if ($elem)
-		return rtrim($elem, "/")."/";
-}
+
 
 $form->applyFilter('__ALL__', 'myTrim');
 $form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
@@ -175,7 +136,11 @@ $form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 
 $form->registerRule('rrdcached_has_option', 'callback', 'rrdcached_has_option');
 $form->registerRule('rrdcached_valid', 'callback', 'rrdcached_valid');
-$form->addRule(array('rrdcached_enable', 'rrdcached_port', 'rrdcached_unix_path'), _('The rrdcached configuration must have a option.'), 'rrdcached_has_option');
+$form->addRule(
+    array('rrdcached_enable', 'rrdcached_port', 'rrdcached_unix_path'),
+    _('The rrdcached configuration must have a option.'),
+    'rrdcached_has_option'
+);
 $form->addRule(array('rrdcached_port', 'rrdcached_unix_path'), _('Only one option must be set.'), 'rrdcached_valid');
 $form->addRule('rrdcached_port', _('The port must be numeric'), 'numeric');
 
@@ -214,31 +179,37 @@ $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc 
 $DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $valid = false;
-if ($form->validate())	{
-	/*
-	 * Update in DB
-	 */
-	updateRRDToolConfigData($form->getSubmitValue("gopt_id"));
+if ($form->validate()) {
+    /*
+     * Update in DB
+     */
+    updateRRDToolConfigData($form->getSubmitValue("gopt_id"));
 
-	/*
-	 * Update in Oreon Object
-	 */
-	$oreon->initOptGen($pearDB);
+    /*
+     * Update in Oreon Object
+     */
+    $oreon->initOptGen($pearDB);
 
-	$o = NULL;
-		$valid = true;
-	$form->freeze();
+    $o = null;
+    $valid = true;
+    $form->freeze();
 }
-if (!$form->validate() && isset($_POST["gopt_id"]))
+if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
+}
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'", 'class' => 'btc bt_info'));
+$form->addElement(
+    "button",
+    "change",
+    _("Modify"),
+    array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'", 'class' => 'btc bt_info')
+);
 
     // prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 

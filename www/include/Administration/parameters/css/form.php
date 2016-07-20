@@ -34,59 +34,66 @@
  */
 
 if (!isset($centreon)) {
-	exit();		
+    exit();
 }
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
-	$data[$opt["key"]] = myDecode($opt["value"]);
+    $data[$opt["key"]] = myDecode($opt["value"]);
 }
 
 $tab_file_css = array();
 $i = 0;
-if ($handle  = @opendir("./Themes/Centreon-2/Color"))	{
-	while ($file = @readdir($handle)){
-		if (is_file("./Themes/Centreon-2/Color"."/$file"))	{
-			$tab_file_css[$i++] = $file;
-		}
-	}
-	@closedir($handle);
+if ($handle  = @opendir("./Themes/Centreon-2/Color")) {
+    while ($file = @readdir($handle)) {
+        if (is_file("./Themes/Centreon-2/Color"."/$file")) {
+            $tab_file_css[$i++] = $file;
+        }
+    }
+    @closedir($handle);
 }
 
 $css_default = $tab_file_css[0];
-$rq = "SELECT * FROM css_color_menu WHERE id_css_color_menu IN (SELECT topology_page FROM topology WHERE topology_page < 10)";
+$rq = "SELECT * 
+        FROM css_color_menu 
+        WHERE id_css_color_menu IN (SELECT topology_page FROM topology WHERE topology_page < 10)";
 $DBRESULT = $pearDB->query($rq);
 $tab_css = array();
-for ($i = 0; $DBRESULT->numRows() && $elem = $DBRESULT->fetchRow();$i++){
-	$tab_css[$elem["menu_nb"]] = $elem;
-	if (isset($_GET["css_color_".$elem["id_css_color_menu"]])){
-		$pearDB->query("UPDATE `css_color_menu` SET `css_name` = '".$_GET["css_color_".$elem["id_css_color_menu"]]."' WHERE `id_css_color_menu` = ".$elem["id_css_color_menu"]);
-	}		
+for ($i = 0; $DBRESULT->numRows() && $elem = $DBRESULT->fetchRow(); $i++) {
+    $tab_css[$elem["menu_nb"]] = $elem;
+    if (isset($_GET["css_color_".$elem["id_css_color_menu"]])) {
+        $pearDB->query("UPDATE `css_color_menu` SET `css_name` = '".$_GET["css_color_".$elem["id_css_color_menu"]]."'
+                        WHERE `id_css_color_menu` = ".$elem["id_css_color_menu"]);
+    }
 }
 
-$rq = "SELECT topology_id, topology_name, topology_page FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order";
+$rq = "SELECT topology_id, topology_name, topology_page 
+        FROM topology 
+        WHERE topology_parent IS NULL AND topology_show = '1' 
+        ORDER BY topology_order";
 $DBRESULT = $pearDB->query($rq);
 $tab_menu = array();
-while ($DBRESULT->numRows() && $elem = $DBRESULT->fetchRow()){
-	$tab_menu[$elem["topology_page"]] = $elem;
+while ($DBRESULT->numRows() && $elem = $DBRESULT->fetchRow()) {
+    $tab_menu[$elem["topology_page"]] = $elem;
 }
 
 /*
  * Insert new menu in table css_color_menu
  */
 $tab_create_menu = array();
-foreach ($tab_menu as $key => $val)	{
-	if (!isset($tab_css[$tab_menu[$key]["topology_page"]]))	{
-		$rq = "INSERT INTO `css_color_menu` ( `id_css_color_menu` , `menu_nb` , `css_name` )" .
-				"VALUES ( NULL , ".$tab_menu[$key]["topology_page"].", '".$css_default."' )";
-		$DBRESULT = $pearDB->query($rq);
-	}
+foreach ($tab_menu as $key => $val) {
+    if (!isset($tab_css[$tab_menu[$key]["topology_page"]])) {
+        $rq = "INSERT INTO `css_color_menu` ( `id_css_color_menu` , `menu_nb` , `css_name` )" .
+                "VALUES ( NULL , ".$tab_menu[$key]["topology_page"].", '".$css_default."' )";
+        $DBRESULT = $pearDB->query($rq);
+    }
 }
 
 /*
  * Get menu_css_bdd list
  */
-$rq = "SELECT * FROM css_color_menu WHERE id_css_color_menu IN (SELECT topology_page FROM topology WHERE topology_page < 10)";
+$rq = "SELECT * FROM css_color_menu 
+      WHERE id_css_color_menu IN (SELECT topology_page FROM topology WHERE topology_page < 10)";
 $DBRESULT = $pearDB->query($rq);
 $elemArr = array();
 /*
@@ -95,23 +102,23 @@ $elemArr = array();
 $style = "one";
 
 if ($DBRESULT->numRows()) {
-	for ($i = 0; $elem = $DBRESULT->fetchRow();$i++)	{
-		$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
-		for ($j=0 ; isset($tab_file_css[$j]) ; $j++) {
-			if ($elem["css_name"] == $tab_file_css[$j]) {
-				$selected = "selected";
-			} else {
-				$selected = "";	
-			}	
-			$select_list .= '<option value="'.$tab_file_css[$j].'" ' . $selected . '>'.$tab_file_css[$j].'</option>';
-		}
-		$select_list .= '</select>';
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-							 "select"=> $select_list,
-							 "menuName"=> _($tab_menu[$elem["menu_nb"]]["topology_name"]),
-							 "css_name"=> $elem["css_name"]);
-		$style != "two" ? $style = "two" : $style = "one";
-	}		
+    for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
+        $select_list =    '<select name="css_color_'. $elem["id_css_color_menu"] .'">';
+        for ($j=0; isset($tab_file_css[$j]); $j++) {
+            if ($elem["css_name"] == $tab_file_css[$j]) {
+                $selected = "selected";
+            } else {
+                $selected = "";
+            }
+            $select_list .= '<option value="'.$tab_file_css[$j].'" ' . $selected . '>'.$tab_file_css[$j].'</option>';
+        }
+        $select_list .= '</select>';
+        $elemArr[$i] = array("MenuClass"=>"list_".$style,
+                             "select"=> $select_list,
+                             "menuName"=> _($tab_menu[$elem["menu_nb"]]["topology_name"]),
+                             "css_name"=> $elem["css_name"]);
+        $style != "two" ? $style = "two" : $style = "one";
+    }
 }
 
 /*
@@ -132,4 +139,4 @@ $tpl->assign("CSS_File", _("CSS File"));
 $tpl->assign("Menu", _("Menu"));
 $tpl->assign('p', $p);
 
-$tpl->display("form.ihtml");	
+$tpl->display("form.ihtml");

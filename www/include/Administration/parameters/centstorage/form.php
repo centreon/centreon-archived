@@ -34,11 +34,11 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 if (isset($_POST["o"]) && $_POST["o"]) {
-	$o = $_POST["o"];
+    $o = $_POST["o"];
 }
 
 /*
@@ -52,9 +52,9 @@ $gopt = array_map("myDecode", $DBRESULT->fetchRow());
  */
 $DBRESULT2 = $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'centstorage%'");
 while ($data = $DBRESULT2->fetchRow()) {
-	if (isset($data['value']) && $data['key'] == "centstorage") {
-		$gopt["enable_centstorage"] = $data['value'];
-	} else {
+    if (isset($data['value']) && $data['key'] == "centstorage") {
+        $gopt["enable_centstorage"] = $data['value'];
+    } else {
         $gopt[$data['key']] = $data['value'];
     }
 }
@@ -64,7 +64,7 @@ while ($data = $DBRESULT2->fetchRow()) {
  */
 $DBRESULT2 = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'index_data'");
 while ($data = $DBRESULT2->fetchRow()) {
-	if (isset($data['value']) && $data['key'] == "index_data") {
+    if (isset($data['value']) && $data['key'] == "index_data") {
         if ($data['value'] == "1") {
             $gopt["insert_in_index_data"] = "0";
         } elseif ($data['value'] == "0") {
@@ -72,14 +72,14 @@ while ($data = $DBRESULT2->fetchRow()) {
         } else {
             $gopt["insert_in_index_data"] = "1";
         }
-	}
+    }
 }
 
 /*
  * Format of text input
  */
-$attrsText 		= array("size"=>"40");
-$attrsText2		= array("size"=>"5");
+$attrsText        = array("size"=>"40");
+$attrsText2        = array("size"=>"5");
 $attrsAdvSelect = null;
 
 /*
@@ -110,7 +110,12 @@ $form->addElement('header', 'audit', _("Audit log activation"));
  */
 $form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 $form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
-$form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Monitoring Engine Statistics"), $attrsText);
+$form->addElement(
+    'text',
+    'RRDdatabase_nagios_stats_path',
+    _("Path to RRDTool Database For Monitoring Engine Statistics"),
+    $attrsText
+);
 $form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsText2);
 $form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
 $form->addElement('text', 'len_storage_downtimes', _("Retention Duration for Downtimes"), $attrsText2);
@@ -122,13 +127,7 @@ $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs")
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
- * Form Rules
- */
-function slash($elem = NULL)	{
-	if ($elem)
-		return rtrim($elem, "/")."/";
-}
+
 
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('RRDdatabase_path', 'slash');
@@ -147,24 +146,29 @@ $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc 
 $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $valid = false;
 
-if ($form->validate())	{
+if ($form->validate()) {
+    /*
+     * Update in DB
+     */
+    updateODSConfigData();
 
-	/*
-	 * Update in DB
-	 */
-	updateODSConfigData();
+    $centreon->initOptGen($pearDB);
 
-	$centreon->initOptGen($pearDB);
-
-	$o = NULL;
-	$valid = true;
-	$form->freeze();
+    $o = null;
+    $valid = true;
+    $form->freeze();
 }
+
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=storage'", 'class' => 'btc bt_info'));
+$form->addElement(
+    "button",
+    "change",
+    _("Modify"),
+    array("onClick"=>"javascript:window.location.href='?p=".$p."&o=storage'", 'class' => 'btc bt_info')
+);
 
 /*
  * Apply a template definition
@@ -182,7 +186,7 @@ $tpl->assign("ods_log_retention_unit", _("days"));
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
