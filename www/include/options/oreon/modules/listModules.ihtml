@@ -46,14 +46,15 @@
         <td id="{$elemArr[elem].RowMenu_name}" class="ListColCenter"></td>
 		<td id="action_{$elemArr[elem].RowMenu_name}" class="ListColRight">
 			{if $elemArr[elem].RowMenu_link_install}
-				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icons/generate_conf.png' class='ico-16 margin_right' title='{t}Install Module{/t}' alt='{t}Install Module{/t}'></a>
-			{/if}
-			{if $elemArr[elem].RowMenu_link_delete}
-				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{t}Do you confirm the deletion?{/t}')"><img src='./img/icons/delete.png' class='ico-16 margin_right' title='{t}Uninstall Module{/}' alt='{t}Uninstall Module{/}'></a>
+				<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icons/generate_conf.png' class='ico-16 margin_right' title='{t}Install Module{/t}' alt='{t}Install Module{/t}'></a>
 			{/if}
 			{if $elemArr[elem].RowMenu_link_upgrade && $elemArr[elem].RowMenu_upgrade == 1}
-				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icons/upgrade.png' class='ico-16 margin_right' title='{t}Upgrade{/t}' alt='{t}Upgrade{/t}'></a>
+                <a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icons/upgrade.png' class='ico-16 margin_right' title='{t}Upgrade{/t}' alt='{t}Upgrade{/t}'></a>
+            {/if}
+            {if $elemArr[elem].RowMenu_link_delete}
+				<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{t}Do you confirm the deletion?{/t}')"><img src='./img/icons/delete.png' class='ico-16 margin_right' title='{t}Uninstall Module{/t}' alt='{t}Uninstall Module{/t}'></a>
 			{/if}
+			
 		</td>
 	</tr>
 	{/section}	

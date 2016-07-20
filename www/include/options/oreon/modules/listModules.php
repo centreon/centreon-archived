@@ -113,7 +113,7 @@ $i = 0;
 while (false !== ($filename = readdir($handle))) {
     if (is_dir(_CENTREON_PATH_ . "www/modules/" . $filename) && $filename != "." && $filename != "..") {
         $moduleinfo = getModuleInfoInDB($filename, NULL);
-
+        
         /*
          * Package already installed
          */
@@ -154,24 +154,21 @@ while (false !== ($filename = readdir($handle))) {
                     $upgradeAvailable = true;
                 }
             }
-            
             if ($upgradeAvailable) {
                 if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
                     $handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
                     while (false !== ($filename2 = readdir($handle2)))  {
-                        if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php")) {
+                        if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]) && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php")) {        
                             @include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
                             if (isset($upgrade_conf[$moduleinfo["name"]]["release_from"]) && $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])  {
                                 $elemArr[$i]["RowMenu_upgrade"] = 1;
                             }
                         }
                     }
-                    closedir($handle2);
+                    closedir($handle2);                    
                 }
             }
-
         } else {
-
             /*
              * Valid package to install
              */
@@ -215,7 +212,6 @@ while (false !== ($filename = readdir($handle))) {
                                         "RowMenu_link_delete" => NULL,
                                         "RowMenu_link_upgrade" => NULL);
             } else {
-
                 /*
                  * Non valid package
                  */
