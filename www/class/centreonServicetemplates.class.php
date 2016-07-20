@@ -86,7 +86,7 @@ class CentreonServicetemplates extends CentreonService
     }
 
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
@@ -166,7 +166,8 @@ class CentreonServicetemplates extends CentreonService
         $serviceIds = array();
 
         $query = 'SELECT DISTINCT(s.service_id) '
-            . 'FROM service s, service st, host h, host ht, host_service_relation hsr, host_service_relation hsrt, host_template_relation htr '
+            . 'FROM service s, service st, host h, host ht, host_service_relation hsr, host_service_relation hsrt,'
+            . ' host_template_relation htr '
             . 'WHERE st.service_description = "' . $this->db->escape($serviceTemplateName) . '" '
             . 'AND s.service_template_model_stm_id = st.service_id '
             . 'AND st.service_id = hsrt.service_service_id '

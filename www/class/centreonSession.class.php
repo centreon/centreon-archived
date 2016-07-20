@@ -35,60 +35,72 @@
 
 class CentreonSession
 {
-	/*
+    /*
 	 * Constructor class
 	 *
 	 * @access public
 	 * @return 	object	object session
 	 */
-	public function __construct() {
+    public function __construct()
+    {
 
-	}
+    }
 
-	public function start() {
-		session_start();
-	}
+    public function start()
+    {
+        session_start();
+    }
 
-	public function stop() {
-		session_unset();
-		session_destroy();
-	}
+    public function stop()
+    {
+        session_unset();
+        session_destroy();
+    }
 
-	public function restart() {
-		self::stop();
-		self::start();
+    public function restart()
+    {
+        self::stop();
+        self::start();
         session_regenerate_id(true);
-	}
+    }
 
-	public function s_unset() {
-		session_unset();
-	}
+    public function s_unset()
+    {
+        session_unset();
+    }
 
-	public function unregister_var($register_var) {
-		unset($_SESSION[$register_var]);
-	}
+    public function unregisterVar($registerVar)
+    {
+        unset($_SESSION[$registerVar]);
+    }
 
-	public function register_var($register_var) {
-		if (!isset($_SESSION[$register_var])) {
-            $_SESSION[$register_var] = $$register_var;
-		}
-	}
+    public function registerVar($registerVar)
+    {
+        if (!isset($_SESSION[$registerVar])) {
+            $_SESSION[$registerVar] = $$registerVar;
+        }
+    }
 
-	public function checkSession($session_id, $pearDB)
-	{
-		$session_id = str_replace(array('_', '%'), array('', ''), $session_id);
-		$DBRESULT = $pearDB->query("SELECT id FROM session WHERE `session_id` = '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
+    public function checkSession($sessionId, $pearDB)
+    {
+        $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
+        $DBRESULT = $pearDB->query(
+            "SELECT id FROM session WHERE `session_id` = '" . htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8") . "'"
+        );
         if ($DBRESULT->numRows()) {
-        	return 1;
+            return 1;
         } else {
-        	return 0;
-       	}
-	}
+            return 0;
+        }
+    }
     
     public static function getUser($sessionId, $pearDB)
     {
-    	$session_id = str_replace(array('_', '%'), array('', ''), $session_id);
-        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
+        $session_id = str_replace(array('_', '%'), array('', ''), $session_id);
+        $DBRESULT = $pearDB->query(
+            "SELECT user_id FROM session
+                WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'"
+        );
         $row = $DBRESULT->fetchRow();
         if (!$row) {
             return 0;
@@ -96,4 +108,3 @@ class CentreonSession
         return $row['user_id'];
     }
 }
-
