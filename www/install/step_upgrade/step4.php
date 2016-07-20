@@ -37,7 +37,8 @@
  */
 
 session_start();
-DEFINE('STEP_NUMBER', 4);
+define('STEP_NUMBER', 4);
+
 $_SESSION['step'] = STEP_NUMBER;
 require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once '../steps/functions.php';
@@ -68,12 +69,15 @@ $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' clas
 $troubleshootTxt1 = _('You seem to be having trouble with your upgrade.');
 $troubleshootTxt2 = _('You may refer to the line that causes problem in order to find out more about the issue.');
 $troubleshootTxt3 = sprintf(_('The SQL files are located in %s'), _CENTREON_PATH_.'www/install/sql/');
-$troubleshootTxt4 = _('But do not edit the SQL files unless you know what you are doing. Refresh this page when the problem is fixed.');
-$contents .= sprintf('<br/><p id="troubleshoot" style="display:none;">%s<br/>%s<br/>%s<br/>%s</p>',
-                     $troubleshootTxt1,
-                     $troubleshootTxt2,
-                     $troubleshootTxt3,
-                     $troubleshootTxt4);
+$troubleshootTxt4 = _('But do not edit the SQL files unless you know what you are doing.'
+    . 'Refresh this page when the problem is fixed.');
+$contents .= sprintf(
+    '<br/><p id="troubleshoot" style="display:none;">%s<br/>%s<br/>%s<br/>%s</p>',
+    $troubleshootTxt1,
+    $troubleshootTxt2,
+    $troubleshootTxt3,
+    $troubleshootTxt4
+);
 
 $next = '';
 if ($handle = opendir('../sql/centreon')) {
@@ -117,24 +121,29 @@ jQuery(function(){
 function nextStep(current, next) {
     jQuery('#step_contents').append('<tr>');
     jQuery('#step_contents').append('<td>'+current+' to '+next+'</td>');
-    jQuery('#step_contents').append('<td style="font-weight: bold;" name="'+replaceDot(current)+'"><img src="../img/misc/ajax-loader.gif"></td>');
+    jQuery('#step_contents').append('<td style="font-weight: bold;" name="'
+        +replaceDot(current)+'"><img src="../img/misc/ajax-loader.gif"></td>');
     jQuery('#step_contents').append('</tr>');
-    doProcess(true, './step_upgrade/process/process_step'+step+'.php', {'current':current,'next':next}, function(response) {
-        var data = jQuery.parseJSON(response);
-        jQuery('td[name='+replaceDot(current)+']').html(data['msg']);
-        if (data['result'] == "0") {
-            jQuery('#troubleshoot').hide();
-            if (data['next']) {
-                nextStep(data['current'], data['next']);
+    doProcess(
+        true,
+        './step_upgrade/process/process_step'+step+'.php'
+        , {'current':current,'next':next},
+        function(response) {
+            var data = jQuery.parseJSON(response);
+            jQuery('td[name='+replaceDot(current)+']').html(data['msg']);
+            if (data['result'] == "0") {
+                jQuery('#troubleshoot').hide();
+                if (data['next']) {
+                    nextStep(data['current'], data['next']);
+                } else {
+                    jQuery('#next').show();
+                    result = true;
+                }
             } else {
-                jQuery('#next').show();
-                result = true;
+                jQuery('#troubleshoot').show();
+                jQuery('#refresh').show();
             }
-        } else {
-            jQuery('#troubleshoot').show();
-            jQuery('#refresh').show();
-        }
-    }); 
+        });
 }
 
 /**
