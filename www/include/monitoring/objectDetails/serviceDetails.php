@@ -239,6 +239,7 @@ if (!is_null($host_id)) {
             $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
                 " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
+                                      AND h.host_id = s.host_id
                                       AND s.service_id = ".$pearDBO->escape($service_id)." 
                                       AND h.host_id = cmt.host_id 
                                       AND s.service_id = cmt.service_id 
