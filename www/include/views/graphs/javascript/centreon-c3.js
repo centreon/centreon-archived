@@ -28,19 +28,21 @@
     }
     
     /* On rendered */
-    if (typeof $$.config.onrendered === 'function') {
-      renderedCallback = $$.config.onrendered
+    if ($$.config.zoom_select.enabled) {
+      if (typeof $$.config.onrendered === 'function') {
+        renderedCallback = $$.config.onrendered
+      }
+      $$.config.onrendered = function () {
+        /* Force scale of brush */
+        if ($$.zoom_select_brush) {
+          $$.zoom_select_brush.x($$.x);
+        }
+        /* The saved onrendered */
+        if (typeof renderedCallback === 'function') {
+          renderedCallback();
+        }
+      };
     }
-    $$.config.onrendered = function () {
-      /* Force scale of brush */
-      if ($$.zoom_select_brush) {
-        $$.zoom_select_brush.x($$.x);
-      }
-      /* The saved onrendered */
-      if (typeof renderedCallback === 'function') {
-        renderedCallback();
-      }
-    };
   };
   
   window.c3.chart.internal.fn.afterInit = function () {
@@ -66,10 +68,19 @@
       /* Attach brush to main chart */
       $$.svg.append('g')
         .attr('class', $$.CLASS.brush)
+        .style('display', 'none')
         .call($$.zoom_select_brush)
         .selectAll('rect')
         .attr('y', -6)
         .attr('height', $$.height);
+      
+      /* Attach events for on click activate brush */
+      $$.svg.select('g').on('mousedown', function () {
+        $$.svg.selectAll('.' + $$.CLASS.brush).style('display', 'block');
+      });
+      $$.svg.select('g').on('mouseup', function () {
+        $$.svg.selectAll('.' + $$.CLASS.brush).style('display', 'none');
+      });
     }
   };
 })(window);
