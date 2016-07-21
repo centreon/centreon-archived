@@ -1,291 +1,271 @@
+<!-- Start Home -->
 <div id='globalView'>
-  {if $aclParameters == 1}
-  <div class="toggleEdit">
-    <a href="#" title="{$editMode}"><img src="./img/icons/edit_mode.png" class="ico-14"></a>
-  </div>
-  {/if}
-  <!-- Action bar -->
-  {if $aclAddView == 1}
-  <div id='actionBar' style="display: none;">
-    <!-- Button for add a view -->
-    <div class="cntn">
-      <button class='addView btnAction btc bt_success'>{t}Add view{/t}</button>
-      <!-- Form for add a view -->
-      <div class="toggle_wrapper inactive" id="addView">
-        <div>
-          <form {$formAddView.attributes}>
-            <table class="table">
-              <tr>
-                <td class="FormHeader" colspan="2">
-                  <h3 style="color:#88b917;">{$formAddView.header.title}</h3>
-                </td>
-              </tr>
-              <tr class="list_two">
-                <td class="FormRowValue" colspan="2">{$formAddView.create_load.html}</td>
-              </tr>
-              <tr class="create_field">
-                <td class="FormRowField">{$formAddView.name.label}</td>
-                <td class="FormRowValue">
-                  <div>{$formAddView.name.html}</div>
-                  <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
-                </td>
-              </tr>
-              <tr class="load_field" style="display:none;">
-                <td class="FormRowField">{$formAddView.viewLoad.label}</td>
-                <td class="FormRowValue">{$formAddView.viewLoad.html}</td>
-              </tr>
-              <tr class="load_field" style="display:none;">
-                <td class="FormRowField">{$formAddView.viewLoadShare.label}</td>
-                <td class="FormRowValue">{$formAddView.viewLoadShare.html}</td>
-              </tr>
-              <tr class="create_field">
-                <td class="FormRowField">{$formAddView.layout.label}</td>
-                <td class="FormRowValue">{$formAddView.layout.html}</td>
-              </tr>
-              <tr class="create_field">
-                <td class="FormRowField">{$formAddView.public.label}</td>
-                <td class="FormRowValue">{$formAddView.public.html}</td>
-              </tr>
-              <tr>
-                <td colspan="2" class="button_group">
-                  {$formAddView.submit.html} {$formAddView.reset.html}
-                </td>
-              </tr>
-            </table>
-            {$formAddView.hidden}
-          </form>
-        </div>
-      </div>
+    {if $aclParameters == 1}
+    <div class="toggleEdit">
+        <a href="#" title="{$editMode}"><img src="./img/icons/edit_mode.png" class="ico-14"></a>
     </div>
     {/if}
-    
-    <!-- Button for edit a view -->
-    {if $aclEdit == 1} 
-    <div class="cntn">
-      <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
-      <div class="toggle_wrapper inactive" id="editView">
-        <div>
-          <form {$formEditView.attributes}>
-            <table class="table">
-              <tr>
-                <td class="FormHeader" colspan="2">
-                  <h3 style="color:#00bfb3;">{$formEditView.header.title}</h3>
-                </td>
-              </tr>
-              <tr class="create_field">
-                <td class="FormRowField">{$formEditView.name.label}</td>
-                <td class="FormRowValue">
-                  <div>{$formEditView.name.html}</div>
-                  <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
-                </td>
-              </tr>
-              <tr class="create_field">
-                <td class="FormRowField">{$formEditView.layout.label}</td>
-                <td class="FormRowValue">{$formEditView.layout.html}</td>
-              </tr>
-              <tr class="create_field">
-                <td class="FormRowField">{$formEditView.public.label}</td>
-                <td class="FormRowValue">{$formEditView.public.html}</td>
-              </tr>
-              <tr>
-                <td colspan="2" class="button_group">
-                  {$formEditView.submit.html} {$formEditView.reset.html}
-                </td>
-              </tr>
-            </table>
-            {$formEditView.hidden}
-          </form>
-        </div>
-      </div>
-    </div>
-    {/if}
-    <!-- Button for delete a view -->
-    {if $aclDeleteView == 1}
-    <button class='deleteView btnExtraAction btc bt_danger'>{t}Delete view{/t}</button>
-    {/if}
-    <!-- Button for set default a view -->
-    {if $aclSetDefault == 1}
-    <button class='setDefault btnExtraAction btc bt_default'>{t}Set default{/t}</button>
-    {/if}
-    
-    <!-- Button for share a view -->
-    {if $aclShare == 1} 
-    <div class="cntn">
-      <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
-      <div class="toggle_wrapper inactive" id="shareView">
-        <form {$formShareView.attributes}>
-          <table class="table">
-            <tr>
-              <td class="FormHeader" colspan="2">
-                <h3 style="color: #00bfb3;">{$formShareView.header.title}</h3>
-              </td>
-            </tr>
-            <tr class="list_lvl_1 viewerInfo">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{t}Viewers{/t}</h4>
-              </td>
-            </tr>
-            <tr class="viewerInfo">
-              <td colspan="2" id="share_viewer"></td>
-            </tr>
-            <tr class="list_lvl_1 viewergroupInfo">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{t}Viewers group{/t}</h4>
-              </td>
-            </tr>
-            <tr class="viewergroupInfo">
-              <td colspan="2" id="share_viewergroup"></td>
-            </tr>
-            <tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2"><h4>{t}Add viewer / viewer group{/t}</h4>
-              </td>
-            </tr>
-            <tr>
-              <td class="FormRowField">{$formShareView.locked.label}</td>
-              <td class="FormRowValue">{$formShareView.locked.html}</td>
-            </tr>
-            <tr>
-              <td  class="FormRowField FormHeader" colspan="2">{$formShareView.user_id.label}</td>
-            </tr>
-            <tr>
-              <td class="FormRowValue" colspan="2">{$formShareView.user_id.html}</td>
-            </tr>
-            <tr>
-              <td class="FormRowField FormHeader" colspan="2">{$formShareView.usergroup_id.label}</td>
-            </tr>
-            <tr>
-              <td class="FormRowValue" colspan="2">{$formShareView.usergroup_id.html}</td>
-            </tr>
-          </table>
-          {$formShareView.hidden}
-          <div class="button_group_center">
-            <p>{$formShareView.submit.html}&nbsp;{$formShareView.reset.html}</p>
-          </div>
-        </form>
-      </div>
-    </div>
-    {/if}
-    <!-- Button for add a widget -->
-    {if $aclAddWidget == 1}
-    <div class="cntn">
-      <button class='addWidget btnAction btnExtraAction btc bt_success'>{t}Add widget{/t}</button>
-      <div class="toggle_wrapper inactive" id="addwdgt">
-        <form {$formAddWidget.attributes}>
-           <table  class="table ">
-              <tr>
-                <td class="FormHeader" colspan="2">
-                  <h3 style="color:#88b917;">{$formAddWidget.header.title}</h3>
-                </td>
-              </tr>
-              <tr>
-                <td class="FormRowValue" colspan="2">{$formAddWidget.widget_title.label} {$formAddWidget.widget_title.html}</td>
-              </tr>
-              <tr>
-                <td class="FormRowValue" colspan="2">
-                  {t}Filter title{/t}: <input type="text" id="widgetSearch">
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <table class="subTable ListTable widget-list">
-                    <tbody>
-                  {foreach item=elem from=$widgetModels}
-                  {cycle values='list_one,list_two' assign=rowStyle}
-                    <tr class={$rowStyle}>
-                      <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
-                      <td class="ListColLeft"
-                          data-description="{$elem.description}"
-                          data-author="{$elem.author}"
-                          data-version="{$elem.version}">{$elem.title}</td>
-                    </tr>
-                  {/foreach}
-                    </tbody>
-                  <!-- <thead>
-                    <tr class="ListHeader">
-                      <th class="ListColHeaderPicker"></th>
-                      <th class="ListColHeaderLeft">
-                        <div>{t}Title{/t}</div>
-                        <div><input class="search" id="widgetSearch"></div>
-                      </th>
-                      <th class="ListColHeaderLeft">{t}Version{/t}</th>
-                      <th class="ListColHeaderLeft">{t}Description{/t}</th>
-                      <th class="ListColHeaderLeft">{t}Author{/t}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {foreach item=elem from=$widgetModels}
-                  {cycle values='list_one,list_two' assign=rowStyle}
-                    <tr class={$rowStyle}>
-                      <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
-                      <td class="ListColLeft">{$elem.title}</td>
-                      <td class="ListColLeft">{$elem.version}</td>
-                      <td class="ListColLeft">{$elem.description}</td>
-                      <td class="ListColLeft">{$elem.author}</td>
-                    </tr>
-                  {/foreach}
-                  </tbody> -->
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" class="button_group">
-                {$formAddWidget.submit.html} {$formAddWidget.reset.html}
-              </td>
-            </tr>
-          </table>
-          {$formAddWidget.hidden}
-        </form>
-      </div>
-    </div>
-    {/if}
-    <!-- Button for activate rotation -->
-    {if $aclRotation == 1} 
-    <div class="cntn">
-      <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
-      <div class="toggle_wrapper inactive" id="rotationTabs">
-          <div id='rotation_timer'></div>
-          <div id='timer_value'></div>
-          <div class="button_group_center">
 
-            <input type='button' value='{t}Apply{/t}' class="btc bt_success" onClick='submitRotation();'/>
-          </div>
-      </div>
-    </div>
-    {/if}
-  </div>
-  
-  <!-- Tab for list of views -->
-  <div id="tabs">
-    <div class="info_box">
-      <h4><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'> {$msg}</h4>
-    </div>
-    <ul class="tabs_header">
-    </ul>
-  </div>
+    <!-- Action bar -->
+    <div id='actionBar' style="display: none;">
+    
+        {if $aclAddView == 1}
+        <!-- Button for add a view -->
+        <div class="cntn">
+            <button class='addView btnAction btc bt_success'>{t}Add view{/t}</button>
+            <!-- Form for add a view -->
+            <div class="toggle_wrapper inactive" id="addView">
+                <div>
+                    <form {$formAddView.attributes}>
+                        <table class="table">
+                            <tr>
+                                <td class="FormHeader" colspan="2">
+                                    <h3 style="color:#88b917;">{$formAddView.header.title}</h3>
+                                </td>
+                            </tr>
+                            <tr class="list_two">
+                                <td class="FormRowValue" colspan="2">{$formAddView.create_load.html}</td>
+                            </tr>
+                            <tr class="create_field">
+                                <td class="FormRowField">{$formAddView.name.label}</td>
+                                <td class="FormRowValue">
+                                    <div>{$formAddView.name.html}</div>
+                                    <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
+                                </td>
+                            </tr>
+                            <tr class="load_field" style="display:none;">
+                                <td class="FormRowField">{$formAddView.viewLoad.label}</td>
+                                <td class="FormRowValue">{$formAddView.viewLoad.html}</td>
+                            </tr>
+                            <tr class="load_field" style="display:none;">
+                                <td class="FormRowField">{$formAddView.viewLoadShare.label}</td>
+                                <td class="FormRowValue">{$formAddView.viewLoadShare.html}</td>
+                            </tr>
+                            <tr class="create_field">
+                                <td class="FormRowField">{$formAddView.layout.label}</td>
+                                <td class="FormRowValue">{$formAddView.layout.html}</td>
+                            </tr>
+                            <tr class="create_field">
+                                <td class="FormRowField">{$formAddView.public.label}</td>
+                                <td class="FormRowValue">{$formAddView.public.html}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="button_group">
+                                {$formAddView.submit.html} {$formAddView.reset.html}
+                                </td>
+                            </tr>
+                        </table>
+                        {$formAddView.hidden}
+                    </form>
+                </div>
+            </div> 
+        </div>
+        {/if}
+        
+        <!-- Button for edit a view -->
+        {if $aclEdit == 1} 
+        <div class="cntn">
+            <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
+            <div class="toggle_wrapper inactive" id="editView">
+                <div>
+                    <form {$formEditView.attributes}>
+                        <table class="table">
+                            <tr>
+                                <td class="FormHeader" colspan="2">
+                                    <h3 style="color:#00bfb3;">{$formEditView.header.title}</h3>
+                                </td>
+                            </tr>
+                            <tr class="create_field">
+                                <td class="FormRowField">{$formEditView.name.label}</td>
+                                <td class="FormRowValue">
+                                    <div>{$formEditView.name.html}</div>
+                                    <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
+                                </td>
+                            </tr>
+                            <tr class="create_field">
+                                <td class="FormRowField">{$formEditView.layout.label}</td>
+                                <td class="FormRowValue">{$formEditView.layout.html}</td>
+                            </tr>
+                            <tr class="create_field">
+                                <td class="FormRowField">{$formEditView.public.label}</td>
+                                <td class="FormRowValue">{$formEditView.public.html}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="button_group">
+                                    {$formEditView.submit.html} {$formEditView.reset.html}
+                                </td>
+                            </tr>
+                        </table>
+                        {$formEditView.hidden}
+                    </form>
+                </div>
+            </div>
+        </div>
+        {/if}
 
+        <!-- Button for delete a view -->
+        {if $aclDeleteView == 1}
+        <button class='deleteView btnExtraAction btc bt_danger'>{t}Delete view{/t}</button>
+        {/if}
+        
+        <!-- Button for set default a view -->
+        {if $aclSetDefault == 1}
+        <button class='setDefault btnExtraAction btc bt_default'>{t}Set default{/t}</button>
+        {/if}
+        
+        <!-- Button for share a view -->
+        {if $aclShare == 1} 
+        <div class="cntn">
+            <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
+            <div class="toggle_wrapper inactive" id="shareView">
+                <form {$formShareView.attributes}>
+                    <table class="table">
+                        <tr>
+                            <td class="FormHeader" colspan="2">
+                                <h3 style="color: #00bfb3;">{$formShareView.header.title}</h3>
+                            </td>
+                        </tr>
+                        <tr class="list_lvl_1 viewerInfo">
+                            <td class="ListColLvl1_name" colspan="2">
+                                <h4>{t}Viewers{/t}</h4>
+                            </td>
+                        </tr>
+                        <tr class="viewerInfo">
+                            <td colspan="2" id="share_viewer"></td>
+                        </tr>
+                        <tr class="list_lvl_1 viewergroupInfo">
+                            <td class="ListColLvl1_name" colspan="2">
+                                <h4>{t}Viewers group{/t}</h4>
+                            </td>
+                        </tr>
+                        <tr class="viewergroupInfo">
+                            <td colspan="2" id="share_viewergroup"></td>
+                        </tr>
+                        <tr class="list_lvl_1">
+                            <td class="ListColLvl1_name" colspan="2"><h4>{t}Add viewer / viewer group{/t}</h4></td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowField">{$formShareView.locked.label}</td>
+                            <td class="FormRowValue">{$formShareView.locked.html}</td>
+                        </tr>
+                        <tr>
+                            <td  class="FormRowField FormHeader" colspan="2">{$formShareView.user_id.label}</td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowValue" colspan="2">{$formShareView.user_id.html}</td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowField FormHeader" colspan="2">{$formShareView.usergroup_id.label}</td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowValue" colspan="2">{$formShareView.usergroup_id.html}</td>
+                        </tr>
+                    </table>
+                    {$formShareView.hidden}
+                    <div class="button_group_center">
+                        <p>{$formShareView.submit.html}&nbsp;{$formShareView.reset.html}</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {/if}
+
+        <!-- Button for add a widget -->
+        {if $aclAddWidget == 1}
+        <div class="cntn">
+            <button class='addWidget btnAction btnExtraAction btc bt_success'>{t}Add widget{/t}</button>
+            <div class="toggle_wrapper inactive" id="addwdgt">
+                <form {$formAddWidget.attributes}>
+                    <table class="table">
+                        <tr>
+                            <td class="FormHeader" colspan="2">
+                                <h3 style="color:#88b917;">{$formAddWidget.header.title}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowValue" colspan="2">{$formAddWidget.widget_title.label} {$formAddWidget.widget_title.html}</td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowValue" colspan="2">
+                                {t}Filter title{/t}: <input type="text" id="widgetSearch">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table class="subTable ListTable widget-list">
+                                    <tbody>
+                                      {foreach item=elem from=$widgetModels}
+                                      {cycle values='list_one,list_two' assign=rowStyle}
+                                        <tr class={$rowStyle}>
+                                          <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
+                                          <td class="ListColLeft"
+                                              data-description="{$elem.description}"
+                                              data-author="{$elem.author}"
+                                              data-version="{$elem.version}">{$elem.title}</td>
+                                        </tr>
+                                      {/foreach}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="button_group">
+                                {$formAddWidget.submit.html} {$formAddWidget.reset.html}
+                            </td>
+                        </tr>
+                    </table>
+                    {$formAddWidget.hidden}
+                </form>
+            </div>
+        </div>
+        {/if}
+
+        <!-- Button for activate rotation -->
+        {if $aclRotation == 1} 
+        <div class="cntn">
+            <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
+            <div class="toggle_wrapper inactive" id="rotationTabs">
+                <div id='rotation_timer'></div>
+                <div id='timer_value'></div>
+                <div class="button_group_center">
+                    <input type='button' value='{t}Apply{/t}' class="btc bt_success" onClick='submitRotation();'/>
+                </div>
+            </div>
+        </div>
+        {/if}
+    </div>
+    
+    <!-- Tab for list of views -->
+    <div id="tabs">
+        <div class="info_box">
+            <h4><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'> {$msg}</h4>
+        </div>
+        <ul class="tabs_header">
+        </ul>
+    </div>
 </div>
 <div hidden>
-  <div id="deleteViewConfirm">
-    <p>{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}</p>
-    <div class="button_group_center">
-      <button type="button" class="btc bt_danger">{t}Delete{/t}</button>
-      <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+    <div id="deleteViewConfirm">
+        <p>{t}Deleting this view might impact other users. Are you sure you want to do it?{/t}</p>
+        <div class="button_group_center">
+            <button type="button" class="btc bt_danger">{t}Delete{/t}</button>
+            <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+        </div>
     </div>
-  </div>
     <div id="dissociateViewConfirm">
-    <p>{t}Dissociate this view ?{/t}</p>
-    <div class="button_group_center">
-      <button type="button" class="btc bt_danger">{t}Dissociate{/t}</button>
-      <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+        <p>{t}Dissociate this view ?{/t}</p>
+        <div class="button_group_center">
+            <button type="button" class="btc bt_danger">{t}Dissociate{/t}</button>
+            <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+        </div>
     </div>
-  </div>
-  <div id="setDefaultConfirm">
-    <p>{t}Set this view as your default view{/t}</p>
-    <div class="button_group_center">
-      <button type="button" class="btc bt_success">{t}Save{/t}</button>
-      <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+    <div id="setDefaultConfirm">
+        <p>{t}Set this view as your default view{/t}</p>
+        <div class="button_group_center">
+            <button type="button" class="btc bt_success">{t}Save{/t}</button>
+            <button type="button" class="btc bt_default">{t}Cancel{/t}</button>
+        </div>
     </div>
-  </div>
 </div>
 <script>  
 {literal}
