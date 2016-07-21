@@ -239,6 +239,7 @@ if (!is_null($host_id)) {
             $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
                 " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
+                  AND h.host_id = s.host_id 
                   AND s.service_id = ".$pearDBO->escape($service_id)." 
                   AND h.host_id = cmt.host_id 
                   AND s.service_id = cmt.service_id 
@@ -290,21 +291,19 @@ if (!is_null($host_id)) {
             $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"]);
         }
 
-        if ($oreon->broker->getBroker() == "broker") {
-            $hskey = $host_name."_".$svc_description;
-            $service_status[$hskey]["long_plugin_output"] = "";
-            $service_status[$hskey]["plugin_output2"] = str_replace("\n", '\n', $service_status[$hskey]["plugin_output2"]);
-            $outputTmp = explode('\n', $service_status[$hskey]["plugin_output2"]);
-            if (count($outputTmp)) {
-                $i = 0;
-                while (isset($outputTmp[$i])) {
-                    if (!$i) {
-                        $service_status[$hskey]["plugin_output"] = htmlentities($outputTmp[$i]) . "<br />";
-                    } else {
-                        $service_status[$hskey]["long_plugin_output"] .= htmlentities($outputTmp[$i]) . "<br />";
-                    }
-                    $i++;
+        $hskey = $host_name."_".$svc_description;
+        $service_status[$hskey]["long_plugin_output"] = "";
+        $service_status[$hskey]["plugin_output2"] = str_replace("\n", '\n', $service_status[$hskey]["plugin_output2"]);
+        $outputTmp = explode('\n', $service_status[$hskey]["plugin_output2"]);
+        if (count($outputTmp)) {
+            $i = 0;
+            while (isset($outputTmp[$i])) {
+                if (!$i) {
+                    $service_status[$hskey]["plugin_output"] = htmlentities($outputTmp[$i]) . "<br />";
+                } else {
+                    $service_status[$hskey]["long_plugin_output"] .= htmlentities($outputTmp[$i]) . "<br />";
                 }
+                $i++;
             }
         }
 
