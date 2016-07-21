@@ -69,7 +69,7 @@ class CentreonInstance extends CentreonObject
                               'centreonbroker_cfg_path'     => '/etc/centreon-broker',
                               'centreonbroker_module_path'  => '/usr/share/centreon/lib/centreon-broker',
                               'centreonconnector_path'      => '/usr/lib64/centreon-connector');
-        $this->insertParams = array('name', 'ns_ip_address', 'ssh_port', 'monitoring_engine');
+        $this->insertParams = array('name', 'ns_ip_address', 'ssh_port');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey(), 'last_restart'));
         $this->action = "INSTANCE";
         $this->nbOfCompulsoryParams = count($this->insertParams);
