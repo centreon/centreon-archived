@@ -122,6 +122,7 @@ $rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
     " h.last_check, " .
     " h.address," .
     " h.name," .
+    " h.alias," .
     " h.action_url," .
     " h.notes_url," .
     " h.notes," .
@@ -367,6 +368,7 @@ while ($data = $DBRESULT->fetchRow()) {
     if ($data["notes_url"] != "") {
         $str = $data['notes_url'];
         $str = str_replace("\$HOSTNAME\$", $data['name'], $str);
+        $str = str_replace("\$HOSTALIAS\$", $data['alias'], $str);
         $str = str_replace("\$HOSTADDRESS\$", $data['address'], $str);
         $str = str_replace("\$HOSTNOTES\$", $data['notes'], $str);
         $str = str_replace("\$INSTANCENAME\$", $data['instance_name'], $str);
@@ -383,6 +385,7 @@ while ($data = $DBRESULT->fetchRow()) {
     if ($data["action_url"] != "") {
         $str = $data['action_url'];
         $str = str_replace("\$HOSTNAME\$", $data['name'], $str);
+        $str = str_replace("\$HOSTALIAS\$", $data['alias'], $str);
         $str = str_replace("\$HOSTADDRESS\$", $data['address'], $str);
         $str = str_replace("\$HOSTNOTES\$", $data['notes'], $str);
         $str = str_replace("\$INSTANCENAME\$", $data['instance_name'], $str);
