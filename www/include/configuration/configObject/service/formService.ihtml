@@ -360,8 +360,6 @@ jQuery('input[name=service_normal_check_interval]').change(function() {
 });
 
 jQuery(function() {
-    // Data for all macros
-    var macros_datas = jQuery("#clone-values-macro").data("clone-values-macro");
 
     sheepIt = jQuery("#macro").sheepIt({
         separator: '',
@@ -394,17 +392,6 @@ jQuery(function() {
         // Set a 'Macro value' field as password field, on edit mode
         if (jQuery(elem).find("input[id^='macroPassword']").is(':checked')) {
             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
-        }
-
-        // for 'consultation only' mode
-
-        // Display [x] if the macro value is a password
-        var macroValueFieldIsAPassword = macros_datas[idx]["macroPassword_#index#"];
-        jQuery(elem).find(".frozenCheckboxIsCheckedInformation").html(macroValueFieldIsAPassword ? '[x]' : '[&nbsp;]');
-
-        // Set a 'Macro value' field as password field, on 'consultation only' mode
-        if (macroValueFieldIsAPassword) {
-             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
         }
 
         {/literal}{if $form.frozen == false}{literal}
