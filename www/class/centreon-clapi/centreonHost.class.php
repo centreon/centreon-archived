@@ -564,19 +564,6 @@ class CentreonHost extends CentreonObject
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName);
         }
         $macroObj = new \Centreon_Object_Host_Macro_Custom();
-        /* $macroList = $macroObj->getList( */
-        /*     array( */
-        /*         "host_macro_name", */
-        /*         "host_macro_value", */
-        /*         "is_password", */
-        /*         "description" */
-        /*     ), */
-        /*     -1, */
-        /*     0, */
-        /*     null, */
-        /*     null, */
-        /*     array("host_host_id" => $hostId) */
-        /* ); */
 
         $aTemplates = $this->getTemplateChain($hostId, array(), -1, true, "host_name,host_id,command_command_id");
         if (!isset($cmdId)) {
@@ -1057,8 +1044,6 @@ class CentreonHost extends CentreonObject
         }
     }
 
-
-
     public function hasMacroFromHostChanged($host_id, &$macroInput, &$macroValue, $cmdId = false)
     {
         $aTemplates = $this->getTemplateChain($host_id, array(), -1, true, "host_name,host_id,command_command_id");
@@ -1208,7 +1193,6 @@ class CentreonHost extends CentreonObject
             }
         }
 
-
         if (count($aMacroInCommande) > 0) {
             $macroCommande = current($aMacroInCommande);
             for ($i = 0; $i < count($macroCommande); $i++) {
@@ -1256,8 +1240,6 @@ class CentreonHost extends CentreonObject
         return $arr;
     }
 
-
-
     public function macro_unique($aTempMacro)
     {
         $storedMacros = array();
@@ -1284,7 +1266,6 @@ class CentreonHost extends CentreonObject
         return $finalMacros;
     }
 
-
     private function comparaPriority($macroA, $macroB, $getFirst = true)
     {
         $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromCommand' => 1);
@@ -1302,7 +1283,6 @@ class CentreonHost extends CentreonObject
             }
         }
     }
-
 
     private function addInfosToMacro($storedMacros, &$finalMacros)
     {
