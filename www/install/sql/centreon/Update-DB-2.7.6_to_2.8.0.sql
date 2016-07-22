@@ -206,3 +206,7 @@ ALTER TABLE servicegroup ADD COLUMN `geo_coords` varchar(32) DEFAULT NULL AFTER 
 UPDATE topology SET topology_url = './include/views/graphTemplates/graphTemplates.php' WHERE topology_page = 20404;
 UPDATE topology SET topology_url = './include/views/componentTemplates/componentTemplates.php' WHERE topology_page = 20405;
 UPDATE topology SET topology_url = './include/views/virtualMetrics/virtualMetrics.php' WHERE topology_page = 20408;
+
+-- Add recovery_notification_delay columns
+ALTER TABLE `host` ADD COLUMN `host_recovery_notification_delay` int(11) DEFAULT NULL AFTER `host_first_notification_delay`;
+ALTER TABLE `service` ADD COLUMN `service_recovery_notification_delay` int(11) DEFAULT NULL AFTER `service_first_notification_delay`;
