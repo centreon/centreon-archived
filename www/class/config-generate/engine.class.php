@@ -55,8 +55,6 @@ class Engine extends AbstractObject {
         external_command_buffer_slots,
         command_check_interval,
         command_file,
-        downtime_file,
-        comment_file,
         state_retention_file,
         retention_update_interval,
         retained_contact_host_attribute_mask,
@@ -172,8 +170,6 @@ class Engine extends AbstractObject {
         'external_command_buffer_slots',
         'command_check_interval',
         'command_file',
-        'downtime_file', // ????!!!
-        'comment_file', // ????!!!
         'state_retention_file',
         'retention_update_interval',
         'retained_contact_host_attribute_mask',
