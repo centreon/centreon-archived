@@ -536,6 +536,8 @@ if ($o == "mc")	{
 
 $form->addElement('text', 'host_first_notification_delay', _("First notification delay"), $attrsText2);
 
+$form->addElement('text', 'host_recovery_notification_delay', _("Recovery notification delay"), $attrsText2);
+
 if ($o == "mc")	{
 	$mc_mod_hcg = array();
 	$mc_mod_hcg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');

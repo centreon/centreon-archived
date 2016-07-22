@@ -207,6 +207,14 @@
 			<td class="FormRowField"><img class="helpTooltip" name="first_notification_delay"> {$form.host_first_notification_delay.label}</td>
 			<td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td>
 		</tr>
+                {if $o == "mc"}
+                <tr class="list_one">
+                {else}
+                <tr class="list_two">
+                {/if}
+                        <td class="FormRowField"><img class="helpTooltip" name="recovery_notification_delay"> {$form.host_recovery_notification_delay.label}</td>
+                        <td class="FormRowValue">{$form.host_recovery_notification_delay.html} {$time_unit}</td>
+                </tr>
 		<tr class="list_lvl_1">
 		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification receivers{/t}</h4></td>
 		</tr>
