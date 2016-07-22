@@ -820,7 +820,8 @@ function insertService($ret = array(), $macro_on_demand = null)
         "service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
         "service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
         "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, " .
-        "service_inherit_contacts_from_host, service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay, " .
+        "service_inherit_contacts_from_host, service_use_only_contacts_from_host, service_stalking_options, " .
+        "service_first_notification_delay, service_recovery_notification_delay," .
         "service_comment, geo_coords, command_command_id_arg, command_command_id_arg2, " .
         "service_register, service_activate, service_acknowledgement_timeout) " .
         "VALUES ( ";
@@ -855,6 +856,7 @@ function insertService($ret = array(), $macro_on_demand = null)
     isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', " : $rq .= "'NULL', ";
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
+    isset($ret["service_recovery_notification_delay"]) && $ret["service_recovery_notification_delay"] != NULL ? $rq .= $ret["service_recovery_notification_delay"] . ", " : $rq .= "NULL, ";
     isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
     isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".CentreonDB::escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
     $ret['command_command_id_arg'] = getCommandArgs($_POST, $ret);
@@ -995,6 +997,9 @@ function insertService($ret = array(), $macro_on_demand = null)
     }
     if (isset($ret["service_first_notification_delay"])) {
         $fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
+    }
+    if (isset($ret["service_recovery_notification_delay"])) {
+        $fields["service_recovery_notification_delay"] = $ret["service_recovery_notification_delay"];
     }
     $fields["service_notifOpts"] = "";
     if (isset($ret["service_notifOpts"])) {
@@ -1191,7 +1196,9 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     $rq .= "service_retain_nonstatus_information = ";
     isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) && $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', " : $rq .= "'2', ";
     $rq .= "service_notifications_enabled = ";
-    isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";    
+    isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
+    $rq .= "service_recovery_notification_delay = ";
+    isset($ret['service_recovery_notification_delay']) && $ret['service_recovery_notification_delay'] != NULL ? $rq .= $ret['service_recovery_notification_delay'] . ', ' : $rq .= 'NULL, ';
     $rq .= "service_inherit_contacts_from_host = ";
     isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "NULL, ";    
     $rq .= "service_use_only_contacts_from_host = ";
@@ -1273,6 +1280,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     if (isset($fields["service_notifications_enabled"])) {
         $fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
     }
+    $fields["service_recovery_notification_delay"] = $ret["service_recovery_notification_delay"];
     if (isset($fields["contact_additive_inheritance"])) {
         $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
     }
@@ -1438,6 +1446,10 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
         $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
         $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
+    }
+    if (isset($ret["service_recovery_notification_delay"]) && $ret["service_recovery_notification_delay"] != NULL) {
+        $rq .= "service_recovery_notification_delay = '".$ret["service_recovery_notification_delay"]."', ";
+        $fields["service_recovery_notification_delay"] = $ret["service_recovery_notification_delay"];
     }
     if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
         $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";

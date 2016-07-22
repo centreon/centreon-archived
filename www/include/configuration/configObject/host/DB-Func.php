@@ -1077,7 +1077,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
     $rq .= "host_notifications_enabled = ";
     isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', " : $rq .= "'2', ";
     $rq .= "host_recovery_notification_delay = ";
-    $rq .= (isset($ret['host_recovery_notification_delay']) ? $ret['host_recovery_notification_delay'] : 'NULL') . ', ';
+    isset($ret['host_recovery_notification_delay']) && $ret['host_recovery_notification_delay'] != NULL ? $rq .= $ret['host_recovery_notification_delay'] . ', ' : $rq .= 'NULL, ';
     $rq.= "contact_additive_inheritance = ";
     $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
     $rq.= "cg_additive_inheritance = ";
@@ -1283,10 +1283,9 @@ function updateHost_MC($host_id = null) {
     if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
         $rq .= "host_notifications_enabled = '" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', ";
     }
-    if (isset($ret["host_recovery_notification_delay "])) {
+    if (isset($ret["host_recovery_notification_delay "]) && $ret["host_recovery_notification_delay "] != NULL) {
         $rq .= "host_recovery_notification_delay  = " . $ret["host_recovery_notification_delay "] . ", ";
     }
-    $rq .= (isset($ret['host_recovery_notification_delay']) ? $ret['host_recovery_notification_delay'] : 'NULL') . ', ';
     if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
         $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
     }
