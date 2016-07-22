@@ -45,12 +45,12 @@ require_once "centreonUtils.class.php";
  */
 class CentreonACL
 {
- 	protected $db;
+    protected $db;
     // hack to get rid of warning messages
     public $topology = array();
     public $topologyStr = "";
 
- 	/**
+    /**
      * Constructor
      *
      * @return void

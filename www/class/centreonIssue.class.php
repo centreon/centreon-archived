@@ -56,7 +56,8 @@ class CentreonIssue
      */
     public function getChildren($issueId)
     {
-        $query = "SELECT tb.issue_id, tb.host_id, tb.service_id, tb.start_time, tb.name, tb.description, tb.state, tb.output
+        $query = "SELECT tb.issue_id, tb.host_id, tb.service_id, tb.start_time, tb.name, tb.description,
+            tb.state, tb.output
         		  FROM (
 					SELECT i.issue_id,
 				   		   i.host_id,
@@ -107,7 +108,9 @@ class CentreonIssue
      */
     public function isParent($issueId)
     {
-        $query = "SELECT parent_id FROM issues_issues_parents WHERE parent_id = " . $this->dbb->escape($issueId) . " LIMIT 1";
+        $query = "SELECT parent_id
+            FROM issues_issues_parents
+            WHERE parent_id = " . $this->dbb->escape($issueId) . " LIMIT 1";
         $res = $this->dbb->query($query);
         if ($res->numRows()) {
             return true;

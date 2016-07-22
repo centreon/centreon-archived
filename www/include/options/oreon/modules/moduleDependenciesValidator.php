@@ -31,29 +31,26 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/options/oreon/modules/moduleDependenciesValidator.php $
- * 
  */
 
 
 // License validator
-function parse_zend_license_file($file)
-{
+function parse_zend_license_file($file) {
     $lines = preg_split('/\n/', file_get_contents($file));
     $infos = array();
-    foreach ($lines as $line)
-    {
-        if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match))
+    foreach ($lines as $line) {
+        if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {
             $infos[$match[1]] = $match[2];
+        }
     }
     return $infos;
 }
     
-// Load conf
+/* Load conf */
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . '/www/autoloader.php';
 
-// Modules access
+/* Modules access */
 $modulesPath = _CENTREON_PATH_ . 'www/modules/';
 $modulesDirResource = opendir($modulesPath);
 
@@ -61,46 +58,38 @@ $XmlObj = new CentreonXML(true);
 $XmlObj->startElement("validation");
 $message = array();
 
-while(false !== ($filename = readdir($modulesDirResource)))
-{
-    if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".svn" && $filename != ".CSV")
-    {
+while (false !== ($filename = readdir($modulesDirResource))) {
+    if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".svn" && $filename != ".CSV") {
         $XmlObj->startElement("module");
         $XmlObj->writeAttribute('name', $filename);
         $checklistDir = $modulesPath.$filename . '/checklist/';
         $warning = false;
         $critical = false;
         
-        if (file_exists($checklistDir.'requirements.php'))
-        {
+        if (file_exists($checklistDir.'requirements.php')) {
             require_once $checklistDir.'requirements.php';
-            if ($critical || $warning)
-            {
-                if ($critical)
-                    $XmlObj->writeAttribute('status', 'critical');
-                elseif ($warning)
-                    $XmlObj->writeAttribute('status', 'warning');
+            if ($critical || $warning) {
                 
-                foreach($message as $errorMessage)
-                {
+                if ($critical) {
+                    $XmlObj->writeAttribute('status', 'critical');
+                } elseif ($warning) {
+                    $XmlObj->writeAttribute('status', 'warning');
+                }
+
+                foreach($message as $errorMessage) {
                     $XmlObj->startElement('message');
                     $XmlObj->writeElement('ErrorMessage', $errorMessage['ErrorMessage']);
                     $XmlObj->writeElement('Solution', $errorMessage['Solution']);
                     $XmlObj->endElement();
                 }
-            }
-            else
-            {
+            } else {
                 $XmlObj->writeAttribute('status', 'ok');
-                if (isset($customAction) && is_array($customAction))
-                {
+                if (isset($customAction) && is_array($customAction)) {
                     $XmlObj->writeAttribute('customAction', $customAction['action']);
                     $XmlObj->writeAttribute('customActionName', $customAction['name']);
                 }
             }
-        }
-        else
-        {
+        } else {
             $XmlObj->writeAttribute('status', 'notfound');
         }
         $XmlObj->endElement();
@@ -108,6 +97,5 @@ while(false !== ($filename = readdir($modulesDirResource)))
 }
 
 $XmlObj->endElement();
-echo $XmlObj->output();
 
-?>
+echo $XmlObj->output();

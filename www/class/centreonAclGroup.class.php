@@ -34,13 +34,13 @@
  */
 
 /**
- *  
+ *
  */
 class CentreonAclGroup
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -55,7 +55,7 @@ class CentreonAclGroup
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */

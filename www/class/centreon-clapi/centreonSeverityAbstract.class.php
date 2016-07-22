@@ -40,7 +40,7 @@ require_once "centreonObject.class.php";
 abstract class CentreonSeverityAbstract extends CentreonObject
 {
     const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1; 
+    const ORDER_ALIAS             = 1;
 
     /**
      * Set severity

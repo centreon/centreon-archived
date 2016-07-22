@@ -39,27 +39,26 @@
   * @author jmathis
   *
   */
- class CentreonCache {
-	public $hosts;
-	public $hostgroups;
-	public $services;
+class CentreonCache
+{
+    public $hosts;
+    public $hostgroups;
+    public $services;
 
- 	/**
- 	 *
- 	 * Constructor
- 	 * @param $pearDB
- 	 */
- 	function __construct($pearDB) {
- 		$this->hostgroups = $this->initHostGroupCache($pearDB);
- 	}
+    /**
+     *
+     * Constructor
+     * @param $pearDB
+     */
+    public function __construct($pearDB)
+    {
+        $this->hostgroups = $this->initHostGroupCache($pearDB);
+    }
 
- 	public function initHostGroupCache($DB) 
- 	{
-		$hg = new CentreonHostGroups($DB);
+    public function initHostGroupCache($DB)
+    {
+        $hg = new CentreonHostGroups($DB);
 
-		$hg->getAllHostgroupsInCache($DB);
-
-
- 	}
-
+        $hg->getAllHostgroupsInCache($DB);
+    }
 }

@@ -35,7 +35,7 @@
 
 class CentreonDuration
 {
-	function toString ($duration, $periods = null)
+    public static function toString($duration, $periods = null)
     {
         if (!is_array($duration)) {
             $duration = CentreonDuration::int2array($duration, $periods);
@@ -43,12 +43,12 @@ class CentreonDuration
         return CentreonDuration::array2string($duration);
     }
  
-    function int2array ($seconds, $periods = null)
-    {        
+    public static function int2array($seconds, $periods = null)
+    {
         // Define time periods
         if (!is_array($periods)) {
             $periods = array (
-                    'y'	=> 31556926,
+                    'y'     => 31556926,
                     'M' => 2629743,
                     'w' => 604800,
                     'd' => 86400,
@@ -78,7 +78,7 @@ class CentreonDuration
         return $values;
     }
  
-    function array2string ($duration)
+    public static function array2string($duration)
     {
         if (!is_array($duration)) {
             return false;
@@ -97,15 +97,18 @@ class CentreonDuration
     }
 }
 
-class Duration_hours_minutes
+class DurationHoursMinutes
 {
-	function toString ($duration, $periods = null){
-        if (!is_array($duration))
-            $duration = Duration_hours_minutes::int2array($duration, $periods);
-        return Duration_hours_minutes::array2string($duration);
+    public static function toString($duration, $periods = null)
+    {
+        if (!is_array($duration)) {
+            $duration = DurationHoursMinutes::int2array($duration, $periods);
+        }
+        return DurationHoursMinutes::array2string($duration);
     }
  
-    function int2array ($seconds, $periods = null){
+    public static function int2array($seconds, $periods = null)
+    {
         // Define time periods
         if (!is_array($periods)) {
             $periods = array (
@@ -119,24 +122,27 @@ class Duration_hours_minutes
         $seconds = (int) $seconds;
         foreach ($periods as $period => $value) {
             $count = floor($seconds / $value);
-            if ($count == 0)
+            if ($count == 0) {
                 continue;
+            }
  
             $values[$period] = $count;
             $seconds = $seconds % $value;
         }
  
         // Return
-        if (empty($values))
-        	$values = null;
+        if (empty($values)) {
+            $values = null;
+        }
  
         return $values;
     }
  
-    function array2string ($duration)
+    public static function array2string($duration)
     {
-        if (!is_array($duration))
+        if (!is_array($duration)) {
             return false;
+        }
 
         foreach ($duration as $key => $value) {
             $array[] = $value."".$key;

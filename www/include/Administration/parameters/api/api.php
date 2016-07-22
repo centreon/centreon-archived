@@ -63,13 +63,16 @@ $form->addElement('text', 'centcore_cmd_timeout', _("Timeout value for Centcore 
 
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?'
+        . 'object=centreon_configuration_contact&action=list',
     'multiple' => true,
     'linkedObject' => 'centreonContact'
 );
 $attrContact1 = array_merge(
     $attrContacts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=contactgroup&field=cg_contacts&id=' . $cg_id)
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?'
+        . 'object=centreon_configuration_contact&action=defaultValues&target=contactgroup&field=cg_contacts&id='
+        . $cg_id)
 );
 $form->addElement('select2', 'cg_contacts', _("Linked Contacts"), array(), $attrContact1);
 
@@ -106,7 +109,7 @@ if ($form->validate()) {
      */
     updateAPIConfigData($pearDB, $form, $centreon);
 
-    $o = NULL;
+    $o = null;
     $valid = true;
     $form->freeze();
 }
@@ -114,7 +117,12 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("impossible to validate, one or more field is incorrect") . "</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=centcore'", 'class' => 'btc bt_info'));
+$form->addElement(
+    "button",
+    "change",
+    _("Modify"),
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=centcore'", 'class' => 'btc bt_info')
+);
 
 /*
  * Apply a template definition

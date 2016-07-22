@@ -271,7 +271,7 @@ if ($centreon->user->access->checkAction("host_schedule_downtime")) {
                  * Set a downtime for only host
                  */
                 foreach ($_POST["host_id"] as $host_id) {
-                    $ecObj->AddHostDowntime(
+                    $ecObj->addHostDowntime(
                             $host_id, 
                             $_POST["comment"], 
                             $_POST["start"].' '.$_POST['start_time'], 
@@ -292,7 +292,7 @@ if ($centreon->user->access->checkAction("host_schedule_downtime")) {
                     $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
                     foreach ($hostlist as $host_id) {
                         if ($centreon->user->access->admin || in_array($host_id, $host_acl_id)) {
-                            $ecObj->AddHostDowntime(
+                            $ecObj->addHostDowntime(
                                 $host_id, 
                                 $_POST["comment"], 
                                 $_POST["start"] . ' '. $_POST["start_time"], 
@@ -314,7 +314,7 @@ if ($centreon->user->access->checkAction("host_schedule_downtime")) {
                     $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
                     while ($row = $DBRESULT->fetchRow()) {
                         if ($centreon->user->access->admin || isset($host_acl_id[$host_id])) {
-                            $ecObj->AddHostDowntime(
+                            $ecObj->addHostDowntime(
                                 $row['host_id'], 
                                 $_POST["comment"], 
                                 $_POST["start"] . ' '. $_POST["start_time"], 

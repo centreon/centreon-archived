@@ -520,6 +520,11 @@ $cloneSetMacro[] = $form->addElement(
     'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
 );
 
+/**
+ * Acknowledgement timeout
+ */
+$form->addElement('text', 'service_acknowledgement_timeout', _("Acknowledgement timeout"), $attrsText2);
+
 ##
 ## Notification informations
 ##

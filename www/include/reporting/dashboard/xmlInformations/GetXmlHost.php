@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -32,49 +32,28 @@
  * For more information : contact@centreon.com
  * 
  */
-		
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-require_once _CENTREON_PATH_."www/include/reporting/dashboard/common-Func.php";
-require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
-require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
-require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
-	
-$buffer = new CentreonXML();
-$buffer->startElement("data");	
+$stateType = 'host';
+require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
-$pearDB 	= new CentreonDB();
-$pearDBO 	= new CentreonDB("centstorage");
-
-$sid = session_id();
-
-$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
-if (!$DBRESULT->numRows()) {
-	exit();
-}
-
-/*
- * Definition of status
- */
-$state 		= array("UP" => _("UP"), "DOWN" => _("DOWN"), "UNREACHABLE" => _("UNREACHABLE"), "UNDETERMINED" => _("UNDETERMINED"));
-$statesTab 	= array("UP", "DOWN", "UNREACHABLE");
-	
-if (isset($_GET["id"]) && isset($_GET["color"])){
-
-	$color = array();
-	foreach ($_GET["color"] as $key => $value) {
-		$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-	}
-	
-	$DBRESULT = $pearDBO->query("SELECT  * FROM `log_archive_host` WHERE host_id = " . $pearDBO->escape($_GET["id"]) . " order by date_start desc");
-	while ($row = $DBRESULT->fetchRow()) {
-		fillBuffer($statesTab, $row, $color);
-	}
+if (isset($_GET["id"]) && isset($_GET["color"])) {
+    $color = array();
+    foreach ($_GET["color"] as $key => $value) {
+        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
+    }
+    
+    $DBRESULT = $pearDBO->query(
+        "SELECT  * FROM `log_archive_host` WHERE host_id = "
+        . $pearDBO->escape($_GET["id"])
+        . " order by date_start desc"
+    );
+    while ($row = $DBRESULT->fetchRow()) {
+        fillBuffer($statesTab, $row, $color);
+    }
 } else {
-	$buffer->writeElement("error", "error");		
+    $buffer->writeElement("error", "error");
 }
 
-$buffer->endElement();	
+$buffer->endElement();
 header('Content-Type: text/xml');
 $buffer->output();

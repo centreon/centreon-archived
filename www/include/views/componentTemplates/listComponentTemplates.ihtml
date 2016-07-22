@@ -1,0 +1,83 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form' method='POST'>
+    <table class="ajaxOption table">
+      <tbody>
+        <tr>
+          <th><h5>{t}Filters{/t}</h5></th>
+        </tr>
+        <tr>
+          <td><h4>{t}Curve{/t}</h4></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="searchCurve" value="{$searchCurve}"></td>
+          <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="ToolbarTable table">
+        <tr class="ToolbarTR">
+            <td>
+                {$msg.options} {$form.o1.html}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+            </td>
+            <input name="p" value="{$p}" type="hidden">
+            {php}
+               include('./include/common/pagination.php');
+            {/php}
+        </tr>
+    </table>    
+    <table class="ListTable">
+        <tr class="ListHeader">
+            <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+            <td></td>
+            <td class="ListColHeaderLeft">{$headerMenu_name}</td>
+            <td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+            <td class="ListColHeaderLeft">{$headerMenu_legend}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_stack}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_order}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_Transp}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_tickness}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_fill}</td>
+            <td class="ListColHeaderRight">{$headerMenu_options}</td>
+        </tr>
+        {section name=elem loop=$elemArr}
+        <tr class={$elemArr[elem].MenuClass}>
+            <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+            <td align="center" width='30'>          
+                <table>
+                    <tr>
+                    <td width="10" height="10" bgcolor="{$elemArr[elem].RowMenu_clrLine}"></td>
+                    <td width="10" height="10" bgcolor="{$elemArr[elem].RowMenu_clrArea}"></td>
+                    </tr>
+                </table>
+            </td>
+            <td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
+            <td class="ListColLeft">{$elemArr[elem].RowMenu_desc}</td>
+            <td class="ListColLeft">{$elemArr[elem].RowMenu_legend}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_stack}</td>
+            <td class="ListColCenter">{if $elemArr[elem].RowMenu_order}{$elemArr[elem].RowMenu_order}{else}-{/if}</td>
+            <td class="ListColRight">{if $elemArr[elem].RowMenu_transp}{$elemArr[elem].RowMenu_transp}&nbsp;%&nbsp;&nbsp;{else}-&nbsp;&nbsp;{/if}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_tickness}&nbsp;px&nbsp;</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_fill}</td>
+            <td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
+        </tr>
+        {/section}
+    </table>
+    <table class="ToolbarTable table">
+        <tr class="ToolbarTR">
+            <td>
+                {$msg.options} {$form.o2.html}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+            </td>
+            <input name="p" value="{$p}" type="hidden">
+            {php}
+               include('./include/common/pagination.php');
+            {/php}
+        </tr>
+    </table>
+<input type='hidden' name='o' id='o' value='42'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+{$form.hidden}
+</form>

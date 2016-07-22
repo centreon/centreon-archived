@@ -33,26 +33,9 @@
  * 
  */
 
-/**
- * Get toolbar action list
- * 
- * @param string $domName
- * @return array
- */
-function getActionList($domName) {
-    $tab = array(
-                    'onchange'=>"javascript: " .
-                    "if (this.form.elements['$domName'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-                    " 	setA(this.form.elements['$domName'].value); submit();} " .
-                    "else if (this.form.elements['$domName'].selectedIndex == 2) {" .
-                    " 	setA(this.form.elements['$domName'].value); submit();} " .
-                    "else if (this.form.elements['$domName'].selectedIndex == 3) {" .
-                    " 	setA(this.form.elements['$domName'].value); submit();} " .
-                    "this.form.elements['$domName'].selectedIndex = 0");
-    return $tab;
-}
 
 include "./include/common/autoNumLimit.php";
+require_once dirname(__FILE__) . "/listFunction.php";
 
 $labels = array('name'        => _('Name'),
                 'description' => _('Description'),
@@ -83,20 +66,35 @@ $tpl = initSmartyTpl($path.'ldap/', $tpl);
 $form = new HTML_QuickForm('select_form', 'POST', "?o=ldap&p=".$p);
 
 $tpl->assign('list', $list);
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=ldap&new=1", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+$tpl->assign(
+    'msg',
+    array("addL"=>"?p=".$p."&o=ldap&new=1", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?"))
+);
 
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), getActionList('o1'));
-$form->setDefaults(array('o1' => NULL));
+$form->addElement(
+    'select',
+    'o1',
+    null,
+    array(null=>_("More actions..."), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")),
+    getActionList('o1')
+);
+$form->setDefaults(array('o1' => null));
 
-$form->addElement('select', 'o2', NULL, array(NULL => _("More actions..."), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), getActionList('o2'));
-$form->setDefaults(array('o2' => NULL));
+$form->addElement(
+    'select',
+    'o2',
+    null,
+    array(null => _("More actions..."), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")),
+    getActionList('o2')
+);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('limit', $limit);

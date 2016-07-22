@@ -35,6 +35,7 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGraphStatus.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonMetric extends CentreonWebService {
@@ -178,10 +179,111 @@ class CentreonMetric extends CentreonWebService {
                 $serviceData[$i]['type'] = $serviceData[$i]['graph_type'];
                 unset($serviceData[$i]['graph_type']);
             }
+            
+            $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
+            $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
+            
             $result[] = array(
                 'service_id' => $id,
                 'data' => $serviceData,
                 'times' => $times,
+                'size' => $rows,
+                'acknowledge' => $acks,
+                'downtime' => $downtimes
+            );
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get the status for a service
+     *
+     * @return array
+     */
+    public function getStatusByService()
+    {
+        global $centreon;
+        
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+        }
+        
+        /* Validate options */
+        if (false === isset($this->arguments['start']) ||
+            false === is_numeric($this->arguments['start']) ||
+            false === isset($this->arguments['end']) ||
+            false === is_numeric($this->arguments['end'])) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        $start = $this->arguments['start'];
+        $end = $this->arguments['end'];
+        
+        /* Get the numbers of points */
+        $rows = 200;
+        if (isset($this->arguments['rows'])) {
+            if (false === is_numeric($this->arguments['rows'])) {
+                throw new RestBadRequestException("Bad parameters");
+            }
+            $rows = $this->arguments['rows'];
+        }
+        if ($rows < 10) {
+            throw new RestBadRequestException("The rows must be greater as 10");
+        }
+        
+        if (false === isset($this->arguments['ids'])) {
+            self::sendJson(array());
+        }
+        
+        /* Get the list of service ID */
+        $ids = explode(',', $this->arguments['ids']);
+        $result = array();
+        
+        /* Get the list of service ID */
+        $ids = explode(',', $this->arguments['ids']);
+        $result = array();
+        
+        foreach ($ids as $id) {
+            list($hostId, $serviceId) = explode('_', $id);
+            if (false === is_numeric($hostId) ||
+                false === is_numeric($serviceId)) {
+                throw new RestBadRequestException("Bad parameters");
+            }
+
+            /* Check ACL is not admin */
+            if (!$isAdmin) {
+                $query = "SELECT service_id
+                    FROM centreon_acl
+                    WHERE host_id = " . $hostId . "
+                        AND service_id = " . $serviceId . "
+                        AND group_id IN (" . $aclGroups . ")";
+                $res = $this->pearDBMonitoring->query($query);
+                if (0 == $res->numRows()) {
+                    throw new RestForbiddenException("Access denied");
+                }
+            }
+
+            $data = array();
+            
+            /* Prepare graph */
+            try {
+                /* Get index data */
+                $indexData = CentreonGraphStatus::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
+                $graph = new CentreonGraphStatus($indexData, $start, $end);
+            } catch (Exception $e) {
+                throw new RestNotFoundException("Graph not found");
+            }
+            
+            $statusData = $graph->getData($rows);
+            $result[] = array(
+                'service_id' => $id,
+                'data' => $statusData,
                 'size' => $rows
             );
         }
@@ -202,6 +304,69 @@ class CentreonMetric extends CentreonWebService {
             return null;
         }
         return $element;
+    }
+    
+    /**
+     * Get the list of a acknowlegment for a service during a period
+     *
+     * @return array The list of ack
+     */
+    protected function getAcknowlegePeriods($hostId, $serviceId, $start, $end)
+    {
+        $query = 'SELECT entry_time as start, deletion_time as end
+            FROM acknowledgements
+            WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . ' AND
+                (
+                    (entry_time <= ' . $end . ' AND ' . $end . ' <= deletion_time) OR
+                    (entry_time <= ' . $start . ' AND ' . $start . ' <= deletion_time) OR
+                    (entry_time >= ' . $start . ' AND ' . $end . ' >= deletion_time) OR
+                    (deletion_time IS NULL)
+                )';
+        return $this->executeQueryPeriods($query, $start, $end);
+    }
+    
+    /**
+     * Get the list of a downtime for a service during a period
+     *
+     * @return array The list of downtimes
+     */
+    protected function getDowntimePeriods($hostId, $serviceId, $start, $end)
+    {
+        $query = 'SELECT actual_start_time as start, actual_end_time as end
+            FROM downtimes
+            WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . ' AND
+                (
+                    (actual_start_time <= ' . $end . ' AND ' . $end . ' <= actual_end_time) OR
+                    (actual_start_time <= ' . $start . ' AND ' . $start . ' <= actual_end_time) OR
+                    (actual_start_time >= ' . $start . ' AND ' . $end . ' >= actual_end_time) OR
+                    (actual_start_time IS NOT NULL AND actual_end_time IS NULL)
+                )';
+        return $this->executeQueryPeriods($query, $start, $end);
+    }
+    
+    /**
+     * Execute a query for a period
+     *
+     * @return array The list of periods
+     */
+    protected function executeQueryPeriods($query, $start, $end)
+    {
+        $periods = array();
+        $res = $this->pearDBMonitoring->query($query);
+        while ($row = $res->fetchRow()) {
+            $period = array(
+                'start' => $row['start'],
+                'end' => $row['end']
+            );
+            if ($start > $row['start']) {
+                $period['start'] = $start;
+            }
+            if ($end < $row['end']) {
+                $period['end'] = $end;
+            }
+            $periods[] = $period;
+        }
+        return $periods;
     }
 }
 ?>

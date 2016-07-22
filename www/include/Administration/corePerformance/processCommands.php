@@ -96,14 +96,14 @@
 	 * Check if command is start or not
 	 */
 	if ($cmd == "global_start") {
-	    if (isset($command->localhost_tab[$poller])) {
+	    if (isset($command->localhostTab[$poller])) {
             shell_exec("sudo " . $nagios_init_script . " start");
 		} else {
 			shell_exec("echo 'START:".$poller."' >> $centcore_pipe");
 		}
 	} else {
     	$cmd_tab = $command->getExternalCommandList();
-    	$command->set_process_command($cmd_tab[$cmd][$type], $poller);
+    	$command->setProcessCommand($cmd_tab[$cmd][$type], $poller);
     	$result = $command->write();
 	}
 

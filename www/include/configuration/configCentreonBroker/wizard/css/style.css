@@ -17,7 +17,7 @@ body {
   border: 1px solid #BFD0E2;
   border-radius: 10px;
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
-  overflow: hidden; 
+  overflow: hidden;
   -webkit-user-select: none;
   margin-bottom: 20px;
 }

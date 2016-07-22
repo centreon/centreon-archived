@@ -35,7 +35,7 @@
 
 if (!isset($centreon)) {
     exit();
- }
+}
 
 /*
  * Path to the configuration dir

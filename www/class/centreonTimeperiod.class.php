@@ -34,13 +34,13 @@
  */
 
 /**
- *  
+ *
  */
 class CentreonTimeperiod
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -55,7 +55,7 @@ class CentreonTimeperiod
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
@@ -86,7 +86,7 @@ class CentreonTimeperiod
     }
     
     /**
-     * 
+     *
      * @param string $name
      * @return string
      */

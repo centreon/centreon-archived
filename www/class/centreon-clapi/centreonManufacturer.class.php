@@ -84,7 +84,7 @@ class CentreonManufacturer extends CentreonObject
         parent::add();
     }
 
-	/**
+    /**
      * Show
      *
      * @return void

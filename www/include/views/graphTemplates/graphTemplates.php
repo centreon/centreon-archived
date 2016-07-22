@@ -59,7 +59,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 /*
  * Path to the configuration dir
  */
-$path = "./include/views/graphs/graphTemplates/";
+$path = "./include/views/graphTemplates/";
 
 /*
  * PHP functions

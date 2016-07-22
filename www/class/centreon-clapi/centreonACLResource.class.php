@@ -93,7 +93,7 @@ class CentreonACLResource extends CentreonObject
      */
     protected $resourceTypeObjectRelation;
 
- 	/**
+    /**
      * Constructor
      *
      * @return void
@@ -106,10 +106,10 @@ class CentreonACLResource extends CentreonObject
         $this->relObject = new \Centreon_Object_Relation_Acl_Group_Resource();
 
         $this->params = array(  'all_hosts'           => '0',
-                                'all_hostgroups'  	  => '0',
-        						'all_servicegroups'   => '0',
-                                'acl_res_activate'	  => '1',
-                                'changed'			  => '1'
+                                'all_hostgroups'      => '0',
+                                'all_servicegroups'   => '0',
+                                'acl_res_activate'      => '1',
+                                'changed'              => '1'
                              );
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_res_activate";
@@ -202,7 +202,7 @@ class CentreonACLResource extends CentreonObject
         $groupIds = $this->relObject->getacl_group_idFromacl_res_id($aclResId[0]);
         echo "id;name" . "\n";
         if (count($groupIds)) {
-            foreach($groupIds as $groupId) {
+            foreach ($groupIds as $groupId) {
                 $result = $this->aclGroupObj->getParameters($groupId, $this->aclGroupObj->getUniqueLabelField());
                 echo $groupId . $this->delim . $result[$this->aclGroupObj->getUniqueLabelField()] . "\n";
             }
@@ -270,7 +270,10 @@ class CentreonACLResource extends CentreonObject
 
         foreach ($resources as $resource) {
             if ($resource != "*") {
-                $ids = $this->resourceTypeObject->getIdByParameter($this->resourceTypeObject->getUniqueLabelField(), array($resource));
+                $ids = $this->resourceTypeObject->getIdByParameter(
+                    $this->resourceTypeObject->getUniqueLabelField(),
+                    array($resource)
+                );
                 if (!count($ids)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$resource);
                 }
@@ -294,9 +297,11 @@ class CentreonACLResource extends CentreonObject
         list($aclResourceId, $resourceIds) = $this->splitParams($type, $arg);
 
         if (isset($this->resourceTypeObjectRelation)) {
-            $results = $this->resourceTypeObjectRelation->getTargetIdFromSourceId($this->resourceTypeObjectRelation->getSecondKey(),
-                                                                                  $this->resourceTypeObjectRelation->getFirstKey(),
-                                                                                  $aclResourceId);
+            $results = $this->resourceTypeObjectRelation->getTargetIdFromSourceId(
+                $this->resourceTypeObjectRelation->getSecondKey(),
+                $this->resourceTypeObjectRelation->getFirstKey(),
+                $aclResourceId
+            );
             foreach ($resourceIds as $resourceId) {
                 if ($resourceId != "*" && !in_array($resourceId, $results)) {
                     $this->resourceTypeObjectRelation->insert($aclResourceId, $resourceId);

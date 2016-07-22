@@ -63,39 +63,78 @@ class CentreonGraphService extends CentreonGraph
         /* Flush RRDCached for have the last values */
         $this->flushRrdCached($this->listMetricsId);
         
-        $commandLine = "";
+        $commandLine = '';
+        $defType = array(
+            0 => 'CDEF',
+            1 => 'VDEF'
+        );
 
         /* Build command line */
         $commandLine .= " xport ";
-        $commandLine .= " --start " . $this->_RRDoptions['start'];
-        $commandLine .= " --end " . $this->_RRDoptions['end'];
+        $commandLine .= " --start " . $this->RRDoptions['start'];
+        $commandLine .= " --end " . $this->RRDoptions['end'];
         $commandLine .= " --maxrows " . $rows;
 
+        
         $metrics = array();
+        $vname = array();
+        $virtuals = array();
         $i = 0;
+        
+        /* Parse metrics */
         foreach ($this->metrics as $metric) {
-            $path = $this->dbPath . '/' . $metric['metric_id'] . '.rrd';
-            if (false === file_exists($path)) {
-                throw new RuntimeException();
+            if (isset($metric['virtual']) && $metric['virtual'] == 1) {
+                $virtuals[] = $metric;
+                $vname[$metric['metric']] = 'vv' . $i;
+            } else {
+                $path = $this->dbPath . '/' . $metric['metric_id'] . '.rrd';
+                if (false === file_exists($path)) {
+                    throw new RuntimeException();
+                }
+                $commandLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
+                $commandLine .= " XPORT:v" . $i . ":v" . $i;
+                $vname[$metric['metric']] = 'v' . $i;
+                $info = array(
+                    "data" => array(),
+                    "legend" => $metric["metric_legend"],
+                    "graph_type" => "line",
+                    "unit" => $metric["unit"],
+                    "color" => $metric["ds_color_line"],
+                    "negative" => false
+                );
+                if (isset($metric['ds_color_area'])) {
+                    $info['graph_type'] = "area";
+                }
+                if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
+                    $info['negative'] = true;
+                }
+                $metrics[] = $info;
             }
-            $commandLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
-            $commandLine .= " XPORT:v" . $i . ":v" . $i;
             $i++;
-            $info = array(
-                "data" => array(),
-                "legend" => $metric["metric_legend"],
-                "graph_type" => "line",
-                "unit" => $metric["unit"],
-                "color" => $metric["ds_color_line"],
-                "negative" => false
-            );
-            if (isset($metric['ds_color_area'])) {
-                $info['graph_type'] = "area";
+        }
+        /* Append virtual metrics */
+        foreach ($virtuals as $metric) {
+            $commandLine .= ' ' . $defType[$metric['def_type']] . ':'
+                . $vname[$metric['metric']] . '='
+                . $this->subsRPN($metric['rpn_function'], $vname);
+            if ($metric['def_type'] == 0) {
+                $commandLine .= " XPORT:" . $vname[$metric['metric']] . ":" . $vname[$metric['metric']];
+                $info = array(
+                    "data" => array(),
+                    "legend" => $metric["metric_legend"],
+                    "graph_type" => "line",
+                    "unit" => $metric["unit"],
+                    "color" => $metric["ds_color_line"],
+                    "negative" => false
+                );
+                if (isset($metric['ds_color_area'])) {
+                    $info['graph_type'] = "area";
+                }
+                if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
+                    $info['negative'] = true;
+                }
+                $metrics[] = $info;
             }
-            if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
-                $info['negative'] = true;
-            }
-            $metrics[] = $info;
         }
 
         $descriptorspec = array(
@@ -104,7 +143,7 @@ class CentreonGraphService extends CentreonGraph
             2 => array('pipe', 'a'),
         );
 
-        $process = proc_open($this->general_opt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
+        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, null, null);
         if (false === is_resource($process)) {
             throw new RuntimeException();
         }

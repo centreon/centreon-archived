@@ -50,7 +50,6 @@ class CentreonInstance extends CentreonObject
     const ORDER_UNIQUENAME        = 0;
     const ORDER_ADDRESS           = 1;
     const ORDER_SSH_PORT          = 2;
-    const ORDER_MONITORING_ENGINE = 3;
 
     /**
      * Constructor
@@ -64,15 +63,13 @@ class CentreonInstance extends CentreonObject
         $this->params = array('localhost'                   => '0',
                               'ns_activate'                 => '1',
                               'ssh_port'                    => '22',
-                              'monitoring_engine'           => 'CENTGINE',
                               'nagios_bin'                  => '/usr/sbin/centengine',
                               'nagiostats_bin'              => '/usr/bin/centenginestats',
-                              'nagios_perfdata'             => '/var/log/centreon-engine/service-perfdata',
                               'init_script'                 => '/etc/init.d/centengine',
                               'centreonbroker_cfg_path'     => '/etc/centreon-broker',
                               'centreonbroker_module_path'  => '/usr/share/centreon/lib/centreon-broker',
                               'centreonconnector_path'      => '/usr/lib64/centreon-connector');
-        $this->insertParams = array('name', 'ns_ip_address', 'ssh_port', 'monitoring_engine');
+        $this->insertParams = array('name', 'ns_ip_address', 'ssh_port');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey(), 'last_restart'));
         $this->action = "INSTANCE";
         $this->nbOfCompulsoryParams = count($this->insertParams);
@@ -95,7 +92,6 @@ class CentreonInstance extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['ns_ip_address'] = $params[self::ORDER_ADDRESS];
         $addParams['ssh_port'] = $params[self::ORDER_SSH_PORT];
-        $addParams['monitoring_engine'] = $params[self::ORDER_MONITORING_ENGINE];
         if ($addParams['ns_ip_address'] == "127.0.0.1" || strtolower($addParams['ns_ip_address']) == "localhost") {
             $this->params['localhost'] = '1';
         }
@@ -140,7 +136,7 @@ class CentreonInstance extends CentreonObject
         $pollerState = CentreonConfigPoller::getPollerState();
 
         $params = array('id', 'name', 'localhost', 'ns_ip_address', 'ns_activate', 'ns_status', 'init_script',
-                           'monitoring_engine', 'nagios_bin', 'nagiostats_bin', 'nagios_perfdata', 'ssh_port');
+                           'nagios_bin', 'nagiostats_bin', 'ssh_port');
         $paramString = str_replace("_", " ", implode($this->delim, $params));
         $paramString = str_replace("ns ", "", $paramString);
         $paramString = str_replace("nagios ", "", $paramString);

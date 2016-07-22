@@ -77,10 +77,10 @@ class CentreonLDAP extends CentreonObject
                                   'user_email'          => '',
                                   'user_filter'         => '',
                                   'user_firstname'      => '',
-				  'user_lastname'       => '',
+                  'user_lastname'       => '',
                                   'user_name'           => '',
                                   'user_pager'          => '',
-        			  'user_group'          => '');
+                      'user_group'          => '');
         $this->serverParams = array('host_address', 'host_port', 'host_order', 'use_ssl', 'use_tls');
     }
 
@@ -93,7 +93,10 @@ class CentreonLDAP extends CentreonObject
      */
     protected function isUnique($name = "", $arId = 0)
     {
-        $stmt = $this->db->query("SELECT ar_name FROM auth_ressource WHERE ar_name = ? AND ar_id != ?", array($name, $arId));
+        $stmt = $this->db->query(
+            "SELECT ar_name FROM auth_ressource WHERE ar_name = ? AND ar_id != ?",
+            array($name, $arId)
+        );
         $res = $stmt->fetchAll();
         if (count($res)) {
             return false;
@@ -134,7 +137,10 @@ class CentreonLDAP extends CentreonObject
         $row = $res->fetchAll();
         echo "id;name;description;status\n";
         foreach ($row as $ldap) {
-            echo $ldap['ar_id'].$this->delim.$ldap['ar_name'].$this->delim.$ldap['ar_description'].$this->delim.$ldap['ar_enable']."\n";
+            echo $ldap['ar_id'] . $this->delim
+                . $ldap['ar_name'] . $this->delim
+                . $ldap['ar_description'] . $this->delim
+                . $ldap['ar_enable'] . "\n";
         }
     }
 
@@ -189,9 +195,14 @@ class CentreonLDAP extends CentreonObject
         if (!$this->isUnique($name)) {
             throw new CentreonClapiException(self::NAMEALREADYINUSE.' ('.$name.')');
         }
-        $this->db->query("INSERT INTO auth_ressource (ar_name, ar_description, ar_enable) VALUES (:name, :description, :status)", array(':name' => $name,
-                                                                                                                                        ':description' => $description,
-                                                                                                                                        ':status' => '1'));
+        $this->db->query(
+            "INSERT INTO auth_ressource (ar_name, ar_description, ar_enable) VALUES (:name, :description, :status)",
+            array(
+                ':name' => $name,
+                ':description' => $description,
+                ':status' => '1'
+            )
+        );
     }
 
     /**
@@ -215,12 +226,17 @@ class CentreonLDAP extends CentreonObject
         if (is_null($arId)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' ' . $arName);
         }
-        $this->db->query("INSERT INTO auth_ressource_host (auth_ressource_id, host_address, host_port, use_ssl, use_tls)
-                          VALUES (:arId, :address, :port, :ssl, :tls)", array(':arId'    => $arId,
-                                                                              ':address' => $address,
-                                                                              ':port'    => $port,
-                                                                              ':ssl'     => $ssl,
-                                                                              ':tls'     => $tls));
+        $this->db->query(
+            "INSERT INTO auth_ressource_host (auth_ressource_id, host_address, host_port, use_ssl, use_tls)
+             VALUES (:arId, :address, :port, :ssl, :tls)",
+            array(
+                ':arId'    => $arId,
+                ':address' => $address,
+                ':port'    => $port,
+                ':ssl'     => $ssl,
+                ':tls'     => $tls
+            )
+        );
     }
 
     /**
@@ -280,17 +296,24 @@ class CentreonLDAP extends CentreonObject
                     throw new CentreonClapiException(self::NAMEALREADYINUSE.' ('.$name.')');
                 }
             }
-            $this->db->query("UPDATE auth_ressource SET ar_".$params[1]." = ? WHERE ar_id = ?", array($params[2], $arId));
+            $this->db->query(
+                "UPDATE auth_ressource SET ar_" . $params[1] . " = ? WHERE ar_id = ?",
+                array($params[2], $arId)
+            );
         } elseif (isset($this->baseParams[strtolower($params[1])])) {
             if (strtolower($params[1]) == 'ldap_contact_tmpl') {
                 $contactObj = new CentreonContact($this->db);
                 $params[2] = $contactObj->getContactID($params[2]);
             }
-            $this->db->query("DELETE FROM auth_ressource_info WHERE ari_name = ? AND ar_id = ?", array($params[1], $arId));
-            $this->db->query("INSERT INTO auth_ressource_info (ari_value, ari_name, ar_id)
-                              VALUES (?, ?, ?)", array($params[2],
-                                                       $params[1],
-                                                       $arId));
+            $this->db->query(
+                "DELETE FROM auth_ressource_info WHERE ari_name = ? AND ar_id = ?",
+                array($params[1], $arId)
+            );
+            $this->db->query(
+                "INSERT INTO auth_ressource_info (ari_value, ari_name, ar_id)
+                 VALUES (?, ?, ?)",
+                array($params[2], $params[1], $arId)
+            );
         } else {
             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
         }
@@ -315,6 +338,10 @@ class CentreonLDAP extends CentreonObject
         if (!in_array(strtolower($key), $this->serverParams)) {
             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
         }
-        $this->db->query("UPDATE auth_ressource_host SET ".strtolower($key)." = ? WHERE ldap_host_id = ?", array($value, $serverId));
+        $this->db->query(
+            "UPDATE auth_ressource_host SET " . strtolower($key)
+            . " = ? WHERE ldap_host_id = ?",
+            array($value, $serverId)
+        );
     }
 }
