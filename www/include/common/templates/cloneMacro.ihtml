@@ -42,7 +42,11 @@
             {else}
             <script>
             {literal}
-                jQuery(document).find("input[name^='macroInput'], input[name^='macroValue']").prop("type", 'text').attr('readonly', 'readonly');
+                jQuery(document).find("input[name^='macroInput'], " +
+                        "input[name^='macroValue']")
+                        .prop("type", 'text')
+                        .attr('readonly', 'readonly')
+                        .attr('disabled','disabled');
             {/literal}
             </script>
             {/if}

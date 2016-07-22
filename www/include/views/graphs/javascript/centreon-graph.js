@@ -265,6 +265,10 @@
       }
       
       data.x = 'times';
+      
+      /* Add group */
+      data.groups = this.buildGroups(dataRaw);
+      
       return {
         data: data,
         axis: axis
@@ -321,6 +325,26 @@
       }
 
       return regions;
+    },
+    /**
+     * Build regions
+     *
+     * @param {Object} data - The chart datas
+     * @return {Array} - The list of regions
+     */
+    buildGroups: function (data) {
+      var group = [];
+      var i;
+      var name;
+      
+      for (i = 0; i < data.data.length; i++) {
+        name = 'data' + (i + 1);
+        if (data.data[i].stack) {
+          group.push(name);
+        }
+      }
+      
+      return [group];
     },
     /**
      * Refresh data of graph

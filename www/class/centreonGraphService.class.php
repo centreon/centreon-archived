@@ -100,13 +100,17 @@ class CentreonGraphService extends CentreonGraph
                     "graph_type" => "line",
                     "unit" => $metric["unit"],
                     "color" => $metric["ds_color_line"],
-                    "negative" => false
+                    "negative" => false,
+                    "stack" => false
                 );
                 if (isset($metric['ds_color_area'])) {
                     $info['graph_type'] = "area";
                 }
                 if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
                     $info['negative'] = true;
+                }
+                if (isset($metric['stack'])) {
+                    $info['stack'] = $metric['stack'] == 1 ? true : false;
                 }
                 $metrics[] = $info;
             }
