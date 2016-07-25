@@ -660,6 +660,8 @@ if ($o == "mc") {
 
 $form->addElement('text', 'service_first_notification_delay', _("First notification delay"), $attrsText2);
 
+$form->addElement('text', 'service_recovery_notification_delay', _("Recovery notification delay"), $attrsText2);
+
 if ($o == "mc") {
     $mc_mod_notifopt_notification_interval = array();
     $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');

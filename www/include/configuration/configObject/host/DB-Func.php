@@ -694,7 +694,8 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
             "host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_retry_check_interval, host_active_checks_enabled, " .
             "host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
             "host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
-            "host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
+            "host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, " .
+            "host_first_notification_delay, host_recovery_notification_delay, " .
             "host_notification_options, host_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community, " .
             "host_snmp_version, host_location, host_comment, geo_coords, host_register, host_activate, host_acknowledgement_timeout) " .
             "VALUES ( ";
@@ -725,6 +726,7 @@ function insertHost($ret, $macro_on_demand = NULL, $server_id = NULL) {
     isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]) && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2 ? $rq .= "'" . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', " : $rq .= "'2', ";
     isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL ? $rq .= "'" . $ret["host_notification_interval"] . "', " : $rq .= "NULL, ";
     isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL ? $rq .= "'" . $ret["host_first_notification_delay"] . "', " : $rq .= "NULL, ";
+    isset($ret["host_recovery_notification_delay"]) && $ret["host_recovery_notification_delay"] != NULL ? $rq .= "'" . $ret["host_recovery_notification_delay"] . "', " : $rq .= "NULL, ";
     isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'" . implode(",", array_keys($ret["host_notifOpts"])) . "', " : $rq .= "NULL, ";
     isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', " : $rq .= "'2', ";
     $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
@@ -1074,6 +1076,8 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL) {
     isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]) && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2 ? $rq .= "'" . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', " : $rq .= "'2', ";
     $rq .= "host_notifications_enabled = ";
     isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', " : $rq .= "'2', ";
+    $rq .= "host_recovery_notification_delay = ";
+    isset($ret['host_recovery_notification_delay']) && $ret['host_recovery_notification_delay'] != NULL ? $rq .= $ret['host_recovery_notification_delay'] . ', ' : $rq .= 'NULL, ';
     $rq.= "contact_additive_inheritance = ";
     $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
     $rq.= "cg_additive_inheritance = ";
@@ -1278,6 +1282,9 @@ function updateHost_MC($host_id = null) {
     }
     if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
         $rq .= "host_notifications_enabled = '" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', ";
+    }
+    if (isset($ret["host_recovery_notification_delay "]) && $ret["host_recovery_notification_delay "] != NULL) {
+        $rq .= "host_recovery_notification_delay  = " . $ret["host_recovery_notification_delay "] . ", ";
     }
     if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
         $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
