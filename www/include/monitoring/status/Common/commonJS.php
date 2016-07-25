@@ -854,47 +854,23 @@ function set_page(page)	{
 // Popin images
 
 var func_displayIMG = function(event) {
-    var NewImage = new Image(),
-        self = event.currentTarget;
+    var self = event.currentTarget;
 
-    jQuery('.img_volante').html('<img class="mimgload" src="img/misc/ajax-loader.gif" />');
     jQuery('.img_volante').css('left', event.pageX + 20);
     jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
     jQuery('.img_volante').show();
-
-    var elements = $(self).id.split('-');
-    var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
-    jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
-    NewImage.onload = function(){
-            jQuery('.img_volante .mimgload').remove();
-            <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-            jQuery('.img_volante').stop(true, true).animate({width: self.width, height: self.height, top: (jQuery(window).height() / 2) - (self.height / 2)}, 25);
-            jQuery('.img_volante img').stop(true, true).fadeIn(1000);
-            <?php } else { ?>
-            jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
-            jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (self.height / 2));
-            jQuery('.img_volante img').show();
-            <?php } ?>
-    };
-    NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?index='+ elements[0];
-    if (NewImage.complete) {
-            jQuery('.img_volante .mimgload').remove();
-            <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-            jQuery('.img_volante').stop(true, true).animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, 25);
-            jQuery('.img_volante img').stop(true, true).fadeIn(1000);
-            <?php } else { ?>
-            jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
-            jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (NewImage.height / 2));
-            jQuery('.img_volante img').show();
-            <?php } ?>
-    }
+        
+    var chartElem = jQuery('<div></div>')
+        .addClass('chart')
+        .data('graphType', 'service')
+        .data('graphId', jQuery(self).attr('id').replace('-', '_'))
+        .appendTo(jQuery('.img_volante'));
+    jQuery(chartElem).centreonGraph({height: 140, interval: '24h'});
 };
 
 var func_hideIMG = function(event) {
     jQuery('.img_volante').hide();
     jQuery('.img_volante').empty();
-    jQuery('.img_volante').css('width', 'auto');
-    jQuery('.img_volante').css('height', 'auto');
 };
 
 // Poppin Function

@@ -1451,9 +1451,14 @@ td,a.infobulle:hover td {padding:0px;}
 
 .img_volante {
     background-color: #ffffff;
-    display:none;
-    position:fixed;
-    z-index:500;
+    display: none;
+    position: fixed;
+    z-index: 500;
+    width: 500px;
+    padding: 3px;
+    border-radius: 4px;
+    box-shadow: 5px 5px 2px #d1d2d4;
+    border: 1px solid #d1d2d4;
 }
 
 .popup_volante {

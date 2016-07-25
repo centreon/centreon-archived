@@ -151,7 +151,9 @@
       
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
-        height: this.settings.height,
+        size: {
+          height: this.settings.height
+        },
         data: parsedData.data,
         axis: axis,
         tooltip: {
@@ -482,10 +484,10 @@
   
   $.fn.centreonGraph = function (options) {
     var args = Array.prototype.slice.call(arguments, 1);
-    var settings = $.extend({}, $.fn.centreonGraph.defaults, options);
+    var settings = jQuery.extend({}, $.fn.centreonGraph.defaults, options);
     var methodReturn;
     var $set = this.each(function () {
-      var $this = $(this);
+      var $this = jQuery(this);
       var data = $this.data("centreonGraph");
 
       if (!data) {
