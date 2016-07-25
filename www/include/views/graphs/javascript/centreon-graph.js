@@ -16,6 +16,17 @@
       unit: parseInterval[2]
     };
     
+    if ($elem.attr('id') === undefined) {
+      $elem.attr('id', function () {
+        function s4() {
+          return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+        }
+        return 'c' + s4() + s4() + s4() + s4();
+      });
+    }
+    
     /* Define tick for timeseries */
     this.timeFormat = d3.time.format.multi([
       [".%L", function(d) { return d.getMilliseconds(); }],

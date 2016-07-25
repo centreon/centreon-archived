@@ -1,3 +1,4 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <table class="table">
 	<tr>
@@ -83,7 +84,10 @@
 				                {foreach key=graphId item=HS from=$graphs}
 								<tr>
 									<td class="ListColLeft ColPopup" style='text-align:center;'>
-									<a href='./main.php?p=204&mode=0&svc_id={$HS}'><img src='./include/views/graphs/generateGraphs/generateImage.php?index={$graphId}&start={$start}&end={$end}'></a>
+									<a href='./main.php?p=204&mode=0&svc_id={$HS}'>
+                                        <div class="chart" data-graph-id="{$graphId}" data-graph-type="service">
+                                        </div>
+                                    </a>
 									</td>
 								</tr>
 								{/foreach}
@@ -476,3 +480,21 @@
 		</td>	
 	</tr>
 </table>
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/common/javascript/charts/d3-timeline.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+{literal}
+<script>
+jQuery(function () {
+  var times = {
+    height: 240,
+    interval: '12h'
+  };
+  jQuery('.chart').centreonGraph(times);    
+});
+</script>
+{/literal}

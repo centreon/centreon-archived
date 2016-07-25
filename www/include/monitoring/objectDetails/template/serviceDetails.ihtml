@@ -1,3 +1,4 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <table class="table"> <!-- Global Table -->
     <tr>
@@ -142,7 +143,12 @@
                                 <h4>{$detailed_graph}</h4></td>
                             </tr>
                             <tr class='list_one'>
-                                <td class="ListColCenter" colspan="2"><a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}"><img src="./include/views/graphs/generateGraphs/generateImage.php?{$options2}"></a></td>
+                                <td class="ListColCenter" colspan="2">
+                                    <a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
+                                        <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service">
+                                        </div>
+                                    </a>
+                                </td>
                             </tr>
                         </table>
                         {/if}
@@ -213,7 +219,6 @@
                                 <td class="ColPopup">
                                     {if $lcaTopo.307 || $admin == 1}
                                         <a href='./main.php?p=307&host={$h.host_id}'>{$lnk_host_reports}</a>
-                                    </p>
                                     {/if}
                                 </td>
 
@@ -451,7 +456,7 @@
                                 <td class="ListColLeft ColPopup">{$servicegroups_label}</td>
                                 <td class="ListColLeft ColPopup">
                                 {foreach item=sg from=$servicegroups}
-                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$sg}</a><br>
+                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$sg}<br>
                                 {/foreach}
                                 </td>
                             </tr>
@@ -567,3 +572,21 @@
     {/foreach}
 </table>
 {/if}
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/common/javascript/charts/d3-timeline.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+{literal}
+<script>
+jQuery(function () {
+  var times = {
+    height: 240,
+    interval: '24h'
+  };
+  jQuery('#chart-detailed').centreonGraph(times);
+});
+</script>
+{/literal}

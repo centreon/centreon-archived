@@ -316,7 +316,7 @@ if (!$is_admin && !$haveAccess) {
     
         /* Get Graphs Listing */
         $graphLists = array();
-        $query =    "SELECT DISTINCT id, host_name, service_description " .
+        $query =    "SELECT DISTINCT id, host_name, service_description, host_id, service_id " .
                     " FROM index_data, metrics " . ((!$is_admin) ? ', centreon_acl acl' : '') .
                     " WHERE metrics.index_id = index_data.id " .
                         " AND index_data.host_id = '$host_id' ".
@@ -324,7 +324,7 @@ if (!$is_admin && !$haveAccess) {
                     " ORDER BY service_description ASC";
         $DBRESULT = $pearDBO->query($query);
         while ($g = $DBRESULT->fetchRow()) {
-            $graphLists[$g["id"]] = $g['host_name'].";".$g['service_description'];
+            $graphLists[$g["host_id"] . '_' . $g['service_id']] = $g['host_name'].";".$g['service_description'];
         }
 
         $host_status[$host_name]["status_class"] = $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
