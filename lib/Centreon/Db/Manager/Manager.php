@@ -63,7 +63,6 @@ class Centreon_Db_Manager
         if (!isset($adapter) || !isset($config) || !is_array($config)) {
             throw new Exception('Missing adapter name and/or configuration array');
         }
-        $db = Zend_Db::factory($adapter, $config);
         self::$instances[$instanceName] = Zend_Db::factory($adapter, $config);
         return self::$instances[$instanceName];
     }
