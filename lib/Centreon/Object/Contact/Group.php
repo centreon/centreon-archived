@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
