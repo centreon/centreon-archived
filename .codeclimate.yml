@@ -10,7 +10,7 @@ engines:
     config:
       file_extensions: "php"
       ignore_warnings: true
-      standard: "PSR1"
+      standard: "PSR2"
       checks:
         PSR2 Classes ClassDeclaration MissingNamespace:
           enabled: false

@@ -159,7 +159,7 @@ notifications_enabled            *1* when notification is enabled, *0* otherwise
 
 contact_additive_inheritance     Enables contact additive inheritance
 
-cg_additive_inheritance              Enables contactgroup additive inheritance
+cg_additive_inheritance          Enables contactgroup additive inheritance
 
 notification_interval            value in minutes
 
@@ -167,7 +167,9 @@ notification_period              Name of the notification period
 
 notification_options             Status linked to notifications
 
-first_notification_delay           First notification delay in seconds
+first_notification_delay         First notification delay in seconds
+
+recovery_notification_delay      Recovery notification delay
 
 parallelize_checks	         *1* when parallelize checks are enabled, *0* otherwise
 
