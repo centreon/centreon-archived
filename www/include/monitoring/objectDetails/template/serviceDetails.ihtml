@@ -1,4 +1,5 @@
 <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+<link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <table class="table"> <!-- Global Table -->
     <tr>
@@ -161,7 +162,10 @@
                                 </td>
                             </tr>
                             <tr class='list_one'>
-                                <td class="ListColCenter" colspan="2"><img src="./include/views/graphs/graphStatus/displayServiceStatus.php?{$options}"></td>
+                                <td class="ListColCenter" colspan="2">
+                                    <div class="chart" id="chart-status" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="status">
+                                    </div>
+                                </td>
                             </tr>
                         </table>
                         {/if}
@@ -579,6 +583,7 @@
 <script src="./include/common/javascript/charts/d3-timeline.js"></script>
 <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
 <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+<script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 {literal}
 <script>
 jQuery(function () {
@@ -586,7 +591,7 @@ jQuery(function () {
     height: 240,
     interval: '24h'
   };
-  jQuery('#chart-detailed').centreonGraph(times);
+  jQuery('.chart').centreonGraph(times);
 });
 </script>
 {/literal}

@@ -40,6 +40,13 @@ require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonMetric extends CentreonWebService {
     protected $pearDBMonitoring;
+    
+    protected $statusColors = array(
+        'ok' => '#88b917',
+        'warning' => '#ff9a13',
+        'critical' => '#e00b3d',
+        'unknown' => 'gray'
+    );
 
     /**
      * Constructor
@@ -283,9 +290,31 @@ class CentreonMetric extends CentreonWebService {
             }
             
             $statusData = $graph->getData($rows);
+            
+            /* Get comments for this services */
+            $queryComment = 'SELECT entry_time, author, data
+                FROM comments
+                WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . '
+                    AND entry_type = 1 AND deletion_time IS NULL AND ' . $start . ' < entry_time
+                    AND ' . $end . ' > entry_time';
+            $res = $this->pearDBMonitoring->query($queryComment);
+            $comments = array();
+            if (false === PEAR::isError($res)) {
+                while ($row = $res->fetchRow()) {
+                    $comments[] = array(
+                        'author' => $row['author'],
+                        'comment' => $row['data'],
+                        'time' => $row['entry_time']
+                    );
+                }
+            }
+            
             $result[] = array(
                 'service_id' => $id,
-                'data' => $statusData,
+                'data' => array(
+                    'status' => $statusData,
+                    'comments' => $comments
+                ),
                 'size' => $rows
             );
         }
