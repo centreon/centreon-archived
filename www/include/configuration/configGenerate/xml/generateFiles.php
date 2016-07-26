@@ -66,9 +66,9 @@ global $generatePhpErrors;
 $generatePhpErrors = array();
 
 $path = _CENTREON_PATH_ . "www/include/configuration/configGenerate/";
-$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/nagiosCFG/";
+$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/engine/";
 $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
-$DebugPath = "filesGeneration/nagiosCFG/";
+$DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
 
@@ -210,7 +210,7 @@ function printDebug($xml, $tabs)
     }
 
     foreach ($tab_server as $host) {
-        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"]."/nagiosCFG.DEBUG 2>&1");
+        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"]."/centengine.DEBUG 2>&1");
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace ("\n", "<br />", $stdout);
         $msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
