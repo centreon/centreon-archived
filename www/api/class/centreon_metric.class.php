@@ -38,7 +38,8 @@ require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphStatus.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
-class CentreonMetric extends CentreonWebService {
+class CentreonMetric extends CentreonWebService
+{
     protected $pearDBMonitoring;
     
     protected $statusColors = array(
@@ -178,7 +179,8 @@ class CentreonMetric extends CentreonWebService {
             for ($i = 0; $i < count($serviceData); $i++) {
                 if (isset($serviceData[$i]['data'])) {
                     $times = array_keys($serviceData[$i]['data']);
-                    $values = array_map(array($this, "convertNaN"),
+                    $values = array_map(
+                        array($this, "convertNaN"),
                         array_values($serviceData[$i]['data'])
                     );
                 }
@@ -400,4 +402,3 @@ class CentreonMetric extends CentreonWebService {
         return $periods;
     }
 }
-?>

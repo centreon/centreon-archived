@@ -36,7 +36,7 @@
 /**
  * Class for REST API exception
  */
-class RestException extends Exception 
+class RestException extends Exception
 {
 
 }
