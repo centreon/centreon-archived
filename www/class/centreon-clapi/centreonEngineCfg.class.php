@@ -37,8 +37,8 @@ namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
-require_once "Centreon/Object/Nagios/Nagios.php";
-require_once "Centreon/Object/Nagios/Nagios_Broker_Module.php";
+require_once "Centreon/Object/Engine/Engine.php";
+require_once "Centreon/Object/Engine/Engine_Broker_Module.php";
 require_once "Centreon/Object/Command/Command.php";
 
 /**
@@ -66,8 +66,8 @@ class CentreonEngineCfg extends CentreonObject
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
         $this->commandObj = new \Centreon_Object_Command();
-        $this->object = new \Centreon_Object_Nagios();
-        $this->brokerModuleObj = new \Centreon_Object_Nagios_Broker_Module();
+        $this->object = new \Centreon_Object_Engine();
+        $this->brokerModuleObj = new \Centreon_Object_Engine_Broker_Module();
         $this->params = array(
             'log_file'                                 => '/var/log/centreon-engine/centengine.log',
             'cfg_dir'                                 => '/etc/centreon-engine/',

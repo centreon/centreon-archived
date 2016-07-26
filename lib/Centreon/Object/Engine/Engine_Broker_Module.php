@@ -36,13 +36,13 @@
 require_once "Centreon/Object/Object.php";
 
 /**
- * Used for interacting with Nagios
+ * Used for interacting with Engine Broker Module
  *
- * @author sylvestre
+ * @author kevin duret <kduret@centreon.com>
  */
-class Centreon_Object_Nagios extends Centreon_Object
+class Centreon_Object_Engine_Broker_Module extends Centreon_Object
 {
-    protected $table = "cfg_nagios";
-    protected $primaryKey = "nagios_id";
-    protected $uniqueLabelField = "nagios_name";
+    protected $table = "cfg_nagios_broker_module";
+    protected $primaryKey = "bk_mod_id";
+    protected $uniqueLabelField = "bk_mod_id";
 }
