@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
-    global $oreon;
 
-if (!isset($oreon)) {
+global $centreon;
+
+if (!isset($centreon)) {
     exit();
 }
 
@@ -48,8 +46,8 @@ if (!isset($oreon)) {
 
 if (isset($_GET["num"])) {
     $num = $_GET["num"];
-} elseif (!isset($_GET["num"]) && isset($oreon->historyPage[$url]) && $oreon->historyPage[$url]) {
-    $num = $oreon->historyPage[$url];
+} elseif (!isset($_GET["num"]) && isset($centreon->historyPage[$url]) && $centreon->historyPage[$url]) {
+    $num = $centreon->historyPage[$url];
 } else {
     $num = 0;
 }
@@ -60,27 +58,27 @@ if (isset($_GET["num"])) {
 
 if (isset($_GET["search_type_service"])) {
     $search_type_service = $_GET["search_type_service"];
-    $oreon->search_type_service = $_GET["search_type_service"];
-} elseif (isset($oreon->search_type_service)) {
-         $search_type_service = $oreon->search_type_service;
+    $centreon->search_type_service = $_GET["search_type_service"];
+} elseif (isset($centreon->search_type_service)) {
+         $search_type_service = $centreon->search_type_service;
 } else {
     $search_type_service = null;
 }
 
 if (isset($_GET["search_type_host"])) {
     $search_type_host = $_GET["search_type_host"];
-    $oreon->search_type_host = $_GET["search_type_host"];
-} elseif (isset($oreon->search_type_host)) {
-         $search_type_host = $oreon->search_type_host;
+    $centreon->search_type_host = $_GET["search_type_host"];
+} elseif (isset($centreon->search_type_host)) {
+         $search_type_host = $centreon->search_type_host;
 } else {
     $search_type_host = null;
 }
 
-if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) && !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)) {
+if (!isset($_GET["search_type_host"]) && !isset($centreon->search_type_host) && !isset($_GET["search_type_service"]) && !isset($centreon->search_type_service)) {
     $search_type_host = 1;
-    $oreon->search_type_host = 1;
+    $centreon->search_type_host = 1;
     $search_type_service = 1;
-    $oreon->search_type_service = 1;
+    $centreon->search_type_service = 1;
 }
 
     $url_var = "";
@@ -210,51 +208,50 @@ if ($rows != 0) {
     }
 }
 
-    ?><script type="text/javascript">
-    function setL(_this){
-        var _l = document.getElementsByName('l');
-        document.forms['form'].elements['limit'].value = _this;
-        _l[0].value = _this;
-        _l[1].value = _this;
-    }
-    </SCRIPT>
-    <?php
-    $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
-    $selLim = $form->addElement('select', 'l', _("Rows"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
-    $selLim->setSelected($limit);
+?><script type="text/javascript">
+function setL(_this){
+    var _l = document.getElementsByName('l');
+    document.forms['form'].elements['limit'].value = _this;
+    _l[0].value = _this;
+    _l[1].value = _this;
+}
+</SCRIPT>
+<?php
+$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
+$selLim = $form->addElement('select', 'l', _("Rows"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
+$selLim->setSelected($limit);
 
-    /*
-	 * Element we need when we reload the page
-	 */
-    $form->addElement('hidden', 'p');
-    $form->addElement('hidden', 'search');
-    $form->addElement('hidden', 'num');
-    $form->addElement('hidden', 'order');
-    $form->addElement('hidden', 'type');
-    $form->addElement('hidden', 'sort_types');
-    $form->setDefaults(array("p" => $p, "search" => $search, "num"=>$num));
+/*
+ * Element we need when we reload the page
+ */
+$form->addElement('hidden', 'p');
+$form->addElement('hidden', 'search');
+$form->addElement('hidden', 'num');
+$form->addElement('hidden', 'order');
+$form->addElement('hidden', 'type');
+$form->addElement('hidden', 'sort_types');
+$form->setDefaults(array("p" => $p, "search" => $search, "num"=>$num));
 
-    /*
-	 * Init QuickForm
-	 */
-    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-    $form->accept($renderer);
+/*
+ * Init QuickForm
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
 
-    if (isset($_GET['host_name'])) {
-        $host_name = $_GET['host_name'];
-    } elseif (!isset($host_name) || $host_name == "") {
-        $host_name = null;
-    }
-    isset($_GET["status"]) ? $status = $_GET["status"] : $status = null;
+if (isset($_GET['host_name'])) {
+    $host_name = $_GET['host_name'];
+} elseif (!isset($host_name) || $host_name == "") {
+    $host_name = null;
+}
+isset($_GET["status"]) ? $status = $_GET["status"] : $status = null;
 
-    $tpl->assign("host_name", $host_name);
-    $tpl->assign("status", $status);
-    $tpl->assign("limite", $limite);
-    $tpl->assign("begin", $num);
-    $tpl->assign("end", $limit);
-    $tpl->assign("pagin_page", _("Page"));
-    $tpl->assign("order", $_GET["order"]);
-    $tpl->assign("tab_order", $tab_order);
-    $tpl->assign('form', $renderer->toArray());
-    $tpl->display("pagination.ihtml");
-?>
+$tpl->assign("host_name", $host_name);
+$tpl->assign("status", $status);
+$tpl->assign("limite", $limite);
+$tpl->assign("begin", $num);
+$tpl->assign("end", $limit);
+$tpl->assign("pagin_page", _("Page"));
+$tpl->assign("order", $_GET["order"]);
+$tpl->assign("tab_order", $tab_order);
+$tpl->assign('form', $renderer->toArray());
+$tpl->display("pagination.ihtml");
