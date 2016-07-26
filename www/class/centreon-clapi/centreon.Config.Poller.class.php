@@ -68,7 +68,7 @@ class CentreonConfigPoller
         $this->_DB = $DB;
         $this->_DBC = $DBC;
         $this->resultTest = 0;
-        $this->nagiosCFGPath = "$centreon_path/filesGeneration/nagiosCFG/";
+        $this->nagiosCFGPath = "$centreon_path/filesGeneration/engine/";
         $this->centreon_path = $centreon_path;
         $this->resultTest = array("warning" => 0, "errors" => 0);
         $this->centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
@@ -363,8 +363,8 @@ class CentreonConfigPoller
         if (isset($nagios_bin["nagios_bin"])) {
             exec(
                 escapeshellcmd(
-                    "sudo " . $nagios_bin["nagios_bin"] . " -v "
-                    . $this->nagiosCFGPath . $idPoller . "/nagiosCFG.DEBUG"
+                    $nagios_bin["nagios_bin"] . " -v "
+                    . $this->nagiosCFGPath . $idPoller . "/centengine.DEBUG"
                 ),
                 $lines,
                 $return_code
@@ -401,19 +401,19 @@ class CentreonConfigPoller
             }
         }
         if ($this->resultTest["errors"] != 0) {
-            print "Error: Nagios Poller $variables cannot restart. configuration broker. Please see debug bellow :\n";
+            print "Error: Centreon Poller $variables cannot restart. configuration broker. Please see debug bellow :\n";
             print "---------------------------------------------------------------------------------------------------\n";
             print $msg_debug."\n";
             print "---------------------------------------------------------------------------------------------------\n";
         } elseif ($this->resultTest["warning"] != 0) {
-            print "Warning: Nagios Poller $variables can restart but configuration is not optimal. Please see debug bellow :\n";
+            print "Warning: Centreon Poller $variables can restart but configuration is not optimal. Please see debug bellow :\n";
             print "---------------------------------------------------------------------------------------------------\n";
             print $msg_debug."\n";
             print "---------------------------------------------------------------------------------------------------\n";
         } elseif ($return_code) {
             print implode("\n", $lines);
         } else {
-            print "OK: Nagios Poller $variables can restart without problem...\n";
+            print "OK: Centreon Poller $variables can restart without problem...\n";
         }
         return $return_code;
     }
@@ -441,15 +441,15 @@ class CentreonConfigPoller
         $setFilesOwner = 1;
         if ($apacheUser != "") {
             /* Change engine Path mod */
-            chown($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $apacheUser);
-            chgrp($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $apacheUser);
+            chown($this->centreon_path."/filesGeneration/engine/$poller_id", $apacheUser);
+            chgrp($this->centreon_path."/filesGeneration/engine/$poller_id", $apacheUser);
 
-            foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/*.cfg") as $file) {
+            foreach (glob($this->centreon_path."/filesGeneration/engine/$poller_id/*.cfg") as $file) {
                 chown($file, $apacheUser);
                 chgrp($file, $apacheUser);
             }
 
-            foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/*.DEBUG") as $file) {
+            foreach (glob($this->centreon_path."/filesGeneration/engine/$poller_id/*.DEBUG") as $file) {
                 chown($file, $apacheUser);
                 chgrp($file, $apacheUser);
             }
@@ -469,7 +469,7 @@ class CentreonConfigPoller
         if ($setFilesOwner == 0) {
             print "We can set configuration file owner after the generation. \n";
             print "Please check that files in the followings directory are writable by apache user : "
-                . $this->centreon_path . "/filesGeneration/nagiosCFG/$poller_id/\n";
+                . $this->centreon_path . "/filesGeneration/engine/$poller_id/\n";
             print "Please check that files in the followings directory are writable by apache user : "
                 . $this->centreon_path . "/filesGeneration/broker/$poller_id/\n";
         }

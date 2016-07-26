@@ -104,7 +104,7 @@ try {
     $ret['restart_mode'] = $_POST['mode'];
 
     chdir(_CENTREON_PATH_ . "www");
-    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
+    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/engine/";
     $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
 
     session_start();
