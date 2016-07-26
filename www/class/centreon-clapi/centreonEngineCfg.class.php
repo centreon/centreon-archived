@@ -69,7 +69,7 @@ class CentreonEngineCfg extends CentreonObject
         $this->object = new \Centreon_Object_Engine();
         $this->brokerModuleObj = new \Centreon_Object_Engine_Broker_Module();
         $this->params = array(
-            'log_file'                                 => '/var/log/centreon-engine/centengine.log',
+            'log_file'                                => '/var/log/centreon-engine/centengine.log',
             'cfg_dir'                                 => '/etc/centreon-engine/',
             'enable_notifications'                    => '0',
             'execute_service_checks'                  => '1',
