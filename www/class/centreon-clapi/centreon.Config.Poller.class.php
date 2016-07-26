@@ -478,6 +478,9 @@ class CentreonConfigPoller {
 
         /* Get Apache user name */
         $apacheUser = $this->getApacheUser();
+        
+        /*Get Centreon group name */
+        $centreonGroup = $this->getCentreonGroup();
 
         /**
          * Move files.
