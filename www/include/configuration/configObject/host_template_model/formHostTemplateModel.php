@@ -43,60 +43,63 @@ $hostObj = new CentreonHost($pearDB);
 #
 $host = array();
 $macroArray = array();
-if (($o == "c" || $o == "w") && $host_id)	{
-        if (isset($lockedElements[$host_id])) {
-            $o = "w";
-        }
-	$DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
+if (($o == "c" || $o == "w") && $host_id) {
+    if (isset($lockedElements[$host_id])) {
+        $o = "w";
+    }
+    $DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 
     
-	# Set base value
-	if ($DBRESULT->numRows())	{
-		$host = array_map("myDecode", $DBRESULT->fetchRow());
+    # Set base value
+    if ($DBRESULT->numRows()) {
+        $host = array_map("myDecode", $DBRESULT->fetchRow());
         $cmdId = $host['command_command_id'];
-		# Set Host Notification Options
-		$tmp = explode(',', $host["host_notification_options"]);
-		foreach ($tmp as $key => $value) {
-		    $host["host_notifOpts"][trim($value)] = 1;
-                }
+        # Set Host Notification Options
+        $tmp = explode(',', $host["host_notification_options"]);
+        foreach ($tmp as $key => $value) {
+            $host["host_notifOpts"][trim($value)] = 1;
+        }
 
-		# Set Stalking Options
-		$tmp = explode(',', $host["host_stalking_options"]);
-		foreach ($tmp as $key => $value) {
-		    $host["host_stalOpts"][trim($value)] = 1;
-                }
-		$DBRESULT->free();
+        # Set Stalking Options
+        $tmp = explode(',', $host["host_stalking_options"]);
+        foreach ($tmp as $key => $value) {
+            $host["host_stalOpts"][trim($value)] = 1;
+        }
+        $DBRESULT->free();
 
-		# Set Contact Group
-		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
-			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
-		$DBRESULT->free();
+        # Set Contact Group
+        $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
+        for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
+            $host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
+        }
+        $DBRESULT->free();
 
-		/*
+        /*
 		 * Set Contacts
 		 */
-		$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++)
-			$host["host_cs"][$i] = $notifC["contact_id"];
-		$DBRESULT->free();
+        $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$host_id."'");
+        for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
+            $host["host_cs"][$i] = $notifC["contact_id"];
+        }
+        $DBRESULT->free();
 
-		# Set Host Parents
-		$DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $parent = $DBRESULT->fetchRow(); $i++)
-			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
-		$DBRESULT->free();
+        # Set Host Parents
+        $DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
+        for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++) {
+            $host["host_parents"][$i] = $parent["host_parent_hp_id"];
+        }
+        $DBRESULT->free();
 
-		# Set Service Templates Childs
-		$DBRESULT = $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $svTpl = $DBRESULT->fetchRow(); $i++){
-			$DBRESULT2 = $pearDB->query("SELECT service_register FROM service WHERE service_id = '".$svTpl['service_service_id']."' LIMIT 1");
-			$tpReg = $DBRESULT2->fetchRow();
-			if ($tpReg['service_register'] == 0)
-				$host["host_svTpls"][$i] = $svTpl["service_service_id"];
-
-		}
-		$DBRESULT->free();
+        # Set Service Templates Childs
+        $DBRESULT = $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
+        for ($i = 0; $svTpl = $DBRESULT->fetchRow(); $i++) {
+            $DBRESULT2 = $pearDB->query("SELECT service_register FROM service WHERE service_id = '".$svTpl['service_service_id']."' LIMIT 1");
+            $tpReg = $DBRESULT2->fetchRow();
+            if ($tpReg['service_register'] == 0) {
+                $host["host_svTpls"][$i] = $svTpl["service_service_id"];
+            }
+        }
+        $DBRESULT->free();
 
         /*
          * Set Host Category Parents
@@ -106,8 +109,9 @@ if (($o == "c" || $o == "w") && $host_id)	{
             WHERE hcr.hostcategories_hc_id = hc.hc_id
             AND hc.level IS NULL
             AND hcr.host_host_id = \''.$host_id.'\'');
-        for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++)
+        for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
+        }
         $DBRESULT->free();
                     
         /*
@@ -124,13 +128,11 @@ if (($o == "c" || $o == "w") && $host_id)	{
             $cr = $res->fetchRow();
             $host['criticality_id'] = $cr['hc_id'];
         }
-	}
+    }
     
     /*
      * Preset values of macros
      */
-    
-    
     $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1);
 
     if (!isset($cmdId)) {
@@ -138,32 +140,25 @@ if (($o == "c" || $o == "w") && $host_id)	{
     }
 
     $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId, $_POST);
-
 }
 
 
-    $cdata = CentreonData::getInstance();
-    
-    $cdata->addJsData('clone-values-macro', htmlspecialchars(
-                      json_encode($macroArray), 
-                      ENT_QUOTES
-                      )
-    );
-    $cdata->addJsData('clone-count-macro', count($macroArray));        
-    /*
-     * Preset values of host templates
-     */
-    $tplArray = $hostObj->getTemplates(isset($host_id) ? $host_id : null);
-    $cdata->addJsData('clone-values-template', htmlspecialchars(
-                                json_encode($tplArray), 
-                                ENT_QUOTES
-                            )
-    );
-    $cdata->addJsData('clone-count-template', count($tplArray));
-    
-    
-    
-    
+$cdata = CentreonData::getInstance();
+
+$cdata->addJsData('clone-values-macro', htmlspecialchars(
+    json_encode($macroArray),
+    ENT_QUOTES
+));
+$cdata->addJsData('clone-count-macro', count($macroArray));
+/*
+ * Preset values of host templates
+ */
+$tplArray = $hostObj->getTemplates(isset($host_id) ? $host_id : null);
+$cdata->addJsData('clone-values-template', htmlspecialchars(
+    json_encode($tplArray),
+    ENT_QUOTES
+));
+$cdata->addJsData('clone-count-template', count($tplArray));
     
 #
 ## Database retrieve information for differents elements list we need on the page
@@ -173,58 +168,63 @@ if (($o == "c" || $o == "w") && $host_id)	{
  * Get all Templates who use himself
  */
 $host_tmplt_who_use_me = array();
-if (isset($_GET["host_id"]) && $_GET["host_id"]){
-	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$pearDB->escape($_GET["host_id"])."'");
-	while($host_tmpl_father = $DBRESULT->fetchRow())
-		$host_tmplt_who_use_me[$host_tmpl_father["host_id"]] = $host_tmpl_father["host_name"];
-	$DBRESULT->free();
+if (isset($_GET["host_id"]) && $_GET["host_id"]) {
+    $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$pearDB->escape($_GET["host_id"])."'");
+    while ($host_tmpl_father = $DBRESULT->fetchRow()) {
+        $host_tmplt_who_use_me[$host_tmpl_father["host_id"]] = $host_tmpl_father["host_name"];
+    }
+    $DBRESULT->free();
 }
 
 /*
  * Host Templates comes from DB -> Store in $hTpls Array
  */
-$hTpls = array(NULL=>NULL);
+$hTpls = array(null=>null);
 $DBRESULT = $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
-while($hTpl = $DBRESULT->fetchRow())	{
-	if (!$hTpl["host_name"])
-		$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
-	if (!isset($host_tmplt_who_use_me[$hTpl["host_id"]]))
-		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
+while ($hTpl = $DBRESULT->fetchRow()) {
+    if (!$hTpl["host_name"]) {
+        $hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
+    }
+    if (!isset($host_tmplt_who_use_me[$hTpl["host_id"]])) {
+        $hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
+    }
 }
 $DBRESULT->free();
 # Service Templates comes from DB -> Store in $svTpls Array
 $svTpls = array();
 $DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' ORDER BY service_description");
-while($svTpl = $DBRESULT->fetchRow())	{
-	if (!$svTpl["service_description"])
-		$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
-	else	{
-		$svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
-		$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
-	}
-	$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
+while ($svTpl = $DBRESULT->fetchRow()) {
+    if (!$svTpl["service_description"]) {
+        $svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
+    } else {
+        $svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
+        $svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
+    }
+    $svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 }
 $DBRESULT->free();
 
 # Timeperiods comes from DB -> Store in $tps Array
-$tps = array(NULL=>NULL);
+$tps = array(null=>null);
 $DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while($tp = $DBRESULT->fetchRow())
-	$tps[$tp["tp_id"]] = $tp["tp_name"];
+while ($tp = $DBRESULT->fetchRow()) {
+    $tps[$tp["tp_id"]] = $tp["tp_name"];
+}
 $DBRESULT->free();
 
 # Check commands comes from DB -> Store in $checkCmds Array
-$checkCmds = array(NULL=>NULL);
+$checkCmds = array(null=>null);
 $DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-while($checkCmd = $DBRESULT->fetchRow())
-	$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
+while ($checkCmd = $DBRESULT->fetchRow()) {
+    $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
+}
 $DBRESULT->free();
 
 # Check commands comes from DB -> Store in $checkCmdEvent Array
 $checkCmdEvent = array(null => null);
 $DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
 while ($checkCmd = $DBRESULT->fetchRow()) {
-$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
+    $checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
 $DBRESULT->free();
 
@@ -232,52 +232,54 @@ $DBRESULT->free();
 $notifCgs = array();
 $cg = new CentreonContactgroup($pearDB);
 $notifCgs = $cg->getListContactgroup(true);
-    
+
 /*
- * Contacts come from DB -> Store in $notifCs Array
- */
+* Contacts come from DB -> Store in $notifCs Array
+*/
 $notifCs = array();
 $DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = 1 ORDER BY contact_name");
-while($notifC = $DBRESULT->fetchRow())
-	$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
-$DBRESULT->free();
-
-/*
- * Host Categories comes from DB -> Store in $hcs Array
- */
-$hcs = array();
-$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories WHERE level IS NULL ORDER BY hc_name");
-while ($hc = $DBRESULT->fetchRow())
-    $hcs[$hc["hc_id"]] = $hc["hc_name"];
-$DBRESULT->free();
-
-/*
- *  Host multiple templates relations stored in DB
- */
-$mTp = array();
-$k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
-while($multiTp = $DBRESULT->fetchRow()) {
-	$mTp[$k] = $multiTp["host_tpl_id"];
-	$k++;
+while ($notifC = $DBRESULT->fetchRow()) {
+    $notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 }
 $DBRESULT->free();
 
 /*
- *  Host on demand macro stored in DB
- */
+* Host Categories comes from DB -> Store in $hcs Array
+*/
+$hcs = array();
+$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories WHERE level IS NULL ORDER BY hc_name");
+while ($hc = $DBRESULT->fetchRow()) {
+    $hcs[$hc["hc_id"]] = $hc["hc_name"];
+}
+$DBRESULT->free();
+
+/*
+*  Host multiple templates relations stored in DB
+*/
+$mTp = array();
+$k = 0;
+$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
+while ($multiTp = $DBRESULT->fetchRow()) {
+    $mTp[$k] = $multiTp["host_tpl_id"];
+    $k++;
+}
+$DBRESULT->free();
+
+/*
+*  Host on demand macro stored in DB
+*/
 $j = 0;
 $DBRESULT = $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
-while ($od_macro = $DBRESULT->fetchRow()){
-	$od_macro_id[$j] = $od_macro["host_macro_id"];
-	$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
-	$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
-	$od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
-	$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
-	$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["host_macro_value"]);
-	$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
-	$od_macro_host_id[$j] = $od_macro["host_host_id"];
-	$j++;
+while ($od_macro = $DBRESULT->fetchRow()) {
+    $od_macro_id[$j] = $od_macro["host_macro_id"];
+    $od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
+    $od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
+    $od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
+    $od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
+    $od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["host_macro_value"]);
+    $od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
+    $od_macro_host_id[$j] = $od_macro["host_host_id"];
+    $j++;
 }
 $DBRESULT->free();
 
@@ -292,60 +294,61 @@ $extImgStatusmap = return_image_list(2);
 ##########################################################
 # Var information to format the element
 #
-$attrsText 		= array("size"=>"30");
-$attrsText2		= array("size"=>"6");
+$attrsText      = array("size"=>"30");
+$attrsText2         = array("size"=>"6");
 $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 $attrsAdvSelect2 = array("style" => "width: 300px; height: 200px;");
-$attrsTextarea 	= array("rows" => "4", "cols" => "80");
-$advancedSelectTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows" => "4", "cols" => "80");
+$advancedSelectTemplate     = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrTimeperiods = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
-    'multiple' => false,
-    'linkedObject' => 'centreonTimeperiod'
+'datasourceOrigin' => 'ajax',
+'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+'multiple' => false,
+'linkedObject' => 'centreonTimeperiod'
 );
 $attrContacts = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonContact'
+'datasourceOrigin' => 'ajax',
+'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+'multiple' => true,
+'linkedObject' => 'centreonContact'
 );
 $attrContactgroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonContactgroup'
+'datasourceOrigin' => 'ajax',
+'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+'multiple' => true,
+'linkedObject' => 'centreonContactgroup'
 );
 $attrServices = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonServicetemplates'
+'datasourceOrigin' => 'ajax',
+'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+'multiple' => true,
+'linkedObject' => 'centreonServicetemplates'
 );
 $attrHostcategories = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonHostcategories'
+'datasourceOrigin' => 'ajax',
+'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list',
+'multiple' => true,
+'linkedObject' => 'centreonHostcategories'
 );
 $attrCommands = array(
-    'datasourceOrigin' => 'ajax',
-    'multiple' => false,
-    'linkedObject' => 'centreonCommand'
+'datasourceOrigin' => 'ajax',
+'multiple' => false,
+'linkedObject' => 'centreonCommand'
 );
 
 #
 ## Form begin
 #
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
-	$form->addElement('header', 'title', _("Add a Host Template"));
-else if ($o == "c")
-	$form->addElement('header', 'title', _("Modify a Host Template"));
-else if ($o == "w")
-	$form->addElement('header', 'title', _("View a Host Template"));
-else if ($o == "mc")
-	$form->addElement('header', 'title', _("Massive Change"));
+if ($o == "a") {
+    $form->addElement('header', 'title', _("Add a Host Template"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title', _("Modify a Host Template"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title', _("View a Host Template"));
+} elseif ($o == "mc") {
+    $form->addElement('header', 'title', _("Massive Change"));
+}
 
 ## Sort 1 - Host Template Configuration
 #
@@ -353,31 +356,31 @@ else if ($o == "mc")
 #
 $form->addElement('header', 'information', _("General Information"));
 # No possibility to change name and alias, because there's no interest
-if ($o != "mc")	{
-	$form->addElement('text', 'host_name', _("Host Template Name"), $attrsText);
-	$form->addElement('text', 'host_alias', _("Alias"), $attrsText);
+if ($o != "mc") {
+    $form->addElement('text', 'host_name', _("Host Template Name"), $attrsText);
+    $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
 }
 $form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
 $form->addElement('select', 'host_snmp_version', _("Version"), array(null=>null, 1=>"1", "2c"=>"2c", 3=>"3"));
 $form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 
 $attrTimezones = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
-    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=host&field=host_location&id=' . $host_id,
-    'multiple' => false,
-    'linkedObject' => 'centreonGMT'
+'datasourceOrigin' => 'ajax',
+'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
+'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=host&field=host_location&id=' . $host_id,
+'multiple' => false,
+'linkedObject' => 'centreonGMT'
 );
 $form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
 
 $form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
 
-if ($o == "mc")	{
-	$mc_mod_tplp = array();
-	$mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
-	$mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_tplp, 'mc_mod_tplp', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_tplp'=>'0'));
+if ($o == "mc") {
+    $mc_mod_tplp = array();
+    $mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
+    $mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_tplp, 'mc_mod_tplp', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_tplp'=>'0'));
 }
 
 ?>
@@ -388,29 +391,29 @@ $form->addElement('static', 'tplText', _("Using a Template allows you to have mu
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
-        'text', 
-        'macroInput[#index#]',
-        _('Macro name'),
-        array(
+    'text',
+    'macroInput[#index#]',
+    _('Macro name'),
+    array(
             'id' => 'macroInput_#index#',
             'size' => 25
         )
-        );
+);
 $cloneSetMacro[] = $form->addElement(
-        'text', 
-        'macroValue[#index#]',
-        _('Macro value'),
-        array(
+    'text',
+    'macroValue[#index#]',
+    _('Macro value'),
+    array(
             'id' => 'macroValue_#index#',
             'size' => 25
         )
-        );
+);
 $cloneSetMacro[] = $form->addElement(
-        'checkbox',
-        'macroPassword[#index#]',
-        _('Password'),
-        null,
-        array(
+    'checkbox',
+    'macroPassword[#index#]',
+    _('Password'),
+    null,
+    array(
             'id' => 'macroPassword_#index#',
             'onClick' => 'javascript:change_macro_input_type(this, false)'
         )
@@ -418,18 +421,20 @@ $cloneSetMacro[] = $form->addElement(
 
 $cloneSetTemplate = array();
 $cloneSetTemplate[] = $form->addElement(
-        'select', 
-        'tpSelect[#index#]', 
-        _("Template"), 
-        (array(null => null) + $hostObj->getList(false, true))
-        ,
-        array(
+    'select',
+    'tpSelect[#index#]',
+    _("Template"),
+    (array(null => null) + $hostObj->getList(false, true)),
+    array(
             "id" => "tpSelect_#index#",
             "type" => "select-one"
             )
-        );
+);
 $cloneSetMacro[] = $form->addElement(
-    'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
+    'hidden',
+    'macroFrom[#index#]',
+    'direct',
+    array('id' => 'macroFrom_#index#')
 );
     
 /*
@@ -456,16 +461,17 @@ $hostEHE[] = HTML_QuickForm::createElement('radio', 'host_event_handler_enabled'
 $hostEHE[] = HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("No"), '0');
 $hostEHE[] = HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("Default"), '2');
 $form->addGroup($hostEHE, 'host_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_event_handler_enabled' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_event_handler_enabled' => '2'));
+}
 
 $attrCommand2 = array_merge(
     $attrCommands,
-        array(
+    array(
             'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
             'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=host&field=command_command_id2&id=' . $host_id
         )
-    );
+);
 $eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
 $eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
 
@@ -477,15 +483,17 @@ $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled'
 $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
 $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Default"), '2');
 $form->addGroup($hostACE, 'host_active_checks_enabled', _("Active Checks Enabled"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_active_checks_enabled' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_active_checks_enabled' => '2'));
+}
 
 $hostPCE[] = HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("Yes"), '1');
 $hostPCE[] = HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("No"), '0');
 $hostPCE[] = HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("Default"), '2');
 $form->addGroup($hostPCE, 'host_passive_checks_enabled', _("Passive Checks Enabled"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_passive_checks_enabled' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_passive_checks_enabled' => '2'));
+}
 
 $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
@@ -506,13 +514,14 @@ $hostNE[] = HTML_QuickForm::createElement('radio', 'host_notifications_enabled',
 $hostNE[] = HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, _("No"), '0');
 $hostNE[] = HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, _("Default"), '2');
 $form->addGroup($hostNE, 'host_notifications_enabled', _("Notification Enabled"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_notifications_enabled' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_notifications_enabled' => '2'));
+}
 
 /*
  * Additive
  */
-if ($o == "mc")	{
+if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
@@ -525,25 +534,25 @@ if ($o == "mc")	{
 } else {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
- }   
-if ($o == "mc")	{
-	$mc_mod_notifopt_first_notification_delay = array();
-	$mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
-	$mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_notifopt_first_notification_delay, 'mc_mod_notifopt_first_notification_delay', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_notifopt_first_notification_delay'=>'0'));
+}
+if ($o == "mc") {
+    $mc_mod_notifopt_first_notification_delay = array();
+    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
+    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_notifopt_first_notification_delay, 'mc_mod_notifopt_first_notification_delay', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_notifopt_first_notification_delay'=>'0'));
 }
 
 $form->addElement('text', 'host_first_notification_delay', _("First notification delay"), $attrsText2);
 
 $form->addElement('text', 'host_recovery_notification_delay', _("Recovery notification delay"), $attrsText2);
 
-if ($o == "mc")	{
-	$mc_mod_hcg = array();
-	$mc_mod_hcg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
-	$mc_mod_hcg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_hcg'=>'0'));
+if ($o == "mc") {
+    $mc_mod_hcg = array();
+    $mc_mod_hcg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
+    $mc_mod_hcg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_hcg, 'mc_mod_hcg', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_hcg'=>'0'));
 }
 
 /*
@@ -568,12 +577,12 @@ $form->addElement('select2', 'host_cgs', _("Linked Contact Groups"), array(), $a
 /*
  * Categories
  */
-if ($o == "mc")	{
-	$mc_mod_hhc = array();
-	$mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Incremental"), '0');
-	$mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_hhc, 'mc_mod_hhc', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_hhc'=>'0'));
+if ($o == "mc") {
+    $mc_mod_hhc = array();
+    $mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Incremental"), '0');
+    $mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_hhc, 'mc_mod_hhc', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_hhc'=>'0'));
 }
 
 $attrHostcategory1 = array_merge(
@@ -582,22 +591,22 @@ $attrHostcategory1 = array_merge(
 );
 $form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
 
-if ($o == "mc")	{
-	$mc_mod_notifopt_notification_interval = array();
-	$mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
-	$mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_notifopt_notification_interval'=>'0'));
+if ($o == "mc") {
+    $mc_mod_notifopt_notification_interval = array();
+    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
+    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_notifopt_notification_interval'=>'0'));
 }
 
 $form->addElement('text', 'host_notification_interval', _("Notification Interval"), $attrsText2);
 
-if ($o == "mc")	{
-	$mc_mod_notifopt_timeperiod = array();
-	$mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Incremental"), '0');
-	$mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
+if ($o == "mc") {
+    $mc_mod_notifopt_timeperiod = array();
+    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Incremental"), '0');
+    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
 }
 
 $attrTimeperiod2 = array_merge(
@@ -606,12 +615,12 @@ $attrTimeperiod2 = array_merge(
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
-if ($o == "mc")	{
-	$mc_mod_notifopts = array();
-	$mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
-	$mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_notifopts, 'mc_mod_notifopts', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_notifopts'=>'0'));
+if ($o == "mc") {
+    $mc_mod_notifopts = array();
+    $mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
+    $mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_notifopts, 'mc_mod_notifopts', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_notifopts'=>'0'));
 }
 
 $hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
@@ -633,30 +642,32 @@ $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $hostActivation[] = HTML_QuickForm::createElement('radio', 'host_activate', null, _("Enabled"), '1');
 $hostActivation[] = HTML_QuickForm::createElement('radio', 'host_activate', null, _("Disabled"), '0');
 $form->addGroup($hostActivation, 'host_activate', _("Status"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_activate' => '1'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_activate' => '1'));
+}
 
 $form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
 
 #
 ## Sort 2 - Host Relations
 #
-if ($o == "a")
-	$form->addElement('header', 'title2', _("Add relations"));
-else if ($o == "c")
-	$form->addElement('header', 'title2', _("Modify relations"));
-else if ($o == "w")
-	$form->addElement('header', 'title2', _("View relations"));
-else if ($o == "mc")
-	$form->addElement('header', 'title2', _("Massive Change"));
+if ($o == "a") {
+    $form->addElement('header', 'title2', _("Add relations"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title2', _("Modify relations"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title2', _("View relations"));
+} elseif ($o == "mc") {
+    $form->addElement('header', 'title2', _("Massive Change"));
+}
 
 $form->addElement('header', 'links', _("Relations"));
-if ($o == "mc")	{
-	$mc_mod_htpl = array();
-	$mc_mod_htpl[] = HTML_QuickForm::createElement('radio', 'mc_mod_htpl', null, _("Incremental"), '0');
-	$mc_mod_htpl[] = HTML_QuickForm::createElement('radio', 'mc_mod_htpl', null, _("Replacement"), '1');
-	$form->addGroup($mc_mod_htpl, 'mc_mod_htpl', _("Update mode"), '&nbsp;');
-	$form->setDefaults(array('mc_mod_htpl'=>'0'));
+if ($o == "mc") {
+    $mc_mod_htpl = array();
+    $mc_mod_htpl[] = HTML_QuickForm::createElement('radio', 'mc_mod_htpl', null, _("Incremental"), '0');
+    $mc_mod_htpl[] = HTML_QuickForm::createElement('radio', 'mc_mod_htpl', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_htpl, 'mc_mod_htpl', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_htpl'=>'0'));
 }
 
 $attrService1 = array_merge(
@@ -668,14 +679,15 @@ $form->addElement('select2', 'host_svTpls', _("Linked Service Templates"), array
 #
 ## Sort 3 - Data treatment
 #
-if ($o == "a")
-	$form->addElement('header', 'title3', _("Add Data Processing"));
-else if ($o == "c")
-	$form->addElement('header', 'title3', _("Modify Data Processing"));
-else if ($o == "w")
-	$form->addElement('header', 'title3', _("View Data Processing"));
-else if ($o == "mc")
-	$form->addElement('header', 'title2', _("Massive Change"));
+if ($o == "a") {
+    $form->addElement('header', 'title3', _("Add Data Processing"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title3', _("Modify Data Processing"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title3', _("View Data Processing"));
+} elseif ($o == "mc") {
+    $form->addElement('header', 'title2', _("Massive Change"));
+}
 
 $form->addElement('header', 'treatment', _("Data Processing"));
 
@@ -683,22 +695,25 @@ $hostOOH[] = HTML_QuickForm::createElement('radio', 'host_obsess_over_host', nul
 $hostOOH[] = HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
 $hostOOH[] = HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
 $form->addGroup($hostOOH, 'host_obsess_over_host', _("Obsess Over Host"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_obsess_over_host' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_obsess_over_host' => '2'));
+}
 
 $hostCF[] = HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("Yes"), '1');
 $hostCF[] = HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("No"), '0');
 $hostCF[] = HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("Default"), '2');
 $form->addGroup($hostCF, 'host_check_freshness', _("Check Freshness"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_check_freshness' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_check_freshness' => '2'));
+}
 
 $hostFDE[] = HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("Yes"), '1');
 $hostFDE[] = HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("No"), '0');
 $hostFDE[] = HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("Default"), '2');
 $form->addGroup($hostFDE, 'host_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_flap_detection_enabled' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_flap_detection_enabled' => '2'));
+}
 
 $form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
 $form->addElement('text', 'host_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
@@ -708,32 +723,36 @@ $hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', nu
 $hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, _("No"), '0');
 $hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, _("Default"), '2');
 $form->addGroup($hostPPD, 'host_process_perf_data', _("Process Perf Data"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_process_perf_data' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_process_perf_data' => '2'));
+}
 
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("Yes"), '1');
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("No"), '0');
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("Default"), '2');
 $form->addGroup($hostRSI, 'host_retain_status_information', _("Retain Status Information"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_retain_status_information' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_retain_status_information' => '2'));
+}
 
 $hostRNI[] = HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, _("Yes"), '1');
 $hostRNI[] = HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, _("No"), '0');
 $hostRNI[] = HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, _("Default"), '2');
 $form->addGroup($hostRNI, 'host_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
-if ($o != "mc")
-	$form->setDefaults(array('host_retain_nonstatus_information' => '2'));
+if ($o != "mc") {
+    $form->setDefaults(array('host_retain_nonstatus_information' => '2'));
+}
 
 #
 ## Sort 4 - Extended Infos
 #
-if ($o == "a")
-	$form->addElement('header', 'title4', _("Add a Host Extended Info"));
-else if ($o == "c")
-	$form->addElement('header', 'title4', _("Modify a Host Extended Info"));
-else if ($o == "w")
-	$form->addElement('header', 'title4', _("View a Host Extended Info"));
+if ($o == "a") {
+    $form->addElement('header', 'title4', _("Add a Host Extended Info"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title4', _("Modify a Host Extended Info"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title4', _("View a Host Extended Info"));
+}
 
 $form->addElement('header', 'nagios', _("Monitoring engine"));
 $form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
@@ -742,7 +761,7 @@ $form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 $form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
 $form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
-$form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"),$extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
+$form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
@@ -752,7 +771,7 @@ $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 $criticality = new CentreonCriticality($pearDB);
 $critList = $criticality->getList();
 $criticalityIds = array(null => null);
-foreach($critList as $critId => $critData) {
+foreach ($critList as $critId => $critData) {
     $criticalityIds[$critId] = $critData['hc_name'].' ('.$critData['level'].')';
 }
 $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
@@ -763,14 +782,15 @@ $form->addElement('header', 'oreon', _("Centreon"));
 ## Sort 5 - Macros - NAGIOS 3
 #
 
-if ($o == "a")
-	$form->addElement('header', 'title5', _("Add macros"));
-else if ($o == "c")
-	$form->addElement('header', 'title5', _("Modify macros"));
-else if ($o == "w")
-	$form->addElement('header', 'title5', _("View macros"));
-else if ($o == "mc")
-	$form->addElement('header', 'title5', _("Massive Change"));
+if ($o == "a") {
+    $form->addElement('header', 'title5', _("Add macros"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title5', _("Modify macros"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title5', _("View macros"));
+} elseif ($o == "mc") {
+    $form->addElement('header', 'title5', _("Massive Change"));
+}
 
 $form->addElement('header', 'macro', _("Macros"));
 $form->addElement('text', 'add_new', _("Add a new macro"), $attrsText2);
@@ -786,20 +806,22 @@ $assoc = $form->addElement('hidden', 'dupSvTplAssoc');
 $assoc->setValue("0");
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
-if (is_array($select))	{
-	$select_str = NULL;
-	foreach ($select as $key => $value)
-		$select_str .= $key.",";
-	$select_pear = $form->addElement('hidden', 'select');
-	$select_pear->setValue($select_str);
+if (is_array($select)) {
+    $select_str = null;
+    foreach ($select as $key => $value) {
+        $select_str .= $key.",";
+    }
+    $select_pear = $form->addElement('hidden', 'select');
+    $select_pear->setValue($select_str);
 }
 
 #
 ## Form Rules
 #
-function myReplace()	{
-	global $form;
-	return (str_replace(" ", "_", $form->getSubmitValue("host_name")));
+function myReplace()
+{
+    global $form;
+    return (str_replace(" ", "_", $form->getSubmitValue("host_name")));
 }
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('host_name', 'myReplace');
@@ -812,11 +834,12 @@ $form->addRule('host_alias', _("Compulsory Alias"), 'required');
 $form->registerRule('cg_group_exists', 'callback', 'testCg');
 $form->addRule('host_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 $from_list_menu = false;
-if ($o == "mc")	{
-	if ($form->getSubmitValue("submitMC"))
-		$from_list_menu = false;
-	else
-		$from_list_menu = true;
+if ($o == "mc") {
+    if ($form->getSubmitValue("submitMC")) {
+        $from_list_menu = false;
+    } else {
+        $from_list_menu = true;
+    }
 }
 
 #
@@ -828,30 +851,28 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path2, $tpl);
 
 # Just watch a host information
-if ($o == "w")	{
-	if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$host_id]))
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$host_id."'"));
+if ($o == "w") {
+    if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$host_id])) {
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$host_id."'"));
+    }
     $form->setDefaults($host);
-	$form->freeze();
-}
-# Modify a host information
-else if ($o == "c")	{
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->freeze();
+} # Modify a host information
+elseif ($o == "c") {
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($host);
-}
-# Add a host information
-else if ($o == "a")	{
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-}
-# Massive Change
-else if ($o == "mc")	{
-	$subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+} # Add a host information
+elseif ($o == "a") {
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+} # Massive Change
+elseif ($o == "mc") {
+    $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min"=>$min));
+$tpl->assign('msg', array ("nagios" => $centreon->user->get_version(), "tpl"=>1, "min"=>$min));
 $tpl->assign('min', $min);
 $tpl->assign('p', $p);
 $tpl->assign("sort1", _("Host Configuration"));
@@ -869,38 +890,40 @@ $tpl->assign('javascript', '
         <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>
     ');
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 # prepare help texts
 $helptext = "";
 include_once("include/configuration/configObject/host/help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
-$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
+$tpl->assign('time_unit', " * ".$centreon->optGen["interval_length"]." "._("seconds"));
 
 $valid = false;
-if ($form->validate() && $from_list_menu == false)	{
-	$hostObj = $form->getElement('host_id');
-	if ($form->getSubmitValue("submitA"))
-		$hostObj->setValue(insertHostInDB());
-	else if ($form->getSubmitValue("submitC"))
-		updateHostInDB($hostObj->getValue());
-	else if ($form->getSubmitValue("submitMC"))	{
-		$select = explode(",", $select);
-		foreach ($select as $key=>$value)
-			if ($value)
-				updateHostInDB($value, true);
-	}
-	$o = NULL;
-	$valid = true;
+if ($form->validate() && $from_list_menu == false) {
+    $hostObj = $form->getElement('host_id');
+    if ($form->getSubmitValue("submitA")) {
+        $hostObj->setValue(insertHostInDB());
+    } elseif ($form->getSubmitValue("submitC")) {
+        updateHostInDB($hostObj->getValue());
+    } elseif ($form->getSubmitValue("submitMC")) {
+        $select = explode(",", $select);
+        foreach ($select as $key => $value) {
+            if ($value) {
+                updateHostInDB($value, true);
+            }
+        }
+    }
+    $o = null;
+    $valid = true;
 }
 
-if ($valid)
-	require_once($path."listHostTemplateModel.php");
-else {
+if ($valid) {
+    require_once($path."listHostTemplateModel.php");
+} else {
     #Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -927,8 +950,8 @@ else {
 
 ?>
 <script type="text/javascript">
-		showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
-		showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
-		showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
+        showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
+        showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
+        showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
 </script>
 <?php } ?>
