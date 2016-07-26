@@ -952,7 +952,14 @@
 
 		    } else {
                         if (!is_null($prefix)) {
-                            $bkpConf['host_name'] = $prefix.$bkpConf['host_name'];
+                           #$bkpConf['host_name'] = $prefix.$bkpConf['host_name'];
+                           if ( isset($tmpConf["host_register"]["host_register"]) && ($tmpConf["host_register"]["host_register"] == '0') ) {
+                              #Modele
+                              $bkpConf["name"] = $prefix.$bkpConf["name"];
+                             } else {
+                              #host
+                              $bkpConf["host_name"] = $prefix.$bkpConf["host_name"];
+                             }
                             return insertHostCFG($bkpConf, $prefix);
                         } else {
 		            $useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
@@ -1569,7 +1576,15 @@
 			}
 		} else {
                     if (!is_null($prefix)) {
-                        $bkpConf["service_description"] = $prefix.$bkpConf["service_description"];
+                        #$bkpConf["service_description"] = $prefix.$bkpConf["service_description"];
+                        # correction bug import templateService
+                       if ( isset($tmpConf["service_register"]["service_register"]) && ($tmpConf["service_register"]["service_register"] == '0') ) {
+                          #Modele
+                          $bkpConf["name"] = $prefix.$bkpConf["name"];
+                        } else {
+                          #Service
+                          $bkpConf["service_description"] = $prefix.$bkpConf["service_description"];
+                        }
                         return insertServiceCFG($bkpConf, $prefix);
                     } else {
                         if (!is_null($use)) {
