@@ -48,7 +48,7 @@ class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()

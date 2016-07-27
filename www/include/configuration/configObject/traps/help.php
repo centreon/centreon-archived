@@ -63,4 +63,3 @@ $help["traps_timeout"] = dgettext("help", "Maximum execution time of trap proces
 $help["traps_customcode"] = dgettext("help", "Custom Perl code. Will be executed with no change (security issue. Need to set centreontrapd secure_mode to '1')");
 $help["services"] = dgettext("help", "Choose a service from the list. The service must have been created beforehand.");
 $help["service_templates"] = dgettext("help", "Choose a service template from the list. The service template must have been created beforehand.");
-

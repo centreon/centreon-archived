@@ -42,7 +42,7 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
     protected $centcore_file;
@@ -65,7 +65,7 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
         $this->pipeOpened = 0;
     }
 
-    /* 
+    /*
      * Get poller Listing 
      */
     private function getPollers()
@@ -95,13 +95,13 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                 $this->hostServices[$row['host_name']][$row['service_description']] = 1;
             }
             $DBRESULT->free();
-        } 
+        }
     }
 
     private function openPipe()
     {
         if ($this->fh = @fopen($this->centcore_file, 'a+')) {
-            $this->pipeOpened = 1;        
+            $this->pipeOpened = 1;
         } else {
             throw new RestBadRequestException("Can't open centcore pipe");
         }
@@ -117,7 +117,7 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
     {
         if ($this->pipeOpened == 0) {
             throw new RestBadRequestException("Can't write results because pipe is closed");
-        } 
+        }
 
         if ($string != '') {
             fwrite($this->fh, $string."\n");
@@ -134,14 +134,14 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
             $command = $data["host"].";".$data["service"].";".$data["status"].";".$data["output"]."|".$data["perfdata"];
             $this->writeInPipe("EXTERNALCMD:".$this->pollerHosts['name'][$data["host"]].":[".$data['updatetime']."] PROCESS_HOST_CHECK_RESULT;".$command);
         } else {
-            /* Host Update */ 
+            /* Host Update */
             $command = $data["host"].";".$data["status"].";".$data["output"]."|".$data["perfdata"];
             $this->writeInPipe("EXTERNALCMD:".$this->pollerHosts['name'][$data["host"]].":[".$data['updatetime']."] PROCESS_SERVICE_CHECK_RESULT;".$command);
         }
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function postSubmit()
@@ -161,7 +161,7 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                             $host = new CentreonHost($this->pearDB);
                             $ret = array(   'host_name' => $data['host'],
                                             'host_alias' => "Passif host - ".$data['host'],
-                                            'host_address' => $data['host'], 
+                                            'host_address' => $data['host'],
                                             'host_active_checks_enabled' => array('host_active_checks_enabled', 0),
                                             'host_passive_checks_enabled' => array('host_passive_checks_enabled' => 1),
                                             'host_retry_check_interval' => 1,
@@ -182,12 +182,12 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                                 $host = new CentreonHost($this->pearDB);
                             }
                             $service = new CentreonService($this->pearDB);
-                            $ret = array(   'service_description' => $data["service"], 
-                                            'service_max_check_attempts' => 3, 
-                                            'service_template_model_stm_id' => 1, 
-                                            'service_normal_check_interval' => $data['interval'], 
-                                            'service_retry_check_interval' => $data['interval'], 
-                                            'service_active_checks_enabled' => array('service_active_checks_enabled' => 0), 
+                            $ret = array(   'service_description' => $data["service"],
+                                            'service_max_check_attempts' => 3,
+                                            'service_template_model_stm_id' => 1,
+                                            'service_normal_check_interval' => $data['interval'],
+                                            'service_retry_check_interval' => $data['interval'],
+                                            'service_active_checks_enabled' => array('service_active_checks_enabled' => 0),
                                             'service_passive_checks_enabled' => array('service_passive_checks_enabled' => 1),
                                             'service_register' => 1,
                                             'service_activate' => array('service_activate' => 1),
@@ -199,7 +199,6 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                             }
                             $service->insertExtendInfo(array('service_service_id' => $service_id));
                             $host->insertRelHostService($host_id, $service_id);
-
                         }
                     }
                     if (isset($this->pollerHosts['name'][$data['host']])) {

@@ -49,7 +49,8 @@ include_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
 
 $centreonDbName = $conf_centreon['db'];
 
-function programExit($msg) {
+function programExit($msg)
+{
     echo "[" . date("Y-m-d H:i:s") . "] " . $msg . "\n";
     exit;
 }
@@ -237,14 +238,14 @@ try {
     while ($result = $DBRESULT1->fetchRow()) {
         $tabGroups[$result["acl_group_id"]] = 1;
         if ($groupStr != '') {
-            $groupStr .= ",";      
+            $groupStr .= ",";
         }
         $groupStr = $result["acl_group_id"];
     }
     $DBRESULT1->free();
     unset($result);
 
-    if (count($tabGroups)) {        
+    if (count($tabGroups)) {
         
         /** ***********************************************
          *  Caching of all Data
@@ -410,7 +411,7 @@ try {
                             }
                             $sgCache[$acl_g_id][$rId][$row['host_host_id']][$svcCache[$row['service_service_id']]] = $row['service_service_id'];
                         }
-                    }                    
+                    }
                 }
             }
         }
@@ -540,7 +541,7 @@ try {
 
                 // Filter
                 $Host = getFilteredHostCategories($Host, $acl_group_id, $res2["acl_res_id"]);
-                $Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);                
+                $Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);
 
                 /*
                  * Initialize and first filter
@@ -615,7 +616,7 @@ try {
             
             $cpt++;
             $pearDB->query("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " . $pearDB->escape($acl_group_id));
-        }   
+        }
     }
     
     /*
@@ -628,7 +629,6 @@ try {
      */
     $pearDB->disconnect();
     $pearDBO->disconnect();
-
 } catch (Exception $e) {
     programExit($e->getMessage());
 }
