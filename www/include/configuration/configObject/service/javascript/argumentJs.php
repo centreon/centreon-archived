@@ -61,7 +61,7 @@ function transformForm()
     proc.setXml(addrXML);
     proc.setXslt(addrXSL);
     proc.transform("dynamicDiv");
-	trapId = 0;
+    trapId = 0;
 }
 
 /**

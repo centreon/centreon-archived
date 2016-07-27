@@ -51,7 +51,7 @@ if (!$oreon->user->admin) {
  * Database retrieve information for Contact
  */
 $cct = array();
-if (($o == "c" || $o == "w") && $sc_id)	{
+if (($o == "c" || $o == "w") && $sc_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$sc_id."' LIMIT 1");
     /*
      * Set base value
@@ -69,7 +69,7 @@ if (($o == "c" || $o == "w") && $sc_id)	{
  */
 $hServices = array();
 $DBRESULT = $pearDB->query("SELECT service_alias, service_description, service_id FROM service WHERE service_register = '0' ORDER BY service_alias, service_description");
-while ($elem = $DBRESULT->fetchRow())	{
+while ($elem = $DBRESULT->fetchRow()) {
     $elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
     $elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
     $elem["service_alias"] = str_replace('#S#', "/", $elem["service_alias"]);
@@ -81,11 +81,11 @@ $DBRESULT->free();
 /*
  * Define Template
  */
-$attrsText 		= array("size"=>"30");
-$attrsText2 	= array("size"=>"60");
+$attrsText      = array("size"=>"30");
+$attrsText2     = array("size"=>"60");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
@@ -97,12 +97,13 @@ $attrServicetemplates = array(
  * Form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Service Category"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a Service Category"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a Service Category"));
+}
 
 /*
  * Contact basic information
@@ -146,8 +147,8 @@ $form->addElement('hidden', 'sc_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-if (is_array($select))	{
-    $select_str = NULL;
+if (is_array($select)) {
+    $select_str = null;
     foreach ($select as $key => $value) {
         $select_str .= $key.",";
     }
@@ -158,7 +159,8 @@ if (is_array($select))	{
 /*
  * Form Rules
  */
-function myReplace()	{
+function myReplace()
+{
     global $form;
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["contact_name"]));
@@ -189,7 +191,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 # prepare help texts
 $helptext = "";
@@ -201,22 +203,23 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w")	{
+if ($o == "w") {
     /*
      * Just watch a service_categories information
      */
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
+    }
     $form->setDefaults($sc);
     $form->freeze();
-} else if ($o == "c")	{
+} elseif ($o == "c") {
     /*
      * Modify a service_categories information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($sc);
-} else if ($o == "a")	{
+} elseif ($o == "a") {
     /*
      * Add a service_categories information
      */
@@ -225,19 +228,20 @@ if ($o == "w")	{
 }
 
 $valid = false;
-if ($form->validate() && $from_list_menu == false)	{
+if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('sc_id');
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         $cctObj->setValue(insertServiceCategorieInDB());
-    else if ($form->getSubmitValue("submitC"))
+    } elseif ($form->getSubmitValue("submitC")) {
         updateServiceCategorieInDB($cctObj->getValue());
-    $o = NULL;
-   $valid = true;
+    }
+    $o = null;
+    $valid = true;
 }
 
-if ($valid)
+if ($valid) {
     require_once($path."listServiceCategories.php");
-else	{
+} else {
     /*
      * Apply a template definition
      */

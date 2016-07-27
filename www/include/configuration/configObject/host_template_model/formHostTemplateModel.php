@@ -954,4 +954,4 @@ if ($valid) {
         showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
         showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
 </script>
-<?php } 
+<?php }

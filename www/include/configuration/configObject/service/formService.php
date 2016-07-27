@@ -49,7 +49,8 @@ $serviceObj = new CentreonService($pearDB);
  * Database retrieve information for Service
  * @param unknown_type $arg
  */
-function myDecodeService($arg) {
+function myDecodeService($arg)
+{
     $arg = str_replace('#BR#', "\\n", $arg);
     $arg = str_replace('#T#', "\\t", $arg);
     $arg = str_replace('#R#', "\\r", $arg);
@@ -131,7 +132,6 @@ $service = array();
 $serviceTplId = null;
 $initialValues = array();
 if (($o == "c" || $o == "w") && $service_id) {
-
     $DBRESULT = $pearDB->query("SELECT * FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '" . $service_id . "' LIMIT 1");
     /*
      * Set base value
@@ -274,9 +274,9 @@ if (($o == "c" || $o == "w") && $service_id) {
 
 $cdata = CentreonData::getInstance();
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
-                json_encode($aMacros), ENT_QUOTES
-        )
-);
+    json_encode($aMacros),
+    ENT_QUOTES
+));
 
 $cdata->addJsData('clone-count-macro', count($aMacros));
 
@@ -498,12 +498,12 @@ if ($o != "mc") {
 }
 
 $attrCommand2 = array_merge(
-        $attrCommands,
-        array(
+    $attrCommands,
+    array(
             'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
             'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id2&id=' . $service_id
         )
-    );
+);
 $eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
 $eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
 
@@ -526,14 +526,17 @@ if ($o != "mc") {
 }
 
 $attrTimeperiod1 = array_merge(
-        $attrTimeperiods,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
-    );
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
+);
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
-        'text', 'macroInput[#index#]', _('Name'), array(
+    'text',
+    'macroInput[#index#]',
+    _('Name'),
+    array(
     'id' => 'macroInput_#index#',
     'size' => 25
         )
@@ -561,7 +564,10 @@ $cloneSetMacro[] = $form->addElement(
 );
 
 $cloneSetMacro[] = $form->addElement(
-    'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
+    'hidden',
+    'macroFrom[#index#]',
+    'direct',
+    array('id' => 'macroFrom_#index#')
 );
 
 /**
@@ -616,7 +622,7 @@ if ($o != "mc") {
  * Additive
  */
 
-if ($o == "mc")	{
+if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
@@ -629,7 +635,7 @@ if ($o == "mc")	{
 } else {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
- }
+}
 
 /*
  *  Contacts
@@ -753,7 +759,6 @@ if ($form_service_type == "BYHOST") {
         array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=service_hPars&id=' . $service_id)
     );
     $form->addElement('select2', 'service_hPars', _("Linked with Hosts"), array(), $attrHost1);
-    
 }
 
 if ($form_service_type == "BYHOSTGROUP") {
@@ -1040,7 +1045,8 @@ if ($o == "w") {
 }
 
 $tpl->assign('msg', array("nagios" => $centreon->user->get_version(), "tpl" => 0));
-$tpl->assign('javascript',
+$tpl->assign(
+    'javascript',
     '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>'

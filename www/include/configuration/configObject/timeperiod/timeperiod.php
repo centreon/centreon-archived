@@ -34,19 +34,19 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["tp_id"]) ? $tpG = $_GET["tp_id"] : $tpG = NULL;
-isset($_POST["tp_id"]) ? $tpP = $_POST["tp_id"] : $tpP = NULL;
+isset($_GET["tp_id"]) ? $tpG = $_GET["tp_id"] : $tpG = null;
+isset($_POST["tp_id"]) ? $tpP = $_POST["tp_id"] : $tpP = null;
 $tpG ? $tp_id = $tpG : $tp_id = $tpP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -63,15 +63,32 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-switch ($o)	{
-	case "a" : require_once($path."formTimeperiod.php"); break; //Add a Timeperiod
-	case "w" : require_once($path."formTimeperiod.php"); break; //Watch a Timeperiod
-	case "c" : require_once($path."formTimeperiod.php"); break; //Modify a Timeperiod
-	case "s" : require_once($path."renderTimeperiod.php"); break; //Show Timeperiod
-	case "m" : multipleTimeperiodInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listTimeperiod.php"); break; #Duplicate n Timeperiods
-	case "d" : deleteTimeperiodInDB(isset($select) ? $select : array()); require_once($path."listTimeperiod.php"); break; #Delete n Timeperiods
-	default : require_once($path."listTimeperiod.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formTimeperiod.php");
+        break; //Add a Timeperiod
+    case "w":
+        require_once($path."formTimeperiod.php");
+        break; //Watch a Timeperiod
+    case "c":
+        require_once($path."formTimeperiod.php");
+        break; //Modify a Timeperiod
+    case "s":
+        require_once($path."renderTimeperiod.php");
+        break; //Show Timeperiod
+    case "m":
+        multipleTimeperiodInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listTimeperiod.php");
+        break; #Duplicate n Timeperiods
+    case "d":
+        deleteTimeperiodInDB(isset($select) ? $select : array());
+        require_once($path."listTimeperiod.php");
+        break; #Delete n Timeperiods
+    default:
+        require_once($path."listTimeperiod.php");
+        break;
 }

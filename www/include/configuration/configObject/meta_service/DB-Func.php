@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
     require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-function testExistence ($name = null)
+function testExistence($name = null)
 {
     global $pearDB;
     global $form;
@@ -51,16 +51,17 @@ function testExistence ($name = null)
     $DBRESULT = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $meta = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id)
+    if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id) {
         return true;
-    #Duplicate entry
-    else if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] != $id)
+    } #Duplicate entry
+    elseif ($DBRESULT->numRows() >= 1 && $meta["meta_id"] != $id) {
         return false;
-    else
+    } else {
         return true;
+    }
 }
 
-function enableMetaServiceInDB ($meta_id = null)
+function enableMetaServiceInDB($meta_id = null)
 {
     if (!$meta_id) {
         return;
@@ -69,7 +70,7 @@ function enableMetaServiceInDB ($meta_id = null)
     $DBRESULT = $pearDB->query("UPDATE meta_service SET meta_activate = '1' WHERE meta_id = '".$meta_id."'");
 }
 
-function disableMetaServiceInDB ($meta_id = null)
+function disableMetaServiceInDB($meta_id = null)
 {
     if (!$meta_id) {
         return;
@@ -78,41 +79,45 @@ function disableMetaServiceInDB ($meta_id = null)
     $DBRESULT = $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '".$meta_id."'");
 }
 
-function deleteMetaServiceInDB ($metas = array())
+function deleteMetaServiceInDB($metas = array())
 {
     global $pearDB;
-    foreach($metas as $key=>$value) {
+    foreach ($metas as $key => $value) {
         $pearDB->query("DELETE FROM meta_service WHERE meta_id = '".$pearDB->escape($key)."'");
         $pearDB->query("DELETE FROM service WHERE service_description = 'meta_".$pearDB->escape($key)."' AND service_register = '2'");
     }
 }
 
-function enableMetricInDB ($msr_id = null)
+function enableMetricInDB($msr_id = null)
 {
-    if (!$msr_id) return;
+    if (!$msr_id) {
+        return;
+    }
     global $pearDB;
     $DBRESULT = $pearDB->query("UPDATE meta_service_relation SET activate = '1' WHERE msr_id = '".$msr_id."'");
 }
 
-function disableMetricInDB ($msr_id = null)
+function disableMetricInDB($msr_id = null)
 {
-    if (!$msr_id) return;
+    if (!$msr_id) {
+        return;
+    }
     global $pearDB;
     $DBRESULT = $pearDB->query("UPDATE meta_service_relation SET activate = '0' WHERE msr_id = '".$msr_id."'");
 }
 
-function deleteMetricInDB ($metrics = array())
+function deleteMetricInDB($metrics = array())
 {
     global $pearDB;
-    foreach($metrics as $key=>$value) {
+    foreach ($metrics as $key => $value) {
         $DBRESULT = $pearDB->query("DELETE FROM meta_service_relation WHERE msr_id = '".$key."'");
     }
 }
 
-function multipleMetaServiceInDB ($metas = array(), $nbrDup = array())
+function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
 {
     # Foreach Meta Service
-    foreach($metas as $key=>$value) {
+    foreach ($metas as $key => $value) {
         global $pearDB;
         # Get all information about it
         $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$key."' LIMIT 1");
@@ -122,27 +127,27 @@ function multipleMetaServiceInDB ($metas = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             # Create a sentence which contains all the value
-            foreach ($row as $key2=>$value2)    {
+            foreach ($row as $key2 => $value2) {
                 $key2 == "meta_name" ? ($meta_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
             }
-            if (testExistence($meta_name))  {
+            if (testExistence($meta_name)) {
                 $val ? $rq = "INSERT INTO meta_service VALUES (".$val.")" : $rq = null;
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
                 $maxId = $DBRESULT->fetchRow();
-                if (isset($maxId["MAX(meta_id)"]))  {
+                if (isset($maxId["MAX(meta_id)"])) {
                     $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
-                    while($Cg = $DBRESULT->fetchRow())  {
+                    while ($Cg = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
                     }
                     $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '".$key."'");
-                    while($metric = $DBRESULT->fetchRow())  {
+                    while ($metric = $DBRESULT->fetchRow()) {
                         $val = null;
                         $metric["msr_id"] = '';
-                        foreach ($metric as $key2=>$value2) {
+                        foreach ($metric as $key2 => $value2) {
                             $key2 == "meta_id" ? $value2 = $maxId["MAX(meta_id)"] : null;
-                            $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                            $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
                         }
                         $DBRESULT2 = $pearDB->query("INSERT INTO meta_service_relation VALUES (".$val.")");
                     }
@@ -152,7 +157,7 @@ function multipleMetaServiceInDB ($metas = array(), $nbrDup = array())
     }
 }
 
-function updateMetaServiceInDB ($meta_id = null)
+function updateMetaServiceInDB($meta_id = null)
 {
     if (!$meta_id) {
         return;
@@ -162,7 +167,7 @@ function updateMetaServiceInDB ($meta_id = null)
     updateMetaServiceContactGroup($meta_id);
 }
 
-function insertMetaServiceInDB ()
+function insertMetaServiceInDB()
 {
     $meta_id = insertMetaService();
     updateMetaServiceContact($meta_id);
@@ -170,10 +175,10 @@ function insertMetaServiceInDB ()
     return ($meta_id);
 }
 
-function multipleMetricInDB ($metrics = array(), $nbrDup = array())
+function multipleMetricInDB($metrics = array(), $nbrDup = array())
 {
     # Foreach Meta Service
-    foreach($metrics as $key=>$value)   {
+    foreach ($metrics as $key => $value) {
         global $pearDB;
         # Get all information about it
         $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$key."' LIMIT 1");
@@ -183,15 +188,16 @@ function multipleMetricInDB ($metrics = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             # Create a sentence which contains all the value
-            foreach ($row as $key2=>$value2)
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+            foreach ($row as $key2 => $value2) {
+                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+            }
             $val ? $rq = "INSERT INTO meta_service_relation VALUES (".$val.")" : $rq = null;
             $DBRESULT = $pearDB->query($rq);
         }
     }
 }
 
-function checkMetaHost() 
+function checkMetaHost()
 {
     global $pearDB;
 
@@ -219,27 +225,27 @@ function insertMetaService($ret = array())
             "notification_period, notification_options, notifications_enabled, calcul_type, data_source_type, meta_select_mode, regexp_str, metric, warning, critical, " .
             "graph_id, meta_comment, geo_coords, meta_activate) " .
             "VALUES ( ";
-    isset($ret["meta_name"]) && $ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["meta_display"]) && $ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["check_period"]) && $ret["check_period"] != NULL ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
-    isset($ret["max_check_attempts"]) && $ret["max_check_attempts"] != NULL ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
-    isset($ret["normal_check_interval"]) && $ret["normal_check_interval"] != NULL ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
-    isset($ret["retry_check_interval"]) && $ret["retry_check_interval"] != NULL ? $rq .= "'".$ret["retry_check_interval"]."', ": $rq .= "NULL, ";
-    isset($ret["notification_interval"]) && $ret["notification_interval"] != NULL ? $rq .= "'".$ret["notification_interval"]."', " : $rq .= "NULL, ";
-    isset($ret["notification_period"]) && $ret["notification_period"] != NULL ? $rq .= "'".$ret["notification_period"]."', ": $rq .= "NULL, ";
-    isset($ret["ms_notifOpts"]) && $ret["ms_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["ms_notifOpts"]))."', " : $rq .= "NULL, ";
+    isset($ret["meta_name"]) && $ret["meta_name"] != null ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["meta_display"]) && $ret["meta_display"] != null ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["check_period"]) && $ret["check_period"] != null ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
+    isset($ret["max_check_attempts"]) && $ret["max_check_attempts"] != null ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
+    isset($ret["normal_check_interval"]) && $ret["normal_check_interval"] != null ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
+    isset($ret["retry_check_interval"]) && $ret["retry_check_interval"] != null ? $rq .= "'".$ret["retry_check_interval"]."', ": $rq .= "NULL, ";
+    isset($ret["notification_interval"]) && $ret["notification_interval"] != null ? $rq .= "'".$ret["notification_interval"]."', " : $rq .= "NULL, ";
+    isset($ret["notification_period"]) && $ret["notification_period"] != null ? $rq .= "'".$ret["notification_period"]."', ": $rq .= "NULL, ";
+    isset($ret["ms_notifOpts"]) && $ret["ms_notifOpts"] != null ? $rq .= "'".implode(",", array_keys($ret["ms_notifOpts"]))."', " : $rq .= "NULL, ";
     isset($ret["notifications_enabled"]["notifications_enabled"]) && $ret["notifications_enabled"]["notifications_enabled"] != 2 ? $rq .= "'".$ret["notifications_enabled"]["notifications_enabled"]."', " : $rq .= "'2', ";
     isset($ret["calcul_type"]) ? $rq .= "'".$ret["calcul_type"]."', " : $rq .= "NULL, ";
     isset($ret["data_source_type"]) ? $rq .= "'".$ret["data_source_type"]."', " : $rq .= "0, ";
     isset($ret["meta_select_mode"]["meta_select_mode"]) ? $rq .= "'".$ret["meta_select_mode"]["meta_select_mode"]."', " : $rq .= "NULL, ";
-    isset($ret["regexp_str"]) && $ret["regexp_str"] != NULL ? $rq .= "'".htmlentities($ret["regexp_str"])."', " : $rq .= "NULL, ";
-    isset($ret["metric"]) && $ret["metric"] != NULL ? $rq .= "'".htmlentities($ret["metric"])."', " : $rq .= "NULL, ";
-    isset($ret["warning"]) && $ret["warning"] != NULL ? $rq .= "'".htmlentities($ret["warning"])."', " : $rq .= "NULL, ";
-    isset($ret["critical"]) && $ret["critical"] != NULL ? $rq .= "'".htmlentities($ret["critical"])."', " : $rq .= "NULL, ";
-    isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
-    isset($ret["meta_comment"]) && $ret["meta_comment"] != NULL ? $rq .= "'".htmlentities($ret["meta_comment"])."', " : $rq .= "NULL, ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".htmlentities($ret["geo_coords"])."', " : $rq .= "NULL, ";
-    isset($ret["meta_activate"]["meta_activate"]) && $ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."'" : $rq .= "NULL";
+    isset($ret["regexp_str"]) && $ret["regexp_str"] != null ? $rq .= "'".htmlentities($ret["regexp_str"])."', " : $rq .= "NULL, ";
+    isset($ret["metric"]) && $ret["metric"] != null ? $rq .= "'".htmlentities($ret["metric"])."', " : $rq .= "NULL, ";
+    isset($ret["warning"]) && $ret["warning"] != null ? $rq .= "'".htmlentities($ret["warning"])."', " : $rq .= "NULL, ";
+    isset($ret["critical"]) && $ret["critical"] != null ? $rq .= "'".htmlentities($ret["critical"])."', " : $rq .= "NULL, ";
+    isset($ret["graph_id"]) && $ret["graph_id"] != null ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
+    isset($ret["meta_comment"]) && $ret["meta_comment"] != null ? $rq .= "'".htmlentities($ret["meta_comment"])."', " : $rq .= "NULL, ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != null ? $rq .= "'".htmlentities($ret["geo_coords"])."', " : $rq .= "NULL, ";
+    isset($ret["meta_activate"]["meta_activate"]) && $ret["meta_activate"]["meta_activate"] != null ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
@@ -266,23 +272,23 @@ function updateMetaService($meta_id = null)
     $ret = $form->getSubmitValues();
     $rq = "UPDATE meta_service SET " ;
     $rq .= "meta_name = ";
-    $ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    $ret["meta_name"] != null ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
     $rq .= "meta_display = ";
-    $ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    $ret["meta_display"] != null ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
     $rq .= "check_period = ";
-    $ret["check_period"] != NULL ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
+    $ret["check_period"] != null ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
     $rq .= "max_check_attempts = ";
-    $ret["max_check_attempts"] != NULL ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
+    $ret["max_check_attempts"] != null ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
     $rq .= "normal_check_interval = ";
-    $ret["normal_check_interval"] != NULL ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
+    $ret["normal_check_interval"] != null ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
     $rq .= "retry_check_interval = ";
-    $ret["retry_check_interval"] != NULL ? $rq .= "'".$ret["retry_check_interval"]."', ": $rq .= "NULL, ";
+    $ret["retry_check_interval"] != null ? $rq .= "'".$ret["retry_check_interval"]."', ": $rq .= "NULL, ";
     $rq .= "notification_interval = ";
-    $ret["notification_interval"] != NULL ? $rq .= "'".$ret["notification_interval"]."', " : $rq .= "NULL, ";
+    $ret["notification_interval"] != null ? $rq .= "'".$ret["notification_interval"]."', " : $rq .= "NULL, ";
     $rq .= "notification_period = ";
-    $ret["notification_period"] != NULL ? $rq .= "'".$ret["notification_period"]."', " : $rq .= "NULL, ";
+    $ret["notification_period"] != null ? $rq .= "'".$ret["notification_period"]."', " : $rq .= "NULL, ";
     $rq .= "notification_options = ";
-    isset($ret["ms_notifOpts"]) && $ret["ms_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["ms_notifOpts"]))."', " : $rq .= "NULL, ";
+    isset($ret["ms_notifOpts"]) && $ret["ms_notifOpts"] != null ? $rq .= "'".implode(",", array_keys($ret["ms_notifOpts"]))."', " : $rq .= "NULL, ";
     $rq .= "notifications_enabled = ";
     $ret["notifications_enabled"]["notifications_enabled"] != 2 ? $rq .= "'".$ret["notifications_enabled"]["notifications_enabled"]."', " : $rq .= "'2', ";
     $rq .= "calcul_type = ";
@@ -290,21 +296,21 @@ function updateMetaService($meta_id = null)
     $rq .= "data_source_type = ";
     $ret["data_source_type"] ? $rq .= "'".$ret["data_source_type"]."', " : $rq .= "0, ";
     $rq .= "meta_select_mode = ";
-    $ret["meta_select_mode"]["meta_select_mode"] != NULL ? $rq .= "'".$ret["meta_select_mode"]["meta_select_mode"]."', " : $rq .= "NULL, ";
+    $ret["meta_select_mode"]["meta_select_mode"] != null ? $rq .= "'".$ret["meta_select_mode"]["meta_select_mode"]."', " : $rq .= "NULL, ";
     $rq .= "regexp_str = ";
-    $ret["regexp_str"] != NULL ? $rq .= "'".htmlentities($ret["regexp_str"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    $ret["regexp_str"] != null ? $rq .= "'".htmlentities($ret["regexp_str"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "metric = ";
-    $ret["metric"] != NULL ? $rq .= "'".htmlentities($ret["metric"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    $ret["metric"] != null ? $rq .= "'".htmlentities($ret["metric"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "warning = ";
-    $ret["warning"] != NULL ? $rq .= "'".htmlentities($ret["warning"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    $ret["warning"] != null ? $rq .= "'".htmlentities($ret["warning"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "critical = ";
-    $ret["critical"] != NULL ? $rq .= "'".htmlentities($ret["critical"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    $ret["critical"] != null ? $rq .= "'".htmlentities($ret["critical"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "graph_id = ";
-    $ret["graph_id"] != NULL ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
+    $ret["graph_id"] != null ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
     $rq .= "meta_comment = ";
-    $ret["meta_comment"] != NULL ? $rq .= "'".htmlentities($ret["meta_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    $ret["meta_comment"] != null ? $rq .= "'".htmlentities($ret["meta_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "meta_activate = ";
-    $ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."' " : $rq .= "NULL ";
+    $ret["meta_activate"]["meta_activate"] != null ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."' " : $rq .= "NULL ";
     $rq .= " WHERE meta_id = '".$meta_id."'";
 
     /* Prepare value for changelog */
@@ -350,7 +356,7 @@ function updateMetaServiceContactGroup($meta_id = null)
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'ms_cgs');
     $cg = new CentreonContactgroup($pearDB);
-    for($i = 0; $i < count($ret); $i++) {
+    for ($i = 0; $i < count($ret); $i++) {
         if (!is_numeric($ret[$i])) {
             $res = $cg->insertLdapGroup($ret[$i]);
             if ($res != 0) {
@@ -367,7 +373,7 @@ function updateMetaServiceContactGroup($meta_id = null)
     }
 }
 
-function updateMetricInDB ($msr_id = null)
+function updateMetricInDB($msr_id = null)
 {
     if (!$msr_id) {
         return;
@@ -375,7 +381,7 @@ function updateMetricInDB ($msr_id = null)
     updateMetric($msr_id);
 }
 
-function insertMetricInDB ()
+function insertMetricInDB()
 {
     $msr_id = insertMetric();
     updateMetricContactGroup($msr_id);
@@ -391,11 +397,11 @@ function insertMetric($ret = array())
     $rq = "INSERT INTO meta_service_relation " .
             "(meta_id, host_id, metric_id, msr_comment, activate) " .
             "VALUES ( ";
-            isset($ret["meta_id"]) && $ret["meta_id"] != NULL ? $rq .= "'".$ret["meta_id"]."', ": $rq .= "NULL, ";
-            isset($ret["host_id"]) && $ret["host_id"] != NULL ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
-            isset($ret["metric_sel"][1]) && $ret["metric_sel"][1] != NULL ? $rq .= "'".$ret["metric_sel"][1]."', ": $rq .= "NULL, ";
-            isset($ret["msr_comment"]) && $ret["msr_comment"] != NULL ? $rq .= "'".htmlentities($ret["msr_comment"])."', " : $rq .= "NULL, ";
-            isset($ret["activate"]["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."'" : $rq .= "NULL";
+            isset($ret["meta_id"]) && $ret["meta_id"] != null ? $rq .= "'".$ret["meta_id"]."', ": $rq .= "NULL, ";
+            isset($ret["host_id"]) && $ret["host_id"] != null ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
+            isset($ret["metric_sel"][1]) && $ret["metric_sel"][1] != null ? $rq .= "'".$ret["metric_sel"][1]."', ": $rq .= "NULL, ";
+            isset($ret["msr_comment"]) && $ret["msr_comment"] != null ? $rq .= "'".htmlentities($ret["msr_comment"])."', " : $rq .= "NULL, ";
+            isset($ret["activate"]["activate"]) && $ret["activate"]["activate"] != null ? $rq .= "'".$ret["activate"]["activate"]."'" : $rq .= "NULL";
             $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");

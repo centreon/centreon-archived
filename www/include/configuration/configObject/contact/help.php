@@ -52,5 +52,3 @@ $help["can_submit_commands"] = dgettext("help", "This directive is used to deter
 $help["retain_status_information"] = dgettext("help", "This directive is used to determine whether or not status-related information about the contact is retained across program restarts. This is only useful if you have enabled state retention using the retain_state_information directive.");
 $help["retain_nonstatus_information"] = dgettext("help", "This directive is used to determine whether or not non-status information about the contact is retained across program restarts. This is only useful if you have enabled state retention using the retain_state_information directive.");
 $help["aclgroups"] = dgettext("help", "ACL groups of user.");
-?>
-

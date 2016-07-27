@@ -33,13 +33,14 @@
  * 
  */
 
-if (!isset($centreon))
+if (!isset($centreon)) {
     exit();
+}
     
 include("./include/common/autoNumLimit.php");
-$mnftr_id = NULL;
+$mnftr_id = null;
     
-$SearchTool = NULL;
+$SearchTool = null;
 $search = '';
 if (isset($_POST['searchTM']) && $_POST['searchTM']) {
     $search = $_POST['searchTM'];
@@ -60,7 +61,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 /* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 /*
@@ -123,8 +124,8 @@ $attrs1 = array(
             "else if (this.form.elements['o1'].selectedIndex == 3) {" .
             "   setO(this.form.elements['o1'].value); submit();} " .
             "");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
+$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+$form->setDefaults(array('o1' => null));
     
 $attrs2 = array(
     'onchange'=>"javascript: " .
@@ -138,16 +139,16 @@ $attrs2 = array(
             "else if (this.form.elements['o2'].selectedIndex == 3) {" .
             "   setO(this.form.elements['o2'].value); submit();} " .
             "");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
+$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchTM', $search);
@@ -156,6 +157,6 @@ $tpl->assign('searchTM', $search);
  * Apply a template definition
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);   
+$form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listGroups.ihtml");

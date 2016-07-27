@@ -35,19 +35,19 @@
  */
 
 if (!isset($centreon)) {
-    exit ();        
+    exit();
 }
 
-isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
-isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
+isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
+isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
 $cG ? $contact_id = $cG : $contact_id = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -77,36 +77,49 @@ $acl = $oreon->user->access;
 $allowedAclGroups = $acl->getAccessGroups();
 
 switch ($o) {
-    case "li" : require_once($path . "ldapImportContact.php");
+    case "li":
+        require_once($path . "ldapImportContact.php");
         break; # LDAP import form	# Wistof
-    case "mc" : require_once($path . "formContact.php");
+    case "mc":
+        require_once($path . "formContact.php");
         break; # Massive Change
-    case "a" : require_once($path . "formContact.php");
+    case "a":
+        require_once($path . "formContact.php");
         break; #Add a contact
-    case "w" : require_once($path . "formContact.php");
+    case "w":
+        require_once($path . "formContact.php");
         break; #Watch a contact
-    case "c" : require_once($path . "formContact.php");
+    case "c":
+        require_once($path . "formContact.php");
         break; #Modify a contact
-    case "s" : enableContactInDB($contact_id);
+    case "s":
+        enableContactInDB($contact_id);
         require_once($path . "listContact.php");
         break; #Activate a contact
-    case "ms" : enableContactInDB(NULL, isset($select) ? $select : array());
+    case "ms":
+        enableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
-    case "u" : disableContactInDB($contact_id);
+    case "u":
+        disableContactInDB($contact_id);
         require_once($path . "listContact.php");
         break; #Desactivate a contact
-    case "mu" : disableContactInDB(NULL, isset($select) ? $select : array());
+    case "mu":
+        disableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
-    case "m" : multipleContactInDB(isset($select) ? $select : array(), $dupNbr);
+    case "m":
+        multipleContactInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path . "listContact.php");
         break; #Duplicate n contacts
-    case "d" : deleteContactInDB(isset($select) ? $select : array());
+    case "d":
+        deleteContactInDB(isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break; #Delete n contacts
-    case "dn" : require_once $path . 'displayNotification.php';
+    case "dn":
+        require_once $path . 'displayNotification.php';
         break;
-    default : require_once($path . "listContact.php");
+    default:
+        require_once($path . "listContact.php");
         break;
 }

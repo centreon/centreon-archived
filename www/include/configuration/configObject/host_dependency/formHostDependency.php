@@ -53,15 +53,14 @@ if (($o == "c" || $o == "w") && $dep_id) {
     foreach ($dep["execution_failure_criteria"] as $key => $value) {
         $dep["execution_failure_criteria"][trim($value)] = 1;
     }
-
 }
 
 # Var information to format the element
-$attrsText 		= array("size"=>"30");
-$attrsText2 	= array("size"=>"10");
+$attrsText      = array("size"=>"30");
+$attrsText2     = array("size"=>"10");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
-$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"3", "cols"=>"30");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
@@ -79,12 +78,13 @@ $attrServices = array(
  * Form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
-	$form->addElement('header', 'title', _("Add a Dependency"));
-else if ($o == "c")
-	$form->addElement('header', 'title', _("Modify a Dependency"));
-else if ($o == "w")
-	$form->addElement('header', 'title', _("View a Dependency"));
+if ($o == "a") {
+    $form->addElement('header', 'title', _("Add a Dependency"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title', _("Modify a Dependency"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title', _("View a Dependency"));
+}
 
 /*
  * Dependency basic information
@@ -162,143 +162,143 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
 # Just watch a Dependency information
 if ($o == "w") {
-	if ($centreon->user->access->page($p) != 2)
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
+    if ($centreon->user->access->page($p) != 2) {
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
+    }
     $form->setDefaults($dep);
-	$form->freeze();
-}
-# Modify a Dependency information
-else if ($o == "c") {
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->freeze();
+} # Modify a Dependency information
+elseif ($o == "c") {
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
-}
-# Add a Dependency information
-else if ($o == "a") {
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-	$form->setDefaults(array('inherits_parent', '0'));
+} # Add a Dependency information
+elseif ($o == "a") {
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->setDefaults(array('inherits_parent', '0'));
 }
 $tpl->assign("nagios", $oreon->user->get_version());
 
 $valid = false;
 if ($form->validate()) {
-	$depObj = $form->getElement('dep_id');
-	if ($form->getSubmitValue("submitA"))
-		$depObj->setValue(insertHostDependencyInDB());
-	else if ($form->getSubmitValue("submitC"))
-		updateHostDependencyInDB($depObj->getValue("dep_id"));
-	$o = NULL;
-	$valid = true;
+    $depObj = $form->getElement('dep_id');
+    if ($form->getSubmitValue("submitA")) {
+        $depObj->setValue(insertHostDependencyInDB());
+    } elseif ($form->getSubmitValue("submitC")) {
+        updateHostDependencyInDB($depObj->getValue("dep_id"));
+    }
+    $o = null;
+    $valid = true;
 }
 
 if ($valid) {
-	require_once("listHostDependency.php");
+    require_once("listHostDependency.php");
 } else {
-	/*
+    /*
 	 * Apply a template definition
 	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-	$tpl->display("formHostDependency.ihtml");
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formHostDependency.ihtml");
 }
 
 ?>
 <script type="text/javascript">
 function uncheckAllH(object)
 {
-	if (object.id == "hNone" && object.checked) {
-		document.getElementById('hUp').checked = false;
-		document.getElementById('hDown').checked = false;
-		document.getElementById('hUnreachable').checked = false;
-		document.getElementById('hPending').checked = false;
-		if (document.getElementById('hFlapping')) {
-			document.getElementById('hFlapping').checked = false;
-		}
-	}
-	else {
-		document.getElementById('hNone').checked = false;
-	}
+    if (object.id == "hNone" && object.checked) {
+        document.getElementById('hUp').checked = false;
+        document.getElementById('hDown').checked = false;
+        document.getElementById('hUnreachable').checked = false;
+        document.getElementById('hPending').checked = false;
+        if (document.getElementById('hFlapping')) {
+            document.getElementById('hFlapping').checked = false;
+        }
+    }
+    else {
+        document.getElementById('hNone').checked = false;
+    }
 }
 
 function hostFilterSelect(elem)
 {
-	var arg = 'host_id='+elem.value;
+    var arg = 'host_id='+elem.value;
 
-	if (window.XMLHttpRequest) {
-		var xhr = new XMLHttpRequest();
-	} else if(window.ActiveXObject){r
-    	try {
-    		var xhr = new ActiveXObject("Msxml2.XMLHTTP");
-    	} catch (e) {
-    		var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-    	}
-	} else {
-	   var xhr = false;
-	}
+    if (window.XMLHttpRequest) {
+        var xhr = new XMLHttpRequest();
+    } else if(window.ActiveXObject){r
+        try {
+            var xhr = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+    } else {
+       var xhr = false;
+    }
 
-	xhr.open("POST","./include/configuration/configObject/service_dependency/getServiceXml.php", true);
-	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhr.send(arg);
+    xhr.open("POST","./include/configuration/configObject/service_dependency/getServiceXml.php", true);
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.send(arg);
 
-	xhr.onreadystatechange = function()
-	{
-		if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
-			var response = xhr.responseXML.documentElement;
-			var _services = response.getElementsByTagName("services");
-			var _selbox;
+    xhr.onreadystatechange = function()
+    {
+        if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
+            var response = xhr.responseXML.documentElement;
+            var _services = response.getElementsByTagName("services");
+            var _selbox;
 
-			if (document.getElementById("dep_hSvChi-f")) {
-				_selbox = document.getElementById("dep_hSvChi-f");
-				_selected = document.getElementById("dep_hSvChi-t");
-			} else if (document.getElementById("__dep_hSvChi")) {
-				_selbox = document.getElementById("__dep_hSvChi");
-				_selected = document.getElementById("_dep_hSvChi");
-			}
+            if (document.getElementById("dep_hSvChi-f")) {
+                _selbox = document.getElementById("dep_hSvChi-f");
+                _selected = document.getElementById("dep_hSvChi-t");
+            } else if (document.getElementById("__dep_hSvChi")) {
+                _selbox = document.getElementById("__dep_hSvChi");
+                _selected = document.getElementById("_dep_hSvChi");
+            }
 
-			while ( _selbox.options.length > 0 ){
-				_selbox.options[0] = null;
-			}
+            while ( _selbox.options.length > 0 ){
+                _selbox.options[0] = null;
+            }
 
-			if (_services.length == 0) {
-				_selbox.setAttribute('disabled', 'disabled');
-			} else {
-				_selbox.removeAttribute('disabled');
-			}
+            if (_services.length == 0) {
+                _selbox.setAttribute('disabled', 'disabled');
+            } else {
+                _selbox.removeAttribute('disabled');
+            }
 
-			for (var i = 0 ; i < _services.length ; i++) {
-				var _svc 		 = _services[i];
-				var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
-				var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
-				var validFlag = true;
+            for (var i = 0 ; i < _services.length ; i++) {
+                var _svc         = _services[i];
+                var _id          = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+                var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+                var validFlag = true;
 
-				for (var j = 0; j < _selected.length; j++) {
-					if (_id == _selected.options[j].value) {
-						validFlag = false;
-					}
-				}
+                for (var j = 0; j < _selected.length; j++) {
+                    if (_id == _selected.options[j].value) {
+                        validFlag = false;
+                    }
+                }
 
-				if (validFlag == true) {
-    				new_elem = new Option(_description,_id);
-    				_selbox.options[_selbox.length] = new_elem;
-				}
-			}
-		}
-	}
+                if (validFlag == true) {
+                    new_elem = new Option(_description,_id);
+                    _selbox.options[_selbox.length] = new_elem;
+                }
+            }
+        }
+    }
 }
 </script>
