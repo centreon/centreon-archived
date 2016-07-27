@@ -111,7 +111,9 @@
         return;
       }
       
-      $$.chartContainer.classed('c3', true);
+      $$.chartContainer
+        .style('position', 'relative')
+        .classed('c3', true);
       
       $$.initTooltip();
       
@@ -348,6 +350,8 @@
     },
     tooltipCommentShow: function (data, element) {
       var $$ = this;
+      
+      console.log($$.tooltip);
       
       $$.tooltip.select('.cc3-tooltip-title')
         .text(
