@@ -52,7 +52,7 @@ if (!isset($_SESSION)) {
 $sid = session_id();
 
 if (!isset($sid) || !isset($_GET["menu"])) {
-	exit();
+    exit();
 }
 
 /*
@@ -66,94 +66,91 @@ global $pearDB;
  */
 $session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
 if (!$session->numRows()) {
-	
-	$buffer = new CentreonXML();
-	$buffer->startElement("root");
-	$buffer->endElement();
-	
-	header('Content-Type: text/xml');
-	header('Cache-Control: no-cache');
-	
-	$buffer->output();
+    $buffer = new CentreonXML();
+    $buffer->startElement("root");
+    $buffer->endElement();
+    
+    header('Content-Type: text/xml');
+    header('Cache-Control: no-cache');
+    
+    $buffer->output();
 } else {
-	$centreon = $_SESSION['centreon'];
+    $centreon = $_SESSION['centreon'];
 
-	$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
-	$centreonLang->bindLang();
-	$centreonMenu = new CentreonMenu($centreonLang);
+    $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
+    $centreonLang->bindLang();
+    $centreonMenu = new CentreonMenu($centreonLang);
 
-	/*
+    /*
 	 * Init XML class
 	 */
-	$buffer = new CentreonXML();
+    $buffer = new CentreonXML();
 
-	$user_id = getUserIdFromSID($sid);
+    $user_id = getUserIdFromSID($sid);
 
-	if (!$user_id) {
-		exit();
-	}
+    if (!$user_id) {
+        exit();
+    }
 
-	$is_admin = isUserAdmin($sid);
-	$access = new CentreonACL($user_id, $is_admin);
-	$topoStr = $access->getTopologyString();
+    $is_admin = isUserAdmin($sid);
+    $access = new CentreonACL($user_id, $is_admin);
+    $topoStr = $access->getTopologyString();
 
-	/*
+    /*
 	 * Get CSS
 	 */
-	$DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".$pearDB->escape($_GET["menu"])."' LIMIT 1");
-	$menu_style = $DBRESULT2->fetchRow();
+    $DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".$pearDB->escape($_GET["menu"])."' LIMIT 1");
+    $menu_style = $DBRESULT2->fetchRow();
 
-	ob_start();
-	if (isset($menu_style['css_name'])){
-	    require_once _CENTREON_PATH_ . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
-	}
-	ob_end_clean();
+    ob_start();
+    if (isset($menu_style['css_name'])) {
+        require_once _CENTREON_PATH_ . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
+    }
+    ob_end_clean();
 
-	$buffer->startElement("root");
-	$buffer->writeElement("Menu1ID", $menu1_bgcolor);
-	$buffer->writeElement("Menu2ID", $menu2_bgcolor);
-	$buffer->writeElement("Menu1Color", "menu_1");
-	$buffer->writeElement("Menu2Color", "menu_2");
+    $buffer->startElement("root");
+    $buffer->writeElement("Menu1ID", $menu1_bgcolor);
+    $buffer->writeElement("Menu2ID", $menu2_bgcolor);
+    $buffer->writeElement("Menu1Color", "menu_1");
+    $buffer->writeElement("Menu2Color", "menu_2");
 
-	$rq = 	"SELECT topology_name, topology_page, topology_url_opt, topology_modules, topology_popup, topology_url FROM topology WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) . " AND topology_show = '1' ORDER BY topology_order";
-	$DBRESULT = $pearDB->query($rq);
-	$buffer->startElement("level_1");
-	while ($elem = $DBRESULT->fetchRow()) {
-		$buffer->startElement("Menu1");
-		$buffer->writeElement("Menu1Page", $elem["topology_page"]);
-		$buffer->writeElement("Menu1ClassImg", $_GET["menu"] == $elem["topology_page"] ? $menu1_bgimg : "");
-		$buffer->writeElement("Menu1Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
-		$buffer->writeElement("Menu1UrlPopup", $elem["topology_popup"]);
-		$buffer->writeElement("Menu1UrlPopupOpen", $elem["topology_url"]);
-		$buffer->writeElement("Menu1Name", $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]), 0);
-		$buffer->writeElement("Menu1Popup", $elem["topology_popup"] ? "true" : "false");
-		$buffer->endElement();
-	}
-	$buffer->endElement();
+    $rq =   "SELECT topology_name, topology_page, topology_url_opt, topology_modules, topology_popup, topology_url FROM topology WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) . " AND topology_show = '1' ORDER BY topology_order";
+    $DBRESULT = $pearDB->query($rq);
+    $buffer->startElement("level_1");
+    while ($elem = $DBRESULT->fetchRow()) {
+        $buffer->startElement("Menu1");
+        $buffer->writeElement("Menu1Page", $elem["topology_page"]);
+        $buffer->writeElement("Menu1ClassImg", $_GET["menu"] == $elem["topology_page"] ? $menu1_bgimg : "");
+        $buffer->writeElement("Menu1Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
+        $buffer->writeElement("Menu1UrlPopup", $elem["topology_popup"]);
+        $buffer->writeElement("Menu1UrlPopupOpen", $elem["topology_url"]);
+        $buffer->writeElement("Menu1Name", $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]), 0);
+        $buffer->writeElement("Menu1Popup", $elem["topology_popup"] ? "true" : "false");
+        $buffer->endElement();
+    }
+    $buffer->endElement();
 
-	$rq = "SELECT * FROM topology WHERE topology_parent = '".$pearDB->escape($_GET["menu"])."' " .$access->queryBuilder("AND", "topology_page", $topoStr) .
-		  "AND topology_show = '1' " .
-		  "ORDER BY topology_group, topology_order";
-	$DBRESULT = $pearDB->query($rq);
-	$buffer->startElement("level_2");
-	while ($elem = $DBRESULT->fetchRow()) {
-		$buffer->startElement("Menu2");
-		$buffer->writeElement("Menu2Sep", "");
-		$buffer->writeElement("Menu2Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
-		$buffer->writeElement("Menu2UrlPopup", $elem["topology_popup"]);
-		$buffer->writeElement("Menu2UrlPopupOpen", $elem["topology_url"]);
-		$buffer->writeElement("Menu2Name", $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]), 0);
-		$buffer->writeElement("Menu2Popup", $elem["topology_popup"] ? "true" : "false");
-		$buffer->endElement();
-	}
-	$buffer->endElement();
-	$buffer->endElement();
+    $rq = "SELECT * FROM topology WHERE topology_parent = '".$pearDB->escape($_GET["menu"])."' " .$access->queryBuilder("AND", "topology_page", $topoStr) .
+          "AND topology_show = '1' " .
+          "ORDER BY topology_group, topology_order";
+    $DBRESULT = $pearDB->query($rq);
+    $buffer->startElement("level_2");
+    while ($elem = $DBRESULT->fetchRow()) {
+        $buffer->startElement("Menu2");
+        $buffer->writeElement("Menu2Sep", "");
+        $buffer->writeElement("Menu2Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);
+        $buffer->writeElement("Menu2UrlPopup", $elem["topology_popup"]);
+        $buffer->writeElement("Menu2UrlPopupOpen", $elem["topology_url"]);
+        $buffer->writeElement("Menu2Name", $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]), 0);
+        $buffer->writeElement("Menu2Popup", $elem["topology_popup"] ? "true" : "false");
+        $buffer->endElement();
+    }
+    $buffer->endElement();
+    $buffer->endElement();
 
-	// Send Headers
-	header('Content-Type: text/xml');
-	header('Cache-Control: no-cache');
+    // Send Headers
+    header('Content-Type: text/xml');
+    header('Cache-Control: no-cache');
 
-	$buffer->output();
-
+    $buffer->output();
 }
-
