@@ -29,3 +29,4 @@ exclude_paths:
 - varinstall/**/*
 - lib/Zend/**/*
 - www/lib/HTML/**/*
+- www/install/**/*
