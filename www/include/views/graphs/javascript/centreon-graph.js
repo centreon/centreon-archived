@@ -203,7 +203,7 @@
           }
           if (self.type === 'status') {
             self.chart.load(
-              self.buildStatusData(data[0]).data
+              self.buildStatusData(data[0])
             );
           } else {
             self.chart.load(

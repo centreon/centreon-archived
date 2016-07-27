@@ -122,7 +122,9 @@
         
       /* Update width */
       $$.setWidth();
-      $$.svg.style('width', $$.width);
+      $$.svg
+        .style('height', $$.config.margin.top + $$.config.margin.bottom + $$.config.itemHeight + 20)
+        .style('width', $$.width);
       
       $$.setPeriod();
       $$.setScaleFactor();
@@ -342,7 +344,7 @@
       $$.gAxis.transition().duration(300).call($$.xAxis);
       
       /* Update data */
-      $$.d3.selectAll('rect')
+      $$.svg.selectAll('rect')
         .remove();
       $$.setScaleFactor();
         
