@@ -45,7 +45,7 @@ class Centreon_Object_Relation_Service_Category_Service extends Centreon_Object_
 
     /**
      * Constructor
-     */ 
+     */
     public function __construct()
     {
         parent::__construct();

@@ -160,6 +160,5 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
             $args = array($fkey);
         }
         $this->db->query($sql, $args);
-        
     }
 }

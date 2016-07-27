@@ -41,7 +41,7 @@ class Centreon_Object_Relation_Instance_Host extends Centreon_Object_Relation
     protected $firstKey = "nagios_server_id";
     protected $secondKey = "host_host_id";
 
-	/**
+    /**
      * Constructor
      *
      * @return void

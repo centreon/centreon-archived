@@ -48,6 +48,5 @@ class Centreon_Object_Service_Macro_Custom extends Centreon_Object
 
     public function duplicate()
     {
-
     }
 }

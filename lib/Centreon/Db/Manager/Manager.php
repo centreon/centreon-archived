@@ -47,9 +47,9 @@ class Centreon_Db_Manager
     /**
      * Factory
      *
-     * @param string $instanceName
-     * @param string $adapter
-     * @param array $config
+     * @param  string $instanceName
+     * @param  string $adapter
+     * @param  array  $config
      * @return Zend_Db_Adapter_Abstract
      */
     public static function factory($instanceName = "centreon", $adapter = "pdo_mysql", $config = array())

@@ -173,7 +173,7 @@ abstract class Centreon_Object_Relation
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 $sql .= " $filterType $key LIKE ? ";
-                $value = trim ($rawvalue);
+                $value = trim($rawvalue);
                 $value = str_replace("\\", "\\\\", $value);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);
@@ -231,7 +231,6 @@ abstract class Centreon_Object_Relation
             throw new Exception("Not a relation table");
         }
         if (preg_match('/^get([a-zA-Z0-9_]+)From([a-zA-Z0-9_]+)/', $name, $matches)) {
-
             if (($matches[1] != $this->firstKey && $matches[1] != $this->secondKey) ||
                 ($matches[2] != $this->firstKey && $matches[2] != $this->secondKey)) {
                 throw new Exception('Unknown field');
@@ -245,7 +244,6 @@ abstract class Centreon_Object_Relation
             } else {
                 throw new Exception('Unknown field');
             }
-
         } else {
             throw new Exception('Unknown method');
         }
