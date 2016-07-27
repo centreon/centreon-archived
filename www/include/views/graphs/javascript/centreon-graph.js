@@ -117,7 +117,13 @@
           format: this.timeFormat
         },
         bindto: '#' + this.$elem.attr('id'),
-        data: this.buildStatusData(data)
+        data: this.buildStatusData(data),
+        margin: {
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0
+        }
       });
     },
     /**
