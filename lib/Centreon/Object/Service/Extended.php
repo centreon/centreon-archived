@@ -109,6 +109,5 @@ class Centreon_Object_Service_Extended extends Centreon_Object
 
     public function duplicate()
     {
-
     }
 }

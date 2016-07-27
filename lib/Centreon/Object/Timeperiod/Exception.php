@@ -48,6 +48,5 @@ class Centreon_Object_Timeperiod_Exception extends Centreon_Object
 
     public function duplicate()
     {
-
     }
 }
