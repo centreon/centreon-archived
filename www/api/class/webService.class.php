@@ -39,25 +39,25 @@ class CentreonWebService
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDB = null;
     
     /**
      *
-     * @var array 
+     * @var array
      */
     protected $arguments= array();
     
     /**
      *
-     * @var string 
+     * @var string
      */
     protected $token = null;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected static $webServicePaths;
 
@@ -128,7 +128,7 @@ class CentreonWebService
 
     /**
      * Get webservice
-     * 
+     *
      * @param string $object
      * @return type
      */

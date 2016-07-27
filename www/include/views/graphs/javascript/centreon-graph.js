@@ -110,16 +110,15 @@
      * @param {Object} data - The graph data
      */
     initGraphStatus: function (data) {
-      this.chart = d3.timeline()
-        .tickFormat({
+      var self = this;
+      
+      this.chart = centreonStatusChart.generate({
+        tickFormat: {
           format: this.timeFormat
-        })
-        .colors(this.colorScale)
-        .colorProperty('status');
-      this.chartSvg = d3.select('#' + this.$elem.attr('id')).append('svg');
-      this.chartSvg.attr('width', this.$elem.width())
-        .datum(this.buildStatusData(data))
-        .call(this.chart);
+        },
+        bindto: '#' + this.$elem.attr('id'),
+        data: this.buildStatusData(data)
+      });
     },
     /**
      * Initialize the metrics graph
@@ -203,7 +202,9 @@
             return callback(data[0]);
           }
           if (self.type === 'status') {
-            self.chartSvg.datum(self.buildStatusData(data[0]));
+            self.chart.load(
+              self.buildStatusData(data[0]).data
+            );
           } else {
             self.chart.load(
               self.buildMetricData(data[0]).data
@@ -295,13 +296,22 @@
      */
     buildStatusData: function (dataRaw) {
       var status;
-      var data = [];
-      for (status in dataRaw.data) {
-        if (dataRaw.data.hasOwnProperty(status)) {
-          if (dataRaw.data[status].length > 0) {
-            data.push({
-              status: status,
-              times: dataRaw.data[status].map(function (values) {
+      var data = {};
+      var dataStatus = [];
+      var statusColor = {
+        ok: '#88b917',
+        warning: '#ff9a13',
+        critical: '#e00b3d',
+        unknown: '#bcbdc0'
+      };
+      
+      for (status in dataRaw.data.status) {
+        if (dataRaw.data.status.hasOwnProperty(status)) {
+          if (dataRaw.data.status[status].length > 0) {
+            dataStatus.push({
+              label: status,
+              color: statusColor[status],
+              times: dataRaw.data.status[status].map(function (values) {
                 return {
                   starting_time: values['start'] * 1000,
                   ending_time: values['end'] * 1000
@@ -311,6 +321,15 @@
           }
         }
       }
+      
+      data = {
+        status: dataStatus,
+        comments: dataRaw.data.comments.map(function (values) {
+          values['time'] = values['time'] * 1000;
+          return values;
+        })
+      };
+      
       return data;
     },
     /**

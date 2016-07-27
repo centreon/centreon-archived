@@ -47,7 +47,7 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()
@@ -66,7 +66,7 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
         if (isset($this->arguments['q'])) {
             $filterContact['contact_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
             $filterContact['contact_alias'] = array('OR', 'LIKE', '%' . $this->arguments['q'] . '%');
-        } 
+        }
 
         $acl = new CentreonACL($centreon->user->user_id);
         

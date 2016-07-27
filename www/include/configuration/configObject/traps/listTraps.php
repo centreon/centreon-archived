@@ -37,12 +37,12 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");    
+include_once("./class/centreonUtils.class.php");
 include("./include/common/autoNumLimit.php");
 
 $tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
 
-$SearchTool = NULL;
+$SearchTool = null;
 if (isset($_POST['searchT']) && $_POST['searchT']) {
     $search = $_POST['searchT'];
     $SearchTool = "WHERE traps_oid LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR traps_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
@@ -61,7 +61,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 /* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 /*
@@ -91,7 +91,7 @@ $style = "one";
  */
 $elemArr = array();
 for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
-    $trap = array_map(array("CentreonUtils","escapeSecure"),$trap);
+    $trap = array_map(array("CentreonUtils","escapeSecure"), $trap);
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[".$trap['traps_id']."]");
     $moptions .= "&nbsp;&nbsp;&nbsp;";
@@ -134,8 +134,8 @@ $attrs1 = array(
             "else if (this.form.elements['o1'].selectedIndex == 3) {" .
             "   setO(this.form.elements['o1'].value); submit();} " .
             "");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
+$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+$form->setDefaults(array('o1' => null));
     
 $attrs2 = array(
     'onchange'=>"javascript: " .
@@ -149,22 +149,22 @@ $attrs2 = array(
             "else if (this.form.elements['o2'].selectedIndex == 3) {" .
             "   setO(this.form.elements['o2'].value); submit();} " .
             "");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
+$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchT', $search);
 
 /* Apply a template definition */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);   
+$form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listTraps.ihtml");

@@ -103,4 +103,3 @@ $centreon = new Centreon($userInfos);
 $oreon = $centreon;
 
 CentreonWebService::router();
-
