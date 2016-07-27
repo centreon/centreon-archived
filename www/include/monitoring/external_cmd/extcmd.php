@@ -37,37 +37,3 @@
  * Write command in nagios pipe or in centcore pipe.
  */
 
-function write_command($cmd, $poller){
-	global $centreon, $key, $pearDB;
-
-	$str = NULL;
-
-	/*
-	 * Destination is centcore pipe path
-	 */
-    if (defined("_CENTREON_VARLIB_")) {
-        $destination = _CENTREON_VARLIB_."/centcore.cmd";
-    } else {
-        $destination = "/var/lib/centreon/centcore.cmd";
-    }
-	
-	$cmd = str_replace("`", "&#96;", $cmd);
-	$cmd = str_replace("\n", "<br>", $cmd);
-	$informations = preg_split("/\;/", $key);
-
-	if (!mb_detect_encoding($cmd, 'UTF-8', true)) {
-		$cmd = utf8_encode($cmd);
-	}
-	setlocale(LC_CTYPE, 'en_US.UTF-8');
-
-    $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
-	return passthru($str);
-}
-
-function send_cmd($cmd, $poller = NULL){
-	if (isset($cmd)) {
-		$flg = write_command($cmd, $poller);
-	}
-	isset($flg) && $flg ? $ret = $flg : $ret = _("Command execution problem");
-	return $ret;
-}
