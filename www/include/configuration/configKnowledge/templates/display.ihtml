@@ -1,0 +1,199 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form' method="POST">
+	<table class="ajaxOption table">
+		<tr>
+			<th><h5>{t}Filters{/t}</h5></th>
+		</tr>
+		<tr>
+			{if $searchOptions.host == 1}
+			<td><h4>{$labels.host}</h4></td>
+			{/if}
+			{if $searchOptions.hostTemplate == 1}
+			<td><h4>{$labels.hostTemplate}</h4></td>
+			{/if}
+			{if $searchOptions.serviceTemplate == 1}
+			<td><h4>{$labels.serviceTemplate}</h4></td>
+			{/if}
+			{if $searchOptions.hostgroup == 1}
+			<td><h4>{$labels.hostgroup}</h4></td>
+			{/if}
+			{if $searchOptions.poller == 1}
+			<td><h4>{$labels.poller}</h4></td>
+			{/if}
+		</tr>
+		<tr>
+			{if $searchOptions.host == 1}
+			<td><input type='text' name='searchHost' value="{$searchHost}" /></td>
+			{/if}
+			{if $searchOptions.hostTemplate == 1}
+			<td><input type='text' name='searchHostTemplate' value="{$searchHostTemplate}" /></td>
+			{/if}
+			{if $searchOptions.serviceTemplate == 1}
+			<td><input type='text' name='searchServiceTemplate' value="{$searchServiceTemplate}" /></td>
+			{/if}
+			{if $searchOptions.hostgroup == 1}
+			<td><select name='searchHostgroup'>{$searchHostgroup}</select></td>
+			{/if}
+			{if $searchOptions.poller == 1}
+			<td><select name='searchPoller'>{$searchPoller}</select></td>
+			{/if}
+			{if $searchOptions.hasNoProcedure == 1 || $searchOptionsTemplateWithNoProcedure == 1}
+			<td>
+				{if $searchOptions.hasNoProcedure == 1}
+				<p><input name='searchHasNoProcedure' type='checkbox' {$searchHasNoProcedure} /> {$labels.hasNoProcedure}</p>
+				{/if}
+				{if $searchOptions.templatesWithNoProcedure == 1}
+				<p><input name='searchTemplatesWithNoProcedure' type='checkbox' {$searchTemplatesWithNoProcedure} /> {$labels.templatesWithNoProcedure}</p>
+				{/if}
+			</td>
+			{/if}
+			<td><input type='submit' name='SearchB' value='{$labels.search}' class="btc bt_success" /></td>
+		</tr>
+		<tr>
+			{if $searchOptions.service == 1}
+			<td><h4>{$labels.service}</h4></td>
+			{/if}
+			{if $searchOptions.servicegroup == 1}
+			<td><h4>{$labels.servicegroup}</h4></td>
+			{/if}
+		</tr>
+		<tr>
+			{if $searchOptions.service == 1}
+			<td><input type='text' name='searchService' value="{$searchService}" /></td>
+			{/if}
+			{if $searchOptions.servicegroup == 1}
+			<td><select name='searchServicegroup'>{$searchServicegroup}</select></td>
+			{/if}
+		</tr>
+	</table>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			{php}
+			include('./modules/centreon-knowledgebase/core/display/pagination.php');
+			{/php}
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft" style="width:18px;">&nbsp;</td>
+			<td class="ListColHeaderLeft" style="width:250px;">
+				{$host_name}&nbsp;
+				<img src='img/icones/7x7/sort_asc.gif' onClick="sortColumns('{$defaultOrderby}', 'ASC');" />&nbsp;
+				<img src='img/icones/7x7/sort_desc.gif' onClick="sortColumns('{$defaultOrderby}', 'DESC');" />
+			</td>
+			{if $selection == 1}
+			<td class="ListColHeaderLeft" style="width:250px;">
+				{$service_description}&nbsp;
+				<img src='img/icones/7x7/sort_asc.gif' onClick="sortColumns('service_description', 'ASC');" />&nbsp;
+				<img src='img/icones/7x7/sort_desc.gif' onClick="sortColumns('service_description', 'DESC');" />
+			</td>
+			{/if}
+			<td class="ListColHeaderCenter" style="width:250px;">{$template_trans}</td>
+			<td class="ListColHeaderCenter" style="width:170px;">{$status_trans}</td>
+			<td class="ListColHeaderCenter">{$actions_trans}&nbsp;&nbsp;&nbsp;</td>
+		</tr>
+		{assign var=$line value=0}
+		{if $selection == 1}
+		{foreach key=elem from=$content item=stt}
+		<tr class="{php} global $line; print $line[$l%2]; {/php}">
+			<td class="ListColCenter"><img class="ico-14" src="./img/icons/service.png"></td>
+			<td class="ListColLeft"><a href="./modules/centreon-knowledgebase/core/proxy/proxy.php?host_name={$services.$elem.h}" target="_blank" title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{if $services.$elem.h != $hostname}{$services.$elem.h}{else} &nbsp;{/if}</td>
+			<td class="ListColLeft"><a href="./modules/centreon-knowledgebase/core/proxy/proxy.php?host_name={$services.$elem.h}&service_description={$services.$elem.svc}" target="_blank" title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{$services.$elem.svc}</td>
+			<td class="ListColRight">{$templateHostArray.$elem}</td>
+			<td class="ListColCenter">{$status[$stt]}</td>
+			<td class="ListColCenter">
+				{if $stt == 0}
+				<a name="Create wiki page" href='./modules/centreon-knowledgebase/core/display/popup.php?session_id={php}print session_id();{/php}&object=Service:{$elem}&type={$selection}' target='_blank'>Create wiki page</a>
+				&nbsp;&nbsp;&nbsp;{$line}
+				{/if}
+				{if $stt == 1}
+				<a href="{$WikiURL}/index.php?title=Service:{$elem}" target='_blank'>View wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Service:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Service:{$elem}&action=history" target='_blank'>View History</a>
+				&nbsp;&nbsp;&nbsp;
+				{/if}
+			</td>
+		</tr>
+		{php} $l++ ; {/php}
+		{/foreach}
+		{else}
+		{php} $l = 0; {/php}
+		{foreach key=elem from=$content item=stt}
+		<tr class="{php} global $line; print $line[$l%2]; {/php}">
+			<td class="ListColCenter">
+				{if $selection == 3}
+				<img class="ico-14" src="./img/icons/service.png"></td>
+			{else}
+			<img class="ico-14" src="{$icone[$elem]}"></td>
+			{/if}
+			<td class="ListColLeft">{if $selection == 0}<a href="./modules/centreon-knowledgebase/core/proxy/proxy.php?host_name={$elem}" target="_blank" title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{/if}{$elem}</td>
+			{if $selection == 1}
+			<td class="ListColLeft">{$content[$elem].svc}</td>
+			{/if}
+			<td class="ListColRight">{$templateHostArray[$elem]}</td>
+			<td class="ListColCenter">{$status[$stt]}</td>
+			<td class="ListColCenter">
+				{if $stt == 0}
+				{if $selection == 3}
+				<a name="Create wiki page" href='./modules/centreon-knowledgebase/core/display/popup.php?session_id={php}print session_id();{/php}&object=Service-Template:{$elem}&type={$selection}' target='_blank'>Create wiki page</a>
+				{elseif $selection == 2}
+				<a name="Create wiki page" href='./modules/centreon-knowledgebase/core/display/popup.php?session_id={php}print session_id();{/php}&object=Host-Template:{$elem}&type={$selection}' target='_blank'>Create wiki page</a>
+				{else}
+				<a name="Create wiki page" href='./modules/centreon-knowledgebase/core/display/popup.php?session_id={php}print session_id();{/php}&object=Host:{$elem}&type={$selection}' target='_blank'>Create wiki page</a>
+				{/if}
+				{/if}
+				{if $stt == 1}
+				{if $selection == 3}
+				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}" target='_blank'>View wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}&action=history" target='_blank'>View History</a>
+				&nbsp;&nbsp;&nbsp;
+				{elseif $selection == 2}
+				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}" target='_blank'>View wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}&action=history" target='_blank'>View History</a>
+				&nbsp;&nbsp;&nbsp;
+				{else}
+				<a href="{$WikiURL}/index.php?title=Host:{$elem}" target='_blank'>View wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Host:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
+				-
+				<a href="{$WikiURL}/index.php?title=Host:{$elem}&action=history" target='_blank'>View History</a>
+				&nbsp;&nbsp;&nbsp;
+				{/if}
+				{/if}
+			</td>
+		</tr>
+		{php} $l++ ; {/php}
+		{/foreach}
+		{/if}
+	</table>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			{php}
+			include('./modules/centreon-knowledgebase/core/display/pagination.php');
+			{/php}
+		</tr>
+	</table>
+	<input type='hidden' name='o' id='o' value='42'>
+	<input type='hidden' id='limit' name='limit' value='{$limit}'>
+	<input type='hidden' id='num' name='num' value='0'>
+	<input type='hidden' id='orderby' name='orderby' value='{$orderby}'>
+	<input type='hidden' id='order' name='order' value='{$order}'>
+</form>
+{literal}
+<script type='text/javascript'>
+	function sortColumns(orderby, order)
+	{
+		document.getElementById('orderby').value = orderby;
+		document.getElementById('order').value = order;
+		document.forms['form'].submit();
+	}
+</script>
+{/literal}
