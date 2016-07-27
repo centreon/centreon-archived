@@ -2091,7 +2091,6 @@ textarea.default-textarea {
 
 .graph {
   margin-top: 4px;
-  height: 400px;
   border: 1px solid #bfd0e2;
   width: 100%;
   position: relative;
@@ -2114,10 +2113,9 @@ textarea.default-textarea {
 
 .graph .content {
   margin: 5px;
-  height: 370px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: flex-start;
 }
 
 .graph .action {
@@ -2156,6 +2154,11 @@ textarea.default-textarea {
 
 .graph .chart {
   overflow: hidden;
+}
+
+.graph .chart-status {
+  margin-top: 10px;
+  margin-left: 40px;
 }
 
 .graph .c3-region.region-downtime {

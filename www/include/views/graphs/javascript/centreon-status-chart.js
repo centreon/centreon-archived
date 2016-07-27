@@ -118,13 +118,13 @@
       $$.initTooltip();
       
       $$.svg = $$.chartContainer.append('svg')
-        .style("overflow", "hidden");
+        .style('overflow', 'hidden');
         
       /* Update width */
       $$.setWidth();
       $$.svg
-        .style('height', $$.config.margin.top + $$.config.margin.bottom + $$.config.itemHeight + 20)
-        .style('width', $$.width);
+        .style('height', ($$.config.margin.top + $$.config.margin.bottom + $$.config.itemHeight + 20) + 'px')
+        .style('width', $$.width + 'px');
       
       $$.setPeriod();
       $$.setScaleFactor();

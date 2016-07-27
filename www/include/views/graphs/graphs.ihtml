@@ -85,7 +85,7 @@
     <div class="action right">
       <button class="bt_action">&gt;&gt;</button>
     </div>
-    <div class="chart" id="graph-status-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="status">
+    <div class="chart chart-status" id="graph-status-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="status">
     </div>
   </div>
 </div>
