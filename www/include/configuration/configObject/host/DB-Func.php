@@ -107,9 +107,9 @@ function hostMacHandler()
 
 function hostExists($name = null)
 {
-    global $pearDB, $oreon;
+    global $pearDB, $centreon;
 
-    $DBRESULT = $pearDB->query("SELECT host_host_id FROM ns_host_relation WHERE host_host_id = '" . getMyHostID(trim($oreon->checkIllegalChar($name))) . "'");
+    $DBRESULT = $pearDB->query("SELECT host_host_id FROM ns_host_relation WHERE host_host_id = '" . getMyHostID(trim($centreon->checkIllegalChar($name))) . "'");
     if ($DBRESULT->numRows() >= 1) {
         return true;
     }
@@ -118,9 +118,9 @@ function hostExists($name = null)
 
 function hostTemplateExists($name = null)
 {
-    global $pearDB, $oreon;
+    global $pearDB, $centreon;
 
-    $DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '" . $oreon->checkIllegalChar($name) . "'");
+    $DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '" . $centreon->checkIllegalChar($name) . "'");
     if ($DBRESULT->numRows() >= 1) {
         return true;
     }
@@ -129,14 +129,14 @@ function hostTemplateExists($name = null)
 
 function testHostExistence($name = null)
 {
-    global $pearDB, $form, $oreon;
+    global $pearDB, $form, $centreon;
 
     $id = null;
     if (isset($form)) {
         $id = $form->getSubmitValue('host_id');
         ;
     }
-    $DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '" . CentreonDB::escape($oreon->checkIllegalChar($name)) . "' AND host_register = '1'");
+    $DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '" . CentreonDB::escape($centreon->checkIllegalChar($name)) . "' AND host_register = '1'");
     $host = $DBRESULT->fetchRow();
 
     /*
@@ -1957,8 +1957,10 @@ function updateHostHostGroup($host_id, $ret = array())
         return;
     }
 
-# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
-# Get initial Hostgroup list to make a diff after deletion
+    /* Special Case, delete relation between host/service, when service is linked 
+     * to hostgroup in escalation, dependencies.
+     * Get initial Hostgroup list to make a diff after deletion
+     */
     $rq = "SELECT hostgroup_hg_id FROM hostgroup_relation ";
     $rq .= "WHERE host_host_id = '" . $host_id . "'";
     $DBRESULT = $pearDB->query($rq);
@@ -1966,7 +1968,8 @@ function updateHostHostGroup($host_id, $ret = array())
     while ($hg = $DBRESULT->fetchRow()) {
         $hgsOLD[$hg["hostgroup_hg_id"]] = $hg["hostgroup_hg_id"];
     }
-# Get service lists linked to hostgroup
+
+    // Get service lists linked to hostgroup
     $hgSVS = array();
     foreach ($hgsOLD as $hg) {
         $rq = "SELECT service_service_id FROM host_service_relation ";
@@ -1976,7 +1979,7 @@ function updateHostHostGroup($host_id, $ret = array())
             $hgSVS[$hg][$sv["service_service_id"]] = $sv["service_service_id"];
         }
     }
-    #
+    
     $rq = "DELETE FROM hostgroup_relation ";
     $rq .= "WHERE host_host_id = '" . $host_id . "'";
     $DBRESULT = $pearDB->query($rq);
@@ -1990,23 +1993,24 @@ function updateHostHostGroup($host_id, $ret = array())
         $DBRESULT = $pearDB->query($rq);
         $hgsNEW[$ret[$i]] = $ret[$i];
     }
-# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
+    
+    // Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
     if (count($hgSVS)) {
         foreach ($hgsOLD as $hg) {
             if (!isset($hgsNEW[$hg])) {
                 if (isset($hgSVS[$hg])) {
                     foreach ($hgSVS[$hg] as $sv) {
-                # Delete in escalation
-                            $rq = "DELETE FROM escalation_service_relation ";
-                            $rq .= "WHERE host_host_id = '" . $host_id . "' AND service_service_id = '" . $sv . "'";
-                            $DBRESULT = $pearDB->query($rq);
-                # Delete in dependencies
-                            $rq = "DELETE FROM dependency_serviceChild_relation ";
-                            $rq .= "WHERE host_host_id = '" . $host_id . "' AND service_service_id = '" . $sv . "'";
-                            $DBRESULT = $pearDB->query($rq);
-                            $rq = "DELETE FROM dependency_serviceParent_relation ";
-                            $rq .= "WHERE host_host_id = '" . $host_id . "' AND service_service_id = '" . $sv . "'";
-                            $DBRESULT = $pearDB->query($rq);
+                        // Delete in escalation
+                        $rq = "DELETE FROM escalation_service_relation ";
+                        $rq .= "WHERE host_host_id = '" . $host_id . "' AND service_service_id = '" . $sv . "'";
+                        $DBRESULT = $pearDB->query($rq);
+                        // Delete in dependencies
+                        $rq = "DELETE FROM dependency_serviceChild_relation ";
+                        $rq .= "WHERE host_host_id = '" . $host_id . "' AND service_service_id = '" . $sv . "'";
+                        $DBRESULT = $pearDB->query($rq);
+                        $rq = "DELETE FROM dependency_serviceParent_relation ";
+                        $rq .= "WHERE host_host_id = '" . $host_id . "' AND service_service_id = '" . $sv . "'";
+                        $DBRESULT = $pearDB->query($rq);
                     }
                 }
             }
@@ -2113,11 +2117,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
         return 0;
     }
 
-    if (file_exists($path . "../service/DB-Func.php")) {
-        require_once $path . "../service/DB-Func.php";
-    } elseif (file_exists($path . "../configObject/service/DB-Func.php")) {
-        require_once $path . "../configObject/service/DB-Func.php";
-    }
+    require_once $path . "../service/DB-Func.php";
 
     $DBRESULT = $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2 . " ORDER BY `order`");
     while ($hTpl = $DBRESULT->fetchRow()) {
@@ -2157,12 +2157,6 @@ function createHostTemplateService($host_id = null, $htm_id = null)
         return;
     }
 
-    if (file_exists($path . "../service/DB-Func.php")) {
-        require_once($path . "../service/DB-Func.php");
-    } elseif (file_exists($path . "../configObject/service/DB-Func.php")) {
-        require_once($path . "../configObject/service/DB-Func.php");
-    }
-
     /*
      * If we select a host template model,
      * 	we create the services linked to this host template model
@@ -2179,12 +2173,6 @@ function updateHostTemplateService($host_id = null)
 
     if (!$host_id) {
         return;
-    }
-
-    if (file_exists($path . "../service/DB-Func.php")) {
-        require_once($path . "../service/DB-Func.php");
-    } elseif (file_exists($path . "../service/DB-Func.php")) {
-        require_once($path . "../configObject/service/DB-Func.php");
     }
 
     $DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . $host_id . "'");
@@ -2217,12 +2205,6 @@ function updateHostTemplateService_MC($host_id = null)
 
     if (!$host_id) {
         return;
-    }
-
-    if (file_exists($path . "../service/DB-Func.php")) {
-        require_once $path . "../service/DB-Func.php";
-    } elseif (file_exists($path . "../service/DB-Func.php")) {
-        require_once $path . "../configObject/service/DB-Func.php";
     }
 
     $DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . intval($host_id) . "'");
