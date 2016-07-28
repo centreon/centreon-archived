@@ -14,7 +14,8 @@
         <div class="cntn">
             <button class='addView btnAction btc bt_success'>{t}Add view{/t}</button>
             <!-- Form for add a view -->
-            <div class="toggle_wrapper inactive" id="addView">
+            <div class="position_toggle_wrapper">
+                <div class="toggle_wrapper inactive" id="addView">
                 <div>
                     <form {$formAddView.attributes}>
                         <table class="table">
@@ -58,7 +59,9 @@
                         {$formAddView.hidden}
                     </form>
                 </div>
-            </div> 
+            </div>
+                <div class="footer_toggle_wrapper"></div>
+            </div>
         </div>
         {/if}
         
@@ -66,7 +69,8 @@
         {if $aclEdit == 1} 
         <div class="cntn">
             <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
-            <div class="toggle_wrapper inactive" id="editView">
+            <div class="position_toggle_wrapper">
+                <div class="toggle_wrapper inactive" id="editView">
                 <div>
                     <form {$formEditView.attributes}>
                         <table class="table">
@@ -100,6 +104,8 @@
                     </form>
                 </div>
             </div>
+                <div class="footer_toggle_wrapper"></div>
+            </div>
         </div>
         {/if}
 
@@ -117,7 +123,8 @@
         {if $aclShare == 1} 
         <div class="cntn">
             <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
-            <div class="toggle_wrapper inactive" id="shareView">
+            <div class="position_toggle_wrapper">
+                <div class="toggle_wrapper inactive" id="shareView">
                 <form {$formShareView.attributes}>
                     <table class="table">
                         <tr>
@@ -167,6 +174,8 @@
                     </div>
                 </form>
             </div>
+                <div class="footer_toggle_wrapper"></div>
+            </div>
         </div>
         {/if}
 
@@ -174,7 +183,8 @@
         {if $aclAddWidget == 1}
         <div class="cntn">
             <button class='addWidget btnAction btnExtraAction btc bt_success'>{t}Add widget{/t}</button>
-            <div class="toggle_wrapper inactive" id="addwdgt">
+            <div class="position_toggle_wrapper">
+                <div class="toggle_wrapper inactive" id="addwdgt">
                 <form {$formAddWidget.attributes}>
                     <table class="table">
                         <tr>
@@ -183,12 +193,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="FormRowValue" colspan="2">{$formAddWidget.widget_title.label} {$formAddWidget.widget_title.html}</td>
+                            <td class="FormRowValue" >{$formAddWidget.widget_title.label}</td>
+                            <td class="FormRowValue" >{$formAddWidget.widget_title.html}</td>
                         </tr>
                         <tr>
-                            <td class="FormRowValue" colspan="2">
-                                {t}Filter title{/t}: <input type="text" id="widgetSearch">
-                            </td>
+                            <td class="FormRowValue">{t}Filter title{/t}:</td>
+                            <td class="FormRowValue"><input type="text"  size="30"></td>
                         </tr>
                         <tr>
                             <td colspan="2">
@@ -199,6 +209,7 @@
                                         <tr class={$rowStyle}>
                                           <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
                                           <td class="ListColLeft"
+                                              style="width:100%"
                                               data-description="{$elem.description}"
                                               data-author="{$elem.author}"
                                               data-version="{$elem.version}">{$elem.title}</td>
@@ -216,20 +227,25 @@
                     </table>
                     {$formAddWidget.hidden}
                 </form>
+                </div>
+                <div class="footer_toggle_wrapper"></div>
             </div>
         </div>
+
         {/if}
 
         <!-- Button for activate rotation -->
         {if $aclRotation == 1} 
         <div class="cntn">
             <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
-            <div class="toggle_wrapper inactive" id="rotationTabs">
+            <div class="position_toggle_wrapper">
+                <div class="toggle_wrapper inactive" id="rotationTabs">
                 <div id='rotation_timer'></div>
                 <div id='timer_value'></div>
                 <div class="button_group_center">
                     <input type='button' value='{t}Apply{/t}' class="btc bt_success" onClick='submitRotation();'/>
                 </div>
+            </div>
             </div>
         </div>
         {/if}

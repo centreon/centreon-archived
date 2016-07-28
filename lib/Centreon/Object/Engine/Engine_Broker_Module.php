@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give Centreon
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,41 +33,16 @@
  *
  */
 
-/*
- * Write command in nagios pipe or in centcore pipe.
+require_once "Centreon/Object/Object.php";
+
+/**
+ * Used for interacting with Engine Broker Module
+ *
+ * @author kevin duret <kduret@centreon.com>
  */
-
-function write_command($cmd, $poller){
-	global $centreon, $key, $pearDB;
-
-	$str = NULL;
-
-	/*
-	 * Destination is centcore pipe path
-	 */
-    if (defined("_CENTREON_VARLIB_")) {
-        $destination = _CENTREON_VARLIB_."/centcore.cmd";
-    } else {
-        $destination = "/var/lib/centreon/centcore.cmd";
-    }
-	
-	$cmd = str_replace("`", "&#96;", $cmd);
-	$cmd = str_replace("\n", "<br>", $cmd);
-	$informations = preg_split("/\;/", $key);
-
-	if (!mb_detect_encoding($cmd, 'UTF-8', true)) {
-		$cmd = utf8_encode($cmd);
-	}
-	setlocale(LC_CTYPE, 'en_US.UTF-8');
-
-    $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
-	return passthru($str);
-}
-
-function send_cmd($cmd, $poller = NULL){
-	if (isset($cmd)) {
-		$flg = write_command($cmd, $poller);
-	}
-	isset($flg) && $flg ? $ret = $flg : $ret = _("Command execution problem");
-	return $ret;
+class Centreon_Object_Engine_Broker_Module extends Centreon_Object
+{
+    protected $table = "cfg_nagios_broker_module";
+    protected $primaryKey = "bk_mod_id";
+    protected $uniqueLabelField = "bk_mod_id";
 }

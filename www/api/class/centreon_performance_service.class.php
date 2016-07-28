@@ -41,12 +41,12 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -56,7 +56,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
@@ -84,7 +84,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
         } else {
             $range = '';
-        }        
+        }
         
         $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.service_description, i.service_id, i.host_name, i.host_id, m.index_id "
             . "FROM index_data i, metrics m ".(!$isAdmin ? ', centreon_acl acl ' : '')

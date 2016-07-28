@@ -40,11 +40,12 @@
    * @param int $pollerId
    * @return array
    */
-function getMyHostTemplateCriticality($host_id) {
+function getMyHostTemplateCriticality($host_id)
+{
     global $pearDB, $critHTpl;
     
     if (!$host_id) {
-        return NULL;
+        return null;
     }
     
     $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order`";
@@ -58,8 +59,8 @@ function getMyHostTemplateCriticality($host_id) {
             }
         }
     }
-    return NULL;
-  }
+    return null;
+}
 
 /**
  * Init Command Cache
@@ -99,17 +100,17 @@ function intCmdParam($DB, $pollerId)
                                  ORDER BY service_register, service_template_model_stm_id");
     while ($data = $DBRESULT->fetchRow()) {
         if ($data["service_register"] == 1) {
-            if ($data["command_command_id_arg"] && !$data["command_command_id"]){
+            if ($data["command_command_id_arg"] && !$data["command_command_id"]) {
                 $cache["svc"][$data["service_id"]] = db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "cmd", $cache)).db2str($data["command_command_id_arg"]);
             } elseif ($data["command_command_id"] && !$data["command_command_id_arg"]) {
                 $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]].db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "arg", $cache));
             } elseif ($data["command_command_id"] && $data["command_command_id_arg"]) {
                 $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]].db2str($data["command_command_id_arg"]);
             } else {
-                $cache["svc"][$data["service_id"]] = NULL;
+                $cache["svc"][$data["service_id"]] = null;
             }
         } else {
-            $cache["tpl"][$data["service_id"]] = array('arg' => $data["command_command_id_arg"], 'cmd' => $data["command_command_id"] != NULL ? $commands[$data["command_command_id"]] : NULL, 'tpl' => $data["service_template_model_stm_id"]);
+            $cache["tpl"][$data["service_id"]] = array('arg' => $data["command_command_id_arg"], 'cmd' => $data["command_command_id"] != null ? $commands[$data["command_command_id"]] : null, 'tpl' => $data["service_template_model_stm_id"]);
         }
         $i++;
     }
@@ -142,7 +143,7 @@ function getInfoInSvcTpl($tpl, $info, $cache)
  *
  * @param $service_id
  */
-function getCheckCmdParam($service_id = NULL, $cache)
+function getCheckCmdParam($service_id = null, $cache)
 {
     if (isset($cache["svc"][$service_id])) {
         return $cache["svc"][$service_id];
@@ -154,9 +155,11 @@ function getCheckCmdParam($service_id = NULL, $cache)
 /*
  * Create Service Template Cache
  */
-function getMyServiceTPInCache($service_id = NULL, $cache)	{
-    if (!$service_id)
+function getMyServiceTPInCache($service_id = null, $cache)
+{
+    if (!$service_id) {
         return;
+    }
     
     $tab = array();
     while (1) {
@@ -177,7 +180,8 @@ function getMyServiceTPInCache($service_id = NULL, $cache)	{
 /*
  * Convert Service Sp�cial Char for generation
  */
-function convertServiceSpecialChar($str) {
+function convertServiceSpecialChar($str)
+{
     $str = str_replace('#S#', "/", $str);
     $str = str_replace('#BS#', "\\", $str);
     return $str;
@@ -186,7 +190,8 @@ function convertServiceSpecialChar($str) {
 /*
  * Purge Args for commands
  */
-function convertServiceSpecialCharInCmd($str) {
+function convertServiceSpecialCharInCmd($str)
+{
     $str = str_replace('#BR#', "\\n", $str);
     $str = str_replace('#T#', "\\t", $str);
     $str = str_replace('#R#', "\\r", $str);
@@ -195,26 +200,33 @@ function convertServiceSpecialCharInCmd($str) {
     return $str;
 }
 
-function myHour($hour) {
-    if (!$hour)
+function myHour($hour)
+{
+    if (!$hour) {
         return "00";
-    if ($hour < 10)
+    }
+    if ($hour < 10) {
         return "0".$hour;
+    }
     return $hour;
 }
 
-function myMinute($min) {
-    if (!$min)
+function myMinute($min)
+{
+    if (!$min) {
         return "00";
-    if ($min < 10 && $min > 0)
+    }
+    if ($min < 10 && $min > 0) {
         return "0".$min;
+    }
     return $min;
 }
 
 /*
  * Compute values for time range
  */
-function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf) {
+function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf)
+{
     global $PeriodBefore, $PeriodAfter, $Period;
     $tabPeriod = preg_split("/\,/", $conf);
     foreach ($tabPeriod as $period) {
@@ -230,82 +242,98 @@ function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf) {
             if ($tabValue[1] < 0 && $tabValue[3] < 0) {
                 $value = (24 + $tabValue[1]);
                 $value = myHour($value);
-                if ($PeriodBefore[$daybefore] != "")
+                if ($PeriodBefore[$daybefore] != "") {
                     $PeriodBefore[$daybefore] .= ",";
+                }
                 $PeriodBefore[$daybefore] .= $value.":".$tabValue[2]."-".(24 + $tabValue[3]).":".myMinute($tabValue[4]);
-            } else if ($tabValue[1] < 0 && $tabValue[3] > 0) {
+            } elseif ($tabValue[1] < 0 && $tabValue[3] > 0) {
                 $value = ((24 + $tabValue[3]) % 24);
-                if ($Period[$day] != "")
+                if ($Period[$day] != "") {
                     $Period[$day] .= ",";
+                }
                 $Period[$day] .= "00:00-".myHour($value).":".(($tabValue[4] < 10 && $tabValue[4] > 0) ? "0".$tabValue[4] : $tabValue[4]);
-                if ($PeriodBefore[$daybefore] != "")
+                if ($PeriodBefore[$daybefore] != "") {
                     $PeriodBefore[$daybefore] .= ",";
+                }
                 $PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".myMinute($tabValue[2])."-24:00";
-            } else if ($tabValue[1] < 0 && $tabValue[3] == 0) {
+            } elseif ($tabValue[1] < 0 && $tabValue[3] == 0) {
                 $value = ((24 + $tabValue[3]) % 24);
-                if ($Period[$day] != "")
+                if ($Period[$day] != "") {
                     $Period[$day] .= ",";
+                }
                 $Period[$day] .= "00:00-".myHour($value).":".(($tabValue[4] < 10 && $tabValue[4] > 0) ? "0".$tabValue[4] : $tabValue[4]);
-                if ($PeriodBefore[$daybefore] != "")
+                if ($PeriodBefore[$daybefore] != "") {
                     $PeriodBefore[$daybefore] .= ",";
+                }
                 $PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".myMinute($tabValue[2])."-24:00";
             } else {
                 $value = ($tabValue[1] < 0 ? 24 + $tabValue[1] : $tabValue[1]);
-                if ($Period[$day] != "")
+                if ($Period[$day] != "") {
                     $Period[$day] .= ",";
+                }
                 $tabValue[3] = ($tabValue[3] < 0 ? 24 + $tabValue[3] : $tabValue[3]);
                 $Period[$day] .= myHour($value).":".myMinute($tabValue[2])."-".(($tabValue[3] < 10 && $tabValue[3] > 0) ? "0".$tabValue[3] : $tabValue[3]).":".myMinute($tabValue[4]);
             }
-        } else if ($gmt > 0) {
+        } elseif ($gmt > 0) {
             $tabValue[1] += $gmt;
             $tabValue[3] += $gmt;
             if ($tabValue[1] >= 24 && $tabValue[3] > 24) {
-                if ($PeriodAfter[$dayafter] != "")
+                if ($PeriodAfter[$dayafter] != "") {
                     $PeriodAfter[$dayafter] .= ",";
+                }
                 $PeriodAfter[$dayafter] .= ($tabValue[1] % 24).":".myMinute($tabValue[2])."-".($tabValue[3] % 24).":".myMinute($tabValue[4])."";
-            } else if ($tabValue[1] < 24 && $tabValue[3] > 24) {
-                if ($Period[$day] != "")
+            } elseif ($tabValue[1] < 24 && $tabValue[3] > 24) {
+                if ($Period[$day] != "") {
                     $Period[$day] .= ",";
+                }
                 $Period[$day] .= myMinute($tabValue[1]).":".$tabValue[2]."-"."24:00";
                 $tabValue[3] = $tabValue[3] % 24;
-                if ($PeriodAfter[$dayafter] != "")
+                if ($PeriodAfter[$dayafter] != "") {
                     $PeriodAfter[$dayafter] .= ",";
+                }
                 $PeriodAfter[$dayafter] .= "00:00-".myHour($tabValue[3]) .":".myMinute($tabValue[4])."";
-            } else if ($tabValue[1] == 24 && $tabValue[3] == 24) {
-                if ($PeriodAfter[$dayafter] != "")
+            } elseif ($tabValue[1] == 24 && $tabValue[3] == 24) {
+                if ($PeriodAfter[$dayafter] != "") {
                     $PeriodAfter[$dayafter] .= ",";
+                }
                 $PeriodAfter[$dayafter] .= "00:".myMinute($tabValue[2])."-00:".myMinute($tabValue[4]);
             } else {
                 if (($tabValue[3] == 24 && $tabValue[4] > 0)) {
-                    if ($PeriodAfter[$dayafter] != "")
+                    if ($PeriodAfter[$dayafter] != "") {
                         $PeriodAfter[$dayafter] .= ",";
+                    }
                     $PeriodAfter[$dayafter] .= "00:00-00:".myMinute($tabValue[4]);
                     $tabValue[4] = "00";
                 }
-                if ($Period[$day] != "")
+                if ($Period[$day] != "") {
                     $Period[$day] .= ",";
+                }
                 $Period[$day] .= myMinute($tabValue[1]).":".myMinute($tabValue[2])."-".myMinute($tabValue[3]).":".myMinute($tabValue[4]);
             }
-        } else if ($gmt == 0) {
-            if ($Period[$day] != "")
+        } elseif ($gmt == 0) {
+            if ($Period[$day] != "") {
                 $Period[$day] .= ",";
+            }
             $Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4];
         }
     }
 }
 
 
-function isHostOnThisInstance($host_id, $instance_id){
+function isHostOnThisInstance($host_id, $instance_id)
+{
     global $pearDB;
 
     $DBRESULT_relation = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."' AND nagios_server_id = '".$instance_id."'");
-    if ($DBRESULT_relation->numRows())
+    if ($DBRESULT_relation->numRows()) {
         return 1;
-    else
+    } else {
         return 0;
+    }
 }
 
-function isLocalInstance($instance_id){
+function isLocalInstance($instance_id)
+{
     global $pearDB;
     
     $DBRESULT_relation = $pearDB->query("SELECT localhost FROM nagios_server WHERE id = '".$instance_id."'");
@@ -313,7 +341,8 @@ function isLocalInstance($instance_id){
     return $data["localhost"];
 }
 
-function manageDependencies($ret = array())	{
+function manageDependencies($ret = array())
+{
     global $pearDB, $form;
     
     /*
@@ -325,7 +354,8 @@ function manageDependencies($ret = array())	{
     return ($gbArr);
 }
 
-function checkDependenciesStrong()	{
+function checkDependenciesStrong()
+{
     global $pearDB,  $oreon;
     $cctEnb = array();
     $cgEnb = array();
@@ -395,12 +425,12 @@ function checkDependenciesStrong()	{
     $hostTemplate = array();
     $DBRESULT = $pearDB->query("SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host WHERE host.host_id = htr.host_host_id");
     while ($htpl = $DBRESULT->fetchRow()) {
-        $hostTemplate[$htpl["host_id"]]	= $htpl["host_tpl_id"];
+        $hostTemplate[$htpl["host_id"]]     = $htpl["host_tpl_id"];
     }
 
     $host = array();
     $DBRESULT = $pearDB->query("SELECT host.host_id, host.host_name FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");
-    while ($host = $DBRESULT->fetchRow())	{
+    while ($host = $DBRESULT->fetchRow()) {
         /*
          * If the Host is link to a Template, we think that the dependencies are manage in the template
          */
@@ -413,8 +443,9 @@ function checkDependenciesStrong()	{
              */
 
             $DBRESULT2 = $pearDB->query("SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr WHERE cghr.host_host_id = '".$host["host_id"]."'");
-            while ($valid = $DBRESULT2->fetchRow())
-                isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : NULL;
+            while ($valid = $DBRESULT2->fetchRow()) {
+                isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
+            }
             $DBRESULT2->free();
             unset($valid);
 
@@ -423,11 +454,11 @@ function checkDependenciesStrong()	{
              */
 
             $DBRESULT2 = $pearDB->query("SELECT DISTINCT chr.contact_id FROM contact_host_relation chr WHERE chr.host_host_id = '".$host["host_id"]."'");
-            while ($valid = $DBRESULT2->fetchRow())
-                isset($cctEnb[$valid["contact_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : NULL;
+            while ($valid = $DBRESULT2->fetchRow()) {
+                isset($cctEnb[$valid["contact_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
+            }
             $DBRESULT2->free();
             unset($valid);
-
         }
     }
     $DBRESULT->free();
@@ -438,7 +469,7 @@ function checkDependenciesStrong()	{
      */
     $hostGroup = array();
     $DBRESULT = $pearDB->query("SELECT DISTINCT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
-    while ($hostGroup = $DBRESULT->fetchRow())	{
+    while ($hostGroup = $DBRESULT->fetchRow()) {
         $DBRESULT2 = $pearDB->query("SELECT DISTINCT hgr.host_host_id, hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."'");
         while ($hostGroup = $DBRESULT2->fetchRow()) {
             if (isset($hostEnb[$hostGroup["host_host_id"]])) {
@@ -470,7 +501,7 @@ function checkDependenciesStrong()	{
                                "FROM service " .
                                "WHERE service_activate = '1' " .
                                "AND service_register = '1'");
-    while ($service = $DBRESULT->fetchRow())	{
+    while ($service = $DBRESULT->fetchRow()) {
         /*
          * If the Service is link to a Template, we think that
          * the dependencies are manage in the template
@@ -482,9 +513,9 @@ function checkDependenciesStrong()	{
             $hg = false;
 
             $DBRESULT2 = $pearDB->query("SELECT DISTINCT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$pearDB->escape($service["service_id"])."'");
-            while ($valid = $DBRESULT2->fetchRow())	{
-                isset($hostEnb[$valid["host_host_id"]]) ? $h = true : NULL;
-                isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : NULL;
+            while ($valid = $DBRESULT2->fetchRow()) {
+                isset($hostEnb[$valid["host_host_id"]]) ? $h = true : null;
+                isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : null;
             }
             $DBRESULT2->free();
             unset($valid);
@@ -503,7 +534,7 @@ function checkDependenciesStrong()	{
      */
     $serviceGroup = array();
     $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup sg WHERE sg.sg_activate = '1'");
-    while ($serviceGroup = $DBRESULT->fetchRow())	{
+    while ($serviceGroup = $DBRESULT->fetchRow()) {
         $DBRESULT2 = $pearDB->query("SELECT sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$serviceGroup["sg_id"]."'");
         while ($valid = $DBRESULT2->fetchRow()) {
             if (isset($svEnb[$valid["service_service_id"]])) {
@@ -520,15 +551,17 @@ function checkDependenciesStrong()	{
      */
     $oms = array();
     $DBRESULT = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_activate = '1'");
-    while ($oms = $DBRESULT->fetchRow())
+    while ($oms = $DBRESULT->fetchRow()) {
         $omsEnb[$oms["meta_id"]] = 1;
+    }
     unset($oms);
     $DBRESULT->free();
 
     return ($gbEnb);
 }
 
-function print_header($handle, $name)	{
+function print_header($handle, $name)
+{
     $time = date("F j, Y, g:i a");
     $by = $name;
     $str  = "###################################################################\n";
@@ -550,8 +583,9 @@ function print_header($handle, $name)	{
     $DBRESULT = $len - 28 - $len_time - 2;
 
     // Add space to put text on center
-    for ($i = 0; $i != $DBRESULT; $i++)
+    for ($i = 0; $i != $DBRESULT; $i++) {
         $str  .= " ";
+    }
 
     $str .= "#\n";
     $str .= "#         By " . $by;
@@ -559,8 +593,9 @@ function print_header($handle, $name)	{
     $DBRESULT = $len - 13 - $len_by - 2;
 
     // Add space to put text on center
-    for ($i = 0; $i != $DBRESULT; $i++)
+    for ($i = 0; $i != $DBRESULT; $i++) {
         $str  .= " ";
+    }
     $str .= "#\n";
     $str .= "#                                                                 #\n";
     $str .= "###################################################################\n\n";
@@ -568,18 +603,20 @@ function print_header($handle, $name)	{
 }
 
 // Create File, print header and return handle.
-function create_file($filename, $name, $header = true)	{
+function create_file($filename, $name, $header = true)
+{
     $oldumask = umask(0113);
     if (!$handle = fopen($filename, 'w')) {
         throw new RuntimeException('Cannot open file "' . $filename . '"');
     }
     umask($oldumask);
-    $header ? print_header($handle, $name) : NULL;
+    $header ? print_header($handle, $name) : null;
     return $handle;
 }
 
 // write data into the file
-function write_in_file($handle, $content, $filename)	{
+function write_in_file($handle, $content, $filename)
+{
     if (strcmp($content, "") && !fwrite($handle, $content)) {
         throw new RuntimeException('Cannot write to file "' . $filename . '"');
     }
@@ -590,24 +627,28 @@ function write_in_file($handle, $content, $filename)	{
  * Change file mod in order to allow nagios to change it.
  * @param unknown_type $filename
  */
-function setFileMod($filename) {
+function setFileMod($filename)
+{
     //chmod($filename, 0664);
 }
 
 // Put text in good format
-function print_line($data1, $data2)	{
+function print_line($data1, $data2)
+{
     $len = strlen($data1);
-    if ($len <= 9)
-	    return "\t" . $data1 . "\t\t\t\t" . $data2 . "\n";
-    else if ($len > 9 && $len <= 18)
-	    return "\t" . $data1 . "\t\t\t" . $data2 . "\n";
-    else if ($len >= 19 && $len <= 27)
-	    return "\t" . $data1 . "\t\t" . $data2 . "\n";
-    else if ($len > 27)
-	    return "\t" . $data1 . "\t" . $data2 . "\n";
+    if ($len <= 9) {
+        return "\t" . $data1 . "\t\t\t\t" . $data2 . "\n";
+    } elseif ($len > 9 && $len <= 18) {
+        return "\t" . $data1 . "\t\t\t" . $data2 . "\n";
+    } elseif ($len >= 19 && $len <= 27) {
+        return "\t" . $data1 . "\t\t" . $data2 . "\n";
+    } elseif ($len > 27) {
+        return "\t" . $data1 . "\t" . $data2 . "\n";
+    }
 }
 
-function removeSpecialChar($str){
+function removeSpecialChar($str)
+{
     $str = str_replace('#BR#', "\\n", $str);
     $str = str_replace('#T#', "\\t", $str);
     $str = str_replace('#R#', "\\r", $str);
@@ -616,10 +657,12 @@ function removeSpecialChar($str){
     return $str;
 }
 
-function verifyIfMustBeGenerated($id, $gbArr, $ret){
+function verifyIfMustBeGenerated($id, $gbArr, $ret)
+{
     $BP = false;
-    if (isset($gbArr[$id]))
+    if (isset($gbArr[$id])) {
         $BP = true;
+    }
     return $BP;
 }
 
@@ -659,7 +702,8 @@ function verifyIfMustBeGenerated($id, $gbArr, $ret){
   Modified for Oreon by Christophe Coraboeuf
 */
 
-function readINIfile ($filename, $commentchar) {
+function readINIfile($filename, $commentchar)
+{
     $array1 = array();
     $array2 = array();
     $array1 = file($filename);
@@ -672,54 +716,73 @@ function readINIfile ($filename, $commentchar) {
             if ($firstchar == '[' && substr($dataline, -1, 1) == ']') {
                 //It's a section
                 $section = strtoupper(substr($dataline, 1, -1));
-            }else{
+            } else {
                 //It's a key...
                 $delimiter = strpos($dataline, '=');
                 if ($delimiter > 0) {
                     //...with a value
                     $key = strtoupper(trim(substr($dataline, 0, $delimiter)));
                     $value = trim(substr($dataline, $delimiter + 1));
-                    if (substr($value, 0, 1) == '"' && substr($value, -1, 1) == '"') { $value = substr($value, 1, -1); }
+                    if (substr($value, 0, 1) == '"' && substr($value, -1, 1) == '"') {
+                        $value = substr($value, 1, -1);
+                    }
                     $array2[$section][$key] = stripcslashes($value);
-                }else{
+                } else {
                     //...without a value
                     $array2[$section][strtoupper(trim($dataline))]='';
                 }
             }
-        }else{
+        } else {
             //It's a comment or blank line.  Ignore.
         }
     }
     return $array2;
 }
 
-function writeINIfile ($filename, $array1, $commentchar, $commenttext) {
+function writeINIfile($filename, $array1, $commentchar, $commenttext)
+{
     $handle = fopen($filename, 'wb');
     if ($commenttext!='') {
         $comtext = $commentchar.
-	     	str_replace($commentchar, "\r\n".$commentchar,
-                        str_replace ("\r", $commentchar,
-                                     str_replace("\n", $commentchar,
-                                                 str_replace("\n\r", $commentchar,
-                                                             str_replace("\r\n", $commentchar, $commenttext)))));
+            str_replace(
+                $commentchar,
+                "\r\n".$commentchar,
+                str_replace(
+                    "\r",
+                    $commentchar,
+                    str_replace(
+                        "\n",
+                        $commentchar,
+                        str_replace(
+                            "\n\r",
+                            $commentchar,
+                            str_replace("\r\n", $commentchar, $commenttext)
+                        )
+                    )
+                )
+            );
         if (substr($comtext, -1, 1)==$commentchar && substr($comtext, -1, 1)!=$commentchar) {
             $comtext = substr($comtext, 0, -1);
         }
-        fwrite ($handle, $comtext."\r\n");
+        fwrite($handle, $comtext."\r\n");
     }
     foreach ($array1 as $sections => $items) {
         //Write the section
-        if (isset($section)) { fwrite ($handle, "\r\n"); }
+        if (isset($section)) {
+            fwrite($handle, "\r\n");
+        }
         //$section = ucfirst(preg_replace('/[\0-\37]|[\177-\377]/', "-", $sections));
         $section = strtoupper(preg_replace('/[\0-\37]|\177/', "-", $sections));
-        fwrite ($handle, "[".$section."]\r\n");
+        fwrite($handle, "[".$section."]\r\n");
         foreach ($items as $keys => $values) {
             //Write the key/value pairs
             $key = strtoupper(preg_replace('/[\0-\37]|=|\177/', "-", $keys));
-            if (substr($key, 0, 1)==$commentchar) { $key = '-'.substr($key, 1); }
+            if (substr($key, 0, 1)==$commentchar) {
+                $key = '-'.substr($key, 1);
+            }
             //  if (substr($values, 0, 1) == '"' && substr($values, -1, 1) == '"') { $values = substr($values, 1, -1); }
-            $value = ucfirst(addcslashes($values,''));
-            fwrite ($handle, '    '.$key.'='.$value."\r\n");
+            $value = ucfirst(addcslashes($values, ''));
+            fwrite($handle, '    '.$key.'='.$value."\r\n");
         }
     }
     fclose($handle);
@@ -788,25 +851,29 @@ function getListIndexData()
     return $listRelation;
 }
 
-function getIndexToDelete($infos) {
+function getIndexToDelete($infos)
+{
     if ($infos['status'] === false) {
         return true;
     }
     return false;
 }
 
-function getIndexToKeep($infos) {
+function getIndexToKeep($infos)
+{
     if ($infos['status'] === true) {
         return true;
     }
     return false;
 }
 
-function getIndexesId($infos) {
+function getIndexesId($infos)
+{
     return $infos['id'];
 }
 
-function getChildren($infos) {
+function getChildren($infos)
+{
     global $pearDB;
     if ($infos['subgrp_id'] == '') {
         return null;
@@ -848,7 +915,8 @@ function getChildren($infos) {
     return $result;
 }
 
-function writeElement($xml, $element) {
+function writeElement($xml, $element)
+{
     if ($element['key'] != 'blockId') {
         if (!is_null($element['children'])) {
             $xml->startElement($element['key']);

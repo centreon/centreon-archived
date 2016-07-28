@@ -49,7 +49,7 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()

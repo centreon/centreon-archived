@@ -34,14 +34,14 @@
  */
 
 if (!isset($oreon)) {
-	exit();
+    exit();
 }
 
 include_once("./class/centreonUtils.class.php");
-		
+        
 include("./include/common/autoNumLimit.php");
 
-isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
+isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
 
 $aclFrom = "";
 $aclCond = "";
@@ -59,7 +59,7 @@ $rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
 $search = '';
 if (isset($_POST['searchSD']) && $_POST['searchSD']) {
     $search = $_POST['searchSD'];
-	$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";		
+    $rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 }
 $DBRESULT = $pearDB->query($rq);
 
@@ -88,8 +88,9 @@ $rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
     . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
     . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
 
-if ($search)
-	$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+if ($search) {
+    $rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+}
 $rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT = $pearDB->query($rq);
 
@@ -103,16 +104,16 @@ $style = "one";
 # Fill a tab with a mutlidimensionnal Array we put in $tpl
 $elemArr = array();
 for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
-	$moptions = "";
-	$selectedElements = $form->addElement('checkbox', "select[".$dep['dep_id']."]");
-	$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$dep['dep_id']."]'></input>";
-	$elemArr[$i] = array("MenuClass"=>"list_".$style,
-					"RowMenu_select"=>$selectedElements->toHtml(),
-					"RowMenu_name"=>CentreonUtils::escapeSecure(myDecode($dep["dep_name"])),
-					"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
-					"RowMenu_description"=>CentreonUtils::escapeSecure(myDecode($dep["dep_description"])),
-					"RowMenu_options"=>$moptions);
-	$style != "two" ? $style = "two" : $style = "one";
+    $moptions = "";
+    $selectedElements = $form->addElement('checkbox', "select[".$dep['dep_id']."]");
+    $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$dep['dep_id']."]'></input>";
+    $elemArr[$i] = array("MenuClass"=>"list_".$style,
+                    "RowMenu_select"=>$selectedElements->toHtml(),
+                    "RowMenu_name"=>CentreonUtils::escapeSecure(myDecode($dep["dep_name"])),
+                    "RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
+                    "RowMenu_description"=>CentreonUtils::escapeSecure(myDecode($dep["dep_description"])),
+                    "RowMenu_options"=>$moptions);
+    $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
@@ -127,47 +128,47 @@ $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfir
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </SCRIPT>
 <?php
 $attrs1 = array(
-	'onchange'=>"javascript: " .
+    'onchange'=>"javascript: " .
                         " var bChecked = isChecked(); ".
                         " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
                         " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
+            "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 3) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "");
+$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+$form->setDefaults(array('o1' => null));
 
 $attrs2 = array(
-	'onchange'=>"javascript: " .
+    'onchange'=>"javascript: " .
                         " var bChecked = isChecked(); ".
                         " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
                         " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
+            "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 3) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "");
+$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchSD', $search);

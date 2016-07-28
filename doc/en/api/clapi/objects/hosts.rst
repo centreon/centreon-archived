@@ -164,6 +164,8 @@ notification_options	             Notification options
 
 notification_period	             Notification period
 
+recovery_notification_delay          Recovery notification delay
+
 obsess_over_host	             Whether or not obsess over host option is enabled
 
 passive_checks_enabled	             Whether or not passive checks are enabled

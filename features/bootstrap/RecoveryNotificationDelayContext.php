@@ -1,6 +1,8 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\ContactListPage;
+use Centreon\Test\Behat\ContactConfigurationPage;
 use Centreon\Test\Behat\CommandConfigurationPage;
 use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\HostConfigurationPage;
@@ -9,14 +11,12 @@ use Centreon\Test\Behat\ServiceConfigurationPage;
 class RecoveryNotificationDelayContext extends CentreonContext
 {
     private $hostName;
-    private $serviceHostName;
     private $serviceName;
 
     public function __construct()
     {
         parent::__construct();
         $this->hostName = 'RecoveryNotificationDelayTestHost';
-        $this->serviceHostName = 'Centreon-Server';
         $this->serviceName = 'RecoveryNotificationDelayTestService';
     }
 
@@ -28,17 +28,12 @@ class RecoveryNotificationDelayContext extends CentreonContext
         // Create notification command.
         $this->createNotificationCommand();
 
+        // Update notifications on admin contact
+        $this->updateContactNotification();
+
         // Create host.
-        $page = new HostConfigurationPage($this);
-        $page->setProperties(array(
-            'name' => $this->hostName,
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1,
-            'recovery_notification_delay' => 1));
-        $page->save();
+        $this->createHostWithRecoveryDelay();
+
         (new ConfigurationPollersPage($this))->restartEngine();
     }
 
@@ -50,22 +45,22 @@ class RecoveryNotificationDelayContext extends CentreonContext
         // Create notification command.
         $this->createNotificationCommand();
 
+        // Update notifications on admin contact
+        $this->updateContactNotification();
+
         // Create service.
-        $page = new ServiceConfigurationPage($this);
-        $page->setProperties(array(
-            'hosts' => $this->serviceHostName,
-            'description' => $this->serviceName,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1,
-            'recovery_notification_delay' => 1));
-        $page->save();
+        $this->createHostWithRecoveryDelay();
+        $this->createServiceWithRecoveryDelay();
+
         (new ConfigurationPollersPage($this))->restartEngine();
+    }
+
+    /**
+     *  @Given the host is UP
+     */
+    public function theHostIsUp()
+    {
+        $this->submitHostResult($this->hostName, 0, __FUNCTION__);
     }
 
     /**
@@ -73,7 +68,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function theHostIsNotUp()
     {
-        $this->submitHostResult($this->hostName, 2, __FUNCTION__);
+        $this->submitHostResult($this->hostName, 1, __FUNCTION__);
     }
 
     /**
@@ -81,7 +76,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function theServiceIsNotOK()
     {
-        $this->submitServiceResult($this->serviceHostName, $this->serviceName, 2, __FUNCTION__);
+        $this->submitServiceResult($this->hostName, $this->serviceName, 2, __FUNCTION__);
     }
 
     /**
@@ -97,7 +92,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function theServiceRecoversBeforeTheRecoveryNotificationDelay()
     {
-        $this->submitServiceResult($this->serviceHostName, $this->serviceName, 0, __FUNCTION__);
+        $this->submitServiceResult($this->hostName, $this->serviceName, 0, __FUNCTION__);
     }
 
     /**
@@ -115,7 +110,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     public function theServiceReceivesANewCheckResult()
     {
         sleep(60);
-        $this->submitServiceResult($this->serviceHostName, $this->serviceName, 0, __FUNCTION__);
+        $this->submitServiceResult($this->hostName, $this->serviceName, 0, __FUNCTION__);
     }
 
     /**
@@ -123,7 +118,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function noRecoveryNotificationIsSent()
     {
-        $retval = $this->execute('ls /tmp/acceptance_notification.tmp', 'web', false);
+        $retval = $this->execute('ls /tmp/acceptance_notification.tmp 2>/dev/null', 'web', false);
         if ($retval['exit_code'] == 0) {
             throw new \Exception('Notification was sent out.');
         }
@@ -134,7 +129,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function aRecoveryNotificationIsSent()
     {
-        $retval = $this->execute('ls /tmp/acceptance_notification.tmp', 'web', false);
+        $retval = $this->execute('ls /tmp/acceptance_notification.tmp 2>/dev/null', 'web', false);
         if ($retval['exit_code'] != 0) {
             throw new \Exception('No notification was sent out.');
         }
@@ -142,10 +137,70 @@ class RecoveryNotificationDelayContext extends CentreonContext
 
     private function createNotificationCommand()
     {
-        $page = new CommandConfigurationPage($this);
+        $page = new CommandConfigurationPage($this, true, 1);
         $page->setProperties(array(
             'command_name' => 'acceptance_notification_command',
-            'command_line' => '/bin/touch /tmp/acceptance_notification.tmp'));
+            'command_line' => 'touch /tmp/acceptance_notification.tmp'));
+        $page->save();
+    }
+
+    private function updateContactNotification()
+    {
+        $page = new ContactListPage($this);
+        $contact = $page->edit('admin');
+        $contact->setProperties(array(
+            'notifications_enabled' => 1,
+            'host_notify_on_recovery' => 1,
+            'host_notify_on_down' => 1,
+            'host_notification_command' => 'acceptance_notification_command',
+            'service_notify_on_recovery' => 1,
+            'service_notify_on_critical' => 1,
+            'service_notification_command' => 'acceptance_notification_command'
+        ));
+        $contact->save();
+    }
+
+    public function createHostWithRecoveryDelay()
+    {
+        $page = new HostConfigurationPage($this);
+        $page->setProperties(array(
+            'name' => $this->hostName,
+            'alias' => $this->hostName,
+            'address' => 'localhost',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1,
+            'notifications_enabled' => 1,
+            'notify_on_recovery' => 1,
+            'notify_on_down' => 1,
+            'recovery_notification_delay' => 1,
+            'cs' => 'admin_admin'
+        ));
+        $page->save();
+    }
+
+    public function createServiceWithRecoveryDelay()
+    {
+        $page = new ServiceConfigurationPage($this);
+        $page->setProperties(array(
+            'hosts' => $this->hostName,
+            'description' => $this->serviceName,
+            'templates' => 'generic-service',
+            'check_command' => 'check_centreon_dummy',
+            'check_period' => '24x7',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1,
+            'notifications_enabled' => 1,
+            'notify_on_recovery' => 1,
+            'notify_on_critical' => 1,
+            'recovery_notification_delay' => 1,
+            'cs' => 'admin_admin'
+        ));
         $page->save();
     }
 }

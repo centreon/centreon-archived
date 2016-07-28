@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give Centreon
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,27 +33,16 @@
  *
  */
 
-session_start();
-require_once '../functions.php';
-define('PROCESS_ID', 'dbutils');
+require_once "Centreon/Object/Object.php";
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+/**
+ * Used for interacting with Engine
+ *
+ * @author sylvestre
+ */
+class Centreon_Object_Engine extends Centreon_Object
+{
+    protected $table = "cfg_nagios";
+    protected $primaryKey = "nagios_id";
+    protected $uniqueLabelField = "nagios_name";
 }
-if (!isset($_SESSION['UTILS_DB'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find utils database. Session probably expired.'));
-}
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['UTILS_DB']) && !is_file('../../tmp/createNDODB')) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-mysql_select_db($_SESSION['UTILS_DB']);
-mysql_query('BEGIN');
-$result = splitQueries('../../createNDODB.sql', ';', null, '../../tmp/createNDODB');
-if ("0" != $result) {
-    mysql_query('ROLLBACK');
-    exitProcess(PROCESS_ID, 1, $result);
-}
-mysql_query('COMMIT');
-
-exitProcess(PROCESS_ID, 0, "OK");

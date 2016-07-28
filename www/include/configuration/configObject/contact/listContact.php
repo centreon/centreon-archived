@@ -170,7 +170,7 @@ foreach ($contacts as $contact) {
                     "RowMenu_lang" => $contact["contact_lang"],
                     "RowMenu_access" => $contact["contact_oreon"] ? _("Enabled") : _("Disabled"),
                     "RowMenu_admin" => $contact["contact_admin"] ? _("Yes") : _("No"),
-                    "RowMenu_status" => $contact["contact_activate"] ? _("Enabled") : _("Disabled"), 
+                    "RowMenu_status" => $contact["contact_activate"] ? _("Enabled") : _("Disabled"),
                     "RowMenu_badge" => $contact["contact_activate"] ? "service_ok" : "service_critical",
                     "RowMenu_options" => $moptions);
     $style != "two" ? $style = "two" : $style = "one";
@@ -216,13 +216,13 @@ foreach (array('o1', 'o2') as $option) {
                 "else if (this.form.elements['".$option."'].selectedIndex == 3 || this.form.elements['".$option."'].selectedIndex == 4 ||this.form.elements['".$option."'].selectedIndex == 5){" .
                 "   setO(this.form.elements['".$option."'].value); submit();} " .
                 "this.form.elements['".$option."'].selectedIndex = 0");
-    $form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
-    $form->setDefaults(array($option => NULL));
+    $form->addElement('select', $option, null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
+    $form->setDefaults(array($option => null));
     
     $o1 = $form->getElement($option);
-    $o1->setValue(NULL);
-    $o1->setSelected(NULL);
-} 
+    $o1->setValue(null);
+    $o1->setSelected(null);
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchC', $search);

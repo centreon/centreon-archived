@@ -37,34 +37,36 @@
 ## Database retrieve information for Manufacturer
 #
 
-function myDecodeMnftr($arg)	{
-	$arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
-	return($arg);
+function myDecodeMnftr($arg)
+{
+    $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
+    return($arg);
 }
 
 $mnftr = array();
-if (($o == "c" || $o == "w") && $id)	{		
-	$DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
-	# Set base value
-	$mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
-	$DBRESULT->free();
+if (($o == "c" || $o == "w") && $id) {
+    $DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
+    # Set base value
+    $mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
+    $DBRESULT->free();
 }
 
 ##########################################################
 # Var information to format the element
 #
-$attrsText 		= array("size"=>"50");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+$attrsText      = array("size"=>"50");
+$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
 #
 ## Form begin
 #
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
-	$form->addElement('header', 'title', _("Add Vendor"));
-else if ($o == "c")
-	$form->addElement('header', 'title', _("Modify Vendor"));
-else if ($o == "w")
-	$form->addElement('header', 'title', _("View Vendor"));
+if ($o == "a") {
+    $form->addElement('header', 'title', _("Add Vendor"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title', _("Modify Vendor"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title', _("View Vendor"));
+}
 
 #
 ## Manufacturer information
@@ -83,9 +85,10 @@ $redirect->setValue($o);
 #
 ## Form Rules
 #
-function myReplace()	{
-	global $form;
-	return (str_replace(" ", "_", $form->getSubmitValue("name")));
+function myReplace()
+{
+    global $form;
+    return (str_replace(" ", "_", $form->getSubmitValue("name")));
 }
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('name', 'myReplace');
@@ -102,55 +105,55 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 # Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 # prepare help texts
 $helptext = "";
 include_once("help.php");
-foreach ($help as $key => $text) { 
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+foreach ($help as $key => $text) {
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
 # Just watch a Command information
-if ($o == "w")	{
-	if ($centreon->user->access->page($p) != 2)
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
+if ($o == "w") {
+    if ($centreon->user->access->page($p) != 2) {
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
+    }
     $form->setDefaults($mnftr);
-	$form->freeze();
-}
-# Modify a Command information
-else if ($o == "c")	{
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->freeze();
+} # Modify a Command information
+elseif ($o == "c") {
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($mnftr);
-}
-# Add a Command information
-else if ($o == "a")	{
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+} # Add a Command information
+elseif ($o == "a") {
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
-if ($form->validate())	{
-	$mnftrObj = $form->getElement('id');
-	if ($form->getSubmitValue("submitA")) 
-		$mnftrObj->setValue(insertMnftrInDB());
-	else if ($form->getSubmitValue("submitC"))
-		updateMnftrInDB($mnftrObj->getValue());
-	$o = NULL;
-	$valid = true;
+if ($form->validate()) {
+    $mnftrObj = $form->getElement('id');
+    if ($form->getSubmitValue("submitA")) {
+        $mnftrObj->setValue(insertMnftrInDB());
+    } elseif ($form->getSubmitValue("submitC")) {
+        updateMnftrInDB($mnftrObj->getValue());
+    }
+    $o = null;
+    $valid = true;
 }
 
-if ($valid)
-	require_once($path."listMnftr.php");
-else	{
-	##Apply a template definition
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-	$tpl->display("formMnftr.ihtml");
+if ($valid) {
+    require_once($path."listMnftr.php");
+} else {
+    ##Apply a template definition
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formMnftr.ihtml");
 }

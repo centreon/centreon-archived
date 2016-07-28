@@ -210,10 +210,13 @@ class CentreonHostGroup extends CentreonObject
                 $relationTable = array();
                 foreach ($relations as $rel) {
                     $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
-                    if (!count($tab)) {
-                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                    if ($tab[0] != '') {
+                        $relationTable[] = $tab[0];
+                    } else {
+                        if ($rel != '') {
+                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                        }
                     }
-                    $relationTable[] = $tab[0];
                 }
                 if ($matches[1] == "set") {
                     $relobj->delete($groupId);

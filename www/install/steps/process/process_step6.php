@@ -41,8 +41,7 @@ foreach ($_POST as $key => $value) {
     $_SESSION[$key] = $value;
 }
 
-$mandatoryFields = array('CONFIGURATION_DB', 'STORAGE_DB', 'UTILS_DB',
-                         'DB_USER', 'DB_PASS', 'db_pass_confirm');
+$mandatoryFields = array('CONFIGURATION_DB', 'STORAGE_DB', 'DB_USER', 'DB_PASS', 'db_pass_confirm');
 $strError = '';
 foreach ($mandatoryFields as $field) {
     if ($_POST[$field] == '') {
@@ -71,10 +70,6 @@ if (!$strError) {
     if ($link) {
         mysql_close($link);
     }
-}
-
-if (isset($_POST['UTILS_DB'])) {
-    $_SESSION['UTILS_DB'] = $_POST['UTILS_DB'];
 }
 
 if ($strError) {

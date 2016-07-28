@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonNotification.class.php';
@@ -45,7 +45,7 @@ require_once _CENTREON_PATH_ . 'www/class/centreonNotification.class.php';
 $ehiCache = array();
 $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
 while ($ehi = $DBRESULT->fetchRow()) {
-	$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
 $DBRESULT->free();
 
@@ -55,15 +55,15 @@ $DBRESULT->free();
 $contact = array("" => null);
 $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup cg ORDER BY cg_alias");
 while ($ct = $DBRESULT->fetchRow()) {
-	$contact[$ct["cg_id"]] = $ct["cg_name"];
+    $contact[$ct["cg_id"]] = $ct["cg_name"];
 }
 $DBRESULT->free();
 
 /*
  * Object init
  */
-$mediaObj 		= new CentreonMedia($pearDB);
-$host_method 	= new CentreonHost($pearDB);
+$mediaObj       = new CentreonMedia($pearDB);
+$host_method    = new CentreonHost($pearDB);
 $contactObj     = new CentreonContact($pearDB);
 
 /*
@@ -87,10 +87,10 @@ $style = "one";
 
 $groups = "''";
 if (isset($_POST["contact"])) {
-	$contactgroup_id = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
+    $contactgroup_id = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
 } else {
-	$contactgroup_id = 0;
-	$formData = array('contact' => $contactgroup_id);
+    $contactgroup_id = 0;
+    $formData = array('contact' => $contactgroup_id);
 }
 
 $formData = array('contact' => $contactgroup_id);
@@ -111,20 +111,20 @@ if ($contactgroup_id) {
     $hostEscResources = $contactObj->getNotificationsContactGroup(2, $contactgroup_id);
 }
 if (isset($hostEscResources)) {
-	foreach ($hostEscResources as $hostId => $hostName) {
-	    if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-		    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-		} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-			$host_icone = "./img/media/" . $icone;
-		} else {
-			$host_icone = "./img/icones/16x16/server_network.gif";
-		}
-		$moptions = "";
-		$elemArrHostEsc[] = array("MenuClass"    => "list_".$style,
-						   	   	  "RowMenu_hico" => $host_icone,
-						   	   	  "RowMenu_host" => myDecode($hostName));
-		$style != "two" ? $style = "two" : $style = "one";
-	}
+    foreach ($hostEscResources as $hostId => $hostName) {
+        if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
+            $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
+        } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+            $host_icone = "./img/media/" . $icone;
+        } else {
+            $host_icone = "./img/icones/16x16/server_network.gif";
+        }
+        $moptions = "";
+        $elemArrHostEsc[] = array("MenuClass"    => "list_".$style,
+                                  "RowMenu_hico" => $host_icone,
+                                  "RowMenu_host" => myDecode($hostName));
+        $style != "two" ? $style = "two" : $style = "one";
+    }
 }
 $tpl->assign("elemArrHostEsc", $elemArrHostEsc);
 
@@ -137,23 +137,23 @@ if ($contactgroup_id) {
     $svcEscResources = $contactObj->getNotificationsContactGroup(3, $contactgroup_id);
 }
 if (isset($svcEscResources)) {
-	foreach ($svcEscResources as $hostId => $hostTab) {
-	    foreach ($hostTab as $serviceId => $tab) {
-    	    if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-    		    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-    		} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-    			$host_icone = "./img/media/" . $icone;
-    		} else {
-    			$host_icone = "./img/icones/16x16/server_network.gif";
-    		}
-    		$moptions = "";
-    		$elemArrSvcEsc[] = array("MenuClass"    => "list_".$style,
-    						   	  "RowMenu_hico"    => $host_icone,
-    						   	  "RowMenu_host"    => myDecode($tab['host_name']),
-    							  "RowMenu_service" => myDecode($tab['service_description']));
-    		$style != "two" ? $style = "two" : $style = "one";
-	    }
-	}
+    foreach ($svcEscResources as $hostId => $hostTab) {
+        foreach ($hostTab as $serviceId => $tab) {
+            if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
+                $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
+            } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+                $host_icone = "./img/media/" . $icone;
+            } else {
+                $host_icone = "./img/icones/16x16/server_network.gif";
+            }
+            $moptions = "";
+            $elemArrSvcEsc[] = array("MenuClass"    => "list_".$style,
+                                  "RowMenu_hico"    => $host_icone,
+                                  "RowMenu_host"    => myDecode($tab['host_name']),
+                                  "RowMenu_service" => myDecode($tab['service_description']));
+            $style != "two" ? $style = "two" : $style = "one";
+        }
+    }
 }
 $tpl->assign("elemArrSvcEsc", $elemArrSvcEsc);
 
@@ -165,20 +165,20 @@ if ($contactgroup_id) {
     $hostResources = $contactObj->getNotificationsContactGroup(0, $contactgroup_id);
 }
 if (isset($hostResources)) {
-	foreach ($hostResources as $hostId => $hostName) {
-	    if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-		    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-		} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-			$host_icone = "./img/media/" . $icone;
-		} else {
-			$host_icone = "./img/icones/16x16/server_network.gif";
-		}
-		$moptions = "";
-		$elemArrHost[] = array("MenuClass"    => "list_".$style,
-						   	   "RowMenu_hico" => $host_icone,
-						   	   "RowMenu_host" => myDecode($hostName));
-		$style != "two" ? $style = "two" : $style = "one";
-	}
+    foreach ($hostResources as $hostId => $hostName) {
+        if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
+            $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
+        } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+            $host_icone = "./img/media/" . $icone;
+        } else {
+            $host_icone = "./img/icones/16x16/server_network.gif";
+        }
+        $moptions = "";
+        $elemArrHost[] = array("MenuClass"    => "list_".$style,
+                               "RowMenu_hico" => $host_icone,
+                               "RowMenu_host" => myDecode($hostName));
+        $style != "two" ? $style = "two" : $style = "one";
+    }
 }
 $tpl->assign("elemArrHost", $elemArrHost);
 
@@ -190,23 +190,23 @@ if ($contactgroup_id) {
     $svcResources = $contactObj->getNotificationsContactGroup(1, $contactgroup_id);
 }
 if (isset($svcResources)) {
-	foreach ($svcResources as $hostId => $hostTab) {
-	    foreach ($hostTab as $serviceId => $tab) {
-    	    if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-    		    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-    		} elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-    			$host_icone = "./img/media/" . $icone;
-    		} else {
-    			$host_icone = "./img/icones/16x16/server_network.gif";
-    		}
-    		$moptions = "";
-    		$elemArrSvc[] = array("MenuClass"       => "list_".$style,
-    						   	  "RowMenu_hico"    => $host_icone,
-    						   	  "RowMenu_host"    => myDecode($tab['host_name']),
-    							  "RowMenu_service" => myDecode($tab['service_description']));
-    		$style != "two" ? $style = "two" : $style = "one";
-	    }
-	}
+    foreach ($svcResources as $hostId => $hostTab) {
+        foreach ($hostTab as $serviceId => $tab) {
+            if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
+                $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
+            } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+                $host_icone = "./img/media/" . $icone;
+            } else {
+                $host_icone = "./img/icones/16x16/server_network.gif";
+            }
+            $moptions = "";
+            $elemArrSvc[] = array("MenuClass"       => "list_".$style,
+                                  "RowMenu_hico"    => $host_icone,
+                                  "RowMenu_host"    => myDecode($tab['host_name']),
+                                  "RowMenu_service" => myDecode($tab['service_description']));
+            $style != "two" ? $style = "two" : $style = "one";
+        }
+    }
 }
 $tpl->assign("elemArrSvc", $elemArrSvc);
 
