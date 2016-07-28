@@ -131,6 +131,25 @@
       
       $$.chartContainer.datum($$.config.data)
         .call(function () { return $$.update(); });
+      
+      /* Bind resize */
+      $$.resizeTimeout = undefined;
+      if (window.attachEvent) {
+        window.attachEvent(
+          'onresize',
+          function () {
+            $$.onResize();
+          }
+        );
+      } else if (window.addEventListener) {
+        window.addEventListener(
+          'resize',
+          function () {
+            $$.onResize();
+          },
+          false
+        );
+      }
     },
     initTooltip: function () {
       var $$ = this;
@@ -353,10 +372,14 @@
         
       $$.drawData();
     },
+    /**
+     * Display the tooltip
+     *
+     * @param {Object} data - The data to display
+     * @param {Object} element - The element of attach the tooltip
+     */
     tooltipCommentShow: function (data, element) {
       var $$ = this;
-      
-      console.log($$.tooltip);
       
       $$.tooltip.select('.cc3-tooltip-title')
         .text(
@@ -373,6 +396,12 @@
       
       $$.tooltip.style('display', 'none');
     },
+    /**
+     * Get the position of tooltip
+     *
+     * @param {Object} element - The element to attach the event of the mouse
+     * @return {Object} - The absolute position (top, left)
+     */
     getTooltipPos: function (element) {
       var $$ = this;
       var pos = $$.d3.mouse(element);
@@ -381,6 +410,21 @@
         left: (pos[0] + 20) + 'px',
         top: (pos[1] + 10) + 'px'
       };
+    },
+    /**
+     * Function on resize action
+     */
+    onResize: function () {
+      var $$ = this;
+
+      if ($$.resizeTimeout !== undefined) {
+        window.clearTimeout($$.resizeTimeout);
+      }
+      $$.resizeTimeout = window.setTimeout(function () {
+        $$.setWidth();
+        $$.svg.style('width', $$.width + 'px');
+        $$.redraw($$.config.data)
+      }, 100);
     }
   };
   
