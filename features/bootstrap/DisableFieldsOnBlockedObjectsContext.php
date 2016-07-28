@@ -50,8 +50,6 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         $hostTemplate = new HostTemplateListPage($this);
         $editHostTemplate = $hostTemplate->edit('myHostTemplate');
 
-        $this->saveScreenshot('toto.png', '/tmp/');
-
         return $editHostTemplate;
     }
 
