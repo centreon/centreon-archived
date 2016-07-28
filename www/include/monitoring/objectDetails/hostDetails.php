@@ -168,7 +168,6 @@ if (!$is_admin && !$haveAccess) {
             " s.latency as check_latency," .
             " s.execution_time as check_execution_time," .
             " s.last_notification as last_notification," .
-            " s.process_perfdata, " .
             " s.service_id as service_id," .
             " h.name AS host_name," .
             " h.host_id AS host_id," .
@@ -214,7 +213,6 @@ if (!$is_admin && !$haveAccess) {
                }
             }
             $row["svc_index"] = (isset($graphs[$row["host_id"]][$row["service_id"]]) ? $graphs[$row["host_id"]][$row["service_id"]] : 0);
-            $row["ppd"] = $row["process_perfdata"];
            
             $duration = "";
             if ($row["last_state_change"] > 0 && time() > $row["last_state_change"]) {
