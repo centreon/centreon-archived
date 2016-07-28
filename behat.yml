@@ -47,3 +47,8 @@ default:
       paths: [ %paths.base%/features/RecoveryNotificationDelay.feature ]
       contexts:
         - RecoveryNotificationDelayContext
+
+    disable_fields_on_blocked_objects:
+      paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
+      contexts:
+        - DisableFieldsOnBlockedObjectsContext
