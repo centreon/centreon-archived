@@ -84,11 +84,13 @@
 	require_once $centreon_path."/www/class/centreon-knowledge/procedures_DB_Connector.class.php";
 	require_once $centreon_path."/www/class/centreon-knowledge/procedures.class.php";
 
+
 	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($modules_path, $tpl);
+
 
 	$currentPage = "hosts";
 	require_once $modules_path.'search.php';
@@ -218,6 +220,12 @@
 	 * Apply a template definition
 	 */
 
+
+if (Mediawikiconfigexist($WikiURL)):
 	$tpl->display($modules_path."templates/display.ihtml");
+else:
+	$tpl->display($modules_path."templates/NoWiki.ihtml");
+endif;
+
 
 ?>

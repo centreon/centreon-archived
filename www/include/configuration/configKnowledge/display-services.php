@@ -280,6 +280,10 @@ $tpl->assign('defaultOrderby', 'host_name');
  * Apply a template definition
  */
 
-$tpl->display($modules_path . "templates/display.ihtml");
+if (Mediawikiconfigexist($WikiURL)):
+    $tpl->display($modules_path."templates/display.ihtml");
+else:
+    $tpl->display($modules_path."templates/NoWiki.ihtml");
+endif;
 
 ?>
