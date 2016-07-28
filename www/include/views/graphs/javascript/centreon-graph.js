@@ -417,14 +417,10 @@
      * Resize the graph
      */
     resize: function () {
-      if (this.type === 'status') {
-        this.chartSvg.attr('width', this.$elem.width());
-      } else {
-        this.chart.resize({
-          width: this.$elem.width(),
-          height: null
-        });
-      }
+      this.chart.resize({
+        width: this.$elem.width(),
+        height: null
+      });
     },
     /**
      * Set an interval string for graph

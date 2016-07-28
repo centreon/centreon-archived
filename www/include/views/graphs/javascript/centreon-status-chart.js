@@ -340,7 +340,10 @@
       
       /* Update Axis */
       $$.setPeriod();
-      $$.xScale.domain([$$.startTime, $$.endTime]);
+      $$.xScale
+        .domain([$$.startTime, $$.endTime])
+        .range([$$.config.margin.left, $$.width - $$.config.margin.right]);
+      
       $$.gAxis.transition().duration(300).call($$.xAxis);
       
       /* Update data */
@@ -391,6 +394,19 @@
       var $$ = this.internal;
       
       $$.redraw(data);
+    },
+    /**
+     * Resize the chart
+     *
+     * @param {Object} data - The width and height
+     */
+    resize: function (data) {
+      var $$ = this.internal;
+      
+      $$.width = data.width;
+      $$.svg.style('width', $$.width + 'px');
+      
+      $$.redraw($$.config.data);
     }
   };
   
