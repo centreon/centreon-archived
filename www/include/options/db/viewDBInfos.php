@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 require_once './class/centreonDB.class.php';
@@ -49,6 +49,18 @@ require_once './class/centreon-partition/options.class.php';
 $dataCentreon = $pearDB->getProperties();
 $dataCentstorage = $pearDBO->getProperties();
 
+/*
+ * Get partitioning informations
+ */
+$partEngine = new PartEngine();
+$dataBinTable = new MysqlTable($pearDBO, 'data_bin', $conf_centreon['dbcstg']);
+$logsTable = new MysqlTable($pearDBO, 'logs', $conf_centreon['dbcstg']);
+
+$partitioningInfos = array(
+    'data_bin' => $partEngine->listParts($dataBinTable, $pearDBO, false),
+    'logs' => $partEngine->listParts($logsTable, $pearDBO, false)
+);
+
 // Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl("./include/options/db/", $tpl);
@@ -56,5 +68,6 @@ $tpl = initSmartyTpl("./include/options/db/", $tpl);
 $tpl->assign('conf_centreon', $conf_centreon);
 $tpl->assign('dataCentreon', $dataCentreon);
 $tpl->assign('dataCentstorage', $dataCentstorage);
+$tpl->assign('partitioning', $partitioningInfos);
 
 $tpl->display("viewDBInfos.ihtml");

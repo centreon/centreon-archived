@@ -437,7 +437,7 @@ class PartEngine
      * list all partitions for a table
      * @param MysqlTable $table
      */
-    public function listParts($table, $db, $dateFormat)
+    public function listParts($table, $db, $throwException = TRUE)
     {
         $tableName = $table->getSchema().".".$table->getName();
         if (!$table->exists()) {
@@ -449,7 +449,7 @@ class PartEngine
         } else {
             $request = "SELECT PARTITION_DESCRIPTION as PART_RANGE, ";
         }
-        $request .= "PARTITION_NAME, PARTITION_ORDINAL_POSITION as partOrder, "
+        $request .= "PARTITION_NAME, PARTITION_ORDINAL_POSITION, "
             . "INDEX_LENGTH, DATA_LENGTH, CREATE_TIME, TABLE_ROWS ";
         $request .= "FROM information_schema.`PARTITIONS` ";
         $request .= "WHERE `TABLE_NAME`='".$table->getName()."' ";
@@ -461,42 +461,20 @@ class PartEngine
                 . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
             );
         }
-        $found = false;
-        $partTitle= "|PARTITION NAME";
-        $rangeTitle = "|RANGE (LESS THAN)  ";
-        $rowsTitle = "|TABLE ROWS  ";
-        $dataTitle = "|DATA LENGTH  ";
-        $indexTitle = "|INDEX LENGTH  |";
-        $message = "";
+
+        $partitions = array();
         while ($row = $DBRESULT->fetchRow()) {
             if (!is_null($row["PARTITION_NAME"])) {
-                $message.= "|".$row["PARTITION_NAME"];
-                for ($i = strlen($partTitle) - strlen("|".$row["PARTITION_NAME"]); $i > 0; $i--) {
-                    $message .= " ";
-                }
-                $message.= "|".$row["PART_RANGE"];
-                for ($i = strlen($rangeTitle) - strlen("|".$row["PART_RANGE"]); $i > 0; $i--) {
-                    $message .= " ";
-                }
-                $message.= "|".$row["TABLE_ROWS"];
-                for ($i = strlen($rowsTitle) - strlen("|".$row["TABLE_ROWS"]); $i > 0; $i--) {
-                    $message .= " ";
-                }
-                $message.= "|".$row["DATA_LENGTH"];
-                for ($i = strlen($dataTitle) - strlen("|".$row["DATA_LENGTH"]); $i > 0; $i--) {
-                    $message .= " ";
-                }
-                $message.= "|".$row["INDEX_LENGTH"];
-                for ($i = strlen($indexTitle) - strlen("|".$row["INDEX_LENGTH"]); $i > 0; $i--) {
-                    $message .= " ";
-                }
-                $message .= "|\n";
+                $row["INDEX_LENGTH"] = round($row["INDEX_LENGTH"] / (1024 * 1024), 2);
+                $row["DATA_LENGTH"] = round($row["DATA_LENGTH"] / (1024 * 1024), 2);
+                $row["TOTAL_LENGTH"] = $row["INDEX_LENGTH"] + $row["DATA_LENGTH"];
+                $partitions[] = $row;
             }
         }
-        if (!strlen($message)) {
+        if (!count($partitions) && $throwException) {
             throw new Exception("No partition found for table ".$tableName."\n");
         } else {
-            echo $partTitle.$rangeTitle.$rowsTitle.$dataTitle.$indexTitle."\n".$message;
+            return $partitions;
         }
         $DBRESULT->free();
     }
