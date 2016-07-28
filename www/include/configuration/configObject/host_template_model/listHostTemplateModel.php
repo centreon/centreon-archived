@@ -202,19 +202,22 @@ foreach (array('o1', 'o2') => $options) {
             "else if (this.form.elements['$option'].selectedIndex == 3 || this.form.elements['$option'].selectedIndex == 4 ||this.form.elements['$option'].selectedIndex == 5){" .
             "   setO(this.form.elements['$option'].value); submit();} " .
             "this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', $option, null, 
-            array(  null => _("More actions..."), 
-                    "m" => _("Duplicate"), 
-                    "d" => _("Delete"), 
-                    "mc" => _("Massive Change"), 
-                    "ms" => _("Enable"), 
-                    "mu" => _("Disable")), 
-            $attrs1);
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(  null => _("More actions..."),
+                    "m" => _("Duplicate"),
+                    "d" => _("Delete"),
+                    "mc" => _("Massive Change"),
+                    "ms" => _("Enable"),
+                    "mu" => _("Disable")),
+        $attrs1
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
     $o1->setSelected(null);
-
 }
 
 $tpl->assign('limit', $limit);

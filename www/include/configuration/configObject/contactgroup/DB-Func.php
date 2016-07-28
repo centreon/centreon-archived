@@ -37,12 +37,14 @@ if (!isset($centreon)) {
     exit();
 }
 
-function testContactGroupExistence($name = NULL) {
+function testContactGroupExistence($name = null)
+{
     global $pearDB, $form, $centreon;
-    $id = NULL;
+    $id = null;
 
-    if (isset($form))
+    if (isset($form)) {
         $id = $form->getSubmitValue('cg_id');
+    }
 
     $DBRESULT = $pearDB->query("SELECT `cg_name`, `cg_id` FROM `contactgroup` WHERE `cg_name` = '" . htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8") . "'");
     $cg = $DBRESULT->fetchRow();
@@ -52,7 +54,7 @@ function testContactGroupExistence($name = NULL) {
          * Modif case
          */
         return true;
-    } else if ($DBRESULT->numRows() >= 1 && $cg["cg_id"] != $id) {
+    } elseif ($DBRESULT->numRows() >= 1 && $cg["cg_id"] != $id) {
         /*
          * Duplicate entry
          */
@@ -62,7 +64,8 @@ function testContactGroupExistence($name = NULL) {
     }
 }
 
-function enableContactGroupInDB($cg_id = null) {
+function enableContactGroupInDB($cg_id = null)
+{
     global $pearDB, $centreon;
 
     if (!$cg_id) {
@@ -76,7 +79,8 @@ function enableContactGroupInDB($cg_id = null) {
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "enable");
 }
 
-function disableContactGroupInDB($cg_id = null) {
+function disableContactGroupInDB($cg_id = null)
+{
     global $pearDB, $centreon;
 
     if (!$cg_id) {
@@ -90,7 +94,8 @@ function disableContactGroupInDB($cg_id = null) {
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "disable");
 }
 
-function deleteContactGroupInDB($contactGroups = array()) {
+function deleteContactGroupInDB($contactGroups = array())
+{
     global $pearDB, $centreon;
 
     foreach ($contactGroups as $key => $value) {
@@ -103,11 +108,11 @@ function deleteContactGroupInDB($contactGroups = array()) {
     }
 }
 
-function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array()) {
+function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
+{
     global $pearDB, $centreon;
 
     foreach ($contactGroups as $key => $value) {
-
         $DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "' LIMIT 1");
 
         $row = $DBRESULT->fetchRow();
@@ -146,14 +151,16 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array()) {
     }
 }
 
-function insertContactGroupInDB($ret = array()) {
+function insertContactGroupInDB($ret = array())
+{
     $cg_id = insertContactGroup($ret);
     updateContactGroupContacts($cg_id, $ret);
     updateContactGroupAclGroups($cg_id, $ret);
     return $cg_id;
 }
 
-function insertContactGroup($ret) {
+function insertContactGroup($ret)
+{
     global $form, $pearDB, $centreon;
 
     if (!count($ret)) {
@@ -175,7 +182,8 @@ function insertContactGroup($ret) {
     return ($cg_id["MAX(cg_id)"]);
 }
 
-function updateContactGroupInDB($cg_id = NULL, $params = array()) {
+function updateContactGroupInDB($cg_id = null, $params = array())
+{
     if (!$cg_id) {
         return;
     }
@@ -185,10 +193,12 @@ function updateContactGroupInDB($cg_id = NULL, $params = array()) {
     updateContactGroupAclGroups($cg_id, $params);
 }
 
-function updateContactGroup($cg_id = null, $params = array()) {
+function updateContactGroup($cg_id = null, $params = array())
+{
     global $form, $pearDB, $centreon;
-    if (!$cg_id)
+    if (!$cg_id) {
         return;
+    }
     $ret = array();
     if (count($params)) {
         $ret = $params;
@@ -211,7 +221,8 @@ function updateContactGroup($cg_id = null, $params = array()) {
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 }
 
-function updateContactGroupContacts($cg_id, $ret = array()) {
+function updateContactGroupContacts($cg_id, $ret = array())
+{
     global $centreon, $form, $pearDB;
     if (!$cg_id) {
         return;
@@ -235,7 +246,8 @@ function updateContactGroupContacts($cg_id, $ret = array()) {
     }
 }
 
-function updateContactGroupAclGroups($cg_id, $ret = array()) {
+function updateContactGroupAclGroups($cg_id, $ret = array())
+{
     global $form, $pearDB;
 
     if (!$cg_id) {
@@ -264,7 +276,8 @@ function updateContactGroupAclGroups($cg_id, $ret = array()) {
  * @param string $name
  * @return int
  */
-function getContactGroupIdByName($name) {
+function getContactGroupIdByName($name)
+{
     global $pearDB;
 
     $id = 0;

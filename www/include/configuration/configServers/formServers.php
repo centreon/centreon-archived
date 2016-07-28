@@ -55,7 +55,6 @@ if (($o == "c" || $o == "w") && $server_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
     $DBRESULT->free();
-    
 }
 
 /*
@@ -64,10 +63,10 @@ if (($o == "c" || $o == "w") && $server_id) {
 $cdata = CentreonData::getInstance();
 $cmdArray = $instanceObj->getCommandsFromPollerId(isset($server_id) ? $server_id : null);
 $cdata->addJsData('clone-values-pollercmd', htmlspecialchars(
-                          json_encode($cmdArray), 
-                          ENT_QUOTES
-                 ));
-$cdata->addJsData('clone-count-pollercmd', count($cmdArray));        
+    json_encode($cmdArray),
+    ENT_QUOTES
+));
+$cdata->addJsData('clone-count-pollercmd', count($cmdArray));
 
 /*
  * nagios servers comes from DB
@@ -88,12 +87,13 @@ $attrsTextarea  = array("rows"=>"5", "cols"=>"40");
  * Form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a poller"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a poller Configuration"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a poller Configuration"));
+}
 
 /*
  * Headers
@@ -140,15 +140,15 @@ $form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
 $cmdObj = new CentreonCommand($pearDB);
 $cloneSetCmd = array();
 $cloneSetCmd[] = $form->addElement(
-                'select', 
-                'pollercmd[#index#]',
-                _('Command'),
-                (array(null => null) + $cmdObj->getMiscCommands()),
-                array(
+    'select',
+    'pollercmd[#index#]',
+    _('Command'),
+    (array(null => null) + $cmdObj->getMiscCommands()),
+    array(
                     'id' => 'pollercmd_#index#',
                     'type' => 'select-one'
                 )
-    );
+);
 
 /*
  * Centreon Broker
@@ -172,7 +172,7 @@ $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database
 /*
  * Set Default Values
  */
-if (isset($_GET["o"]) && $_GET["o"] == 'a'){
+if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     $monitoring_engines = array( "nagios_bin" => "/usr/sbin/centengine",
                                  "nagiostats_bin" => "/usr/sbin/centenginestats",
                                  "init_script" => "/etc/init.d/centengine",
@@ -228,22 +228,23 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-if ($o == "w")  {
+if ($o == "w") {
     /*
      * Just watch a nagios information
      */
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$server_id."'"));
+    }
     $form->setDefaults($nagios);
     $form->freeze();
-} else if ($o == "c")   {
+} elseif ($o == "c") {
     /*
      * Modify a nagios information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($nagios);
-} else if ($o == "a")   {
+} elseif ($o == "a") {
     /*
      * Add a nagios information
      */
@@ -252,14 +253,14 @@ if ($o == "w")  {
 }
 
 $valid = false;
-if ($form->validate())  {
+if ($form->validate()) {
     $nagiosObj = $form->getElement('id');
     if ($form->getSubmitValue("submitA")) {
         insertServerInDB();
-    } else if ($form->getSubmitValue("submitC")) {
+    } elseif ($form->getSubmitValue("submitC")) {
         updateServerInDB($nagiosObj->getValue());
     }
-    $o = NULL;
+    $o = null;
     $valid = true;
 }
 

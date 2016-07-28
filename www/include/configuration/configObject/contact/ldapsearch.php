@@ -225,4 +225,3 @@ $buffer->output();
 if (isset($debug_ldap_import) && $debug_ldap_import) {
     error_log("[" . date("d/m/Y H:s") . "] LDAP Search : XML Output : " . $buffer->output() . "\n", 3, $debug_path . "ldapsearch.log");
 }
-?>

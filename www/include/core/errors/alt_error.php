@@ -31,10 +31,10 @@
  * 
  * For more information : contact@centreon.com
  * 
- */ 
+ */
  
 if (!isset($centreon)) {
-   exit();
+    exit();
 }
-	
+    
 echo "<div class='msg' align='center'>"._("You are not allowed to reach this page")."</div>";

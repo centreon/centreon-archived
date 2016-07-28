@@ -84,8 +84,8 @@ $xml = new CentreonXML();
 $xml->startElement("response");
 
 if (isset($hostId)) {
-	if ($hostId == 0) {
-		$query = "SELECT DISTINCT res.service_id, res.service_description, res.host_name, res.host_id FROM (
+    if ($hostId == 0) {
+        $query = "SELECT DISTINCT res.service_id, res.service_description, res.host_name, res.host_id FROM (
 					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
 					FROM service s, host h, host_service_relation hsr 
 					WHERE hsr.hostgroup_hg_id IS NULL 
@@ -101,8 +101,8 @@ if (isset($hostId)) {
 					AND s.service_register = '1'
 				) AS res $aclFrom $aclCond
 				ORDER BY res.host_name, res.service_description";
-	} else {
-		$query = "SELECT DISTINCT res.service_id, res.service_description, res.host_name, res.host_id FROM (
+    } else {
+        $query = "SELECT DISTINCT res.service_id, res.service_description, res.host_name, res.host_id FROM (
 					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
 					FROM service s, host h, host_service_relation hsr 
 					WHERE hsr.hostgroup_hg_id IS NULL 
@@ -122,14 +122,14 @@ if (isset($hostId)) {
                                         AND s.service_register = '1' 
                                 ) AS res $aclFrom $aclCond
 				ORDER BY res.host_name, res.service_description";
-	}
-	$res = $db->query($query);
-	while ($row = $res->fetchRow()) {
-		$xml->startElement("services");
-		$xml->writeElement("id", $row['host_id']."_".$row['service_id']);
-		$xml->writeElement("description", $row['host_name'] . " - " . $row['service_description']);
-		$xml->endElement();
-	}
+    }
+    $res = $db->query($query);
+    while ($row = $res->fetchRow()) {
+        $xml->startElement("services");
+        $xml->writeElement("id", $row['host_id']."_".$row['service_id']);
+        $xml->writeElement("description", $row['host_name'] . " - " . $row['service_description']);
+        $xml->endElement();
+    }
 }
 $xml->endElement();
 

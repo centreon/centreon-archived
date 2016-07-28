@@ -34,12 +34,13 @@
  */
 
 if (!isset($centreon)) {
-    exit ();
+    exit();
 }
 
-require_once ("./include/common/autoNumLimit.php");
+require_once("./include/common/autoNumLimit.php");
 
-function searchUserName($user_name) {
+function searchUserName($user_name)
+{
     global $pearDB;
     $str = "";
   
@@ -90,7 +91,7 @@ if (isset($_POST["searchO"])) {
 } elseif (isset($_SESSION["searchO"])) {
     $searchO = $_SESSION["searchO"];
 } else {
-    $searchO = NULL;
+    $searchO = null;
 }
 
 if (isset($_POST["searchU"])) {
@@ -99,7 +100,7 @@ if (isset($_POST["searchU"])) {
 } elseif (isset($_SESSION["searchU"])) {
     $searchU = $_SESSION["searchU"];
 } else {
-    $searchU = NULL;
+    $searchU = null;
 }
 
 if (isset($_POST["otype"])) {
@@ -108,7 +109,7 @@ if (isset($_POST["otype"])) {
 } elseif (isset($_SESSION["otype"])) {
     $otype = $_SESSION["otype"];
 } else {
-    $otype = NULL;
+    $otype = null;
 }
 
 /*
@@ -158,7 +159,7 @@ $query = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, action
 
 $where_flag = 1;
 if ($searchO) {
-    if ($where_flag)  {
+    if ($where_flag) {
         $query .= " WHERE ";
         $where_flag = 0;
     } else {
@@ -167,7 +168,7 @@ if ($searchO) {
     $query .= " object_name LIKE '%".$searchO."%' ";
 }
 if ($searchU) {
-    if ($where_flag)  {
+    if ($where_flag) {
         $query .= " WHERE ";
         $where_flag = 0;
     } else {
@@ -176,15 +177,15 @@ if ($searchU) {
     $query .= " log_contact_id IN (".searchUserName($searchU).") ";
 }
 if (!is_null($otype)) {
-  if ($otype != 0) {
-    if ($where_flag)  {
-      $query .= " WHERE ";
-      $where_flag = 0;
-    } else {
-      $query .= " AND ";
+    if ($otype != 0) {
+        if ($where_flag) {
+            $query .= " WHERE ";
+            $where_flag = 0;
+        } else {
+            $query .= " AND ";
+        }
+        $query .= " object_type = '".$objects_type_tab[$otype]."' ";
     }
-    $query .= " object_type = '".$objects_type_tab[$otype]."' ";
-  }
 }
 $query .= " ORDER BY action_log_date DESC LIMIT ".$num * $limit.", ".$limit;
 $DBRESULT = $pearDBO->query($query);
@@ -195,7 +196,7 @@ include("./include/common/checkPagination.php");
 
 $elemArray = array();
 while ($res = $DBRESULT->fetchRow()) {
-    if ($res['object_id']) { 
+    if ($res['object_id']) {
         $objectName = str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"]);
 
         if ($res['object_type'] == "service") {

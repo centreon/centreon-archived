@@ -33,20 +33,20 @@
  * 
  */
 
-if (!isset ($centreon)) {
-	exit ();
+if (!isset($centreon)) {
+    exit();
 }
 
-isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = NULL;
-isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = NULL;
+isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = null;
+isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = null;
 $cG ? $dep_id = $cG : $dep_id = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 #Pear library
@@ -62,17 +62,32 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
 $acl = $oreon->user->access;
 $metastr = $acl->getMetaServiceString();
 
-switch ($o)	{
-	case "a" : require_once($path."formMetaServiceDependency.php"); break; #Add a Meta Service
-	case "w" : require_once($path."formMetaServiceDependency.php"); break; #Watch a Meta Service
-	case "c" : require_once($path."formMetaServiceDependency.php"); break; #Modify a Meta Service
-	case "m" : multipleMetaServiceDependencyInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMetaServiceDependency.php"); break; #Duplicate n Meta Services
-	case "d" : deleteMetaServiceDependencyInDB(isset($select) ? $select : array()); require_once($path."listMetaServiceDependency.php"); break; #Delete n Meta Service
-	default : require_once($path."listMetaServiceDependency.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formMetaServiceDependency.php");
+        break; #Add a Meta Service
+    case "w":
+        require_once($path."formMetaServiceDependency.php");
+        break; #Watch a Meta Service
+    case "c":
+        require_once($path."formMetaServiceDependency.php");
+        break; #Modify a Meta Service
+    case "m":
+        multipleMetaServiceDependencyInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listMetaServiceDependency.php");
+        break; #Duplicate n Meta Services
+    case "d":
+        deleteMetaServiceDependencyInDB(isset($select) ? $select : array());
+        require_once($path."listMetaServiceDependency.php");
+        break; #Delete n Meta Service
+    default:
+        require_once($path."listMetaServiceDependency.php");
+        break;
 }

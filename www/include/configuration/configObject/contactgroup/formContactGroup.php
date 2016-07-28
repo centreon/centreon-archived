@@ -74,12 +74,12 @@ if (($o == "c" || $o == "w") && $cg_id) {
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT `contact_contact_id` FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'");
     for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
-                if (!$centreon->user->admin && !isset($allowedContacts[$contacts['contact_contact_id']])) {
-                    $initialValues['cg_contacts'][] = $contacts["contact_contact_id"];
-                } else {
-                    $cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
-                }
-            }
+        if (!$centreon->user->admin && !isset($allowedContacts[$contacts['contact_contact_id']])) {
+            $initialValues['cg_contacts'][] = $contacts["contact_contact_id"];
+        } else {
+            $cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
+        }
+    }
     $DBRESULT->free();
 
     /*
@@ -150,12 +150,13 @@ $attrAclgroups = array(
  * form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Contact Group"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a Contact Group"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a Contact Group"));
+}
 
 /*
  * Contact basic information
@@ -211,7 +212,7 @@ $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('cg_name', _("Compulsory Name"), 'required');
 $form->addRule('cg_alias', _("Compulsory Alias"), 'required');
 
-if(!$centreon->user->admin) {
+if (!$centreon->user->admin) {
     $form->addRule('cg_acl_groups', _('Compulsory field'), 'required');
 }
 
@@ -225,7 +226,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 # prepare help texts
 $helptext = "";
 include_once("help.php");
@@ -234,22 +235,23 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w")  {
+if ($o == "w") {
     /*
      * Just watch a Contact Group information
      */
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
+    }
     $form->setDefaults($cg);
     $form->freeze();
-} else if ($o == "c")   {
+} elseif ($o == "c") {
     /*
      * Modify a Contact Group information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cg);
-} else if ($o == "a")   {
+} elseif ($o == "a") {
     /*
      * Add a Contact Group information
      */
@@ -258,16 +260,16 @@ if ($o == "w")  {
 }
 
 $valid = false;
-if ($form->validate())  {
-
+if ($form->validate()) {
     $cgObj = $form->getElement('cg_id');
 
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         $cgObj->setValue(insertContactGroupInDB());
-    else if ($form->getSubmitValue("submitC"))
+    } elseif ($form->getSubmitValue("submitC")) {
         updateContactGroupInDB($cgObj->getValue());
+    }
 
-    $o = NULL;
+    $o = null;
     $valid = true;
 }
 if ($valid) {

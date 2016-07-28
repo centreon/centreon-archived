@@ -51,13 +51,13 @@ $sid = session_id();
 
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
-	$currentTime = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $centreon->user->getMyGMT());
-	$DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
-	if ($DBRESULT->numRows()) {
-		$buffer->writeElement("state", "ok");
-	} else {
-		$buffer->writeElement("state", "nok");
-	}
+    $currentTime = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $centreon->user->getMyGMT());
+    $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
+    if ($DBRESULT->numRows()) {
+        $buffer->writeElement("state", "ok");
+    } else {
+        $buffer->writeElement("state", "nok");
+    }
 } else {
     $currentTime = date(_("Y/m/d G:i"));
     $buffer->writeElement("state", "nok");
@@ -71,4 +71,3 @@ header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
 
 $buffer->output();
-

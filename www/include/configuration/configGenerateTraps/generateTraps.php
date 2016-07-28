@@ -34,7 +34,7 @@
  */
  
 if (!isset($centreon)) {
-    exit ();
+    exit();
 }
 
 /*
@@ -55,7 +55,7 @@ $path = "./include/configuration/configGenerateTraps/";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
-    default : 
-        require_once($path."formGenerateTraps.php"); 
+    default:
+        require_once($path."formGenerateTraps.php");
         break;
 }

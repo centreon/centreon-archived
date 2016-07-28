@@ -126,11 +126,11 @@ try {
      */
     if (isset($centreon->optGen["nagios_path_img"]) && $centreon->optGen["nagios_path_img"]) {
         $DBRESULT_imgs = $pearDB->query("SELECT `dir_alias`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
-        while ($images = $DBRESULT_imgs->fetchrow()){
+        while ($images = $DBRESULT_imgs->fetchrow()) {
             if (!is_dir($centreon->optGen["nagios_path_img"]."/".$images["dir_alias"])) {
                 $mkdirResult = @mkdir($centreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
             }
-            if (file_exists(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
+            if (file_exists(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"])) {
                 $copyResult = @copy(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $centreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
             }
         }
@@ -260,4 +260,3 @@ header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
 
 $xml->output();
-

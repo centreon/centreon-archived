@@ -95,5 +95,3 @@ $help["macro"] = dgettext("help", "Macros are used as object-specific variables/
 $help["display_name"] = dgettext("help", "This directive is used to define an alternate name that should be displayed in the web interface for this host. If not specified, this defaults to the value you specify as host name.");
 $help["flap_detection_options"] = dgettext("help", "This directive is used to determine what host states the flap detection logic will use for this host.");
 $help["initial_state"] = dgettext("help", "By default monitoring engine will assume that all hosts are in UP states when it starts. You can override the initial state for a host by using this directive.");
-
-?>
