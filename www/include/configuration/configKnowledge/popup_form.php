@@ -36,10 +36,10 @@
  *
  */
 
-	require_once "../../wiki.conf.php";
+    require_once $centreon_path."/config/wiki.conf.php";
 	require_once "$etc_centreon/centreon.conf.php";
 
-	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "www/modules/centreon-knowledgebase/".PATH_SEPARATOR . $centreon_path."www/");
+	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "www/include/configuration/configKnowledge/".PATH_SEPARATOR . $centreon_path."www/class/".PATH_SEPARATOR . $centreon_path."www/");
 
 	require_once "DB.php";
 	require_once "include/common/common-Func.php";
@@ -50,9 +50,9 @@
 	$pearDB 	= new CentreonDB();
 	if (isset($_GET["session_id"]) && $_GET["session_id"] != "") {
 		$path = "core/display/";
-		require_once "wiki.conf.php";
-		require_once "core/class/procedures_DB_Connector.class.php";
-		require_once "core/class/procedures.class.php";
+        require_once $centreon_path."/config/wiki.conf.php";
+		require_once "centreon-knowledge/procedures_DB_Connector.class.php";
+		require_once "centreon-knowledge/procedures.class.php";
 
 		/*
 		 * Init procedures Object

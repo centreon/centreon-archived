@@ -37,8 +37,8 @@
  */
 
 	ini_set("display_errors", "On");
-
-	require_once "../config/wiki.conf.php";
+    $centreon_path = realpath(dirname(__FILE__) . '/../../../../../');
+    require_once $centreon_path."/config/wiki.conf.php";
 	global $etc_centreon, $db_prefix;
 
 	require_once $etc_centreon."/centreon.conf.php";

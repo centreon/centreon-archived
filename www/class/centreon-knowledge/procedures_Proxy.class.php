@@ -26,7 +26,8 @@ class procedures_Proxy  {
 		$this->hflag = 0;
 		$this->sflag = 0;
 
-		require_once "../../../config/wiki.conf.php";
+        $centreon_path = realpath(dirname(__FILE__) . '/../../../');
+        require_once $centreon_path."/config/wiki.conf.php";
 		require_once "$etc_centreon/centreon.conf.php";
 
 		$this->wikiURL = $WikiURL;

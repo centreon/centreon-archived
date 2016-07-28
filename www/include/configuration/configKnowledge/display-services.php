@@ -41,7 +41,6 @@ if (!isset($oreon)) {
 }
 
 $modules_path = $centreon_path . "www/include/configuration/configKnowledge/";
-require_once $modules_path . 'header.php';
 require_once $modules_path . 'functions.php';
 
 

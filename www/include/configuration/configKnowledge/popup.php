@@ -43,20 +43,25 @@
  	/*
 	 * Add paths
 	 */
-	require_once "../../wiki.conf.php";
+
+    $centreon_path = realpath(dirname(__FILE__) . '/../../../../');
+    require_once $centreon_path."/config/wiki.conf.php";
 	require_once "$etc_centreon/centreon.conf.php";
 
-    require_once $centreon_path.'www/modules/centreon-knowledgebase/core/header.php';
-
-	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "www/modules/centreon-knowledgebase/". PATH_SEPARATOR . $centreon_path."www/class/");
+	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "config/". PATH_SEPARATOR . $centreon_path."www/class/");
 
  	require_once "DB.php";
 
  	require_once "wiki.conf.php";
-	require_once "core/class/procedures_DB_Connector.class.php";
-	require_once "core/class/procedures.class.php";
+	require_once "centreon-knowledge/procedures_DB_Connector.class.php";
+	require_once "centreon-knowledge/procedures.class.php";
 	require_once "centreonLog.class.php";
  	require_once "centreonDB.class.php";
+
+
+
+
+
 
 	/*
 	 * Connect to centreon DB

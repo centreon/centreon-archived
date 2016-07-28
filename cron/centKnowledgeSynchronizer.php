@@ -171,7 +171,7 @@ function editLinkForHost($dbConnector, $hostName)
     $resHost = $dbConnector->query($querySelect);
     $tuple = $resHost->fetchRow();
 
-    $valueToAdd = _CENTREONURL_.'/../proxy/proxyKB.php?host_name=$HOSTNAME$';
+    $valueToAdd = _CENTREONURL_.'/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
     $queryUpdate = "UPDATE extended_host_information "
         ."SET ehi_notes_url = '$valueToAdd' "
         ."WHERE host_host_id = '".$tuple['host_id']."'";
@@ -205,7 +205,7 @@ function editLinkForService($dbConnector, $objName)
     $resService = $dbConnector->query($querySelect);
     $tuple = $resService->fetchRow();
 
-    $valueToAdd = _CENTREONURL_.'/../proxy/proxyKB.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+    $valueToAdd = _CENTREONURL_.'/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
     $queryUpdate = "UPDATE extended_service_information "
         ."SET esi_notes_url = '$valueToAdd' "
         ."WHERE service_service_id = '".$tuple['service_id']."'";

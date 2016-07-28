@@ -105,7 +105,7 @@
 	/*
 	 * Smarty template Init
 	 */
-	$tpl = initSmartyTpl($path, new Smarty(), "./modules/centreon-knowledgebase/core/display/");
+	$tpl = initSmartyTpl($path, new Smarty(), "./include/configuration/configKnowledge/");
 
 	$page_max = ceil($rows / $limit);
 	if ($num >= $page_max && $rows) {
@@ -223,9 +223,8 @@
 	$tpl->assign("order", $_GET["order"]);
 	$tpl->assign("tab_order", $tab_order);
 	$tpl->assign('form', $renderer->toArray());
-	if ($bNewChart) {
-		$tpl->display("templates/pagination-2.7.ihtml");
-	} else {
-		$tpl->display("templates/pagination.ihtml");
-	}
+
+
+	$tpl->display("templates/pagination.ihtml");
+
 ?>
