@@ -6,7 +6,7 @@
           <th><h5>{t}Filters{/t}</h5></th>
         </tr>
         <tr>
-          <td><h4>{t}Hostgroup{/t}</h4></td>
+          <td><h4>{t}Name{/t}</h4></td>
         </tr>
         <tr>
           <td><input type="text" name="searchHg" value="{$searchHg}" ></td>

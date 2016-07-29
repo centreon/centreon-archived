@@ -214,7 +214,7 @@ if ($o == "a") {
  */
 $form->addElement('header', 'information', _("General Information"));
 
-$form->addElement('text', 'meta_name', _("Meta Service Name"), $attrsText);
+$form->addElement('text', 'meta_name', _("Name"), $attrsText);
 $form->addElement('text', 'meta_display', _("Output format string (printf-style)"), $attrsText);
 $form->addElement('text', 'warning', _("Warning Level"), $attrsText2);
 $form->addElement('text', 'critical', _("Critical Level"), $attrsText2);

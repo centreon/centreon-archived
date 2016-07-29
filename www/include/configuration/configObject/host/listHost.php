@@ -169,7 +169,7 @@ $tpl->assign('mode_access', $lvl_access);
  * start header menu
  */
 $tpl->assign("headerMenu_name", _("Name"));
-$tpl->assign("headerMenu_desc", _("Description"));
+$tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_address", _("IP Address / DNS"));
 $tpl->assign("headerMenu_poller", _("Poller"));
 $tpl->assign("headerMenu_parent", _("Templates"));
@@ -423,10 +423,10 @@ $tpl->assign('template', $options);
 unset($options);
 
 $tpl->assign('form', $renderer->toArray());
-$tpl->assign('Hosts', _("Hosts"));
+$tpl->assign('Hosts', _("Name"));
 $tpl->assign('Poller', _("Poller"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
-$tpl->assign('HelpServices', _("Display all Services fo this host"));
+$tpl->assign('HelpServices', _("Display all Services for this host"));
 $tpl->assign('Template', _("Template"));
 $tpl->assign('Search', _("Search"));
 

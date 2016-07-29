@@ -184,7 +184,7 @@ if ($o == "a") {
  * Catrgorie basic information
  */
 $form->addElement('header', 'information', _("General Information"));
-$form->addElement('text', 'hc_name', _("Host Category Name"), $attrsText);
+$form->addElement('text', 'hc_name', _("Name"), $attrsText);
 $form->addElement('text', 'hc_alias', _("Alias"), $attrsText);
 
 /*

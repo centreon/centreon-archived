@@ -357,7 +357,7 @@ if ($o == "a") {
 $form->addElement('header', 'information', _("General Information"));
 # No possibility to change name and alias, because there's no interest
 if ($o != "mc") {
-    $form->addElement('text', 'host_name', _("Host Template Name"), $attrsText);
+    $form->addElement('text', 'host_name', _("Name"), $attrsText);
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
 }
 $form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
@@ -373,7 +373,7 @@ $attrTimezones = array(
 );
 $form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
 
-$form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
+$form->addElement('text', 'host_parallel_template', _("Templates"), $hTpls);
 
 if ($o == "mc") {
     $mc_mod_tplp = array();

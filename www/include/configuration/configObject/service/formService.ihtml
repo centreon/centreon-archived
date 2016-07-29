@@ -7,7 +7,7 @@
         <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Notifications{/t}</a></li>
         <li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{t}Relations{/t}</a></li>
         <li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{t}Data Processing{/t}</a></li>     
-        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Service Extended Info{/t}</a></li>       
+        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Extended Info{/t}</a></li>       
     </ul>
     <div id="validFormTop">
     {if $o == "a" || $o == "c" || $o == "mc"}

@@ -193,7 +193,7 @@ $tpl->assign('mode_access', $lvl_access);
 $tpl->assign("headerMenu_name", _("Host"));
 $tpl->assign("headerMenu_desc", _("Service"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
-$tpl->assign("headerMenu_parent", _("Parent Template"));
+$tpl->assign("headerMenu_parent", _("Template"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
