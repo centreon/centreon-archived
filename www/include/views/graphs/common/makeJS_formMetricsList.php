@@ -39,12 +39,13 @@
     /*
 	 * Lang file
 	 */
-	$locale = $oreon->user->get_lang();
-	putenv("LANG=$locale");
-	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
-	bind_textdomain_codeset("messages", "UTF-8"); 
-	textdomain("messages");
+    $locale = $oreon->user->get_lang();
+    putenv("LANG=$locale");
+    setlocale(LC_ALL, $locale);
+    bindtextdomain("messages", _CENTREON_PATH_ . "www/locale/");
+;
+    bind_textdomain_codeset("messages", "UTF-8");
+    textdomain("messages");
 ?><script type="text/javascript">
 
 var _o = '<?php echo $o;?>';
@@ -75,58 +76,58 @@ function display_select_list(xhr, def_id){
     }
 
     for(i=0; i<options.length; i++) {
-        id = o_id.item(i).firstChild.data;  	
+        id = o_id.item(i).firstChild.data;      
         alias = o_alias.item(i).firstChild.data;
 
         if ( _o == "a" || _o == "c") {
-            var o_elem = document.createElement('option');    	
+            var o_elem = document.createElement('option');      
             o_elem.value = id;
             o_elem.text = alias;
         }
-		if ( def_id != null && def_id == id ) {
-			if ( _o == "w" ) {
-				service_val = o_alias.item(i).firstChild.data;
-			} else {
-				o_elem.selected = true;
-			}
-		}
-		if ( i == 0) {
-			if ( _o == "w" ) {
-				service_val = "Services list";
-			} else {
-				o_elem.selected = true;
-			}
-		}
-		if ( _o == "a" || _o == "c") {
-    		if (navigator.appName == "Microsoft Internet Explorer") {					
-    			c_elem.add(o_elem);
-    		} else {
-	   			c_elem.appendChild(o_elem);
-			}
-		}
-	}			
-	var td_elem = document.getElementById(td_id);		
-	if ( td_elem != null ) {
-		if ( _o == "w" ) {
-			var inHTML = td_elem.innerHTML;
-			var pattern = "(&nbsp;)+";
-			var re = new RegExp(pattern);
-			inHTML = inHTML.replace(re, "");
-			td_elem.innerHTML = inHTML + service_val;
-			/* init new input element */	
-			var c_elem = document.createElement('input');
-			c_elem.type = "hidden";
-			if ( def_id != null )
-				c_elem.value = def_id;
-			c_elem.name = "index_id";
-		} else {
-			/* Remove old select if exist */
-   			var s_old = document.getElementById(s_id);
-			if ( s_old != null )
-				td_elem.removeChild(s_old);
-		}
-		td_elem.appendChild(c_elem);
-	}
+        if ( def_id != null && def_id == id ) {
+            if ( _o == "w" ) {
+                service_val = o_alias.item(i).firstChild.data;
+            } else {
+                o_elem.selected = true;
+            }
+        }
+        if ( i == 0) {
+            if ( _o == "w" ) {
+                service_val = "Services list";
+            } else {
+                o_elem.selected = true;
+            }
+        }
+        if ( _o == "a" || _o == "c") {
+            if (navigator.appName == "Microsoft Internet Explorer") {                   
+                c_elem.add(o_elem);
+            } else {
+                c_elem.appendChild(o_elem);
+            }
+        }
+    }           
+    var td_elem = document.getElementById(td_id);       
+    if ( td_elem != null ) {
+        if ( _o == "w" ) {
+            var inHTML = td_elem.innerHTML;
+            var pattern = "(&nbsp;)+";
+            var re = new RegExp(pattern);
+            inHTML = inHTML.replace(re, "");
+            td_elem.innerHTML = inHTML + service_val;
+            /* init new input element */    
+            var c_elem = document.createElement('input');
+            c_elem.type = "hidden";
+            if ( def_id != null )
+                c_elem.value = def_id;
+            c_elem.name = "index_id";
+        } else {
+            /* Remove old select if exist */
+            var s_old = document.getElementById(s_id);
+            if ( s_old != null )
+                td_elem.removeChild(s_old);
+        }
+        td_elem.appendChild(c_elem);
+    }
 }
 
 /*
