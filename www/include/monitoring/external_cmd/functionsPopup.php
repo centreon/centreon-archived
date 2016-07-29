@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 /**
@@ -43,19 +43,20 @@ if (!isset($centreon)) {
  * @param $cmd
  * @param $poller
  */
-function write_command($cmd, $poller){
-	global $centreon, $key, $pearDB;
-	$str = NULL;
+function write_command($cmd, $poller)
+{
+    global $centreon, $key, $pearDB;
+    $str = null;
 
-	$informations = preg_split("/\;/", $key);
+    $informations = preg_split("/\;/", $key);
     
     /* Replace forbidden charaters in external command*/
     $cmd = str_replace("`", "&#96;", $cmd);
-	$cmd = str_replace("\n", "<br>", $cmd);
+    $cmd = str_replace("\n", "<br>", $cmd);
     
-	setlocale(LC_CTYPE, 'en_US.UTF-8');
+    setlocale(LC_CTYPE, 'en_US.UTF-8');
     $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . _CENTREON_VARLIB_."/centcore.cmd";
-	return passthru($str);
+    return passthru($str);
 }
 
 /**
@@ -63,7 +64,8 @@ function write_command($cmd, $poller){
  * Ack hosts massively
  * @param $key
  */
-function massiveHostAck($key){
+function massiveHostAck($key)
+{
     global $pearDB, $is_admin, $centreon;
     static $processedHosts = array();
 
@@ -78,44 +80,44 @@ function massiveHostAck($key){
     }
     $processedHosts[$host_name] = true;
 
-	isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
-	isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
-	isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
-	isset($_GET['force_check']) && $_GET['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
+    isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
+    isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
+    isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
+    isset($_GET['force_check']) && $_GET['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
 
-	if ($actions == true || $is_admin) {
-		$host_poller = GetMyHostPoller($pearDB, $host_name);
-		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".trim(urldecode($_GET["comment"])), $host_poller);
-	    if ($force_check == 1) {
-		    write_command(" SCHEDULE_FORCED_HOST_CHECK;".$host_name.";".time(), $host_poller);
+    if ($actions == true || $is_admin) {
+        $host_poller = GetMyHostPoller($pearDB, $host_name);
+        $flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".trim(urldecode($_GET["comment"])), $host_poller);
+        if ($force_check == 1) {
+            write_command(" SCHEDULE_FORCED_HOST_CHECK;".$host_name.";".time(), $host_poller);
         }
-	}
+    }
 
-	$actions = $centreon->user->access->checkAction("service_acknowledgement");
-	if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
-		$DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
-		$row = $DBRES->fetchRow();
-		$svc_tab = array();
-		$svc_tab = getMyHostServices($row['host_id']);
-		if (count($svc_tab)) {
-			foreach ($svc_tab as $key2 => $value) {
-				write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".trim(urldecode($_GET["comment"])), $host_poller);
-				if ($force_check == 1 && $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
-			 		write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$value.";".time(), $host_poller);
-				}
-			}
-		}
-	}
+    $actions = $centreon->user->access->checkAction("service_acknowledgement");
+    if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
+        $DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
+        $row = $DBRES->fetchRow();
+        $svc_tab = array();
+        $svc_tab = getMyHostServices($row['host_id']);
+        if (count($svc_tab)) {
+            foreach ($svc_tab as $key2 => $value) {
+                write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".trim(urldecode($_GET["comment"])), $host_poller);
+                if ($force_check == 1 && $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
+                    write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$value.";".time(), $host_poller);
+                }
+            }
+        }
+    }
 
-	/*
+    /*
 	 * Set param in memory
 	 */
-	set_user_param($centreon->user->user_id, $pearDB, "ack_sticky", $sticky);
-	set_user_param($centreon->user->user_id, $pearDB, "ack_notify", $notify);
-	set_user_param($centreon->user->user_id, $pearDB, "ack_persistent", $persistent);
-	set_user_param($centreon->user->user_id, $pearDB, "force_check", $force_check);
+    set_user_param($centreon->user->user_id, $pearDB, "ack_sticky", $sticky);
+    set_user_param($centreon->user->user_id, $pearDB, "ack_notify", $notify);
+    set_user_param($centreon->user->user_id, $pearDB, "ack_persistent", $persistent);
+    set_user_param($centreon->user->user_id, $pearDB, "force_check", $force_check);
 
-	return _("Your command has been sent");
+    return _("Your command has been sent");
 }
 
 /**
@@ -123,53 +125,53 @@ function massiveHostAck($key){
  * Ack services massively
  * @param $key
  */
-function massiveServiceAck($key){
-	global $pearDB, $is_admin, $centreon;
+function massiveServiceAck($key)
+{
+    global $pearDB, $is_admin, $centreon;
 
-	$actions = false;
-	$actions = $centreon->user->access->checkAction("service_acknowledgement");
+    $actions = false;
+    $actions = $centreon->user->access->checkAction("service_acknowledgement");
 
-	$key = urldecode($key);
+    $key = urldecode($key);
 
-	$tmp = preg_split("/\;/", $key);
+    $tmp = preg_split("/\;/", $key);
 
-	if (!isset($tmp[0])) {
-		throw new Exception('No host found');
-	}
-	$host_name = $tmp[0];
-
-	if (!isset($tmp[1])) {
-		throw new Exception('No service found');
-	} else {
-		$svc_description = $tmp[1];
-	}
-
-	isset($_GET['persistent']) && $_GET['persistent'] == "true" 		? $persistent = "1" : $persistent = "0";
-	isset($_GET['notify']) && $_GET['notify'] == "true" 			? $notify = "1" : $notify = "0";
-	isset($_GET['sticky']) && $_GET['sticky'] == "true" 			? $sticky = "2" : $sticky = "1";
-	isset($_GET['force_check']) && $_GET['force_check'] == "true" 		? $force_check = "1" : $force_check = "0";
-
-	$host_poller = GetMyHostPoller($pearDB, $host_name);
-
-	if ($actions == true || $is_admin) {
-
-		$_GET["comment"] = $_GET["comment"];
-		$_GET["comment"] = str_replace('\'', ' ', trim(urldecode($_GET["comment"])));
-
-		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
-
-		if ($force_check == 1 && $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
-			write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$svc_description.";".time(), $host_poller);
-		}
-		set_user_param($centreon->user->user_id, $pearDB, "ack_sticky", $sticky);
-		set_user_param($centreon->user->user_id, $pearDB, "ack_notify", $notify);
-		set_user_param($centreon->user->user_id, $pearDB, "ack_persistent", $persistent);
-		set_user_param($centreon->user->user_id, $pearDB, "force_check", $force_check);
-
-		return _("Your command has been sent");
-	}
-	return null;
+    if (!isset($tmp[0])) {
+        throw new Exception('No host found');
     }
+    $host_name = $tmp[0];
+
+    if (!isset($tmp[1])) {
+        throw new Exception('No service found');
+    } else {
+        $svc_description = $tmp[1];
+    }
+
+    isset($_GET['persistent']) && $_GET['persistent'] == "true"         ? $persistent = "1" : $persistent = "0";
+    isset($_GET['notify']) && $_GET['notify'] == "true"             ? $notify = "1" : $notify = "0";
+    isset($_GET['sticky']) && $_GET['sticky'] == "true"             ? $sticky = "2" : $sticky = "1";
+    isset($_GET['force_check']) && $_GET['force_check'] == "true"       ? $force_check = "1" : $force_check = "0";
+
+    $host_poller = GetMyHostPoller($pearDB, $host_name);
+
+    if ($actions == true || $is_admin) {
+        $_GET["comment"] = $_GET["comment"];
+        $_GET["comment"] = str_replace('\'', ' ', trim(urldecode($_GET["comment"])));
+
+        $flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+
+        if ($force_check == 1 && $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
+            write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$svc_description.";".time(), $host_poller);
+        }
+        set_user_param($centreon->user->user_id, $pearDB, "ack_sticky", $sticky);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_notify", $notify);
+        set_user_param($centreon->user->user_id, $pearDB, "ack_persistent", $persistent);
+        set_user_param($centreon->user->user_id, $pearDB, "force_check", $force_check);
+
+        return _("Your command has been sent");
+    }
+    return null;
+}
 
 
 /**
@@ -179,17 +181,17 @@ function massiveServiceAck($key){
  */
 function massiveHostDowntime($key)
 {
-	global $pearDB, $is_admin, $centreon, $centreonGMT;
+    global $pearDB, $is_admin, $centreon, $centreonGMT;
     static $processedHosts = array();
     
     $actions = false;
     $actions = $centreon->user->access->checkAction("host_schedule_downtime");
 
     if ($actions == true || $is_admin) {
-    	$key = urldecode($key);
+        $key = urldecode($key);
 
-    	$tmp = preg_split("/\;/", $key);
-    	if (!isset($tmp[0])) {
+        $tmp = preg_split("/\;/", $key);
+        if (!isset($tmp[0])) {
             throw new Exception('No host found');
         }
         
@@ -199,13 +201,13 @@ function massiveHostDowntime($key)
         }
         $processedHosts[$host_name] = true;
 
-		isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
-		isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
-		isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', trim(urldecode($_GET["comment"]))) : $comment = "";
-		isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
-		isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
+        isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
+        isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
+        isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', trim(urldecode($_GET["comment"]))) : $comment = "";
+        isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
+        isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
         isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
-        isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" 		? $host_or_centreon_time = "1" : $host_or_centreon_time = "0";
+        isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true"       ? $host_or_centreon_time = "1" : $host_or_centreon_time = "0";
         
         if ($duration > 0) {
             switch ($duration_scale) {
@@ -229,12 +231,12 @@ function massiveHostDowntime($key)
         
         $with_services = false;
         if (($centreon->user->access->checkAction("service_schedule_downtime") == true)
-			&& isset($_GET['downtimehostservice']) && $_GET['downtimehostservice'] == "true") {
+            && isset($_GET['downtimehostservice']) && $_GET['downtimehostservice'] == "true") {
             $with_services = true;
-		}
+        }
         
         $extCmdObj = new CentreonExternalCommand($centreon);
-        $extCmdObj->addHostDowntime($host, $comment, $start, $end, $fixed, $duration, $with_services,$host_or_centreon_time);
+        $extCmdObj->addHostDowntime($host, $comment, $start, $end, $fixed, $duration, $with_services, $host_or_centreon_time);
     }
     
     return null;
@@ -243,39 +245,38 @@ function massiveHostDowntime($key)
 /*
  *  Sets service downtime massively
  */
-function massiveServiceDowntime($key) {
-	global $pearDB, $is_admin, $centreon, $centreonGMT;
+function massiveServiceDowntime($key)
+{
+    global $pearDB, $is_admin, $centreon, $centreonGMT;
 
     $actions = false;
     $actions = $centreon->user->access->checkAction("service_schedule_downtime");
 
     if ($actions == true || $is_admin) {
-    	$key = urldecode($key);
-    	$tmp = preg_split("/\;/", $key);
+        $key = urldecode($key);
+        $tmp = preg_split("/\;/", $key);
 
-    	if (!isset($tmp[0])) {
-			throw new Exception('No host found');
-		}
-		$host_name = $tmp[0];
+        if (!isset($tmp[0])) {
+            throw new Exception('No host found');
+        }
+        $host_name = $tmp[0];
 
-		if (!isset($tmp[1])) {
-			throw new Exception('No service found');
-    	} else {
-			$svc_description = $tmp[1];
-		}
+        if (!isset($tmp[1])) {
+            throw new Exception('No service found');
+        } else {
+            $svc_description = $tmp[1];
+        }
 
-		isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
-		isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
-		isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
-		isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
-		isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
+        isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
+        isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
+        isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
+        isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
+        isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
         isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
-        isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" 		? $host_or_centreon_time = "1" : $host_or_centreon_time = "0";
+        isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true"       ? $host_or_centreon_time = "1" : $host_or_centreon_time = "0";
         
-        if ($duration > 0)
-        {
-            switch ($duration_scale)
-            {
+        if ($duration > 0) {
+            switch ($duration_scale) {
                 default:
                 case 's':
                     $duration = $duration;

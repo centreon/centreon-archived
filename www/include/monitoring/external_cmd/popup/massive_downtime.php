@@ -43,8 +43,7 @@ if (isset($_GET['select'])) {
         if ($cmd == '75') {
             $tmp = preg_split("/\;/", $key);
             $select[] = $tmp[0];
-        }
-        else {
+        } else {
             $select[] = $key;
         }
     }
@@ -88,11 +87,11 @@ $form->addElement('text', 'end_time', '', array('id'=>'end_time', 'size' => 5, '
     
     
 $form->setDefaults(
-            array(
-                "start" => $centreonGMT->getDate("Y/m/d" , time() + 120), 
+    array(
+                "start" => $centreonGMT->getDate("Y/m/d", time() + 120),
                 "end" => $centreonGMT->getDate("Y/m/d", time() + 7320),
-                "start_time" => $centreonGMT->getDate("G:i" , time() + 120),
-                "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
+                "start_time" => $centreonGMT->getDate("G:i", time() + 120),
+                "end_time" => $centreonGMT->getDate("G:i", time() + 7320)
     )
 );
 /*

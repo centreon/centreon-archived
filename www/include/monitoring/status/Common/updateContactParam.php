@@ -34,15 +34,15 @@
  */
  
 if (!isset($_GET['uid']) || !isset($_GET['instance_id'])) {
-	exit(0);	
+    exit(0);
 }
-	
+    
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once (_CENTREON_PATH_ . "/www/class/centreonDB.class.php");
+require_once(_CENTREON_PATH_ . "/www/class/centreonDB.class.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 
 $pearDB = new CentreonDB();
 
 CentreonSession::start();
-	
-$_SESSION['monitoring_default_poller'] = $_GET['instance_id']; 
+    
+$_SESSION['monitoring_default_poller'] = $_GET['instance_id'];

@@ -53,7 +53,7 @@ $dbb = new CentreonDB("centstorage");
 $centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonlang->bindLang();
 $sid = session_id();
-if (isset($sid)){
+if (isset($sid)) {
     //$sid = $_GET["sid"];
     $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
     if (!$session = $res->fetchRow()) {
@@ -130,4 +130,3 @@ header('Cache-Control: no-cache, must-revalidate');
  * Print Buffer
  */
 $xml->output();
-?>

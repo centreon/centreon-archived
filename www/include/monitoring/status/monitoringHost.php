@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 require_once './class/centreonDuration.class.php';
@@ -61,64 +61,66 @@ $pathDetails = "./include/monitoring/objectDetails/";
 $pathTools = "./include/tools/";
 
 if (!isset($_GET["cmd"]) && isset($_POST["cmd"])) {
-	$param = $_POST;
+    $param = $_POST;
 } else {
-	$param = $_GET;
+    $param = $_GET;
 }
 
 if (isset($param["cmd"]) && $param["cmd"] == 14 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1) {
-	if (!isset($param["sticky"])) {
-		$param["sticky"] = 0;
-	}
-	if (!isset($param["notify"])) {
-		$param["notify"] = 0;
-	}
-	if (!isset($param["persistent"])) {
-		$param["persistent"] = 0;
-	}
-	if (!isset($param["ackhostservice"])) {
-		$param["ackhostservice"] = 0;
-	}
-	acknowledgeHost($param);
-} else if (isset($param["cmd"]) && $param["cmd"] == 14 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0) {
-	acknowledgeHostDisable();
+    if (!isset($param["sticky"])) {
+        $param["sticky"] = 0;
+    }
+    if (!isset($param["notify"])) {
+        $param["notify"] = 0;
+    }
+    if (!isset($param["persistent"])) {
+        $param["persistent"] = 0;
+    }
+    if (!isset($param["ackhostservice"])) {
+        $param["ackhostservice"] = 0;
+    }
+    acknowledgeHost($param);
+} elseif (isset($param["cmd"]) && $param["cmd"] == 14 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0) {
+    acknowledgeHostDisable();
 }
 
 if (isset($param["cmd"]) && $param["cmd"] == 16 && isset($param["output"])) {
-	submitHostPassiveCheck();
+    submitHostPassiveCheck();
 }
 
-if ($min){
-	switch ($o)	{
-		default : require_once($pathTools."tools.php"); break;
-	}
+if ($min) {
+    switch ($o) {
+        default:
+            require_once($pathTools."tools.php");
+            break;
+    }
 } else {
-	/*
+    /*
 	 * Now route to pages or Actions
 	 */
-	if ($continue) {
-		switch ($o)	{
-			case "h" 	:
-				require_once($path."host.php");
-				break;
-			case "hpb" 	:
-				require_once($path."host.php");
-				break;
-			case "h_unhandled" 	:
-				require_once($path."host.php");
-				break;
-			case "hd" 	:
-				require_once($pathDetails."hostDetails.php");
-				break;
-			case "hpc" 		:
-				require_once("./include/monitoring/submitPassivResults/hostPassiveCheck.php");
-				break;
-			case "hak" 	:
-				require_once($pathRoot."acknowlegement/hostAcknowledge.php");
-				break;
-			default 	:
-				require_once($path."host.php");
-				break;
-		}
-	}
+    if ($continue) {
+        switch ($o) {
+            case "h":
+                require_once($path."host.php");
+                break;
+            case "hpb":
+                require_once($path."host.php");
+                break;
+            case "h_unhandled":
+                require_once($path."host.php");
+                break;
+            case "hd":
+                require_once($pathDetails."hostDetails.php");
+                break;
+            case "hpc":
+                require_once("./include/monitoring/submitPassivResults/hostPassiveCheck.php");
+                break;
+            case "hak":
+                require_once($pathRoot."acknowlegement/hostAcknowledge.php");
+                break;
+            default:
+                require_once($path."host.php");
+                break;
+        }
+    }
 }

@@ -46,8 +46,8 @@ include_once("./class/centreonService.class.php");
 /*
  * Create Object env
  */
-$hostObj 	= new CentreonHost($pearDB);
-$svcObj 	= new CentreonService($pearDB);
+$hostObj    = new CentreonHost($pearDB);
+$svcObj     = new CentreonService($pearDB);
 
 /*
  * ACL Actions
@@ -64,7 +64,7 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = $centreon->user->access->getActions();
 }
 
-if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
+if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != "") {
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
 } else {
@@ -83,7 +83,7 @@ $host_id = getMyHostID($host_name);
 if (!is_null($host_id)) {
     $can_display = 1;
     $service_id = getMyServiceID($svc_description, $host_id);
-    if (!isset($service_id)){
+    if (!isset($service_id)) {
         $service_id = getMyServiceIDStorage($svc_description, $host_id);
     }
     if (!$is_admin) {
@@ -95,7 +95,6 @@ if (!is_null($host_id)) {
     if ($can_display == 0) {
         include_once("../errors/alt_error.php");
     } else {
-
         // Get Hostgroup List
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
                                    $centreon->user->access->queryBuilder("AND", "host_host_id", $centreon->user->access->getHostsString("ID", $pearDBO)));
@@ -117,7 +116,7 @@ if (!is_null($host_id)) {
         /*
          * Get servicegroups list
          */
-        if(isset($service_id) && isset($host_id)){
+        if (isset($service_id) && isset($host_id)) {
             $query = "SELECT DISTINCT sg.sg_name
                     FROM servicegroup sg, servicegroup_relation sgr
                     WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
@@ -144,7 +143,7 @@ if (!is_null($host_id)) {
         /*
          * start ndo service info
          */
-        $rq =	"SELECT " .
+        $rq =   "SELECT " .
             " s.state AS current_state," .
             " s.output as plugin_output, " .
             " s.output as plugin_output2," .
@@ -208,7 +207,7 @@ if (!is_null($host_id)) {
         $tab_host_status[1] = "DOWN";
         $tab_host_status[2] = "UNREACHABLE";
 
-        $rq2 =	"SELECT state AS current_state FROM hosts WHERE name LIKE '".$pearDBO->escape($host_name)."'";
+        $rq2 =  "SELECT state AS current_state FROM hosts WHERE name LIKE '".$pearDBO->escape($host_name)."'";
         $DBRESULT = $pearDBO->query($rq2);
 
         $ndo2 = $DBRESULT->fetchRow();
@@ -235,8 +234,8 @@ if (!is_null($host_id)) {
          * Get comments for service
          */
         $tabCommentServices = array();
-        if (isset($host_id) && isset($service_id)){
-            $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
+        if (isset($host_id) && isset($service_id)) {
+            $rq2 =  " SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
                 " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
                                       AND h.host_id = s.host_id
@@ -247,7 +246,7 @@ if (!is_null($host_id)) {
                                       AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
                                       ORDER BY cmt.entry_time DESC";
             $DBRESULT = $pearDBO->query($rq2);
-            for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+            for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]['host_name'] = $data['host_name'];
                 $tabCommentServices[$i]['service_description'] = $data['service_description'];
@@ -259,13 +258,13 @@ if (!is_null($host_id)) {
         }
     
         $en_acknowledge_text= array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
-        $en_acknowledge 	= array("1" => "0", "0" => "1");
-        $en_disable 		= array("1" => _("Enabled"), "0" => _("Disabled"));
-        $en_inv				= array("1" => "1", "0" => "0");
-        $en_inv_text 		= array("1" => _("Disable"), "0" => _("Enable"));
-        $color_onoff 		= array("1" => "#88b917", "0" => "#e00b3d");
-        $color_onoff_inv 	= array("0" => "#F7FAFF", "1" => "#E7C9FF");
-        $img_en 			= array("0" => "'./img/icons/enabled.png'", "1" => "'./img/icons/disabled.png'");
+        $en_acknowledge     = array("1" => "0", "0" => "1");
+        $en_disable         = array("1" => _("Enabled"), "0" => _("Disabled"));
+        $en_inv                 = array("1" => "1", "0" => "0");
+        $en_inv_text        = array("1" => _("Disable"), "0" => _("Enable"));
+        $color_onoff        = array("1" => "#88b917", "0" => "#e00b3d");
+        $color_onoff_inv    = array("0" => "#F7FAFF", "1" => "#E7C9FF");
+        $img_en             = array("0" => "'./img/icons/enabled.png'", "1" => "'./img/icons/disabled.png'");
 
         /*
          * Ajust data for beeing displayed in template
@@ -285,7 +284,7 @@ if (!is_null($host_id)) {
 
         if (isset($service_status[$hskey]["next_notification"]) && !$service_status[$hskey]["next_notification"]) {
             $service_status[$hskey]["next_notification"] = "";
-        } else if (!isset($service_status[$hskey]["next_notification"])) {
+        } elseif (!isset($service_status[$hskey]["next_notification"])) {
             $service_status[$hskey]["next_notification"] = "N/A";
         } else {
             $service_status[$hskey]["next_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["next_notification"]);
@@ -326,8 +325,8 @@ if (!is_null($host_id)) {
         if (isset($service_status[$hskey]["notes_url"]) && $service_status[$hskey]["notes_url"]) {
             $service_status[$hskey]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$hskey]["notes_url"]);
             $service_status[$hskey]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$hskey]["notes_url"]);
-            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICESTATE\$",  $service_status[$hskey]["current_state"], $service_status[$hskey]["notes_url"]);
-            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICESTATEID\$",  $service_status[$hskey]["current_stateid"], $service_status[$hskey]["notes_url"]);
+            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICESTATE\$", $service_status[$hskey]["current_state"], $service_status[$hskey]["notes_url"]);
+            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICESTATEID\$", $service_status[$hskey]["current_stateid"], $service_status[$hskey]["notes_url"]);
             if ($host_id) {
                 $service_status[$hskey]["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$hskey]["notes_url"]);
                 $service_status[$hskey]["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$hskey]["notes_url"]);
@@ -336,7 +335,7 @@ if (!is_null($host_id)) {
         if (isset($service_status[$hskey]["action_url"]) && $service_status[$hskey]["action_url"]) {
             $service_status[$hskey]["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$hskey]["action_url"]);
             $service_status[$hskey]["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$hskey]["action_url"]);
-            $service_status[$hskey]["action_url"] = str_replace("\$SERVICESTATE\$",  $service_status[$hskey]["current_state"], $service_status[$hskey]["action_url"]);
+            $service_status[$hskey]["action_url"] = str_replace("\$SERVICESTATE\$", $service_status[$hskey]["current_state"], $service_status[$hskey]["action_url"]);
             $service_status[$hskey]["action_url"] = str_replace("\$SERVICESTATEID\$", $service_status[$hskey]["current_stateid"], $service_status[$hskey]["action_url"]);
             if ($host_id) {
                 $service_status[$hskey]["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$hskey]["action_url"]);
@@ -380,7 +379,7 @@ if (!is_null($host_id)) {
         if (isset($service_status[$hskey]["last_time_".strtolower($service_status[$hskey]["current_state"])])) {
             !$service_status[$hskey]["last_state_change"] ? $service_status[$hskey]["duration"] = CentreonDuration::toString($service_status[$hskey]["last_time_".strtolower($service_status[$hskey]["current_state"])]) : $service_status[$hskey]["duration"] = centreonDuration::toString(time() - $service_status[$hskey]["last_state_change"]);
         }
-        !$service_status[$hskey]["last_state_change"] ? $service_status[$hskey]["last_state_change"] = "": $service_status[$hskey]["last_state_change"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$hskey]["last_state_change"]);
+        !$service_status[$hskey]["last_state_change"] ? $service_status[$hskey]["last_state_change"] = "": $service_status[$hskey]["last_state_change"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["last_state_change"]);
         $service_status[$hskey]["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
         !$service_status[$hskey]["is_flapping"] ? $service_status[$hskey]["is_flapping"] = $en[$service_status[$hskey]["is_flapping"]] : $service_status[$hskey]["is_flapping"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["is_flapping"]);
 
@@ -394,7 +393,7 @@ if (!is_null($host_id)) {
             $service_status[$hskey]["scheduled_downtime_depth"] = 1;
         }
 
-        $status = NULL;
+        $status = null;
         foreach ($tab_status as $key => $value) {
             $status .= "&value[".$key."]=".$value;
         }
@@ -505,9 +504,9 @@ if (!is_null($host_id)) {
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $centreon->user->access->topology);
         $tpl->assign("count_comments_svc", count($tabCommentServices));
-        $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils","escapeSecure"),$tabCommentServices));
+        $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils","escapeSecure"), $tabCommentServices));
         $centreonGraph = new CentreonGraph($centreon->user->user_id, null, 0, null);
-        if (isset($host_id) && isset($service_id)){
+        if (isset($host_id) && isset($service_id)) {
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
             $tpl->assign("service_id", $service_id);
         }
@@ -629,7 +628,7 @@ if (!is_null($host_id)) {
             $tools[$key]['url'] = str_replace("@plugin_output@", $service_status[$hskey]["plugin_output"], $tools[$key]['url']);
         }
 
-        if(count($tools) > 0) {
+        if (count($tools) > 0) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
@@ -643,110 +642,110 @@ if (!is_null($host_id)) {
 
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
-	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
-	var command_sent = '<?php echo _("Command sent"); ?>';
-	var command_failure = "<?php echo _("Failed to execute command");?>";
-	var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
-	var svc_id = '<?php echo $svcObj->getServiceId($svc_description, $host_name);?>';
-	var labels = new Array();
+    var glb_confirm = '<?php  echo _("Submit command?"); ?>';
+    var command_sent = '<?php echo _("Command sent"); ?>';
+    var command_failure = "<?php echo _("Failed to execute command");?>";
+    var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
+    var svc_id = '<?php echo $svcObj->getServiceId($svc_description, $host_name);?>';
+    var labels = new Array();
 
-	labels['service_checks'] = new Array(
-	    "<?php echo $str_check_svc_enable;?>",
-	    "<?php echo $str_check_svc_disable;?>",
-	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"
-	);
+    labels['service_checks'] = new Array(
+        "<?php echo $str_check_svc_enable;?>",
+        "<?php echo $str_check_svc_disable;?>",
+        "<?php echo $img_en[0];?>",
+        "<?php echo $img_en[1];?>"
+    );
 
-	labels['service_notifications'] = new Array(
-	    "<?php echo $str_notif_svc_enable;?>",
-	    "<?php echo $str_notif_svc_disable;?>",
-	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"
-	);
+    labels['service_notifications'] = new Array(
+        "<?php echo $str_notif_svc_enable;?>",
+        "<?php echo $str_notif_svc_disable;?>",
+        "<?php echo $img_en[0];?>",
+        "<?php echo $img_en[1];?>"
+    );
 
-	labels['service_event_handler'] = new Array(
-	    "<?php echo $str_handler_svc_enable;?>",
-	    "<?php echo $str_handler_svc_disable;?>",
-	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"
-	);
+    labels['service_event_handler'] = new Array(
+        "<?php echo $str_handler_svc_enable;?>",
+        "<?php echo $str_handler_svc_disable;?>",
+        "<?php echo $img_en[0];?>",
+        "<?php echo $img_en[1];?>"
+    );
 
-	labels['service_flap_detection'] = new Array(
-	    "<?php echo $str_flap_svc_enable;?>",
-	    "<?php echo $str_flap_svc_disable;?>",
-	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"
-	);
+    labels['service_flap_detection'] = new Array(
+        "<?php echo $str_flap_svc_enable;?>",
+        "<?php echo $str_flap_svc_disable;?>",
+        "<?php echo $img_en[0];?>",
+        "<?php echo $img_en[1];?>"
+    );
 
-	labels['service_passive_checks'] = new Array(
-	    "<?php echo $str_passive_svc_enable;?>",
-	    "<?php echo $str_passive_svc_disable;?>",
-	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"
-	);
+    labels['service_passive_checks'] = new Array(
+        "<?php echo $str_passive_svc_enable;?>",
+        "<?php echo $str_passive_svc_disable;?>",
+        "<?php echo $img_en[0];?>",
+        "<?php echo $img_en[1];?>"
+    );
 
-	labels['service_obsess'] = new Array(
-	    "<?php echo $str_obsess_svc_enable;?>",
-	    "<?php echo $str_obsess_svc_disable;?>",
-	    "<?php echo $img_en[0];?>",
-	    "<?php echo $img_en[1];?>"
-	);
+    labels['service_obsess'] = new Array(
+        "<?php echo $str_obsess_svc_enable;?>",
+        "<?php echo $str_obsess_svc_disable;?>",
+        "<?php echo $img_en[0];?>",
+        "<?php echo $img_en[1];?>"
+    );
 
-	function send_command(cmd, actiontype) {
-		if (!confirm(glb_confirm)) {
-			return 0;
-		}
-		if (window.XMLHttpRequest) {
-		    xhr_cmd = new XMLHttpRequest();
-		}
-		else if (window.ActiveXObject)
-		{
-		    xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
-	   	xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&actiontype=" + actiontype, true);
-    	xhr_cmd.send(null);
-	}
-
-	function display_result(xhr_cmd, cmd) {
-		if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete") {
-			return(0);
+    function send_command(cmd, actiontype) {
+        if (!confirm(glb_confirm)) {
+            return 0;
         }
-		var msg_result;
-		var docXML= xhr_cmd.responseXML;
-		var items_state = docXML.getElementsByTagName("result");
-		var received_command = docXML.getElementsByTagName("cmd");
-		var acttype = docXML.getElementsByTagName("actiontype");
-		var state = items_state.item(0).firstChild.data;
-		var actiontype = acttype.item(0).firstChild.data;
-		var executed_command = received_command.item(0).firstChild.data;
-		var commands = new Array("service_checks", "service_notifications", "service_event_handler", "service_flap_detection", "service_passive_checks", "service_obsess");
+        if (window.XMLHttpRequest) {
+            xhr_cmd = new XMLHttpRequest();
+        }
+        else if (window.ActiveXObject)
+        {
+            xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
+        xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&actiontype=" + actiontype, true);
+        xhr_cmd.send(null);
+    }
 
-		if (state == "0") {
-			msg_result = command_sent;
-			for (var i = 0;i < commands.length; i++)
-				mycmd = commands[i];
-			    if (cmd == mycmd) {
-				var tmp = atoi(actiontype) + 2;
-				img_src= labels[executed_command][tmp];
-				document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"
-				+ "<img src=" + img_src
-				+ " alt=\"'" + labels[executed_command][actiontype] + "\"'"
-				+ " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
-				+ " onmouseout='UnTip()'>"
-				+ "</img></a>";
-			    }
-		} else {
-			 msg_result = command_failure;
-		}
-		<?php
-		require_once "./class/centreonMsg.class.php";
-		?>
-		_clear("centreonMsg");
-		_setTextStyle("centreonMsg", "bold");
-		_setText("centreonMsg", msg_result);
-		_nextLine("centreonMsg");
-		_setTimeout("centreonMsg", 3);
-	}
+    function display_result(xhr_cmd, cmd) {
+        if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete") {
+            return(0);
+        }
+        var msg_result;
+        var docXML= xhr_cmd.responseXML;
+        var items_state = docXML.getElementsByTagName("result");
+        var received_command = docXML.getElementsByTagName("cmd");
+        var acttype = docXML.getElementsByTagName("actiontype");
+        var state = items_state.item(0).firstChild.data;
+        var actiontype = acttype.item(0).firstChild.data;
+        var executed_command = received_command.item(0).firstChild.data;
+        var commands = new Array("service_checks", "service_notifications", "service_event_handler", "service_flap_detection", "service_passive_checks", "service_obsess");
+
+        if (state == "0") {
+            msg_result = command_sent;
+            for (var i = 0;i < commands.length; i++)
+                mycmd = commands[i];
+                if (cmd == mycmd) {
+                var tmp = atoi(actiontype) + 2;
+                img_src= labels[executed_command][tmp];
+                document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"
+                + "<img src=" + img_src
+                + " alt=\"'" + labels[executed_command][actiontype] + "\"'"
+                + " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
+                + " onmouseout='UnTip()'>"
+                + "</img></a>";
+                }
+        } else {
+             msg_result = command_failure;
+        }
+        <?php
+        require_once "./class/centreonMsg.class.php";
+        ?>
+        _clear("centreonMsg");
+        _setTextStyle("centreonMsg", "bold");
+        _setText("centreonMsg", msg_result);
+        _nextLine("centreonMsg");
+        _setTimeout("centreonMsg", 3);
+    }
 </script>
 <?php } ?>

@@ -34,42 +34,45 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
-function deleteDowntimeFromDb($centreon, $select = array()) {
+function deleteDowntimeFromDb($centreon, $select = array())
+{
     if (isset($select)) {
         $pearDBO = new CentreonDB("centstorage");
 
         $dIds =  array();
         foreach ($select as $key => $val) {
-            $tmp = explode(";",$key);
+            $tmp = explode(";", $key);
             if (isset($tmp[1])) {
                 $dIds[] = $tmp[1];
             }
         }
 
         if (count($dIds)) {
-            $request = "DELETE FROM downtimes WHERE internal_id IN (".implode(', ',$dIds).")";
+            $request = "DELETE FROM downtimes WHERE internal_id IN (".implode(', ', $dIds).")";
             $pearDBO->query($request);
         }
-	}
+    }
 }
 
-function getDowntimes($internalId){
+function getDowntimes($internalId)
+{
     $pearDBO = new CentreonDB("centstorage");
     $request = "Select host_id,service_id from downtimes WHERE internal_id = ".CentreonDB::escape($internalId)." ORDER BY downtime_id DESC LIMIT 0,1";
     $res = $pearDBO->query($request);
     $row = $res->fetchRow();
-    if(!empty($row)){
+    if (!empty($row)) {
         return $row;
     }
     return false;
 }
 
-function isDownTimeHost($internalId){
+function isDownTimeHost($internalId)
+{
     $downtime = getDowntimes($internalId);
-    if(!empty($downtime['host_id']) && !empty($downtime['service_id'])){
+    if (!empty($downtime['host_id']) && !empty($downtime['service_id'])) {
         return false;
     }
     return true;
