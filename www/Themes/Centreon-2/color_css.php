@@ -170,10 +170,6 @@ unset($res);
 #footerline1    {   background-color:<?php print $menu1_bgcolor; ?>;}
 #footerline2    {   background-color:<?php print $footerline2; ?>;}
 
-input, textarea {
-    font-size: 10px;
-    border:1px solid #BBBBBB;
-}
 input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
     background : <?php print $menu1_bgcolor; ?>;
     color : <?php print $color9; ?>;

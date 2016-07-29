@@ -32,8 +32,9 @@
  *
  */
 
-body {background-color:#FFF;}
-
+body {
+    background-color:#FFF;
+}
 * {
     margin:0;
     padding:0;
@@ -42,23 +43,26 @@ html {
     height: 100%;
 }
 body {
-    /*font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';*/
     font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
     color:#555;
     font-size:11px;
     height: 100%;
 }
-
-.link a{
+.link a {
     font-size:12px;
 }
 
 /* Set Basic objects properties */
-a       {text-decoration:none;}
-a:hover {text-decoration:underline;}
-
-img,hr {border:0;padding:0}
-
+a {
+    text-decoration:none;
+}
+a:hover {
+    text-decoration:underline;
+}
+img, hr {
+    border:0;
+    padding:0;
+}
 ul {
     list-style-type:none;
 }
@@ -69,7 +73,14 @@ table {
     border-spacing:0;
 }
 
-img         {margin:0px;padding:0;}
+img {
+    margin:0px;
+    padding:0;
+}
+
+input, textarea {
+    border:1px solid #BBBBBB;
+}
 
 input, select {
     padding: 4px;
@@ -77,11 +88,16 @@ input, select {
     border: 1px solid #bcbdc0;
     line-height: 18px;
 }
-/*input[type="text"] {
-    width: 70%;
-}*/
-input[type="checkbox"]  {border:0px;margin:0;padding:0px;vertical-align: middle}
-input[type="radio"] {vertical-align: middle;}
+
+input[type="checkbox"]  {
+        border:0px;
+        margin:0;
+        padding:0px;
+        vertical-align: middle
+}
+input[type="radio"] {
+    vertical-align: middle;
+}
 select {
     padding: 6px;
 }
@@ -342,14 +358,15 @@ p.description a, p.description a:visited {
 
 /* ------------ Badge -----------*/
 
-.badge              {   display: inline-block;
-                        border-radius: 18px;
-                        color: #fff;
-                        padding: 2px 6px;
-                        font-size: 10px;
-                        font-weight: bold;
-                        text-transform: uppercase;
-                    }
+.badge  {   
+    display: inline-block;
+    border-radius: 18px;
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
 
 .badge a            {
                         display: inline-block;
@@ -1446,9 +1463,12 @@ table.ListTableSmallArg td {
     float: left;
 }
 
-input,checkbox,a.infobulle:hover table                              {border:1px gray solid;}
-
-td,a.infobulle:hover td {padding:0px;}
+checkbox,a.infobulle:hover table {
+    border:1px gray solid;
+}
+td, a.infobulle:hover td {
+    padding:0px;
+}
 
 #menu_3 a,#footer a,#logli a,#logOut a {color:#666;}
 
@@ -1513,25 +1533,17 @@ ul.no-deco-list {
     list-style-type: none;
 }
 
+/* CLONE ELEMENT */
 .clonable {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-
-.clonehandle {
-   /* margin-top: -5px;
-    margin-right: 10px;
-    cursor: move;
-    float: right;*/
-}
-
 .cloneremove {
     margin-top:-5px;
     cursor: pointer;
     float: right;
 }
-
 .clone-placeholder {
     border-color: #cccccc;
     border-style: dashed;
@@ -1539,7 +1551,6 @@ ul.no-deco-list {
     margin-bottom: 10px;
     height:60px;
 }
-
 .clone-cell {
     padding-top:1px;
     padding-bottom:3px;
@@ -1671,17 +1682,11 @@ span.state_badge {
 }
 
 /* ColorBox CSS */
-
-#cboxBottomRight,#cboxBottomLeft,
-#cboxBottomCenter,#cboxMiddleLeft,
-#cboxMiddleRight, #cboxTopCenter,
-#cboxTopRight,#cboxTopLeft
-{
+#cboxBottomRight, #cboxBottomLeft, #cboxBottomCenter, #cboxMiddleLeft, #cboxMiddleRight, #cboxTopCenter, #cboxTopRight, #cboxTopLeft {
     background: none !important;
 }
 
 /* Fullscreen icon */ 
-
 .fullscreen-icon {
   position: fixed;
   right: 10px;
@@ -1696,6 +1701,7 @@ span.state_badge {
 .fullscreen-icon img {
     vertical-align: middle;
 }
+
 /* Style for Eventlogs page */
 .log-extend-icon {
     cursor: pointer;
@@ -1985,7 +1991,6 @@ textarea.default-textarea {
 }
 
 /* Vertical Tabs */
-
 .vertical-tabs.ui-widget-content{
     background: none;
     border: none;
@@ -2064,10 +2069,7 @@ textarea.default-textarea {
 .tohide {
     display: none;
 }
-:fullscreen .tohide,
-:-webkit-full-screen .tohide,
-:-moz-full-screen .tohide,
-:-ms-fullscreen .tohide{
+:fullscreen .tohide, :-webkit-full-screen .tohide, :-moz-full-screen .tohide, :-ms-fullscreen .tohide {
     display: none;
 }
 
