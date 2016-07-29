@@ -146,7 +146,7 @@ $tpl->assign('msg', array("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </SCRIPT>
 <?php

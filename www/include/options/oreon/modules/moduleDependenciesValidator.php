@@ -35,7 +35,8 @@
 
 
 // License validator
-function parse_zend_license_file($file) {
+function parse_zend_license_file($file)
+{
     $lines = preg_split('/\n/', file_get_contents($file));
     $infos = array();
     foreach ($lines as $line) {
@@ -69,14 +70,13 @@ while (false !== ($filename = readdir($modulesDirResource))) {
         if (file_exists($checklistDir.'requirements.php')) {
             require_once $checklistDir.'requirements.php';
             if ($critical || $warning) {
-                
                 if ($critical) {
                     $XmlObj->writeAttribute('status', 'critical');
                 } elseif ($warning) {
                     $XmlObj->writeAttribute('status', 'warning');
                 }
 
-                foreach($message as $errorMessage) {
+                foreach ($message as $errorMessage) {
                     $XmlObj->startElement('message');
                     $XmlObj->writeElement('ErrorMessage', $errorMessage['ErrorMessage']);
                     $XmlObj->writeElement('Solution', $errorMessage['Solution']);

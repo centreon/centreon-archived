@@ -98,7 +98,6 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
                 } else {
                     $val .= ($value2!=null?("'".$value2."'"):"NULL");
                 }
-                
             }
             if (testExistence($lca_name)) {
                 $val ? $rq = "INSERT INTO lca_define VALUES (".$val.")" : $rq = null;
