@@ -136,7 +136,7 @@ $attrServicetemplate1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicecategories&field=sc_svcTpl&id=' . $sc_id)
 );
 
-$form->addElement('select2', 'sc_svcTpl', _("Linked Service Templates"), array(), $attrServicetemplate1);
+$form->addElement('select2', 'sc_svcTpl', _("Linked Templates"), array(), $attrServicetemplate1);
 
 $sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
 $sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Disabled"), '0');
