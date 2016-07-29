@@ -842,6 +842,11 @@ div.menuLeft {
     padding: 10px 0;
 }
 
+.detail-chart-title {
+  background-color: #cfedf9;
+  padding: 5px 0;
+}
+
 /* ------ START : info box -----*/
 
 .info_box {

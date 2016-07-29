@@ -82,12 +82,14 @@
 	                                <td class="ListColHeaderLeft FormHeader"><h4>{t}Graphs{/t}</h4></td>
 	                            </tr>
 				                {foreach key=graphId item=HS from=$graphs}
+                                {assign var=names value=';'|explode:$HS}
 								<tr>
 									<td class="ListColLeft ColPopup" style='text-align:center;'>
-									<a href='./main.php?p=204&mode=0&svc_id={$HS}'>
-                                        <div class="chart" data-graph-id="{$graphId}" data-graph-type="service">
-                                        </div>
-                                    </a>
+                                      <h3 class="detail-chart-title">{$names[1]}</h3>
+                                      <a href='./main.php?p=204&mode=0&svc_id={$HS}'>
+                                          <div class="chart" data-graph-id="{$graphId}" data-graph-type="service">
+                                          </div>
+                                      </a>
 									</td>
 								</tr>
 								{/foreach}
