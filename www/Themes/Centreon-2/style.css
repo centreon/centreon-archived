@@ -1464,7 +1464,7 @@ td,a.infobulle:hover td {padding:0px;}
     display: none;
     position: fixed;
     z-index: 500;
-    width: 500px;
+    width: 600px;
     padding: 3px;
     border-radius: 4px;
     box-shadow: 5px 5px 2px #d1d2d4;

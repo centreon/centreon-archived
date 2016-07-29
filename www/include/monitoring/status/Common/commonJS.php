@@ -871,7 +871,7 @@ var func_displayIMG = function(event) {
         .data('graphType', 'service')
         .data('graphId', jQuery(self).attr('id').replace('-', '_'))
         .appendTo(jQuery('.img_volante'));
-    jQuery(chartElem).centreonGraph({height: 140, interval: '24h'});
+    jQuery(chartElem).centreonGraph({height: 200, interval: '24h'});
 };
 
 var func_hideIMG = function(event) {

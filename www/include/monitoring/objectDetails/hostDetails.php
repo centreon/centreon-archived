@@ -579,6 +579,13 @@ if (!$is_admin && !$haveAccess) {
     }
 } 
 ?>
+<script>
+<?php
+$tFM = 0;
+$time = time();
+require_once _CENTREON_PATH_ . 'www/include/monitoring/status/Common/commonJS.php';
+?>
+</script>
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
     
@@ -680,4 +687,6 @@ if (!$is_admin && !$haveAccess) {
 		_setTimeout("centreonMsg", 3);
 	}
 </script>
-<?php } ?>
+<?php
+}
+

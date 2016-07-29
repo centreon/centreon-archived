@@ -50,7 +50,7 @@
 	                                <td>
 	                                    {if $hs.svc_index > 0}
 	                                    <a href="main.php?p=204&amp;mode=0&amp;svc_id={$hs.hnl};{$hs.sdl}">
-	                                        <img id="{$hs.svc_index}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
+	                                        <img id="{$host_id}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
 	                                    </a>
 	                                    {/if}
 	                                    {if $hs.acknowledged != 0}
@@ -480,6 +480,7 @@
 		</td>	
 	</tr>
 </table>
+<div id="div_img" class="img_volante"></div>
 <script src="./include/common/javascript/moment-with-locales.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 <script src="./include/common/javascript/charts/d3.min.js"></script>
