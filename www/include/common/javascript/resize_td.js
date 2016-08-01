@@ -33,22 +33,20 @@
  */
  
 function setOverflowDivToTitle(elemA){
-
-
     jQuery(elemA).contents().filter(function() {
         return this.nodeType === 3;
     }).each(function() {
         //this.nodeValue = jQuery.trim(this.nodeValue); code here if you want to apply some modification to the node value
     }).wrap('<span class="unWrapedElement"></span>');
-    jQuery(elemA).wrapInner('<div style="display:inline-block" ></div>');
-    
+    jQuery(elemA).wrapInner('<div style="display:inline-block"></div>');
+
     jQuery(elemA).each(function(idx, elem){
         var elementWith = jQuery(elem).width();
-        var elementContentWith = jQuery(elem).children( ":first-child" ).width();
-        var wrapper = jQuery(elem).children( ":first-child" );
-        if(elementWith < elementContentWith){
-            var elemOldText = jQuery(elem).children( ":first-child" ).text();
-            var elemOldHtml = jQuery(elem).children( ":first-child" ).html();
+        var elementContentWith = jQuery(elem).children(":first-child").width();
+        var wrapper = jQuery(elem).children(":first-child");
+        if (elementWith < elementContentWith) {
+            var elemOldText = jQuery(elem).children(":first-child").text();
+            var elemOldHtml = jQuery(elem).children(":first-child").html();
             var newHtml = jQuery('<div></div>');
             var popin = jQuery('<div></div>',{html : elemOldHtml, style : 'position:relative;width:700px;word-wrap:break-word;'}).appendTo(jQuery(elem));
             var newSpan = jQuery('<span></span>',{
@@ -61,21 +59,20 @@ function setOverflowDivToTitle(elemA){
             newSpan.click(function(){
                 popin.centreonPopin("open");
             });
-            
             newSpan.css('visibility','inherit');
             
-            if(wrapper.children().length > 1){
+            if (wrapper.children().length > 1) {
                 wrapper.children().each(function (idx, el) {
                     tmpWidth += jQuery(el).outerWidth(true);
                     if (tmpWidth < elementWith) {
                         newHtml.append(jQuery(el).clone());
                     }
                 });
-            }else{
+            } else {
                 var childtext = wrapper.children().text();
                 var textLenght = childtext.length;
                 var maxTextLenght = elementWith / (elementContentWith / textLenght);
-                var finalText = TextAbstract(wrapper.children().text(),maxTextLenght);
+                var finalText = TextAbstract(wrapper.children().text(), maxTextLenght);
                 var clone = wrapper.children().clone().text(finalText);
                 newHtml.append(clone);
             }
