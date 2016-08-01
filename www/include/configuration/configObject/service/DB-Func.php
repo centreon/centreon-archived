@@ -1060,10 +1060,8 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     $rq .= "service_comment = ";
     isset($ret["service_comment"]) && $ret["service_comment"] != null ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
-    
     $rq .= "geo_coords = ";
     isset($ret["geo_coords"]) && $ret["geo_coords"] != null ? $rq .= "'".CentreonDB::escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
-
     $ret["command_command_id_arg"] = getCommandArgs($_POST, $ret);
     $rq .= "command_command_id_arg = ";
     isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != null ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
