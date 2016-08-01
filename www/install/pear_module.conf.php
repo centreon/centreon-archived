@@ -72,15 +72,3 @@ $pear_module[25]["name"] = "Validate";
 $pear_module[25]["version"] = "0.6.2";
 $pear_module[25]["file"] = "Validate-0.6.2.tgz";
 $pear_module[25]["path"] = "Validate.php";
-
-/*
-$pear_module[27]["name"] = "XML_RPC";
-$pear_module[27]["version"] = "1.4.5";
-$pear_module[27]["file"] = "XML_RPC-1.4.5.tgz";
-$pear_module[27]["path"] = "XML/RPC.php";
-
-$pear_module[28]["name"] = "SOAP";
-$pear_module[28]["version"] = "0.10.1";
-$pear_module[28]["file"] = "SOAP-0.10.1.tgz";
-$pear_module[28]["path"] = "SOAP/Client.php";
-*/

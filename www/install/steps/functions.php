@@ -242,4 +242,3 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['CENTREON_ENGINE_LIB'] = $conf_centreon['centreon_engine_lib'];
     $_SESSION['CENTREONBROKER_CBMOD'] = $conf_centreon['centreonbroker_cbmod'];
 }
-?>
