@@ -41,7 +41,7 @@ class Centreon_Object_Relation_Contact_Group_Service extends Centreon_Object_Rel
     protected $firstKey = "contactgroup_cg_id";
     protected $secondKey = "service_service_id";
 
-	/**
+    /**
      * Constructor
      *
      * @return void

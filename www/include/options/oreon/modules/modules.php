@@ -34,25 +34,25 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["list"]) ? $mG = $_GET["list"] : $mG = NULL;
-isset($_POST["list"]) ? $mP = $_POST["list"] : $mP = NULL;
+isset($_GET["list"]) ? $mG = $_GET["list"] : $mG = null;
+isset($_POST["list"]) ? $mP = $_POST["list"] : $mP = null;
 $mG ? $list = $mG : $list = $mP;
 
-isset($_GET["id"]) ? $mG = $_GET["id"] : $mG = NULL;
-isset($_POST["id"]) ? $mP = $_POST["id"] : $mP = NULL;
+isset($_GET["id"]) ? $mG = $_GET["id"] : $mG = null;
+isset($_POST["id"]) ? $mP = $_POST["id"] : $mP = null;
 $mG ? $id = $mG : $id = $mP;
 
-isset($_GET["name"]) ? $nameG = $_GET["name"] : $nameG = NULL;	
-isset($_POST["name"]) ? $nameP = $_POST["name"] : $nameP = NULL;
+isset($_GET["name"]) ? $nameG = $_GET["name"] : $nameG = null;
+isset($_POST["name"]) ? $nameP = $_POST["name"] : $nameP = null;
 $nameG ? $name = $nameG : $name = $nameP;
 
 $operationType = '';
-if ($name !== NULL) {
+if ($name !== null) {
     $operationType = 'install';
-} elseif ($id !== NULL) {
+} elseif ($id !== null) {
     $operationType = 'upgrade';
 }
 
@@ -64,20 +64,30 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /*
  * Path to the options dir
- */	
+ */
 $path = "./include/options/oreon/modules/";
 
 require_once "./include/common/common-Func.php";
 require_once $path ."DB-Func.php";
 
-if ($list) { 
-	require_once($path."listModules.php");
+if ($list) {
+    require_once($path."listModules.php");
 } else {
-	switch ($o)	{
-		case "i" : require_once($path."formModule.php"); break;
-		case "u" : require_once($path."formModule.php"); break;
-		case "d" : require_once($path."listModules.php"); break;
-		case "w" : require_once($path."formModule.php"); break;
-		default : require_once($path."listModules.php");  break;
-	}
+    switch ($o) {
+        case "i":
+            require_once($path."formModule.php");
+            break;
+        case "u":
+            require_once($path."formModule.php");
+            break;
+        case "d":
+            require_once($path."listModules.php");
+            break;
+        case "w":
+            require_once($path."formModule.php");
+            break;
+        default:
+            require_once($path."listModules.php");
+            break;
+    }
 }

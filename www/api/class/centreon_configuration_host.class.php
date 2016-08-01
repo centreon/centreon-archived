@@ -42,12 +42,12 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -58,7 +58,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
@@ -117,7 +117,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return type
      * @throws RestBadRequestException
      */

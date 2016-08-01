@@ -45,5 +45,4 @@ class Centreon_Object_Resource extends Centreon_Object
     protected $table = "cfg_resource";
     protected $primaryKey = "resource_id";
     protected $uniqueLabelField = "resource_name";
-
 }

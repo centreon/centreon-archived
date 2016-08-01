@@ -60,8 +60,8 @@ $obj = new CentreonGraph($contactId, $_GET["index"], 0, 1);
 /*
  * Set arguments from GET
  */
-$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
-$obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
+$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)));
+$obj->setRRDOption("end", $obj->checkArgument("end", $_GET, time()));
 
 //$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
@@ -69,21 +69,21 @@ $obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
  * Template Management
  */
 if (isset($_GET["template_id"])) {
-	$obj->setTemplate($_GET["template_id"]);
+    $obj->setTemplate($_GET["template_id"]);
 } else {
-	$obj->setTemplate();
+    $obj->setTemplate();
 }
 
 $obj->init();
 if (isset($_GET["flagperiod"])) {
-	$obj->setCommandLineTimeLimit($_GET["flagperiod"]);
+    $obj->setCommandLineTimeLimit($_GET["flagperiod"]);
 }
 
 /*
  * Init Curve list
  */
 if (isset($_GET["metric"])) {
-	$obj->setMetricList($_GET["metric"]);
+    $obj->setMetricList($_GET["metric"]);
 }
 $obj->initCurveList();
 

@@ -33,58 +33,57 @@
  *
  */
 
-    require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-    require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
-	require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
-	require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 
-	session_start();
+session_start();
 
-	$centreon = $_SESSION['centreon'];
-	if (!isset($centreon))
-		exit();
+$centreon = $_SESSION['centreon'];
+if (!isset($centreon)) {
+    exit();
+}
 
-    $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
-	$centreonLang->bindLang();
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
+$centreonLang->bindLang();
 
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$args = array();
-	$str = "";
-	$nb_arg = 0;
-	if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
-		$str = str_replace("\$", "@DOLLAR@", $_GET['cmd_line']);
-		$nb_arg = preg_match_all("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $str, $matches);
-	}
+$args = array();
+$str = "";
+$nb_arg = 0;
+if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
+    $str = str_replace("\$", "@DOLLAR@", $_GET['cmd_line']);
+    $nb_arg = preg_match_all("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $str, $matches);
+}
 
-	if (isset($_GET['textArea']) && $_GET['textArea']) {
-		$tab = preg_split("/\;\;\;/", $_GET['textArea']);
-		foreach ($tab as $key=>$value) {
-			$tab2 = preg_split("/\ \:\ /", $value, 2);
-			$index = str_replace("ARG", "", $tab2[0]);
-			if (isset($tab2[0]) && $tab2[0])
-				$args[$index] = $tab2[1];
-		}
-	}
+if (isset($_GET['textArea']) && $_GET['textArea']) {
+    $tab = preg_split("/\;\;\;/", $_GET['textArea']);
+    foreach ($tab as $key => $value) {
+        $tab2 = preg_split("/\ \:\ /", $value, 2);
+        $index = str_replace("ARG", "", $tab2[0]);
+        if (isset($tab2[0]) && $tab2[0]) {
+            $args[$index] = $tab2[1];
+        }
+    }
+}
 
-	/* FORM */
+/* FORM */
 
 $path = _CENTREON_PATH_."/www/include/configuration/configObject/command/";
 
-$attrsText 		= array("size"=>"30");
-$attrsText2 	= array("size"=>"60");
+$attrsText      = array("size"=>"30");
+$attrsText2     = array("size"=>"60");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
 
 /*Basic info */
 $form = new HTML_QuickForm('Form', 'post');
 $form->addElement('header', 'title', _("Argument Descriptions"));
 $form->addElement('header', 'information', _("Arguments"));
-
-/*$form->addElement('text', 'ba_group_name', _("Name"), $attrsText);*/
-
 
 $subS = $form->addElement('button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();"));
 $subS = $form->addElement('button', 'close', _("Close"), array("onClick"=>"closeBox();"));
@@ -109,10 +108,11 @@ $dummyTab = array();
 $defaultDesc = array();
 
 for ($i = 1; $i <= $nb_arg; $i++) {
-	$dummyTab[$i] = $matches[1][$i - 1];
-	$defaultDesc[$i] = "";
-	if (isset($args[$dummyTab[$i]]) && $args[$dummyTab[$i]])
-		$defaultDesc[$i] = $args[$dummyTab[$i]];
+    $dummyTab[$i] = $matches[1][$i - 1];
+    $defaultDesc[$i] = "";
+    if (isset($args[$dummyTab[$i]]) && $args[$dummyTab[$i]]) {
+        $defaultDesc[$i] = $args[$dummyTab[$i]];
+    }
 }
 $tpl->assign('dummyTab', $dummyTab);
 $tpl->assign('defaultDesc', $defaultDesc);
@@ -125,5 +125,3 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('args', $args);
 $tpl->display("formArguments.ihtml");
-
-?>

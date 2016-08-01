@@ -36,5 +36,3 @@
 if (!isset($centreon)) {
     exit();
 }
-
-

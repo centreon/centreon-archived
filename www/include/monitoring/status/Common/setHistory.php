@@ -33,41 +33,37 @@
  *
  */
 
-/*
- * Write command in nagios pipe or in centcore pipe.
- */
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-function write_command($cmd, $poller){
-	global $centreon, $key, $pearDB;
+$path = _CENTREON_PATH_."/www";
+require_once("$path/class/centreon.class.php");
+require_once("$path/class/centreonSession.class.php");
 
-	$str = NULL;
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+    print "Bad Session ID";
+    exit();
+} else {
 
-	/*
-	 * Destination is centcore pipe path
-	 */
-    if (defined("_CENTREON_VARLIB_")) {
-        $destination = _CENTREON_VARLIB_."/centcore.cmd";
-    } else {
-        $destination = "/var/lib/centreon/centcore.cmd";
-    }
-	
-	$cmd = str_replace("`", "&#96;", $cmd);
-	$cmd = str_replace("\n", "<br>", $cmd);
-	$informations = preg_split("/\;/", $key);
+	$centreon = $_SESSION['centreon'];
 
-	if (!mb_detect_encoding($cmd, 'UTF-8', true)) {
-		$cmd = utf8_encode($cmd);
+	if (isset($_POST["limit"]) && isset($_POST["url"])) {
+		$centreon->historyLimit[$_POST["url"]] = $_POST["limit"];
 	}
-	setlocale(LC_CTYPE, 'en_US.UTF-8');
 
-    $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
-	return passthru($str);
-}
-
-function send_cmd($cmd, $poller = NULL){
-	if (isset($cmd)) {
-		$flg = write_command($cmd, $poller);
+	if (isset($_POST["page"]) && isset($_POST["url"])) {
+		$centreon->historyPage[$_POST["url"]] = $_POST["page"];
 	}
-	isset($flg) && $flg ? $ret = $flg : $ret = _("Command execution problem");
-	return $ret;
+
+	if (isset($_POST["search"]) && isset($_POST["url"])) {
+		$centreon->historySearchService[$_POST["url"]] = addslashes($_POST["search"]);
+	}
+
+	if (isset($_POST["search_host"]) && isset($_POST["url"])) {
+		$centreon->historySearch[$_POST["url"]] = addslashes($_POST["search_host"]);
+	}
+
+	if (isset($_POST["search_output"]) && isset($_POST["url"])) {
+		$centreon->historySearchOutput[$_POST["url"]] = addslashes($_POST["search_output"]);
+	}
 }

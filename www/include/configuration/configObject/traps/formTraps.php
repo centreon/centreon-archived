@@ -40,24 +40,27 @@ if (!isset($centreon)) {
 /**
  * Database retrieve information for Trap
  */
-function testTrapExistence() {
+function testTrapExistence()
+{
     global $trapObj;
 
     return $trapObj->testTrapExistence();
 }
 
-function myDecodeTrap($arg) {
+function myDecodeTrap($arg)
+{
     $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
     return($arg);
 }
 
-function myReplace() {
+function myReplace()
+{
     global $form;
     return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
 }
 
 $trap = array();
-$mnftr = array(NULL => NULL);
+$mnftr = array(null => null);
 $mnftr_id = -1;
 $initialValues = array();
 $hServices = array();
@@ -76,10 +79,9 @@ if (($o == "c" || $o == "w") && $traps_id) {
      */
     $preexecArray = $trapObj->getPreexecFromTrapId($traps_id);
     $cdata->addJsData('clone-values-preexec', htmlspecialchars(
-            json_encode($preexecArray), 
-            ENT_QUOTES
-        )
-    );
+        json_encode($preexecArray),
+        ENT_QUOTES
+    ));
     $cdata->addJsData('clone-count-preexec', count($preexecArray));
     
     /*
@@ -87,10 +89,9 @@ if (($o == "c" || $o == "w") && $traps_id) {
      */
     $mrulesArray = $trapObj->getMatchingRulesFromTrapId($traps_id);
     $cdata->addJsData('clone-values-matchingrules', htmlspecialchars(
-            json_encode($mrulesArray), 
-            ENT_QUOTES
-        )
-    );
+        json_encode($mrulesArray),
+        ENT_QUOTES
+    ));
     $cdata->addJsData('clone-count-matchingrules', count($mrulesArray));
 }
 
@@ -168,9 +169,9 @@ $form->addElement('text', 'traps_oid', _("OID"), $attrsText);
 $form->addElement('select', 'traps_status', _("Default Status"), array(0=>_("Ok"), 1=>_("Warning"), 2=>_("Critical"), 3=>_("Unknown")), array('id' => 'trapStatus'));
 $severities = $severityObj->getList(null, "level", 'ASC', null, null, true);
     $severityArr = array(null=>null);
-    foreach($severities as $severity_id => $severity) {
-        $severityArr[$severity_id] = $severity['sc_name'].' ('.$severity['level'].')';
-    }
+foreach ($severities as $severity_id => $severity) {
+    $severityArr[$severity_id] = $severity['sc_name'].' ('.$severity['level'].')';
+}
     $form->addElement('select', 'severity', _("Default Severity"), $severityArr);
     $form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
 $form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment'));
@@ -224,17 +225,17 @@ if ($centreon->user->admin) {
  * Routing 
  */
 $form->addElement(
-        'text', 
-        'traps_routing_value', 
-        _('Route definition'), 
-        $attrsLongText
-        );
+    'text',
+    'traps_routing_value',
+    _('Route definition'),
+    $attrsLongText
+);
 $form->addElement(
-        'text', 
-        'traps_routing_filter_services', 
-        _('Filter services'), 
-        $attrsLongText
-        );
+    'text',
+    'traps_routing_filter_services',
+    _('Filter services'),
+    $attrsLongText
+);
 $form->addElement('checkbox', 'traps_routing_mode', _("Enable routing"));
 
 /*
@@ -242,77 +243,77 @@ $form->addElement('checkbox', 'traps_routing_mode', _("Enable routing"));
  */
 $cloneSetMaching = array();
 $cloneSetMaching[] = $form->addElement(
-        'text', 
-        'rule[#index#]', 
-        _("String"), 
-        array(
-            "size"=>"50", 
+    'text',
+    'rule[#index#]',
+    _("String"),
+    array(
+            "size"=>"50",
             "id" => "rule_#index#",
             "value" => "@OUTPUT@"
             )
-        );
+);
 $cloneSetMaching[] = $form->addElement(
-        'text', 
-        'regexp[#index#]', 
-        _("Regexp"), 
-        array(
-            "size"=>"50", 
+    'text',
+    'regexp[#index#]',
+    _("Regexp"),
+    array(
+            "size"=>"50",
             "id" => "regexp_#index#",
             "value" => "//"
             )
-        );
+);
 $cloneSetMaching[] = $form->addElement(
-        'select', 
-        'rulestatus[#index#]', 
-        _("Status"), 
-        array(
+    'select',
+    'rulestatus[#index#]',
+    _("Status"),
+    array(
           0 => _('OK'),
           1 => _('Warning'),
           2 => _('Critical'),
           3 => _('Unknown')
         ),
-        array(
+    array(
             "id" => "rulestatus_#index#",
             "type" => "select-one"
             )
-        );
+);
 $cloneSetMaching[] = $form->addElement(
-        'select', 
-        'ruleseverity[#index#]', 
-        _("Severity"), 
-        $severityArr,
-        array(
+    'select',
+    'ruleseverity[#index#]',
+    _("Severity"),
+    $severityArr,
+    array(
             "id" => "ruleseverity_#index#",
             "type" => "select-one"
             )
-        );
+);
 
 $form->addElement(
-        'text', 
-        'traps_timeout', 
-        _("Timeout"),
-        array('size' => 5)
-        );
+    'text',
+    'traps_timeout',
+    _("Timeout"),
+    array('size' => 5)
+);
 
 $form->addElement(
-        'text',
-        'traps_exec_interval',
-        _('Execution interval'),
-        array('size' => 5)
-        );
+    'text',
+    'traps_exec_interval',
+    _('Execution interval'),
+    array('size' => 5)
+);
 
 $form->addElement(
-        'checkbox',
-        'traps_log',
-        _("Insert trap's information into database")
-        );
+    'checkbox',
+    'traps_log',
+    _("Insert trap's information into database")
+);
         
 $form->addElement(
-        'text', 
-        'traps_output_transform', 
-        _('Output Transform'), 
-        $attrsLongText
-        );
+    'text',
+    'traps_output_transform',
+    _('Output Transform'),
+    $attrsLongText
+);
 
 $form->addElement('textarea', 'traps_customcode', _("Custom code"), $attrsTextarea);
 
@@ -337,14 +338,14 @@ $form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
  */
 $cloneSet = array();
 $cloneSet[] = $form->addElement(
-        'text', 
-        'preexec[#index#]', 
-        _("Preexec definition"), 
-        array(
-            "size"=>"50", 
+    'text',
+    'preexec[#index#]',
+    _("Preexec definition"),
+    array(
+            "size"=>"50",
             "id" => "preexec_#index#"
             )
-        );
+);
     
 /*
  * Form Rules
@@ -366,7 +367,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 $tpl->assign('trap_adv_args', _("Advanced matching rules"));
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 /* prepare help texts */
 $helptext = "";
@@ -383,12 +384,12 @@ if ($o == "w") {
     }
     $form->setDefaults($trap);
     $form->freeze();
-} else if ($o == "c") {
+} elseif ($o == "c") {
     # Modify a Command information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($trap);
-} else if ($o == "a") {
+} elseif ($o == "a") {
     # Add a Command information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -403,7 +404,7 @@ if ($form->validate()) {
     } elseif ($form->getSubmitValue("submitC")) {
         $trapObj->update($trapParam->getValue());
     }
-    $o = NULL;
+    $o = null;
     $valid = true;
 }
 

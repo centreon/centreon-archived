@@ -47,13 +47,13 @@ if (isset($_POST["searchH"])) {
     $search = $_POST["searchH"];
     $_POST["search"] = $_POST["searchH"];
     $centreon->historySearch[$url] = $search;
-} else if (isset($centreon->historySearch[$url])) {
+} elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
 } else {
-    $search = NULL;
+    $search = null;
 }
 
-$SearchTool = NULL;
+$SearchTool = null;
 $search = "";
 if (isset($_POST['searchH']) && $_POST['searchH']) {
     $search = $_POST['searchH'];
@@ -87,7 +87,7 @@ $tpl->assign('mode_access', $lvl_access);
  * start header menu
  */
 $tpl->assign("headerMenu_name", _("Name"));
-$tpl->assign("headerMenu_desc", _("Description"));
+$tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_hc_type", _("Type"));
 $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
@@ -199,11 +199,11 @@ foreach (array('o1', 'o2') as $option) {
                 "else if (this.form.elements['".$option."'].selectedIndex == 4) {" .
                 "   setO(this.form.elements['".$option."'].value); submit();} " .
                 "this.form.elements['".$option."'].selectedIndex = 0");
-    $form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
-    $form->setDefaults(array($option => NULL));
+    $form->addElement('select', $option, null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
+    $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
-    $o1->setValue(NULL);
-    $o1->setSelected(NULL);    
+    $o1->setValue(null);
+    $o1->setSelected(null);
 }
 
 $tpl->assign('limit', $limit);

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -38,7 +37,8 @@
  * Init functions
  */
 
-function microtime_float2() {
+function microtime_float2()
+{
     list($usec, $sec) = explode(" ", microtime());
     return ((float) $usec + (float) $sec);
 }
@@ -46,13 +46,14 @@ function microtime_float2() {
 /**
  * Return host tab after poller filter
  */
-function getFilteredPollers($host, $acl_group_id, $res_id) {
+function getFilteredPollers($host, $acl_group_id, $res_id)
+{
     global $pearDB, $hostCache;
 
     $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '".$res_id."'";
-	$DBRESULT = $pearDB->query($request);
-	$row = $DBRESULT->fetchRow();
-	$isPollerFilter = $row['count'];
+    $DBRESULT = $pearDB->query($request);
+    $row = $DBRESULT->fetchRow();
+    $isPollerFilter = $row['count'];
 
     $hostTmp = $host;
     $request = "SELECT host_host_id " .
@@ -67,24 +68,25 @@ function getFilteredPollers($host, $acl_group_id, $res_id) {
 
     if ($DBRESULT->numRows()) {
         $host = array();
-		while ($row = $DBRESULT->fetchRow()) {
-			if (isset($hostTmp[$row['host_host_id']])) {
-				$host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
-			}
-		}
+        while ($row = $DBRESULT->fetchRow()) {
+            if (isset($hostTmp[$row['host_host_id']])) {
+                $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
+            }
+        }
     } else {
-		# If result of query is empty and user have poller restriction, clean host table.
-		if ($isPollerFilter) {
-			$host = array();
-		}
-	}
+        # If result of query is empty and user have poller restriction, clean host table.
+        if ($isPollerFilter) {
+            $host = array();
+        }
+    }
     return $host;
 }
 
 /**
  * Return host tab after host categories filter
  */
-function getFilteredHostCategories($host, $acl_group_id, $res_id) {
+function getFilteredHostCategories($host, $acl_group_id, $res_id)
+{
     global $pearDB, $hostCache, $hostTemplateCache;
 
     $hostTmp = $host;
@@ -120,11 +122,13 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id) {
  * Return enable categories for this resource access
  */
 
-function getAuthorizedCategories($groupstr, $res_id) {
+function getAuthorizedCategories($groupstr, $res_id)
+{
     global $pearDB;
 
-    if (strlen($groupstr) == 0)
+    if (strlen($groupstr) == 0) {
         return array();
+    }
 
     $tab_categories = array();
     $request = "SELECT sc_id " .
@@ -144,13 +148,15 @@ function getAuthorizedCategories($groupstr, $res_id) {
     return $tab_categories;
 }
 
-function getServiceTemplateCategoryList($service_id = NULL) {
+function getServiceTemplateCategoryList($service_id = null)
+{
     global $pearDB, $svcTplCache, $svcCatCache;
 
     $tabCategory = array();
 
-    if (!$service_id)
+    if (!$service_id) {
         return;
+    }
 
     if (isset($svcCatCache[$service_id])) {
         foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
@@ -177,11 +183,13 @@ function getServiceTemplateCategoryList($service_id = NULL) {
     }
 }
 
-function getACLSGForHost($pearDB, $host_id, $groupstr) {
+function getACLSGForHost($pearDB, $host_id, $groupstr)
+{
     global $svcCache, $sgCache;
 
-    if (!$pearDB || !isset($host_id))
+    if (!$pearDB || !isset($host_id)) {
         return;
+    }
 
     $svc = array();
     if (isset($sgCache[$groupstr])) {
@@ -235,7 +243,8 @@ function getACLSGForHost($pearDB, $host_id, $groupstr) {
  * @param int $res_id The ACL ressource id
  * @return bool
  */
-function hasPollerFilter($res_id) {
+function hasPollerFilter($res_id)
+{
     global $pearDB;
 
     if (!is_numeric($res_id)) {
@@ -260,7 +269,8 @@ function hasPollerFilter($res_id) {
  * @param int $res_id The ACL ressource id
  * @return bool
  */
-function hasHostCategoryFilter($res_id) {
+function hasHostCategoryFilter($res_id)
+{
     global $pearDB;
 
     if (!is_numeric($res_id)) {
@@ -285,7 +295,8 @@ function hasHostCategoryFilter($res_id) {
  * @param int $res_id The ACL ressource id
  * @return bool
  */
-function hasServiceCategoryFilter($res_id) {
+function hasServiceCategoryFilter($res_id)
+{
     global $pearDB;
 
     if (!is_numeric($res_id)) {
@@ -304,7 +315,8 @@ function hasServiceCategoryFilter($res_id) {
     return false;
 }
 
-function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCategories) {
+function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCategories)
+{
     global $pearDB, $svcCache, $hostCache;
 
     $tab_svc = getMyHostServicesByName($host_id);
@@ -337,7 +349,8 @@ function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCate
     return $tab_services;
 }
 
-function hostIsAuthorized($host_id, $group_id) {
+function hostIsAuthorized($host_id, $group_id)
+{
     global $pearDB;
 
     $query = "SELECT rhr.host_host_id " .
@@ -348,8 +361,9 @@ function hostIsAuthorized($host_id, $group_id) {
             "AND rhr.host_host_id = '" . $host_id . "' " .
             "AND res.acl_res_activate = '1'";
     $DBRES = $pearDB->query($query);
-    if ($DBRES->numRows())
+    if ($DBRES->numRows()) {
         return true;
+    }
 
     $query2 = "SELECT hgr.host_host_id FROM " .
             "hostgroup_relation hgr, acl_resources_hg_relations rhgr, acl_resources res, acl_res_group_relations rgr " .
@@ -362,10 +376,12 @@ function hostIsAuthorized($host_id, $group_id) {
             "AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = rhgr.acl_res_id)";
 
     $DBRES2 = $pearDB->query($query2);
-    if (PEAR::isError($DBRES2))
+    if (PEAR::isError($DBRES2)) {
         print "DB Error : " . $DBRES2->getDebugInfo() . "<br />";
-    if ($DBRES2->numRows())
+    }
+    if ($DBRES2->numRows()) {
         return true;
+    }
 
     return false;
 }
@@ -373,18 +389,22 @@ function hostIsAuthorized($host_id, $group_id) {
 /*
  * Retreive service description
  */
-function getMyHostServicesByName($host_id = NULL) {
+function getMyHostServicesByName($host_id = null)
+{
     global $pearDB, $hsRelation, $svcCache;
 
-    if (!$host_id)
+    if (!$host_id) {
         return;
+    }
 
     $hSvs = array();
     if (isset($hsRelation[$host_id])) {
         foreach ($hsRelation[$host_id] as $service_id => $flag) {
-            $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
-            $service_description = str_replace('#BS#', '\\', $service_description);
-            $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
+            if (isset($svcCache[$service_id])) {
+                $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
+                $service_description = str_replace('#BS#', '\\', $service_description);
+                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);                
+            }
         }
     }
     return $hSvs;
@@ -392,13 +412,14 @@ function getMyHostServicesByName($host_id = NULL) {
 
 /**
  * Get meta services
- * 
+ *
  * @param int $resId
  * @param CentreonDB $db
  * @param CentreonMeta $metaObj
  * @return array
  */
-function getMetaServices($resId, $db, $metaObj) {
+function getMetaServices($resId, $db, $metaObj)
+{
     $sql = "SELECT meta_id 
                 FROM acl_resources_meta_relations
                 WHERE acl_res_id = {$db->escape($resId)}";
@@ -413,4 +434,3 @@ function getMetaServices($resId, $db, $metaObj) {
     }
     return $arr;
 }
-

@@ -48,7 +48,7 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()

@@ -42,5 +42,3 @@ $help["tip_print_average"] = dgettext("help", "Prints average value.");
 $help["tip_print_last_value"] = dgettext("help", "Prints last Value.");
 $help["tip_print_total_value"] = dgettext("help", "Print total value.");
 $help["tip_comments"] = dgettext("help", "Comments regarding the curve template.");
-
-

@@ -49,7 +49,7 @@ $mediaObj = new CentreonMedia($pearDB);
 /*
  * Search
  */
-$SearchTool = NULL;
+$SearchTool = null;
 $search = "";
 if (isset($_POST['searchHg']) && $_POST['searchHg']) {
     $search = $_POST['searchHg'];
@@ -72,7 +72,7 @@ $tpl->assign('mode_access', $lvl_access);
  * start header menu
  */
 $tpl->assign("headerMenu_name", _("Name"));
-$tpl->assign("headerMenu_desc", _("Description"));
+$tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 $tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
@@ -158,7 +158,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $rq = "SELECT COUNT(*) as nbr FROM hostgroup_hg_relation hgr, hostgroup WHERE hg_parent_id = '".$hg['hg_id']."' AND hostgroup.hg_id = hgr.hg_child_id AND hostgroup.hg_activate = '0'";
     $DBRESULT2 = $pearDB->query($rq);
     $nbrhostgroupDeact = $DBRESULT2->fetchRow();
-    */ 
+    */
 
     if ($hg['hg_icon_image'] != "") {
         $hgIcone = "./img/media/" . $mediaObj->getFilename($hg['hg_icon_image']);
@@ -184,7 +184,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
      * Switch color line
      */
     $style != "two" ? $style = "two" : $style = "one";
- }
+}
 $tpl->assign("elemArr", $elemArr);
 
 /*
@@ -203,41 +203,41 @@ $attrs1 = array('onchange'=>"javascript: " .
                 " var bChecked = isChecked(); ".
                 " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
                 " alert('"._("Please select one or more items")."'); return false;} " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 4) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
+                "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                " 	setO(this.form.elements['o1'].value); submit();} " .
+                "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                " 	setO(this.form.elements['o1'].value); submit();} " .
+                "else if (this.form.elements['o1'].selectedIndex == 3) {" .
+                " 	setO(this.form.elements['o1'].value); submit();} " .
+                "else if (this.form.elements['o1'].selectedIndex == 4) {" .
+                " 	setO(this.form.elements['o1'].value); submit();} " .
+                "this.form.elements['o1'].selectedIndex = 0");
+$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
+$form->setDefaults(array('o1' => null));
 
 $attrs2 = array('onchange'=>"javascript: " .
                 " var bChecked = isChecked(); ".
                 " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
                 " alert('"._("Please select one or more items")."'); return false;} " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 4) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o2', NULL, array(NULL => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
+                "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                " 	setO(this.form.elements['o2'].value); submit();} " .
+                "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                " 	setO(this.form.elements['o2'].value); submit();} " .
+                "else if (this.form.elements['o2'].selectedIndex == 3) {" .
+                " 	setO(this.form.elements['o2'].value); submit();} " .
+                "else if (this.form.elements['o2'].selectedIndex == 4) {" .
+                " 	setO(this.form.elements['o2'].value); submit();} " .
+                "this.form.elements['o1'].selectedIndex = 0");
+$form->addElement('select', 'o2', null, array(null => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $tpl->assign('searchHg', $search);
 

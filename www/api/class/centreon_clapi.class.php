@@ -38,7 +38,7 @@ require_once dirname(__FILE__) . "/webService.class.php";
 define('_CLAPI_LIB_', _CENTREON_PATH_ . '/lib');
 define('_CLAPI_CLASS_', _CENTREON_PATH_ . '/www/class/centreon-clapi');
 
-set_include_path(implode(PATH_SEPARATOR, array(_CENTREON_PATH_ . '/lib',  
+set_include_path(implode(PATH_SEPARATOR, array(_CENTREON_PATH_ . '/lib',
                                                _CENTREON_PATH_ . '/www/class/centreon-clapi',
                                                get_include_path()
                                                )));
@@ -69,7 +69,7 @@ class CentreonClapi extends CentreonWebService
         $dbConfig['password'] = $conf_centreon['password'];
         $dbConfig['dbname'] = $conf_centreon['db'];
         if (isset($conf_centreon['port'])) {
-            $dbConfig['port'] = $conf_centreon['port']; 
+            $dbConfig['port'] = $conf_centreon['port'];
         } elseif ($p = strstr($dbConfig['host'], ':')) {
             $p = substr($p, 1);
             if (is_numeric($p)) {
@@ -80,10 +80,9 @@ class CentreonClapi extends CentreonWebService
         $dbConfig['dbname'] = $conf_centreon['dbcstg'];
         $db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
         try {
-          $db->getConnection();
-          $db_storage->getConnection();
+            $db->getConnection();
+            $db_storage->getConnection();
         } catch (Exception $e) {
-
         }
         
         $username = $centreon->user->alias;
@@ -91,7 +90,7 @@ class CentreonClapi extends CentreonWebService
         CentreonClapi\CentreonUtils::setUserName($username);
         
         if (false === isset($this->arguments['action'])) {
-            throw new RestBadRequestException("Bad parameters"); 
+            throw new RestBadRequestException("Bad parameters");
         }
         
         /* Prepare options table */

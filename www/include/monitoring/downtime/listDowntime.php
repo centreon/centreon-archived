@@ -34,54 +34,60 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
 
 include("./include/common/autoNumLimit.php");
 
-if (isset($_POST["search_service"]))
-  	$search_service = $_POST["search_service"];
-else if (isset($_GET["search_service"]))
-  	$search_service = $_GET["search_service"];
-else
-  	$search_service = NULL;
+if (isset($_POST["search_service"])) {
+    $search_service = $_POST["search_service"];
+} elseif (isset($_GET["search_service"])) {
+    $search_service = $_GET["search_service"];
+} else {
+    $search_service = null;
+}
 
-if (isset($_POST["search_host"]))
-	$host_name = $_POST["search_host"];
-else if (isset($_GET["search_host"]))
-	$host_name = $_GET["search_host"];
-else
-	$host_name = NULL;
+if (isset($_POST["search_host"])) {
+    $host_name = $_POST["search_host"];
+} elseif (isset($_GET["search_host"])) {
+    $host_name = $_GET["search_host"];
+} else {
+    $host_name = null;
+}
 
-if (isset($_POST["search_output"]))
-	$search_output = $_POST["search_output"];
-else if (isset($_GET["search_output"]))
-	$search_output = $_GET["search_output"];
-else
-	$search_output = NULL;
+if (isset($_POST["search_output"])) {
+    $search_output = $_POST["search_output"];
+} elseif (isset($_GET["search_output"])) {
+    $search_output = $_GET["search_output"];
+} else {
+    $search_output = null;
+}
 
-if (isset($_POST["view_all"]))
-	$view_all = 1;
-else if (isset($_GET["view_all"]) && !isset($_POST["SearchB"]))
-	$view_all = 1;
-else
-	$view_all = 0;
+if (isset($_POST["view_all"])) {
+    $view_all = 1;
+} elseif (isset($_GET["view_all"]) && !isset($_POST["SearchB"])) {
+    $view_all = 1;
+} else {
+    $view_all = 0;
+}
 
-if (isset($_POST["view_downtime_cycle"]))
-	$view_downtime_cycle = 1;
-else if (isset($_GET["view_downtime_cycle"]) && !isset($_POST["SearchB"]))
-	$view_downtime_cycle = 1;
-else
-	$view_downtime_cycle = 0;
+if (isset($_POST["view_downtime_cycle"])) {
+    $view_downtime_cycle = 1;
+} elseif (isset($_GET["view_downtime_cycle"]) && !isset($_POST["SearchB"])) {
+    $view_downtime_cycle = 1;
+} else {
+    $view_downtime_cycle = 0;
+}
 
-if (isset($_POST["search_author"]))
-	$search_author = $_POST["search_author"];
-else if (isset($_GET["search_author"]) && !isset($_POST["SearchB"]))
-	$search_author = $_GET["search_author"];
-else
-	$search_author = NULL;
+if (isset($_POST["search_author"])) {
+    $search_author = $_POST["search_author"];
+} elseif (isset($_GET["search_author"]) && !isset($_POST["SearchB"])) {
+    $search_author = $_GET["search_author"];
+} else {
+    $search_author = null;
+}
 
 /*
  * Init GMT class
@@ -111,19 +117,19 @@ $tab_downtime_svc = array();
  * Service Downtimes
  */
 if ($view_all == 1) {
-	$downtimeTable = "downtimehistory";
-	$extrafields = ", actual_end_time, cancelled as was_cancelled ";
+    $downtimeTable = "downtimehistory";
+    $extrafields = ", actual_end_time, cancelled as was_cancelled ";
 } else {
-	$downtimeTable = "scheduleddowntime";
-	$extrafields = "";
+    $downtimeTable = "scheduleddowntime";
+    $extrafields = "";
 }
 /* --------------- Services ---------------*/
 $request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields . " " .
         "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
         "WHERE d.host_id = s.host_id " .
-        "AND d.service_id = s.service_id ". 
-        "AND s.host_id = h.host_id ". 
-	"AND d.service_id IS NOT NULL ";
+        "AND d.service_id = s.service_id ".
+        "AND s.host_id = h.host_id ".
+    "AND d.service_id IS NOT NULL ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
@@ -159,20 +165,20 @@ $DBRESULT_NDO = $pearDBO->query($request);
 
 $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
-	$tab_downtime_svc[$i] = $data;
+    $tab_downtime_svc[$i] = $data;
         $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
-	$tab_downtime_svc[$i]['host_name'] = $data['host_name'];
-	$tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
-	$tab_downtime_svc[$i]['service_description'] = ($data['service_description'] != '' ? $data['service_description'] : '-');
-	$tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(_("Y/m/d H:i") , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
-	$tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(_("Y/m/d H:i") , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
-        if ($data['service_description'] != '') {
-            $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
-            $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
-        } else {
-            $tab_downtime_svc[$i]['service_description'] = '-';
-            $tab_downtime_svc[$i]['downtime_type'] = 'HOST';
-        }
+    $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
+    $tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
+    $tab_downtime_svc[$i]['service_description'] = ($data['service_description'] != '' ? $data['service_description'] : '-');
+    $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(_("Y/m/d H:i"), $tab_downtime_svc[$i]["scheduled_start_time"])." ";
+    $tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(_("Y/m/d H:i"), $tab_downtime_svc[$i]["scheduled_end_time"])." ";
+    if ($data['service_description'] != '') {
+        $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
+        $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
+    } else {
+        $tab_downtime_svc[$i]['service_description'] = '-';
+        $tab_downtime_svc[$i]['downtime_type'] = 'HOST';
+    }
 }
 unset($data);
 
@@ -183,20 +189,20 @@ include("./include/common/checkPagination.php");
 
 $en = array("0" => _("No"), "1" => _("Yes"));
 foreach ($tab_downtime_svc as $key => $value) {
-	$tab_downtime_svc[$key]["is_fixed"] = $en[$tab_downtime_svc[$key]["is_fixed"]];
-	$tab_downtime_svc[$key]["was_started"] = $en[$tab_downtime_svc[$key]["was_started"]];
-	if ($view_all == 1) {
-	    if (!isset($tab_downtime_svc[$key]["actual_end_time"]) || !$tab_downtime_svc[$key]["actual_end_time"]) {
-	        if ($tab_downtime_svc[$key]["was_cancelled"] == 0) {
-	            $tab_downtime_svc[$key]["actual_end_time"] = _("N/A");
-	        } else {
-	            $tab_downtime_svc[$key]["actual_end_time"] = _("Never Started");
-	        }
-	    } else {
-	        $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(_("Y/m/d H:i") , $tab_downtime_svc[$key]["actual_end_time"])." ";
-	    }
-	    $tab_downtime_svc[$key]["was_cancelled"] = $en[$tab_downtime_svc[$key]["was_cancelled"]];
-	}
+    $tab_downtime_svc[$key]["is_fixed"] = $en[$tab_downtime_svc[$key]["is_fixed"]];
+    $tab_downtime_svc[$key]["was_started"] = $en[$tab_downtime_svc[$key]["was_started"]];
+    if ($view_all == 1) {
+        if (!isset($tab_downtime_svc[$key]["actual_end_time"]) || !$tab_downtime_svc[$key]["actual_end_time"]) {
+            if ($tab_downtime_svc[$key]["was_cancelled"] == 0) {
+                $tab_downtime_svc[$key]["actual_end_time"] = _("N/A");
+            } else {
+                $tab_downtime_svc[$key]["actual_end_time"] = _("Never Started");
+            }
+        } else {
+            $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(_("Y/m/d H:i"), $tab_downtime_svc[$key]["actual_end_time"])." ";
+        }
+        $tab_downtime_svc[$key]["was_cancelled"] = $en[$tab_downtime_svc[$key]["was_cancelled"]];
+    }
 }
 /*
  * Element we need when we reload the page
@@ -206,10 +212,10 @@ $tab = array ("p" => $p);
 $form->setDefaults($tab);
 
 if ($oreon->user->access->checkAction("service_schedule_downtime")) {
-	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a service downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
+    $tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a service downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
 }
 if ($oreon->user->access->checkAction("host_schedule_downtime")) {
-	$tpl->assign('msgs2', array ("addL2"=>"?p=".$p."&o=ah", "addT2"=>_("Add a host downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
+    $tpl->assign('msgs2', array ("addL2"=>"?p=".$p."&o=ah", "addT2"=>_("Add a host downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
 }
 
 $tpl->assign("p", $p);
@@ -269,12 +275,12 @@ function doAction(slt, act) {
     if (slt.selectedIndex == 0) {
         return false;
     } else { 
-		if (confirm(msgArr[act])) {
-	            jQuery('input[name=o]').attr('value', act);
-	            document.form.submit();
-		} else {
-	            slt.value = 0;
-		}
+        if (confirm(msgArr[act])) {
+                jQuery('input[name=o]').attr('value', act);
+                document.form.submit();
+        } else {
+                slt.value = 0;
+        }
     }
 }
 </script>

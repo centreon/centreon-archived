@@ -34,11 +34,11 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
-isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
+isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
+isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
 $cG ? $contact_id = $cG : $contact_id = $cP;
 
 /*
@@ -61,29 +61,29 @@ require_once "./include/common/common-Func.php";
 require_once "./include/monitoring/comments/common-Func.php";
 require_once "./include/monitoring/external_cmd/functions.php";
 
-switch ($o)	{
-	case "ah" :
-		require_once($path."AddHostComment.php");
-		break;
-	case "vh" :
-		require_once($path."listComment.php");
-		break;
-	case "as" :
-		require_once($path."AddSvcComment.php");
-		break;
-	case "ds" :
-            if (isset($_GET["select"])) {
-                foreach ($_GET["select"] as $key => $value) {
-                    $res = explode(';', urldecode($key));
-                    DeleteComment($res[0], array($res[1] . ';' . $res[2] => 'on'));
-                }
+switch ($o) {
+    case "ah":
+        require_once($path."AddHostComment.php");
+        break;
+    case "vh":
+        require_once($path."listComment.php");
+        break;
+    case "as":
+        require_once($path."AddSvcComment.php");
+        break;
+    case "ds":
+        if (isset($_GET["select"])) {
+            foreach ($_GET["select"] as $key => $value) {
+                $res = explode(';', urldecode($key));
+                DeleteComment($res[0], array($res[1] . ';' . $res[2] => 'on'));
             }
+        }
             require_once($path."listComment.php");
-            break;
-	case "vs" :
-		require_once($path."listComment.php");
-		break;
-	default :
-		require_once($path."listComment.php");
-		break;
+        break;
+    case "vs":
+        require_once($path."listComment.php");
+        break;
+    default:
+        require_once($path."listComment.php");
+        break;
 }

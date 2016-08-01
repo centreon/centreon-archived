@@ -65,8 +65,8 @@ class Centreon_Cache_Manager
     /**
      * Get cache file name from sql query
      *
-     * @param string $sqlQuery
-     * @param array $sqlParams
+     * @param  string $sqlQuery
+     * @param  array  $sqlParams
      * @return string
      */
     public function getCacheFileName($sqlQuery, $sqlParams = array())

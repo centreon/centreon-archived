@@ -36,115 +36,118 @@
  *
  */
 
-	header('Content-Type: text/xml');
-	header('Cache-Control: no-cache');
+    header('Content-Type: text/xml');
+    header('Cache-Control: no-cache');
 
-	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-	require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
-	require_once _CENTREON_PATH_."/www/class/centreonXML.class.php";
+    require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+    require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
+    require_once _CENTREON_PATH_."/www/class/centreonXML.class.php";
 
-	function compare($a, $b) {
-		if ( $a["metric_name"] == $b["metric_name"] )
-			return 0;
-		return ( $a["metric_name"] < $b["metric_name"] ) ? -1 : 1;
-	}
+function compare($a, $b)
+{
+    if ($a["metric_name"] == $b["metric_name"]) {
+        return 0;
+    }
+    return ( $a["metric_name"] < $b["metric_name"] ) ? -1 : 1;
+}
 
-	$pearDB = new CentreonDB();
-	$pearDBO = new CentreonDB("centstorage");
+    $pearDB = new CentreonDB();
+    $pearDBO = new CentreonDB("centstorage");
 
         /*
 	 * Get session
 	 */
-	require_once (_CENTREON_PATH_ . "www/class/centreonSession.class.php");
-	require_once (_CENTREON_PATH_ . "www/class/centreon.class.php");
-	if(!isset($_SESSION['centreon'])) {
-		CentreonSession::start();
-	}
+    require_once(_CENTREON_PATH_ . "www/class/centreonSession.class.php");
+    require_once(_CENTREON_PATH_ . "www/class/centreon.class.php");
+if (!isset($_SESSION['centreon'])) {
+    CentreonSession::start();
+}
 
-	if (isset($_SESSION['centreon'])) {
-            $oreon = $_SESSION['centreon']; 
-	} else {
-            exit;
-	}
+if (isset($_SESSION['centreon'])) {
+    $oreon = $_SESSION['centreon'];
+} else {
+    exit;
+}
         
-	/*
+    /*
 	 * Get language 
 	 */
-	$locale = $oreon->user->get_lang();
-	putenv("LANG=$locale");
-	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
-	bind_textdomain_codeset("messages", "UTF-8"); 
-	textdomain("messages");
+    $locale = $oreon->user->get_lang();
+    putenv("LANG=$locale");
+    setlocale(LC_ALL, $locale);
+    bindtextdomain("messages", _CENTREON_PATH_ . "www/locale/");
+;
+    bind_textdomain_codeset("messages", "UTF-8");
+    textdomain("messages");
         
-	#
-	# Existing Real Metric List comes from DBO -> Store in $rmetrics Array
-	#
-	$s_datas = array();
-	$o_datas = array(""=> utf8_decode(sprintf("%s%s", _("List of known metrics"), "&nbsp;&nbsp;&nbsp;")));
-	$mx_l = strlen($o_datas[""]);
-	$where = "";
-	$def_type = array(0=>"CDEF",1=>"VDEF");
+    #
+    # Existing Real Metric List comes from DBO -> Store in $rmetrics Array
+    #
+    $s_datas = array();
+    $o_datas = array(""=> utf8_decode(sprintf("%s%s", _("List of known metrics"), "&nbsp;&nbsp;&nbsp;")));
+    $mx_l = strlen($o_datas[""]);
+    $where = "";
+    $def_type = array(0=>"CDEF",1=>"VDEF");
 
-        if (isset($_GET["vdef"]) && $_GET["vdef"] == 0) {
-            $where = " AND def_type='".$_GET["vdef"]."'";
+if (isset($_GET["vdef"]) && $_GET["vdef"] == 0) {
+    $where = " AND def_type='".$_GET["vdef"]."'";
+}
+
+if (isset($_GET["host_id"]) && $_GET["service_id"]) {
+    $host_id = $_GET["host_id"];
+    $service_id = $_GET["service_id"];
+
+    $query = "SELECT id "
+        . "FROM index_data "
+        . "WHERE host_id = " . $pearDB->escape($host_id) . " "
+        . "AND service_id = " . $pearDB->escape($service_id) . " ";
+
+    $index_id = 0;
+    $pq_sql = $pearDBO->query($query);
+    if ($row = $pq_sql->fetchRow()) {
+        $index_id = $row['id'];
+    }
+
+    $query = "SELECT metric_id, metric_name "
+        . "FROM metrics "
+        . "WHERE index_id = " . $index_id . " ";
+    $pq_sql = $pearDBO->query($query);
+    while ($fw_sql = $pq_sql->fetchRow()) {
+        $sd_l = strlen($fw_sql["metric_name"]);
+        $fw_sql["metric_name"] = $fw_sql["metric_name"] . "&nbsp;&nbsp;&nbsp;";
+        $s_datas[] = $fw_sql;
+        if ($sd_l > $mx_l) {
+            $mx_l = $sd_l;
         }
+    }
+    $pq_sql->free();
+    $query = "SELECT vmetric_id, vmetric_name, def_type "
+        . "FROM virtual_metrics "
+        . "WHERE index_id = " .  $index_id . " "
+        . $where . " ";
+    $pq_sql = $pearDB->query($query);
 
-	if (isset($_GET["host_id"]) && $_GET["service_id"]) {
-            $host_id = $_GET["host_id"];
-            $service_id = $_GET["service_id"];
-
-            $query = "SELECT id "
-                . "FROM index_data "
-                . "WHERE host_id = " . $pearDB->escape($host_id) . " "
-                . "AND service_id = " . $pearDB->escape($service_id) . " ";
-
-            $index_id = 0;
-            $pq_sql = $pearDBO->query($query);
-            if ($row = $pq_sql->fetchRow()) {
-                $index_id = $row['id'];
-            }
-
-            $query = "SELECT metric_id, metric_name "
-                . "FROM metrics "
-                . "WHERE index_id = " . $index_id . " ";
-            $pq_sql = $pearDBO->query($query);
-            while($fw_sql = $pq_sql->fetchRow()) {
-                $sd_l = strlen($fw_sql["metric_name"]);
-                $fw_sql["metric_name"] = $fw_sql["metric_name"] . "&nbsp;&nbsp;&nbsp;";
-                $s_datas[] = $fw_sql;
-                if ( $sd_l > $mx_l ) {
-                    $mx_l = $sd_l;
-                }
-            }
-            $pq_sql->free();
-            $query = "SELECT vmetric_id, vmetric_name, def_type "
-                . "FROM virtual_metrics "
-                . "WHERE index_id = " .  $index_id . " "
-                . $where . " ";
-            $pq_sql = $pearDB->query($query);
-
-            while($fw_sql = $pq_sql->fetchRow()) {
-                $sd_l = strlen($fw_sql["vmetric_name"]." [CDEF]");
-                $fw_sql["metric_name"] = $fw_sql["vmetric_name"]." [".$def_type[$fw_sql["def_type"]]."]&nbsp;&nbsp;&nbsp;";
-                $fw_sql["metric_id"] = "v".$fw_sql["vmetric_id"];
-                $s_datas[] = $fw_sql;
-                if ( $sd_l > $mx_l ) {
-                    $mx_l = $sd_l;
-                }
-                $pq_sql->free();
-            }
+    while ($fw_sql = $pq_sql->fetchRow()) {
+        $sd_l = strlen($fw_sql["vmetric_name"]." [CDEF]");
+        $fw_sql["metric_name"] = $fw_sql["vmetric_name"]." [".$def_type[$fw_sql["def_type"]]."]&nbsp;&nbsp;&nbsp;";
+        $fw_sql["metric_id"] = "v".$fw_sql["vmetric_id"];
+        $s_datas[] = $fw_sql;
+        if ($sd_l > $mx_l) {
+            $mx_l = $sd_l;
         }
+        $pq_sql->free();
+    }
+}
 
         usort($s_datas, "compare");
 
-        foreach ($s_datas as $key => $om) {
-            $o_datas[$om["metric_id"]] = $om["metric_name"];
-        }
+foreach ($s_datas as $key => $om) {
+    $o_datas[$om["metric_id"]] = $om["metric_name"];
+}
 
-        for ($i = strlen($o_datas[""]); $i != $mx_l; $i++) {
-            $o_datas[""] .= "&nbsp;";
-        }
+for ($i = strlen($o_datas[""]); $i != $mx_l; $i++) {
+    $o_datas[""] .= "&nbsp;";
+}
 
         # The first element of the select is empty
         $buffer = new CentreonXML();
@@ -153,13 +156,12 @@
         $buffer->writeElement("select_id", "sl_list_metrics");
 
         # Now we fill out the select with templates id and names
-        foreach ($o_datas as $o_id => $o_alias){
-            $buffer->startElement("option");
-            $buffer->writeElement("o_id", $o_id);
-            $buffer->writeElement("o_alias", $o_alias);
-            $buffer->endElement();
-        }
+foreach ($o_datas as $o_id => $o_alias) {
+    $buffer->startElement("option");
+    $buffer->writeElement("o_id", $o_id);
+    $buffer->writeElement("o_alias", $o_alias);
+    $buffer->endElement();
+}
 
         $buffer->endElement();
         $buffer->output();
-?>
