@@ -667,6 +667,7 @@ CREATE TABLE `command` (
   `command_type` tinyint(4) DEFAULT NULL,
   `enable_shell` int(1) unsigned NOT NULL DEFAULT '0',
   `command_comment` text,
+  `command_activate` enum('0','1') DEFAULT '1',
   `graph_id` int(11) DEFAULT NULL,
   `cmd_cat_id` int(11) DEFAULT NULL,
   `command_locked` BOOLEAN DEFAULT 0,
