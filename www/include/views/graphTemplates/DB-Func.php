@@ -34,161 +34,173 @@
 */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
-function testExistence ($name = NULL)	{
-	global $pearDB, $form;
+function testExistence($name = null)
+{
+    global $pearDB, $form;
 
-	$id = NULL;
-	if (isset($form)) {
-		$id = $form->getSubmitValue('graph_id');
-	}
-	$res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-	$graph = $res->fetchRow();
-	/*
+    $id = null;
+    if (isset($form)) {
+        $id = $form->getSubmitValue('graph_id');
+    }
+    $res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+    $graph = $res->fetchRow();
+    /*
 	 * Modif case
 	 */
-	if ($res->numRows() >= 1 && $graph["graph_id"] == $id) {
-		return true;
-	}
-	/*
+    if ($res->numRows() >= 1 && $graph["graph_id"] == $id) {
+        return true;
+    } /*
 	 * Duplicate entry
 	 */
-	else if ($res->numRows() >= 1 && $graph["graph_id"] != $id)
-		return false;
-	else
-		return true;
+    elseif ($res->numRows() >= 1 && $graph["graph_id"] != $id) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
-function deleteGraphTemplateInDB ($graphs = array())	{
-	global $pearDB;
+function deleteGraphTemplateInDB($graphs = array())
+{
+    global $pearDB;
  
-	foreach($graphs as $key => $value) {
-		$pearDB->query("DELETE FROM giv_graphs_template WHERE graph_id = '".$key."'");
-	}
-	defaultOreonGraph();
+    foreach ($graphs as $key => $value) {
+        $pearDB->query("DELETE FROM giv_graphs_template WHERE graph_id = '".$key."'");
+    }
+    defaultOreonGraph();
 }
 
-function multipleGraphTemplateInDB ($graphs = array(), $nbrDup = array())	{
-	foreach($graphs as $key => $value)	{
-		global $pearDB;
-		$res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$key."' LIMIT 1");
-		$row = $res->fetchRow();
-		$row["graph_id"] = '';
-		$row["default_tpl1"] = '0';
-		for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
-			$val = null;
-			foreach ($row as $key2=>$value2)	{
-				$key2 == "name" ? ($name = $value2 = $value2."_".$i) : null;
-				$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
-			}
-			if (testExistence($name))	{
-				$val ? $rq = "INSERT INTO giv_graphs_template VALUES (".$val.")" : $rq = null;
-				$pearDB->query($rq);
-			}
-		}
-	}
+function multipleGraphTemplateInDB($graphs = array(), $nbrDup = array())
+{
+    foreach ($graphs as $key => $value) {
+        global $pearDB;
+        $res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$key."' LIMIT 1");
+        $row = $res->fetchRow();
+        $row["graph_id"] = '';
+        $row["default_tpl1"] = '0';
+        for ($i = 1; $i <= $nbrDup[$key]; $i++) {
+            $val = null;
+            foreach ($row as $key2 => $value2) {
+                $key2 == "name" ? ($name = $value2 = $value2."_".$i) : null;
+                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+            }
+            if (testExistence($name)) {
+                $val ? $rq = "INSERT INTO giv_graphs_template VALUES (".$val.")" : $rq = null;
+                $pearDB->query($rq);
+            }
+        }
+    }
 }
 
-function defaultOreonGraph ()	{
-	global $pearDB;
-	$rq = "SELECT DISTINCT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'";
-	$res = $pearDB->query($rq);
-	if (!$res->numRows())	{
-		$rq = "UPDATE giv_graphs_template SET default_tpl1 = '1' WHERE graph_id = (SELECT MIN(graph_id) FROM giv_graphs_template)";
-		$pearDB->query($rq);
-	}
+function defaultOreonGraph()
+{
+    global $pearDB;
+    $rq = "SELECT DISTINCT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'";
+    $res = $pearDB->query($rq);
+    if (!$res->numRows()) {
+        $rq = "UPDATE giv_graphs_template SET default_tpl1 = '1' WHERE graph_id = (SELECT MIN(graph_id) FROM giv_graphs_template)";
+        $pearDB->query($rq);
+    }
 }
 
-function noDefaultOreonGraph ()	{
-	global $pearDB;
-	$rq = "UPDATE giv_graphs_template SET default_tpl1 = '0'";
-	$pearDB->query($rq);
+function noDefaultOreonGraph()
+{
+    global $pearDB;
+    $rq = "UPDATE giv_graphs_template SET default_tpl1 = '0'";
+    $pearDB->query($rq);
 }
 
 
-function updateGraphTemplateInDB ($graph_id = NULL)	{
-	if (!$graph_id) return;
-	updateGraphTemplate($graph_id);
+function updateGraphTemplateInDB($graph_id = null)
+{
+    if (!$graph_id) {
+        return;
+    }
+    updateGraphTemplate($graph_id);
 }
 
-function insertGraphTemplateInDB ()	{
-	$graph_id = insertGraphTemplate();
-	return ($graph_id);
+function insertGraphTemplateInDB()
+{
+    $graph_id = insertGraphTemplate();
+    return ($graph_id);
 }
 
-function insertGraphTemplate()	{
-	global $form;
-	global $pearDB;
-	$ret = array();
-	$ret = $form->getSubmitValues();
-	if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
-		noDefaultOreonGraph();
-	$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
-			"`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `size_to_max`, `default_tpl1` , `split_component` , `scaled`, `stacked` , `comment`) ";
-	$rq .= "VALUES (";
-	$rq .= "NULL, ";
-	isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	isset($ret["vertical_label"]) && $ret["vertical_label"] != NULL ? $rq .= "'".htmlentities($ret["vertical_label"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	isset($ret["width"]) && $ret["width"] != NULL ? $rq .= "'".htmlentities($ret["width"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	isset($ret["height"]) && $ret["height"] != NULL ? $rq .= "'".htmlentities($ret["height"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".htmlentities($ret["base"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	isset($ret["lower_limit"]) && $ret["lower_limit"] != NULL ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
-	isset($ret["upper_limit"]) && $ret["upper_limit"] != NULL ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
-	isset($ret["size_to_max"]) && $ret["size_to_max"] != NULL ? $rq .= "'".$ret["size_to_max"]."', ": $rq .= "0, ";
-	isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-	isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
-	isset($ret["scaled"]) && $ret["scaled"] != NULL ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
-	isset($ret["stacked"]) && $ret["stacked"] != NULL ? $rq .= "'".htmlentities($ret["stacked"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
-	$rq .= ")";
-	$pearDB->query($rq);
-	defaultOreonGraph();
-	$res = $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
-	$graph_id = $res->fetchRow();
-	return ($graph_id["MAX(graph_id)"]);
+function insertGraphTemplate()
+{
+    global $form;
+    global $pearDB;
+    $ret = array();
+    $ret = $form->getSubmitValues();
+    if (isset($ret["default_tpl1"]) && $ret["default_tpl1"]) {
+        noDefaultOreonGraph();
+    }
+    $rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
+            "`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `size_to_max`, `default_tpl1` , `split_component` , `scaled`, `stacked` , `comment`) ";
+    $rq .= "VALUES (";
+    $rq .= "NULL, ";
+    isset($ret["name"]) && $ret["name"] != null ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["vertical_label"]) && $ret["vertical_label"] != null ? $rq .= "'".htmlentities($ret["vertical_label"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["width"]) && $ret["width"] != null ? $rq .= "'".htmlentities($ret["width"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["height"]) && $ret["height"] != null ? $rq .= "'".htmlentities($ret["height"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["base"]) && $ret["base"] != null ? $rq .= "'".htmlentities($ret["base"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["lower_limit"]) && $ret["lower_limit"] != null ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
+    isset($ret["upper_limit"]) && $ret["upper_limit"] != null ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
+    isset($ret["size_to_max"]) && $ret["size_to_max"] != null ? $rq .= "'".$ret["size_to_max"]."', ": $rq .= "0, ";
+    isset($ret["default_tpl1"]) && $ret["default_tpl1"] != null ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
+    isset($ret["split_component"]) && $ret["split_component"] != null ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
+    isset($ret["scaled"]) && $ret["scaled"] != null ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
+    isset($ret["stacked"]) && $ret["stacked"] != null ? $rq .= "'".htmlentities($ret["stacked"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
+    $rq .= ")";
+    $pearDB->query($rq);
+    defaultOreonGraph();
+    $res = $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
+    $graph_id = $res->fetchRow();
+    return ($graph_id["MAX(graph_id)"]);
 }
 
-function updateGraphTemplate($graph_id = null)	{
-	global $form, $pearDB;
-	 
-	if (!$graph_id) {
-		return;
-	}
-	$ret = array();
-	$ret = $form->getSubmitValues();
-	if (isset($ret["default_tpl1"]) && $ret["default_tpl1"]) {
-		noDefaultOreonGraph();
-	}
-	$rq = "UPDATE giv_graphs_template ";
-	$rq .= "SET name = ";
-	isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	$rq .= 	"vertical_label = ";
-	isset($ret["vertical_label"]) && $ret["vertical_label"] != NULL ? $rq .= "'".htmlentities($ret["vertical_label"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-	$rq .= "width = ";
-	isset($ret["width"]) && $ret["width"] != NULL ? $rq .= "'".$ret["width"]."', ": $rq .= "NULL, ";
-	$rq .= "height = ";
-	isset($ret["height"]) && $ret["height"] != NULL ? $rq .= "'".$ret["height"]."', ": $rq .= "NULL, ";
-	$rq .= "base = ";
-	isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".$ret["base"]."', ": $rq .= "NULL, ";
-	$rq .= "lower_limit = ";
-	isset($ret["lower_limit"]) && $ret["lower_limit"] != NULL ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
-	$rq .= "upper_limit = ";
-	isset($ret["upper_limit"]) && $ret["upper_limit"] != NULL ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
-	$rq .= "size_to_max = ";
-	isset($ret["size_to_max"]) && $ret["size_to_max"] != NULL ? $rq .= "'".$ret["size_to_max"]."', ": $rq .= "0, ";
-	$rq .= "default_tpl1 = ";
-	isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-	$rq .= "split_component = ";
-	isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
-	$rq .= "scaled = ";
-	isset($ret["scaled"]) && $ret["scaled"] != NULL ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
-	$rq .= "stacked = ";
-	isset($ret["stacked"]) && $ret["stacked"] != NULL ? $rq .= "'".$ret["stacked"]."', ": $rq .= "NULL, ";
-	$rq .= "comment = ";
-	isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
-	$rq .= "WHERE graph_id = '".$graph_id."'";
-	$pearDB->query($rq);
-	defaultOreonGraph();
+function updateGraphTemplate($graph_id = null)
+{
+    global $form, $pearDB;
+     
+    if (!$graph_id) {
+        return;
+    }
+    $ret = array();
+    $ret = $form->getSubmitValues();
+    if (isset($ret["default_tpl1"]) && $ret["default_tpl1"]) {
+        noDefaultOreonGraph();
+    }
+    $rq = "UPDATE giv_graphs_template ";
+    $rq .= "SET name = ";
+    isset($ret["name"]) && $ret["name"] != null ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    $rq .=  "vertical_label = ";
+    isset($ret["vertical_label"]) && $ret["vertical_label"] != null ? $rq .= "'".htmlentities($ret["vertical_label"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    $rq .= "width = ";
+    isset($ret["width"]) && $ret["width"] != null ? $rq .= "'".$ret["width"]."', ": $rq .= "NULL, ";
+    $rq .= "height = ";
+    isset($ret["height"]) && $ret["height"] != null ? $rq .= "'".$ret["height"]."', ": $rq .= "NULL, ";
+    $rq .= "base = ";
+    isset($ret["base"]) && $ret["base"] != null ? $rq .= "'".$ret["base"]."', ": $rq .= "NULL, ";
+    $rq .= "lower_limit = ";
+    isset($ret["lower_limit"]) && $ret["lower_limit"] != null ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
+    $rq .= "upper_limit = ";
+    isset($ret["upper_limit"]) && $ret["upper_limit"] != null ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
+    $rq .= "size_to_max = ";
+    isset($ret["size_to_max"]) && $ret["size_to_max"] != null ? $rq .= "'".$ret["size_to_max"]."', ": $rq .= "0, ";
+    $rq .= "default_tpl1 = ";
+    isset($ret["default_tpl1"]) && $ret["default_tpl1"] != null ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
+    $rq .= "split_component = ";
+    isset($ret["split_component"]) && $ret["split_component"] != null ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
+    $rq .= "scaled = ";
+    isset($ret["scaled"]) && $ret["scaled"] != null ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
+    $rq .= "stacked = ";
+    isset($ret["stacked"]) && $ret["stacked"] != null ? $rq .= "'".$ret["stacked"]."', ": $rq .= "NULL, ";
+    $rq .= "comment = ";
+    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+    $rq .= "WHERE graph_id = '".$graph_id."'";
+    $pearDB->query($rq);
+    defaultOreonGraph();
 }

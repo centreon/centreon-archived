@@ -16,13 +16,13 @@
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			{ if $mode_access=='w' }
+			{if $mode_access=='w'}
 			<td>
 				{$msg.options}{$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
-			{ else }
+			{else}
 			<td>&nbsp;</td>
-			{ /if }
+			{/if}
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -39,6 +39,7 @@
 			<td class="ListColHeaderCenter">{$headerMenu_huse}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_suse}</td>
 			{/if}
+			<td class="ListColHeaderCenter">{t}Status{/t}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{assign var=pattern_mode value=0}
@@ -67,19 +68,20 @@
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_huse}</td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_suse}</td>
 				{/if}
-				<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+				<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
+				<td class="ListColRight" align="right">{if $mode_access == 'w'}{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 			</tr>
 		{/section}
 	</table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			{ if $mode_access == 'w' }
+			{if $mode_access == 'w'}
 			<td>
 				{$msg.options}{$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
-			{ else }
+			{else}
 			<td>&nbsp;</td>
-			{ /if }
+			{/if}
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');

@@ -33,20 +33,20 @@
  *
  */
 
-if (!isset ($centreon)) {
-    exit ();
+if (!isset($centreon)) {
+    exit();
 }
 
-isset($_GET["compo_id"]) ? $cG = $_GET["compo_id"] : $cG = NULL;
-isset($_POST["compo_id"]) ? $cP = $_POST["compo_id"] : $cP = NULL;
+isset($_GET["compo_id"]) ? $cG = $_GET["compo_id"] : $cG = null;
+isset($_POST["compo_id"]) ? $cP = $_POST["compo_id"] : $cP = null;
 $cG ? $compo_id = $cG : $compo_id = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -67,32 +67,32 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
-    case "a" :
+    case "a":
         require_once $path."formComponentTemplate.php";
         break; //Add a Component Template
-    case "w" :
+    case "w":
         require_once $path."formComponentTemplate.php";
         break; //Watch a Component Template
-    case "c" :
+    case "c":
         require_once $path."formComponentTemplate.php" ;
         break; //Modify a Component Template
-    case "s" :
+    case "s":
         enableComponentTemplateInDB($lca_id);
         require_once $path."listComponentTemplates.php";
         break; //Activate a Component Template
-    case "u" :
+    case "u":
         disableComponentTemplateInDB($lca_id);
         require_once $path."listComponentTemplates.php";
         break; //Desactivate a Component Template
-    case "m" :
+    case "m":
         multipleComponentTemplateInDB(isset($select) ? $select : array(), $dupNbr);
         require_once $path."listComponentTemplates.php";
         break; //Duplicate n Component Templates
-    case "d" :
+    case "d":
         deleteComponentTemplateInDB(isset($select) ? $select : array());
         require_once $path."listComponentTemplates.php";
         break; //Delete n Component Templates
-    default :
+    default:
         require_once $path."listComponentTemplates.php";
         break;
 }

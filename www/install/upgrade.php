@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /*
@@ -55,4 +52,4 @@ if (file_exists("pear_module.conf.php")) {
 
 require_once './step_upgrade/index.php';
 exit;
-?>
+

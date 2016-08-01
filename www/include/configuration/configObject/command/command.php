@@ -131,6 +131,20 @@ if ($min) {
              */
             require_once($path."formCommand.php");
             break;
+        case "e":
+            /*
+             * Enable n Commands
+             */
+            changeCommandStatus($cmdG, 1);
+            require_once($path."listCommand.php");
+            break;
+        case "d":
+            /*
+             * Disable n Commands
+             */
+            changeCommandStatus($cmdG, 0);
+            require_once($path."listCommand.php");
+            break;
         case "m":
             /*
              * Duplicate n Commands

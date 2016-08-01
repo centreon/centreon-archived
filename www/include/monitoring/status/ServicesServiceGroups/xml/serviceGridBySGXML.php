@@ -108,21 +108,21 @@ $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
     . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
     . "INNER JOIN services s ON s.service_id = sgm.service_id "
     . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
-    . $obj->access->getACLHostsTableJoin($obj->DBC,"h.host_id") 
-    . $obj->access->getACLServicesTableJoin($obj->DBC,"s.service_id") 
+    . $obj->access->getACLHostsTableJoin($obj->DBC, "h.host_id")
+    . $obj->access->getACLServicesTableJoin($obj->DBC, "s.service_id")
     . "WHERE 1 = 1  ";
 
 # Servicegroup ACL
 $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
 
-/* Servicegroup search */    
-if ($sgSearch != ""){
+/* Servicegroup search */
+if ($sgSearch != "") {
     $query .= "AND sg.name = '" . $sgSearch . "' ";
 }
 
 /* Host search */
 $h_search = '';
-if ($hSearch != ""){
+if ($hSearch != "") {
     $h_search .= "AND h.name like '%" . $hSearch . "%' ";
 }
 $query .= $h_search;
@@ -177,7 +177,7 @@ if ($numRows > 0) {
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
-    if ($sgSearch != ""){
+    if ($sgSearch != "") {
         $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
     }
 
@@ -201,21 +201,20 @@ if ($numRows > 0) {
     $count = 0;
 
     while ($tab = $DBRESULT->fetchRow()) {
-         
         if (!isset($aTab[$tab["sg_name"]])) {
             $aTab[$tab["sg_name"]] = array(
                 'sgn' => CentreonUtils::escapeSecure($tab["sg_name"]),
                 'o'   => $ct,
-                'host' => array()    
+                'host' => array()
             );
         }
         
         if (!isset($aTab[$tab["sg_name"]]['host'][$tab["host_name"]])) {
             $count++;
             if ($tab["icon_image"]) {
-               $icone = $tab["icon_image"];
+                $icone = $tab["icon_image"];
             } else {
-               $icone = "none";
+                $icone = "none";
             }
             $aTab[$tab["sg_name"]]['host'][$tab["host_name"]] = array(
                 'h' => $tab["host_name"],
@@ -232,7 +231,6 @@ if ($numRows > 0) {
         }
         
         if (!isset($aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']])) {
-            
              $aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']] = array(
                  
                 "sn" => CentreonUtils::escapeSecure($tab['description']),
@@ -250,27 +248,27 @@ foreach ($aTab as $key => $element) {
         $obj->XML->writeElement("sgn", $element['sgn']);
         $obj->XML->writeElement("o", $element['o']);
 
-        foreach ($element['host'] as $host) {
-            $obj->XML->startElement("h");
-                $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-                $obj->XML->writeElement("hn", $host['hn'], false);
-                $obj->XML->writeElement("hico", $host['hico']);
-                $obj->XML->writeElement("hnl", $host['hnl']);
-                $obj->XML->writeElement("hid", $host['hid']);
-                $obj->XML->writeElement("hcount", $host['hcount']);
-                $obj->XML->writeElement("hs", $host['hs']);
-                $obj->XML->writeElement("hc",$host['hc']);
-                foreach ($host['service'] as $service) {
-                    $obj->XML->startElement("svc");
-                        $obj->XML->writeElement("sn", $service['sn']);
-                        $obj->XML->writeElement("snl", $service['snl']);
-                        $obj->XML->writeElement("sc", $service['sc']);
-                        $obj->XML->writeElement("svc_id", $service['svc_id']);
-                    $obj->XML->endElement();
-                }
-            $obj->XML->endElement();    
-            $count++;
+    foreach ($element['host'] as $host) {
+        $obj->XML->startElement("h");
+        $obj->XML->writeAttribute("class", $obj->getNextLineClass());
+        $obj->XML->writeElement("hn", $host['hn'], false);
+        $obj->XML->writeElement("hico", $host['hico']);
+        $obj->XML->writeElement("hnl", $host['hnl']);
+        $obj->XML->writeElement("hid", $host['hid']);
+        $obj->XML->writeElement("hcount", $host['hcount']);
+        $obj->XML->writeElement("hs", $host['hs']);
+        $obj->XML->writeElement("hc", $host['hc']);
+        foreach ($host['service'] as $service) {
+            $obj->XML->startElement("svc");
+            $obj->XML->writeElement("sn", $service['sn']);
+            $obj->XML->writeElement("snl", $service['snl']);
+            $obj->XML->writeElement("sc", $service['sc']);
+            $obj->XML->writeElement("svc_id", $service['svc_id']);
+            $obj->XML->endElement();
         }
+        $obj->XML->endElement();
+        $count++;
+    }
     
     $obj->XML->endElement();
 }
@@ -287,4 +285,3 @@ $obj->header();
  * Send XML
  */
 $obj->XML->output();
-

@@ -49,7 +49,7 @@ $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
-} else { 
+} else {
     exit;
 }
 $criticality = new CentreonCriticality($obj->DB);
@@ -71,14 +71,14 @@ $obj->getDefaultFilters();
 /*
  *  Check Arguments from GET
  */
-$o 			= $obj->checkArgument("o", $_GET, "h");
-$p			= $obj->checkArgument("p", $_GET, "2");
-$num 		= $obj->checkArgument("num", $_GET, 0);
-$limit 		= $obj->checkArgument("limit", $_GET, 20);
-$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$o          = $obj->checkArgument("o", $_GET, "h");
+$p          = $obj->checkArgument("p", $_GET, "2");
+$num        = $obj->checkArgument("num", $_GET, 0);
+$limit      = $obj->checkArgument("limit", $_GET, 20);
+$instance   = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search 	= $obj->checkArgument("search", $_GET, "");
-$order 		= $obj->checkArgument("order", $_GET, "ASC");
+$search     = $obj->checkArgument("search", $_GET, "");
+$order      = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
@@ -88,9 +88,9 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     $sort_type = "name";
 } else {
     if ($o == "hpb" || $o == "h_unhandled") {
-        $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+        $sort_type  = $obj->checkArgument("sort_type", $_GET, "");
     } else {
-        $sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+        $sort_type  = $obj->checkArgument("sort_type", $_GET, "host_name");
     }
 }
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
@@ -111,7 +111,7 @@ $obj->setCriticality($criticality_id);
 /*
  * Get Host status
  */
-$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
+$rq1 =  " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
     " h.acknowledged, " .
     " h.passive_checks," .
     " h.active_checks," .
@@ -189,7 +189,7 @@ if ($statusFilter == "up") {
     $rq1 .= " AND h.state = 2 ";
 } elseif ($statusFilter == "pending") {
     $rq1 .= " AND h.state = 4 ";
-} 
+}
 
 if ($hostgroups) {
     $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id";
@@ -200,37 +200,37 @@ if ($instance != -1) {
 }
 $rq1 .= " AND h.enabled = 1 ";
 switch ($sort_type) {
-case 'name' :
-    $rq1 .= " ORDER BY h.name ". $order;
-    break;
-case 'current_state' :
-    $rq1 .= " ORDER BY h.state ". $order.",h.name ";
-    break;
-case 'last_state_change' :
-    $rq1 .= " ORDER BY h.last_state_change ". $order.",h.name ";
-    break;
-case 'last_hard_state_change' :
-    $rq1 .= " ORDER BY h.last_hard_state_change ". $order.",h.name ";
-    break;
-case 'last_check' :
-    $rq1 .= " ORDER BY h.last_check ". $order.",h.name ";
-    break;
-case 'current_check_attempt' :
-    $rq1 .= " ORDER BY h.check_attempt ". $order.",h.name ";
-    break;
-case 'ip' :
-    # Not SQL portable
+    case 'name':
+        $rq1 .= " ORDER BY h.name ". $order;
+        break;
+    case 'current_state':
+        $rq1 .= " ORDER BY h.state ". $order.",h.name ";
+        break;
+    case 'last_state_change':
+        $rq1 .= " ORDER BY h.last_state_change ". $order.",h.name ";
+        break;
+    case 'last_hard_state_change':
+        $rq1 .= " ORDER BY h.last_hard_state_change ". $order.",h.name ";
+        break;
+    case 'last_check':
+        $rq1 .= " ORDER BY h.last_check ". $order.",h.name ";
+        break;
+    case 'current_check_attempt':
+        $rq1 .= " ORDER BY h.check_attempt ". $order.",h.name ";
+        break;
+    case 'ip':
+        # Not SQL portable
         $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) ". $order.",h.name ";
-    break;
-case 'plugin_output' :
-    $rq1 .= " ORDER BY h.output ". $order.",h.name ";
-    break;
-case 'criticality_id':
-    $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
-    break;
-default :
-    $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
-    break;
+        break;
+    case 'plugin_output':
+        $rq1 .= " ORDER BY h.output ". $order.",h.name ";
+        break;
+    case 'criticality_id':
+        $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+        break;
+    default:
+        $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+        break;
 }
 $rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
@@ -273,7 +273,6 @@ $obj->XML->endElement();
 
 $delimInit = 0;
 while ($data = $DBRESULT->fetchRow()) {
-    
     if ($data["last_state_change"] > 0 && time() > $data["last_state_change"]) {
         $duration = CentreonDuration::toString(time() - $data["last_state_change"]);
     } else {
@@ -282,7 +281,7 @@ while ($data = $DBRESULT->fetchRow()) {
 
     if (($data["last_hard_state_change"] > 0) && ($data["last_hard_state_change"] >= $data["last_state_change"])) {
         $hard_duration = CentreonDuration::toString(time() - $data["last_hard_state_change"]);
-    } else if ($data["last_hard_state_change"] > 0) {
+    } elseif ($data["last_hard_state_change"] > 0) {
         $hard_duration = " N/A ";
     } else {
         $hard_duration = "N/A";
@@ -295,11 +294,12 @@ while ($data = $DBRESULT->fetchRow()) {
     $class = null;
     if ($data["scheduled_downtime_depth"] > 0) {
         $class = "line_downtime";
-    } else if ($data["state"] == 1) {
+    } elseif ($data["state"] == 1) {
         $data["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
     } else {
-        if ($data["acknowledged"] == 1)
+        if ($data["acknowledged"] == 1) {
             $class = "line_ack";
+        }
     }
 
     $obj->XML->startElement("l");
@@ -308,43 +308,43 @@ while ($data = $DBRESULT->fetchRow()) {
         $trClass = $class;
     }
     $obj->XML->writeAttribute("class", $trClass);
-    $obj->XML->writeElement("o", 	$ct++);
-    $obj->XML->writeElement("hc", 	$obj->colorHost[$data["state"]]);
-    $obj->XML->writeElement("f", 	$flag);
-    $obj->XML->writeElement("hid",	$data["host_id"]);
+    $obj->XML->writeElement("o", $ct++);
+    $obj->XML->writeElement("hc", $obj->colorHost[$data["state"]]);
+    $obj->XML->writeElement("f", $flag);
+    $obj->XML->writeElement("hid", $data["host_id"]);
     $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($data["name"]), false);
     $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
-    $obj->XML->writeElement("a", 	($data["address"] ? CentreonUtils::escapeSecure($data["address"]) : "N/A"));
-    $obj->XML->writeElement("ou", 	($data["output"] ? CentreonUtils::escapeSecure($data["output"]) : "N/A"));
-    $obj->XML->writeElement("lc", 	($data["last_check"] != 0 ? CentreonDuration::toString(time() - $data["last_check"]) : "N/A"));
-    $obj->XML->writeElement("cs", 	_($obj->statusHost[$data["state"]]), false);
-    $obj->XML->writeElement("pha", 	$data["acknowledged"]);
-    $obj->XML->writeElement("pce", 	$data["passive_checks"]);
-    $obj->XML->writeElement("ace", 	$data["active_checks"]);
-    $obj->XML->writeElement("lsc", 	($duration ? $duration : "N/A"));
-    $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
-    $obj->XML->writeElement("ha", 	$data["acknowledged"]);
+    $obj->XML->writeElement("a", ($data["address"] ? CentreonUtils::escapeSecure($data["address"]) : "N/A"));
+    $obj->XML->writeElement("ou", ($data["output"] ? CentreonUtils::escapeSecure($data["output"]) : "N/A"));
+    $obj->XML->writeElement("lc", ($data["last_check"] != 0 ? CentreonDuration::toString(time() - $data["last_check"]) : "N/A"));
+    $obj->XML->writeElement("cs", _($obj->statusHost[$data["state"]]), false);
+    $obj->XML->writeElement("pha", $data["acknowledged"]);
+    $obj->XML->writeElement("pce", $data["passive_checks"]);
+    $obj->XML->writeElement("ace", $data["active_checks"]);
+    $obj->XML->writeElement("lsc", ($duration ? $duration : "N/A"));
+    $obj->XML->writeElement("lhs", ($hard_duration ? $hard_duration : "N/A"));
+    $obj->XML->writeElement("ha", $data["acknowledged"]);
     $obj->XML->writeElement("hdtm", $data["scheduled_downtime_depth"]);
     $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=".$data['host_id']);
     $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
     $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=".$data['host_id']);
     $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
-    $obj->XML->writeElement("hae", 	$data["active_checks"]);
-    $obj->XML->writeElement("hpe", 	$data["passive_checks"]);
-    $obj->XML->writeElement("ne", 	$data["notify"]);
-    $obj->XML->writeElement("tr", 	$data["check_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
+    $obj->XML->writeElement("hae", $data["active_checks"]);
+    $obj->XML->writeElement("hpe", $data["passive_checks"]);
+    $obj->XML->writeElement("ne", $data["notify"]);
+    $obj->XML->writeElement("tr", $data["check_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
 
     if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['host_id']])) {
         $obj->XML->writeElement("hci", 1); // has criticality
-        $critData = $criticality->getData($critCache[$data['host_id']]);                    
+        $critData = $criticality->getData($critCache[$data['host_id']]);
         $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
         $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
     } else {
         $obj->XML->writeElement("hci", 0); // has no criticality
     }
-    $obj->XML->writeElement("ico", 	$data["icon_image"]);
-    $obj->XML->writeElement("isp", 	$data["is_parent"] ? 1 : 0);
-    $obj->XML->writeElement("isf",  $data["flapping"]);
+    $obj->XML->writeElement("ico", $data["icon_image"]);
+    $obj->XML->writeElement("isp", $data["is_parent"] ? 1 : 0);
+    $obj->XML->writeElement("isf", $data["flapping"]);
     $parenth = 0;
     if ($ct === 1 && $data['is_parent']) {
         $parenth = 1;

@@ -33,29 +33,30 @@
  *
  */
 
-function get_error($str){
-	echo $str."<br />";
-	exit(0);
+function get_error($str)
+{
+    echo $str."<br />";
+    exit(0);
 }
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once '../../../class/centreonDB.class.php';
 
-$pearDB 	= new CentreonDB();
-$pearDBO 	= new CentreonDB("centstorage");
+$pearDB     = new CentreonDB();
+$pearDBO    = new CentreonDB("centstorage");
 session_start();
 $sid = session_id();
 if (isset($sid)) {
-	$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-	if (!$session = $res->fetchRow()) {
-		get_error('bad session id');
-	}
+    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+    if (!$session = $res->fetchRow()) {
+        get_error('bad session id');
+    }
 } else {
-	get_error('need session identifiant !'); 
+    get_error('need session identifiant !');
 }
 
-isset ($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = NULL;
-isset ($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = $mtrcs;
+isset($_GET["metric_id"]) ? $mtrcs = htmlentities($_GET["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = null;
+isset($_POST["metric_id"]) ? $mtrcs = htmlentities($_POST["metric_id"], ENT_QUOTES, "UTF-8") : $mtrcs = $mtrcs;
 
 require_once '../../../class/centreonDuration.class.php';
 require_once '../../common/common-Func.php';
@@ -70,7 +71,6 @@ print "Date;value\n";
 $begin = time() - 26000;
 
 $res = $pearDB->query("SELECT ctime, value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
-while ($data = $res->fetchRow()){
-	print $data["ctime"].";".$data["value"].";".date("Y-m-d H:i:s", $data["ctime"])."\n";
+while ($data = $res->fetchRow()) {
+    print $data["ctime"].";".$data["value"].";".date("Y-m-d H:i:s", $data["ctime"])."\n";
 }
-

@@ -53,10 +53,9 @@ if (isset($param["en"])) {
 }
 
 if (isset($param["select"])) {
-    foreach ($param["select"] as $key => $value) {  
+    foreach ($param["select"] as $key => $value) {
         if (isset($param["cmd"])) {
             switch ($param["cmd"]) {
-                
                 /*
                  * Re-Schedulde SVC Checks
                  */

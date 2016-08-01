@@ -132,7 +132,7 @@ $DBRESULT = $obj->DBC->query($rq1);
 while ($data = $DBRESULT->fetchRow()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
-                "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0), 
+                "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
                 "s" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 3 => 0, 4 => 0));
     }
     $stats[$data["alias"]]["h"][$data["state"]] = $data["nb"];
@@ -180,7 +180,7 @@ $DBRESULT = $obj->DBC->query($rq2);
 while ($data = $DBRESULT->fetchRow()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
-                "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0), 
+                "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
                 "s" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 3 => 0, 4 => 0));
     }
     if ($stats[$data["alias"]]) {
