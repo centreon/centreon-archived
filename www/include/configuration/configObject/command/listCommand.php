@@ -149,8 +149,8 @@ for ($i = 0; $cmd = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_type" => $commandType[$cmd["command_type"]],
         "RowMenu_huse" => "<a name='#' title='"._("Host links (host template links)")."'>".getHostNumberUse($cmd['command_id']) . " (".getHostTPLNumberUse($cmd['command_id']).")</a>",
         "RowMenu_suse" => "<a name='#' title='"._("Service links (service template links)")."'>".getServiceNumberUse($cmd['command_id']) . " (".getServiceTPLNumberUse($cmd['command_id']).")</a>",
-        "RowMenu_status" => $contact["command_activate"] ? _("Enabled") : _("Disabled"),
-        "RowMenu_badge" => $contact["command_activate"] ? "service_ok" : "service_critical",        
+        "RowMenu_status" => $cmd["command_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $cmd["command_activate"] ? "service_ok" : "service_critical",        
         "RowMenu_options" => $moptions);
     $style != "two" ? $style = "two" : $style = "one";
 }

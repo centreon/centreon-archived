@@ -168,8 +168,8 @@ function updateCommand($cmd_id = null, $params = array())
             "`command_type` = '" . $pearDB->escape($ret["command_type"]["command_type"]) . "', " .
             "`command_comment` = '" . $pearDB->escape($ret["command_comment"]) . "', " .
             "`graph_id` = '" . $pearDB->escape($ret["graph_id"]) . "', " .
-            "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL") . " " .
-            "`command_activate` = " . (isset($ret["command_activate"]) ? "'" . $ret['command_activate'] . "'" : "NULL") . " " .
+            "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $pearDB->escape($ret['connectors']) . "'" : "NULL") . ", " .
+            "`command_activate` = " . (isset($ret["command_activate"]["command_activate"]) ? "'" . $pearDB->escape($ret['command_activate']["command_activate"]) . "'" : "NULL") . " " .
             "WHERE `command_id` = '" . intval($cmd_id) . "'";
     $DBRESULT = $pearDB->query($rq);
 
@@ -213,8 +213,9 @@ function insertCommand($ret = array())
             '" . $ret["graph_id"] . "', 
             " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL") . ", 
             '" . $pearDB->escape($ret["command_comment"]) . "', 
-            '" . $pearDB->escape($ret["command_activate"]) . "'";
+            '" . $pearDB->escape($ret["command_activate"]["command_activate"]) . "'";
     $rq .= ")";
+    print $rq;
     $DBRESULT = $pearDB->query($rq);
 
     /*
