@@ -58,7 +58,7 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     $DBRESULT = $pearDB->query("SELECT * FROM `contact`
     				WHERE `contact_alias` = '".$pearDB->escape($_GET["username"])."'
     				AND `contact_activate` = '1'
-    				AND `contact_autologin_key` = '".$token."' LIMIT 1");
+    				AND `contact_autologin_key` = '".$pearDB->escape($token)."' LIMIT 1");
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
