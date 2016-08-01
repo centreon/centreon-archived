@@ -212,4 +212,4 @@ ALTER TABLE `host` ADD COLUMN `host_recovery_notification_delay` int(11) DEFAULT
 ALTER TABLE `service` ADD COLUMN `service_recovery_notification_delay` int(11) DEFAULT NULL AFTER `service_first_notification_delay`;
 
 -- Add possibility to disable command
-ALTER TABLE ADD COLUMN `command_activate` enum('0','1') DEFAULT '1' AFTER `command_comment`;
+ALTER TABLE ADD `command` COLUMN `command_activate` enum('0','1') DEFAULT '1' AFTER `command_comment`;
