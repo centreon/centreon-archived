@@ -781,7 +781,6 @@ function insertServiceInDB($ret = array(), $macro_on_demand = null)
 {
     global $centreon;
 
-    $tmp_fields = array();
     $tmp_fields = insertService($ret, $macro_on_demand);
     $service_id = $tmp_fields['service_id'];
     updateServiceContactGroup($service_id, $ret);
@@ -797,8 +796,6 @@ function insertServiceInDB($ret = array(), $macro_on_demand = null)
     updateServiceTrap($service_id, $ret);
     updateServiceCategories($service_id, $ret);
     $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $service_id, "action" => "ADD"));
-    $fields = $tmp_fields['fields'];
-    $centreon->CentreonLogAction->insertLog("service", $service_id, $fields["service_description"], "a", $fields);
     return ($service_id);
 }
 
@@ -922,170 +919,11 @@ function insertService($ret = array(), $macro_on_demand = null)
     if (isset($ret['criticality_id'])) {
         setServiceCriticality($service_id['MAX(service_id)'], $ret['criticality_id']);
     }
-    if (isset($ret["service_template_model_stm_id"])) {
-        $fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
-    }
-    if (isset($ret["command_command_id"])) {
-        $fields["command_command_id"] = $ret["command_command_id"];
-    }
-    if (isset($ret['timeperiod_tp_id'])) {
-        $fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
-    }
-    if (isset($ret["command_command_id2"])) {
-        $fields["command_command_id2"] = $ret["command_command_id2"];
-    }
-    if (isset($ret["timeperiod_tp_id2"])) {
-        $fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-    }
-    if (isset($ret["service_description"])) {
-        $fields["service_description"] = CentreonDB::escape($ret["service_description"]);
-    }
-    if (isset($ret["service_alias"])) {
-        $fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
-    }
-    if (isset($ret["service_acknowledgement_timeout"])) {
-        $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
-    }
-    if (isset($ret["service_is_volatile"]) && isset($ret["service_is_volatile"]['service_is_volatile'])) {
-        $fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
-    }
-    if (isset($ret["service_max_check_attempts"])) {
-        $fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
-    }
-    if (isset($ret["service_normal_check_interval"])) {
-        $fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
-    }
-    if (isset($ret["service_retry_check_interval"])) {
-        $fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
-    }
-    if (isset($ret["service_active_checks_enabled"]) &&
-        isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"])) {
-        $fields["service_active_checks_enabled"] = $ret["service_active_checks_enabled"]["service_active_checks_enabled"];
-    }
-    if (isset($ret["service_passive_checks_enabled"]) &&
-        isset($ret['service_passive_checks_enabled']['service_passive_checks_enabled'])) {
-        $fields["service_passive_checks_enabled"] = $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"];
-    }
-    if (isset($ret["service_obsess_over_service"]) &&
-        isset($ret["service_obsess_over_service"]["service_obsess_over_service"])) {
-        $fields["service_obsess_over_service"] = $ret["service_obsess_over_service"]["service_obsess_over_service"];
-    }
-    if (isset($ret["service_check_freshness"]) &&
-        isset($ret["service_check_freshness"]["service_check_freshness"])) {
-        $fields["service_check_freshness"] = $ret["service_check_freshness"]["service_check_freshness"];
-    }
-    if (isset($ret["service_freshness_threshold"])) {
-        $fields["service_freshness_threshold"] = $ret["service_freshness_threshold"];
-    }
-    if (isset($ret["service_event_handler_enabled"]) &&
-        isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"])) {
-        $fields["service_event_handler_enabled"] = $ret["service_event_handler_enabled"]["service_event_handler_enabled"];
-    }
-    if (isset($ret["service_low_flap_threshold"])) {
-        $fields["service_low_flap_threshold"] = $ret["service_low_flap_threshold"];
-    }
-    if (isset($ret["service_high_flap_threshold"])) {
-        $fields["service_high_flap_threshold"] = $ret["service_high_flap_threshold"];
-    }
-    if (isset($ret["service_flap_detection_enabled"]) &&
-        isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"])) {
-        $fields["service_flap_detection_enabled"] = $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"];
-    }
-    if (isset($ret["service_retain_status_information"]) &&
-        isset($ret["service_retain_status_information"]["service_retain_status_information"])) {
-        $fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
-    }
-    if (isset($ret["service_retain_nonstatus_information"]) &&
-        isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"])) {
-        $fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
-    }
-    if (isset($ret["service_notification_interval"])) {
-        $fields["service_notification_interval"] = $ret["service_notification_interval"];
-    }
-    if (isset($ret["service_first_notification_delay"])) {
-        $fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
-    }
-    if (isset($ret["service_recovery_notification_delay"])) {
-        $fields["service_recovery_notification_delay"] = $ret["service_recovery_notification_delay"];
-    }
-    $fields["service_notifOpts"] = "";
-    if (isset($ret["service_notifOpts"])) {
-        $fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
-    }
-    if (isset($ret["service_notifications_enabled"]) && isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
-        $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
-    }
-    if (isset($ret["contact_additive_inheritance"])) {
-        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
-    }
-    if (isset($ret["cg_additive_inheritance"])) {
-        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
-    }
-    $fields["service_stalOpts"] = "";
-    if (isset($ret["service_stalOpts"])) {
-        $fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
-    }
-    if (isset($ret["service_comment"])) {
-        $fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
-    }
-    if (isset($ret["command_command_id_arg"])) {
-        $fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
-    }
-    if (isset($ret["command_command_id_arg2"])) {
-        $fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
-    }
-    if (isset($ret["service_register"]) && isset($ret["service_register"])) {
-        $fields["service_register"] = $ret["service_register"];
-    }
-    if (isset($ret["service_activate"]) && isset($ret["service_activate"]["service_activate"])) {
-        $fields["service_activate"] = $ret["service_activate"]["service_activate"];
-    }
-    if (isset($ret["esi_notes"])) {
-        $fields["esi_notes"] = CentreonDB::escape($ret["esi_notes"]);
-    }
-    if (isset($ret["esi_notes_url"])) {
-        $fields["esi_notes_url"] = CentreonDB::escape($ret["esi_notes_url"]);
-    }
-    if (isset($ret["esi_action_url"])) {
-        $fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
-    }
-    if (isset($ret["esi_icon_image"])) {
-        $fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
-    }
-    if (isset($ret["esi_icon_image_alt"])) {
-        $fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
-    }
-    if (isset($ret["graph_id"])) {
-        $fields["graph_id"] = $ret["graph_id"];
-    }
-    $fields["service_cs"] = "";
-    if (isset($ret["service_cs"])) {
-        $fields["service_cs"] = implode(",", $ret["service_cs"]);
-    }
-    $fields["service_cgs"] = "";
-    if (isset($ret["service_cgs"])) {
-        $fields["service_cgs"] = implode(",", $ret["service_cgs"]);
-    }
-    $fields["service_sgs"] = "";
-    if (isset($ret["service_sgs"])) {
-        $fields["service_sgs"] = implode(",", $ret["service_sgs"]);
-    }
-    $fields["service_hPars"] = "";
-    if (isset($ret["service_hPars"])) {
-        $fields["service_hPars"] = implode(",", $ret["service_hPars"]);
-    }
-    $fields["service_hgPars"] = "";
-    if (isset($ret["service_hgPars"])) {
-        $fields["service_hgPars"] = implode(",", $ret["service_hgPars"]);
-    }
-    $fields["service_categories"] = "";
-    if (isset($ret["service_categories"])) {
-        $fields["service_categories"] = implode(",", $ret["service_categories"]);
-    }
-    $fields["service_traps"] = "";
-    if (isset($ret["service_traps"])) {
-        $fields["service_traps"] = implode(",", $ret["service_traps"]);
-    }
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], CentreonDB::escape($ret["service_description"]), "a", $fields);
+
     return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 }
 
@@ -1147,9 +985,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
         $ret = $form->getSubmitValues();
     }
 
-    if (isset($ret['sg_name'])) {
-        $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
-    }
+    $ret["service_description"] = $service->checkIllegalChar($ret["service_description"]);
 
     if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null) {
         $ret["command_command_id_arg2"] = str_replace("\n", "//BR//", $ret["command_command_id_arg2"]);
@@ -1269,88 +1105,11 @@ function updateService($service_id = null, $from_MC = false, $params = array())
         setServiceCriticality($service_id, $ret['criticality_id']);
     }
 
-    $fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
-    $fields["command_command_id"] = $ret["command_command_id"];
-    $fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
-    $fields["command_command_id2"] = $ret["command_command_id2"];
-    //$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-    $fields["service_description"] = CentreonDB::escape($ret["service_description"]);
-    if (isset($fields["service_alias"])) {
-        $fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
-    }
-    $fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
-    $fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
-    $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
-    $fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
-    $fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
-    $fields["service_active_checks_enabled"] = $ret["service_active_checks_enabled"]["service_active_checks_enabled"];
-    $fields["service_passive_checks_enabled"] = $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"];
-    $fields["service_obsess_over_service"] = $ret["service_obsess_over_service"]["service_obsess_over_service"];
-    $fields["service_check_freshness"] = $ret["service_check_freshness"]["service_check_freshness"];
-    $fields["service_freshness_threshold"] = $ret["service_freshness_threshold"];
-    $fields["service_event_handler_enabled"] = $ret["service_event_handler_enabled"]["service_event_handler_enabled"];
-    $fields["service_low_flap_threshold"] = $ret["service_low_flap_threshold"];
-    $fields["service_high_flap_threshold"] = $ret["service_high_flap_threshold"];
-    $fields["service_flap_detection_enabled"] = $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"];
-    $fields["service_process_perf_data"] = $ret["service_process_perf_data"]["service_process_perf_data"];
-    $fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
-    $fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
-    if (isset($fields["service_notifications_enabled"])) {
-        $fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
-    }
-    $fields["service_recovery_notification_delay"] = $ret["service_recovery_notification_delay"];
-    if (isset($fields["contact_additive_inheritance"])) {
-        $fields["contact_additive_inheritance"] = $ret["contact_additive_inheritance"];
-    }
-    if (isset($fields["cg_additive_inheritance"])) {
-        $fields["cg_additive_inheritance"] = $ret["cg_additive_inheritance"];
-    }
-    $fields["service_stalOpts"] = "";
-    if (isset($ret["service_stalOpts"])) {
-        $fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
-    }
-    $fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
-    $fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
-    $fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
-    $fields["service_register"] = $ret["service_register"];
-    $fields["service_activate"] = $ret["service_activate"]["service_activate"];
-    $fields["esi_notes"] = CentreonDB::escape($ret["esi_notes"]);
-    $fields["esi_notes_url"] = CentreonDB::escape($ret["esi_notes_url"]);
-    $fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
-    $fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
-    $fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
-    $fields["geo_coords"] = CentreonDB::escape($ret["geo_coords"]);
-    $fields["graph_id"] = $ret["graph_id"];
-    $fields["service_cs"] = "";
-    if (isset($ret["service_cs"])) {
-        $fields["service_cs"] = implode(",", $ret["service_cs"]);
-    }
-    $fields["service_cgs"] = "";
-    if (isset($ret["service_cgs"])) {
-        $fields["service_cgs"] = implode(",", $ret["service_cgs"]);
-    }
-    $fields["service_sgs"] = "";
-    if (isset($ret["service_sgs"])) {
-        $fields["service_sgs"] = implode(",", $ret["service_sgs"]);
-    }
-    $fields["service_hPars"] = "";
-    if (isset($ret["service_hPars"])) {
-        $fields["service_hPars"] = implode(",", $ret["service_hPars"]);
-    }
-    $fields["service_hgPars"] = "";
-    if (isset($ret["service_hgPars"])) {
-        $fields["service_hgPars"] = implode(",", $ret["service_hgPars"]);
-    }
-    $fields["service_categories"] = "";
-    if (isset($ret["service_categories"])) {
-        $fields["service_categories"] = implode(",", $ret["service_categories"]);
-    }
-    $fields["service_traps"] = "";
-    if (isset($ret["service_traps"])) {
-        $fields["service_traps"] = implode(",", $ret["service_traps"]);
-    }
-    $centreon->CentreonLogAction->insertLog("service", $service_id, $ret["service_description"], "c", $fields);
     $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $service_id, "action" => "UPDATE"));
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("service", $service_id, CentreonDB::escape($ret["service_description"]), "c", $fields);
 }
 
 function updateService_MC($service_id = null, $params = array())
@@ -1388,180 +1147,106 @@ function updateService_MC($service_id = null, $params = array())
     $rq = "UPDATE service SET ";
     if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != null) {
         $rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
-        $fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
     }
     if (isset($ret["command_command_id"]) && $ret["command_command_id"] != null) {
         $rq .= "command_command_id = '".$ret["command_command_id"]."', ";
-        $fields["command_command_id"] = $ret["command_command_id"];
     }
     if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null) {
         $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
-        $fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
     }
     if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null) {
         $rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
-        $fields["command_command_id2"] = $ret["command_command_id2"];
     }
     if (isset($ret["service_alias"]) && $ret["service_alias"] != null) {
         $rq .= "service_alias = '".$ret["service_alias"]."', ";
-        $fields["service_alias"] = $ret["service_alias"];
     }
     if (isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2) {
         $rq .= "service_is_volatile = '".$ret["service_is_volatile"]["service_is_volatile"]."', ";
-        $fields["service_is_volatile"] = $ret["service_is_volatile"]["service_is_volatile"];
     }
     if (isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != null) {
         $rq .= "service_max_check_attempts = '".$ret["service_max_check_attempts"]."', ";
-        $fields["service_max_check_attempts"] = $ret["service_max_check_attempts"];
     }
     if (isset($ret["service_acknowledgement_timeout"]) && $ret["service_acknowledgement_timeout"] != null) {
         $rq .= "service_acknowledgement_timeout = '".$ret["service_acknowledgement_timeout"]."', ";
-        $fields["service_acknowledgement_timeout"] = $ret["service_acknowledgement_timeout"];
     }
     if (isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != null) {
         $rq .= "service_normal_check_interval = '".$ret["service_normal_check_interval"]."', ";
-        $fields["service_normal_check_interval"] = $ret["service_normal_check_interval"];
     }
     if (isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != null) {
         $rq .= "service_retry_check_interval = '".$ret["service_retry_check_interval"]."', ";
-        $fields["service_retry_check_interval"] = $ret["service_retry_check_interval"];
     }
     if (isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"])) {
         $rq .= "service_active_checks_enabled = '".$ret["service_active_checks_enabled"]["service_active_checks_enabled"]."', ";
-        $fields["service_active_checks_enabled"] = $fields["service_active_checks_enabled"]["service_active_checks_enabled"];
     }
     if (isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"])) {
         $rq .= "service_passive_checks_enabled = '".$ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]."', ";
-        $fields["service_passive_checks_enabled"] = $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"];
     }
     if (isset($ret["service_obsess_over_service"]["service_obsess_over_service"])) {
         $rq .= "service_obsess_over_service = '".$ret["service_obsess_over_service"]["service_obsess_over_service"]."', ";
-        $fields["service_obsess_over_service"] = $ret["service_obsess_over_service"]["service_obsess_over_service"];
     }
     if (isset($ret["service_check_freshness"]["service_check_freshness"])) {
         $rq .= "service_check_freshness = '".$ret["service_check_freshness"]["service_check_freshness"]."', ";
-        $fields["service_check_freshness"] = $ret["service_check_freshness"]["service_check_freshness"];
     }
     if (isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != null) {
         $rq .= "service_freshness_threshold = '".$ret["service_freshness_threshold"]."', ";
-        $fields["service_freshness_threshold"] = $ret["service_freshness_threshold"];
     }
     if (isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"])) {
         $rq .= "service_event_handler_enabled = '".$ret["service_event_handler_enabled"]["service_event_handler_enabled"]."', ";
-        $fields["service_event_handler_enabled"] = $ret["service_event_handler_enabled"]["service_event_handler_enabled"];
     }
     if (isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != null) {
         $rq .= "service_low_flap_threshold = '".$ret["service_low_flap_threshold"]."', ";
-        $fields["service_low_flap_threshold"] = $ret["service_low_flap_threshold"];
     }
     if (isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != null) {
         $rq .= "service_high_flap_threshold = '".$ret["service_high_flap_threshold"]."', ";
-        $fields["service_high_flap_threshold"] = $ret["service_high_flap_threshold"];
     }
     if (isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"])) {
         $rq .= "service_flap_detection_enabled = '".$ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]."', ";
-        $fields["service_flap_detection_enabled"] = $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"];
     }
     if (isset($ret["service_retain_status_information"]["service_retain_status_information"])) {
         $rq .= "service_retain_status_information = '".$ret["service_retain_status_information"]["service_retain_status_information"]."', ";
-        $fields["service_retain_status_information"]["service_retain_status_information"];
     }
     if (isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"])) {
         $rq .= "service_retain_nonstatus_information = '".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', ";
-        $fields["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
     }
     if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
         $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
-        $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
     }
     if (isset($ret["service_recovery_notification_delay"]) && $ret["service_recovery_notification_delay"] != null) {
         $rq .= "service_recovery_notification_delay = '".$ret["service_recovery_notification_delay"]."', ";
-        $fields["service_recovery_notification_delay"] = $ret["service_recovery_notification_delay"];
     }
     if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"]) && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))) {
         $rq .= "contact_additive_inheritance = '" . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
-        $fields["contact_additive_inheritance"] = $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"];
     }
     if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"]) && in_array($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"], array('0', '1'))) {
         $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
-        $fields["cg_additive_inheritance"] = $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"];
     }
     if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
         $rq .= "service_inherit_contacts_from_host = '".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', ";
-        $fields["service_inherit_contacts_from_host"] = $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"];
     }
     if (isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"])) {
         $rq .= "service_use_only_contacts_from_host = '".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', ";
-        $fields["service_use_only_contacts_from_host"] = $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"];
     }
     if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null) {
         $rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";
-        $fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
     }
     if (isset($ret["service_comment"]) && $ret["service_comment"] != null) {
         $rq .= "service_comment = '".CentreonDB::escape($ret["service_comment"])."', ";
-        $fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
     }
     $ret["command_command_id_arg"] = getCommandArgs($_POST, $ret);
     if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != null) {
         $rq .= "command_command_id_arg = '".CentreonDB::escape($ret["command_command_id_arg"])."', ";
-        $fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
     }
     if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null) {
         $rq .= "command_command_id_arg2 = '".CentreonDB::escape($ret["command_command_id_arg2"])."', ";
-        $fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
     }
     if (isset($ret["service_register"]) && $ret["service_register"] != null) {
         $rq .= "service_register = '".$ret["service_register"]."', ";
-        $fields["service_register"] = $ret["service_register"];
     }
     if (isset($ret["geo_coords"]) && $ret["geo_coords"] != null) {
         $rq .= "geo_coords = '".$ret["geo_coords"]."', ";
-        $fields["geo_coords"] = $ret["geo_coords"];
     }
     if (isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != null) {
         $rq .= "service_activate = '".$ret["service_activate"]["service_activate"]."', ";
-        $fields["service_activate"] = $ret["service_activate"]["service_activate"];
-    }
-
-    if (isset($ret["esi_notes"]) && $ret["esi_notes"] != null) {
-        $fields["esi_notes"] = CentreonDB::escape($ret["esi_notes"]);
-    }
-    if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != null) {
-        $fields["esi_notes_url"] = CentreonDB::escape($ret["esi_notes_url"]);
-    }
-    if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != null) {
-        $fields["esi_action_url"] = CentreonDB::escape($ret["esi_action_url"]);
-    }
-    if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != null) {
-        $fields["esi_icon_image"] = CentreonDB::escape($ret["esi_icon_image"]);
-    }
-    if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != null) {
-        $fields["esi_icon_image_alt"] = CentreonDB::escape($ret["esi_icon_image_alt"]);
-    }
-    if (isset($ret["graph_id"]) && $ret["graph_id"] != null) {
-        $fields["graph_id"] = $ret["graph_id"];
-    }
-    if (isset($ret["service_cs"]) && $ret["service_cs"] != null) {
-        $fields["service_cs"] = implode(",", $ret["service_cs"]);
-    }
-    if (isset($ret["service_cgs"]) && $ret["service_cgs"] != null) {
-        $fields["service_cgs"] = implode(",", $ret["service_cgs"]);
-    }
-    if (isset($ret["service_sgs"]) && $ret["service_sgs"] != null) {
-        $fields["service_sgs"] = implode(",", $ret["service_sgs"]);
-    }
-    if (isset($ret["service_hPars"]) && $ret["service_hPars"] != null) {
-        $fields["service_hPars"] = implode(",", $ret["service_hPars"]);
-    }
-    if (isset($ret["service_hgPars"]) && $ret["service_hgPars"] != null) {
-        $fields["service_hgPars"] = implode(",", $ret["service_hgPars"]);
-    }
-    if (isset($ret["service_categories"]) && $ret["service_categories"] != null) {
-        $fields["service_categories"] = implode(",", $ret["service_categories"]);
-    }
-    if (isset($ret["service_traps"]) && $ret["service_traps"] != null) {
-        $fields["service_traps"] = implode(",", $ret["service_traps"]);
     }
 
     if (strcmp("UPDATE service SET ", $rq)) {
@@ -1598,7 +1283,9 @@ function updateService_MC($service_id = null, $params = array())
         setServiceCriticality($service_id, $ret['criticality_id']);
     }
 
-    $centreon->CentreonLogAction->insertLog("service", $service_id, getMyServiceName($service_id), "mc", $fields);
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("service", $service_id, CentreonDB::escape($ret["service_description"]), "mc", $fields);
 }
 
 /*
@@ -1705,24 +1392,28 @@ function updateServiceNotifs_MC($service_id = null)
     $ret = $form->getSubmitValue("service_notifOpts");
 
     if (is_array($ret)) {
-        isset($service["service_notification_options"]) && $service["service_notification_options"] != null ? $temp = $service["service_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
+        if (isset($service["service_notification_options"]) && $service["service_notification_options"] != null) {
+            $temp = $service["service_notification_options"] . ",". implode(",", array_keys($ret));
+        } else {
+            $temp = implode(",", array_keys($ret));
+        }
     }
 
     if (isset($temp) && $temp != null) {
         $rq = "UPDATE service SET " ;
         $rq .= "service_notification_options = '". trim($temp, ',')."' ";
         $rq .= "WHERE service_id = '".$service_id."'";
-        $DBRESULT =& $pearDB->query($rq);
+        $DBRESULT = $pearDB->query($rq);
     }
 }
 
 function updateServiceNotifOptionInterval($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
 
     if (isset($ret["service_notification_interval"])) {
         $ret = $ret["service_notification_interval"];
@@ -1734,17 +1425,17 @@ function updateServiceNotifOptionInterval($service_id = null, $ret = array())
     $rq .= "service_notification_interval = ";
     isset($ret) && $ret != null ? $rq .= "'".$ret."' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '".$service_id."'";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 // For massive change. incremental mode
 function updateServiceNotifOptionInterval_MC($service_id = null)
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
 
     $ret = $form->getSubmitValue("service_notification_interval");
 
@@ -1752,17 +1443,17 @@ function updateServiceNotifOptionInterval_MC($service_id = null)
         $rq = "UPDATE service SET " ;
         $rq .= "service_notification_interval = '".$ret."' ";
         $rq .= "WHERE service_id = '".$service_id."'";
-        $DBRESULT =& $pearDB->query($rq);
+        $DBRESULT = $pearDB->query($rq);
     }
 }
 
 function updateServiceNotifOptionTimeperiod($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
 
     if (isset($ret["timeperiod_tp_id2"])) {
         $ret = $ret["timeperiod_tp_id2"];
@@ -1774,17 +1465,17 @@ function updateServiceNotifOptionTimeperiod($service_id = null, $ret = array())
     $rq .= "timeperiod_tp_id2 = ";
     isset($ret) && $ret != null ? $rq .= "'".$ret."' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '".$service_id."'";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 // For massive change. incremental mode
 function updateServiceNotifOptionTimeperiod_MC($service_id = null)
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
 
     $ret = $form->getSubmitValue("timeperiod_tp_id2");
 
@@ -1792,18 +1483,18 @@ function updateServiceNotifOptionTimeperiod_MC($service_id = null)
         $rq = "UPDATE service SET " ;
         $rq .= "timeperiod_tp_id2 = '".$ret."' ";
         $rq .= "WHERE service_id = '".$service_id."'";
-        $DBRESULT =& $pearDB->query($rq);
+        $DBRESULT = $pearDB->query($rq);
     }
 }
 
 function updateServiceNotifOptionFirstNotificationDelay($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
-
+    
     if (isset($ret["service_first_notification_delay"])) {
         $ret = $ret["service_first_notification_delay"];
     } else {
@@ -1814,17 +1505,17 @@ function updateServiceNotifOptionFirstNotificationDelay($service_id = null, $ret
     $rq .= "service_first_notification_delay = ";
     isset($ret) && $ret != null ? $rq .= "'".$ret."' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '".$service_id."'";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 // For massive change. incremental mode
 function updateServiceNotifOptionFirstNotificationDelay_MC($service_id = null)
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
 
     $ret = $form->getSubmitValue("service_first_notification_delay");
 
@@ -1832,18 +1523,19 @@ function updateServiceNotifOptionFirstNotificationDelay_MC($service_id = null)
         $rq = "UPDATE service SET " ;
         $rq .= "service_first_notification_delay = '".$ret."' ";
         $rq .= "WHERE service_id = '".$service_id."'";
-        $DBRESULT =& $pearDB->query($rq);
+        $DBRESULT = $pearDB->query($rq);
     }
 }
 
 // For massive change. We just add the new list if the elem doesn't exist yet
 function updateServiceContactGroup_MC($service_id = null)
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
+
     $rq = "SELECT * FROM contactgroup_service_relation ";
     $rq .= "WHERE service_service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
@@ -1877,11 +1569,12 @@ function updateServiceContactGroup_MC($service_id = null)
 // For massive change. We just add the new list if the elem doesn't exist yet
 function updateServiceContact_MC($service_id = null)
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
+
     $rq = "SELECT * FROM contact_service_relation ";
     $rq .= "WHERE service_service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
@@ -1903,11 +1596,11 @@ function updateServiceContact_MC($service_id = null)
 
 function updateServiceServiceGroup($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
 
     $rq = "DELETE FROM servicegroup_relation ";
     $rq .= "WHERE service_service_id = '".$service_id."'";
@@ -2002,11 +1695,12 @@ function updateServiceServiceGroup_MC($service_id = null)
 
 function updateServiceTrap($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
+
     $rq = "DELETE FROM traps_service_relation ";
     $rq .= "WHERE service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
@@ -2027,11 +1721,12 @@ function updateServiceTrap($service_id = null, $ret = array())
 // For massive change. We just add the new list if the elem doesn't exist yet
 function updateServiceTrap_MC($service_id = null)
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
+
     $rq = "SELECT * FROM traps_service_relation ";
     $rq .= "WHERE service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
@@ -2053,11 +1748,11 @@ function updateServiceTrap_MC($service_id = null)
 
 function updateServiceHostContactsInheritance($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form;
-    global $pearDB;
 
     if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
         $ret = $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"];
@@ -2069,12 +1764,13 @@ function updateServiceHostContactsInheritance($service_id = null, $ret = array()
     $rq .= "service_inherit_contacts_from_host = ";
     isset($ret) && $ret != null ? $rq .= "'".$ret['service_inherit_contacts_from_host']["service_inherit_contacts_from_host"]."' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '".$service_id."'";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
     
 function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
 {
     global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
@@ -2173,10 +1869,12 @@ function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
 // For massive change. We just add the new list if the elem doesn't exist yet
 function updateServiceHost_MC($service_id = null)
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form, $pearDB;
+    
     $rq = "SELECT * FROM host_service_relation ";
     $rq .= "WHERE service_service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
@@ -2227,10 +1925,12 @@ function updateServiceHost_MC($service_id = null)
 
 function updateServiceExtInfos($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form, $pearDB;
+    
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
@@ -2262,10 +1962,12 @@ function updateServiceExtInfos($service_id = null, $ret = array())
 
 function updateServiceExtInfos_MC($service_id = null, $params = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form, $pearDB;
+    
     if (count($params)) {
         $ret = $params;
     } else {
@@ -2312,11 +2014,12 @@ function updateServiceTemplateUsed($useTpls = array())
 
 function updateServiceCategories_MC($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
+
     if (!$service_id) {
         return;
     }
-    global $form, $pearDB;
-
+    
     if (isset($ret["service_categories"])) {
         $ret = $ret["service_categories"];
     } else {
@@ -2333,10 +2036,11 @@ function updateServiceCategories_MC($service_id = null, $ret = array())
 
 function updateServiceCategories($service_id = null, $ret = array())
 {
+    global $form, $pearDB;
     if (!$service_id) {
         return;
     }
-    global $form, $pearDB;
+    
     $rq = "DELETE FROM service_categories_relation
                     WHERE service_service_id = '".$service_id."'
                     AND NOT EXISTS(
