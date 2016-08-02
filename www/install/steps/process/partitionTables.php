@@ -58,21 +58,14 @@ $tables = array(
     'log_archive_service'
 );
 
-foreach ($tables as $table) {
-    $config = new Config($database, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml');
-    $mysqlTable = $config->getTable($table);
-    $partEngine->createParts($mysqlTable, $database);
+try {
+    foreach ($tables as $table) {
+        $config = new Config($database, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml');
+        $mysqlTable = $config->getTable($table);
+        $partEngine->createParts($mysqlTable, $database);
+    }
+} catch (\Exception $e) {
+    exitProcess(PROCESS_ID, 1, $e->getMessage());
 }
-
-/*
-$dataBinConfig = new Config($database, _CENTREON_PATH_ . '/config/partition.d/partitioning-data_bin.xml');
-$logsConfig = new Config($database, _CENTREON_PATH_ . '/config/partition.d/partitioning-logs.xml');
-
-$dataBinTable = $dataBinConfig->getTable('data_bin');
-$logsTable = $logsConfig->getTable('logs');
-
-$partEngine->createParts($dataBinTable, $database);
-$partEngine->createParts($logsTable, $database);
-*/
 
 exitProcess(PROCESS_ID, 0, "OK");
