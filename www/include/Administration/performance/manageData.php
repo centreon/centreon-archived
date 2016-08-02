@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 include("./include/common/autoNumLimit.php");
@@ -62,11 +62,11 @@ require_once("./class/centreonDB.class.php");
 
 $pearDBO = new CentreonDB("centstorage");
 
-switch ($o)	{
-	case "msvc" : 
-		require_once($path."viewMetrics.php"); 
-		break;
-	default : 
-		require_once($path."viewData.php"); 
-		break;
+switch ($o) {
+    case "msvc":
+        require_once($path."viewMetrics.php");
+        break;
+    default:
+        require_once($path."viewData.php");
+        break;
 }
