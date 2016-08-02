@@ -1839,8 +1839,8 @@ div#tabs_periods {
 }
 
 td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
-    border: 1px solid #d1d2d4 !important;
-    background: #f3f3f4 !important;
+    border: 1px solid #bdbdc2 !important;
+    background: #cacace !important;
     font-weight: bold !important;
     color: #009fdf !important;
 }
