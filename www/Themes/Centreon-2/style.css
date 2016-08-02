@@ -2118,6 +2118,16 @@ textarea.default-textarea {
   margin-top: 2px;
 }
 
+.graph .title .remove {
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.graph .title > span {
+  vertical-align: top;
+  margin-top: 2px;
+}
+
 .graph .content {
   margin: 5px;
   display: flex;
@@ -2131,8 +2141,8 @@ textarea.default-textarea {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 280px;
-  top: 0;
+  height: 240px;
+  top: 20px;
 }
 
 .graph .action.left {
@@ -2209,4 +2219,11 @@ textarea.default-textarea {
 .ico-col.ico-col-3.active {
   background-image: url('../../img/icons/3-col-blue.png');
   background-size: cover;
+}
+
+.filter-select {
+  background-image: url('../../img/icons/filter.png');
+  background-size: 18px;
+  background-position: right;
+  background-repeat: no-repeat;
 }
