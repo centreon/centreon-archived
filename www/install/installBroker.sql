@@ -453,41 +453,6 @@ LOCK TABLES `issues_issues_parents` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `logs` (
-  `log_id` int(11) NOT NULL AUTO_INCREMENT,
-  `ctime` int(11) DEFAULT NULL,
-  `host_id` int(11) DEFAULT NULL,
-  `host_name` varchar(255) DEFAULT NULL,
-  `instance_name` varchar(255) NOT NULL,
-  `issue_id` int(11) DEFAULT NULL,
-  `msg_type` tinyint(4) DEFAULT NULL,
-  `notification_cmd` varchar(255) DEFAULT NULL,
-  `notification_contact` varchar(255) DEFAULT NULL,
-  `output` text,
-  `retry` int(11) DEFAULT NULL,
-  `service_description` varchar(255) DEFAULT NULL,
-  `service_id` int(11) DEFAULT NULL,
-  `status` tinyint(4) DEFAULT NULL,
-  `type` smallint(6) DEFAULT NULL,
-  PRIMARY KEY (`log_id`),
-  KEY `host_name` (`host_name`(64)),
-  KEY `service_description` (`service_description`(64)),
-  KEY `status` (`status`),
-  KEY `instance_name` (`instance_name`),
-  KEY `ctime` (`ctime`),
-  KEY `rq1` (`host_id`,`service_id`,`msg_type`,`status`,`ctime`),
-  KEY `rq2` (`host_id`,`msg_type`,`status`,`ctime`),
-  KEY `host_id` (`host_id`,`service_id`,`msg_type`,`ctime`,`status`),
-  KEY `host_id_2` (`host_id`,`msg_type`,`ctime`,`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `logs` WRITE;
-/*!40000 ALTER TABLE `logs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `logs` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `modules` (
   `module_id` int(11) NOT NULL AUTO_INCREMENT,
   `instance_id` int(11) NOT NULL,

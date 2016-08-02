@@ -5,7 +5,7 @@
         <column>date_end</column>
         <type>date</type>
         <duration>daily</duration>
-        <timezone>Europe/London</timezone>
+        <timezone></timezone>
         <retention>90</retention>
         <retentionforward>10</retentionforward>        
         <backup>

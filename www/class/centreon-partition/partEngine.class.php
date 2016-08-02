@@ -77,7 +77,6 @@ class PartEngine
                     . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
                 );
             }
-            print "[".date(DATE_RFC822)."][createParts] Create new part : MAXVALUE\n";
         }
     }
     

@@ -194,6 +194,8 @@ class MysqlTable
     {
         if (isset($timezone) && $timezone != "") {
             $this->timezone = $timezone;
+        } else {
+            $this->timezone = date_default_timezone_get();
         }
     }
     

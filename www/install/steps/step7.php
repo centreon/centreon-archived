@@ -61,7 +61,8 @@ $map = "{
             'dbutils'    : './steps/process/installUtilsDb.php',
             'createuser' : './steps/process/createDbUser.php',
             'baseconf'   : './steps/process/insertBaseConf.php',
-            'configfile' : './steps/process/configFileSetup.php'
+            'configfile' : './steps/process/configFileSetup.php',
+            'dbpartitioning' : './steps/process/partitionTables.php'
         }";
 
 $labels = "{
@@ -70,7 +71,8 @@ $labels = "{
             'dbutils'   : '"._('Utils database')."',
             'createuser': '"._('Creating database user')."',
             'baseconf'  : '"._('Setting up basic configuration')."',
-            'configfile': '"._('Setting up configuration file')."'
+            'configfile': '"._('Setting up configuration file')."',
+            'dbpartitioning': '"._('Partitioning database tables')."'
            }";
 
 $template->assign('step', STEP_NUMBER);
@@ -108,7 +110,9 @@ $template->display('content.tpl');
                     nextStep('baseconf');
                 } else if (key == 'baseconf') {
                     nextStep('configfile');
-                } else if ('configfile') {
+                } else if (key == 'configfile') {
+                    nextStep('dbpartitioning');
+                } else if (key == 'dbpartitioning') {
                     processStatus = true;
                     jQuery("#next").show();
                 }
