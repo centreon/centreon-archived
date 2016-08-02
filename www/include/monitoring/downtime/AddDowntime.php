@@ -182,11 +182,14 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     if (isset($_GET["host_id"]) && !isset($_GET["service_id"])) {
         $data["host_id"] = $_GET["host_id"];
         $data["downtimeType"] = 1;
+        $focus = 'host';
     } elseif (isset($_GET["host_id"]) && isset($_GET["service_id"])) {
         $data["service_id"] = $_GET["host_id"].'-'.$_GET["service_id"];
         $data["downtimeType"] = 2;
+        $focus = 'service';
     } else {
         $data["downtimeType"] = 1;
+        $focus = 'host';
     }
 
     $form->setDefaults($data);
@@ -362,20 +365,21 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
         $tpl->assign('form', $renderer->toArray());
         $tpl->assign('seconds', _("seconds"));
         $tpl->assign('o', $o);
+        $tpl->assign('focus', $focus);
         $tpl->display("AddDowntime.ihtml");
     }
 }
 ?>
 <script type='text/javascript'>
 
-<?php 
+jQuery(function() {
+    setDurationField();
+    
+    <?php 
     if (isset($data["service_id"])) {
         print "toggleParams('service');";
     }
     ?>
-
-jQuery(function() {
-    setDurationField();
     
 });
 
@@ -383,10 +387,10 @@ function setDurationField() {
     var durationField = document.getElementById('duration');
     var fixedCb = document.getElementById('fixed');
 
-    if (fixedCb.checked() == true) {
-        durationField.disabled() = true;
+    if (fixedCb.checked == true) {
+        durationField.disabled = true;
     } else {
-        durationField.disabled() = false;
+        durationField.disabled = false;
     }
 }
 </script>
