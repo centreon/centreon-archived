@@ -67,6 +67,8 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclServices = '';
+        $additionnalTables = '';
+        $additionnalCondition = '';
         
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -86,11 +88,27 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $range = '';
         }
         
+        if (isset($this->arguments['hostgroup'])) {
+            $additionnalTables .= ',hosts_hostgroups hg ';
+            $additionnalCondition .= 'AND (hg.host_id = i.host_id AND hg.hostgroup_id IN (' .
+                join(',', $this->arguments['hostgroup']) . ')) ';
+        }
+        if (isset($this->arguments['servicegroup'])) {
+            $additionnalTables .= ',services_servicegroups sg ';
+            $additionnalCondition .= 'AND (sg.host_id = i.host_id AND sg.service_id = i.service_id '
+                . 'AND sg.servicegroup_id IN (' . join(',', $this->arguments['servicegroup']) . ')) ';
+        }
+        if (isset($this->arguments['host'])) {
+            $additionnalCondition .= 'AND i.host_id IN (' . join(',', $this->arguments['host']) . ')';
+        }
+        
         $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.service_description, i.service_id, i.host_name, i.host_id, m.index_id "
             . "FROM index_data i, metrics m ".(!$isAdmin ? ', centreon_acl acl ' : '')
+            . $additionnalTables
             . 'WHERE i.id = m.index_id '
             . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN ('.$acl->getAccessGroupsString().') ' : '')
             . "AND (i.service_description LIKE '%$q%' OR i.host_name LIKE '%$q%') "
+            . $additionnalCondition
             . $aclServices
             . "ORDER BY i.host_name, i.service_description "
             . $range;
