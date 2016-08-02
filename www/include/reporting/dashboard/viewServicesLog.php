@@ -166,7 +166,6 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
     include("./include/reporting/dashboard/ajaxReporting_js.php");
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
-
 }
 
 $tpl->display("template/viewServicesLog.ihtml");

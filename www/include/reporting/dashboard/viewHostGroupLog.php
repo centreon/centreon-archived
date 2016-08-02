@@ -89,7 +89,6 @@ if ($id != "NULL") {
  * Stats Display for selected hostgroup
  */
 if (isset($id) && $id != "NULL") {
-
     /*
      * Getting periods values
      */
@@ -156,7 +155,6 @@ $tpl->assign('formItem', $renderer->toArray());
  * Ajax timeline and CSV export initialization
  */
 if (isset($id) && $id != "NULL") {
-
     /*
      * CSV export
      */
@@ -183,7 +181,6 @@ if (isset($id) && $id != "NULL") {
     include("./include/reporting/dashboard/ajaxReporting_js.php");
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script><?php
-
 }
 
 $tpl->display("template/viewHostGroupLog.ihtml");
