@@ -282,6 +282,7 @@ CREATE TABLE `hosts` (
   `state` smallint(6) DEFAULT NULL,
   `state_type` smallint(6) DEFAULT NULL,
   `statusmap_image` varchar(255) DEFAULT NULL,
+  `timezone` varchar(64) DEFAULT NULL,
   `real_state` smallint(6) DEFAULT NULL,
   UNIQUE KEY `host_id` (`host_id`),
   KEY `instance_id` (`instance_id`),
