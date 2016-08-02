@@ -143,7 +143,7 @@ if (!is_null($host_id)) {
         /*
          * start ndo service info
          */
-        $rq =   "SELECT " .
+        $rq =   "SELECT s.service_id, " .
             " s.state AS current_state," .
             " s.output as plugin_output, " .
             " s.output as plugin_output2," .

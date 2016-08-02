@@ -64,9 +64,6 @@ require_once $path."common-Func.php";
 require_once "./include/monitoring/external_cmd/functions.php";
 
 switch ($o) {
-    case "as":
-        require_once($path . "AddSvcDowntime.php");
-        break;
     case "ds":
         if (isset($_POST["select"])) {
             foreach ($_POST["select"] as $key => $value) {
@@ -102,8 +99,8 @@ switch ($o) {
     case "vs":
         require_once($path . "listDowntime.php");
         break;
-    case "ah":
-        require_once($path."AddHostDowntime.php");
+    case "a":
+        require_once($path."AddDowntime.php");
         break;
     case "vh":
         require_once($path."listDowntime.php");

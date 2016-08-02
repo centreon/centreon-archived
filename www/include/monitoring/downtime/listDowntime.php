@@ -211,11 +211,8 @@ $form->addElement('hidden', 'p');
 $tab = array ("p" => $p);
 $form->setDefaults($tab);
 
-if ($oreon->user->access->checkAction("service_schedule_downtime")) {
-    $tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a service downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
-}
 if ($oreon->user->access->checkAction("host_schedule_downtime")) {
-    $tpl->assign('msgs2', array ("addL2"=>"?p=".$p."&o=ah", "addT2"=>_("Add a host downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
+    $tpl->assign('msgs2', array ("addL2"=>"?p=".$p."&o=a", "addT2"=>_("Add downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
 }
 
 $tpl->assign("p", $p);

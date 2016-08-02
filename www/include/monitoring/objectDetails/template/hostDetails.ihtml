@@ -407,7 +407,7 @@
 				{if $aclAct.host_schedule_downtime || $admin == 1}	
 				<tr class='list_one'>
 					<td class="ListColLeft ColPopup" id="host_downtime">
-						<a href='main.php?p=21001&o=ah&host_name={$host_data.host_name}'>{$m_mon_SCH_downtime}</a>
+						<a href='main.php?p=21001&o=a&host_id={$host_data.host_id}'>{$m_mon_SCH_downtime}</a>
 					</td>
 				</tr>
 				{/if}
