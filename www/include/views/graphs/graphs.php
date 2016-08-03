@@ -267,6 +267,7 @@ $tpl->assign('from', _("From"));
 $tpl->assign('to', _("to"));
 $tpl->assign('displayStatus', _("Display Status"));
 $tpl->assign('Apply', _("Apply"));
+$tpl->assign('defaultCharts', json_encode(array_values($defaultServicesForGraph)));
 $tpl->display("graphs.ihtml");
 
 $multi = 1;
