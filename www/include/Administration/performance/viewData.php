@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 require_once './class/centreonDuration.class.php';
 require_once './class/centreonBroker.class.php';
@@ -68,24 +68,24 @@ include("./include/common/autoNumLimit.php");
  * Prepare search engine
  */
 if (isset($_POST["search"])) {
-	$searchH = $_POST["searchH"];
+    $searchH = $_POST["searchH"];
     $num = $_GET['num'] = 0;
-	$_POST["search"] = $_POST["searchH"];
-	$oreon->historySearch[$url] = $search;
-} else if (isset($oreon->historySearch[$url])) {
-	$searchH = $oreon->historySearch[$url];
+    $_POST["search"] = $_POST["searchH"];
+    $oreon->historySearch[$url] = $search;
+} elseif (isset($oreon->historySearch[$url])) {
+    $searchH = $oreon->historySearch[$url];
 } else {
-	$searchH = NULL;
+    $searchH = null;
 }
 
 if (isset($_POST["searchS"])) {
-	$searchS = $_POST["searchS"];
+    $searchS = $_POST["searchS"];
     $num = $_GET['num'] = 0;
-	$oreon->historySearchService[$url] = $searchS;
-} else if (isset($oreon->historySearchService[$url])) {
-	$searchS = $oreon->historySearchService[$url];
+    $oreon->historySearchService[$url] = $searchS;
+} elseif (isset($oreon->historySearchService[$url])) {
+    $searchS = $oreon->historySearchService[$url];
 } else {
-	$searchS = NULL;
+    $searchS = null;
 }
 
 /* Search for poller */
@@ -93,80 +93,80 @@ if (isset($_POST['searchP']) && is_numeric($_POST['searchP'])) {
     $searchP = $_POST['searchP'];
     $num = $_GET['num'] = 0;
 } else {
-    $searchP = NULL;
+    $searchP = null;
 }
 
 /* Get broker type */
 $brk = new CentreonBroker($pearDB);
 
-if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])){
-	if ($_POST["o"] == "rg" && isset($_POST["select"])){
-		$selected = $_POST["select"];
-		foreach ($selected as $key => $value){
-			$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
-		}
+if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])) {
+    if ($_POST["o"] == "rg" && isset($_POST["select"])) {
+        $selected = $_POST["select"];
+        foreach ($selected as $key => $value) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
+        }
         $brk->reload();
-	} else if ($_POST["o"] == "nrg" && isset($_POST["select"])){
-		$selected = $_POST["select"];
-		foreach ($selected as $key => $value){
-			$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
-		}
-	} else if ($_POST["o"] == "ed" && isset($_POST["select"])){
-		$selected = $_POST["select"];
-		$listMetricsToDelete = array();
-		foreach ($selected as $key => $value){
-			$DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = '".$key."'");
-			while ($metrics = $DBRESULT->fetchRow()){
-			    $listMetricsToDelete[] = $metrics['metric_id'];
-			}
-		}
-		$listMetricsToDelete = array_unique($listMetricsToDelete);
-		if (count($listMetricsToDelete) > 0) {
-			$pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
+    } elseif ($_POST["o"] == "nrg" && isset($_POST["select"])) {
+        $selected = $_POST["select"];
+        foreach ($selected as $key => $value) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
+        }
+    } elseif ($_POST["o"] == "ed" && isset($_POST["select"])) {
+        $selected = $_POST["select"];
+        $listMetricsToDelete = array();
+        foreach ($selected as $key => $value) {
+            $DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = '".$key."'");
+            while ($metrics = $DBRESULT->fetchRow()) {
+                $listMetricsToDelete[] = $metrics['metric_id'];
+            }
+        }
+        $listMetricsToDelete = array_unique($listMetricsToDelete);
+        if (count($listMetricsToDelete) > 0) {
+            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
             $pearDBO->query("UPDATE index_data SET to_delete = 1 WHERE id IN (" . join(', ', array_keys($selected)) . ")");
-			$pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
-           	$brk->reload();
-		}
-	} else if ($_POST["o"] == "hg" && isset($_POST["select"])){
-		$selected = $_POST["select"];
-		foreach ($selected as $key => $value){
-			$DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
-		}
-	} else if ($_POST["o"] == "nhg" && isset($_POST["select"])){
-		$selected = $_POST["select"];
-		foreach ($selected as $key => $value){
-			$DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
-		}
-	} else if ($_POST["o"] == "lk" && isset($_POST["select"])){
-		$selected = $_POST["select"];
-		foreach ($selected as $key => $value){
-			$DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
-		}
-	} else if ($_POST["o"] == "nlk" && isset($_POST["select"])){
-		$selected = $_POST["select"];
-		foreach ($selected as $key => $value){
-			$DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
-		}
-	}
+            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
+            $brk->reload();
+        }
+    } elseif ($_POST["o"] == "hg" && isset($_POST["select"])) {
+        $selected = $_POST["select"];
+        foreach ($selected as $key => $value) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
+        }
+    } elseif ($_POST["o"] == "nhg" && isset($_POST["select"])) {
+        $selected = $_POST["select"];
+        foreach ($selected as $key => $value) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
+        }
+    } elseif ($_POST["o"] == "lk" && isset($_POST["select"])) {
+        $selected = $_POST["select"];
+        foreach ($selected as $key => $value) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
+        }
+    } elseif ($_POST["o"] == "nlk" && isset($_POST["select"])) {
+        $selected = $_POST["select"];
+        foreach ($selected as $key => $value) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
+        }
+    }
 }
 
-if (isset($_POST["o"]) && $_POST["o"] == "d" && isset($_POST["id"])){
-	$DBRESULT = $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
+if (isset($_POST["o"]) && $_POST["o"] == "d" && isset($_POST["id"])) {
+    $DBRESULT = $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
 }
 
-if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])){
-	$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
+if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])) {
+    $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
 }
 
 $search_string = "";
 $extTables = "";
 if ($searchH != "" || $searchS != "" || $searchP != "") {
-	if ($searchH != ""){
-		$search_string .= " AND i.host_name LIKE '%".htmlentities($searchH, ENT_QUOTES, 'UTF-8')."%' ";
-	}
-	if ($searchS != "") {
-		$search_string .= " AND i.service_description LIKE '%".htmlentities($searchS, ENT_QUOTES, 'UTF-8')."%' ";
-	}
+    if ($searchH != "") {
+        $search_string .= " AND i.host_name LIKE '%".htmlentities($searchH, ENT_QUOTES, 'UTF-8')."%' ";
+    }
+    if ($searchS != "") {
+        $search_string .= " AND i.service_description LIKE '%".htmlentities($searchS, ENT_QUOTES, 'UTF-8')."%' ";
+    }
     if ($searchP != "") {
         /* Centron Broker */
         $extTables = ", hosts h";
@@ -183,34 +183,34 @@ $DBRESULT = $pearDBO->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT i.* FROM index_
 $rows = $pearDBO->numberRows();
 
 for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
-	$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."' ORDER BY metric_name");
-	$metric = "";
-	for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++){
-		if ($im) {
-			$metric .= " - ";
-		}
-		$metric .= $metrics["metric_name"];
-		if (isset($metrics["unit_name"]) && $metrics["unit_name"]) {
-			$metric .= "(".$metrics["unit_name"].")";
-		}
-	}
-	$index_data["metrics_name"] = $metric;
-	$index_data["service_description"] = "<a href='./main.php?p=50119&o=msvc&index_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
+    $DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."' ORDER BY metric_name");
+    $metric = "";
+    for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
+        if ($im) {
+            $metric .= " - ";
+        }
+        $metric .= $metrics["metric_name"];
+        if (isset($metrics["unit_name"]) && $metrics["unit_name"]) {
+            $metric .= "(".$metrics["unit_name"].")";
+        }
+    }
+    $index_data["metrics_name"] = $metric;
+    $index_data["service_description"] = "<a href='./main.php?p=50119&o=msvc&index_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
 
-	$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
-	$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
+    $index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
+    $index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
     $index_data["to_delete"] = $yesOrNo[$index_data["to_delete"]];
-	$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
-	$index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
+    $index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
+    $index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
 
-	if (isset($index_data["locked"])) {
-		$index_data["locked"] = $yesOrNo[$index_data["locked"]];
-	} else {
-		$index_data["locked"] = $yesOrNo[0];
-	}
+    if (isset($index_data["locked"])) {
+        $index_data["locked"] = $yesOrNo[$index_data["locked"]];
+    } else {
+        $index_data["locked"] = $yesOrNo[0];
+    }
 
-	$index_data["class"] = $tab_class[$i % 2];
-	$data[$i] = $index_data;
+    $index_data["class"] = $tab_class[$i % 2];
+    $data[$i] = $index_data;
 }
 
 /* Get the list of running poller */
@@ -236,57 +236,57 @@ $form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </script>
 <?php
 $attrs1 = array(
-	'onchange'=>"javascript: " .
-			"if (this.form.elements['o1'].selectedIndex == 1) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 2) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 4) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 5) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 6) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 7) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Delete graphs"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
+    'onchange'=>"javascript: " .
+            "if (this.form.elements['o1'].selectedIndex == 1) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 2) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 4) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 5) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 6) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "else if (this.form.elements['o1'].selectedIndex == 7) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} " .
+            "");
+$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Delete graphs"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
+$form->setDefaults(array('o1' => null));
 
 $attrs2 = array(
-	'onchange'=>"javascript: " .
-			"if (this.form.elements['o2'].selectedIndex == 1) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 2) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 4) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 5) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 6) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 7) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Delete graphs"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
+    'onchange'=>"javascript: " .
+            "if (this.form.elements['o2'].selectedIndex == 1) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 2) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 4) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 5) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 6) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "else if (this.form.elements['o2'].selectedIndex == 7) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} " .
+            "");
+$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Delete graphs"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 
@@ -312,10 +312,10 @@ $tpl->assign('Pollers', _("Pollers"));
 $tpl->assign('Search', _("Search"));
 
 if (isset($searchH)) {
-	$tpl->assign('searchH', $searchH);
+    $tpl->assign('searchH', $searchH);
 }
 if (isset($searchS)) {
-	$tpl->assign('searchS', $searchS);
+    $tpl->assign('searchS', $searchS);
 }
 if (isset($searchP)) {
     $tpl->assign('searchP', $searchP);

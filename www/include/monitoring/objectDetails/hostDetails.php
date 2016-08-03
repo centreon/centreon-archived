@@ -230,7 +230,7 @@ if (!$is_admin && !$haveAccess) {
         /*
          * Get host informations
          */
-        $rq2 = "SELECT state AS current_state, h.name, alias, h.address, " .
+        $rq2 = "SELECT state AS current_state, h.name, alias, h.address, host_id, " .
             " acknowledged AS problem_has_been_acknowledged, " .
             " passive_checks AS passive_checks_enabled," .
             " active_checks AS active_checks_enabled," .
