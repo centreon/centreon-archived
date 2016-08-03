@@ -44,7 +44,6 @@ require_once _CENTREON_PATH_ . '/www/class/centreonGraph.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonBroker.class.php';
 
-
 $pearDB = new CentreonDB();
 
 //$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
@@ -81,6 +80,22 @@ if (isset($_GET["hostname"]) && isset($_GET["service"])) {
     if ($DBRESULT->numRows()) {
         $res = $DBRESULT->fetchRow();
         $index = $res["id"];
+    } else {
+        die('Resource not found');
+    }
+}
+if (isset($_GET['chartId'])) {
+    list($hostId, $serviceId) = explode('_', $_GET['chartId']);
+    if (false === isset($hostId) || false === isset($serviceId)) {
+        die('Resource not found');
+    }
+    $res = $pearDBO->query('SELECT id
+        FROM index_data
+        WHERE host_id = ' . $pearDBO->escape($hostId) .
+        ' AND service_id = ' . $pearDBO->escape($serviceId));
+    if ($res->numRows()) {
+        $row = $res->fetchRow();
+        $index = $row['id'];     
     } else {
         die('Resource not found');
     }

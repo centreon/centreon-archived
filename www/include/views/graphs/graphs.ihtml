@@ -78,14 +78,14 @@
 
 {literal}
 <script id="graph-line" type="text/x-handlebars-template">
-<div id="graph_wrapper_{{graphId}}" class="graph">
+<div id="graph_wrapper_{{graphId}}" data-graph-id="{{graphId}}" class="graph">
   <div class="title">
     <img class="remove ico-14 margin_right" src="./img/icons/circle-cross.png">
     <span>{{graphTitle}}</span>
-    <a class="actions">
+    <a class="actions" href="#" data-href="./include/views/graphs/generateGraphs/generateImage.php">
       <img alt="Export graph" src="./img/icons/picture.png" class="ico-14 margin_right">
     </a>
-    <a class="actions">
+    <a class="actions" href="#" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
       <img alt="Export CSV" src="./img/icons/csv.png" class="ico-14 margin_right">
     </a>
   </div>
@@ -271,6 +271,34 @@ jQuery(function () {
           .select2('close');  
       });
     }
+  });
+  
+  /* Add events on click on action download image/CSV */
+  jQuery('.graphZone').delegate('a.actions', 'click', function (e) {
+    var $a = jQuery(this);
+    var baseUrl = $a.data('href');
+    var chartId = $a.parents('.graph').data('graphId');
+    var start;
+    var end;
+    /* Get the period */
+    if (jQuery('select[name="period"]').val() === '') {
+      start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
+      end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+      duration = moment.duration(end.diff(start));
+    } else {
+      parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
+      duration = moment.duration(
+        parseInt(parseInterval[1], 10),
+        parseInterval[2]
+      );
+      start = moment();
+      end = moment();
+      start.subtract(parseInterval[1], parseInterval[2]);
+    }
+    
+    e.preventDefault();
+    baseUrl += '?chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
+    window.location = baseUrl;
   });
   
   /* Remove a chart */
