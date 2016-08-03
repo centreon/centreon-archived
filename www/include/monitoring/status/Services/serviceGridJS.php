@@ -37,11 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
-    $tFM = 10;
-} else {
-    $tFM = $centreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-}
+$tFM = 10;
 $tFS = 10;
 
 $sid = session_id();

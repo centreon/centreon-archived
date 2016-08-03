@@ -37,16 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
-    $tFS = 10;
-} else {
-    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-}
-if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
-    $tFM = 10;
-} else {
-    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-}
+$tFS = 10;
+$tFM = 10;
+
 $sid = session_id();
 $time = time();
 
@@ -64,7 +57,6 @@ var _debug = 0;
 
 var _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
 var _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
-
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
