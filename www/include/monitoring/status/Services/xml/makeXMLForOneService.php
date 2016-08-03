@@ -222,8 +222,6 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("duration", $duration);
     $obj->XML->writeElement("duration_name", _("Current State Duration"), 0);
     $obj->XML->writeElement("last_notification", $obj->GMT->getDate($dateFormat, $last_notification));
-    $obj->XML->writeElement("last_notification_name", _("Last Notification"), 0);
-    $obj->XML->writeElement("next_notification", $obj->GMT->getDate($dateFormat, $next_notification));
     $obj->XML->writeElement("next_notification_name", _("Next Notification"), 0);
     $obj->XML->writeElement("current_notification_number", $data["notification_number"]);
     $obj->XML->writeElement("current_notification_number_name", _("Current Notification Number"), 0);
