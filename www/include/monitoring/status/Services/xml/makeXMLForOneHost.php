@@ -207,6 +207,9 @@ if ($data = $DBRESULT->fetchRow()) {
             $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_up"]);
         }
     }
+    if ($status_date == 0) {
+        $status_date = '-';
+    }
     $obj->XML->writeElement("last_time_name", _("Last time in "), 0);
     $obj->XML->writeElement("last_time", $status_date, 0);
     $obj->XML->writeElement("last_time_status", $status, 0);
