@@ -2,7 +2,6 @@
 <script type="text/javascript">
 function toggleParams(type) 
 {
-	alert(type);
 	if (type == 'host') {
 		Effect.Fade('hostgroup_input', { duration : 0 });
 		Effect.Fade('poller_input', { duration : 0 });
