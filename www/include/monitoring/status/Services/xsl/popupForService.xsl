@@ -61,7 +61,7 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type"/></td>
 		</tr>
-		<tr class='list_two'>
+		<tr class='list_one'>
 			<td class="ColPopup">&#160;<xsl:value-of select="performance_data_name"/></td>
 			<td class="ColPopup">
 			<xsl:for-each select="performance_data">
