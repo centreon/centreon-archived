@@ -77,6 +77,8 @@
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
 <script>
 var defaultCharts = JSON.parse('{$defaultCharts}');
+var nbDisplayedCharts = 18;
+var tooManyChartMsg = '{t}You cannot add more charts. The maximum charts is {/t}' + nbDisplayedCharts;
 </script>
 
 {literal}
@@ -190,6 +192,10 @@ function loadChart(chart, callback) {
     success: function (data) {
       var i = 0;
       for (i = 0; i < data.length; i++) {
+        if (charts.length >= nbDisplayedCharts) {
+          alert(tooManyChartMsg);
+          break;
+        }
         addChart(data[i].id, data[i].title, times);
       }
       displayNav(end);
