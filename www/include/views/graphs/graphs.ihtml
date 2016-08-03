@@ -75,6 +75,9 @@
 <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
 <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
+<script>
+var defaultCharts = JSON.parse('{$defaultCharts}');
+</script>
 
 {literal}
 <script id="graph-line" type="text/x-handlebars-template">
@@ -256,8 +259,7 @@ function displayNav(end) {
 }
   
 jQuery(function () {
-  // @todo list of chart by url
-  //loadChart();
+  loadChart(defaultCharts);
   
   /* Add events */
   jQuery('#select-chart').on('change', function () {
