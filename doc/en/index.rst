@@ -16,6 +16,7 @@ Contents:
    configuration_guide/index
    exploitation_guide/index
    administration_guide/index
+   knowledge_base/index
    howto/index
    upgrade/index
    faq/index
