@@ -97,6 +97,8 @@ $help["event_handler_enabled"] = dgettext("help", "This directive is used to det
 $help["event_handler"] = dgettext("help", "This directive is used to specify the command that should be run whenever a change in the state of the service is detected (i.e. whenever it changes to non-OK or recovers).");
 $help["event_handler_args"] = dgettext("help", "This parameters are passed to the event handler commands in the same way check command parameters are handled. The format is: !ARG1!ARG2!...ARGn");
 
+$help["service_acknowledgement_timeout"] = dgettext("help", "Specify a duration of acknowledgement for this service or service depending to this template. If you leave it blank, no timeout will be set.");
+
 /*
  * Service extended infos
  */
