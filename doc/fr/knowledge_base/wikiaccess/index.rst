@@ -3,8 +3,8 @@ Configuration de l'accès au wiki
 ================================
 
 Afin d'utiliser *Centreon Knowledge Base*, vous devez le configurer pour qu'il accède à la base de données du wiki.
-Pour cela vous devez renseigner le fichier *wiki.conf.php* qui se situe à la racine du répertoire d'installation de *Centreon Knowledge Base*:
-*<install_dir>/centreon/www/modules/centreon-knowledgebase/wiki.conf.php*.
+Pour cela vous devez renseigner le fichier *wiki.conf.php* qui se situe à la racine du répertoire d'installation de *Centreon*:
+*<install_dir>/centreon/config/wiki.conf.php*.
 
 Le fichier ressemble à ceci::
 

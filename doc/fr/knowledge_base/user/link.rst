@@ -6,7 +6,7 @@ Lien avec l'interface web de supervision
 La base de connaissance est accessible depuis l'interface web de Centreon 
 à travers un icône cliquable (voir ci dessous)
 
-.. image:: /_static/operation/screen_host_monitoring.png
+.. image:: ../_static/operation/screen_host_monitoring.png
    :align: center
 
 En cliquant sur l'icône, l'utilisateur est redirigé vers la base de connaissance 
@@ -19,7 +19,7 @@ Synchronisation
 ---------------
 
 Un cron se charge de réaliser les mises à jour de la configuration des hôtes, des services 
-ainsi que  desmodèles d'hôtes et de services s'il trouve une nouvelle entrée dans l'index du wiki.
+ainsi que des modèles d'hôtes et de services s'il trouve une nouvelle entrée dans l'index du wiki.
 
 Par exemple, si vous créez une page dans le wiki en utilisant le motif habituel 
 (ex : ``Host:Centreon-Server`` ou ``Service:Centreon-Server Disk-/``), le cron trouvera 

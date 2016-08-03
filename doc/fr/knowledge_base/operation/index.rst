@@ -1,7 +1,0 @@
-Exploitation
-============
-
-.. toctree::
-
-    definition
-    display 

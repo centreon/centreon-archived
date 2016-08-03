@@ -2,14 +2,14 @@ Algorithme d'affichage : Héritage et surcharge
 ==============================================
 
 Pour éviter une trop grande charge de travail sur les procédures de déploiement,
-le module permet à l'administrateur de configurer une procédure simple pour les hôtes/services.
+cette fonctionnalité permet à l'administrateur de configurer une procédure simple pour les hôtes/services.
 Ainsi une procédure peut être spécifiée pour un hôte/service donné mais aussi pour un modèle 
 d'hôte et de service.
 Si une procédure est définie au niveau d'un modèle, tous les enfants du modèle parent bénéficieront 
 également de cette procédure sauf si elle est surchargée par une autre procédure spécifique à l'enfant.
 Ce système est identique au système de modèle par héritage présent dans Centreon.
 
-Le module *Centreon Knowledge Base* est conçu pour :
+La fonctionnalité *Centreon Knowledge Base* est conçu pour :
 
 - éviter d'ajouter ou de mettre à jour manuellement plusieurs fois la même procédure dans la base de connaissances.
 - être proche du système de modèle par héritage de Centreon en surchargeant pour un déploiement et une maintenance plus rapide.

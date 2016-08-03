@@ -1,7 +1,7 @@
 Displayed procedure: template and overload
 ==========================================
 
-To avoid too much workload on the procedure deployment, the module
+To avoid too much workload on the procedure deployment, the functionality
 allows administrator to setup a single procedure for
 hosts/services. So a procedure can be specified for a given
 host/service but can be specified as well for a host/service
@@ -10,7 +10,7 @@ the template will have the procedure attached as well unless
 overloaded by a specific one. The mechanism is identical to template
 system in Centreon with inheritance.
 
-*Centreon Knowledge Base* module is designed to:
+*Centreon Knowledge Base* function is designed to:
 
 - avoid to input or update several times the same procedure in the knowledge base
 - be close to Centreon template system with inheritance, overload for quick deployment and maintenance
