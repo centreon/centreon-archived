@@ -159,6 +159,22 @@ if ($min) {
             deleteCommandInDB(isset($select) ? $select : array());
             require_once($path."listCommand.php");
             break;
+        case "me":
+            changeCommandStatus(null, isset($select) ? $select : array(), 1);
+            require_once($path."listCommand.php");
+            break;
+        case "md":
+            changeCommandStatus(null, isset($select) ? $select : array(), 0);
+            require_once($path."listCommand.php");
+            break;
+        case "en":
+            changeCommandStatus($cmdG, null, 1);
+            require_once($path."listCommand.php");
+            break;
+        case "di":
+            changeCommandStatus($cmdG, null, 0);
+            require_once($path."listCommand.php");
+            break;
         default:
             require_once($path."listCommand.php");
             break;
