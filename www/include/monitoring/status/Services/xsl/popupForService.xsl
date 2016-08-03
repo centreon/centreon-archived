@@ -24,6 +24,11 @@
 				</xsl:element>
 			</td>
 		</tr>
+		<tr class="list_lvl_1">
+			<td class='ListColLvl1_name' colspan="2">
+				<h4><xsl:value-of select="tr6"/></h4>
+			</td>
+		</tr>
 		<tr>
 			<td class="ColPopupNoWrap" colspan="2">
 				<h4><xsl:value-of select="plugin_output"/></h4>
@@ -31,9 +36,10 @@
 		</tr>
 		<xsl:if test="notes != ''">
 		<tr class="list_lvl_1">
-			<td class='ListColLvl1_name' colspan='2'><xsl:value-of select='tr4'></xsl:value-of></td>
-		</tr>
-		<tr class='list_one'>
+			<td class='ListColLvl1_name' colspan="2">
+				<h4><xsl:value-of select="tr4"/></h4>
+			</td>
+		</tr>		<tr class='list_one'>
 			<td class="ColPopup"><xsl:value-of select="notes/@name"/></td>
 			<td class="ColPopup"><xsl:value-of select="notes"/></td>
 		</tr>
@@ -54,10 +60,6 @@
 		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type"/></td>
-		</tr>
-		<tr class='list_one'>
-			<td class="ColPopup">&#160;<xsl:value-of select="percent_state_change_name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="percent_state_change"/> %</td>
 		</tr>
 		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="performance_data_name"/></td>
@@ -92,10 +94,6 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="is_downtime_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="is_downtime"/></td>
 		</tr>
-		<tr class='list_one'>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_update_name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_update"/></td>
-		</tr>
 		<tr class="list_lvl_1">
 			<td class='ListColLvl1_name' colspan="2">
 				<h4><xsl:value-of select="tr2"/></h4>
@@ -105,35 +103,15 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="last_notification_name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_notification"/></td>
 		</tr>
-		<tr class='list_one'>
-			<td class="ColPopup">&#160;<xsl:value-of select="next_notification_name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="next_notification"/></td>
-		</tr>
-		<tr class='list_two'>
-			<td class="ColPopup">&#160;<xsl:value-of select="current_notification_number_name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="current_notification_number"/></td>
-		</tr>
 		<tr class="list_lvl_1">
 			<td class='ListColLvl1_name' colspan="2">
 				<h4><xsl:value-of select="tr3"/></h4>
 			</td>
 		</tr>
 		<tr class='list_one'>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_ok/@name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_ok"/></td>
+			<td class="ColPopup">&#160;<xsl:value-of select="last_time_name"/><xsl:value-of select="last_time_status"/></td>
+			<td class="ColPopup">&#160;<xsl:value-of select="last_time"/></td>
 		</tr>
-		<tr class='list_two'>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_critical/@name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_critical"/></td>
-		</tr>
-		<tr class='list_one'>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_warning/@name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_warning"/></td>
-		</tr>
-		<tr class='list_two'>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_unknown/@name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="last_time_unknown"/></td>
-		</tr>		
 	</table>
 </xsl:template>
 </xsl:stylesheet>
