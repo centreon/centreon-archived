@@ -140,15 +140,17 @@
                         {if $index_data}
                         <table class="ListTable">
                             <tr class='list_lvl_1'>
-                                <td class="FormHeader" colspan="2">
-                                <h4>{$detailed_graph}</h4></td>
+                              <td class="FormHeader" colspan="2">
+                                <h4>
+                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
+                                    <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
+                                  </a>
+                                </h4>
+                              </td>
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColCenter" colspan="2">
-                                    <a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
-                                        <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service">
-                                        </div>
-                                    </a>
+                                  <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service"></div>
                                 </td>
                             </tr>
                         </table>
