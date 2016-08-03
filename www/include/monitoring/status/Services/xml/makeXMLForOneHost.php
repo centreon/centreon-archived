@@ -88,7 +88,7 @@ $dateFormat         = $obj->checkArgument("date_time_format_status", $_GET, "Y/m
 $rq1 =  " SELECT state," .
         " address," .
         " name," .
-                    " alias," .
+        " alias," .
         " perfdata," .
         " check_attempt," .
         " state_type," .
@@ -108,10 +108,10 @@ $rq1 =  " SELECT state," .
         " scheduled_downtime_depth," .
         " output," .
         " notes," .
-        " ROUND(percent_state_change) as percent_state_change," .
         " notify," .
         " event_handler_enabled," .
-        " icon_image" .
+        " icon_image, " .
+        " timezone" .
         " FROM hosts " .
         " WHERE host_id = " . $host_id .
         " LIMIT 1";
@@ -163,8 +163,6 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeAttribute("name", _("Status Information"));
     $obj->XML->text(CentreonUtils::escapeSecure($pluginShortOuput), 0);
     $obj->XML->endElement();
-    $obj->XML->writeElement("performance_data", CentreonUtils::escapeSecure($data["perfdata"]));
-    $obj->XML->writeElement("performance_data_name", _("Performance Data"), 0);
     $obj->XML->startElement("current_attempt");
     $obj->XML->writeAttribute("name", _("Current Attempt"));
     $obj->XML->text($data["check_attempt"]);
@@ -173,44 +171,48 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("state_type_name", _("State Type"), 0);
     $obj->XML->writeElement("last_check", $obj->GMT->getDate($dateFormat, $data["last_check"]));
     $obj->XML->writeElement("last_check_name", _("Last Check"), 0);
-    $obj->XML->writeElement("next_check", $obj->GMT->getDate($dateFormat, $data["next_check"]));
-    $obj->XML->writeElement("next_check_name", _("Next Check"), 0);
-    $obj->XML->writeElement("check_latency", $data["latency"]);
-    $obj->XML->writeElement("check_latency_name", _("Latency"), 0);
-    $obj->XML->writeElement("check_execution_time", $data["execution_time"]);
-    $obj->XML->writeElement("check_execution_time_name", _("Execution Time"), 0);
     $obj->XML->writeElement("last_state_change", $obj->GMT->getDate($dateFormat, $data["last_state_change"]));
     $obj->XML->writeElement("last_state_change_name", _("Last State Change"), 0);
     $obj->XML->writeElement("duration", $duration);
     $obj->XML->writeElement("duration_name", _("Current State Duration"), 0);
     $obj->XML->writeElement("last_notification", $obj->GMT->getDate($dateFormat, $last_notification));
     $obj->XML->writeElement("last_notification_name", _("Last Notification"), 0);
-    $obj->XML->writeElement("next_notification", $obj->GMT->getDate($dateFormat, $next_notification));
-    $obj->XML->writeElement("next_notification_name", _("Next Notification"), 0);
     $obj->XML->writeElement("current_notification_number", $data["notification_number"]);
     $obj->XML->writeElement("current_notification_number_name", _("Current Notification Number"), 0);
-    $obj->XML->writeElement("percent_state_change", $data["percent_state_change"]);
-    $obj->XML->writeElement("percent_state_change_name", _("Percent State Change"), 0);
     $obj->XML->writeElement("is_downtime", ($data["scheduled_downtime_depth"] > 0 ? $obj->en[1] : $obj->en[0]));
     $obj->XML->writeElement("is_downtime_name", _("In Scheduled Downtime?"), 0);
     $obj->XML->writeElement("last_update", $obj->GMT->getDate($dateFormat, time()));
     $obj->XML->writeElement("last_update_name", _("Last Update"), 0);
     $obj->XML->writeElement("ico", $data["icon_image"]);
+    $obj->XML->writeElement("timezone_name", _("Timezone"));
+    $obj->XML->writeElement("timezone", str_replace(':', '', $data["timezone"]));
 
-    $obj->XML->startElement("last_time_up");
-    $obj->XML->writeAttribute("name", _("Last time up"));
-    $obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_up"]));
-    $obj->XML->endElement();
 
-    $obj->XML->startElement("last_time_down");
-    $obj->XML->writeAttribute("name", _("Last time down"));
-    $obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_down"]));
-    $obj->XML->endElement();
-
-    $obj->XML->startElement("last_time_unreachable");
-    $obj->XML->writeAttribute("name", _("Last time unreachable"));
-    $obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_unreachable"]));
-    $obj->XML->endElement();
+    /* Last State Info */
+    if ($data["state"] == 0) {
+        $status = '';
+        $status_date = 0;
+        if (isset($data["last_time_down"]) && $status_date < $data["last_time_down"]) {
+            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_down"]);
+            $status = _('DOWN');
+        }
+        if (isset($data["last_time_unreachable"]) && $status_date < $data["last_time_unreachable"]) {
+            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_unreachable"]);
+            $status = _('UNREACHABLE');
+        }
+    } else {
+        $status = _('OK');
+        $status_date = 0;
+        if ($data["last_time_up"]) {
+            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_up"]);
+        }
+    }
+    if ($status_date == 0) {
+        $status_date = '-';
+    }
+    $obj->XML->writeElement("last_time_name", _("Last time in "), 0);
+    $obj->XML->writeElement("last_time", $status_date, 0);
+    $obj->XML->writeElement("last_time_status", $status, 0);
 
     $obj->XML->startElement("notes");
     $obj->XML->writeAttribute("name", _("Notes"));

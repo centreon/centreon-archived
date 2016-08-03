@@ -51,6 +51,19 @@ if (!function_exists("myDecodeCommand")) {
 
 }
 
+function getCommandName($command_id)
+{
+    global $pearDB;
+
+    $DBRESULT = $pearDB->query("SELECT `command_name` FROM `command` WHERE `command_id` = " . $pearDB->escape($command_id) . "");
+    $command = $DBRESULT->fetchRow();
+    if (isset($command['command_name'])) {
+        return $command['command_name'];
+    } else {
+        return null;
+    }
+}
+
 function testCmdExistence($name = null)
 {
     global $pearDB, $form, $centreon;
@@ -413,11 +426,54 @@ function insertMacrosDesc($cmd, $ret)
             }
             
             if (!empty($sName)) {
-                $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape($sName)."' AND `command_command_id` = ".intval($cmd);
+                $query = "DELETE FROM `on_demand_macro_command` 
+                            WHERE command_macro_name = '".$pearDB->escape($sName)."' 
+                            AND `command_command_id` = ".intval($cmd);
                 $pearDB->query($query);
 
-                $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape($sName)."', '".$pearDB->escape($sDesc)."', '".$arr[$sType]."')";
+                $sQueryInsert = "INSERT INTO `on_demand_macro_command` 
+                    (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) 
+                    VALUES (".  intval($cmd).", 
+                        '".$pearDB->escape($sName)."', 
+                        '".$pearDB->escape($sDesc)."', 
+                        '".$arr[$sType]."')";
                 $pearDB->query($sQueryInsert);
+            }
+        }
+    }
+}
+
+/**
+ * Change status command
+ *
+ * @param ini $command_id
+ * @param array $commands
+ * @param int $status
+ *
+ */
+function changeCommandStatus($command_id, $commands, $status)
+{
+    global $pearDB, $centreon;
+
+    if (isset($command_id)) {
+        $query = "UPDATE `command` SET command_activate = '".$pearDB->escape($status)."' 
+                    WHERE command_id = '".$pearDB->escape($command_id)."'";
+        $pearDB->query($query);
+        $centreon->CentreonLogAction->insertLog("command", 
+                                                    $command_id, 
+                                                    getCommandName($command_id), 
+                                                    $status ? "enable" : "disable");
+    } else {
+        foreach ($commands as $command_id => $flag) {
+            if (isset($command_id) && $command_id) {
+                $query = "UPDATE `command` SET command_activate = '".$pearDB->escape($status)."' 
+                            WHERE command_id = '".$pearDB->escape($command_id)."'";
+                $pearDB->query($query);            
+
+                $centreon->CentreonLogAction->insertLog("command", 
+                                                            $command_id, 
+                                                            getCommandName($command_id), 
+                                                            $status ? "enable" : "disable");
             }
         }
     }

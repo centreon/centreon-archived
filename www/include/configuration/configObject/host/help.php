@@ -66,6 +66,8 @@ $help["event_handler_enabled"] = dgettext("help", "This directive is used to det
 $help["event_handler"] = dgettext("help", "The event handler command is triggered whenever a change in the state of the host is detected, i.e. whenever it goes down or recovers.");
 $help["event_handler_args"] = dgettext("help", "This parameters are passed to the event handler commands in the same way check command parameters are handled. The format is: !ARG1!ARG2!...ARGn");
 
+$help["host_acknowledgement_timeout"] = dgettext("help", "Specify a duration of acknowledgement for this host or host depending to this template. If you leave it blank, no timeout will be set.");
+
 /*
  * Host extended infos
  */

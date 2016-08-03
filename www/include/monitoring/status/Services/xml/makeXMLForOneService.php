@@ -96,7 +96,6 @@ $rq1 = "SELECT s.state," .
         " s.next_check," .
         " s.last_state_change," .
         " s.last_notification," .
-        " s.next_notification," .
         " s.last_hard_state_change," .
         " s.last_hard_state," .
         " s.latency," .
@@ -165,11 +164,6 @@ if ($data = $DBRESULT->fetchRow()) {
         $last_notification = $data["last_notification"];
     }
 
-    $next_notification = "N/A";
-    if ($data["next_notification"] > 0) {
-        $next_notification = $data["next_notification"];
-    }
-
     if ($data["last_check"] == 0) {
         $data["last_check"] = _("N/A");
     }
@@ -233,45 +227,39 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("next_notification_name", _("Next Notification"), 0);
     $obj->XML->writeElement("current_notification_number", $data["notification_number"]);
     $obj->XML->writeElement("current_notification_number_name", _("Current Notification Number"), 0);
-    $obj->XML->writeElement("percent_state_change", $data["percent_state_change"]);
-    $obj->XML->writeElement("percent_state_change_name", _("Percent State Change"), 0);
     $obj->XML->writeElement("is_downtime", ($data["scheduled_downtime_depth"] ? $obj->en["1"] : $obj->en["0"]));
     $obj->XML->writeElement("is_downtime_name", _("In Scheduled Downtime?"), 0);
-    $obj->XML->writeElement("last_update", $obj->GMT->getDate($dateFormat, time()));
-    $obj->XML->writeElement("last_update_name", _("Last Update"), 0);
     $obj->XML->writeElement("ico", $data["icon_image"]);
 
-    $obj->XML->startElement("last_time_ok");
-    $obj->XML->writeAttribute("name", _("Last ok time"));
-    if ($data["last_time_ok"] == 0) {
-        $data["last_time_ok"] = _("N/A");
+    /* Last State Info */
+    if ($data["state"] == 0) {
+        $status = '';
+        $status_date = 0;
+        if (isset($data["last_time_critical"]) && $status_date < $data["last_time_critical"]) {
+            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_critical"]);
+            $status = _('CRITICAL');
+        }
+        if (isset($data["last_time_warning"]) && $status_date < $data["last_time_warning"]) {
+            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_warning"]);
+            $status = _('WARNING');
+        }
+        if (isset($data["last_time_unknown"]) && $status_date < $data["last_time_unknown"]) {
+            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_unknown"]);
+            $status = _('UNKNOWN');
+        }
+    } else {
+        $status = _('OK');
+        $status_date = 0;
+        if ($data["last_time_ok"]) {
+            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_ok"]);
+        }
     }
-    $obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_ok"]));
-    $obj->XML->endElement();
-
-    $obj->XML->startElement("last_time_warning");
-    $obj->XML->writeAttribute("name", _("Last warning time"));
-    if ($data["last_time_warning"] == 0) {
-        $data["last_time_warning"] = _("N/A");
+    if ($status_date == 0) {
+        $status_date = '-';
     }
-    $obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_warning"]));
-    $obj->XML->endElement();
-
-    $obj->XML->startElement("last_time_unknown");
-    $obj->XML->writeAttribute("name", _("Last unknown time"));
-    if ($data["last_time_unknown"] == 0) {
-        $data["last_time_unknown"] = _("N/A");
-    }
-    $obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_unknown"]));
-    $obj->XML->endElement();
-
-    $obj->XML->startElement("last_time_critical");
-    $obj->XML->writeAttribute("name", _("Last critical time"));
-    if ($data["last_time_critical"] == 0) {
-        $data["last_time_critical"] = _("N/A");
-    }
-    $obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_critical"]));
-    $obj->XML->endElement();
+    $obj->XML->writeElement("last_time_name", _("Last time in "), 0);
+    $obj->XML->writeElement("last_time", $status_date, 0);
+    $obj->XML->writeElement("last_time_status", $status, 0);
 
     $obj->XML->startElement("notes");
     $obj->XML->writeAttribute("name", _("Notes"));
@@ -290,6 +278,7 @@ $obj->XML->writeElement("tr2", _("Notification Information"), 0);
 $obj->XML->writeElement("tr3", _("Last Status Change"), 0);
 $obj->XML->writeElement("tr4", _("Extended information"), 0);
 $obj->XML->writeElement("tr5", _("Status Information"), 0);
+$obj->XML->writeElement("tr6", _("Output"), 0);
 
 /*
  * End Buffer
