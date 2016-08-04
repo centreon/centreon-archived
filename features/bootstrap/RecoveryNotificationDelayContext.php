@@ -69,6 +69,8 @@ class RecoveryNotificationDelayContext extends CentreonContext
     public function theHostIsNotUp()
     {
         $this->submitHostResult($this->hostName, 1, __FUNCTION__);
+        sleep(5);
+        $this->execute('rm -f /tmp/acceptance_notification.tmp', 'web', false);
     }
 
     /**
@@ -77,6 +79,8 @@ class RecoveryNotificationDelayContext extends CentreonContext
     public function theServiceIsNotOK()
     {
         $this->submitServiceResult($this->hostName, $this->serviceName, 2, __FUNCTION__);
+        sleep(5);
+        $this->execute('rm -f /tmp/acceptance_notification.tmp', 'web', false);
     }
 
     /**
@@ -100,7 +104,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function theHostReceivesANewCheckResult()
     {
-        sleep(60);
+        sleep(65);
         $this->submitHostResult($this->hostName, 0, __FUNCTION__);
     }
 
@@ -109,7 +113,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function theServiceReceivesANewCheckResult()
     {
-        sleep(60);
+        sleep(65);
         $this->submitServiceResult($this->hostName, $this->serviceName, 0, __FUNCTION__);
     }
 
@@ -118,6 +122,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function noRecoveryNotificationIsSent()
     {
+        sleep(10);
         $retval = $this->execute('ls /tmp/acceptance_notification.tmp 2>/dev/null', 'web', false);
         if ($retval['exit_code'] == 0) {
             throw new \Exception('Notification was sent out.');
@@ -129,6 +134,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
      */
     public function aRecoveryNotificationIsSent()
     {
+        sleep(10);
         $retval = $this->execute('ls /tmp/acceptance_notification.tmp 2>/dev/null', 'web', false);
         if ($retval['exit_code'] != 0) {
             throw new \Exception('No notification was sent out.');
