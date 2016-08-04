@@ -5,8 +5,7 @@
         <column>date_end</column>
         <type>date</type>
         <duration>daily</duration>
-        <timezone></timezone>
-        <retention>90</retention>
+        <retention>365</retention>
         <retentionforward>10</retentionforward>        
         <backup>
             <folder>/var/backups/</folder>

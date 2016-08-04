@@ -5,8 +5,7 @@
         <column>ctime</column>
         <type>date</type>
         <duration>daily</duration>
-        <timezone></timezone>
-        <retention>365</retention>
+        <retention>31</retention>
         <retentionforward>10</retentionforward>        
         <backup>
             <folder>/var/backups/</folder>

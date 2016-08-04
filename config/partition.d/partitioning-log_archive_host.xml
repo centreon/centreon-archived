@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <centreon-partitioning>
-<table name="log_archive_host" schema="centreon_storage">
- 	<activate>1</activate>
+    <table name="log_archive_host" schema="centreon_storage">
+        <activate>1</activate>
         <column>date_end</column>
         <type>date</type>
         <duration>daily</duration>
-        <timezone></timezone>
-        <retention>90</retention>
+        <retention>365</retention>
         <retentionforward>10</retentionforward>        
         <backup>
-                <folder>/var/backups/</folder>
-                <format>%Y-%m-%d</format>
+            <folder>/var/backups/</folder>
+            <format>%Y-%m-%d</format>
         </backup>
         <createstmt>
 CREATE TABLE `log_archive_host` (
@@ -37,6 +36,6 @@ CREATE TABLE `log_archive_host` (
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8
-</createstmt>
-</table>
+        </createstmt>
+    </table>
 </centreon-partitioning>
