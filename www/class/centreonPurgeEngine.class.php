@@ -124,7 +124,7 @@ class CentreonPurgeEngine
 
         $DBRESULT = $this->dbCentstorage->query($query);
         if (PEAR::isError($DBRESULT)) {
-            throw new Exception('Cannot get retention information');
+            throw new Exception('Cannot get partition information');
         }
 
         while ($row = $DBRESULT->fetchRow()) {
@@ -138,15 +138,19 @@ class CentreonPurgeEngine
     {
         foreach ($this->tablesToPurge as $table => $parameters) {
             if ($parameters['retention'] > 0) {
+                echo "[" . date(DATE_RFC822) . "] Purging table " . $table . "...\n";
                 if ($parameters['is_partitioned']) {
                     $this->purgeParts($table);
                 } else {
                     $this->purgeOldData($table);
                 }
+                echo "[" . date(DATE_RFC822) . "] Table " . $table . " purged\n";
             }
         }
 
+        echo "[" . date(DATE_RFC822) . "] Purging index_data...\n";
         $this->purgeIndexData();
+        echo "[" . date(DATE_RFC822) . "] index_data purged\n";
     }
 
     /**
@@ -175,6 +179,7 @@ class CentreonPurgeEngine
                 throw new Exception("Error : Cannot drop partition " . $row["PARTITION_NAME"] . " of table "
                     . $table . ", " . $DBRESULT2->getDebugInfo() . "\n");
             }
+            echo "[" . date(DATE_RFC822) . "] Partition " . $row["PARTITION_NAME"] . " deleted\n";
         }
     }
 

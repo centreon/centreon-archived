@@ -45,12 +45,12 @@ $debugLevel = 0;
 
 require_once "DB.php";
 
-require_once __DIR__."../config/centreon.config.php";
+require_once __DIR__."/../config/centreon.config.php";
 
-require_once __DIR__."../www/class/centreon-partition/options.class.php";
-require_once __DIR__."../www/class/centreon-partition/partEngine.class.php";
-require_once __DIR__."../www/class/centreon-partition/mysqlTable.class.php";
-require_once __DIR__."../www/class/centreon-partition/config.class.php";
+require_once __DIR__."/../www/class/centreon-partition/options.class.php";
+require_once __DIR__."/../www/class/centreon-partition/partEngine.class.php";
+require_once __DIR__."/../www/class/centreon-partition/mysqlTable.class.php";
+require_once __DIR__."/../www/class/centreon-partition/config.class.php";
 
 $options = new Options();
 if ($options->isMissingOptions()) {
