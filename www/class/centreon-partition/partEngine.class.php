@@ -453,6 +453,7 @@ class PartEngine
         $request .= "FROM information_schema.`PARTITIONS` ";
         $request .= "WHERE `TABLE_NAME`='".$table->getName()."' ";
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
+        $request .= "ORDER BY PARTITION_NAME DESC ";
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
             throw new Exception(
