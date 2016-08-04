@@ -187,9 +187,9 @@ function editLinkForService($dbConnector, $objName)
 {
     if (is_array($objName))
     {
-        $serviceName = str_replace(' ', '_', $objName[count($objName) - 1]);
-        unset($objName[count($objName) - 1]);
-        $hostName = substr(implode('_', $objName), 8);
+        $temphostName = explode(':', array_shift($objName));
+        $hostName = $temphostName[1];
+        $serviceName = join(' ', $objName);
         $querySelect = "SELECT service_id "
             ."FROM service, host, host_service_relation "
             ."WHERE service.service_description = '$serviceName' "

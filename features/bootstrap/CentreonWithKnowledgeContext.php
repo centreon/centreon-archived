@@ -1,7 +1,5 @@
 <?php
 
-
-
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\HostConfigurationPage;
@@ -22,7 +20,6 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->hostName = 'MediawikiHost';
         $this->serviceHostName = 'Centreon-Server';
         $this->serviceName = 'MediawikiService';
-
     }
 
     /**
@@ -37,7 +34,6 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->iAmLoggedIn();
 
     }
-
 
 
     /**
@@ -142,7 +138,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
 
         /* Add wiki page */
         $checkurl = 'Service:'.$this->serviceHostName.'_'.$this->serviceName;
-        if( !strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
+        if( !strstr(urldecode($this->getSession()->getCurrentUrl()), $checkurl)) {
            throw new Exception(' Mauvaise url');
         }
 

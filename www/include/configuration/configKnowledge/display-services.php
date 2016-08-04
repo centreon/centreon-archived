@@ -205,14 +205,15 @@ $templateHostArray = array();
 foreach ($serviceList as $key => $value) {
     $tplStr = "";
     $tplArr = $proc->getMyServiceTemplateModels($value['id']);
-    if ($proc->serviceHasProcedure($key, $tplArr) == true) {
+    $key_nospace = str_replace(" ", "_", $key);
+    if ($proc->serviceHasProcedure($key_nospace, $tplArr) == true) {
         $diff[$key] = 1;
     } else {
         $diff[$key] = 0;
     }
 
     if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
-        if ($diff[$key] == 1 || $proc->serviceHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
+        if ($diff[$key] == 1 || $proc->serviceHasProcedure($key_nospace, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
             $rows--;
             unset($diff[$key]);
             unset($serviceList[$key]);
