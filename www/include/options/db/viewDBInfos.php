@@ -53,13 +53,21 @@ $dataCentstorage = $pearDBO->getProperties();
  * Get partitioning informations
  */
 $partEngine = new PartEngine();
-$dataBinTable = new MysqlTable($pearDBO, 'data_bin', $conf_centreon['dbcstg']);
-$logsTable = new MysqlTable($pearDBO, 'logs', $conf_centreon['dbcstg']);
 
-$partitioningInfos = array(
-    'data_bin' => $partEngine->listParts($dataBinTable, $pearDBO, false),
-    'logs' => $partEngine->listParts($logsTable, $pearDBO, false)
+$tables = array(
+    'data_bin',
+    'logs',
+    'log_archive_host',
+    'log_archive_service',
+    'comments',
+    'downtimes'
 );
+
+$partitioningInfos = array();
+foreach ($tables as $table) {
+    $mysqlTable = new MysqlTable($pearDBO, $table, $conf_centreon['dbcstg']);
+    $partitioningInfos[$table] = $partEngine->listParts($mysqlTable, $pearDBO, false);
+}
 
 // Smarty template Init
 $tpl = new Smarty();

@@ -47,3 +47,8 @@ default:
       paths: [ %paths.base%/features/RecoveryNotificationDelay.feature ]
       contexts:
         - RecoveryNotificationDelayContext
+
+    partitioning:
+      paths: [ %paths.base%/features/Partitioning.feature ]
+      contexts:
+        - PartitioningContext

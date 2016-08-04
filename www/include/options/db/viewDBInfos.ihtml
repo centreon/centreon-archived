@@ -1,6 +1,6 @@
 <table width='100%'>
     <tr>
-        <td width='60%' style='vertical-align:top;'>
+        <td id='database_partitioning' width='60%' style='vertical-align:top;'>
             <h2>Database partitioning</h2>
             <hr>
 
@@ -55,7 +55,7 @@
             {/foreach}
 
         <td width='2%' style='vertical-align:top;'>&nbsp;</td>
-        <td width='38%' style='vertical-align:top;'>
+        <td id='database_informations' width='38%' style='vertical-align:top;'>
             <h2>{t}Database Informations{/t}</h2>
             <hr>
             <table class="ListTable">
