@@ -6,11 +6,11 @@ Lien avec l'interface web de supervision
 La base de connaissance est accessible depuis l'interface web de Centreon 
 à travers un icône cliquable (voir ci dessous)
 
-.. image:: ../_static/operation/screen_host_monitoring.png
+.. image:: ../../_static/images/knowledge/screen_host_monitoring.png
    :align: center
 
 En cliquant sur l'icône, l'utilisateur est redirigé vers la base de connaissance 
-correspondante. Si l'icône est situé à droite du nom de l'hôte, la base de connaissance 
+correspondante. Si l'icône est situé à gauche du nom de l'hôte, la base de connaissance
 concernera l'hôte. Si l'icône est situé à droite du nom du service, la base de connaissance 
 concernera le service. Vous pouvez vous appuyer sur l'illustration précédente pour différencier 
 les différents icônes grâce au carré rouge et bleu.

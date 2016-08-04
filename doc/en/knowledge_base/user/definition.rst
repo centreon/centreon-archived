@@ -13,5 +13,6 @@ Procedures can be of different natures:
 
 A procedure can be defined for a host and/or a service.
 
-.. image:: ../_static/operation/kb_change.png
+.. image:: ../../_static/images/knowledge/kb_change.png
+
 
