@@ -16,11 +16,11 @@ class CentreonWithKnowledgeContext extends CentreonContext
     {
         parent::__construct();
         $this->pollers_page = new ConfigurationPollersPage($this);
-
         $this->hostName = 'MediawikiHost';
         $this->serviceHostName = 'Centreon-Server';
         $this->serviceName = 'MediawikiService';
     }
+
 
     /**
      * @Given I am logged in a Centreon server with MediaWiki installed
@@ -56,7 +56,6 @@ class CentreonWithKnowledgeContext extends CentreonContext
     }
 
 
-
     /**
      * @Given a service configured
      */
@@ -79,17 +78,14 @@ class CentreonWithKnowledgeContext extends CentreonContext
     }
 
 
-
     /**
      * @When I add a procedure concerning this host in MediaWiki
      */
     public function iAddAProcedureConcerningThisHostInMediawiki()
     {
-
         /* Go to the page to options page */
         $this->visit('/main.php?p=61001');
         $this->assertFind('css', '.list_two td:nth-child(5) a:nth-child(1)')->click();
-
         sleep(5);
         $windowNames = $this->getSession()->getWindowNames();
         if(count($windowNames) > 1) {
@@ -105,17 +101,12 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki host page');
         $this->assertFind('css', 'input[name="wpSave"]')->click();
 
-
         /* cron */
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
-        sleep(10);
-
+        sleep(2);
         /* Apply config */
         (new ConfigurationPollersPage($this))->restartEngine();
-
-
     }
-
 
 
     /**
@@ -123,18 +114,14 @@ class CentreonWithKnowledgeContext extends CentreonContext
      */
     public function iAddAProcedureConcerningThisServiceInMediawiki()
     {
-
         /* Go to the page to options page */
         $this->visit('/main.php?p=61002');
         $this->assertFind('css', '.list_one:nth-child(4) td:nth-child(6) a:nth-child(1)')->click();
         sleep(5);
-
         $windowNames = $this->getSession()->getWindowNames();
-
         if(count($windowNames) > 1) {
             $this->getSession()->switchToWindow($windowNames[1]);
         }
-
 
         /* Add wiki page */
         $checkurl = 'Service:'.$this->serviceHostName.'_'.$this->serviceName;
@@ -147,108 +134,49 @@ class CentreonWithKnowledgeContext extends CentreonContext
 
         /* cron */
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
-        sleep(10);
-
+        sleep(2);
         /* Apply config */
         (new ConfigurationPollersPage($this))->restartEngine();
-
     }
 
 
-
-
-
-
     /**
-     * @Then a link towards this host procedure is available in monitoring
+     * @Then a link towards this host procedure is available in configuration
      */
-    public function aLinkTowardThisHostProcedureIsAvailableInMonitoring()
+    public function aLinkTowardThisHostProcedureIsAvailableInConfiguration()
     {
-
         /* check url config */
         $this->visit('/main.php?p=60101');
         $this->assertFind('css', '.list_two td:nth-child(2) a:nth-child(1)')->click();
         sleep(2);
         $this->assertFind('css', '#c5 a:nth-child(1)')->click();
         sleep(2);
-
         $fieldValue = $this->assertFind('css', 'input[name="ehi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
         if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')) {
             throw new Exception(' Mauvaise url');
         }
-
-
-
-        /* Go to the page host monitoring */
-/*        $this->visit('/main.php?p=20202');
-        sleep(5);
-        $this->assertFind('css', '#statusHost option:nth-child(3)')->click();
-        sleep(5);
-        $this->assertFind('css', '#trStatus:nth-child(2) td:nth-child(3) a:nth-child(1)')->click();
-        sleep(5);
-        $windowNames = $this->getSession()->getWindowNames();
-        if(count($windowNames) > 1) {
-            $this->getSession()->switchToWindow($windowNames[1]);
-        }
-        /* Add wiki page */
-/*        $checkurl = 'Host:'.$this->hostName;
-        if( !strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
-            throw new Exception(' Mauvaise url');
-        }
-
-
-*/
-
-
     }
 
 
-
     /**
-     * @Then a link towards this service procedure is available in monitoring
+     * @Then a link towards this service procedure is available in configuration
      */
-    public function aLinkTowardThisServiceProcedureIsAvailableInMonitoring()
+    public function aLinkTowardThisServiceProcedureIsAvailableInConfiguration()
     {
-
         /* check url config */
         $this->visit('/main.php?p=60201');
         $this->assertFind('css', '.list_one:nth-child(8) td:nth-child(3) a')->click();
         sleep(2);
         $this->assertFind('css', '#c5 a:nth-child(1)')->click();
         sleep(2);
-
         $fieldValue = $this->assertFind('css', 'input[name="esi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
         if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')) {
             throw new Exception(' Mauvaise url');
         }
-
-
-
-        /* Go to the page host monitoring */
-/*        $this->visit('/main.php?p=20201');
-        sleep(5);
-        $this->assertFind('css', '#statusService option:nth-child(3)')->click();
-        sleep(5);
-        $this->assertFind('css', '#trStatus:nth-child(2) td:nth-child(5) a')->click();
-        /* View wiki page */
-/*        $checkurl = 'Service:'.$this->serviceHostName.'_'.$this->serviceName;
-        if( !strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
-            throw new Exception(' Mauvaise url');
-        }
-*/
-
-
-
-
-
     }
-
-
-
-
 
 }
