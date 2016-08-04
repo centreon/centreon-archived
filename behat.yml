@@ -47,3 +47,8 @@ default:
       paths: [ %paths.base%/features/RecoveryNotificationDelay.feature ]
       contexts:
         - RecoveryNotificationDelayContext
+
+    centreon_knowledge_base:
+      paths: [ %paths.base%/features/CentreonWithKnowledge.feature ]
+      contexts:
+        - CentreonWithKnowledgeContext
