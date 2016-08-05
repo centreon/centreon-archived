@@ -51,11 +51,12 @@ try {
     $centreon = $_SESSION['centreon'];
     $db = new CentreonDB();
     $locale = $centreon->user->get_lang();
-	putenv("LANG=$locale");
-	setlocale(LC_ALL, $locale);
-	bindtextdomain("messages",  _CENTREON_PATH_ . "www/locale/");;
-	bind_textdomain_codeset("messages", "UTF-8");
-	textdomain("messages");
+    putenv("LANG=$locale");
+    setlocale(LC_ALL, $locale);
+    bindtextdomain("messages", _CENTREON_PATH_ . "www/locale/");
+    ;
+    bind_textdomain_codeset("messages", "UTF-8");
+    textdomain("messages");
     
     if (CentreonSession::checkSession(session_id(), $db) == 0) {
         throw new Exception('Invalid session');
@@ -64,8 +65,8 @@ try {
     $widgetObj = new CentreonWidget($centreon, $db);
 
     /**
-	 * Smarty
-	 */
+     * Smarty
+     */
     $path = _CENTREON_PATH_ . "www/include/home/customViews/layouts/";
     $template = new Smarty();
     $template = initSmartyTplForPopup($path, $template, "./", _CENTREON_PATH_);
@@ -87,7 +88,7 @@ try {
             } else {
                 $widgets[$widgetId]['column'] = 0;
             }
-            if(!$permission && $widgets[$widgetId]['title'] === ""){
+            if (!$permission && $widgets[$widgetId]['title'] === "") {
                 $widgets[$widgetId]['title'] = "&nbsp;";
             }
             $widgetNumber++;
@@ -120,90 +121,90 @@ var trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
 var idUser = "<?php echo $centreon->user->user_id;?>";
 
 jQuery(function() {
-	if (columnClass) {
-    	if (!permission) {
-    		jQuery('.addWidget').button('disable');
-    		jQuery('.editView').button('disable');
+    if (columnClass) {
+        if (!permission) {
+            jQuery('.addWidget').button('disable');
+            jQuery('.editView').button('disable');
             wrenchSpan = '<span></span>';
-    		trashSpan = '<span></span>';
-    	} else {
-    		jQuery('.shareView').button('enable');
-    		jQuery('.addWidget').button('enable');
-    		jQuery('.editView').button('enable');
-    		jQuery('.widgetBody').sortable({
-        		connectWith: '.'+columnClass,
-        		handle: '.portlet-header',
-        		cursor: 'move',
-        		scroll: false,
-        		stop: function(event, ui) {
-    				jQuery('.portlet-content').each(function() {
-						if (jQuery(this).parent().find('.ui-icon-minusthick').length) {
-    						jQuery(this).show();
-						}
-					});
-					savePositions();
-        		},
-    			start: function() {
-					jQuery('.portlet-content').hide();
-            	}
-        	});
-        	jQuery('.widgetTitle').editable('./include/home/customViews/rename.php',
-                							{
-												id			: 'elementId',
-												name		: 'newName',
-												event		: 'dblclick'
-                							});
-    	}
+            trashSpan = '<span></span>';
+        } else {
+            jQuery('.shareView').button('enable');
+            jQuery('.addWidget').button('enable');
+            jQuery('.editView').button('enable');
+            jQuery('.widgetBody').sortable({
+                connectWith: '.'+columnClass,
+                handle: '.portlet-header',
+                cursor: 'move',
+                scroll: false,
+                stop: function(event, ui) {
+                    jQuery('.portlet-content').each(function() {
+                        if (jQuery(this).parent().find('.ui-icon-minusthick').length) {
+                            jQuery(this).show();
+                        }
+                    });
+                    savePositions();
+                },
+                start: function() {
+                    jQuery('.portlet-content').hide();
+                }
+            });
+            jQuery('.widgetTitle').editable('./include/home/customViews/rename.php',
+                                            {
+                                                id          : 'elementId',
+                                                name        : 'newName',
+                                                event       : 'dblclick'
+                                            });
+        }
 
-    	if (!ownership) {
-    		jQuery('.shareView').button('disable');
-		} else {
-			jQuery('.shareView').button('enable');
-		}
+        if (!ownership) {
+            jQuery('.shareView').button('disable');
+        } else {
+            jQuery('.shareView').button('enable');
+        }
         jQuery('.deleteView').button('enable');
 
-    	jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
-    		.find(".portlet-header")
-    			.addClass("ui-widget-header ui-corner-all")
-    			.prepend('<span class="ui-icon ui-icon-refresh"></span>')
-    			.prepend(wrenchSpan)
-    			.prepend(trashSpan)
-    			.prepend('<span class="show-hide ui-icon ui-icon-minusthick"></span>')
-    			.end()
-    		.find(".portlet-content");
+        jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
+            .find(".portlet-header")
+                .addClass("ui-widget-header ui-corner-all")
+                .prepend('<span class="ui-icon ui-icon-refresh"></span>')
+                .prepend(wrenchSpan)
+                .prepend(trashSpan)
+                .prepend('<span class="show-hide ui-icon ui-icon-minusthick"></span>')
+                .end()
+            .find(".portlet-content");
 
-    	jQuery(".portlet-header .show-hide").click(function() {
-    		jQuery(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-    		jQuery(this).parents(".portlet:first").find(".portlet-content").toggle();
-    	});
+        jQuery(".portlet-header .show-hide").click(function() {
+            jQuery(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+            jQuery(this).parents(".portlet:first").find(".portlet-content").toggle();
+        });
 
-    	<?php foreach ($widgets as $widgetId => $widget) { ?>
-			jQuery("[name=widget_" + viewId +  "_<?php echo $widgetId;?>]").attr('src', '<?php echo $widget['url']; ?>?widgetId='+<?php echo $widgetId;?> + '&customViewId=' + viewId);
-    	<?php } ?>
-	}
+        <?php foreach ($widgets as $widgetId => $widget) { ?>
+            jQuery("[name=widget_" + viewId +  "_<?php echo $widgetId;?>]").attr('src', '<?php echo $widget['url']; ?>?widgetId='+<?php echo $widgetId;?> + '&customViewId=' + viewId);
+        <?php } ?>
+    }
 
-	jQuery(".ui-icon-wrench").each(function(index, element) {
-										var tmp = jQuery(element).parents('.portlet').attr('name')
-										var widgetIndex = tmp.split("portlet_");
-										var widgetId = widgetIndex[1];
-										initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id="+viewId+"&widget_id="+widgetId, "70%", "70%");
-								   });
+    jQuery(".ui-icon-wrench").each(function(index, element) {
+                                        var tmp = jQuery(element).parents('.portlet').attr('name')
+                                        var widgetIndex = tmp.split("portlet_");
+                                        var widgetId = widgetIndex[1];
+                                        initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id="+viewId+"&widget_id="+widgetId, "70%", "70%");
+                                   });
 
-	jQuery(".ui-icon-refresh").each(function(index, element) {
-		var tmp = jQuery(element).parents('.portlet').attr('name')
-		var widgetIndex = tmp.split("portlet_");
-		var widgetId = widgetIndex[1];
-		jQuery(element).click(function() {
-			window.frames["widget_" + viewId +  "_" + widgetId].location.reload();
-		});
-   	});
+    jQuery(".ui-icon-refresh").each(function(index, element) {
+        var tmp = jQuery(element).parents('.portlet').attr('name')
+        var widgetIndex = tmp.split("portlet_");
+        var widgetId = widgetIndex[1];
+        jQuery(element).click(function() {
+            window.frames["widget_" + viewId +  "_" + widgetId].location.reload();
+        });
+    });
 
-	jQuery("span[class='ui-icon ui-icon-trash']").each(function(index, element) {
-                                		var tmp = jQuery(element).parents('.portlet').attr('name')
-                                		var widgetIndex = tmp.split("portlet_");
-                                		var widgetId = widgetIndex[1];
-                                		deleteWidget(element, viewId, widgetId);
-    								   });
+    jQuery("span[class='ui-icon ui-icon-trash']").each(function(index, element) {
+                                        var tmp = jQuery(element).parents('.portlet').attr('name')
+                                        var widgetIndex = tmp.split("portlet_");
+                                        var widgetId = widgetIndex[1];
+                                        deleteWidget(element, viewId, widgetId);
+                                       });
 });
 
 /**
@@ -211,25 +212,25 @@ jQuery(function() {
  */
 function deleteView()
 {
-	if (confirm(deleteViewMessage)) {
-			jQuery.ajax({
-				type	:	"POST",
-				dataType:	"xml",
-				url 	:	"./include/home/customViews/action.php",
-				data	:   {
-								action			:	"deleteView",
-								custom_view_id  :	viewId
-							},
-				success :	function(response) {
-								var view = response.getElementsByTagName('custom_view_id');
-								if (typeof(view) != 'undefined') {
-									window.top.location = './main.php?p=103';
-								} else if (typeof(error) != 'undefined') {
-									var errorMsg = error.item(0).firstChild.data;
-								}
-							}
-			});
-	}
+    if (confirm(deleteViewMessage)) {
+            jQuery.ajax({
+                type    :   "POST",
+                dataType:   "xml",
+                url     :   "./include/home/customViews/action.php",
+                data    :   {
+                                action          :   "deleteView",
+                                custom_view_id  :   viewId
+                            },
+                success :   function(response) {
+                                var view = response.getElementsByTagName('custom_view_id');
+                                if (typeof(view) != 'undefined') {
+                                    window.top.location = './main.php?p=103';
+                                } else if (typeof(error) != 'undefined') {
+                                    var errorMsg = error.item(0).firstChild.data;
+                                }
+                            }
+            });
+    }
 }
 
 /**
@@ -237,31 +238,31 @@ function deleteView()
  */
 function deleteWidget(element, viewId, widgetId)
 {
-	jQuery(element).click(function() {
-		if (confirm(deleteWdgtMessage)) {
-			jQuery.ajax({
-				type	:	"POST",
-				dataType:	"xml",
-				url 	:	"./include/home/customViews/action.php",
-				data	:   {
-								action			:	"deleteWidget",
-								custom_view_id  :	viewId,
-								widget_id		:	widgetId
-							},
-				success :	function(response) {
-								var view = response.getElementsByTagName('custom_view_id');
-								var error = response.getElementsByTagName('error');
-								if (typeof(view) != 'undefined') {
-									var viewId = view.item(0).firstChild.data;
+    jQuery(element).click(function() {
+        if (confirm(deleteWdgtMessage)) {
+            jQuery.ajax({
+                type    :   "POST",
+                dataType:   "xml",
+                url     :   "./include/home/customViews/action.php",
+                data    :   {
+                                action          :   "deleteWidget",
+                                custom_view_id  :   viewId,
+                                widget_id       :   widgetId
+                            },
+                success :   function(response) {
+                                var view = response.getElementsByTagName('custom_view_id');
+                                var error = response.getElementsByTagName('error');
+                                if (typeof(view) != 'undefined') {
+                                    var viewId = view.item(0).firstChild.data;
                                     jQuery('#tabs').tabs('load', getTabPos(viewId));
-									//window.top.location = './main.php?p=103&currentView='+viewId;
-								} else if (typeof(error) != 'undefined') {
-									var errorMsg = error.item(0).firstChild.data;
-								}
-							}
-			});
-		}
-	});
+                                    //window.top.location = './main.php?p=103&currentView='+viewId;
+                                } else if (typeof(error) != 'undefined') {
+                                    var errorMsg = error.item(0).firstChild.data;
+                                }
+                            }
+            });
+        }
+    });
 }
 
 /**
@@ -269,28 +270,28 @@ function deleteWidget(element, viewId, widgetId)
  */
 function savePositions()
 {
-	var tab = new Array();
-	var i = 0;
-	jQuery('.'+columnClass).each(function(columnNumber, element) {
-			jQuery(element).children('.portlet').each(function(rowNumber, element) {
-				if (jQuery(element).attr('name')) {
-    				var tmp = jQuery(element).attr('name').split("portlet_");
-    				var order = columnNumber + '_' + rowNumber;
-    				tab[i] = order + '_' +tmp[1];
-    				i++;
-				}
-			});
-	});
-	jQuery.ajax({
-		type	:	"POST",
-		dataType:	"xml",
-		url 	:	"./include/home/customViews/action.php",
-		data	:   {
-						action			:	"position",
-						custom_view_id  :	viewId,
-						positions		:	tab
-					}
-	});
+    var tab = new Array();
+    var i = 0;
+    jQuery('.'+columnClass).each(function(columnNumber, element) {
+            jQuery(element).children('.portlet').each(function(rowNumber, element) {
+                if (jQuery(element).attr('name')) {
+                    var tmp = jQuery(element).attr('name').split("portlet_");
+                    var order = columnNumber + '_' + rowNumber;
+                    tab[i] = order + '_' +tmp[1];
+                    i++;
+                }
+            });
+    });
+    jQuery.ajax({
+        type    :   "POST",
+        dataType:   "xml",
+        url     :   "./include/home/customViews/action.php",
+        data    :   {
+                        action          :   "position",
+                        custom_view_id  :   viewId,
+                        positions       :   tab
+                    }
+    });
 }
 
 /**
@@ -298,16 +299,16 @@ function savePositions()
  */
 function setDefault()
 {
-	if (confirm(setDefaultMessage)) {
-    	jQuery.ajax({
-    		type	:	"POST",
-    		dataType:	"xml",
-    		url 	:	"./include/home/customViews/action.php",
-    		data	:   {
-    						action			:	"setDefault",
-    						custom_view_id  :	viewId
-    					}
-    	});
-	}
+    if (confirm(setDefaultMessage)) {
+        jQuery.ajax({
+            type    :   "POST",
+            dataType:   "xml",
+            url     :   "./include/home/customViews/action.php",
+            data    :   {
+                            action          :   "setDefault",
+                            custom_view_id  :   viewId
+                        }
+        });
+    }
 }
 </script>

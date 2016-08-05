@@ -42,12 +42,12 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -56,7 +56,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
@@ -73,17 +73,17 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHostcategories .= 'AND hc.hc_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
         }
-		/*
+        /*
 		 * Check for select2 't' argument
 		 * 'a' or empty = category and severitiy
 		 * 'c' = catagory only
 		 * 's' = severity only
 		 */
-		if (false === isset($this->arguments['t'])) {
-			$t = '';
-		} else {
-			$t = $this->arguments['t'];
-		}
+        if (false === isset($this->arguments['t'])) {
+            $t = '';
+        } else {
+            $t = $this->arguments['t'];
+        }
         
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
@@ -103,13 +103,13 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             . "FROM hostcategories hc "
             . "WHERE hc.hc_name LIKE '%$q%' "
             . $aclHostcategories;
-		if (!empty($t) && $t == 'c') {
-			$queryHostcategory .= "AND level IS NULL ";
-		}
-		if (!empty($t) && $t == 's') {
-			$queryHostcategory .= "AND level IS NOT NULL ";
-		}
-		$queryHostcategory .= "ORDER BY hc.hc_name "
+        if (!empty($t) && $t == 'c') {
+            $queryHostcategory .= "AND level IS NULL ";
+        }
+        if (!empty($t) && $t == 's') {
+            $queryHostcategory .= "AND level IS NOT NULL ";
+        }
+        $queryHostcategory .= "ORDER BY hc.hc_name "
             . $range;
         
         $DBRESULT = $this->pearDB->query($queryHostcategory);

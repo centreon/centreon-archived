@@ -136,7 +136,9 @@ class CentreonGraphStatus
                 } else {
                     $currentStatus;
                     $value = floatval((string)$info);
-                    if ($value < 75) {
+                    if ((string)$info === 'NaN') {
+                        $currentStatus = 'unknown';
+                    } elseif ($value < 75) {
                         $currentStatus = 'critical';
                     } elseif ($value == 100) {
                         $currentStatus = 'ok';
@@ -155,6 +157,10 @@ class CentreonGraphStatus
                         $interval['end'] = $time;
                         $metrics[$lastStatus][] = $interval;
                         $lastStatus = $currentStatus;
+                        $interval = array(
+                            'start' => $time,
+                            'end' => null
+                        );
                     }
                 }
             }

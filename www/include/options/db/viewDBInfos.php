@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 require_once './class/centreonDB.class.php';

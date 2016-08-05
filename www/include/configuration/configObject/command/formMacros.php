@@ -45,8 +45,9 @@ require_once _CENTREON_PATH_ . "/www/class/centreonCommand.class.php";
 session_start();
 
 $centreon = $_SESSION['centreon'];
-if (!isset($centreon))
+if (!isset($centreon)) {
     exit();
+}
 
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
@@ -57,7 +58,6 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 if (!isset($pearDB) || is_null($pearDB)) {
     $pearDB = new CentreonDB();
     global $pearDB;
-
 }
 
 $macros = array();

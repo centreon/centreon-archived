@@ -36,7 +36,8 @@
 
 require_once dirname(__FILE__) . "/webService.class.php";
 
-class CentreonWs extends CentreonWebService {
+class CentreonWs extends CentreonWebService
+{
     
     public function __construct()
     {

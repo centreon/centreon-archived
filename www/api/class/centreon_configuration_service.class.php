@@ -41,12 +41,12 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -57,7 +57,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
@@ -120,7 +120,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param type $q
      * @param type $aclServices
      */
@@ -162,7 +162,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param type $q
      * @param type $aclServices
      */
@@ -198,7 +198,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
 
     /**
-     * 
+     *
      * @param type $args
      * @return array
      */

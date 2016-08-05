@@ -34,11 +34,11 @@
 */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = NULL;
-isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = NULL;
+isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = null;
+isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = null;
 $mnftrG ? $id = $mnftrG : $id = $mnftrP;
 
 #Pear library
@@ -52,7 +52,11 @@ $path = "./include/configuration/configObject/traps-mibs/";
 #PHP functions
 require_once "./include/common/common-Func.php";
 
-switch ($o)	{
-	case "a" : require_once($path."formMibs.php"); break; #Show command execution
-	default : require_once($path."formMibs.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formMibs.php");
+        break; #Show command execution
+    default:
+        require_once($path."formMibs.php");
+        break;
 }

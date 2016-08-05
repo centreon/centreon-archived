@@ -34,27 +34,27 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = NULL;
-isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
+isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = null;
+isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = null;
 $sG ? $service_id = $sG : $service_id = $sP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-if ($o == "c" && $service_id == NULL) {
-	$o = "";
+if ($o == "c" && $service_id == null) {
+    $o = "";
 }
 
 /*
@@ -80,19 +80,48 @@ $serviceObj = new CentreonService($pearDB);
 $lockedElements = $serviceObj->getLockedServiceTemplates();
     
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-switch ($o)	{
-	case "a" : require_once($path."formServiceTemplateModel.php"); break; #Add a Service Template Model
-	case "w" : require_once($path."formServiceTemplateModel.php"); break; #Watch a Service Template Model
-	case "c" : require_once($path."formServiceTemplateModel.php"); break; #Modify a Service Template Model
-	case "mc" : require_once($path."formServiceTemplateModel.php"); break; #Massive change
-	case "s" : enableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Activate a Service Template Model
-	case "ms" : enableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceTemplateModel.php"); break;
-	case "u" : disableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Desactivate a Service Template Model
-	case "mu" : disableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceTemplateModel.php"); break;
-	case "m" : multipleServiceInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServiceTemplateModel.php"); break; #Duplicate n Service Template Models
-	case "d" : deleteServiceInDB(isset($select) ? $select : array()); require_once($path."listServiceTemplateModel.php"); break; #Delete n Service Template Models
-	default : require_once($path."listServiceTemplateModel.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formServiceTemplateModel.php");
+        break; #Add a Service Template Model
+    case "w":
+        require_once($path."formServiceTemplateModel.php");
+        break; #Watch a Service Template Model
+    case "c":
+        require_once($path."formServiceTemplateModel.php");
+        break; #Modify a Service Template Model
+    case "mc":
+        require_once($path."formServiceTemplateModel.php");
+        break; #Massive change
+    case "s":
+        enableServiceInDB($service_id);
+        require_once($path."listServiceTemplateModel.php");
+        break; #Activate a Service Template Model
+    case "ms":
+        enableServiceInDB(null, isset($select) ? $select : array());
+        require_once($path."listServiceTemplateModel.php");
+        break;
+    case "u":
+        disableServiceInDB($service_id);
+        require_once($path."listServiceTemplateModel.php");
+        break; #Desactivate a Service Template Model
+    case "mu":
+        disableServiceInDB(null, isset($select) ? $select : array());
+        require_once($path."listServiceTemplateModel.php");
+        break;
+    case "m":
+        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listServiceTemplateModel.php");
+        break; #Duplicate n Service Template Models
+    case "d":
+        deleteServiceInDB(isset($select) ? $select : array());
+        require_once($path."listServiceTemplateModel.php");
+        break; #Delete n Service Template Models
+    default:
+        require_once($path."listServiceTemplateModel.php");
+        break;
 }

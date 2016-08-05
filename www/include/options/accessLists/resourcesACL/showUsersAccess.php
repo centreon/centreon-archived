@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 /**
@@ -43,7 +43,7 @@ if (!isset($centreon)) {
 $ehiCache = array();
 $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
 while ($ehi = $DBRESULT->fetchRow()) {
-	$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
 $DBRESULT->free();
 
@@ -53,15 +53,15 @@ $DBRESULT->free();
 $contact = array("" => null);
 $DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact WHERE contact_admin = '0' ORDER BY contact_alias");
 while ($ct = $DBRESULT->fetchRow()) {
-	$contact[$ct["contact_id"]] = $ct["contact_alias"];
+    $contact[$ct["contact_id"]] = $ct["contact_alias"];
 }
 $DBRESULT->free();
 
 /*
  * Object init
  */
-$mediaObj 		= new CentreonMedia($pearDB);
-$host_method 	= new CentreonHost($pearDB);
+$mediaObj       = new CentreonMedia($pearDB);
+$host_method    = new CentreonHost($pearDB);
 
 /*
  * Smarty template Init
@@ -82,21 +82,21 @@ $style = "one";
 
 $groups = "''";
 if (isset($_POST["contact"])) {
-	$contact_id = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
-	$access = new CentreonACL($contact_id, 0);
-	$groupList = $access->getAccessGroups();
-	if (isset($groupList) && count($groupList)) {
-		foreach ($groupList as $key => $value) {
-			if ($groups != "") {
-				$groups .= ",";
-			}
-			$groups .= "'".$key."'";
-		}
-	}
+    $contact_id = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
+    $access = new CentreonACL($contact_id, 0);
+    $groupList = $access->getAccessGroups();
+    if (isset($groupList) && count($groupList)) {
+        foreach ($groupList as $key => $value) {
+            if ($groups != "") {
+                $groups .= ",";
+            }
+            $groups .= "'".$key."'";
+        }
+    }
 } else {
-	$contact_id = 0;
-	$formData = array('contact' => $contact_id);
-	$groups = "''";
+    $contact_id = 0;
+    $formData = array('contact' => $contact_id);
+    $groups = "''";
 }
 
 $formData = array('contact' => $contact_id);
@@ -121,20 +121,20 @@ $query = "SELECT DISTINCT h.name, s.description, acl.host_id, acl.service_id "
      $DBRESULT = $pearDBO->query($query);
 
 for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
-	if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
-	    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$resources["host_id"]]);
-	} elseif ($icone = $host_method->replaceMacroInString($resources["host_id"], getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1))) {
-		$host_icone = "./img/media/" . $icone;
-	} else {
-		$host_icone = "./img/icons/host.png";
-	}
-	$moptions = "";
-	$elemArr[$i] = array("MenuClass"=>"list_".$style,
-					"RowMenu_hico" => $host_icone,
-					"RowMenu_host" => myDecode($resources["name"]),
-					"RowMenu_service" => myDecode($resources["description"]),
-					);
-	$style != "two" ? $style = "two" : $style = "one";
+    if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
+        $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$resources["host_id"]]);
+    } elseif ($icone = $host_method->replaceMacroInString($resources["host_id"], getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1))) {
+        $host_icone = "./img/media/" . $icone;
+    } else {
+        $host_icone = "./img/icons/host.png";
+    }
+    $moptions = "";
+    $elemArr[$i] = array("MenuClass"=>"list_".$style,
+                    "RowMenu_hico" => $host_icone,
+                    "RowMenu_host" => myDecode($resources["name"]),
+                    "RowMenu_service" => myDecode($resources["description"]),
+                    );
+    $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 

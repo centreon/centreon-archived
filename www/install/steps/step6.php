@@ -51,8 +51,7 @@ $defaults = array('ADDRESS' => '',
                 'DB_PORT' => DEFAULT_PORT,
                 'root_password' => '', 
                 'CONFIGURATION_DB' => DEFAULT_CONF_NAME, 
-                'STORAGE_DB' => DEFAULT_STORAGE_NAME, 
-                'UTILS_DB' => DEFAULT_UTILS_NAME,
+                'STORAGE_DB' => DEFAULT_STORAGE_NAME,
                 'DB_USER' => DEFAULT_DB_USER,
                 'DB_PASS' => '',
                 'db_pass_confirm' => '');
@@ -103,13 +102,6 @@ $contents = "
             <td class='formlabel'>"._('Storage database name').$star."</td>
             <td class='formvalue'>
                 <input type='text' name='STORAGE_DB' value='".$defaults['STORAGE_DB']."' />
-                <label class='field_msg'></label>
-            </td>
-        </tr>
-        <tr>
-            <td class='formlabel'>"._('Utils database name').$star."</td>
-            <td class='formvalue'>
-                <input type='text' name='UTILS_DB' value='".$defaults['UTILS_DB']."' />
                 <label class='field_msg'></label>
             </td>
         </tr>

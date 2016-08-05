@@ -36,31 +36,30 @@
  *
  */
 
-	header('Content-Type: application/json');
-	header('Cache-Control: no-cache');
+    header('Content-Type: application/json');
+    header('Cache-Control: no-cache');
 
-	require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
-	require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-	require_once _CENTREON_PATH_ . "/www/class/centreonDowntime.class.php";
+    require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+    require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+    require_once _CENTREON_PATH_ . "/www/class/centreonDowntime.class.php";
 
-	$pearDB = new CentreonDB();
+    $pearDB = new CentreonDB();
 
-	if (isset($_GET['dt_id'])) {
-		$id = $_GET['dt_id'];
-	} else {
-		$id = 0;
-	}
+if (isset($_GET['dt_id'])) {
+    $id = $_GET['dt_id'];
+} else {
+    $id = 0;
+}
 
-	$path = _CENTREON_PATH_ . "/www/include/configuration/configDowntime/";
+    $path = _CENTREON_PATH_ . "/www/include/configuration/configDowntime/";
 
-	$downtime = new CentreonDowntime($pearDB);
+    $downtime = new CentreonDowntime($pearDB);
 
-	require_once $path . 'json.php';
-    if ($id == 0) {
-        $periods = array();
-    } else {
-        $periods = $downtime->getPeriods($id);
-    }
-	$json = new Services_JSON();
-	print $json->encode($periods);
-?>
+    require_once $path . 'json.php';
+if ($id == 0) {
+    $periods = array();
+} else {
+    $periods = $downtime->getPeriods($id);
+}
+    $json = new Services_JSON();
+    print $json->encode($periods);

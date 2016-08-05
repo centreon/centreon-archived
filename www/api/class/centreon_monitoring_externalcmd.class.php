@@ -40,7 +40,7 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
     protected $centcore_file;
@@ -54,7 +54,7 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function postSend()

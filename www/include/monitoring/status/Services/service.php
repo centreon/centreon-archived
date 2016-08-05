@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 if (!isset($centreon)) {
@@ -145,7 +142,7 @@ if (isset($_REQUEST['hg'])) {
 if (isset($_REQUEST['sg'])) {
     $_SESSION['monitoring_default_servicegroups'] = $_REQUEST['sg'];
 } elseif (isset($_GET["servicegroup"]) && $_GET["servicegroup"]) {
-	$_SESSION['monitoring_default_servicegroups'] = $_GET["servicegroup"];
+    $_SESSION['monitoring_default_servicegroups'] = $_GET["servicegroup"];
 }
 
 include_once("./include/monitoring/status/Common/default_poller.php");
@@ -226,42 +223,60 @@ $action_list[] = _("More actions...");
  * Showing actions allowed for current user
  */
 if (isset($authorized_actions) && $allActions == false) {
-	if (isset($authorized_actions["service_schedule_check"]))
-		$action_list[3] = _("Services : Schedule immediate check");
-	if (isset($authorized_actions["service_schedule_forced_check"]))
-		$action_list[4] = _("Services : Schedule immediate check (Forced)");
-	if (isset($authorized_actions["service_acknowledgement"]))
-		$action_list[70] = _("Services : Acknowledge");
-	if (isset($authorized_actions["service_disacknowledgement"]))
-		$action_list[71] = _("Services : Disacknowledge");
-	if (isset($authorized_actions["service_notifications"]))
-		$action_list[80] = _("Services : Enable Notification");
-	if (isset($authorized_actions["service_notifications"]))
-		$action_list[81] = _("Services : Disable Notification");
-	if (isset($authorized_actions["service_checks"]))
-		$action_list[90] = _("Services : Enable Check");
-	if (isset($authorized_actions["service_checks"]))
-		$action_list[91] = _("Services : Disable Check");
-	if (isset($authorized_actions["service_schedule_downtime"]))
-		$action_list[74] = _("Services : Set Downtime");
-    if (isset($authorized_actions["host_schedule_check"]))
+    if (isset($authorized_actions["service_schedule_check"])) {
+        $action_list[3] = _("Services : Schedule immediate check");
+    }
+    if (isset($authorized_actions["service_schedule_forced_check"])) {
+        $action_list[4] = _("Services : Schedule immediate check (Forced)");
+    }
+    if (isset($authorized_actions["service_acknowledgement"])) {
+        $action_list[70] = _("Services : Acknowledge");
+    }
+    if (isset($authorized_actions["service_disacknowledgement"])) {
+        $action_list[71] = _("Services : Disacknowledge");
+    }
+    if (isset($authorized_actions["service_notifications"])) {
+        $action_list[80] = _("Services : Enable Notification");
+    }
+    if (isset($authorized_actions["service_notifications"])) {
+        $action_list[81] = _("Services : Disable Notification");
+    }
+    if (isset($authorized_actions["service_checks"])) {
+        $action_list[90] = _("Services : Enable Check");
+    }
+    if (isset($authorized_actions["service_checks"])) {
+        $action_list[91] = _("Services : Disable Check");
+    }
+    if (isset($authorized_actions["service_schedule_downtime"])) {
+        $action_list[74] = _("Services : Set Downtime");
+    }
+    if (isset($authorized_actions["host_schedule_check"])) {
         $action_list[94] = _("Hosts : Schedule immediate check");
-    if (isset($authorized_actions["host_schedule_forced_check"]))
+    }
+    if (isset($authorized_actions["host_schedule_forced_check"])) {
         $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
-	if (isset($authorized_actions["host_acknowledgement"]))
-		$action_list[72] = _("Hosts : Acknowledge");
-	if (isset($authorized_actions["host_disacknowledgement"]))
-		$action_list[73] = _("Hosts : Disacknowledge");
-	if (isset($authorized_actions["host_notifications"]))
-		$action_list[82] = _("Hosts : Enable Notification");
-	if (isset($authorized_actions["host_notifications"]))
-		$action_list[83] = _("Hosts : Disable Notification");
-	if (isset($authorized_actions["host_checks"]))
-		$action_list[92] = _("Hosts : Enable Check");
-	if (isset($authorized_actions["host_checks"]))
-		$action_list[93] = _("Hosts : Disable Check");
-	if (isset($authorized_actions["host_schedule_downtime"]))
-		$action_list[75] = _("Hosts : Set Downtime");
+    }
+    if (isset($authorized_actions["host_acknowledgement"])) {
+        $action_list[72] = _("Hosts : Acknowledge");
+    }
+    if (isset($authorized_actions["host_disacknowledgement"])) {
+        $action_list[73] = _("Hosts : Disacknowledge");
+    }
+    if (isset($authorized_actions["host_notifications"])) {
+        $action_list[82] = _("Hosts : Enable Notification");
+    }
+    if (isset($authorized_actions["host_notifications"])) {
+        $action_list[83] = _("Hosts : Disable Notification");
+    }
+    if (isset($authorized_actions["host_checks"])) {
+        $action_list[92] = _("Hosts : Enable Check");
+    }
+    if (isset($authorized_actions["host_checks"])) {
+        $action_list[93] = _("Hosts : Disable Check");
+    }
+    if (isset($authorized_actions["host_schedule_downtime"])) {
+        $action_list[75] = _("Hosts : Set Downtime");
+    }
 } else {
     $action_list[3] = _("Services : Schedule immediate check");
     $action_list[4] = _("Services : Schedule immediate check (Forced)");
@@ -290,11 +305,11 @@ $attrs = array('onchange' => "javascript: ".
     " if (this.form.elements['o1'].selectedIndex == 0) {".
     " return false;} ".
     " if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
-$form->addElement('select', 'o1', NULL, $action_list, $attrs);
+$form->addElement('select', 'o1', null, $action_list, $attrs);
 
-$form->setDefaults(array('o1' => NULL));
+$form->setDefaults(array('o1' => null));
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
+$o1->setValue(null);
 
 $attrs = array('onchange' => "javascript: ".
     " var bChecked = isChecked(); ".
@@ -303,11 +318,11 @@ $attrs = array('onchange' => "javascript: ".
     " if (this.form.elements['o2'].selectedIndex == 0) {".
     " return false;} ".
     " if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
-$form->addElement('select', 'o2', NULL, $action_list, $attrs);
-$form->setDefaults(array('o2' => NULL));
+$form->addElement('select', 'o2', null, $action_list, $attrs);
+$form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 $tpl->assign('limit', $limit);
 
 $keyPrefix = "";

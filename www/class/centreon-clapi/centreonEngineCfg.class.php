@@ -37,15 +37,15 @@ namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonInstance.class.php";
-require_once "Centreon/Object/Nagios/Nagios.php";
-require_once "Centreon/Object/Nagios/Nagios_Broker_Module.php";
+require_once "Centreon/Object/Engine/Engine.php";
+require_once "Centreon/Object/Engine/Engine_Broker_Module.php";
 require_once "Centreon/Object/Command/Command.php";
 
 /**
  *
  * @author sylvestre
  */
-class CentreonNagiosCfg extends CentreonObject
+class CentreonEngineCfg extends CentreonObject
 {
     const ORDER_UNIQUENAME        = 0;
     const ORDER_INSTANCE          = 1;
@@ -66,28 +66,23 @@ class CentreonNagiosCfg extends CentreonObject
         parent::__construct();
         $this->instanceObj = new CentreonInstance();
         $this->commandObj = new \Centreon_Object_Command();
-        $this->object = new \Centreon_Object_Nagios();
-        $this->brokerModuleObj = new \Centreon_Object_Nagios_Broker_Module();
+        $this->object = new \Centreon_Object_Engine();
+        $this->brokerModuleObj = new \Centreon_Object_Engine_Broker_Module();
         $this->params = array(
-            'log_file'                                 => '/var/log/nagios/nagios.log',
-            'cfg_dir'                                 => '/etc/nagios/',
-            'temp_file'                               => '/var/log/nagios/nagios.tmp',
-            'nagios_user'                             => 'nagios',
-            'nagios_group'                            => 'nagios',
+            'log_file'                                => '/var/log/centreon-engine/centengine.log',
+            'cfg_dir'                                 => '/etc/centreon-engine/',
             'enable_notifications'                    => '0',
             'execute_service_checks'                  => '1',
             'accept_passive_service_checks'           => '1',
             'execute_host_checks'                     => '2',
             'accept_passive_host_checks'              => '2',
             'enable_event_handlers'                   => '1',
-            'log_rotation_method'                     => 'd',
-            'log_archive_path'                        => '/var/log/nagios/archives/',
+            'log_archive_path'                        => '/var/log/centreon-engine/archives/',
             'check_external_commands'                 => '1',
             'command_check_interval'                  => '1s',
-            'command_file'                            => '/var/log/nagios/rw/nagios.cmd',
-            'lock_file'                               => '/var/log/nagios/nagios.lock',
+            'command_file'                            => '/var/log/centreon-engine/rw/nagios.cmd',
             'retain_state_information'                => '1',
-            'state_retention_file'                    => '/var/log/nagios/status.sav',
+            'state_retention_file'                    => '/var/log/centreon-engine/status.sav',
             'retention_update_interval'               => '60',
             'use_retained_program_state'              => '1',
             'use_retained_scheduling_info'            => '1',
@@ -149,7 +144,7 @@ class CentreonNagiosCfg extends CentreonObject
         );
         $this->nbOfCompulsoryParams = 3;
         $this->activateField = "nagios_activate";
-        $this->action = 'NAGIOSCFG';
+        $this->action = 'ENGINECFG';
         $this->insertParams = array($this->object->getUniqueLabelField(), 'nagios_server_id', 'nagios_comment');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey()));
     }
@@ -309,11 +304,14 @@ class CentreonNagiosCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler' || $parameter == 'global_service_event_handler'
-                        || $parameter == 'host_perfdata_command' || $parameter == 'service_perfdata_command'
+                    if ($parameter == 'global_host_event_handler' 
+                        || $parameter == 'global_service_event_handler'
+                        || $parameter == 'host_perfdata_command' 
+                        || $parameter == 'service_perfdata_command'
                         || $parameter == 'host_perfdata_file_processing_command'
                         || $parameter == 'service_perfdata_file_processing_command'
-                        || $parameter == 'ochp_command' || $parameter == 'ocsp_command') {
+                        || $parameter == 'ochp_command' 
+                        || $parameter == 'ocsp_command') {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
                     } elseif ($parameter == 'illegal_object_name_chars'

@@ -41,7 +41,7 @@ define ('TMP_DIR_SUFFIX', '.d');
 class Backend {
     private static $_instance = null;
     public $generate_path = '/usr/share/centreon/filesGeneration';
-    public $engine_sub = 'nagiosCFG';
+    public $engine_sub = 'engine';
     public $broker_sub = 'broker';
     public $db = null;
     public $db_cs = null;

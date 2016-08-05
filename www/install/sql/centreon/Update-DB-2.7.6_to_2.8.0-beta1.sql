@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.6' LIMIT 1;
+UPDATE `informations` SET `value` = '2.8.0-beta1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.6' LIMIT 1;
 
 -- Add graphite output for centreon-broker
 INSERT IGNORE INTO cb_module (name, libname, loading_pos, is_activated)
@@ -220,3 +220,6 @@ UPDATE topology SET topology_url = './include/views/virtualMetrics/virtualMetric
 -- Add recovery_notification_delay columns
 ALTER TABLE `host` ADD COLUMN `host_recovery_notification_delay` int(11) DEFAULT NULL AFTER `host_first_notification_delay`;
 ALTER TABLE `service` ADD COLUMN `service_recovery_notification_delay` int(11) DEFAULT NULL AFTER `service_first_notification_delay`;
+
+-- Add possibility to disable command
+ALTER TABLE `command` ADD COLUMN `command_activate` enum('0','1') DEFAULT '1' AFTER `command_comment`;

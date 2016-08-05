@@ -40,7 +40,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
     /**
@@ -53,7 +53,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()

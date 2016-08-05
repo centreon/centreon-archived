@@ -36,8 +36,6 @@
  * 
  */
 
-	if (!isset($oreon))
-		exit();
-		
-		
-?>
+if (!isset($oreon)) {
+    exit();
+}

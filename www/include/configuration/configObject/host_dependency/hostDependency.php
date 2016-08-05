@@ -34,19 +34,19 @@
  */
  
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = NULL;
-isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = NULL;
+isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = null;
+isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = null;
 $cG ? $dep_id = $cG : $dep_id = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -68,17 +68,32 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
 $acl = $centreon->user->access;
 $dbmon = $acl->getNameDBAcl();
     
-switch ($o)	{
-	case "a" : require_once($path."formHostDependency.php"); break; #Add a Dependency
-	case "w" : require_once($path."formHostDependency.php"); break; #Watch a Dependency
-	case "c" : require_once($path."formHostDependency.php"); break; #Modify a Dependency
-	case "m" : multipleHostDependencyInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHostDependency.php"); break; #Duplicate n Dependencys
-	case "d" : deleteHostDependencyInDB(isset($select) ? $select : array()); require_once($path."listHostDependency.php"); break; #Delete n Dependency
-	default : require_once($path."listHostDependency.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formHostDependency.php");
+        break; #Add a Dependency
+    case "w":
+        require_once($path."formHostDependency.php");
+        break; #Watch a Dependency
+    case "c":
+        require_once($path."formHostDependency.php");
+        break; #Modify a Dependency
+    case "m":
+        multipleHostDependencyInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listHostDependency.php");
+        break; #Duplicate n Dependencys
+    case "d":
+        deleteHostDependencyInDB(isset($select) ? $select : array());
+        require_once($path."listHostDependency.php");
+        break; #Delete n Dependency
+    default:
+        require_once($path."listHostDependency.php");
+        break;
 }

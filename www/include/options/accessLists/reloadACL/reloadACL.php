@@ -33,8 +33,9 @@
  *
  */
 
-if (!isset($centreon))
-	exit();
+if (!isset($centreon)) {
+    exit();
+}
 
 $path = "./include/options/accessLists/reloadACL/";
 
@@ -45,39 +46,41 @@ require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 session_start();
 $sid = session_id();
-if (isset($_GET["o"]) && $_GET["o"] == "r"){
-	$pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($sid)."'");
-	$pearDB->query("UPDATE acl_resources SET changed = '1'");
-	$msg = new CentreonMsg();
-	$msg->setTextStyle("bold");
-	$msg->setText(_("ACL reloaded"));
-	$msg->setTimeOut("3");
-	passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
+if (isset($_GET["o"]) && $_GET["o"] == "r") {
+    $pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($sid)."'");
+    $pearDB->query("UPDATE acl_resources SET changed = '1'");
+    $msg = new CentreonMsg();
+    $msg->setTextStyle("bold");
+    $msg->setText(_("ACL reloaded"));
+    $msg->setTimeOut("3");
+    passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
 } elseif (isset($_POST["o"]) && $_POST["o"] == "u") {
-	isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = NULL;
-	isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
+    isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = null;
+    isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
 
-	$pearDB->query("UPDATE acl_resources SET changed = '1'");
-	$query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
-	$i = 0;
-	if (isset($sel))
-		foreach ($sel as $key => $val) {
-			if ($i)
-				$query .= ", ";
-			$query .= "'".$key."'";
-			$i++;
-		}
-	if (!$i) {
-		$query .= "'')";
-	} else {
-		$query .= ")";
-	}
+    $pearDB->query("UPDATE acl_resources SET changed = '1'");
+    $query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
+    $i = 0;
+    if (isset($sel)) {
+        foreach ($sel as $key => $val) {
+            if ($i) {
+                $query .= ", ";
+            }
+            $query .= "'".$key."'";
+            $i++;
+        }
+    }
+    if (!$i) {
+        $query .= "'')";
+    } else {
+        $query .= ")";
+    }
 
-	$pearDB->query($query);
-	$msg->setTextStyle("bold");
-	$msg->setText(_("ACL reloaded"));
-	$msg->setTimeOut("3");
-	passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
+    $pearDB->query($query);
+    $msg->setTextStyle("bold");
+    $msg->setText(_("ACL reloaded"));
+    $msg->setTimeOut("3");
+    passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
 }
 
 # Smarty template Init
@@ -89,33 +92,33 @@ $session_data = array();
 $cpt = 0;
 $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
-while ($r = $res->fetchRow()){
-	$resUser = $pearDB->query("SELECT contact_name, contact_admin FROM contact WHERE contact_id = '".$r["user_id"]."'");
-	$rU = $resUser->fetchRow();
-	if ($rU["contact_admin"] != "1") {
-		$session_data[$cpt] = array();
-		if ($cpt % 2) {
-			$session_data[$cpt]["class"] = "list_one";
-		} else {
-			$session_data[$cpt]["class"] = "list_two";
-		}
-		$session_data[$cpt]["user_id"] = $r["user_id"];
-		$session_data[$cpt]["user_alias"] = $rU["contact_name"];
-		$session_data[$cpt]["admin"] = $rU["contact_admin"];
-		
-		$resCP = $pearDB->query("SELECT topology_name, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
-		$rCP = $resCP->fetchRow();
-		$session_data[$cpt]["ip_address"] = $r["ip_address"];
-		$session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
-		$session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
-		$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=r'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
-		$selectedElements = $form->addElement('checkbox', "select[".$r['user_id']."]");
-		$session_data[$cpt]["checkbox"] = $selectedElements->toHtml();
-		$cpt++;
-	}
+while ($r = $res->fetchRow()) {
+    $resUser = $pearDB->query("SELECT contact_name, contact_admin FROM contact WHERE contact_id = '".$r["user_id"]."'");
+    $rU = $resUser->fetchRow();
+    if ($rU["contact_admin"] != "1") {
+        $session_data[$cpt] = array();
+        if ($cpt % 2) {
+            $session_data[$cpt]["class"] = "list_one";
+        } else {
+            $session_data[$cpt]["class"] = "list_two";
+        }
+        $session_data[$cpt]["user_id"] = $r["user_id"];
+        $session_data[$cpt]["user_alias"] = $rU["contact_name"];
+        $session_data[$cpt]["admin"] = $rU["contact_admin"];
+        
+        $resCP = $pearDB->query("SELECT topology_name, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
+        $rCP = $resCP->fetchRow();
+        $session_data[$cpt]["ip_address"] = $r["ip_address"];
+        $session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
+        $session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
+        $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=r'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
+        $selectedElements = $form->addElement('checkbox', "select[".$r['user_id']."]");
+        $session_data[$cpt]["checkbox"] = $selectedElements->toHtml();
+        $cpt++;
+    }
 }
 if (isset($msg)) {
-	$tpl->assign("msg", $msg);
+    $tpl->assign("msg", $msg);
 }
 
 $tpl->assign("session_data", $session_data);
@@ -126,19 +129,19 @@ $tpl->assign("distant_location", _("IP Address"));
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </script>
 <?php
 foreach (array('o1', 'o2') as $option) {
-	$attrs = array(
-			'onchange'=>"javascript: " .
-				"if (this.form.elements['".$option."'].selectedIndex == 1) {" .
-				" 	setO(this.form.elements['".$option."'].value); submit();} this.form.elements['".$option."'].selectedIndex = 0");
-	$form->addElement('select', $option, NULL, array(NULL=>_("More actions..."), "u"=>_("Reload ACL")), $attrs);
-	$o1 = $form->getElement($option);
-	$o1->setValue(NULL);
-} 
+    $attrs = array(
+            'onchange'=>"javascript: " .
+                "if (this.form.elements['".$option."'].selectedIndex == 1) {" .
+                " 	setO(this.form.elements['".$option."'].value); submit();} this.form.elements['".$option."'].selectedIndex = 0");
+    $form->addElement('select', $option, null, array(null=>_("More actions..."), "u"=>_("Reload ACL")), $attrs);
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);
+}
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);

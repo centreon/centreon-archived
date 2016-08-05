@@ -53,10 +53,10 @@ $resource_def = str_replace('$', '@DOLLAR@', $command);
 $resource_def = escapeshellcmd($resource_def);
 
 /* Get resources in DB and replace by the value */
-while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")  {
+while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
     $DBRESULT = $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
     $resource = $DBRESULT->fetchRow();
-    if (!isset($resource["resource_line"])){
+    if (!isset($resource["resource_line"])) {
         $error_msg .= "\$USER".$matches[1]."\$";
     } else {
         $resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
@@ -64,7 +64,7 @@ while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and
 }
 
 /* Replace HOSTADDRESS by the real content */
-while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and $error_msg == "")   {
+while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
     if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
         $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
     } else {
@@ -73,27 +73,27 @@ while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and 
 }
 
 /* Replace $POLLERID$ by the poller id */
-while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")   {
+while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
     $match_id = $matches[1];
-    if (isset($args[$match_id])){
+    if (isset($args[$match_id])) {
         $resource_def = str_replace("@DOLLAR@ARG". $match_id ."@DOLLAR@", $args[$match_id], $resource_def);
         $resource_def = str_replace('$', '@DOLLAR@', $resource_def);
         if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches)) {
             $DBRESULT = $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
             $resource = $DBRESULT->fetchRow();
-            if (!isset($resource["resource_line"])){
+            if (!isset($resource["resource_line"])) {
                 $error_msg .= "\$USER".$match_id."\$";
             } else {
                 $resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
             }
         }
         if (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches)) {
-            if (isset($_GET["command_hostaddress"])){
+            if (isset($_GET["command_hostaddress"])) {
                 $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
             } else {
                 $error_msg .= "\$HOSTADDRESS\$";
             }
-        }           
+        }
     } else {
         $error_msg = "\$USER" . $match_id . "\$";
     }
@@ -121,12 +121,12 @@ if ($error_msg != "") {
     $user1Path = $resource["resource_line"];
     $pathMatch = str_replace('/', '\/', $user1Path);
 
-    if (preg_match("/^$pathMatch/", $command)){
+    if (preg_match("/^$pathMatch/", $command)) {
         if (preg_match("/\.\./", $command)) {
             $msg = _("Directory traversal detected");
         } else {
             $msg = exec($command, $stdout, $status);
-            $msg = join("<br/>",$stdout);
+            $msg = join("<br/>", $stdout);
             if ($status == 1) {
                 $status = _("WARNING");
             } elseif ($status == 2) {
@@ -144,15 +144,15 @@ if ($error_msg != "") {
 
 $attrsText  = array("size" => "25");
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-$form->addElement('header', 'title',_("Plugin Test"));
+$form->addElement('header', 'title', _("Plugin Test"));
 
 /*
  * Command information
  */
 $form->addElement('header', 'information', _("Plugin test"));
-$form->addElement('text',   'command_line', _("Command Line"), $attrsText);
-$form->addElement('text',   'command_help', _("Output"), $attrsText);
-$form->addElement('text',   'command_status', _("Status"), $attrsText);
+$form->addElement('text', 'command_line', _("Command Line"), $attrsText);
+$form->addElement('text', 'command_help', _("Output"), $attrsText);
+$form->addElement('text', 'command_status', _("Status"), $attrsText);
 
 /*
  * Smarty template Init

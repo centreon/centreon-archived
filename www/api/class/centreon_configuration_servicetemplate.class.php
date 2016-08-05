@@ -48,7 +48,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()
@@ -82,7 +82,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
     }
     
     /**
-     * 
+     *
      * @param string $q
      * @return array
      */
@@ -110,7 +110,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
     }
     
     /**
-     * 
+     *
      * @param string $q
      * @return array
      */

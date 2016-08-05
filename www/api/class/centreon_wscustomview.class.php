@@ -37,7 +37,8 @@
 require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 require_once dirname(__FILE__) . "/webService.class.php";
 
-class CentreonWscustomview extends CentreonWebService {
+class CentreonWscustomview extends CentreonWebService
+{
     /**
      * Constructor
      *

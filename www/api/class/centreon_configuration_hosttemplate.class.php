@@ -40,12 +40,12 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -54,7 +54,7 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */

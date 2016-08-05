@@ -58,7 +58,6 @@ $contents .= '<table cellpadding="0" cellspacing="0" border="0" width="80%" clas
 $map = "{            
             'dbconf'     : './steps/process/installConfigurationDb.php',
             'dbstorage'  : './steps/process/installStorageDb.php',
-            'dbutils'    : './steps/process/installUtilsDb.php',
             'createuser' : './steps/process/createDbUser.php',
             'baseconf'   : './steps/process/insertBaseConf.php',
             'configfile' : './steps/process/configFileSetup.php'

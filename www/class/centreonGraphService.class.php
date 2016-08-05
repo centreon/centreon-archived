@@ -101,9 +101,14 @@ class CentreonGraphService extends CentreonGraph
                     "unit" => $metric["unit"],
                     "color" => $metric["ds_color_line"],
                     "negative" => false,
-                    "stack" => false
+                    "stack" => false,
+                    "crit" => null,
+                    "warn" => null
                 );
-                if (isset($metric['ds_color_area'])) {
+                
+                if (isset($metric['ds_color_area']) &&
+                  isset($metric['ds_filled']) &&
+                  $metric['ds_filled'] === '1') {
                     $info['graph_type'] = "area";
                 }
                 if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
@@ -111,6 +116,12 @@ class CentreonGraphService extends CentreonGraph
                 }
                 if (isset($metric['stack'])) {
                     $info['stack'] = $metric['stack'] == 1 ? true : false;
+                }
+                if (isset($metric['crit'])) {
+                    $info['crit'] = $metric['crit'];
+                }
+                if (isset($metric['warn'])) {
+                    $info['warn'] = $metric['warn'];
                 }
                 $metrics[] = $info;
             }

@@ -390,7 +390,7 @@ class Engine extends AbstractObject {
         $object['host_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
         $object['service_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
         
-        $this->generate_filename = 'nagiosCFG.DEBUG';
+        $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
         $object['resource_file'] = $this->cfg_file['debug']['resource_file'];
         $this->generateFile($object);
@@ -406,10 +406,7 @@ class Engine extends AbstractObject {
     
     public function generateFromPoller($poller)
     {
-        if (!is_null($poller['monitoring_engine']) && $poller['monitoring_engine'] == 'CENGINE') {
-            Connector::getInstance()->generateObjects($poller['centreonconnector_path']);
-        }
-        
+        Connector::getInstance()->generateObjects($poller['centreonconnector_path']);
         Resource::getInstance()->generateFromPollerId($poller['id']);
         
         $this->generate($poller['id']);

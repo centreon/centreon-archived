@@ -108,21 +108,21 @@ $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
     . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
     . "INNER JOIN services s ON s.service_id = sgm.service_id "
     . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
-    . $obj->access->getACLHostsTableJoin($obj->DBC,"h.host_id") 
-    . $obj->access->getACLServicesTableJoin($obj->DBC,"s.service_id") 
+    . $obj->access->getACLHostsTableJoin($obj->DBC, "h.host_id")
+    . $obj->access->getACLServicesTableJoin($obj->DBC, "s.service_id")
     . "WHERE 1 = 1  ";
 
 # Servicegroup ACL
 $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
 
-/* Servicegroup search */    
-if ($sgSearch != ""){
+/* Servicegroup search */
+if ($sgSearch != "") {
     $query .= "AND sg.name = '" . $sgSearch . "' ";
 }
 
 /* Host search */
 $h_search = '';
-if ($hSearch != ""){
+if ($hSearch != "") {
     $h_search .= "AND h.name like '%" . $hSearch . "%' ";
 }
 $query .= $h_search;
@@ -181,7 +181,7 @@ if ($numRows > 0) {
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
-    if ($sgSearch != ""){
+    if ($sgSearch != "") {
         $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
     }
 
@@ -207,7 +207,7 @@ if ($numRows > 0) {
     );
 
     $sg_list = array();
-    while ($tab = $DBRESULT->fetchRow()){
+    while ($tab = $DBRESULT->fetchRow()) {
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_id'] = $tab['host_id'];
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['icon_image'] = $tab['icon_image'];
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_state'] = $tab['host_state'];

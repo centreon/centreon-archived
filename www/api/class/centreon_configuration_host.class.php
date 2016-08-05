@@ -42,12 +42,12 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -58,7 +58,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
@@ -69,6 +69,8 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHosts = '';
+        $additionnalTables = '';
+        $additionnalCondition = '';
         
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -90,11 +92,19 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             $range = '';
         }
         
+        if (isset($this->arguments['hostgroup'])) {
+            $additionnalTables .= ',hostgroup_relation hg ';
+            $additionnalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (' .
+                join(',', $this->arguments['hostgroup']) . ') ';
+        }
+        
         $queryHost = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id "
             . "FROM host h "
+            . $additionnalTables
             . "WHERE h.host_register = '1' "
             . "AND h.host_name LIKE '%$q%' "
             . $aclHosts
+            . $additionnalCondition
             . "ORDER BY h.host_name "
             . $range;
         
@@ -117,7 +127,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return type
      * @throws RestBadRequestException
      */

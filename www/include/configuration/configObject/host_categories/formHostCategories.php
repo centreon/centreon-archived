@@ -70,8 +70,9 @@ unset($host);
  */
 $hostTpl = array();
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow())
+while ($host = $DBRESULT->fetchRow()) {
     $hostTpl[$host["host_id"]] = $host["host_name"];
+}
 $DBRESULT->free();
 unset($host);
 
@@ -81,7 +82,7 @@ $initialValues = array();
  * Database retrieve information for HostCategories
  */
 $hc = array();
-if (($o == "c" || $o == "w") && $hc_id)	{
+if (($o == "c" || $o == "w") && $hc_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '".$hc_id."' LIMIT 1");
     /*
      * Set base value
@@ -149,11 +150,11 @@ $extImgStatusmap = return_image_list(2);
 /*
  * Define Templatse
  */
-$attrsText 		= array("size"=>"30");
-$attrsTextLong 	= array("size"=>"50");
+$attrsText      = array("size"=>"30");
+$attrsTextLong  = array("size"=>"50");
 $attrsAdvSelect = array("style" => "width: 220px; height: 220px;");
-$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"4", "cols"=>"60");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
@@ -171,19 +172,20 @@ $attrHosttemplates = array(
  * Create formulary
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a host category"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a  host category"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a  host category"));
+}
 
 /*
  * Catrgorie basic information
  */
-$form->addElement('header', 	'information', _("General Information"));
-$form->addElement('text', 		'hc_name', _("Host Category Name"), $attrsText);
-$form->addElement('text', 		'hc_alias', _("Alias"), $attrsText);
+$form->addElement('header', 'information', _("General Information"));
+$form->addElement('text', 'hc_name', _("Name"), $attrsText);
+$form->addElement('text', 'hc_alias', _("Alias"), $attrsText);
 
 /*
  * Severity
@@ -242,7 +244,8 @@ $init->setValue(serialize($initialValues));
 /*
  * Form Rules
  */
-function myReplace()	{
+function myReplace()
+{
     global $form;
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["hc_name"]));
@@ -269,7 +272,7 @@ $form->addFormRule('checkSeverity');
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 # prepare help texts
 $helptext = "";
@@ -279,22 +282,23 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w")	{
+if ($o == "w") {
     /*
      * Just watch a HostCategorie information
      */
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hc_id=".$hc_id."'"));
+    }
     $form->setDefaults($hc);
     $form->freeze();
-} else if ($o == "c")	{
+} elseif ($o == "c") {
     /*
      * Modify a HostCategorie information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($hc);
-} else if ($o == "a")	{
+} elseif ($o == "a") {
     /*
      * Add a HostCategorie information
      */
@@ -305,20 +309,21 @@ if ($o == "w")	{
 $tpl->assign('p', $p);
 
 $valid = false;
-if ($form->validate())	{
+if ($form->validate()) {
     $hcObj = $form->getElement('hc_id');
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         $hcObj->setValue(insertHostCategoriesInDB());
-    else if ($form->getSubmitValue("submitC"))
+    } elseif ($form->getSubmitValue("submitC")) {
         updateHostCategoriesInDB($hcObj->getValue());
-    $o = NULL;
+    }
+    $o = null;
     $hcObj = $form->getElement('hc_id');
     $valid = true;
 }
 
 if ($valid) {
     require_once($path."listHostCategories.php");
-} else	{
+} else {
     /*
      * Apply a template definition
      */

@@ -49,8 +49,8 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 /** *****************************************
  * Connect MySQL DB
  */
-$pearDB 	= new CentreonDB();
-$pearDBO 	= new CentreonDB("centstorage");
+$pearDB     = new CentreonDB();
+$pearDBO    = new CentreonDB("centstorage");
 
 /**
  * Security check
@@ -83,7 +83,7 @@ header("Pragma: public");
  * Read flow
  */
 $xml = new SimpleXMLElement($flow);
-if ($engine == "false"){
+if ($engine == "false") {
     echo _("Begin date")."; "._("End date").";\n";
     echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)).";".date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
     echo "\n";

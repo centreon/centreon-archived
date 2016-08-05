@@ -48,7 +48,7 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()
@@ -59,17 +59,17 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-		/*
+        /*
 		 * Check for select2 't' argument
 		 * 'a' or empty = category and severitiy
 		 * 'c' = catagory only
 		 * 's' = severity only
 		 */
-		 if (false === isset($this->arguments['t'])) {
-			 $t = '';
-		 } else {
-			 $t = $this->arguments['t'];
-		}
+        if (false === isset($this->arguments['t'])) {
+            $t = '';
+        } else {
+            $t = $this->arguments['t'];
+        }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
@@ -82,12 +82,12 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
             . "FROM service_categories "
             . "WHERE sc_name LIKE '%$q%' ";
         if (!empty($t) && $t == 'c') {
-			$queryContact .= "AND level IS NULL ";
-		}
-		if (!empty($t) && $t == 's') {
-			$queryContact .= "AND level IS NOT NULL ";
-		}
-		$queryContact .= "ORDER BY sc_name "
+            $queryContact .= "AND level IS NULL ";
+        }
+        if (!empty($t) && $t == 's') {
+            $queryContact .= "AND level IS NOT NULL ";
+        }
+        $queryContact .= "ORDER BY sc_name "
             . $range;
         
         $DBRESULT = $this->pearDB->query($queryContact);
