@@ -7,10 +7,4 @@ Please find here the release notes dedicated to the last 2.7.x version of Centre
 .. toctree::
     :maxdepth: 1
 
-    centreon-2.7.0
-    centreon-2.7.1
-    centreon-2.7.2
-    centreon-2.7.3
-    centreon-2.7.4
-    centreon-2.7.5
-    centreon-2.7.6
+    centreon-2.8.0-beta1

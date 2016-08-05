@@ -2,7 +2,7 @@
 Centreon 2.7
 ############
 
-Vous trouverez ici la liste des notes de versions pour les versions 2.7.x
+Please find here the release notes dedicated to the last 2.7.x version of Centreon.
 
 .. toctree::
     :maxdepth: 1
@@ -11,3 +11,6 @@ Vous trouverez ici la liste des notes de versions pour les versions 2.7.x
     centreon-2.7.1
     centreon-2.7.2
     centreon-2.7.3
+    centreon-2.7.4
+    centreon-2.7.5
+    centreon-2.7.6
