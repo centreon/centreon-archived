@@ -164,7 +164,8 @@ class CentreonPurgeEngine
         $request .= "WHERE TABLE_NAME='" . $table . "' ";
         $request .= "AND TABLE_SCHEMA='" . dbcstg . "' ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
-        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $this->tablesToPurge[$table]['retention'];
+        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $this->tablesToPurge[$table]['retention'] . " ";
+        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) NOT LIKE 'pmax' ";
         
         $DBRESULT = $this->dbCentstorage->query($request);
         if (PEAR::isError($DBRESULT)) {

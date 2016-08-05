@@ -68,6 +68,7 @@ class PartEngine
         }
         
         if (!($row = $DBRESULT->fetchRow())) {
+            #print "[".date(DATE_RFC822)."][createMaxvaluePartition] Create new part pmax for table " . $tableName . "\n";
             $request = "ALTER TABLE ".$tableName;
             $request .= " ADD PARTITION (PARTITION `pmax` VALUES LESS THAN MAXVALUE)";
             $DBRESULT = $db->query($request);
