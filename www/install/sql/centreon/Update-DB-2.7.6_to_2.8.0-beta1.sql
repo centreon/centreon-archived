@@ -186,14 +186,14 @@ UPDATE topology set readonly = '0' WHERE topology_page = 60901;
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (122,'API',501,50120,100,1,'./include/Administration/parameters/parameters.php','&o=api','0','0','1',NULL,NULL,NULL,'1');
 
 -- Add an KB Access configuration page
+
+DELETE FROM `topology` WHERE `topology_parent` = 610;
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Knowledge Base', '610', NULL , NULL , '36', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Knowledge Base', '6', '610', '65', '36', NULL, NULL , NULL , '1', '1', NULL , NULL , NULL);
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Hosts', '610', '61001', '5', '36', './include/configuration/configKnowledge/display-hosts.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Host Templates', '610', '61003', '15', '36', './include/configuration/configKnowledge/display-hostTemplates.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Services', '610', '61002', '10', '36', './include/configuration/configKnowledge/display-services.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Service Templates', '610', '61004', '20', '36', './include/configuration/configKnowledge/display-serviceTemplates.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
-
-
 
 -- Add possibility to limit access to API
 ALTER TABLE contact ADD COLUMN `reach_api` int(11) DEFAULT '0' AFTER `contact_oreon`;
