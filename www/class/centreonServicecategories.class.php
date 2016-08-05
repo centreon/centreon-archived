@@ -70,10 +70,7 @@ class CentreonServicecategories
         switch ($field) {
             case 'sc_svcTpl':
                 $parameters['type'] = 'relation';
-                $parameters['externalObject']['table'] = 'service';
-                $parameters['externalObject']['id'] = 'service_id';
-                $parameters['externalObject']['name'] = 'service_description';
-                $parameters['externalObject']['comparator'] = 'service_id';
+                $parameters['externalObject']['object'] = 'centreonServicetemplates';
                 $parameters['relationObject']['table'] = 'service_categories_relation';
                 $parameters['relationObject']['field'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'sc_id';

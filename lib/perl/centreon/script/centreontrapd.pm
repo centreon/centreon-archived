@@ -123,7 +123,9 @@ sub new {
         
         current_trap_id => undef,
         current_host_id => undef,
-        current_service_id => undef
+        current_service_id => undef,
+        
+        custom => {},
     };
    
     $self->{htmlentities} = 0;   
@@ -347,7 +349,9 @@ sub reload {
     }
     
     centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb}, $self->{csdb});
-    centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
+    if ($self->{centreontrapd_config}->{mode} == 0) {
+    	centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
+    }
 
     if ($self->{cdb}->type() =~ /SQLite/i) {
         $self->{logger}->writeLogInfo("Sqlite database. Need to disconnect and connect file.");
@@ -472,8 +476,8 @@ sub set_current_values {
     $self->{current_service_desc} = $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{service_description};
     $self->{current_service_notes} = defined($self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes}) ?
         $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes} : '';
-    $self->{current_user_arg1} = defined($self->{user_arg1}) ? $self->{user_arg1} : '';
-    $self->{current_user_arg2} = defined($self->{user_arg2}) ? $self->{user_arg2} : '';
+    $self->{current_user_arg1} = defined($self->{trap_data}->{custom}->{user_arg1}) ? $self->{trap_data}->{custom}->{user_arg1} : '';
+    $self->{current_user_arg2} = defined($self->{trap_data}->{custom}->{user_arg2}) ? $self->{trap_data}->{custom}->{user_arg2} : '';
 }
 
 sub check_sequential_can_exec {
@@ -1031,6 +1035,7 @@ sub getTrapsInfos {
     return 0 if ($fstatus == -1);
     foreach my $trap_id (keys %{$self->{trap_data}->{ref_oids}}) {
         $self->{trap_data}->{current_trap_id} = $trap_id;
+        $self->{trap_data}->{custom} = {};
 
         ($fstatus, $self->{trap_data}->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
                                                                  cdb => $self->{cdb},

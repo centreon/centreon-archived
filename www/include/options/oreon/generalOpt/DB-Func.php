@@ -126,11 +126,7 @@ function updateNagiosConfigData($gopt_id = null) {
     updateOption($pearDB, "broker_correlator_script", isset($ret["broker_correlator_script"]) && $ret["broker_correlator_script"] != NULL ? $pearDB->escape($ret["broker_correlator_script"]) : "NULL");
     updateOption($pearDB, "broker_socket_path", isset($ret["broker_socket_path"]) && $ret["broker_socket_path"] != NULL ? $pearDB->escape($ret["broker_socket_path"]) : "NULL");
     updateOption($pearDB, "interval_length", isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $pearDB->escape($ret["interval_length"]) : "NULL");
-    $brokerOpt = "ndo";
-
-    if (isset($ret['broker']) && $ret['broker']) {
-        $brokerOpt = $pearDB->escape($ret['broker']);
-    }
+    $brokerOpt = "broker";
 
     updateOption($pearDB, "broker", $brokerOpt);
     if ($oreon->broker->getBroker() != $brokerOpt) {
@@ -279,7 +275,10 @@ function updateGeneralConfigData($gopt_id = null) {
     updateOption($pearDB, "sso_enable", isset($ret["sso_enable"]["yes"]) && $ret["sso_enable"]["yes"] != NULL ? 1 : 0);
     updateOption($pearDB, "sso_mode", isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != NULL ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1);
     updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
+    updateOption($pearDB, "sso_blacklist_clients", isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != NULL ? $pearDB->escape($ret["sso_blacklist_clients"]) : "");
     updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
+    updateOption($pearDB, "sso_username_pattern", isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != NULL ? $pearDB->escape($ret["sso_username_pattern"]) : "");
+    updateOption($pearDB, "sso_username_replace", isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != NULL ? $pearDB->escape($ret["sso_username_replace"]) : "");
     updateOption($pearDB, "centreon_support_email", isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != NULL ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL");
         
     $oreon->initOptGen($pearDB);

@@ -87,10 +87,11 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         }        
         
         $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.service_description, i.service_id, i.host_name, i.host_id, m.index_id "
-            . "FROM index_data i, metrics m ".(!$isAdmin ? ', centreon_acl acl' : '')
+            . "FROM index_data i, metrics m ".(!$isAdmin ? ', centreon_acl acl ' : '')
             . 'WHERE i.id = m.index_id '
             . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN ('.$acl->getAccessGroupsString().') ' : '')
             . "AND (i.service_description LIKE '%$q%' OR i.host_name LIKE '%$q%') "
+            . "AND i.host_name NOT LIKE '%_Module%' "
             . $aclServices
             . "ORDER BY i.host_name, i.service_description "
             . $range;

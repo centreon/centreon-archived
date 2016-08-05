@@ -22,7 +22,7 @@
                 	<td>
                 		<div  class="headerTabContainer">
 	                		<ul id="mainnav">
-					            <li class="a" id='c1'><a href="#" style='cursor:pointer' onclick="javascript:montre('1');">{t}Service Statuses{/t}</a></li>
+					            <li class="a" id='c1'><a href="#" style='cursor:pointer' onclick="javascript:montre('1');">{t}Service Status{/t}</a></li>
 					            <li class="b" id='c2'><a href="#" style='cursor:pointer' onclick="javascript:montre('2');">{t}Performances{/t}</a></li>
 					            <li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{t}Host Informations{/t}</a></li>
 					            <li class="b" id='c4'><a href="#" style='cursor:pointer' onclick="javascript:montre('4');">{t}Comments{/t}</a></li>

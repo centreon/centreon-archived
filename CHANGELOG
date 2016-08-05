@@ -1,3 +1,40 @@
+## Centreon 2.7.6
+
+* Fix: Hard PATHs in some folders
+* Fix: Correction of some typos
+* Fix: contact_location default value incorrent
+* Fix: Problem with custom view style, when user was not able to edit the view then old style was used.
+* Fix: Centreontrapd - issue if number of downtimes is greater than 1
+* Fix: Service comments wrong request
+* Enh: SQL Optimisation in handling service templates
+
+## Centreon 2.7.5
+
+* Fix: Flapping configuration was not exported to Centreon Engine configuration files
+* Fix: Option “test the plugin” didn’t working with special characters
+* Fix: It was possible to select Meta Service or BA in performance page filters
+* Fix: With non admin users, it was impossible to select services in Performances page
+* Fix: Non admin users could not seen services in Reporting page
+* Fix: Number of hosts in Hostgroups was not good for non admin users
+* Fix: Max and Min was not correct for inverted curves
+* Fix: It was impossible to create Virtual metrics with web UI in french language
+* Fix: Exclude Desactivate poller in configuration generation page filter
+* Enh: Add an error message when no pollers are selected in configuration genration page
+
+## Centreon 2.7.4
+
+* Fix: Contacts in contactgroups were exported with a wrong ID
+* Fix: Error when saving “Administration > Parameters > Monitoring” page
+* Fix: Zoom in Performance graph
+* Fix: Select contactgroups / contacts in services & hosts configuration was not working
+* Fix: Display only catagories and not severities on form
+* Fix: Scroll bar in “Configuration - Hosts - Host Groups”
+* Fix: Category Relation on host and host template form
+* Fix: Order in More Actions Menu
+* Fix: generateSqlLite not install with source
+* Fix: SSO connection with LDAP user
+* Enh: Add possibility to set local to “browser” when adding a contact by CLAPI
+
 ## Centreon 2.7.3
 
 * Fix Recurent downtimes starting at 00:00

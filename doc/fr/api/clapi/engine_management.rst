@@ -2,6 +2,10 @@
 Poller management
 =================
 
+.. note::
+
+    All actions have to be perform in user root
+
 List available pollers
 ----------------------
 

@@ -77,14 +77,11 @@ class CentreonSession
 		}
 	}
 
-	function checkSession($session_id, $pearDB) {
-		$DBRESULT = $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
-        $i = 0;
-        while ($a = $DBRESULT->fetchRow()) {
-        	$i++;
-        }
-
-        if ($i) {
+	function checkSession($session_id, $pearDB)
+	{
+		$session_id = str_replace(array('_', '%'), array('', ''), $session_id);
+		$DBRESULT = $pearDB->query("SELECT id FROM session WHERE `session_id` = '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
+        if ($DBRESULT->numRows()) {
         	return 1;
         } else {
         	return 0;
@@ -93,7 +90,8 @@ class CentreonSession
     
     public static function getUser($sessionId, $pearDB)
     {
-        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
+    	$session_id = str_replace(array('_', '%'), array('', ''), $session_id);
+        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
         $row = $DBRESULT->fetchRow();
         if (!$row) {
             return 0;

@@ -592,7 +592,7 @@ function updateHostInDB($host_id = NULL, $from_MC = false, $cfg = NULL) {
     else if (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && !$ret["mc_mod_hhc"]["mc_mod_hhc"])
         updateHostHostCategory_MC($host_id);
     else
-        updateHostHostCategory($host_id);
+        updateHostHostCategory($host_id, $ret);
 
 # Function for updating host template
 # 1 - MC with deletion of existing template

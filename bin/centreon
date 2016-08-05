@@ -86,8 +86,6 @@ if ($debug) {
 	}
 }
 
-
-
 require_once _CENTREON_ETC_."/centreon.conf.php";
 require_once _CLAPI_CLASS_."/centreonAPI.class.php";
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
@@ -108,8 +106,8 @@ $db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
 $dbConfig['dbname'] = $conf_centreon['dbcstg'];
 $db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
 try {
-  $db->getConnection();
-  $db_storage->getConnection();
+    $db->getConnection();
+    $db_storage->getConnection();
 } catch (Exception $e) {
     echo sprintf("Could not connect to database. Check your configuration file %s\n", _CENTREON_ETC_.'/centreon.conf.php');
     if (isset($options['h'])) {
@@ -192,5 +190,5 @@ if ($api->login == "" || $api->password == "") {
         $api->setReturnCode(1);
     }
 }
-	$api->close();
-?>
+
+$api->close();

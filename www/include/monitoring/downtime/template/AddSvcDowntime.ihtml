@@ -25,6 +25,9 @@
 				<td  class="ListColLeft">{$form.duration.label}</td>
 				<td  class="ListColLeft">{$form.duration.html} {$form.duration_scale.html}</td>
 			</tr>
+                        <tr>
+                                <td colspan=2>{$form.timezone_warning.label}</td>
+                        </tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.start.label}</td>
 				<td  class="ListColLeft">

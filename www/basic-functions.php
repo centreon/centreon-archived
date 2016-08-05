@@ -69,8 +69,11 @@ function get_child($id_page, $lcaTStr){
 function reset_search_page($url){
 	# Clean Vars
 	global $centreon;
-	if (!isset($url))
+
+	if (!isset($url)) {
 		return;
+	}
+	
 	if (isset($_GET["search"]) && isset($centreon->historySearch[$url]) && $_GET["search"] != $centreon->historySearch[$url]){		
 		$_POST["num"] = 0;
 		$_GET["num"] = 0;

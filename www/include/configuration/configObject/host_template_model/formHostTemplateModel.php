@@ -324,7 +324,7 @@ $attrServices = array(
 );
 $attrHostcategories = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list&t=c',
     'multiple' => true,
     'linkedObject' => 'centreonHostcategories'
 );

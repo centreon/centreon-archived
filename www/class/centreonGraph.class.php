@@ -657,6 +657,7 @@ class CentreonGraph {
                         /* Switching RRD options lower-limit & upper-limit */
                         if ($this->onecurve && isset($this->_RRDoptions["lower-limit"]) && $this->_RRDoptions["lower-limit"] && isset($this->_RRDoptions["upper-limit"]) && $this->_RRDoptions["upper-limit"])
                             $this->switchRRDLimitOption($this->_RRDoptions["lower-limit"],$this->_RRDoptions["upper-limit"]);
+                        $this->vname[$tm["metric"].'inv'] = "vi".$cpt;
                         $this->addArgument("DEF:vi".$cpt."=".$this->dbPath.$key.".rrd:value:AVERAGE CDEF:v".$cpt."=vi".$cpt.",-1,*");
                         if (isset($tm["warn"]) && $tm["warn"] != 0)
                             $tm["warn"] *= -1;
@@ -792,16 +793,26 @@ class CentreonGraph {
                         continue;
                     }
                     $dispname = ucfirst($name);
-                    $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."="
-                        .$this->vname[$tm["metric"]].",".$cf. " ";
+                    if (isset($this->vname[$tm["metric"].'inv'])) {
+                        $vdefs .= "VDEF:".$this->vname[$tm["metric"].'inv'].$dispname."="
+                        .$this->vname[$tm["metric"].'inv'].",".$cf. " ";
+                    } else {
+                        $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."="
+                            .$this->vname[$tm["metric"]].",".$cf. " ";
+                    }
                     if (($name == "min" || $name == "max") &&
                         (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int'])) {
                         $displayformat = "%7.0lf";
                     } else {
                         $displayformat = "%7.2lf";
                     }
-                    $prints .= "GPRINT:".$this->vname[$tm["metric"]].$dispname.":\""
-                        .$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
+                    if (isset($this->vname[$tm["metric"].'inv'])) {
+                        $prints .= "GPRINT:".$this->vname[$tm["metric"].'inv'].$dispname.":\""
+                            .$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
+                    } else {
+                        $prints .= "GPRINT:".$this->vname[$tm["metric"]].$dispname.":\""
+                            .$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
+                    }
                 }
                 $this->addArgument($vdefs);
                 $this->addArgument($prints . "COMMENT:\"\\l\"");
@@ -1180,6 +1191,9 @@ class CentreonGraph {
         foreach ($this->_RRDoptions as $key => $value) {
             $commandLine .= "--".$key;
             if (isset($value)) {
+                if (preg_match('/\'/', $value)) {
+                    $value = "'" . preg_replace('/\'/', ' ', $value) . "'";
+                }
                 $commandLine .= "=".$value;
             }
             $commandLine .= " ";

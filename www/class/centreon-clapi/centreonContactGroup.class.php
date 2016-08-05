@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.modules.centreon.com/centreon-clapi/trunk/www/modules/centreon-clapi/core/class/centreonContact.class.php $
- * SVN : $Id: centreonContact.class.php 25 2010-03-30 05:52:19Z jmathis $
- *
  */
 
 require_once "centreonObject.class.php";
@@ -206,9 +203,9 @@ class CentreonContactGroup extends CentreonObject {
     public function export() {
         parent::export();
         $obj = new Centreon_Object_Relation_Contact_Group_Contact();
-        $elements = $obj->getMergedParameters(array("cg_name"), array("contact_name"), -1, 0, "cg_name");
+        $elements = $obj->getMergedParameters(array("cg_name"), array("contact_alias"), -1, 0, "cg_name");
         foreach ($elements as $element) {
-            echo $this->action . $this->delim . "addcontact" . $this->delim . $element['cg_name'] . $this->delim . $element['contact_name'] . "\n";
+            echo $this->action . $this->delim . "addcontact" . $this->delim . $element['cg_name'] . $this->delim . $element['contact_alias'] . "\n";
         }
     }
 

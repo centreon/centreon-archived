@@ -98,6 +98,7 @@ sub init {
         $self->{cdb} = centreon::common::db->new
           (db => $self->{centreon_config}->{centreon_db},
            host => $self->{centreon_config}->{db_host},
+           port => $self->{centreon_config}->{db_port},
            user => $self->{centreon_config}->{db_user},
            password => $self->{centreon_config}->{db_passwd},
            logger => $self->{logger});
@@ -108,6 +109,7 @@ sub init {
         $self->{csdb} = centreon::common::db->new
           (db => $self->{centreon_config}->{centstorage_db},
            host => $self->{centreon_config}->{db_host},
+           port => $self->{centreon_config}->{db_port},
            user => $self->{centreon_config}->{db_user},
            password => $self->{centreon_config}->{db_passwd},
            logger => $self->{logger});

@@ -52,7 +52,7 @@ Changes
 * Browser compatibility : IE 11, FF 5 et Chrome 39 at least
 * Shared views in custom views are not automaticaly loaded in views of others users. Now views are able to be public and user can load them during the creation step.
 
-Secutiry fixes
+Security Fixes
 --------------
 
 * Removing PHP session ID in the URL of the Ajax flow of certain pages.
@@ -82,6 +82,7 @@ Known Bugs
  * Monitoring > Downtimes
  * Monitoring > Comments
  * Monitoring > Eventlogs > System logs
+ * Configuration > Pollers
 * Graph slip not working
 * Pagination is broker when you go on the last page, change the number of line to the Max. Page become empty.
 * If you have timeperiods used in exception or inclusion of timeperiod and now deleted, their ids stays in the database in relation table. During the sql update process, this blocks an addition of constraint on this relation table. To fix it, you have to remove old timeperiod id.
@@ -94,4 +95,4 @@ Known Bugs
 How to Install ?
 ----------------
 
-Now that you are aware about all specificities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisits and all upgrade steps in order to avoid data loss.
+Now that you are aware about all specificities of this version, you can install it. If you install from scratch on your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisites and all upgrade steps in order to avoid data loss.

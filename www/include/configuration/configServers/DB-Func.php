@@ -278,7 +278,7 @@ function updateServer($id = null)	{
     isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "init_script = '".htmlentities(trim($ret["init_script"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "init_script = NULL, ";
     isset($ret["init_script_centreontrapd"]) && $ret["init_script_centreontrapd"] != NULL ? $rq .= "init_script_centreontrapd = '".htmlentities(trim($ret["init_script_centreontrapd"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "init_script_centreontrapd = NULL, ";
     isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != NULL ? $rq .= "snmp_trapd_path_conf = '".htmlentities(trim($ret["snmp_trapd_path_conf"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "snmp_trapd_path_conf = NULL, ";
-  	$rq .= "monitoring_engine = 'Centreon Engine',  ";
+  	$rq .= "monitoring_engine = 'CENGINE',  ";
     isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "nagios_bin = '".htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_bin = NULL, ";
     isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != NULL ? $rq .= "nagiostats_bin = '".htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagiostats_bin = NULL, ";
     isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != NULL ? $rq .= "nagios_perfdata = '".htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_perfdata = NULL, ";

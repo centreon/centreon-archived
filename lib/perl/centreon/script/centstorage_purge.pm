@@ -128,7 +128,7 @@ sub run {
         my $delete_limit = time() - 60 * 60 * 24 * $self->{config}->{len_storage_comments};
 
         $self->{logger}->writeLogInfo("Purging centstorage.comments table...");
-        $self->{csdb}->do("DELETE FROM comments WHERE (deletion_time is not null and deletion_time < '$delete_limit') or (expire_time  is not null and expire_time < '$delete_limit')");
+        $self->{csdb}->do("DELETE FROM comments WHERE entry_time < $delete_limit OR (deletion_time IS NOT null AND deletion_time < $delete_limit) OR (expire_time < $delete_limit AND expire_time <> 0)");
         $self->{logger}->writeLogInfo("Done");
     }
     

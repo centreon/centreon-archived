@@ -157,6 +157,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		$form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
                     
 		$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
+        $form->addElement('text','timezone_warning', _("*The timezone used is configured on your user settings"));
         $defaultDuration = 3600;
         
         if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
@@ -179,6 +180,11 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		$with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("Yes"), '1');
         $with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("No"), '0');
         $form->addGroup($with_services, 'with_services', _("Set downtime for hosts services"), '&nbsp;');
+        if (isset($oreon->optGen['monitoring_dwt_svc']) && $oreon->optGen['monitoring_dwt_svc']) {
+            $defaultwwithService = $oreon->optGen['monitoring_dwt_svc'];
+        }
+        $form->setDefaults(array('with_services[with_services]' => $defaultwwithService));
+
 
 		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 

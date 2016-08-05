@@ -59,8 +59,7 @@ $help['tip_display_autologin_shortcut'] = dgettext('help', 'Displays Autologin s
  * Time Zone
  */
 
-$help['tip_enable_timezone_management'] = dgettext('help', 'Enables timezone management.');
-$help['tip_default_timezone'] = dgettext('help', 'Default host timezone.');
+$help['tip_default_timezone'] = dgettext('help', 'Default host and contact timezone.');
 
 /**
  * SSO
@@ -68,7 +67,10 @@ $help['tip_default_timezone'] = dgettext('help', 'Default host timezone.');
 $help['sso_enable'] = dgettext('help', 'Whether SSO authentication is enabled. SSO feature have only to be enabled in a secured and dedicated environment for SSO. Direct access to Centreon UI from users have to be disabled.');
 $help['sso_mode'] = dgettext('help', 'Authentication can be solely based on SSO or it can work with both SSO and local authentication systems.');
 $help['sso_trusted_clients'] = dgettext('help', 'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.');
+$help['sso_blacklist_clients'] = dgettext('help', 'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.');
 $help['sso_header_username'] = dgettext('help', 'The header variable that will be used as login. i.e: $_SERVER[\'HTTP_AUTH_USER\']');
+$help['sso_username_pattern'] = dgettext('help', 'The pattern to search for in the username. If i want to remove the domain of the email: /@.*/');
+$help['sso_username_replace'] = dgettext('help', 'The string to replace.');
 
 /**
  * UI bahvior

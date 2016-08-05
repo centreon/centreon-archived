@@ -5,8 +5,9 @@
   </div>
   {/if}
   <!-- Action bar -->
-  {if $aclAddView == 1}
   <div id='actionBar' style="display: none;">
+
+  {if $aclAddView == 1}
     <!-- Button for add a view -->
     <div class="cntn">
       <button class='addView btnAction btc bt_success'>{t}Add view{/t}</button>

@@ -48,7 +48,7 @@ Add
 
 In order to add a contact, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_EN;local" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_US;local" 
 
 
 The required parameters are the following:
@@ -68,7 +68,7 @@ Admin                      *1* (admin) or *0* (non admin)
 
 GUI Access                 *1* (can access UI) or *0* (cannot access UI)
 
-Language                   Language pack has to be installed on Centreon
+Language                   Language pack has to be installed on Centreon (it can be "browser")
 
 Authentication type        *local* or *ldap*
 ========================== ================================================
@@ -93,7 +93,8 @@ If you want to change a specific parameter for a contact, use the **SETPARAM** a
 
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifcmd;command name" 
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;svcnotifcmd;command name" 
-  root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifperiod;period name" 
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifperiod;period name"
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setparam -v "contact alias;timezone;Europe/Berlin"
 
 The required parameters are the following:
 
@@ -162,6 +163,8 @@ enable_notifications	   *1* when notification is enable, *0* otherwise
 autologin_key	           Used for auto login
 
 template	           Name of the template to apply to the contact
+
+timezone                   Timezone
 ========================== ============================================================================================
 
 .. note::

@@ -126,6 +126,23 @@ class MetaService extends AbstractObject {
             if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $service_id = $row['sid'];
             }
+
+            // Add relation between meta host and meta service
+            $stmt = $this->backend_instance->db->prepare("SELECT host_id 
+                    FROM host WHERE host_name = '_Module_Meta' 
+                    AND host_register = '2'");
+            $stmt->execute();
+            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $host_id = $row['host_id'];
+            }
+
+            $stmt = $this->backend_instance->db->prepare("INSERT INTO host_service_relation 
+                    (host_host_id, service_service_id) 
+                VALUES
+                    (:meta_host_id, :meta_service_id)");
+            $stmt->bindParam(':meta_host_id', $host_id);
+            $stmt->bindParam(':meta_service_id', $service_id);
+            $stmt->execute();
         }
 
         if (!isset($service_id)) {

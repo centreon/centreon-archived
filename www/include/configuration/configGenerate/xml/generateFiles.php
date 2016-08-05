@@ -31,13 +31,29 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL:$
- * SVN : $Id:$
- *
  */
 
 ini_set("display_errors", "Off");
+
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
+
+$pearDB = new CentreonDB();
+
+/* Check Session */
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    print "Bad Session";
+    exit();
+}
 
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit;
@@ -55,13 +71,6 @@ $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/nagiosCFG/";
 
 chdir(_CENTREON_PATH_ . "www");
-require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
-require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
-require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 
 session_start();
 if ($_POST['sid'] != session_id()) {
@@ -70,7 +79,6 @@ if ($_POST['sid'] != session_id()) {
 $oreon = $_SESSION['centreon'];
 $centreon = $oreon;
 $xml = new CentreonXML();
-$pearDB = new CentreonDB();
 
 $config_generate = new Generate();
 
