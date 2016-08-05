@@ -78,4 +78,3 @@ function set_user_param($user_id, $pearDB, $key, $value)
         $pearDB->query($queryIns);
     }
 }
-

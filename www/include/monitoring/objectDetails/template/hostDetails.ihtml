@@ -85,11 +85,12 @@
                                 {assign var=names value=';'|explode:$HS}
 								<tr>
 									<td class="ListColLeft ColPopup" style='text-align:center;'>
-                                      <h3 class="detail-chart-title">{$names[1]}</h3>
-                                      <a href='./main.php?p=204&mode=0&svc_id={$HS}'>
-                                          <div class="chart" data-graph-id="{$graphId}" data-graph-type="service">
-                                          </div>
-                                      </a>
+                                      <h3 class="detail-chart-title">
+                                        {$names[1]} <a href='./main.php?p=204&mode=0&svc_id={$HS}'>
+                                          <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
+                                        </a>
+                                      </h3>
+                                      <div class="chart" data-graph-id="{$graphId}" data-graph-type="service"></div>
 									</td>
 								</tr>
 								{/foreach}
@@ -407,7 +408,7 @@
 				{if $aclAct.host_schedule_downtime || $admin == 1}	
 				<tr class='list_one'>
 					<td class="ListColLeft ColPopup" id="host_downtime">
-						<a href='main.php?p=21001&o=ah&host_name={$host_data.host_name}'>{$m_mon_SCH_downtime}</a>
+						<a href='main.php?p=21001&o=a&host_id={$host_data.host_id}'>{$m_mon_SCH_downtime}</a>
 					</td>
 				</tr>
 				{/if}

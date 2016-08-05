@@ -44,7 +44,6 @@ require_once _CENTREON_PATH_ . '/www/class/centreonGraph.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonBroker.class.php';
 
-
 $pearDB = new CentreonDB();
 
 //$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
@@ -53,28 +52,26 @@ $mySessionId = session_id();
 /**
  * Checks for token
  */
-if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {    
+if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {
     $token = isset($_GET['token']) ? $_GET['token'] : $_GET['akey'];
     $DBRESULT = $pearDB->query("SELECT * FROM `contact`
     				WHERE `contact_alias` = '".$pearDB->escape($_GET["username"])."'
     				AND `contact_activate` = '1'
-    				AND `contact_autologin_key` = '".$token."' LIMIT 1");
+    				AND `contact_autologin_key` = '".$pearDB->escape($token)."' LIMIT 1");
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
             $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".$mySessionId."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
-        }        
+        }
     } else {
         die('Invalid token');
     }
-
 }
 
 $index = isset($_GET['index']) ? $_GET['index'] : 0;
 $pearDBO = new CentreonDB("centstorage");
 if (isset($_GET["hostname"]) && isset($_GET["service"])) {
-
     $DBRESULT = $pearDBO->query("SELECT `id`
                                  FROM index_data
     				 WHERE host_name = '".$pearDB->escape($_GET["hostname"])."'
@@ -83,6 +80,22 @@ if (isset($_GET["hostname"]) && isset($_GET["service"])) {
     if ($DBRESULT->numRows()) {
         $res = $DBRESULT->fetchRow();
         $index = $res["id"];
+    } else {
+        die('Resource not found');
+    }
+}
+if (isset($_GET['chartId'])) {
+    list($hostId, $serviceId) = explode('_', $_GET['chartId']);
+    if (false === isset($hostId) || false === isset($serviceId)) {
+        die('Resource not found');
+    }
+    $res = $pearDBO->query('SELECT id
+        FROM index_data
+        WHERE host_id = ' . $pearDBO->escape($hostId) .
+        ' AND service_id = ' . $pearDBO->escape($serviceId));
+    if ($res->numRows()) {
+        $row = $res->fetchRow();
+        $index = $row['id'];     
     } else {
         die('Resource not found');
     }
@@ -111,7 +124,7 @@ if (!$isAdmin) {
     $res = $dbstorage->query($sql);
     if (!$res->numRows()) {
         die('Graph not found');
-    }    
+    }
     $row = $res->fetchRow();
     unset($res);
     $hostId = $row['host_id'];
@@ -138,8 +151,8 @@ $obj = new CentreonGraph($contactId, $index, 0, 1);
 /**
  * Set arguments from GET
  */
-$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
-$obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
+$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)));
+$obj->setRRDOption("end", $obj->checkArgument("end", $_GET, time()));
 
 /**
  * Template Management
@@ -190,4 +203,3 @@ $obj->displayImageFlow();
 if (isset($_GET['akey'])) {
     $pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($mySessionId)."'AND user_id = (SELECT contact_id from contact where contact_autologin_key = '".$_GET['akey']."')");
 }
-

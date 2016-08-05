@@ -860,8 +860,10 @@ div.menuLeft {
 }
 
 .detail-chart-title {
+  text-align: left;
   background-color: #cfedf9;
   padding: 5px 0;
+  padding-left: 5px;
 }
 
 /* ------ START : info box -----*/
@@ -1529,6 +1531,10 @@ form label { margin-left: 3px; }
     float: left;
 }
 
+.pull-right {
+    float: right;
+}
+
 ul.no-deco-list {
     list-style-type: none;
 }
@@ -1839,8 +1845,8 @@ div#tabs_periods {
 }
 
 td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
-    border: 1px solid #d1d2d4 !important;
-    background: #f3f3f4 !important;
+    border: 1px solid #bdbdc2 !important;
+    background: #cacace !important;
     font-weight: bold !important;
     color: #009fdf !important;
 }
@@ -2118,6 +2124,16 @@ textarea.default-textarea {
   margin-top: 2px;
 }
 
+.graph .title .remove {
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.graph .title > span {
+  vertical-align: top;
+  margin-top: 2px;
+}
+
 .graph .content {
   margin: 5px;
   display: flex;
@@ -2131,8 +2147,8 @@ textarea.default-textarea {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 280px;
-  top: 0;
+  height: 240px;
+  top: 20px;
 }
 
 .graph .action.left {
@@ -2209,4 +2225,11 @@ textarea.default-textarea {
 .ico-col.ico-col-3.active {
   background-image: url('../../img/icons/3-col-blue.png');
   background-size: cover;
+}
+
+.filter-select {
+  background-image: url('../../img/icons/filter.png');
+  background-size: 18px;
+  background-position: right;
+  background-repeat: no-repeat;
 }

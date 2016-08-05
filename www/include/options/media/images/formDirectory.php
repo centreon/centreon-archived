@@ -164,8 +164,7 @@ if ($o == "m") {
         _("Cancel"),
         array("onClick" => "javascript:window.location.href='?p=" . $p . "'")
     );
-}
-# Modify a directory
+} # Modify a directory
 elseif ($o == "cd") {
     if (isset($dir['dir_imgs'])) {
         $confirm = implode(',', $dir['dir_imgs']);

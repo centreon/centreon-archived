@@ -48,6 +48,10 @@ default:
       contexts:
         - RecoveryNotificationDelayContext
 
+    centreon_knowledge_base:
+      paths: [ %paths.base%/features/CentreonWithKnowledge.feature ]
+      contexts:
+        - CentreonWithKnowledgeContext
     disable_fields_on_blocked_objects:
       paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
       contexts:

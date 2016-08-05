@@ -140,15 +140,17 @@
                         {if $index_data}
                         <table class="ListTable">
                             <tr class='list_lvl_1'>
-                                <td class="FormHeader" colspan="2">
-                                <h4>{$detailed_graph}</h4></td>
+                              <td class="FormHeader" colspan="2">
+                                <h4>
+                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
+                                    <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
+                                  </a>
+                                </h4>
+                              </td>
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColCenter" colspan="2">
-                                    <a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
-                                        <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service">
-                                        </div>
-                                    </a>
+                                  <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service"></div>
                                 </td>
                             </tr>
                         </table>
@@ -286,7 +288,7 @@
                                 {if $aclAct.service_schedule_downtime || $admin == true}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='./main.php?p=21001&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_downtime}</a></b>
+                                            <b><a href='./main.php?p=21001&o=a&host_id={$h.host_id}&service_id={$service_data.service_id}'>{$m_mon_schedule_downtime}</a></b>
                                         </td>
                                     </tr>
                                 {/if}

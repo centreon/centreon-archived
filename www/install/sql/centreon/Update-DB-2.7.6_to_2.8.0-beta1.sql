@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '2.8.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.6' LIMIT 1;
+UPDATE `informations` SET `value` = '2.8.0-beta1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.7.6' LIMIT 1;
 
 -- Add graphite output for centreon-broker
 INSERT IGNORE INTO cb_module (name, libname, loading_pos, is_activated)
@@ -185,6 +185,16 @@ UPDATE topology set readonly = '0' WHERE topology_page = 60901;
 -- Add an API Access configuration page
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (122,'API',501,50120,100,1,'./include/Administration/parameters/parameters.php','&o=api','0','0','1',NULL,NULL,NULL,'1');
 
+-- Add an KB Access configuration page
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Knowledge Base', '610', NULL , NULL , '36', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Knowledge Base', '6', '610', '65', '36', NULL, NULL , NULL , '1', '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Hosts', '610', '61001', '5', '36', './include/configuration/configKnowledge/display-hosts.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Host Templates', '610', '61003', '15', '36', './include/configuration/configKnowledge/display-hostTemplates.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Services', '610', '61002', '10', '36', './include/configuration/configKnowledge/display-services.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Service Templates', '610', '61004', '20', '36', './include/configuration/configKnowledge/display-serviceTemplates.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
+
+
+
 -- Add possibility to limit access to API
 ALTER TABLE contact ADD COLUMN `reach_api` int(11) DEFAULT '0' AFTER `contact_oreon`;
 
@@ -210,3 +220,6 @@ UPDATE topology SET topology_url = './include/views/virtualMetrics/virtualMetric
 -- Add recovery_notification_delay columns
 ALTER TABLE `host` ADD COLUMN `host_recovery_notification_delay` int(11) DEFAULT NULL AFTER `host_first_notification_delay`;
 ALTER TABLE `service` ADD COLUMN `service_recovery_notification_delay` int(11) DEFAULT NULL AFTER `service_first_notification_delay`;
+
+-- Add possibility to disable command
+ALTER TABLE `command` ADD COLUMN `command_activate` enum('0','1') DEFAULT '1' AFTER `command_comment`;

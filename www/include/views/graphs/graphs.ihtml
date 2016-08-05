@@ -8,38 +8,49 @@
                 <th><h5>{t}Filters{/t}</h5></th>
             </tr>
             <tr>
-                <td class="log-select"><h4>{$form.host_group_filter.label} <img id="setHostGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
-                <td class="log-select"><h4>{$form.host_selector.label}</h4></td>
-                <td colspan='2'><h4>{$from}</h4></td>
+                <td><h4>{t}Chart{/t}</h4></td>
+                <td><h4>{t}Host{/t}</h4></td>
+                <td><h4>{t}Hostgroup{/t}</h4></td>
+                <td><h4>{t}Servicegroup{/t}</h4></td>
             </tr>
             <tr>
-			    <td class="log-select">{$form.host_group_filter.html}</td>
-			    <td class="log-select">{$form.host_selector.html}</td>
-			    <td>{$form.StartDate.html} {$form.StartTime.html}</td>
-			    <td></td>
-			</tr>
-			<tr>
-			    <td><h4>{$form.service_group_filter.label} <img id="setServiceGroup" class="log-extend-icon ico-12" src="./img/icons/arrow-right.png" alt=""/></h4></td>
-			    <td class="checkbox"><h4>{$form.service_selector.label}</h4></td>
-			    <td collspan=2><h4>{$to}</h4></td>
-			</tr>
-			<tr>
-			    <td class="log-select">{$form.service_group_filter.html}</td>
-			    <td class="log-select">{$form.service_selector.html}</td>
-			    <td>{$form.EndDate.html} {$form.EndTime.html}</td>
-			    <td></td>
-			</tr>
-			<tr>
-			    <td class="log-select"><h4>{$form.metaservice_selector.label}</h4></td>
-			    <td><h4>{$displayStatus}</h4></td>
-			    <td collspan=2><h4>{$form.period.label}</h4></td>
-			</tr>
-			<tr>
-			    <td>{$form.metaservice_selector.html}</td>
-			    <td><input type="checkbox" name="displayStatus" id="displayStatus" /></td>
-			    <td>{$form.period.html}</td>
-			    <td>{$form.graph.html}</td>
-			</tr>
+                <td class="log-select">
+                    <select id="select-chart" multiple size="1"></select>
+                </td>
+                <td class="log-select">
+                    <select 
+                        id="host_filter"
+                        multiple
+                        size="1">
+                    </select>
+                </td>
+                <td class="log-select">
+                    <select 
+                        id="host_group_filter"
+                        multiple
+                        size="1">
+                    </select>
+                </td>
+                <td class="log-select">
+                    <select 
+                        id="service_group_filter"
+                        multiple
+                        size="1">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><h4>{t}Period{/t}</h4></td>
+                <td><h4>{t}From{/t}</h4></td>
+                <td><h4>{t}To{/t}</h4></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>{$form.period.html}</td>
+                <td>{$form.StartDate.html} {$form.StartTime.html}</td>
+                <td>{$form.EndDate.html} {$form.EndTime.html}</td>
+                <td></td>
+            </tr>
         </table>
     </form>
     <div class="graph-options">
@@ -63,17 +74,24 @@
 <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
 <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
 <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
+<script src="./include/common/javascript/centreon/centreon-select2.js"></script>
+<script>
+var defaultCharts = JSON.parse('{$defaultCharts}');
+var nbDisplayedCharts = 18;
+var tooManyChartMsg = '{t}You cannot add more charts. The maximum charts is {/t}' + nbDisplayedCharts;
+</script>
 
 {literal}
 <script id="graph-line" type="text/x-handlebars-template">
-<div id="graph_wrapper_{{graphId}}" class="graph">
+<div id="graph_wrapper_{{graphId}}" data-graph-id="{{graphId}}" class="graph">
   <div class="title">
-    {{graphTitle}}
-    <a class="actions">
-      <img alt="Export graph" src="./img/icons/picture.png" class="ico-16 margin_right">
+    <img class="remove ico-14 margin_right" src="./img/icons/circle-cross.png">
+    <span>{{graphTitle}}</span>
+    <a class="actions" href="#" data-href="./include/views/graphs/generateGraphs/generateImage.php">
+      <img alt="Export graph" src="./img/icons/picture.png" class="ico-14 margin_right">
     </a>
-    <a class="actions">
-      <img alt="Export CSV" src="./img/icons/csv.png" class="ico-16 margin_right">
+    <a class="actions" href="#" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
+      <img alt="Export CSV" src="./img/icons/csv.png" class="ico-14 margin_right">
     </a>
   </div>
   <div class="content">
@@ -130,7 +148,7 @@ function addChart(id, name, times) {
   jQuery('#graph-status-' + id).centreonGraph(times);
 }
 
-function loadChart() {
+function loadChart(chart, callback) {
   var i = 0;
   var exclude = [
     'StartDate',
@@ -140,10 +158,14 @@ function loadChart() {
     'period',
     'displayStatus'
   ];
-  var dataForm = jQuery('#FormPeriod').serializeArray();
   var postData = {};
   var times = {};
   var end;
+  chart = chart ? chart : [];
+  
+  if (chart.length === 0) {
+    return;
+  }
   
   if (jQuery('select[name="period"]').val() === '') {
     times = {
@@ -160,33 +182,26 @@ function loadChart() {
     end = moment();
   }
   
-  for (i = 0; i < dataForm.length; i++) {
-    if (exclude.indexOf(dataForm[i].name) !== -1) {
-      postData[dataForm[i].name] = dataForm[i].value;
-    }
-  }
   jQuery.ajax({
     url: './include/views/graphs/getGraphAjax.php',
     type: 'post',
     dataType: 'json',
-    data: dataForm,
+    data: {
+      service_selector: chart
+    },
     success: function (data) {
-      var newListHost = [];
-      var tmpChartsList = [];
       var i = 0;
       for (i = 0; i < data.length; i++) {
-        addChart(data[i].id, data[i].title, times);
-        newListHost.push(data[i].id);
-      }
-      for (i = 0; i < charts.length; i++) {
-        if (newListHost.indexOf(charts[i]) === -1) {
-          jQuery('#graph_wrapper_' + charts[i]).remove();
-        } else {
-          tmpChartsList.push(charts[i]);
+        if (charts.length >= nbDisplayedCharts) {
+          alert(tooManyChartMsg);
+          break;
         }
+        addChart(data[i].id, data[i].title, times);
       }
-      charts = tmpChartsList;
       displayNav(end);
+      if (typeof callback == 'function') {
+        callback();
+      }
     }
   });
 }
@@ -250,14 +265,61 @@ function displayNav(end) {
 }
   
 jQuery(function () {
-  loadChart();
+  loadChart(defaultCharts);
   
   /* Add events */
-  jQuery('#service_selector').on('change', loadChart);
-  jQuery('#host_selector').on('change', loadChart);
-  jQuery('#metaservice_selector').on('change', loadChart);
-  jQuery('#service_group_filter').on('change', loadChart);
-  jQuery('#host_group_filter').on('change', loadChart);
+  jQuery('#select-chart').on('change', function () {
+    var charts = jQuery('#select-chart').val();
+    
+    if (charts !== null && charts.length > 0) {
+      loadChart(charts, function () {
+        jQuery('#select-chart').val('');
+        jQuery('#select-chart')
+          .trigger('change')
+          .select2('close');  
+      });
+    }
+  });
+  
+  /* Add events on click on action download image/CSV */
+  jQuery('.graphZone').delegate('a.actions', 'click', function (e) {
+    var $a = jQuery(this);
+    var baseUrl = $a.data('href');
+    var chartId = $a.parents('.graph').data('graphId');
+    var start;
+    var end;
+    /* Get the period */
+    if (jQuery('select[name="period"]').val() === '') {
+      start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
+      end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+      duration = moment.duration(end.diff(start));
+    } else {
+      parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
+      duration = moment.duration(
+        parseInt(parseInterval[1], 10),
+        parseInterval[2]
+      );
+      start = moment();
+      end = moment();
+      start.subtract(parseInterval[1], parseInterval[2]);
+    }
+    
+    e.preventDefault();
+    baseUrl += '?chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
+    window.location = baseUrl;
+  });
+  
+  /* Remove a chart */
+  jQuery('.graphZone').delegate('.graph > .title > .remove', 'click', function () {
+    var $elem = jQuery(this);
+    var parent = jQuery(this).parents('.graph');
+    var chartId = parent.attr('id').replace('graph_wrapper_', '');
+    var arrayIndex = charts.indexOf(chartId);
+    if (arrayIndex > -1) {
+      charts.splice(arrayIndex, 1);
+      parent.remove();
+    }
+  });
   
   jQuery('.graphZone').delegate('.action > .bt_action', 'click', function () {
     var $elem = jQuery(this);
@@ -303,6 +365,53 @@ jQuery(function () {
   
   jQuery('.datepicker-iso').datepicker({
     dateFormat: 'yy-mm-dd'
+  });
+  
+  /* Initialize the select chart */
+  jQuery('#service_group_filter').centreonSelect2({
+    select2: {
+      ajax: {
+        url: './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list'
+      },
+      containerCssClass: 'filter-select'
+    },
+    allowClear: true
+  });
+  
+  jQuery('#host_group_filter').centreonSelect2({
+    select2: {
+      ajax: {
+        url: './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list'
+      },
+      containerCssClass: 'filter-select'
+    },
+    allowClear: true
+  });
+  
+  jQuery('#host_filter').centreonSelect2({
+    select2: {
+      ajax: {
+        url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list'
+      },
+      containerCssClass: 'filter-select'
+    },
+    allowClear: true,
+    additionnalFilters: {
+      hostgroup: '#host_group_filter'
+    }
+  });
+  
+  jQuery('#select-chart').centreonSelect2({
+    select2: {
+      ajax: {
+        url: './include/common/webServices/rest/internal.php?object=centreon_performance_service&action=list'
+      }
+    },
+    additionnalFilters: {
+      host: '#host_filter',
+      hostgroup: '#host_group_filter',
+      servicegroup: '#service_group_filter'
+    }
   });
 });
 </script>

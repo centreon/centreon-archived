@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -401,9 +400,11 @@ function getMyHostServicesByName($host_id = null)
     $hSvs = array();
     if (isset($hsRelation[$host_id])) {
         foreach ($hsRelation[$host_id] as $service_id => $flag) {
-            $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
-            $service_description = str_replace('#BS#', '\\', $service_description);
-            $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
+            if (isset($svcCache[$service_id])) {
+                $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
+                $service_description = str_replace('#BS#', '\\', $service_description);
+                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);                
+            }
         }
     }
     return $hSvs;

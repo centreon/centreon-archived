@@ -56,4 +56,5 @@ $countMacro = count($aMacros);
 $arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
 
 echo json_encode($arrayReturn);
+
 die;

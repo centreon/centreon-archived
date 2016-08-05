@@ -55,7 +55,7 @@ if (isset($_GET["host_search"])) {
 }
 
 $tab_class = array(
-    "0" => "list_one", 
+    "0" => "list_one",
     "1" => "list_two"
     );
 $rows = 10;
@@ -142,7 +142,7 @@ $form->setDefaults(array('typeDisplay2' => 'pb'));
 
 foreach (array('o1', 'o2') as $option) {
     $attrs = array('onchange' => "javascript: setO(this.form.elements['$option'].value); submit();");
-    $form->addElement('select', $option, NULL, array(NULL => _("More actions..."),
+    $form->addElement('select', $option, null, array(null => _("More actions..."),
         "3" => _("Verification Check"),
         "4" => _("Verification Check (Forced)"),
         "70" => _("Services : Acknowledge"),
@@ -158,10 +158,10 @@ foreach (array('o1', 'o2') as $option) {
         "92" => _("Hosts : Enable Check"),
         "93" => _("Hosts : Disable Check")), $attrs);
 
-    $form->setDefaults(array($option => NULL));
+    $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
-    $o1->setValue(NULL);
-    $o1->setSelected(NULL);
+    $o1->setValue(null);
+    $o1->setSelected(null);
 }
 
 $tpl->assign('limit', $limit);

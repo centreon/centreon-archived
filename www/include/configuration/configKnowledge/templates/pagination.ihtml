@@ -1,0 +1,15 @@
+<td class="ToolbarPagination" align="center">
+	{if $firstPage}&nbsp;<a href="{$firstPage}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/first_rewind.png" title='{$first}'></a>{/if}
+	{if $pagePrev}&nbsp;<a href="{$pagePrev}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/rewind.png" title='{$previous}'></a>{/if}
+	{foreach key=key item=item from=$pageArr }
+	{if $pageArr[$key].num != $num}
+	&nbsp;<a href="{$pageArr[$key].url_page}{if $host_name}&host_name={$host_name}{/if}" class="otherPageNumber">{$pageArr[$key].label_page}</a>
+	{else}
+	&nbsp;<b class="currentPageNumber">{$pageArr[$key].label_page}</b>
+	{/if}
+	{/foreach}
+	{if $pageNext}&nbsp;<a href="{$pageNext}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/fast_forward.png" title='{$next}'></a>{/if}
+	{if $lastPage}&nbsp;<a href="{$lastPage}{if $host_name}&host_name={$host_name}{/if}"><img src="./img/icons/end_forward.png" title='{$last}'></a>{/if}
+</td>
+<td class="Toolbar_pagelimit">{$form.l.html}</td>
+{$form.hidden}

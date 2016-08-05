@@ -33,7 +33,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -85,7 +85,7 @@ if ($ret2 && $ret2['topology_page'] != "" && $p != $ret2['topology_page']) {
     $p = $ret['topology_page'];
 }
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl('broker');
 $hgs = $acl->getHostGroupAclConf(null, 'broker');

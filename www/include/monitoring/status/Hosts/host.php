@@ -200,24 +200,33 @@ $action_list[] = _("More actions...");
  * Showing actions allowed for current user
  */
 if (isset($authorized_actions) && $allActions == false) {
-    if (isset($authorized_actions) && $allActions == false)
+    if (isset($authorized_actions) && $allActions == false) {
         $action_list[94] = _("Hosts : Schedule immediate check");
-    if (isset($authorized_actions["host_schedule_forced_check"]))
+    }
+    if (isset($authorized_actions["host_schedule_forced_check"])) {
         $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
-	if (isset($authorized_actions["host_acknowledgement"]))
-		$action_list[72] = _("Hosts : Acknowledge");
-    if (isset($authorized_actions["host_disacknowledgement"]))
+    }
+    if (isset($authorized_actions["host_acknowledgement"])) {
+        $action_list[72] = _("Hosts : Acknowledge");
+    }
+    if (isset($authorized_actions["host_disacknowledgement"])) {
         $action_list[73] = _("Hosts : Disacknowledge");
-    if (isset($authorized_actions["host_notifications"]))
+    }
+    if (isset($authorized_actions["host_notifications"])) {
         $action_list[82] = _("Hosts : Enable Notification");
-    if (isset($authorized_actions["host_notifications"]))
+    }
+    if (isset($authorized_actions["host_notifications"])) {
         $action_list[83] = _("Hosts : Disable Notification");
-    if (isset($authorized_actions["host_checks"]))
+    }
+    if (isset($authorized_actions["host_checks"])) {
         $action_list[92] = _("Hosts : Enable Check");
-    if (isset($authorized_actions["host_checks"]))
+    }
+    if (isset($authorized_actions["host_checks"])) {
         $action_list[93] = _("Hosts : Disable Check");
-    if (isset($authorized_actions["host_schedule_downtime"]))
+    }
+    if (isset($authorized_actions["host_schedule_downtime"])) {
         $action_list[75] = _("Hosts : Set Downtime");
+    }
 } else {
     $action_list[94] = _("Hosts : Schedule immediate check");
     $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
@@ -237,10 +246,10 @@ $attrs = array('onchange' => "javascript: ".
     " if (this.form.elements['o1'].selectedIndex == 0) {".
     " return false;} ".
     "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
-$form->addElement('select', 'o1', NULL, $action_list, $attrs);
-$form->setDefaults(array('o1' => NULL));
+$form->addElement('select', 'o1', null, $action_list, $attrs);
+$form->setDefaults(array('o1' => null));
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
+$o1->setValue(null);
 
 $attrs = array('onchange' => "javascript: ".
     " var bChecked = isChecked(); ".
@@ -249,11 +258,11 @@ $attrs = array('onchange' => "javascript: ".
     " if (this.form.elements['o2'].selectedIndex == 0) {".
     " return false;} ".
     "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
-$form->addElement('select', 'o2', NULL, $action_list, $attrs);
-$form->setDefaults(array('o2' => NULL));
+$form->addElement('select', 'o2', null, $action_list, $attrs);
+$form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $keyPrefix = "";
 $statusList = array("" => "",

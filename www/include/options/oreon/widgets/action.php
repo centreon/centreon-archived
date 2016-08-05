@@ -56,16 +56,17 @@ try {
     $db = new CentreonDB();
     $widgetObj = new CentreonWidget($centreon, $db);
     switch ($action) {
-        case 'install' :
+        case 'install':
             $widgetObj->install(_CENTREON_PATH_."www/widgets/", $directory);
             break;
-        case 'uninstall' :
+        case 'uninstall':
             $widgetObj->uninstall($directory);
             break;
-        case 'upgrade' :
+        case 'upgrade':
             $widgetObj->upgrade(_CENTREON_PATH_."www/widgets/", $directory);
             break;
-        default : throw new Exception('Unknown action');
+        default:
+            throw new Exception('Unknown action');
     }
     $xml->writeElement('result', 1);
 } catch (Exception $e) {

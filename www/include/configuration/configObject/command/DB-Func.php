@@ -51,6 +51,19 @@ if (!function_exists("myDecodeCommand")) {
 
 }
 
+function getCommandName($command_id)
+{
+    global $pearDB;
+
+    $DBRESULT = $pearDB->query("SELECT `command_name` FROM `command` WHERE `command_id` = " . $pearDB->escape($command_id) . "");
+    $command = $DBRESULT->fetchRow();
+    if (isset($command['command_name'])) {
+        return $command['command_name'];
+    } else {
+        return null;
+    }
+}
+
 function testCmdExistence($name = null)
 {
     global $pearDB, $form, $centreon;
@@ -168,7 +181,8 @@ function updateCommand($cmd_id = null, $params = array())
             "`command_type` = '" . $pearDB->escape($ret["command_type"]["command_type"]) . "', " .
             "`command_comment` = '" . $pearDB->escape($ret["command_comment"]) . "', " .
             "`graph_id` = '" . $pearDB->escape($ret["graph_id"]) . "', " .
-            "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL") . " " .
+            "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $pearDB->escape($ret['connectors']) . "'" : "NULL") . ", " .
+            "`command_activate` = " . (isset($ret["command_activate"]["command_activate"]) ? "'" . $pearDB->escape($ret['command_activate']["command_activate"]) . "'" : "NULL") . " " .
             "WHERE `command_id` = '" . intval($cmd_id) . "'";
     $DBRESULT = $pearDB->query($rq);
 
@@ -202,10 +216,18 @@ function insertCommand($ret = array())
     /*
      * Insert
      */
-    $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, `graph_id`, `connector_id`, `command_comment`) ";
-    $rq .= "VALUES ('" . $pearDB->escape($ret["command_name"]) . "', '" . $pearDB->escape($ret["command_line"]) . "', '" . $pearDB->escape($ret['enable_shell']) . "', '" . $pearDB->escape($ret["command_example"]) . "', '" . $ret["command_type"]["command_type"] . "', '" . $ret["graph_id"] . "', ";
-    $rq .= (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL");
-    $rq .= ", '" . $pearDB->escape($ret["command_comment"]) . "'";
+    $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, 
+        `graph_id`, `connector_id`, `command_comment`, `command_activate`) ";
+    $rq .= "VALUES (
+            '" . $pearDB->escape($ret["command_name"]) . "', 
+            '" . $pearDB->escape($ret["command_line"]) . "', 
+            '" . $pearDB->escape($ret['enable_shell']) . "', 
+            '" . $pearDB->escape($ret["command_example"]) . "', 
+            '" . $ret["command_type"]["command_type"] . "', 
+            '" . $ret["graph_id"] . "', 
+            " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL") . ", 
+            '" . $pearDB->escape($ret["command_comment"]) . "', 
+            '" . $pearDB->escape($ret["command_activate"]["command_activate"]) . "'";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
 
@@ -291,7 +313,9 @@ function duplicateArgDesc($new_cmd_id, $cmd_id)
 {
     global $pearDB;
 
-    $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) SELECT '" . intval($new_cmd_id) . "', macro_name, macro_description FROM command_arg_description WHERE cmd_id = '" . intval($cmd_id) . "'";
+    $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) 
+                    SELECT '" . intval($new_cmd_id) . "', macro_name, macro_description 
+                    FROM command_arg_description WHERE cmd_id = '" . intval($cmd_id) . "'";
     $pearDB->query($query);
 }
 
@@ -304,7 +328,8 @@ function getHostNumberUse($command_id)
 {
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' AND host_register = '1'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND host_register = '1'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
@@ -318,7 +343,8 @@ function getServiceNumberUse($command_id)
 {
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' AND service_register = '1'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND service_register = '1'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
@@ -332,7 +358,8 @@ function getHostTPLNumberUse($command_id)
 {
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' AND host_register = '0'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND host_register = '0'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
@@ -346,7 +373,8 @@ function getServiceTPLNumberUse($command_id)
 {
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' AND service_register = '0'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND service_register = '0'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
@@ -404,11 +432,54 @@ function insertMacrosDesc($cmd, $ret)
             }
             
             if (!empty($sName)) {
-                $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape($sName)."' AND `command_command_id` = ".intval($cmd);
+                $query = "DELETE FROM `on_demand_macro_command` 
+                            WHERE command_macro_name = '".$pearDB->escape($sName)."' 
+                            AND `command_command_id` = ".intval($cmd);
                 $pearDB->query($query);
 
-                $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape($sName)."', '".$pearDB->escape($sDesc)."', '".$arr[$sType]."')";
+                $sQueryInsert = "INSERT INTO `on_demand_macro_command` 
+                    (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) 
+                    VALUES (".  intval($cmd).", 
+                        '".$pearDB->escape($sName)."', 
+                        '".$pearDB->escape($sDesc)."', 
+                        '".$arr[$sType]."')";
                 $pearDB->query($sQueryInsert);
+            }
+        }
+    }
+}
+
+/**
+ * Change status command
+ *
+ * @param ini $command_id
+ * @param array $commands
+ * @param int $status
+ *
+ */
+function changeCommandStatus($command_id, $commands, $status)
+{
+    global $pearDB, $centreon;
+
+    if (isset($command_id)) {
+        $query = "UPDATE `command` SET command_activate = '".$pearDB->escape($status)."' 
+                    WHERE command_id = '".$pearDB->escape($command_id)."'";
+        $pearDB->query($query);
+        $centreon->CentreonLogAction->insertLog("command", 
+                                                    $command_id, 
+                                                    getCommandName($command_id), 
+                                                    $status ? "enable" : "disable");
+    } else {
+        foreach ($commands as $command_id => $flag) {
+            if (isset($command_id) && $command_id) {
+                $query = "UPDATE `command` SET command_activate = '".$pearDB->escape($status)."' 
+                            WHERE command_id = '".$pearDB->escape($command_id)."'";
+                $pearDB->query($query);            
+
+                $centreon->CentreonLogAction->insertLog("command", 
+                                                            $command_id, 
+                                                            getCommandName($command_id), 
+                                                            $status ? "enable" : "disable");
             }
         }
     }

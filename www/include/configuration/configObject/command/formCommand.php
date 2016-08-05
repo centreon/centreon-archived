@@ -214,6 +214,11 @@ $form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
 $form->addElement('button', 'desc_macro', _("Describe macros"), array("onClick"=>"manageMacros();"));
 $form->addElement('textarea', 'listOfMacros', _("Macros Descriptions"), $attrsTextarea4)->setAttribute("readonly");
 
+$cmdActivation[] = HTML_QuickForm::createElement('radio', 'command_activate', null, _("Enabled"), '1');
+$cmdActivation[] = HTML_QuickForm::createElement('radio', 'command_activate', null, _("Disabled"), '0');
+$form->addGroup($cmdActivation, 'command_activate', _("Status"), '&nbsp;');
+$form->setDefaults(array('command_activate' => '1'));
+
 $form->setDefaults(array("listOfArg" => $strArgDesc));
 $form->setDefaults(array("listOfMacros" => $sStrMcro));
 

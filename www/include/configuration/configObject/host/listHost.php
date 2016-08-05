@@ -38,7 +38,6 @@ if (!isset($centreon)) {
 }
 
 include_once("./class/centreonUtils.class.php");
-
 require_once("./include/common/autoNumLimit.php");
 require_once(_CENTREON_PATH_ . "/www/class/centreonHost.class.php");
 
@@ -66,9 +65,9 @@ $DBRESULT->free();
 if (isset($_POST["searchH"])) {
     $search = $_POST["searchH"];
     $_POST["search"] = $_POST["searchH"];
-    $oreon->historySearch[$url] = $search;
-} elseif (isset($oreon->historySearch[$url])) {
-    $search = $oreon->historySearch[$url];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 } else {
     $search = null;
 }
@@ -80,8 +79,8 @@ if (isset($_POST["poller"])) {
     $poller = $_POST["poller"];
 } elseif (isset($_GET["poller"])) {
     $poller = $_GET["poller"];
-} elseif (isset($oreon->poller) && $oreon->poller) {
-    $poller = $oreon->poller;
+} elseif (isset($centreon->poller) && $centreon->poller) {
+    $poller = $centreon->poller;
 } else {
     $poller = 0;
 }
@@ -90,8 +89,8 @@ if (isset($_POST["hostgroup"])) {
     $hostgroup = $_POST["hostgroup"];
 } elseif (isset($_GET["hostgroup"])) {
     $hostgroup = $_GET["hostgroup"];
-} elseif (isset($oreon->hostgroup) && $oreon->hostgroup) {
-    $hostgroup = $oreon->hostgroup;
+} elseif (isset($centreon->hostgroup) && $centreon->hostgroup) {
+    $hostgroup = $centreon->hostgroup;
 } else {
     $hostgroup = 0;
 }
@@ -100,8 +99,8 @@ if (isset($_POST["template"])) {
     $template = $_POST["template"];
 } elseif (isset($_GET["template"])) {
     $template = $_GET["template"];
-} elseif (isset($oreon->template) && $oreon->template) {
-    $template = $oreon->template;
+} elseif (isset($centreon->template) && $centreon->template) {
+    $template = $centreon->template;
 } else {
     $template = 0;
 }
@@ -117,15 +116,14 @@ if (isset($_POST["status"])) {
 /*
  * set object history
  */
-$oreon->poller = $poller;
-$oreon->hostgroup = $hostgroup;
-$oreon->template = $template;
+$centreon->poller = $poller;
+$centreon->hostgroup = $hostgroup;
+$centreon->template = $template;
 
 /*
  * Status Filter
  */
 $statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-;
 $statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enable")."</option>";
 $statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disable")."</option>";
 
@@ -219,7 +217,7 @@ $style = "one";
  */
 $aclFrom = "";
 $aclCond = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclFrom = ", $aclDbName.centreon_acl acl";
     $aclCond = " AND h.host_id = acl.host_id
                  AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
@@ -283,14 +281,14 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         }
 
         /*
-		 * TPL List
-		 */
+         * TPL List
+         */
         $tplArr = array();
         $tplStr = "";
 
         /*
-		 * Create Template topology
-		 */
+         * Create Template topology
+         */
 
         $tplArr = getMyHostMultipleTemplateModels($host['host_id']);
         if (count($tplArr)) {
@@ -306,8 +304,8 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         }
 
         /*
-		 * Check icon
-		 */
+         * Check icon
+         */
         if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
             $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
         } elseif ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
@@ -317,22 +315,21 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         }
 
         /*
-		 * Create Array Data for template list
-		 */
-
-        $elemArr[$i] = array("MenuClass"=>"list_".$style,
-                        "RowMenu_select"=>$selectedElements->toHtml(),
-                        "RowMenu_name"=>CentreonUtils::escapeSecure($host["host_name"]),
-                        "RowMenu_id"=>$host["host_id"],
-                        "RowMenu_icone"=> $host_icone,
-                        "RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
-                        "RowMenu_desc"=>CentreonUtils::escapeSecure($host["host_alias"]),
-                        "RowMenu_address"=>CentreonUtils::escapeSecure($host["host_address"]),
-                        "RowMenu_poller"=> isset($tab_relation[$host["host_id"]]) ? $tab_relation[$host["host_id"]] : "",
-                        "RowMenu_parent"=>CentreonUtils::escapeSecure($tplStr),
-                        "RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
-                        "RowMenu_badge" => $host["host_activate"] ? "service_ok" : "service_critical",
-                        "RowMenu_options"=>$moptions);
+         * Create Array Data for template list
+         */
+        $elemArr[$i] = array("MenuClass" => "list_".$style,
+                        "RowMenu_select" => $selectedElements->toHtml(),
+                        "RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"]),
+                        "RowMenu_id" => $host["host_id"],
+                        "RowMenu_icone" =>  $host_icone,
+                        "RowMenu_link" => "?p=".$p."&o=c&host_id=".$host['host_id'],
+                        "RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"]),
+                        "RowMenu_address" => CentreonUtils::escapeSecure($host["host_address"]),
+                        "RowMenu_poller" =>  isset($tab_relation[$host["host_id"]]) ? $tab_relation[$host["host_id"]] : "",
+                        "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
+                        "RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
+                        "RowMenu_badge"  =>  $host["host_activate"] ? "service_ok" : "service_critical",
+                        "RowMenu_options" => $moptions);
         $style != "two" ? $style = "two" : $style = "one";
     }
 }
@@ -341,7 +338,7 @@ $tpl->assign("elemArr", $elemArr);
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+$tpl->assign('msg', array ("addL" => "?p=".$p."&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?")));
 
 /*
  * Toolbar select
@@ -353,39 +350,32 @@ $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfir
     }
 </SCRIPT>
 <?php
-$attrs1 = array(
-    'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-            "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5 || this.form.elements['o1'].selectedIndex == 6){" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dp" => _("Deploy Service")), $attrs1);
-
-$attrs2 = array(
-    'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-            "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5 || this.form.elements['o2'].selectedIndex == 6){" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "this.form.elements['o2'].selectedIndex = 0");
-$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dp" => _("Deploy Service")), $attrs2);
-
-$o1 = $form->getElement('o1');
-$o1->setValue(null);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(null);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange' => "javascript: " .
+                " var bChecked = isChecked(); ".
+                " if (this.form.elements['$option'].selectedIndex != 0 && !bChecked) {".
+                " alert('"._("Please select one or more items")."'); return false;} " .
+                "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                "   setO(this.form.elements['$option'].value); submit();} " .
+                "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                "   setO(this.form.elements['$option'].value); submit();} " .
+                "else if (this.form.elements['$option'].selectedIndex == 3 || 
+                        this.form.elements['$option'].selectedIndex == 4 || 
+                        this.form.elements['$option'].selectedIndex == 5 || 
+                        this.form.elements['$option'].selectedIndex == 6){" .
+                "   setO(this.form.elements['$option'].value); submit();} " .
+                "this.form.elements['$option'].selectedIndex = 0");
+    $form->addElement('select', $option, null, array(null  =>  _("More actions..."), 
+                                                    "m"  =>  _("Duplicate"), 
+                                                    "d"  =>  _("Delete"), 
+                                                    "mc"  =>  _("Massive Change"), 
+                                                    "ms"  =>  _("Enable"), 
+                                                    "mu"  =>  _("Disable"), 
+                                                    "dp"  =>  _("Deploy Service")), $attrs1);
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);    
+}
 
 $tpl->assign('limit', $limit);
 

@@ -42,8 +42,8 @@ require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
 
 class CentreonExternalCommand
 {
-
     protected $DB;
+    protected $DBC;
     protected $cmdTab;
     protected $pollerTab;
     public $localhostTab = array();
@@ -62,6 +62,7 @@ class CentreonExternalCommand
 
         $this->obj = $oreon;
         $this->DB = new CentreonDB();
+        $this->DBC = new CentreonDB('centstorage');
 
         $rq = "SELECT id FROM `nagios_server` WHERE localhost = '1'";
         $DBRES = $this->DB->query($rq);
@@ -270,18 +271,15 @@ class CentreonExternalCommand
          * Check if $host is an id or a name
          */
         if (preg_match("/^[0-9]*$/", $host)) {
-            $DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host
-                WHERE ns_host_relation.host_host_id = '" . CentreonDB::escape($host) . "'
-                    AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+            $DBRESULT = $this->DBC->query("SELECT instances.instance_id FROM hosts, instances WHERE hosts.host_id = '" . 
+                CentreonDB::escape($host) . "' AND instances.instance_id = hosts.instance_id AND hosts.enabled='1' LIMIT 1");
         } else {
-            $DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host
-                WHERE host.host_name = '" . CentreonDB::escape($host) . "'
-                    AND host.host_id = ns_host_relation.host_host_id
-                    AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+            $DBRESULT = $this->DBC->query("SELECT instances.instance_id FROM hosts, instances WHERE hosts.name = '" . 
+                CentreonDB::escape($host) . "' AND instances.instance_id = hosts.instance_id AND hosts.enabled='1' LIMIT 1");
         }
-        $nagios_server = $DBRESULT->fetchRow();
-        if (isset($nagios_server['id'])) {
-            return $nagios_server['id'];
+        $row = $DBRESULT->fetchRow();
+        if (isset($row['instance_id'])) {
+            return $row['instance_id'];
         }
         return 0;
     }
