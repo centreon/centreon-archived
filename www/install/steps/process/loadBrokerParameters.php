@@ -54,7 +54,7 @@ foreach ($lines as $line) {
             $val = $_SESSION[$key];
         }
         if ($required) {
-            $star = "<span style='color:#f91e05'> *</span>";
+            $star = "<span style='color:#e00b3d'> *</span>";
         }
         $html .= "
                     <tr>

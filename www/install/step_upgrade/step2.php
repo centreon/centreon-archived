@@ -65,9 +65,9 @@ foreach ($requiredLib as $line) {
     $contents .= "<td>".$lib."</td>";
     $contents .= "<td>";
     if (extension_loaded($lib)) {
-        $libMessage = '<span style="color:#10CA31; font-weight:bold;">'._('Loaded').'</span>';
+        $libMessage = '<span style="color:#88b917; font-weight:bold;">'._('Loaded').'</span>';
     } else {
-        $libMessage = '<span style="color:#f91e05; font-weight:bold;">'._('Not loaded').'</span>';
+        $libMessage = '<span style="color:#e00b3d; font-weight:bold;">'._('Not loaded').'</span>';
         $allClear = 0;
     }
     $contents .= $libMessage;
@@ -82,7 +82,7 @@ if (!ini_get('date.timezone')) {
     $contents .= "<td>"._("Set the default timezone in php.ini file") ."</td>";
     $contents .= "<td>";
 
-    $libMessage = '<span style="color:#f91e05; font-weight:bold;">'._('Not initialized').'</span>';
+    $libMessage = '<span style="color:#e00b3d; font-weight:bold;">'._('Not initialized').'</span>';
     $allClear = 0;
     $contents .= $libMessage;
     $contents .= "</td>";

@@ -111,5 +111,5 @@ if ($handle = opendir('../../sql/centreon')) {
     closedir($handle);
 }
 $_SESSION['CURRENT_VERSION'] = $current;
-$okMsg = "<span style='color:#10CA31;'>OK</span>";
+$okMsg = "<span style='color:#88b917;'>OK</span>";
 exitUpgradeProcess($status, $current, $next, $okMsg);

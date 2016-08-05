@@ -98,7 +98,7 @@ $template->display('content.tpl');
        doProcess(true, map[key], new Array, function(response) {
             var data = jQuery.parseJSON(response);
             if (data['result'] == 0) {
-                jQuery('#'+data['id']).html('<span style="color:#10CA31;">OK</span>');
+                jQuery('#'+data['id']).html('<span style="color:#88b917;">OK</span>');
                 if (key == 'dbconf') {
                     nextStep('dbstorage');   
                 } else if (key == 'dbstorage') {

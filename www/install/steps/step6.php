@@ -60,7 +60,7 @@ foreach ($defaults as $k => $v) {
         $defaults[$k] = $_SESSION[$k];
     }
 }
-$star = "<span style='color:#f91e05'> *</span>";
+$star = "<span style='color:#e00b3d'> *</span>";
 $contents = " 
     <form id='form_step".STEP_NUMBER."'>
         <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
