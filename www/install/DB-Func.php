@@ -29,7 +29,9 @@ function aff_header($str, $str2, $nb){
    <meta http-equiv="Content-Style-Type" content="text/css">
    <title><?php print $str; ?></title>
    <link rel="shortcut icon" href="../img/favicon.ico">
-   <link rel="stylesheet" href="./install.css" type="text/css">
+	<link rel="stylesheet" href="../Themes/Centreon-2/style.css" type="text/css">
+	<link rel="stylesheet" href="./install.css" type="text/css">
+	<link rel="stylesheet" href="./pub_install.css" type="text/css">
    <SCRIPT language='javascript'>
 		function LicenceAccepted(){
 			var theForm     = document.forms[0];

@@ -1,13 +1,15 @@
 <table cellspacing="0" cellpadding="0" border="0" align="center" class="shell">
-    <tr height="83" style="background-image: url('../img/bg_banner.gif');">
-        <th width="400" height="83">{$step} - {$title}</th>
-        <th width="200" height="83" style="text-align: right; padding: 0px;">
-            <a href="http://www.centreon.com" target="_blank"><img src="../img/centreon.png" alt="Centreon" border="0" style='padding-right:15px;padding-top:10px;'></a>
+    <tr class="install-header">
+        <th class="logo-wrapper">
+            <a href="http://www.centreon.com" target="_blank"><img src="../img/centreon.png" alt="Centreon" border="0" /></a>
         </th>
+        <th class="step-wrapper">
+            <h3><span>{$step}</span> {$title}</h3>
+        </th>
+
     </tr>
-    <tr>
+    <tr class="install-body">
         <td align="left" colspan="2">
-            <hr>
             <table width='100%' cellspacing="0" cellpadding="0" border="0" class="stdTable">
                 <tr>
                     <td>{$content}</td>
@@ -15,24 +17,50 @@
             </table>
         </td>
     </tr>
-    {if isset($finish) && $finish == 1 && isset($pub_content)}
-        <tr>
-            <td colspan="2">
-            <img src="{$pub_content}" height='600' width='800'/>
-            </td>
-        </tr>    
-    {/if}
+    <tr>
+        <td colspan="2" id="installPub">
+            {if isset($finish) && $finish == 1}
+                <script type="text/javascript">
+                    {literal}
+                    function pubcallback(html) {
+                        jQuery("#installPub").html(html);
+                    }
+
+                    jQuery(document).ready(function() {
+                        jQuery.ajax({
+                            url: 'https://advertising.centreon.com/centreon-2.8.0-beta1/pub.json',
+                            type: 'GET',
+                            dataType: 'jsonp',
+                            crossDomain: true
+                        });
+                    });
+
+                    {/literal}
+                </script>
+            {/if}
+        </td>
+    </tr>
+
     <tr style='height:40px;'>
-        <td align='right' colspan='2'>
+        <td>
+            {if $finish}
+                <p class="link-group">
+                    <a href="https://documentation.centreon.com" target="_blank">Documentation</a> | <a href="https://github.com/centreon/centreon.git" target="_blank">Github </a> | <a href="https://forum.centreon.com/" target="_blank">Forum</a>
+                    <b><a href=" https://www.centreon.com" target="_blank">www.centreon.com</a></b>
+                </p>
+            {/if}
+        </td>
+
+        <td align='right'>
         {if ($step-1 && !$blockPreview)}
-        <input class='button' type='button' id='previous' value='Back' onClick='jumpTo({$step-1});'/>
+        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='jumpTo({$step-1});'/>
         {/if}
-        <input class='button' type='button' id='refresh' value='Refresh' onClick='jumpTo({$step});'/>
+        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='jumpTo({$step});'/>
         {if !$finish}
-        <input class='button' type='button' id='next' value='Next' onClick='if (validation() == true) jumpTo({$step+1});'/>
+        <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) jumpTo({$step+1});'/>
         {else}
-        <input class='button' type='button' id='finish' value='Finish' onClick='javascript:self.location="../main.php"'/>
+        <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='javascript:self.location="../main.php"'/>
         {/if}
         </td>
     </tr>
-</table>        
+</table>
