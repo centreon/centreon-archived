@@ -58,6 +58,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <link href="./Themes/Centreon-2/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <link href="./Themes/Centreon-2/jquery-ui/jquery-ui-centreon.css" rel="stylesheet" type="text/css"/>
 <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/wizard/css/style.css" />
+<link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
 <?php
 
 // == Declare CSS for modules
