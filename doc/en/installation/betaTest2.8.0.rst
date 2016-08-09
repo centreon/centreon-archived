@@ -1,10 +1,10 @@
 .. _betaTest2_8_0: 
 
-=====================
-CES v3.4 installation
-=====================
+==========================
+Centreon v3.4 installation
+==========================
 
-The CES v3.4 includes Centreon web 2.8, Centreon Engine 1.6, Centreon Broker 3.0
+The Centreon v3.4 includes Centreon web 2.8, Centreon Engine 1.6, Centreon Broker 3.0
 and are based on CentOS 6 operating system.
 
 Prerequisites
@@ -27,10 +27,10 @@ To install and update
 =====================
 
 This chapter describes how to set up a Centreon Web v2.8 platform. **This version is a Beta version**.
-**So please do not use this version on your production envirnment!!!***.
+**So please do not use this version on your production envirnment!!!**.
 
 .. warning::
-    This procedure is based on CES context. All commands are for Red Hat and CentOS using yum.
+    This procedure is based on Centreon context. All commands are for Red Hat and CentOS using yum.
 
 Add the testing repo
 --------------------
@@ -45,7 +45,7 @@ new repo on your server.
 To install this repo use the following commands::
 
     # cd /etc/yum.repos.d
-    # wget http://yum.centreon.com/standard/3.0/testing/ces-standard-testing.repo -O /etc/yum.repos.d/ces-standard-testing.repo
+    # wget http://yum.centreon.com/standard/3.4/el6/testing/centreon-testing.repo -O /etc/yum.repos.d/ces-standard-testing.repo
 
 Install
 -------
@@ -129,5 +129,5 @@ Let's go!
 We are waiting your feedback on your `github <https://github.com/centreon/centreon>`_ project.
 Please use the **"BetaTest** category in github to merge all issues from this beta test campaign.
 
-If you have any question regarding CES 3.4 best test campaign you can send us an email at: centreon-beta-test@centreon.com
+If you have any question regarding Centreon 3.4 best test campaign you can send us an email at: centreon-beta-test@centreon.com
 
