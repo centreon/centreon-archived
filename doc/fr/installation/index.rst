@@ -23,4 +23,4 @@ Enfin, vous pourrez procéder à l'installation de la plate-forme.
    from_packages
    from_sources
 
-Vous faites partie du programme de beta test de Centreon web 2.8. Cliquez :ref:`ici <betaTest2_8_0>`_
+Vous faites partie du programme de beta test de Centreon web 2.8. Cliquez :ref:`ici <betaTest2_8_0>`.
