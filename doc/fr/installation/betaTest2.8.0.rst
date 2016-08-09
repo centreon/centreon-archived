@@ -1,4 +1,4 @@
-.. _betaTest2_7_0: 
+.. _betaTest2_8_0: 
 
 =================================================
 Mise à jour vers la version 2.8.0 de Centreon web
