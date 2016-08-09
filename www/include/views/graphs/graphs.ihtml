@@ -54,11 +54,11 @@
         </table>
     </form>
     <div class="graph-options">
-      <a href="javascript:switchCols(1)" class="ico-16 margin_right ico-col ico-col-1 active" alt="{t}One column{/t}">
+      <a href="javascript:switchCols(1)" class="ico-16 margin_right ico-col ico-col-1 active" alt="{t}One column{/t}" title="{t}One column{/t}">
       </a>
-      <a href="javascript:switchCols(2)" class="ico-16 margin_right ico-col ico-col-2" alt="{t}Two columns{/t}">
+      <a href="javascript:switchCols(2)" class="ico-16 margin_right ico-col ico-col-2" alt="{t}Two columns{/t}" title="{t}Two columns{/t}">
       </a>
-      <a href="javascript:switchCols(3)" class="ico-16 margin_right ico-col ico-col-3" alt="{t}Three columns{/t}">
+      <a href="javascript:switchCols(3)" class="ico-16 margin_right ico-col ico-col-3" alt="{t}Three columns{/t}" title="{t}Three columns{/t}">
       </a>
     </div>
     <div id="graphs" class="graph_content">
