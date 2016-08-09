@@ -12,6 +12,7 @@ Prerequisites
 
 The prerequisites for Centreon Web 2.8 are evolved. It is strongly recommended 
 to follow the instructions to set up your platform:
+
 * Apache = 2.2
 * Centreon Engine >= 1.6.0
 * Centreon Broker >= 3.0.0
