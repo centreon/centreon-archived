@@ -42,7 +42,7 @@ $template = getTemplate('./templates');
 
 $title = _('Installation finished');
 
-$contents = '<div>'._('The installation is now finished.').':</div>';
+$contents = '<div>'._('Congratulations, you have successfully installed Centreon!').'</div>';
 
 $centreon_path = realpath(dirname(__FILE__) . '/../../../');
 
