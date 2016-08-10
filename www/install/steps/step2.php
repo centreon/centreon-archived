@@ -45,7 +45,7 @@ $requiredLib = explode("\n", file_get_contents('../var/phplib'));
 /**
  * PHP Libraries 
  */
-$contents = "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>";
+$contents = "<table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>";
 $allClear = 1;
 $contents .= "<tr>
                 <th>"._('Module name')."</th>
