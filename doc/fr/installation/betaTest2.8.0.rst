@@ -43,6 +43,8 @@ de Centreon web 2.8.0, Centreon Engine 1.6 et Centreon Broker 3.0. Une série de
 est également disponible dans ce repo. Pour mettre en place votre fichier repo spécifique 
 testing lancez les commandes suivantes : 
 
+::
+
     # cd /etc/yum.repos.d
     # wget http://yum.centreon.com/standard/3.4/el6/testing/centreon-testing.repo -O /etc/yum.repos.d/ces-standard-testing.repo
 
@@ -119,7 +121,9 @@ Les risques sont les suivants :
 * Les nouveau graphiques de performances ont des échelles affichant trop de détails
 * Des erreurs PHP de type warning apparaissent dans le journal d'évènement d'Apache
 * Des incompatibilités avec les modules Centreon déjà installés peuvent apparaitre
-
+* Le zoom affecte tous les graphiques
+* Le retour arrière du zoom des graphiques est absent
+* L'export CSV ne fonctionne pas pour les eventlogs
 
 C'est parti !
 =============

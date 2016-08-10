@@ -122,6 +122,9 @@ Known issues
 * Scales in peformance graphs display too many steps
 * PHP Warning issues when user access to performance graphs menu in Centreon Web
 * Some incompatibilities with Centreon modules already installed
+* When you zoom on a graph the zoom is applyed for all graphs
+* You can't cancel zoom
+* CSV export doesn't work for eventlogs
 
 Let's go!
 *********
