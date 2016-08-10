@@ -63,7 +63,7 @@ foreach ($lines as $line) {
                         <input type='text' name='".$key."' value='".$val."' size='40' />
                         <label class='field_msg'></label>
                     </td>
-                    </star>";
+                    </tr>";
     }
 }
 echo $html;
