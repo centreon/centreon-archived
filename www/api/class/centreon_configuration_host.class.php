@@ -138,13 +138,18 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             throw new RestBadRequestException("Missing host id");
         }
         $id = $this->arguments['id'];
+
+        $allServices = false;
+        if (isset($this->arguments['all'])) {
+            $allServices = true;
+        }
         
         $hostObj = new CentreonHost($this->pearDB);
         $serviceList = array();
         $serviceListRaw = $hostObj->getServices($id);
         
         foreach ($serviceListRaw as $service_id => $service_description) {
-            if (service_has_graph($id, $service_id)) {
+            if (!$allServices || service_has_graph($id, $service_id)) {
                 $serviceList[$service_id] = $service_description;
             }
         }
