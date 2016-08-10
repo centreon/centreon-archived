@@ -185,4 +185,28 @@ class CentreonMeta
 
         return $items;
     }
+
+
+    /**
+     * Get the list of all meta-service
+     *
+     * @return array
+     */
+    public function getList()
+    {
+        $queryList = "SELECT `meta_id`, `meta_name`
+ 	    	FROM `meta_service`
+ 	    	ORDER BY `meta_name`";
+
+        $res = $this->db->query($queryList);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $listMeta = array();
+        while ($row = $res->fetchRow()) {
+            $listMeta[$row['meta_id']] = $row['meta_name'];
+        }
+        return $listMeta;
+    }
+
 }
