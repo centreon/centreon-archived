@@ -36,8 +36,9 @@
  *
  */
 
-if (!isset($oreon))
+if (!isset($oreon)) {
     exit;
+}
 
 /*
  * Database retrieve information
@@ -47,7 +48,7 @@ if ($o == "a" && isset($_POST['vmetric_id']) && $_POST['vmetric_id'] != '') {
     $vmetric_id = $_POST['vmetric_id'];
     $o = "c";
 }
-if (($o == "c" || $o == "w") && $vmetric_id)    {
+if (($o == "c" || $o == "w") && $vmetric_id) {
     $p_qy = $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
     // Set base value
     $vmetric = array_map("myDecode", $p_qy->fetchRow());
@@ -65,11 +66,12 @@ $dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;")
 if (PEAR::isError($dbindd)) {
     print "DB Error : ".$dbindd->getDebugInfo()."<br />";
 }
-while($indd = $dbindd->fetchRow()) {
+while ($indd = $dbindd->fetchRow()) {
     $indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
     $hn_l = strlen($indd["host_name"]);
-    if ( $hn_l > $mx_l)
+    if ($hn_l > $mx_l) {
         $mx_l = $hn_l;
+    }
 }
 $dbindd->free();
 
@@ -97,12 +99,13 @@ $attrServices = array(
  * Form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Virtual Metric"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'ftitle', _("Modify a Virtual Metric"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'ftitle', _("View a Virtual Metric"));
+}
 
 /*
  * Basic information 
@@ -114,13 +117,13 @@ $form->addElement('header', 'options', _("Options"));
 // General Information
 $form->addElement('text', 'vmetric_name', _("Metric Name"), $attrsText);
 #$form->addElement('text', 'hs_relation', _("Host / Service Data Source"), $attrsText);
-$form->addElement('static', 'hsr_text',_("Choose a service if you want a specific virtual metric for it."));
+$form->addElement('static', 'hsr_text', _("Choose a service if you want a specific virtual metric for it."));
 $form->addElement('select2', 'host_id', _("Linked Host Services"), array(), $attrServices);
 
 $form->addElement('select', 'def_type', _("DEF Type"), array(0=>"CDEF&nbsp;&nbsp;&nbsp;",1=>"VDEF&nbsp;&nbsp;&nbsp;"), "onChange=manageVDEF();");
 // RPN Function
 $form->addElement('textarea', 'rpn_function', _("RPN (Reverse Polish Notation) Function"), $attrsTextarea);
-$form->addElement('static', 'rpn_text',_("<br><i><b><font color=\"#B22222\">Notes </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Do not mix metrics of different sources.<br>&nbsp;&nbsp;&nbsp;- Only aggregation functions work in VDEF rpn expressions."));
+$form->addElement('static', 'rpn_text', _("<br><i><b><font color=\"#B22222\">Notes </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Do not mix metrics of different sources.<br>&nbsp;&nbsp;&nbsp;- Only aggregation functions work in VDEF rpn expressions."));
 #$form->addElement('select', 'real_metrics', null, $rmetrics);
 $form->addElement('text', 'unit_name', _("Metric Unit"), $attrsText2);
 $form->addElement('text', 'warn', _("Warning Threshold"), $attrsText2);
@@ -163,12 +166,12 @@ if ($o == "w") {
     $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&vmetric_id=".$vmetric_id."'"));
     $form->setDefaults($vmetric);
     $form->freeze();
-} else if ($o == "c") {
+} elseif ($o == "c") {
     // Modify
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");", "class" => "btc bt_default"));
     $form->setDefaults($vmetric);
-} else if ($o == "a") {
+} elseif ($o == "a") {
     // Add
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)", "class" => "btc bt_default"));
@@ -228,7 +231,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
-if ($form->validate())  {
+if ($form->validate()) {
     $vmetricObj = $form->getElement('vmetric_id');
     if ($o == "a") {
         $vmetric_id = insertVirtualMetricInDB();
@@ -238,7 +241,7 @@ if ($form->validate())  {
         } catch (Exception $e) {
             $error = $e->getMessage();
         }
-    } else if ($o == "c") {
+    } elseif ($o == "c") {
         try {
             updateVirtualMetricInDB($vmetricObj->getValue());
         } catch (Exception $e) {
@@ -247,16 +250,20 @@ if ($form->validate())  {
     }
     if (!isset($error)) {
         $o = "w";
-        $form->addElement("button", "change", _("Modify"), 
-                          array("onClick"=>"javascript:window.location.href='?p=$p&o=c&vmetric_id=".$vmetricObj->getValue()."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick"=>"javascript:window.location.href='?p=$p&o=c&vmetric_id=".$vmetricObj->getValue()."'")
+        );
         $form->freeze();
         $valid = true;
     }
 }
 $action = $form->getSubmitValue("action");
-if ($valid)
+if ($valid) {
     require_once("listVirtualMetrics.php");
-else {
+} else {
     if (isset($error)) {
         print "<p style='text-align: center'><span class='msg'>$error</span></p>";
     }
@@ -272,9 +279,9 @@ else {
 $vdef=1; /* Display VDEF too */
 include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
 if ($o == "c" || $o == "w") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $host_service_id=$_POST["host_id"]: $host_service_id=$vmetric["host_id"];
-} else if ($o == "a") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $host_service_id=$_POST["host_id"]: $host_service_id=0;
+    isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=$vmetric["host_id"];
+} elseif ($o == "a") {
+    isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=0;
 }
 ?>
 

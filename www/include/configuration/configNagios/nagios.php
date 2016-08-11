@@ -34,40 +34,41 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["nagios_id"]) ? $cG = $_GET["nagios_id"] : $cG = NULL;
-isset($_POST["nagios_id"]) ? $cP = $_POST["nagios_id"] : $cP = NULL;
+isset($_GET["nagios_id"]) ? $cG = $_GET["nagios_id"] : $cG = null;
+isset($_POST["nagios_id"]) ? $cP = $_POST["nagios_id"] : $cP = null;
 $cG ? $nagios_id = $cG : $nagios_id = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 
 
-#Pear library
+/* Pear library */
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-#Path to the configuration dir
+/* Path to the configuration dir */
 $path = "./include/configuration/configNagios/";
 
-    require_once $path."/../common-Func.php";
+require_once $path."/../common-Func.php";
     
-#PHP functions
+/* PHP functions */
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
     
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
 $acl = $oreon->user->access;
 $serverString = $acl->getPollerString();
@@ -80,13 +81,33 @@ if ($serverString != "''" && !empty($serverString)) {
     }
 }
 
-switch ($o)	{
-	case "a" : require_once($path."formNagios.php"); break; #Add Nagios.cfg
-	case "w" : require_once($path."formNagios.php"); break; #Watch Nagios.cfg
-	case "c" : require_once($path."formNagios.php"); break; #Modify Nagios.cfg
-	case "s" : enableNagiosInDB($nagios_id); require_once($path."listNagios.php"); break; #Activate a nagios CFG
-	case "u" : disableNagiosInDB($nagios_id); require_once($path."listNagios.php"); break; #Desactivate a nagios CFG
-	case "m" : multipleNagiosInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listNagios.php"); break; #Duplicate n nagios CFGs
-	case "d" : deleteNagiosInDB(isset($select) ? $select : array()); require_once($path."listNagios.php"); break; #Delete n nagios CFG
-	default : require_once($path."listNagios.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formNagios.php");
+        break; #Add Nagios.cfg
+    case "w":
+        require_once($path."formNagios.php");
+        break; #Watch Nagios.cfg
+    case "c":
+        require_once($path."formNagios.php");
+        break; #Modify Nagios.cfg
+    case "s":
+        enableNagiosInDB($nagios_id);
+        require_once($path."listNagios.php");
+        break; #Activate a nagios CFG
+    case "u":
+        disableNagiosInDB($nagios_id);
+        require_once($path."listNagios.php");
+        break; #Desactivate a nagios CFG
+    case "m":
+        multipleNagiosInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listNagios.php");
+        break; #Duplicate n nagios CFGs
+    case "d":
+        deleteNagiosInDB(isset($select) ? $select : array());
+        require_once($path."listNagios.php");
+        break; #Delete n nagios CFG
+    default:
+        require_once($path."listNagios.php");
+        break;
 }

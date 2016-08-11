@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-function testExistence ($name = null, $instanceId = null)
+function testExistence($name = null, $instanceId = null)
 {
     global $pearDB, $form;
 
@@ -68,16 +68,16 @@ function testExistence ($name = null, $instanceId = null)
     }
 }
 
-function deleteResourceInDB ($DBRESULT = array())
+function deleteResourceInDB($DBRESULT = array())
 {
     global $pearDB;
 
-    foreach ($DBRESULT as $key => $value){
+    foreach ($DBRESULT as $key => $value) {
         $DBRESULT = $pearDB->query("DELETE FROM cfg_resource WHERE resource_id = '".$key."'");
     }
 }
 
-function enableResourceInDB ($resource_id = null)
+function enableResourceInDB($resource_id = null)
 {
     global $pearDB;
 
@@ -87,7 +87,7 @@ function enableResourceInDB ($resource_id = null)
     $DBRESULT = $pearDB->query("UPDATE cfg_resource SET resource_activate = '1' WHERE resource_id = '".$resource_id."'");
 }
 
-function disableResourceInDB ($resource_id = null)
+function disableResourceInDB($resource_id = null)
 {
     global $pearDB;
     if (!$resource_id) {
@@ -96,7 +96,7 @@ function disableResourceInDB ($resource_id = null)
     $DBRESULT = $pearDB->query("UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."'");
 }
 
-function multipleResourceInDB ($DBRESULT = array(), $nbrDup = array())
+function multipleResourceInDB($DBRESULT = array(), $nbrDup = array())
 {
     global $pearDB;
 
@@ -106,18 +106,18 @@ function multipleResourceInDB ($DBRESULT = array(), $nbrDup = array())
         $row["resource_id"] = '';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
-            foreach ($row as $key2=>$value2) {
+            foreach ($row as $key2 => $value2) {
                 $key2 == "resource_name" ? ($resource_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
             }
-            if (testExistence($resource_name))  {
+            if (testExistence($resource_name)) {
                 $DBRESULT = $pearDB->query($val ? $rq = "INSERT INTO cfg_resource VALUES (".$val.")" : $rq = null);
             }
         }
     }
 }
 
-function updateResourceInDB ($resource_id = NULL)
+function updateResourceInDB($resource_id = null)
 {
     if (!$resource_id) {
         return;
@@ -165,10 +165,10 @@ function insertResource($ret = array())
     $rq = "INSERT INTO cfg_resource ";
     $rq .= "(resource_name, resource_line, resource_comment, resource_activate) ";
     $rq .= "VALUES (";
-    isset($ret["resource_name"]) && $ret["resource_name"] != NULL ? $rq .= "'".$pearDB->escape($ret["resource_name"])."', " : $rq .= "NULL, ";
-    isset($ret["resource_line"]) && $ret["resource_line"] != NULL ? $rq .= "'".$pearDB->escape($ret["resource_line"])."', " : $rq .= "NULL, ";
-    isset($ret["resource_comment"]) && $ret["resource_comment"] != NULL ? $rq .= "'".$pearDB->escape($ret["resource_comment"])."', " : $rq .= "NULL, ";
-    isset($ret["resource_activate"]["resource_activate"]) && $ret["resource_activate"]["resource_activate"] != NULL ? $rq .= "'".$ret["resource_activate"]["resource_activate"]."'" : $rq .= "NULL";
+    isset($ret["resource_name"]) && $ret["resource_name"] != null ? $rq .= "'".$pearDB->escape($ret["resource_name"])."', " : $rq .= "NULL, ";
+    isset($ret["resource_line"]) && $ret["resource_line"] != null ? $rq .= "'".$pearDB->escape($ret["resource_line"])."', " : $rq .= "NULL, ";
+    isset($ret["resource_comment"]) && $ret["resource_comment"] != null ? $rq .= "'".$pearDB->escape($ret["resource_comment"])."', " : $rq .= "NULL, ";
+    isset($ret["resource_activate"]["resource_activate"]) && $ret["resource_activate"]["resource_activate"] != null ? $rq .= "'".$ret["resource_activate"]["resource_activate"]."'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");

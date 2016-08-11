@@ -64,9 +64,11 @@ $xml->startElement('response');
 try {
     $xml->startElement('options');
     if ($data) {
-        $aclString = $centreon->user->access->queryBuilder('AND', 
-                                                      's.service_id',
-                                                      $centreon->user->access->getServicesString('ID', $monitoringDb));
+        $aclString = $centreon->user->access->queryBuilder(
+            'AND',
+            's.service_id',
+            $centreon->user->access->getServicesString('ID', $monitoringDb)
+        );
         $sql = "SELECT service_id, service_description
         		FROM service s, host_service_relation hsr
         		WHERE hsr.host_host_id = " . $db->escape($data) . "

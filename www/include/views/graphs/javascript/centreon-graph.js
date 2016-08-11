@@ -110,16 +110,21 @@
      * @param {Object} data - The graph data
      */
     initGraphStatus: function (data) {
-      this.chart = d3.timeline()
-        .tickFormat({
+      var self = this;
+      
+      this.chart = centreonStatusChart.generate({
+        tickFormat: {
           format: this.timeFormat
-        })
-        .colors(this.colorScale)
-        .colorProperty('status');
-      this.chartSvg = d3.select('#' + this.$elem.attr('id')).append('svg');
-      this.chartSvg.attr('width', this.$elem.width())
-        .datum(this.buildStatusData(data))
-        .call(this.chart);
+        },
+        bindto: '#' + this.$elem.attr('id'),
+        data: this.buildStatusData(data),
+        margin: {
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0
+        }
+      });
     },
     /**
      * Initialize the metrics graph
@@ -203,7 +208,9 @@
             return callback(data[0]);
           }
           if (self.type === 'status') {
-            self.chartSvg.datum(self.buildStatusData(data[0]));
+            self.chart.load(
+              self.buildStatusData(data[0])
+            );
           } else {
             self.chart.load(
               self.buildMetricData(data[0]).data
@@ -229,7 +236,8 @@
         columns: [],
         names: {},
         types: {},
-        colors: {}
+        colors: {},
+        regions: {}
       };
       var units = {};
       var axis = {};
@@ -239,6 +247,8 @@
       var axesName;
       var unit;
       var times = dataRaw.times;
+      var thresholdData;
+      var nbPoints;
       times = times.map(function (time) {
         return time * 1000;
       });
@@ -257,7 +267,8 @@
           }
         }
         data.names[name] = legend;
-        data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ? convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
+        data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
+          convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
         data.colors[name] = dataRaw.data[i].color;
       }
       
@@ -279,6 +290,35 @@
       
       data.x = 'times';
       
+      /* Prepare threshold */
+      if (this.settings.threshold && dataRaw.data.length === 1) {
+        nbPoints = dataRaw.data[0].data.length;
+        if (dataRaw.data[0].crit) {
+          data.colors.crit = '#e00b3d';
+          data.types.crit = 'line';
+          data.names.crit = 'Threshold critical';
+          thresholdData = Array.apply(null, Array(nbPoints))
+            .map(function () {
+              return dataRaw.data[0].crit;
+            });
+          thresholdData.unshift('crit');
+          data.columns.push(thresholdData);
+          data.regions.crit = [{style: 'dashed'}];
+        }
+        if (dataRaw.data[0].warn) {
+          data.colors.warn = '#ff9a13';
+          data.types.warn = 'line';
+          data.names.warn = 'Threshold warning';
+          thresholdData = Array.apply(null, Array(nbPoints))
+            .map(function () {
+              return dataRaw.data[0].warn;
+            });
+          thresholdData.unshift('warn');
+          data.columns.push(thresholdData);
+          data.regions.warn = [{style: 'dashed'}];
+        }
+      }
+      
       /* Add group */
       data.groups = this.buildGroups(dataRaw);
       
@@ -295,13 +335,22 @@
      */
     buildStatusData: function (dataRaw) {
       var status;
-      var data = [];
-      for (status in dataRaw.data) {
-        if (dataRaw.data.hasOwnProperty(status)) {
-          if (dataRaw.data[status].length > 0) {
-            data.push({
-              status: status,
-              times: dataRaw.data[status].map(function (values) {
+      var data = {};
+      var dataStatus = [];
+      var statusColor = {
+        ok: '#88b917',
+        warning: '#ff9a13',
+        critical: '#e00b3d',
+        unknown: '#bcbdc0'
+      };
+      
+      for (status in dataRaw.data.status) {
+        if (dataRaw.data.status.hasOwnProperty(status)) {
+          if (dataRaw.data.status[status].length > 0) {
+            dataStatus.push({
+              label: status,
+              color: statusColor[status],
+              times: dataRaw.data.status[status].map(function (values) {
                 return {
                   starting_time: values['start'] * 1000,
                   ending_time: values['end'] * 1000
@@ -311,6 +360,15 @@
           }
         }
       }
+      
+      data = {
+        status: dataStatus,
+        comments: dataRaw.data.comments.map(function (values) {
+          values['time'] = values['time'] * 1000;
+          return values;
+        })
+      };
+      
       return data;
     },
     /**
@@ -374,7 +432,8 @@
     getTimes: function () {
       var start;
       var end;
-      if (this.settings.period.start === null || this.settings.period.end === null) {
+      if (this.settings.period.start === null ||
+        this.settings.period.end === null) {
         start = moment();
         end = moment();
         start.subtract(this.interval.number, this.interval.unit);
@@ -392,14 +451,10 @@
      * Resize the graph
      */
     resize: function () {
-      if (this.type === 'status') {
-        this.chartSvg.attr('width', this.$elem.width());
-      } else {
-        this.chart.resize({
-          width: this.$elem.width(),
-          height: null
-        });
-      }
+      this.chart.resize({
+        width: this.$elem.width(),
+        height: null
+      });
     },
     /**
      * Set an interval string for graph
@@ -436,7 +491,8 @@
     /**
      * Set auto refresh interval
      *
-     * @param {Number} interval - The number of seconds to refresh, 0 stop the auto refresh
+     * @param {Number} interval - The number of seconds to refresh,
+     *                            0 stop the auto refresh
      */
     setRefresh: function (interval) {
       var self = this;
@@ -478,6 +534,9 @@
      */
     isInversed: function (id) {
       var pos = parseInt(id.replace('data', ''), 10) - 1;
+      if (id === 'crit' || id === 'warn') {
+        return false;
+      }
       return this.chartData.data[pos].negative;
     }
   };
@@ -491,7 +550,10 @@
       var data = $this.data("centreonGraph");
 
       if (!data) {
-        $this.data("centreonGraph", ( data = new CentreonGraph(settings, $this)));
+        $this.data(
+          "centreonGraph",
+          (data = new CentreonGraph(settings, $this))
+        );
       }
 
       if (typeof options === "string") {
@@ -517,6 +579,7 @@
     period: {
       start: null,
       end: null
-    }
+    },
+    threshold: true
   };
 })(jQuery);

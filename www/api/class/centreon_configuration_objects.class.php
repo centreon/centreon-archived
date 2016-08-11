@@ -47,7 +47,7 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
     
     /**
-     * 
+     *
      * @global type _CENTREON_PATH_
      * @throws RestBadRequestException
      */
@@ -74,7 +74,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters target");
         }
         
-        // 
+        //
         $defaultValuesParameters = array();
         $targetedFile = _CENTREON_PATH_ . "/www/class/centreon$target.class.php";
         if (file_exists($targetedFile)) {
@@ -83,12 +83,12 @@ class CentreonConfigurationObjects extends CentreonWebService
             $defaultValuesParameters = $calledClass::getDefaultValuesParameters($field);
         }
         
-        // 
+        //
         if (count($defaultValuesParameters) == 0) {
             throw new RestBadRequestException("Bad parameters count");
         }
         
-        // 
+        //
         if (isset($defaultValuesParameters['type']) && $defaultValuesParameters['type'] === 'simple') {
             if (isset($defaultValuesParameters['reverse']) && $defaultValuesParameters['reverse']) {
                 $selectedValues = $this->retrieveSimpleValues(
@@ -118,7 +118,7 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
     
     /**
-     * 
+     *
      * @param array $externalObject
      * @param array $values
      */
@@ -160,7 +160,7 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
     
     /**
-     * 
+     *
      * @param integer $id
      * @param string $field
      * @return array
@@ -193,7 +193,7 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
     
     /**
-     * 
+     *
      * @param array $relationObject
      * @param integer $id
      * @return array

@@ -75,7 +75,7 @@ function parseStatsFile($statfile)
     }
     $lineBlock = null;
     $failover = null;
-	$acceptedEvents = null;
+    $acceptedEvents = null;
     $result = array(
         'lastmodif' => $lastmodif,
         'modules' => array(),

@@ -53,7 +53,7 @@ $initialValues = array();
  * Database retrieve information for HostGroup
 	 */
 $hg = array();
-if (($o == "c" || $o == "w") && $hg_id)	{
+if (($o == "c" || $o == "w") && $hg_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
     /*
      * Set base value
@@ -121,8 +121,9 @@ unset($host);
  */
 
 $EDITCOND = "";
-if ($o == "w" || $o == "c")
+if ($o == "w" || $o == "c") {
     $EDITCOND = " WHERE `hg_id` != '".$hg_id."' ";
+}
 
 $hostGroups = array();
 $DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
@@ -139,8 +140,9 @@ unset($hgs);
  */
 $cgs = array();
 $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-while ($cg = $DBRESULT->fetchRow())
+while ($cg = $DBRESULT->fetchRow()) {
     $cgs[$cg["cg_id"]] = $cg["cg_name"];
+}
 $DBRESULT->free();
 unset($cg);
 
@@ -155,11 +157,11 @@ $extImgStatusmap = return_image_list(2);
 /*
  * Define Templatse
  */
-$attrsText 		= array("size"=>"30");
-$attrsTextLong 	= array("size"=>"50");
+$attrsText      = array("size"=>"30");
+$attrsTextLong  = array("size"=>"50");
 $attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
-$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"4", "cols"=>"60");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
@@ -177,19 +179,20 @@ $attrHostgroups = array(
  * Create formulary
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Host Group"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a Host Group"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a Host Group"));
+}
 
 /*
  * Contact basic information
  */
-$form->addElement('header', 	'information', _("General Information"));
-$form->addElement('text', 		'hg_name', _("Host Group Name"), $attrsText);
-$form->addElement('text', 		'hg_alias', _("Alias"), $attrsText);
+$form->addElement('header', 'information', _("General Information"));
+$form->addElement('text', 'hg_name', _("Host Group Name"), $attrsText);
+$form->addElement('text', 'hg_alias', _("Alias"), $attrsText);
 
 /*
  * Hosts Selection
@@ -209,12 +212,12 @@ $form->addElement('select2', 'hg_hg', _("Linked Host Groups"), array(), $attrHos
 /*
  * Extended information
  */
-$form->addElement('header', 	'extended', _("Extended Information"));
-$form->addElement('text', 		'hg_notes', _("Notes"), $attrsText);
-$form->addElement('text', 		'hg_notes_url', _("Notes URL"), $attrsTextLong);
-$form->addElement('text', 		'hg_action_url', _("Action URL"), $attrsTextLong);
-$form->addElement('select', 	'hg_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('hg_icon_image_img',this.form.elements['hg_icon_image'].value)"));
-$form->addElement('select', 	'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)"));
+$form->addElement('header', 'extended', _("Extended Information"));
+$form->addElement('text', 'hg_notes', _("Notes"), $attrsText);
+$form->addElement('text', 'hg_notes_url', _("Notes URL"), $attrsTextLong);
+$form->addElement('text', 'hg_action_url', _("Action URL"), $attrsTextLong);
+$form->addElement('select', 'hg_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('hg_icon_image_img',this.form.elements['hg_icon_image'].value)"));
+$form->addElement('select', 'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)"));
 
 /*
  * Further informations
@@ -239,7 +242,8 @@ $init->setValue(serialize($initialValues));
 /*
  * Form Rules
  */
-function myReplace()	{
+function myReplace()
+{
     global $form;
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["hg_name"]));
@@ -267,18 +271,19 @@ if ($o == "w") {
     /*
      * Just watch a HostGroup information
      */
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hg_id."'"));
+    }
     $form->setDefaults($hg);
     $form->freeze();
-} else if ($o == "c") {
+} elseif ($o == "c") {
     /*
      * Modify a HostGroup information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($hg);
-} else if ($o == "a") {
+} elseif ($o == "a") {
     /*
      * Add a HostGroup information
      */
@@ -291,8 +296,8 @@ $tpl->assign("initJS", "<script type='text/javascript'>
 							jQuery(function () {
 							initAutoComplete('Form','city_name','sub');
 							});</script>");
-$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>");
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 # prepare help texts
 $helptext = "";
@@ -303,20 +308,21 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
-if ($form->validate())	{
+if ($form->validate()) {
     $hgObj = $form->getElement('hg_id');
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         $hgObj->setValue(insertHostGroupInDB());
-    else if ($form->getSubmitValue("submitC"))
+    } elseif ($form->getSubmitValue("submitC")) {
         updateHostGroupInDB($hgObj->getValue());
-    $o = NULL;
+    }
+    $o = null;
     $hgObj = $form->getElement('hg_id');
     $valid = true;
 }
 
 if ($valid) {
     require_once($path."listHostGroup.php");
-} else	{
+} else {
     /*
      * Apply a template definition
      */

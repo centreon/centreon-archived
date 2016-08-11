@@ -50,16 +50,16 @@ $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
 if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
-	exit();
+    exit();
 }
 $sid = session_id();
-if (isset($sid)){
-	$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-	if (!$session = $res->fetchRow()) {
-		exit();
-	}
+if (isset($sid)) {
+    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+    if (!$session = $res->fetchRow()) {
+        exit();
+    }
 } else {
-	exit;
+    exit;
 }
 
 define('SMARTY_DIR', _CENTREON_PATH_ . 'GPL_LIB/Smarty/libs/');
@@ -71,8 +71,8 @@ $p = htmlentities($_GET['p'], ENT_QUOTES, "UTF-8");
 $cmd = htmlentities($_GET['cmd'], ENT_QUOTES, "UTF-8");
 
 if ($cmd == 70 || $cmd == 72) {
-	require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_ack.php';
-} else if ($cmd == 74 || $cmd == 75) {
-	require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_downtime.php';
+    require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_ack.php';
+} elseif ($cmd == 74 || $cmd == 75) {
+    require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_downtime.php';
 }
 exit();

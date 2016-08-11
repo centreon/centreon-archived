@@ -287,6 +287,6 @@ $formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_sta
 <script type='text/javascript'>
 function togglePeriodType()
 {
-	document.getElementById("presetPeriod").selectedIndex = 0;
+    document.getElementById("presetPeriod").selectedIndex = 0;
 }
 </script>

@@ -56,8 +56,16 @@ $pathDetails = "./include/monitoring/objectDetails/";
 include_once("./class/centreonDB.class.php");
 
 switch ($o) {
-    case "hg"   : require_once($path_hg."hostGroup.php"); break;
-    case "hgpb" : require_once($path_hg."hostGroup.php"); break;
-    case "hgd"  : require_once($pathDetails."hostgroupDetails.php"); break;
-    default     : require_once($path_hg."hostGroup.php"); break;
+    case "hg":
+        require_once($path_hg."hostGroup.php");
+        break;
+    case "hgpb":
+        require_once($path_hg."hostGroup.php");
+        break;
+    case "hgd":
+        require_once($pathDetails."hostgroupDetails.php");
+        break;
+    default:
+        require_once($path_hg."hostGroup.php");
+        break;
 }

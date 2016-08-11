@@ -14,5 +14,3 @@ $help["host_relation"] = dgettext("help", "This field give you the possibility t
 $help["hostgroup_relation"] = dgettext("help", "This field give you the possibility to select all hostgroups and all hosts contained into the selected hostgroups implied by this downtime");
 $help["svc_relation"] = dgettext("help", "This field give you the possibility to select all services implied by this downtime");
 $help["svcgroup_relation"] = dgettext("help", "This field give you the possibility to select all servicegroups and all services contained into the servicegroups implied by this downtime");
-
-?>

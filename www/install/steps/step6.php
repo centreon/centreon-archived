@@ -51,8 +51,7 @@ $defaults = array('ADDRESS' => '',
                 'DB_PORT' => DEFAULT_PORT,
                 'root_password' => '', 
                 'CONFIGURATION_DB' => DEFAULT_CONF_NAME, 
-                'STORAGE_DB' => DEFAULT_STORAGE_NAME, 
-                'UTILS_DB' => DEFAULT_UTILS_NAME,
+                'STORAGE_DB' => DEFAULT_STORAGE_NAME,
                 'DB_USER' => DEFAULT_DB_USER,
                 'DB_PASS' => '',
                 'db_pass_confirm' => '');
@@ -61,10 +60,10 @@ foreach ($defaults as $k => $v) {
         $defaults[$k] = $_SESSION[$k];
     }
 }
-$star = "<span style='color:#f91e05'> *</span>";
+$star = "<span style='color:#e00b3d'> *</span>";
 $contents = " 
     <form id='form_step".STEP_NUMBER."'>
-        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+        <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
             <tr>
                 <th colspan='2'>"._('Database information')."</th>
@@ -103,13 +102,6 @@ $contents = "
             <td class='formlabel'>"._('Storage database name').$star."</td>
             <td class='formvalue'>
                 <input type='text' name='STORAGE_DB' value='".$defaults['STORAGE_DB']."' />
-                <label class='field_msg'></label>
-            </td>
-        </tr>
-        <tr>
-            <td class='formlabel'>"._('Utils database name').$star."</td>
-            <td class='formvalue'>
-                <input type='text' name='UTILS_DB' value='".$defaults['UTILS_DB']."' />
                 <label class='field_msg'></label>
             </td>
         </tr>

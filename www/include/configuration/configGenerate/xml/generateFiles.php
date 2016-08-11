@@ -66,9 +66,9 @@ global $generatePhpErrors;
 $generatePhpErrors = array();
 
 $path = _CENTREON_PATH_ . "www/include/configuration/configGenerate/";
-$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/nagiosCFG/";
+$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/engine/";
 $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
-$DebugPath = "filesGeneration/nagiosCFG/";
+$DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
 
@@ -136,7 +136,7 @@ try {
 
     $xml->writeElement("status", $statusMsg);
     $xml->writeElement("statuscode", $statusCode);
-}  catch (Exception $e) {
+} catch (Exception $e) {
     $xml->writeElement("status", $nokMsg);
     $xml->writeElement("statuscode", 1);
     $xml->writeElement("error", $e->getMessage());
@@ -210,18 +210,18 @@ function printDebug($xml, $tabs)
     }
 
     foreach ($tab_server as $host) {
-        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"]."/nagiosCFG.DEBUG 2>&1");
+        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"]."/centengine.DEBUG 2>&1");
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
-        $msg_debug[$host['id']] = str_replace ("\n", "<br />", $stdout);
-        $msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("warning: ", "<font color='orange'>Warning</font> ", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("reading", "Reading", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("running", "Running", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("Total Errors:   0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("<br />License:", " - License:", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("\n", "<br />", $stdout);
+        $msg_debug[$host['id']] = str_replace("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("warning: ", "<font color='orange'>Warning</font> ", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("reading", "Reading", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("running", "Running", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("Total Errors:   0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("<br />License:", " - License:", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = preg_replace('/\[[0-9]+?\] /', '', $msg_debug[$host['id']]);
 
         $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
@@ -229,8 +229,9 @@ function printDebug($xml, $tabs)
         $i = 0;
         foreach ($lines as $line) {
             if (strncmp($line, "Processing object config file", strlen("Processing object config file"))
-                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org")))
-            $msg_debug[$host['id']] .= $line . "<br>";
+                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org"))) {
+                $msg_debug[$host['id']] .= $line . "<br>";
+            }
             $i++;
         }
     }
@@ -250,7 +251,7 @@ function printDebug($xml, $tabs)
                     if ($matches[1] == "Errors") {
                         $pollerNameColor = "red";
                         $returnCode = 1;
-                    } elseif($matches[1] == "Warnings") {
+                    } elseif ($matches[1] == "Warnings") {
                         $pollerNameColor = "orange";
                     }
                 }

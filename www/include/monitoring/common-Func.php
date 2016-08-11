@@ -33,28 +33,31 @@
  * 
  */
 
-if (!isset($centreon))
+if (!isset($centreon)) {
     exit();
+}
 
-function getMyHostRow($host_id = NULL, $rowdata)
+function getMyHostRow($host_id = null, $rowdata)
 {
     global $pearDB;
 
-    if (!$host_id)
+    if (!$host_id) {
         exit();
+    }
     while (1) {
         $DBRESULT = $pearDB->query("SELECT host_" . $rowdata . ", host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        if ($row["host_" . $rowdata])
+        if ($row["host_" . $rowdata]) {
             return $row["host_$rowdata"];
-        else if ($row["host_template_model_htm_id"])
+        } elseif ($row["host_template_model_htm_id"]) {
             $host_id = $row["host_template_model_htm_id"];
-        else
+        } else {
             break;
+        }
     }
 }
 
-function get_user_param($user_id, $pearDB) 
+function get_user_param($user_id, $pearDB)
 {
     $list_param = array('ack_sticky', 'ack_notify', 'ack_persistent', 'ack_services', 'force_active', 'force_check');
     $tab_row = array();
@@ -90,7 +93,6 @@ function get_notified_infos_for_host($host_id)
 
     $firstTime = true;
     while (count($hostStack) > 0) {
-
         $myHost = $hostStack[count($hostStack) - 1];
         $currentHost = $myHost["host_id"];
         $hostParam = $myHost["hostParam"];
@@ -118,7 +120,6 @@ function get_notified_infos_for_host($host_id)
         $firstTime = false;
 
         if (((count($contacts) == 0) && (count($contactGroups) == 0) || ($additive))) {
-
             for ($i = 0; $h = $DBRESULT->fetchRow(); $i++) {
                 if ($h["host_tpl_id"] != "") {
                     $hostStack[] = array("host_id" => $h["host_tpl_id"],
@@ -140,15 +141,16 @@ function get_contactgroups_for_hosts($host_list, &$contactGroups, $withTpl = fal
 {
     global $pearDB;
 
-    if (!is_array($host_list))
+    if (!is_array($host_list)) {
         $host_list = array($host_list);
+    }
 
-    if($withTpl){
+    if ($withTpl) {
         $host = new CentreonHost($pearDB);
         $host_list2 = $host_list;
-        foreach($host_list2 as $host_id){
-            $templates = $host->getTemplateChain($host_id, array(), -1, true,"host_name,host_id");
-            foreach($templates as $template){
+        foreach ($host_list2 as $host_id) {
+            $templates = $host->getTemplateChain($host_id, array(), -1, true, "host_name,host_id");
+            foreach ($templates as $template) {
                 $host_list[] = $template['host_id'];
             }
         }
@@ -158,25 +160,28 @@ function get_contactgroups_for_hosts($host_list, &$contactGroups, $withTpl = fal
             WHERE cghr.contactgroup_cg_id = cg.cg_id AND cghr.host_host_id IN (" . implode(',', $host_list) . ")
             GROUP BY cg_name");
     for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
-        if (!in_array($cg["cg_name"], $contactGroups))
+        if (!in_array($cg["cg_name"], $contactGroups)) {
             $contactGroups[] = $cg["cg_name"];
+        }
     }
     $DBRESULT->free();
 }
 
-function get_contacts_for_hosts($host_list, &$contacts, $withTpl = false) {
+function get_contacts_for_hosts($host_list, &$contacts, $withTpl = false)
+{
     global $pearDB;
 
-    if (!is_array($host_list))
+    if (!is_array($host_list)) {
         $host_list = array($host_list);
+    }
     
     
-    if($withTpl){
+    if ($withTpl) {
         $host = new CentreonHost($pearDB);
         $host_list2 = $host_list;
-        foreach($host_list2 as $host_id){
-            $templates = $host->getTemplateChain($host_id, array(), -1, true,"host_name,host_id");
-            foreach($templates as $template){
+        foreach ($host_list2 as $host_id) {
+            $templates = $host->getTemplateChain($host_id, array(), -1, true, "host_name,host_id");
+            foreach ($templates as $template) {
                 $host_list[] = $template['host_id'];
             }
         }
@@ -188,16 +193,15 @@ function get_contacts_for_hosts($host_list, &$contacts, $withTpl = false) {
             WHERE chr.contact_id = c.contact_id AND chr.host_host_id IN (" . implode(',', $host_list) . ")
             GROUP BY contact_name");
     for ($i = 0; $c = $DBRESULT->fetchRow(); $i++) {
-        if (!in_array($c["contact_name"], $contacts))
+        if (!in_array($c["contact_name"], $contacts)) {
             $contacts[] = $c["contact_name"];
+        }
     }
     $DBRESULT->free();
-    
-
-
 }
 
-function get_notified_infos_for_service($service_id, $host_id) {
+function get_notified_infos_for_service($service_id, $host_id)
+{
     global $pearDB;
 
     // Init vars
@@ -270,7 +274,8 @@ function get_notified_infos_for_service($service_id, $host_id) {
     }
 }
 
-function get_contactgroups_for_services($service_list, &$contactGroups, $withTpl = false) {
+function get_contactgroups_for_services($service_list, &$contactGroups, $withTpl = false)
+{
     global $pearDB;
 
     if (!is_array($service_list)) {
@@ -280,11 +285,11 @@ function get_contactgroups_for_services($service_list, &$contactGroups, $withTpl
         $service_list = array($service_list);
     }
     
-    if($withTpl){
+    if ($withTpl) {
         $service_list2 = $service_list;
-        foreach($service_list2 as $service_id){
+        foreach ($service_list2 as $service_id) {
             $templates = getListTemplates($pearDB, $service_id);
-            foreach($templates as $template){
+            foreach ($templates as $template) {
                 $service_list[] = $template['service_id'];
             }
         }
@@ -294,13 +299,15 @@ function get_contactgroups_for_services($service_list, &$contactGroups, $withTpl
             WHERE cgsr.contactgroup_cg_id = cg.cg_id AND cgsr.service_service_id IN (" . implode(',', $service_list) . ")
             GROUP BY cg_name");
     for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
-        if (!in_array($cg["cg_name"], $contactGroups))
+        if (!in_array($cg["cg_name"], $contactGroups)) {
             $contactGroups[] = $cg["cg_name"];
+        }
     }
     $DBRESULT->free();
 }
 
-function get_contacts_for_services($service_list, &$contacts, $withTpl = false) {
+function get_contacts_for_services($service_list, &$contacts, $withTpl = false)
+{
     global $pearDB;
 
     if (!is_array($service_list)) {
@@ -310,11 +317,11 @@ function get_contacts_for_services($service_list, &$contacts, $withTpl = false) 
         $service_list = array($service_list);
     }
 
-    if($withTpl){
+    if ($withTpl) {
         $service_list2 = $service_list;
-        foreach($service_list2 as $service_id){
+        foreach ($service_list2 as $service_id) {
             $templates = getListTemplates($pearDB, $service_id);
-            foreach($templates as $template){
+            foreach ($templates as $template) {
                 $service_list[] = $template['service_id'];
             }
         }
@@ -324,8 +331,9 @@ function get_contacts_for_services($service_list, &$contacts, $withTpl = false) 
             WHERE csr.contact_id = c.contact_id AND csr.service_service_id IN (" . implode(',', $service_list) . ")
             GROUP BY contact_name");
     for ($i = 0; $c = $DBRESULT->fetchRow(); $i++) {
-        if (!in_array($c["contact_name"], $contacts))
+        if (!in_array($c["contact_name"], $contacts)) {
             $contacts[] = $c["contact_name"];
+        }
     }
     $DBRESULT->free();
 }

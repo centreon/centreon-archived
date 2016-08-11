@@ -55,7 +55,7 @@ class Command extends AbstractObject {
         $stmt = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM command 
-                LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1'
+                LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1' AND command.command_activate = '1'
             ");
         $stmt->execute();
         $this->commands = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);

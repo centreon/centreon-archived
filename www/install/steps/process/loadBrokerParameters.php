@@ -54,7 +54,7 @@ foreach ($lines as $line) {
             $val = $_SESSION[$key];
         }
         if ($required) {
-            $star = "<span style='color:#f91e05'> *</span>";
+            $star = "<span style='color:#e00b3d'> *</span>";
         }
         $html .= "
                     <tr>
@@ -63,7 +63,7 @@ foreach ($lines as $line) {
                         <input type='text' name='".$key."' value='".$val."' size='40' />
                         <label class='field_msg'></label>
                     </td>
-                    </star>";
+                    </tr>";
     }
 }
 echo $html;

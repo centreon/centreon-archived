@@ -34,19 +34,19 @@
  */
  
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
     
-isset($_GET["traps_id"]) ? $trapG = $_GET["traps_id"] : $trapG = NULL;
-isset($_POST["traps_id"]) ? $trapP = $_POST["traps_id"] : $trapP = NULL;
+isset($_GET["traps_id"]) ? $trapG = $_GET["traps_id"] : $trapG = null;
+isset($_POST["traps_id"]) ? $trapP = $_POST["traps_id"] : $trapP = null;
 $trapG ? $traps_id = $trapG : $traps_id = $trapP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /* Pear library */
@@ -70,14 +70,28 @@ $severityObj = new CentreonCriticality($pearDB);
 
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
-	$p = $ret['topology_page'];
+    $p = $ret['topology_page'];
 }
 
-switch ($o)	{
-	case "a" : require_once($path."formTraps.php"); break; #Add a Trap
-	case "w" : require_once($path."formTraps.php"); break; #Watch a Trap
-	case "c" : require_once($path."formTraps.php"); break; #Modify a Trap
-	case "m" : $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listTraps.php"); break; #Duplicate n Traps
-	case "d" : $trapObj->delete(isset($select) ? $select : array()); require_once($path."listTraps.php"); break; #Delete n Traps
-	default : require_once($path."listTraps.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formTraps.php");
+        break; #Add a Trap
+    case "w":
+        require_once($path."formTraps.php");
+        break; #Watch a Trap
+    case "c":
+        require_once($path."formTraps.php");
+        break; #Modify a Trap
+    case "m":
+        $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listTraps.php");
+        break; #Duplicate n Traps
+    case "d":
+        $trapObj->delete(isset($select) ? $select : array());
+        require_once($path."listTraps.php");
+        break; #Delete n Traps
+    default:
+        require_once($path."listTraps.php");
+        break;
 }

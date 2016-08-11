@@ -48,9 +48,9 @@
 	                                    <a href="./main.php?p=20201&o=svcd&host_name={$hs.host_name}&service_description={$hs.service_description}">{$hs.service_description}</a>
 	                                </td>
 	                                <td>
-	                                    {if $hs.ppd > 0 && $hs.svc_index > 0}
+	                                    {if $hs.svc_index > 0}
 	                                    <a href="main.php?p=204&amp;mode=0&amp;svc_id={$hs.hnl};{$hs.sdl}">
-	                                        <img id="{$hs.svc_index}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
+	                                        <img id="{$host_id}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
 	                                    </a>
 	                                    {/if}
 	                                    {if $hs.acknowledged != 0}
@@ -82,12 +82,15 @@
 	                                <td class="ListColHeaderLeft FormHeader"><h4>{t}Graphs{/t}</h4></td>
 	                            </tr>
 				                {foreach key=graphId item=HS from=$graphs}
+                                {assign var=names value=';'|explode:$HS}
 								<tr>
 									<td class="ListColLeft ColPopup" style='text-align:center;'>
-									<a href='./main.php?p=204&mode=0&svc_id={$HS}'>
-                                        <div class="chart" data-graph-id="{$graphId}" data-graph-type="service">
-                                        </div>
-                                    </a>
+                                      <h3 class="detail-chart-title">
+                                        {$names[1]} <a href='./main.php?p=204&mode=0&svc_id={$HS}'>
+                                          <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
+                                        </a>
+                                      </h3>
+                                      <div class="chart" data-graph-id="{$graphId}" data-graph-type="service"></div>
 									</td>
 								</tr>
 								{/foreach}
@@ -405,7 +408,7 @@
 				{if $aclAct.host_schedule_downtime || $admin == 1}	
 				<tr class='list_one'>
 					<td class="ListColLeft ColPopup" id="host_downtime">
-						<a href='main.php?p=21001&o=ah&host_name={$host_data.host_name}'>{$m_mon_SCH_downtime}</a>
+						<a href='main.php?p=21001&o=a&host_id={$host_data.host_id}'>{$m_mon_SCH_downtime}</a>
 					</td>
 				</tr>
 				{/if}
@@ -480,6 +483,7 @@
 		</td>	
 	</tr>
 </table>
+<div id="div_img" class="img_volante"></div>
 <script src="./include/common/javascript/moment-with-locales.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 <script src="./include/common/javascript/charts/d3.min.js"></script>

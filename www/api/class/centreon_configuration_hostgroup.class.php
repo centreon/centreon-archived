@@ -42,12 +42,12 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -56,7 +56,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
@@ -110,7 +110,8 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         );
     }
     
-    public function getHostList(){
+    public function getHostList()
+    {
         global $centreon;
         
         $userId = $centreon->user->user_id;
@@ -165,7 +166,6 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         return array(
             'items' => $hostList,
             'total' => $total
-        );       
+        );
     }
-    
 }

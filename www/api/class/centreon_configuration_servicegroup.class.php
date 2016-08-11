@@ -41,7 +41,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
     /**
@@ -54,7 +54,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getList()
@@ -84,7 +84,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         
         $queryContact = " SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name "
             . " FROM servicegroup "
-            . " WHERE sg_name LIKE '%$q%' ".$aclServicegroups 
+            . " WHERE sg_name LIKE '%$q%' ".$aclServicegroups
             . " ORDER BY sg_name "
             . $range;
         
@@ -134,7 +134,6 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            
         }
         
         $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_id, s.service_description, h.host_name, h.host_id "
@@ -163,6 +162,6 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         return array(
             'items' => $serviceList,
             'total' => $total
-        );        
+        );
     }
 }

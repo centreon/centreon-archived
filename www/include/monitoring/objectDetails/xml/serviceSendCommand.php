@@ -48,8 +48,9 @@ require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
 CentreonSession::start();
 $centreon = $_SESSION["centreon"];
-if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["service_id"]) || !isset($_GET["cmd"]) || !isset($_GET["actiontype"]))
+if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["service_id"]) || !isset($_GET["cmd"]) || !isset($_GET["actiontype"])) {
     exit();
+}
 
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
@@ -64,18 +65,18 @@ $act_type = $_GET["actiontype"];
 $pearDB = new CentreonDB();
 
 $DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
-if (!$DBRESULT->numRows()){
+if (!$DBRESULT->numRows()) {
     exit();
 }
 
 if ($centreon->user->is_admin() === 0) {
-    if (!$centreon->user->access->checkAction($cmd)){
+    if (!$centreon->user->access->checkAction($cmd)) {
         exit();
     }
-    if(!$centreon->user->access->checkHost($host_id)){
+    if (!$centreon->user->access->checkHost($host_id)) {
         exit();
     }
-    if(!$centreon->user->access->checkService($svc_id)){
+    if (!$centreon->user->access->checkService($svc_id)) {
         exit();
     }
 }

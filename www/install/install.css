@@ -30,26 +30,24 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
-BODY {
-	margin: 0px 0px 0px 0px;
-	background-color : #888888 ;
+body {
+	font-family: 'open sans', Arial, Verdana, Helvetica, sans-serif;
+	margin: 0px;
+	background-color : #a7a9ac;
 	color : #333333;
+	height: auto;
 	}
-
 
 tr,td,th,table {
-	font-family: Arial, Verdana, Helvetica, sans-serif;
-	font-size: 12px;
-	color: #333333;
 	vertical-align: top;
-	}
+}
 
-p {MARGIN-TOP: 0px; MARGIN-BOTTOM: 10px}
+p {
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
 
 hr  {
 	color: #888888;
@@ -59,14 +57,14 @@ hr  {
 	}
 
 a:link, a:visited {
-	font-size: 12px; color: #333333; text-decoration: none;
-	font-family:  Arial, Verdana, Helvetica, sans-serif;
-    text-decoration: underline;
+	font-size: 12px;
+	color: #333333;
+	text-decoration: none;
 	}
 
 a:hover {
-	color: #EA1313;	text-decoration: none;
-    text-decoration: underline;
+	color: #0072ce;
+	text-decoration: none;
 	}
 
 input,select {
@@ -98,29 +96,51 @@ textarea {
 /* custom */
 
 table.shell {
-	/*background-color: #ffffff;*/
-	width: 600px;
+	border: 1px solid #fff;
 	height: 300px;
-	margin-top: 20px;
-	margin-bottom: 100px;
-	border: 1px solid #111111;
+	margin: 60px auto;
+	width: 650px;
+	box-shadow: 0px 0px 0px 1px #818285;
 	}
 
-table.shell th {
-	border-bottom: 1px solid #888888;
-	/*background-color: #ffffff;*/
-	color: #888888;
-	font-size: 16px;
-	font-weight: bold;
-	padding: 6px;
+table.shell {
 	text-align: left;
-	}
+	padding: 0px;
+}
+
+table.shell .install-header {
+	background-color: #dddddd;
+	height: 80px;
+}
+
+table.shell .step-wrapper h3{
+	color: #8a8a8a;
+	font-weight: normal;
+	margin: 12px 0;
+}
+
+table.shell .step-wrapper h3 span {
+	font-size: 42px;
+	vertical-align: middle;
+}
+
+table.shell .logo-wrapper {
+	padding: 9px 20px;
+}
+
+table.shell th {
+	text-align: left;
+	border-bottom: 1px solid #fff;
+}
 
 table.shell td {
 	padding: 6px;
-	background-color: #dddddd;
+	background-color: #d6d5d5;
+}
 
-	}
+table.shell .install-body {
+	background-color: #e7e7e8;
+}
 
 table.stdTable td {
 
@@ -162,11 +182,19 @@ table.StyleDottedHr th {
 	color: #00cc00;
 	}
 .required,.field_msg {
-	color: #ff2222;
+	color: #e00b3d;
 	font-weight: bold;
 	}
         
 #troubleshoot {
-    color: #ff2222;
+    color: #e00b3d;
     font-weight: normal;
+}
+.link-group {
+	margin-bottom: 0px;
+	padding: 5px 2px;
+}
+
+.link-group b {
+	margin-left: 52px;
 }

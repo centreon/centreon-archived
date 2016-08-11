@@ -95,8 +95,8 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();', 'class' => 'btc bt_success'));
-$msg = NULL;
-$stdout = NULL;
+$msg = null;
+$stdout = null;
 
 $tpl->assign("noPollerSelectedLabel", _("Compulsory Poller"));
 $tpl->assign("consoleLabel", _("Console"));
@@ -232,7 +232,7 @@ $tpl->display("formGenerateFiles.ihtml");
         if (!checkSelectedPoller()) {
             return null;
         }
-	curProgress = 0;
+    curProgress = 0;
         stepProgress = 0;
         updateProgress();
         cleanErrorPhp();
@@ -312,7 +312,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -338,7 +338,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -365,7 +365,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -388,7 +388,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -533,10 +533,10 @@ $tpl->display("formGenerateFiles.ihtml");
         if (typeof(curProgress) != 'undefined' && typeof(stepProgress) != 'undefined') {
             pct = curProgress + stepProgress;
             curProgress += stepProgress;
-	}
-	if (pct > 100) {
-	    pct = 100;
-	}
+    }
+    if (pct > 100) {
+        pct = 100;
+    }
         progressBar.setPercentage(pct);
         $('progressPct').update(Math.round(pct) + "%");
     }

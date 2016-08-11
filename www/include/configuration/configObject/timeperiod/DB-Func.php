@@ -46,7 +46,7 @@ function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = a
      */
     if (isset($includeTab) && is_array($includeTab)) {
         $str = "";
-        foreach($includeTab as $tpIncludeId) {
+        foreach ($includeTab as $tpIncludeId) {
             if ($str != "") {
                 $str.= ", ";
             }
@@ -63,7 +63,7 @@ function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = a
      */
     if (isset($excludeTab) && is_array($excludeTab)) {
         $str = "";
-        foreach($excludeTab as $tpExcludeId) {
+        foreach ($excludeTab as $tpExcludeId) {
             if ($str != "") {
                 $str.= ", ";
             }
@@ -76,11 +76,11 @@ function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = a
     }
 }
 
-function testTPExistence ($name = NULL)
+function testTPExistence($name = null)
 {
     global $pearDB, $form, $centreon;
 
-    $id = NULL;
+    $id = null;
     if (isset($form)) {
         $id = $form->getSubmitValue('tp_id');
     }
@@ -88,19 +88,20 @@ function testTPExistence ($name = NULL)
     $DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
     $tp = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $tp["tp_id"] == $id)
+    if ($DBRESULT->numRows() >= 1 && $tp["tp_id"] == $id) {
         return true;
-    #Duplicate entry
-    else if ($DBRESULT->numRows() >= 1 && $tp["tp_id"] != $id)
+    } #Duplicate entry
+    elseif ($DBRESULT->numRows() >= 1 && $tp["tp_id"] != $id) {
         return false;
-    else
+    } else {
         return true;
+    }
 }
 
-function deleteTimeperiodInDB ($timeperiods = array())
+function deleteTimeperiodInDB($timeperiods = array())
 {
     global $pearDB, $centreon;
-    foreach($timeperiods as $key=>$value)   {
+    foreach ($timeperiods as $key => $value) {
         $DBRESULT2 = $pearDB->query("SELECT tp_name FROM `timeperiod` WHERE `tp_id` = '".$key."' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
         $DBRESULT = $pearDB->query("DELETE FROM timeperiod WHERE tp_id = '".$key."'");
@@ -108,7 +109,7 @@ function deleteTimeperiodInDB ($timeperiods = array())
     }
 }
 
-function multipleTimeperiodInDB ($timeperiods = array(), $nbrDup = array())
+function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
 {
     global $centreon;
 
@@ -135,7 +136,7 @@ function multipleTimeperiodInDB ($timeperiods = array(), $nbrDup = array())
                     $value2 .= "_" . $i;
                 }
                 $key2 == "tp_name" ? ($tp_name = $value2) : "";
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
                 if ($key2 != "tp_id") {
                     $fields[$key2] = $value2;
                 }
@@ -170,9 +171,11 @@ function multipleTimeperiodInDB ($timeperiods = array(), $nbrDup = array())
     }
 }
 
-function updateTimeperiodInDB ($tp_id = NULL)
+function updateTimeperiodInDB($tp_id = null)
 {
-    if (!$tp_id) return;
+    if (!$tp_id) {
+        return;
+    }
     updateTimeperiod($tp_id);
 }
 
@@ -184,11 +187,11 @@ function updateTimeperiod($tp_id, $params = array())
         return;
     }
     $ret = array();
-            if (count($params)) {
-                $ret = $params;
-            } else {
+    if (count($params)) {
+        $ret = $params;
+    } else {
         $ret = $form->getSubmitValues();
-            }
+    }
 
     $ret["tp_name"] = $centreon->checkIllegalChar($ret["tp_name"]);
 
@@ -239,7 +242,7 @@ function updateTimeperiod($tp_id, $params = array())
     $centreon->CentreonLogAction->insertLog("timeperiod", $tp_id, htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 }
 
-function insertTimeperiodInDB ($ret = array())
+function insertTimeperiodInDB($ret = array())
 {
     $tp_id = insertTimeperiod($ret);
     return ($tp_id);
@@ -258,15 +261,15 @@ function insertTimeperiod($ret = array(), $exceptions = null)
     $rq = "INSERT INTO timeperiod ";
     $rq .= "(tp_name, tp_alias, tp_sunday, tp_monday, tp_tuesday, tp_wednesday, tp_thursday, tp_friday, tp_saturday) ";
     $rq .= "VALUES (";
-    isset($ret["tp_name"]) && $ret["tp_name"] != NULL ? $rq .= "'".htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_alias"]) && $ret["tp_alias"] != NULL ? $rq .= "'".htmlentities($ret["tp_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_sunday"]) && $ret["tp_sunday"] != NULL ? $rq .= "'".htmlentities($ret["tp_sunday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_monday"]) && $ret["tp_monday"] != NULL ? $rq .= "'".htmlentities($ret["tp_monday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_tuesday"]) && $ret["tp_tuesday"] != NULL ? $rq .= "'".htmlentities($ret["tp_tuesday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_wednesday"]) && $ret["tp_wednesday"] != NULL ? $rq .= "'".htmlentities($ret["tp_wednesday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_thursday"]) && $ret["tp_thursday"] != NULL ? $rq .= "'".htmlentities($ret["tp_thursday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_friday"]) && $ret["tp_friday"] != NULL ? $rq .= "'".htmlentities($ret["tp_friday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_saturday"]) && $ret["tp_saturday"] != NULL ? $rq .= "'".htmlentities($ret["tp_saturday"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
+    isset($ret["tp_name"]) && $ret["tp_name"] != null ? $rq .= "'".htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_alias"]) && $ret["tp_alias"] != null ? $rq .= "'".htmlentities($ret["tp_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_sunday"]) && $ret["tp_sunday"] != null ? $rq .= "'".htmlentities($ret["tp_sunday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_monday"]) && $ret["tp_monday"] != null ? $rq .= "'".htmlentities($ret["tp_monday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_tuesday"]) && $ret["tp_tuesday"] != null ? $rq .= "'".htmlentities($ret["tp_tuesday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_wednesday"]) && $ret["tp_wednesday"] != null ? $rq .= "'".htmlentities($ret["tp_wednesday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_thursday"]) && $ret["tp_thursday"] != null ? $rq .= "'".htmlentities($ret["tp_thursday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_friday"]) && $ret["tp_friday"] != null ? $rq .= "'".htmlentities($ret["tp_friday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["tp_saturday"]) && $ret["tp_saturday"] != null ? $rq .= "'".htmlentities($ret["tp_saturday"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
@@ -284,10 +287,11 @@ function insertTimeperiod($ret = array(), $exceptions = null)
     /*
      *  Insert exceptions
      */
-    if (isset($exceptions))
+    if (isset($exceptions)) {
         $my_tab = $exceptions;
-    else if (isset($_POST['nbOfExceptions']))
+    } elseif (isset($_POST['nbOfExceptions'])) {
         $my_tab = $_POST;
+    }
     if (isset($my_tab['nbOfExceptions'])) {
         $already_stored = array();
         for ($i=0; $i <= $my_tab['nbOfExceptions']; $i++) {
@@ -317,14 +321,17 @@ function checkHours($hourString)
     } else {
         if (strstr($hourString, ",")) {
             $tab1 = preg_split("/\,/", $hourString);
-            for ($i = 0 ; isset($tab1[$i]) ; $i++) {
+            for ($i = 0; isset($tab1[$i]); $i++) {
                 if (preg_match("/([0-9]*):([0-9]*)-([0-9]*):([0-9]*)/", $tab1[$i], $str)) {
-                    if ($str[1] > 24 || $str[3] > 24)
+                    if ($str[1] > 24 || $str[3] > 24) {
                         return false;
-                    if ($str[2] > 59 || $str[4] > 59)
+                    }
+                    if ($str[2] > 59 || $str[4] > 59) {
                         return false;
-                    if (($str[3] * 60 * 60 + $str[4] * 60) > 86400 || ($str[1] * 60 * 60 + $str[2] * 60) > 86400)
+                    }
+                    if (($str[3] * 60 * 60 + $str[4] * 60) > 86400 || ($str[1] * 60 * 60 + $str[2] * 60) > 86400) {
                         return false;
+                    }
                 } else {
                     return false;
                 }
@@ -332,12 +339,15 @@ function checkHours($hourString)
             return true;
         } else {
             if (preg_match("/([0-9]*):([0-9]*)-([0-9]*):([0-9]*)/", $hourString, $str)) {
-                if ($str[1] > 24 || $str[3] > 24)
+                if ($str[1] > 24 || $str[3] > 24) {
                     return false;
-                if ($str[2] > 59 || $str[4] > 59)
+                }
+                if ($str[2] > 59 || $str[4] > 59) {
                     return false;
-                if (($str[3] * 60 * 60 + $str[4] * 60) > 86400 || ($str[1] * 60 * 60 + $str[2] * 60) > 86400)
+                }
+                if (($str[3] * 60 * 60 + $str[4] * 60) > 86400 || ($str[1] * 60 * 60 + $str[2] * 60) > 86400) {
                     return false;
+                }
                 return true;
             } else {
                 return false;
@@ -352,7 +362,8 @@ function checkHours($hourString)
  * @param string $name
  * @return int
  */
-function getTimeperiodIdByName($name) {
+function getTimeperiodIdByName($name)
+{
     global $pearDB;
 
     $id = 0;

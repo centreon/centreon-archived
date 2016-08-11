@@ -41,7 +41,7 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
     
@@ -173,7 +173,8 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
             for ($i = 0; $i < count($serviceData); $i++) {
                 if (isset($serviceData[$i]['data'])) {
                     $times = array_keys($serviceData[$i]['data']);
-                    $values = array_map(array($this, "convertNaN"),
+                    $values = array_map(
+                        array($this, "convertNaN"),
                         array_values($serviceData[$i]['data'])
                     );
                 }
@@ -209,4 +210,3 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
         return $element;
     }
 }
-?>

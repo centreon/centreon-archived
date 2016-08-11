@@ -35,8 +35,9 @@
 
 $calcType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
 
-if (!isset($oreon))
-	exit();
+if (!isset($oreon)) {
+    exit();
+}
 
     include_once("./class/centreonUtils.class.php");
 
@@ -58,9 +59,9 @@ $pearDBO = new CentreonDB("centstorage");
 $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");
 
 $meta = $DBRESULT->fetchRow();
-$tpl->assign("meta", array(	"meta" => _("Meta Service"),
-							"name" => $meta["meta_name"],
-							"calc_type" => $calcType[$meta["calcul_type"]]));
+$tpl->assign("meta", array(     "meta" => _("Meta Service"),
+                            "name" => $meta["meta_name"],
+                            "calc_type" => $calcType[$meta["calcul_type"]]));
 $DBRESULT->free();
 
 /*
@@ -101,25 +102,26 @@ while ($row = $results->fetchRow()) {
     $in_statement_append = ",";
 }
 
-if ($in_statement != "")  {
+if ($in_statement != "") {
     $DBRESULTO = $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id IN ($in_statement) and m.index_id=i.id ORDER BY i.host_name, i.service_description, m.metric_name");
-	/*
+    /*
 	 * Different style between each lines
 	 */
-	$style = "one";
-	/*
+    $style = "one";
+    /*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
-	$elemArr1 = array();
+    $elemArr1 = array();
     $i = 0;
     while ($metric = $DBRESULTO->fetchRow()) {
         foreach ($ar_relations[$metric['metric_id']] as $relation) {
                 $moptions = "";
                 $selectedElements = $form->addElement('checkbox', "select[".$relation['msr_id']."]");
-                if ($relation["activate"])
-                    $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
-                else
-                    $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+            if ($relation["activate"]) {
+                $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+            } else {
+                $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+            }
                 $metric["service_description"] = str_replace("#S#", "/", $metric["service_description"]);
                 $metric["service_description"] = str_replace("#BS#", "\\", $metric["service_description"]);
                 $elemArr1[$i] = array(  "MenuClass"=>"list_".$style,
@@ -161,32 +163,32 @@ $form->setDefaults($tab);
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </SCRIPT>
 <?php
 $attrs1 = array(
-	'onchange'=>"javascript: " .
-			"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} ");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "ds"=>_("Delete")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
+    'onchange'=>"javascript: " .
+            "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+            " 	setO(this.form.elements['o1'].value); submit();} ");
+$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "ds"=>_("Delete")), $attrs1);
+$form->setDefaults(array('o1' => null));
 
 
 $attrs2 = array(
-	'onchange'=>"javascript: " .
-			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} ");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ds"=>_("Delete")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
+    'onchange'=>"javascript: " .
+            "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+            " 	setO(this.form.elements['o2'].value); submit();} ");
+$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "ds"=>_("Delete")), $attrs2);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 

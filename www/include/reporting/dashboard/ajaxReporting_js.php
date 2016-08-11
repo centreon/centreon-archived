@@ -54,29 +54,29 @@ $url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg
 var tl;
 
 function initTimeline() {
-	var eventSource = new Timeline.DefaultEventSource();
-	var bandInfos = [
-	Timeline.createBandInfo({
-			eventSource:    eventSource,
-			width:          "70%", 
-			intervalUnit:   Timeline.DateTime.DAY, 
-			intervalPixels: 300
-	    }), 
-		Timeline.createBandInfo({
-	    	showEventText:  false,
-	   		eventSource:    eventSource,
-	    	width:          "30%", 
-	    	intervalUnit:   Timeline.DateTime.MONTH, 
-		    intervalPixels: 300
-		})
-	];
+    var eventSource = new Timeline.DefaultEventSource();
+    var bandInfos = [
+    Timeline.createBandInfo({
+            eventSource:    eventSource,
+            width:          "70%", 
+            intervalUnit:   Timeline.DateTime.DAY, 
+            intervalPixels: 300
+        }), 
+        Timeline.createBandInfo({
+            showEventText:  false,
+            eventSource:    eventSource,
+            width:          "30%", 
+            intervalUnit:   Timeline.DateTime.MONTH, 
+            intervalPixels: 300
+        })
+    ];
 
-	bandInfos[1].syncWith = 0;
-	bandInfos[1].highlight = true;
-	bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
-	 		  	
-	tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
-	
-	Timeline.loadXML('<?php echo $url ?>', function(xml, url) { eventSource.loadXML(xml, url); });
+    bandInfos[1].syncWith = 0;
+    bandInfos[1].highlight = true;
+    bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
+                
+    tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+    
+    Timeline.loadXML('<?php echo $url ?>', function(xml, url) { eventSource.loadXML(xml, url); });
 }
 </script>

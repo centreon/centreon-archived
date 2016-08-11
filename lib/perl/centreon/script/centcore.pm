@@ -234,7 +234,7 @@ sub getBrokerStats($) {
         mkpath($destFile);
     }
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name,retention_path "
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name, retention_path "
         . "FROM cfg_centreonbroker "
         . "WHERE stats_activate='1' "
         . "AND ns_nagios_server = '" . $poller_id . "'");
@@ -488,7 +488,7 @@ sub sendConfigFile($){
         return;
     }
 
-    my $origin = $self->{centreonDir} . "/filesGeneration/nagiosCFG/".$id."/*";
+    my $origin = $self->{centreonDir} . "/filesGeneration/engine/".$id."/*";
     my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
 
     # Send data with SCP

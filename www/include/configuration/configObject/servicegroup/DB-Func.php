@@ -37,10 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
-function testServiceGroupExistence ($name = NULL)   {
+function testServiceGroupExistence($name = null)
+{
     global $pearDB, $form, $centreon;
 
-    $id = NULL;
+    $id = null;
 
     if (isset($form)) {
         $id = $form->getSubmitValue('sg_id');
@@ -51,7 +52,7 @@ function testServiceGroupExistence ($name = NULL)   {
     if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] == $id) {
         # Modif
         return true;
-    } else if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] != $id) {
+    } elseif ($DBRESULT->numRows() >= 1 && $sg["sg_id"] != $id) {
         # Duplicate
         return false;
     } else {
@@ -59,9 +60,11 @@ function testServiceGroupExistence ($name = NULL)   {
     }
 }
 
-function enableServiceGroupInDB ($sg_id = null)
+function enableServiceGroupInDB($sg_id = null)
 {
-    if (!$sg_id) return;
+    if (!$sg_id) {
+        return;
+    }
     global $pearDB, $centreon;
     $DBRESULT = $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
     $DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
@@ -69,9 +72,11 @@ function enableServiceGroupInDB ($sg_id = null)
     $centreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "enable");
 }
 
-function disableServiceGroupInDB ($sg_id = null)
+function disableServiceGroupInDB($sg_id = null)
 {
-    if (!$sg_id) return;
+    if (!$sg_id) {
+        return;
+    }
     global $pearDB, $centreon;
     $DBRESULT = $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
     $DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
@@ -79,11 +84,11 @@ function disableServiceGroupInDB ($sg_id = null)
     $centreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "disable");
 }
 
-function deleteServiceGroupInDB ($serviceGroups = array()) 
+function deleteServiceGroupInDB($serviceGroups = array())
 {
     global $pearDB, $centreon;
 
-    foreach ($serviceGroups as $key=>$value) {
+    foreach ($serviceGroups as $key => $value) {
         $DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$key."' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
         $DBRESULT = $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
@@ -92,21 +97,21 @@ function deleteServiceGroupInDB ($serviceGroups = array())
     $centreon->user->access->updateACL();
 }
 
-function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array()) 
+function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
 {
     global $pearDB, $centreon, $is_admin;
             
     $sgAcl = array();
-    foreach($serviceGroups as $key=>$value) {
+    foreach ($serviceGroups as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["sg_id"] = '';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = NULL;
-            $rq = NULL;
-            foreach ($row as $key2=>$value2)    {
+            $val = null;
+            $rq = null;
+            foreach ($row as $key2 => $value2) {
                 $key2 == "sg_name" ? ($sg_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
                 if ($key2 != "sg_id") {
                     $fields[$key2] = $value2;
                 }
@@ -114,20 +119,21 @@ function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())
                     $fields["sg_name"] = $sg_name;
                 }
             }
-            if (testServiceGroupExistence($sg_name))    {
+            if (testServiceGroupExistence($sg_name)) {
                 $val ? $rq = "INSERT INTO servicegroup VALUES (".$val.")" : $rq = null;
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
                 $maxId = $DBRESULT->fetchRow();
-                if (isset($maxId["MAX(sg_id)"]))    {
+                if (isset($maxId["MAX(sg_id)"])) {
                                             $sgAcl[$maxId["MAX(sg_id)"]] = $key;
                     $DBRESULT->free();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
                     $fields["sg_hgServices"] = "";
-                    while($service = $DBRESULT->fetchRow()) {
+                    while ($service = $DBRESULT->fetchRow()) {
                         $val = null;
-                        foreach ($service as $key2=>$value2)
-                            $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                        foreach ($service as $key2 => $value2) {
+                            $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                        }
                         $DBRESULT2 = $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$val.", '".$maxId["MAX(sg_id)"]."')");
                         $fields["sg_hgServices"] .= $service["service_service_id"] . ",";
                     }
@@ -141,7 +147,7 @@ function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())
     $centreon->user->access->updateACL();
 }
 
-function insertServiceGroupInDB ($ret = array())
+function insertServiceGroupInDB($ret = array())
 {
         global $centreon;
 
@@ -151,13 +157,13 @@ function insertServiceGroupInDB ($ret = array())
         return $sg_id;
 }
 
-function updateServiceGroupInDB ($sg_id = NULL, $ret = array(), $increment = false)
+function updateServiceGroupInDB($sg_id = null, $ret = array(), $increment = false)
 {
         global $centreon;
 
-        if (!$sg_id) {
-            return;
-        }
+    if (!$sg_id) {
+        return;
+    }
         updateServiceGroup($sg_id, $ret);
         updateServiceGroupServices($sg_id, $ret, $increment);
         $centreon->user->access->updateACL();
@@ -166,18 +172,19 @@ function updateServiceGroupInDB ($sg_id = NULL, $ret = array(), $increment = fal
 function insertServiceGroup($ret = array())
 {
     global $form, $pearDB, $centreon;
-    if (!count($ret))
+    if (!count($ret)) {
         $ret = $form->getSubmitValues();
+    }
 
     $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
 
     $rq = "INSERT INTO servicegroup (sg_name, sg_alias, sg_comment, geo_coords, sg_activate) ";
     $rq .= "VALUES (";
-    isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "'".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-    isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-    isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "'".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-    isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
+    isset($ret["sg_name"]) && $ret["sg_name"] != null ? $rq .= "'".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["sg_alias"]) && $ret["sg_alias"] != null ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["sg_comment"]) && $ret["sg_comment"] != null ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != null ? $rq .= "'".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != null ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
 
@@ -207,11 +214,11 @@ function updateServiceGroup($sg_id, $ret = array())
     $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
 
     $rq = "UPDATE servicegroup SET ";
-    isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_name = NULL,";
-    isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq.= "sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_alias = NULL";
-    isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_comment = NULL,";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != NULL ? $rq .= "geo_coords = '".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "geo_coords = NULL,";
-    isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
+    isset($ret["sg_name"]) && $ret["sg_name"] != null ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_name = NULL,";
+    isset($ret["sg_alias"]) && $ret["sg_alias"] != null ? $rq.= "sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_alias = NULL";
+    isset($ret["sg_comment"]) && $ret["sg_comment"] != null ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_comment = NULL,";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != null ? $rq .= "geo_coords = '".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "geo_coords = NULL,";
+    isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != null ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
     $rq .= "WHERE sg_id = '".$sg_id."'";
     $DBRESULT = $pearDB->query($rq);
 
@@ -222,8 +229,9 @@ function updateServiceGroup($sg_id, $ret = array())
 
 function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
 {
-    if (!$sg_id)
+    if (!$sg_id) {
         return;
+    }
     global $pearDB, $form;
 
     if ($increment == false) {
@@ -234,8 +242,8 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
 
     /* service templates */
     $retTmp = isset($ret["sg_tServices"]) ? $ret["sg_tServices"] : $form->getSubmitValue("sg_tServices");
-    for ($i = 0; $i < count($retTmp); $i++)    {
-        if (isset($retTmp[$i]) && $retTmp[$i]){
+    for ($i = 0; $i < count($retTmp); $i++) {
+        if (isset($retTmp[$i]) && $retTmp[$i]) {
             $t = preg_split("/\-/", $retTmp[$i]);
             $resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE host_host_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
             if (!$resTest->numRows()) {
@@ -248,7 +256,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
     /* regular services */
     $retTmp = isset($ret["sg_hServices"]) ? $ret["sg_hServices"] : CentreonUtils::mergeWithInitialValues($form, 'sg_hServices');
     for ($i = 0; $i < count($retTmp); $i++) {
-        if (isset($retTmp[$i]) && $retTmp[$i]){
+        if (isset($retTmp[$i]) && $retTmp[$i]) {
             $t = preg_split("/\-/", $retTmp[$i]);
             $resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE host_host_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
             if (!$resTest->numRows()) {
