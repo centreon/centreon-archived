@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
  
 echo _("About");
@@ -160,4 +157,3 @@ echo _("Visualisation");
 echo _("Widgets");
 echo _("Wizard");
 echo _("WizardAjax");
-?>

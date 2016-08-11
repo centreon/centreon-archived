@@ -45,7 +45,7 @@ $requiredLib = explode("\n", file_get_contents('../var/phplib'));
 /**
  * PHP Libraries 
  */
-$contents = "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>";
+$contents = "<table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>";
 $allClear = 1;
 $contents .= "<tr>
                 <th>"._('Module name')."</th>
@@ -62,9 +62,9 @@ foreach ($requiredLib as $line) {
     $contents .= "<td>".$lib.".so</td>";
     $contents .= "<td>";    
     if (extension_loaded($lib)) {
-        $libMessage = '<span style="color:#10CA31; font-weight:bold;">'._('Loaded').'</span>';
+        $libMessage = '<span style="color:#88b917; font-weight:bold;">'._('Loaded').'</span>';
     } else {
-        $libMessage = '<span style="color:#f91e05; font-weight:bold;">'._('Not loaded').'</span>';
+        $libMessage = '<span style="color:#e00b3d; font-weight:bold;">'._('Not loaded').'</span>';
         $allClear = 0;
     }
     $contents .= $libMessage;

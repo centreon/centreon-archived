@@ -13,13 +13,10 @@
 		<td><h4>{$Author}</h4></td>
 	</tr>
     <tr>
-      <td><input type='text' name='search_host' value="{$search_host}" /></td>
-      <td><input type='text' name='search_service' value="{$search_service}" /></td>
-      <td><input type='text' name='search_output' value="{$search_output}" /></td>
-      <td><input type='text' name='search_author' value="{$search_author}" /></td>
-    </tr>
-    <tr class="divider">
-      <td colspan="4"><hr></td>
+        <td><input type='text' name='search_host' value="{$search_host}" /></td>
+        <td><input type='text' name='search_service' value="{$search_service}" /></td>
+        <td><input type='text' name='search_output' value="{$search_output}" /></td>
+        <td><input type='text' name='search_author' value="{$search_author}" /></td>
     </tr>
 	<tr>
         <td class="checkbox"><input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /> <h4>{$ViewAll}</h4></td>
@@ -37,7 +34,6 @@
                 <option value="cs">{$cancel}</option>
                 <option value="ds">{$delete}</option>
             </select>
-            {if $msgs}<a class="btc bt_success" href="{$msgs.addL}">{$msgs.addT}</a>{/if}
             {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
         </td>
         {php}
@@ -89,7 +85,7 @@
                 {assign var='nbcol' value=10}
             {/if}
             <td colspan={$nbcol} style='text-align:center;'>
-                <b>{t}No downtime scheduled for services{/t}</b>
+                <b>{t}No downtime scheduled{/t}</b>
             </td>
         </tr>
     {/if}
@@ -102,7 +98,6 @@
                 <option value="cs">{$cancel}</option>
                 <option value="ds">{$delete}</option>
             </select>
-            {if $msgs}<a class="btc bt_success" href="{$msgs.addL}">{$msgs.addT}</a>{/if}
             {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
         </td>
 	{php}

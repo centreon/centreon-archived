@@ -85,10 +85,10 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_desc", _("Service Templates names"));
+$tpl->assign("headerMenu_desc", _("Name"));
 $tpl->assign("headerMenu_alias", _("Alias"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
-$tpl->assign("headerMenu_parent", _("Parent Templates"));
+$tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 

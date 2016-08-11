@@ -64,53 +64,48 @@ require_once $path."common-Func.php";
 require_once "./include/monitoring/external_cmd/functions.php";
 
 switch ($o) {
-    case "as" :
-        require_once($path . "AddSvcDowntime.php");
-        break;
-    case "ds" :
+    case "ds":
         if (isset($_POST["select"])) {
             foreach ($_POST["select"] as $key => $value) {
                 $res = explode(';', urldecode($key));
                 $ishost = isDownTimeHost($res[2]);
-                if($oreon->user->access->admin || 
+                if ($oreon->user->access->admin ||
                     ($ishost && $oreon->user->access->checkAction("host_schedule_downtime")) ||
                     (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
-                ){
+                ) {
                     $ecObj->deleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
                     deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
                 }
-
             }
         }
         
         require_once($path . "listDowntime.php");
         break;
-    case "cs" :
+    case "cs":
         if (isset($_POST["select"])) {
             foreach ($_POST["select"] as $key => $value) {
                 $res = explode(';', urldecode($key));
                 $ishost = isDownTimeHost($res[2]);
-                if($oreon->user->access->admin || 
+                if ($oreon->user->access->admin ||
                     ($ishost && $oreon->user->access->checkAction("host_schedule_downtime")) ||
                     (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
-                ){
+                ) {
                     $ecObj->deleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
                 }
-                
             }
         }
         require_once($path . "listDowntime.php");
         break;
-    case "vs" :
+    case "vs":
         require_once($path . "listDowntime.php");
         break;
-    case "ah" :
-        require_once($path."AddHostDowntime.php");
+    case "a":
+        require_once($path."AddDowntime.php");
         break;
-    case "vh" :
+    case "vh":
         require_once($path."listDowntime.php");
         break;
-    default :
+    default:
         require_once($path."listDowntime.php");
         break;
 }

@@ -83,7 +83,6 @@ if ($id != "NULL") {
  * Stats Display for selected host
  */
 if (isset($id) && $id != "NULL") {
-
     /*
      * Getting periods values
      */
@@ -166,6 +165,5 @@ if (isset($id) && $id != "NULL") {
     include("./include/reporting/dashboard/ajaxReporting_js.php");
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
-
 }
 $tpl->display("template/viewHostLog.ihtml");

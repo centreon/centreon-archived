@@ -72,7 +72,7 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_name", _("Meta Service Name"));
+$tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_type", _("Calculation Type"));
 $tpl->assign("headerMenu_levelw", _("Warning Level"));
 $tpl->assign("headerMenu_levelc", _("Critical Level"));

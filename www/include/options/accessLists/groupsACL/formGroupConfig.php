@@ -35,7 +35,7 @@
 
 if (!isset($centreon)) {
     exit();
- }
+}
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
@@ -55,43 +55,47 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
      * Set Contact Childs
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."' AND contact_contact_id NOT IN (SELECT contact_id FROM contact WHERE contact_admin = '1')");
-    for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++)
+    for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contacts"][$i] = $contacts["contact_contact_id"];
+    }
     $DBRESULT->free();
     
     /*
      * Set ContactGroup Childs
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'");
-    for ($i = 0; $contactgroups = $DBRESULT->fetchRow(); $i++)
+    for ($i = 0; $contactgroups = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
+    }
     $DBRESULT->free();
     
     /*
      * Set Menu link List
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'");
-    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++)
+    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["menuAccess"][$i] = $data["acl_topology_id"];
+    }
     $DBRESULT->free();
     
     /*
      * Set resources List
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
-    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++)
+    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["resourceAccess"][$i] = $data["acl_res_id"];
+    }
     $DBRESULT->free();
     
     /*
      * Set Action List
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT acl_action_id FROM acl_group_actions_relations WHERE acl_group_id = '".$acl_group_id."'");
-    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++)
+    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["actionAccess"][$i] = $data["acl_action_id"];
+    }
     $DBRESULT->free();
-
- }
+}
 
 /*
  * Database retrieve information for differents elements list we need on the page
@@ -112,42 +116,46 @@ $contactGroups = $cg->getListContactgroup(true);
 # topology comes from DB -> Store in $contacts Array
 $menus = array();
 $DBRESULT = $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
-while ($topo = $DBRESULT->fetchRow())
+while ($topo = $DBRESULT->fetchRow()) {
     $menus[$topo["acl_topo_id"]] = $topo["acl_topo_name"];
+}
 unset($topo);
 $DBRESULT->free();
 
 # Action comes from DB -> Store in $contacts Array
 $action = array();
 $DBRESULT = $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions ORDER BY acl_action_name");
-while ($data = $DBRESULT->fetchRow())
+while ($data = $DBRESULT->fetchRow()) {
     $action[$data["acl_action_id"]] = $data["acl_action_name"];
+}
 unset($data);
 $DBRESULT->free();
 
 # Resources comes from DB -> Store in $contacts Array
 $resources = array();
 $DBRESULT = $pearDB->query("SELECT acl_res_id, acl_res_name FROM acl_resources ORDER BY acl_res_name");
-while ($res = $DBRESULT->fetchRow())
+while ($res = $DBRESULT->fetchRow()) {
     $resources[$res["acl_res_id"]] = $res["acl_res_name"];
+}
 unset($res);
 $DBRESULT->free();
 
 ##########################################################
 # Var information to format the element
 #
-$attrsText 		= array("size"=>"30");
+$attrsText      = array("size"=>"30");
 $attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
-$attrsTextarea 	= array("rows"=>"6", "cols"=>"150");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"6", "cols"=>"150");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Group"));
- else if ($o == "c")
-     $form->addElement('header', 'title', _("Modify a Group"));
- else if ($o == "w")
-     $form->addElement('header', 'title', _("View a Group"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title', _("Modify a Group"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title', _("View a Group"));
+}
 
 /*
  * Contact basic information
@@ -216,7 +224,8 @@ $redirect->setValue($o);
 /*
  * Form Rules
  */
-function myReplace()	{
+function myReplace()
+{
     global $form;
 
     $ret = $form->getSubmitValues();
@@ -260,31 +269,31 @@ if ($o == "w") {
     $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$group_id."'"));
     $form->setDefaults($group);
     $form->freeze();
- } else if ($o == "c") {
+} elseif ($o == "c") {
     /*
-     * Modify a Contact Group information
-     */
+    * Modify a Contact Group information
+    */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($group);
- } else if ($o == "a") {
+} elseif ($o == "a") {
     /*
-     * Add a Contact Group information
-     */
+    * Add a Contact Group information
+    */
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
- }
+}
 $valid = false;
-if ($form->validate())	{
+if ($form->validate()) {
     $groupObj = $form->getElement('acl_group_id');
     if ($form->getSubmitValue("submitA")) {
         $groupObj->setValue(insertGroupInDB());
-    } else if ($form->getSubmitValue("submitC")) {
+    } elseif ($form->getSubmitValue("submitC")) {
         updateGroupInDB($groupObj->getValue());
     }
-    $o = NULL;
+    $o = null;
     $valid = true;
- }
+}
 
 $action = $form->getSubmitValue("action");
 if ($valid) {

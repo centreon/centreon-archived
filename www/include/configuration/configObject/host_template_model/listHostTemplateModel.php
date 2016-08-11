@@ -82,10 +82,10 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_name", _("Host Templates name"));
-$tpl->assign("headerMenu_desc", _("Description"));
+$tpl->assign("headerMenu_name", _("Name"));
+$tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_svChilds", _("Linked Services Templates"));
-$tpl->assign("headerMenu_parent", _("Parent Templates"));
+$tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
@@ -189,17 +189,17 @@ function setO(_i) {
 }
 </SCRIPT>
 <?php
-foreach (array('o1', 'o2') => $options) {
+foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
-    'onchange'=>"javascript: " .
-            " var bChecked = isChecked(); ".
-            " if (this.form.elements['$option'].selectedIndex != 0 && !bChecked) {".
-            " alert('"._("Please select one or more items")."'); return false;} " .
+        'onchange' => "javascript: " .
+            "var bChecked = isChecked();".
+            "if (this.form.elements['$option'].selectedIndex != 0 && !bChecked) {".
+            "   alert('"._("Please select one or more items")."'); return false;} " .
             "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
             "   setO(this.form.elements['$option'].value); submit();} " .
             "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
             "   setO(this.form.elements['$option'].value); submit();} " .
-            "else if (this.form.elements['$option'].selectedIndex == 3 || this.form.elements['$option'].selectedIndex == 4 ||this.form.elements['$option'].selectedIndex == 5){" .
+            "else if (this.form.elements['$option'].selectedIndex == 3 || this.form.elements['$option'].selectedIndex == 4 || this.form.elements['$option'].selectedIndex == 5){" .
             "   setO(this.form.elements['$option'].value); submit();} " .
             "this.form.elements['o1'].selectedIndex = 0");
     $form->addElement(

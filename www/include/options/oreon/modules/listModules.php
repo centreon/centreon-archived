@@ -43,7 +43,8 @@ if (!isset($centreon)) {
  * @param string $file The file name
  * @return array
  */
-function parse_zend_license_file($file) {
+function parse_zend_license_file($file)
+{
     $lines = preg_split('/\n/', file_get_contents($file));
     $infos = array();
     foreach ($lines as $line) {
@@ -58,7 +59,7 @@ function parse_zend_license_file($file) {
  * Test Modules Existence for deletion
  */
 if ($id && $o == "d" && testModuleExistence($id)) {
-    $moduleinfo = getModuleInfoInDB(NULL, $id);
+    $moduleinfo = getModuleInfoInDB(null, $id);
     deleteModuleInDB($id);
 
     if ($moduleinfo["is_removeable"]) {
@@ -87,7 +88,7 @@ if ($id && $o == "d" && testModuleExistence($id)) {
             unset($oreon->modules[$moduleinfo["name"]]);
         }
     }
- }
+}
 
 /*
  * Smarty template Init
@@ -112,7 +113,7 @@ $elemArr = array();
 $i = 0;
 while (false !== ($filename = readdir($handle))) {
     if (is_dir(_CENTREON_PATH_ . "www/modules/" . $filename) && $filename != "." && $filename != "..") {
-        $moduleinfo = getModuleInfoInDB($filename, NULL);
+        $moduleinfo = getModuleInfoInDB($filename, null);
         
         /*
          * Package already installed
@@ -139,7 +140,7 @@ while (false !== ($filename = readdir($handle))) {
                                     "RowMenu_upgrade" => 0,
                                     "RowMenu_isinstalled" => _("Yes"),
                                     "RowMenu_link" => "?p=".$p."&o=w&id=".$moduleinfo["id"],
-                                    "RowMenu_link_install" => NULL,
+                                    "RowMenu_link_install" => null,
                                     "RowMenu_link_delete" => "?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
                                     "RowMenu_link_upgrade" => "?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=u");
 
@@ -157,15 +158,15 @@ while (false !== ($filename = readdir($handle))) {
             if ($upgradeAvailable) {
                 if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
                     $handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
-                    while (false !== ($filename2 = readdir($handle2)))  {
-                        if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]) && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php")) {        
+                    while (false !== ($filename2 = readdir($handle2))) {
+                        if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]) && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php")) {
                             @include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
-                            if (isset($upgrade_conf[$moduleinfo["name"]]["release_from"]) && $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])  {
+                            if (isset($upgrade_conf[$moduleinfo["name"]]["release_from"]) && $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"]) {
                                 $elemArr[$i]["RowMenu_upgrade"] = 1;
                             }
                         }
                     }
-                    closedir($handle2);                    
+                    closedir($handle2);
                 }
             }
         } else {
@@ -174,12 +175,11 @@ while (false !== ($filename = readdir($handle))) {
              */
             if (is_file(_CENTREON_PATH_ . "www/modules/".$filename."/conf.php")) {
                 include_once(_CENTREON_PATH_ . "www/modules/".$filename."/conf.php");
-            } else if (is_file(_CENTREON_PATH_ . "www/modules/".$filename."/.api/conf.php")) {
+            } elseif (is_file(_CENTREON_PATH_ . "www/modules/".$filename."/.api/conf.php")) {
                 include_once(_CENTREON_PATH_ . "www/modules/".$filename."/.api/conf.php");
             }
 
             if (isset($module_conf[$filename]["name"])) {
-
                 $picturePath = "./img/icones/16x16/component_green.gif";
                 if (file_exists(_CENTREON_PATH_ . "www/modules/".$filename."/icone.gif")) {
                     $picturePath =  "./modules/".$filename."/icone.gif";
@@ -209,8 +209,8 @@ while (false !== ($filename = readdir($handle))) {
                                         "RowMenu_isinstalled" => _("No"),
                                         "RowMenu_link" => "?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
                                         "RowMenu_link_install" => "?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",
-                                        "RowMenu_link_delete" => NULL,
-                                        "RowMenu_link_upgrade" => NULL);
+                                        "RowMenu_link_delete" => null,
+                                        "RowMenu_link_upgrade" => null);
             } else {
                 /*
                  * Non valid package
@@ -221,7 +221,7 @@ while (false !== ($filename = readdir($handle))) {
                                         "RowMenu_release" => _("NA"),
                                         "RowMenu_author" => _("NA"),
                                         "RowMenu_isinstalled" => _("Impossible"),
-                                        "RowMenu_link" => NULL);
+                                        "RowMenu_link" => null);
             }
         }
         $style != "two" ? $style = "two" : $style = "one";

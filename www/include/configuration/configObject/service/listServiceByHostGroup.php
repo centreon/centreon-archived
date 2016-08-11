@@ -204,7 +204,7 @@ include("./include/common/checkPagination.php");
 $tpl->assign("headerMenu_name", _("HostGroup"));
 $tpl->assign("headerMenu_desc", _("Service"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
-$tpl->assign("headerMenu_parent", _("Parent Template"));
+$tpl->assign("headerMenu_parent", _("Template"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 

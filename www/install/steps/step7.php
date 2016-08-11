@@ -44,7 +44,7 @@ $title = _('Installation');
 
 $contents = _('Currently installing database... please do not interrupt this process.<br/><br/>');
 
-$contents .= '<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
+$contents .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr" align="center">
                 <thead>
                     <tr>
                         <th>'._('Step').'</th>
@@ -58,7 +58,6 @@ $contents .= '<table cellpadding="0" cellspacing="0" border="0" width="80%" clas
 $map = "{            
             'dbconf'     : './steps/process/installConfigurationDb.php',
             'dbstorage'  : './steps/process/installStorageDb.php',
-            'dbutils'    : './steps/process/installUtilsDb.php',
             'createuser' : './steps/process/createDbUser.php',
             'baseconf'   : './steps/process/insertBaseConf.php',
             'configfile' : './steps/process/configFileSetup.php',
@@ -101,7 +100,7 @@ $template->display('content.tpl');
        doProcess(true, map[key], new Array, function(response) {
             var data = jQuery.parseJSON(response);
             if (data['result'] == 0) {
-                jQuery('#'+data['id']).html('<span style="color:#10CA31;">OK</span>');
+                jQuery('#'+data['id']).html('<span style="color:#88b917;">OK</span>');
                 if (key == 'dbconf') {
                     nextStep('dbstorage');   
                 } else if (key == 'dbstorage') {

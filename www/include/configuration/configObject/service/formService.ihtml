@@ -7,7 +7,7 @@
         <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Notifications{/t}</a></li>
         <li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{t}Relations{/t}</a></li>
         <li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{t}Data Processing{/t}</a></li>     
-        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Service Extended Info{/t}</a></li>       
+        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Extended Info{/t}</a></li>       
     </ul>
     <div id="validFormTop">
     {if $o == "a" || $o == "c" || $o == "mc"}
@@ -127,7 +127,6 @@
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.service_notifications_enabled.label}</td><td class="FormRowValue">{$form.service_notifications_enabled.html}</td></tr>
         {if !$isServiceTemplate}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_only_contacts_from_host"> {$form.service_use_only_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_use_only_contacts_from_host.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="inherit_contacts_from_host"> {$form.service_inherit_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_inherit_contacts_from_host.html}</td></tr>
         {/if}
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
@@ -385,8 +384,6 @@ jQuery(function() {
     jQuery(".onemacro").each(function(idx,elem) {
         var from = jQuery(elem).find('input[name^=macroFrom]').val();
         if (from === "direct") {
-            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
-            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
         } else if (from === "fromTpl") {
             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
@@ -429,6 +426,19 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroValue']").css("background", "white");
         });
 
+        var $passwordCheckbox = jQuery(elem).find("input[id^='macroPassword_']");
+        {/literal}{if $form.frozen == true}{literal}
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.replaceWith('[x]');
+        } else {
+            $passwordCheckbox.replaceWith('[ ]');
+        }
+        {/literal}{else}{literal}
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.parent('span').empty();
+        }
+        {/literal}{/if}{literal}
+
     });
 
     jQuery(".macroclone").sortable({
@@ -444,12 +454,16 @@ jQuery(function() {
     function bindInhertance() {
         if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "1") {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").attr('disabled', 'disabled').removeAttr('checked');
+            jQuery("input[name='contact_additive_inheritance']").attr('disabled', 'disabled');
+            jQuery("input[name='cg_additive_inheritance']").attr('disabled', 'disabled');
             jQuery("#service_cs").attr('disabled', 'disabled');
             jQuery("#service_cs").select2("val", "");
             jQuery("#service_cgs").attr('disabled', 'disabled');
             jQuery("#service_cgs").select2("val", "");
         } else {
             jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").removeAttr('disabled');
+            jQuery("input[name='contact_additive_inheritance']").removeAttr('disabled');
+            jQuery("input[name='cg_additive_inheritance']").removeAttr('disabled');
             jQuery("#service_cs").removeAttr('disabled');
             jQuery("#service_cgs").removeAttr('disabled');
         }

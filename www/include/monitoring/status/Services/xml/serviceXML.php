@@ -262,19 +262,19 @@ if (preg_match("/^svc_unhandled/", $statusService)) {
     $request .= " AND s.acknowledged = 0";
     $request .= " AND s.scheduled_downtime_depth = 0";
     $request .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
-} else if ($statusService == "svcpb") {
+} elseif ($statusService == "svcpb") {
     $request .= " AND s.state != 0 AND s.state != 4 ";
 }
 
 if ($statusFilter == "ok") {
     $request .= " AND s.state = 0";
-} else if ($statusFilter == "warning") {
+} elseif ($statusFilter == "warning") {
     $request .= " AND s.state = 1";
-} else if ($statusFilter == "critical") {
+} elseif ($statusFilter == "critical") {
     $request .= " AND s.state = 2";
-} else if ($statusFilter == "unknown") {
+} elseif ($statusFilter == "unknown") {
     $request .= " AND s.state = 3";
-} else if ($statusFilter == "pending") {
+} elseif ($statusFilter == "pending") {
     $request .= " AND s.state = 4";
 }
 
@@ -363,7 +363,7 @@ if (!PEAR::isError($DBRESULT)) {
 
         if ($data["last_state_change"] > 0 && time() > $data["last_state_change"]) {
             $duration = CentreonDuration::toString(time() - $data["last_state_change"]);
-        } else if ($data["last_state_change"] > 0) {
+        } elseif ($data["last_state_change"] > 0) {
             $duration = " - ";
         }
 
@@ -375,7 +375,7 @@ if (!PEAR::isError($DBRESULT)) {
         $class = null;
         if ($data["scheduled_downtime_depth"] > 0) {
             $class = "line_downtime";
-        } else if ($data["state"] == 2) {
+        } elseif ($data["state"] == 2) {
             $data["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
         } else {
             if ($data["acknowledged"] == 1) {

@@ -126,7 +126,7 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
     $form->addElement('header', 'information', _("General Information"));
     $form->addElement('header', 'linkManagement', _("Links Management"));
     $form->addElement('text', 'downtime_name', _("Name"), $attrsText);
-    $form->addElement('text', 'downtime_description', _("Description"), $attrsTextLong);
+    $form->addElement('text', 'downtime_description', _("Alias"), $attrsTextLong);
 
     $donwtime_activate[] = HTML_QuickForm::createElement('radio', 'downtime_activate', null, _("Yes"), '1');
     $donwtime_activate[] = HTML_QuickForm::createElement('radio', 'downtime_activate', null, _("No"), '0');

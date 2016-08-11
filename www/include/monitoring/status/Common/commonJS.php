@@ -51,10 +51,14 @@ var _search_type_host='<?php echo $search_type_host?>';
 var _search_type_service='<?php echo $search_type_service?>';
 <?php } ?>
 
-var _search = '<?php global $url ; echo ($search ? $search : (isset($centreon->historySearchService[$url]) ? $centreon->historySearchService[$url] : ""));?>';
-var _host_search = '<?php global $url ; echo (isset($search_host) && $search_host != "" ? $search_host : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
-var _sg_search = '<?php global $url ; echo (isset($search_sg) && $search_sg != "" ? $search_sg : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
-var _output_search = '<?php global $url ; echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
+var _search = '<?php global $url ;
+echo ($search ? $search : (isset($centreon->historySearchService[$url]) ? $centreon->historySearchService[$url] : ""));?>';
+var _host_search = '<?php global $url ;
+echo (isset($search_host) && $search_host != "" ? $search_host : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
+var _sg_search = '<?php global $url ;
+echo (isset($search_sg) && $search_sg != "" ? $search_sg : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
+var _output_search = '<?php global $url ;
+echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
 
 var _num='<?php echo $num?>';
 var _limit='<?php echo $limit?>';
@@ -81,8 +85,12 @@ var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
 var _instance = "-1";
-var _default_hg = "<?php if (isset($default_hg)) { echo htmlentities($default_hg, ENT_QUOTES, "UTF-8"); } ?>";
-var _default_sg = "<?php if (isset($default_sg)) { echo htmlentities($default_sg, ENT_QUOTES, "UTF-8"); } ?>";
+var _default_hg = "<?php if (isset($default_hg)) {
+    echo htmlentities($default_hg, ENT_QUOTES, "UTF-8");
+} ?>";
+var _default_sg = "<?php if (isset($default_sg)) {
+    echo htmlentities($default_sg, ENT_QUOTES, "UTF-8");
+} ?>";
 var _default_instance = "<?php echo $default_poller?>";
 var _nc = 0;
 var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
@@ -246,16 +254,16 @@ function construct_selecteList_ndo_instance(id){
      * Get instance listing
      */
     
-    if ($centreon->user->admin || !count($pollerArray)) {
-        $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
-    } else {
-        $instanceQuery = "SELECT instance_id, name 
+if ($centreon->user->admin || !count($pollerArray)) {
+    $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
+} else {
+    $instanceQuery = "SELECT instance_id, name 
                             FROM `instances` WHERE running = '1' 
                             AND name IN (". $centreon->user->access->getPollerString('NAME') .") 
                           ORDER BY name";
-    }
+}
     $DBRESULT = $pearDBO->query($instanceQuery);
-    while ($nagios_server = $DBRESULT->fetchRow()) {   ?>
+while ($nagios_server = $DBRESULT->fetchRow()) {   ?>
         var m = document.createElement('option');
         m.value= "<?php echo $nagios_server["instance_id"]; ?>";
         _select.appendChild(m);
@@ -264,7 +272,7 @@ function construct_selecteList_ndo_instance(id){
         _select.appendChild(m);
         select_index["<?php echo $nagios_server["instance_id"]; ?>"] = i;
         i++;
-<?php } ?>
+<?php     } ?>
         _select.selectedIndex = select_index[_default_instance];
         _select_instance.appendChild(_select);
     }
@@ -297,8 +305,8 @@ function construct_HostGroupSelectList(id) {
         $hgNdo = array();
         $hgBrk = array();
         $acldb = $pearDBO;
-        if (!$centreon->user->access->admin) {
-            $query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name
+if (!$centreon->user->access->admin) {
+    $query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name
                   FROM hostgroup hg, acl_resources_hg_relations arhr
                   WHERE hg.hg_id = arhr.hg_hg_id
                       AND arhr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
@@ -306,49 +314,48 @@ function construct_HostGroupSelectList(id) {
                       AND hg.hg_id in (SELECT hostgroup_hg_id
                                        FROM hostgroup_relation
                                        WHERE host_host_id IN (".$centreon->user->access->getHostsString("ID", $acldb)."))";
-            $DBRESULT = $pearDB->query($query);
-            while ($data = $DBRESULT->fetchRow()) {
-                $hgNdo[$data["name"]] = 1;
-                $hgBrk[$data["name"]] = 1;
-            }
-            $DBRESULT->free();
-            unset($data);
-        }
+    $DBRESULT = $pearDB->query($query);
+    while ($data = $DBRESULT->fetchRow()) {
+        $hgNdo[$data["name"]] = 1;
+        $hgBrk[$data["name"]] = 1;
+    }
+    $DBRESULT->free();
+    unset($data);
+}
 
         $DBRESULT = $pearDBO->query("SELECT DISTINCT hg.name, hg.hostgroup_id 
                                         FROM hostgroups hg, hosts_hostgroups hhg 
                                         WHERE hg.hostgroup_id = hhg.hostgroup_id 
                                         AND hg.name NOT LIKE 'meta\_%' 
                                      ORDER BY hg.name");
-        while ($hostgroups = $DBRESULT->fetchRow()) {
-            if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
-                if (!isset($tabHG)) {
-                    $tabHG = array();
-                }
-                if (!isset($tabHG[$hostgroups["name"]])) {
-                    $tabHG[$hostgroups["name"]] = "";
-                } else {
-                    $tabHG[$hostgroups["name"]] .= ",";
-                }
-                $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
-            }
-        
+while ($hostgroups = $DBRESULT->fetchRow()) {
+    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
+        if (!isset($tabHG)) {
+            $tabHG = array();
         }
+        if (!isset($tabHG[$hostgroups["name"]])) {
+            $tabHG[$hostgroups["name"]] = "";
+        } else {
+            $tabHG[$hostgroups["name"]] .= ",";
+        }
+        $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
+    }
+}
 
-        if (isset($tabHG)) {
-            foreach ($tabHG as $name => $id) {
-                ?>
-                var m = document.createElement('option');
-                    m.value= "<?php echo $id; ?>";
-                    _select.appendChild(m);
-                    var n = document.createTextNode("<?php echo $name; ?>   ");
-                    m.appendChild(n);
-                    _select.appendChild(m);
-                    select_index["<?php echo $id; ?>"] = i;
-                    i++;
+if (isset($tabHG)) {
+    foreach ($tabHG as $name => $id) {
+        ?>
+        var m = document.createElement('option');
+            m.value= "<?php echo $id; ?>";
+            _select.appendChild(m);
+            var n = document.createTextNode("<?php echo $name; ?>   ");
+            m.appendChild(n);
+            _select.appendChild(m);
+            select_index["<?php echo $id; ?>"] = i;
+            i++;
                 <?php
-            }
-        }
+    }
+}
 ?>
         if (typeof(_default_hg) != "undefined") {
             _select.selectedIndex = select_index[_default_hg];
@@ -384,8 +391,8 @@ function construct_ServiceGroupSelectList(id) {
         $sgNdo = array();
         $sgBrk = array();
         $acldb = $pearDBO;
-        if (!$centreon->user->access->admin) {
-            $query = "SELECT DISTINCT sg.sg_alias, sg.sg_name AS name
+if (!$centreon->user->access->admin) {
+    $query = "SELECT DISTINCT sg.sg_alias, sg.sg_name AS name
                   FROM servicegroup sg, acl_resources_sg_relations arsr
                   WHERE sg.sg_id = arsr.sg_id
                                   AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
@@ -393,45 +400,44 @@ function construct_ServiceGroupSelectList(id) {
                       AND sg.sg_id in (SELECT servicegroup_sg_id
                                    FROM servicegroup_relation
                                    WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
-            $DBRESULT = $pearDB->query($query);
-            while ($data = $DBRESULT->fetchRow()) {
-                $sgNdo[$data["name"]] = 1;
-                $sgBrk[$data["name"]] = 1;
-            }
-            $DBRESULT->free();
-            unset($data);
-        }
+    $DBRESULT = $pearDB->query($query);
+    while ($data = $DBRESULT->fetchRow()) {
+        $sgNdo[$data["name"]] = 1;
+        $sgBrk[$data["name"]] = 1;
+    }
+    $DBRESULT->free();
+    unset($data);
+}
 
         $DBRESULT = $pearDBO->query("SELECT DISTINCT sg.name, sg.servicegroup_id FROM servicegroups sg, services_servicegroups ssg WHERE sg.servicegroup_id = ssg.servicegroup_id AND sg.name NOT LIKE 'meta\_%' ORDER BY sg.name");
-        while ($servicegroups = $DBRESULT->fetchRow()) {
-            if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$servicegroups["name"]]))) {
-                if (!isset($tabSG)) {
-                    $tabSG = array();
-                }
-                if (!isset($tabSG[$servicegroups["name"]])) {
-                    $tabSG[$servicegroups["name"]] = "";
-                } else {
-                    $tabSG[$servicegroups["name"]] .= ",";
-                }
-                $tabSG[$servicegroups["name"]] .= $servicegroups["servicegroup_id"];
-            }
-        
+while ($servicegroups = $DBRESULT->fetchRow()) {
+    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$servicegroups["name"]]))) {
+        if (!isset($tabSG)) {
+            $tabSG = array();
         }
+        if (!isset($tabSG[$servicegroups["name"]])) {
+            $tabSG[$servicegroups["name"]] = "";
+        } else {
+            $tabSG[$servicegroups["name"]] .= ",";
+        }
+        $tabSG[$servicegroups["name"]] .= $servicegroups["servicegroup_id"];
+    }
+}
 
-        if (isset($tabSG)) {
-            foreach ($tabSG as $name => $id) {
-                ?>
-                var m = document.createElement('option');
-                    m.value= "<?php echo $id; ?>";
-                    _select.appendChild(m);
-                    var n = document.createTextNode("<?php echo $name; ?>   ");
-                    m.appendChild(n);
-                    _select.appendChild(m);
-                    select_index["<?php echo $id; ?>"] = i;
-                    i++;
+if (isset($tabSG)) {
+    foreach ($tabSG as $name => $id) {
+        ?>
+        var m = document.createElement('option');
+            m.value= "<?php echo $id; ?>";
+            _select.appendChild(m);
+            var n = document.createTextNode("<?php echo $name; ?>   ");
+            m.appendChild(n);
+            _select.appendChild(m);
+            select_index["<?php echo $id; ?>"] = i;
+            i++;
                 <?php
-            }
-        }
+    }
+}
 ?>
         if (typeof(_default_sg) != "undefined") {
             _select.selectedIndex = select_index[_default_sg];
@@ -613,7 +619,7 @@ function pagination_changed(){
     var _numprev = Number(_num) - 1;
 
 <?php
-    for ($i = 1; $i <= 2; $i++) { ?>
+for ($i = 1; $i <= 2; $i++) { ?>
     var _img_previous<?php echo $i; ?>  = mk_img("./img/icons/rewind.png", "previous");
     var _img_next<?php echo $i; ?>      = mk_img("./img/icons/fast_forward.png", "next");
     var _img_first<?php echo $i; ?>     = mk_img("./img/icons/first_rewind.png", "first");
@@ -650,7 +656,7 @@ function pagination_changed(){
         _pagination<?php echo $i; ?>.appendChild(_linkaction_first<?php echo $i; ?>);
         _pagination<?php echo $i; ?>.appendChild(_linkaction_left<?php echo $i; ?>);
     }
-<?php }
+<?php     }
 
     /*
      * Page Number
@@ -871,7 +877,7 @@ var func_displayIMG = function(event) {
         .data('graphType', 'service')
         .data('graphId', jQuery(self).attr('id').replace('-', '_'))
         .appendTo(jQuery('.img_volante'));
-    jQuery(chartElem).centreonGraph({height: 140, interval: '24h'});
+    jQuery(chartElem).centreonGraph({height: 200, interval: '24h'});
 };
 
 var func_hideIMG = function(event) {

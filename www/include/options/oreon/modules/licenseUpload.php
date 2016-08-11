@@ -36,7 +36,8 @@
  */
 
 /* License validator */
-function parse_zend_license_file($file) {
+function parse_zend_license_file($file)
+{
     $lines = preg_split('/\n/', file_get_contents($file));
     $infos = array();
     foreach ($lines as $line) {
@@ -70,14 +71,14 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl') {
             $licenseExpired = true;
 
             if ($filename == "centreon-bi-server") {
-                if ($zend_info['Product-Name'] == 'merethis_'.$filename 
+                if ($zend_info['Product-Name'] == 'merethis_'.$filename
                     || $zend_info['Product-Name'] == 'merethis_'.$filename."-2") {
                     $licenseMatchedProduct = true;
                 }
             } else {
                 if ($zend_info['Product-Name'] == 'merethis_'.$filename) {
                     $licenseMatchedProduct = true;
-                }                
+                }
             }
 
             // Check ZendId
@@ -90,7 +91,7 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl') {
                 }
             }
             
-            if ((isset($zend_info['Zendid']) && ($zend_info['Zendid'] == 'Not-Locked')) || 
+            if ((isset($zend_info['Zendid']) && ($zend_info['Zendid'] == 'Not-Locked')) ||
                 (isset($zend_info['Hardware-Locked']) && ($zend_info['Hardware-Locked'] == 'No'))) {
                 $licenseMatchedZendID = true;
             }
@@ -104,7 +105,7 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl') {
                 $licenseHasAdmin = false;
             }
 
-            if ($licenseMatchedProduct && $licenseMatchedZendID && $licenseHasAdmin && ($licenseExpired == FALSE)) {
+            if ($licenseMatchedProduct && $licenseMatchedZendID && $licenseHasAdmin && ($licenseExpired == false)) {
                 if (file_exists(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
                     unlink(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 }

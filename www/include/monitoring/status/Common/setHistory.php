@@ -33,27 +33,37 @@
  *
  */
 
-session_start();
-require_once '../functions.php';
-define('PROCESS_ID', 'dbutils');
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-if (!isset($_SESSION['UTILS_DB'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find utils database. Session probably expired.'));
-}
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['UTILS_DB']) && !is_file('../../tmp/createNDODB')) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-mysql_select_db($_SESSION['UTILS_DB']);
-mysql_query('BEGIN');
-$result = splitQueries('../../createNDODB.sql', ';', null, '../../tmp/createNDODB');
-if ("0" != $result) {
-    mysql_query('ROLLBACK');
-    exitProcess(PROCESS_ID, 1, $result);
-}
-mysql_query('COMMIT');
+$path = _CENTREON_PATH_."/www";
+require_once("$path/class/centreon.class.php");
+require_once("$path/class/centreonSession.class.php");
 
-exitProcess(PROCESS_ID, 0, "OK");
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+    print "Bad Session ID";
+    exit();
+} else {
+
+	$centreon = $_SESSION['centreon'];
+
+	if (isset($_POST["limit"]) && isset($_POST["url"])) {
+		$centreon->historyLimit[$_POST["url"]] = $_POST["limit"];
+	}
+
+	if (isset($_POST["page"]) && isset($_POST["url"])) {
+		$centreon->historyPage[$_POST["url"]] = $_POST["page"];
+	}
+
+	if (isset($_POST["search"]) && isset($_POST["url"])) {
+		$centreon->historySearchService[$_POST["url"]] = addslashes($_POST["search"]);
+	}
+
+	if (isset($_POST["search_host"]) && isset($_POST["url"])) {
+		$centreon->historySearch[$_POST["url"]] = addslashes($_POST["search_host"]);
+	}
+
+	if (isset($_POST["search_output"]) && isset($_POST["url"])) {
+		$centreon->historySearchOutput[$_POST["url"]] = addslashes($_POST["search_output"]);
+	}
+}

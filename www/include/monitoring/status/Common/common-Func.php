@@ -33,18 +33,19 @@
  *
  */
 
-function getMyIndexGraph4Service($host_id = NULL, $service_id = NULL, $pearDBO)	{
-	if ((!isset($service_id) || !$service_id ) || (!isset($host_id) || !$host_id)) {
-		return NULL;
-	}
+function getMyIndexGraph4Service($host_id = null, $service_id = null, $pearDBO)
+{
+    if ((!isset($service_id) || !$service_id ) || (!isset($host_id) || !$host_id)) {
+        return null;
+    }
 
-	$DBRESULT = $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_id = '".$host_id."' " .
-								"AND m.hidden = '0' " .
-								"AND i.service_id = '".$service_id."' " .
-								"AND i.id = m.index_id");
-	if ($DBRESULT->numRows()) {
-		$row = $DBRESULT->fetchRow();
-		return $row["id"];
-	}
-	return 0;
+    $DBRESULT = $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_id = '".$host_id."' " .
+                                "AND m.hidden = '0' " .
+                                "AND i.service_id = '".$service_id."' " .
+                                "AND i.id = m.index_id");
+    if ($DBRESULT->numRows()) {
+        $row = $DBRESULT->fetchRow();
+        return $row["id"];
+    }
+    return 0;
 }

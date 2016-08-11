@@ -61,29 +61,29 @@ require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 include_once _CENTREON_PATH_ . "www/include/monitoring/external_cmd/functionsPopup.php";
 
 if (isset($_GET["select"]) && isset($sid)) {
-	$is_admin = isUserAdmin($sid);
-	foreach ($_GET["select"] as $key => $value) {
-		if (isset($_GET["cmd"])) {
-			switch ($_GET["cmd"]) {
-				case 70:
-					massiveServiceAck($key);
-					break;
-				case 72:
-					massiveHostAck($key);
-					break;
-				case 74:
-					massiveServiceDowntime($key);
-					break;
-				case 75:
-					massiveHostDowntime($key);
-					break;
-			}
-		}
-	}
+    $is_admin = isUserAdmin($sid);
+    foreach ($_GET["select"] as $key => $value) {
+        if (isset($_GET["cmd"])) {
+            switch ($_GET["cmd"]) {
+                case 70:
+                    massiveServiceAck($key);
+                    break;
+                case 72:
+                    massiveHostAck($key);
+                    break;
+                case 74:
+                    massiveServiceDowntime($key);
+                    break;
+                case 75:
+                    massiveHostDowntime($key);
+                    break;
+            }
+        }
+    }
 }

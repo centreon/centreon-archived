@@ -50,7 +50,7 @@ function testExistence($name = null)
     $lca = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] == $id) {
         return true;
-    } else if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] != $id) {
+    } elseif ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] != $id) {
         return false;
     } else {
         return true;
@@ -62,7 +62,7 @@ function testExistence($name = null)
  * Enable ACL Entry in DB
  * @param $acl_id
  */
-function enableLCAInDB ($acl_id = null)
+function enableLCAInDB($acl_id = null)
 {
     global $pearDB;
 
@@ -78,7 +78,7 @@ function enableLCAInDB ($acl_id = null)
  * Disable ACL Entry in DB
  * @param $acl_id
  */
-function disableLCAInDB ($acl_id = null)
+function disableLCAInDB($acl_id = null)
 {
     global $pearDB;
 
@@ -94,11 +94,11 @@ function disableLCAInDB ($acl_id = null)
  * Delete ACL entry in DB
  * @param $acls
  */
-function deleteLCAInDB ($acls = array())
+function deleteLCAInDB($acls = array())
 {
     global $pearDB;
 
-    foreach ($acls as $key => $value){
+    foreach ($acls as $key => $value) {
         $DBRESULT = $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')");
         $DBRESULT = $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '".$key."'");
     }
@@ -110,7 +110,7 @@ function deleteLCAInDB ($acls = array())
  * @param $lcas
  * @param $nbrDup
  */
-function multipleLCAInDB ($lcas = array(), $nbrDup = array())
+function multipleLCAInDB($lcas = array(), $nbrDup = array())
 {
     global $pearDB;
 
@@ -121,9 +121,9 @@ function multipleLCAInDB ($lcas = array(), $nbrDup = array())
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
-            foreach ($row as $key2=>$value2) {
+            foreach ($row as $key2 => $value2) {
                 $key2 == "acl_res_name" ? ($acl_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
             }
 
             if (testExistence($acl_name)) {
@@ -137,7 +137,6 @@ function multipleLCAInDB ($lcas = array(), $nbrDup = array())
                 if (isset($maxId["MAX(acl_res_id)"])) {
                     duplicateGroups($key, $maxId["MAX(acl_res_id)"], $pearDB);
                 }
-
             }
         }
     }
@@ -202,7 +201,7 @@ function duplicateContactGroups($idTD, $acl_id, $pearDB)
  * Update ACL entry
  * @param $acl_id
  */
-function updateLCAInDB ($acl_id = null)
+function updateLCAInDB($acl_id = null)
 {
     if (!$acl_id) {
         return;
@@ -339,7 +338,7 @@ function updateHosts($acl_id = null)
     $ret = $form->getSubmitValue("acl_hosts");
     if (isset($ret)) {
         foreach ($ret as $key => $value) {
-            if (isset($value))  {
+            if (isset($value)) {
                 $DBRESULT = $pearDB->query("INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
             }
         }
@@ -388,7 +387,7 @@ function updateHostexcludes($acl_id = null)
     $ret = array();
     $ret = $form->getSubmitValue("acl_hostexclude");
     if (isset($ret)) {
-        foreach ($ret as $key => $value){
+        foreach ($ret as $key => $value) {
             if (isset($value)) {
                 $DBRESULT = $pearDB->query("INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
             }
@@ -413,8 +412,8 @@ function updateHostGroups($acl_id = null)
     $ret = array();
     $ret = $form->getSubmitValue("acl_hostgroup");
     if (isset($ret)) {
-        foreach ($ret as $key => $value){
-            if (isset($value))  {
+        foreach ($ret as $key => $value) {
+            if (isset($value)) {
                 $DBRESULT = $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('".$acl_id."', '".$value."')");
             }
         }
@@ -438,8 +437,8 @@ function updateServiceCategories($acl_id = null)
     $ret = array();
     $ret = $form->getSubmitValue("acl_sc");
     if (isset($ret)) {
-        foreach ($ret as $key => $value){
-            if (isset($value))  {
+        foreach ($ret as $key => $value) {
+            if (isset($value)) {
                 $DBRESULT = $pearDB->query("INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES ('".$acl_id."', '".$value."')");
             }
         }
@@ -463,8 +462,8 @@ function updateHostCategories($acl_id = null)
     $ret = array();
     $ret = $form->getSubmitValue("acl_hc");
     if (isset($ret)) {
-        foreach ($ret as $key => $value){
-            if (isset($value))  {
+        foreach ($ret as $key => $value) {
+            if (isset($value)) {
                 $DBRESULT = $pearDB->query("INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id) VALUES ('".$acl_id."', '".$value."')");
             }
         }
@@ -488,8 +487,8 @@ function updateServiceGroups($acl_id = null)
     $ret = array();
     $ret = $form->getSubmitValue("acl_sg");
     if (isset($ret)) {
-        foreach ($ret as $key => $value){
-            if (isset($value))  {
+        foreach ($ret as $key => $value) {
+            if (isset($value)) {
                 $DBRESULT = $pearDB->query("INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) VALUES ('".$acl_id."', '".$value."')");
             }
         }
@@ -513,8 +512,8 @@ function updateMetaServices($acl_id = null)
     $ret = array();
     $ret = $form->getSubmitValue("acl_meta");
     if (isset($ret)) {
-        foreach ($ret as $key => $value){
-            if (isset($value))  {
+        foreach ($ret as $key => $value) {
+            if (isset($value)) {
                 $DBRESULT = $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES ('".$acl_id."', '".$value."')");
             }
         }

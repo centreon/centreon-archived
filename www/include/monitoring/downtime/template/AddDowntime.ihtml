@@ -5,34 +5,58 @@ function toggleParams(type)
 	if (type == 'host') {
 		Effect.Fade('hostgroup_input', { duration : 0 });
 		Effect.Fade('poller_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
 		Effect.Appear('host_input', { duration : 0 });
 	} else if (type == 'hostgroup') {
-		Effect.Appear('hostgroup_input', { duration : 0 });
 		Effect.Fade('poller_input', { duration : 0 });
 		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
+		Effect.Appear('hostgroup_input', { duration : 0 });
+	} else if (type == 'service') {
+		Effect.Fade('hostgroup_input', { duration : 0 });
+		Effect.Fade('poller_input', { duration : 0 });
+		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
+		Effect.Appear('service_input', { duration : 0 });
+	} else if (type == 'servicegroup') {
+		Effect.Fade('hostgroup_input', { duration : 0 });
+		Effect.Fade('poller_input', { duration : 0 });
+		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Appear('servicegroup_input', { duration : 0 });
 	} else {
 		Effect.Fade('hostgroup_input', { duration : 0 });
-		Effect.Appear('poller_input', { duration : 0 });
 		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
+		Effect.Appear('poller_input', { duration : 0 });
 	}
 }
-Event.observe(window, "load", function() { toggleParams('host'); });
+Event.observe(window, "load", function() {
+	toggleParams('{/literal}{$focus}{literal}'); 
+});
+
 </script>
 {/literal}
 <div align=center>
 	<form {$form.attributes}>
 		<table class="ListTableMedium">
 			<tr class="ListHeader">
-				<td class="FormHeader" colspan="2">{$form.header.title}</td>
+				<td class="FormHeader" colspan="2">{t}Add downtime{/t}</td>
 			<tr>
 			<tr class="list_one">
-				<td  class="ListColLeft">{$form.host_or_hg.label}</td>
-				<td  class="ListColLeft">{$form.host_or_hg.html}</td>
+				<td  class="ListColLeft">{$form.downtimeType.label}</td>
+				<td  class="ListColLeft">{$form.downtimeType.html}</td>
 			</tr>
+			<!--
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.host_or_centreon_time.label}</td>
 				<td  class="ListColLeft">{$form.host_or_centreon_time.html}</td>
 			</tr>
+			-->
+			<!-- Object choice -->
 			<tr class="list_two" id="host_input">
 				<td  class="ListColLeft">{$form.host_id.label}</td>
 				<td  class="ListColLeft">{$form.host_id.html}</td>
@@ -41,10 +65,19 @@ Event.observe(window, "load", function() { toggleParams('host'); });
 				<td  class="ListColLeft">{$form.hostgroup_id.label}</td>
 				<td  class="ListColLeft">{$form.hostgroup_id.html}</td>
 			</tr>
+			<tr class="list_two" id="service_input">
+				<td  class="ListColLeft">{$form.service_id.label}</td>
+				<td  class="ListColLeft">{$form.service_id.html}</td>
+			</tr>
+			<tr class="list_two" id="servicegroup_input">
+				<td  class="ListColLeft">{$form.servicegroup_id.label}</td>
+				<td  class="ListColLeft">{$form.servicegroup_id.html}</td>
+			</tr>
 			<tr class="list_two" id="poller_input">
 				<td  class="ListColLeft">{$form.poller_id.label}</td>
 				<td  class="ListColLeft">{$form.poller_id.html}</td>
 			</tr>
+			<!-- End Object Choice -->
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.persistant.label}</td>
 				<td  class="ListColLeft">{$form.persistant.html}</td>

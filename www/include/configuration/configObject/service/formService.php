@@ -452,7 +452,7 @@ $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=service&field=service_template_model_stm_id&id=' . $service_id)
 );
-$serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
+$serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Template"), array(), $attrServicetemplate1);
 $serviceTplSelect->addJsCallback('change', 'changeServiceTemplate(this.value)');
 
 $form->addElement('static', 'tplText', _("Using a Template exempts you to fill required fields"));
@@ -605,17 +605,6 @@ $serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contac
 $form->addGroup($serviceIOHC, 'service_use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"), '&nbsp;');
 if ($o != "mc") {
     $form->setDefaults(array('service_use_only_contacts_from_host' => '0'));
-}
-
-##
-## Host's contact inheritance
-##
-$form->addElement('header', 'inherit_contacts_from_host', _("Inherit contacts from host"));
-$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("Yes"), '1');
-$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("No"), '0');
-$form->addGroup($serviceIHC, 'service_inherit_contacts_from_host', _("Inherit contacts from host"), '&nbsp;');
-if ($o != "mc") {
-    $form->setDefaults(array('service_inherit_contacts_from_host' => '1'));
 }
 
 /*

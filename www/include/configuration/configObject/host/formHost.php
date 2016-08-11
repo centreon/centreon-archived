@@ -500,7 +500,7 @@ if ($o == "a") {
 $form->addElement('header', 'information', _("General Information"));
 # No possibility to change name and alias, because there's no interest
 if ($o != "mc") {
-    $form->addElement('text', 'host_name', _("Host Name"), $attrsText);
+    $form->addElement('text', 'host_name', _("Name"), $attrsText);
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
     $form->addElement('text', 'host_address', _("IP Address / DNS"), array_merge(array('id' => 'host_address'), $attrsText));
     $form->addElement('button', 'host_resolve', _("Resolve"), array('onClick' => 'resolveHostNameToAddress(document.getElementById(\'host_address\').value, function(err, ip){if (!err) document.getElementById(\'host_address\').value = ip});', 'class' => 'btc bt_info'));
@@ -539,6 +539,7 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_tplp' => '0'));
 }
 
+$form->addElement('text', 'host_parallel_template', _('Templates'));
 $form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance") . "<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70, FIX, [this, 0, 10])\" onmouseout=\"UnTip()\">" . _("Here is a self-explanatory image.") . "</a>");
 $form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 

@@ -87,7 +87,7 @@ $tpl->assign('mode_access', $lvl_access);
  * start header menu
  */
 $tpl->assign("headerMenu_name", _("Name"));
-$tpl->assign("headerMenu_desc", _("Description"));
+$tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_hc_type", _("Type"));
 $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
