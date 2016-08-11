@@ -43,8 +43,10 @@ require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.p
 /**
  * Include Classes / Methods
  */
-include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "www/include/eventLogs/common-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 
 /** *****************************************
  * Connect MySQL DB
@@ -60,6 +62,18 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
+
+$centreon = $_SESSION["centreon"];
+
+/**
+ * Language informations init
+ */
+$locale = $centreon->user->get_lang();
+putenv("LANG=$locale");
+setlocale(LC_ALL, $locale);
+bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
+bind_textdomain_codeset("messages", "UTF-8");
+textdomain("messages");
 
 /**
  * save of the XML flow in $flow
