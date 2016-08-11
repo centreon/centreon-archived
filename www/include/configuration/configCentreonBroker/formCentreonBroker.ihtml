@@ -64,7 +64,7 @@
 			{foreach from=$tab.forms item=formBlock name=formForeach}
 				{assign var="posAbs" value=$smarty.foreach.formForeach.index}
 				{assign var="posBlock" value=$posAbs+1}
-			<tbody class="collapse-wrapper" id="{$tab.id}_{$posBlock}">
+			<tbody id="{$tab.id}_{$posBlock}">
 				{include file='blockConfig.ihtml' tagBlock=$tab.id posBlock=$posBlock formBlock=$formBlock helps=$tab.helps[$posAbs]}
 			</tbody>
 			{/foreach}
@@ -87,15 +87,11 @@ span.v_required_star {
    padding-left: 5px; 
    color: red;
 }
-.elem-toCollapse {
-     display: none;
-  }
 </style>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
 <script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler-min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js"></script>
-<script type="text/javascript" src="./include/common/javascript/centreon/brokerConfig.js"></script>
 <script type="text/javascript">
 function mk_paginationFF(){};
 function set_header_title(){};
