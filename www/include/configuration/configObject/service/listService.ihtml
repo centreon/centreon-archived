@@ -9,18 +9,20 @@
           	</th>
         </tr>
 		<tr>
-		    <td><h4>{$Hosts}</h4></td>
             {if (isset($hostgroupsFilter))}
-                <td><h4>{$Hostgroups}</h4></td>
+                <td><h4>{$HostGroups}</h4></td>
+            {else}
+                <td><h4>{$Hosts}</h4></td>
             {/if}
             <td><h4>{$Services}</h4></td>
 			<td><h4>{$ServiceTemplates}</h4></td>
 			<td><h4>{$ServiceStatus}</h4></td>
 		</tr>
         <tr>
-            <td><input type='text' name='searchH' value="{$searchH}" /></td>
             {if (isset($hostgroupsFilter))}
-                <td><select name='hostgroups' >{$hostgroupsFilter}</select></td>
+                <td><input type='text' name='hostgroups' value="{$hostgroupsFilter}" /></td>
+            {else}
+                <td><input type='text' name='searchH' value="{$searchH}" /></td>
             {/if}
 			<td><input type='text' name='searchS' value="{$searchS}" /></td>
 			<td><select name='template'>{$templateFilter}</select></td>
