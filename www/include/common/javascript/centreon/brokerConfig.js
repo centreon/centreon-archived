@@ -25,7 +25,7 @@ jQuery(document).ready(function(){
                 jQuery(this).addClass('open').removeClass('close');
                 tbody.eq(0).find(".list_lvl_1").removeClass("open").addClass('close');
                 nextElemChildren.hide();
-                elemChildren.show();
+                elemChildren.show(); 
             }
         });
     })

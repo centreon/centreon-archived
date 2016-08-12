@@ -1,0 +1,36 @@
+span.v_required_star {
+    font-size: 12px;
+    padding-left: 5px;
+    color: red;
+}
+
+/* collapse */
+.elem-toCollapse {
+    display: none;
+}
+.elem-header {
+    cursor: pointer;
+}
+.elem-header:hover {
+
+}
+.elem-header td:first-child {
+    position: relative;
+    padding-left: 20px !important;
+}
+.elem-header td:first-child:before {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    width: 16px;
+    height: 16px;
+    color: #231f20;
+    font-size: 12px;
+    font-weight: bold;
+}
+.elem-header.open td:first-child:before {
+    content: "-";
+}
+.elem-header.close td:first-child:before {
+    content: "+";
+}
