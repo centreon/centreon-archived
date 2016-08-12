@@ -88,18 +88,18 @@
                 </td>    
                 <td class="Toolbar_pagelimit">
 					<xsl:element name='a'>
-						<xsl:attribute name="href">javascript:log_4_host(this, '', 'CSV')</xsl:attribute>
+						<xsl:attribute name="href">javascript:logs(this, '', 'CSV')</xsl:attribute>
 						<xsl:element name='img'>
-							<xsl:attribute name="title">{t}Export CSV{/t}</xsl:attribute>
+							<xsl:attribute name="title">Export CSV</xsl:attribute>
 							<xsl:attribute name="alt">Export CSV</xsl:attribute>
 							<xsl:attribute name="class">ico-20</xsl:attribute>
 							<xsl:attribute name="src">./img/icons/csv.png</xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 					<xsl:element name='a'>
-						<xsl:attribute name="href">javascript:log_4_host(this, '', 'XML')</xsl:attribute>
+						<xsl:attribute name="href">javascript:logs(this, '', 'XML')</xsl:attribute>
 						<xsl:element name='img'>
-							<xsl:attribute name="title">{t}Export XML{/t}</xsl:attribute>
+							<xsl:attribute name="title">Export XML</xsl:attribute>
 							<xsl:attribute name="alt">Export XML</xsl:attribute>
 							<xsl:attribute name="class">ico-20</xsl:attribute>
 							<xsl:attribute name="src">./img/icons/xml.png</xsl:attribute>

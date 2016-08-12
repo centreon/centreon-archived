@@ -19,10 +19,11 @@
         <div class="clone-cell">
             {foreach from=$cloneSet item=v}
                 <span>
-                    {if $v->getLabel() != ""}
-                        {$v->getLabel()}
-                    {/if}
-                    {$v->toHtml()}
+                {if $v->isFrozen()}
+                    {$v->getLabel()} : {$v->unfreeze()}{$v->setAttribute('disabled', 'disabled')}{$v->toHtml()}
+                {else}
+                    {$v->getLabel()}  {$v->toHtml()}
+                {/if}
                 </span>
             {/foreach}
             <input type='hidden' id='macroTplValue_#index#' name='macroTplValue_#index#' value="" />
@@ -39,16 +40,6 @@
             <span id="{$cloneId}_remove_current" style=''>
                 <img src="./img/icons/circle-cross.png" class='ico-14' style="vertical-align:middle;">
             </span>
-            {else}
-            <script>
-            {literal}
-                jQuery(document).find("input[name^='macroInput'], " +
-                        "input[name^='macroValue']")
-                        .prop("type", 'text')
-                        .attr('readonly', 'readonly')
-                        .attr('disabled','disabled');
-            {/literal}
-            </script>
             {/if}
         </div>
         <input type="hidden" name="clone_order_{$cloneId}_#index#" id="clone_order_#index#" />

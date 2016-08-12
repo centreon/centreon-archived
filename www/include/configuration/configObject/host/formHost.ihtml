@@ -503,6 +503,19 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroInput']").css("background","white");
             jQuery(elem).find("input[name^='macroValue']").css("background","white");
         });
+
+        {/literal}{if $form.frozen == true}{literal}
+        var $passwordCheckbox = jQuery(elem).find("input[id^='macroPassword_']");
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.replaceWith('[x]');
+        } else {
+            $passwordCheckbox.replaceWith('[ ]');
+        }
+        {/literal}{else}{literal}
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.parent('span').empty();
+        }
+        {/literal}{/if}{literal}
     });
 
     jQuery(".macroclone").sortable(
@@ -619,8 +632,7 @@ jQuery(function() {
 
                         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
                         	jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
-                    	} 
-
+                    	}
                     });
                     
                 }

@@ -137,7 +137,7 @@ function getCentreonBrokerInformation($id)
         );
     }
     $row = $res->fetchRow();
-    return array(
+    $brokerConf = array(
         "id" => $id,
         "name" => $row['config_name'],
         "filename" => $row['config_filename'],
@@ -149,6 +149,17 @@ function getCentreonBrokerInformation($id)
         "write_thread_id" => $row['config_write_thread_id'],
         "event_queue_max_size" => $row['event_queue_max_size'],
         "retention_path" => $row['retention_path']
+    );
+
+    $query = "SELECT `value` FROM options WHERE `key` = 'broker_socket_path'";
+    $res = $pearDB->query($query);
+    if (PEAR::isError($res)) {
+        return $brokerConf;
+    }
+	$row = $res->fetchRow();
+    return array_merge (
+        array('command_file' => $row['value']),
+        $brokerConf
     );
 }
 

@@ -58,7 +58,7 @@ class procedures_DB_Connector {
     }
 
 	private function displayConnectionErrorPage() {
-		echo "<center><b>" . _("Connection to Wiki database failed, please contact your administrator") . "</b></center>";
+		echo "<center><b>" . _("Connection to Wiki database failed, please contact your administrator or read the Centreon online documentation to configure wiki access") . "</b></center>";
 		exit;
 	}
 
