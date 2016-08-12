@@ -35,8 +35,8 @@
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-session_start();
-
+require_once _CENTREON_PATH_."www/class/centreon.class.php";
+require_once _CENTREON_PATH_."www/class/centreonUser.class.php";
 require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
@@ -44,6 +44,8 @@ require_once _CENTREON_PATH_."www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_."www/include/reporting/dashboard/DB-Func.php";
 require_once _CENTREON_PATH_."www/include/reporting/dashboard/common-Func.php";
 require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
+
+session_start();
 
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
