@@ -1,5 +1,6 @@
 {$form.javascript}
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
+<link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/style.css" />
 <form {$form.attributes}>
 	<div class="headerTabContainer">
 	<ul id="mainnav">
@@ -64,7 +65,7 @@
 			{foreach from=$tab.forms item=formBlock name=formForeach}
 				{assign var="posAbs" value=$smarty.foreach.formForeach.index}
 				{assign var="posBlock" value=$posAbs+1}
-			<tbody id="{$tab.id}_{$posBlock}">
+			<tbody class="collapse-wrapper" id="{$tab.id}_{$posBlock}">
 				{include file='blockConfig.ihtml' tagBlock=$tab.id posBlock=$posBlock formBlock=$formBlock helps=$tab.helps[$posAbs]}
 			</tbody>
 			{/foreach}
@@ -81,17 +82,11 @@
 	{$form.hidden}
 </form>
 {literal}
-<style type="text/css">
-span.v_required_star {
-   font-size: 12px;
-   padding-left: 5px; 
-   color: red;
-}
-</style>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
 <script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler-min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js"></script>
+<script type="text/javascript" src="./include/common/javascript/centreon/brokerConfig.js"></script>
 <script type="text/javascript">
 function mk_paginationFF(){};
 function set_header_title(){};

@@ -236,6 +236,7 @@ class CentreonWebService
         while ($row = $res->fetchRow()) {
             self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
         }
+        self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php'));
         
         $webService = self::webservicePath($object);
         
