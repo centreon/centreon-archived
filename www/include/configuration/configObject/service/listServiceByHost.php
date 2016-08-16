@@ -117,22 +117,6 @@ require_once "./class/centreonHost.class.php";
 $host_method = new CentreonHost($pearDB);
 $service_method = new CentreonService($pearDB);
 
-/**
- * Get
- */
-$hostgroupsTab = array();
-$hostgroupsFilter = "<option value='0'></option>";
-$DBRESULT = $pearDB->query("SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) AND hg_activate='1' ORDER BY hg_name");
-$hglist = $acl->getHostGroupAclConf(null, null, array('fields'  => array('hg_id', 'hg_name'),
-                                                      'keys'    => array('hg_id'),
-                                                      'order'   => array('hg_name')
-                                                     ));
-foreach ($hglist as $hgrp) {
-    $hostgroupsTab[$hgrp["hg_id"]] = $hgrp["hg_name"];
-    $hostgroupsFilter .= "<option value='".$hgrp["hg_id"]."'".(($hgrp["hg_id"] == $hostgroups) ? " selected" : "").">".$hgrp["hg_name"]."</option>";
-}
-$DBRESULT->free();
-
 $searchH = '';
 $searchH_SQL = '';
 $searchH_GET = '';
@@ -407,7 +391,6 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('Hosts', _("Hosts"));
-$tpl->assign('Hostgroups', _("HostGroups"));
 $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
 $tpl->assign('Services', _("Services"));

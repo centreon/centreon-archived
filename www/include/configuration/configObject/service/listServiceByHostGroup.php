@@ -41,18 +41,18 @@ include_once("./class/centreonUtils.class.php");
 
 $mediaObj = new CentreonMedia($pearDB);
 
-if (isset($_POST["searchH"])) {
-    $searchH = $_POST["searchH"];
-    $centreon->svc_host_search = $searchH;
+if (isset($_POST["hostgroups"])) {
+    $searchHG = $_POST["hostgroups"];
+    $centreon->svc_hostgroup_search = $searchHG;
     if ($_POST["searchH"] != "") {
         $search_type_host = 1;
         $centreon->search_type_host = 1;
     }
 } else {
-    if (isset($centreon->svc_host_search) && $centreon->svc_host_search) {
-        $searchH = $centreon->svc_host_search;
+    if (isset($centreon->svc_hostgroup_search) && $centreon->svc_hostgroup_search) {
+        $searchHG = $centreon->svc_hostgroup_search;
     } else {
-        $searchH = null;
+        $searchHG = null;
     }
 }
 
@@ -119,7 +119,7 @@ include("./include/common/autoNumLimit.php");
 $rows = 0;
 $tmp = null;
 $tmp2 = null;
-$searchH = $pearDB->escape($searchH);
+$searchHG = $pearDB->escape($searchHG);
 $searchS = $pearDB->escape($searchS);
 
 $aclfrom = "";
@@ -135,8 +135,8 @@ if (!$centreon->user->admin) {
 /*
  * Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
  */
-if ($searchS != "" || $searchH != "") {
-    if ($searchS && !$searchH) {
+if ($searchS != "" || $searchHG != "") {
+    if ($searchS && !$searchHG) {
         $DBRESULT = $pearDB->query("SELECT $distinct hostgroup_hg_id, sv.service_id, sv.service_description, service_template_model_stm_id " .
                                     "FROM service sv, host_service_relation hsr $aclfrom" .
                                     "WHERE sv.service_register = '1' $sqlFilterCase " .
@@ -151,13 +151,13 @@ if ($searchS != "" || $searchH != "") {
             $tab_buffer[$service["service_id"]] = $service["service_id"];
             $rows++;
         }
-    } elseif (!$searchS && $searchH) {
+    } elseif (!$searchS && $searchHG) {
         $DBRESULT = $pearDB->query("SELECT $distinct hostgroup_hg_id, sv.service_id, sv.service_description, service_template_model_stm_id " .
                                     "FROM service sv, host_service_relation hsr, hostgroup hg $aclfrom" .
                                     "WHERE sv.service_register = '1' $sqlFilterCase " .
                                     "	AND hsr.service_service_id = sv.service_id " . $aclcond .
                                     "	AND hsr.host_host_id IS NULL " .
-                                    "	AND (hg.hg_name LIKE '%$searchH%')" .
+                                    "	AND (hg.hg_name LIKE '%$searchHG%')" .
                                     "	AND hsr.hostgroup_hg_id = hg.hg_id".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
         while ($service = $DBRESULT->fetchRow()) {
             $tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
@@ -170,7 +170,7 @@ if ($searchS != "" || $searchH != "") {
                                     "WHERE sv.service_register = '1' $sqlFilterCase " .
                                     "	AND hsr.service_service_id = sv.service_id " . $aclcond .
                                     "	AND hsr.host_host_id IS NULL " .
-                                    "	AND hg.hg_name LIKE '%$searchH%'" .
+                                    "	AND hg.hg_name LIKE '%$searchHG%'" .
                                     "	AND sv.service_description LIKE '%$searchS%'" .
                                     "	AND hsr.hostgroup_hg_id = hg.hg_id".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
         while ($service = $DBRESULT->fetchRow()) {
@@ -211,7 +211,7 @@ $tpl->assign("headerMenu_options", _("Options"));
 /*
  * HostGroup/service list
  */
-if ($searchS || $searchH) {
+if ($searchS || $searchHG) {
     $rq = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND hsr.hostgroup_hg_id IN (".($tmp2 ? $tmp2 : 'NULL').") ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $aclcond ORDER BY hg.hg_name, sv.service_description LIMIT ".$num * $limit.", ".$limit;
 } else {
     $rq = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom WHERE sv.service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $aclcond ORDER BY hg.hg_name, sv.service_description LIMIT ".$num * $limit.", ".$limit;
@@ -374,15 +374,15 @@ $o2->setValue(null);
 
 $tpl->assign('limit', $limit);
 
-if (isset($searchH) && $searchH) {
-    $searchH = html_entity_decode($searchH);
-    $searchH = stripslashes(str_replace('"', "&quot;", $searchH));
+if (isset($searchHG) && $searchHG) {
+    $searchHG = html_entity_decode($searchHG);
+    $searchHG = stripslashes(str_replace('"', "&quot;", $searchHG));
 }
 if (isset($searchS) && $searchS) {
     $searchS = html_entity_decode($searchS);
     $searchS = stripslashes(str_replace('"', "&quot;", $searchS));
 }
-$tpl->assign("searchH", $searchH);
+$tpl->assign("hostgroupsFilter", $searchHG);
 $tpl->assign("searchS", $searchS);
 $tpl->assign("templateFilter", $templateFilter);
 $tpl->assign("statusFilter", $statusFilter);
@@ -393,7 +393,7 @@ $tpl->assign("statusFilter", $statusFilter);
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
-$tpl->assign('Hosts', _("HostGroups"));
+$tpl->assign('HostGroups', _("HostGroups"));
 $tpl->assign('Services', _("Services"));
 $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
