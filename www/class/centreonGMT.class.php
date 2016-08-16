@@ -33,6 +33,8 @@
  *
  */
 
+include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
+
 class CentreonGMT
 {
 
@@ -50,6 +52,12 @@ class CentreonGMT
      * @var type
      */
     protected $db;
+
+    /**
+     *
+     * @var type
+     */
+    protected $dbc;
 
     /**
      *
@@ -78,7 +86,7 @@ class CentreonGMT
     public function __construct($DB)
     {
         $this->db = $DB;
-        
+        $this->dbc = new CentreonDB("centstorage");
         /*
          * Define Table of GMT line
          */
@@ -478,19 +486,24 @@ class CentreonGMT
      */
     public function getHostLocations()
     {
-        if (count($this->hostLocations) == 0) {
-            $locations = array();
+       if (count($this->hostLocations)) {
+           return $this->hostLocations;
+       }
 
-            $query = "SELECT host_id, host_location FROM host";
-            $res  = $this->db->query($query);
-            if (!PEAR::isError($res)) {
-                while ($row = $res->fetchRow()) {
-                    $locations[$row['host_id']] = $row['host_location'];
-                }
+        $locations = array();
+
+        $query = 'SELECT h.host_id, hs.timezone '
+            . 'FROM ' . db . '.host h '
+            . 'LEFT JOIN ' . dbcstg . '.hosts hs ON h.host_id = hs.host_id ';
+
+        $res  = $this->dbc->query($query);
+        if (!PEAR::isError($res)) {
+            while ($row = $res->fetchRow()) {
+                $locations[$row['host_id']] = $row['timezone'];
             }
-            $this->hostLocations = $locations;
         }
-        
+        $this->hostLocations = $locations;
+
         return $this->hostLocations;
     }
     
@@ -540,7 +553,6 @@ class CentreonGMT
                  $sTimezone = date_default_timezone_get();
             }
         }
-        
         return $sTimezone;
     }
 }
