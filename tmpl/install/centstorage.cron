@@ -14,5 +14,5 @@ CRONTAB_EXEC_USER=""
 0 2 * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/centstorage_purge --config=@CENTREON_ETC@/conf.pm >> @CENTREON_LOG@/centreon-purge.log 2>&1
 
 # Cron for database partitioning
-0 4 * * * @CENTREON_USER@ @PHP_BIN@ @INSTALL_DIR_CENTREON@/cron/centreon-partitioning.php >> @CENTREON_VARLOG@/centreon-partitioning.log 2>&1
+0 4 * * * @CENTREON_USER@ @PHP_BIN@ @INSTALL_DIR_CENTREON@/cron/centreon-partitioning.php >> @CENTREON_LOG@/centreon-partitioning.log 2>&1
 

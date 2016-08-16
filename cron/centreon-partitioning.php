@@ -62,7 +62,9 @@ try {
     foreach ($tables as $table) {
         $config = new Config($database, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml');
         $mysqlTable = $config->getTable($table);
-        $partEngine->updateParts($mysqlTable, $database);
+        if ($partEngine->isPartitioned($mysqlTable, $database)) {
+            $partEngine->updateParts($mysqlTable, $database);
+        }
     }
 } catch (\Exception $e) {
     echo "[" . date(DATE_RFC822) . "] " . $e->getMessage();

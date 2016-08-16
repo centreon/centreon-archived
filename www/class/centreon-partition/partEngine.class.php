@@ -41,7 +41,6 @@
  */
 class PartEngine
 {
-
     /**
      *
      * Class constructor
@@ -90,7 +89,7 @@ class PartEngine
         return "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $current_time;
     }
     
-    private function updateAddDailyPartitions($db, $tableName, $month, $day, $year)
+    private function updateAddDailyPartitions($db, $tableName, $month, $day, $year, $hasMaxValuePartition = false)
     {
         $current_time = mktime(0, 0, 0, $month, $day, $year);
         $ntime = localtime($current_time);
@@ -105,9 +104,22 @@ class PartEngine
             
         print "[".date(DATE_RFC822)."][updateParts] Create new part : " . ($ntime[5] + 1900) . $month . $day
             . " - Range: $current_time\n";
-        $request = "ALTER TABLE ".$tableName;
-        $request .= " ADD PARTITION (PARTITION `p" . ($ntime[5] + 1900) . $month . $day
-            . "` VALUES LESS THAN(" . $current_time . "))";
+
+        $partitionQuery = "PARTITION `p" . ($ntime[5] + 1900) . $month . $day
+            . "` VALUES LESS THAN(" . $current_time . ")";
+
+        $request = "ALTER TABLE " . $tableName . " ";
+
+        if ($hasMaxValuePartition) {
+            $request .= "REORGANIZE PARTITION `pmax` INTO ("
+                . $partitionQuery
+                . ", PARTITION `pmax` VALUES LESS THAN MAXVALUE)";
+        } else {
+            $request .= "ADD PARTITION ("
+                . $partitionQuery
+                . ")";
+        }
+
         $DBRESULT = $db->query($request);
 
         if (PEAR::isError($DBRESULT)) {
@@ -120,6 +132,8 @@ class PartEngine
     
     private function updateDailyPartitions($db, $tableName, $table, $lastTime)
     {
+        $hasMaxValuePartition = $this->hasMaxValuePartition($db, $table);
+
         date_default_timezone_set($table->getTimezone());
         $how_much_forward = 0;
         $ltime = localtime();
@@ -141,12 +155,15 @@ class PartEngine
                 $tableName,
                 $ltime[4] + 1,
                 $ltime[3] + $how_much_forward + 1,
-                $ltime[5] + 1900
+                $ltime[5] + 1900,
+                $hasMaxValuePartition
             );
             $how_much_forward++;
         }
         
-        $this->createMaxvaluePartition($db, $tableName, $table);
+        if (!$hasMaxValuePartition) {
+            $this->createMaxvaluePartition($db, $tableName, $table);
+        }
     }
     
     private function createDailyPartitions($table)
@@ -543,6 +560,7 @@ class PartEngine
             );
         }
     }
+
     /**
      *
      * Check if MySQL version is compatible with partitionning.
@@ -558,5 +576,57 @@ class PartEngine
         unset($config);
 
         return (true);
+    }
+
+    /**
+     *
+     * Check if a table is partitioned.
+     */
+    public function isPartitioned($table, $db)
+    {
+        $query = 'SELECT DISTINCT TABLE_NAME '
+            . 'FROM INFORMATION_SCHEMA.PARTITIONS '
+            . 'WHERE PARTITION_NAME IS NOT NULL '
+            . 'AND TABLE_NAME="' . $table->getName() . '" '
+            . 'AND TABLE_SCHEMA="' . $table->getSchema() . '" ';
+
+        $DBRESULT = $db->query($query);
+        if (PEAR::isError($DBRESULT)) {
+            throw new Exception('Cannot get partition information');
+        }
+
+        if ($DBRESULT->fetchRow()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * Check if a table has max value partition.
+     */
+    private function hasMaxValuePartition($db, $table)
+    {
+        # Check if pmax partition exists 
+        $request = "SELECT 1 FROM INFORMATION_SCHEMA.PARTITIONS ";
+        $request .= "WHERE TABLE_NAME='".$table->getName()."' ";
+        $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
+        $request .= "AND PARTITION_NAME = 'pmax' ";
+
+        $DBRESULT = $db->query($request);
+        if (PEAR::isError($DBRESULT)) {
+            throw new Exception(
+                "Error : Cannot get partition maxvalue information for table "
+                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+            );
+        }
+
+        $hasMaxValuePartition = false;
+        if ($DBRESULT->fetchRow()) {
+            $hasMaxValuePartition = true;
+        }
+
+        return $hasMaxValuePartition;
     }
 }
