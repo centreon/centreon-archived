@@ -196,7 +196,6 @@ while ($topology_js = $DBRESULT->fetchRow()) {
     }
 }
 ?>
-        initChangeTab();
         check_session();
     });
 </script>
