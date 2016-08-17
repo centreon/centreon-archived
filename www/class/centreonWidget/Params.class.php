@@ -47,7 +47,7 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     protected $trigger;
     protected $acl;
     protected $monitoringDb;
-    
+
 
     /**
      * Constructor
@@ -65,8 +65,8 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
         $this->userId = $userId;
         $this->userGroups = array();
         $query = "SELECT contactgroup_cg_id
-        		  FROM contactgroup_contact_relation
-        		  WHERE contact_contact_id = " . $this->db->escape($this->userId);
+                          FROM contactgroup_contact_relation
+                          WHERE contact_contact_id = " . $this->db->escape($this->userId);
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $this->userGroups[$row['contactgroup_cg_id']] = $row['contactgroup_cg_id'];
@@ -84,19 +84,19 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     protected function getUserPreferences($params)
     {
         $query = "SELECT preference_value
-            	  FROM widget_preferences wp, widget_views wv, custom_view_user_relation cvur
-            	  WHERE wp.parameter_id = " .$this->db->escape($params['parameter_id']) . "
-            	  AND wp.widget_view_id = wv.widget_view_id
-            	  AND wv.widget_id = ".$this->db->escape($params['widget_id'])."
-            	  AND wv.custom_view_id = cvur.custom_view_id
-            	  AND wp.user_id = ".$this->db->escape($this->userId) . "
-            	  AND (cvur.user_id = wp.user_id";
+                  FROM widget_preferences wp, widget_views wv, custom_view_user_relation cvur
+                  WHERE wp.parameter_id = " .$this->db->escape($params['parameter_id']) . "
+                  AND wp.widget_view_id = wv.widget_view_id
+                  AND wv.widget_id = ".$this->db->escape($params['widget_id'])."
+                  AND wv.custom_view_id = cvur.custom_view_id
+                  AND wp.user_id = ".$this->db->escape($this->userId) . "
+                  AND (cvur.user_id = wp.user_id";
         if (count($this->userGroups)) {
             $cglist = implode(",", $this->userGroups);
             $query .= " OR cvur.usergroup_id IN ($cglist) ";
         }
         $query .= ") AND cvur.custom_view_id = ". $this->db->escape($params['custom_view_id']) . "
-				  LIMIT 1";
+                                  LIMIT 1";
         $res = $this->db->query($query);
         if ($res->numRows()) {
             $row = $res->fetchRow();
@@ -168,8 +168,8 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     public function getListValues($paramId)
     {
         $query = "SELECT option_name, option_value
-           		  FROM widget_parameters_multiple_options
-           		  WHERE parameter_id = " . $this->db->escape($paramId);
+                          FROM widget_parameters_multiple_options
+                          WHERE parameter_id = " . $this->db->escape($paramId);
         $res = $this->db->query($query);
         $tab = array(null => null);
         while ($row = $res->fetchRow()) {
