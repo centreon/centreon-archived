@@ -28,9 +28,6 @@ class CentreonWithKnowledgeContext extends CentreonContext
     public function iAmLoggedInACentreonServerWithWikiInstalled()
     {
         $this->launchCentreonWebContainer('kb');
-        $this->container->execute("sed -i -e 's/wiki.localhost\/mediawiki/mediawiki/g' /usr/share/centreon/config/wiki.conf.php", 'web');
-        $this->container->execute("sed -i -e 's/db_host\s=\s\"localhost\"/db_host = \"mediawiki\"/g' /usr/share/centreon/config/wiki.conf.php", 'web');
-        $this->container->execute("sed -i -e 's/db_password\s=\s\"password\"/db_password = \"centreon\"/g' /usr/share/centreon/config/wiki.conf.php", 'web');
         $this->iAmLoggedIn();
 
     }
