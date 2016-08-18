@@ -15,6 +15,6 @@ INSERT INTO `topology` (
 `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`
 ) VALUES (
 NULL,'Backup',501,50165,90,1,
-'./include/Administration/backup/formBackup.php','&o=c','0','0','1',
+'./include/Administration/parameters/backup/formBackup.php','&o=c','0','0','1',
 NULL,NULL,NULL,'1'
 );
