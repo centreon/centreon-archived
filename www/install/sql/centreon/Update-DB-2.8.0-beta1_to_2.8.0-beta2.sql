@@ -10,11 +10,11 @@ AND cbt.type_shortname = 'graphite';
 
 -- Inset Centreon Backup menu in topology
 INSERT INTO `topology` (
-`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`,
-`topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`,
+`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`,
+`topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`,
 `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`
 ) VALUES (
-NULL,'Backup',501,50165,90,1,
-'./include/Administration/parameters/backup/formBackup.php','&o=c','0','0','1',
+NULL,'Backup',501,50165,90,
+1,'./include/Administration/parameters/parameters.php','&o=backup','0','0','1',
 NULL,NULL,NULL,'1'
 );
