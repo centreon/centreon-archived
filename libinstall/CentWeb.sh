@@ -80,6 +80,7 @@ add_group "$MONITORINGENGINE_USER" "$CENTREON_GROUP"
 get_primary_group "$MONITORINGENGINE_USER" "MONITORINGENGINE_GROUP"
 add_group "$WEB_USER" "$MONITORINGENGINE_GROUP"
 add_group "$CENTREON_USER" "$MONITORINGENGINE_GROUP"
+add_group "$CENTREON_USER" "$WEB_GROUP"
 
 ## Config Sudo
 # I think this process move on CentCore install...
