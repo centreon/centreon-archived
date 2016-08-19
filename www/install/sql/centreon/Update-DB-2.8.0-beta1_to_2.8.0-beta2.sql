@@ -8,7 +8,7 @@ INNER JOIN cb_type cbt ON cbfr.cb_type_id=cbt.cb_type_id
 AND cbf.fieldname = 'failover'
 AND cbt.type_shortname = 'graphite';
 
--- Inset Centreon Backup menu in topology
+-- Insert Centreon Backup menu in topology
 INSERT INTO `topology` (
 `topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`,
 `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`,
@@ -18,3 +18,18 @@ NULL,'Backup',501,50165,90,
 1,'./include/Administration/parameters/parameters.php','&o=backup','0','0','1',
 NULL,NULL,NULL,'1'
 );
+
+-- Insert Centreon Backup base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+('backup_enabled', '0'),
+('backup_configuration_files', '1'),
+('backup_database_centreon', '1'),
+('backup_database_centreon_storage', '1'),
+('backup_directory', '/var/backup'),
+('backup_tmp_directory', '/tmp/backup'),
+('backup_retention', '5'),
+('backup_gzip', '/usr/bin/gzip'),
+('backup_tar', '/usr/bin/tar'),
+('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
+('backup_zend_conf', '/etc/php.d/zendguard.ini');
