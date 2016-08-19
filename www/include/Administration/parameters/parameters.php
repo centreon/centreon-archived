@@ -90,6 +90,9 @@ switch ($o) {
     case "api":
         require_once $path.'api/api.php';
         break;
+    case "backup":
+        require_once $path . 'backup/formBackup.php';
+        break;
     default:
         require_once $path."general/form.php" ;
         break;

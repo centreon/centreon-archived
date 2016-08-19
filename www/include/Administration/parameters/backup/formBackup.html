@@ -4,16 +4,35 @@
     <table class="formTable table">
         <tr class="ListHeader">
             <td class="FormHeader" colspan="2">
-                <h3>| {t}Centcore properties{/t}</h3>
+                <h3>| {t}Backup properties{/t}</h3>
             </td>
         </tr>
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
-                <h4>{t}Centcore Options{/t}</h4>
+                <h4>{t}General Options{/t}</h4>
             </td>
         </tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_broker_stats">&nbsp;{$form.enable_broker_stats.label}</td><td class="FormRowValue">{$form.enable_broker_stats.html}</td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centcore_cmd_timeout">&nbsp;{$form.centcore_cmd_timeout.label}</td><td class="FormRowValue">{$form.centcore_cmd_timeout.html}&nbsp;{t}seconds{/t}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_enabled">{$form.backup_enabled.label}</td><td class="FormRowValue">{$form.backup_enabled.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_configuration_files">{$form.backup_configuration_files.label}</td><td class="FormRowValue">{$form.backup_configuration_files.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_database_centreon">{$form.backup_database_centreon.label}</td><td class="FormRowValue">{$form.backup_database_centreon.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_database_centreon_storage">{$form.backup_database_centreon_storage.label}</td><td class="FormRowValue">{$form.backup_database_centreon_storage.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_backup_dir">{$form.backup_backup_dir.label}</td><td class="FormRowValue">{$form.backup_backup_dir.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_tmp_dir">{$form.backup_tmp_dir.label}</td><td class="FormRowValue">{$form.backup_tmp_dir.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_retention">{$form.backup_retention.label}</td><td class="FormRowValue">{$form.backup_retention.html} {t}days{/t}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Binary Options{/t}</h4>
+            </td>
+        </tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_gzip">{$form.backup_gzip.label}</td><td class="FormRowValue">{$form.backup_gzip.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_tar">{$form.backup_tar.label}</td><td class="FormRowValue">{$form.backup_tar.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Extra Options{/t}</h4>
+            </td>
+        </tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_mysql_conf">{$form.backup_mysql_conf.label}</td><td class="FormRowValue">{$form.backup_mysql_conf.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_backup_zend_conf">{$form.backup_zend_conf.label}</td><td class="FormRowValue">{$form.backup_zend_conf.html}</td></tr>
     </table>
     {if !$valid}
     <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
