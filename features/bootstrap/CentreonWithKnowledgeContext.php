@@ -27,9 +27,8 @@ class CentreonWithKnowledgeContext extends CentreonContext
      */
     public function iAmLoggedInACentreonServerWithWikiInstalled()
     {
-        $this->launchCentreonWebContainer('kb');
+        $this->launchCentreonWebContainer('web_kb');
         $this->iAmLoggedIn();
-
     }
 
 
