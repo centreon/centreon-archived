@@ -811,3 +811,17 @@ function updateCASConfigData($gopt_id = null)
 
     $centreon->initOptGen($pearDB);
 }
+
+function updateKnowledgeBaseData($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+
+    foreach ($ret as $key => $value) {
+        if (preg_match('/^kb_/', $key)) {
+                updateOption($db, $key, $value);
+        }
+    }
+
+    $centreon->initOptGen($db);
+
+}
