@@ -3,7 +3,7 @@
   function CentreonSelect2(settings, $elem) {
     this.internal = new CentreonSelect2Internal(settings, $elem);
   }
-
+  
   function CentreonSelect2Internal(settings, $elem) {
     this.settings = settings;
     this.$elem = $elem;
@@ -19,15 +19,15 @@
     this.extendedAction = false;
     this.savedSearch = '';
     this.ajaxOptions = {};
-
+    
     /* Get if multiple */
     if (settings.multiple || $elem.attr('multiple')) {
       this.settings.multiple = true;
     }
-
+    
     this.init();
   }
-
+  
   CentreonSelect2Internal.prototype = {
     /**
      * Initialize select2
@@ -35,10 +35,10 @@
     init: function () {
       var self = this;
       var select2Options = this.settings.select2;
-
+      
       this.initLocale();
       this.initAjax();
-
+      
       /* Template for result display */
       select2Options.templateResult = function (item) {
         var text = item.text;
@@ -48,8 +48,8 @@
         }
         if (item.id) {
           $result = $('<div>')
-              .data('did', item.id)
-              .attr('title', item.text);
+            .data('did', item.id)
+            .attr('title', item.text);
           if (typeof text === 'string') {
             return $result.text(text);
           }
@@ -59,25 +59,25 @@
       };
       /* Template for selection */
       select2Options.templateSelection = function (data, container) {
-        if (data.hasOwnProperty('element') && data.element.hidden) {
+        if (data.element.hidden) {
           $(container).hide();
         }
         return $('<span>')
-            .addClass('select2-content')
-            .attr('title', data.text)
-            .text(data.text);
+          .addClass('select2-content')
+          .attr('title', data.text)
+          .text(data.text);
       };
-
+      
       if (this.remoteData) {
         select2Options.ajax = this.ajaxOptions;
       }
-
+      
       this.$elem.select2(select2Options);
-
+      
       this.initNiceScroll();
       this.initSaveSearch();
       this.initEvents();
-
+      
       if (this.settings.allowClear) {
         this.initAllowClear();
       }
@@ -94,9 +94,9 @@
       } else {
         this.locale = navigator.language || navigator.userLanguage;
       }
-
+      
       if (typeof centreonSelect2Locales !== 'undefined' &&
-          centreonSelect2Locales.hasOwnProperty(this.locale)) {
+        centreonSelect2Locales.hasOwnProperty(this.locale)) {
         this.messages = centreonSelect2Locales[this.locale];
       }
     },
@@ -107,15 +107,15 @@
       var self = this;
 
       this.clearButton = $('<span>')
-          .css('cursor', 'pointer')
-          .addClass('clearAllSelect2')
-          .attr('title', this.translate('Clear field'))
-          .append(
-              $('<img>')
-                  .attr('src', './img/icons/circle-cross.png')
-                  .addClass('ico-14')
-          );
-
+        .css('cursor', 'pointer')
+        .addClass('clearAllSelect2')
+        .attr('title', this.translate('Clear field'))
+        .append(
+          $('<img>')
+            .attr('src', './img/icons/circle-cross.png')
+            .addClass('ico-14')
+        );
+      
       this.clearButton.on('click', function () {
         var currentValues = self.$elem.val();
         self.$elem.val('');
@@ -123,8 +123,8 @@
           self.$elem.empty().append($('<option>'));
         }
         self.$elem.trigger('change', currentValues);
-      });
-
+      });  
+      
       $(this.parent).prepend(this.clearButton);
     },
     /**
@@ -132,17 +132,17 @@
      */
     initMultiple: function() {
       var self = this;
-
+      
       self.initShiftKey();
       self.initSelectAll();
-
+      
       /* Add event for command on MacOSX */
       self.$elem.on('select2:closing', function (e) {
         if (e.params.hasOwnProperty('args') &&
-            e.params.args !== undefined &&
-            e.params.args.hasOwnProperty('originalEvent') &&
-            e.params.args.originalEvent !== undefined &&
-            e.params.args.originalEvent.metaKey) {
+          e.params.args !== undefined &&
+          e.params.args.hasOwnProperty('originalEvent') &&
+          e.params.args.originalEvent !== undefined &&
+          e.params.args.originalEvent.metaKey) {
           e.preventDefault();
         }
       });
@@ -152,56 +152,56 @@
      */
     initShiftKey: function () {
       var self = this;
-
+      
       /* Event on open select2 */
       self.$elem.on('select2:open', function (e) {
         e.preventDefault();
         self.events.shiftFirstEl = null;
       });
-
+      
       /* Event when select an element with shift pressed */
       self.$elem.on('select2:selecting', function (e) {
         var endSelection = 0;
         var selectedValues = [];
-
+        
         if (e.params.hasOwnProperty('args') &&
-            e.params.args !== undefined &&
-            e.params.args.hasOwnProperty('originalEvent') &&
-            e.params.args.originalEvent !== undefined &&
-            e.params.args.originalEvent.shiftKey) {
+          e.params.args !== undefined &&
+          e.params.args.hasOwnProperty('originalEvent') &&
+          e.params.args.originalEvent !== undefined &&
+          e.params.args.originalEvent.shiftKey) {
           e.preventDefault();
-
+          
           /* The not element already selected */
           if (self.events.shiftFirstEl === null) {
             self.events.shiftFirstEl = e.params.args.data.id;
           } else {
             endSelection = e.params.args.data.id;
             selectedValues = self.getShiftSelected(endSelection);
-
+            
             self.selectElements(selectedValues);
             self.$elem.select2('close');
             self.events.shiftFirstEl = null;
           }
         }
       });
-
+      
       /* Event when unselect an element with shift pressed */
       self.$elem.on('select2:unselecting', function (e) {
         var endSelection = 0;
         var selectedValues = [];
-
+        
         if (e.params.args.hasOwnProperty('originalEvent') &&
-            e.params.args.originalEvent !== undefined &&
-            e.params.args.originalEvent.shiftKey) {
+          e.params.args.originalEvent !== undefined &&
+          e.params.args.originalEvent.shiftKey) {
           e.preventDefault();
-
+          
           /* The not element already selected */
           if (self.events.shiftFirstEl === null) {
             self.events.shiftFirstEl = e.params.args.data.id;
           } else {
             endSelection = e.params.args.data.id;
             selectedValues = self.getShiftSelected(endSelection);
-
+            
             self.unselectElements(selectedValues);
             self.$elem.select2('close');
             self.events.shiftFirstEl = null;
@@ -211,39 +211,39 @@
     },
     /**
      * Initialize select all button when use multiple select option
-     *
+     * 
      * @todo add event for no remote select2 for count number of elements
      */
     initSelectAll: function() {
       var self = this;
-
+      
       self.$elem.on('select2:open', function () {
         if ($('.select2-results-header').length === 0) {
           var $buttonSelectAll = $('<button>')
-              .addClass('btc bt_info')
-              .text(self.translate('Select all'));
+            .addClass('btc bt_info')
+            .text(self.translate('Select all'));
           var $buttonSelectAllHeader;
-
           self.$totalElements = $('<span>')
-              .addClass('select2-results-header__nb-elements-value');
+            .addClass('select2-results-header__nb-elements-value');
+            
           $buttonSelectAllHeader = $('<div>')
-              .addClass('select2-results-header')
-              .append(
-                  $('<div>')
-                      .addClass('select2-results-header__nb-elements')
-                      .text(' ' + self.translate('element(s) found'))
-                      .prepend(self.$totalElements)
-              )
-              .append(
-                  $('<div>')
-                      .addClass('select2-results-header__select-all')
-                      .append($buttonSelectAll)
-              );
-
-          $('span.select2-results')
-              .parents('.select2-dropdown')
-              .prepend($buttonSelectAllHeader);
-
+            .addClass('select2-results-header')
+            .append(
+              $('<div>')
+                .addClass('select2-results-header__nb-elements')
+                .text(' ' + self.translate('element(s) found'))
+                .prepend(self.$totalElements)
+            )
+            .append(
+              $('<div>')
+                .addClass('select2-results-header__select-all')
+                .append($buttonSelectAll)
+            );
+          
+         $('span.select2-results')
+            .parents('.select2-dropdown')
+            .prepend($buttonSelectAllHeader);
+          
           $buttonSelectAll.on('click', function () {
             self.confirmSelectAll();
           });
@@ -255,7 +255,7 @@
      */
     initNiceScroll: function () {
       var self = this;
-
+      
       self.$elem.on('select2:open', function () {
         $('ul.select2-results__options').off('mousewheel');
         $('ul.select2-results__options').niceScroll({
@@ -273,7 +273,7 @@
      */
     initEvents: function () {
       var self = this;
-
+      
       /* Prevent closing when advanced event is running */
       this.$elem.on('select2:closing', function (e) {
         if (self.extendedAction) {
@@ -286,26 +286,26 @@
      */
     initSaveSearch: function () {
       var self = this;
-
+      
       /* Save the current search */
       this.$elem.on('select2:closing', function (e) {
         self.savedSearch = self.$elem.data()
-            .select2.$container.find(".select2-search__field")
-            .val();
+          .select2.$container.find(".select2-search__field")
+          .val();
       });
-
+      
       this.$elem.on('select2:open', function (e) {
         if (self.savedSearch) {
           self.$elem.data()
-              .select2.$container.find(".select2-search__field")
-              .val(self.savedSearch);
+            .select2.$container.find(".select2-search__field")
+            .val(self.savedSearch);
           /* Wait for select2 finish to open */
           setTimeout(function () {
             self.$elem.data().select2.trigger(
-                'query',
-                {
-                  term: self.savedSearch
-                }
+              'query',
+              {
+                term: self.savedSearch
+              }
             );
           }, 10);
         }
@@ -316,9 +316,9 @@
      */
     initAjax: function () {
       var self = this;
-
+      
       if (self.settings.select2.hasOwnProperty('ajax') &&
-          self.settings.select2.ajax.hasOwnProperty('url')) {
+        self.settings.select2.ajax.hasOwnProperty('url')) {
         self.remoteData = true;
         self.ajaxOptions = self.settings.select2.ajax;
         self.ajaxOptions.data = function (params) {
@@ -326,9 +326,7 @@
         };
         self.ajaxOptions.processResults = function (data, params) {
           params.page = params.page || 1;
-          if (self.settings.multiple) {
-            self.$totalElements.text(data.total);
-          }
+          self.$totalElements.text(data.total);
           return {
             results: data.items,
             pagination: {
@@ -344,60 +342,60 @@
     confirmSelectAll: function () {
       var self = this;
       var $validButton = $('<button>')
-          .addClass('btc bt_success')
-          .text(this.translate('Ok'));
+        .addClass('btc bt_success')
+        .text(this.translate('Ok'));
       var $cancelButton = $('<button>')
-          .addClass('btc bt_default')
-          .text(this.translate('Cancel'));
-
+        .addClass('btc bt_default')
+        .text(this.translate('Cancel'));
+        
       if (self.confirmBox !== null) {
         return;
       }
-
+      
       self.extendedAction = true;
-
+      
       /* Open popin */
       self.confirmBox = $('<div>')
-          .append(
-              $('<p>').
-              text(
-                  self.translate(
-                      'Add {0} elements to selection ?',
-                      self.$totalElements.text()
-                  )
+        .append(
+          $('<p>').
+            text(
+              self.translate(
+                'Add {0} elements to selection ?',
+                self.$totalElements.text()
               )
-          )
-          .append(
-              $('<div>')
-                  .addClass('button_group_center')
-                  .append($validButton)
-                  .append($cancelButton)
-          );
-
+            )
+        )
+        .append(
+          $('<div>')
+            .addClass('button_group_center')
+            .append($validButton)
+            .append($cancelButton)
+        );
+      
       /* Add event on cancel button */
       $cancelButton.on('click', function() {
         self.closeSelectAllBox();
       });
-
+      
       /* Add event on confirm */
       $validButton.on('click', function () {
         self.selectAll();
       });
-
+      
       /* Add event on click on overlay */
       $('#centreonPopinOverlay').on('click', function (e) {
         if ($(e.target).parents('.centreon-popin').length === 0) {
           self.closeSelectAllBox();
         }
       });
-
+      
       /* Add event on esc key */
       $(document).on('keyup.centreonPopin', function (e) {
         if (e.keyCode === 27) {
           self.closeSelectAllBox();
         }
       });
-
+      
       /* Open the popin */
       self.confirmBox.centreonPopin({open: true});
     },
@@ -420,11 +418,11 @@
     selectAll: function () {
       var self = this;
       var search = this.$elem.data()
-          .select2.$container.find('.select2-search__field')
-          .val();
+        .select2.$container.find('.select2-search__field')
+        .val();
       var selectedElements = [];
       var matchExp = new RegExp('.*' + search + '.*', 'i');
-
+    
       if (this.remoteData) {
         /* Execute select all for ajax */
         $.ajax({
@@ -436,7 +434,7 @@
             var selectedValues = [];
             var selectedElements = [];
             var i = 0;
-
+            
             /* Get already selected in DOM to avoid to select twice */
             self.$elem.find('option').each(function (idx, element) {
               var value = $(element).val();
@@ -444,7 +442,7 @@
                 selectedValues.push(value);
               }
             });
-
+            
             /* Prepare new items to add */
             for (i = 0; i < data.items.length; i++) {
               if (selectedValues.indexOf('' + data.items[i].id) < 0) {
@@ -473,7 +471,7 @@
     },
     /**
      * Select a list of elements
-     *
+     * 
      * @param {Array[Object]} elements - The list of elements
      * @param {String} elements.id - The value of the element
      * @param {String} elements.text - The display test of the element
@@ -483,19 +481,19 @@
       var item;
       var option;
       var selectedElements;
-
+      
       if (this.remoteData) {
         /* Append new elements */
         for (var i = 0; i < elements.length; i++) {
           item = elements[i];
-
+          
           /* Create DOM option that is pre-selected by default */
           option = '<option selected value="' + item.id + '"';
           if (item.hide === true) {
             option += ' hidden';
           }
           option += '>' + item.text + '</option>';
-
+          
           /* Append it to select */
           self.$elem.append(option);
         }
@@ -510,7 +508,7 @@
     },
     /**
      * Select a list of elements
-     *
+     * 
      * @param {Array[Object]} elements - The list of elements
      * @param {String} elements.id - The value of the element
      * @param {String} elements.text - The display test of the element
@@ -522,7 +520,7 @@
       var selectedElements;
       var currentValues;
       var tmpIds;
-
+      
       if (this.remoteData) {
         /* Remove elements */
         tmpIds = elements.map(function (object) {
@@ -551,7 +549,7 @@
     },
     /**
      * Get the elements selected by shift
-     *
+     * 
      * @param {String} endSelection - The id of mouse clicked
      * @return {Array[Object]} - The list of elements selected
      */
@@ -562,7 +560,7 @@
       var tempIndex;
       var startSelection = self.events.shiftFirstEl;
       var selectedValues = [];
-
+      
       $('.select2-results li>div').each(function (index) {
         var $this = $(this);
         if ($this.data('did') == startSelection) {
@@ -572,27 +570,27 @@
           endIndex = index;
         }
       });
-
+      
       /* Good order */
       if (endIndex < startIndex) {
         tempIndex = startIndex;
         startIndex = endIndex;
         endIndex = tempIndex;
       }
-
+      
       $(".select2-results li>div").each(function (index){
-        var $this = $(this);
-
-        if (index >= startIndex && index <= endIndex) {
-          selectedValues.push(
-              {
-                id: $this.data('did').toString(),
-                text: $this.text()
-              }
-          );
-        }
+          var $this = $(this);
+          
+          if (index >= startIndex && index <= endIndex) {
+              selectedValues.push(
+                {
+                  id: $this.data('did').toString(),
+                  text: $this.text()
+                }
+              );
+          }
       });
-
+      
       return selectedValues;
     },
     /**
@@ -606,7 +604,7 @@
         page_limit: this.settings.pageLimit,
         page: params.page || 1
       };
-
+      
       for (filterKey in this.settings.additionnalFilters) {
         if (this.settings.additionnalFilters.hasOwnProperty(filterKey)) {
           if (typeof this.settings.additionnalFilters[filterKey] === 'string') {
@@ -619,12 +617,12 @@
           }
         }
       }
-
+      
       return data;
     },
     /**
      * Format a string
-     *
+     * 
      * '{0} {1}' (first, second)
      * => first second
      */
@@ -648,23 +646,23 @@
       return this.stringFormat(message, parameters);
     }
   };
-
+  
   CentreonSelect2.prototype = {
     /**
      * Action add nice scroll
      */
     addNiceScroll: function () {
       this.internal.niceScroll = this.internal.$elem.next('.select2-container')
-          .find('ul.select2-selection__rendered')
-          .niceScroll(
-              {
-                cursorcolor: '#818285',
-                cursoropacitymax: 0.6,
-                cursorwidth: 3,
-                horizrailenabled: true,
-                autohidemode: true
-              }
-          );
+        .find('ul.select2-selection__rendered')
+        .niceScroll(
+          {
+            cursorcolor: '#818285',
+            cursoropacitymax: 0.6,
+            cursorwidth: 3,
+            horizrailenabled: true,
+            autohidemode: true
+          }
+        );
     },
     /**
      * Action remove nice scroll
@@ -673,7 +671,7 @@
       this.internal.niceScroll.remove();
     }
   };
-
+  
   $.fn.centreonSelect2 = function (options) {
     var args = Array.prototype.slice.call(arguments, 1);
     var settings = $.extend({}, $.fn.centreonSelect2.defaults, options);
@@ -689,8 +687,9 @@
       if (typeof options === "string") {
         methodReturn = data[options].apply(data, args);
       }
+
+      return (methodReturn === undefined) ? $set : methodReturn;
     });
-    return (methodReturn === undefined) ? $set : methodReturn;
   };
 
   $.fn.centreonSelect2.defaults = {
