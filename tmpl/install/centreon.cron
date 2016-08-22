@@ -24,3 +24,7 @@ CRONTAB_EXEC_USER=""
 
 # Cron for knowledge base
 */5 * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/centKnowledgeSynchronizer.php >> @CENTREON_LOG@/knowledgebase.log 2>&1
+
+##########################
+# Cron for Centreon-Backup
+30 3 * * * root @INSTALL_DIR_CENTREON@/cron/centreon-backup.pl >> @CENTREON_LOG@/centreon-backup.log 2&>1
