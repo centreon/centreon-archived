@@ -1238,10 +1238,10 @@ VALUES
 ('backup_configuration_files', '1'),
 ('backup_database_centreon', '1'),
 ('backup_database_centreon_storage', '1'),
+('backup_database_type', '1'),
+('backup_database_level', '0'),
 ('backup_directory', '/var/backup'),
 ('backup_tmp_directory', '/tmp/backup'),
 ('backup_retention', '5'),
-('backup_gzip', '/usr/bin/gzip'),
-('backup_tar', '/usr/bin/tar'),
 ('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
 ('backup_zend_conf', '/etc/php.d/zendguard.ini');

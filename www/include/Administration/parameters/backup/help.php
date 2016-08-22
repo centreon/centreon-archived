@@ -22,7 +22,11 @@ $help['tip_backup_database_centreon_storage'] = dgettext(
 );
 $help['tip_backup_database_type'] = dgettext(
     'help',
-    'Backup type for centreon_storage database : full or partial. If partial, backup is done on last partition of partitioned tables'
+    'Backup type for centreon_storage database : mysqldump or LVM snapshot (need available space on MySQL LVM)'
+);
+$help['tip_backup_database_level'] = dgettext(
+    'help',
+    'Backup level for centreon_storage database : full or partial. If partial, backup is done on last partition of partitioned tables'
 );
 $help['tip_backup_directory'] = dgettext(
     'help',
@@ -43,4 +47,20 @@ $help['tip_backup_mysql_conf'] = dgettext(
 $help['tip_backup_zend_conf'] = dgettext(
     'help',
     'Zend configuration file path (i.e. /etc/php.d/zendguard.ini)'
+);
+$help['tip_backup_export_scp_enabled'] = dgettext(
+    'help',
+    'Use SCP to copy backup on remote host'
+);
+$help['tip_backup_export_scp_user'] = dgettext(
+    'help',
+    'Remote user used by SCP'
+);
+$help['tip_backup_export_scp_host'] = dgettext(
+    'help',
+    'Remote host to copy by SCP'
+);
+$help['tip_backup_export_scp_directory'] = dgettext(
+    'help',
+    'Remote directory to copy by SCP'
 );
