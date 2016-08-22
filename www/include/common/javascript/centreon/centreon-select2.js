@@ -345,9 +345,11 @@
       var self = this;
       var $validButton = $('<button>')
           .addClass('btc bt_success')
+          .attr('type', 'button')
           .text(this.translate('Ok'));
       var $cancelButton = $('<button>')
           .addClass('btc bt_default')
+          .attr('type', 'button')
           .text(this.translate('Cancel'));
 
       if (self.confirmBox !== null) {
@@ -399,7 +401,15 @@
       });
 
       /* Open the popin */
-      self.confirmBox.centreonPopin({open: true});
+      self.confirmBox.centreonPopin(
+          {
+            open: true,
+            onClose: function () {
+              self.confirmBox.remove();
+              self.confirmBox = null;
+            }
+          }
+      );
     },
     /**
      * Close the confirm box
@@ -411,8 +421,6 @@
         return;
       }
       this.confirmBox.centreonPopin('close');
-      this.confirmBox.remove();
-      this.confirmBox = null;
     },
     /**
      * Select all elements matching to the search
