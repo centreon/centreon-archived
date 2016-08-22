@@ -817,7 +817,8 @@ function updateBackupConfigData($db, $form, $centreon)
     $ret = $form->getSubmitValues();
 
     $radiobutton = array(
-        'backup_enabled'
+        'backup_enabled',
+        'backup_database_type'
     );
     foreach ($radiobutton as $value) {
         $ret[$value] = isset($ret[$value]) && isset($ret[$value][$value]) && $ret[$value][$value] ? 1 : 0;
