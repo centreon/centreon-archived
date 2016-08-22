@@ -429,6 +429,14 @@ log "INFO" "$(gettext "Change right for dashboardBuilder")"
 ${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right for dashboardBuilder")"
 
+log "INFO" "$(gettext "Change right for centreon-backup.pl")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-backup.pl >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for centreon-backup.pl")"
+
+log "INFO" "$(gettext "Change right for centreon-backup-mysql.sh")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-backup-mysql.sh >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for centreon-backup-mysql.sh")"
+
 ## Logrotate
 log "INFO" "$(gettext "Change macros for centreon.logrotate")"
 ${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
