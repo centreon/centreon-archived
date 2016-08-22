@@ -78,13 +78,17 @@ class SelectAllSelect2Context extends CentreonContext
         $selectAll->press();
 
         //$this->getSession()->wait(1000);
-
+/*
         $this->spin(
             function ($context) {
                 return $context->getSession()->getPage()->has('css', '#confirmcommand_id');
             },
             10
         );
+        */
+
+sleep(2);
+
     }
 
     /**
@@ -92,7 +96,7 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function iValidateSelectAllConfirmBox()
     {
-        $confirmButton = $this->assertFind('css', '#confirmcommand_id .btc.bt_success');
+        $confirmButton = $this->assertFind('css', '.popin-wrapper .button_group_center .btc.bt_success');
         $confirmButton->click();
 
         $this->spin(
@@ -108,12 +112,12 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function iCancelSelectAllConfirmBox()
     {
-        $cancelButton = $this->assertFind('css', '#confirmcommand_id .btc.bt_default');
+        $cancelButton = $this->assertFind('css', '.popin-wrapper .button_group_center .btc.bt_default');
         $cancelButton->click();
 
         $this->spin(
             function ($context) {
-                return !$context->getSession()->getPage()->has('css', '#confirmcommand_id');
+                return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
             },
             10
         );
@@ -124,12 +128,13 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function iExitSelectAllConfirmBox()
     {
-        $exitButton = $this->assertFind('css', '#confirmcommand_id img');
+        $exitButton = $this->assertFind('css', '.centreon-popin a.close img');
         $exitButton->click();
+
 
         $this->spin(
             function ($context) {
-                return !$context->getSession()->getPage()->has('css', '#confirmcommand_id');
+                return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
             },
             10
         );
