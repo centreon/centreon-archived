@@ -412,13 +412,16 @@ ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
     $TMP_DIR/src/cron/downtimeManager.php > $TMP_DIR/work/cron/downtimeManager.php
 check_result $? "$(gettext "Change macros for downtimeManager.php")"
 
+cp -f $TMP_DIR/work/cron/downtimeManager.php \
+    $TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
+
 log "INFO" "$(gettext "Change macros for centreon-backup.pl")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
     $TMP_DIR/src/cron/centreon-backup.pl > $TMP_DIR/work/cron/centreon-backup.pl
 check_result $? "$(gettext "Change macros for centreon-backup.pl")"
 
-cp -f $TMP_DIR/work/cron/downtimeManager.php \
-    $TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
+cp -f $TMP_DIR/work/cron/centreon-backup.pl \
+    $TMP_DIR/final/cron/centreon-backup.pl >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
