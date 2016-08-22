@@ -20,6 +20,10 @@ $help['tip_backup_database_centreon_storage'] = dgettext(
     'help',
     'Backup centreon_storage database'
 );
+$help['tip_backup_database_type'] = dgettext(
+    'help',
+    'Backup type for centreon_storage database : full or partial. If partial, backup is done on last partition of partitioned tables'
+);
 $help['tip_backup_directory'] = dgettext(
     'help',
     'Directory where backups will be stored'
@@ -31,14 +35,6 @@ $help['tip_backup_tmp_directory'] = dgettext(
 $help['tip_backup_retention'] = dgettext(
     'help',
     'Backup retention (in days)'
-);
-$help['tip_backup_gzip'] = dgettext(
-    'help',
-    'Gzip binary file path)'
-);
-$help['tip_backup_tar'] = dgettext(
-    'help',
-    'Tar binary file path'
 );
 $help['tip_backup_mysql_conf'] = dgettext(
     'help',

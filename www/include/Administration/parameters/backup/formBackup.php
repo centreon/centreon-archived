@@ -62,28 +62,30 @@ $backupEnabled[] = HTML_QuickForm::createElement('radio', 'backup_enabled', null
 $backupEnabled[] = HTML_QuickForm::createElement('radio', 'backup_enabled', null, _("No"), '0');
 $form->addGroup($backupEnabled, 'backup_enabled', _("Backup enabled"), '&nbsp;');
 $form->setDefaults(array('backup_enabled'=>'0'));
-$form->addElement('checkbox', 'backup_configuration_files', _("Backup configuration files"));
-$form->addElement('checkbox', 'backup_database_centreon', _("Backup database centreon"));
-$form->addElement('checkbox', 'backup_database_centreon_storage', _("Backup database centreon_storage"));
 $form->addElement('text', 'backup_backup_directory', _("Backup directory"), $attrsText);
 $form->addRule('backup_backup_directory', _("Mandatory field"), 'required');
 $form->addElement('text', 'backup_tmp_directory', _("Temporary directory"), $attrsText);
 $form->addRule('backup_tmp_directory', _("Mandatory field"), 'required');
+
+
+/*
+ * Database Options
+ */
+$form->addElement('checkbox', 'backup_database_centreon', _("Backup database centreon"));
+$form->addElement('checkbox', 'backup_database_centreon_storage', _("Backup database centreon_storage"));
+$backupDatabaseType = array();
+$backupDatabaseType[] = HTML_QuickForm::createElement('radio', 'backup_database_type', null, _("Partial"), '0');
+$backupDatabaseType[] = HTML_QuickForm::createElement('radio', 'backup_database_type', null, _("Full"), '1');
+$form->addGroup($backupDatabaseType, 'backup_database_type', _("Backup type"), '&nbsp;');
+$form->setDefaults(array('backup_database_type'=>'1'));
 $form->addElement('text', 'backup_retention', _("Backup retention"), $attrsText2);
 $form->addRule('backup_retention', _("Mandatory field"), 'required');
 $form->addRule('backup_retention', _('Must be a number'), 'numeric');
 
 /*
- * Binary Options
+ * Configuration Files Options
  */
-$form->addElement('text', 'backup_gzip', _("gzip binary path"), $attrsText);
-$form->addRule('backup_gzip', _("Mandatory field"), 'required');
-$form->addElement('text', 'backup_tar', _("tar binary path"), $attrsText);
-$form->addRule('backup_tar', _("Mandatory field"), 'required');
-
-/*
- * Extra Options
- */
+$form->addElement('checkbox', 'backup_configuration_files', _("Backup configuration files"));
 $form->addElement('text', 'backup_mysql_conf', _("MySQL configuration file path"), $attrsText);
 $form->addElement('text', 'backup_zend_conf', _("Zend configuration file path"), $attrsText);
 
