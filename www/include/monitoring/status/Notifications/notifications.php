@@ -64,19 +64,30 @@ $host_class_label = array(0 => "success", 1 => "error", 2 => "alert");
 $sql = "SELECT name, description, s.state
         FROM services s, hosts h %s
         WHERE h.host_id = s.host_id
+        AND description NOT LIKE 'meta_%%'
+        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        %s
+        UNION
+        SELECT 'Meta Service', s.display_name, s.state
+        FROM services s, hosts h %s
+        WHERE h.host_id = s.host_id
+        AND description LIKE 'meta_%%'
         AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
         %s
         UNION
         SELECT name, NULL, h.state
         FROM hosts h %s
         WHERE h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
-        %s";
+        %s
+        AND name != '_Module_Meta'";
 if ($obj->is_admin) {
-    $sql = sprintf($sql, "", "", "", "");
+    $sql = sprintf($sql, "", "", "", "", "", "");
 } else {
     $sql = sprintf(
         $sql,
-        ", centreon_acl acl",
+	    ", centreon_acl acl",
+	    "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
+		", centreon_acl acl",
         "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
         ", centreon_acl acl",
         "AND acl.host_id = h.host_id" . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr)
