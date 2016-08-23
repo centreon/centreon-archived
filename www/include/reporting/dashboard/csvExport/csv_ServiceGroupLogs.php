@@ -46,12 +46,19 @@ require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
 include_once _CENTREON_PATH_ . "www/include/reporting/dashboard/DB-Func.php";
 
-session_start();
 /*
  * DB Connexion
  */
 $pearDB    = new CentreonDB();
 $pearDBO    = new CentreonDB("centstorage");
+
+if (!isset($_SESSION["centreon"])) {
+    CentreonSession::start();
+    if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+        print "Bad Session";
+        exit();
+    }
+}
 
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
