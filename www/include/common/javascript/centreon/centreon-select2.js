@@ -420,16 +420,19 @@
       var search = this.$elem.data()
         .select2.$container.find('.select2-search__field')
         .val();
+      var data = self.ajaxData({
+        term: search
+      });
       var selectedElements = [];
       var matchExp = new RegExp('.*' + search + '.*', 'i');
+      delete data.page_limit;
+      delete data.page;
     
       if (this.remoteData) {
         /* Execute select all for ajax */
         $.ajax({
           url: self.settings.select2.ajax.url,
-          data: {
-            q: search
-          },
+          data: data,
           success: function (data) {
             var selectedValues = [];
             var selectedElements = [];
