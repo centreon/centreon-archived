@@ -8,7 +8,7 @@ use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\HostConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
 
-class PartitioningContext extends CentreonContext
+class BackupContext extends CentreonContext
 {
     private $hostName;
     private $serviceName;
@@ -16,31 +16,29 @@ class PartitioningContext extends CentreonContext
     public function __construct()
     {
         parent::__construct();
-        $this->hostName = 'RecoveryNotificationDelayTestHost';
-        $this->serviceName = 'RecoveryNotificationDelayTestService';
     }
 
     /**
-     *  @When I am on database informations page
+     * @When I check centreon scheduled task
      */
-    public function iAmOnDatabaseInformationsPage()
+    public function iCheckCentreonScheduledTask()
     {
-        $this->visit('main.php?p=50503');
-
-        $this->spin(function ($context) {
-            return $context->getSession()->getPage()->has('named', array('id_or_name', 'database_informations'));
-        });
+        try {
+            $this->container->execute('ls /etc/cron.d/centreon', 'web', true);
+        } catch (\Exception $e) {
+            throw new \Exception('Centreon scheduled task does not exist');
+        }
     }
 
     /**
-     *  @Then partitioning informations are displayed
+     * @Then backup is scheduled
      */
-    public function partitioningInformationsAreDisplayed()
+    public function backupIsScheduled()
     {
-        $this->spin(function ($context) {
-            return ($context->getSession()->getPage()->has('named', array('id_or_name', 'tab1')) &&
-                $context->getSession()->getPage()->has('named', array('id_or_name', 'tab2')));
-        });
+        $cron = $this->container->execute('cat /etc/cron.d/centreon', 'web', true);
+        if (!preg_match('/centreon-backup.pl/m', $cron['output'])) {
+            throw new \Exception('centreon-backup is not scheduled');
+        }
     }
 }
 

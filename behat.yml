@@ -62,3 +62,8 @@ default:
       paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
       contexts:
         - DisableFieldsOnBlockedObjectsContext
+
+    backup:
+          paths: [ %paths.base%/features/Backup.feature ]
+          contexts:
+            - BackupContext

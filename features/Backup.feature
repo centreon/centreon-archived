@@ -1,12 +1,11 @@
-Feature: Database partitioning
+Feature: Centreon backup
     As a Centreon user
-    I want to clean database tables quickly
-    To keep it easy to maintain
+    I want to backup my data
+    To keep safe in case of failure
 
     Background:
         Given I am logged in a Centreon server
 
-    Scenario: Database partitioning informations
-        When I am on database informations page
-        Then partitioning informations are displayed
-
+    Scenario: Scheduled backup
+        When I check centreon scheduled task
+        Then backup is scheduled
