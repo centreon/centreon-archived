@@ -26,5 +26,6 @@ $help['tip_knowledge_database_prefix'] = dgettext(
 );
 $help['tip_knowledge_wiki_url'] = dgettext(
     'help',
-    "Knowledge wiki url."
+    "Knowledge wiki url. "
+    ."Exemple: http://wiki/mywiki"
 );
