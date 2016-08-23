@@ -332,7 +332,9 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.esi_icon_image.label}</td><td class="FormRowValue">{$form.esi_icon_image.html}&nbsp;&nbsp;<img id='esi_icon_image_img' src='./img/blank.gif'></td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="icon_image_alt"> {$form.esi_icon_image_alt.label}</td><td class="FormRowValue">{$form.esi_icon_image_alt.html}</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
+        {if $form.geo_coords.label}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
+        {/if}
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.furtherInfos}</h4>
