@@ -33,3 +33,8 @@ VALUES
 ('backup_retention', '7'),
 ('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
 ('backup_zend_conf', '/etc/php.d/zendguard.ini');
+
+-- Insert KB configuration
+INSERT INTO `options` (`key`, `value`) VALUES ('kb_db_name', ''), ('kb_db_user', ''), ('kb_db_password', ''), ('kb_db_host', ''), ('kb_db_prefix', ''), ('kb_WikiURL', '');
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Knowledge Base', '501', '50133', 90, 1, './include/Administration/parameters/parameters.php', '&o=knowledgeBase' , NULL , '1', '1', NULL , NULL , NULL);
+

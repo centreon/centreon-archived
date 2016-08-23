@@ -18,14 +18,11 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
     public function aBlockedObjectTemplate()
     {
         $newHostTemplate = new HostTemplateEditPage($this);
-        $this->getSession()->getPage()->find('css' , '#macro_add p')->click();
-        sleep(2);
         $newHostTemplate->setProperties(array(
             'name' => 'myHostTemplate',
             'alias' => 'myAlias',
             'address' => '127.0.0.1',
-            'macro-name' => 'macro1',
-            'macro-value' => '001'
+            'macros' => array('macro1' => '001')
         ));
 
         $newHostTemplate->save();
@@ -40,7 +37,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
             throw new \Exception('the host template' . $hostTemplate . 'is not locked');
         };
     }
-    
+
     /**
      * @When i open the form
      */
