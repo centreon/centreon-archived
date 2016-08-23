@@ -7,7 +7,6 @@
 require_once "/etc/centreon/centreon.conf.php";
 $centreon_path = "/usr/share/centreon/";
 $module_path = $centreon_path . "www/class/centreon-knowledge/";
-require_once $centreon_path . "config/wiki.conf.php";
 require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $module_path . "procedures.class.php";
 require_once $module_path . "procedures_DB_Connector.class.php";

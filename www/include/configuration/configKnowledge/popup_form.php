@@ -36,8 +36,8 @@
  *
  */
 
-    require_once $centreon_path."/config/wiki.conf.php";
-	require_once "$etc_centreon/centreon.conf.php";
+	$centreon_path = realpath(dirname(__FILE__) . '/../../../../');
+	require_once $centreon_path."/config/centreon.config.php";
 
 	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "www/include/configuration/configKnowledge/".PATH_SEPARATOR . $centreon_path."www/class/".PATH_SEPARATOR . $centreon_path."www/");
 
@@ -47,17 +47,20 @@
 	require_once "class/centreonLog.class.php";
 	require_once "class/centreonDB.class.php";
 
-	$pearDB 	= new CentreonDB();
+	$pearDB = new CentreonDB();
+
+	$conf = getWikiConfig($pearDB);
+
 	if (isset($_GET["session_id"]) && $_GET["session_id"] != "") {
 		$path = "core/display/";
-        require_once $centreon_path."/config/wiki.conf.php";
+		
 		require_once "centreon-knowledge/procedures_DB_Connector.class.php";
 		require_once "centreon-knowledge/procedures.class.php";
 
 		/*
 		 * Init procedures Object
 		 */
-		$proc = new procedures(3, $db_name, $db_user, $db_host, $db_password, $pearDB);
+		$proc = new procedures(3, $conf['kb_db_user'], $conf['kb_db_host'], $conf['kb_db_password'], $pearDB, $conf['kb_db_prefix']);
 		$proc->setHostInformations();
 		$proc->setServiceInformations();
 		$wikiContent = $proc->getProcedures();
