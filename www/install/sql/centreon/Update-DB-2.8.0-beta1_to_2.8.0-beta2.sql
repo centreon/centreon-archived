@@ -28,8 +28,8 @@ VALUES
 ('backup_database_centreon_storage', '1'),
 ('backup_database_type', '1'),
 ('backup_database_level', '0'),
-('backup_directory', '/var/backup'),
+('backup_backup_directory', '/var/backup'),
 ('backup_tmp_directory', '/tmp/backup'),
-('backup_retention', '5'),
+('backup_retention', '7'),
 ('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
 ('backup_zend_conf', '/etc/php.d/zendguard.ini');
