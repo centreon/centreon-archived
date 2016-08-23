@@ -182,7 +182,8 @@ INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topo
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Services', '610', '61002', '10', '36', './include/configuration/configKnowledge/display-services.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Service Templates', '610', '61004', '20', '36', './include/configuration/configKnowledge/display-serviceTemplates.php', NULL , NULL , '1', '1', NULL , NULL , NULL);
 
-
+-- Add backup configuration page
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Backup',501,50165,90,1,'./include/Administration/parameters/parameters.php','&o=backup','0','0','1',NULL,NULL,NULL,'1');
 
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;

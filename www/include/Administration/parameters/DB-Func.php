@@ -812,6 +812,38 @@ function updateCASConfigData($gopt_id = null)
     $centreon->initOptGen($pearDB);
 }
 
+function updateBackupConfigData($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+
+    $radiobutton = array(
+        'backup_enabled',
+        'backup_database_type',
+        'backup_database_level',
+        'backup_export_scp_enabled'
+    );
+    foreach ($radiobutton as $value) {
+        $ret[$value] = isset($ret[$value]) && isset($ret[$value][$value]) && $ret[$value][$value] ? 1 : 0;
+    }
+
+    $checkbox = array(
+        'backup_configuration_files',
+        'backup_database_centreon',
+        'backup_database_centreon_storage'
+    );
+    foreach ($checkbox as $value) {
+        $ret[$value] = isset($ret[$value]) && $ret[$value] ? 1 : 0;
+    }
+
+    foreach ($ret as $key => $value) {
+        if (preg_match('/^backup_/', $key)) {
+            updateOption($db, $key, $value);
+        }
+    }
+
+    $centreon->initOptGen($db);
+}
+
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
@@ -823,5 +855,4 @@ function updateKnowledgeBaseData($db, $form, $centreon)
     }
 
     $centreon->initOptGen($db);
-
 }

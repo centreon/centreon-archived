@@ -1230,3 +1230,18 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
 INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VALUES
 ('en', 'English', 'en.png'),
 ('fr', 'French', 'fr.png');
+
+-- Insert Centreon Backup base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+('backup_enabled', '0'),
+('backup_configuration_files', '1'),
+('backup_database_centreon', '1'),
+('backup_database_centreon_storage', '1'),
+('backup_database_type', '1'),
+('backup_database_level', '0'),
+('backup_backup_directory', '/var/backup'),
+('backup_tmp_directory', '/tmp/backup'),
+('backup_retention', '7'),
+('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
+('backup_zend_conf', '/etc/php.d/zendguard.ini');
