@@ -66,6 +66,8 @@ $help["notification_interval"] = dgettext("help", "Define the number of \"time u
 $help["notification_period"] = dgettext("help", "Specify the time period during which notifications of events for this service can be sent out to contacts. If a state change occurs during a time which is not covered by the time period, no notifications will be sent out.");
 $help["notification_options"] = dgettext("help", "Define the states of the service for which notifications should be sent out. If you specify None as an option, no service notifications will be sent out. If you do not specify any notification options, monitoring engine will assume that you want notifications to be sent out for all possible states.");
 $help["first_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the first problem notification when this service enters a non-OK state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will start sending out notifications immediately.");
+$help["recovery_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the recovery notification when this host enters a non-UP state. The default time unit is 0 (this number will mean multiples of 1 minute). If you set this value to 0, monitoring engine will start sending out notifications immediately.");
+$help['use_only_contacts_from_host'] = dgettext("If this option is enabled, use host's notification parameters instead of service or from  template of service parameters inherited");
 
 /*
  * Relations
@@ -110,8 +112,8 @@ $help["notes"] = dgettext("help", "Define an optional string of notes pertaining
 $help["action_url"] = dgettext("help", "Define an optional URL that can be used to provide more actions to be performed on the service. You will see the link to the action URL in the service details.");
 $help["icon_image"] = dgettext("help", "Define the image that should be associated with this service here. This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.");
 $help["icon_image_alt"] = dgettext("help", "Define an optional string that is used in the alternative description of the icon image.");
-
-$help['criticality_id'] = dgettext("help", "Severity level");
+$help['criticality_id'] = dgettext("help", "Severity level use to sort issue in Monitoring menu.");
+$help["geo_coords"] = dgettext("help", "Geographical coordinates use by Centreon Map module to position element on map. Define \"Latitude,Longitude\", for example for Paris coordinates set \"48.51,2.20\"");
 
 /*
  * Macros
