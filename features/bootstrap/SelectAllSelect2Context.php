@@ -78,14 +78,16 @@ class SelectAllSelect2Context extends CentreonContext
         $selectAll->press();
 
         //$this->getSession()->wait(1000);
-
+/*
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
+                return $context->getSession()->getPage()->has('css', '#confirmcommand_id');
             },
             10
         );
+        */
 
+sleep(2);
 
     }
 

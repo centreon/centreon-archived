@@ -62,8 +62,3 @@ default:
       paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
       contexts:
         - DisableFieldsOnBlockedObjectsContext
-
-    select2_with_enter:
-      paths: [ %paths.base%/features/Select2WithEnter.feature ]
-      contexts:
-        - Select2WithEnterContext
