@@ -16,8 +16,9 @@ This documentation is available only in english.
 Permissions
 -----------
 
-To do API calls from a specific Centreon user, you need to have permission on the API. You can configure that on the menu *Administration > ACL > API rest*
-
+To do API calls from a specific Centreon user, you need to have permission on the API.
+You have to edit user settings on the menu **Configuration > Users > Contacts/Users**,
+edit user and on second tab check box **Reach API**.
 
 
 Authentification
