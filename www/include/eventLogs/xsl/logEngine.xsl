@@ -126,8 +126,8 @@
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/d"/></td>
-			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/P"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/t"/></td>
+			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/P"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/o"/></td>
 		</tr>
 		<xsl:for-each select="//line">
