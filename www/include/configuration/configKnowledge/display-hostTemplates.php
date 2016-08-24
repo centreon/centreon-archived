@@ -80,11 +80,11 @@
 	require_once "HTML/QuickForm/advmultiselect.php";
 	require_once "HTML/QuickForm/Renderer/ArraySmarty.php";
 
-
-	require_once $centreon_path."/config/wiki.conf.php";
 	require_once $centreon_path."/www/class/centreon-knowledge/procedures_DB_Connector.class.php";
 	require_once $centreon_path."/www/class/centreon-knowledge/procedures.class.php";
 
+	$conf = getWikiConfig($pearDB);
+	$WikiURL = $conf['kb_wiki_url'];
 
 	/*
 	 * Smarty template Init
@@ -101,7 +101,7 @@
 	$status = array(0=>"<font color='orange'> "._("No wiki page defined")." </font>", 1=>"<font color='green'> "._("Wiki page defined")." </font>");
 	$line = array(0 => "list_one", 1 => "list_two");
 
-	$proc = new procedures(3, $db_name, $db_user, $db_host, $db_password, $pearDB, $db_prefix);
+	$proc = new procedures(3, $conf['kb_db_name'], $conf['kb_db_user'], $conf['kb_db_host'], $conf['kb_db_password'], $pearDB, $conf['kb_db_prefix']);
 	$proc->setHostInformations();
 	$proc->setServiceInformations();
 

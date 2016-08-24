@@ -27,11 +27,16 @@ class procedures_Proxy  {
 		$this->sflag = 0;
 
         $centreon_path = realpath(dirname(__FILE__) . '/../../../');
-        require_once $centreon_path."/config/wiki.conf.php";
-		require_once "$etc_centreon/centreon.conf.php";
+		require_once $centreon_path."/config/centreon.config.php";
 
-		$this->wikiURL = $WikiURL;
-		$this->proc = new procedures(3, $db_name, $db_user, $db_host, $db_password, $this->DB, $db_prefix);
+		$modules_path = $centreon_path . "/www/include/configuration/configKnowledge/";
+		require_once $modules_path . 'functions.php';
+
+		$conf = getWikiConfig($this->DB);
+		$WikiURL = $conf['kb_wiki_url'];
+
+		$this->wikiUrl = $WikiURL;
+		$this->proc = new procedures(3, $conf['kb_db_name'], $conf['kb_db_user'], $conf['kb_db_host'], $conf['kb_db_password'], $this->DB, $conf['kb_db_prefix']);
 
 		if (isset($host_name)) {
 			if (isset($service_description))
@@ -51,7 +56,7 @@ class procedures_Proxy  {
 		 * Check if host has a procedure directly on Host
 		 */
 		if (isset($procList["Host:".$host_name])) {
-			$this->url = $this->wikiURL."/index.php?title=Host:".$host_name;
+			$this->url = $this->wikiUrl."/index.php?title=Host:".$host_name;
 			return ;
 		}
 

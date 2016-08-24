@@ -415,6 +415,14 @@ check_result $? "$(gettext "Change macros for downtimeManager.php")"
 cp -f $TMP_DIR/work/cron/downtimeManager.php \
     $TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
 
+log "INFO" "$(gettext "Change macros for centreon-backup.pl")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+    $TMP_DIR/src/cron/centreon-backup.pl > $TMP_DIR/work/cron/centreon-backup.pl
+check_result $? "$(gettext "Change macros for centreon-backup.pl")"
+
+cp -f $TMP_DIR/work/cron/centreon-backup.pl \
+    $TMP_DIR/final/cron/centreon-backup.pl >> "$LOG_FILE" 2>&1
+
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
@@ -428,6 +436,14 @@ check_result $? "$(gettext "Change right for eventReportBuilder")"
 log "INFO" "$(gettext "Change right for dashboardBuilder")"
 ${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right for dashboardBuilder")"
+
+log "INFO" "$(gettext "Change right for centreon-backup.pl")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-backup.pl >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for centreon-backup.pl")"
+
+log "INFO" "$(gettext "Change right for centreon-backup-mysql.sh")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-backup-mysql.sh >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for centreon-backup-mysql.sh")"
 
 ## Logrotate
 log "INFO" "$(gettext "Change macros for centreon.logrotate")"

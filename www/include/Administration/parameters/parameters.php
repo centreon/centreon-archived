@@ -87,8 +87,14 @@ switch ($o) {
     case "centcore":
         require_once $path.'centcore/centcore.php';
         break;
+    case "knowledgeBase":
+        require_once $path.'knowledgeBase/formKnowledgeBase.php';
+        break;
     case "api":
         require_once $path.'api/api.php';
+        break;
+    case "backup":
+        require_once $path . 'backup/formBackup.php';
         break;
     default:
         require_once $path."general/form.php" ;

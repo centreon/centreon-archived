@@ -173,7 +173,11 @@ if (!is_null($host_id)) {
             " s.description as service_description, " .
             " s.notes_url, " .
             " s.notes, " .
-            " s.action_url, " .
+            " s.action_url, ";
+        if ($is_admin || isset($authorized_actions['service_display_command'])) {
+            $rq .= " s.command_line, ";
+        }
+        $rq .=  " i.name as instance_name " .
             " i.name as instance_name " .
             " FROM services s, hosts h, instances i " .
             " WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id " .
@@ -453,7 +457,7 @@ if (!is_null($host_id)) {
         $tpl->assign("m_mon_ticket", "Open Ticket");
         $tpl->assign("links", _("Links"));
         $tpl->assign("notifications", _("Notifications"));
-
+        $tpl->assign("m_mon_service_command_line", _("Executed Check Command Line"));
         $tpl->assign("m_mon_services_en_check_active", _("Active Checks"));
         $tpl->assign("m_mon_services_en_check_passif", _("Passive Checks"));
         $tpl->assign("m_mon_accept_passive", _("Passive Checks"));

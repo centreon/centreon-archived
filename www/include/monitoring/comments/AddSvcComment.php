@@ -108,7 +108,8 @@ if ($centreon->user->access->checkAction("service_comment")) {
 
     $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
     $selSv = $form->addElement('select', 'service_id', _("Service"), $services);
-    $form->addElement('checkbox', 'persistant', _("Persistent"));
+    $persistant = $form->addElement('checkbox', 'persistant', _("Persistent"));
+    $persistant->setValue('1');
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
     /*

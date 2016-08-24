@@ -45,30 +45,31 @@
 	 */
 
     $centreon_path = realpath(dirname(__FILE__) . '/../../../../');
-    require_once $centreon_path."/config/wiki.conf.php";
-	require_once "$etc_centreon/centreon.conf.php";
+	require_once $centreon_path."/config/centreon.config.php";
 
 	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "config/". PATH_SEPARATOR . $centreon_path."www/class/");
 
  	require_once "DB.php";
 
- 	require_once "wiki.conf.php";
+ 	//require_once "wiki.conf.php"; 
 	require_once "centreon-knowledge/procedures_DB_Connector.class.php";
 	require_once "centreon-knowledge/procedures.class.php";
 	require_once "centreonLog.class.php";
  	require_once "centreonDB.class.php";
 
-
-
-
+	$modules_path = $centreon_path . "/www/include/configuration/configKnowledge/";
+	require_once $modules_path . 'functions.php';
 
 
 	/*
 	 * Connect to centreon DB
 	 */
-	$pearDB 	= new CentreonDB();
+	$pearDB = new CentreonDB();
 
-	$proc = new procedures(3, $db_name, $db_user, $db_host, $db_password, $pearDB, $db_prefix);
+	$conf = getWikiConfig($pearDB);
+	$WikiURL = $conf['kb_wiki_url'];
+
+$proc = new procedures(3, $conf['kb_db_name'], $conf['kb_db_user'], $conf['kb_db_host'], $conf['kb_db_password'], $pearDB, $conf['kb_db_prefix']);
 
 	if (isset($_GET["template"]) && $_GET["template"] != "")
 		$proc->duplicate(htmlentities($_GET["template"], ENT_QUOTES), htmlentities($_GET["object"], ENT_QUOTES), htmlentities($_GET["type"], ENT_QUOTES));
