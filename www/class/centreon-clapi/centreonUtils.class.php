@@ -58,9 +58,9 @@ class CentreonUtils
         if (isset(self::$centreonPath)) {
             return self::$centreonPath;
         }
-        $db = Centreon_Db_Manager::factory('centreon');
+        $db = new \CentreonDB('centreon');
         $res = $db->query("SELECT `value` FROM options WHERE `key` = 'oreon_path'");
-        $row = $res->fetch();
+        $row = $res->fetchRow();
         self::$centreonPath = $row['value'];
         return self::$centreonPath = $row['value'];
     }
@@ -72,9 +72,9 @@ class CentreonUtils
      */
     public static function getCentreonDir()
     {
-        $db = Centreon_Db_Manager::factory('centreon');
+        $db = new \CentreonDB('centreon');
         $res = $db->query("SELECT `value` FROM options WHERE `key` = 'oreon_path' LIMIT 1");
-        $row = $res->fetch();
+        $row = $res->fetchRow();
         if (isset($row['value'])) {
             return $row['value'];
         }
@@ -118,10 +118,10 @@ class CentreonUtils
                         "AND img.img_path = '".$imagename."' ".
                         "AND dir.dir_name = '".$dirname."' " .
                         "LIMIT 1";
-        $db = Centreon_Db_Manager::factory('centreon');
+        $db = new \CentreonDB('centreon');
         $res = $db->query($query);
         $img_id = null;
-        $row = $res->fetch();
+        $row = $res->fetchRow();
         if (isset($row['img_id']) && $row['img_id']) {
             $img_id = $row['img_id'];
         }
