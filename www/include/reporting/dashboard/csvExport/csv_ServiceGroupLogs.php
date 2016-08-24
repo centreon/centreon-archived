@@ -72,6 +72,8 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
     get_error('need session id!');
 }
 
+$centreon = $oreon;
+
 isset($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUOTES, "UTF-8") : $id = "NULL";
 isset($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES, "UTF-8") : $id = $id;
 
