@@ -315,7 +315,7 @@ function apply_period() {
 
 function apply_period_engine() {
     var openid = document.getElementById('openid').innerHTML;
-    logEngine();
+    logsEngine();
 }
 
 var _limit = 30;
@@ -491,18 +491,30 @@ function logs(id, formu, type) {
         proc.transform("logView4xml");
     } else {
         var openid = document.getElementById('openid').innerHTML;
-        if (type == 'CSV') {
-            var _addr = './include/eventLogs/export/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) {
-                print "&search_host=".$search;
-} if (isset($search_service) && $search_service) {
-    print "&search_service=".$search_service;
-} ?>&export=1';
-        } else if (type == 'XML') {
-            var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) {
-                print "&search_host=".$search;
-} if (isset($search_service) && $search_service) {
-    print "&search_service=".$search_service;
-} ?>&export=1';
+        if (_engine == 0) {
+            if (type == 'CSV') {
+                var _addr = './include/eventLogs/export/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+
+                '&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+
+                '&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='
+                +EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) { print "&search_host=".$search;} if (isset($search_service) && $search_service) {
+                print "&search_service=".$search_service;} ?>&export=1';
+            } else if (type == 'XML') {
+                var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+
+                '&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+
+                '&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='
+                +EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) { print "&search_host=".$search; print "&search_host=".$search;
+                } if (isset($search_service) && $search_service) { print "&search_service=".$search_service; } ?>&export=1';
+            }
+        } else {
+            if (type == 'CSV') {
+                var _addr = './include/eventLogs/export/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
+                '&num='+_num+'&limit='+_limit+'&id=<?php echo $poller ?>&export=1';
+            } else if (type == 'XML') {
+                var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
+                '&num='+_num+'&limit='+_limit+'&id=<?php echo $poller ?>&export=1';
+            }
         }
         document.location.href = _addr;
     }
