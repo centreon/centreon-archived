@@ -178,7 +178,6 @@ if (!is_null($host_id)) {
             $rq .= " s.command_line, ";
         }
         $rq .=  " i.name as instance_name " .
-            " i.name as instance_name " .
             " FROM services s, hosts h, instances i " .
             " WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id " .
             " AND h.enabled = 1 " .
