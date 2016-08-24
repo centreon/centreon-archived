@@ -107,6 +107,12 @@
                                 <td class="ListColLeft ColPopup">{$m_mon_last_update}</td>
                                 <td class="ListColLeft ColPopup">{$service_data.last_update}</td>
                             </tr>
+                            {if $service_data.command_line}
+                            <tr class='list_one'>
+                                <td class="ListColLeft ColPopup">{$m_mon_service_command_line}</td>
+                                <td class="ListColLeft ColPopup">{$service_data.command_line}</td>
+                            </tr>
+                            {/if}
                         </table>
                     </td>
                 </tr>

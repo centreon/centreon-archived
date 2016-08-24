@@ -304,6 +304,7 @@ function listActions()
     $actions[] = "service_flap_detection";
     $actions[] = "service_passive_checks";
     $actions[] = "service_submit_result";
+    $actions[] = "service_display_command";
 
     # Hosts Actions
     $actions[] = "host_checks";
