@@ -119,6 +119,11 @@
       this.opened = false;
       this.$elem.hide();
       $('#centreonPopinOverlay').hide();
+
+      /* Execute callback if defined on settings */
+      if (typeof(this.settings.onClose) === 'function') {
+        this.settings.onClose();
+      }
     }
   };
   
@@ -145,6 +150,7 @@
     open: false,
     url : null,
     ajaxType : null,
-    postDatas : null
+    postDatas : null,
+    onClose: null
   };
 })(jQuery, window);
