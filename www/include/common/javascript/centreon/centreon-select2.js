@@ -409,6 +409,7 @@
         return;
       }
       this.confirmBox.centreonPopin('close');
+      this.confirmBox.close();
       this.confirmBox.remove();
       this.confirmBox = null;
     },
