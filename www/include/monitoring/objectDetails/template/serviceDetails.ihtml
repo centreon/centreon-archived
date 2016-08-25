@@ -10,11 +10,15 @@
                         <h3 style="color: #fff;">
                             <img src='./img/icons/service.png' style="vertical-align: middle;" class="ico-16"{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}> |
                             {$m_mon_services} {$svc_description}
+                            {if !$is_meta}
                             <p style="padding-left: 28px; font-size: 12px;float:right;">
                                 {$h.host_alias} | {$h.host_address}
                             </p>
+                            {/if}
                         </h3>
+                        {if !$is_meta}
                         <p style="margin-left: 30px;">{$h.host_name}</p>
+                        {/if}
                         {if $sv_ext_notes_url}
                             <a href="{$sv_ext_notes_url}" target="_blank">
                             <img src='./img/icons/link.png' class="ico-14"  style="vertical-align:middle;" title="{if $sv_ext_notes}{$sv_ext_notes}{else}{$sv_ext_notes_url}{/if}">
@@ -467,6 +471,8 @@
                         {/if}
                     </td>
                 </tr>
+
+                {if !$is_meta}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;">
                         <table class="ListTable table linkList">
@@ -502,6 +508,7 @@
                         </table>
                     </td>
                 </tr>
+                {/if}
 
                 <tr>
                     <td>
