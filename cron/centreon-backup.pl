@@ -55,8 +55,7 @@ sub print_help();
 sub print_usage();
 sub trim($);
 
-#my $CENTREON_ETC = '@CENTREON_ETC@';
-my $CENTREON_ETC = '/etc/centreon';
+my $CENTREON_ETC = '@CENTREON_ETC@';
 my @licfiles;
 
 # Require DB configuration files
