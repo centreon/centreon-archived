@@ -490,6 +490,24 @@ if (!is_null($host_id)) {
             $tpl->assign("aclAct", $authorized_actions);
         }
 
+        /* Define if the service is a metaservice */
+        $isMetaservice = false;
+        $serviceDescriptionDisplay = $svc_description;
+        $hostNameDisplay = $host_name;
+        if ($host_name == '_Module_Meta') {
+            $isMetaservice = true;
+            $meta_id = $service_id;
+            if (preg_match('/meta_(\d+)/', $svc_description, $matches)) {
+                $meta_id = $matches[1];
+            }
+            $tpl->assign("meta_id", $meta_id);
+
+            $hostNameDisplay = '';
+            $serviceDisplayName = $svcObj->getParameters($service_id, array('display_name'));
+            $serviceDescriptionDisplay = $serviceDisplayName['display_name'];
+        }
+        $tpl->assign("is_meta", $isMetaservice);
+
         $tpl->assign("p", $p);
         $tpl->assign("o", $o);
         $tpl->assign("en", $en);
@@ -517,8 +535,8 @@ if (!is_null($host_id)) {
         }
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$hskey]);
-        $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
-        $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
+        $tpl->assign("host_name", CentreonUtils::escapeSecure($hostNameDisplay));
+        $tpl->assign("svc_description", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 
@@ -636,18 +654,6 @@ if (!is_null($host_id)) {
         if (count($tools) > 0) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
-
-        /* Define if the service is a metaservice */
-        $isMetaservice = false;
-        if ($host_name == '_Module_Meta') {
-            $isMetaservice = true;
-            $meta_id = $service_id;
-            if (preg_match('/meta_(\d+)/', $svc_description, $matches)) {
-                $meta_id = $matches[1];
-            }
-            $tpl->assign("meta_id", $meta_id);
-        }
-        $tpl->assign("is_meta", $isMetaservice);
 
         $tpl->display("serviceDetails.ihtml");
     }
