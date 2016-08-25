@@ -27,4 +27,5 @@ CRONTAB_EXEC_USER=""
 
 ##########################
 # Cron for Centreon-Backup
-30 3 * * * root @INSTALL_DIR_CENTREON@/cron/centreon-backup.pl >> @CENTREON_LOG@/centreon-backup.log 2&>1
+30 3 * * * root @INSTALL_DIR_CENTREON@/cron/centreon-backup.pl >> @CENTREON_LOG@/centreon-backup.log 2>&1
+

@@ -28,6 +28,10 @@ class CentreonWithKnowledgeContext extends CentreonContext
     public function iAmLoggedInACentreonServerWithWikiInstalled()
     {
         $this->launchCentreonWebContainer('web_kb');
+        $this->container->waitForAvailableUrl(
+            'http://' . $this->container->getHost() . ':' .
+            $this->container->getPort(80, 'mediawiki') . '/index.php/Main_Page'
+        );
         $this->iAmLoggedIn();
     }
 

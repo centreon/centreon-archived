@@ -639,6 +639,18 @@ if (!is_null($host_id)) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
+        /* Define if the service is a metaservice */
+        $isMetaservice = false;
+        if ($host_name == '_Module_Meta') {
+            $isMetaservice = true;
+            $meta_id = $service_id;
+            if (preg_match('/meta_(\d+)/', $svc_description, $matches)) {
+                $meta_id = $matches[1];
+            }
+            $tpl->assign("meta_id", $meta_id);
+        }
+        $tpl->assign("is_meta", $isMetaservice);
+
         $tpl->display("serviceDetails.ihtml");
     }
 } else {

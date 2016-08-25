@@ -37,7 +37,6 @@
   
   function CentreonPopin(settings, $elem) {
     var self = this;
-    var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png" class="ico-18"></a>');
     var $newElem = $('<div></div>');
     self.settings = settings;
 
@@ -49,13 +48,7 @@
   
     self.$elem = $elem.parents('.centreon-popin').detach();
     self.$elem.appendTo('body');
-    
-    /* Append close button */
-    closeBtn.appendTo($elem);
-    closeBtn.on('click', function () {
-      self.close();
-    });
-    
+
     self.initOverlay();
     
     if(self.settings.url !== null){
@@ -77,7 +70,7 @@
         }
     }
   }
-  
+
   CentreonPopin.prototype = {
     initOverlay: function () {
       var self = this;
@@ -140,9 +133,8 @@
       if (typeof options === 'string') {
         methodReturn = data[options].apply(data, args);
       }
-      
-      return (methodReturn === undefined) ? $set : methodReturn;
     });
+    return (methodReturn === undefined) ? $set : methodReturn;
   };
   
   $.fn.centreonPopin.defaults = {
