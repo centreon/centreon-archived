@@ -38,10 +38,10 @@ if (!isset($centreon)) {
 }
 
 include_once("./class/centreonUtils.class.php");
-
 include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
+include_once( $centreon_path . "www/include/monitoring/objectDetails/common-func.php");
 
 /*
  * Create Object env
@@ -163,7 +163,8 @@ if (!is_null($host_id)) {
             " s.percent_state_change," .
             " s.notification_number AS current_notification_number," .
             " s.obsess_over_service," .
-            " s.check_type," .
+            " s.check_type," 
+            " s.check_command," .
             " s.state_type," .
             " s.latency as check_latency," .
             " s.execution_time as check_execution_time," .
@@ -173,11 +174,8 @@ if (!is_null($host_id)) {
             " s.description as service_description, " .
             " s.notes_url, " .
             " s.notes, " .
-            " s.action_url, ";
-        if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $rq .= " s.command_line, ";
-        }
-        $rq .=  " i.name as instance_name " .
+            " s.action_url, " .
+            " i.name as instance_name " .
             " FROM services s, hosts h, instances i " .
             " WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id " .
             " AND h.enabled = 1 " .
@@ -200,6 +198,10 @@ if (!is_null($host_id)) {
         }
         $DBRESULT->free();
         
+        if ($is_admin || isset($authorized_actions['service_display_command'])) {
+            $service_status[$hskey]["command_line"] = hidePasswordInCommand($service_status[$hskey]["check_command"], $service_status[$hskey]["service_id"]);
+        }
+
         $service_status[$hskey]["current_stateid"] = $service_status[$hskey]["current_state"];
         $service_status[$hskey]["current_state"] = $tab_status_service[$service_status[$hskey]["current_state"]];
 
@@ -274,7 +276,7 @@ if (!is_null($host_id)) {
          */
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $service_status[$hskey]['command_line'] = str_replace(' --', "\n\t--", $service_status[$hskey]['command_line']);
-        $service_status[$hskey]['performance_data'] = str_replace(' ', "\n'", $service_status[$hskey]['performance_data']);
+        $service_status[$hskey]['performance_data'] = str_replace(' \'', "\n'", $service_status[$hskey]['performance_data']);
         $service_status[$hskey]["status_color"] = $centreon->optGen["color_".strtolower($service_status[$hskey]["current_state"])];
         
         $service_status[$hskey]["status_class"] = $tab_class_service[strtolower($service_status[$hskey]["current_state"])];
