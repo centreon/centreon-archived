@@ -163,7 +163,7 @@ if (!is_null($host_id)) {
             " s.percent_state_change," .
             " s.notification_number AS current_notification_number," .
             " s.obsess_over_service," .
-            " s.check_type," 
+            " s.check_type," .
             " s.check_command," .
             " s.state_type," .
             " s.latency as check_latency," .
