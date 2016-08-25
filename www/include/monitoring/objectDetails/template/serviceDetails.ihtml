@@ -191,6 +191,7 @@
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
                         <table class="table ListTable linkList">
+                            {if !$is_meta}
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;">
                                     <h4>{$host_shortcut}</h4>
@@ -252,10 +253,24 @@
                                 </td>
                                 <td></td>
                             </tr>
+                            {else}
+                            <tr class='list_lvl_1'>
+                                <td class="FormHeader" style="border-bottom:1px solid #d1d2d4;">
+                                    <h4>{$serv_shortcut}</h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ColPopup">
+                                    {if $lcaTopo.60204 || $admin == 1}
+                                        <a href='./main.php?p=60204&o=c&meta_id={$meta_id}&o=c'>{$lnk_serv_config}</a>
+                                    {/if}
+                                </td>
+                            </tr>    
+                            {/if}
                         </table>
                     </td>
                 </tr>
-                {if $lcaTopo.20201 || $admin == 1}
+                {if !$is_meta && ($lcaTopo.20201 || $admin == 1)}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;" nowrap="nowrap">
                         <table class="table linkList">
