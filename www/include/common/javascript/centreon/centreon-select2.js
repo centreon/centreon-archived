@@ -351,6 +351,10 @@
           .addClass('btc bt_default')
           .attr('type', 'button')
           .text(this.translate('Cancel'));
+      var $closeButton = $('<a>')
+          .addClass('close')
+          .css('cursor', 'pointer')
+          .append('<img src="./img/icons/circle-cross.png" class="ico-18">');
 
       if (self.confirmBox !== null) {
         return;
@@ -373,11 +377,19 @@
               $('<div>')
                   .addClass('button_group_center')
                   .append($validButton)
+                  .append(" ")
                   .append($cancelButton)
-          );
+          )
+          .append($closeButton)
+      ;
 
       /* Add event on cancel button */
       $cancelButton.on('click', function() {
+        self.closeSelectAllBox();
+      });
+
+      /* Add event on close button */
+      $closeButton.on('click', function() {
         self.closeSelectAllBox();
       });
 
