@@ -394,6 +394,7 @@ if (!PEAR::isError($DBRESULT)) {
         if (!strncmp($data["name"], "_Module_Meta", strlen("_Module_Meta"))) {
             $data["real_name"] = $data["name"];
             $data["name"] = "Meta";
+            $data["host_state"] = "0";
         }
 
         if ($host_prev == $data["name"]) {
