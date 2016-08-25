@@ -44,8 +44,10 @@
                                 <td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;">{$service_data.long_plugin_output}</div></td>
                             </tr>
                             <tr class='list_one'>
-                                <td class="ListColLeft ColPopup">{$m_mon_performance_data}</td>
-                                <td class="ListColNoWrap">{$service_data.performance_data}</td>
+                                <td class="ListColLeft ColPopup" valign="top">{$m_mon_performance_data}</td>
+                                <td class="ListColNoWrap">
+                                    <pre>{$service_data.performance_data}</pre>
+                                </td>
                             </tr>
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_attempt}</td>
@@ -109,8 +111,10 @@
                             </tr>
                             {if $service_data.command_line}
                             <tr class='list_one'>
-                                <td class="ListColLeft ColPopup">{$m_mon_service_command_line}</td>
-                                <td class="ListColLeft ColPopup">{$service_data.command_line}</td>
+                                <td class="ListColLeft ColPopup" valign="top">{$m_mon_service_command_line}</td>
+                                <td class="ListColLeft ColPopup">
+                                    <pre>{$service_data.command_line}</pre>
+                                </td>
                             </tr>
                             {/if}
                         </table>
