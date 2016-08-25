@@ -559,9 +559,8 @@
       if (typeof options === "string") {
         methodReturn = data[options].apply(data, args);
       }
-
-      return (methodReturn === undefined) ? $set : methodReturn;
     });
+    return (methodReturn === undefined) ? $set : methodReturn;
   };
   
   $.fn.centreonGraph.defaults = {
