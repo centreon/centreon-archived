@@ -499,6 +499,11 @@ jQuery(function () {
       servicegroup: '#service_group_filter'
     }
   });
+  
+  /* Active drag and drop */
+  jQuery('.graphZone').sortable({
+    handle: '.title',
+  });
 });
 </script>
 {/literal}

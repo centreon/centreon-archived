@@ -2117,6 +2117,7 @@ textarea.default-textarea {
   font-weight: bold;
   width: calc(100% - 4px);
   padding: 0 2px;
+  cursor: move;
 }
 
 .graph .title .actions {
