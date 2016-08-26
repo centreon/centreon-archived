@@ -435,17 +435,19 @@ if (!PEAR::isError($DBRESULT)) {
             }
             $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], $hostNotesUrl)));
 
+            $hostObj = new CentreonHost($obj->DB);
+
             $hostActionUrl = "none";
             if ($data["h_action_url"]) {
                 $hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
-                $hostActionUrl = str_replace("\$HOSTALIAS\$", $data["alias"], $hostNotesUrl);
+                $hostActionUrl = str_replace("\$HOSTALIAS\$", $data["alias"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostActionUrl);
                 $hostActionUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data["instance_name"], "ns_ip_address"), $hostActionUrl);
             }
-            $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], $hostNotesUrl)));
+            $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], $hostActionUrl)));
 
             $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($data["h_notes"]));
             $obj->XML->writeElement("hico", $data["h_icon_images"]);
