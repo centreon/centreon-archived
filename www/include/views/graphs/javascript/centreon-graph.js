@@ -498,13 +498,15 @@
       var self = this;
       this.refresh = interval;
       
+      if (this.refreshEvent !== null) {
+        clearInterval(this.refreshEvent);
+        this.refreshEvent = null;
+      }
+      
       if (this.refresh > 0) {
         this.refreshEvent = setInterval(function () {
           self.refreshData();
         }, self.refresh * 1000);
-      } else if (this.refreshEvent !== null) {
-        clearInterval(this.refreshEvent);
-        this.refreshEvent = null;
       }
     },
     /**
