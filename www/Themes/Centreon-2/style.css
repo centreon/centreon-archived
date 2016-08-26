@@ -2117,6 +2117,7 @@ textarea.default-textarea {
   font-weight: bold;
   width: calc(100% - 4px);
   padding: 0 2px;
+  cursor: move;
 }
 
 .graph .title .actions {
@@ -2233,3 +2234,59 @@ textarea.default-textarea {
   background-position: right;
   background-repeat: no-repeat;
 }
+
+/* Refresh component for chart */
+.refresh {
+  margin: 0 6px 0 0;
+  padding: 0;
+  border: 1px solid #818285;
+  border-radius: 2px;
+  display: inline-block;
+  position: relative;
+  height: 16px;
+  cursor: pointer;
+}
+
+.refresh .icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.refresh .icon img {
+  margin: 1px;
+}
+
+.refresh .time {
+  line-height: 14px;
+  font-size: 12px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.refresh-list {
+  display: none;
+  position: absolute;
+  left: -1px;
+  top: 16px;
+  border: 1px solid #818285;
+  border-radius: 2px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 150;
+  background-color: #fff;
+}
+
+.refresh-list li {
+  padding: 2px 3px;
+  white-space: nowrap;
+}
+
+.refresh-list li:hover {
+  background-color: #5897fb;
+}
+
+.refresh-list.show {
+  display: block;
+}
+
