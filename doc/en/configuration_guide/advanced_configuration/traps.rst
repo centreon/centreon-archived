@@ -168,7 +168,7 @@ Configuration of the connection to the database
 -----------------------------------------------
 
 .. note::
-    Un a poller, the database access should be configure in **/etc/centreon/centreontrapd.pm** file.
+    On a poller, the database access should be configure in **/etc/centreon/centreontrapd.pm** file.
 
 It is possible of configure the file **/etc/centreon/conf.pm** in two ways:
 
