@@ -167,6 +167,9 @@ Here is an example of possible configuration of the file **/etc/centreon/centreo
 Configuration of the connection to the database
 -----------------------------------------------
 
+.. note::
+    Un a poller, the database access should be configure in **/etc/centreon/centreontrapd.pm** file.
+
 It is possible of configure the file **/etc/centreon/conf.pm** in two ways:
 
 * Retain the connection to the MySQL server database (necessary for the central server and possible for the satellite servers). Content of the file::
