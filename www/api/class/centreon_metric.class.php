@@ -87,7 +87,42 @@ class CentreonMetric extends CentreonWebService
 
         return $metrics;
     }
-    
+
+//        h.host_name
+//        s.service_description
+//        m.metric_id
+//        m.metric_name
+
+    protected function getListByService()
+    {
+//        if (false === isset($this->arguments['q'])) {
+//            $q = '';
+//        } else {
+//            $q = $this->arguments['q'];
+//        }
+
+        $query = "SELECT h.name, s.description, m.metric_id, m.metric_name
+                  FROM metrics m, hosts h, services s, index_data i
+                  WHERE m.index_id = i.id
+                  AND   h.host_id = i.host_id
+                  AND   s.service_id = i.service_id
+                  ORDER BY h.name, s.description, m.metric_name COLLATE utf8_general_ci";
+        $DBRESULT = $this->pearDBMonitoring->query($query);
+        $metrics = array();
+        while ($row = $DBRESULT->fetchRow()) {
+            $fullName = $row['name']." - ". $row['description']. " - ". $row['metric_name'];
+            $metrics[] = array(
+                'id' => $row['metric_id'],
+                'text' => $fullName
+            );
+        }
+        return array(
+            'items' => $metrics,
+            'total' => 10
+        );
+    }
+
+
     /**
      * Get metrics datas for a service
      *
@@ -376,7 +411,7 @@ class CentreonMetric extends CentreonWebService
                 )';
         return $this->executeQueryPeriods($query, $start, $end);
     }
-    
+
     /**
      * Execute a query for a period
      *
