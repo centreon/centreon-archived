@@ -1357,6 +1357,26 @@ table.ListTableSmallArg td {
 .list_lvl_1, .list_lvl_2 {
     vertical-align:middle;
 }
+.list_lvl_3 {
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 2px solid #fff;
+}
+
+.list_lvl_3 th, .list_lvl_3 td {
+    padding: 6px;
+    font-weight: normal;
+}
+
+.list_lvl_3 th {
+    color: #818285;
+}
+
+.list_lvl_3 th:first-child, .list_lvl_3 td:first-child {
+    width: 205px;
+    padding-left: 12px;
+}
+
 
 .ListColLvl2_name {padding-left:15px;}
 
