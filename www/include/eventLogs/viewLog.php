@@ -506,14 +506,27 @@ function logs(id, formu, type) {
                 } if (isset($search_service) && $search_service) { print "&search_service=".$search_service; } ?>&export=1';
             }
         } else {
+            var poller_value = jQuery("#poller_filter").val();
+            var args = "";
+            if (poller_value !== null) {
+                poller_value.each(function(val) {
+                    if (val !== " " && val !== "") {
+                        if (args !== "") {
+                            args += ",";
+                        }
+                        args += val;
+                    }
+                });
+            }
+
             if (type == 'CSV') {
                 var _addr = './include/eventLogs/export/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
                 '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
-                '&num='+_num+'&limit='+_limit+'&id=<?php echo $poller ?>&export=1';
+                '&num='+_num+'&limit='+_limit+'&id='+args+'&export=1'
             } else if (type == 'XML') {
                 var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
                 '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
-                '&num='+_num+'&limit='+_limit+'&id=<?php echo $poller ?>&export=1';
+                '&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
             }
         }
         document.location.href = _addr;
