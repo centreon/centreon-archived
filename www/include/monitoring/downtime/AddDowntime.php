@@ -145,6 +145,7 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     $form->addElement('text', 'start_time', '', array('size' => 5, 'class' => 'timepicker'));
     $form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
     $form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
+    $form->addElement('text','timezone_warning', _("*The timezone used is configured on your user settings"));
 
     $defaultDuration = 3600;    
     if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {

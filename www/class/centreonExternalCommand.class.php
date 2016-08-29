@@ -437,7 +437,10 @@ class CentreonExternalCommand
                 $start,
                 $this->GMT->getMyGTMFromUser($centreon->user->get_id())
             );
-            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
+            $end_time = $this->GMT->getUTCDateFromString(
+                $end,
+                $this->GMT->getMyGTMFromUser($centreon->user->get_id())
+            );
         } else {
             $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
             $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
