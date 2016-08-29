@@ -1173,6 +1173,92 @@ class CentreonHost
     }
 
     /**
+     * Get host template ids
+     *
+     * @param int $hostId The host or host template Id
+     * @return array
+     */
+    public function getHostTemplateIds($hostId) {
+        $hostTemplateIds = array();
+
+        $sql = "SELECT htr.host_tpl_id "
+            . "FROM host_template_relation htr, host ht "
+            . "WHERE htr.host_host_id = '" . CentreonDB::escape($hostId) . "' "
+            . "AND htr.host_tpl_id = ht.host_id "
+            . "AND ht.host_activate = '1' "
+            . "ORDER BY `order` ASC ";
+
+        $DBRESULT = $this->db->query($sql);
+
+        while ($row = $DBRESULT->fetchRow()) {
+            $hostTemplateIds[] = $row['host_tpl_id'];
+        }
+
+        return hostTemplateIds;
+    }
+
+    /**
+     * Get inherited values
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed already processed host ids
+     * @param int $depth depth to search values (-1 for infinite)
+     * @param array $fields fields to search
+     * @param array $values found values
+     * @return array
+     */
+    public function getInheritedValues(
+    $hostId,
+    $alreadyProcessed = array(),
+    $depth = -1,
+    $fields = array(),
+    $values = array()
+    ) {
+        if ($depth != 0) {
+            $depth--;
+
+            if (in_array($hostId, $alreadyProcessed)) {
+                return $templates;
+            } else {
+                if (count($alreadyProcessed) && empty($fields)) {
+                    return $values;
+                } else if (empty($fields)) {
+                    $fields = " * ";
+                } else {
+                    $fields = implode(',', $fields);
+                }
+
+                $sql = "SELECT " . $fields . " "
+                    . "FROM host h ";
+
+                $DBRESULT = $this->db->query($sql);
+
+                while ($row = $DBRESULT->fetchRow()) {
+                    if (!count($alreadyProcessed)) {
+                        $fields = array_keys($row);
+                    }
+
+                    foreach ($row as $field => $value) {
+                        if (!isset($values[$field]) && !is_null($value) && $value != '') {
+                            unset($fields[$field]);
+                            $values[$field] = $value;
+                        }
+                    }
+                }
+
+                $alreadyProcessed[] = $hostId;
+
+                $hostTemplateIds = $this->getHostTemplateIds($hostId);
+                foreach ($hostTemplateIds as $hostTemplateId) {
+                    $values = $this->getTemplateChain($row['host_id'], $alreadyProcessed, $depth, $fields, $values);
+                }
+            }
+        }
+
+        return $values;
+    }
+
+    /**
      * Returns array of locked host templates
      *
      * @return array
