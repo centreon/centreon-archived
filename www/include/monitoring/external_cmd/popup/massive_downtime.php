@@ -84,7 +84,8 @@ $form->addElement('text', 'end', _('End Time'), array('id'=>'end', 'size'=>10, '
     
 $form->addElement('text', 'start_time', '', array('id'=>'start_time', 'size' => 5, 'class' => 'timepicker'));
 $form->addElement('text', 'end_time', '', array('id'=>'end_time', 'size' => 5, 'class' => 'timepicker'));
-    
+
+$form->addElement('text','timezone_warning', _("*The timezone used is configured on your user settings"));
     
 $form->setDefaults(
     array(

@@ -276,7 +276,7 @@ class CentreonGMT
             $iTimestamp = $sDate->getTimestamp();
             $sOffset = $sDate->getOffset();
             $sLocalOffset = $localDate->getOffset();
-            $return = $iTimestamp + (($sOffset - $sLocalOffset) * $reverseOffset);
+            $return = $iTimestamp - (($sOffset - $sLocalOffset) * $reverseOffset);
         }
         
         return $return;
