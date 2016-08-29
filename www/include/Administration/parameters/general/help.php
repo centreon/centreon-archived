@@ -65,8 +65,7 @@ $help['tip_display_autologin_shortcut'] = dgettext('help', 'Displays Autologin s
  * Time Zone
  */
 
-$help['tip_enable_timezone_management'] = dgettext('help', 'Enables timezone management.');
-$help['tip_default_timezone'] = dgettext('help', 'Default host timezone.');
+$help['tip_default_timezone'] = dgettext('help', 'Default host and contact timezone.');
 
 /**
  * SSO

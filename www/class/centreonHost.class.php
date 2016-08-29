@@ -1194,7 +1194,7 @@ class CentreonHost
             $hostTemplateIds[] = $row['host_tpl_id'];
         }
 
-        return hostTemplateIds;
+        return $hostTemplateIds;
     }
 
     /**
@@ -1214,22 +1214,25 @@ class CentreonHost
     $fields = array(),
     $values = array()
     ) {
+
         if ($depth != 0) {
             $depth--;
 
             if (in_array($hostId, $alreadyProcessed)) {
-                return $templates;
+                return $values;
             } else {
-                if (count($alreadyProcessed) && empty($fields)) {
+                $queryFields = $fields ;
+                if (count($alreadyProcessed) && !count($fields)) {
                     return $values;
-                } else if (empty($fields)) {
-                    $fields = " * ";
+                } else if (!count($fields)) {
+                    $queryFields = " * ";
                 } else {
-                    $fields = implode(',', $fields);
+                    $queryFields = implode(',', $fields);
                 }
 
-                $sql = "SELECT " . $fields . " "
-                    . "FROM host h ";
+                $sql = "SELECT " . $queryFields . " "
+                    . "FROM host h "
+                    . "WHERE host_id =". CentreonDB::escape($hostId);
 
                 $DBRESULT = $this->db->query($sql);
 
@@ -1239,6 +1242,7 @@ class CentreonHost
                     }
 
                     foreach ($row as $field => $value) {
+
                         if (!isset($values[$field]) && !is_null($value) && $value != '') {
                             unset($fields[$field]);
                             $values[$field] = $value;
@@ -1250,11 +1254,10 @@ class CentreonHost
 
                 $hostTemplateIds = $this->getHostTemplateIds($hostId);
                 foreach ($hostTemplateIds as $hostTemplateId) {
-                    $values = $this->getTemplateChain($row['host_id'], $alreadyProcessed, $depth, $fields, $values);
+                    $values = $this->getInheritedValues($hostTemplateId, $alreadyProcessed, $depth, $fields, $values);
                 }
             }
         }
-
         return $values;
     }
 

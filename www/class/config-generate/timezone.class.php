@@ -35,6 +35,7 @@
 
 class Timezone extends AbstractObject {
     private $aTimezone = null;
+    private $defaultTimezone = null;
     
     private function getTimezone()
     {   
@@ -42,16 +43,23 @@ class Timezone extends AbstractObject {
             return $this->aTimezone;
         }
 
+        $this->aTimezone = array();
         $stmt = $this->backend_instance->db->prepare("SELECT 
                 timezone_id,
                 timezone_name
             FROM timezone");
         $stmt->execute();
-        $resulats = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($resulats as $res) {
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($results as $res) {
             $this->aTimezone[$res['timezone_id']] = $res['timezone_name'];
         }
-        
+
+        $stmt = $this->backend_instance->db->prepare("SELECT `value` from options WHERE `key` = 'gmt'");
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($results) > 0 && isset($this->aTimezone[$results[0]['value']])) {
+            $this->defaultTimezone = $this->aTimezone[$results[0]['value']];
+        }
     }
     
     public function getTimezoneFromId($iTimezone)
@@ -59,8 +67,8 @@ class Timezone extends AbstractObject {
         if (is_null($this->aTimezone)) {
             $this->getTimezone();
         }
-        
-        $result = null;
+
+        $result = $this->defaultTimezone;
         if (!is_null($iTimezone) && isset($this->aTimezone[$iTimezone])) {
             $result = $this->aTimezone[$iTimezone];
         }
