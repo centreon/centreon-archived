@@ -55,7 +55,8 @@ sub print_help();
 sub print_usage();
 sub trim($);
 
-my $CENTREON_ETC = '@CENTREON_ETC@';
+#my $CENTREON_ETC = '@CENTREON_ETC@';
+my $CENTREON_ETC = '/etc/centreon';
 my @licfiles;
 
 # Require DB configuration files
@@ -744,229 +745,206 @@ sub monitoringengineBackup() {
 	my $today = sprintf("%d-%02d-%02d",(1900+$year),($mon+1),$mday);
 	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$year), ($mon+1), $mday, $hour, $min, $sec) . "] Start monitoring engine backup processus\n";
 
-	my $query = "SELECT * FROM cfg_nagios WHERE nagios_activate = '1'";
-
-	my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host.";port=".$mysql_port, $mysql_user, $mysql_passwd,{'RaiseError' => 0, 'PrintError' => 0});
-	if (!$dbh) {
-		print STDERR sprintf("Couldn't connect: %s", $DBI::errstr) . "\n";
-	}
-
-	my $sth = $dbh->prepare($query);
-	if (!$sth) {
-		print STDERR "Error: " . $dbh->errstr . "\n";
-	}
-
-	if (!$sth->execute()) {
-		print STDERR "Error: " . $dbh->errstr . "\n";
-	}
-
-	if ($sth->rows == 0) {
-		print STDERR "Unable to get informations about poller form ".$mysql_database_oreon." database" . "\n";
-	} else {
-		# Create path
-		mkpath($TEMP_POLLERS, {mode => 0755, error => \my $err_list});
-		if (@$err_list) {
-			for my $diag (@$err_list) {
-				my ($file, $message) = %$diag;
-				if ($file eq '') {
-					print STDERR "Unable to create temporary directories because: " . $message . "\n";
-				} else {
-					print STDERR "Problem with file  ".$file.": " . $message . "\n";
-				}
+    # Create path
+	mkpath($TEMP_POLLERS, {mode => 0755, error => \my $err_list});
+	if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+			if ($file eq '') {
+				print STDERR "Unable to create temporary directories because: " . $message . "\n";
+			} else {
+				print STDERR "Problem with file  ".$file.": " . $message . "\n";
 			}
 		}
+	}
 
-		while (my $poller = $sth->fetchrow_hashref) {
-			my $poller_name = $poller->{nagios_name};
+	my $sth2 = $dbh->prepare("SELECT n.nagios_name, n.cfg_dir, n.log_file, n.log_archive_path, ns.* FROM nagios_server ns, cfg_nagios n WHERE ns.id = n.nagios_server_id AND n.nagios_activate = '1' AND ns.localhost = '1';");
+	if (!$sth2->execute()) {
+		print STDERR "Error: " . $dbh->errstr . "\n";
+		return 1;
+	}
 
-			#########################################################
-			# Get information about poller from nagios_server table #
-			#########################################################
+	my $nagios_server;
+	my $poller_name;
+	if ($sth2->rows == 0) {
+		print STDERR "Unable to get informations about poller form " . $mysql_database_oreon . " database\n";
+		return 1;
+	} else {
+		$nagios_server = $sth2->fetchrow_hashref;
+        $poller_name = $nagios_server->{nagios_name};
+		$sth2->finish();
+	}
 
-			my $sth2 = $dbh->prepare("SELECT * FROM nagios_server WHERE id = '".$poller->{nagios_server_id}."' AND localhost = '1';");
-			if (!$sth2->execute()) {
-				print STDERR"Error: " . $dbh->errstr . "\n";
-			}
+	# Remove space
+	my $poller_name_dir = $poller_name;
+	$poller_name_dir =~ s/ /_/g;
 
-			my $nagios_server;
-			if ($sth2->rows == 0) {
-				print STDERR "Unable to get informations about poller form " . $mysql_database_oreon . " database\n";
+	# Create path for specific poller
+	my $ACTUAL_POLLER_BCK_DIR = $TEMP_POLLERS."/".$poller_name_dir;
+	mkpath($ACTUAL_POLLER_BCK_DIR, {mode => 0755, error => \my $err_list});
+	if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+			if ($file eq '') {
+				print STDERR "Unable to create temporary directories because: " . $message . "\n";
 			} else {
-				$nagios_server =$sth2->fetchrow_hashref;
-				$sth2->finish();
+				print STDERR "Problem with file " . $file.": " . $message . "\n";
 			}
+		}
+	}
 
-			# Remove space
-			my $poller_name_dir = $poller_name;
-			$poller_name_dir =~ s/ /_/g;
+	if (!defined($nagios_server->{ssh_port}) || $nagios_server->{ssh_port} == "") {
+		$nagios_server->{ssh_port} = 22;
+	}
 
-			# Create path for specific poller
-			my $ACTUAL_POLLER_BCK_DIR = $TEMP_POLLERS."/".$poller_name_dir;
-			mkpath($ACTUAL_POLLER_BCK_DIR, {mode => 0755, error => \my $err_list});
-			if (@$err_list) {
-				for my $diag (@$err_list) {
-					my ($file, $message) = %$diag;
-					if ($file eq '') {
-						print STDERR "Unable to create temporary directories because: " . $message . "\n";
-					} else {
-						print STDERR "Problem with file " . $file.": " . $message . "\n";
-					}
-				}
+	###########
+	# Plugins #
+	###########
+	mkpath($ACTUAL_POLLER_BCK_DIR."/plugins", {mode => 0755, error => \my $err_list});
+	if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+			if ($file eq '') {
+				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+			} else {
+				print STDERR "Problem with file  ".$file.": ".$message . "\n";
 			}
+		}
+	}
+	my $plugins_dir = getNagiosPluginsdir(1, $nagios_server->{ns_ip_address}, $nagios_server->{ssh_port});
+	if ($plugins_dir ne "") {
+		`cp -pr $plugins_dir/* $ACTUAL_POLLER_BCK_DIR/plugins/`;
+		if ($? != 0) {
+			print STDERR "Unable to copy plugins\n";
+		}
+	}
 
-			if (!defined($nagios_server->{ssh_port}) || $nagios_server->{ssh_port} == "") {
-				$nagios_server->{ssh_port} = 22;
+	########
+	# Logs #
+	########
+	mkpath($ACTUAL_POLLER_BCK_DIR."/logs", {mode => 0755, error => \my $err_list});
+	if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+			if ($file eq '') {
+				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+			} else {
+				print STDERR "Problem with file  ".$file.": ".$message . "\n";
 			}
+		}
+	}
 
-			###########
-			# Plugins #
-			###########
-			mkpath($ACTUAL_POLLER_BCK_DIR."/plugins", {mode => 0755, error => \my $err_list});
-			if (@$err_list) {
-				for my $diag (@$err_list) {
-					my ($file, $message) = %$diag;
-					if ($file eq '') {
-						print STDERR "Unable to create temporary directories because: ".$message . "\n";
-					} else {
-						print STDERR "Problem with file  ".$file.": ".$message . "\n";
-					}
-				}
+	copy($nagios_server->{log_file}, ($ACTUAL_POLLER_BCK_DIR."/logs/centengine.log"));
+	my $logs_archive_directory = substr($nagios_server->{log_archive_path}, 0, rindex($nagios_server->{log_archive_path}, "/"));
+	mkpath($ACTUAL_POLLER_BCK_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
+    if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+			if ($file eq '') {
+				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+			} else {
+				print STDERR "Problem with file  ".$file.": ".$message . "\n";
 			}
-			my $plugins_dir = getNagiosPluginsdir(1, $nagios_server->{ns_ip_address}, $nagios_server->{ssh_port});
-			if ($plugins_dir ne "") {
-				`cp -pr $plugins_dir/* $ACTUAL_POLLER_BCK_DIR/plugins/`;
-				if ($? != 0) {
-					print STDERR "Unable to copy plugins\n";
-				}
+		}
+	}
+	`cp -p $logs_archive_directory/* $ACTUAL_POLLER_BCK_DIR/logs/archives/`;
+	if ($? != 0) {
+		print STDERR "Unable to copy monitoring engine logs archives\n";
+	}
+
+	#################
+	# Configuration #
+	#################
+	mkpath($ACTUAL_POLLER_BCK_DIR."/etc", {mode => 0755, error => \my $err_list});
+	if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+	    	if ($file eq '') {
+				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+			} else {
+    			print STDERR "Problem with file  ".$file.": ".$message."\n";
 			}
-			########
-			# Logs #
-			########
-			mkpath($ACTUAL_POLLER_BCK_DIR."/logs", {mode => 0755, error => \my $err_list});
-			if (@$err_list) {
-				for my $diag (@$err_list) {
-					my ($file, $message) = %$diag;
-					if ($file eq '') {
-						print STDERR "Unable to create temporary directories because: ".$message . "\n";
-					} else {
-						print STDERR "Problem with file  ".$file.": ".$message . "\n";
-					}
-				}
+		}
+	}
+	`cp -pr $nagios_server->{cfg_dir}/* $ACTUAL_POLLER_BCK_DIR/etc/`;
+	if ($? != 0) {
+		print STDERR "Unable to copy Monitoring Engine configuration files\n";
+	}
+
+	#########################
+	# Script initialisation #
+	#########################
+	copy($nagios_server->{init_script}, ($ACTUAL_POLLER_BCK_DIR."/init_d_centengine"));
+
+	###############
+	# Sudo rights #
+	###############
+	copy("/etc/sudoers", ($ACTUAL_POLLER_BCK_DIR."/etc_sudoers"));
+
+	############
+	# SSH keys #
+	############
+	mkpath($ACTUAL_POLLER_BCK_DIR."/ssh", {mode => 0755, error => \my $err_list});
+	if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+    		if ($file eq '') {
+				print STDERR "Unable to create temporary directories because: " . $message . "\n";
+			} else {
+				print STDERR "Problem with file  ".$file.": ".$message . "\n";
 			}
+		}
+	}
+    my $centreon_home = "/var/spool/centreon";
+    if (-d "$centreon_home/.ssh" ) {
+        `cp -pr $centreon_home/.ssh/* $ACTUAL_POLLER_BCK_DIR/ssh`;
+    } else {
+        print STDERR "No SSH keys for Centreon\n";
+    }
 
-			copy($poller->{log_file}, ($ACTUAL_POLLER_BCK_DIR."/logs/centengine.log"));
-			my $logs_archive_directory = substr($poller->{log_archive_path}, 0, rindex($poller->{log_archive_path}, "/"));
-			mkpath($ACTUAL_POLLER_BCK_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
-                        if (@$err_list) {
-					for my $diag (@$err_list) {
-						my ($file, $message) = %$diag;
-						if ($file eq '') {
-							print STDERR "Unable to create temporary directories because: ".$message . "\n";
-						} else {
-							print STDERR "Problem with file  ".$file.": ".$message . "\n";
-						}
-					}
-				}
-				`cp -p $logs_archive_directory/* $ACTUAL_POLLER_BCK_DIR/logs/archives/`;
-				if ($? != 0) {
-					print STDERR "Unable to copy monitoring engine logs archives\n";
-				}
+    mkpath($ACTUAL_POLLER_BCK_DIR."/ssh-centreon-engine", {mode => 0755, error => \my $err_list});
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            } else {
+                    print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
 
-				#################
-				# Configuration #
-				#################
-				mkpath($ACTUAL_POLLER_BCK_DIR."/etc", {mode => 0755, error => \my $err_list});
-				if (@$err_list) {
-					for my $diag (@$err_list) {
-						my ($file, $message) = %$diag;
-						if ($file eq '') {
-							print STDERR "Unable to create temporary directories because: ".$message . "\n";
-						} else {
-							print STDERR "Problem with file  ".$file.": ".$message."\n";
-						}
-					}
-				}
-				`cp -pr $poller->{cfg_dir }/* $ACTUAL_POLLER_BCK_DIR/etc/`;
-				if ($? != 0) {
-					print STDERR "Unable to copy Monitoring Engine configuration files\n";
-				}
+    my $centreonengine_home = "/var/lib/centreon-engine/";
+    if (-d "$centreonengine_home/.ssh") {
+        `cp -pr $centreonengine_home/.ssh/* $ACTUAL_POLLER_BCK_DIR/ssh-centreon-engine/`;
+    } else {
+        print STDERR "No ssh keys for Monitoring Engine\n";
+    }
 
-				#########################
-				# Script initialisation #
-				#########################
-				copy($nagios_server->{init_script}, ($ACTUAL_POLLER_BCK_DIR."/init_d_centengine"));
+	##################
+	# Make archives #
+	#################
+	`cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-Monitoring-Engine.tar.gz backup`;
+    if ($? ne 0) {
+        print STDERR "Unable to make tar of backup\n";
+    }
 
-				###############
-				# Sudo rights #
-				###############
-				copy("/etc/sudoers", ($ACTUAL_POLLER_BCK_DIR."/etc_sudoers"));
+    ###################
+    # Export archives #
+    ###################
+    exportBackup();
+    move ($TEMP_POLLERS."/".$today."-Monitoring-Engine-".$nagios_server->{name}.".tar.gz", $BACKUP_DIR."/".$today."-Monitoring-Engine-".$nagios_server->{name}.".tar.gz");
 
-				############
-				# SSH keys #
-				############
-				mkpath($ACTUAL_POLLER_BCK_DIR."/ssh", {mode => 0755, error => \my $err_list});
-				if (@$err_list) {
-					for my $diag (@$err_list) {
-						my ($file, $message) = %$diag;
-						if ($file eq '') {
-							print STDERR "Unable to create temporary directories because: " . $message . "\n";
-						} else {
-							print STDERR "Problem with file  ".$file.": ".$message . "\n";
-						}
-					}
-				}
-                my $centreon_home = "/var/spool/centreon";
-                if (-d "$centreon_home/.ssh" ) {
-                    `cp -pr $centreon_home/.ssh/* $ACTUAL_POLLER_BCK_DIR/ssh`;
-                } else {
-                    print STDERR "No SSH keys for Centreon\n";
-                }
-
-                mkpath($ACTUAL_POLLER_BCK_DIR."/ssh-centreon-engine", {mode => 0755, error => \my $err_list});
-                if (@$err_list) {
-                    for my $diag (@$err_list) {
-                        my ($file, $message) = %$diag;
-                        if ($file eq '') {
-                            print STDERR "Unable to create temporary directories because: " . $message . "\n";
-                        } else {
-                            print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-                        }
-                    }
-                }
-
-                my $centreonengine_home = "/var/lib/centreon-engine/";
-                if (-d "$centreonengine_home/.ssh") {
-                    `cp -pr $centreonengine_home/.ssh/* $ACTUAL_POLLER_BCK_DIR/ssh-centreon-engine/`;
-                } else {
-                    print STDERR "No ssh keys for Monitoring Engine\n";
-                }
-
-				#################
-				# Make archives #
-				#################
-				`cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-Monitoring-Engine.tar.gz backup`;
-                if ($? ne 0) {
-                    print STDERR "Unable to make tar of backup\n";
-                }
-
-                ###################
-                # Export archives #
-                ###################
-                exportBackup();
-                move ($TEMP_POLLERS."/".$today."-Monitoring-Engine-".$nagios_server->{name}.".tar.gz", $BACKUP_DIR."/".$today."-Monitoring-Engine-".$nagios_server->{name}.".tar.gz");
-
-			# Remove all temp directory
-			chdir;
-			rmtree($TEMP_POLLERS, {mode => 0755, error => \my $err_list});
-			if (@$err_list) {
-				for my $diag (@$err_list) {
-					my ($file, $message) = %$diag;
-					if ($file eq '') {
-						print STDERR "Unable to remove temporary directories because: " . $message . "\n";
-					} else {
-						print STDERR "Problem unlinking " . $file . ": " . $message . "\n";
-					}
-				}
+	# Remove all temp directory
+	chdir;
+	rmtree($TEMP_POLLERS, {mode => 0755, error => \my $err_list});
+	if (@$err_list) {
+		for my $diag (@$err_list) {
+			my ($file, $message) = %$diag;
+			if ($file eq '') {
+				print STDERR "Unable to remove temporary directories because: " . $message . "\n";
+			} else {
+				print STDERR "Problem unlinking " . $file . ": " . $message . "\n";
 			}
 		}
 	}
