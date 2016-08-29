@@ -25,6 +25,9 @@
 					<p style="float:left;padding-left: 28px; font-size: 11px;">
 						<xsl:value-of select="hostalias"/>
 					</p>
+                    <p style="float:left;padding-left: 28px; font-size: 11px;">
+                        (<xsl:value-of select="poller" />)
+                    </p>
 				</xsl:element>
 			</td>
 		</tr>
