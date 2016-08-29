@@ -269,7 +269,21 @@
                                         <a href='./main.php?p=60204&o=c&meta_id={$meta_id}&o=c'>{$lnk_serv_config}</a>
                                     {/if}
                                 </td>
-                            </tr>    
+                            </tr>
+                            <tr>
+                                <td class="ColPopup">
+                                    {if $lcaTopo.20301 || $admin == 1}
+                                        <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
+                                    {/if}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ColPopup">
+                                    {if $lcaTopo.30702 || $admin == 1}
+                                        <a href='./main.php?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>{$lnk_serv_reports}</a>
+                                    {/if}
+                                </td>
+                            </tr>
                             {/if}
                         </table>
                     </td>

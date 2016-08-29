@@ -669,9 +669,9 @@ if (!is_null($host_id)) {
 <script type="text/javascript">
     var glb_confirm = '<?php  echo _("Submit command?"); ?>';
     var command_sent = '<?php echo _("Command sent"); ?>';
-    var command_failure = "<?php echo _("Failed to execute command");?>";
-    var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
-    var svc_id = '<?php echo $svcObj->getServiceId($svc_description, $host_name);?>';
+    var command_failure = '<?php echo _("Failed to execute command");?>';
+    var host_id = '<?php echo $host_id;?>';
+    var svc_id = '<?php echo $service_id;?>';
     var labels = new Array();
 
     labels['service_checks'] = new Array(

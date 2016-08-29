@@ -455,16 +455,32 @@ class CentreonHost
      */
     public function getHostPollerId($host_id)
     {
+        $pollerId= null;
+
         $rq = "SELECT nagios_server_id
  		       FROM ns_host_relation
  		       WHERE host_host_id = " . $this->db->escape($host_id) . "
  		       LIMIT 1";
         $res = $this->db->query($rq);
-        if (!$res->numRows()) {
-            return null;
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            $pollerId = $row['nagios_server_id'];
+        } else {
+            $hostName = $this->getHostName($host_id);
+            if (preg_match('/^_Module_Meta/', $hostName)) {
+                $rq = "SELECT id "
+                    . "FROM nagios_server "
+                    . "WHERE localhost = '1' "
+                    . "LIMIT 1 ";
+                $res = $this->db->query($rq);
+                if ($res->numRows()) {
+                    $row = $res->fetchRow();
+                    $pollerId = $row['id'];
+                }
+            }
         }
-        $row = $res->fetchRow();
-        return $row['nagios_server_id'];
+
+        return $pollerId;
     }
 
     /**
