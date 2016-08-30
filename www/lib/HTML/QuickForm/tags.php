@@ -84,25 +84,25 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
      */
     function getJsInit()
     {
-        $jsPre = '<script type="text/javascript">';
         $additionnalJs = '';
-        $jsPost = '</script>';
-        $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").select2({';
-        
-        $mainJsInit = 'tags: true,';
-        $mainJsInit .= 'allowClear: true,';
-        
+        $mainJsInit = '';
+
         $label = $this->getLabel();
         if (!empty($label)) {
-            $mainJsInit .= 'placeholder: "' . $this->getLabel() . '",';
+            $placeholder = 'placeholder: "' . $this->getLabel() . '",';
         }
-        
         if ($this->_flagFrozen) {
-             $mainJsInit .= 'disabled: true,';
+            $disabled = 'disabled: true,';
         }
-        
+
+        $allowClear = 'allowClear: ';
+        if ($this->_allowClear) {
+            $allowClear .= 'true,';
+        } else {
+            $allowClear .= 'false,';
+        }
+
         if ($this->_ajaxSource) {
-            $mainJsInit .= $this->setAjaxSource() . ',';
             if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
                 $additionnalJs .= $this->setDefaultAjaxDatas();
             } else {
@@ -111,18 +111,39 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         } else {
             $mainJsInit .= $this->setFixedDatas() . ',';
         }
+
+        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
+            . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
+            . ' jQuery(this).resizable({ maxWidth: 500, '
+            . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
+            . ' minHeight : jQuery(this).height() != 0 ? jQuery(this).height() : 45 });'
+            . ' this.isResiable = true; '
+            . ' }'
+            . ' }); ';
+
+
+
+        $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").centreonSelect2({
+                    tags: true,'
+                    . $allowClear .',
+                    pageLimit: ' . $this->_pagination . ',
+                    select2: {
+                        '.
+                        $placeholder.
+                        $disabled. '
+                    }
+                });
+                
+                ' . $additionnalJs . '
+            });
         
+        ';
+
+
+
         $mainJsInit .= 'multiple: ';
-        $scroll = "";
         if ($this->_multiple) {
             $mainJsInit .= 'true,';
-            $scroll = '$currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").niceScroll({
-            	cursorcolor:"#818285",
-            	cursoropacitymax: 0.6,
-            	cursorwidth:3,
-            	horizrailenabled:false
-            	});';
-
                 $mainJsInit .= 'templateSelection: function (data, container) {
                     if (data.element.hidden === true) {
                         $(container).hide();
@@ -132,17 +153,9 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         } else {
             $mainJsInit .= 'false,';
         }
-        //$mainJsInit .= 'minimumInputLength: 1,';
-        
-        $mainJsInit .= 'allowClear: ';
-        if ($this->_allowClear) {
-            $mainJsInit .= 'true,';
-        } else {
-            $mainJsInit .= 'false,';
-        }
 
         $strJsInitEnding = '});';
-        
+
         if (!$this->_allowClear) {
             $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").prevAll(".clearAllSelect2").on("click",function(){ '
                 . '$currentValues = jQuery("#' . $this->getName() . '").val(); '
@@ -151,18 +164,18 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
                 . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
                 . ' }); ';
         }
-        
-        
-        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
-            . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
-            . ' jQuery(this).resizable({ maxWidth: 500, '
-            . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
-            . ' minHeight : jQuery(this).height() != 0 ? jQuery(this).height() : 45 });'
-            . ' this.isResiable = true; '
-            . ' }'
-            . ' }); ';
-        
-        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
+
+        $finalJs = '<script type="text/javascript">'.
+            $strJsInitBegining .
+            $mainJsInit .
+            $strJsInitEnding .
+            $additionnalJs .
+            $this->_jsCallback .
+        '</script>';
+
+
+
+
         
         return $finalJs;
     }
