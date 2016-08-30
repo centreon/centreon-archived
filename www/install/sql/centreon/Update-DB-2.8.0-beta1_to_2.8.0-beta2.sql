@@ -41,3 +41,42 @@ UPDATE `topology` SET topology_name = 'Graphs' WHERE topology_name = 'Edit View'
 
 -- Issue #4649 - [logAnalyserBroker] Doesn't work
 UPDATE `config` SET nagios_log_file = '/var/log/centreon-engine/centengine.log', archive_log = 1;
+
+
+-- Fix influxdb broker output in fresh isntall of centreon-2.8.0-beta1
+DELETE FROM cb_type_field_relation
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1);
+
+INSERT INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_display)
+    (SELECT (SELECT cbt.cb_type_id FROM cb_type cbt WHERE cbt.type_shortname = 'influxdb' LIMIT 1), 0, cbf1.cb_field_id, @rownum := @rownum + 1
+    FROM cb_field cbf1 CROSS JOIN (SELECT @rownum := 0) r
+    WHERE cbf1.cb_field_id IN (SELECT cbf2.cb_field_id FROM cb_field cbf2 WHERE cbf2.fieldname IN (
+        'db_host', 'db_port', 'db_user', 'db_password',
+        'metrics_timeseries')
+    )
+    ORDER BY FIELD(cbf1.fieldname, 'db_host', 'db_port', 'db_user', 'db_password',
+        'metrics_timeseries')
+    );
+
+INSERT INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_display)
+    (SELECT (SELECT cbt.cb_type_id FROM cb_type cbt WHERE cbt.type_shortname = 'influxdb' LIMIT 1), 0, cbf1.cb_field_id, @rownum := @rownum + 6
+    FROM cb_field cbf1 CROSS JOIN (SELECT @rownum := 0) r
+    WHERE cbf1.cb_fieldgroup_id IN (SELECT cbfg.cb_fieldgroup_id FROM cb_fieldgroup cbfg WHERE cbfg.groupname = 'metrics_column')
+    );
+
+INSERT INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_display)
+    (SELECT (SELECT cbt.cb_type_id FROM cb_type cbt WHERE cbt.type_shortname = 'influxdb' LIMIT 1), 0, cbf1.cb_field_id, @rownum := @rownum + 10
+    FROM cb_field cbf1 CROSS JOIN (SELECT @rownum := 0) r
+    WHERE cbf1.cb_field_id IN (SELECT cbf2.cb_field_id FROM cb_field cbf2 WHERE cbf2.fieldname = 'status_timeseries')
+    );
+
+INSERT INTO cb_type_field_relation (cb_type_id, is_required, cb_field_id, order_display)
+    (SELECT (SELECT cbt.cb_type_id FROM cb_type cbt WHERE cbt.type_shortname = 'influxdb' LIMIT 1), 0, cbf1.cb_field_id, @rownum := @rownum + 11
+    FROM cb_field cbf1 CROSS JOIN (SELECT @rownum := 0) r
+    WHERE cbf1.cb_fieldgroup_id IN (SELECT cbfg.cb_fieldgroup_id FROM cb_fieldgroup cbfg WHERE cbfg.groupname = 'status_column')
+    );
+
+UPDATE cb_type_field_relation SET is_required = 1
+WHERE
+    cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+    AND cb_field_id IN (SELECT cb_field_id FROM cb_field where fieldname IN ('db_host', 'metrics_timeseries', 'status_timeseries'));
