@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 
@@ -45,13 +41,13 @@ class CentreonService
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $instanceObj;
 
@@ -94,7 +90,7 @@ class CentreonService
 
     /**
      * Get Service Template ID
-     * 
+     *
      * @param string $templateName
      * @return int
      */
@@ -104,7 +100,7 @@ class CentreonService
             return null;
         }
         $res = $this->db->query(
-                "SELECT service_id 
+            "SELECT service_id 
                  FROM service
                  WHERE service_description = '" . $this->db->escape($templateName) . "' 
                     AND service_register = '0'"
@@ -123,7 +119,7 @@ class CentreonService
      *  @param string $host_name
      *  @return int
      */
-    public function getServiceId($svc_desc = null, $host_name)
+    public function getServiceId($svc_desc = null, $host_name = null)
     {
         static $hostSvcTab = array();
 
@@ -219,27 +215,23 @@ class CentreonService
      */
     public function getServicesDescr($sid = array())
     {
-
-        
-        
-        
         $arrayReturn = array();
         
         if (!empty($sid)) {
             $where = "";
-            foreach($sid as $s){
-                $tmp = explode("_",$s);
-                if(isset($tmp[0]) && isset($tmp[1])){
-                    if($where !== ""){
+            foreach ($sid as $s) {
+                $tmp = explode("_", $s);
+                if (isset($tmp[0]) && isset($tmp[1])) {
+                    if ($where !== "") {
                         $where .= " OR ";
-                    }else{
+                    } else {
                         $where .= " AND ( ";
                     }
-                    $where .= " (h.host_id = ".$this->db->escape($tmp[0]); 
-                    $where .= " AND s.service_id = ".$this->db->escape($tmp[1])." ) "; 
+                    $where .= " (h.host_id = ".$this->db->escape($tmp[0]);
+                    $where .= " AND s.service_id = ".$this->db->escape($tmp[1])." ) ";
                 }
             }
-            if($where !== ""){
+            if ($where !== "") {
                 $where .= " ) ";
                 $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
                           FROM service s
@@ -247,8 +239,8 @@ class CentreonService
                           INNER JOIN host h ON hsr.host_host_id = h.host_id 
                           WHERE  1 = 1 ".$where;
                 $res = $this->db->query($query);
-                while($row = $res->fetchRow()){
-                    $arrayReturn[] = array("service_id" => $row['service_id'], 
+                while ($row = $res->fetchRow()) {
+                    $arrayReturn[] = array("service_id" => $row['service_id'],
                                             "description" => $row['service_description'],
                                             "host_name" => $row['host_name'],
                                             "host_id" => $row['host_id']
@@ -294,8 +286,9 @@ class CentreonService
     {
         $rq = "SELECT service_register FROM service WHERE service_id = '" . $svc_id . "' LIMIT 1";
         $DBRES = $this->db->query($rq);
-        if (!$DBRES->numRows())
+        if (!$DBRES->numRows()) {
             return $string;
+        }
         $row = $DBRES->fetchRow();
 
         /*
@@ -309,7 +302,11 @@ class CentreonService
                 $string = str_replace("\$INSTANCENAME\$", $this->instanceObj->getParam($instanceId, 'name'), $string);
             }
             if (!is_null($instanceId) && preg_match("\$INSTANCEADDRESS\$", $string)) {
-                $string = str_replace("\$INSTANCEADDRESS\$", $this->instanceObj->getParam($instanceId, 'ns_ip_address'), $string);
+                $string = str_replace(
+                    "\$INSTANCEADDRESS\$",
+                    $this->instanceObj->getParam($instanceId, 'ns_ip_address'),
+                    $string
+                );
             }
         }
         $matches = array();
@@ -317,7 +314,9 @@ class CentreonService
         preg_match_all($pattern, $string, $matches);
         $i = 0;
         while (isset($matches[1][$i])) {
-            $rq = "SELECT svc_macro_value FROM on_demand_macro_service WHERE svc_svc_id = '" . $svc_id . "' AND svc_macro_name LIKE '" . $matches[1][$i] . "'";
+            $rq = "SELECT svc_macro_value
+                FROM on_demand_macro_service
+                WHERE svc_svc_id = '" . $svc_id . "' AND svc_macro_name LIKE '" . $matches[1][$i] . "'";
             $DBRES = $this->db->query($rq);
             while ($row = $DBRES->fetchRow()) {
                 $string = str_replace($matches[1][$i], $row['svc_macro_value'], $string);
@@ -329,7 +328,11 @@ class CentreonService
             $DBRES2 = $this->db->query($rq2);
             while ($row2 = $DBRES2->fetchRow()) {
                 if (!isset($antiLoop) || !$antiLoop) {
-                    $string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string, $row2['service_template_model_stm_id']);
+                    $string = $this->replaceMacroInString(
+                        $row2['service_template_model_stm_id'],
+                        $string,
+                        $row2['service_template_model_stm_id']
+                    );
                 } elseif ($row2['service_template_model_stm_id'] != $antiLoop) {
                     $string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string, $antiLoop);
                 }
@@ -340,8 +343,8 @@ class CentreonService
 
     /**
      * Get list of service templates
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function getServiceTemplateList()
     {
@@ -358,7 +361,7 @@ class CentreonService
 
     /**
      * Insert macro
-     * 
+     *
      * @param int $serviceId
      * @param array $macroInput
      * @param array $macroValue
@@ -378,9 +381,9 @@ class CentreonService
         $macroFrom = false
     ) {
         if (false === $isMassiveChange) {
-			$this->db->query("DELETE FROM on_demand_macro_service 
+            $this->db->query("DELETE FROM on_demand_macro_service 
 							WHERE svc_svc_id = " . $this->db->escape($serviceId));
-		} else {
+        } else {
             $macroList = "";
             foreach ($macroInput as $v) {
                 $macroList .= "'\$_SERVICE" . strtoupper($this->db->escape($v)) . "\$',";
@@ -389,21 +392,35 @@ class CentreonService
                 $macroList = rtrim($macroList, ",");
                 $this->db->query("DELETE FROM on_demand_macro_service
                          WHERE svc_svc_id = " . $this->db->escape($serviceId) . "
-                         AND svc_macro_name IN ({$macroList})"
-                );
+                         AND svc_macro_name IN ({$macroList})");
             }
         }
 
-		$stored = array();
-		$cnt = 0;
+        $stored = array();
+        $cnt = 0;
         $macros = $macroInput;
         $macrovalues = $macroValue;
-        $this->hasMacroFromServiceChanged($this->db,$serviceId,$macros,$macrovalues,$cmdId, $isMassiveChange, $macroFrom);
+        $this->hasMacroFromServiceChanged(
+            $this->db,
+            $serviceId,
+            $macros,
+            $macrovalues,
+            $cmdId,
+            $isMassiveChange,
+            $macroFrom
+        );
         foreach ($macros as $key => $value) {
             if ($value != "" &&
                     !isset($stored[strtolower($value)])) {
-                $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `is_password`, `description`, `svc_svc_id`, `macro_order`) 
-                                VALUES ('\$_SERVICE" . strtoupper($this->db->escape($value)) . "\$', '" . $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') . ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($serviceId) . ", " . $cnt . " )");
+                $this->db->query(
+                    "INSERT INTO on_demand_macro_service
+                        (`svc_macro_name`, `svc_macro_value`, `is_password`, `description`,
+                            `svc_svc_id`, `macro_order`) 
+                        VALUES ('\$_SERVICE" . strtoupper($this->db->escape($value)) . "\$', '" .
+                            $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') .
+                            ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($serviceId) .
+                            ", " . $cnt . " )"
+                );
                 $stored[strtolower($value)] = true;
                 $cnt ++;
             }
@@ -411,7 +428,7 @@ class CentreonService
     }
 
     /**
-     * 
+     *
      * @param integer $serviceId
      * @param array $template
      * @return array
@@ -436,14 +453,14 @@ class CentreonService
                         if ($row['is_password'] === '1') {
                             $valPassword = '1';
                         } else {
-                           $valPassword = null;
+                            $valPassword = null;
                         }
                     }
                     $arr[$i]['macroPassword_#index#'] = $valPassword;
 
                     $arr[$i]['macroDescription_#index#'] = $row['description'];
                     $arr[$i]['macroDescription'] = $row['description'];
-                    if(!is_null($template)){
+                    if (!is_null($template)) {
                         $arr[$i]['macroTpl_#index#'] = "Service template : ".$template['service_description'];
                     }
                     $i++;
@@ -456,7 +473,7 @@ class CentreonService
     
     /**
      * Get service custom macro
-     * 
+     *
      * @param int $serviceId
      * @return array
      */
@@ -480,7 +497,7 @@ class CentreonService
                         if ($row['is_password'] === '1') {
                             $valPassword = '1';
                         } else {
-                           $valPassword = null;
+                            $valPassword = null;
                         }
                     }
                     $arr[$i]['macroPassword_#index#'] = $valPassword;
@@ -493,7 +510,7 @@ class CentreonService
         } elseif (isset($_REQUEST['macroInput'])) {
             foreach ($_REQUEST['macroInput'] as $key => $val) {
                 $index = $i;
-                if($realKeys){
+                if ($realKeys) {
                     $index = $key;
                 }
                 $arr[$index]['macroInput_#index#'] = $val;
@@ -504,13 +521,15 @@ class CentreonService
                     if ($_REQUEST['is_password'][$key] === '1') {
                         $valPassword = '1';
                     } else {
-                       $valPassword = null;
+                        $valPassword = null;
                     }
                 }
                 $arr[$i]['macroPassword_#index#'] = $valPassword;
                           
-                $arr[$index]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
-                $arr[$index]['macroDescription'] = isset($_REQUEST['description'][$key]) ? $_REQUEST['description'][$key] : NULL;
+                $arr[$index]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ?
+                    $_REQUEST['description'][$key] : null;
+                $arr[$index]['macroDescription'] = isset($_REQUEST['description'][$key]) ?
+                    $_REQUEST['description'][$key] : null;
                 $i++;
             }
         }
@@ -519,7 +538,7 @@ class CentreonService
 
     /**
      * Returns array of locked templates
-     * 
+     *
      * @return array
      */
     public function getLockedServiceTemplates()
@@ -540,7 +559,7 @@ class CentreonService
 
     /**
      * Clean up service relations (services by hostgroup)
-     * 
+     *
      * @param string $table
      * @param string $host_id_field
      * @param string $service_id_field
@@ -572,7 +591,7 @@ class CentreonService
      * @param array $cctSCache
      * @return bool
      */
-    public function serviceHasContact($service, $type = 0, $cgSCache, $cctSCache)
+    public function serviceHasContact($service, $type = 0, $cgSCache = array(), $cctSCache = array())
     {
         static $serviceTemplateHasContactGroup = array();
         static $serviceTemplateHasContact = array();
@@ -596,35 +615,42 @@ class CentreonService
             }
             $res = $this->db->query("SELECT service_template_model_stm_id 
 			   	    FROM service 
-				    WHERE service_id = {$serviceId}"
-            );
+				    WHERE service_id = {$serviceId}");
             $service = $res->fetchRow();
         }
         return false;
     }
     
     /**
-     * 
+     *
      * @param type $pearDB
      * @param integer $service_id
      * @param string $macroInput
      * @param string $macroValue
      * @param boolean $cmdId
      */
-    public function hasMacroFromServiceChanged($pearDB, $service_id, &$macroInput, &$macroValue, $cmdId = false, $isMassiveChange = false, $macroFrom = false)
-    {
-        $aListTemplate = getListTemplates($pearDB, $service_id);
+    public function hasMacroFromServiceChanged(
+        $pearDB,
+        $serviceId,
+        &$macroInput,
+        &$macroValue,
+        $cmdId = false,
+        $isMassiveChange = false,
+        $macroFrom = false
+    ) {
+        $aListTemplate = getListTemplates($pearDB, $serviceId);
         
         if (!isset($cmdId)) {
             $cmdId = "";
         }
 
-        $aMacros = $this->getMacros($service_id, $aListTemplate, $cmdId);
+        $aMacros = $this->getMacros($serviceId, $aListTemplate, $cmdId);
         foreach ($aMacros as $macro) {
-            foreach($macroInput as $ind => $input){
+            foreach ($macroInput as $ind => $input) {
                 # Don't override macros on massive change if there is not direct inheritance
                 if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
-                    || ($isMassiveChange && $input == $macro['macroInput_#index#'] && isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')) {
+                    || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
+                        isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')) {
                     unset($macroInput[$ind]);
                     unset($macroValue[$ind]);
                 }
@@ -632,18 +658,21 @@ class CentreonService
         }
     }
     
-    public function getMacroFromForm($form,$fromKey){
+    public function getMacroFromForm($form, $fromKey)
+    {
      
         $Macros = array();
-        if(!empty($form['macroInput'])){
-            foreach($form['macroInput'] as $key=>$macroInput){
-                if($form['macroFrom'][$key] == $fromKey){
+        if (!empty($form['macroInput'])) {
+            foreach ($form['macroInput'] as $key => $macroInput) {
+                if ($form['macroFrom'][$key] == $fromKey) {
                     $macroTmp = array();
                     $macroTmp['macroInput_#index#'] = $macroInput;
                     $macroTmp['macroValue_#index#'] = $form['macroValue'][$key];
-                    $macroTmp['macroPassword_#index#'] = isset($form['is_password'][$key]) ? 1 : NULL;
-                    $macroTmp['macroDescription_#index#'] = isset($form['description'][$key]) ? $form['description'][$key] : NULL;
-                    $macroTmp['macroDescription'] = isset($form['description'][$key]) ? $form['description'][$key] : NULL;
+                    $macroTmp['macroPassword_#index#'] = isset($form['is_password'][$key]) ? 1 : null;
+                    $macroTmp['macroDescription_#index#'] = isset($form['description'][$key]) ?
+                        $form['description'][$key] : null;
+                    $macroTmp['macroDescription'] = isset($form['description'][$key]) ?
+                        $form['description'][$key] : null;
                     $Macros[] = $macroTmp;
                 }
             }
@@ -653,11 +682,11 @@ class CentreonService
     
     /**
      * This method get the macro attached to the service
-     * 
+     *
      * @param int $iServiceId
      * @param array $aListTemplate
      * @param int $iIdCommande
-     * 
+     *
      * @return array
      */
     public function getMacros($iServiceId, $aListTemplate, $iIdCommande, $form = array())
@@ -665,24 +694,24 @@ class CentreonService
         
         $macroArray = $this->getCustomMacroInDb($iServiceId);
         
-        $macroArray = array_merge($macroArray,$this->getMacroFromForm($form,"direct"));
+        $macroArray = array_merge($macroArray, $this->getMacroFromForm($form, "direct"));
         
-        $aMacroInService = $this->getMacroFromForm($form,"fromService");
+        $aMacroInService = $this->getMacroFromForm($form, "fromService");
         //Get macro attached to the host
         
         // clear current template/service from the list.
         unset($aListTemplate[count($aListTemplate) - 1]);
         foreach ($aListTemplate as $template) {
             if (!empty($template)) {
-                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'],$template);
+                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'], $template);
             }
         }
-        $aMacroTemplate[] = $this->getMacroFromForm($form,"fromTpl");
+        $aMacroTemplate[] = $this->getMacroFromForm($form, "fromTpl");
         
         $templateName = "";
-        if(empty($iIdCommande)){
-            foreach($aListTemplate as $template){
-                if(!empty($template['command_command_id'])){
+        if (empty($iIdCommande)) {
+            foreach ($aListTemplate as $template) {
+                if (!empty($template['command_command_id'])) {
                     $iIdCommande = $template['command_command_id'];
                     $templateName = "Service template : ".$template['service_description']." | ";
                 }
@@ -690,11 +719,11 @@ class CentreonService
         }
         
         
-        //Get macro attached to the command        
+        //Get macro attached to the command
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
             $macroTmp = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
-            foreach($macroTmp as $tmpmacro ){
+            foreach ($macroTmp as $tmpmacro) {
                 $tmpmacro['macroTpl_#index#'] = $templateName.' Commande : '.$tmpmacro['macroCommandFrom'];
                 $aMacroInService[] = $tmpmacro;
             }
@@ -711,7 +740,7 @@ class CentreonService
             }
         }
         
-        if (count($aMacroTemplate) > 0) {  
+        if (count($aMacroTemplate) > 0) {
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
                     $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
@@ -723,7 +752,7 @@ class CentreonService
         }
         
         if (count($macroArray) > 0) {
-            foreach($macroArray as $directMacro){
+            foreach ($macroArray as $directMacro) {
                 $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
                 $directMacro['macroFrom_#index#'] = 'direct';
                 $directMacro['source'] = 'direct';
@@ -731,17 +760,18 @@ class CentreonService
             }
         }
         
-        $aFinalMacro = $this->macro_unique($aTempMacro);
+        $aFinalMacro = $this->macroUnique($aTempMacro);
         
         return $aFinalMacro;
     }
     
-    public function ajaxMacroControl($form){
+    public function ajaxMacroControl($form)
+    {
         $aMacroInService = array();
-        $macroArray = $this->getCustomMacro(null,true);
-        $this->purgeOldMacroToForm($macroArray,$form,'fromTpl');
+        $macroArray = $this->getCustomMacro(null, true);
+        $this->purgeOldMacroToForm($macroArray, $form, 'fromTpl');
         $aListTemplate = array();
-        if(isset($form['service_template_model_stm_id']) && !empty($form['service_template_model_stm_id'])){
+        if (isset($form['service_template_model_stm_id']) && !empty($form['service_template_model_stm_id'])) {
              $aListTemplate = getListTemplates($this->db, $form['service_template_model_stm_id']);
         }
         //Get macro attached to the template
@@ -749,35 +779,34 @@ class CentreonService
         
         foreach ($aListTemplate as $template) {
             if (!empty($template)) {
-                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'],$template);
+                $aMacroTemplate[] = $this->getCustomMacroInDb($template['service_id'], $template);
             }
         }
         
         $iIdCommande = $form['command_command_id'];
         
         $templateName = "";
-        if(empty($iIdCommande)){
-            foreach($aListTemplate as $template){
-                if(!empty($template['command_command_id'])){
+        if (empty($iIdCommande)) {
+            foreach ($aListTemplate as $template) {
+                if (!empty($template['command_command_id'])) {
                     $iIdCommande = $template['command_command_id'];
                     $templateName = "Service template : ".$template['service_description']." | ";
                 }
             }
         }
         
-        //Get macro attached to the command     
-        //$aMacroInService = array();
+        //Get macro attached to the command
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->db);
             
             $macroTmp = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
-            foreach($macroTmp as $tmpmacro ){
+            foreach ($macroTmp as $tmpmacro) {
                 $tmpmacro['macroTpl_#index#'] = $templateName.' Commande : '.$tmpmacro['macroCommandFrom'];
                 $aMacroInService[] = $tmpmacro;
             }
         }
 
-        $this->purgeOldMacroToForm($macroArray,$form,'fromService');
+        $this->purgeOldMacroToForm($macroArray, $form, 'fromService');
         
         
         //filter a macro
@@ -792,7 +821,7 @@ class CentreonService
             }
         }
         
-        if (count($aMacroTemplate) > 0) {  
+        if (count($aMacroTemplate) > 0) {
             foreach ($aMacroTemplate as $key => $macr) {
                 foreach ($macr as $mm) {
                     $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
@@ -804,7 +833,7 @@ class CentreonService
         }
         
         if (count($macroArray) > 0) {
-            foreach($macroArray as $key => $directMacro){
+            foreach ($macroArray as $key => $directMacro) {
                 $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
                 $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key];
                 $directMacro['source'] = 'direct';
@@ -812,46 +841,47 @@ class CentreonService
             }
         }
         
-        $aFinalMacro = $this->macro_unique($aTempMacro);
+        $aFinalMacro = $this->macroUnique($aTempMacro);
         
         return $aFinalMacro;
     }
 
-    public function purgeOldMacroToForm(&$macroArray,&$form,$fromKey,$macrosArrayToCompare = null){
+    public function purgeOldMacroToForm(&$macroArray, &$form, $fromKey, $macrosArrayToCompare = null)
+    {
         
         
-        if(isset($form["macroInput"]["#index#"])){
-            unset($form["macroInput"]["#index#"]); 
+        if (isset($form["macroInput"]["#index#"])) {
+            unset($form["macroInput"]["#index#"]);
         }
-        if(isset($form["macroValue"]["#index#"])){
-            unset($form["macroValue"]["#index#"]); 
+        if (isset($form["macroValue"]["#index#"])) {
+            unset($form["macroValue"]["#index#"]);
         }
 
         
         
         
-        foreach($macroArray as $key=>$macro){
-            if($macro["macroInput_#index#"] == ""){
+        foreach ($macroArray as $key => $macro) {
+            if ($macro["macroInput_#index#"] == "") {
                 unset($macroArray[$key]);
             }
         }
         
-        if(is_null($macrosArrayToCompare)){
-            foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key] == $fromKey){
+        if (is_null($macrosArrayToCompare)) {
+            foreach ($macroArray as $key => $macro) {
+                if ($form['macroFrom'][$key] == $fromKey) {
                     unset($macroArray[$key]);
                 }
             }
-        }else{
+        } else {
             $inputIndexArray = array();
-            foreach($macrosArrayToCompare as $tocompare){
+            foreach ($macrosArrayToCompare as $tocompare) {
                 if (isset($tocompare['macroInput_#index#'])) {
                     $inputIndexArray[] = $tocompare['macroInput_#index#'];
                 }
             }
-            foreach($macroArray as $key=>$macro){
-                if($form['macroFrom'][$key] == $fromKey){
-                    if(!in_array($macro['macroInput_#index#'],$inputIndexArray)){
+            foreach ($macroArray as $key => $macro) {
+                if ($form['macroFrom'][$key] == $fromKey) {
+                    if (!in_array($macro['macroInput_#index#'], $inputIndexArray)) {
                         unset($macroArray[$key]);
                     }
                 }
@@ -862,7 +892,7 @@ class CentreonService
     
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -988,7 +1018,7 @@ class CentreonService
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
@@ -1081,132 +1111,138 @@ class CentreonService
     
     
     
-    private function comparaPriority($macroA,$macroB,$getFirst = true){
+    private function comparaPriority($macroA, $macroB, $getFirst = true)
+    {
         
         $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromService' => 1);
-        if($getFirst){
-            if($arrayPrio[$macroA['source']] > $arrayPrio[$macroB['source']]){
+        if ($getFirst) {
+            if ($arrayPrio[$macroA['source']] > $arrayPrio[$macroB['source']]) {
                 return $macroA;
-            }else{
+            } else {
                 return $macroB;
             }
-        }else{
-            if($arrayPrio[$macroA['source']] >= $arrayPrio[$macroB['source']]){
+        } else {
+            if ($arrayPrio[$macroA['source']] >= $arrayPrio[$macroB['source']]) {
                 return $macroA;
-            }else{
+            } else {
                 return $macroB;
             }
         }
     }
     
-    public function macro_unique($aTempMacro)
+    public function macroUnique($aTempMacro)
     {
         
         $storedMacros = array();
-        foreach($aTempMacro as $TempMacro){
+        foreach ($aTempMacro as $TempMacro) {
             $sInput = $TempMacro['macroInput_#index#'];
             $storedMacros[$sInput][] = $TempMacro;
         }
         
         $finalMacros = array();
-        foreach($storedMacros as $key=>$macros){
+        foreach ($storedMacros as $key => $macros) {
             $choosedMacro = array();
-            foreach($macros as $macro){
-                if(empty($choosedMacro)){
+            foreach ($macros as $macro) {
+                if (empty($choosedMacro)) {
                     $choosedMacro = $macro;
-                }else{
-                    $choosedMacro = $this->comparaPriority($macro,$choosedMacro,false);
+                } else {
+                    $choosedMacro = $this->comparaPriority($macro, $choosedMacro, false);
                 }
             }
-            if(!empty($choosedMacro)){
+            if (!empty($choosedMacro)) {
                 $finalMacros[] = $choosedMacro;
             }
         }
-        $this->addInfosToMacro($storedMacros,$finalMacros);
+        $this->addInfosToMacro($storedMacros, $finalMacros);
         return $finalMacros;
     }
     
-    private function addInfosToMacro($storedMacros,&$finalMacros){
+    private function addInfosToMacro($storedMacros, &$finalMacros)
+    {
         
-        foreach($finalMacros as &$finalMacro){
+        foreach ($finalMacros as &$finalMacro) {
             $sInput = $finalMacro['macroInput_#index#'];
-            $this->setInheritedDescription($finalMacro,$this->getInheritedDescription($storedMacros[$sInput],$finalMacro));
-            switch($finalMacro['source']){
-                case 'direct' :
-                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),$finalMacro);
+            $this->setInheritedDescription(
+                $finalMacro,
+                $this->getInheritedDescription($storedMacros[$sInput], $finalMacro)
+            );
+            switch ($finalMacro['source']) {
+                case 'direct':
+                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]), $finalMacro);
                     break;
-                case 'fromTpl' : 
-                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]),$finalMacro);
+                case 'fromTpl':
+                    $this->setTplValue($this->findTplValue($storedMacros[$sInput]), $finalMacro);
                     break;
-                case 'fromService' :
+                case 'fromService':
                     break;
-                default :
+                default:
                     break;
             }
             
         }
     }
     
-    private function getInheritedDescription($storedMacros,$finalMacro){
+    private function getInheritedDescription($storedMacros, $finalMacro)
+    {
         $description = "";
-        if(empty($finalMacro['macroDescription'])){
+        if (empty($finalMacro['macroDescription'])) {
             $choosedMacro = array();
-            foreach($storedMacros as $storedMacro){
-                if(!empty($storedMacro['macroDescription'])){
-                    if(empty($choosedMacro)){
+            foreach ($storedMacros as $storedMacro) {
+                if (!empty($storedMacro['macroDescription'])) {
+                    if (empty($choosedMacro)) {
                         $choosedMacro = $storedMacro;
-                    }else{
-                        $choosedMacro = $this->comparaPriority($storedMacro,$choosedMacro,false);
+                    } else {
+                        $choosedMacro = $this->comparaPriority($storedMacro, $choosedMacro, false);
                     }
                     $description = $choosedMacro['macroDescription'];
                 }
             }
-        }else{
+        } else {
             $description = $finalMacro['macroDescription'];
         }
         return $description;
     }
     
-    private function setInheritedDescription(&$finalMacro,$description){
+    private function setInheritedDescription(&$finalMacro, $description)
+    {
         $finalMacro['macroDescription_#index#'] = $description;
         $finalMacro['macroDescription'] = $description;
     }
     
-    private function setTplValue($tplValue,&$finalMacro){
+    private function setTplValue($tplValue, &$finalMacro)
+    {
         
-        if($tplValue !== false){
+        if ($tplValue !== false) {
             $finalMacro['macroTplValue_#index#'] = $tplValue;
             $finalMacro['macroTplValToDisplay_#index#'] = 1;
-        }else{
+        } else {
             $finalMacro['macroTplValue_#index#'] = "";
             $finalMacro['macroTplValToDisplay_#index#'] = 0;
         }
     }
     
-    private function findTplValue($storedMacro,$getFirst = false){
-        if($getFirst){
-            foreach($storedMacro as $macros){
-                if($macros['source'] == 'fromTpl'){
+    private function findTplValue($storedMacro, $getFirst = false)
+    {
+        if ($getFirst) {
+            foreach ($storedMacro as $macros) {
+                if ($macros['source'] == 'fromTpl') {
                     return $macros['macroValue_#index#'];
-                } 
+                }
             }
-        }else{
+        } else {
             $macroReturn = false;
-            foreach($storedMacro as $macros){
-                if($macros['source'] == 'fromTpl'){
+            foreach ($storedMacro as $macros) {
+                if ($macros['source'] == 'fromTpl') {
                     $macroReturn = $macros['macroValue_#index#'];
-                } 
+                }
             }
             return $macroReturn;
         }
         return false;
     }
     
-    
-    
-    
     /**
-     * 
+     *
      * @param type $ret
      * @return type
      */
@@ -1214,73 +1250,142 @@ class CentreonService
     {
         $ret["service_description"] = $this->checkIllegalChar($ret["service_description"]);
 
-        if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null)		{
+        if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null) {
             $ret["command_command_id_arg2"] = str_replace("\n", "//BR//", $ret["command_command_id_arg2"]);
             $ret["command_command_id_arg2"] = str_replace("\t", "//T//", $ret["command_command_id_arg2"]);
             $ret["command_command_id_arg2"] = str_replace("\r", "//R//", $ret["command_command_id_arg2"]);
         }
         $rq = "INSERT INTO service " .
-            "(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, " .
-            "service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, " .
-            "service_retry_check_interval, service_active_checks_enabled, " .
-            "service_passive_checks_enabled, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
-            "service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
-            "service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
-            "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
-            "service_register, service_activate) " .
+            "(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, " .
+            "timeperiod_tp_id2, service_description, service_alias, service_is_volatile, service_max_check_attempts, " .
+            "service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, " .
+            "service_passive_checks_enabled, service_obsess_over_service, service_check_freshness, " .
+            "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, " .
+            "service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, " .
+            " service_retain_status_information, service_retain_nonstatus_information, " .
+            "service_notification_interval, service_notification_options, service_notifications_enabled, " .
+            "contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, " .
+            "service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay, " .
+            "service_comment, command_command_id_arg, command_command_id_arg2, service_register, service_locked, " .
+            "service_activate) " .
             "VALUES ( ";
-        isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
-        isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
-        isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
-        isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
-        isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-        isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_description"])."', ": $rq .= "NULL, ";
-        isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_alias"])."', ": $rq .= "NULL, ";
-        isset($ret["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
-        isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL ? $rq .= "'".$ret["service_max_check_attempts"]."', " : $rq .= "NULL, ";
-        isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL ? $rq .= "'".$ret["service_normal_check_interval"]."', ": $rq .= "NULL, ";
-        isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != NULL ? $rq .= "'".$ret["service_retry_check_interval"]."', ": $rq .= "NULL, ";
-        isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"]) && $ret["service_active_checks_enabled"]["service_active_checks_enabled"] != 2 ? $rq .= "'".$ret["service_active_checks_enabled"]["service_active_checks_enabled"]."', ": $rq .= "'2', ";
-        isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]) && $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"] != 2 ? $rq .= "'".$ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]."', ": $rq .= "'2', ";
-        isset($ret["service_obsess_over_service"]["service_obsess_over_service"]) && $ret["service_obsess_over_service"]["service_obsess_over_service"] != 2 ? $rq .= "'".$ret["service_obsess_over_service"]["service_obsess_over_service"]."', ": $rq .= "'2', ";
-        isset($ret["service_check_freshness"]["service_check_freshness"]) && $ret["service_check_freshness"]["service_check_freshness"] != 2 ? $rq .= "'".$ret["service_check_freshness"]["service_check_freshness"]."', ": $rq .= "'2', ";
-        isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != NULL ? $rq .= "'".$ret["service_freshness_threshold"]."', ": $rq .= "NULL, ";
-        isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"]) && $ret["service_event_handler_enabled"]["service_event_handler_enabled"] != 2 ? $rq .= "'".$ret["service_event_handler_enabled"]["service_event_handler_enabled"]."', ": $rq .= "'2', ";
-        isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != NULL ? $rq .= "'".$ret["service_low_flap_threshold"]."', " : $rq .= "NULL, ";
-        isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != NULL ? $rq .= "'".$ret["service_high_flap_threshold"]."', " : $rq .= "NULL, ";
-        isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]) && $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"] != 2 ? $rq .= "'".$ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]."', " : $rq .= "'2', ";
-        isset($ret["service_process_perf_data"]["service_process_perf_data"]) && $ret["service_process_perf_data"]["service_process_perf_data"] != 2 ? $rq .= "'".$ret["service_process_perf_data"]["service_process_perf_data"]."', " : $rq .= "'2', ";
-        isset($ret["service_retain_status_information"]["service_retain_status_information"]) && $ret["service_retain_status_information"]["service_retain_status_information"] != 2 ? $rq .= "'".$ret["service_retain_status_information"]["service_retain_status_information"]."', " : $rq .= "'2', ";
-        isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) && $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', " : $rq .= "'2', ";
-        isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL ? $rq .= "'".$ret["service_notification_interval"]."', " : $rq .= "NULL, ";
-        isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, ";
-        isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
+        isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != null ?
+            $rq .= "'" . $ret["service_template_model_stm_id"] . "', " : $rq .= "NULL, ";
+        isset($ret["command_command_id"]) && $ret["command_command_id"] != null ?
+            $rq .= "'" . $ret["command_command_id"] . "', " : $rq .= "NULL, ";
+        isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null ?
+            $rq .= "'" . $ret["timeperiod_tp_id"] . "', " : $rq .= "NULL, ";
+        isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null ?
+            $rq .= "'" . $ret["command_command_id2"] . "', " : $rq .= "NULL, ";
+        isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != null ?
+            $rq .= "'" . $ret["timeperiod_tp_id2"] . "', " : $rq .= "NULL, ";
+        isset($ret["service_description"]) && $ret["service_description"] != null ?
+            $rq .= "'" . CentreonDB::escape($ret["service_description"]) . "', " : $rq .= "NULL, ";
+        isset($ret["service_alias"]) && $ret["service_alias"] != null ?
+            $rq .= "'" . CentreonDB::escape($ret["service_alias"]) . "', " : $rq .= "NULL, ";
+        isset($ret["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ?
+            $rq .= "'" . $ret["service_is_volatile"]["service_is_volatile"] . "', " : $rq .= "'2', ";
+        isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != null ?
+            $rq .= "'" . $ret["service_max_check_attempts"] . "', " : $rq .= "NULL, ";
+        isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != null ?
+            $rq .= "'" . $ret["service_normal_check_interval"] . "', " : $rq .= "NULL, ";
+        isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != null ?
+            $rq .= "'" . $ret["service_retry_check_interval"] . "', " : $rq .= "NULL, ";
+        isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"]) &&
+            $ret["service_active_checks_enabled"]["service_active_checks_enabled"] != 2 ?
+            $rq .= "'" . $ret["service_active_checks_enabled"]["service_active_checks_enabled"] . "', " :
+            $rq .= "'2', ";
+        isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]) &&
+            $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"] != 2 ?
+            $rq .= "'" . $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"] . "', " :
+            $rq .= "'2', ";
+        isset($ret["service_obsess_over_service"]["service_obsess_over_service"]) &&
+            $ret["service_obsess_over_service"]["service_obsess_over_service"] != 2 ?
+            $rq .= "'" . $ret["service_obsess_over_service"]["service_obsess_over_service"] . "', " : $rq .= "'2', ";
+        isset($ret["service_check_freshness"]["service_check_freshness"]) &&
+            $ret["service_check_freshness"]["service_check_freshness"] != 2 ?
+            $rq .= "'" . $ret["service_check_freshness"]["service_check_freshness"] . "', " : $rq .= "'2', ";
+        isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != null ?
+            $rq .= "'" . $ret["service_freshness_threshold"] . "', ": $rq .= "NULL, ";
+        isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"]) &&
+            $ret["service_event_handler_enabled"]["service_event_handler_enabled"] != 2 ?
+            $rq .= "'" . $ret["service_event_handler_enabled"]["service_event_handler_enabled"] . "', " :
+            $rq .= "'2', ";
+        isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != null ?
+            $rq .= "'" . $ret["service_low_flap_threshold"] . "', " : $rq .= "NULL, ";
+        isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != null ?
+            $rq .= "'" . $ret["service_high_flap_threshold"] . "', " : $rq .= "NULL, ";
+        isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]) &&
+            $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"] != 2 ?
+            $rq .= "'" . $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"] . "', " :
+            $rq .= "'2', ";
+        isset($ret["service_process_perf_data"]["service_process_perf_data"]) &&
+            $ret["service_process_perf_data"]["service_process_perf_data"] != 2 ?
+            $rq .= "'" . $ret["service_process_perf_data"]["service_process_perf_data"] . "', " : $rq .= "'2', ";
+        isset($ret["service_retain_status_information"]["service_retain_status_information"]) &&
+            $ret["service_retain_status_information"]["service_retain_status_information"] != 2 ?
+            $rq .= "'" . $ret["service_retain_status_information"]["service_retain_status_information"] . "', " :
+            $rq .= "'2', ";
+        isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) &&
+            $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ?
+            $rq .= "'" . $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] . "', " :
+            $rq .= "'2', ";
+        isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != null ?
+            $rq .= "'" . $ret["service_notification_interval"] . "', " : $rq .= "NULL, ";
+        isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != null ?
+            $rq .= "'" . implode(",", array_keys($ret["service_notifOpts"])) . "', " : $rq .= "NULL, ";
+        isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) &&
+            $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ?
+            $rq .= "'" . $ret["service_notifications_enabled"]["service_notifications_enabled"] . "', " :
+            $rq .= "'2', ";
         $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
         $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
-        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "'NULL', ";
-        isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
-        isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
+        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) &&
+            $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ?
+            $rq .= "'" . $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] . "', " :
+            $rq .= "'NULL', ";
+        isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) &&
+            $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ?
+            $rq .= "'" . $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] . "', " :
+            $rq .= "'NULL', ";
+        isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null ?
+            $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
+        isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != null ?
+            $rq .= "'" . $ret["service_first_notification_delay"] . "', " : $rq .= "NULL, ";
 
-        isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
+        isset($ret["service_comment"]) && $ret["service_comment"] != null ?
+            $rq .= "'" . CentreonDB::escape($ret["service_comment"]) . "', " : $rq .= "NULL, ";
         $ret['command_command_id_arg'] = $this->getCommandArgs($ret, $ret);
-        isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
+        isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != null ?
+            $rq .= "'" . CentreonDB::escape($ret["command_command_id_arg"]) . "', " : $rq .= "NULL, ";
 
 
-        isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
-        isset($ret["service_register"]) && $ret["service_register"] != NULL ? $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
-        isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
+        isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null ?
+            $rq .= "'" . CentreonDB::escape($ret["command_command_id_arg2"]) . "', " : $rq .= "NULL, ";
+        isset($ret["service_register"]) && $ret["service_register"] != null ?
+            $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
+        isset($ret["service_locked"]) && $ret["service_locked"] != null ?
+            $rq .= "'".$ret["service_locked"]."', " : $rq .= "0, ";
+        isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != null ?
+            $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
         $rq .= ")";
+        
         $DBRESULT = $this->db->query($rq);
+        if (\PEAR::isError($DBRESULT)) {
+            throw new \Exception('Error while insert service '.$ret['service_description']);
+        }
         
-        $DBRESULT   = $this->db->query("SELECT MAX(service_id) as id FROM service");
+        $DBRESULT   = $this->db->query("SELECT MAX(service_id) as service_id FROM service");
         $service_id = $DBRESULT->fetchRow();
+
+        $ret['service_service_id'] = $service_id['service_id'];
+        $this->insertExtendInfo($ret);
         
-        return $service_id['id'];
-    
+        return $service_id['service_id'];
     }
     
     /**
-     * 
+     *
      * @param type $aDatas
      * @return type
      */
@@ -1291,18 +1396,199 @@ class CentreonService
             return;
         }
         $rq = "INSERT INTO extended_service_information ";
-        $rq .= "(service_service_id, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt, graph_id) ";
+        $rq .= "(service_service_id, esi_notes, esi_notes_url, esi_action_url, esi_icon_image,
+            esi_icon_image_alt, graph_id) ";
         $rq .= "VALUES ";
         $rq .= "('".$aDatas['service_service_id']."', ";
         isset($aDatas["esi_notes"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes"])."'," : $rq .="NULL, ";
-        isset($aDatas["esi_notes_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_notes_url"])."'," : $rq .= "NULL, ";
-        isset($aDatas["esi_action_url"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_action_url"])."'," : $rq .= "NULL, ";
-        isset($aDatas["esi_icon_image"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image"])."'," : $rq .= "NULL, ";
-        isset($aDatas["esi_icon_image_alt"]) ? $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image_alt"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_notes_url"]) ?
+            $rq .= "'" .CentreonDB::escape($aDatas["esi_notes_url"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_action_url"]) ?
+            $rq .= "'" .CentreonDB::escape($aDatas["esi_action_url"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_icon_image"]) ?
+            $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image"])."'," : $rq .= "NULL, ";
+        isset($aDatas["esi_icon_image_alt"]) ?
+            $rq .= "'" .CentreonDB::escape($aDatas["esi_icon_image_alt"])."'," : $rq .= "NULL, ";
         isset($aDatas["graph_id"]) ? $rq .= CentreonDB::escape($aDatas["graph_id"]) : $rq .= "NULL ";
         $rq .= ")";
         
         $DBRESULT = $this->db->query($rq);
+    }
+    
+    /**
+     *
+     * @param array $ret
+     */
+    public function update($service_id, $ret)
+    {
+        $rq = "UPDATE service SET " ;
+        $rq .= "service_template_model_stm_id = ";
+        isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != null ?
+            $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
+        $rq .= "command_command_id = ";
+        isset($ret["command_command_id"]) && $ret["command_command_id"] != null ?
+            $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
+        $rq .= "timeperiod_tp_id = ";
+        isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null ?
+            $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
+        $rq .= "command_command_id2 = ";
+        isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null ?
+            $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
+        
+        $rq .= "service_description = ";
+        isset($ret["service_description"]) && $ret["service_description"] != null ?
+            $rq .= "'".CentreonDB::escape($ret["service_description"])."', ": $rq .= "NULL, ";
+        
+        $rq .= "service_alias = ";
+        isset($ret["service_alias"]) && $ret["service_alias"] != null ?
+            $rq .= "'" . CentreonDB::escape($ret["service_alias"]) . "', ": $rq .= "NULL, ";
+        $rq .= "service_acknowledgement_timeout = ";
+        isset($ret["service_acknowledgement_timeout"]) &&
+            $ret["service_acknowledgement_timeout"] != null ?
+            $rq .= "'".$ret["service_acknowledgement_timeout"]."', ": $rq .= "NULL, ";
+        $rq .= "service_is_volatile = ";
+        isset($ret["service_is_volatile"]["service_is_volatile"]) &&
+            $ret["service_is_volatile"]["service_is_volatile"] != 2 ?
+            $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
+        $rq .= "service_max_check_attempts = ";
+        isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != null ?
+            $rq .= "'".$ret["service_max_check_attempts"]."', " : $rq .= "NULL, ";
+        $rq .= "service_normal_check_interval = ";
+        isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != null ?
+            $rq .= "'".$ret["service_normal_check_interval"]."', ": $rq .= "NULL, ";
+        $rq .= "service_retry_check_interval = ";
+        isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != null ?
+            $rq .= "'".$ret["service_retry_check_interval"]."', ": $rq .= "NULL, ";
+        $rq .= "service_active_checks_enabled = ";
+        isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"]) &&
+            $ret["service_active_checks_enabled"]["service_active_checks_enabled"] != 2 ?
+            $rq .= "'".$ret["service_active_checks_enabled"]["service_active_checks_enabled"]."', ": $rq .= "'2', ";
+        $rq .= "service_passive_checks_enabled = ";
+        isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]) &&
+            $ret["service_passive_checks_enabled"]["service_passive_checks_enabled"] != 2 ?
+            $rq .= "'".$ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]."', ": $rq .= "'2', ";
+        $rq .= "service_obsess_over_service = ";
+        isset($ret["service_obsess_over_service"]["service_obsess_over_service"]) &&
+            $ret["service_obsess_over_service"]["service_obsess_over_service"] != 2 ?
+            $rq .= "'".$ret["service_obsess_over_service"]["service_obsess_over_service"]."', ": $rq .= "'2', ";
+        $rq .= "service_check_freshness = ";
+        isset($ret["service_check_freshness"]["service_check_freshness"]) &&
+            $ret["service_check_freshness"]["service_check_freshness"] != 2 ?
+            $rq .= "'".$ret["service_check_freshness"]["service_check_freshness"]."', ": $rq .= "'2', ";
+        $rq .= "service_freshness_threshold = ";
+        isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != null ?
+            $rq .= "'".$ret["service_freshness_threshold"]."', ": $rq .= "NULL, ";
+        $rq .= "service_event_handler_enabled = ";
+        isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"]) &&
+            $ret["service_event_handler_enabled"]["service_event_handler_enabled"] != 2 ?
+            $rq .= "'".$ret["service_event_handler_enabled"]["service_event_handler_enabled"]."', ": $rq .= "'2', ";
+        $rq .= "service_low_flap_threshold = ";
+        isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != null ?
+            $rq .= "'".$ret["service_low_flap_threshold"]."', " : $rq .= "NULL, ";
+        $rq .= "service_high_flap_threshold = ";
+        isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != null ?
+            $rq .= "'".$ret["service_high_flap_threshold"]."', " : $rq .= "NULL, ";
+        $rq .= "service_flap_detection_enabled = ";
+        isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]) &&
+            $ret["service_flap_detection_enabled"]["service_flap_detection_enabled"] != 2 ?
+            $rq .= "'".$ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]."', " : $rq .= "'2', ";
+        $rq .= "service_process_perf_data = ";
+        isset($ret["service_process_perf_data"]["service_process_perf_data"]) &&
+            $ret["service_process_perf_data"]["service_process_perf_data"] != 2 ?
+            $rq .= "'".$ret["service_process_perf_data"]["service_process_perf_data"]."', " : $rq .= "'2', ";
+        $rq .= "service_retain_status_information = ";
+        isset($ret["service_retain_status_information"]["service_retain_status_information"]) &&
+            $ret["service_retain_status_information"]["service_retain_status_information"] != 2 ?
+            $rq .= "'".$ret["service_retain_status_information"]["service_retain_status_information"]."', " :
+            $rq .= "'2', ";
+        $rq .= "service_retain_nonstatus_information = ";
+        isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) &&
+            $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ?
+            $rq .= "'".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', " :
+            $rq .= "'2', ";
+        $rq .= "service_notifications_enabled = ";
+        isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) &&
+            $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ?
+            $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
+
+        $rq .= "service_inherit_contacts_from_host = ";
+        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) &&
+            $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ?
+            $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " :
+            $rq .= "NULL, ";
+
+        $rq .= "service_use_only_contacts_from_host = ";
+        isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) &&
+            $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ?
+            $rq .= "'".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', " :
+            $rq .= "NULL, ";
+
+        $rq.= "contact_additive_inheritance = ";
+        $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
+        $rq.= "cg_additive_inheritance = ";
+        $rq .= (isset($ret['cg_additive_inheritance']) ? 1 : 0) . ', ';
+
+
+        $rq .= "service_stalking_options = ";
+        isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null ?
+            $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
+
+        $rq .= "service_comment = ";
+        isset($ret["service_comment"]) && $ret["service_comment"] != null ?
+            $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
+
+        $ret["command_command_id_arg"] = $this->getCommandArgs($ret, $ret);
+        $rq .= "command_command_id_arg = ";
+        isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != null ?
+            $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
+        $rq .= "command_command_id_arg2 = ";
+        isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null ?
+            $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
+        $rq .= "service_register = ";
+        isset($ret["service_register"]) && $ret["service_register"] != null ?
+            $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
+        $rq .= "service_activate = ";
+        isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != null ?
+            $rq .= "'".$ret["service_activate"]["service_activate"]."' " : $rq .= "NULL ";
+        $rq .= "WHERE service_id = '".$service_id."'";
+        
+        $DBRESULT = $this->db->query($rq);
+
+        $this->updateExtendedInfos($service_id, $ret);
+    }
+
+    /**
+     *
+     * update service extended informations in DB
+     *
+     */
+    public function updateExtendedInfos($service_id, $ret)
+    {
+        $fields = array(
+            'esi_notes' => 'esi_notes',
+            'esi_notes_url' => 'esi_notes_url',
+            'esi_action_url' => 'esi_action_url',
+            'esi_icon_image' => 'esi_icon_image',
+            'esi_icon_image_alt' => 'esi_icon_image_alt',
+            'graph_id' => 'graph_id'
+        );
+
+        $query = "UPDATE extended_service_information SET ";
+        $updateFields = array();
+        foreach ($ret as $key => $value) {
+            if (isset($fields[$key])) {
+                $updateFields[] = '`' . $fields[$key] . '` = "' . CentreonDB::escape($value) . '" ';
+            }
+        }
+
+        if (count($updateFields)) {
+            $query .= implode(',', $updateFields)
+                . 'WHERE service_service_id = "' . $service_id . '" ';
+            $result = $this->db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while updating extendeded infos of service ' . $service_id);
+            }
+        }
     }
     
     /**
@@ -1311,37 +1597,37 @@ class CentreonService
     * @param $argArray
     * @return string
     */
-   function getCommandArgs($argArray = array(), $conf = array())
-   {
-       if (isset($conf['command_command_id_arg'])) {
-           return $conf['command_command_id_arg'];
-       }
-       $argTab = array();
-       foreach ($argArray as $key => $value) {
-           if (preg_match('/^ARG(\d+)/', $key, $matches)) {
-               $argTab[$matches[1]] = $value;
-               $argTab[$matches[1]] = str_replace("\n", "#BR#", $argTab[$matches[1]]);
-               $argTab[$matches[1]] = str_replace("\t", "#T#", $argTab[$matches[1]]);
-               $argTab[$matches[1]] = str_replace("\r", "#R#", $argTab[$matches[1]]);
-           }
-       }
-       ksort($argTab);
-       $str = "";
-       foreach ($argTab as $val) {
-           if ($val != "") {
-               $str .= "!" . $val;
-           }
-       }
-       if (!strlen($str)) {
-           return null;
-       }
-       return $str;
-   }
+    public function getCommandArgs($argArray = array(), $conf = array())
+    {
+        if (isset($conf['command_command_id_arg'])) {
+            return $conf['command_command_id_arg'];
+        }
+        $argTab = array();
+        foreach ($argArray as $key => $value) {
+            if (preg_match('/^ARG(\d+)/', $key, $matches)) {
+                $argTab[$matches[1]] = $value;
+                $argTab[$matches[1]] = str_replace("\n", "#BR#", $argTab[$matches[1]]);
+                $argTab[$matches[1]] = str_replace("\t", "#T#", $argTab[$matches[1]]);
+                $argTab[$matches[1]] = str_replace("\r", "#R#", $argTab[$matches[1]]);
+            }
+        }
+        ksort($argTab);
+        $str = "";
+        foreach ($argTab as $val) {
+            if ($val != "") {
+                $str .= "!" . $val;
+            }
+        }
+        if (!strlen($str)) {
+            return null;
+        }
+        return $str;
+    }
    
    
    /**
      * Returns service details
-     * 
+     *
      * @param int $id
      * @return array
      */
@@ -1381,18 +1667,117 @@ class CentreonService
         } else {
             $alreadyProcessed[] = $svcId;
 
-            $res = $this->db->query("SELECT service_template_model_stm_id FROM service WHERE service_id = ".$this->db->escape($svcId));
+            $res = $this->db->query(
+                "SELECT service_template_model_stm_id FROM service WHERE service_id = ".$this->db->escape($svcId)
+            );
 
             if ($res->numRows()) {
                 $row = $res->fetchRow();
-                if (!empty($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] !== NULL) {
-                    $svcTmpl = array_merge($svcTmpl, $this->getTemplatesChain($row['service_template_model_stm_id'], $alreadyProcessed));
+                if (!empty($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] !== null) {
+                    $svcTmpl = array_merge(
+                        $svcTmpl,
+                        $this->getTemplatesChain($row['service_template_model_stm_id'], $alreadyProcessed)
+                    );
                     $svcTmpl[] = $row['service_template_model_stm_id'];
                 }
             }
             return $svcTmpl;
         }
     }
-}
 
-?>
+    /**
+     * Delete service in database
+     *
+     * @param string $service_description Hostname
+     * @throws Exception
+     */
+    public function deleteServiceByDescription($service_description)
+    {
+        $sQuery = 'DELETE FROM service '
+            . 'WHERE service_description = "' . $this->db->escape($service_description) . '"';
+
+        $res = $this->db->query($sQuery);
+
+        if (\PEAR::isError($res)) {
+            throw new \Exception('Error while delete service ' . $service_description);
+        }
+    }
+
+    /**
+     * Set service description
+     *
+     * @param int $serviceId service id
+     * @param string $serviceDescription service description
+     * @throws Exception
+     */
+    public function setServiceDescription($serviceId, $serviceDescription)
+    {
+        $query = 'UPDATE service '
+            . 'SET service_description = "' .  $this->db->escape($serviceDescription) . '" '
+            . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
+
+        $result = $this->db->query($query);
+
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while updating service ' . $serviceId);
+        }
+    }
+
+    /**
+     * Set service alias
+     *
+     * @param int $serviceId service id
+     * @param string $serviceAlias service alias
+     * @throws Exception
+     */
+    public function setServiceAlias($serviceId, $serviceAlias)
+    {
+        $query = 'UPDATE service '
+            . 'SET service_alias = "' .  $this->db->escape($serviceAlias) . '" '
+            . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
+
+        $result = $this->db->query($query);
+
+        if (\PEAR::isError($result)) {
+            throw new \Exception('Error while updating service ' . $serviceId);
+        }
+    }
+
+    /**
+     * Return the list of linked hosts or host templates
+     *
+     * @param int $serviceDescription The service description
+     * @param bool $getHostNmae Defined method return (id or name)
+     * @return array
+     */
+    public function getLinkedHostsByServiceDescription($serviceDescription, $getHostName = false)
+    {
+        $hosts = array();
+
+        $select = 'SELECT h.host_id ';
+        if ($getHostName) {
+            $select .= ', h.host_name ';
+        }
+
+        $from = 'FROM host_service_relation hsr, host h, service s ';
+
+        $where = 'WHERE hsr.host_host_id = h.host_id '
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND s.service_description = "' . $this->db->escape($serviceDescription) . '" ';
+
+        $query = $select . $from . $where;
+
+        $result = $this->db->query($query);
+
+        while ($row = $result->fetchRow()) {
+            if ($getHostName) {
+                $hosts[] = $row['host_name'];
+            } else {
+                $hosts[] = $row['host_id'];
+            }
+        }
+        $hosts = array_unique($hosts);
+
+        return $hosts;
+    }
+}

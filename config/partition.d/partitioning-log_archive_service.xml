@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<centreon-partitioning>
+    <table name="log_archive_service" schema="centreon_storage">
+        <activate>1</activate>
+        <column>date_end</column>
+        <type>date</type>
+        <duration>daily</duration>
+        <retention>365</retention>
+        <retentionforward>10</retentionforward>        
+        <backup>
+            <folder>/var/backups/</folder>
+            <format>%Y-%m-%d</format>
+        </backup>
+        <createstmt>
+CREATE TABLE `log_archive_service` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `host_id` int(11) NOT NULL DEFAULT '0',
+  `service_id` int(11) NOT NULL DEFAULT '0',
+  `OKTimeScheduled` int(11) NOT NULL DEFAULT '0',
+  `OKnbEvent` int(11) NOT NULL DEFAULT '0',
+  `OKTimeAverageAck` int(11) NOT NULL,
+  `OKTimeAverageRecovery` int(11) NOT NULL,
+  `WARNINGTimeScheduled` int(11) NOT NULL DEFAULT '0',
+  `WARNINGnbEvent` int(11) NOT NULL DEFAULT '0',
+  `WARNINGTimeAverageAck` int(11) NOT NULL,
+  `WARNINGTimeAverageRecovery` int(11) NOT NULL,
+  `UNKNOWNTimeScheduled` int(11) NOT NULL DEFAULT '0',
+  `UNKNOWNnbEvent` int(11) NOT NULL DEFAULT '0',
+  `UNKNOWNTimeAverageAck` int(11) NOT NULL,
+  `UNKNOWNTimeAverageRecovery` int(11) NOT NULL,
+  `CRITICALTimeScheduled` int(11) NOT NULL DEFAULT '0',
+  `CRITICALnbEvent` int(11) NOT NULL DEFAULT '0',
+  `CRITICALTimeAverageAck` int(11) NOT NULL,
+  `CRITICALTimeAverageRecovery` int(11) NOT NULL,
+  `UNDETERMINEDTimeScheduled` int(11) NOT NULL DEFAULT '0',
+  `MaintenanceTime` int(11) DEFAULT '0',
+  `date_start` int(11) DEFAULT NULL,
+  `date_end` int(11) DEFAULT NULL,
+  KEY (`log_id`),
+  KEY `host_index` (`host_id`),
+  KEY `service_index` (`service_id`),
+  KEY `date_end_index` (`date_end`),
+  KEY `date_start_index` (`date_start`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+        </createstmt>
+    </table>
+</centreon-partitioning>

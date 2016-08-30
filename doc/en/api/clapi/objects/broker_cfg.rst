@@ -135,7 +135,6 @@ In order to get parameters of a specific I/O object, use one of the following co
  - getoutput
  - getlogger
  - getcorrelation
- - getstats
 
 Example::
 
@@ -174,7 +173,6 @@ In order to add a new I/O object, use one of the following commands:
  - **ADDOUTPUT**
  - **ADDLOGGER**
  - **ADDCORRELATION**
- - **ADDTEMPORARY**
  - **ADDSTATS**
 
 Example::

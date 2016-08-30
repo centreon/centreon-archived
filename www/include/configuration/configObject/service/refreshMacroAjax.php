@@ -47,13 +47,12 @@ $db = new CentreonDB();
 
 $serviceObj = new CentreonService($db);
 
-
 $aMacros = $serviceObj->ajaxMacroControl($_POST);
 
 $countMacro = count($aMacros);
 
-
 $arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
 
 echo json_encode($arrayReturn);
+
 die;

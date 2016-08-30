@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-    exit ();        
+    exit();
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
@@ -50,58 +50,73 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 $connectorObj = new CentreonConnector($pearDB);
 
-if (isset($_REQUEST['select']))
+if (isset($_REQUEST['select'])) {
     $select = $_REQUEST['select'];
+}
 
-if (isset($_REQUEST['id']))
+if (isset($_REQUEST['id'])) {
     $connector_id = $_REQUEST['id'];
+}
 
-if (isset($_REQUEST['options']))
+if (isset($_REQUEST['options'])) {
     $options = $_REQUEST['options'];
+}
 
-switch ($o)
-{
+/* Access level */
+($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+
+switch ($o) {
     case "a":
         require_once($path.'formConnector.php');
-    break;
+        break;
 
     case "w":
         require_once($path.'formConnector.php');
-    break;
+        break;
 
     case "c":
         require_once($path.'formConnector.php');
-    break;
+        break;
 
     case "s":
-        $myConnector = $connectorObj->read($connector_id);
-        $myConnector['enabled'] = '1';
-        $connectorObj->update($connector_id, $myConnector);
+        if ($lvl_access == "w") {
+            $myConnector = $connectorObj->read($connector_id);
+            $myConnector['enabled'] = '1';
+            $connectorObj->update($connector_id, $myConnector);
+        }
         require_once($path.'listConnector.php');
-    break;
+        break;
 
     case "u":
-        $myConnector = $connectorObj->read($connector_id);
-        $myConnector['enabled'] = '0';
-        $connectorObj->update($connector_id, $myConnector);
+        if ($lvl_access == "w") {
+            $myConnector = $connectorObj->read($connector_id);
+            $myConnector['enabled'] = '0';
+            $connectorObj->update($connector_id, $myConnector);
+        }
         require_once($path.'listConnector.php');
-    break;
+        break;
 
     case "m":
-        $selectedConnectors = array_keys($select);
-        foreach($selectedConnectors as $connectorId)
-            $connectorObj->copy($connectorId, (int)$options[$connectorId]);
+        if ($lvl_access == "w") {
+            $selectedConnectors = array_keys($select);
+            foreach ($selectedConnectors as $connectorId) {
+                $connectorObj->copy($connectorId, (int)$options[$connectorId]);
+            }
+        }
         require_once($path.'listConnector.php');
-    break;
+        break;
 
     case "d":
-        $selectedConnectors = array_keys($select);
-        foreach($selectedConnectors as $connectorId)
-            $connectorObj->delete($connectorId);
+        if ($lvl_access == "w") {
+            $selectedConnectors = array_keys($select);
+            foreach ($selectedConnectors as $connectorId) {
+                $connectorObj->delete($connectorId);
+            }
+        }
         require_once($path.'listConnector.php');
-    break;
+        break;
 
     default:
         require_once($path.'listConnector.php');
-    break;
+        break;
 }

@@ -31,10 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.modules.centreon.com/centreon-clapi/trunk/www/modules/centreon-clapi/core/class/centreonHost.class.php $
- * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
- *
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -122,7 +120,7 @@ class CentreonHostGroup extends CentreonObject
         parent::add();
     }
 
-	/**
+    /**
      * Del Action
      * Must delete services as well
      *
@@ -133,7 +131,10 @@ class CentreonHostGroup extends CentreonObject
     public function del($objectName)
     {
         parent::del($objectName);
-        $this->db->query("DELETE FROM service WHERE service_register = '1' AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)");
+        $this->db->query(
+            "DELETE FROM service WHERE service_register = '1' "
+            . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
+        );
     }
 
 
@@ -171,17 +172,21 @@ class CentreonHostGroup extends CentreonObject
      */
     public function __call($name, $arg)
     {
+        /* Get the method name */
         $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $hgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($hgIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
-        }
-        $groupId = $hgIds[0];
+        /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)(member|host|servicegroup)$/", $name, $matches)) {
+            /* Parse arguments */
+            if (!isset($arg[0])) {
+                throw new CentreonClapiException(self::MISSINGPARAMETER);
+            }
+            $args = explode($this->delim, $arg[0]);
+            $hgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+            if (!count($hgIds)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+            }
+            $groupId = $hgIds[0];
+
             if ($matches[2] == "host" || $matches[2] == "member") {
                 $relobj = new \Centreon_Object_Relation_Host_Group_Host();
                 $obj = new \Centreon_Object_Host();
@@ -192,7 +197,7 @@ class CentreonHostGroup extends CentreonObject
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hgIds);
                 echo "id".$this->delim."name"."\n";
-                foreach($tab as $value) {
+                foreach ($tab as $value) {
                     $tmp = $obj->getParameters($value, array($obj->getUniqueLabelField()));
                     echo $value . $this->delim . $tmp[$obj->getUniqueLabelField()] . "\n";
                 }
@@ -203,18 +208,25 @@ class CentreonHostGroup extends CentreonObject
                 $relation = $args[1];
                 $relations = explode("|", $relation);
                 $relationTable = array();
-                foreach($relations as $rel) {
+                foreach ($relations as $rel) {
                     $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
-                    if (!count($tab)) {
-                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                    if ($tab[0] != '') {
+                        $relationTable[] = $tab[0];
+                    } else {
+                        if ($rel != '') {
+                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                        }
                     }
-                    $relationTable[] = $tab[0];
                 }
                 if ($matches[1] == "set") {
                     $relobj->delete($groupId);
                 }
-                $existingRelationIds = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), array($groupId));
-                foreach($relationTable as $relationId) {
+                $existingRelationIds = $relobj->getTargetIdFromSourceId(
+                    $relobj->getSecondKey(),
+                    $relobj->getFirstKey(),
+                    array($groupId)
+                );
+                foreach ($relationTable as $relationId) {
                     if ($matches[1] == "del") {
                         $relobj->delete($groupId, $relationId);
                     } elseif ($matches[1] == "set" || $matches[1] == "add") {
@@ -243,10 +255,19 @@ class CentreonHostGroup extends CentreonObject
         $hostObj = new \Centreon_Object_Host();
         $hgFieldName = $this->object->getUniqueLabelField();
         $hFieldName = $hostObj->getUniqueLabelField();
-        $elements = $relObj->getMergedParameters(array($hgFieldName), array($hFieldName), -1, 0, $hgFieldName, null);
+        $elements = $relObj->getMergedParameters(
+            array($hgFieldName),
+            array($hFieldName),
+            -1,
+            0,
+            $hgFieldName,
+            null
+        );
         foreach ($elements as $element) {
-            echo $this->action.$this->delim."addhost".$this->delim.$element[$hgFieldName].$this->delim.$element[$hFieldName]."\n";
+            echo $this->action . $this->delim
+                . "addhost" . $this->delim
+                . $element[$hgFieldName] . $this->delim
+                . $element[$hFieldName] . "\n";
         }
     }
 }
-?>

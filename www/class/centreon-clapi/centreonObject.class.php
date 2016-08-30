@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
@@ -145,14 +144,14 @@ abstract class CentreonObject
     protected function objectExists($name, $updateId = null)
     {
         $ids = $this->object->getList(
-            $this->object->getPrimaryKey(), 
-            -1, 
-            0, 
-            null, 
-            null, 
+            $this->object->getPrimaryKey(),
+            -1,
+            0,
+            null,
+            null,
             array(
                 $this->object->getUniqueLabelField() => $name
-            ), 
+            ),
             "AND"
         );
         if (isset($updateId) && count($ids)) {
@@ -209,7 +208,10 @@ abstract class CentreonObject
             throw new CentreonClapiException(self::MISSINGNAMEPARAMETER);
         }
         if ($this->objectExists($this->params[$this->object->getUniqueLabelField()]) === true) {
-            throw new CentreonClapiException(self::OBJECTALREADYEXISTS." (".$this->params[$this->object->getUniqueLabelField()].")");
+            throw new CentreonClapiException(
+                self::OBJECTALREADYEXISTS . " ("
+                . $this->params[$this->object->getUniqueLabelField()] . ")"
+            );
         }
     }
 
@@ -222,9 +224,9 @@ abstract class CentreonObject
     {
         $id = $this->object->insert($this->params);
         $this->addAuditLog(
-            'a', 
-            $id, 
-            $this->params[$this->object->getUniqueLabelField()], 
+            'a',
+            $id,
+            $this->params[$this->object->getUniqueLabelField()],
             $this->params
         );
         return $id;
@@ -256,7 +258,8 @@ abstract class CentreonObject
      */
     public function setparam($objectId, $params = array())
     {
-        if (isset($params[$this->object->getUniqueLabelField()]) && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true) {
+        if (isset($params[$this->object->getUniqueLabelField()])
+            && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true) {
             throw new CentreonClapiException(self::NAMEALREADYINUSE);
         }
         $this->object->update($objectId, $params);
@@ -264,9 +267,9 @@ abstract class CentreonObject
         $p = $this->object->getParameters($objectId, $uniqueField);
         if (isset($p[$uniqueField])) {
             $this->addAuditLog(
-                'c', 
-                $objectId, 
-                $p[$uniqueField], 
+                'c',
+                $objectId,
+                $p[$uniqueField],
                 $params
             );
         }
@@ -333,32 +336,36 @@ abstract class CentreonObject
         $this->activate($objectName, '0');
     }
 
-	/**
-	 * Export data
-	 *
-	 * @param string $parameters
-	 * @return void
-	 */
-	public function export()
-	{
-            $elements = $this->object->getList("*", -1, 0);
-            foreach ($elements as $element) {
-                $addStr = $this->action.$this->delim."ADD";
-                foreach ($this->insertParams as $param) {
-                    $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
-                    $addStr .= $this->delim.$element[$param];
-                }
-                $addStr .= "\n";
-                echo $addStr;
-                foreach ($element as $parameter => $value) {
-                    if (!in_array($parameter, $this->exportExcludedParams)) {
-                        if (!is_null($value) && $value != "") {
-                            $value = CentreonUtils::convertLineBreak($value);
-                            echo $this->action.$this->delim."setparam".$this->delim.$element[$this->object->getUniqueLabelField()].$this->delim.$parameter.$this->delim.$value."\n";
-                        }
+    /**
+     * Export data
+     *
+     * @param string $parameters
+     * @return void
+     */
+    public function export()
+    {
+        $elements = $this->object->getList("*", -1, 0);
+        foreach ($elements as $element) {
+            $addStr = $this->action.$this->delim."ADD";
+            foreach ($this->insertParams as $param) {
+                $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
+                $addStr .= $this->delim.$element[$param];
+            }
+            $addStr .= "\n";
+            echo $addStr;
+            foreach ($element as $parameter => $value) {
+                if (!in_array($parameter, $this->exportExcludedParams)) {
+                    if (!is_null($value) && $value != "") {
+                        $value = CentreonUtils::convertLineBreak($value);
+                        echo $this->action . $this->delim
+                            . "setparam" . $this->delim
+                            . $element[$this->object->getUniqueLabelField()] . $this->delim
+                            . $parameter . $this->delim
+                            . $value . "\n";
                     }
                 }
             }
+        }
     }
 
     /**
@@ -390,7 +397,7 @@ abstract class CentreonObject
             return null;
         }
         $objType = $objectTypes[$objType];
-        
+
         $contactObj = new \Centreon_Object_Contact();
         $contact = $contactObj->getIdByParameter('contact_alias', CentreonUtils::getUserName());
         $userId = $contact[0];
@@ -433,7 +440,7 @@ abstract class CentreonObject
                     $value = '';
                 }
                 $dbstorage->query(
-                    $query, 
+                    $query,
                     array(
                         $name,
                         $value,

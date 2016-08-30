@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 include_once("./class/centreonUtils.class.php");
@@ -53,16 +53,16 @@ $mediaObj = new CentreonMedia($pearDB);
 $ehiCache = array();
 $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
 while ($ehi = $DBRESULT->fetchRow()) {
-	$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
 $DBRESULT->free();
 
 $search = '';
 if (isset($_POST['searchHT']) && $_POST['searchHT']) {
     $search = $_POST['searchHT'];
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%') AND host_register = '0'");
+    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%') AND host_register = '0'");
 } else {
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
+    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
 }
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
@@ -82,11 +82,10 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-$tpl->assign("headerMenu_name", _("Host Templates name"));
-$tpl->assign("headerMenu_desc", _("Description"));
+$tpl->assign("headerMenu_name", _("Name"));
+$tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_svChilds", _("Linked Services Templates"));
-$tpl->assign("headerMenu_parent", _("Parent Templates"));
+$tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
@@ -94,9 +93,9 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Host Template list
  */
 if ($search) {
-	$rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE (host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%') AND host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
+    $rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE (host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%') AND host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 } else {
-	$rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
+    $rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 }
 $DBRESULT = $pearDB->query($rq);
 
@@ -130,49 +129,50 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 
     /* TPL List */
     $tplArr = array();
-    $tplStr = NULL;
+    $tplStr = null;
 
-	$tplArr = getMyHostMultipleTemplateModels($host['host_id']);
-	if (count($tplArr)) {
-		$firstTpl = 1;
-		foreach($tplArr as $key =>$value) {
-			if ($firstTpl) {
-				$tplStr .= "<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-				$firstTpl = 0;
-			} else {
-				$tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
-			}
-		}
-	}
+    $tplArr = getMyHostMultipleTemplateModels($host['host_id']);
+    if (count($tplArr)) {
+        $firstTpl = 1;
+        foreach ($tplArr as $key => $value) {
+            if ($firstTpl) {
+                $tplStr .= "<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
+                $firstTpl = 0;
+            } else {
+                $tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
+            }
+        }
+    }
 
-	/*
+    /*
 	 * Check icon
 	 */
-	if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
-		$host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
-	} else if ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
-		$host_icone = "./img/media/" . $icone;
-	} else {
-		$host_icone = "./img/icons/host.png";
-	}
+    if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
+        $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
+    } elseif ($icone = $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1))) {
+        $host_icone = "./img/media/" . $icone;
+    } else {
+        $host_icone = "./img/icons/host.png";
+    }
 
-	/*
+    /*
 	 * Service List
 	 */
-	$svArr = array();
-	$svStr = NULL;
-	$svArr = getMyHostServices($host['host_id']);
-	$elemArr[$i] = array("MenuClass" => "list_".$style,
-					"RowMenu_select" => $selectedElements->toHtml(),
-					"RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"]),
-					"RowMenu_link" => "?p=".$p."&o=c&host_id=".$host['host_id'],
-					"RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"]),
-					"RowMenu_icone" => $host_icone,
-					"RowMenu_svChilds" => count($svArr),
-					"RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
-					"RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
-					"RowMenu_options" => $moptions);
-	$style != "two" ? $style = "two" : $style = "one";
+    $svArr = array();
+    $svStr = null;
+    $svArr = getMyHostServices($host['host_id']);
+    $elemArr[$i] = array("MenuClass" => "list_".$style,
+                    "RowMenu_select" => $selectedElements->toHtml(),
+                    "RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"]),
+                    "RowMenu_link" => "?p=".$p."&o=c&host_id=".$host['host_id'],
+                    "RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"]),
+                    "RowMenu_icone" => $host_icone,
+                    "RowMenu_svChilds" => count($svArr),
+                    "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
+                    "RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
+                    "RowMenu_badge" => $host["host_activate"] ? "service_ok" : "service_critical",
+                    "RowMenu_options" => $moptions);
+    $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
@@ -185,47 +185,40 @@ $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfir
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </SCRIPT>
 <?php
-$attrs1 = array(
-	'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', null, array(null => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
-$form->setDefaults(array('o1' => null));
-
-$attrs2 = array(
-	'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"this.form.elements['o2'].selectedIndex = 0");
-$form->addElement('select', 'o2', null, array(null => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
-$form->setDefaults(array('o2' => null));
-
-$o1 = $form->getElement('o1');
-$o1->setValue(null);
-$o1->setSelected(null);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(null);
-$o2->setSelected(null);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange' => "javascript: " .
+            "var bChecked = isChecked();".
+            "if (this.form.elements['$option'].selectedIndex != 0 && !bChecked) {".
+            "   alert('"._("Please select one or more items")."'); return false;} " .
+            "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+            "   setO(this.form.elements['$option'].value); submit();} " .
+            "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+            "   setO(this.form.elements['$option'].value); submit();} " .
+            "else if (this.form.elements['$option'].selectedIndex == 3 || this.form.elements['$option'].selectedIndex == 4 || this.form.elements['$option'].selectedIndex == 5){" .
+            "   setO(this.form.elements['$option'].value); submit();} " .
+            "this.form.elements['o1'].selectedIndex = 0");
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(  null => _("More actions..."),
+                    "m" => _("Duplicate"),
+                    "d" => _("Delete"),
+                    "mc" => _("Massive Change"),
+                    "ms" => _("Enable"),
+                    "mu" => _("Disable")),
+        $attrs1
+    );
+    $form->setDefaults(array($option => null));
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);
+    $o1->setSelected(null);
+}
 
 $tpl->assign('limit', $limit);
 
@@ -234,5 +227,3 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('searchHT', $search);
 $tpl->display("listHostTemplateModel.ihtml");
-
-?>

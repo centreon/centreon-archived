@@ -34,19 +34,19 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["sg_id"]) ? $sG = $_GET["sg_id"] : $sG = NULL;
-isset($_POST["sg_id"]) ? $sP = $_POST["sg_id"] : $sP = NULL;
+isset($_GET["sg_id"]) ? $sG = $_GET["sg_id"] : $sG = null;
+isset($_POST["sg_id"]) ? $sP = $_POST["sg_id"] : $sP = null;
 $sG ? $sg_id = $sG : $sg_id = $sP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -68,26 +68,48 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
 $acl = $oreon->user->access;
 $aclDbName = $acl->getNameDBAcl();
 $dbmon = new CentreonDB('centstorage');
-$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
+$sgs = $acl->getServiceGroupAclConf(null, 'broker');
 
-function mywrap ($el) {
+function mywrap($el)
+{
     return "'".$el."'";
 }
 $sgString = implode(',', array_map('mywrap', array_keys($sgs)));
 
-switch ($o)	{
-	case "a" : require_once($path."formServiceGroup.php"); break; #Add a Servicegroup
-	case "w" : require_once($path."formServiceGroup.php"); break; #Watch a Servicegroup
-	case "c" : require_once($path."formServiceGroup.php"); break; #Modify a Servicegroup
-	case "s" : enableServiceGroupInDB($sg_id); require_once($path."listServiceGroup.php"); break; #Activate a Servicegroup
-	case "u" : disableServiceGroupInDB($sg_id); require_once($path."listServiceGroup.php"); break; #Desactivate a Servicegroup
-	case "m" : multipleServiceGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServiceGroup.php"); break; #Duplicate n Service grou
-	case "d" : deleteServiceGroupInDB(isset($select) ? $select : array()); require_once($path."listServiceGroup.php"); break; #Delete n Service group
-	default : require_once($path."listServiceGroup.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formServiceGroup.php");
+        break; #Add a Servicegroup
+    case "w":
+        require_once($path."formServiceGroup.php");
+        break; #Watch a Servicegroup
+    case "c":
+        require_once($path."formServiceGroup.php");
+        break; #Modify a Servicegroup
+    case "s":
+        enableServiceGroupInDB($sg_id);
+        require_once($path."listServiceGroup.php");
+        break; #Activate a Servicegroup
+    case "u":
+        disableServiceGroupInDB($sg_id);
+        require_once($path."listServiceGroup.php");
+        break; #Desactivate a Servicegroup
+    case "m":
+        multipleServiceGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listServiceGroup.php");
+        break; #Duplicate n Service grou
+    case "d":
+        deleteServiceGroupInDB(isset($select) ? $select : array());
+        require_once($path."listServiceGroup.php");
+        break; #Delete n Service group
+    default:
+        require_once($path."listServiceGroup.php");
+        break;
 }

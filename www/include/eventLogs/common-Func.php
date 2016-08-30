@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -40,7 +39,7 @@ function get_user_param($user_id, $pearDB)
         'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok',
         'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
         'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh',
-        'search_H', 'search_S');
+        'search_H', 'search_S', 'log_filter_period');
     $tab_row = array();
     foreach ($list_param as $param) {
         if (isset($_SESSION[$param])) {
@@ -78,17 +77,4 @@ function set_user_param($user_id, $pearDB, $key, $value)
         $pearDB->query($queryDel);
         $pearDB->query($queryIns);
     }
-}
-
-function getMyHostIDService($svc_id = NULL)
-{
-    if (!$svc_id)
-        return;
-    global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '" . CentreonDB::escape($svc_id) . "'");
-    if ($DBRESULT->numRows()) {
-        $row = $DBRESULT->fetchRow();
-        return $row["host_id"];
-    }
-    return NULL;
 }

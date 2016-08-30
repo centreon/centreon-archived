@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -45,47 +42,19 @@ $template = getTemplate('./templates');
 
 $title = _('Broker module information');
 
-$brokers = array();
-if ($handle = opendir('../var/brokers')) {
-    while (false !== ($broker = readdir($handle))) {
-        if ($broker != "." && $broker != "..") {
-            $brokers[] = $broker;
-        }
-    }
-    closedir($handle);
-}
-
 $selectedBroker = "centreon-broker";;
-if (isset($_SESSION['BROKER_MODULE'])) {
-    $selectedBroker = $_SESSION['BROKER_MODULE'];
-}
 
-$brokerOption = "<option value='0'></option>";
-foreach ($brokers as $broker) {
-    $selected = "";
-    if ($broker == $selectedBroker) {
-        $selected = "selected";
-    }
-    $brokerOption .= "<option value='$broker' $selected>$broker</option>";
-}
 $contents = " 
 <form id='form_step".STEP_NUMBER."'>
-        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+    <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
             <tr>
                 <th colspan='2'>"._('Broker Module information')."</th>
             </tr>
-            <tr>
-                <td class='formlabel'>"._('Broker Module')."</td>
-                <td class='formvalue'>
-                    <select name='BROKER_MODULE' onChange='loadParameters(this.value);'>$brokerOption</select>
-                    <label class='field_msg'></label>
-                </td>
-            </tr>
         </thead>
         <tbody id='brokerParams'></tbody>
-        <table>
-    </form>
+    </table>
+</form>
 ";
 
 $template->assign('step', STEP_NUMBER);

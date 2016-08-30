@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -43,7 +40,7 @@ class CentreonMeta
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -58,7 +55,7 @@ class CentreonMeta
     
     /**
      * Return host id
-     * 
+     *
      * @return int
      */
     public function getRealHostId()
@@ -83,7 +80,7 @@ class CentreonMeta
     
     /**
      * Return service id
-     * 
+     *
      * @param int $metaId
      * @return int
      */
@@ -112,7 +109,7 @@ class CentreonMeta
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -159,7 +156,7 @@ class CentreonMeta
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
@@ -187,5 +184,59 @@ class CentreonMeta
         }
 
         return $items;
+    }
+
+
+    /**
+     * Get the list of all meta-service
+     *
+     * @return array
+     */
+    public function getList()
+    {
+        $queryList = "SELECT `meta_id`, `meta_name`
+ 	    	FROM `meta_service`
+ 	    	ORDER BY `meta_name`";
+
+        $res = $this->db->query($queryList);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $listMeta = array();
+        while ($row = $res->fetchRow()) {
+            $listMeta[$row['meta_id']] = $row['meta_name'];
+        }
+        return $listMeta;
+    }
+
+    /**
+     * Returns service details
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getParameters($id, $parameters = array())
+    {
+        $sElement = "*";
+        $values = array();
+        if (empty($id) || empty($parameters)) {
+            return array();
+        }
+
+        if (count($parameters) > 0) {
+            $sElement = implode(",", $parameters);
+        }
+
+        $query = "SELECT " . $sElement . " "
+            . "FROM meta_service "
+            . "WHERE meta_id = " . $this->db->escape($id) . " ";
+
+        $res = $this->db->query($query);
+
+        if ($res->numRows()) {
+            $values = $res->fetchRow();
+        }
+
+        return $values;
     }
 }

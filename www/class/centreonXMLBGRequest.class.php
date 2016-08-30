@@ -90,6 +90,7 @@ class CentreonXMLBGRequest {
      */
     var $defaultPoller;
     var $defaultHostgroups;
+    var $defaultServicegroups;
     var $defaultCriticality = 0;
 
     /*
@@ -271,9 +272,13 @@ class CentreonXMLBGRequest {
     public function getDefaultFilters() {
         $this->defaultPoller = -1;
         $this->defaultHostgroups = NULL;
+        $this->defaultServicegroups = NULL;
         if (isset($_SESSION['monitoring_default_hostgroups'])) {
             $this->defaultHostgroups = $_SESSION['monitoring_default_hostgroups'];
         }
+        if (isset($_SESSION['monitoring_default_servicegroups'])) {
+            $this->defaultServicegroups = $_SESSION['monitoring_default_servicegroups'];
+       }
         if (isset($_SESSION['monitoring_default_poller'])) {
             $this->defaultPoller = $_SESSION['monitoring_default_poller'];
         }
@@ -288,6 +293,10 @@ class CentreonXMLBGRequest {
 
     public function setHostGroupsHistory($hg) {
         $_SESSION['monitoring_default_hostgroups'] = $hg;
+    }
+
+	public function setServiceGroupsHistory($sg) {
+        $_SESSION['monitoring_default_servicegroups'] = sg;
     }
 
     public function setCriticality($criticality) {

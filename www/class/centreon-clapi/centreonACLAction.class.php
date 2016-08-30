@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -55,7 +54,7 @@ class CentreonACLAction extends CentreonObject
     protected $aclGroupObj;
     protected $availableActions;
 
- 	/**
+    /**
      * Constructor
      *
      * @return void
@@ -69,13 +68,13 @@ class CentreonACLAction extends CentreonObject
         $this->params = array('acl_action_activate' => '1');
         $this->nbOfCompulsoryParams = 2;
         $this->availableActions = array('global_event_handler',
-										'global_flap_detection',
-										'global_host_checks',
-										'global_host_obsess',
-										'global_host_passive_checks',
-										'global_notifications',
-										'global_perf_data',
-										'global_restart',
+                                        'global_flap_detection',
+                                        'global_host_checks',
+                                        'global_host_obsess',
+                                        'global_host_passive_checks',
+                                        'global_notifications',
+                                        'global_perf_data',
+                                        'global_restart',
                                         'global_service_checks',
                                         'global_service_obsess',
                                         'global_service_passive_checks',
@@ -214,7 +213,7 @@ class CentreonACLAction extends CentreonObject
         $groupIds = $this->relObject->getacl_group_idFromacl_action_id($aclActionId[0]);
         echo "id;name" . "\n";
         if (count($groupIds)) {
-            foreach($groupIds as $groupId) {
+            foreach ($groupIds as $groupId) {
                 $result = $this->aclGroupObj->getParameters($groupId, $this->aclGroupObj->getUniqueLabelField());
                 echo $groupId . $this->delim . $result[$this->aclGroupObj->getUniqueLabelField()] . "\n";
             }
@@ -241,12 +240,16 @@ class CentreonACLAction extends CentreonObject
             }
         }
         foreach ($actions as $act) {
-            $res = $this->db->query("SELECT COUNT(*) as nb FROM acl_actions_rules WHERE acl_action_rule_id = ? AND acl_action_name = ?",
-                                    array($aclActionId, $act));
+            $res = $this->db->query(
+                "SELECT COUNT(*) as nb FROM acl_actions_rules WHERE acl_action_rule_id = ? AND acl_action_name = ?",
+                array($aclActionId, $act)
+            );
             $row = $res->fetchAll();
             if (!$row[0]['nb']) {
-                $this->db->query("INSERT INTO acl_actions_rules (acl_action_rule_id, acl_action_name) VALUES (?, ?)",
-                                 array($aclActionId, $act));
+                $this->db->query(
+                    "INSERT INTO acl_actions_rules (acl_action_rule_id, acl_action_name) VALUES (?, ?)",
+                    array($aclActionId, $act)
+                );
             }
             unset($res);
         }
@@ -262,8 +265,10 @@ class CentreonACLAction extends CentreonObject
     {
         list($aclActionId, $action) = $this->splitParams($parameters);
         if ($action == "*") {
-            $this->db->query("DELETE FROM acl_actions_rules WHERE acl_action_rule_id = ?",
-                             array($aclActionId));
+            $this->db->query(
+                "DELETE FROM acl_actions_rules WHERE acl_action_rule_id = ?",
+                array($aclActionId)
+            );
         } else {
             $actions = explode("|", $action);
             foreach ($actions as $act) {
@@ -272,8 +277,10 @@ class CentreonACLAction extends CentreonObject
                 }
             }
             foreach ($actions as $act) {
-                $this->db->query("DELETE FROM acl_actions_rules WHERE acl_action_rule_id = ? AND acl_action_name = ?",
-                                 array($aclActionId, $act));
+                $this->db->query(
+                    "DELETE FROM acl_actions_rules WHERE acl_action_rule_id = ? AND acl_action_name = ?",
+                    array($aclActionId, $act)
+                );
             }
         }
     }

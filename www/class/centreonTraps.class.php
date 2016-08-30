@@ -41,9 +41,9 @@
  */
 class CentreonTraps
 {
-    protected $_db;
-    protected $_form;
-    protected $_centreon;
+    protected $db;
+    protected $form;
+    protected $centreon;
 
     /*
      * constructor
@@ -53,9 +53,9 @@ class CentreonTraps
         if (!isset($db)) {
             throw new Exception('Db connector object is required');
         }
-        $this->_db = $db;
-        $this->_centreon = $centreon;
-        $this->_form = $form;
+        $this->db = $db;
+        $this->centreon = $centreon;
+        $this->form = $form;
     }
 
     /**
@@ -64,15 +64,15 @@ class CentreonTraps
      *  then inserts data into the  traps_matching_properties
      * @param int $trapId
      */
-    private function _setMatchingOptions($trapId)
+    private function setMatchingOptions($trapId)
     {
-    	$this->_db->query("DELETE FROM traps_matching_properties WHERE trap_id = '" . $trapId ."'");
+        $this->db->query("DELETE FROM traps_matching_properties WHERE trap_id = '" . $trapId ."'");
 
         $insertStr = "";
         if (isset($_REQUEST['rule'])) {
             $rules = $_REQUEST['rule'];
             $regexp = $_REQUEST['regexp'];
-            $status = $_REQUEST['rulestatus'];            
+            $status = $_REQUEST['rulestatus'];
             $severity = $_REQUEST['ruleseverity'];
             $i = 1;
             foreach ($rules as $key => $value) {
@@ -85,48 +85,53 @@ class CentreonTraps
                 if ($severity[$key] == "") {
                     $severity[$key] = "NULL";
                 }
-                $insertStr .= "($trapId, '".$this->_db->escape($value)."', '".$this->_db->escape($regexp[$key])."', ".$this->_db->escape($status[$key]).", ".$this->_db->escape($severity[$key]).", $i)";
+                $insertStr .= "($trapId, '" . $this->db->escape($value) . "', '" .
+                    $this->db->escape($regexp[$key]) . "', " . $this->db->escape($status[$key]) . ", " .
+                    $this->db->escape($severity[$key]) . ", $i)";
                 $i++;
             }
         }
         if ($insertStr) {
-            $this->_db->query("INSERT INTO traps_matching_properties (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr");
+            $this->db->query(
+                "INSERT INTO traps_matching_properties
+                    (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr"
+            );
         }
     }
 
-	/**
-	 *
-	 * Sets form if not passed to constructor beforehands
-	 * @param $form
-	 */
+    /**
+     *
+     * Sets form if not passed to constructor beforehands
+     * @param $form
+     */
     public function setForm($form)
     {
-        $this->_form = $form;
+        $this->form = $form;
     }
 
-   	/**
-   	 *
-   	 * tests if trap already exists
-   	 * @param $oid
-   	 */
-    public function testTrapExistence($oid = NULL)
+    /**
+     *
+     * tests if trap already exists
+     * @param $oid
+     */
+    public function testTrapExistence($oid = null)
     {
-		$id = NULL;
-		if (isset($this->_form)) {
-			$id = $this->_form->getSubmitValue('traps_id');
+        $id = null;
+        if (isset($this->form)) {
+            $id = $this->form->getSubmitValue('traps_id');
         }
-		$query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".$this->_db->escape($oid)."'";
-        $res = $this->_db->query($query);
-		$trap = $res->fetchRow();
+        $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".$this->db->escape($oid)."'";
+        $res = $this->db->query($query);
+        $trap = $res->fetchRow();
 
-		if ($res->numRows() >= 1 && $trap["traps_id"] == $id) {
-			return true;
-        } else if ($res->numRows() >= 1 && $trap["traps_id"] != $id) {
-			return false;
+        if ($res->numRows() >= 1 && $trap["traps_id"] == $id) {
+            return true;
+        } elseif ($res->numRows() >= 1 && $trap["traps_id"] != $id) {
+            return false;
         } else {
             return true;
         }
-	}
+    }
 
     /**
      *
@@ -135,11 +140,13 @@ class CentreonTraps
      */
     public function delete($traps = array())
     {
-        foreach($traps as $key=>$value) {
-            $res2 = $this->_db->query("SELECT traps_name FROM `traps` WHERE `traps_id` = '".$this->_db->escape($key)."' LIMIT 1");
+        foreach ($traps as $key => $value) {
+            $res2 = $this->db->query(
+                "SELECT traps_name FROM `traps` WHERE `traps_id` = '" . $this->db->escape($key) . "' LIMIT 1"
+            );
             $row = $res2->fetchRow();
-            $res = $this->_db->query("DELETE FROM traps WHERE traps_id = '".$this->_db->escape($key)."'");
-            $this->_centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
+            $res = $this->db->query("DELETE FROM traps WHERE traps_id = '" . $this->db->escape($key) . "'");
+            $this->centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
         }
     }
 
@@ -152,14 +159,16 @@ class CentreonTraps
     public function duplicate($traps = array(), $nbrDup = array())
     {
         foreach ($traps as $key => $value) {
-            $res = $this->_db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
+            $res = $this->db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
             $row = $res->fetchRow();
-		    $row["traps_id"] = '';
-		    for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
+            $row["traps_id"] = '';
+            for ($i = 1; $i <= $nbrDup[$key]; $i++) {
                 $val = null;
                 foreach ($row as $key2 => $value2) {
                     $key2 == "traps_name" ? ($traps_name = $value2 = $value2."_".$i) : null;
-			        $val ? $val .= ($value2!=NULL?(", '".$this->_db->escape($value2)."'"):", NULL") : $val .= ($value2!=NULL?("'".$this->_db->escape($value2)."'"):"NULL");
+                    $val ? $val .= (
+                        $value2 != null ? (", '" . $this->db->escape($value2) . "'") : ", NULL"
+                    ) : $val .= ($value2 != null?("'" . $this->db->escape($value2) . "'") : "NULL");
                     if ($key2 != "traps_id") {
                         $fields[$key2] = $value2;
                     }
@@ -168,18 +177,24 @@ class CentreonTraps
                     }
                 }
                 $val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
-                $res = $this->_db->query($rq);
-                $res2 = $this->_db->query("SELECT MAX(traps_id) FROM traps");
+                $res = $this->db->query($rq);
+                $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                 $maxId = $res2->fetchRow();
-                $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
+                $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
                                 (SELECT ".$maxId['MAX(traps_id)'].", service_id 
                                     FROM traps_service_relation 
-                                    WHERE traps_id = ".$this->_db->escape($key).")");
-                $this->_db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
+                                    WHERE traps_id = ".$this->db->escape($key).")");
+                $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
                                 (SELECT ".$maxId['MAX(traps_id)'].", tpe_string, tpe_order
                                     FROM traps_preexec 
-                                    WHERE trap_id = ".$this->_db->escape($key).")");
-                $this->_centreon->CentreonLogAction->insertLog("traps", $maxId["MAX(traps_id)"], $traps_name, "a", $fields);
+                                    WHERE trap_id = ".$this->db->escape($key).")");
+                $this->centreon->CentreonLogAction->insertLog(
+                    "traps",
+                    $maxId["MAX(traps_id)"],
+                    $traps_name,
+                    "a",
+                    $fields
+                );
             }
         }
     }
@@ -189,14 +204,14 @@ class CentreonTraps
      * Update
      * @param $traps_id
      */
-	public function update($traps_id = null)
+    public function update($traps_id = null)
     {
         if (!$traps_id) {
             return null;
         }
 
         $ret = array();
-        $ret = $this->_form->getSubmitValues();
+        $ret = $this->form->getSubmitValues();
 
         if (!isset($ret["traps_reschedule_svc_enable"]) || !$ret["traps_reschedule_svc_enable"]) {
             $ret["traps_reschedule_svc_enable"] = 0;
@@ -208,7 +223,7 @@ class CentreonTraps
             $ret["traps_execution_command_enable"] = 0;
         }
         if (!isset($ret["traps_advanced_treatment"]) || !$ret["traps_advanced_treatment"]) {
-        $ret["traps_advanced_treatment"] = 0;
+            $ret["traps_advanced_treatment"] = 0;
         }
         if (!isset($ret["traps_routing_mode"]) || !$ret["traps_routing_mode"]) {
             $ret["traps_routing_mode"] = 0;
@@ -234,63 +249,54 @@ class CentreonTraps
         }
 
         $rq = "UPDATE traps ";
-        $rq .= "SET `traps_name` = '".$this->_db->escape($ret["traps_name"])."', ";
-        $rq .= "`traps_oid` = '".$this->_db->escape($ret["traps_oid"])."', ";
-        $rq .= "`traps_args` = '".$this->_db->escape($ret["traps_args"])."', ";
-        $rq .= "`traps_status` = '".$this->_db->escape($ret["traps_status"])."', ";
-        $rq .= "`severity_id` = ".$this->_db->escape($ret["severity"]).", ";
-        $rq .= "`traps_submit_result_enable` = '".$this->_db->escape($ret["traps_submit_result_enable"])."', ";
-        $rq .= "`traps_reschedule_svc_enable` = '".$this->_db->escape($ret["traps_reschedule_svc_enable"])."', ";
-        $rq .= "`traps_execution_command` = '".$this->_db->escape($ret["traps_execution_command"])."', ";
-        $rq .= "`traps_execution_command_enable` = '".$this->_db->escape($ret["traps_execution_command_enable"])."', ";
-        $rq .= "`traps_advanced_treatment` = '".$this->_db->escape($ret["traps_advanced_treatment"])."', ";
-        $rq .= "`traps_comments` = '".$this->_db->escape($ret["traps_comments"])."', ";
-        $rq .= "`traps_routing_mode` = '".$this->_db->escape($ret["traps_routing_mode"])."', ";
-        $rq .= "`traps_routing_value` = '".$this->_db->escape($ret["traps_routing_value"])."', ";
-        $rq .= "`traps_routing_filter_services` = '".$this->_db->escape($ret["traps_routing_filter_services"])."', ";
-        $rq .= "`manufacturer_id` = '".$this->_db->escape($ret["manufacturer_id"])."', ";
-        $rq .= "`traps_log` = '".$this->_db->escape($ret["traps_log"])."', ";
-        $rq .= "`traps_exec_interval` = '".$this->_db->escape($ret["traps_exec_interval"])."', ";
-        $rq .= "`traps_exec_interval_type` = '".$this->_db->escape($ret["traps_exec_interval_type"])."', ";
-        $rq .= "`traps_downtime` = '".$this->_db->escape($ret["traps_downtime"])."', ";
-        $rq .= "`traps_exec_method` = '".$this->_db->escape($ret["traps_exec_method"])."', ";
-        $rq .= "`traps_output_transform` = '".$this->_db->escape($ret["traps_output_transform"])."', ";
-        $rq .= "`traps_advanced_treatment_default` = '".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
-        $rq .= "`traps_customcode` = '".$this->_db->escape($ret["traps_customcode"])."', ";
-        $rq .= "`traps_timeout` = '".$this->_db->escape($ret["traps_timeout"])."' ";
-        $rq .= "WHERE `traps_id` = '".$traps_id."'";
-        $this->_db->query($rq);
+        $rq .= "SET `traps_name` = '" . $this->db->escape($ret["traps_name"]) . "', ";
+        $rq .= "`traps_oid` = '" . $this->db->escape($ret["traps_oid"]) . "', ";
+        $rq .= "`traps_args` = '" . $this->db->escape($ret["traps_args"]) . "', ";
+        $rq .= "`traps_status` = '" . $this->db->escape($ret["traps_status"]) . "', ";
+        $rq .= "`severity_id` = " . $this->db->escape($ret["severity"]) . ", ";
+        $rq .= "`traps_submit_result_enable` = '" . $this->db->escape($ret["traps_submit_result_enable"]) . "', ";
+        $rq .= "`traps_reschedule_svc_enable` = '" . $this->db->escape($ret["traps_reschedule_svc_enable"]) . "', ";
+        $rq .= "`traps_execution_command` = '" . $this->db->escape($ret["traps_execution_command"]) . "', ";
+        $rq .= "`traps_execution_command_enable` = '" . $this->db->escape($ret["traps_execution_command_enable"]) .
+            "', ";
+        $rq .= "`traps_advanced_treatment` = '" . $this->db->escape($ret["traps_advanced_treatment"]) . "', ";
+        $rq .= "`traps_comments` = '" . $this->db->escape($ret["traps_comments"]) . "', ";
+        $rq .= "`traps_routing_mode` = '" . $this->db->escape($ret["traps_routing_mode"]) . "', ";
+        $rq .= "`traps_routing_value` = '" . $this->db->escape($ret["traps_routing_value"]) . "', ";
+        $rq .= "`traps_routing_filter_services` = '" . $this->db->escape($ret["traps_routing_filter_services"]) .
+            "', ";
+        $rq .= "`manufacturer_id` = '" . $this->db->escape($ret["manufacturer_id"]) . "', ";
+        $rq .= "`traps_log` = '" . $this->db->escape($ret["traps_log"]) . "', ";
+        $rq .= "`traps_exec_interval` = '" . $this->db->escape($ret["traps_exec_interval"]) . "', ";
+        $rq .= "`traps_exec_interval_type` = '" . $this->db->escape($ret["traps_exec_interval_type"]) . "', ";
+        $rq .= "`traps_downtime` = '" . $this->db->escape($ret["traps_downtime"]) . "', ";
+        $rq .= "`traps_exec_method` = '" . $this->db->escape($ret["traps_exec_method"]) . "', ";
+        $rq .= "`traps_output_transform` = '" . $this->db->escape($ret["traps_output_transform"]) . "', ";
+        $rq .= "`traps_advanced_treatment_default` = '" .
+            $this->db->escape($ret['traps_advanced_treatment_default']) . "', ";
+        $rq .= "`traps_customcode` = '" . $this->db->escape($ret["traps_customcode"]) . "', ";
+        $rq .= "`traps_timeout` = '" . $this->db->escape($ret["traps_timeout"]) . "' ";
+        $rq .= "WHERE `traps_id` = '" . $traps_id . "'";
+        $this->db->query($rq);
 
-        /*
-         * Logs
-         */
-        $fields["traps_name"] = $this->_db->escape($ret["traps_name"]);
-        $fields["traps_args"] = $this->_db->escape($ret["traps_args"]);
-        $fields["traps_status"] = $this->_db->escape($ret["traps_status"]);
-        $fields["traps_submit_result_enable"] = $this->_db->escape($ret["traps_submit_result_enable"]);
-        $fields["traps_reschedule_svc_enable"] = $this->_db->escape($ret["traps_reschedule_svc_enable"]);
-        $fields["traps_execution_command"] = $this->_db->escape($ret["traps_execution_command"]);
-        $fields["traps_execution_command_enable"] = $this->_db->escape($ret["traps_execution_command_enable"]);
-        $fields["traps_comments"] = $this->_db->escape($ret["traps_comments"]);
-        $fields["traps_routing_mode"] = $this->_db->escape($ret["traps_routing_mode"]);
-        $fields["traps_routing_value"] = $this->_db->escape($ret["traps_routing_value"]);
-        $fields["manufacturer_id"] = $this->_db->escape($ret["manufacturer_id"]);
+        $this->setMatchingOptions($traps_id, $_POST);
+        $this->setServiceRelations($traps_id);
+        $this->setServiceTemplateRelations($traps_id);
+        $this->setPreexec($traps_id);
 
-        $this->_setMatchingOptions($traps_id, $_POST);
-        $this->_setServiceRelations($traps_id);
-        $this->_setServiceTemplateRelations($traps_id);
-        $this->_setPreexec($traps_id);
-        $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id, $fields["traps_name"], "c", $fields);
-	}
+        /* Prepare value for changelog */
+        $fields = CentreonLogAction::prepareChanges($ret);
+        $this->centreon->CentreonLogAction->insertLog("traps", $traps_id, $fields["traps_name"], "c", $fields);
+    }
 
     /**
      * Set preexec commands
-     * 
+     *
      * @param int $trapId
      */
-    protected function _setPreexec($trapId)
+    protected function setPreexec($trapId)
     {
-        $this->_db->query("DELETE FROM traps_preexec WHERE trap_id = ".$this->_db->escape($trapId));
+        $this->db->query("DELETE FROM traps_preexec WHERE trap_id = ".$this->db->escape($trapId));
         $insertStr = "";
         if (isset($_REQUEST['preexec'])) {
             $preexec = $_REQUEST['preexec'];
@@ -302,29 +308,29 @@ class CentreonTraps
                 if ($insertStr) {
                     $insertStr .= ", ";
                 }
-                $insertStr .= "($trapId, '".$this->_db->escape($value)."', $i)";
+                $insertStr .= "($trapId, '".$this->db->escape($value)."', $i)";
                 $i++;
             }
         }
         if ($insertStr) {
-            $this->_db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr");
+            $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr");
         }
     }
         
     /**
      * Delete & insert service relations
-     * 
+     *
      * @param int $trapId
      */
-    protected function _setServiceRelations($trapId)
+    protected function setServiceRelations($trapId)
     {
-        $this->_db->query("DELETE FROM traps_service_relation 
-                WHERE traps_id = " . $this->_db->escape($trapId). "
+        $this->db->query("DELETE FROM traps_service_relation 
+                WHERE traps_id = " . $this->db->escape($trapId). "
                 AND NOT EXISTS (SELECT s.service_id 
                     FROM service s 
                     WHERE s.service_register = '0'
                     AND s.service_id = traps_service_relation.service_id)");
-        $services = CentreonUtils::mergeWithInitialValues($this->_form, 'services');
+        $services = CentreonUtils::mergeWithInitialValues($this->form, 'services');
         $insertStr = "";
         $first = true;
         $already = array();
@@ -341,24 +347,24 @@ class CentreonTraps
             }
         }
         if ($insertStr) {
-            $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
+            $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
         }
     }
         
     /**
      * Delete & insert service template relations
-     * 
+     *
      * @param int $trapId
      */
-    protected function _setServiceTemplateRelations($trapId)
+    protected function setServiceTemplateRelations($trapId)
     {
-        $this->_db->query("DELETE FROM traps_service_relation 
-                WHERE traps_id = " . $this->_db->escape($trapId). "
+        $this->db->query("DELETE FROM traps_service_relation 
+                WHERE traps_id = " . $this->db->escape($trapId). "
                 AND NOT EXISTS (SELECT s.service_id 
                     FROM service s 
                     WHERE s.service_register = '1'
                     AND s.service_id = traps_service_relation.service_id)");
-        $serviceTpl = (array)$this->_form->getSubmitValue('service_templates');
+        $serviceTpl = (array)$this->form->getSubmitValue('service_templates');
         $insertStr = "";
         $first = true;
         foreach ($serviceTpl as $tpl) {
@@ -370,19 +376,19 @@ class CentreonTraps
             $insertStr .= "($trapId, $tpl)";
         }
         if ($insertStr) {
-            $this->_db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
+            $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
         }
     }
         
     /**
      * Insert Traps
-     * 
+     *
      * @param array $ret
      */
-	public function insert($ret = array())
+    public function insert($ret = array())
     {
         if (!count($ret)) {
-            $ret = $this->_form->getSubmitValues();
+            $ret = $this->form->getSubmitValues();
         }
         if (!isset($ret["traps_reschedule_svc_enable"]) || !$ret["traps_reschedule_svc_enable"]) {
             $ret["traps_reschedule_svc_enable"] = 0;
@@ -423,76 +429,72 @@ class CentreonTraps
         $rq .= "(traps_name, traps_oid, traps_args, 
             traps_status, severity_id, traps_submit_result_enable, 
             traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
-            traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, traps_routing_filter_services, manufacturer_id,
-            traps_log, traps_exec_interval, traps_exec_interval_type, traps_exec_method, traps_downtime, traps_output_transform, traps_advanced_treatment_default,
+            traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value,
+            traps_routing_filter_services, manufacturer_id, traps_log, traps_exec_interval, traps_exec_interval_type,
+            traps_exec_method, traps_downtime, traps_output_transform, traps_advanced_treatment_default,
             traps_timeout, traps_customcode) ";
         $rq .= "VALUES ";
-        $rq .= "('".$this->_db->escape($ret["traps_name"])."',";
-        $rq .= "'".$this->_db->escape($ret["traps_oid"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_args"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_status"])."', ";
-        $rq .= "".$this->_db->escape($ret["severity"]).", ";
-        $rq .= "'".$this->_db->escape($ret["traps_submit_result_enable"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_reschedule_svc_enable"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_execution_command"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_execution_command_enable"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_advanced_treatment"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_comments"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_routing_mode"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_routing_value"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_routing_filter_services"])."', ";
-        $rq .= "'".$this->_db->escape($ret["manufacturer_id"])."',";
-        $rq .= "'".$this->_db->escape($ret["traps_log"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_exec_interval"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_exec_interval_type"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_exec_method"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_downtime"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_output_transform"])."', ";
-        $rq .= "'".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_timeout"])."', ";
-        $rq .= "'".$this->_db->escape($ret["traps_customcode"])."') ";
-        $this->_db->query($rq);
-        $res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
-        $traps_id = $res->fetchRow();
-
-        /*
-         * logs
-         */
-        $fields["traps_name"] = $this->_db->escape($ret["traps_name"]);
-        $fields["traps_args"] = $this->_db->escape($ret["traps_args"]);
-        $fields["traps_status"] = $this->_db->escape($ret["traps_status"]);
-        $fields["traps_submit_result_enable"] = $this->_db->escape($ret["traps_submit_result_enable"]);
-        $fields["traps_reschedule_svc_enable"] = $this->_db->escape($ret["traps_reschedule_svc_enable"]);
-        $fields["traps_execution_command"] = $this->_db->escape($ret["traps_execution_command"]);
-        $fields["traps_execution_command_enable"] = $this->_db->escape($ret["traps_execution_command_enable"]);
-        $fields["traps_advanced_treatment"] = $this->_db->escape($ret["traps_advanced_treatment"]);
-        $fields["traps_comments"] = $this->_db->escape($ret["traps_comments"]);
-        $fields["traps_routing_mode"] = $this->_db->escape($ret["traps_routing_mode"]);
-        $fields["manufacturer_id"] = $this->_db->escape($ret["manufacturer_id"]);
-        $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
-
-        $this->_setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
-        $this->_setServiceRelations($traps_id['MAX(traps_id)']);
-        $this->_setServiceTemplateRelations($traps_id['MAX(traps_id)']);
-        $this->_setPreexec($traps_id['MAX(traps_id)']);
-        if ($this->_centreon->user->admin) {
-            $this->_setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
+        $rq .= "('".$this->db->escape($ret["traps_name"])."',";
+        $rq .= "'".$this->db->escape($ret["traps_oid"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_args"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_status"])."', ";
+        $rq .= "".$this->db->escape($ret["severity"]).", ";
+        $rq .= "'".$this->db->escape($ret["traps_submit_result_enable"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_reschedule_svc_enable"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_execution_command"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_execution_command_enable"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_advanced_treatment"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_comments"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_routing_mode"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_routing_value"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_routing_filter_services"])."', ";
+        $rq .= "'".$this->db->escape($ret["manufacturer_id"])."',";
+        $rq .= "'".$this->db->escape($ret["traps_log"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_exec_interval"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_exec_interval_type"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_exec_method"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_downtime"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_output_transform"])."', ";
+        $rq .= "'".$this->db->escape($ret['traps_advanced_treatment_default'])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_timeout"])."', ";
+        $rq .= "'".$this->db->escape($ret["traps_customcode"])."') ";
+        $this->db->query($rq);
+        
+        $this->setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
+        $this->setServiceRelations($traps_id['MAX(traps_id)']);
+        $this->setServiceTemplateRelations($traps_id['MAX(traps_id)']);
+        $this->setPreexec($traps_id['MAX(traps_id)']);
+        if ($this->centreon->user->admin) {
+            $this->setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
         }
 
+        $res = $this->db->query("SELECT MAX(traps_id) FROM traps");
+        $traps_id = $res->fetchRow();
+
+        /* Prepare value for changelog */
+        $fields = CentreonLogAction::prepareChanges($ret);
+        $this->centreon->CentreonLogAction->insertLog(
+            "traps",
+            $traps_id["MAX(traps_id)"],
+            $fields["traps_name"],
+            "a",
+            $fields
+        );
+
         return ($traps_id["MAX(traps_id)"]);
-	}
+    }
         
     /**
      * Get pre exec commands from trap_id
-     * 
+     *
      * @param int $trapId
      * @return array
      */
     public function getPreexecFromTrapId($trapId)
     {
-        $res = $this->_db->query("SELECT tpe_string
+        $res = $this->db->query("SELECT tpe_string
                 FROM traps_preexec
-                WHERE trap_id = ".$this->_db->escape($trapId)."
+                WHERE trap_id = ".$this->db->escape($trapId)."
                 ORDER BY tpe_order");
         $arr = array();
         $i = 0;
@@ -505,15 +507,15 @@ class CentreonTraps
 
     /**
      * Get matching rules from trap_id
-     * 
+     *
      * @param int $trapId
      * @return array
      */
     public function getMatchingRulesFromTrapId($trapId)
     {
-        $res = $this->_db->query("SELECT tmo_string, tmo_regexp, tmo_status, severity_id
+        $res = $this->db->query("SELECT tmo_string, tmo_regexp, tmo_status, severity_id
                 FROM traps_matching_properties
-                WHERE trap_id = ".$this->_db->escape($trapId)."
+                WHERE trap_id = ".$this->db->escape($trapId)."
                 ORDER BY tmo_order");
         $arr = array();
         $i = 0;
@@ -530,7 +532,7 @@ class CentreonTraps
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -550,7 +552,7 @@ class CentreonTraps
                 $parameters['externalObject']['name'] = 'name';
                 $parameters['externalObject']['comparator'] = 'id';
                 break;
-             case 'groups':
+            case 'groups':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['table'] = 'traps';
                 $parameters['externalObject']['id'] = 'traps_id';
@@ -580,7 +582,7 @@ class CentreonTraps
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
@@ -599,7 +601,7 @@ class CentreonTraps
             . "WHERE traps_id IN (" . $explodedValues . ") "
             . "ORDER BY traps_name ";
         
-        $resRetrieval = $this->_db->query($query);
+        $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['traps_id'],
@@ -610,4 +612,3 @@ class CentreonTraps
         return $items;
     }
 }
-?>

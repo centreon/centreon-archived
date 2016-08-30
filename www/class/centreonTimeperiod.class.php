@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,19 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
- *  
+ *
  */
 class CentreonTimeperiod
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -59,7 +55,7 @@ class CentreonTimeperiod
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
@@ -88,6 +84,24 @@ class CentreonTimeperiod
 
         return $items;
     }
-}
+    
+    /**
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getTimperiodIdByName($name)
+    {
+        $query = "SELECT tp_id FROM timeperiod 
+                WHERE tp_name = '".$this->db->escape($name)."'";
 
-?>
+        $res = $this->db->query($query);
+
+        if (!$res->numRows()) {
+            return null;
+        }
+        $row = $res->fetchRow();
+        
+        return $row['tp_id'];
+    }
+}

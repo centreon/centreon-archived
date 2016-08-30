@@ -23,6 +23,3 @@ $help["notification_period"] = dgettext("help", "Specify the time period during 
 $help["notification_options"] = dgettext("help", "Define the states of the service for which notifications should be sent out. If you do not specify any notification options, Centreon will assume that you want notifications to be sent out for all possible states.");
 
 $help["graph_template"] = dgettext("help", "The optional definition of a graph template will be used as default graph template for this service.");
-
-?>
-

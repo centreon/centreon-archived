@@ -31,12 +31,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-class CentreonUserLog {
+class CentreonUserLog
+{
 
     private static $instance;
     private $errorType;
@@ -47,7 +45,8 @@ class CentreonUserLog {
      * Constructor
      */
 
-    public function __construct($uid, $pearDB) {
+    public function __construct($uid, $pearDB)
+    {
 
         $this->uid = $uid;
         $this->errorType = array();
@@ -79,7 +78,8 @@ class CentreonUserLog {
      * Function for writing logs
      */
 
-    public function insertLog($id, $str, $print = 0, $page = 0, $option = 0) {
+    public function insertLog($id, $str, $print = 0, $page = 0, $option = 0)
+    {
         /*
          * Construct alerte message
          */
@@ -104,7 +104,8 @@ class CentreonUserLog {
         file_put_contents($this->errorType[$id], $string . "\n", FILE_APPEND);
     }
 
-    public function setUID($uid) {
+    public function setUID($uid)
+    {
         $this->uid = $uid;
     }
 
@@ -114,16 +115,17 @@ class CentreonUserLog {
      * @param int $uid The user id
      * @return CentreonUserLog
      */
-    public static function singleton($uid = 0) {
+    public static function singleton($uid = 0)
+    {
         if (is_null(self::$instance)) {
             self::$instance = new CentreonUserLog($uid, CentreonDB::factory('centreon'));
         }
         return self::$intance;
     }
-
 }
 
-class CentreonLog {
+class CentreonLog
+{
 
     private $errorType;
     private $path;
@@ -132,7 +134,8 @@ class CentreonLog {
      * Constructor
      */
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->errorType = array();
 
         /*
@@ -149,7 +152,8 @@ class CentreonLog {
      * Function for writing logs
      */
 
-    public function insertLog($id, $str, $print = 0, $page = 0, $option = 0) {
+    public function insertLog($id, $str, $print = 0, $page = 0, $option = 0)
+    {
         /*
          * Construct alerte message
          */
@@ -175,7 +179,4 @@ class CentreonLog {
          */
         file_put_contents($this->errorType[$id], $string . "\n", FILE_APPEND);
     }
-
 }
-
-?>

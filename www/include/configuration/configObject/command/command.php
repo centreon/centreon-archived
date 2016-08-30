@@ -33,16 +33,16 @@
  * 
  */
  
-if (!isset ($centreon)) {
-	exit ();
+if (!isset($centreon)) {
+    exit();
 }
 
-isset($_GET["command_id"]) ? $cmdG = $_GET["command_id"] : $cmdG = NULL;
-isset($_POST["command_id"]) ? $cmdP = $_POST["command_id"] : $cmdP = NULL;
+isset($_GET["command_id"]) ? $cmdG = $_GET["command_id"] : $cmdG = null;
+isset($_POST["command_id"]) ? $cmdP = $_POST["command_id"] : $cmdP = null;
 $cmdG ? $command_id = $cmdG : $command_id = $cmdP;
 
-isset($_GET["type"]) ? $typeG = $_GET["type"] : $typeG = NULL;
-isset($_POST["type"]) ? $typeP = $_POST["type"] : $typeP = NULL;
+isset($_GET["type"]) ? $typeG = $_GET["type"] : $typeG = null;
+isset($_POST["type"]) ? $typeP = $_POST["type"] : $typeP = null;
 $typeG ? $type = $typeG : $type = $typeP;
 
 if (!isset($type) || !$type) {
@@ -51,12 +51,12 @@ if (!isset($type) || !$type) {
 
 isset($_POST["command_type"]) ? $type = $_POST["command_type"]["command_type"] : null;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -76,74 +76,107 @@ $path = "./include/configuration/configObject/command/";
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
-if (isset($_POST["o1"]) && isset($_POST["o2"])){
-	if ($_POST["o1"] != "")
-		$o = $_POST["o1"];
-	if ($_POST["o2"] != "")
-		$o = $_POST["o2"];
+if (isset($_POST["o1"]) && isset($_POST["o2"])) {
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
 }
 
 $commandObj = new CentreonCommand($pearDB);
 $lockedElements = $commandObj->getLockedCommands();
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
 if ($min) {
-	switch ($o)	{
-		case "h" 	:
-			/*
-			 * Show Help Command
-			 */ 
-			require_once($path."minHelpCommand.php"); 
-			break; 
-		case "p" 	: 
-			/*
-			 * Test the plugin
-			 */
-			require_once($path."minPlayCommand.php"); 
-			break; 
-		default 	: 
-			require_once($path."minCommand.php"); 
-			break;
-	}
+    switch ($o) {
+        case "h":
+            /*
+             * Show Help Command
+             */
+            require_once($path."minHelpCommand.php");
+            break;
+        case "p":
+            /*
+             * Test the plugin
+             */
+            require_once($path."minPlayCommand.php");
+            break;
+        default:
+            require_once($path."minCommand.php");
+            break;
+    }
 } else {
-	switch ($o)	{
-		case "a" 	: 
-			/*
-			 * Add a Command
-			 */
-			require_once($path."formCommand.php"); 
-			break;
-		case "w" 	: 
-			/*
-			 * Watch a Command
-			 */
-			require_once($path."formCommand.php"); 
-			break;
-		case "c" 	:
-			/*
-			 * Modify a Command
-			 */ 
-			require_once($path."formCommand.php"); 
-			break; 
-		case "m" 	:
-			/*
-			 * Duplicate n Commands
-			 */ 
-			multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); 
-			require_once($path."listCommand.php"); 
-			break; 
-		case "d" 	:
-			/*
-			 * Delete n Commands
-			 */ 
-			deleteCommandInDB(isset($select) ? $select : array()); 
-			require_once($path."listCommand.php"); 
-			break;
-		default 	: 
-			require_once($path."listCommand.php"); 
-			break;
-	}
+    switch ($o) {
+        case "a":
+            /*
+             * Add a Command
+             */
+            require_once($path."formCommand.php");
+            break;
+        case "w":
+            /*
+             * Watch a Command
+             */
+            require_once($path."formCommand.php");
+            break;
+        case "c":
+            /*
+             * Modify a Command
+             */
+            require_once($path."formCommand.php");
+            break;
+        case "e":
+            /*
+             * Enable n Commands
+             */
+            changeCommandStatus($cmdG, 1);
+            require_once($path."listCommand.php");
+            break;
+        case "d":
+            /*
+             * Disable n Commands
+             */
+            changeCommandStatus($cmdG, 0);
+            require_once($path."listCommand.php");
+            break;
+        case "m":
+            /*
+             * Duplicate n Commands
+             */
+            multipleCommandInDB(isset($select) ? $select : array(), $dupNbr);
+            require_once($path."listCommand.php");
+            break;
+        case "d":
+            /*
+             * Delete n Commands
+             */
+            deleteCommandInDB(isset($select) ? $select : array());
+            require_once($path."listCommand.php");
+            break;
+        case "me":
+            changeCommandStatus(null, isset($select) ? $select : array(), 1);
+            require_once($path."listCommand.php");
+            break;
+        case "md":
+            changeCommandStatus(null, isset($select) ? $select : array(), 0);
+            require_once($path."listCommand.php");
+            break;
+        case "en":
+            changeCommandStatus($cmdG, null, 1);
+            require_once($path."listCommand.php");
+            break;
+        case "di":
+            changeCommandStatus($cmdG, null, 0);
+            require_once($path."listCommand.php");
+            break;
+        default:
+            require_once($path."listCommand.php");
+            break;
+    }
 }

@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 /*
  *  Get Poller List
  */
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
                                                   'order'      => array('name'),
                                                   'keys'       => array('id'),
@@ -63,35 +63,27 @@ foreach ($tab_nagios_server as $key => $name) {
 $attrSelect = array("style" => "width: 220px;");
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-$form->addElement('header', 'title', _("Configuration Files Export"));
-$form->addElement('header', 'infos', _("Implied Server"));
-$form->addElement('header', 'opt', _("Export Options"));
-$form->addElement('header', 'result', _("Actions"));
 
 $form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
-
 $form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug'));
 $form->setDefaults(array('debug' => '1'));
-
 $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));
 $form->setDefaults(array('gen' => '1'));
-
 $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
-
-$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"));
-$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
+$form->addElement('select', 'restart_mode', _("Method"), array(2 => _("Restart"), 1 => _("Reload")), array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 $form->setDefaults(array('restart_mode' => '1'));
 
 /* Add multiselect for pollers */
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
-    'allowClear' => false,
+    'allowClear' => true,
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
     'multiple' => true
 );
-$form->addElement('select2', 'nhost', _("Pollers"), array(), $attrPoller);
+$form->addElement('select2', 'nhost', _("Pollers"), array("class" => "required"), $attrPoller);
+$form->addRule('nhost', _("You need to select a least one polling instance."), 'required', null, 'client');
 
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -103,16 +95,17 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();', 'class' => 'btc bt_success'));
-$msg = NULL;
-$stdout = NULL;
+$msg = null;
+$stdout = null;
 
+$tpl->assign("noPollerSelectedLabel", _("Compulsory Poller"));
 $tpl->assign("consoleLabel", _("Console"));
 $tpl->assign("progressLabel", _("Progress"));
 $tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
-$helptext = "";
 
 include_once("help.php");
 
+$helptext = "";
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
@@ -210,13 +203,36 @@ $tpl->display("formGenerateFiles.ihtml");
     }
 
     /**
+     * Display error if no poller is selected
+     *
+     * @returns boolean
+     */
+    function checkSelectedPoller() {
+        var countSelectedPoller = jQuery('#nhost').next('span').find('.select2-selection__choice').length;
+        if (countSelectedPoller > 0) {
+            jQuery('#noSelectedPoller').hide();
+            jQuery('#noSelectedPoller').next('br').remove();
+            return true;
+        } else {
+            jQuery('#noSelectedPoller').show();
+            if (!jQuery('#noSelectedPoller').next('br').length) {
+                jQuery('#noSelectedPoller').after('<br>');
+            }
+            return false;
+        }
+    }
+
+    /**
      * Generation process
      *
      * @return void
      */
     function generationProcess()
     {
-	curProgress = 0;
+        if (!checkSelectedPoller()) {
+            return null;
+        }
+    curProgress = 0;
         stepProgress = 0;
         updateProgress();
         cleanErrorPhp();
@@ -296,7 +312,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -322,7 +338,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -349,7 +365,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -372,7 +388,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-            	updateProgress();
+                updateProgress();
                 nextStep();
             }
         });
@@ -517,10 +533,10 @@ $tpl->display("formGenerateFiles.ihtml");
         if (typeof(curProgress) != 'undefined' && typeof(stepProgress) != 'undefined') {
             pct = curProgress + stepProgress;
             curProgress += stepProgress;
-	}
-	if (pct > 100) {
-	    pct = 100;
-	}
+    }
+    if (pct > 100) {
+        pct = 100;
+    }
         progressBar.setPercentage(pct);
         $('progressPct').update(Math.round(pct) + "%");
     }

@@ -66,30 +66,17 @@ sub getServiceAckTime {
     my $dbLayer = $self->{dbLayer};
     my $query;
     
-    if ($dbLayer eq "ndo") {
-        $query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time, is_sticky as sticky ".
-            " FROM `nagios_acknowledgements` a, `nagios_objects` o".
-            " WHERE o.`object_id` = a.`object_id`".
-            " AND `acknowledgement_type` = '1'".
-            " AND `entry_time` >= FROM_UNIXTIME(".$start.")".
-			" AND `entry_time` <= FROM_UNIXTIME(".$end.")".
-            " AND objecttype_id = '2'".
-            " AND o.`name1` = '".$hostName. "'".
-            " AND o.`name2` = '".$serviceDescription. "'".    
-            " ORDER BY `entry_time` asc";
-    } elsif ($dbLayer eq "broker") {
-        $query = "SELECT `entry_time` as ack_time, sticky ".
-            " FROM `acknowledgements` a, `services` s, `hosts` h ".
-            " WHERE h.`name` = '".$hostName. "'".
-            " AND h.`host_id` = s.`host_id`".   
-            " AND s.`description` = '".$serviceDescription. "'".
-            " AND s.`host_id` = a.`host_id`".
-            " AND s.`service_id` = a.`service_id`".
-            " AND `type` = 1".
-            " AND `entry_time` >= ".$start.
-            " AND `entry_time` <= ".$end. 
-            " ORDER BY `entry_time` asc";
-    }
+    $query = "SELECT `entry_time` as ack_time, sticky ".
+    " FROM `acknowledgements` a, `services` s, `hosts` h ".
+    " WHERE h.`name` = '".$hostName. "'".
+    " AND h.`host_id` = s.`host_id`".   
+    " AND s.`description` = '".$serviceDescription. "'".
+    " AND s.`host_id` = a.`host_id`".
+    " AND s.`service_id` = a.`service_id`".
+    " AND `type` = 1".
+    " AND `entry_time` >= ".$start.
+    " AND `entry_time` <= ".$end. 
+    " ORDER BY `entry_time` asc";
 
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
@@ -112,25 +99,14 @@ sub getHostAckTime {
     my $dbLayer = $self->{dbLayer};
     my $query;
     
-    if ($dbLayer eq "ndo") {
-        $query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time, is_sticky as sticky ".
-            " FROM `nagios_acknowledgements` a, `nagios_objects` o".
-            " WHERE o.`object_id` = a.`object_id`".
-            " AND `acknowledgement_type` = '0'".
-            " AND UNIX_TIMESTAMP(`entry_time`) >= ".$start.
-            " AND UNIX_TIMESTAMP(`entry_time`) <= ".$end.
-            " AND o.`name1` = '".$hostName. "'".
-            " ORDER BY `entry_time` asc";
-    } elsif ($dbLayer eq "broker") {
-        $query = "SELECT entry_time as ack_time, sticky ".
-            " FROM `acknowledgements` a, `hosts` h".
-            " WHERE h.`host_id` = a.`host_id`".
-            " AND `type` = 0".
-            " AND `entry_time` >= ".$start.
-            " AND `entry_time` <= ".$end.
-            " AND h.`name` = '".$hostName. "'".
-            " ORDER BY `entry_time` asc";
-    }
+    $query = "SELECT entry_time as ack_time, sticky ".
+        " FROM `acknowledgements` a, `hosts` h".
+        " WHERE h.`host_id` = a.`host_id`".
+        " AND `type` = 0".
+        " AND `entry_time` >= ".$start.
+        " AND `entry_time` <= ".$end.
+        " AND h.`name` = '".$hostName. "'".
+        " ORDER BY `entry_time` asc";
 
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";

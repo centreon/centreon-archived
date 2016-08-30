@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once ("centreonACL.class.php");
@@ -61,6 +58,7 @@ class CentreonUser
 	var $log;
 	var $userCrypted;
     protected $token;
+    public $default_page;
         
 	# User LCA
 	# Array with elements ID for loop test
@@ -88,6 +86,7 @@ class CentreonUser
         $this->token = $user['contact_autologin_key'];
         $this->admin = $user["contact_admin"];
         $this->version = 3;
+        $this->default_page = $user["default_page"];
         $this->gmt = $user["contact_location"];
         $this->js_effects = $user["contact_js_effects"];
         $this->is_admin = NULL;
@@ -410,4 +409,3 @@ class CentreonUser
         $this->token = $token;
     }
 }
-?>

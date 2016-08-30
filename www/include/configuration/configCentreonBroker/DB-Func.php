@@ -31,207 +31,221 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-    if (!isset($oreon)) {
-        exit();
-    }
-    
-    /**
-    *
-    * Test broker file config existance
-    * @param $name
-    */
-    function testExistence ($name = NULL)	{
-    	global $pearDB, $form;
-    	
-    	$id = NULL;
-    	
-    	if (isset($form)){
-    		$id = $form->getSubmitValue('id');
-    	}
-    	
-    	$DBRESULT = $pearDB->query("SELECT config_name, config_id FROM `cfg_centreonbroker` WHERE `config_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-    	$ndomod = $DBRESULT->fetchRow();
-    	if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] == $id) {
-    		return true;
-    	} else if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] != $id) {
-    		return false;
-    	} else {
-    		return true;
-    	}
+/**
+ *
+ * Test broker file config existance
+ * @param $name
+ */
+function testExistence($name = null)
+{
+    global $pearDB, $form;
+
+    $id = null;
+
+    if (isset($form)) {
+        $id = $form->getSubmitValue('id');
     }
 
-    /**
-     * Enable a Centreon Broker configuration
-     *
-     * @param int $id The Centreon Broker configuration in database
-     */
-    function enableCentreonBrokerInDB($id) {
-        global $pearDB;
+    $DBRESULT = $pearDB->query("SELECT config_name, config_id 
+                                FROM `cfg_centreonbroker` 
+                                WHERE `config_name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'");
+    $ndomod = $DBRESULT->fetchRow();
+    if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] == $id) {
+        return true;
+    } elseif ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] != $id) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
-        if (!$id) {
-        	return;
+/**
+ * Enable a Centreon Broker configuration
+ *
+ * @param int $id The Centreon Broker configuration in database
+ */
+function enableCentreonBrokerInDB($id)
+{
+    global $pearDB;
+
+    if (!$id) {
+        return;
+    }
+
+    $query = "UPDATE cfg_centreonbroker SET config_activate = '1' WHERE config_id = " . $id;
+    $pearDB->query($query);
+}
+
+/**
+ * Disable a Centreon Broker configuration
+ *
+ * @param int $id The Centreon Broker configuration in database
+ */
+function disablCentreonBrokerInDB($id)
+{
+    global $pearDB;
+
+    if (!$id) {
+        return;
+    }
+
+    $query = "UPDATE cfg_centreonbroker SET config_activate = '0' WHERE config_id = " . $id;
+    $pearDB->query($query);
+}
+
+/**
+ * Delete Centreon Broker configurations
+ *
+ * @param array $id The Centreon Broker configuration in database
+ */
+function deleteCentreonBrokerInDB($ids = array())
+{
+    global $pearDB;
+
+    foreach ($ids as $key => $value) {
+        $pearDB->query("DELETE FROM cfg_centreonbroker WHERE config_id = " . $key);
+    }
+}
+
+/**
+ * Get the information of a server
+ *
+ * @param int $id
+ * @return array
+ */
+function getCentreonBrokerInformation($id)
+{
+    global $pearDB;
+
+    $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate, correlation_activate,
+                    config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
+                    retention_path
+                  FROM cfg_centreonbroker 
+                  WHERE config_id = " . $id;
+    $res = $pearDB->query($query);
+
+    if (PEAR::isError($res)) {
+        return array(
+            "name" => '',
+            "filename" => '',
+            "write_timestamp" => '1',
+            "write_thread_id" => "1",
+            "activate" => '1',
+            "event_queue_max_size" => ''
+        );
+    }
+    $row = $res->fetchRow();
+    $brokerConf = array(
+        "id" => $id,
+        "name" => $row['config_name'],
+        "filename" => $row['config_filename'],
+        "ns_nagios_server" => $row['ns_nagios_server'],
+        "activate" => $row['config_activate'],
+        "stats_activate" => $row['stats_activate'],
+        "correlation_activate" => $row['correlation_activate'],
+        "write_timestamp" => $row['config_write_timestamp'],
+        "write_thread_id" => $row['config_write_thread_id'],
+        "event_queue_max_size" => $row['event_queue_max_size'],
+        "retention_path" => $row['retention_path']
+    );
+
+    $query = "SELECT `value` FROM options WHERE `key` = 'broker_socket_path'";
+    $res = $pearDB->query($query);
+    if (PEAR::isError($res)) {
+        return $brokerConf;
+    }
+	$row = $res->fetchRow();
+    return array_merge (
+        array('command_file' => $row['value']),
+        $brokerConf
+    );
+}
+
+/**
+ * Duplicate a configuration
+ *
+ * @param array $ids List of id CentreonBroker configuration
+ * @param array $nbr List of number a duplication
+ */
+function multipleCentreonBrokerInDB($ids, $nbrDup)
+{
+    global $pearDB;
+    foreach ($ids as $id => $value) {
+        $cbObj = new CentreonConfigCentreonBroker($pearDB);
+
+        $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server,
+            event_queue_max_size, retention_path "
+            . "FROM cfg_centreonbroker "
+            . "WHERE config_id = " . $id . " ";
+        $DBRESULT = $pearDB->query($query);
+        $row = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+
+        # Prepare values
+        $values = array();
+        $values['activate']['activate'] = '0';
+        $values['ns_nagios_server'] = $row['ns_nagios_server'];
+        $values['event_queue_max_size'] = $row['event_queue_max_size'];
+        $values['retention_path'] = $row['retention_path'];
+        $query = "SELECT config_key, config_value, config_group, config_group_id "
+            . "FROM cfg_centreonbroker_info "
+            . "WHERE config_id = " . $id . " ";
+        $DBRESULT = $pearDB->query($query);
+        $values['output'] = array();
+        $values['input'] = array();
+        $values['logger'] = array();
+        while ($rowOpt = $DBRESULT->fetchRow()) {
+            if ($rowOpt['config_key'] == 'filters') {
+                continue;
+            } elseif ($rowOpt['config_key'] == 'category') {
+                $config_key = 'filters__' . $rowOpt['config_group_id'] . '__category';
+                $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$config_key] = $rowOpt['config_value'];
+            } else {
+                $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$rowOpt['config_key']] =
+                    $rowOpt['config_value'];
+            }
         }
+        $DBRESULT->free();
 
-        $query = "UPDATE cfg_centreonbroker SET config_activate = '1' WHERE config_id = " . $id;
-        $pearDB->query($query);
-    }
-
-    /**
-     * Disable a Centreon Broker configuration
-     *
-     * @param int $id The Centreon Broker configuration in database
-     */
-    function disablCentreonBrokerInDB($id) {
-        global $pearDB;
-
-        if (!$id) {
-        	return;
-        }
-
-    	$query = "UPDATE cfg_centreonbroker SET config_activate = '0' WHERE config_id = " . $id;
-        $pearDB->query($query);
-    }
-
-    /**
-     * Delete Centreon Broker configurations
-     *
-     * @param array $id The Centreon Broker configuration in database
-     */
-    function deleteCentreonBrokerInDB($ids = array())	{
-		global $pearDB;
-
-		foreach ($ids as $key => $value)	{
-			$pearDB->query("DELETE FROM cfg_centreonbroker WHERE config_id = ".$key);
-		}
-	}
-
-	/**
-	 * Get the information of a server
-	 *
-	 * @param int $id
-	 * @return array
-	 */
-	function getCentreonBrokerInformation($id) {
-	    global $pearDB;
-
-	    $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate, correlation_activate,
-                        config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size, retention_path
-                      FROM cfg_centreonbroker 
-                      WHERE config_id = " . $id;
-	    $res = $pearDB->query($query);
-        
-	    if (PEAR::isError($res)) {
-	        return array(
-        		"name" => '',
-                "filename" => '',
-                "write_timestamp" => '1',
-                "write_thread_id" => "1",
-        		"activate" => '1',
-                "event_queue_max_size" => ''
-    		);
-	    }
-	    $row = $res->fetchRow();
-	    return array(
-	        "id" => $id,
-                "name" => $row['config_name'],
-                "filename" => $row['config_filename'],
-                "ns_nagios_server" => $row['ns_nagios_server'],
-                "activate" => $row['config_activate'],
-                "stats_activate" => $row['stats_activate'],
-                "correlation_activate" => $row['correlation_activate'],
-                "write_timestamp" => $row['config_write_timestamp'],
-                "write_thread_id" => $row['config_write_thread_id'],
-                "event_queue_max_size" => $row['event_queue_max_size'],
-                "retention_path" => $row['retention_path']
-	    );
-	}
-
-	/**
-	 * Duplicate a configuration
-	 *
-	 * @param array $ids List of id CentreonBroker configuration
-	 * @param array $nbr List of number a duplication
-	 */
-	function multipleCentreonBrokerInDB($ids, $nbrDup) {
-            global $pearDB;
-                foreach ($ids as $id => $value)	{
-                    $cbObj = new CentreonConfigCentreonBroker($pearDB);
-
-                    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size, retention_path "
-                        . "FROM cfg_centreonbroker "
-                        . "WHERE config_id = " . $id . " ";
-                    $DBRESULT = $pearDB->query($query);
-                    $row = $DBRESULT->fetchRow();
-                    $DBRESULT->free();
-                    
-                    # Prepare values
-                    $values = array();
-                    $values['activate']['activate'] = '0';
-                    $values['ns_nagios_server'] = $row['ns_nagios_server'];
-                    $values['event_queue_max_size'] = $row['event_queue_max_size'];
-                    $values['retention_path'] = $row['retention_path'];
-                    $query = "SELECT config_key, config_value, config_group, config_group_id "
-                        . "FROM cfg_centreonbroker_info "
-                        . "WHERE config_id = " . $id . " ";
-                    $DBRESULT = $pearDB->query($query);
-                    $values['output'] = array();
-                    $values['input'] = array();
-                    $values['logger'] = array();
-                    while ($rowOpt = $DBRESULT->fetchRow()) {
-                        if ($rowOpt['config_key'] == 'filters') {
-                            continue;
-                        } else if ($rowOpt['config_key'] == 'category') {
-                            $config_key = 'filters__' . $rowOpt['config_group_id'] . '__category';
-                            $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$config_key] = $rowOpt['config_value'];
-                        } else {
-                            $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$rowOpt['config_key']] = $rowOpt['config_value'];
-                        }
-                    }
-                    $DBRESULT->free();
-                    
-                    # Convert values radio button
-                    foreach ($values as $group => $groups) {
-                        foreach ($groups as $gid => $infos) {
-                            if (isset($infos['blockId'])) {
-                                list($tagId, $typeId) = explode('_', $infos['blockId']);
-                                $fieldtype = $cbObj->getFieldtypes($typeId);
-                            } else {
-                                $fieldtype = array();
-                            }
-                            foreach ($infos as $key => $value) {
-    	                        if (isset($fieldtype[$key]) && $fieldtype[$key] == 'radio') {
-                                    $values[$group][$gid][$key] = array($key => $value);
-                                }
-                            }
-                        }
-                    }
-
-                    # Copy the configuration
-                    $j = 1;
-                    for ($i = 1; $i <= $nbrDup[$id]; $i++) {
-                        $nameNOk = true;
-
-                        # Find the name
-                        while ($nameNOk) {
-                            $newname = $row['config_name'] . '_' . $j;
-                            $newfilename = $j . '_' . $row['config_filename'];
-                            $query = "SELECT COUNT(*) as nb FROM cfg_centreonbroker WHERE config_name = '" . $newname . "'";
-                            $res = $pearDB->query($query);
-                            $rowNb = $res->fetchRow();
-                            if ($rowNb['nb'] == 0) {
-                                $nameNOk = false;
-                            }
-                            $j++;
-                        }
-                        $values['name'] = $newname;
-                        $values['filename'] = $newfilename;
-                        $cbObj->insertConfig($values);
+        # Convert values radio button
+        foreach ($values as $group => $groups) {
+            foreach ($groups as $gid => $infos) {
+                if (isset($infos['blockId'])) {
+                    list($tagId, $typeId) = explode('_', $infos['blockId']);
+                    $fieldtype = $cbObj->getFieldtypes($typeId);
+                } else {
+                    $fieldtype = array();
+                }
+                foreach ($infos as $key => $value) {
+                    if (isset($fieldtype[$key]) && $fieldtype[$key] == 'radio') {
+                        $values[$group][$gid][$key] = array($key => $value);
                     }
                 }
             }
-?>
+        }
+
+        # Copy the configuration
+        $j = 1;
+        for ($i = 1; $i <= $nbrDup[$id]; $i++) {
+            $nameNOk = true;
+
+            # Find the name
+            while ($nameNOk) {
+                $newname = $row['config_name'] . '_' . $j;
+                $newfilename = $j . '_' . $row['config_filename'];
+                $query = "SELECT COUNT(*) as nb FROM cfg_centreonbroker WHERE config_name = '" . $newname . "'";
+                $res = $pearDB->query($query);
+                $rowNb = $res->fetchRow();
+                if ($rowNb['nb'] == 0) {
+                    $nameNOk = false;
+                }
+                $j++;
+            }
+            $values['name'] = $newname;
+            $values['filename'] = $newfilename;
+            $cbObj->insertConfig($values);
+        }
+    }
+}

@@ -31,10 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.modules.centreon.com/centreon-clapi/trunk/www/modules/centreon-clapi/core/class/centreonHost.class.php $
- * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
- *
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -171,9 +169,18 @@ class CentreonTimePeriod extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $excObj = new \Centreon_Object_Timeperiod_Exception();
-        $escList = $excObj->getList($excObj->getPrimaryKey(), -1, 0, null, null, array("timeperiod_id"    => $tpId,
-                                                                                	   "days"             => $params[1]),
-                                                                                		"AND");
+        $escList = $excObj->getList(
+            $excObj->getPrimaryKey(),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "timeperiod_id"    => $tpId,
+                "days"             => $params[1]
+            ),
+            "AND"
+        );
         if (count($escList)) {
             $excObj->update($escList[0][$excObj->getPrimaryKey()], array('timerange' => $params[2]));
         } else {
@@ -200,9 +207,18 @@ class CentreonTimePeriod extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $excObj = new \Centreon_Object_Timeperiod_Exception();
-        $escList = $excObj->getList($excObj->getPrimaryKey(), -1, 0, null, null, array("timeperiod_id"    => $tpId,
-                                                                                	   "days"             => $params[1]),
-                                                                                		"AND");
+        $escList = $excObj->getList(
+            $excObj->getPrimaryKey(),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "timeperiod_id"    => $tpId,
+                "days"             => $params[1]
+            ),
+            "AND"
+        );
         if (count($escList)) {
             $excObj->delete($escList[0][$excObj->getPrimaryKey()]);
         }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,22 +31,22 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
-function testContactGroupExistence($name = NULL) {
-    global $pearDB, $form, $oreon;
-    $id = NULL;
+function testContactGroupExistence($name = null)
+{
+    global $pearDB, $form, $centreon;
+    $id = null;
 
-    if (isset($form))
+    if (isset($form)) {
         $id = $form->getSubmitValue('cg_id');
+    }
 
-    $DBRESULT = $pearDB->query("SELECT `cg_name`, `cg_id` FROM `contactgroup` WHERE `cg_name` = '" . htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8") . "'");
+    $DBRESULT = $pearDB->query("SELECT `cg_name`, `cg_id` FROM `contactgroup` WHERE `cg_name` = '" . htmlentities($centreon->checkIllegalChar($name)) . "'");
     $cg = $DBRESULT->fetchRow();
 
     if ($DBRESULT->numRows() >= 1 && $cg["cg_id"] == $id) {
@@ -55,7 +54,7 @@ function testContactGroupExistence($name = NULL) {
          * Modif case
          */
         return true;
-    } else if ($DBRESULT->numRows() >= 1 && $cg["cg_id"] != $id) {
+    } elseif ($DBRESULT->numRows() >= 1 && $cg["cg_id"] != $id) {
         /*
          * Duplicate entry
          */
@@ -65,43 +64,55 @@ function testContactGroupExistence($name = NULL) {
     }
 }
 
-function enableContactGroupInDB($cg_id = null) {
-    global $pearDB, $oreon;
-    if (!$cg_id)
+function enableContactGroupInDB($cg_id = null)
+{
+    global $pearDB, $centreon;
+
+    if (!$cg_id) {
         return;
+    }
     $DBRESULT = $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '1' WHERE `cg_id` = '" . intval($cg_id) . "'");
+    
     $DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($cg_id) . "' LIMIT 1");
     $row = $DBRESULT2->fetchRow();
-    $oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "enable");
+
+    $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "enable");
 }
 
-function disableContactGroupInDB($cg_id = null) {
-    global $pearDB, $oreon;
-    if (!$cg_id)
+function disableContactGroupInDB($cg_id = null)
+{
+    global $pearDB, $centreon;
+
+    if (!$cg_id) {
         return;
+    }
     $DBRESULT = $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '0' WHERE `cg_id` = '" . intval($cg_id) . "'");
+    
     $DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($cg_id) . "' LIMIT 1");
     $row = $DBRESULT2->fetchRow();
-    $oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "disable");
+    
+    $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "disable");
 }
 
-function deleteContactGroupInDB($contactGroups = array()) {
-    global $pearDB, $oreon;
+function deleteContactGroupInDB($contactGroups = array())
+{
+    global $pearDB, $centreon;
 
     foreach ($contactGroups as $key => $value) {
         $DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
 
         $DBRESULT = $pearDB->query("DELETE FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "'");
-        $oreon->CentreonLogAction->insertLog("contactgroup", $key, $row['cg_name'], "d");
+        
+        $centreon->CentreonLogAction->insertLog("contactgroup", $key, $row['cg_name'], "d");
     }
 }
 
-function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array()) {
-    global $pearDB, $oreon;
+function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
+{
+    global $pearDB, $centreon;
 
     foreach ($contactGroups as $key => $value) {
-
         $DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "' LIMIT 1");
 
         $row = $DBRESULT->fetchRow();
@@ -133,56 +144,61 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array()) {
                         $fields["cg_contacts"] .= $cct["contact_contact_id"] . ",";
                     }
                     $fields["cg_contacts"] = trim($fields["cg_contacts"], ",");
-                    $oreon->CentreonLogAction->insertLog("contactgroup", $maxId["MAX(cg_id)"], $cg_name, "a", $fields);
+                    $centreon->CentreonLogAction->insertLog("contactgroup", $maxId["MAX(cg_id)"], $cg_name, "a", $fields);
                 }
             }
         }
     }
 }
 
-function insertContactGroupInDB($ret = array()) {
+function insertContactGroupInDB($ret = array())
+{
     $cg_id = insertContactGroup($ret);
     updateContactGroupContacts($cg_id, $ret);
     updateContactGroupAclGroups($cg_id, $ret);
     return $cg_id;
 }
 
-function insertContactGroup($ret) {
-    global $form, $pearDB, $oreon;
+function insertContactGroup($ret)
+{
+    global $form, $pearDB, $centreon;
 
-    if (!count($ret))
+    if (!count($ret)) {
         $ret = $form->getSubmitValues();
+    }
 
-    $ret["cg_name"] = $oreon->checkIllegalChar($ret["cg_name"]);
+    $ret["cg_name"] = $centreon->checkIllegalChar($ret["cg_name"]);
 
     $rq = "INSERT INTO `contactgroup` (`cg_name`, `cg_alias`, `cg_comment`, `cg_activate`) ";
-    $rq .= "VALUES ('" . htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8") . "', '" . htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8") . "', '" . htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8") . "', '" . $ret["cg_activate"]["cg_activate"] . "')";
+    $rq .= "VALUES ('" . CentreonDB::escape($ret["cg_name"]) . "', '" . CentreonDB::escape($ret["cg_alias"]) . "', '" . CentreonDB::escape($ret["cg_comment"]) . "', '" . $ret["cg_activate"]["cg_activate"] . "')";
     $DBRESULT = $pearDB->query($rq);
 
     $DBRESULT = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
     $cg_id = $DBRESULT->fetchRow();
-    $fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8");
-    $fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8");
-    $fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8");
-    $fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
-    if (isset($ret["cg_contacts"]))
-        $fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
-    $oreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
+    
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], CentreonDB::escape($ret["cg_name"]), "a", $fields);
     return ($cg_id["MAX(cg_id)"]);
 }
 
-function updateContactGroupInDB($cg_id = NULL, $params = array()) {
-    if (!$cg_id)
+function updateContactGroupInDB($cg_id = null, $params = array())
+{
+    if (!$cg_id) {
         return;
+    }
+
     updateContactGroup($cg_id, $params);
     updateContactGroupContacts($cg_id, $params);
     updateContactGroupAclGroups($cg_id, $params);
 }
 
-function updateContactGroup($cg_id = null, $params = array()) {
-    global $form, $pearDB, $oreon;
-    if (!$cg_id)
+function updateContactGroup($cg_id = null, $params = array())
+{
+    global $form, $pearDB, $centreon;
+    if (!$cg_id) {
         return;
+    }
     $ret = array();
     if (count($params)) {
         $ret = $params;
@@ -190,36 +206,36 @@ function updateContactGroup($cg_id = null, $params = array()) {
         $ret = $form->getSubmitValues();
     }
 
-    $ret["cg_name"] = $oreon->checkIllegalChar($ret["cg_name"]);
+    $ret["cg_name"] = $centreon->checkIllegalChar($ret["cg_name"]);
 
     $rq = "UPDATE `contactgroup` ";
-    $rq .= "SET `cg_name` = '" . htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8") . "', " .
-            "`cg_alias` = '" . htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8") . "', " .
-            "`cg_comment` = '" . htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8") . "', " .
+    $rq .= "SET `cg_name` = '" . CentreonDB::escape($ret["cg_name"]) . "', " .
+            "`cg_alias` = '" . CentreonDB::escape($ret["cg_alias"]) . "', " .
+            "`cg_comment` = '" . CentreonDB::escape($ret["cg_comment"]) . "', " .
             "`cg_activate` = '" . $ret["cg_activate"]["cg_activate"] . "' " .
             "WHERE `cg_id` = '" . intval($cg_id) . "'";
     $DBRESULT = $pearDB->query($rq);
-    $fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8");
-    $fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8");
-    $fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8");
-    $fields["cg_activate"] = $ret["cg_activate"]["cg_activate"];
-    if (isset($ret["cg_contacts"]))
-        $fields["cg_contacts"] = implode(",", $ret["cg_contacts"]);
-    $oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
+    
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, CentreonDB::escape($ret["cg_name"]), "c", $fields);
 }
 
-function updateContactGroupContacts($cg_id, $ret = array()) {
+function updateContactGroupContacts($cg_id, $ret = array())
+{
     global $centreon, $form, $pearDB;
-    if (!$cg_id)
+    if (!$cg_id) {
         return;
+    }
 
     $rq = "DELETE FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '" . intval($cg_id) . "'";
     $DBRESULT = $pearDB->query($rq);
 
-    if (isset($ret["cg_contacts"]))
+    if (isset($ret["cg_contacts"])) {
         $ret = $ret["cg_contacts"];
-    else
+    } else {
         $ret = CentreonUtils::mergeWithInitialValues($form, 'cg_contacts');
+    }
 
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) ";
@@ -230,7 +246,8 @@ function updateContactGroupContacts($cg_id, $ret = array()) {
     }
 }
 
-function updateContactGroupAclGroups($cg_id, $ret = array()) {
+function updateContactGroupAclGroups($cg_id, $ret = array())
+{
     global $form, $pearDB;
 
     if (!$cg_id) {
@@ -240,10 +257,11 @@ function updateContactGroupAclGroups($cg_id, $ret = array()) {
     $rq = "DELETE FROM `acl_group_contactgroups_relations` WHERE `cg_cg_id` = " . intval($cg_id);
     $res = $pearDB->query($rq);
 
-    if (isset($ret["cg_acl_groups"]))
+    if (isset($ret["cg_acl_groups"])) {
         $ret = $ret["cg_acl_groups"];
-    else
+    } else {
         $ret = CentreonUtils::mergeWithInitialValues($form, 'cg_acl_groups');
+    }
 
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO `acl_group_contactgroups_relations` (`acl_group_id`, `cg_cg_id`) ";
@@ -258,16 +276,15 @@ function updateContactGroupAclGroups($cg_id, $ret = array()) {
  * @param string $name
  * @return int
  */
-function getContactGroupIdByName($name) {
+function getContactGroupIdByName($name)
+{
     global $pearDB;
 
     $id = 0;
-    $res = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '" . $pearDB->escape($name) . "'");
+    $res = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '" . CentreonDB::escape($name) . "'");
     if ($res->numRows()) {
         $row = $res->fetchRow();
         $id = $row['cg_id'];
     }
     return $id;
 }
-
-?>

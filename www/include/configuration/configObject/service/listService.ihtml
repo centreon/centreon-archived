@@ -4,39 +4,42 @@
 	<table class="ajaxOption table">
       <tbody>
         <tr>
-          <th><h5>{t}Filters{/t}</h5></th>
+          	<th>
+          		<h5>{t}Filters{/t}</h5>
+          	</th>
         </tr>
 		<tr>
-		    <td><h4>{$Hosts}</h4></td>
             {if (isset($hostgroupsFilter))}
-                <td><h4>{$Hostgroups}</h4></td>
+                <td><h4>{$HostGroups}</h4></td>
+            {else}
+                <td><h4>{$Hosts}</h4></td>
             {/if}
-             <td><h4>{$Services}</h4></td>
-			 <td><h4>{$ServiceTemplates}</h4></td>
-			 <td><h4>{$ServiceStatus}</h4></td>
+            <td><h4>{$Services}</h4></td>
+			<td><h4>{$ServiceTemplates}</h4></td>
+			<td><h4>{$ServiceStatus}</h4></td>
 		</tr>
         <tr>
-            <td><input type='text' name='searchH' value="{$searchH}" /></td>
-             {if (isset($hostgroupsFilter))}
-                <td><select name='hostgroups' >{$hostgroupsFilter}</select></td>
+            {if (isset($hostgroupsFilter))}
+                <td><input type='text' name='hostgroups' value="{$hostgroupsFilter}" /></td>
+            {else}
+                <td><input type='text' name='searchH' value="{$searchH}" /></td>
             {/if}
 			<td><input type='text' name='searchS' value="{$searchS}" /></td>
-			<td><select name='template' >{$templateFilter}</select></td>
-			<td><select name='status' >{$statusFilter}</select></td>
+			<td><select name='template'>{$templateFilter}</select></td>
+			<td><select name='status'>{$statusFilter}</select></td>
 			<td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
         </tr>
       </tbody>
 	</table>
-
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			{ if $mode_access == 'w' }
+			{if $mode_access == 'w'}
 			<td>
 				{$msg.options} {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
-			{ else }
+			{else}
 			<td>&nbsp;</td>
-			{ /if }
+			{/if}
 			<input name="p" value="{$p}" type="hidden" />
 			{php}
 			   include('./include/common/pagination.php');
@@ -64,24 +67,25 @@
 			</td>
 			<td class="ListColLeft resizeTitle">
 				<a href="{$elemArr[elem].RowMenu_link2}">{if $elemArr[elem].RowMenu_sicon != ""}
-			<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14 margin_right"/>{/if}{$elemArr[elem].RowMenu_desc}</a></td>
+				<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14 margin_right"/>{/if}{$elemArr[elem].RowMenu_desc}</a>
+			</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_retry}</td>
 			<td class="ListColLeft resizeTitle">{$elemArr[elem].RowMenu_parent}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
-			<td class="ListColRight" align="right" style="min-width: 80px;">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+			<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
+			<td class="ListColRight" style="white-space: nowrap;">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{/section}
 	</table>
 	<table class="ToolbarTable ToolbarTR table">
 		<tr>
-			{ if $mode_access == 'w' }
+			{if $mode_access == 'w'}
 			<td class="Toolbar_TDSelectAction_Bottom">
 				{$msg.options} {$form.o2.html}
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
-			{ else }
+			{else}
 			<td>&nbsp;</td>
-			{ /if }
+			{/if}
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');

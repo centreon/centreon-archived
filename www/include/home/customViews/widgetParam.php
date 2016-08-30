@@ -54,12 +54,22 @@ $viewObj = new CentreonCustomView($centreon, $db);
 $widgetObj = new CentreonWidget($centreon, $db);
 $title = "";
 $defaultTab = array();
-if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] &&
-    isset($_REQUEST['widget_id']) && $_REQUEST['widget_id']) {
+if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] && isset($_REQUEST['widget_id']) && $_REQUEST['widget_id']) {
     $viewId = $_REQUEST['view_id'];
     $widgetId = $_REQUEST['widget_id'];
     $action = "setPreferences";
-    $title = sprintf(_("Widget Preferences for %s"), $widgetObj->getWidgetTitle($widgetId));
+
+    $widgetTitle = $widgetObj->getWidgetTitle($widgetId);
+    if ($widgetTitle != '') {
+        $title = sprintf(_("Widget Preferences for %s"), $widgetTitle);
+    } else {
+        $title = _("Widget Preferences");
+    }
+
+    $info = $widgetObj->getWidgetDirectory($widgetObj->getWidgetType($widgetId));
+    $title .= " [".$info."]";
+    
+
     $defaultTab['custom_view_id'] = $viewId;
     $defaultTab['widget_id'] = $widgetId;
     $defaultTab['action'] = $action;
@@ -113,7 +123,7 @@ try {
                 }
             }
             if (false === $paramClassFound) {
-                throw new Exception ('No connector found for ' . $param['ft_typename']);
+                throw new Exception('No connector found for ' . $param['ft_typename']);
             }
             $className = "CentreonWidgetParamsConnector".ucfirst($param['ft_typename']);
         } else {
@@ -128,7 +138,7 @@ try {
             $params[$paramId]['trigger'] = $currentParam->getTrigger();
             $element = $currentParam->getElement();
         } else {
-            throw new Exception ('No class name found');
+            throw new Exception('No class name found');
         }
     }
 } catch (Exception $e) {
@@ -164,41 +174,41 @@ var widgetUrl = '<?php echo $url;?>';
 
 jQuery(function()
 {
-	jQuery("input[type=text]").keypress(function(e) {
-											var code = null;
-											code =  (e.keyCode ? e.keyCode : e.which);
-											return (code == 13) ? false : true;
-										} );
-	setDatePicker();
+    jQuery("input[type=text]").keypress(function(e) {
+                                            var code = null;
+                                            code =  (e.keyCode ? e.keyCode : e.which);
+                                            return (code == 13) ? false : true;
+                                        } );
+    setDatePicker();
 });
 
 function submitData()
 {
-	jQuery.ajax({
-			type	:	"POST",
-			dataType:	"xml",
-			url 	:	"./include/home/customViews/action.php",
-			data	:   jQuery("#Form").serialize(),
-			success :	function(response) {
-							var view = response.getElementsByTagName('custom_view_id');
-							var error = response.getElementsByTagName('error');
-							if (typeof(view) != 'undefined') {
-								var viewId = view.item(0).firstChild.data;
-								parent.jQuery("[name=widget_" + viewId +  "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId='+ widgetId);
-								parent.jQuery.colorbox.close();
-							} else if (typeof(error) != 'undefined') {
-								var errorMsg = error.item(0).firstChild.data;
-							}
-						}
-	});
+    jQuery.ajax({
+            type    :   "POST",
+            dataType:   "xml",
+            url     :   "./include/home/customViews/action.php",
+            data    :   jQuery("#Form").serialize(),
+            success :   function(response) {
+                            var view = response.getElementsByTagName('custom_view_id');
+                            var error = response.getElementsByTagName('error');
+                            if (typeof(view) != 'undefined') {
+                                var viewId = view.item(0).firstChild.data;
+                                parent.jQuery("[name=widget_" + viewId +  "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId='+ widgetId);
+                                parent.jQuery.colorbox.close();
+                            } else if (typeof(error) != 'undefined') {
+                                var errorMsg = error.item(0).firstChild.data;
+                            }
+                        }
+    });
 }
 
 function setDatePicker()
 {
-	jQuery(".datepicker").datepicker({
-							defaultDate:	"+1w",
-							changeMonth:	true
-						   });
+    jQuery(".datepicker").datepicker({
+                            defaultDate:    "+1w",
+                            changeMonth:    true
+                           });
 }
 
 /**
@@ -211,18 +221,18 @@ function setDatePicker()
  */
 function loadFromTrigger(triggerSource, targetId, triggerValue)
 {
-	jQuery.ajax({
-		type	:	"POST",
-		dataType:	"xml",
-		url 	:	triggerSource,
-		data	:   { data: triggerValue } ,
-		success :	function(response) {
-							jQuery("[name=param_"+targetId+"]").find('option').remove().end();
-							jQuery(response).find('option').each(function() {
-								jQuery("[name=param_"+targetId+"]").append(new Option(jQuery(this).find('label').text(),
-																					  triggerValue + '-' + jQuery(this).find('id').text(), true, true));
-							});
-					}
+    jQuery.ajax({
+        type    :   "POST",
+        dataType:   "xml",
+        url     :   triggerSource,
+        data    :   { data: triggerValue } ,
+        success :   function(response) {
+                            jQuery("[name=param_"+targetId+"]").find('option').remove().end();
+                            jQuery(response).find('option').each(function() {
+                                jQuery("[name=param_"+targetId+"]").append(new Option(jQuery(this).find('label').text(),
+                                                                                      triggerValue + '-' + jQuery(this).find('id').text(), true, true));
+                            });
+                    }
 });
 }
 </script>

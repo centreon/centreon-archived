@@ -32,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 if (!isset($centreon)) {
@@ -52,8 +49,9 @@ $contactTypeIcone = array(1 => "./img/icons/admin.png", 2 => "./img/icons/user.p
  */
 $tpCache = array("" => "");
 $DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-while ($data = $DBRESULT->fetchRow())
+while ($data = $DBRESULT->fetchRow()) {
     $tpCache[$data["tp_id"]] = $data["tp_name"];
+}
 unset($data);
 $DBRESULT->free();
 
@@ -72,7 +70,10 @@ $fields = array(
     'timeperiod_tp_id2',
     'contact_activate');
 $contacts = $contactObj->getContactTemplates(
-        $fields, $clauses, array('contact_name', 'ASC'), array(($num * $limit), $limit)
+    $fields,
+    $clauses,
+    array('contact_name', 'ASC'),
+    array(($num * $limit), $limit)
 );
 $rows = $pearDB->numberRows();
 include("./include/common/checkPagination.php");
@@ -90,7 +91,6 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Full Name"));
 $tpl->assign("headerMenu_desc", _("Alias / Login"));
 $tpl->assign("headerMenu_email", _("Email"));
@@ -156,6 +156,7 @@ foreach ($contacts as $contact) {
         "RowMenu_hostNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id"]) ? $contact["timeperiod_tp_id"] : "")], ENT_QUOTES, "UTF-8") . " (" . (isset($contact["contact_host_notification_options"]) ? $contact["contact_host_notification_options"] : "") . ")",
         "RowMenu_svNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id2"]) ? $contact["timeperiod_tp_id2"] : "")], ENT_QUOTES, "UTF-8") . " (" . (isset($contact["contact_service_notification_options"]) ? $contact["contact_service_notification_options"] : "") . ")",
         "RowMenu_status" => $contact["contact_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $contact["contact_activate"] ? "service_ok" : "service_critical",
         "RowMenu_options" => $moptions
     );
     $style != "two" ? $style = "two" : $style = "one";
@@ -187,14 +188,14 @@ $attrs1 = array(
     " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
     " alert('"._("Please select one or more items")."'); return false;} " .
     "if (this.form.elements['o1'].selectedIndex == 1 && confirm('" . _("Do you confirm the duplication ?") . "')) {" .
-    " 	setO(this.form.elements['o1'].value); submit();} " .
+    "   setO(this.form.elements['o1'].value); submit();} " .
     "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('" . _("Do you confirm the deletion ?") . "')) {" .
-    " 	setO(this.form.elements['o1'].value); submit();} " .
+    "   setO(this.form.elements['o1'].value); submit();} " .
     "else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
-    " 	setO(this.form.elements['o1'].value); submit();} " .
+    "   setO(this.form.elements['o1'].value); submit();} " .
     "this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', NULL, array(NULL => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete"), "mc" => _("Massive Change"), "ms" => _("Enable"), "mu" => _("Disable")), $attrs1);
-$form->setDefaults(array('o1' => NULL));
+$form->addElement('select', 'o1', null, array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete"), "mc" => _("Massive Change"), "ms" => _("Enable"), "mu" => _("Disable")), $attrs1);
+$form->setDefaults(array('o1' => null));
 
 $attrs2 = array(
     'onchange' => "javascript: " .
@@ -202,22 +203,22 @@ $attrs2 = array(
     " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
     " alert('"._("Please select one or more items")."'); return false;} " .
     "if (this.form.elements['o2'].selectedIndex == 1 && confirm('" . _("Do you confirm the duplication ?") . "')) {" .
-    " 	setO(this.form.elements['o2'].value); submit();} " .
+    "   setO(this.form.elements['o2'].value); submit();} " .
     "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('" . _("Do you confirm the deletion ?") . "')) {" .
-    " 	setO(this.form.elements['o2'].value); submit();} " .
+    "   setO(this.form.elements['o2'].value); submit();} " .
     "else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
-    " 	setO(this.form.elements['o2'].value); submit();} " .
+    "   setO(this.form.elements['o2'].value); submit();} " .
     "this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o2', NULL, array(NULL => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete"), "mc" => _("Massive Change"), "ms" => _("Enable"), "mu" => _("Disable")), $attrs2);
-$form->setDefaults(array('o2' => NULL));
+$form->addElement('select', 'o2', null, array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete"), "mc" => _("Massive Change"), "ms" => _("Enable"), "mu" => _("Disable")), $attrs2);
+$form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-$o1->setSelected(NULL);
+$o1->setValue(null);
+$o1->setSelected(null);
 
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchCT', $search);

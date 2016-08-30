@@ -234,7 +234,7 @@ sub getBrokerStats($) {
         mkpath($destFile);
     }
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name,retention_path "
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name, retention_path "
         . "FROM cfg_centreonbroker "
         . "WHERE stats_activate='1' "
         . "AND ns_nagios_server = '" . $poller_id . "'");
@@ -488,7 +488,7 @@ sub sendConfigFile($){
         return;
     }
 
-    my $origin = $self->{centreonDir} . "/filesGeneration/nagiosCFG/".$id."/*";
+    my $origin = $self->{centreonDir} . "/filesGeneration/engine/".$id."/*";
     my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
 
     # Send data with SCP
@@ -564,11 +564,15 @@ sub initEngine($$){
 
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
-        $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => 120
-                                                              );
+        if ($conf->{init_system} eq 'systemd') {
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemctl $options ".$conf->{init_script};
+        } elsif ($conf->{init_system} eq 'systemv') {
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
+        } else {
+           $self->{logger}->writeLogError("Unknown init system for poller $id");
+           return;
+        }
+        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd, logger => $self->{logger}, timeout => 120);
     } else {
         $self->{logger}->writeLogError("Cannot $options Engine for poller $id");
     }

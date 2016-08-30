@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -57,31 +54,13 @@ if ($handle = opendir($varPath)) {
 }
 
 $selectedEngine = "centreon-engine";
-if (isset($_SESSION['MONITORING_ENGINE'])) {
-    $selectedEngine = $_SESSION['MONITORING_ENGINE'];
-}
 
-$engineOption = "<option value='0'></option>";
-foreach ($engines as $engine) {
-    $selected = "";
-    if ($engine == $selectedEngine) {
-        $selected = "selected";
-    }
-    $engineOption .= "<option value='$engine' $selected>$engine</option>";
-}
 $contents = " 
     <form id='form_step".STEP_NUMBER."'>
-        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+        <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
             <tr>
                 <th colspan='2'>"._('Monitoring engine information')."</th>
-            </tr>
-            <tr>
-                <td class='formlabel'>"._('Monitoring engine')."</td>
-                <td class='formvalue'>
-                    <select name='MONITORING_ENGINE' onChange='loadParameters(this.value);'>$engineOption</select>
-                    <label class='field_msg'></label>
-                </td>
             </tr>
         </thead>
         <tbody id='engineParams'></tbody>

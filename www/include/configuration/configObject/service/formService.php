@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -50,7 +49,8 @@ $serviceObj = new CentreonService($pearDB);
  * Database retrieve information for Service
  * @param unknown_type $arg
  */
-function myDecodeService($arg) {
+function myDecodeService($arg)
+{
     $arg = str_replace('#BR#', "\\n", $arg);
     $arg = str_replace('#T#', "\\t", $arg);
     $arg = str_replace('#R#', "\\r", $arg);
@@ -60,7 +60,7 @@ function myDecodeService($arg) {
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     if ($service_id) {
         $checkres = $pearDB->query("SELECT service_id
                                         FROM $acldbname.centreon_acl
@@ -76,7 +76,6 @@ if (!$oreon->user->admin) {
     }
 }
 
-
 /* notification contacts */
 $notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
     'get_row' => 'contact_name',
@@ -87,7 +86,7 @@ $notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contac
 /* notification contact groups */
 $notifCgs = array();
 $cg = new CentreonContactgroup($pearDB);
-if ($oreon->user->admin) {
+if ($centreon->user->admin) {
     $notifCgs = $cg->getListContactgroup(true);
 } else {
     $cgAcl = $acl->getContactGroupAclConf(array('fields' => array('cg_id', 'cg_name'),
@@ -99,19 +98,19 @@ if ($oreon->user->admin) {
 }
 
 /* hosts */
-$hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields' => array('host.host_id', 'host.host_name'),
+$hosts = $acl->getHostAclConf(null, 'broker', array('fields' => array('host.host_id', 'host.host_name'),
     'keys' => array('host_id'),
     'get_row' => 'host_name',
     'order' => array('host_name')));
 
 /* hostgroups */
-$hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker(), array('fields' => array('hg_id', 'hg_name'),
+$hgs = $acl->getHostGroupAclConf(null, 'broker', array('fields' => array('hg_id', 'hg_name'),
     'keys' => array('hg_id'),
     'get_row' => 'hg_name',
     'order' => array('hg_name')));
 
 /* service groups */
-$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker(), array('fields' => array('sg_id', 'sg_name'),
+$sgs = $acl->getServiceGroupAclConf(null, 'broker', array('fields' => array('sg_id', 'sg_name'),
     'keys' => array('sg_id'),
     'get_row' => 'sg_name',
     'order' => array('sg_name')));
@@ -133,7 +132,6 @@ $service = array();
 $serviceTplId = null;
 $initialValues = array();
 if (($o == "c" || $o == "w") && $service_id) {
-
     $DBRESULT = $pearDB->query("SELECT * FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '" . $service_id . "' LIMIT 1");
     /*
      * Set base value
@@ -268,22 +266,17 @@ if (($o == "c" || $o == "w") && $service_id) {
 if (($o == "c" || $o == "w") && $service_id) {
     $aListTemplate = getListTemplates($pearDB, $service_id);
 
-
-
     if (!isset($cmdId)) {
         $cmdId = "";
     }
-    
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
-
-
 }
 
 $cdata = CentreonData::getInstance();
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
-                json_encode($aMacros), ENT_QUOTES
-        )
-);
+    json_encode($aMacros),
+    ENT_QUOTES
+));
 
 $cdata->addJsData('clone-count-macro', count($aMacros));
 
@@ -459,7 +452,7 @@ $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=service&field=service_template_model_stm_id&id=' . $service_id)
 );
-$serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Service Template"), array(), $attrServicetemplate1);
+$serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Template"), array(), $attrServicetemplate1);
 $serviceTplSelect->addJsCallback('change', 'changeServiceTemplate(this.value)');
 
 $form->addElement('static', 'tplText', _("Using a Template exempts you to fill required fields"));
@@ -505,12 +498,12 @@ if ($o != "mc") {
 }
 
 $attrCommand2 = array_merge(
-        $attrCommands,
-        array(
+    $attrCommands,
+    array(
             'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
             'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id2&id=' . $service_id
         )
-    );
+);
 $eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
 $eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
 
@@ -533,14 +526,17 @@ if ($o != "mc") {
 }
 
 $attrTimeperiod1 = array_merge(
-        $attrTimeperiods,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
-    );
+    $attrTimeperiods,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
+);
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
-        'text', 'macroInput[#index#]', _('Name'), array(
+    'text',
+    'macroInput[#index#]',
+    _('Name'),
+    array(
     'id' => 'macroInput_#index#',
     'size' => 25
         )
@@ -567,10 +563,19 @@ $cloneSetMacro[] = $form->addElement(
     )
 );
 
-
 $cloneSetMacro[] = $form->addElement(
-    'hidden', 'macroFrom[#index#]','direct', array('id' => 'macroFrom_#index#')
+    'hidden',
+    'macroFrom[#index#]',
+    'direct',
+    array('id' => 'macroFrom_#index#')
 );
+
+$form->addElement('header', 'information', _("Service Basic Information"));
+
+/**
+ * Acknowledgement timeout
+ */
+$form->addElement('text', 'service_acknowledgement_timeout', _("Acknowledgement timeout"), $attrsText2);
 
 
 ##
@@ -593,23 +598,22 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_cgs' => '0'));
 }
 
-
 ##
-## Host's contact inheritance
+## Use only contacts/contacts group of host and host template
 ##
-$form->addElement('header', 'inherit_contacts_from_host', _("Inherit contacts from host"));
-$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("Yes"), '1');
-$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("No"), '0');
-$form->addGroup($serviceIHC, 'service_inherit_contacts_from_host', _("Inherit contacts from host"), '&nbsp;');
+$form->addElement('header', 'use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"));
+$serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("Yes"), '1');
+$serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("No"), '0');
+$form->addGroup($serviceIOHC, 'service_use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"), '&nbsp;');
 if ($o != "mc") {
-    $form->setDefaults(array('service_inherit_contacts_from_host' => '1'));
+    $form->setDefaults(array('service_use_only_contacts_from_host' => '0'));
 }
 
 /*
  * Additive
  */
 
-if ($o == "mc")	{
+if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
@@ -622,7 +626,7 @@ if ($o == "mc")	{
 } else {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
- }
+}
 
 /*
  *  Contacts
@@ -632,7 +636,6 @@ $attrContact1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=service&field=service_cs&id=' . $service_id)
 );
 $form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
-
 
 /*
  *  Contact groups
@@ -653,6 +656,8 @@ if ($o == "mc") {
 }
 
 $form->addElement('text', 'service_first_notification_delay', _("First notification delay"), $attrsText2);
+
+$form->addElement('text', 'service_recovery_notification_delay', _("Recovery notification delay"), $attrsText2);
 
 if ($o == "mc") {
     $mc_mod_notifopt_notification_interval = array();
@@ -745,7 +750,6 @@ if ($form_service_type == "BYHOST") {
         array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=service_hPars&id=' . $service_id)
     );
     $form->addElement('select2', 'service_hPars', _("Linked with Hosts"), array(), $attrHost1);
-    
 }
 
 if ($form_service_type == "BYHOSTGROUP") {
@@ -778,7 +782,6 @@ $ams3 = $form->addElement('select2', 'service_sgs', _("Linked with Servicegroups
 if ($sgReadOnly === true) {
     $ams3->freeze();
 }
-
 
 $form->addElement('header', 'traps', _("SNMP Traps"));
 if ($o == "mc") {
@@ -838,14 +841,6 @@ $form->addElement('text', 'service_freshness_threshold', _("Freshness Threshold"
 $form->addElement('text', 'service_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
 $form->addElement('text', 'service_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Yes"), '1');
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("No"), '0');
-$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Default"), '2');
-$form->addGroup($servicePPD, 'service_process_perf_data', _("Process Perf Data"), '&nbsp;');
-if ($o != "mc") {
-    $form->setDefaults(array('service_process_perf_data' => '2'));
-}
-
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Yes"), '1');
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("No"), '0');
 $serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Default"), '2');
@@ -881,7 +876,7 @@ $form->addElement('text', 'esi_notes_url', _("URL"), $attrsTextURL);
 $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
 $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id" => "esi_icon_image", "onChange" => "showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
-
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 /*
  * Criticality
@@ -901,8 +896,6 @@ $attrGraphtemplate1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=defaultValues&target=service&field=graph_id&id=' . $service_id)
 );
 $form->addElement('select2', 'graph_id', _("Graph Template"), array(), $attrGraphtemplate1);
-
-
 
 if ($o == "mc") {
     $mc_mod_sc = array();
@@ -959,14 +952,9 @@ if (is_array($select)) {
     $select_pear->setValue($select_str);
 }
 
-#
-## Form Rules
-#
-function myReplace() {
-    global $form;
-    return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
-}
-
+/* 
+ * Form Rules
+ */
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;
 if ($o != "mc") {
@@ -974,11 +962,6 @@ if ($o != "mc") {
     # If we are using a Template, no need to check the value, we hope there are in the Template
     if (!$form->getSubmitValue("service_template_model_stm_id")) {
         $form->addRule('command_command_id', _("Compulsory Command"), 'required');
-        $form->addRule('service_max_check_attempts', _("Required Field"), 'required');
-        $form->addRule('service_normal_check_interval', _("Required Field"), 'required');
-        $form->addRule('service_retry_check_interval', _("Required Field"), 'required');
-        $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-        $form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
         if (!$form->getSubmitValue("service_hPars")) {
             $form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
         }
@@ -1052,13 +1035,14 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign('msg', array("nagios" => $oreon->user->get_version(), "tpl" => 0));
-$tpl->assign('javascript',
+$tpl->assign('msg', array("nagios" => $centreon->user->get_version(), "tpl" => 0));
+$tpl->assign(
+    'javascript',
     '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>'
     . '<script type="text/javascript" src="./include/common/javascript/centreon/macroLoadDescription.js"></script>'
 );
-$tpl->assign('time_unit', " * " . $oreon->optGen["interval_length"] . " " . _("seconds"));
+$tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _("seconds"));
 $tpl->assign("p", $p);
 $tpl->assign(
     "helpattr",
@@ -1122,14 +1106,13 @@ if ($valid) {
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));
-    $tpl->assign("Perfdata_Options", _("Perfdata Options"));
     $tpl->assign("History_Options", _("History Options"));
     $tpl->assign("Event_Handler", _("Event Handler"));
     $tpl->assign("topdoc", _("Documentation"));
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign("service_type", $form_service_type);
 
-    $tpl->assign('v', $oreon->user->get_version());
+    $tpl->assign('v', $centreon->user->get_version());
     $tpl->display("formService.ihtml");
     ?>
     <script type="text/javascript">

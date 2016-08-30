@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -83,11 +83,13 @@ class ServiceTemplate extends AbstractService {
         service_stalking_options as stalking_options,
         service_register as register,
         service_inherit_contacts_from_host,
+        service_use_only_contacts_from_host,
         esi_notes as notes,
         esi_notes_url as notes_url,
         esi_action_url as action_url,
         esi_icon_image as icon_image_id,
-        esi_icon_image_alt as icon_image_alt
+        esi_icon_image_alt as icon_image_alt,
+        service_acknowledgement_timeout as acknowledgement_timeout
     ';
     protected $attributes_write = array(
         'service_description',
@@ -116,7 +118,8 @@ class ServiceTemplate extends AbstractService {
         'notes_url',
         'action_url',
         'icon_image',
-        'icon_image_alt'
+        'icon_image_alt',
+        'acknowledgement_timeout'
     );
     
     private function getServiceGroups($service_id) {        

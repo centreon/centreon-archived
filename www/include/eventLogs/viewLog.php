@@ -34,75 +34,9 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
-function get_user_param($user_id, $pearDB) {
-	$list_param = array('log_filter_host', 'log_filter_svc', 'log_filter_host_down',
-		'log_filter_host_up', 'log_filter_host_unreachable', 'log_filter_svc_ok',
-		'log_filter_svc_warning', 'log_filter_svc_critical', 'log_filter_svc_unknown',
-		'log_filter_notif', 'log_filter_error', 'log_filter_alert', 'log_filter_oh',
-		'search_H', 'search_S', 'log_filter_period');
-	$tab_row = array();
-	$cache = null;
-	foreach ($list_param as $param) {
-		if (isset($_SESSION[$param])) {
-			$tab_row[$param] = $_SESSION[$param];
-		} else {
-			if (is_null($cache)) {
-				$cache = array();
-				$query = "SELECT cp_key, cp_value FROM contact_param WHERE cp_key in ('" . implode("', '", $list_param) . "') AND cp_contact_id = " . $user_id;
-				$DBRESULT = $pearDB->query($query);
-				while ($row = $DBRESULT->fetchRow()) {
-					$cache[$row['cp_key']] = $row['cp_value'];
-				}
-			}
-			if (isset($cache[$param])) {
-				$tab_row[$param] = $cache[$param];
-			}
-		}
-	}
-	return $tab_row;
-}
-
-$user_params = get_user_param($oreon->user->user_id, $pearDB);
-if (!isset($user_params["log_filter_host"]))
-	$user_params["log_filter_host"] = true;
-if (!isset($user_params["log_filter_svc"]))
-	$user_params["log_filter_svc"] = true;
-if (!isset($user_params["log_filter_host_down"]))
-	$user_params["log_filter_host_down"] = true;
-if (!isset($user_params["log_filter_host_up"]))
-	$user_params["log_filter_host_up"] = true;
-if (!isset($user_params["log_filter_host_unreachable"]))
-	$user_params["log_filter_host_unreachable"] = true;
-if (!isset($user_params["log_filter_svc_ok"]))
-	$user_params["log_filter_svc_ok"] = true;
-if (!isset($user_params["log_filter_svc_warning"]))
-	$user_params["log_filter_svc_warning"] = true;
-if (!isset($user_params["log_filter_svc_critical"]))
-	$user_params["log_filter_svc_critical"] = true;
-if (!isset($user_params["log_filter_svc_unknown"]))
-	$user_params["log_filter_svc_unknown"] = true;
-if (!isset($user_params["log_filter_notif"]))
-	$user_params["log_filter_notif"] = false;
-if (!isset($user_params["log_filter_error"]))
-	$user_params["log_filter_error"] = true;
-if (!isset($user_params["log_filter_alert"]))
-	$user_params["log_filter_alert"] = true;
-if (!isset($user_params["log_filter_oh"]))
-	$user_params["log_filter_oh"] = false;
-
-if (!isset($user_params["search_H"]))
-	$user_params["search_H"] = "";
-if (!isset($user_params["search_S"]))
-	$user_params["search_S"] = "";
-
-if (!isset($user_params['log_filter_period']))
-	$user_params['log_filter_period'] = "10800";
-
-if (!isset($user_params['output']))
-	$user_params['output'] = "";
 /*
  * Pear library
  */
@@ -110,55 +44,101 @@ require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
+require_once $centreon_path."/www/include/eventLogs/common-Func.php";
+
+$user_params = get_user_param($oreon->user->user_id, $pearDB);
+
+if (!isset($user_params["log_filter_host"])) {
+    $user_params["log_filter_host"] = true;
+}
+if (!isset($user_params["log_filter_svc"])) {
+    $user_params["log_filter_svc"] = true;
+}
+if (!isset($user_params["log_filter_host_down"])) {
+    $user_params["log_filter_host_down"] = true;
+}
+if (!isset($user_params["log_filter_host_up"])) {
+    $user_params["log_filter_host_up"] = true;
+}
+if (!isset($user_params["log_filter_host_unreachable"])) {
+    $user_params["log_filter_host_unreachable"] = true;
+}
+if (!isset($user_params["log_filter_svc_ok"])) {
+    $user_params["log_filter_svc_ok"] = true;
+}
+if (!isset($user_params["log_filter_svc_warning"])) {
+    $user_params["log_filter_svc_warning"] = true;
+}
+if (!isset($user_params["log_filter_svc_critical"])) {
+    $user_params["log_filter_svc_critical"] = true;
+}
+if (!isset($user_params["log_filter_svc_unknown"])) {
+    $user_params["log_filter_svc_unknown"] = true;
+}
+if (!isset($user_params["log_filter_notif"])) {
+    $user_params["log_filter_notif"] = false;
+}
+if (!isset($user_params["log_filter_error"])) {
+    $user_params["log_filter_error"] = true;
+}
+if (!isset($user_params["log_filter_alert"])) {
+    $user_params["log_filter_alert"] = true;
+}
+if (!isset($user_params["log_filter_oh"])) {
+    $user_params["log_filter_oh"] = false;
+}
+if (!isset($user_params["search_H"])) {
+    $user_params["search_H"] = "";
+}
+if (!isset($user_params["search_S"])) {
+    $user_params["search_S"] = "";
+}
+if (!isset($user_params['log_filter_period'])) {
+    $user_params['log_filter_period'] = "10800";
+}
+if (!isset($user_params['output'])) {
+    $user_params['output'] = "";
+}
+
 /*
  * Add QuickSearch ToolBar
  */
 $FlagSearchService = 1;
 
 /*
- * Path to the configuration dir
- */
-$path = "./include/eventLogs/";
-
-/*
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
 
-if(isset($_GET["engine"])){
-    if($_GET["engine"] == "true"){
+if (isset($_GET["engine"])) {
+    if ($_GET["engine"] == "true") {
         $engine = 'true';
-    }else{
+    } else {
         $engine = 'false';
     }
-}else{
+} else {
     $engine = 'false';
 }
 
 $output = "";
-if(isset($_GET["output"])){
+if (isset($_GET["output"])) {
     $output = $_GET["output"];
 }
 
-
-
 $openid = '0';
-$open_id_sub = '0';
-if (isset($_GET["openid"])){
-	$openid = $_GET["openid"];
-	$open_id_type = substr($openid, 0, 2);
-	$open_id_sub = substr($openid, 3, strlen($openid));
+if (isset($_GET["openid"])) {
+    $openid = $_GET["openid"];
 }
 
-if (isset($_GET["id"])){
-	$id = $_GET["id"];
+if (isset($_GET["id"])) {
+    $id = $_GET["id"];
 } else {
-	$id = 1;
+    $id = 1;
 }
 
-if (isset($_POST["id"])){
-	$id = $_POST["id"];
+if (isset($_POST["id"])) {
+    $id = $_POST["id"];
 }
 
 $hostArray = array();
@@ -166,79 +146,30 @@ $hostGrpArray = array();
 $serviceArray = array();
 $serviceGrpArray = array();
 $pollerArray = array();
-if(isset($_GET['h'])){
-    $h = explode(",",$_GET['h']);
+if (isset($_GET['h'])) {
+    $h = explode(",", $_GET['h']);
     $hostObj = new CentreonHost($pearDB);
     $hostArray = $hostObj->getHostsNames($h);
 }
-if(isset($_GET['hg'])){
-    $hg = explode(",",$_GET['hg']);
+if (isset($_GET['hg'])) {
+    $hg = explode(",", $_GET['hg']);
     $hostGrpObj = new CentreonHostgroups($pearDB);
     $hostGrpArray = $hostGrpObj->getHostsgroups($hg);
 }
-if(isset($_GET['svc'])){
-    $svc = explode(",",$_GET['svc']);
+if (isset($_GET['svc'])) {
+    $svc = explode(",", $_GET['svc']);
     $serviceObj = new CentreonService($pearDB);
     $serviceArray = $serviceObj->getServicesDescr($svc);
 }
-if(isset($_GET['svcg'])){
-    $svcg = explode(",",$_GET['svcg']);
+if (isset($_GET['svcg'])) {
+    $svcg = explode(",", $_GET['svcg']);
     $serviceGrpObj = new CentreonServicegroups($pearDB);
     $serviceGrpArray = $serviceGrpObj->getServicesGroups($svcg);
 }
-if(isset($_GET['poller'])){
-    $poller = explode(",",$_GET['poller']);
-    $pollerObj = new CentreonInstance($pearDB,$pearDBO);
+if (isset($_GET['poller'])) {
+    $poller = explode(",", $_GET['poller']);
+    $pollerObj = new CentreonInstance($pearDB, $pearDBO);
     $pollerArray = $pollerObj->getInstancesMonitoring($poller);
-}
-
-
-
-/*
- * From Monitoring
- */
-if (isset($_POST["svc_id"])) {
-	$id = "";
-    $services = preg_split("/\,/", $_POST["svc_id"]);
-	foreach ($services as $str) {
-		$buf_svc = preg_split("/\;/", urldecode($str));
-        $lhost_id = getMyHostID($buf_svc[0]);
-		$id .= "HS_" . getMyServiceID($buf_svc[1], $lhost_id)."_" . $lhost_id . ",";
-	}
-}
-
-/*
- * From Graphs
- */
-if (!strncmp("MS", $id, 2)) {
-	$meta = 0;
-	if (isset($id) && $id){
-		$id = "";
-		$id_svc = $id;
-		$tab_svcs = explode(",", $id_svc);
-		foreach ($tab_svcs as $svc){
-			$tmp = explode(";", urldecode($svc));
-             $lhost_id = getMyHostID($tmp[0]);
-			$id .= "HS_" . getMyServiceID($tmp[1], $lhost_id)."_" . $lhost_id . ",";
-		}
-	}
-} else {
-	$meta = 1;
-}
-
-$id_log = "'RR_0'";
-$multi = 0;
-$lockTree = 0;
-    $focusUrl = "";
-if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
-	$mode = 0;
-	$lockTree = 1;
-	$id_log = "'".$id."'";
-	$multi =1;
-	$focusUrl = "?p=$p&id=$id&mode=0&lock_tree=0";
-} else {
-	$mode = 1;
-	$id = 1;
 }
 
 /*
@@ -247,52 +178,51 @@ if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
 $form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
 $form->addElement('header', 'title', _("Choose the source"));
 
-$periods = array(	""=>"",
-					"10800"=>_("Last 3 Hours"),
-					"21600"=>_("Last 6 Hours"),
-					"43200"=>_("Last 12 Hours"),
-					"86400"=>_("Last 24 Hours"),
-					"172800"=>_("Last 2 Days"),
-					"302400"=>_("Last 4 Days"),
-					"604800"=>_("Last 7 Days"),
-					"1209600"=>_("Last 14 Days"),
-					"2419200"=>_("Last 28 Days"),
-					"2592000"=>_("Last 30 Days"),
-					"2678400"=>_("Last 31 Days"),
-					"5184000"=>_("Last 2 Months"),
-					"10368000"=>_("Last 4 Months"),
-					"15552000"=>_("Last 6 Months"),
-					"31104000"=>_("Last Year"));
+$periods = array(   ""=>"",
+                    "10800"=>_("Last 3 Hours"),
+                    "21600"=>_("Last 6 Hours"),
+                    "43200"=>_("Last 12 Hours"),
+                    "86400"=>_("Last 24 Hours"),
+                    "172800"=>_("Last 2 Days"),
+                    "302400"=>_("Last 4 Days"),
+                    "604800"=>_("Last 7 Days"),
+                    "1209600"=>_("Last 14 Days"),
+                    "2419200"=>_("Last 28 Days"),
+                    "2592000"=>_("Last 30 Days"),
+                    "2678400"=>_("Last 31 Days"),
+                    "5184000"=>_("Last 2 Months"),
+                    "10368000"=>_("Last 4 Months"),
+                    "15552000"=>_("Last 6 Months"),
+                    "31104000"=>_("Last Year"));
 
 $lang = array("ty" => _("Message Type"),
-			  "n" => _("Notifications"),
-			  "a" => _("Alerts"),
-			  "e" => _("Errors"),
-			  "s" => _("Status"),
-			  "do" => _("Down"),
-			  "up" => _("Up"),
-			  "un" => _("Unreachable"),
-			  "w" => _("Warning"),
-			  "ok" => _("Ok"),
-			  "cr" => _("Critical"),
-			  "uk" => _("Unknown"),
-			  "oh" => _("Hard Only"),
-			  "sch" => _("Search")
-			);
+              "n" => _("Notifications"),
+              "a" => _("Alerts"),
+              "e" => _("Errors"),
+              "s" => _("Status"),
+              "do" => _("Down"),
+              "up" => _("Up"),
+              "un" => _("Unreachable"),
+              "w" => _("Warning"),
+              "ok" => _("Ok"),
+              "cr" => _("Critical"),
+              "uk" => _("Unknown"),
+              "oh" => _("Hard Only"),
+              "sch" => _("Search")
+            );
 
 $form->addElement('select', 'period', _("Log Period"), $periods);
 $form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "datepicker", "size"=>8));
 $form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 $form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
 $form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-$form->addElement('text', 'output', _("Output"),  array("id"=>"output", "style"=>"width: 203px;", "size"=>15, "value" => $user_params['output']));
+$form->addElement('text', 'output', _("Output"), array("id"=>"output", "style"=>"width: 203px;", "size"=>15, "value" => $user_params['output']));
 
-if($engine == "false"){
-    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period()","class"=>"btc bt_success"));
-}else{
-    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period_engine()","class"=>"btc bt_success"));
+if ($engine == "false") {
+    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
+} else {
+    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period_engine()", "class"=>"btc bt_success"));
 }
-
 
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
@@ -300,13 +230,13 @@ $attrHosts = array(
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
     'multiple' => true
 );
+
 /* Host Parents */
 $attrHost1 = array_merge(
     $attrHosts,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_parents&id=')
 );
 $form->addElement('select2', 'host_filter', _("Hosts"), array(), $attrHost1);
-
 
 $attrServicegroups = array(
     'datasourceOrigin' => 'ajax',
@@ -321,8 +251,6 @@ $attrServicegroup1 = array_merge(
 );
 $form->addElement('select2', 'service_group_filter', _("Services Groups"), array(), $attrServicegroup1);
 
-
-
 $attrService = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
@@ -335,8 +263,6 @@ $attrService1 = array_merge(
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=service&field=service_sgs&id=')
 );
 $form->addElement('select2', 'service_filter', _("Services"), array(), $attrService1);
-
-
 
 $attrHostGroup = array(
     'datasourceOrigin' => 'ajax',
@@ -369,15 +295,10 @@ $form->setDefaults(array("period" => $user_params['log_filter_period']));
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
-$tpl->assign('From', _("From"));
-$tpl->assign('To', _("To"));
-$tpl->assign('periodORlabel', _("or"));
-$tpl->assign('focusUrl', $focusUrl);
-$tpl->assign('treeFocus', _('Tree Focus'));
 $tpl->assign('user_params', $user_params);
 $tpl->assign('lang', $lang);
 
-if ($engine == 'false'){
+if ($engine == 'false') {
     $tpl->display("viewLog.ihtml");
 } else {
     $tpl->display("viewLogEngine.ihtml");
@@ -387,39 +308,30 @@ if ($engine == 'false'){
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
-	var multi = <?php echo $multi; ?>;
-
-// it's fake methode for using ajax system by default
-function mk_pagination(){;}
-function mk_paginationFF(){;}
-function set_header_title(){;}
-
-function apply_period(){
-	var openid = document.getElementById('openid').innerHTML;
-	log_4_host(openid,'','');
+function apply_period() {
+    var openid = document.getElementById('openid').innerHTML;
+    logs(openid,'','');
 }
 
-
-function apply_period_engine(){
-	var openid = document.getElementById('openid').innerHTML;
-	log_4_engine();
+function apply_period_engine() {
+    var openid = document.getElementById('openid').innerHTML;
+    logsEngine();
 }
 
 var _limit = 30;
-function setL(_this){
+function setL(_this) {
     _limit = _this;
 }
 
-
 var _num = 0;
 function log_4_host_page(id, formu, num)	{
-	_num = num;
-	log_4_host(id, formu, '');
+    _num = num;
+    logs(id, formu, '');
 }
 
-function log_4_engine_page(id,formu,num){
-	_num = num;
-	log_4_engine();
+function log_4_engine_page(id,formu,num) {
+    _num = num;
+    logsEngine();
 }
 
 var _host 		= <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"]: 'false'; ?>;
@@ -457,32 +369,32 @@ var EndTime='';
 var opid='';
 
 if (document.FormPeriod && document.FormPeriod.period.value != "")	{
-	period = document.FormPeriod.period.value;
+    period = document.FormPeriod.period.value;
 }
 
-if (document.FormPeriod && document.FormPeriod.period.value == ""){
-	document.FormPeriod.StartDate.value = StartDate;
-	document.FormPeriod.EndDate.value = EndDate;
-	document.FormPeriod.StartTime.value = StartTime;
-	document.FormPeriod.EndTime.value = EndTime;
+if (document.FormPeriod && document.FormPeriod.period.value == "") {
+    document.FormPeriod.StartDate.value = StartDate;
+    document.FormPeriod.EndDate.value = EndDate;
+    document.FormPeriod.StartTime.value = StartTime;
+    document.FormPeriod.EndTime.value = EndTime;
 }
 
-function log_4_engine(type){
+function logsEngine(type) {
     _output = jQuery( "#output" ).val();
     var poller_value = jQuery("#poller_filter").val();
     var args = "";
     var urlargs = "";
-    if(poller_value !== null){
+    if (poller_value !== null) {
         urlargs += "&poller=";
         var flagfirst = true;
-        poller_value.each(function(val){
-            if(val !== " " && val !== ""){
-                if(args !== ""){
+        poller_value.each(function(val) {
+            if (val !== " " && val !== "") {
+                if (args !== "") {
                     args += ",";
                 }
-                if(!flagfirst){
+                if (!flagfirst) {
                     urlargs += ",";
-                }else{
+                } else {
                     flagfirst = false;
                 }
                 urlargs += val;
@@ -495,283 +407,294 @@ function log_4_engine(type){
         window.history.pushState("", "", "main.php?p=20302&engine=true"+urlargs);
     }
     
-    
     controlTimePeriod();
     var proc = new Transformation();
-	var _addrXSL = "./include/eventLogs/logEngine.xsl";
+    var _addrXSL = "./include/eventLogs/xsl/logEngine.xsl";
     
-    if (!type){
-        var _addr = './include/eventLogs/GetXmlLog.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+    if (!type) {
+        var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
                 '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args;
         proc.setXml(_addr)
         proc.setXslt(_addrXSL)
         proc.transform("logView4xml");
-	} else {
-		var _addr = './include/eventLogs/Get'+type+'Log.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+    } else {
+        if (type == 'CSV') {
+            var _addr = './include/eventLogs/export/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
                 '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
-		document.location.href = _addr;
-	}
+
+        } else if (type == 'XML') {
+            var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
+
+        }
+        document.location.href = _addr;
+    }
 
 }
 
-
-function controlTimePeriod(){
+function controlTimePeriod() {
     if (document.FormPeriod) {
-	    if (document.FormPeriod.period.value!="")	{
-			period = document.FormPeriod.period.value;
-	    } else {
-			period = '';
-			StartDate = document.FormPeriod.StartDate.value;
-			EndDate = document.FormPeriod.EndDate.value;
-			StartTime = document.FormPeriod.StartTime.value;
-			EndTime = document.FormPeriod.EndTime.value;
-	    }
-	}
+        if (document.FormPeriod.period.value!="")   {
+            period = document.FormPeriod.period.value;
+        } else {
+            period = '';
+            StartDate = document.FormPeriod.StartDate.value;
+            EndDate = document.FormPeriod.EndDate.value;
+            StartTime = document.FormPeriod.StartTime.value;
+            EndTime = document.FormPeriod.EndTime.value;
+        }
+    }
     if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
-		StartDate = document.FormPeriod.StartDate.value;
-	if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
-		EndDate = document.FormPeriod.EndDate.value;
+        StartDate = document.FormPeriod.StartDate.value;
+    if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
+        EndDate = document.FormPeriod.EndDate.value;
 
-	if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
-		StartTime = document.FormPeriod.StartTime.value;
-	if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
-		EndTime = document.FormPeriod.EndTime.value;
+    if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
+        StartTime = document.FormPeriod.StartTime.value;
+    if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
+        EndTime = document.FormPeriod.EndTime.value;
 }
 
-function log_4_host(id, formu, type){
+function logs(id, formu, type) {
     opid = id;
-    if(jQuery( "#output" ) !== "undefined"){
+    if (jQuery( "#output" ) !== "undefined") {
         _output = jQuery( "#output" ).val();
     }
     
-    
     controlTimePeriod();
-	// type
-	if (document.formu2 && document.formu2.notification)
-		_notification = document.formu2.notification.checked;
-	if (document.formu2 && document.formu2.error)
-		_error = document.formu2.error.checked;
-	if (document.formu2 && document.formu2.alert)
-		_alert = document.formu2.alert.checked;
 
-	if (document.formu2 && document.formu2.up)
-		_up = document.formu2.up.checked;
-	if (document.formu2 && document.formu2.down)
-		_down = document.formu2.down.checked;
-	if (document.formu2 && document.formu2.unreachable)
-		_unreachable = document.formu2.unreachable.checked;
+    if (document.formu2 && document.formu2.notification) _notification = document.formu2.notification.checked;
+    if (document.formu2 && document.formu2.error) _error = document.formu2.error.checked;
+    if (document.formu2 && document.formu2.alert) _alert = document.formu2.alert.checked;
+    if (document.formu2 && document.formu2.up) _up = document.formu2.up.checked;
+    if (document.formu2 && document.formu2.down) _down = document.formu2.down.checked;
+    if (document.formu2 && document.formu2.unreachable) _unreachable = document.formu2.unreachable.checked;
+    if (document.formu2 && document.formu2.ok) _ok = document.formu2.ok.checked;
+    if (document.formu2 && document.formu2.warning) _warning = document.formu2.warning.checked;
+    if (document.formu2 && document.formu2.critical) _critical = document.formu2.critical.checked;
+    if (document.formu2 && document.formu2.unknown) _unknown = document.formu2.unknown.checked;
+    if (document.formu2 && document.formu2.oh) _oh = document.formu2.oh.checked;
+    if (document.formu2 && document.formu2.search_H) _search_H = document.formu2.search_H.checked;
+    if (document.formu2 && document.formu2.search_S) _search_S = document.formu2.search_S.checked;
 
-	if (document.formu2 && document.formu2.ok)
-		_ok = document.formu2.ok.checked;
-	if (document.formu2 && document.formu2.warning)
-		_warning = document.formu2.warning.checked;
-	if (document.formu2 && document.formu2.critical)
-		_critical = document.formu2.critical.checked;
-	if (document.formu2 && document.formu2.unknown)
-		_unknown = document.formu2.unknown.checked;
+    var proc = new Transformation();
+    var _addrXSL = "./include/eventLogs/xsl/log.xsl";
 
-	if (document.formu2 && document.formu2.oh)
-		_oh = document.formu2.oh.checked;
+    if (!type) {
+        var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) {
+            print "&search_host=".$search;
+} if (isset($search_service) && $search_service) {
+    print "&search_service=".$search_service;
+} ?>';
+        proc.setXml(_addr)
+        proc.setXslt(_addrXSL)
+        proc.transform("logView4xml");
+    } else {
+        var openid = document.getElementById('openid').innerHTML;
+        if (_engine == 0) {
+            if (type == 'CSV') {
+                var _addr = './include/eventLogs/export/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+
+                '&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+
+                '&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='
+                +EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) { print "&search_host=".$search;} if (isset($search_service) && $search_service) {
+                print "&search_service=".$search_service;} ?>&export=1';
+            } else if (type == 'XML') {
+                var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+
+                '&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+
+                '&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='
+                +EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) { print "&search_host=".$search; print "&search_host=".$search;
+                } if (isset($search_service) && $search_service) { print "&search_service=".$search_service; } ?>&export=1';
+            }
+        } else {
+            var poller_value = jQuery("#poller_filter").val();
+            var args = "";
+            if (poller_value !== null) {
+                poller_value.each(function(val) {
+                    if (val !== " " && val !== "") {
+                        if (args !== "") {
+                            args += ",";
+                        }
+                        args += val;
+                    }
+                });
+            }
 
-	if (document.formu2 && document.formu2.search_H)
-		_search_H = document.formu2.search_H.checked;
-	if (document.formu2 && document.formu2.search_S)
-		_search_S = document.formu2.search_S.checked;
-
-	var proc = new Transformation();
-	var _addrXSL = "./include/eventLogs/log.xsl";
-
-	if (!type){
-		var _addr = './include/eventLogs/GetXmlLog.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
-		proc.setXml(_addr)
-		proc.setXslt(_addrXSL)
-		proc.transform("logView4xml");
-	} else {
-		var openid = document.getElementById('openid').innerHTML;
-		var _addr = './include/eventLogs/Get'+type+'Log.php?multi='+multi+'&output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) print "&search_host=".$search; if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>&export=1';
-		document.location.href = _addr;
-	}
+            if (type == 'CSV') {
+                var _addr = './include/eventLogs/export/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
+                '&num='+_num+'&limit='+_limit+'&id='+args+'&export=1'
+            } else if (type == 'XML') {
+                var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
+                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
+                '&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
+            }
+        }
+        document.location.href = _addr;
+    }
 }
 
-    /**
-     * Javascript action depending on the status checkboxes 
-     *
-     * @param bool isChecked 
-     * @return void
-     */
-    function checkStatusCheckbox(isChecked) {
-            var alertCb = document.getElementById('alertId');
+/**
+ * Javascript action depending on the status checkboxes 
+ *
+ * @param bool isChecked 
+ * @return void
+ */
+function checkStatusCheckbox(isChecked) {
+        var alertCb = document.getElementById('alertId');
 
-            if (isChecked == true) {
-                alertCb.checked = true;
-            }
-    }
-
-    /**
-     * Javascript action depending on the alert/notif checkboxes
-     *
-     * @return void
-     */
-    function checkAlertNotifCheckbox() {
-        if (document.getElementById('alertId').checked == false && 
-            document.getElementById('notifId').checked == false) {
-            document.getElementById('cb_up').checked = false;
-            document.getElementById('cb_down').checked = false;
-            document.getElementById('cb_unreachable').checked = false;
-            document.getElementById('cb_ok').checked = false;
-            document.getElementById('cb_warning').checked = false;
-            document.getElementById('cb_critical').checked = false;
-            document.getElementById('cb_unknown').checked = false;
+        if (isChecked == true) {
+            alertCb.checked = true;
         }
+}
+
+/**
+ * Javascript action depending on the alert/notif checkboxes
+ *
+ * @return void
+ */
+function checkAlertNotifCheckbox() {
+    if (document.getElementById('alertId').checked == false && document.getElementById('notifId').checked == false) {
+        document.getElementById('cb_up').checked = false;
+        document.getElementById('cb_down').checked = false;
+        document.getElementById('cb_unreachable').checked = false;
+        document.getElementById('cb_ok').checked = false;
+        document.getElementById('cb_warning').checked = false;
+        document.getElementById('cb_critical').checked = false;
+        document.getElementById('cb_unknown').checked = false;
     }
+}
 
-    function getArgsForHost(){
-        var host_value = jQuery("#host_filter").val();
-        var service_value = jQuery("#service_filter").val();
-        var hg_value = jQuery("#host_group_filter").val();
-        var sg_value = jQuery("#service_group_filter").val();
-        
-        var args = "";
-        var urlargs = "";
-         if(host_value !== null){
-             urlargs += "&h=";
-             var flagfirst = true;
-             host_value.each(function(val){
-                 if(val !== " " && val !== ""){
-                     if(args !== ""){
-                         args += ",";
-                     }
-                     if(!flagfirst){
-                         urlargs += ",";
-                     }else{
-                         flagfirst = false;
-                     }
-                     urlargs += val;
-                     args += "HH_" + val;
+function getArgsForHost() {
+    var host_value = jQuery("#host_filter").val();
+    var service_value = jQuery("#service_filter").val();
+    var hg_value = jQuery("#host_group_filter").val();
+    var sg_value = jQuery("#service_group_filter").val();
+    
+    var args = "";
+    var urlargs = "";
+     if (host_value !== null) {
+         urlargs += "&h=";
+         var flagfirst = true;
+         host_value.each(function(val) {
+            if (val !== " " && val !== "") {
+                if (args !== "") {
+                     args += ",";
                  }
-             });
-         }
-         if(service_value !== null){
-             urlargs += "&svc=";
-             var flagfirst = true;
-             service_value.each(function(val){
-                 if(val !== " " && val !== ""){
-                     if(args !== ""){
-                         args += ",";
-                     }
-                     if(!flagfirst){
-                         urlargs += ",";
-                     }else{
-                         flagfirst = false;
-                     }
-                     urlargs += val.replace("-","_");
-                     args += "HS_" + val.replace("-","_");
+                 if (!flagfirst) {
+                     urlargs += ",";
+                 } else {
+                     flagfirst = false;
                  }
-             });
-         }
-         if(hg_value !== null){
-             urlargs += "&hg=";
-             var flagfirst = true;
-             hg_value.each(function(val){
-                 if(val !== " " && val !== ""){
-                     if(args !== ""){
-                         args += ",";
-                     }
-                     if(!flagfirst){
-                         urlargs += ",";
-                     }else{
-                         flagfirst = false;
-                     }
-                     urlargs += val;
-                     args += "HG_" + val;
+                 urlargs += val;
+                 args += "HH_" + val;
+             }
+         });
+     }
+     if (service_value !== null) {
+         urlargs += "&svc=";
+         var flagfirst = true;
+         service_value.each(function(val) {
+             if (val !== " " && val !== "") {
+                 if (args !== "") {
+                     args += ",";
                  }
-             });
-         }
-         if(sg_value !== null){
-             urlargs += "&svcg=";
-             var flagfirst = true;
-             sg_value.each(function(val){
-                 if(val !== " " && val !== ""){
-                     if(args !== ""){
-                         args += ",";
-                     }
-                     if(!flagfirst){
-                         urlargs += ",";
-                     }else{
-                         flagfirst = false;
-                     }
-                     urlargs += val;
-                     args += "ST_" + val;
+                 if (!flagfirst) {
+                     urlargs += ",";
+                 } else {
+                     flagfirst = false;
                  }
-             });
-         }
+                 urlargs += val.replace("-","_");
+                 args += "HS_" + val.replace("-","_");
+             }
+         });
+     }
+     if (hg_value !== null) {
+         urlargs += "&hg=";
+         var flagfirst = true;
+         hg_value.each(function(val) {
+             if (val !== " " && val !== "") {
+                 if (args !== "") {
+                     args += ",";
+                 }
+                 if (!flagfirst) {
+                     urlargs += ",";
+                 } else {
+                     flagfirst = false;
+                 }
+                 urlargs += val;
+                 args += "HG_" + val;
+             }
+         });
+     }
+     if (sg_value !== null) {
+         urlargs += "&svcg=";
+         var flagfirst = true;
+         sg_value.each(function(val) {
+             if (val !== " " && val !== "") {
+                 if (args !== "") {
+                     args += ",";
+                 }
+                 if (!flagfirst) {
+                     urlargs += ",";
+                 } else {
+                     flagfirst = false;
+                 }
+                 urlargs += val;
+                 args += "ST_" + val;
+             }
+         });
+     }
 
-        return new Array(args,urlargs);
-    }
-
+    return new Array(args,urlargs);
+}
 
 jQuery(function () {
-    if(!_engine){
-        /// Initialise selection with Get params
+    if (_engine == 0) {
+        // Initialise selection with Get params
         arrayHostValues = new Array();
-        <?php 
-            foreach($hostArray as $host){
-                ?>
-                arrayHostValues.push(<?php echo $host['id']; ?>);
-                jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));        
-
-                <?php         
-            }
-        ?>        
-
-
+        <?php
+        foreach ($hostArray as $host) {
+            ?>
+            arrayHostValues.push(<?php echo $host['id']; ?>);
+            jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));
+            <?php
+        }
+        ?>
         arrayServicesValues = new Array();
-        <?php 
-            foreach($serviceArray as $service){
-                ?>
-                arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
-                jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
+        <?php
+        foreach ($serviceArray as $service) {
+            ?>
+            arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
+            jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
 
-                <?php         
-            }
+            <?php
+        }
         ?>
-               
-
-
         arrayServicesGrpValues = new Array();
-        <?php 
-            foreach($serviceGrpArray as $serviceGrp){
-                ?>
-                arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
-                jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
-
-                <?php         
-            }
+        <?php
+        foreach ($serviceGrpArray as $serviceGrp) {
+            ?>
+            arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
+            jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
+            <?php
+        }
         ?>
-        
-
         arrayHostsGrpValues = new Array();
-        <?php 
-            foreach($hostGrpArray as $hostGrp){
-                ?>
-                arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
-                jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
-
-                <?php         
-            }
+        <?php
+        foreach ($hostGrpArray as $hostGrp) {
+            ?>
+            arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
+            jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
+            <?php
+        }
         ?>
-
-        
-        
-        
         // Here is your precious function
         // You can call as many functions as you want here;
-        jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(function(event,infos){
-
+        jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(function(event,infos) {
            var argArray = getArgsForHost();
            args = argArray[0];
            urlargs = argArray[1];
-           if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
+           if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
             return false;
            }
 
@@ -779,31 +702,31 @@ jQuery(function () {
                window.history.pushState("", "", "main.php?p=20301"+urlargs);
            }
            document.getElementById('openid').innerHTML = args;
-           log_4_host(args, '', false);
+           logs(args, '', false);
         });
         //setServiceGroup
-        jQuery("#setHostGroup").click(function(){
+        jQuery("#setHostGroup").click(function() {
             var hg_value = jQuery("#host_group_filter").val();
             var host_value = jQuery("#host_filter").val();
-            if(host_value === null){
+            if (host_value === null) {
                 host_value = new Array();
             }
             jQuery.ajax({
-                url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=hostList",
+                url: "./api/internal.php?object=centreon_configuration_hostgroup&action=hostList",
                 type: "GET",
                 dataType : "json",
                 data: "hgid="+hg_value,
-                success : function(json){
-                    json.items.each(function(elem){
-                        if(jQuery.inArray(elem.id,host_value) === -1){
+                success : function(json) {
+                    json.items.each(function(elem) {
+                        if (jQuery.inArray(elem.id,host_value) === -1) {
                             var existingOptions = jQuery("#host_filter").find('option');
                             var existFlag = false;
-                            existingOptions.each(function(el){
-                                if(jQuery(this).val() == elem.id){
+                            existingOptions.each(function(el) {
+                                if (jQuery(this).val() == elem.id) {
                                     existFlag = true;
                                 }
                             });
-                            if(!existFlag){
+                            if (!existFlag) {
                                 jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
                             }
                             host_value.push(elem.id);
@@ -818,28 +741,28 @@ jQuery(function () {
 
         });
 
-        jQuery("#setServiceGroup").click(function(){
+        jQuery("#setServiceGroup").click(function() {
            var service_value = jQuery("#service_filter").val();
            var sg_value = jQuery("#service_group_filter").val();
-            if(service_value === null){
+            if (service_value === null) {
                 service_value = new Array();
             }
             jQuery.ajax({
-                url: "./include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
+                url: "./api/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
                 type: "GET",
                 dataType : "json",
                 data: "sgid="+sg_value,
-                success : function(json){
-                    json.items.each(function(elem){
-                        if(jQuery.inArray(elem.id,service_value) === -1){
+                success : function(json) {
+                    json.items.each(function(elem) {
+                        if (jQuery.inArray(elem.id,service_value) === -1) {
                             var existingOptions = jQuery("#service_filter option");
                             var existFlag = false;
-                            existingOptions.each(function(){
-                                if(jQuery(this).val() == elem.id){
+                            existingOptions.each(function() {
+                                if (jQuery(this).val() == elem.id) {
                                     existFlag = true;
                                 }
                             });
-                            if(!existFlag){
+                            if (!existFlag) {
                                 jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
                             }
                             service_value.push(elem.id);
@@ -851,7 +774,6 @@ jQuery(function () {
                     jQuery("#service_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
                 }
             });    
-
         });
 
         jQuery("#host_filter").val(arrayHostValues).trigger("change",[{origin:"select2defaultinit"}]);
@@ -864,39 +786,34 @@ jQuery(function () {
                 var argArray = getArgsForHost();
                 args = argArray[0];
                 urlargs = argArray[1];
-                log_4_host(args, '', false);
+                logs(args, '', false);
                event.preventDefault();
             }
         });
         
-    }else{
-        
+    } else {
         arrayPollerValues = new Array();
-        <?php 
-            foreach($pollerArray as $pollers){
-                ?>
-                arrayPollerValues.push('<?php echo $pollers['id']; ?>');
-                jQuery("#poller_filter").append(jQuery('<option>').val('<?php echo $pollers['id']; ?>').html('<?php echo $pollers['name']; ?>'));        
-
-                <?php         
+        <?php
+        foreach ($pollerArray as $pollers) {
+            ?>
+            arrayPollerValues.push('<?php echo $pollers['id']; ?>');
+            jQuery("#poller_filter").append(jQuery('<option>').val('<?php echo $pollers['id']; ?>').html('<?php echo $pollers['name']; ?>'));        
+            <?php
+        }
+        ?>         
+        jQuery("#poller_filter").change(function(event,infos) {
+            if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
+                return false;
             }
-        ?> 
-        
-        jQuery("#poller_filter").change(function(event,infos){
-           if(typeof infos !== "undefined" && infos.origin === "select2defaultinit"){
-            return false;
-           }
-           log_4_engine();
+            logsEngine();
         });
         jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
         jQuery( "#output" ).keypress(function(  event ) {
             if ( event.which == 13 ) {
-                log_4_engine();
-               event.preventDefault();
+                logsEngine();
+                event.preventDefault();
             }
         });
-
-
     }
     });
 </script>

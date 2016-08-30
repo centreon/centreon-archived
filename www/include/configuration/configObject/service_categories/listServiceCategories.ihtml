@@ -6,7 +6,7 @@
         <th><h5>{t}Filters{/t}</h5></th>
       </tr>
       <tr>
-        <td><h4>{t}Service category{/t}</h4></td>
+        <td><h4>{t}Name{/t}</h4></td>
       </tr>
       <tr>
         <td><input type="text" name="searchSC" value="{$searchSC}"></td>
@@ -47,8 +47,8 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].sc_link}">{$elemArr[elem].sc_name}</a></td>
 			<td class="ListColCenter"><a href="{$elemArr[elem].sc_link}">{$elemArr[elem].sc_description}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].svc_linked}</td>
-                        <td class="ListColCenter">{$elemArr[elem].sc_type}</td>
-			<td class="ListColCenter">{$elemArr[elem].sc_activated}</td>
+            <td class="ListColCenter">{$elemArr[elem].sc_type}</td>
+			<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].sc_activated}</span></td>
 			<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
 		{/section}

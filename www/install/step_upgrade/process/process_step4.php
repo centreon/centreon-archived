@@ -79,7 +79,7 @@ if (is_file($prePhp)) {
  * Upgrade configuration sql
  */
 $confSql = '../../sql/centreon/Update-DB-'.$current.'_to_'.$next.'.sql';
-if (is_file($confSql)) {    
+if (is_file($confSql)) {
     $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-'.$current.'_to_'.$next);
     if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $result);
@@ -111,5 +111,5 @@ if ($handle = opendir('../../sql/centreon')) {
     closedir($handle);
 }
 $_SESSION['CURRENT_VERSION'] = $current;
-$okMsg = "<span style='color:#10CA31;'>OK</span>";
+$okMsg = "<span style='color:#88b917;'>OK</span>";
 exitUpgradeProcess($status, $current, $next, $okMsg);

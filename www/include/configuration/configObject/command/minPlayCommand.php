@@ -31,149 +31,149 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
- 	if (!isset($oreon))
- 		exit();
+if (!isset($centreon)) {
+    exit();
+}
 
-  	if (!isset ($oreon))
-		exit ();
+require_once(_CENTREON_PATH_ . "www/include/common/common-Func.php");
 
-	
-	require_once(_CENTREON_PATH_ . "www/include/common/common-Func.php");
+$error_msg = "";
+$command = urldecode($_GET["command_line"]);
+$example = $_GET["command_example"];
+$args = preg_split("/\!/", $example);
 
- 	$error_msg = "";
-	$command = $_GET["command_line"];
-	$example = $_GET["command_example"];
-	$args = preg_split("/\!/", $example);
+$command = str_replace(array('&#39;', '&#34;'), array("'", '"'), $command);
 
-	for ($i = 0; $i < count($args); $i++)
-	    $args[$i] = escapeshellarg ($args[$i]);
-	$resource_def = str_replace('$', '@DOLLAR@', $command);
-	$resource_def = escapeshellcmd($resource_def);
+for ($i = 0; $i < count($args); $i++) {
+    $args[$i] = escapeshellarg($args[$i]);
+}
+$resource_def = str_replace('$', '@DOLLAR@', $command);
+$resource_def = escapeshellcmd($resource_def);
 
-	while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
-		$DBRESULT = $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
-		$resource = $DBRESULT->fetchRow();
-		if (!isset($resource["resource_line"])){
-			$error_msg .= "\$USER".$matches[1]."\$";
-		} else {
-			$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
-		}
-	}
+/* Get resources in DB and replace by the value */
+while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
+    $DBRESULT = $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
+    $resource = $DBRESULT->fetchRow();
+    if (!isset($resource["resource_line"])) {
+        $error_msg .= "\$USER".$matches[1]."\$";
+    } else {
+        $resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
+    }
+}
 
-	while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
-		if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
-			$resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
-		} else {
-			$error_msg .= "\$HOSTADDRESS\$";
-		}
-	}
-	
-	while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
-		$match_id = $matches[1];
-		if (isset($args[$match_id])){
-			$resource_def = str_replace("@DOLLAR@ARG". $match_id ."@DOLLAR@", $args[$match_id], $resource_def);
-			$resource_def = str_replace('$', '@DOLLAR@', $resource_def);
-			if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches)) {
-				$DBRESULT = $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
-				$resource = $DBRESULT->fetchRow();
-				if (!isset($resource["resource_line"])){
-					$error_msg .= "\$USER".$match_id."\$";
-				} else {
-					$resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
-				}
-			}
-			if (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches)) {
-				if (isset($_GET["command_hostaddress"])){
-					$resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
-				} else {
-					$error_msg .= "\$HOSTADDRESS\$";
-				}
-			}			
-		} else {
-			$error_msg = "\$USER" . $match_id . "\$";
-		}
-	}
+/* Replace HOSTADDRESS by the real content */
+while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
+    if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
+        $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
+    } else {
+        $error_msg .= "\$HOSTADDRESS\$";
+    }
+}
 
-	if ($error_msg != "") {
-		$command = $resource_def;
-		$command = str_replace('@DOLLAR@', '$', $command);
-		$msg = _("Could not find macro ") . $error_msg;
-		$status = _("ERROR");
-	} else {
-		$command = $resource_def;
-		$command = str_replace('@DOLLAR@', '$', $command);
-		$splitter = preg_split("/\;/", $command);
-		$command = $splitter[0];
-		$stdout = array();
-		unset($stdout);
+/* Replace $POLLERID$ by the poller id */
+while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
+    $match_id = $matches[1];
+    if (isset($args[$match_id])) {
+        $resource_def = str_replace("@DOLLAR@ARG". $match_id ."@DOLLAR@", $args[$match_id], $resource_def);
+        $resource_def = str_replace('$', '@DOLLAR@', $resource_def);
+        if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches)) {
+            $DBRESULT = $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
+            $resource = $DBRESULT->fetchRow();
+            if (!isset($resource["resource_line"])) {
+                $error_msg .= "\$USER".$match_id."\$";
+            } else {
+                $resource_def = str_replace("@DOLLAR@USER". $matches[1] ."@DOLLAR@", $resource["resource_line"], $resource_def);
+            }
+        }
+        if (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches)) {
+            if (isset($_GET["command_hostaddress"])) {
+                $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
+            } else {
+                $error_msg .= "\$HOSTADDRESS\$";
+            }
+        }
+    } else {
+        $error_msg = "\$USER" . $match_id . "\$";
+    }
+}
 
-		/*
-		 * for security reasons, we do not allow the execution of any command unless it is located in path $USER1$
-		 */
-		$DBRESULT = $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER1\$' LIMIT 1");
-		$resource = $DBRESULT->fetchRow();
-		$user1Path = $resource["resource_line"];
-		$pathMatch = str_replace('/', '\/', $user1Path);
+/* Execute */
+if ($error_msg != "") {
+    $command = $resource_def;
+    $command = str_replace('@DOLLAR@', '$', $command);
+    $msg = _("Could not find macro ") . $error_msg;
+    $status = _("ERROR");
+} else {
+    $command = $resource_def;
+    $command = str_replace('@DOLLAR@', '$', $command);
+    $splitter = preg_split("/\;/", $command);
+    $command = $splitter[0];
+    $stdout = array();
+    unset($stdout);
 
-		if (preg_match("/^$pathMatch/", $command)){
-                    if (preg_match("/\.\./", $command)) {
-                        $msg = _("Directory traversal detected");
-                    } else {
-                        $msg = exec($command, $stdout, $status);
-                        $msg = join("<br/>",$stdout);
-                        if ($status == 1) {
-                            $status = _("WARNING");
-                        } elseif ($status == 2) {
-                            $status = _("CRITICAL");
-                        } elseif ($status == 0) {
-                                    $status = _("OK");
-                        } else {
-                            $status = _("UNKNOWN");
-                        }
-                    }
-		} else {
-                    $msg = _("Plugin has to be in : ") . $user1Path;
-		}
-	}
+    /*
+     * for security reasons, we do not allow the execution of any command unless it is located in path $USER1$
+     */
+    $DBRESULT = $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER1\$' LIMIT 1");
+    $resource = $DBRESULT->fetchRow();
+    $user1Path = $resource["resource_line"];
+    $pathMatch = str_replace('/', '\/', $user1Path);
 
-	$attrsText 	= array("size" => "25");
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title',_("Plugin Test"));
+    if (preg_match("/^$pathMatch/", $command)) {
+        if (preg_match("/\.\./", $command)) {
+            $msg = _("Directory traversal detected");
+        } else {
+            $msg = exec($command, $stdout, $status);
+            $msg = join("<br/>", $stdout);
+            if ($status == 1) {
+                $status = _("WARNING");
+            } elseif ($status == 2) {
+                $status = _("CRITICAL");
+            } elseif ($status == 0) {
+                        $status = _("OK");
+            } else {
+                $status = _("UNKNOWN");
+            }
+        }
+    } else {
+        $msg = _("Plugin has to be in : ") . $user1Path;
+    }
+}
 
-	/*
-	 * Command information
-	 */
-	$form->addElement('header', 'information', _("Plugin test"));
-	$form->addElement('text', 	'command_line', _("Command Line"), $attrsText);
-	$form->addElement('text', 	'command_help', _("Output"), $attrsText);
-	$form->addElement('text', 	'command_status', _("Status"), $attrsText);
+$attrsText  = array("size" => "25");
+$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form->addElement('header', 'title', _("Plugin Test"));
 
-	/*
-	 * Smarty template Init
-	 */
+/*
+ * Command information
+ */
+$form->addElement('header', 'information', _("Plugin test"));
+$form->addElement('text', 'command_line', _("Command Line"), $attrsText);
+$form->addElement('text', 'command_help', _("Output"), $attrsText);
+$form->addElement('text', 'command_status', _("Status"), $attrsText);
 
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+/*
+ * Smarty template Init
+ */
 
-	/*
-	 * Apply a template definition
-	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-	$tpl->assign('command_line', $command);
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
-	if (isset($msg) && $msg)
-		$tpl->assign('msg', $msg);
+/*
+ * Apply a template definition
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('form', $renderer->toArray());
+$tpl->assign('o', $o);
+$tpl->assign('command_line', $command);
 
-	if (isset($status))
-		$tpl->assign('status', $status);
-
-	$tpl->display("minPlayCommand.ihtml");
-?>
+if (isset($msg) && $msg) {
+    $tpl->assign('msg', $msg);
+}
+if (isset($status)) {
+    $tpl->assign('status', $status);
+}
+$tpl->display("minPlayCommand.ihtml");

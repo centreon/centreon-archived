@@ -5,6 +5,7 @@ default:
       sessions:
         default:
           selenium2: ~
+    Centreon\Test\Behat\Extensions\ContainerExtension:
   suites:
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
@@ -22,3 +23,47 @@ default:
       paths: [ %paths.base%/features/SelectAllSelect2.feature ]
       contexts:
         - SelectAllSelect2Context
+
+    empty_default_configuration:
+      paths: [ %paths.base%/features/EmptyDefaultConfiguration.feature ]
+      contexts:
+        - EmptyDefaultConfigurationContext
+
+    generate_service_contact_configuration:
+      paths: [ %paths.base%/features/GenerateServiceContact.feature ]
+      contexts:
+        - GenerateServiceContactContext
+    centreon_engine_restart:
+      paths: [ %paths.base%/features/RestartCentreonEngine.feature ]
+      contexts:
+        - RestartCentreonEngineContext
+
+    acknowledgement_timeout:
+      paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
+      contexts:
+        - AcknowledgementTimeoutContext
+
+    recovery_notification_delay:
+      paths: [ %paths.base%/features/RecoveryNotificationDelay.feature ]
+      contexts:
+        - RecoveryNotificationDelayContext
+
+    partitioning:
+      paths: [ %paths.base%/features/Partitioning.feature ]
+      contexts:
+        - PartitioningContext
+
+    centreon_knowledge_base:
+      paths: [ %paths.base%/features/CentreonWithKnowledge.feature ]
+      contexts:
+        - CentreonWithKnowledgeContext
+
+    disable_fields_on_blocked_objects:
+      paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
+      contexts:
+        - DisableFieldsOnBlockedObjectsContext
+
+    backup:
+          paths: [ %paths.base%/features/Backup.feature ]
+          contexts:
+            - BackupContext

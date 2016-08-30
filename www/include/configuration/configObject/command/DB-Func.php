@@ -38,8 +38,8 @@ if (!isset($centreon)) {
 }
 
 if (!function_exists("myDecodeCommand")) {
-
-    function myDecodeCommand($arg) {
+    function myDecodeCommand($arg)
+    {
         $arg = str_replace('#BR#', "\\n", $arg);
         $arg = str_replace('#T#', "\\t", $arg);
         $arg = str_replace('#R#', "\\r", $arg);
@@ -51,15 +51,29 @@ if (!function_exists("myDecodeCommand")) {
 
 }
 
-function testCmdExistence($name = null) {
-    global $pearDB, $form, $oreon;
+function getCommandName($command_id)
+{
+    global $pearDB;
+
+    $DBRESULT = $pearDB->query("SELECT `command_name` FROM `command` WHERE `command_id` = " . $pearDB->escape($command_id) . "");
+    $command = $DBRESULT->fetchRow();
+    if (isset($command['command_name'])) {
+        return $command['command_name'];
+    } else {
+        return null;
+    }
+}
+
+function testCmdExistence($name = null)
+{
+    global $pearDB, $form, $centreon;
     $id = null;
 
     if (isset($form)) {
         $id = $form->getSubmitValue('command_id');
     }
 
-    $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '" . $pearDB->escape($oreon->checkIllegalChar($name)) . "'");
+    $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '" . $pearDB->escape($centreon->checkIllegalChar($name)) . "'");
     $command = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id) {
         /*
@@ -76,19 +90,21 @@ function testCmdExistence($name = null) {
     }
 }
 
-function deleteCommandInDB($commands = array()) {
-    global $pearDB, $oreon;
+function deleteCommandInDB($commands = array())
+{
+    global $pearDB, $centreon;
 
     foreach ($commands as $key => $value) {
         $DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE `command_id` = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
         $DBRESULT = $pearDB->query("DELETE FROM `command` WHERE `command_id` = '" . intval($key) . "'");
-        $oreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
+        $centreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
     }
 }
 
-function multipleCommandInDB($commands = array(), $nbrDup = array()) {
-    global $pearDB, $oreon;
+function multipleCommandInDB($commands = array(), $nbrDup = array())
+{
+    global $pearDB, $centreon;
 
     foreach ($commands as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . intval($key) . "' LIMIT 1");
@@ -101,7 +117,7 @@ function multipleCommandInDB($commands = array(), $nbrDup = array()) {
 
             foreach ($row as $key2 => $value2) {
                 $key2 == "command_name" ? ($command_name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != NULL ? (", '" . $pearDB->escape($value2) . "'") : ", NULL") : $val .= ($value2 != NULL ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
+                $val ? $val .= ($value2 != null ? (", '" . $pearDB->escape($value2) . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
                 if ($key2 != "command_id") {
                     $fields[$key2] = $pearDB->escape($value2);
                 }
@@ -119,7 +135,7 @@ function multipleCommandInDB($commands = array(), $nbrDup = array()) {
                  */
                 $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
                 $cmd_id = $DBRESULT->fetchRow();
-                $oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
+                $centreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
             }
 
             /*
@@ -130,16 +146,17 @@ function multipleCommandInDB($commands = array(), $nbrDup = array()) {
     }
 }
 
-function updateCommandInDB($cmd_id = null) {
+function updateCommandInDB($cmd_id = null)
+{
     if (!$cmd_id) {
         return;
     }
     updateCommand($cmd_id);
 }
 
-function updateCommand($cmd_id = null, $params = array()) {
-    global $form, $pearDB, $oreon;
-
+function updateCommand($cmd_id = null, $params = array())
+{
+    global $form, $pearDB, $centreon;
 
     if (!$cmd_id) {
         return;
@@ -152,7 +169,7 @@ function updateCommand($cmd_id = null, $params = array()) {
         $ret = $form->getSubmitValues();
     }
 
-    $ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+    $ret["command_name"] = $centreon->checkIllegalChar($ret["command_name"]);
     if (!isset($ret['enable_shell'])) {
         $ret['enable_shell'] = 0;
     }
@@ -164,38 +181,34 @@ function updateCommand($cmd_id = null, $params = array()) {
             "`command_type` = '" . $pearDB->escape($ret["command_type"]["command_type"]) . "', " .
             "`command_comment` = '" . $pearDB->escape($ret["command_comment"]) . "', " .
             "`graph_id` = '" . $pearDB->escape($ret["graph_id"]) . "', " .
-            "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL") . " " .
+            "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $pearDB->escape($ret['connectors']) . "'" : "NULL") . ", " .
+            "`command_activate` = " . (isset($ret["command_activate"]["command_activate"]) ? "'" . $pearDB->escape($ret['command_activate']["command_activate"]) . "'" : "NULL") . " " .
             "WHERE `command_id` = '" . intval($cmd_id) . "'";
     $DBRESULT = $pearDB->query($rq);
 
-    $fields["command_name"] = $pearDB->escape($ret["command_name"]);
-    $fields["command_line"] = $pearDB->escape($ret["command_line"]);
-    $fields["enable_shell"] = $pearDB->escape($ret["enable_shell"]);
-    $fields["command_example"] = $pearDB->escape($ret["command_example"]);
-    $fields["command_comment"] = $pearDB->escape($ret["command_comment"]);
-    $fields["command_type"] = $ret["command_type"]["command_type"];
-
-    $fields["graph_id"] = $ret["graph_id"];
-    $fields["connector_id"] = $ret["connectors"];
-    $oreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
     insertArgDesc($cmd_id, $ret);
-    
     insertMacrosDesc($cmd_id, $ret);
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
 }
 
-function insertCommandInDB($ret = array()) {
+function insertCommandInDB($ret = array())
+{
     $cmd_id = insertCommand($ret);
     return ($cmd_id);
 }
 
-function insertCommand($ret = array()) {
-    global $form, $pearDB, $oreon;
+function insertCommand($ret = array())
+{
+    global $form, $pearDB, $centreon;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
 
-    $ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+    $ret["command_name"] = $centreon->checkIllegalChar($ret["command_name"]);
     if (!isset($ret['enable_shell'])) {
         $ret['enable_shell'] = 0;
     }
@@ -203,37 +216,48 @@ function insertCommand($ret = array()) {
     /*
      * Insert
      */
-    $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, `graph_id`, `connector_id`, `command_comment`) ";
-    $rq .= "VALUES ('" . $pearDB->escape($ret["command_name"]) . "', '" . $pearDB->escape($ret["command_line"]) . "', '" . $pearDB->escape($ret['enable_shell']) . "', '" . $pearDB->escape($ret["command_example"]) . "', '" . $ret["command_type"]["command_type"] . "', '" . $ret["graph_id"] . "', ";
-    $rq .= (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL");
-    $rq .= ", '" . $pearDB->escape($ret["command_comment"]) . "'";
+    $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, 
+        `graph_id`, `connector_id`, `command_comment`, `command_activate`) ";
+    $rq .= "VALUES (
+            '" . $pearDB->escape($ret["command_name"]) . "', 
+            '" . $pearDB->escape($ret["command_line"]) . "', 
+            '" . $pearDB->escape($ret['enable_shell']) . "', 
+            '" . $pearDB->escape($ret["command_example"]) . "', 
+            '" . $ret["command_type"]["command_type"] . "', 
+            '" . $ret["graph_id"] . "', 
+            " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $ret['connectors'] . "'" : "NULL") . ", 
+            '" . $pearDB->escape($ret["command_comment"]) . "', 
+            '" . $pearDB->escape($ret["command_activate"]["command_activate"]) . "'";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
-
-    $fields["command_name"] = $pearDB->escape($ret["command_name"]);
-    $fields["command_line"] = $pearDB->escape($ret["command_line"]);
-    $fields['enable_shell'] = $pearDB->escape($ret['enable_shell']);
-    $fields["command_example"] = $pearDB->escape($ret["command_example"]);
-    $fields["command_type"] = $ret["command_type"]["command_type"];
-    $fields["graph_id"] = $ret["graph_id"];
-    $fields["connector_id"] = $ret["connectors"];
 
     /*
      * Get Max ID
      */
-    $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
-    $cmd_id = $DBRESULT->fetchRow();
+    $max_id = getMaxID();
 
-    $oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $pearDB->escape($ret["command_name"]), "a", $fields);
-    insertArgDesc($cmd_id["MAX(command_id)"], $ret);
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("command", $max_id, $pearDB->escape($ret["command_name"]), "a", $fields);
     
-    insertMacrosDesc($cmd_id["MAX(command_id)"], $ret);
+    insertArgDesc($max_id, $ret);
+    insertMacrosDesc($max_id, $ret);
     
-    return ($cmd_id["MAX(command_id)"]);
+    return ($max_id);
 }
 
-function return_plugin($rep) {
-    global $oreon;
+function getMaxID()
+{
+    global $pearDB;
+
+    $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
+    $row = $DBRESULT->fetchRow();
+    return $row['MAX(command_id)'];
+}
+
+function return_plugin($rep)
+{
+    global $centreon;
 
     $plugins = array();
     $is_not_a_plugin = array("." => 1, ".." => 1, "oreon.conf" => 1, "oreon.pm" => 1, "utils.pm" => 1, "negate" => 1, "centreon.conf" => 1, "centreon.pm" => 1);
@@ -245,7 +269,7 @@ function return_plugin($rep) {
                 $plugins = array_merge($plugins, $plg_tmp);
                 unset($plg_tmp);
             } elseif (!isset($is_not_a_plugin[$filename]) && substr($filename, -1) != "~" && substr($filename, -1) != "#") {
-                $key = substr($rep . "/" . $filename, strlen($oreon->optGen["nagios_path_plugins"]));
+                $key = substr($rep . "/" . $filename, strlen($centreon->optGen["nagios_path_plugins"]));
                 $plugins[$key] = $key;
             }
         }
@@ -258,8 +282,9 @@ function return_plugin($rep) {
  *  Inserts descriptions of arguments
  */
 
-function insertArgDesc($cmd_id, $ret = null) {
-    global $oreon, $pearDB;
+function insertArgDesc($cmd_id, $ret = null)
+{
+    global $centreon, $pearDB;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
@@ -284,10 +309,13 @@ function insertArgDesc($cmd_id, $ret = null) {
  * @param $ret
  * @return unknown_type
  */
-function duplicateArgDesc($new_cmd_id, $cmd_id) {
+function duplicateArgDesc($new_cmd_id, $cmd_id)
+{
     global $pearDB;
 
-    $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) SELECT '" . intval($new_cmd_id) . "', macro_name, macro_description FROM command_arg_description WHERE cmd_id = '" . intval($cmd_id) . "'";
+    $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) 
+                    SELECT '" . intval($new_cmd_id) . "', macro_name, macro_description 
+                    FROM command_arg_description WHERE cmd_id = '" . intval($cmd_id) . "'";
     $pearDB->query($query);
 }
 
@@ -296,10 +324,12 @@ function duplicateArgDesc($new_cmd_id, $cmd_id) {
  * @param $command_id
  * @return unknown_type
  */
-function getHostNumberUse($command_id) {
+function getHostNumberUse($command_id)
+{
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' AND host_register = '1'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND host_register = '1'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
@@ -309,10 +339,12 @@ function getHostNumberUse($command_id) {
  * @param $command_id
  * @return unknown_type
  */
-function getServiceNumberUse($command_id) {
+function getServiceNumberUse($command_id)
+{
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' AND service_register = '1'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND service_register = '1'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
@@ -322,10 +354,12 @@ function getServiceNumberUse($command_id) {
  * @param $command_id
  * @return unknown_type
  */
-function getHostTPLNumberUse($command_id) {
+function getHostTPLNumberUse($command_id)
+{
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' AND host_register = '0'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND host_register = '0'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
@@ -335,21 +369,24 @@ function getHostTPLNumberUse($command_id) {
  * @param $command_id
  * @return unknown_type
  */
-function getServiceTPLNumberUse($command_id) {
+function getServiceTPLNumberUse($command_id)
+{
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' AND service_register = '0'");
+    $DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '" . intval($command_id) . "' 
+                                AND service_register = '0'");
     $data = $DBRESULT->fetchRow();
     return $data['number'];
 }
 
 /**
  * Get command ID by name
- * 
+ *
  * @param string $name
  * @return int
  */
-function getCommandIdByName($name) {
+function getCommandIdByName($name)
+{
     global $pearDB;
 
     $id = 0;
@@ -363,11 +400,11 @@ function getCommandIdByName($name) {
 
 /**
  * Inserts descriptions of macros rattached to the command
- * 
+ *
  * @global type $pearDB
  * @param type $cmd
  * @param type $ret
- * 
+ *
  */
 function insertMacrosDesc($cmd, $ret)
 {
@@ -395,11 +432,54 @@ function insertMacrosDesc($cmd, $ret)
             }
             
             if (!empty($sName)) {
-                $query = "DELETE FROM `on_demand_macro_command` WHERE command_macro_name = '".$pearDB->escape($sName)."' AND `command_command_id` = ".intval($cmd);
+                $query = "DELETE FROM `on_demand_macro_command` 
+                            WHERE command_macro_name = '".$pearDB->escape($sName)."' 
+                            AND `command_command_id` = ".intval($cmd);
                 $pearDB->query($query);
 
-                $sQueryInsert = "INSERT INTO `on_demand_macro_command` (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) VALUES (".  intval($cmd).", '".$pearDB->escape($sName)."', '".$pearDB->escape($sDesc)."', '".$arr[$sType]."')";
+                $sQueryInsert = "INSERT INTO `on_demand_macro_command` 
+                    (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) 
+                    VALUES (".  intval($cmd).", 
+                        '".$pearDB->escape($sName)."', 
+                        '".$pearDB->escape($sDesc)."', 
+                        '".$arr[$sType]."')";
                 $pearDB->query($sQueryInsert);
+            }
+        }
+    }
+}
+
+/**
+ * Change status command
+ *
+ * @param ini $command_id
+ * @param array $commands
+ * @param int $status
+ *
+ */
+function changeCommandStatus($command_id, $commands, $status)
+{
+    global $pearDB, $centreon;
+
+    if (isset($command_id)) {
+        $query = "UPDATE `command` SET command_activate = '".$pearDB->escape($status)."' 
+                    WHERE command_id = '".$pearDB->escape($command_id)."'";
+        $pearDB->query($query);
+        $centreon->CentreonLogAction->insertLog("command", 
+                                                    $command_id, 
+                                                    getCommandName($command_id), 
+                                                    $status ? "enable" : "disable");
+    } else {
+        foreach ($commands as $command_id => $flag) {
+            if (isset($command_id) && $command_id) {
+                $query = "UPDATE `command` SET command_activate = '".$pearDB->escape($status)."' 
+                            WHERE command_id = '".$pearDB->escape($command_id)."'";
+                $pearDB->query($query);            
+
+                $centreon->CentreonLogAction->insertLog("command", 
+                                                            $command_id, 
+                                                            getCommandName($command_id), 
+                                                            $status ? "enable" : "disable");
             }
         }
     }

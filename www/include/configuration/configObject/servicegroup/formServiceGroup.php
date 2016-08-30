@@ -36,7 +36,7 @@
 if (!isset($centreon)) {
     exit();
 }
-	
+    
 if (!$centreon->user->admin) {
     if ($sg_id && false === strpos($sgString, "'".$sg_id."'")) {
         $msg = new CentreonMsg();
@@ -46,7 +46,6 @@ if (!$centreon->user->admin) {
         return null;
     }
 }
-
 
 /*
  * Database retrieve information for differents elements list we need on the page
@@ -65,13 +64,13 @@ if (!$centreon->user->admin) {
         AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
 }
 
-$DBRESULT = $pearDB->query( "SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
+$DBRESULT = $pearDB->query("SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
         "FROM host_service_relation hsr, service sv, hostgroup hg $aclFrom" .
         "WHERE sv.service_register = '1' " .
         "AND hsr.service_service_id = sv.service_id " .
         "AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
         "ORDER BY hg.hg_name, sv.service_description");
-while ($elem = $DBRESULT->fetchRow())   {
+while ($elem = $DBRESULT->fetchRow()) {
     // If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
     if (!$elem["service_description"]) {
         $elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
@@ -91,7 +90,7 @@ $initialValues = array('sg_hServices' => array(), 'sg_hgServices' => array());
  */
 $sg = array();
 $hServices = array();
-if (($o == "c" || $o == "w") && $sg_id)	{
+if (($o == "c" || $o == "w") && $sg_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
 
     // Set base value
@@ -115,10 +114,10 @@ while ($row = $res->fetchRow()) {
 ##########################################################
 # Var information to format the element
 #
-$attrsText 		= array("size"=>"30");
+$attrsText      = array("size"=>"30");
 $attrsAdvSelect = array("style" => "width: 400px; height: 250px;");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
@@ -144,44 +143,48 @@ $attrHostgroups = array(
 ## Form begin
 #
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
-$form->addElement('header', 'title', _("Add a Service Group"));
-else if ($o == "c")
-$form->addElement('header', 'title', _("Modify a Service Group"));
-else if ($o == "w")
-$form->addElement('header', 'title', _("View a Service Group"));
+if ($o == "a") {
+    $form->addElement('header', 'title', _("Add a Service Group"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title', _("Modify a Service Group"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title', _("View a Service Group"));
+}
 
 #
 ## Contact basic information
 #
 $form->addElement('header', 'information', _("General Information"));
-$form->addElement('text', 'sg_name', _("Service Group Name"), $attrsText);
+$form->addElement('text', 'sg_name', _("Name"), $attrsText);
 $form->addElement('text', 'sg_alias', _("Description"), $attrsText);
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 ##
 ## Services Selection
 ##
 $hostFilter = array(null => null,
         0    => sprintf('__%s__', _('ALL')));
-$hostFilter = ($hostFilter + $acl->getHostAclConf(null,
-                                                 $oreon->broker->getBroker(),
-                                                 array('fields'  => array('host.host_id', 'host.host_name'),
+$hostFilter = ($hostFilter + $acl->getHostAclConf(
+    null,
+    'broker',
+    array('fields'  => array('host.host_id', 'host.host_name'),
                                                        'keys'    => array('host_id'),
                                                        'get_row' => 'host_name',
                                                        'order'   => array('host.host_name')),
-                                                 false));
+    false
+));
 
 $form->addElement('header', 'relation', _("Relations"));
 if (isset($_REQUEST['sg_hServices']) && count($_REQUEST['sg_hServices'])) {
-   $sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
+    $sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
            WHERE h.host_id = hsr.host_host_id
            AND hsr.service_service_id = s.service_id
            AND CONCAT_WS('-', h.host_id, s.service_id) IN ('".implode("','", $_REQUEST['sg_hServices'])."')";
-   $res = $pearDB->query($sql);
-   while ($row = $res->fetchRow()) {
-       $k = $row['host_id'] . '-' . $row['service_id'];
-       $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
-   }
+    $res = $pearDB->query($sql);
+    while ($row = $res->fetchRow()) {
+        $k = $row['host_id'] . '-' . $row['service_id'];
+        $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
+    }
 }
 $attrService1 = array_merge(
     $attrServices,
@@ -224,7 +227,8 @@ $init->setValue(serialize($initialValues));
 /*
  * Form Rules
  */
-function myReplace()	{
+function myReplace()
+{
     global $form;
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["sg_name"]));
@@ -246,26 +250,25 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 # Just watch a Service Group information
-if ($o == "w")	{
-    if ($centreon->user->access->page($p) != 2)
+if ($o == "w") {
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
+    }
     $form->setDefaults($sg);
     $form->freeze();
-}
-# Modify a Service Group information
-else if ($o == "c")	{
+} # Modify a Service Group information
+elseif ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($sg);
-}
-# Add a Service Group information
-else if ($o == "a")	{
+} # Add a Service Group information
+elseif ($o == "a") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $tpl->assign('nagios', $oreon->user->get_version());
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 # prepare help texts
 $helptext = "";
@@ -276,19 +279,20 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
-if ($form->validate())	{
+if ($form->validate()) {
     $sgObj = $form->getElement('sg_id');
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         $sgObj->setValue(insertServiceGroupInDB());
-    else if ($form->getSubmitValue("submitC"))
+    } elseif ($form->getSubmitValue("submitC")) {
         updateServiceGroupInDB($sgObj->getValue());
-    $o = NULL;
+    }
+    $o = null;
     $valid = true;
 }
 $action = $form->getSubmitValue("action");
 
 if ($valid) {
-    require_once($path."listServiceGroup.php");    
+    require_once($path."listServiceGroup.php");
 } else {
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
@@ -347,8 +351,8 @@ function hostFilterSelect(elem)
             }
 
             for (var i = 0 ; i < _services.length ; i++) {
-                var _svc 		 = _services[i];
-                var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+                var _svc         = _services[i];
+                var _id          = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
                 var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
                 var validFlag = true;
 

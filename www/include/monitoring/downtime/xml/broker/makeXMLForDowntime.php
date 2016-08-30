@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/xml/ndo/makeXMLForOneHost.php $
- * SVN : $Id: makeXMLForOneHost.php 12188 2011-05-04 15:45:01Z shotamchay $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
@@ -56,7 +53,7 @@ $dbb = new CentreonDB("centstorage");
 $centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonlang->bindLang();
 $sid = session_id();
-if (isset($sid)){
+if (isset($sid)) {
     //$sid = $_GET["sid"];
     $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
     if (!$session = $res->fetchRow()) {
@@ -116,11 +113,11 @@ while ($row = $res->fetchRow()) {
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author']);
-    $xml->writeElement('start', $centreonGMT->getDate('d/m/Y H:i:s', $row['actual_start_time']));
+    $xml->writeElement('start', $centreonGMT->getDate('Y/m/d H:i:s', $row['actual_start_time']));
     if (!$row['fixed']) {
         $row['end_time'] = (int)$row['actual_start_time'] + (int)$row['duration'];
     }
-    $xml->writeElement('end', $centreonGMT->getDate('d/m/Y H:i:s', $row['end_time']));
+    $xml->writeElement('end', $centreonGMT->getDate('Y/m/d H:i:s', $row['end_time']));
     $xml->writeElement('comment', $row['comment_data']);
     $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
     $xml->writeElement('fixed', $row['fixed'] ? _('Yes') : _('No'));
@@ -139,4 +136,3 @@ header('Cache-Control: no-cache, must-revalidate');
  * Print Buffer
  */
 $xml->output();
-?>

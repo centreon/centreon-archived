@@ -34,114 +34,108 @@
  *
  */
 
-
 $aDefaultBrokerDirective = array(
     'ui' => '/usr/lib64/centreon-engine/externalcmd.so',
     'wizard' => '/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml'
 );
 
- $aInstanceDefaultValues = array(
-	'log_file' => '/var/log/centreon-engine/centengine.log',
-	'cfg_dir' => '/etc/centreon-engine/', 
-	'object_cache_file' => '/var/log/centreon-engine/objects.cache', 
-	'temp_file' => '/var/log/centreon-engine/centengine.tmp', 
-	'status_file' => '/var/log/centreon-engine/status.dat',
-	'status_update_interval' => '30', 
-	'nagios_user' => 'centreon-engine', 
-	'nagios_group' => 'centreon-engine', 
-	'enable_notifications' => '1', 
-	'execute_service_checks' => '1', 
-	'accept_passive_service_checks' => '1', 
-	'execute_host_checks' => '1', 
-	'accept_passive_host_checks' => '1', 
-	'enable_event_handlers' => '1', 
-	'log_rotation_method' => 'd', 
-	'log_archive_path' => '/var/log/centreon-engine/archives/', 
-	'check_external_commands' => '1', 
-	'external_command_buffer_slots' => '4096', 
-	'command_check_interval' => '1s', 
-	'command_file' => '/var/lib/centreon-engine/rw/centengine.cmd', 
-	'lock_file' => '/var/lock/subsys/centengine.lock', 
-	'retain_state_information' => '1', 
-	'state_retention_file' => '/var/log/centreon-engine/retention.dat', 
-	'retention_update_interval' => '60', 
-	'use_retained_program_state' => '1', 
-	'use_retained_scheduling_info' => '1', 
-	'use_syslog' => '0', 
-	'log_notifications' => '1', 
-	'log_service_retries' => '1', 
-	'log_host_retries' => '1', 
-	'log_event_handlers' => '1', 
-	'log_initial_states' => '1', 
-	'log_external_commands' => '1', 
-	'log_passive_checks' => '0', 
-	'sleep_time' => '0.2', 
-	'service_inter_check_delay_method' => 's', 
-	'host_inter_check_delay_method' => 's', 
-	'service_interleave_factor' => 's', 
-	'max_concurrent_checks' => '400', 
-	'max_service_check_spread' => '5', 
-	'max_host_check_spread' => '5', 
-	'check_result_reaper_frequency' => '5', 
-	'max_check_result_reaper_time' => '10', 
-	'interval_length' => '60', 
-	'auto_reschedule_checks' => '0', 
-	'use_aggressive_host_checking' => '0', 
-	'enable_flap_detection' => '0', 
-	'low_service_flap_threshold' => '25.0', 
-	'high_service_flap_threshold' => '50.0',
-	'low_host_flap_threshold' => '25.0',
-	'high_host_flap_threshold' => '50.0',
-	'soft_state_dependencies' => '0',
-	'service_check_timeout' => '60',
-	'host_check_timeout' => '10',
-	'event_handler_timeout' => '30',
-	'notification_timeout' => '30',
-	'ocsp_timeout' => '5',
-	'ochp_timeout' => '5',
-	'perfdata_timeout' => '5',
-	'obsess_over_services' => '0',
-	'obsess_over_hosts' => '0',
-	'process_performance_data' => '0',
-	'host_perfdata_file_mode' => '2',
-	'service_perfdata_file_mode' => '2',
-	'check_for_orphaned_services' => '0',
-	'check_for_orphaned_hosts' => '0',
-	'check_service_freshness' => '2',
-	'check_host_freshness' => '2',
-	'date_format' => 'euro',
-	'illegal_object_name_chars' => "~!$%^&*\"|'<>?,()=",
-	'illegal_macro_output_chars' => "`~$^&\"|'<>",
-	'use_regexp_matching' => '2',
-	'use_true_regexp_matching' => '2',
-	'admin_email' => 'admin@localhost',
-	'admin_pager' => 'admin',
-	'nagios_comment' => 'Centreon Engine configuration file',
-	'nagios_activate' => '1',
-	'event_broker_options' => '-1',
-	'translate_passive_host_checks' => '2',
-	'nagios_server_id' => '1',
-	'enable_predictive_host_dependency_checks' => '0',
-	'enable_predictive_service_dependency_checks' => '0',
-	'passive_host_checks_are_soft' => '2',
-	'use_large_installation_tweaks' => '1',
-	'free_child_process_memory' => '2',
-	'child_processes_fork_twice' => '2',
-	'enable_environment_macros' => '2',
-     'use_setpgid' => '2',
-	'debug_file' => '/var/log/centreon-engine/centengine.debug',
-	'debug_level' => '0',
-	'debug_level_opt' => '0',
-	'debug_verbosity' => '0',
-	'max_debug_file_size' => '1000000000',
-	'daemon_dumps_core' => '0',
-	'cfg_file' => 'centengine.cfg',
-        'use_check_result_path' => '0',
+$aInstanceDefaultValues = array(
+    'log_file' => '/var/log/centreon-engine/centengine.log',
+    'cfg_dir' => '/etc/centreon-engine/',
+    'object_cache_file' => '/var/log/centreon-engine/objects.cache',
+    'temp_file' => '/var/log/centreon-engine/centengine.tmp',
+    'status_file' => '/var/log/centreon-engine/status.dat',
+    'status_update_interval' => '30',
+    'nagios_user' => 'centreon-engine',
+    'nagios_group' => 'centreon-engine',
+    'enable_notifications' => '1',
+    'execute_service_checks' => '1',
+    'accept_passive_service_checks' => '1',
+    'execute_host_checks' => '1',
+    'accept_passive_host_checks' => '1',
+    'enable_event_handlers' => '1',
+    'log_rotation_method' => 'd',
+    'log_archive_path' => '/var/log/centreon-engine/archives/',
+    'check_external_commands' => '1',
+    'external_command_buffer_slots' => '4096',
+    'command_check_interval' => '1s',
+    'command_file' => '/var/lib/centreon-engine/rw/centengine.cmd',
+    'lock_file' => '/var/lock/subsys/centengine.lock',
+    'retain_state_information' => '1',
+    'state_retention_file' => '/var/log/centreon-engine/retention.dat',
+    'retention_update_interval' => '60',
+    'use_retained_program_state' => '1',
+    'use_retained_scheduling_info' => '1',
+    'use_syslog' => '0',
+    'log_notifications' => '1',
+    'log_service_retries' => '1',
+    'log_host_retries' => '1',
+    'log_event_handlers' => '1',
+    'log_initial_states' => '1',
+    'log_external_commands' => '1',
+    'log_passive_checks' => '0',
+    'sleep_time' => '0.2',
+    'service_inter_check_delay_method' => 's',
+    'host_inter_check_delay_method' => 's',
+    'service_interleave_factor' => 's',
+    'max_concurrent_checks' => '400',
+    'max_service_check_spread' => '5',
+    'max_host_check_spread' => '5',
+    'check_result_reaper_frequency' => '5',
+    'max_check_result_reaper_time' => '10',
+    'interval_length' => '60',
+    'auto_reschedule_checks' => '0',
+    'use_aggressive_host_checking' => '0',
+    'enable_flap_detection' => '0',
+    'low_service_flap_threshold' => '25.0',
+    'high_service_flap_threshold' => '50.0',
+    'low_host_flap_threshold' => '25.0',
+    'high_host_flap_threshold' => '50.0',
+    'soft_state_dependencies' => '0',
+    'service_check_timeout' => '60',
+    'host_check_timeout' => '10',
+    'event_handler_timeout' => '30',
+    'notification_timeout' => '30',
+    'ocsp_timeout' => '5',
+    'ochp_timeout' => '5',
+    'perfdata_timeout' => '5',
+    'obsess_over_services' => '0',
+    'obsess_over_hosts' => '0',
+    'process_performance_data' => '0',
+    'host_perfdata_file_mode' => '2',
+    'service_perfdata_file_mode' => '2',
+    'check_for_orphaned_services' => '0',
+    'check_for_orphaned_hosts' => '0',
+    'check_service_freshness' => '2',
+    'check_host_freshness' => '2',
+    'date_format' => 'euro',
+    'illegal_object_name_chars' => "~!$%^&*\"|'<>?,()=",
+    'illegal_macro_output_chars' => "`~$^&\"|'<>",
+    'use_regexp_matching' => '2',
+    'use_true_regexp_matching' => '2',
+    'admin_email' => 'admin@localhost',
+    'admin_pager' => 'admin',
+    'nagios_comment' => 'Centreon Engine configuration file',
+    'nagios_activate' => '1',
+    'event_broker_options' => '-1',
+    'translate_passive_host_checks' => '2',
+    'nagios_server_id' => '1',
+    'enable_predictive_host_dependency_checks' => '0',
+    'enable_predictive_service_dependency_checks' => '0',
+    'passive_host_checks_are_soft' => '2',
+    'use_large_installation_tweaks' => '1',
+    'enable_environment_macros' => '2',
+    'use_setpgid' => '2',
+    'debug_file' => '/var/log/centreon-engine/centengine.debug',
+    'debug_level' => '0',
+    'debug_level_opt' => '0',
+    'debug_verbosity' => '0',
+    'max_debug_file_size' => '1000000000',
+    'daemon_dumps_core' => '0',
+    'cfg_file' => 'centengine.cfg',
+    'use_check_result_path' => '0',
     'cached_host_check_horizon' => '60'
 );
- 
- 
- 
 
 function insertBrokerDefaultDirectives($iId, $source)
 {
@@ -153,9 +147,8 @@ function insertBrokerDefaultDirectives($iId, $source)
     
     $value = $aDefaultBrokerDirective[$source];
 
-	$DBRESULT = $pearDB->query("SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '".$iId."'");
+    $DBRESULT = $pearDB->query("SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '".$iId."'");
     if ($DBRESULT->numRows() == 0) {
-
         $sQuery = "INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) VALUES ('". $value ."', ". $iId .")";
         $res = $pearDB->query($sQuery);
 
@@ -167,7 +160,7 @@ function insertBrokerDefaultDirectives($iId, $source)
 
 /**
  * Insert the instance in cfg_nagios
- * 
+ *
  * @param string $sName
  * @param int $iId
  */
@@ -182,8 +175,7 @@ function insertServerInCfgNagios($iId, $sName)
     }
     $DBRESULT = $pearDB->query("SELECT nagios_id FROM `cfg_nagios` WHERE  nagios_server_id = '".$iId."'");
     
-    if ($DBRESULT->numRows() == 0) { 
-    
+    if ($DBRESULT->numRows() == 0) {
         $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `object_cache_file`, `temp_file`, `status_file`, 
         `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, 
         `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, 
@@ -197,7 +189,7 @@ function insertServerInCfgNagios($iId, $sName)
         `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`, 
         `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, 
         `event_broker_options`, `translate_passive_host_checks`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, 
-        `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `use_setpgid`, 
+        `use_large_installation_tweaks`, `enable_environment_macros`, `use_setpgid`,
         `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, `cfg_file`, `use_check_result_path`) ";
         $rq .= "VALUES (";
 
@@ -284,8 +276,6 @@ function insertServerInCfgNagios($iId, $sName)
         $aInstanceDefaultValues['enable_predictive_service_dependency_checks'] ."', '" .
         $aInstanceDefaultValues['passive_host_checks_are_soft'] ."', '" .
         $aInstanceDefaultValues['use_large_installation_tweaks'] ."', '" .
-        $aInstanceDefaultValues['free_child_process_memory'] ."', '" .
-        $aInstanceDefaultValues['child_processes_fork_twice'] ."', '" .
         $aInstanceDefaultValues['enable_environment_macros'] ."', '" .
         $aInstanceDefaultValues['use_setpgid'] ."', '" .
         $aInstanceDefaultValues['debug_file'] ."', '" .
@@ -312,5 +302,5 @@ function insertServerInCfgNagios($iId, $sName)
     }
     
     
-	return $iIdNagios;
+    return $iIdNagios;
 }

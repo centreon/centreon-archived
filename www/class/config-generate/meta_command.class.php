@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -48,7 +48,7 @@ class MetaCommand extends AbstractObject {
         
         $object = array();
         $object['command_name'] = 'check_meta';
-        $object['command_line'] = '/usr/lib/nagios/plugins/check_meta_service -i $ARG1$';        
+        $object['command_line'] = '$USER1$/check_meta_service -i $ARG1$';        
         $this->generateObjectInFile($object, 0);
         
         $object['command_name'] = 'check_meta_host_alive';

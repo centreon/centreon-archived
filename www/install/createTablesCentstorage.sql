@@ -52,23 +52,8 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1', '0', '0');
+INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,365,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/centengine.log.log',0,'1', 0, 0);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `data_bin` (
-  `id_metric` int(11) DEFAULT NULL,
-  `ctime` int(11) DEFAULT NULL,
-  `value` float DEFAULT NULL,
-  `status` enum('0','1','2','3','4') DEFAULT NULL,
-  KEY `index_metric` (`id_metric`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `data_bin` WRITE;
-/*!40000 ALTER TABLE `data_bin` DISABLE KEYS */;
-/*!40000 ALTER TABLE `data_bin` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -161,52 +146,6 @@ LOCK TABLES `index_data` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `instance` (
-  `instance_id` int(11) NOT NULL AUTO_INCREMENT,
-  `instance_name` varchar(254) DEFAULT NULL,
-  `instance_alias` varchar(254) DEFAULT NULL,
-  `log_flag` int(11) DEFAULT NULL,
-  `log_md5` varchar(255) DEFAULT NULL,
-  `last_ctime` int(11) DEFAULT 0,
-  PRIMARY KEY (`instance_id`),
-  UNIQUE KEY `instance_name` (`instance_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `instance` WRITE;
-/*!40000 ALTER TABLE `instance` DISABLE KEYS */;
-/*!40000 ALTER TABLE `instance` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log` (
-  `log_id` int(11) NOT NULL AUTO_INCREMENT,
-  `ctime` int(11) DEFAULT NULL,
-  `host_name` varchar(255) DEFAULT NULL,
-  `service_description` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `output` text,
-  `notification_cmd` varchar(255) DEFAULT NULL,
-  `notification_contact` varchar(255) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `retry` int(255) NOT NULL,
-  `msg_type` enum('0','1','2','3','4','5','6','7','8','9','10','11') NOT NULL,
-  `instance` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`log_id`),
-  KEY `host_name` (`host_name`(64)),
-  KEY `service_description` (`service_description`(64)),
-  KEY `status` (`status`),
-  KEY `instance` (`instance`),
-  KEY `ctime` (`ctime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `log` WRITE;
-/*!40000 ALTER TABLE `log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_action` (
   `action_log_id` int(11) NOT NULL AUTO_INCREMENT,
   `action_log_date` int(11) NOT NULL,
@@ -216,7 +155,8 @@ CREATE TABLE `log_action` (
   `action_type` varchar(255) NOT NULL,
   `log_contact_id` int(11) NOT NULL,
   PRIMARY KEY (`action_log_id`),
-  KEY `log_contact_id` (`log_contact_id`)
+  KEY `log_contact_id` (`log_contact_id`),
+  KEY `action_log_date` (`action_log_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -242,39 +182,6 @@ LOCK TABLES `log_action_modification` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log_archive_host` (
-  `log_id` int(11) NOT NULL AUTO_INCREMENT,
-  `host_id` int(11) DEFAULT NULL,
-  `UPTimeScheduled` int(11) DEFAULT NULL,
-  `UPnbEvent` int(11) DEFAULT NULL,
-  `UPTimeAverageAck` int(11) NOT NULL,
-  `UPTimeAverageRecovery` int(11) NOT NULL,
-  `DOWNTimeScheduled` int(11) DEFAULT NULL,
-  `DOWNnbEvent` int(11) DEFAULT NULL,
-  `DOWNTimeAverageAck` int(11) NOT NULL,
-  `DOWNTimeAverageRecovery` int(11) NOT NULL,
-  `UNREACHABLETimeScheduled` int(11) DEFAULT NULL,
-  `UNREACHABLEnbEvent` int(11) DEFAULT NULL,
-  `UNREACHABLETimeAverageAck` int(11) NOT NULL,
-  `UNREACHABLETimeAverageRecovery` int(11) NOT NULL,
-  `UNDETERMINEDTimeScheduled` int(11) DEFAULT NULL,
-  `MaintenanceTime` int(11) DEFAULT '0',
-  `date_end` int(11) DEFAULT NULL,
-  `date_start` int(11) DEFAULT NULL,
-  PRIMARY KEY (`log_id`),
-  UNIQUE KEY `log_id` (`log_id`),
-  KEY `host_index` (`host_id`),
-  KEY `date_end_index` (`date_end`),
-  KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `log_archive_host` WRITE;
-/*!40000 ALTER TABLE `log_archive_host` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_archive_host` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_archive_last_status` (
   `host_id` int(11) DEFAULT NULL,
   `service_id` int(11) DEFAULT NULL,
@@ -288,44 +195,6 @@ CREATE TABLE `log_archive_last_status` (
 LOCK TABLES `log_archive_last_status` WRITE;
 /*!40000 ALTER TABLE `log_archive_last_status` DISABLE KEYS */;
 /*!40000 ALTER TABLE `log_archive_last_status` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log_archive_service` (
-  `log_id` int(11) NOT NULL AUTO_INCREMENT,
-  `host_id` int(11) NOT NULL DEFAULT '0',
-  `service_id` int(11) NOT NULL DEFAULT '0',
-  `OKTimeScheduled` int(11) NOT NULL DEFAULT '0',
-  `OKnbEvent` int(11) NOT NULL DEFAULT '0',
-  `OKTimeAverageAck` int(11) NOT NULL,
-  `OKTimeAverageRecovery` int(11) NOT NULL,
-  `WARNINGTimeScheduled` int(11) NOT NULL DEFAULT '0',
-  `WARNINGnbEvent` int(11) NOT NULL DEFAULT '0',
-  `WARNINGTimeAverageAck` int(11) NOT NULL,
-  `WARNINGTimeAverageRecovery` int(11) NOT NULL,
-  `UNKNOWNTimeScheduled` int(11) NOT NULL DEFAULT '0',
-  `UNKNOWNnbEvent` int(11) NOT NULL DEFAULT '0',
-  `UNKNOWNTimeAverageAck` int(11) NOT NULL,
-  `UNKNOWNTimeAverageRecovery` int(11) NOT NULL,
-  `CRITICALTimeScheduled` int(11) NOT NULL DEFAULT '0',
-  `CRITICALnbEvent` int(11) NOT NULL DEFAULT '0',
-  `CRITICALTimeAverageAck` int(11) NOT NULL,
-  `CRITICALTimeAverageRecovery` int(11) NOT NULL,
-  `UNDETERMINEDTimeScheduled` int(11) NOT NULL DEFAULT '0',
-  `MaintenanceTime` int(11) DEFAULT '0',
-  `date_start` int(11) DEFAULT NULL,
-  `date_end` int(11) DEFAULT NULL,
-  PRIMARY KEY (`log_id`),
-  KEY `host_index` (`host_id`),
-  KEY `service_index` (`service_id`),
-  KEY `date_end_index` (`date_end`),
-  KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `log_archive_service` WRITE;
-/*!40000 ALTER TABLE `log_archive_service` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_archive_service` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -371,30 +240,6 @@ LOCK TABLES `nagios_stats` WRITE;
 /*!40000 ALTER TABLE `nagios_stats` DISABLE KEYS */;
 /*!40000 ALTER TABLE `nagios_stats` ENABLE KEYS */;
 UNLOCK TABLES;
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `statistics` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ctime` int(11) DEFAULT NULL,
-  `lineRead` int(11) DEFAULT NULL,
-  `valueReccorded` int(11) DEFAULT NULL,
-  `last_insert_duration` int(11) DEFAULT NULL,
-  `average_duration` int(11) DEFAULT NULL,
-  `last_nb_line` int(11) DEFAULT NULL,
-  `cpt` int(11) DEFAULT NULL,
-  `last_restart` int(11) DEFAULT NULL,
-  `average` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `statistics` WRITE;
-/*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (1,0,1,0,0,0,0,0,0,0);
-/*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

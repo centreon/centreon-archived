@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,19 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
- *  
+ *
  */
 class CentreonManufacturer
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -59,7 +55,7 @@ class CentreonManufacturer
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
@@ -89,5 +85,3 @@ class CentreonManufacturer
         return $items;
     }
 }
-
-?>

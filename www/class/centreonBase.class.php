@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 
@@ -43,94 +40,94 @@
  */
 class CentreonBase
 {
-	/*
+    /*
 	 * Objects
 	 */
-	var $DB;
-	var $DBC;
+    protected $DB;
+    protected $DBC;
 
-	var $GMT;
+    protected $GMT;
 
-	var $hostObj;
-	var $serviceObj;
+    protected $hostObj;
+    protected $serviceObj;
 
-	var $session_id;
+    protected $sessionId;
 
-	/*
+    /*
 	 * Variables
 	 */
-	var $debug;
-	var $compress;
-	var $user_id;
-	var $general_opt;
+    protected $debug;
+    protected $compress;
+    protected $userId;
+    protected $general_opt;
 
-	/*
+    /*
 	 * Class constructor
 	 *
 	 * <code>
 	 * $obj = new CentreonBGRequest($_GET["session_id"], 1, 1, 0, 1);
 	 * </code>
 	 *
-	 * $session_id 	char 	session id
+	 * $sessionId 	char 	session id
 	 * $dbneeds		bool 	flag for enable ndo connexion
 	 * $headType	bool 	send XML header
 	 * $debug		bool 	debug flag.
 	 */
-	function CentreonBase($session_id, $index, $debug, $compress = null)
-	{
-		if (!isset($debug)) {
-			$this->debug = 0;
-		}
+    public function __construct($sessionId, $index, $debug, $compress = null)
+    {
+        if (!isset($debug)) {
+            $this->debug = 0;
+        }
 
-		(!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
+        (!isset($compress)) ? $this->compress = 1 : $this->compress = $compress;
 
-		if (!isset($session_id)) {
-			print "Your must check your session id";
-			exit(1);
-		} else {
-			$this->session_id = htmlentities($session_id, ENT_QUOTES, "UTF-8");
-		}
+        if (!isset($sessionId)) {
+            print "Your must check your session id";
+            exit(1);
+        } else {
+            $this->sessionId = htmlentities($sessionId, ENT_QUOTES, "UTF-8");
+        }
 
-		$this->index = htmlentities($index, ENT_QUOTES, "UTF-8");
+        $this->index = htmlentities($index, ENT_QUOTES, "UTF-8");
 
-		/*
+        /*
 		 * Enable Database Connexions
 		 */
-		$this->DB 		= new CentreonDB();
-		$this->DBC 		= new CentreonDB("centstorage");
+        $this->DB = new CentreonDB();
+        $this->DBC = new CentreonDB("centstorage");
 
-		/*
+        /*
 		 * Init Objects
 		 */
-		$this->hostObj		= new CentreonHost($this->DB);
-		$this->serviceObj	= new CentreonService($this->DB);
+        $this->hostObj = new CentreonHost($this->DB);
+        $this->serviceObj = new CentreonService($this->DB);
 
-		/*
+        /*
 		 * Timezone management
 		 */
-		$this->GMT = new CentreonGMT($this->DB);
-		$this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
-	}
+        $this->GMT = new CentreonGMT($this->DB);
+        $this->GMT->getMyGMTFromSession($this->sessionId, $this->DB);
+    }
 
-	/*
+    /*
 	 * Set General options
 	 */
-	public function setGeneralOption($options)
-	{
-		$this->general_opt = $options;
-	}
+    public function setGeneralOption($options)
+    {
+        $this->general_opt = $options;
+    }
 
-	/*
+    /*
 	 * Get user id from session_id
 	 */
-	private function getUserIdFromSID()
-	{
-		$DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
-		$admin = $DBRESULT->fetchRow();
-		unset($DBRESULT);
-		if (isset($admin["user_id"])) {
-			$this->user_id = $admin["user_id"];
-		}
-	}
+    private function getUserIdFromSID()
+    {
+        $DBRESULT = $this->DB->query("SELECT user_id FROM session
+            WHERE session_id = '" . $this->sessionId . "' LIMIT 1");
+        $admin = $DBRESULT->fetchRow();
+        unset($DBRESULT);
+        if (isset($admin["user_id"])) {
+            $this->userId = $admin["user_id"];
+        }
+    }
 }
-?>

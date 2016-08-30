@@ -50,13 +50,15 @@ class SelectAllSelect2Context extends CentreonContext
     }
 
     /**
-     * @Given enter a research
+     * @Given I search :arg1 in Select
      */
-    public function enterAResearch()
+    public function iSearchWordInSelect($search)
     {
         $this->getSession()->executeScript(
-            'jQuery("select#command_id").parent().find(".select2-search__field").val("load");'
-            );
+            'jQuery("select#command_id").parent().find(".select2-search__field").val("' . $search . '");
+            var data = jQuery("select#command_id").data();
+            data.select2.trigger("query", {term: "' . $search . '"});'
+        );
         $this->getSession()->wait(1000);
     }
 
@@ -65,9 +67,6 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function iClickOnSelectAllButton()
     {
-        /* Add search to select2 */
-        $inputField = $this->assertFind('css', 'select#command_id');
-
         /* Get the number of elements */
         $this->expectedElements = intval($this->assertFind('css', '.select2-results-header__nb-elements-value')->getText());
 
@@ -75,16 +74,63 @@ class SelectAllSelect2Context extends CentreonContext
         $selectAll = $this->assertFind('css', '.select2-results-header__select-all > button');
         $selectAll->press();
 
-        $this->getSession()->wait(1000);
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
+            },
+            10
+        );
 
-        $confirmButton = $this->assertFind('css', '#confirmcommand_id .btc.bt_success');
+
+
+    }
+
+    /**
+     * @When I validate Select all confirm box
+     */
+    public function iValidateSelectAllConfirmBox()
+    {
+        $confirmButton = $this->assertFind('css', '.popin-wrapper .button_group_center .btc.bt_success');
         $confirmButton->click();
 
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
             },
-            30
+            10
+        );
+    }
+
+    /**
+     * @When I cancel Select all confirm box
+     */
+    public function iCancelSelectAllConfirmBox()
+    {
+        $cancelButton = $this->assertFind('css', '.popin-wrapper .button_group_center .btc.bt_default');
+        $cancelButton->click();
+
+        $this->spin(
+            function ($context) {
+                return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
+            },
+            10
+        );
+    }
+
+    /**
+     * @When I exit Select all confirm box
+     */
+    public function iExitSelectAllConfirmBox()
+    {
+        $exitButton = $this->assertFind('css', '.centreon-popin a.close img');
+        $exitButton->click();
+
+
+        $this->spin(
+            function ($context) {
+                return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
+            },
+            10
         );
     }
 
@@ -98,7 +144,7 @@ class SelectAllSelect2Context extends CentreonContext
 
         $values = $inputField->getValue();
         if (count($values) != $this->expectedElements) {
-            throw new \Exception('All elements are not selected (got ' . count($value) . ', expected ' . $this->expectedElements . ').');
+            throw new \Exception('All elements are not selected (got ' . count($values) . ', expected ' . $this->expectedElements . ').');
         }
     }
 
@@ -111,9 +157,22 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        /* if (count($values) != $this->expectedElements) { */
-        if (count($values) <= 0) {
+        if (count($values) != $this->expectedElements) {
             throw new \Exception('All filtered elements are not selected (got ' . count($values) . ', expected ' . $this->expectedElements . ').');
+        }
+    }
+
+    /**
+     * @Then no one element is selected
+     */
+    public function noOneElementIsSelected()
+    {
+        /* Add search to select2 */
+        $inputField = $this->assertFind('css', 'select#command_id');
+
+        $values = $inputField->getValue();
+        if (count($values) != 0) {
+            throw new \Exception(count($values) . ' elements have been selected');
         }
     }
 }

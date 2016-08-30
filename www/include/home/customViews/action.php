@@ -46,14 +46,14 @@ require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 session_start();
 
 if (!isset($_POST['action']) || !isset($_SESSION['centreon'])) {
-    exit;
+    exit();
 }
 
 $centreon = $_SESSION['centreon'];
 $action = $_POST['action'];
 $db = new CentreonDB();
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
-    exit;
+    exit();
 }
 
 $viewObj = new CentreonCustomView($centreon, $db);
@@ -68,12 +68,12 @@ if (isset($_POST['custom_view_id']) && $_POST['custom_view_id']) {
 $xml->startElement('response');
 try {
     if ($action == "add") {
-        if(isset($_POST['create_load']['create_load']) && $_POST['create_load']['create_load'] == 'create'){
+        if (isset($_POST['create_load']['create_load']) && $_POST['create_load']['create_load'] == 'create') {
             $customViewId = $viewObj->addCustomView($_POST);
             if (isset($_POST['widget_id'])) {
                 $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
             }
-        }else if(isset($_POST['create_load']['create_load']) && $_POST['create_load']['create_load'] == 'load'){
+        } elseif (isset($_POST['create_load']['create_load']) && $_POST['create_load']['create_load'] == 'load') {
             $customViewId = $viewObj->loadCustomView($_POST);
         }
     } elseif ($action == "edit" && $customViewId) {
@@ -152,9 +152,10 @@ try {
     $xml->writeElement('error', $e->getMessage());
 }
 $xml->endElement();
+
 header('Content-Type: text/xml');
 header('Pragma: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
+
 $xml->output();
-?>

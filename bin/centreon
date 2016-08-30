@@ -86,10 +86,9 @@ if ($debug) {
 	}
 }
 
-
-
 require_once _CENTREON_ETC_."/centreon.conf.php";
 require_once _CLAPI_CLASS_."/centreonAPI.class.php";
+require_once _CLAPI_CLASS_."/centreonUtils.class.php";
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 
 $dbConfig['host'] = $conf_centreon['hostCentreon'];
@@ -192,5 +191,4 @@ if ($api->login == "" || $api->password == "") {
         $api->setReturnCode(1);
     }
 }
-	$api->close();
-?>
+$api->close();

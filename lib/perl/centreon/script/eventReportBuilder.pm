@@ -101,24 +101,7 @@ sub initVars {
     
     # Getting centstatus database name
     $self->{dbLayer} = $self->getDbLayer();
-    if ($self->{dbLayer} eq "ndo") {
-        my ($status, $sth) = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
-        if (my $row = $sth->fetchrow_hashref()) {
-            #connecting to censtatus
-            $centstatus = centreon::common::db->new(db => $row->{db_name},
-                                                    host => $row->{db_host},
-                                                    port => $row->{db_port},
-                                                    user => $row->{db_user},
-                                                    password => $row->{db_pass},
-                                                    force => 0,
-                                                    logger => $self->{logger});
-        }
-    } elsif ($self->{dbLayer} eq "broker") {
-        $centstatus = $self->{csdb};
-    } else {
-        $self->{logger}->writeLogError("Unsupported database layer: " . $self->{dbLayer});
-        $self->exit_pgr();
-    }
+    $centstatus = $self->{csdb};
     
     # classes to query database tables 
     $self->{host} = centreon::reporting::CentreonHost->new($self->{logger}, $self->{cdb});

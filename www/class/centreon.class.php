@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -33,209 +33,233 @@
  *
  */
 
-require_once("centreonUser.class.php");
-require_once("centreonGMT.class.php");
-require_once("centreonLogAction.class.php");
-require_once("centreonExternalCommand.class.php");
-require_once("centreonObjects.class.php");
-require_once("centreonCache.class.php");
-require_once("centreonBroker.class.php");
+require_once dirname(__FILE__) . '/centreonUser.class.php';
+require_once dirname(__FILE__) . '/centreonGMT.class.php';
+require_once dirname(__FILE__) . '/centreonLogAction.class.php';
+require_once dirname(__FILE__) . '/centreonExternalCommand.class.php';
+require_once dirname(__FILE__) . '/centreonObjects.class.php';
+require_once dirname(__FILE__) . '/centreonCache.class.php';
+require_once dirname(__FILE__) . '/centreonBroker.class.php';
+require_once dirname(__FILE__) . '/centreonHostgroups.class.php';
 
-require_once("centreonHostgroups.class.php");
+/**
+ * Class for load application Centreon
+ */
+class Centreon
+{
 
-class Centreon	{
+    public $Nagioscfg;
+    public $optGen;
+    public $redirectTo;
+    public $modules;
+    public $plugins;
+    public $status_graph_service;
+    public $status_graph_host;
+    public $historyPage;
+    public $historySearch;
+    public $historySearchService;
+    public $historySearchOutput;
+    public $historyLimit;
+    public $search_type_service;
+    public $search_type_host;
+    public $svc_svc_search;
+    public $svc_host_search;
+    public $poller;
+    public $template;
+    public $hostgroup;
+    public $host_id;
 
-	var $Nagioscfg;
-	var $optGen;
-	var $redirectTo;
-	var $modules;
-	var $plugins;
-	var $status_graph_service;
-	var $status_graph_host;
-	var $historyPage;
-  	var $historySearch;
-  	var $historySearchService;
-  	var $historySearchOutput;
-	var $historyLimit;
-  	var $search_type_service;
-	var $search_type_host;
-	var $svc_svc_search;
-	var $svc_host_search;
-	var $poller;
-	var $template;
-	var $hostgroup;
-	var $host_id;
+    public $user;
+    public $CentreonGMT;
+    public $CentreonLogAction;
+    public $extCmd;
+    public $DB;
+    public $config;
+    public $session;
+    public $lang;
+    public $duration;
+    public $media;
+    public $objects;
+    public $cache;
+    public $broker;
 
-	public $user;
-	public $CentreonGMT;
-	public $CentreonLogAction;
-	public $extCmd;
-	public $DB;
-	public $config;
-	public $session;
-	public $lang;
-	public $duration;
-	public $media;
-	public $objects;
-	public $cache;
-	public $broker;
-
-    /** **************************************
+    /**
      * Class constructor
      *
-     * @access public
-	 * @param	object 	$user User objects
-	 * @return	object	objet information
+     * @param object $user User objects
      */
-	function Centreon($userInfos)	{
-		global $pearDB;
+    public function __construct($userInfos)
+    {
+        global $pearDB;
 
-		/*
-		 * Get User informations
-		 */
-		$this->user = new CentreonUser($userInfos);
+        /*
+         * Get User informations
+         */
+        $this->user = new CentreonUser($userInfos);
 
-		/*
-		 * Get Local nagios.cfg file
-		 */
-		$this->initNagiosCFG($pearDB);
+        /*
+         * Get Local nagios.cfg file
+         */
+        $this->initNagiosCFG($pearDB);
 
-		/*
-		 * Get general options
-		 */
-		$this->initOptGen($pearDB);
+        /*
+         * Get general options
+         */
+        $this->initOptGen($pearDB);
 
-		/*
-		 * Grab Modules
-		 */
-		$this->creatModuleList($pearDB);
+        /*
+         * Grab Modules
+         */
+        $this->creatModuleList($pearDB);
 
-		/*
-		 * Create GMT object
-		 */
-		$this->CentreonGMT = new CentreonGMT($pearDB);
+        /*
+         * Create GMT object
+         */
+        $this->CentreonGMT = new CentreonGMT($pearDB);
 
-		/*
-		 * Create LogAction object
-		 */
-		$this->CentreonLogAction = new CentreonLogAction($this->user);
+        /*
+         * Create LogAction object
+         */
+        $this->CentreonLogAction = new CentreonLogAction($this->user);
 
-		/*
-		 * Init Poller id
-		 */
-		$this->poller = 0;
+        /*
+         * Init Poller id
+         */
+        $this->poller = 0;
 
-		/*
-		 * Init External CMD object
-		 */
-		$this->extCmd = new CentreonExternalCommand($pearDB);
+        /*
+         * Init External CMD object
+         */
+        $this->extCmd = new CentreonExternalCommand($pearDB);
 
-		/*
-		 * Objects
-		 */
-		$this->objects = new CentreonObjects($pearDB);
+        /*
+         * Objects
+         */
+        $this->objects = new CentreonObjects($pearDB);
 
-		/*
-		 * Cache
-		 */
-		$this->cache = new CentreonCache($pearDB);
+        /*
+         * Cache
+         * Not Used
+         */
+        //$this->cache = new CentreonCache($pearDB);
 
-		/*
-		 * Engine
-		 */
-		$this->broker = new CentreonBroker($pearDB);
-	}
+        /*
+         * Engine
+         * Not Used 
+         */
+        //$this->broker = new CentreonBroker($pearDB);
+    }
 
-	/**
-	 *
-	 * Create a list of all module installed into Centreon
-	 * @param $pearDB
-	 */
-	function creatModuleList($pearDB) {
-		$this->modules = array();
-		$DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
-		while ($result = $DBRESULT->fetchRow()){
-			$this->modules[$result["name"]] = array("name"=>$result["name"], "gen"=>false, "restart"=>false, "sql"=>$result["sql_files"], "lang"=>$result["lang_files"]);
-			if (is_dir("./modules/".$result["name"]."/generate_files/")) {
-				$this->modules[$result["name"]]["gen"] = true;
-			}
-            
+    /**
+     * Create a list of all module installed into Centreon
+     *
+     * @param $pearDB The database connection to centreon database
+     */
+    public function creatModuleList($pearDB)
+    {
+        $this->modules = array();
+        $DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
+        while ($result = $DBRESULT->fetchRow()) {
+            $this->modules[$result["name"]] = array("name" => $result["name"],
+                                                    "gen" => false, "restart" => false,
+                                                    "sql" => $result["sql_files"],
+                                                    "lang" => $result["lang_files"],
+                                                    "license" => false);
+
+            if (is_dir("./modules/".$result["name"]."/generate_files/")) {
+                $this->modules[$result["name"]]["gen"] = true;
+            }
             if (is_dir("./modules/" . $result["name"] . "/restart_pollers/")) {
-				$this->modules[$result["name"]]["restart"] = true;
-			}
-		}
-		$DBRESULT->free();
-	}
+                $this->modules[$result["name"]]["restart"] = true;
+            }
+            if (is_dir("./modules/" . $result["name"] . "/restart_pollers/")) {
+                $this->modules[$result["name"]]["restart"] = true;
+            }
+            if (file_exists("./modules/" . $result["name"] . "/license/merethis_lic.zl")) {
+                $this->modules[$result["name"]]["license"] = true;
+            }
+        }
+        $DBRESULT->free();
+    }
 
-	/**
-	 *
-	 * Create history list
-	 */
-	function createHistory() {
-  		$this->historyPage = array();
-  		$this->historySearch = array();
-  		$this->historySearchService = array();
-  		$this->historySearchOutput = array();
-  		$this->historyLimit = array();
-  		$this->search_type_service = 1;
-  		$this->search_type_host = 1;
-  	}
+    /**
+     * Create history list
+     */
+    public function createHistory()
+    {
+        $this->historyPage = array();
+        $this->historySearch = array();
+        $this->historySearchService = array();
+        $this->historySearchOutput = array();
+        $this->historyLimit = array();
+        $this->search_type_service = 1;
+        $this->search_type_host = 1;
+    }
 
-  	/**
-  	 *
-  	 * Initiate nagios option list
-  	 * @param $pearDB
-  	 */
-	function initNagiosCFG($pearDB = NULL) {
+    /**
+     * Initiate nagios option list
+     *
+     * @param $pearDB The database connection to centreon database
+     */
+    public function initNagiosCFG($pearDB = null)
+    {
 
-		if (!$pearDB)
-			return;
+        if (!$pearDB) {
+            return;
+        }
 
-		$this->Nagioscfg = array();
-        # We don't check activate because we can a server without a engine on localhost running (but we order to get if we have one)
-		$DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios, nagios_server
-								    WHERE nagios_server.id = cfg_nagios.nagios_server_id
-								    AND nagios_server.localhost = '1' ORDER BY cfg_nagios.nagios_activate DESC LIMIT 1");
-		$this->Nagioscfg = $DBRESULT->fetchRow();
-		$DBRESULT->free();
-	}
+        $this->Nagioscfg = array();
+        /*
+         * We don't check activate because we can a server without a engine on localhost running 
+         * (but we order to get if we have one)
+         */
+        $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios, nagios_server
+                                    WHERE nagios_server.id = cfg_nagios.nagios_server_id
+                                    AND nagios_server.localhost = '1' 
+                                    ORDER BY cfg_nagios.nagios_activate 
+                                    DESC LIMIT 1");
+        $this->Nagioscfg = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+    }
 
-	/**
-	 *
-	 * initiate general option list
-	 * @param $pearDB
-	 */
-	function initOptGen($pearDB = NULL)	{
+    /**
+     * Initiate general option list
+     *
+     * @param $pearDB The database connection to centreon database
+     */
+    public function initOptGen($pearDB = null)
+    {
+        if (!$pearDB) {
+            return;
+        }
 
-		if (!$pearDB)
-			return;
+        $this->optGen = array();
+        $DBRESULT = $pearDB->query("SELECT * FROM `options`");
+        while ($opt = $DBRESULT->fetchRow()) {
+            $this->optGen[$opt["key"]] = $opt["value"];
+        }
+        $DBRESULT->free();
+        unset($opt);
+    }
 
-		$this->optGen = array();
-		$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-		while ($opt = $DBRESULT->fetchRow()) {
-			$this->optGen[$opt["key"]] = $opt["value"];
-		}
-		$DBRESULT->free();
-		unset($opt);
-	}
+    /**
+     * Check illegal char defined into nagios.cfg file
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
+     */
+    public function checkIllegalChar($name)
+    {
+        global $pearDB;
 
-	/**
- 	 *
- 	 * Check illegal char defined into nagios.cfg file
- 	 * @param varchar $name
- 	 */
- 	public function checkIllegalChar($name) {
- 		global $pearDB;
-
- 		$DBRESULT = $pearDB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
-		while ($data = $DBRESULT->fetchRow()) {
-			$tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
-			foreach ($tab as $char) {
-				$name = str_replace($char, "", $name);
-			}
-		}
-		$DBRESULT->free();
-		return $name;
- 	}
+        $DBRESULT = $pearDB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+        while ($data = $DBRESULT->fetchRow()) {
+            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+            foreach ($tab as $char) {
+                $name = str_replace($char, "", $name);
+            }
+        }
+        $DBRESULT->free();
+        return $name;
+    }
 }
-?>

@@ -31,13 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/Administration/corePerformance/processInfo.php $
- * SVN : $Id: processInfo.php 12790 2011-12-15 15:32:42Z shotamchay $
- *
  */
 
-
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -79,7 +75,7 @@ function parseStatsFile($statfile)
     }
     $lineBlock = null;
     $failover = null;
-	$acceptedEvents = null;
+    $acceptedEvents = null;
     $result = array(
         'lastmodif' => $lastmodif,
         'modules' => array(),
@@ -238,44 +234,36 @@ $lang['temporary recovery mode'] = _('Temporary recovery mode');
 
 $tpl->assign('lang', $lang);
 $tpl->assign('poller_name', $pollerName);
-$tpl->assign('broker', $oreon->broker->getBroker());
 
 /*
- * If broker is Centreon Broker
+ * Get the stats file name
  */
-if ($oreon->broker->getBroker() == 'broker') {
-    /*
-     * Get the stats file name
-     */
-    $queryStatName = "SELECT config_name,retention_path "
-        . "FROM cfg_centreonbroker "
-        . "WHERE stats_activate='1' "
-        . "AND ns_nagios_server = " . CentreonDB::escape($selectedPoller) . " ";
-    $res = $pearDB->query($queryStatName);
-    if (PEAR::isError($res)) {
-        $tpl->assign('msg_err', _('Error in getting stats filename'));
-    } else {
-        if (!$res->numRows()) {
-            $tpl->assign('msg_err', _('No statistics file defined for this poller'));
-        }
-        $perf_info = array();
-        $perf_err = array();
-        while ($row = $res->fetchRow()) {
-            $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '.stats';
-            if ($defaultPoller != $selectedPoller) {
-                $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
-            }
-            if (!file_exists($statsfile) || !is_readable($statsfile)) {
-                $perf_err[$row['config_name']] = _('Cannot open statistics file');
-            } else {
-                $perf_info[$row['config_name']] = parseStatsFile($statsfile);
-            }
-        }
-        $tpl->assign('perf_err', $perf_err);
-        $tpl->assign('perf_info_array', $perf_info);
-    }
+$queryStatName = "SELECT config_name,retention_path "
+    . "FROM cfg_centreonbroker "
+    . "WHERE stats_activate='1' "
+    . "AND ns_nagios_server = " . CentreonDB::escape($selectedPoller) . " ";
+$res = $pearDB->query($queryStatName);
+if (PEAR::isError($res)) {
+    $tpl->assign('msg_err', _('Error in getting stats filename'));
 } else {
-    $tpl->assign('msg_err', _('Performance broker page work only with Centreon Broker.'));
+    if (!$res->numRows()) {
+        $tpl->assign('msg_err', _('No statistics file defined for this poller'));
+    }
+    $perf_info = array();
+    $perf_err = array();
+    while ($row = $res->fetchRow()) {
+        $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '.stats';
+        if ($defaultPoller != $selectedPoller) {
+            $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
+        }
+        if (!file_exists($statsfile) || !is_readable($statsfile)) {
+            $perf_err[$row['config_name']] = _('Cannot open statistics file');
+        } else {
+            $perf_info[$row['config_name']] = parseStatsFile($statsfile);
+        }
+    }
+    $tpl->assign('perf_err', $perf_err);
+    $tpl->assign('perf_info_array', $perf_info);
 }
 
 $tpl->display('brokerPerformance.ihtml');

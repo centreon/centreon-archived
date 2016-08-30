@@ -35,48 +35,49 @@
 
 class CentreonBroker
 {
-	private $name;
-	private $db;
+    private $name;
+    private $db;
 
-	/*
+    /*
 	 * Constructor class
 	 *
 	 * @access public
 	 * @return 	object	object session
 	 */
-	public function __construct($db)
-	{
-		$this->db = $db;
-		$this->setBrokerName();
-	}
+    public function __construct($db)
+    {
+        $this->db = $db;
+        $this->setBrokerName();
+    }
 
-	/**
-	 * Get Broker engine name
-	 */
-	private function setBrokerName()
-	{
+    /**
+     * Get Broker engine name
+     */
+    private function setBrokerName()
+    {
             $this->name = 'broker';
-	}
+    }
 
-	/*
+    /*
 	 * return broker engine
 	 */
-	public function getBroker()
-	{
-		return "broker";
-	}
+    public function getBroker()
+    {
+        return "broker";
+    }
         
     /**
      * Execute script
-     * 
+     *
      * @param string $script
      * @param string $action
-     * @return void 
+     * @return void
      */
-    protected function execLocalScript($script, $action) {
+    protected function execLocalScript($script, $action)
+    {
         $scriptD = str_replace("/etc/init.d/", '', $script);
         if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
-            shell_exec("sudo systemctl $action $scriptD");    
+            shell_exec("sudo systemctl $action $scriptD");
         } else {
             exec("ps -edf | grep cbd | grep -v grep", $output, $return_vars);
             if (count($output) == 0) {
@@ -89,11 +90,12 @@ class CentreonBroker
         
     /**
      * Get Init script
-     * 
+     *
      * @param string $sql;
      * @return string
      */
-    protected function getInitScript($sql) {
+    protected function getInitScript($sql)
+    {
         $res = $this->db->query($sql);
         $row = $res->fetchRow();
         $scriptName = "";
@@ -105,11 +107,12 @@ class CentreonBroker
         
     /**
      * Do action
-     * 
+     *
      * @param string $action
-     * @return void 
+     * @return void
      */
-    protected function doAction($action) {
+    protected function doAction($action)
+    {
         if ($this->name == 'broker') {
             $initScript = $this->getInitScript("SELECT `value` FROM options WHERE `key` = 'broker_correlator_script'");
             if ($initScript) {
@@ -120,16 +123,16 @@ class CentreonBroker
         
     /**
      * Magic method
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      * @param array $params
      * @throws Exception
      */
-    public function __call($name, $params) {
+    public function __call($name, $params)
+    {
         if (!preg_match('/reload|restart|stop|start/', $name)) {
             throw new Exception('Unknown method: '.$name);
         }
         $this->doAction($name);
     }
 }
-?>

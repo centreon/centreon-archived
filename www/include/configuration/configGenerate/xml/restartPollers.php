@@ -37,11 +37,30 @@ ini_set("display_errors", "Off");
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
+require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
+
+  $pearDB = new CentreonDB();
+
+/* Check Session */
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    print "Bad Session";
+    exit();
+}
+
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
 if (!isset($_POST['poller']) || !isset($_POST['mode']) || !isset($_POST['sid'])) {
-    exit;
+    exit();
 }
 
 /**
@@ -85,16 +104,8 @@ try {
     $ret['restart_mode'] = $_POST['mode'];
 
     chdir(_CENTREON_PATH_ . "www");
-    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
+    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/engine/";
     $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
-    require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -108,11 +119,10 @@ try {
     if (defined('_CENTREON_VARLIB_')) {
         $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
     } else {
-	    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
+        $centcore_pipe = "/var/lib/centreon/centcore.cmd";
     }
 
     $xml = new CentreonXML();
-    $pearDB = new CentreonDB();
 
     $stdout = "";
     if (!isset($msg_restart)) {
@@ -124,9 +134,9 @@ try {
                                                          'conditions' => array('ns_activate' => '1'),
                                                          'keys'       => array('id')));
     foreach ($tabs as $tab) {
-      if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
-        $poller[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"], 'init_script' => $tab['init_script']);
-      }
+        if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
+            $poller[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"], 'init_script' => $tab['init_script']);
+        }
     }
 
     /*
@@ -136,9 +146,14 @@ try {
     $brk->reload();
     
     foreach ($poller as $host) {
-    	if ($ret["restart_mode"] == 1) {
+        if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " reload");
+                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
+                if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
+                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl reload $scriptD");
+                } else {
+                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " reload");
+                }
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
                     fwrite($fh, "RELOAD:".$host["id"]."\n");
@@ -146,8 +161,7 @@ try {
                 } else {
                     throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
                 }
-                // OLD SYSTEM : system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe", $return);
-
+                
                 // Manage Error Message
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
@@ -158,9 +172,14 @@ try {
                     $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to ".$host["name"].". Check $centcore_pipe properties.\n");
                 }
             }
-        } else if ($ret["restart_mode"] == 2) {
+        } elseif ($ret["restart_mode"] == 2) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " restart");
+                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
+                if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
+                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl restart $scriptD");
+                } else {
+                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " restart");
+                }
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
                     fwrite($fh, "RESTART:".$host["id"]."\n");
@@ -168,7 +187,6 @@ try {
                 } else {
                     throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
                 }
-                // OLD SYSTEM : system("echo \"RESTART:".$host["id"]."\" >> $centcore_pipe", $return);
 
                 // Manage error Message
                 if (!isset($msg_restart[$host["id"]])) {
@@ -192,15 +210,17 @@ try {
     foreach ($centreon->modules as $key => $value) {
         $addModule = true;
         if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
-            $module_license_validity = zend_loader_install_license (_CENTREON_PATH_ . "www/modules/".$key."license/merethis_lic.zl", true);
-            if ($module_license_validity == false)
+            $module_license_validity = zend_loader_install_license(_CENTREON_PATH_ . "www/modules/".$key."license/merethis_lic.zl", true);
+            if ($module_license_validity == false) {
                 $addModule = false;
+            }
         }
         
         if ($addModule) {
             if ($value["restart"] && $files = glob(_CENTREON_PATH_ . "www/modules/".$key."/restart_pollers/*.php")) {
-                foreach ($files as $filename)
+                foreach ($files as $filename) {
                     include $filename;
+                }
             }
         }
     }

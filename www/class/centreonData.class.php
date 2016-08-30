@@ -37,7 +37,7 @@
 
 /**
  * Object used for storing and accessing specific data
- * 
+ *
  * @package Centreon
  * @version 2.5.0
  * @since 2.5.0
@@ -50,14 +50,14 @@ class CentreonData
      *
      * @var Centreon_Template
      */
-    static private $_instance = null;
+    static private $instance = null;
 
     /**
      * List of javascript data
      *
      * @var array
      */
-    private $_jsData = array();        
+    private $jsData = array();
     
     /**
      * Constructor
@@ -65,34 +65,34 @@ class CentreonData
      */
     public function __construct()
     {
-
     }
 
     /**
      * Pass data to javascript
-     * 
+     *
      * @param string $key
-     * @param string $value 
+     * @param string $value
      * @return void
      * @throws Exception
      */
     public function addJsData($key, $value)
     {
-        if (isset($this->_jsData[$key])) {
+        if (isset($this->jsData[$key])) {
             throw new Exception(
-                    sprintf('Key %s in Javascript Data already used', $key)
+                sprintf('Key %s in Javascript Data already used', $key)
             );
         }
-        $this->_jsData[$key] = $value;
+        $this->jsData[$key] = $value;
     }
 
     /**
      * Get javascript data
-     * 
+     *
      * @return array
      */
-    public function getJsData() {
-        return $this->_jsData;
+    public function getJsData()
+    {
+        return $this->jsData;
     }
     
     /**
@@ -100,12 +100,12 @@ class CentreonData
      *
      * @return Centreon_Template
      */
-    static public function getInstance()
+    public static function getInstance()
     {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new CentreonData();
+        if (is_null(self::$instance)) {
+            self::$instance = new CentreonData();
         }
-        return self::$_instance;
+        return self::$instance;
     }
 }
 

@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$oreon->user->admin && $contact_id) {
+if (!$centreon->user->admin && $contact_id) {
     $aclOptions = array(
         'fields' => array('contact_id', 'contact_name'),
         'keys' => array('contact_id'),
@@ -79,7 +79,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
 
     $DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($contact_id) . "' LIMIT 1");
     $cct = array_map("myDecode", $DBRESULT->fetchRow());
-    $cct["contact_passwd"] = NULL;
+    $cct["contact_passwd"] = null;
     $DBRESULT->free();
 
     /**
@@ -104,7 +104,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '" . intval($contact_id) . "'");
     for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && !isset($cgs[$notifCg['contactgroup_cg_id']])) {
+        if (!$centreon->user->admin && !isset($cgs[$notifCg['contactgroup_cg_id']])) {
             $initialValues['contact_cgNotif'][] = $notifCg["contactgroup_cg_id"];
         } else {
             $cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
@@ -144,7 +144,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
      */
     $DBRESULT = $pearDB->query("SELECT acl_group_id FROM `acl_group_contacts_relations` WHERE `contact_contact_id` = '" . intval($contact_id) . "'");
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
+        if (!$centreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
             $initialValues['contact_acl_groups'] = $data['acl_group_id'];
         } else {
             $cct["contact_acl_groups"][$i] = $data["acl_group_id"];
@@ -166,10 +166,11 @@ if ($o == "mc") {
  * Timeperiods comes from DB -> Store in $notifsTps Array
  * When we make a massive change, give the possibility to not crush value
  */
-$notifTps = array(NULL => NULL);
+$notifTps = array(null => null);
 $DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($notifTp = $DBRESULT->fetchRow())
+while ($notifTp = $DBRESULT->fetchRow()) {
     $notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
+}
 $DBRESULT->free();
 
 /**
@@ -177,8 +178,9 @@ $DBRESULT->free();
  */
 $notifCmds = array();
 $DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
-while ($notifCmd = $DBRESULT->fetchRow())
+while ($notifCmd = $DBRESULT->fetchRow()) {
     $notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
+}
 $DBRESULT->free();
 
 /**
@@ -192,7 +194,7 @@ $notifCgs = array();
 $cg = new CentreonContactgroup($pearDB);
 $notifCgs = $cg->getListContactgroup(false);
 
-if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap' && isset($cct['ar_id']) && $cct['ar_id']) {
+if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap' && isset($cct['ar_id']) && $cct['ar_id']) {
     $ldap = new CentreonLDAP($pearDB, null, $cct['ar_id']);
     if (false !== $ldap->connect()) {
         $cgLdap = $ldap->listGroupsForUser($cct['contact_ldap_dn']);
@@ -204,7 +206,7 @@ if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'lda
  */
 $aclGroups = array();
 $aclCond = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclCond = " WHERE acl_group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 $sql = "SELECT acl_group_id, acl_group_name 
@@ -226,7 +228,7 @@ if (isset($contact_id)) {
     $strRestrinction = "";
 }
 
-$contactTpl = array(NULL => "           ");
+$contactTpl = array(null => "           ");
 $DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '0' $strRestrinction ORDER BY contact_name");
 while ($contacts = $DBRESULT->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
@@ -268,14 +270,15 @@ $attrAclgroups = array(
 );
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a User"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a User"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a User"));
-else if ($o == "mc")
+} elseif ($o == "mc") {
     $form->addElement('header', 'title', _("Massive Change"));
+}
 
 /**
  * Contact basic information
@@ -346,11 +349,19 @@ $form->addElement('password', 'contact_passwd', _("Password"), array("size" => "
 $form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size" => "30", "autocomplete" => "off", "id" => "passwd2", "onkeypress" => "resetPwdType(this);"));
 $form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick' => 'generatePassword("passwd");'));
 $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
-$form->addElement('select', 'contact_type_msg', _("Mail Type"), array(NULL => NULL, "txt" => "txt", "html" => "html", "pdf" => "pdf"));
-$tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
-$form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
+$form->addElement('select', 'contact_type_msg', _("Mail Type"), array(null => null, "txt" => "txt", "html" => "html", "pdf" => "pdf"));
+
+if ($centreon->user->admin) {
+    $tab = array();
+    $tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
+    $tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
+    $form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
+
+    $tab = array();
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("Yes"), '1');
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("No"), '0');
+    $form->addGroup($tab, 'reach_api', _("Reach API"), '&nbsp;');
+}
 
 /**
  * ACL configurations
@@ -383,10 +394,7 @@ $attrTimezones = array(
     'multiple' => false,
     'linkedObject' => 'centreonGMT'
 );
-
-
 $form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
-
 
 if ($o != "mc") {
     $auth_type = array();
@@ -395,7 +403,7 @@ if ($o != "mc") {
 }
 
 $auth_type["local"] = "Centreon";
-if ($oreon->optGen['ldap_auth_enable'] == 1) {
+if ($centreon->optGen['ldap_auth_enable'] == 1) {
     $auth_type["ldap"] = "LDAP";
     $form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
 }
@@ -517,9 +525,10 @@ $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
 
 if (is_array($select)) {
-    $select_str = NULL;
-    foreach ($select as $key => $value)
+    $select_str = null;
+    foreach ($select as $key => $value) {
         $select_str .= $key . ",";
+    }
     $select_pear = $form->addElement('hidden', 'select');
     $select_pear->setValue($select_str);
 }
@@ -527,7 +536,8 @@ if (is_array($select)) {
 /**
  * Form Rules
  */
-function myReplace() {
+function myReplace()
+{
     global $form;
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["contact_name"]));
@@ -564,11 +574,12 @@ if ($o != "mc") {
     $form->addRule('contact_alias', "<font style='color: red;'>*</font>&nbsp;" . _("Alias already exists"), 'existAlias');
     $form->registerRule('keepOneContactAtLeast', 'callback', 'keepOneContactAtLeast');
     $form->addRule('contact_alias', _("You have to keep at least one contact to access to Centreon"), 'keepOneContactAtLeast');
-} else if ($o == "mc") {
-    if ($form->getSubmitValue("submitMC"))
+} elseif ($o == "mc") {
+    if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
-    else
+    } else {
         $from_list_menu = true;
+    }
 }
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
@@ -591,26 +602,27 @@ $tpl->assign("helptext", $helptext);
 
 if ($o == "w") {
 # Just watch a contact information
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $contact_id . "'"));
+    }
     $form->setDefaults($cct);
     $form->freeze();
-} else if ($o == "c") {
+} elseif ($o == "c") {
 # Modify a contact information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
-} else if ($o == "a") {
+} elseif ($o == "a") {
 # Add a contact information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-} else if ($o == "mc") {
+} elseif ($o == "mc") {
 # Massive Change
     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
+if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
     $tpl->assign("ldap_group", _("Group Ldap"));
     if (isset($cgLdap)) {
         $tpl->assign("ldapGroups", $cgLdap);
@@ -620,33 +632,38 @@ if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'lda
 $valid = false;
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         $cctObj->setValue(insertContactInDB());
-    else if ($form->getSubmitValue("submitC"))
+    } elseif ($form->getSubmitValue("submitC")) {
         updateContactInDB($cctObj->getValue());
-    else if ($form->getSubmitValue("submitMC")) {
+    } elseif ($form->getSubmitValue("submitMC")) {
         $select = explode(",", $select);
-        foreach ($select as $key => $value)
-            if ($value)
+        foreach ($select as $key => $value) {
+            if ($value) {
                 updateContactInDB($value, true);
+            }
+        }
     }
-    $o = NULL;
+    $o = null;
     $valid = true;
 }
 
 if ($valid) {
     require_once($path . "listContact.php");
 } else {
-# Apply a template definition
+    /*
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $form->accept($renderer);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
+    $tpl->assign('displayAdminFlag', $centreon->user->admin);
     $tpl->assign("tzUsed", $CentreonGMT->used());
-    if ($oreon->optGen['ldap_auth_enable']) {
-        $tpl->assign('ldap', $oreon->optGen['ldap_auth_enable']);
+    if ($centreon->optGen['ldap_auth_enable']) {
+        $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
     }
     $tpl->display("formContact.ihtml");
 }
@@ -688,5 +705,4 @@ function uncheckAllS(object)
         document.getElementById('sNone').checked = false;
     }
 }
-
 </script>

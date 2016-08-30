@@ -57,12 +57,10 @@
 			    <td class="FormRowValue">{$form.nagios_server_id.html}</td>
 			</tr>
             {/if}
-			{if $tpl == 0 && $tzUsed}
 			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="host_location"> {$form.host_location.label}</td>
 				<td class="FormRowValue">{$form.host_location.html}</td>
 			</tr>
-			{/if}
 			{if $o == "mc"}
 			<tr class="list_two">	
 				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_tplp.label}</td>
@@ -163,6 +161,50 @@
 			<td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.host_notifications_enabled.label}</td>
 			<td class="FormRowValue">{$form.host_notifications_enabled.html}</td>
 		</tr>
+		<tr class="list_lvl_1">
+		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification receivers{/t}</h4></td>
+		</tr>
+        {if $o == "mc"}
+        <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
+			<td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
+        </tr>
+        <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cs.label}</td>
+			<td class="FormRowValue">{$form.host_cs.html}</td>
+        </tr>
+		{else}
+            <tr class="list_one">
+                <td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td>
+                <td class="FormRowValue">{$form.host_cs.html}</td>
+        </tr>
+        <tr class="list_one">
+			<td class="FormRowField"></td>
+			<td class="FormRowValue">{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance"></td>
+        </tr>		
+        {/if}
+        {if $o == "mc"}
+        <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
+			<td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
+        </tr>
+        <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
+			<td class="FormRowValue">{$form.host_cgs.html}</td>
+        </tr>
+		{else}
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
+            <td class="FormRowValue">{$form.host_cgs.html}</td>
+        </tr>
+        <tr class="list_one">
+			<td class="FormRowField"></td>
+			<td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
+        </tr>		
+		{/if}
+		<tr class="list_lvl_1">
+		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification options{/t}</h4></td>
+		</tr>
 	    {if $o == "mc"}
 		<tr class="list_two">
 			<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopts.label}</td>
@@ -209,51 +251,14 @@
 			<td class="FormRowField"><img class="helpTooltip" name="first_notification_delay"> {$form.host_first_notification_delay.label}</td>
 			<td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td>
 		</tr>
-		<tr class="list_lvl_1">
-		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification receivers{/t}</h4></td>
-		</tr>
-                {if $o == "mc"}
-                    <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
-			<td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
-                    </tr>
-                    <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cs.label}</td>
-			<td class="FormRowValue">{$form.host_cs.html}</td>
-                    </tr>
-		{else}
-                    <tr class="list_one">
-                            <td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td>
-                            <td class="FormRowValue">
-                                <p style='margin-bottom : 6px;'>
-                                    {$form.contact_additive_inheritance.html} {$form.contact_additive_inheritance.label}
-                                    <img class="helpTooltip" name="contact_additive_inheritance">
-                                </p>
-                                {$form.host_cs.html}
-                            </td>
-                    </tr>
-                {/if}
-                {if $o == "mc"}
-                    <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
-			<td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
-                    </tr>
-                    <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
-			<td class="FormRowValue">{$form.host_cgs.html}</td>
-                    </tr>
-		{else}
-                    <tr class="list_two">
-                        <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
-                        <td class="FormRowValue">
-                            <p style='margin-bottom : 6px;'>
-                                {$form.cg_additive_inheritance.html} {$form.cg_additive_inheritance.label}
-                                <img class="helpTooltip" name="cg_additive_inheritance">
-                            </p>
-                            {$form.host_cgs.html}
-                        </td>
-                    </tr>
-		{/if}
+        {if $o == "mc"}
+        <tr class="list_one">
+        {else}
+        <tr class="list_two">
+        {/if}
+            <td class="FormRowField"><img class="helpTooltip" name="recovery_notification_delay"> {$form.host_recovery_notification_delay.label}</td>
+            <td class="FormRowValue">{$form.host_recovery_notification_delay.html} {$time_unit}</td>
+    	</tr>
 	</table>
 </div>
 <div id='tab3' class='tab'>
@@ -316,50 +321,51 @@
  </table>
 </div>
 <div id='tab4' class='tab'>
- <table class="formTable table">
-	<tr class="ListHeader">
-      <td class="FormHeader" colspan="2">
-        <h3>| {$form.header.title3}</h3>
-      </td>
-    </tr>
-	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.treatment}</h4>
-      </td>
-    </tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_host"> {$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
-	<tr class="list_lvl_1">
-		<td class="ListColLvl1_name" colspan="2">
-          <h4>{$Freshness_Control_options}</h4>
+<table class="formTable table">
+    <tr class="ListHeader">
+        <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title3}</h3>
         </td>
-	</tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_freshness"> {$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="freshness_threshold"> {$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
+    </tr>
+    
+    <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.treatment}</h4>
+        </td>
+    </tr>
+
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_host"> {$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_acknowledgement_timeout"> {$form.host_acknowledgement_timeout.label}</td><td class="FormRowValue">{$form.host_acknowledgement_timeout.html}&nbsp;{$time_unit}</td></tr>
+
+    <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+            <h4>{$Freshness_Control_options}</h4>
+        </td>
+    </tr>
+    
+        
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_freshness"> {$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="freshness_threshold"> {$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$Flapping_Options}</h4>
       </td>
     </tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
-	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$Perfdata_Options}</h4>
-      </td>
-    </tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="process_perf_data"> {$form.host_process_perf_data.label}</td><td class="FormRowValue">{$form.host_process_perf_data.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
+	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
       <h4>{$History_Options}</h4>
     </td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retain_status_information"> {$form.host_retain_status_information.label}</td><td class="FormRowValue">{$form.host_retain_status_information.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retain_nonstatus_information"> {$form.host_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.host_retain_nonstatus_information.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="stalking_options"> {$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retain_status_information"> {$form.host_retain_status_information.label}</td><td class="FormRowValue">{$form.host_retain_status_information.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retain_nonstatus_information"> {$form.host_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.host_retain_nonstatus_information.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="stalking_options"> {$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
       <h4>{$Event_Handler}</h4>
     </td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_enabled"> {$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
-	<tr class="list_two">
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="event_handler_enabled"> {$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
+	<tr class="list_one">
 		<td class="FormRowField"><img class="helpTooltip" name="event_handler"> {$form.command_command_id2.label}</td>
 		<td class="FormRowValue">
 			{$form.command_command_id2.html}
@@ -368,7 +374,7 @@
 			{/if}
 		</td>
 	</tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_args"> {$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="event_handler_args"> {$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
 		{if $o == "a" || $o == "c"}
 		&nbsp;<a><img src="./img/icons/arrow-left.png" class="ico-14" style='cursor: pointer;margin: 0 6px;vertical-align: middle;' alt="*" onclick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
 		{/if}</td>
@@ -397,9 +403,16 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="icon_image_alt"> {$form.ehi_icon_image_alt.label}</td><td class="FormRowValue">{$form.ehi_icon_image_alt.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="vrml_image"> {$form.ehi_vrml_image.label}</td><td class="FormRowValue">{$form.ehi_vrml_image.html}&nbsp;&nbsp;<img id='ehi_vrml_image_img' src='./img/blank.gif'></td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
+		{if $form.geo_coords.label}
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
+		{else}
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
+		{/if}
 		<tr class="list_lvl_1">
 		  <td class="ListColLvl1_name" colspan="2">
 			<h4>{$form.header.furtherInfos}</h4>
@@ -451,11 +464,10 @@ jQuery(function() {
         }
 
     });
+
     jQuery(".onemacro").each(function(idx,elem){
         var from = jQuery(elem).find('input[name^=macroFrom]').val();
         if (from === "direct") {
-            jQuery(elem).find("input[name^='macroInput']").css("background","white");
-            jQuery(elem).find("input[name^='macroValue']").css("background","white");
         } else if(from === "fromTpl"){
             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
@@ -464,6 +476,7 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
         }
 
+        // Set a 'Macro value' field as password field, on edit mode
         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
         }
@@ -495,6 +508,19 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroInput']").css("background","white");
             jQuery(elem).find("input[name^='macroValue']").css("background","white");
         });
+
+        {/literal}{if $form.frozen == true}{literal}
+        var $passwordCheckbox = jQuery(elem).find("input[id^='macroPassword_']");
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.replaceWith('[x]');
+        } else {
+            $passwordCheckbox.replaceWith('[ ]');
+        }
+        {/literal}{else}{literal}
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.parent('span').empty();
+        }
+        {/literal}{/if}{literal}
     });
 
     jQuery(".macroclone").sortable(
@@ -528,6 +554,7 @@ jQuery(function() {
         setListener(el.find('select[name^=tpSelect]'));
     }
 
+{/literal}{if $o != "mc"}{literal}    
     function doAjaxLoad(elems){
             jQuery.ajax({
                 url: "./include/configuration/configObject/host/refreshMacroAjax.php",
@@ -556,6 +583,7 @@ jQuery(function() {
                         }
                     );
 
+                    
                     jQuery(".onemacro").each(function(idx,elem){
                         var from = jQuery(elem).find('input[name^=macroFrom]').val();
                         if (from === "direct") {
@@ -600,16 +628,22 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
+                        
                         jQuery(elem).find("input[name^='macroValue']").on("input",function(){
                             jQuery(elem).find('input[name^=macroFrom]').val("direct");
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
 
+                        if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+                        	jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                    	}
                     });
+                    
                 }
             });
     }
+ {/literal}{/if}{literal}
 
 {/literal}
 </script>

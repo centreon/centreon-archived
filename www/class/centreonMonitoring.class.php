@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -42,52 +39,53 @@
  * @author jmathis
  *
  */
-class CentreonMonitoring {
+class CentreonMonitoring
+{
 
-	var $poller;
-	var $DB;
-	var $objBroker;
+    protected $poller;
+    protected $DB;
+    protected $objBroker;
 
-	/**
-	 *
-	 * Enter description here ...
-	 */
-	public function __construct($DB)
-	{
-		$this->DB = $DB;
-		$this->objBroker = new CentreonBroker($DB);
-	}
+    /**
+     *
+     * Enter description here ...
+     */
+    public function __construct($DB)
+    {
+        $this->DB = $DB;
+        $this->objBroker = new CentreonBroker($DB);
+    }
 
-	/**
-	 *
-	 * Enter description here ...
-	 * @param unknown_type $pollerId
-	 */
-	public function setPoller($pollerId)
-	{
-		$this->poller = $pollerId;
-	}
+    /**
+     *
+     * Enter description here ...
+     * @param unknown_type $pollerId
+     */
+    public function setPoller($pollerId)
+    {
+        $this->poller = $pollerId;
+    }
 
-	/**
-	 *
-	 * Enter description here ...
-	 */
-	public function getPoller()
-	{
-		return $this->poller;
-	}
+    /**
+     *
+     * Enter description here ...
+     */
+    public function getPoller()
+    {
+        return $this->poller;
+    }
 
-	/**
-	 *
-	 * Proxy function
-	 * @param unknown_type $hostList
-	 * @param unknown_type $objXMLBG
-	 * @param unknown_type $o
-	 * @param unknown_type $instance
-	 * @param unknown_type $hostgroups
-	 */
-	public function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj)
-	{
+    /**
+     *
+     * Proxy function
+     * @param unknown_type $hostList
+     * @param unknown_type $objXMLBG
+     * @param unknown_type $o
+     * @param unknown_type $instance
+     * @param unknown_type $hostgroups
+     */
+    public function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj)
+    {
             $rq = "SELECT count(distinct s.service_id) as count "
                 . "FROM services s, hosts h " . (!$objXMLBG->is_admin ? ", centreon_acl " : "")
                 . "WHERE s.state = '" . $status . "' "
@@ -97,91 +95,91 @@ class CentreonMonitoring {
                 . "AND h.name = '" . $host_name . "' ";
 
             # Acknowledgement filter
-            if ($o == "svcSum_ack_0") {
-                $rq .= "AND s.acknowledged = 0 AND s.state != 0 ";
-            } else if ($o == "svcSum_ack_1") {
-                $rq .= "AND s.acknowledged = 1 AND s.state != 0 ";
-            }
+        if ($o == "svcSum_ack_0") {
+            $rq .= "AND s.acknowledged = 0 AND s.state != 0 ";
+        } elseif ($o == "svcSum_ack_1") {
+            $rq .= "AND s.acknowledged = 1 AND s.state != 0 ";
+        }
 
-            if (!$objXMLBG->is_admin) {
-                $rq .=  "AND h.host_id = centreon_acl.host_id "
-                    . "AND s.service_id = centreon_acl.service_id "
-                    . "AND centreon_acl.group_id IN (" .  $obj->access->getAccessGroupsString() . ") ";
-            }
+        if (!$objXMLBG->is_admin) {
+            $rq .=  "AND h.host_id = centreon_acl.host_id "
+                . "AND s.service_id = centreon_acl.service_id "
+                . "AND centreon_acl.group_id IN (" .  $obj->access->getAccessGroupsString() . ") ";
+        }
 
             $DBRESULT = $objXMLBG->DBC->query($rq);
 
             $cpt = 0;
-            if ($DBRESULT->numRows()) {
-                $row = $DBRESULT->fetchRow();
-                $cpt = $row['count'];
-            }
+        if ($DBRESULT->numRows()) {
+            $row = $DBRESULT->fetchRow();
+            $cpt = $row['count'];
+        }
             $DBRESULT->free();
 
             return $cpt;
-	}
+    }
 
-	/**
-	 *
-	 * Proxy function
-	 * @param unknown_type $hostList
-	 * @param unknown_type $objXMLBG
-	 * @param unknown_type $o
-	 * @param unknown_type $instance
-	 * @param unknown_type $hostgroups
-	 */
-	public function getServiceStatus($hostList, $objXMLBG, $o, $instance, $hostgroups)
-	{
-            if ($hostList == "") {
-                return array();
-            }
+    /**
+     *
+     * Proxy function
+     * @param unknown_type $hostList
+     * @param unknown_type $objXMLBG
+     * @param unknown_type $o
+     * @param unknown_type $instance
+     * @param unknown_type $hostgroups
+     */
+    public function getServiceStatus($hostList, $objXMLBG, $o, $instance, $hostgroups)
+    {
+        if ($hostList == "") {
+            return array();
+        }
 
             $rq = "SELECT h.name, s.description as service_name, s.state, s.service_id, "
                 . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2  when 3 then 2 else s.state END) as tri "
                 . "FROM hosts h, services s ";
 
-            if (!$objXMLBG->is_admin) {
-                $rq .= ", centreon_acl ";
-            }
+        if (!$objXMLBG->is_admin) {
+            $rq .= ", centreon_acl ";
+        }
             $rq .= "WHERE h.host_id = s.host_id "
                 . "AND s.enabled = '1' "
                 . "AND h.enabled = '1' "
                 . "AND h.name NOT LIKE '_Module_%' ";
 
-            if ($o == "svcgrid_pb" || $o == "svcOV_pb") {
-                $rq .= "AND s.state != 0 ";
-            } else if ($o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
-                $rq .= "AND s.acknowledged = 0 AND s.state != 0 ";
-            } else if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
-                $rq .= "AND s.acknowledged = 1 ";
-            }
+        if ($o == "svcgrid_pb" || $o == "svcOV_pb") {
+            $rq .= "AND s.state != 0 ";
+        } elseif ($o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
+            $rq .= "AND s.acknowledged = 0 AND s.state != 0 ";
+        } elseif ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
+            $rq .= "AND s.acknowledged = 1 ";
+        }
 
             $rq .= "AND h.name IN (" . $hostList . ") ";
 
             # Instance filter
-            if ($instance != -1) {
-                $rq .=  "AND h.instance_id = " . $instance . " ";
-            }
+        if ($instance != -1) {
+            $rq .=  "AND h.instance_id = " . $instance . " ";
+        }
 
             $grouplistStr = $objXMLBG->access->getAccessGroupsString();
-            if (!$objXMLBG->is_admin) {
-                $rq .= "AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id "
-                    . $objXMLBG->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr)
-                    . " ";
-            }
+        if (!$objXMLBG->is_admin) {
+            $rq .= "AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id "
+                . $objXMLBG->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr)
+                . " ";
+        }
 
             $rq .= " order by tri asc";
             
             $tab = array();
             $DBRESULT = $objXMLBG->DBC->query($rq);
-            while ($svc = $DBRESULT->fetchRow()) {
-                if (!isset($tab[$svc["name"]])) {
-                    $tab[$svc["name"]] = array();
-                }
-                $tab[$svc["name"]][$svc["service_name"]] = $svc["state"];
+        while ($svc = $DBRESULT->fetchRow()) {
+            if (!isset($tab[$svc["name"]])) {
+                $tab[$svc["name"]] = array();
             }
+            $tab[$svc["name"]][$svc["service_name"]] = $svc["state"];
+        }
             $DBRESULT->free();
 
             return $tab;
-	}
+    }
 }

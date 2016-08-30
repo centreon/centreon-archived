@@ -34,23 +34,23 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
 global $form_service_type;
 $form_service_type = "BYHOST";
 
 
-isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = NULL;
-isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
+isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = null;
+isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = null;
 $sG ? $service_id = CentreonDB::escape($sG) : $service_id = CentreonDB::escape($sP);
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -93,33 +93,64 @@ while ($data = $DBRESULT->fetchRow()) {
  * Check options
  */
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
-	if ($_POST["o1"] != "") {
-		$o = $_POST["o1"];
-	}
-	if ($_POST["o2"] != "") {
-		$o = $_POST["o2"];
-	}
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
 }
 
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
-	$p = $ret['topology_page'];
+    $p = $ret['topology_page'];
 }
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $acldbname = $acl->getNameDBAcl();
 
-switch ($o)	{
-	case "a" : require_once($path."formService.php"); break; #Add a service
-	case "w" : require_once($path."formService.php"); break; #Watch a service
-	case "c" : require_once($path."formService.php"); break; #Modify a service
-	case "mc" : require_once($path."formService.php"); break; #Massive change
-	case "dv" : divideGroupedServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHost$linkType.php"); break; # Divide service linked to n hosts
-	case "s" : enableServiceInDB($service_id); require_once($path."listServiceByHost$linkType.php"); break; #Activate a service
-	case "ms" : enableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHost$linkType.php"); break;
-	case "u" : disableServiceInDB($service_id); require_once($path."listServiceByHost$linkType.php"); break; #Desactivate a service
-	case "mu" : disableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHost$linkType.php"); break;
-	case "m" : multipleServiceInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServiceByHost$linkType.php"); break; #Duplicate n services
-	case "d" : deleteServiceInDB(isset($select) ? $select : array()); require_once($path."listServiceByHost$linkType.php"); break; #Delete n services
-	default : require_once($path."listServiceByHost$linkType.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formService.php");
+        break; #Add a service
+    case "w":
+        require_once($path."formService.php");
+        break; #Watch a service
+    case "c":
+        require_once($path."formService.php");
+        break; #Modify a service
+    case "mc":
+        require_once($path."formService.php");
+        break; #Massive change
+    case "dv":
+        divideGroupedServiceInDB(null, isset($select) ? $select : array());
+        require_once($path."listServiceByHost$linkType.php");
+        break; # Divide service linked to n hosts
+    case "s":
+        enableServiceInDB($service_id);
+        require_once($path."listServiceByHost$linkType.php");
+        break; #Activate a service
+    case "ms":
+        enableServiceInDB(null, isset($select) ? $select : array());
+        require_once($path."listServiceByHost$linkType.php");
+        break;
+    case "u":
+        disableServiceInDB($service_id);
+        require_once($path."listServiceByHost$linkType.php");
+        break; #Desactivate a service
+    case "mu":
+        disableServiceInDB(null, isset($select) ? $select : array());
+        require_once($path."listServiceByHost$linkType.php");
+        break;
+    case "m":
+        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listServiceByHost$linkType.php");
+        break; #Duplicate n services
+    case "d":
+        deleteServiceInDB(isset($select) ? $select : array());
+        require_once($path."listServiceByHost$linkType.php");
+        break; #Delete n services
+    default:
+        require_once($path."listServiceByHost$linkType.php");
+        break;
 }

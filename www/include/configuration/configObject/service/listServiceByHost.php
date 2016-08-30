@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
 include_once("./class/centreonUtils.class.php");
@@ -50,36 +50,36 @@ $mediaObj = new CentreonMedia($pearDB);
 $ehiCache = array();
 $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
 while ($ehi = $DBRESULT->fetchRow()) {
-	$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
 $DBRESULT->free();
 
 if (isset($_POST["template"])) {
-	$template = $_POST["template"];
-} else if (isset($_GET["template"])) {
-	$template = $_GET["template"];
+    $template = $_POST["template"];
+} elseif (isset($_GET["template"])) {
+    $template = $_GET["template"];
 } else {
-	$template = NULL;
+    $template = null;
 }
 
 if (isset($_POST["hostgroups"])) {
-	$hostgroups = $_POST["hostgroups"];
+    $hostgroups = $_POST["hostgroups"];
     $_SESSION['configuration_default_hostgroups'] = $hostgroups;
-} else if (isset($_GET["hostgroups"])) {
-	$hostgroups = $_GET["hostgroups"];
+} elseif (isset($_GET["hostgroups"])) {
+    $hostgroups = $_GET["hostgroups"];
     $_SESSION['configuration_default_hostgroups'] = $hostgroups;
-} else if(isset($_SESSION['configuration_default_hostgroups'])){
-	$hostgroups = $_SESSION['configuration_default_hostgroups'];
+} elseif (isset($_SESSION['configuration_default_hostgroups'])) {
+    $hostgroups = $_SESSION['configuration_default_hostgroups'];
 } else {
-    $hostgroups = NULL;
+    $hostgroups = null;
 }
 
 if (isset($_POST["status"])) {
-	$status = $_POST["status"];
-} else if (isset($_GET["status"])) {
-	$status = $_GET["status"];
+    $status = $_POST["status"];
+} elseif (isset($_GET["status"])) {
+    $status = $_GET["status"];
 } else {
-	$status = -1;
+    $status = -1;
 }
 
 /*
@@ -89,23 +89,24 @@ $tplService = array();
 $templateFilter = "<option value='0'></option>";
 $DBRESULT = $pearDB->query("SELECT service_id, service_description, service_alias FROM service WHERE service_register = '0' AND service_activate = '1' ORDER BY service_description");
 while ($tpl = $DBRESULT->fetchRow()) {
-	$tplService[$tpl["service_id"]] = $tpl["service_alias"];
-	$templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
+    $tplService[$tpl["service_id"]] = $tpl["service_alias"];
+    $templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
 }
 $DBRESULT->free();
 
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";;
+$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
+;
 $statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enable")."</option>";
 $statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disable")."</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
-	$sqlFilterCase = " AND sv.service_activate = '1' ";
-} else if ($status == 0 && $status != "") {
-	$sqlFilterCase = " AND sv.service_activate = '0' ";
+    $sqlFilterCase = " AND sv.service_activate = '1' ";
+} elseif ($status == 0 && $status != "") {
+    $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
 require_once "./class/centreonHost.class.php";
@@ -116,41 +117,26 @@ require_once "./class/centreonHost.class.php";
 $host_method = new CentreonHost($pearDB);
 $service_method = new CentreonService($pearDB);
 
-/**
- * Get
- */
-$hostgroupsTab = array();
-$hostgroupsFilter = "<option value='0'></option>";
-$DBRESULT = $pearDB->query("SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) AND hg_activate='1' ORDER BY hg_name");
-$hglist = $acl->getHostGroupAclConf(null, null, array('fields'  => array('hg_id', 'hg_name'),
-                                                      'keys'    => array('hg_id'),
-                                                      'order'   => array('hg_name')
-                                                     ));
-foreach ($hglist as $hgrp) {
-    $hostgroupsTab[$hgrp["hg_id"]] = $hgrp["hg_name"];
-    $hostgroupsFilter .= "<option value='".$hgrp["hg_id"]."'".(($hgrp["hg_id"] == $hostgroups) ? " selected" : "").">".$hgrp["hg_name"]."</option>";
-}
-$DBRESULT->free();
-
 $searchH = '';
 $searchH_SQL = '';
 $searchH_GET = '';
 $tmp_search_h = '';
 
 if (isset($_GET['search_h'])) {
-	$tmp_search_h = $_GET['search_h'];
-    $oreon->svc_host_search = $tmp_search_h;
+    $tmp_search_h = $_GET['search_h'];
+    $centreon->svc_host_search = $tmp_search_h;
 }
 if (isset($_POST["searchH"])) {
-	$tmp_search_h = $_POST["searchH"];
-    $oreon->svc_host_search = $tmp_search_h;
-} elseif (isset($oreon->svc_host_search) && $oreon->svc_host_search != '')
-    $tmp_search_h = $oreon->svc_host_search;
+    $tmp_search_h = $_POST["searchH"];
+    $centreon->svc_host_search = $tmp_search_h;
+} elseif (isset($centreon->svc_host_search) && $centreon->svc_host_search != '') {
+    $tmp_search_h = $centreon->svc_host_search;
+}
 
 if ($tmp_search_h != '') {
     $searchH = $tmp_search_h;
-   	$searchH_GET = $tmp_search_h;
-   	$searchH_SQL = "AND (host.host_name LIKE '%". $pearDB->escape($tmp_search_h) ."%' OR host_alias LIKE '%". $pearDB->escape($tmp_search_h) ."%' OR host_address LIKE '%". $pearDB->escape($tmp_search_h) ."%')";
+    $searchH_GET = $tmp_search_h;
+    $searchH_SQL = "AND (host.host_name LIKE '%". $pearDB->escape($tmp_search_h) ."%' OR host_alias LIKE '%". $pearDB->escape($tmp_search_h) ."%' OR host_address LIKE '%". $pearDB->escape($tmp_search_h) ."%')";
 }
 
 $searchS = '';
@@ -158,17 +144,18 @@ $searchS_SQL = '';
 $searchS_GET = '';
 $tmp_search_s = '';
 if (isset($_GET['search_s'])) {
-	$tmp_search_s = $_GET['search_s'];
-    $oreon->svc_svc_search = $tmp_search_s;
+    $tmp_search_s = $_GET['search_s'];
+    $centreon->svc_svc_search = $tmp_search_s;
 } elseif (isset($_POST["searchS"])) {
-	$tmp_search_s = $_POST["searchS"];
-    $oreon->svc_svc_search = $tmp_search_s;
-} elseif (isset($oreon->svc_svc_search))
-	$tmp_search_s = $oreon->svc_svc_search;
+    $tmp_search_s = $_POST["searchS"];
+    $centreon->svc_svc_search = $tmp_search_s;
+} elseif (isset($centreon->svc_svc_search)) {
+    $tmp_search_s = $centreon->svc_svc_search;
+}
 
 if ($tmp_search_s != '') {
     $searchS = $tmp_search_s;
-	$searchS_GET = $tmp_search_s;
+    $searchS_GET = $tmp_search_s;
     $searchS_SQL = "AND (sv.service_alias LIKE '%" . $pearDB->escape($tmp_search_s) . "%' OR sv.service_description LIKE '%" . $pearDB->escape($tmp_search_s) . "%')";
 }
 
@@ -187,17 +174,16 @@ $tpl->assign('mode_access', $lvl_access);
 /*
  * start header menu
  */
-$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 $tpl->assign("headerMenu_name", _("Host"));
 $tpl->assign("headerMenu_desc", _("Service"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
-$tpl->assign("headerMenu_parent", _("Parent Template"));
+$tpl->assign("headerMenu_parent", _("Template"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 $aclfilter = "";
 $distinct = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclfilter = " AND host.host_id = acl.host_id
                    AND acl.service_id = sv.service_id
                    AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
@@ -207,20 +193,20 @@ if (!$oreon->user->admin) {
 /*
  * Host/service list
  */
-$rq_body = 	"esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
-		"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
-		"sv.service_retry_check_interval, sv.service_max_check_attempts " .
-		"FROM service sv, host" .
+$rq_body =  "esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
+        "host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
+        "sv.service_retry_check_interval, sv.service_max_check_attempts " .
+        "FROM service sv, host" .
         ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
-        ($oreon->user->admin ? "" : $acldbname.".centreon_acl acl, ").
+        ($centreon->user->admin ? "" : $acldbname.".centreon_acl acl, ").
         "host_service_relation hsr " .
         "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
-		"WHERE host.host_register = '1' $searchH_SQL AND host.host_activate = '1' AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
-				"AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
-				((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
+        "WHERE host.host_register = '1' $searchH_SQL AND host.host_activate = '1' AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
+                "AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
+                ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
                 ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
                 $aclfilter .
-				"ORDER BY host.host_name, service_description";
+                "ORDER BY host.host_name, service_description";
 
 $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS " . $distinct . $rq_body . " LIMIT " . $num * $limit . ", " . $limit);
 $rows = $pearDB->numberRows();
@@ -241,107 +227,108 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-$fgHost = array("value"=>NULL, "print"=>NULL);
+$fgHost = array("value"=>null, "print"=>null);
 
-$interval_length = $oreon->optGen['interval_length'];
+$interval_length = $centreon->optGen['interval_length'];
 
 for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-	/*
+    /*
 	 * Get Number of Hosts linked to this one.
 	 */
-	$request = "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '".$service["service_id"]."'";
-	$BDRESULT2 = $pearDB->query($request);
-	$data = $BDRESULT2->fetchRow();
-	$service["nbr"] = $data["COUNT(*)"];
-	$BDRESULT2->free();
-	unset($data);
+    $request = "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '".$service["service_id"]."'";
+    $BDRESULT2 = $pearDB->query($request);
+    $data = $BDRESULT2->fetchRow();
+    $service["nbr"] = $data["COUNT(*)"];
+    $BDRESULT2->free();
+    unset($data);
 
-	/**
-	 * If the name of our Host is in the Template definition, we have to catch it, whatever the level of it :-)
-	 */
-	$fgHost["value"] != $service["host_name"] ? ($fgHost["print"] = true && $fgHost["value"] = $service["host_name"]) : $fgHost["print"] = false;
-	$selectedElements = $form->addElement('checkbox', "select[".$service['service_id']."]");
-	$moptions = "";
-	if ($service["service_activate"]) {
-		$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&hostgroups=".$hostgroups."&template=$template&status=".$status."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
-	} else {
-		$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&hostgroups=".$hostgroups."&template=$template&status=".$status."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
-	}
-	$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
+    /**
+     * If the name of our Host is in the Template definition, we have to catch it, whatever the level of it :-)
+     */
+    $fgHost["value"] != $service["host_name"] ? ($fgHost["print"] = true && $fgHost["value"] = $service["host_name"]) : $fgHost["print"] = false;
+    $selectedElements = $form->addElement('checkbox', "select[".$service['service_id']."]");
+    $moptions = "";
+    if ($service["service_activate"]) {
+        $moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&hostgroups=".$hostgroups."&template=$template&status=".$status."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
+    } else {
+        $moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&hostgroups=".$hostgroups."&template=$template&status=".$status."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
+    }
+    $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
 
-	/*
+    /*
 	 * If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 	 */
 
-	if (!$service["service_description"]) {
-		$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
-	} else {
-		$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
-		$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
-	}
+    if (!$service["service_description"]) {
+        $service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
+    } else {
+        $service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
+        $service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
+    }
 
-	/**
-	 * TPL List
-	 */
-	$tplArr = array();
-	$tplStr = null;
-	$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
-	if (count($tplArr)) {
-		foreach($tplArr as $key => $value) {
-			$tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
-		}		
-	}
+    /**
+     * TPL List
+     */
+    $tplArr = array();
+    $tplStr = null;
+    $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
+    if (count($tplArr)) {
+        foreach ($tplArr as $key => $value) {
+            $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
+        }
+    }
 
-	/**
-	 * Get service intervals in seconds
-	 */
-	$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
-	$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $interval_length;
+    /**
+     * Get service intervals in seconds
+     */
+    $normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
+    $retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") * $interval_length;
 
-	if ($normal_check_interval % 60 == 0) {
-		$normal_units = "min";
-		$normal_check_interval = $normal_check_interval / 60;
-	} else {
-		$normal_units = "sec";
-	}
+    if ($normal_check_interval % 60 == 0) {
+        $normal_units = "min";
+        $normal_check_interval = $normal_check_interval / 60;
+    } else {
+        $normal_units = "sec";
+    }
 
-	if ($retry_check_interval % 60 == 0) {
-		$retry_units = "min";
-		$retry_check_interval = $retry_check_interval / 60;
-	} else {
-		$retry_units = "sec";
-	}
+    if ($retry_check_interval % 60 == 0) {
+        $retry_units = "min";
+        $retry_check_interval = $retry_check_interval / 60;
+    } else {
+        $retry_units = "sec";
+    }
 
-	if ((isset($ehiCache[$service["host_id"]]) && $ehiCache[$service["host_id"]])) {
-	    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$service["host_id"]]);
-	} elseif ($icone = $host_method->replaceMacroInString($service["host_id"], getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1))) {
-		$host_icone = "./img/media/" . $icone;
-	} else {
-		$host_icone = "./img/icons/host.png";
-	}
+    if ((isset($ehiCache[$service["host_id"]]) && $ehiCache[$service["host_id"]])) {
+        $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$service["host_id"]]);
+    } elseif ($icone = $host_method->replaceMacroInString($service["host_id"], getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1))) {
+        $host_icone = "./img/media/" . $icone;
+    } else {
+        $host_icone = "./img/icons/host.png";
+    }
 
     if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
-		$svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
-	} elseif ($icone = $mediaObj->getFilename(getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))) {
-		$svc_icon = "./img/media/" . $icone;
-	} else {
-		$svc_icon = "./img/icons/service.png";
-	}
+        $svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
+    } elseif ($icone = $mediaObj->getFilename(getMyServiceExtendedInfoField($service["service_id"], "esi_icon_image"))) {
+        $svc_icon = "./img/media/" . $icone;
+    } else {
+        $svc_icon = "./img/icons/service.png";
+    }
 
-    $elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style),
-                            "RowMenu_select"	=> $selectedElements->toHtml(),
-                            "RowMenu_name"		=> CentreonUtils::escapeSecure($service["host_name"]),
-                            "RowMenu_icone"		=> $host_icone,
+    $elemArr[$i] = array(   "MenuClass"             => "list_".($service["nbr"]>1 ? "three" : $style),
+                            "RowMenu_select"    => $selectedElements->toHtml(),
+                            "RowMenu_name"      => CentreonUtils::escapeSecure($service["host_name"]),
+                            "RowMenu_icone"         => $host_icone,
                             "RowMenu_sicon"     => $svc_icon,
-                            "RowMenu_link"		=> "?p=60101&o=c&host_id=".$service['host_id'],
-                            "RowMenu_link2"		=> "?p=".$p."&o=c&service_id=".$service['service_id'],
-                            "RowMenu_parent"	=> CentreonUtils::escapeSecure($tplStr),
-                            "RowMenu_retry"		=> CentreonUtils::escapeSecure("$normal_check_interval $normal_units / $retry_check_interval $retry_units"),
-                            "RowMenu_desc"		=> CentreonUtils::escapeSecure($service["service_description"]),
-                            "RowMenu_status"	=> $service["service_activate"] ? _("Enabled") : _("Disabled"),
-                            "RowMenu_options"	=> $moptions);
-	$fgHost["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;
-	$style != "two" ? $style = "two" : $style = "one";
+                            "RowMenu_link"      => "?p=60101&o=c&host_id=".$service['host_id'],
+                            "RowMenu_link2"         => "?p=".$p."&o=c&service_id=".$service['service_id'],
+                            "RowMenu_parent"    => CentreonUtils::escapeSecure($tplStr),
+                            "RowMenu_retry"         => CentreonUtils::escapeSecure("$normal_check_interval $normal_units / $retry_check_interval $retry_units"),
+                            "RowMenu_desc"      => CentreonUtils::escapeSecure($service["service_description"]),
+                            "RowMenu_status"    => $service["service_activate"] ? _("Enabled") : _("Disabled"),
+                            "RowMenu_badge"     => $service["service_activate"] ? "service_ok" : "service_critical",
+                            "RowMenu_options"   => $moptions);
+    $fgHost["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;
+    $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
@@ -356,47 +343,30 @@ $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfir
 ?>
 <script type="text/javascript">
 function setO(_i) {
-	document.forms['form'].elements['o'].value = _i;
+    document.forms['form'].elements['o'].value = _i;
 }
 </SCRIPT>
 <?php
-$attrs1 = array(
-	'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 6 && confirm('"._("Are you sure you want to detach the service ?")."')) {" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
-			" 	setO(this.form.elements['o1'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach")), $attrs1);
 
-$attrs2 = array(
-	'onchange'=>"javascript: " .
-                        " var bChecked = isChecked(); ".
-                        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-                        " alert('"._("Please select one or more items")."'); return false;} " .
-			"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 6 && confirm('"._("Are you sure you want to detach the service ?")."')) {" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
-			" 	setO(this.form.elements['o2'].value); submit();} " .
-			"this.form.elements['o1'].selectedIndex = 0");
-$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach")), $attrs2);
-
-$o1 = $form->getElement('o1');
-$o1->setValue(NULL);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(NULL);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange'=>"javascript: " .
+                " var bChecked = isChecked(); ".
+                " if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
+                " alert('"._("Please select one or more items")."'); return false;} " .
+                "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                " 	setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                " 	setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 6 && confirm('"._("Are you sure you want to detach the service ?")."')) {" .
+                " 	setO(this.form.elements['".$option."'].value); submit();} " .
+                "else if (this.form.elements['".$option."'].selectedIndex == 3 || this.form.elements['".$option."'].selectedIndex == 4 ||this.form.elements['".$option."'].selectedIndex == 5){" .
+                " 	setO(this.form.elements['".$option."'].value); submit();} " .
+                "this.form.elements['".$option."'].selectedIndex = 0");
+    $form->addElement('select', $option, null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach")), $attrs1);
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);
+}
 
 $tpl->assign('limit', $limit);
 
@@ -421,7 +391,6 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('Hosts', _("Hosts"));
-$tpl->assign('Hostgroups', _("HostGroups"));
 $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
 $tpl->assign('Services', _("Services"));

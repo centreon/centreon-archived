@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -59,7 +58,7 @@ class CentreonACLGroup extends CentreonObject
     const ORDER_UNIQUENAME        = 0;
     const ORDER_ALIAS             = 1;
 
- 	/**
+    /**
      * Constructor
      *
      * @return void
@@ -69,7 +68,7 @@ class CentreonACLGroup extends CentreonObject
         parent::__construct();
         $this->object = new \Centreon_Object_Acl_Group();
         $this->params = array(  'acl_group_changed'                         => '1',
-                                'acl_group_activate'	                    => '1'
+                                'acl_group_activate'                        => '1'
                             );
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_group_activate";
@@ -153,16 +152,9 @@ class CentreonACLGroup extends CentreonObject
      */
     public function __call($name, $arg)
     {
+        /* Get the method name */
         $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $groupIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($groupIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
-        }
-        $groupId = $groupIds[0];
+        /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)([a-zA-Z_]+)/", $name, $matches)) {
             $relclass = "Centreon_Object_Relation_Acl_Group_".ucwords($matches[2]);
             if (class_exists("Centreon_Object_Acl_".ucwords($matches[2]))) {
@@ -174,12 +166,23 @@ class CentreonACLGroup extends CentreonObject
                 $class = "Centreon_Object_".ucwords($matches[2]);
             }
             if (class_exists($relclass) && class_exists($class)) {
+                /* Parse arguments */
+                if (!isset($arg[0])) {
+                    throw new CentreonClapiException(self::MISSINGPARAMETER);
+                }
+                $args = explode($this->delim, $arg[0]);
+                $groupIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+                if (!count($groupIds)) {
+                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                }
+                $groupId = $groupIds[0];
+
                 $relobj = new $relclass();
                 $obj = new $class();
                 if ($matches[1] == "get") {
                     $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $groupIds);
                     echo "id".$this->delim."name"."\n";
-                    foreach($tab as $value) {
+                    foreach ($tab as $value) {
                         $tmp = $obj->getParameters($value, array($obj->getUniqueLabelField()));
                         echo $value . $this->delim . $tmp[$obj->getUniqueLabelField()] . "\n";
                     }
@@ -190,7 +193,7 @@ class CentreonACLGroup extends CentreonObject
                     $relation = $args[1];
                     $relations = explode("|", $relation);
                     $relationTable = array();
-                    foreach($relations as $rel) {
+                    foreach ($relations as $rel) {
                         $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                         if (!count($tab)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
@@ -200,8 +203,12 @@ class CentreonACLGroup extends CentreonObject
                     if ($matches[1] == "set") {
                         $relobj->delete($groupId);
                     }
-                    $existingRelationIds = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), array($groupId));
-                    foreach($relationTable as $relationId) {
+                    $existingRelationIds = $relobj->getTargetIdFromSourceId(
+                        $relobj->getSecondKey(),
+                        $relobj->getFirstKey(),
+                        array($groupId)
+                    );
+                    foreach ($relationTable as $relationId) {
                         if ($matches[1] == "del") {
                             $relobj->delete($groupId, $relationId);
                         } elseif ($matches[1] == "set" || $matches[1] == "add") {

@@ -31,49 +31,67 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit ();
-	}
+if (!isset($centreon)) {
+    exit();
+}
 
-	isset($_GET["acl_res_id"]) ? $cG = $_GET["acl_res_id"] : $cG = NULL;
-	isset($_POST["acl_res_id"]) ? $cP = $_POST["acl_res_id"] : $cP = NULL;
-	$cG ? $acl_id = $cG : $acl_id = $cP;
+isset($_GET["acl_res_id"]) ? $cG = $_GET["acl_res_id"] : $cG = null;
+isset($_POST["acl_res_id"]) ? $cP = $_POST["acl_res_id"] : $cP = null;
+$cG ? $acl_id = $cG : $acl_id = $cP;
 
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-	$cG ? $select = $cG : $select = $cP;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
+$cG ? $select = $cG : $select = $cP;
 
-	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 
-	#Pear library
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+#Pear library
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
-	$path = "./include/options/accessLists/resourcesACL/";
+#Path to the configuration dir
+$path = "./include/options/accessLists/resourcesACL/";
 
-	#PHP functions
-	require_once $path."DB-Func.php";
-	require_once "./include/common/common-Func.php";
+#PHP functions
+require_once $path."DB-Func.php";
+require_once "./include/common/common-Func.php";
 
-	switch ($o)	{
-		case "a" : require_once($path."formResourcesAccess.php"); break; #Add a LCA
-		case "w" : require_once($path."formResourcesAccess.php"); break; #Watch a LCA
-		case "c" : require_once($path."formResourcesAccess.php"); break; #Modify a LCA
-		case "s" : enableLCAInDB($acl_id); require_once($path."listsResourcesAccess.php"); break; #Activate a LCA
-		case "u" : disableLCAInDB($acl_id); require_once($path."listsResourcesAccess.php"); break; #Desactivate a LCA
-		case "m" : multipleLCAInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listsResourcesAccess.php"); break; #Duplicate n LCAs
-		case "d" : deleteLCAInDB(isset($select) ? $select : array()); require_once($path."listsResourcesAccess.php"); break; #Delete n LCAs
-		case "t" : require_once($path."showUsersAccess.php"); break;
-		default : require_once($path."listsResourcesAccess.php"); break;
-	}
-?>
+switch ($o) {
+    case "a":
+        require_once($path."formResourcesAccess.php");
+        break; #Add a LCA
+    case "w":
+        require_once($path."formResourcesAccess.php");
+        break; #Watch a LCA
+    case "c":
+        require_once($path."formResourcesAccess.php");
+        break; #Modify a LCA
+    case "s":
+        enableLCAInDB($acl_id);
+        require_once($path."listsResourcesAccess.php");
+        break; #Activate a LCA
+    case "u":
+        disableLCAInDB($acl_id);
+        require_once($path."listsResourcesAccess.php");
+        break; #Desactivate a LCA
+    case "m":
+        multipleLCAInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listsResourcesAccess.php");
+        break; #Duplicate n LCAs
+    case "d":
+        deleteLCAInDB(isset($select) ? $select : array());
+        require_once($path."listsResourcesAccess.php");
+        break; #Delete n LCAs
+    case "t":
+        require_once($path."showUsersAccess.php");
+        break;
+    default:
+        require_once($path."listsResourcesAccess.php");
+        break;
+}

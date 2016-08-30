@@ -347,7 +347,9 @@ sub reload {
     }
     
     centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb}, $self->{csdb});
-    centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
+    if ($self->{centreontrapd_config}->{mode} == 0) {
+    	centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
+    }
 
     if ($self->{cdb}->type() =~ /SQLite/i) {
         $self->{logger}->writeLogInfo("Sqlite database. Need to disconnect and connect file.");

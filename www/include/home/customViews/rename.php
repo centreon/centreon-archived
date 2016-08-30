@@ -43,19 +43,20 @@ require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 session_start();
 
 if (!isset($_SESSION['centreon'])) {
-    exit;
+    exit();
 }
 
 $centreon = $_SESSION['centreon'];
 $action = $_REQUEST['action'];
 $db = new CentreonDB();
+
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
-    exit;
+    exit();
 }
+
 $widgetObj = new CentreonWidget($centreon, $db);
 try {
     echo $widgetObj->rename($_REQUEST);
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage();
 }
-?>

@@ -31,35 +31,30 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
  /*
   *  Class that contains various methods for managing hosts
   */
- class CentreonObjects {
- 	private $DB;
-	public $hosts;
-	public $services;
-	public $hostgoups;
-	public $servicegroups;
-	public $commandes;
+class CentreonObjects
+{
+    private $DB;
+    public $hosts;
+    public $services;
+    public $hostgoups;
+    public $servicegroups;
+    public $commandes;
 
+    /**
+     *
+     * Constructor
+     * @param $pearDB
+     */
+    public function __construct($pearDB)
+    {
+        $this->DB = $pearDB;
 
- 	/**
- 	 *
- 	 * Constructor
- 	 * @param $pearDB
- 	 */
- 	function __construct($pearDB) {
- 		$this->DB = $pearDB;
+        $this->hostgroups = new CentreonHostGroups($pearDB);
 
-		$this->hostgroups = new CentreonHostGroups($pearDB);
-
- 	}
-
+    }
 }
-
-?>

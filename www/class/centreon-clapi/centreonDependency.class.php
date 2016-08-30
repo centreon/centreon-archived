@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -77,8 +78,8 @@ class CentreonDependency extends CentreonObject
         $this->object = new \Centreon_Object_Dependency();
         $this->action = "DEP";
         $this->insertParams = array(
-            'dep_name', 
-            'dep_description', 
+            'dep_name',
+            'dep_description',
             'type',
             'parents'
         );
@@ -98,10 +99,10 @@ class CentreonDependency extends CentreonObject
             $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
         }
         $params = array(
-            'dep_id', 
-            'dep_name', 
-            'dep_description', 
-            'inherits_parent', 
+            'dep_id',
+            'dep_name',
+            'dep_description',
+            'inherits_parent',
             'execution_failure_criteria',
             'notification_failure_criteria'
         );
@@ -152,7 +153,7 @@ class CentreonDependency extends CentreonObject
             default:
                 throw new CentreonClapiException(
                     sprintf(
-                        'Unknown type %s. Please choose one of the following host|hg|service|sg|meta', 
+                        'Unknown type %s. Please choose one of the following host|hg|service|sg|meta',
                         $params[self::ORDER_DEP_TYPE]
                     )
                 );
@@ -168,11 +169,11 @@ class CentreonDependency extends CentreonObject
      */
     protected function getDependencyType($dependencyName)
     {
-        $sql = "SELECT '".self::DEP_TYPE_HOST."' as type 
+        $sql = "SELECT '".self::DEP_TYPE_HOST."' as type
             FROM dependency d, dependency_hostParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
             AND d.dep_name = :name
-            UNION 
+            UNION
             SELECT '".self::DEP_TYPE_SERVICE."'
             FROM dependency d, dependency_serviceParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
@@ -181,7 +182,7 @@ class CentreonDependency extends CentreonObject
             SELECT '".self::DEP_TYPE_HOSTGROUP."'
             FROM dependency d, dependency_hostgroupParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
-            AND d.dep_name = :name                        
+            AND d.dep_name = :name
             UNION
             SELECT '".self::DEP_TYPE_SERVICEGROUP."'
             FROM dependency d, dependency_servicegroupParent_relation rel
@@ -216,7 +217,7 @@ class CentreonDependency extends CentreonObject
         $parentIds = array();
         foreach ($parents as $parent) {
             $idTab = $parentObj->getIdByParameter(
-                $parentObj->getUniqueLabelField(), 
+                $parentObj->getUniqueLabelField(),
                 array($parent)
             );
             // make sure that all parents exist
@@ -253,9 +254,9 @@ class CentreonDependency extends CentreonObject
         $obj = new \Centreon_Object_Host();
         $relObj = new \Centreon_Object_Relation_Dependency_Parent_Host();
         $this->insertDependency(
-            $params['dep_name'], 
-            $params['dep_description'], 
-            $obj, 
+            $params['dep_name'],
+            $params['dep_description'],
+            $obj,
             $params['parents'],
             $relObj
         );
@@ -271,9 +272,9 @@ class CentreonDependency extends CentreonObject
         $obj = new \Centreon_Object_Host_Group();
         $relObj = new \Centreon_Object_Relation_Dependency_Parent_Hostgroup();
         $this->insertDependency(
-            $params['dep_name'], 
-            $params['dep_description'], 
-            $obj, 
+            $params['dep_name'],
+            $params['dep_description'],
+            $obj,
             $params['parents'],
             $relObj
         );
@@ -315,7 +316,7 @@ class CentreonDependency extends CentreonObject
         }
 
         // insert relations
-        $sql = "INSERT INTO dependency_serviceParent_relation 
+        $sql = "INSERT INTO dependency_serviceParent_relation
             (dependency_dep_id, host_host_id, service_service_id) VALUES (?, ?, ?)";
         foreach ($parentIds as $parentId) {
             $this->db->query($sql, array($depId, $parentId[0], $parentId[1]));
@@ -332,9 +333,9 @@ class CentreonDependency extends CentreonObject
         $obj = new \Centreon_Object_Service_Group();
         $relObj = new \Centreon_Object_Relation_Dependency_Parent_Servicegroup();
         $this->insertDependency(
-            $params['dep_name'], 
-            $params['dep_description'], 
-            $obj, 
+            $params['dep_name'],
+            $params['dep_description'],
+            $obj,
             $params['parents'],
             $relObj
         );
@@ -350,9 +351,9 @@ class CentreonDependency extends CentreonObject
         $obj = new \Centreon_Object_Meta_Service();
         $relObj = new \Centreon_Object_Relation_Dependency_Parent_Metaservice();
         $this->insertDependency(
-            $params['dep_name'], 
-            $params['dep_description'], 
-            $obj, 
+            $params['dep_name'],
+            $params['dep_description'],
+            $obj,
             $params['parents'],
             $relObj
         );
@@ -391,7 +392,7 @@ class CentreonDependency extends CentreonObject
     public function listdep($parameters)
     {
         $type = $this->getDependencyType($parameters);
-        
+
         if ($type == '') {
             throw new CentreonClapiException('Could not define type of dependency');
         }
@@ -430,7 +431,7 @@ class CentreonDependency extends CentreonObject
     protected function listhostgroupdep($depId)
     {
         /* Parents */
-        $sql = "SELECT hg_name 
+        $sql = "SELECT hg_name
             FROM hostgroup hg, dependency_hostgroupParent_relation rel
             WHERE hg.hg_id = rel.hostgroup_hg_id
             AND rel.dependency_dep_id = ?";
@@ -442,7 +443,7 @@ class CentreonDependency extends CentreonObject
         }
 
         /* Children */
-        $sql = "SELECT hg_name 
+        $sql = "SELECT hg_name
             FROM hostgroup hg, dependency_hostgroupChild_relation rel
             WHERE hg.hg_id = rel.hostgroup_hg_id
             AND rel.dependency_dep_id = ?";
@@ -466,7 +467,7 @@ class CentreonDependency extends CentreonObject
     protected function listservicedep($depId)
     {
         /* Parents */
-        $sql = "SELECT host_name, service_description 
+        $sql = "SELECT host_name, service_description
             FROM host h, service s, dependency_serviceParent_relation rel
             WHERE h.host_id = rel.host_host_id
             AND rel.service_service_id = s.service_id
@@ -479,7 +480,7 @@ class CentreonDependency extends CentreonObject
         }
 
         /* Host children */
-        $sql = "SELECT host_name 
+        $sql = "SELECT host_name
             FROM host h, dependency_hostChild_relation rel
             WHERE h.host_id = rel.host_host_id
             AND rel.dependency_dep_id = ?";
@@ -517,7 +518,7 @@ class CentreonDependency extends CentreonObject
     protected function listservicegroupdep($depId)
     {
         /* Parents */
-        $sql = "SELECT sg_name 
+        $sql = "SELECT sg_name
             FROM servicegroup sg, dependency_servicegroupParent_relation rel
             WHERE sg.sg_id = rel.servicegroup_sg_id
             AND rel.dependency_dep_id = ?";
@@ -529,7 +530,7 @@ class CentreonDependency extends CentreonObject
         }
 
         /* Children */
-        $sql = "SELECT sg_name 
+        $sql = "SELECT sg_name
             FROM servicegroup sg, dependency_servicegroupChild_relation rel
             WHERE sg.sg_id = rel.servicegroup_sg_id
             AND rel.dependency_dep_id = ?";
@@ -553,7 +554,7 @@ class CentreonDependency extends CentreonObject
     protected function listmetadep($depId)
     {
         /* Parents */
-        $sql = "SELECT meta_name 
+        $sql = "SELECT meta_name
             FROM meta_service m, dependency_metaserviceParent_relation rel
             WHERE m.meta_id = rel.meta_service_meta_id
             AND rel.dependency_dep_id = ?";
@@ -565,7 +566,7 @@ class CentreonDependency extends CentreonObject
         }
 
         /* Children */
-        $sql = "SELECT meta_name 
+        $sql = "SELECT meta_name
             FROM meta_service m, dependency_metaserviceChild_relation rel
             WHERE m.meta_id = rel.meta_service_meta_id
             AND rel.dependency_dep_id = ?";
@@ -589,7 +590,7 @@ class CentreonDependency extends CentreonObject
     protected function listhostdep($depId)
     {
         /* Parents */
-        $sql = "SELECT host_name 
+        $sql = "SELECT host_name
             FROM host h, dependency_hostParent_relation rel
             WHERE h.host_id = rel.host_host_id
             AND rel.dependency_dep_id = ?";
@@ -601,7 +602,7 @@ class CentreonDependency extends CentreonObject
         }
 
         /* Host children */
-        $sql = "SELECT host_name 
+        $sql = "SELECT host_name
             FROM host h, dependency_hostChild_relation rel
             WHERE h.host_id = rel.host_host_id
             AND rel.dependency_dep_id = ?";
@@ -676,7 +677,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToInsert
      * @param string $relType | 'parent' or 'child'
@@ -694,7 +695,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToInsert
      * @param string $relType | 'parent' or 'child'
@@ -712,7 +713,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToInsert
      * @param string $relType | 'parent' or 'child'
@@ -720,7 +721,7 @@ class CentreonDependency extends CentreonObject
     protected function addMetaRelations($depId, $objectToInsert, $relType)
     {
         $table = "dependency_metaservice" . ucfirst($relType) . "_relation";
-       
+
         $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (?, ?)";
         $obj = new \Centreon_Object_Meta_Service();
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
@@ -731,7 +732,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToInsert
      * @param string $relType | 'parent' or 'child'
@@ -747,7 +748,7 @@ class CentreonDependency extends CentreonObject
             }
             $params = array($depId, $hostIds[0]);
         } elseif ($relType == 'child' && strstr($objectToInsert, ',')) { // service child
-            $sql = "INSERT INTO dependency_serviceChild_relation 
+            $sql = "INSERT INTO dependency_serviceChild_relation
                 (dependency_dep_id, host_host_id, service_service_id)
                 VALUES (?, ?, ?)";
             list($host, $service) = explode(",", $objectToInsert);
@@ -767,9 +768,9 @@ class CentreonDependency extends CentreonObject
         }
         $this->db->query($sql, $params);
     }
- 
+
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToInsert
      * @param string $relType | 'parent' or 'child'
@@ -856,7 +857,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToDelete
      * @param string $relType | 'parent' or 'child'
@@ -864,7 +865,7 @@ class CentreonDependency extends CentreonObject
     protected function delHostgroupRelations($depId, $objectToDelete, $relType)
     {
         $table = "dependency_hostgroup" . ucfirst($relType) . "_relation";
-        $sql = "DELETE FROM {$table} 
+        $sql = "DELETE FROM {$table}
             WHERE dependency_dep_id = ?
             AND hostgroup_hg_id = ?";
         $obj = new \Centreon_Object_Host_Group();
@@ -876,7 +877,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToDelete
      * @param string $relType | 'parent' or 'child'
@@ -884,7 +885,7 @@ class CentreonDependency extends CentreonObject
     protected function delServicegroupRelations($depId, $objectToDelete, $relType)
     {
         $table = "dependency_servicegroup" . ucfirst($relType) . "_relation";
-        $sql = "DELETE FROM {$table} 
+        $sql = "DELETE FROM {$table}
             WHERE dependency_dep_id = ?
             AND servicegroup_sg_id = ?";
         $obj = new \Centreon_Object_Service_Group();
@@ -896,7 +897,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToDelete
      * @param string $relType | 'parent' or 'child'
@@ -904,8 +905,8 @@ class CentreonDependency extends CentreonObject
     protected function delMetaRelations($depId, $objectToDelete, $relType)
     {
         $table = "dependency_metaservice" . ucfirst($relType) . "_relation";
-       
-        $sql = "DELETE FROM {$table} 
+
+        $sql = "DELETE FROM {$table}
             WHERE dependency_dep_id = ?
             AND meta_service_meta_id = ?";
         $obj = new \Centreon_Object_Meta_Service();
@@ -917,7 +918,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToDelete
      * @param string $relType | 'parent' or 'child'
@@ -958,9 +959,9 @@ class CentreonDependency extends CentreonObject
         }
         $this->db->query($sql, $params);
     }
- 
+
     /**
-     * 
+     *
      * @param int $depId
      * @param string $objectToDelete
      * @param string $relType | 'parent' or 'child'
@@ -1029,7 +1030,7 @@ class CentreonDependency extends CentreonObject
     /**
      * Add parent
      *
-     * @param string 
+     * @param string
      */
     public function addparent($parameters)
     {
@@ -1107,7 +1108,7 @@ class CentreonDependency extends CentreonObject
                     ) . "\n";
                 }
                 // add host children
-                $childSql = "SELECT host_name 
+                $childSql = "SELECT host_name
                     FROM host h, dependency_hostChild_relation rel
                     WHERE h.host_id = rel.host_host_id
                     AND rel.dependency_dep_id = ?";
@@ -1211,7 +1212,7 @@ class CentreonDependency extends CentreonObject
                     ) . "\n";
                 }
                 // add host children
-                $childSql = "SELECT host_name 
+                $childSql = "SELECT host_name
                     FROM host h, dependency_hostChild_relation rel
                     WHERE h.host_id = rel.host_host_id
                     AND rel.dependency_dep_id = ?";
@@ -1314,7 +1315,7 @@ class CentreonDependency extends CentreonObject
                     ) . "\n";
                 }
                 // add children
-                $childSql = "SELECT hg_name 
+                $childSql = "SELECT hg_name
                     FROM hostgroup hg, dependency_hostgroupChild_relation rel
                     WHERE hg.hg_id = rel.hostgroup_hg_id
                     AND rel.dependency_dep_id = ?";
@@ -1397,7 +1398,7 @@ class CentreonDependency extends CentreonObject
                     ) . "\n";
                 }
                 // add children
-                $childSql = "SELECT sg_name 
+                $childSql = "SELECT sg_name
                     FROM servicegroup sg, dependency_servicegroupChild_relation rel
                     WHERE sg.sg_id = rel.servicegroup_sg_id
                     AND rel.dependency_dep_id = ?";
@@ -1480,7 +1481,7 @@ class CentreonDependency extends CentreonObject
                     ) . "\n";
                 }
                 // add children
-                $childSql = "SELECT meta_name 
+                $childSql = "SELECT meta_name
                     FROM meta_service m, dependency_metaserviceChild_relation rel
                     WHERE m.meta_id = rel.meta_service_meta_id
                     AND rel.dependency_dep_id = ?";
@@ -1512,5 +1513,4 @@ class CentreonDependency extends CentreonObject
             $previous = $row['dep_id'];
         }
     }
-
 }

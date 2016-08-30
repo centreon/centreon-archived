@@ -7,7 +7,7 @@
         <th><h5>{t}Filters{/t}</h5></th>
       </tr>
       <tr>
-        <td><h4>{t}Servicegroup{/t}</h4></td>
+        <td><h4>{t}Name{/t}</h4></td>
       </tr>
       <tr>
         <td><input type="text" name="searchSG" value="{$searchSG}"></td>
@@ -44,7 +44,7 @@
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
+			<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}

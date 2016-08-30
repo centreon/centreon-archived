@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -160,18 +160,25 @@ class Service extends AbstractService {
         return 0;
     }
     
-    private function getContactsFromHost($host_id, $service_id) {
-        $this->service_cache[$service_id]['contact_from_host'] = 0;
-        if (is_null($this->service_cache[$service_id]['service_inherit_contacts_from_host']) || $this->service_cache[$service_id]['service_inherit_contacts_from_host'] == 0) {
-            return 0;
+    private function getContactsFromHost($host_id, $service_id, $sOnlyContactHost) {
+        if ($sOnlyContactHost == 1) {
+            $host = Host::getInstance();
+            $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
+            $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
+            $this->service_cache[$service_id]['contact_from_host'] = 1;
+        } else {
+            $this->service_cache[$service_id]['contact_from_host'] = 0;
+            if (is_null($this->service_cache[$service_id]['service_inherit_contacts_from_host']) || $this->service_cache[$service_id]['service_inherit_contacts_from_host'] == 0) {
+                return 0;
+            }
+            if ($this->isServiceHasContacts($service_id)) {
+                return 0;
+            }
+            $host = Host::getInstance();
+            $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
+            $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
+            $this->service_cache[$service_id]['contact_from_host'] = 1;
         }
-        if ($this->isServiceHasContacts($service_id)) {
-            return 0;
-        }
-        $host = Host::getInstance();
-        $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
-        $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
-        $this->service_cache[$service_id]['contact_from_host'] = 1;
     }
     
     private function getSeverityInServiceChain($service_id_arg) {
@@ -275,9 +282,9 @@ class Service extends AbstractService {
         if (is_null($service_id)) {
             return null;
         }
-        
+               
         $this->buildCache();
-        
+               
         if (($this->use_cache == 0 || $by_hg == 1) && !isset($this->service_cache[$service_id])) {
             $this->getServiceFromId($service_id);
         }        
@@ -303,8 +310,10 @@ class Service extends AbstractService {
         $this->getServicePeriods($this->service_cache[$service_id]);
         $this->getContactGroups($this->service_cache[$service_id]);
         $this->getContacts($this->service_cache[$service_id]);
+        
+        
         # By default in centengine 1.4.15
-        #$this->getContactsFromHost($host_id, $service_id);
+        $this->getContactsFromHost($host_id, $service_id, $this->service_cache[$service_id]['service_use_only_contacts_from_host']);
         $this->getSeverity($host_id, $service_id);
         $this->getServiceGroups($service_id, $host_id, $host_name);        
         $this->generateObjectInFile($this->service_cache[$service_id] + array('host_name' => $host_name), $host_id . '.' . $service_id);
@@ -327,4 +336,3 @@ class Service extends AbstractService {
         parent::reset();
     }
 }
-

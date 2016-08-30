@@ -57,6 +57,7 @@ Notification
 *	Si la case **Contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
 *	La liste **Contacts liés** indique les contacts qui recevront les notifications.
 *	Si la case **Groupes de contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent.
+*       Si la case **Inherit only contacts/contacts group from host** est cochée, alors lors de la génération de la configuration, les contacts et/ou groupes de contacts de l’hôte (ou de ses templates suivant l’héritage) viendront écraser ceux du service ou de ses modèles de service. Cette fonction désactive la saisie de contacts et groupes de contacts pour ce service.
 *	Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications.
 *	Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification lorsque le statut est non-OK. Si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification par changement de statut.
 *	Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyée.

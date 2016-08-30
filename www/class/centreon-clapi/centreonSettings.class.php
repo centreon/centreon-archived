@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,10 +31,8 @@
  *
  * For more information : command@centreon.com
  *
- * SVN : $URL: http://svn.modules.centreon.com/centreon-clapi/trunk/www/modules/centreon-clapi/core/class/centreonHost.class.php $
- * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
- *
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -106,9 +104,9 @@ class CentreonSettings extends CentreonObject
         $res = $stmt->fetchAll();
         echo "parameter".$this->delim."value\n";
         foreach ($res as $row) {
-           if (isset($this->authorizedOptions[$row['key']])) {
-               echo $row['key'].$this->delim.$row['value']."\n";
-           }
+            if (isset($this->authorizedOptions[$row['key']])) {
+                echo $row['key'].$this->delim.$row['value']."\n";
+            }
         }
     }
 
@@ -159,4 +157,3 @@ class CentreonSettings extends CentreonObject
         $this->db->query("UPDATE `options` SET `value` = ? WHERE `key` = ?", array($value, $key));
     }
 }
-?>

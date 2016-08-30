@@ -33,238 +33,260 @@
  *
  */
 
- 	// Set logging options                                                                                                                                                                                                                                                    
-	if (defined("E_DEPRECATED")) {
-		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
-	} else {
-		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
-	}
-	
-	/*
-	 * Define Local Functions
-	 *   - remove SQL Injection : Thanks to Julien CAYSSOL
-	 */
+// Set logging options
+if (defined("E_DEPRECATED")) {
+    ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+} else {
+    ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
+}
+    
+/*
+ * Define Local Functions
+ *   - remove SQL Injection : Thanks to Julien CAYSSOL
+ */
 
-	function getParameters($str){
-		$var = NULL;
-		if (isset($_GET[$str]))
-			$var = $_GET[$str];
-		if (isset($_POST[$str]))
-			$var = $_POST[$str];
-		if ($var == "")
-			$var = NULL;
-		return htmlentities($var, ENT_QUOTES, "UTF-8");
-	}
-
- 	/*
- 	 * Purge Values
- 	 */
-	if (function_exists('filter_var')){
-		foreach ($_GET as $key => $value){
-			if (!is_array($value)){
-				$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-				$_GET[$key] = $value;
-			}
-		}
-	}
-
-	$p = getParameters("p");
-	$o = getParameters("o");
-	$min = getParameters("min");
-	$type = getParameters("type");
-	$search = getParameters("search");
-	$limit = getParameters("limit");
-	$num = getParameters("num");
-
-	/*
-	 * Include all func
-	 */
-
-	include_once ("./basic-functions.php");
-	include_once ("./include/common/common-Func.php");
-	include_once ("./header.php");
-
-	require_once _CENTREON_PATH_ . "www/autoloader.php";
-
-	/*
-	 * LCA Init Common Var
-	 */
-	global $is_admin;
-	$is_admin = $centreon->user->admin;
-
-	$DBRESULT = $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
-	$redirect = $DBRESULT->fetchRow();
-
-	/*
-	 * Init URL
-	 */
-	$url = "";
-    $acl_page = $centreon->user->access->page($p, true);
-    if ($acl_page == 1 || $acl_page == 2) {
-        if ($redirect["topology_page"] < 100){
-            $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-            if (!$ret['topology_page']){
-                if (file_exists($redirect["topology_url"])){
-                    $url = $redirect["topology_url"];
-                    reset_search_page($url);
-                } else {
-                    $url = "./alt_error.php";
-                }
-            } else {
-                $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
-                if ($ret2["topology_url_opt"])	{
-                    if (!$o) {
-                        $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
-                        $o = $tab[1];
-                    }
-                    $p = $ret2["topology_page"];
-                }
-                if (file_exists($ret2["topology_url"])){
-                    $url = $ret2["topology_url"];
-                    reset_search_page($url);
-                    if ($ret2["topology_url_opt"]){
-                        $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
-                        $o = $tab[1];
-                    }
-                } elseif ($ret['topology_url']) {
-                    $url = $ret['topology_url'];
-                } else {
-                    $url = "./alt_error.php";
-                }
-            }
-        } else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
-            $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-            if (!$ret['topology_page']) {
-                if (file_exists($redirect["topology_url"])){
-                    $url = $redirect["topology_url"];
-                    reset_search_page($url);
-                } else {
-                    $url = "./alt_error.php";
-                }
-            } else {
-                if ($ret["topology_url_opt"]){
-                    if (!$o) {
-                        $tab = preg_split("/\=/", $ret["topology_url_opt"]);
-                        $o = $tab[1];
-                    }
-                    $p = $ret["topology_page"];
-                }
-                if (file_exists($ret["topology_url"])){
-                    $url = $ret["topology_url"];
-                    reset_search_page($url);
-                } else {
-                    $url = "./alt_error.php";
-                }
-            }
-        } else if ($redirect["topology_page"] >= 1000) {
-            $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-            if (!$ret['topology_page']){
-                if (file_exists($redirect["topology_url"])){
-                    $url = $redirect["topology_url"];
-                    reset_search_page($url);
-                } else {
-                    $url = "./alt_error.php";
-                }
-            } else {
-                if (file_exists($redirect["topology_url"]) && $ret['topology_page']){
-                    $url = $redirect["topology_url"];
-                    reset_search_page($url);
-                } else {
-                    $url = "./alt_error.php";
-                }
-            }
-        }
-        if (isset($o) && $acl_page == 2) {
-            if ($o == 'c') {
-                $o = 'w';
-            } elseif ($o == 'a') {
-                $url = "./alt_error.php";
-            }
-        }
-    } else {
-        $url = "./alt_error.php";
+function getParameters($str)
+{
+    $var = null;
+    if (isset($_GET[$str])) {
+        $var = $_GET[$str];
     }
+    if (isset($_POST[$str])) {
+        $var = $_POST[$str];
+    }
+    if ($var == "") {
+        $var = null;
+    }
+    return htmlentities($var, ENT_QUOTES, "UTF-8");
+}
 
-	/*
-	 *  Header HTML
-	 */
-	include_once "./htmlHeader.php";
+/*
+ * Purge Values
+ */
+if (function_exists('filter_var')) {
+    foreach ($_GET as $key => $value) {
+        if (!is_array($value)) {
+            $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+            $_GET[$key] = $value;
+        }
+    }
+}
 
-	/*
-	 * Display Menu
-	 */
-	if (!$min) {
-		include_once "menu/Menu.php";
-	}
+$p = getParameters("p");
+$o = getParameters("o");
+$min = getParameters("min");
+$type = getParameters("type");
+$search = getParameters("search");
+$limit = getParameters("limit");
+$num = getParameters("num");
 
-	if (!$centreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { setQuickSearchPosition(); } });</script> <?php }
-	if (!$centreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'appear', { duration : 0 });</script> <?php }
-	if (!$centreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'appear', { duration : 0 });</script> <?php }
+/*
+ * Include all func
+ */
+include_once("./include/common/common-Func.php");
+include_once("./include/core/header/header.php");
 
-	/*
-	 * Display PathWay
-	 */
-	if ($min != 1) {
-		include_once "pathWay.php";
-	}
+require_once _CENTREON_PATH_ . "www/autoloader.php";
 
-	/*
-	 * Go on our page
-	 */
-	if ($min != 1) {
-    	require_once ("./class/centreonMsg.class.php");
-    	$msg = new CentreonMsg();
-    	if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
-    		$msg->setImage("./img/icons/warning.png");
-    		$msg->setTextStyle("bold");
-    		$msg->setText(_("You are not in an access group"));
-    		$msg->setTimeOut("3");
-    	}
-	}
+/*
+ * LCA Init Common Var
+ */
+global $is_admin;
+$is_admin = $centreon->user->admin;
 
-	if (isset($url) && $url) {
-    	include_once $url;
-	}
+$query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page " .
+            " FROM topology WHERE topology_page = '".$p."'";
+$DBRESULT = $pearDB->query($query);
+$redirect = $DBRESULT->fetchRow();
 
-	if (!isset($centreon->historyPage)) {
-		$centreon->createHistory();
-	}
+/*
+ * Init URL
+ */
+$url = "";
+$acl_page = $centreon->user->access->page($p, true);
+if ($acl_page == 1 || $acl_page == 2) {
+    if ($redirect["topology_page"] < 100) {
+        $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
+        if (!$ret['topology_page']) {
+            if (file_exists($redirect["topology_url"])) {
+                $url = $redirect["topology_url"];
+                reset_search_page($url);
+            } else {
+                $url = "./include/core/errors/alt_error.php";
+            }
+        } else {
+            $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
+            if ($ret2["topology_url_opt"]) {
+                if (!$o) {
+                    $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
+                    $o = $tab[1];
+                }
+                $p = $ret2["topology_page"];
+            }
+            if (file_exists($ret2["topology_url"])) {
+                $url = $ret2["topology_url"];
+                reset_search_page($url);
+                if ($ret2["topology_url_opt"]) {
+                    $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
+                    $o = $tab[1];
+                }
+            } elseif ($ret['topology_url']) {
+                $url = $ret['topology_url'];
+            } else {
+                $url = "./include/core/errors/alt_error.php";
+            }
+        }
+    } elseif ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
+        $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
+        if (!$ret['topology_page']) {
+            if (file_exists($redirect["topology_url"])) {
+                $url = $redirect["topology_url"];
+                reset_search_page($url);
+            } else {
+                $url = "./include/core/errors/alt_error.php";
+            }
+        } else {
+            if ($ret["topology_url_opt"]) {
+                if (!$o) {
+                    $tab = preg_split("/\=/", $ret["topology_url_opt"]);
+                    $o = $tab[1];
+                }
+                $p = $ret["topology_page"];
+            }
+            if (file_exists($ret["topology_url"])) {
+                $url = $ret["topology_url"];
+                reset_search_page($url);
+            } else {
+                $url = "./include/core/errors/alt_error.php";
+            }
+        }
+    } elseif ($redirect["topology_page"] >= 1000) {
+        $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
+        if (!$ret['topology_page']) {
+            if (file_exists($redirect["topology_url"])) {
+                $url = $redirect["topology_url"];
+                reset_search_page($url);
+            } else {
+                $url = "./include/core/errors/alt_error.php";
+            }
+        } else {
+            if (file_exists($redirect["topology_url"]) && $ret['topology_page']) {
+                $url = $redirect["topology_url"];
+                reset_search_page($url);
+            } else {
+                $url = "./include/core/errors/alt_error.php";
+            }
+        }
+    }
+    if (isset($o) && $acl_page == 2) {
+        if ($o == 'c') {
+            $o = 'w';
+        } elseif ($o == 'a') {
+            $url = "./include/core/errors/alt_error.php";
+        }
+    }
+} else {
+    $url = "./include/core/errors/alt_error.php";
+}
 
-	/*
-	 * Keep in memory all informations about pagination, keyword for search...
-	 */
-	if (isset($url) && $url) {
-		if (isset($_GET["num"]))
-			$centreon->historyPage[$url] = $_GET["num"];
-		if (isset($_POST["num"]))
-			$centreon->historyPage[$url] = $_POST["num"];
-		if (isset($_GET["search"]))
-			$centreon->historySearch[$url] = $_GET["search"];
-		if (isset($_POST["search"]))
-			$centreon->historySearch[$url] = $_POST["search"];
-		if (isset($_GET["search_service"]))
-			$centreon->historySearchService[$url] = $_GET["search_service"];
-		if (isset($_POST["search_service"]))
-			$centreon->historySearchService[$url] = $_POST["search_service"];
-		if (isset($_GET["limit"]))
-			$centreon->historyLimit[$url] = $_GET["limit"];
-		if (isset($_POST["limit"]))
-			$centreon->historyLimit[$url] = $_POST["limit"];
-	}
+/*
+ *  Header HTML
+ */
+include_once "./include/core/header/htmlHeader.php";
 
-	/*
-	 * Display Footer
-	 */
-	if (!$min) {
-        print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
-	}
+/*
+ * Display Menu
+ */
+if (!$min) {
+    include_once "./include/core/menu/menu.php";
+}
 
-    print "<!-- Footer -->";
-    include_once "footer.php";
+if (!$centreon->user->showDiv("header")) {
+?><script type="text/javascript">
+    new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { 
+        setQuickSearchPosition(); } 
+    });
+</script> <?php
+}
+if (!$centreon->user->showDiv("menu_3")) {
+?><script type="text/javascript">
+    new Effect.toggle('menu_3', 'appear', { duration : 0 });
+</script> <?php
+}
+if (!$centreon->user->showDiv("menu_2")) {
+?><script type="text/javascript">
+    new Effect.toggle('menu_2', 'appear', { duration : 0 });
+</script> <?php
+}
 
-?>
-<script type='text/javascript'>
-var centreonTooltip = new CentreonToolTip();
-centreonTooltip.setTitle('<?php echo _("Help"); ?>');
-centreonTooltip.render();
-</script>
+/*
+ * Display PathWay
+ */
+if ($min != 1) {
+    include_once "./include/core/pathway/pathway.php";
+}
+
+/*
+ * Go on our page
+ */
+if ($min != 1) {
+    require_once("./class/centreonMsg.class.php");
+    $msg = new CentreonMsg();
+    if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
+        $msg->setImage("./img/icons/warning.png");
+        $msg->setTextStyle("bold");
+        $msg->setText(_("You are not in an access group"));
+        $msg->setTimeOut("3");
+    }
+}
+
+if (isset($url) && $url) {
+    include_once $url;
+}
+
+if (!isset($centreon->historyPage)) {
+    $centreon->createHistory();
+}
+
+/*
+ * Keep in memory all informations about pagination, keyword for search...
+ */
+if (isset($url) && $url) {
+    if (isset($_GET["num"])) {
+        $centreon->historyPage[$url] = $_GET["num"];
+    }
+    if (isset($_POST["num"])) {
+        $centreon->historyPage[$url] = $_POST["num"];
+    }
+    if (isset($_GET["search"])) {
+        $centreon->historySearch[$url] = $_GET["search"];
+    }
+    if (isset($_POST["search"])) {
+        $centreon->historySearch[$url] = $_POST["search"];
+    }
+    if (isset($_GET["search_service"])) {
+        $centreon->historySearchService[$url] = $_GET["search_service"];
+    }
+    if (isset($_POST["search_service"])) {
+        $centreon->historySearchService[$url] = $_POST["search_service"];
+    }
+    if (isset($_GET["limit"])) {
+        $centreon->historyLimit[$url] = $_GET["limit"];
+    }
+    if (isset($_POST["limit"])) {
+        $centreon->historyLimit[$url] = $_POST["limit"];
+    }
+}
+
+/*
+ * Display Footer
+ */
+if (!$min) {
+    print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
+}
+
+/*
+ * Include Footer 
+ */
+include_once "./include/core/footer/footer.php";
+

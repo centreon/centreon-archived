@@ -34,19 +34,19 @@
  */
 
 if (!isset($centreon)) {
-	exit();		
+    exit();
 }
 
-if (!isset($oreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
+if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"]) || $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0) {
     $tFM = 10;
 } else {
-    $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+    $tFM = $centreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 }
 
-if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
+if (!isset($centreon->optGen["AjaxFirstTimeReloadStatistic"]) || $centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
     $tFS = 10;
 } else {
-    $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+    $tFS = $centreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
 }
 
 $sid = session_id();
@@ -54,10 +54,10 @@ $time = time();
 
 $obis = $o;
 if (isset($_GET["problem"])) {
-	$obis .= '_pb';
+    $obis .= '_pb';
 }
 if (isset($_GET["acknowledge"])) {
-	$obis .= '_ack_' . $_GET["acknowledge"];
+    $obis .= '_ack_' . $_GET["acknowledge"];
 }
 
 ?>
@@ -65,7 +65,7 @@ if (isset($_GET["acknowledge"])) {
 
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/Hosts/xml/<?php print $centreon->broker->getBroker(); ?>/hostXML.php";
+var _addrXML = "./include/monitoring/status/Hosts/xml/hostXML.php";
 var _addrXSL = "./include/monitoring/status/Hosts/xsl/host.xsl";
 var _criticality_id = 0;
 
@@ -75,53 +75,53 @@ var _selectedElem = new Array();
 
 function set_header_title() {
 
-	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
-	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
+    var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
+    var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if (document.getElementById('host_name')){
-		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo addslashes(_("Hosts"))?>';
-	  	h.indice = 'host_name';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+    if (document.getElementById('host_name')){
+        var h = document.getElementById('host_name');
+        h.innerHTML = '<?php echo addslashes(_("Hosts"))?>';
+        h.indice = 'host_name';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
-		var h = document.getElementById('current_state');
-		h.innerHTML = '<?php echo addslashes(_("Status"))?>';
-	  	h.indice = 'current_state';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+        var h = document.getElementById('current_state');
+        h.innerHTML = '<?php echo addslashes(_("Status"))?>';
+        h.indice = 'current_state';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
-		var h = document.getElementById('ip');
-		h.innerHTML = '<?php echo addslashes(_("IP Address"))?>';
-	  	h.indice = 'ip';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+        var h = document.getElementById('ip');
+        h.innerHTML = '<?php echo addslashes(_("IP Address"))?>';
+        h.indice = 'ip';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
-		var h = document.getElementById('last_state_change');
-		h.innerHTML = '<?php echo addslashes(_("Duration"))?>';
-	  	h.indice = 'last_state_change';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+        var h = document.getElementById('last_state_change');
+        h.innerHTML = '<?php echo addslashes(_("Duration"))?>';
+        h.indice = 'last_state_change';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
-		var h = document.getElementById('last_hard_state_change');
-		if (h) {
-			h.innerHTML = '<?php echo addslashes(_("Hard State Duration"))?>';
-		  	h.indice = 'last_hard_state_change';
-		  	h.onclick=function(){change_type_order(this.indice)};
-			h.style.cursor = "pointer";
-		}
+        var h = document.getElementById('last_hard_state_change');
+        if (h) {
+            h.innerHTML = '<?php echo addslashes(_("Hard State Duration"))?>';
+            h.indice = 'last_hard_state_change';
+            h.onclick=function(){change_type_order(this.indice)};
+            h.style.cursor = "pointer";
+        }
 
-		var h = document.getElementById('last_check');
-		h.innerHTML = '<?php echo addslashes(_("Last Check"))?>';
-	  	h.indice = 'last_check';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+        var h = document.getElementById('last_check');
+        h.innerHTML = '<?php echo addslashes(_("Last Check"))?>';
+        h.indice = 'last_check';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
-		var h = document.getElementById('current_check_attempt');
-		h.innerHTML = '<?php echo addslashes(_("Tries"))?>';
-	  	h.indice = 'current_check_attempt';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+        var h = document.getElementById('current_check_attempt');
+        h.innerHTML = '<?php echo addslashes(_("Tries"))?>';
+        h.indice = 'current_check_attempt';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
         var h = document.getElementById('criticality_id');
         if (h) {
@@ -132,13 +132,13 @@ function set_header_title() {
             h.style.cursor = "pointer";
         }
 
-		var h = document.getElementById('plugin_output');
-		h.innerHTML = '<?php echo addslashes(_("Status information"))?>';
-	  	h.indice = 'plugin_output';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+        var h = document.getElementById('plugin_output');
+        h.innerHTML = '<?php echo addslashes(_("Status information"))?>';
+        h.indice = 'plugin_output';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
-		if (_sort_type) {
+        if (_sort_type) {
             var h = document.getElementById(_sort_type);
             var _linkaction_asc = document.createElement("a");
             if (_order == 'ASC') {
@@ -151,114 +151,114 @@ function set_header_title() {
             if (h) {
                 h.appendChild(_linkaction_asc);
             }
-		}
-	}
+        }
+    }
 }
 
 function mainLoopHost() {
 
- 	_currentInputField = document.getElementById('host_search');
-  	if (document.getElementById('host_search') && document.getElementById('host_search').value) {
-  		_currentInputFieldValue = document.getElementById('host_search').value;
-  	} else {
-  		_currentInputFieldValue = "";
-  	}
+    _currentInputField = document.getElementById('host_search');
+    if (document.getElementById('host_search') && document.getElementById('host_search').value) {
+        _currentInputFieldValue = document.getElementById('host_search').value;
+    } else {
+        _currentInputFieldValue = "";
+    }
 
-  	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
-    	if (!_lock) {
-    		set_search_host(escapeURI(_currentInputFieldValue));
-			_host_search = _currentInputFieldValue;
+    if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
+        if (!_lock) {
+            set_search_host(escapeURI(_currentInputFieldValue));
+            _host_search = _currentInputFieldValue;
 
-			monitoring_refresh();
+            monitoring_refresh();
 
-			if (_currentInputFieldValue.length >= 3) {
-				_currentInputField.className = "search_input_active";
-			} else {
-				_currentInputField.className = "search_input";
-			}
-		}
-	}
-	_oldInputFieldValue = _currentInputFieldValue;
+            if (_currentInputFieldValue.length >= 3) {
+                _currentInputField.className = "search_input_active";
+            } else {
+                _currentInputField.className = "search_input";
+            }
+        }
+    }
+    _oldInputFieldValue = _currentInputFieldValue;
 
-	setTimeout("mainLoopHost()", 250);
+    setTimeout("mainLoopHost()", 250);
 }
 
 function initM(_time_reload, _sid, _o ){
 
-	// INIT Select objects
-	construct_selecteList_ndo_instance('instance_selected');
-	construct_HostGroupSelectList('hostgroups_selected');
+    // INIT Select objects
+    construct_selecteList_ndo_instance('instance_selected');
+    construct_HostGroupSelectList('hostgroups_selected');
 
-	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
-		_host_search = document.getElementById("host_search").value;
-		viewDebugInfo('service search: '+document.getElementById("host_search").value);
-	} else if (document.getElementById("host_search").length == 0) {
-		_host_search = "";
-	}
-
-    if (document.getElementById("critFilter") && document.getElementById("critFilter").value) {
-		_criticality_id = document.getElementById("critFilter").value;
-		viewDebugInfo('Host criticality: '+document.getElementById("critFilter").value);
+    if (document.getElementById("host_search") && document.getElementById("host_search").value) {
+        _host_search = document.getElementById("host_search").value;
+        viewDebugInfo('service search: '+document.getElementById("host_search").value);
+    } else if (document.getElementById("host_search").length == 0) {
+        _host_search = "";
     }
 
-	if (_first){
-		mainLoopHost();
-		_first = 0;
-	}
+    if (document.getElementById("critFilter") && document.getElementById("critFilter").value) {
+        _criticality_id = document.getElementById("critFilter").value;
+        viewDebugInfo('Host criticality: '+document.getElementById("critFilter").value);
+    }
 
-	_time=<?php echo $time; ?>;
-	if (_on) {
-		goM(_time_reload,_sid,_o);
-	}
+    if (_first){
+        mainLoopHost();
+        _first = 0;
+    }
+
+    _time=<?php echo $time; ?>;
+    if (_on) {
+        goM(_time_reload,_sid,_o);
+    }
 }
 
 function goM(_time_reload, _sid, _o) {
 
-	_lock = 1;
-	var proc = new Transformation();
+    _lock = 1;
+    var proc = new Transformation();
 
-	// INIT search informations
-	if (_counter == 0) {
-		document.getElementById("host_search").value = _host_search;
-		_counter += 1;
-	}
+    // INIT search informations
+    if (_counter == 0) {
+        document.getElementById("host_search").value = _host_search;
+        _counter += 1;
+    }
 
     var statusHost = jQuery.trim(jQuery('#statusHost').val());
     var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
         
-	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
-	proc.setXslt(_addrXSL);
-	proc.transform("forAjax");
+    proc.setCallback(monitoringCallBack);
+    proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
+    proc.setXslt(_addrXSL);
+    proc.transform("forAjax");
 
-	_lock = 0;
-	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
-	_time_live = _time_reload;
-	_on = 1;
+    _lock = 0;
+    _timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+    _time_live = _time_reload;
+    _on = 1;
 
-	set_header_title();
+    set_header_title();
 }
 
 function unsetCheckboxes() {
-	for (keyz in _selectedElem) {
-		if (keyz == _selectedElem[keyz]) {
-			removeFromSelectedElem(decodeURIComponent(keyz));
+    for (keyz in _selectedElem) {
+        if (keyz == _selectedElem[keyz]) {
+            removeFromSelectedElem(decodeURIComponent(keyz));
                 if (document.getElementById(decodeURIComponent(keyz))) {
                     document.getElementById(decodeURIComponent(keyz)).checked = false;
                 }
-		}
-	}
+        }
+    }
 }
 
 function cmdCallback(cmd) {
-	var keyz;
+    var keyz;
 
-	_cmd = cmd;
+    _cmd = cmd;
     _getVar = "";
     if (cmd != '72' && cmd != '75') {
-		return 1;
+        return 1;
     } else {
-    	for (keyz in _selectedElem) {
+        for (keyz in _selectedElem) {
             if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
                 document.getElementById(decodeURIComponent(keyz))) {
                 if (document.getElementById(decodeURIComponent(keyz)).checked) {
@@ -277,90 +277,90 @@ function cmdCallback(cmd) {
 }
 
 function send_the_command() {
-	if (window.XMLHttpRequest) {
-    	xhr_cmd = new XMLHttpRequest();
+    if (window.XMLHttpRequest) {
+        xhr_cmd = new XMLHttpRequest();
     }
     else if (window.ActiveXObject)
     {
-    	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
+        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
     }
     var comment = encodeURIComponent(document.getElementById('popupComment').value.trim());
     if (comment == "") {
-		alert(_popup_no_comment_msg);
-		return 0;
-	}
-	if (_cmd == '70' || _cmd == '72') {
+        alert(_popup_no_comment_msg);
+        return 0;
+    }
+    if (_cmd == '70' || _cmd == '72') {
 
-		if (document.getElementById('sticky')) {
-			var sticky = document.getElementById('sticky').checked;
-		} else
-			var sticky = 1;
+        if (document.getElementById('sticky')) {
+            var sticky = document.getElementById('sticky').checked;
+        } else
+            var sticky = 1;
 
-		if (document.getElementById('persistent')) {
-			var persistent = document.getElementById('persistent').checked;
-		} else {
-			var persistent = 1;
-		}
+        if (document.getElementById('persistent')) {
+            var persistent = document.getElementById('persistent').checked;
+        } else {
+            var persistent = 1;
+        }
 
-		if (document.getElementById('notify')) {
-			var notify = document.getElementById('notify').checked;
-		} else {
-			var notify = 0;
-		}
+        if (document.getElementById('notify')) {
+            var notify = document.getElementById('notify').checked;
+        } else {
+            var notify = 0;
+        }
 
-		if (document.getElementById('force_check')) {
-			var force_check = document.getElementById('force_check').checked;
-		} else {
-			var force_check = 0;
-		}
+        if (document.getElementById('force_check')) {
+            var force_check = document.getElementById('force_check').checked;
+        } else {
+            var force_check = 0;
+        }
 
-		var ackhostservice = 0;
-		if (document.getElementById('ackhostservice')) {
-			ackhostservice = document.getElementById('ackhostservice').checked;
-		}
+        var ackhostservice = 0;
+        if (document.getElementById('ackhostservice')) {
+            ackhostservice = document.getElementById('ackhostservice').checked;
+        }
 
-	    var author = document.getElementById('author').value;
+        var author = document.getElementById('author').value;
 
-	    xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + _getVar, true);
-	}
-	else if (_cmd == '74' || _cmd == '75') {
-		var downtimehostservice = 0;
-		if (document.getElementById('downtimehostservice')) {
-			downtimehostservice = document.getElementById('downtimehostservice').checked;
-		}
-		if (document.getElementById('fixed')) {
-			var fixed = document.getElementById('fixed').checked;
-		}
-		else {
-			var fixed = 0;
-		}
-		var start = document.getElementById('start').value+' '+document.getElementById('start_time').value;
+        xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment + "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify + "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author  + _getVar, true);
+    }
+    else if (_cmd == '74' || _cmd == '75') {
+        var downtimehostservice = 0;
+        if (document.getElementById('downtimehostservice')) {
+            downtimehostservice = document.getElementById('downtimehostservice').checked;
+        }
+        if (document.getElementById('fixed')) {
+            var fixed = document.getElementById('fixed').checked;
+        }
+        else {
+            var fixed = 0;
+        }
+        var start = document.getElementById('start').value+' '+document.getElementById('start_time').value;
                 var end = document.getElementById('end').value+' '+document.getElementById('end_time').value;
-		var author = document.getElementById('author').value;
-		var duration = document.getElementById('duration').value;
+        var author = document.getElementById('author').value;
+        var duration = document.getElementById('duration').value;
         var duration_scale = document.getElementById('duration_scale').value;
         var tmp = document.querySelector('input[name="host_or_centreon_time[host_or_centreon_time]"]:checked');
         var host_or_centreon_time = "0";
         if(tmp !== null && typeof tmp !== "undefined" ){
             host_or_centreon_time = tmp.value;
         }
-		xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&host_or_centreon_time=" + host_or_centreon_time + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
-	}
+        xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end +  "&comment=" + comment + "&fixed=" + fixed + "&host_or_centreon_time=" + host_or_centreon_time + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + _getVar, true);
+    }
     xhr_cmd.send(null);
     window.currentPopin.centreonPopin("close");
-	//Modalbox.hide();
-	unsetCheckboxes();
+    //Modalbox.hide();
+    unsetCheckboxes();
 }
 
 function toggleFields(fixed)
 {
-	var dur;
-	dur = document.getElementById('duration');
-	if (fixed.checked) {
-		dur.disabled = true;
-	}
-	else {
-		dur.disabled = false;
-	}
+    var dur;
+    dur = document.getElementById('duration');
+    if (fixed.checked) {
+        dur.disabled = true;
+    }
+    else {
+        dur.disabled = false;
+    }
 }
 </script>

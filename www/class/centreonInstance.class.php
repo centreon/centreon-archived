@@ -1,8 +1,43 @@
 <?php
 /**
+ * Copyright 2005-2015 Centreon
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
+/**
  * Class for handling Instances
  */
-class CentreonInstance {
+class CentreonInstance
+{
     protected $db;
     protected $dbo;
     protected $params;
@@ -14,10 +49,10 @@ class CentreonInstance {
      * @param CentreonDB $db
      * @return void
      */
-    public function __construct($db,$dbo = null)
+    public function __construct($db, $dbo = null)
     {
         $this->db = $db;
-        if(!empty($dbo)){
+        if (!empty($dbo)) {
             $this->dbo = $dbo;
         }
         $this->instances = array();
@@ -49,16 +84,17 @@ class CentreonInstance {
         }
     }
     
-    public function getInstancesMonitoring($poller_id = array()){
+    public function getInstancesMonitoring($poller_id = array())
+    {
         $pollers = array();
-        if(!empty($poller_id)){
+        if (!empty($poller_id)) {
             $query = "SELECT instance_id, instance_name
                 FROM instance
-                WHERE instance_id IN (".$this->dbo->escape(implode(",",$poller_id)).") ";
+                WHERE instance_id IN (".$this->dbo->escape(implode(",", $poller_id)).") ";
             $res = $this->dbo->query($query);
             while ($row = $res->fetchRow()) {
                 $pollers[] = array('id' => $row['instance_id'], 'name' => $row['instance_name']);
-            }  
+            }
         }
         
         return $pollers;
@@ -98,11 +134,12 @@ class CentreonInstance {
     
     /**
      * Get command data from poller id
-     * 
+     *
      * @param int $pollerId
      * @return array
      */
-    public function getCommandData($pollerId) {
+    public function getCommandData($pollerId)
+    {
         $sql = "SELECT c.command_id, c.command_name, c.command_line 
             FROM command c, poller_command_relations pcr
             WHERE pcr.poller_id = ?
@@ -118,11 +155,12 @@ class CentreonInstance {
     
     /**
      * Return list of commands used by poller
-     * 
+     *
      * @param int $pollerId
      * @return array
      */
-    public function getCommandsFromPollerId($pollerId = null) {
+    public function getCommandsFromPollerId($pollerId = null)
+    {
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['pollercmd']) && $pollerId) {
@@ -136,7 +174,7 @@ class CentreonInstance {
                 $i++;
             }
         } elseif (isset($_REQUEST['pollercmd'])) {
-            foreach($_REQUEST['pollercmd'] as $val) {
+            foreach ($_REQUEST['pollercmd'] as $val) {
                 $arr[$i]['pollercmd_#index#'] = $val;
                 $i++;
             }
@@ -146,22 +184,24 @@ class CentreonInstance {
     
     /**
      * Set post-restart commands
-     * 
+     *
      * @param int $pollerId
      * @param array $commands
      * @return void
      */
-    public function setCommands($pollerId, $commands) {
+    public function setCommands($pollerId, $commands)
+    {
         $this->db->query("DELETE FROM poller_command_relations
                 WHERE poller_id = ".$this->db->escape($pollerId));
             
         $stored = array();
         $i = 1;
         foreach ($commands as $value) {
-            if ($value != "" && 
+            if ($value != "" &&
                 !isset($stored[$value])) {
-                    $this->db->query("INSERT INTO poller_command_relations (`poller_id`, `command_id`, `command_order`) 
-                                VALUES (". $this->db->escape($pollerId) .", ". $this->db->escape($value) .", ". $i .")");
+                    $this->db->query("INSERT INTO poller_command_relations
+                        (`poller_id`, `command_id`, `command_order`) 
+                        VALUES (" . $this->db->escape($pollerId) . ", " . $this->db->escape($value) . ", " . $i . ")");
                     $stored[$value] = true;
                     $i++;
             }
@@ -169,7 +209,7 @@ class CentreonInstance {
     }
     
     /**
-     * 
+     *
      * @param array $values
      * @return array
      */
@@ -182,7 +222,7 @@ class CentreonInstance {
         if (empty($explodedValues)) {
             $explodedValues = "''";
         } else {
-            $selectedInstances .= "AND r.resource_id IN ($explodedValues) ";
+            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
         }
         
         $queryInstance = "SELECT DISTINCT p.name as name, p.id  as id"
@@ -191,7 +231,6 @@ class CentreonInstance {
             . " AND p.id = rel.instance_id "
             . $selectedInstances
             . " ORDER BY p.name";
-        
         $DBRESULT = $this->db->query($queryInstance);
         while ($data = $DBRESULT->fetchRow()) {
             $aInstanceList[] = array(

@@ -242,4 +242,21 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['CENTREON_ENGINE_LIB'] = $conf_centreon['centreon_engine_lib'];
     $_SESSION['CENTREONBROKER_CBMOD'] = $conf_centreon['centreonbroker_cbmod'];
 }
+
+function getDatabaseVariable($variable) {
+    $query = "SHOW VARIABLES LIKE '" . $variable . "'";
+    $res = mysql_query($query);
+
+    $row = mysql_fetch_assoc($res);
+
+    $value = null;
+    if ($row && isset($row['Value'])) {
+        $value = $row['Value'];
+    }
+
+    mysql_free_result($res);
+
+    return $value;
+}
+
 ?>

@@ -31,189 +31,187 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/xml/ndo/serviceGridXML.php $
- * SVN : $Id: serviceGridXML.php 11683 2011-02-14 16:10:44Z jmathis $
- *
  */
 
-	ini_set("display_errors", "Off");
+ini_set("display_errors", "Off");
 
-	require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
-        include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
-        include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
-        include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
-        include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
-        include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
+include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
-	/*
-	 * Create XML Request Objects
-	 */
-    CentreonSession::start();
-	$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
-	$svcObj = new CentreonService($obj->DB);
-	
+/*
+ * Create XML Request Objects
+ */
+CentreonSession::start();
+$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+$svcObj = new CentreonService($obj->DB);
 
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		;
-	} else {
-		print "Bad Session ID";
-		exit();
-	}
 
-	/*
-	 * Set Default Poller
-	 */
-	$obj->getDefaultFilters();
+if (!CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+    print "Bad Session ID";
+    exit();
+}
 
-	/* **************************************************
-	 * Check Arguments From GET tab
-	 */
-	$o 			= $obj->checkArgument("o", $_GET, "h");
-	$p 			= $obj->checkArgument("p", $_GET, "2");
-	$nc 		= $obj->checkArgument("nc", $_GET, "0");
-	$num 		= $obj->checkArgument("num", $_GET, 0);
-	$limit 		= $obj->checkArgument("limit", $_GET, 20);
-	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-	$search 	= $obj->checkArgument("search", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
-	$order 		= $obj->checkArgument("order", $_GET, "ASC");
-	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+/*
+ * Set Default Poller
+ */
+$obj->getDefaultFilters();
 
-	/*
-	 * Backup poller selection
-	 */
-	$obj->setInstanceHistory($instance);
+/* **************************************************
+ * Check Arguments From GET tab
+ */
+$o          = $obj->checkArgument("o", $_GET, "h");
+$p          = $obj->checkArgument("p", $_GET, "2");
+$nc         = $obj->checkArgument("nc", $_GET, "0");
+$num        = $obj->checkArgument("num", $_GET, 0);
+$limit      = $obj->checkArgument("limit", $_GET, 20);
+$instance   = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+$search     = $obj->checkArgument("search", $_GET, "");
+$sort_type  = $obj->checkArgument("sort_type", $_GET, "host_name");
+$order      = $obj->checkArgument("order", $_GET, "ASC");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
-	/** *********************************************
-	 * Get Host status
-	 */
-	$rq1 =	  	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id " .
-				" FROM hosts ";
-	if ($hostgroups) {
-		$rq1 .= ", hosts_hostgroups hg, hostgroups hg2 ";
-	}
-	if (!$obj->is_admin) {
-		$rq1 	.= ", centreon_acl ";
-	}
-	$rq1 .=		" WHERE hosts.name NOT LIKE '_Module_%' ";
-	if (!$obj->is_admin) {
-		$rq1 .=		" AND hosts.host_id = centreon_acl.host_id ";
-		$rq1 .= $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
-	}
-	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
-		$rq1 .= " AND hosts.host_id IN (" .
-				" SELECT s.host_id FROM services s " .
-				" WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
-	}
-	if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
-		$rq1 .= " AND hosts.host_id IN (" .
-				" SELECT s.host_id FROM services s " .
-				" WHERE s.acknowledged = '1' AND s.enabled = 1)";
-	}
-	if ($search != "") {
-		$rq1 .= " AND hosts.name like '%" . $search . "%' ";
-	}
-	if ($instance != -1) {
-		$rq1 .= " AND hosts.instance_id = ".$instance."";
-	}
-	if ($hostgroups) {
-	    $rq1 .= " AND hosts.host_id = hg.host_id ";
-	    $rq1 .= " AND hg.hostgroup_id IN (".$hostgroups.") ";
-	    $rq1 .= " AND hg.hostgroup_id = hg2.hostgroup_id ";
-	}
-	$rq1 .= " AND hosts.enabled = 1 ";
+/*
+ * Backup poller selection
+ */
+$obj->setInstanceHistory($instance);
 
-	switch ($sort_type) {
-		case 'current_state' : $rq1 .= " ORDER BY hosts.state ". $order.",hosts.name "; break;
-		default : $rq1 .= " ORDER BY hosts.name ". $order; break;
-	}
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+/** *********************************************
+ * Get Host status
+ */
+$rq1 =      " SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id " .
+            " FROM hosts ";
+if ($hostgroups) {
+    $rq1 .= ", hosts_hostgroups hg, hostgroups hg2 ";
+}
+if (!$obj->is_admin) {
+    $rq1    .= ", centreon_acl ";
+}
+$rq1 .=         " WHERE hosts.name NOT LIKE '_Module_%' ";
+if (!$obj->is_admin) {
+    $rq1 .=         " AND hosts.host_id = centreon_acl.host_id ";
+    $rq1 .= $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
+}
+if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
+    $rq1 .= " AND hosts.host_id IN (" .
+            " SELECT s.host_id FROM services s " .
+            " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+}
+if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
+    $rq1 .= " AND hosts.host_id IN (" .
+            " SELECT s.host_id FROM services s " .
+            " WHERE s.acknowledged = '1' AND s.enabled = 1)";
+}
+if ($search != "") {
+    $rq1 .= " AND hosts.name like '%" . $search . "%' ";
+}
+if ($instance != -1) {
+    $rq1 .= " AND hosts.instance_id = ".$instance."";
+}
+if ($hostgroups) {
+    $rq1 .= " AND hosts.host_id = hg.host_id ";
+    $rq1 .= " AND hg.hostgroup_id IN (".$hostgroups.") ";
+    $rq1 .= " AND hg.hostgroup_id = hg2.hostgroup_id ";
+}
+$rq1 .= " AND hosts.enabled = 1 ";
 
-	/*
-	 * Execute request
-	 */
-	$DBRESULT = $obj->DBC->query($rq1);
-	$numRows = $obj->DBC->numberRows();
+switch ($sort_type) {
+    case 'current_state':
+        $rq1 .= " ORDER BY hosts.state ". $order.",hosts.name ";
+        break;
+    default:
+        $rq1 .= " ORDER BY hosts.name ". $order;
+        break;
+}
+$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-	$obj->XML->startElement("reponse");
-	$obj->XML->startElement("i");
-	$obj->XML->writeElement("numrows", $numRows);
-	$obj->XML->writeElement("num", $num);
-	$obj->XML->writeElement("limit", $limit);
-	$obj->XML->writeElement("p", $p);
+/*
+ * Execute request
+ */
+$DBRESULT = $obj->DBC->query($rq1);
+$numRows = $obj->DBC->numberRows();
 
-	preg_match("/svcOV/",$_GET["o"], $matches) ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
-	$obj->XML->endElement();
+$obj->XML->startElement("reponse");
+$obj->XML->startElement("i");
+$obj->XML->writeElement("numrows", $numRows);
+$obj->XML->writeElement("num", $num);
+$obj->XML->writeElement("limit", $limit);
+$obj->XML->writeElement("p", $p);
 
-	$tab_final = array();
-	$str = "";
-	while ($ndo = $DBRESULT->fetchRow()) {
-		if ($str != "") {
-			$str .= ",";
-		}
-		$str .= "'".$ndo["name"]."'";
-		$tab_final[$ndo["name"]] = array("cs" => $ndo["state"], "hid" => $ndo["host_id"]);
-		if ($ndo["icon_image"] != "") {
-			$tabIcone[$ndo["name"]] = $ndo["icon_image"];
-		} else {
-			$tabIcone[$ndo["name"]] = "none";
-		}
-	}
-	$DBRESULT->free();
+preg_match("/svcOV/", $_GET["o"], $matches) ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
+$obj->XML->endElement();
 
-	/*
-	 * Get Service status
-	 */
-	$tab_svc = $obj->monObj->getServiceStatus($str, $obj, $o, $instance, $hostgroups);
-	if (isset($tab_svc)) {
-		foreach ($tab_svc as $host_name => $tab) {
-			if (count($tab)) {
-				$tab_final[$host_name]["tab_svc"] = $tab;
-			}
-		}
-	}
+$tab_final = array();
+$str = "";
+while ($ndo = $DBRESULT->fetchRow()) {
+    if ($str != "") {
+        $str .= ",";
+    }
+    $str .= "'".$ndo["name"]."'";
+    $tab_final[$ndo["name"]] = array("cs" => $ndo["state"], "hid" => $ndo["host_id"]);
+    if ($ndo["icon_image"] != "") {
+        $tabIcone[$ndo["name"]] = $ndo["icon_image"];
+    } else {
+        $tabIcone[$ndo["name"]] = "none";
+    }
+}
+$DBRESULT->free();
 
-	$ct = 0;
-	if (isset($tab_svc)) {
-		foreach ($tab_final as $host_name => $tab){
-			$obj->XML->startElement("l");
-			$obj->XML->writeAttribute("class", $obj->getNextLineClass());
-			if (isset($tab["tab_svc"])) {
-				foreach ($tab["tab_svc"] as $svc => $state) {
-					$obj->XML->startElement("svc");
-					$obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc), false);
-					$obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
-					$obj->XML->writeElement("sc", $obj->colorService[$state]);
-					$obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
-					$obj->XML->endElement();
-				}
-			}
-			$obj->XML->writeElement("o", $ct++);
-			$obj->XML->writeElement("ico", $tabIcone[$host_name]);
-			$obj->XML->writeElement("hn", $host_name, false);
-			$obj->XML->writeElement("hid", $tab["hid"], false);
-			$obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
-			$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
-			$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
-			$obj->XML->endElement();
-		}
-	}
+/*
+ * Get Service status
+ */
+$tab_svc = $obj->monObj->getServiceStatus($str, $obj, $o, $instance, $hostgroups);
+if (isset($tab_svc)) {
+    foreach ($tab_svc as $host_name => $tab) {
+        if (count($tab)) {
+            $tab_final[$host_name]["tab_svc"] = $tab;
+        }
+    }
+}
 
-	if (!$ct) {
-		$obj->XML->writeElement("infos", "none");
-	}
-	$obj->XML->endElement();
+$ct = 0;
+if (isset($tab_svc)) {
+    foreach ($tab_final as $host_name => $tab) {
+        $obj->XML->startElement("l");
+        $obj->XML->writeAttribute("class", $obj->getNextLineClass());
+        if (isset($tab["tab_svc"])) {
+            foreach ($tab["tab_svc"] as $svc => $state) {
+                $obj->XML->startElement("svc");
+                $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc), false);
+                $obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
+                $obj->XML->writeElement("sc", $obj->colorService[$state]);
+                $obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
+                $obj->XML->endElement();
+            }
+        }
+        $obj->XML->writeElement("o", $ct++);
+        $obj->XML->writeElement("ico", $tabIcone[$host_name]);
+        $obj->XML->writeElement("hn", $host_name, false);
+        $obj->XML->writeElement("hid", $tab["hid"], false);
+        $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
+        $obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
+        $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+        $obj->XML->endElement();
+    }
+}
 
-	/*
-	 * Send Header
-	 */
-	$obj->header();
+if (!$ct) {
+    $obj->XML->writeElement("infos", "none");
+}
+$obj->XML->endElement();
 
-	/*
-	 * Send XML
-	 */
-	$obj->XML->output();
-?>
+/*
+ * Send Header
+ */
+$obj->header();
+
+/*
+ * Send XML
+ */
+$obj->XML->output();

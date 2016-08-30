@@ -30,10 +30,7 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
- * SVN : $URL:  $
- * SVN : $Id:  $
- * 
+ *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -44,4 +41,3 @@ header("Content-type: text/css");
 $bg_image_header = "../../Images/bg_header_pink.gif";
 
 require_once _CENTREON_PATH_ . "www/Themes/Centreon-2/Modalbox/modalbox_css.php";
-?>

@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit();		
+    exit();
 }
 
 if (!isset($oreon->optGen["AjaxFirstTimeReloadStatistic"]) || $oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0) {
@@ -52,17 +52,17 @@ $time = time();
 
 $obis = $o;
 if (isset($_GET["problem"])) {
-	$obis .= '_pb';
+    $obis .= '_pb';
 }
 if (isset($_GET["acknowledge"])) {
-	$obis .= '_ack_' . $_GET["acknowledge"];
+    $obis .= '_ack_' . $_GET["acknowledge"];
 }
 
 ?>
 <script type="text/javascript">
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceGridBySGXML.php";
+var _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/serviceGridBySGXML.php";
 var _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
@@ -72,116 +72,116 @@ _hostgroup_enable = 0;
 
 function set_header_title(){
 
-	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
-	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
+    var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
+    var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
-	if (document.getElementById('host_name')){
-		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo addslashes(_("Servicegroups / Hosts"))?>';
-	  	h.indice = 'host_name';
-	  	h.onclick=function(){change_type_order(this.indice)};
-		h.style.cursor = "pointer";
+    if (document.getElementById('host_name')){
+        var h = document.getElementById('host_name');
+        h.innerHTML = '<?php echo addslashes(_("Servicegroups / Hosts"))?>';
+        h.indice = 'host_name';
+        h.onclick=function(){change_type_order(this.indice)};
+        h.style.cursor = "pointer";
 
-		if (document.getElementById('host_state')){
-			var h = document.getElementById('host_state');
-			h.innerHTML = '<?php echo addslashes(_("Status"))?>';
-		  	h.indice = 'host_state';
-		  	h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
-		  	h.onclick=function(){change_type_order(this.indice)};
-			h.style.cursor = "pointer";
-		}
+        if (document.getElementById('host_state')){
+            var h = document.getElementById('host_state');
+            h.innerHTML = '<?php echo addslashes(_("Status"))?>';
+            h.indice = 'host_state';
+            h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
+            h.onclick=function(){change_type_order(this.indice)};
+            h.style.cursor = "pointer";
+        }
 
-		var h = document.getElementById('services');
-		h.innerHTML = '<?php echo addslashes(_("Services informations"))?>';
-	  	h.indice = 'services';
+        var h = document.getElementById('services');
+        h.innerHTML = '<?php echo addslashes(_("Services informations"))?>';
+        h.indice = 'services';
 
-		var h = document.getElementById(_sort_type);
-		var _linkaction_asc = document.createElement("a");
-		if (_order == 'ASC')
-			_linkaction_asc.appendChild(_img_asc);
-		else
-			_linkaction_asc.appendChild(_img_desc);
-		_linkaction_asc.href = '#' ;
-		_linkaction_asc.onclick=function(){change_order()};
-		h.appendChild(_linkaction_asc);
-	}
+        var h = document.getElementById(_sort_type);
+        var _linkaction_asc = document.createElement("a");
+        if (_order == 'ASC')
+            _linkaction_asc.appendChild(_img_asc);
+        else
+            _linkaction_asc.appendChild(_img_desc);
+        _linkaction_asc.href = '#' ;
+        _linkaction_asc.onclick=function(){change_order()};
+        h.appendChild(_linkaction_asc);
+    }
 }
 
 function mainLoopLocal() {
- 	_currentInputField = document.getElementById('host_search');
-  	if (document.getElementById('host_search') && document.getElementById('host_search').value) {
-  		_currentInputFieldValue = document.getElementById('host_search').value;
-  	} else {
-  		_currentInputFieldValue = "";
-  	}
+    _currentInputField = document.getElementById('host_search');
+    if (document.getElementById('host_search') && document.getElementById('host_search').value) {
+        _currentInputFieldValue = document.getElementById('host_search').value;
+    } else {
+        _currentInputFieldValue = "";
+    }
 
-  	if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
-    	if (!_lock) {
-    		set_search_host(escapeURI(_currentInputFieldValue));
-			_search = _currentInputFieldValue;
+    if ((_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue != _currentInputFieldValue){
+        if (!_lock) {
+            set_search_host(escapeURI(_currentInputFieldValue));
+            _search = _currentInputFieldValue;
 
-			monitoring_refresh();
+            monitoring_refresh();
 
-			if (_currentInputFieldValue.length >= 3) {
-				_currentInputField.className = "search_input_active";
-			} else {
-				_currentInputField.className = "search_input";
-			}
-		}
-	}
-	_oldInputFieldValue = _currentInputFieldValue;
-	setTimeout("mainLoopLocal()", 250);
+            if (_currentInputFieldValue.length >= 3) {
+                _currentInputField.className = "search_input_active";
+            } else {
+                _currentInputField.className = "search_input";
+            }
+        }
+    }
+    _oldInputFieldValue = _currentInputFieldValue;
+    setTimeout("mainLoopLocal()", 250);
 }
 
 function initM(_time_reload, _sid, _o ){
 
-	// INIT Select objects
-	construct_selecteList_ndo_instance('instance_selected');
-	construct_HostGroupSelectList('hostgroups_selected');
+    // INIT Select objects
+    construct_selecteList_ndo_instance('instance_selected');
+    construct_HostGroupSelectList('hostgroups_selected');
 
-	if (document.getElementById("host_search") && document.getElementById("host_search").value) {
-		_host_search = document.getElementById("host_search").value;
-		viewDebugInfo('search: '+document.getElementById("host_search").value);
-	} else if (document.getElementById("host_search").value.length === 0) {
-		_host_search = "";
-	}
+    if (document.getElementById("host_search") && document.getElementById("host_search").value) {
+        _host_search = document.getElementById("host_search").value;
+        viewDebugInfo('search: '+document.getElementById("host_search").value);
+    } else if (document.getElementById("host_search").value.length === 0) {
+        _host_search = "";
+    }
     
     if (document.getElementById("sg_search") && document.getElementById("sg_search").value) {
-		_sg_search = document.getElementById("sg_search").value;
-		viewDebugInfo('search: '+document.getElementById("sg_search").value);
-	} else if (document.getElementById("sg_search").value.length === 0) {
-		_sg_search = "";
-	}
+        _sg_search = document.getElementById("sg_search").value;
+        viewDebugInfo('search: '+document.getElementById("sg_search").value);
+    } else if (document.getElementById("sg_search").value.length === 0) {
+        _sg_search = "";
+    }
     
-	if (_first){
-		mainLoopLocal();
-		_first = 0;
-	}
+    if (_first){
+        mainLoopLocal();
+        _first = 0;
+    }
 
-	_time=<?php echo $time; ?>;
-	if (_on) {
-		goM(_time_reload,_sid,_o);
-	}
+    _time=<?php echo $time; ?>;
+    if (_on) {
+        goM(_time_reload,_sid,_o);
+    }
 }
 
 function goM(_time_reload, _sid, _o) {
-	_lock = 1;
-	var proc = new Transformation();
-	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'&host_search='+_host_search+'&sg_search='+_sg_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
-	proc.setXslt(_addrXSL);
-	proc.transform("forAjax");
+    _lock = 1;
+    var proc = new Transformation();
+    proc.setCallback(monitoringCallBack);
+    proc.setXml(_addrXML+"?"+'&host_search='+_host_search+'&sg_search='+_sg_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
+    proc.setXslt(_addrXSL);
+    proc.transform("forAjax");
 
-	if (_counter == 0) {
-		document.getElementById("host_search").value = _host_search;
-		document.getElementById("sg_search").value = _sg_search;
-		_counter += 1;
-	}
+    if (_counter == 0) {
+        document.getElementById("host_search").value = _host_search;
+        document.getElementById("sg_search").value = _sg_search;
+        _counter += 1;
+    }
 
-	_lock = 0;
-	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
-	_time_live = _time_reload;
-	_on = 1;
-	set_header_title();
+    _lock = 0;
+    _timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+    _time_live = _time_reload;
+    _on = 1;
+    set_header_title();
 }
 </SCRIPT>

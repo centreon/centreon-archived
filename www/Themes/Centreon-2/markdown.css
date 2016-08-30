@@ -2,6 +2,16 @@
  * Inspired from https://github.com/jasonm23/markdown-css-themes/blob/gh-pages/markdown10.css
  */
 
+.full-page {
+    width: 90%;
+    max-height: none;
+    margin: 10px auto;
+    display: block;
+    float: none;
+    padding: 10px;
+    border: 0;
+}
+
 .md-preview p {
     margin: 1em 0;
     line-height: 1.5em;

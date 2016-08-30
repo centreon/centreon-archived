@@ -1,0 +1,168 @@
+#! /usr/bin/php
+<?php
+/**
+ * Copyright 2005-2016 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
+/**
+ *
+ * Class that handles properties to create partitions for a table
+ * @author msugumaran
+ *
+ */
+
+$debugLevel = 0;
+
+require_once "DB.php";
+
+require_once __DIR__."/../config/centreon.config.php";
+
+require_once __DIR__."/../www/class/centreon-partition/options.class.php";
+require_once __DIR__."/../www/class/centreon-partition/partEngine.class.php";
+require_once __DIR__."/../www/class/centreon-partition/mysqlTable.class.php";
+require_once __DIR__."/../www/class/centreon-partition/config.class.php";
+
+$options = new Options();
+if ($options->isMissingOptions()) {
+    $options->printHelp();
+    exit(1);
+}
+if (!is_readable(_CENTREON_ETC_)) {
+    echo "[".date(DATE_RFC822)."] ERROR: Cannot read database connection parameters file\n";
+    exit (1);
+}
+include_once(_CENTREON_ETC_);
+if (!isset($conf_centreon['hostCentstorage']) ||!isset($conf_centreon['user'])
+    ||!isset($conf_centreon['password'])) {
+    echo "[".date(DATE_RFC822)."] ERROR: Cannot get database connection parameters\n";
+    exit (1);   
+}
+
+$DB = connect($conf_centreon);
+$partEngine = new PartEngine();
+if (!$partEngine->isCompatible($DB)) {
+    echo "[".date(DATE_RFC822)."] CRITICAL: MySQL server is not compatible with partitionning. MySQL version must be greater or equal to 5.1\n";
+    exit (1);
+}
+if ($options->isMigration()) {
+    launchAction($partEngine, "migrate", $options, $DB);
+} elseif ($options->isCreation()) {
+    launchAction($partEngine, "createParts", $options, $DB);
+} elseif ($options->isUpdate()){
+    launchAction($partEngine, "purgeParts", $options, $DB);
+    launchAction($partEngine, "updateParts", $options, $DB);
+} elseif ($options->isPurge()){
+    launchAction($partEngine, "purgeParts", $options, $DB);
+} elseif ($options->isBackup()){
+    launchAction($partEngine, "backupParts", $options, $DB);
+} elseif ($options->isOptimize()){
+    launchAction($partEngine, "optimizeTablePartitions", $options, $DB);
+} elseif ($options->isPartList()){
+    try {
+        $table = new MysqlTable($DB, $options->getOptionValue("l"), $options->getOptionValue("s"));
+        $partEngine->listParts($table, $DB);
+    } catch (Exception $e) {
+        echo "[".date(DATE_RFC822)."][listParts] ".$e->getMessage();
+        exit(1);
+    }
+} else {
+    $options->printHelp();
+    exit(1);
+}
+exit(0);
+
+function launchAction($obj, $method, $options, $DB) {       
+    try {
+        $config = new Config($DB, $options->getConfFile());
+    } catch (Exception $e){
+        echo "[".date(DATE_RFC822)."][".$method."] ".$e->getMessage();
+        exit(1);
+    }
+    if (!$config->isValid()) {
+        echo "[".date(DATE_RFC822)."] CRITICAL: Configuration file is not valid. Check for missing properties in XML file.\n";
+        exit(1);
+    }
+    $tableList = $config->getTables($config->getTables());
+    foreach($tableList as $key => $instance) {
+        if ($instance->getActivate() == 1) {
+            echo "[".date(DATE_RFC822)."][".$method."] Processing table: ". $key."\n";
+            try {
+                $obj->$method($instance, $DB);
+            } catch (Exception $e) {
+                echo "[".date(DATE_RFC822)."][".$method."] ".$e->getMessage();
+            }
+        } else {
+            print "[".date(DATE_RFC822)."][".$method."] configuration disabled for table : $key \n"; 
+        }
+    }
+}
+
+function connect($conf) {
+    $dsn = array(
+         'phptype'  => "mysql",
+         'username' => $conf['user'],
+         'password' => $conf['password'],
+         'hostspec' => $conf['hostCentstorage'],
+         );
+
+    $DB =& DB::connect($dsn);
+    if (PEAR::isError($DB)) {
+        print $DB->getMessage();
+        exit(1);
+    } else {
+        $DB->setFetchMode(DB_FETCHMODE_ASSOC);
+    }
+    return ($DB);
+}
+
+# function that checks if the program has already run for the current day
+function dayAlreadyProcessed() {
+    global $centreonLog;
+    $today = date("Y-m-d");
+    $tmp_file = $centreonLog."/centreon-partitioning.last";
+    if (is_writable($tmp_file)) {
+        $last = file_get_contents($tmp_file);
+        if ($today == $last) {
+            echo  "[".date(DATE_RFC822)."][updateParts] Error : day already processed\n";
+            return 1;
+        }
+    }
+    if (($handle = fopen($tmp_file, "w"))) {
+        fwrite($handle, $today);
+        fclose($handle);
+    } else {
+        echo  "[".date(DATE_RFC822)."][updateParts] Error : Cannot open file ".$tmp_file." in write mode\n";
+        return 1;
+    }
+    return 0;
+}

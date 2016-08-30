@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.0');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.0-beta2');
 
 --
 -- Contenu de la table `contact`
@@ -525,7 +525,14 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
 (50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL),
 (51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
-(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL);
+(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL),
+(63, 'cache', "Cache", "Enable caching", 'radio', NULL),
+(64, 'storage_db_host', 'Storage DB host', 'IP address or hostname of the database server.', 'text', NULL),
+(65, 'storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
+(66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
+(67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
+(68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
+(69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -558,6 +565,7 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (5, 25, 'no'),
 (2, 12, NULL),
 (3, 15, NULL),
+(3, 69, NULL),
 (4, 24, NULL),
 (1, 39, 'no'),
 (1, 42, 'yes'),
@@ -569,7 +577,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (7, 57, 'string'),
 (8, 58, 'false'),
 (9, 61, 'string'),
-(10, 62, 'false');
+(10, 62, 'false'),
+(1, 63, 'yes');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -760,17 +769,22 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (30, 8, 0, 3),
 (30, 9, 0, 4),
 (30, 34, 0, 5),
-(30, 28, 0, 6),
 (30, 51, 1, 7),
 (30, 52, 1, 8),
 (31, 7, 1, 1),
 (31, 18, 0, 2),
 (31, 8, 0, 3),
 (31, 9, 0, 4),
-(31, 34, 0, 5),
-(31, 28,0, 6),
-(31, 51, 1, 7),
-(31, 52, 1, 8);
+(31, 53, 1, 5),
+(31, 55, 0, 6),
+(31, 56, 0, 7),
+(31, 57, 0, 8),
+(31, 58, 0, 9),
+(31, 54, 1, 10),
+(31, 59, 0, 11),
+(31, 60, 0, 12),
+(31, 61, 0, 13),
+(31, 62, 0, 14);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -794,8 +808,16 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('poller', 1), 
                                            ('hostCategories',1), 
                                            ('serviceCategories',1),
-                                           ('metric',1); 	  
-
+                                           ('metric',1), 
+                                           ('ba', 1),
+                                           ('bv', 1),
+                                           ('hostCategoriesMulti', 1),
+                                           ('hostGroupMulti', 1),
+                                           ('hostMulti', 1),
+                                           ('metricMulti', 1),
+                                           ('serviceCategory', 1),
+                                           ('hostCategory', 1),
+                                           ('serviceMulti', 1);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
                         ('Africa/Abidjan', '-00:00', '-00:00'),
@@ -1220,3 +1242,18 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
 INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VALUES
 ('en', 'English', 'en.png'),
 ('fr', 'French', 'fr.png');
+
+-- Insert Centreon Backup base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+('backup_enabled', '0'),
+('backup_configuration_files', '1'),
+('backup_database_centreon', '1'),
+('backup_database_centreon_storage', '1'),
+('backup_database_type', '1'),
+('backup_database_level', '0'),
+('backup_backup_directory', '/var/backup'),
+('backup_tmp_directory', '/tmp/backup'),
+('backup_retention', '7'),
+('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
+('backup_zend_conf', '/etc/php.d/zendguard.ini');

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/xml/ndo/makeXMLForOneHost.php $
- * SVN : $Id: makeXMLForOneHost.php 12188 2011-05-04 15:45:01Z shotamchay $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
@@ -56,7 +53,7 @@ $dbb = new CentreonDB("centstorage");
 $centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonlang->bindLang();
 $sid = session_id();
-if (isset($sid)){
+if (isset($sid)) {
     //$sid = $_GET["sid"];
     $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
     if (!$session = $res->fetchRow()) {
@@ -109,17 +106,19 @@ if (!$service_id) {
 }
 $res = $dbb->query($query);
 $rowClass = "list_one";
-while ($row = $res->fetchRow()) {
-    $row['comment_data'] = strip_tags($row['comment_data']);
-    $xml->startElement('ack');
-    $xml->writeAttribute('class', $rowClass);
-    $xml->writeElement('author', $row['author']);
-    $xml->writeElement('entrytime', $centreonGMT->getDate('d/m/Y H:i:s', $row['entry_time']));
-    $xml->writeElement('comment', $row['comment_data']);
-    $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
-    $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
-    $xml->endElement();
-    $rowClass == "list_one" ? $rowClass = "list_two" : $rowClass = "list_one";
+if (isset($res)) {
+    while ($row = $res->fetchRow()) {
+        $row['comment_data'] = strip_tags($row['comment_data']);
+        $xml->startElement('ack');
+        $xml->writeAttribute('class', $rowClass);
+        $xml->writeElement('author', $row['author']);
+        $xml->writeElement('entrytime', $centreonGMT->getDate('Y/m/d H:i:s', $row['entry_time']));
+        $xml->writeElement('comment', $row['comment_data']);
+        $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
+        $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
+        $xml->endElement();
+        $rowClass == "list_one" ? $rowClass = "list_two" : $rowClass = "list_one";
+    }
 }
 
 /*
@@ -133,4 +132,3 @@ header('Cache-Control: no-cache, must-revalidate');
  * Print Buffer
  */
 $xml->output();
-?>

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -59,7 +56,7 @@ $xml->startElement("response");
 if ($hostId != "") {
     $aclFrom = "";
     if (!$centreon->user->admin) {
-        $aclDbName = $acl->getNameDBAcl($centreon->broker->getBroker());
+        $aclDbName = $acl->getNameDBAcl('broker');
         $aclFrom = ", $aclDbName.centreon_acl acl ";
     }
     $query = "SELECT DISTINCT h.host_id, h.host_name, s.service_id, s.service_description
@@ -85,8 +82,10 @@ if ($hostId != "") {
     }
 }
 $xml->endElement();
+
 header('Content-Type: text/xml');
 header('Pragma: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
+
 $xml->output();

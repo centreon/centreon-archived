@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -58,7 +57,7 @@ class CentreonACLMenu extends CentreonObject
     protected $relObject;
     protected $aclGroupObj;
 
- 	/**
+    /**
      * Constructor
      *
      * @return void
@@ -182,19 +181,20 @@ class CentreonACLMenu extends CentreonObject
         foreach ($levels as $level => $menu) {
             if ($menu) {
                 switch ($level) {
-                    case self::LEVEL_1 :
+                    case self::LEVEL_1:
                         $length = 1;
                         break;
-                    case self::LEVEL_2 :
+                    case self::LEVEL_2:
                         $length = 3;
                         break;
-                    case self::LEVEL_3 :
+                    case self::LEVEL_3:
                         $length = 5;
                         break;
-                    case self::LEVEL_4 :
+                    case self::LEVEL_4:
                         $length = 7;
                         break;
-                    default: break;
+                    default:
+                        break;
                 }
                 if (is_numeric($menu)) {
                     $sql = "SELECT topology_id, topology_page
@@ -252,7 +252,7 @@ class CentreonACLMenu extends CentreonObject
         $groupIds = $this->relObject->getacl_group_idFromacl_topology_id($aclMenuId[0]);
         echo "id;name" . "\n";
         if (count($groupIds)) {
-            foreach($groupIds as $groupId) {
+            foreach ($groupIds as $groupId) {
                 $result = $this->aclGroupObj->getParameters($groupId, $this->aclGroupObj->getUniqueLabelField());
                 echo $groupId . $this->delim . $result[$this->aclGroupObj->getUniqueLabelField()] . "\n";
             }
@@ -274,11 +274,15 @@ class CentreonACLMenu extends CentreonObject
         $res = $this->db->query($sql, array($parentTopologyId));
         $rows = $res->fetchAll();
         foreach ($rows as $row) {
-            $this->db->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = ? AND topology_topology_id = ?",
-                                array($aclMenuId, $row['topology_id']));
+            $this->db->query(
+                "DELETE FROM acl_topology_relations WHERE acl_topo_id = ? AND topology_topology_id = ?",
+                array($aclMenuId, $row['topology_id'])
+            );
             if ($action == "grant") {
-                $this->db->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES (?, ?)",
-                                array($aclMenuId, $row['topology_id']));
+                $this->db->query(
+                    "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES (?, ?)",
+                    array($aclMenuId, $row['topology_id'])
+                );
             }
             $this->processChildrenOf($action, $aclMenuId, $row['topology_page']);
         }
@@ -293,11 +297,15 @@ class CentreonACLMenu extends CentreonObject
     public function grant($parameters)
     {
         list($aclMenuId, $menus, $topologies) = $this->splitParams($parameters);
-        foreach($menus as $level => $menuId) {
-            $this->db->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = ? AND topology_topology_id = ?",
-                                array($aclMenuId, $menuId));
-            $this->db->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES (?, ?)",
-                            array($aclMenuId, $menuId));
+        foreach ($menus as $level => $menuId) {
+            $this->db->query(
+                "DELETE FROM acl_topology_relations WHERE acl_topo_id = ? AND topology_topology_id = ?",
+                array($aclMenuId, $menuId)
+            );
+            $this->db->query(
+                "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES (?, ?)",
+                array($aclMenuId, $menuId)
+            );
             if (!isset($menus[$level + 1]) && $level != self::LEVEL_4) {
                 $this->processChildrenOf("grant", $aclMenuId, $topologies[$level]);
             }
@@ -313,10 +321,12 @@ class CentreonACLMenu extends CentreonObject
     public function revoke($parameters)
     {
         list($aclMenuId, $menus, $topologies) = $this->splitParams($parameters);
-        foreach($menus as $level => $menuId) {
+        foreach ($menus as $level => $menuId) {
             if (!isset($menus[$level + 1])) {
-                $this->db->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = ? AND topology_topology_id = ?",
-                                array($aclMenuId, $menuId));
+                $this->db->query(
+                    "DELETE FROM acl_topology_relations WHERE acl_topo_id = ? AND topology_topology_id = ?",
+                    array($aclMenuId, $menuId)
+                );
                 $this->processChildrenOf("revoke", $aclMenuId, $topologies[$level]);
             }
         }

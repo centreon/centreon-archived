@@ -26,6 +26,7 @@ $help["passive_checks_enabled"] = dgettext("help", "Enable or disable passive ch
 
 $help["notifications_enabled"] = dgettext("help", "Specify whether or not notifications for this host are enabled.");
 $help["contact_additive_inheritance"] = dgettext("help", "When enabled, the contact definition will not override the definitions on template levels, it will be appended instead.");
+$help["cg_additive_inheritance"] = dgettext("help", "When enabled, the contactgroup definition will not override the definitions on template levels, it will be appended instead.");
 $help["contacts"] = dgettext("help", "This is a list of contacts that should be notified whenever there are problems (or recoveries) with this host. Useful if you want notifications to go to just a few people and don't want to configure contact groups. You must specify at least one contact or contact group in each host definition (or indirectly through its template).");
 $help["cg_additive_inheritance"] = dgettext("help", "When enabled, the contact group definition will not override the definitions on template levels, it will be appended instead.");
 $help["contact_groups"] = dgettext("help", "This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this host. You must specify at least one contact or contact group in each host definition.");
@@ -34,6 +35,7 @@ $help["notification_interval"] = dgettext("help", "Define the number of \"time u
 $help["notification_period"] = dgettext("help", "Specify the time period during which notifications of events for this host can be sent out to contacts. If a state change occurs during a time which is not covered by the time period, no notifications will be sent out.");
 $help["notification_options"] = dgettext("help", "Define the states of the host for which notifications should be sent out. If you specify None as an option, no host notifications will be sent out. If you do not specify any notification options, monitoring engine will assume that you want notifications to be sent out for all possible states.");
 $help["first_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the first problem notification when this host enters a non-UP state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will start sending out notifications immediately.");
+$help["recovery_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the recovery notification when this host enters a non-UP state. The default time unit is 0 (this number will mean multiples of 1 minute). If you set this value to 0, monitoring engine will start sending out notifications immediately.");
 
 /*
  * Relations
@@ -66,6 +68,8 @@ $help["event_handler_enabled"] = dgettext("help", "This directive is used to det
 $help["event_handler"] = dgettext("help", "The event handler command is triggered whenever a change in the state of the host is detected, i.e. whenever it goes down or recovers.");
 $help["event_handler_args"] = dgettext("help", "This parameters are passed to the event handler commands in the same way check command parameters are handled. The format is: !ARG1!ARG2!...ARGn");
 
+$help["host_acknowledgement_timeout"] = dgettext("help", "Specify a duration of acknowledgement for this host or host depending to this template. If you leave it blank, no timeout will be set.");
+
 /*
  * Host extended infos
  */
@@ -77,11 +81,10 @@ $help["icon_image"] = dgettext("help", "Define the image that should be associat
 $help["icon_image_alt"] = dgettext("help", "Define an optional string that is used in the alternative description of the icon image.");
 $help["vrml_image"] = dgettext("help", "Define the VRML image that should be associated with this host. This image will be used as the texture map for the specified host in the 3D statuswrl CGI in monitoring engine.");
 $help["statusmap_image"] = dgettext("help", "Define an image that should be associated with this host in the statusmap CGI in monitoring engine. You can choose a JPEG, PNG, and GIF image. The GD2 image format is preferred, as other image formats must be converted first when the statusmap image is generated. The image will look best if it is 40x40 pixels in size.");
+$help["geo_coords"] = dgettext("help", "Geographical coordinates use by Centreon Map module to position element on map. Define \"Latitude,Longitude\", for example for Paris coordinates set \"48.51,2.20\"");
 $help["2d_coords"] = dgettext("help", "Define the coordinates to use when drawing the host in the statusmap CGI. Coordinates should be given in positive integers, as they correspond to physical pixels in the generated image. The origin for drawing (0,0) is in the upper left hand corner of the image and extends in the positive x direction (to the right) along the top of the image and in the positive y direction (down) along the left hand side of the image. For reference, the size of the icons drawn is usually about 40x40 pixels (text takes a little extra space). The coordinates you specify here are for the upper left hand corner of the host icon that is drawn. Note: Don't worry about what the maximum x and y coordinates that you can use are. The CGI will automatically calculate the maximum dimensions of the image it creates based on the largest x and y coordinates you specify.");
 $help["3d_coords"] = dgettext("help", "Define the coordinates to use when drawing the host in the statuswrl CGI. Coordinates can be positive or negative real numbers. The origin for drawing is (0.0,0.0,0.0). For reference, the size of the host cubes drawn is 0.5 units on each side (text takes a little more space). The coordinates you specify here are used as the center of the host cube.");
-
-$help['criticality_id'] = dgettext("help", "Severity level");
-
+$help['criticality_id'] = dgettext("help", "Severity level use to sort issue in Monitoring menu.");
 $help['acl_groups'] = dgettext("help", "This is required so that you can access your host after creation. Some selected resource groups may contain filter, thus still preventing you from seeing the new host. In this case, make sure to link your Host to a Host Category.");
 
 /*
@@ -95,5 +98,3 @@ $help["macro"] = dgettext("help", "Macros are used as object-specific variables/
 $help["display_name"] = dgettext("help", "This directive is used to define an alternate name that should be displayed in the web interface for this host. If not specified, this defaults to the value you specify as host name.");
 $help["flap_detection_options"] = dgettext("help", "This directive is used to determine what host states the flap detection logic will use for this host.");
 $help["initial_state"] = dgettext("help", "By default monitoring engine will assume that all hosts are in UP states when it starts. You can override the initial state for a host by using this directive.");
-
-?>

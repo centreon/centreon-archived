@@ -58,7 +58,6 @@ if (($o == "c" || $o == "w") && $resource_id) {
     $DBRESULT->free();
 }
 
-
 /**
  * Var information to format the element
  */
@@ -73,13 +72,13 @@ require_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
  * Form
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-if ($o == "a")
+if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Resource"));
-else if ($o == "c")
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a Resource"));
-else if ($o == "w")
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View Resource"));
-
+}
 
 /**
  * Resources CFG basic information
@@ -91,13 +90,14 @@ $form->addElement('text', 'resource_line', _("MACRO Expression"), $attrsText);
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
+    'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=list',
     'multiple' => true,
     'linkedObject' => 'centreonInstance'
 );
 /* Host Parents */
 $attrPoller1 = array_merge(
-        $attrPoller, array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=defaultValues&target=resources&field=instance_id&id='.$resource_id)
+    $attrPoller,
+    array('defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=defaultValues&target=resources&field=instance_id&id='.$resource_id)
 );
 $form->addElement('select2', 'instance_id', _("Linked Instances"), array(), $attrPoller1);
 
@@ -127,7 +127,8 @@ $init->setValue(serialize($initialValues));
 /**
  * Form definition
  */
-function myReplace() {
+function myReplace()
+{
     global $form;
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["resource_name"]));
@@ -153,15 +154,13 @@ if ($o == "w") {
     }
     $form->setDefaults($rs);
     $form->freeze();
-}
-// Modify a Resources CFG information
-else if ($o == "c") {
+} // Modify a Resources CFG information
+elseif ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($rs);
-}
-// Add a Resources CFG information
-else if ($o == "a") {
+} // Add a Resources CFG information
+elseif ($o == "a") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
@@ -169,19 +168,20 @@ else if ($o == "a") {
 $valid = false;
 if ($form->validate()) {
     $rsObj = $form->getElement('resource_id');
-    if ($form->getSubmitValue("submitA"))
+    if ($form->getSubmitValue("submitA")) {
         $rsObj->setValue(insertResourceInDB());
-    else if ($form->getSubmitValue("submitC"))
+    } elseif ($form->getSubmitValue("submitC")) {
         updateResourceInDB($rsObj->getValue());
-    $o = NULL;
+    }
+    $o = null;
     $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $rsObj->getValue() . "'"));
     $valid = true;
 }
 
 $action = $form->getSubmitValue("action");
-if ($valid)
+if ($valid) {
     require_once($path . "listResources.php");
-else {
+} else {
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

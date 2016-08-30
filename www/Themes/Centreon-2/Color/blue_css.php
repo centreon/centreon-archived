@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
@@ -84,4 +81,3 @@ $menu2_color = "#c1ecff";
 $bg_image_header = "../../Images/bg_header_grayblue.gif";
 
 require_once _CENTREON_PATH_ . "www/Themes/Centreon-2/color_css.php";
-?>

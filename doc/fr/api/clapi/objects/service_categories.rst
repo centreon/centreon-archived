@@ -92,10 +92,7 @@ In order to view the member list of a service category, use the **GETSERVICE** o
 Addservice, Setservice , Addservicetemplate and Setservicetemplate
 ------------------------------------------------------------------
 
-In order to add a new element to a specific service category, you use the following actions: 
-*ADDSERVICE**, **SETSERVICE**, **ADDSERVICETEMPLATE**, where *add* will append and *set* will overwrite previous definitions::
-
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SC -a addservice -v "Ping-Category;my host,my service" 
+In order to add a new element to a specific service category, you use the following action **ADDSERVICETEMPLATE**, where *add* will append and *set* will overwrite previous definitions::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o SC -a addservicetemplate -v "Ping-Category;my template" 
 

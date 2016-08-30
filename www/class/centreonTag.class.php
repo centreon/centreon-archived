@@ -31,24 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonTag
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
-    
-    
 
     /**
      *
@@ -70,7 +65,7 @@ class CentreonTag
             . "WHERE tags_id IN (" . $explodedValues . ") "
             . "ORDER BY tags_name ";
 
-        $resRetrieval = $this->_db->query($query);
+        $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
 
             $items[] = array(
@@ -82,4 +77,3 @@ class CentreonTag
         return $items;
     }
 }
-?>

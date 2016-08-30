@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -35,6 +35,9 @@
 
 require_once dirname(__FILE__) . '/abstract/host.class.php';
 require_once dirname(__FILE__) . '/abstract/service.class.php';
+require_once dirname(__FILE__) . '/../centreonHost.class.php';
+require_once dirname(__FILE__) . '/../centreonDB.class.php';
+
 
 class Host extends AbstractHost {
     protected $hosts_by_name = array();
@@ -46,6 +49,8 @@ class Host extends AbstractHost {
     protected $stmt_service = null;
     protected $stmt_service_sg = null;
     protected $generated_parentship = array();
+
+
 
     private function getHostGroups(&$host) {
         if (!isset($host['hg'])) {
@@ -212,16 +217,23 @@ class Host extends AbstractHost {
         $stmt->execute();
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
     }
-    
+
+
     public function generateFromHostId(&$host) {
         $this->getImages($host);
         $this->getMacros($host);
-        $host['macros']['_HOST_ID'] = $host['host_id']; 
+        $host['macros']['_HOST_ID'] = $host['host_id'];
+
+        $pearDB = new CentreonDB();
+        $hostObj = new CentreonHost($pearDB);
+        $template = $hostObj->getInheritedValues($host['host_id'], array(), -1, array('host_location'));
+
         $oTimezone = Timezone::getInstance();
-        $sTimezone = $oTimezone->getTimezoneFromId($host['host_location']);
+        $sTimezone = $oTimezone->getTimezoneFromId($template['host_location']);
         if (!is_null($sTimezone)) {
             $host['timezone'] = ":". $sTimezone;
         }
+
         $this->getHostTemplates($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);

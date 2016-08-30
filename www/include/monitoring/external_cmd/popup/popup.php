@@ -31,53 +31,48 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL
- * SVN : $Id$
- *
  */
 
-	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-	require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
-	require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
+require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-	$pearDB = new CentreonDB();
+$pearDB = new CentreonDB();
 
-	session_start();
-	$oreon = $_SESSION['centreon'];
-    
+session_start();
+$centreon = $_SESSION['centreon'];
 
-	$centreonLang = new CentreonLang(_CENTREON_PATH_, $oreon);
-	$centreonLang->bindLang();
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
+$centreonLang->bindLang();
 
-	if (!isset($oreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
-		exit;
-	}
-    $sid = session_id();
-	if (isset($sid)){
-		//$sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8");
-		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session = $res->fetchRow())
-			exit;
-	} else {
-		exit;
-	}
+if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
+    exit();
+}
+$sid = session_id();
+if (isset($sid)) {
+    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+    if (!$session = $res->fetchRow()) {
+        exit();
+    }
+} else {
+    exit;
+}
 
-	define('SMARTY_DIR', _CENTREON_PATH_ . 'GPL_LIB/Smarty/libs/');
+define('SMARTY_DIR', _CENTREON_PATH_ . 'GPL_LIB/Smarty/libs/');
 
-	require_once SMARTY_DIR . "Smarty.class.php";
+require_once SMARTY_DIR . "Smarty.class.php";
 
-	$o = htmlentities($_GET['o'], ENT_QUOTES, "UTF-8");
-	$p = htmlentities($_GET['p'], ENT_QUOTES, "UTF-8");
-	$cmd = htmlentities($_GET['cmd'], ENT_QUOTES, "UTF-8");
+$o = htmlentities($_GET['o'], ENT_QUOTES, "UTF-8");
+$p = htmlentities($_GET['p'], ENT_QUOTES, "UTF-8");
+$cmd = htmlentities($_GET['cmd'], ENT_QUOTES, "UTF-8");
 
-	if ($cmd == 70 || $cmd == 72) {
-		require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_ack.php';
-	} else if ($cmd == 74 || $cmd == 75) {
-		require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_downtime.php';
-	}
-	exit();
-?>
+if ($cmd == 70 || $cmd == 72) {
+    require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_ack.php';
+} elseif ($cmd == 74 || $cmd == 75) {
+    require_once _CENTREON_PATH_ . 'www/include/monitoring/external_cmd/popup/massive_downtime.php';
+}
+exit();

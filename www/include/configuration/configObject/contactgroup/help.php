@@ -10,6 +10,3 @@ $help["acl_groups"] = dgettext("help", "Refers to the ACL groups this contact gr
  * unsupported in Centreon
  */
 $help["contactgroup_members"] = dgettext("help", "This optional directive can be used to include contacts from other \"sub\" contact groups in this contact group. Specify a list of other contact groups whose members should be included in this group.");
-
-?>
-

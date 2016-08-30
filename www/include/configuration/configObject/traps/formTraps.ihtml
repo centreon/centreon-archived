@@ -9,32 +9,31 @@
         </ul>
         <div id="validFormTop">
 	     {if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		    <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	     {else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		    <p class="oreonbutton">{$form.change.html}</p>
 	     {/if}
         </div>
 	</div>
 	<div id='tab1' class='tab'>
-	 <table class="formTable table">
-            <tbody>
-                   <tr class="ListHeader">
-                     <td class="FormHeader" colspan="2">
-                       <h3>| {$form.header.title}</h3>
-                     </td>
-                   </tr>
-                   <tr class="list_lvl_1">
-                     <td class="ListColLvl1_name" colspan="2">
-                       <h4>{$subtitle0}</h4>
-                     </td>
-                    </tr>
-                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trapname"> {$form.traps_name.label}</td><td class="FormRowValue">{$form.traps_name.html}</td></tr>
-                   <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="oid"> {$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
-                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="vendor"> {$form.manufacturer_id.label}</td><td class="FormRowValue">{$form.manufacturer_id.html}</td></tr>
-
-                   <tr class="list_lvl_1">
-                     <td class="ListColLvl1_name" colspan="2">
-                       <h4>{$subtitle0}</h4>
+	<table class="formTable table">
+        <tbody>
+            <tr class="ListHeader">
+                <td class="FormHeader" colspan="2">
+                    <h3>| {$form.header.title}</h3>
+                </td>
+            </tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$subtitle0}</h4>
+                </td>
+            </tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trapname"> {$form.traps_name.label}</td><td class="FormRowValue">{$form.traps_name.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="oid"> {$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="vendor"> {$form.manufacturer_id.label}</td><td class="FormRowValue">{$form.manufacturer_id.html}</td></tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$subtitle0}</h4>
                      </td>
                    </tr>
                    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trap_args"> {$form.traps_args.label}</td><td class="FormRowValue">{$form.traps_args.html}</td></tr>

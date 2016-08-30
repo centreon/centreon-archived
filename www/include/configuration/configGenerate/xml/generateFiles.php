@@ -31,16 +31,32 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL:$
- * SVN : $Id:$
- *
  */
 
 ini_set("display_errors", "Off");
+
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
+
+$pearDB = new CentreonDB();
+
+/* Check Session */
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    print "Bad Session";
+    exit();
+}
+
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
-    exit;
+    exit();
 }
 
 /**
@@ -50,27 +66,20 @@ global $generatePhpErrors;
 $generatePhpErrors = array();
 
 $path = _CENTREON_PATH_ . "www/include/configuration/configGenerate/";
-$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/nagiosCFG/";
+$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/engine/";
 $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
-$DebugPath = "filesGeneration/nagiosCFG/";
+$DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
-require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
-require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
-require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 
 session_start();
 if ($_POST['sid'] != session_id()) {
     exit;
 }
-$oreon = $_SESSION['centreon'];
-$centreon = $oreon;
+$centreon = $_SESSION['centreon'];
+$centreon = $centreon;
 $xml = new CentreonXML();
-$pearDB = new CentreonDB();
+
 
 $config_generate = new Generate();
 
@@ -95,7 +104,7 @@ try {
     $tabs = array();
     if ($generate) {
         $pearDBO = new CentreonDB('centstorage');
-        $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('id', 'name', 'localhost', 'monitoring_engine'),
+        $tabs = $centreon->user->access->getPollerAclConf(array('fields'     => array('id', 'name', 'localhost', 'monitoring_engine'),
                                                              'order'      => array('name'),
                                                              'keys'       => array('id'),
                                                              'conditions' => array('ns_activate' => '1')));
@@ -127,7 +136,7 @@ try {
 
     $xml->writeElement("status", $statusMsg);
     $xml->writeElement("statuscode", $statusCode);
-}  catch (Exception $e) {
+} catch (Exception $e) {
     $xml->writeElement("status", $nokMsg);
     $xml->writeElement("statuscode", 1);
     $xml->writeElement("error", $e->getMessage());
@@ -186,7 +195,7 @@ function log_error($errno, $errstr, $errfile, $errline)
 
 function printDebug($xml, $tabs)
 {
-    global $pearDB, $ret, $oreon, $nagiosCFGPath;
+    global $pearDB, $ret, $centreon, $nagiosCFGPath;
 
     $DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
     $nagios_bin = $DBRESULT_Servers->fetchRow();
@@ -201,18 +210,18 @@ function printDebug($xml, $tabs)
     }
 
     foreach ($tab_server as $host) {
-        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"]."/nagiosCFG.DEBUG 2>&1");
+        $stdout = shell_exec($nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"]."/centengine.DEBUG 2>&1");
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
-        $msg_debug[$host['id']] = str_replace ("\n", "<br />", $stdout);
-        $msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("warning: ", "<font color='orange'>Warning</font> ", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("reading", "Reading", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("running", "Running", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("Total Errors:   0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace ("<br />License:", " - License:", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("\n", "<br />", $stdout);
+        $msg_debug[$host['id']] = str_replace("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("warning: ", "<font color='orange'>Warning</font> ", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("reading", "Reading", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("running", "Running", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("Total Errors:   0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace("<br />License:", " - License:", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = preg_replace('/\[[0-9]+?\] /', '', $msg_debug[$host['id']]);
 
         $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
@@ -220,8 +229,9 @@ function printDebug($xml, $tabs)
         $i = 0;
         foreach ($lines as $line) {
             if (strncmp($line, "Processing object config file", strlen("Processing object config file"))
-                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org")))
-            $msg_debug[$host['id']] .= $line . "<br>";
+                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org"))) {
+                $msg_debug[$host['id']] .= $line . "<br>";
+            }
             $i++;
         }
     }
@@ -241,7 +251,7 @@ function printDebug($xml, $tabs)
                     if ($matches[1] == "Errors") {
                         $pollerNameColor = "red";
                         $returnCode = 1;
-                    } elseif($matches[1] == "Warnings") {
+                    } elseif ($matches[1] == "Warnings") {
                         $pollerNameColor = "orange";
                     }
                 }

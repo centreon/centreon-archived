@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-	exit;
+    exit;
 }
 
 $path = "./include/reporting/dashboard";
@@ -62,18 +62,15 @@ require_once "./include/common/common-Func.php";
  * Create DB connexion
  */
 $pearDBO = new CentreonDB("centstorage");
-if ($oreon->broker->getBroker() == "ndo") {
-	$pearDBndo 	= new CentreonDB("ndo");
-}
 
 $debug = 0;
 
 /*
  * QuickForm templates
  */
-$attrsTextI		= array("size"=>"3");
-$attrsText 		= array("size"=>"30");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+$attrsTextI        = array("size"=>"3");
+$attrsText        = array("size"=>"30");
+$attrsTextarea    = array("rows"=>"5", "cols"=>"40");
 
 
 /*
@@ -114,45 +111,60 @@ $tpl->assign('color', $color);
  * Translations and styles
  */
 
-$tpl->assign('style_ok', 		"class='ListColCenter' style='padding:5px;background:#" . $colors['ok'] . "'");
-$tpl->assign('style_ok_top', 		" style='color:#" . $colors['ok'] . "'");
-$tpl->assign('style_ok_alert', 		"class='ListColCenter' style='width: 25px; background:#" . $colors['ok'] . "'");
-$tpl->assign('style_warning' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['warning'] . "'");
-$tpl->assign('style_warning_top' , 		"style='color:#" . $colors['warning'] . "'");
-$tpl->assign('style_warning_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['warning'] . "'");
-$tpl->assign('style_critical' , 	"class='ListColCenter' style='padding:5px;background:#" . $colors['critical'] . "'");
-$tpl->assign('style_critical_top' , 	"style='color:#" . $colors['critical'] . "'");
-$tpl->assign('style_critical_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['critical'] . "'");
-$tpl->assign('style_unknown' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['unknown'] . "'");
-$tpl->assign('style_unknown_top' , 		"");
-$tpl->assign('style_unknown_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['unknown'] . "'");
-$tpl->assign('style_pending' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['undetermined'] . "'");
-$tpl->assign('style_pending_top' , 		"");
-$tpl->assign('style_pending_alert' , 	"class='ListColCenter' style='width: 25px; background:#" . $colors['undetermined'] . "'");
-$tpl->assign('style_maintenance' , 		"class='ListColCenter' style='padding:5px;background:#" . $colors['maintenance'] . "'");
-$tpl->assign('style_maintenance_top' , 		"style='color:#" . $colors['maintenance'] . "'");
+$tpl->assign('style_ok', "class='ListColCenter' style='padding:5px;background:#" . $colors['ok'] . "'");
+$tpl->assign('style_ok_top', " style='color:#" . $colors['ok'] . "'");
+$tpl->assign('style_ok_alert', "class='ListColCenter' style='width: 25px; background:#" . $colors['ok'] . "'");
+$tpl->assign('style_warning', "class='ListColCenter' style='padding:5px;background:#" . $colors['warning'] . "'");
+$tpl->assign('style_warning_top', "style='color:#" . $colors['warning'] . "'");
+$tpl->assign(
+    'style_warning_alert',
+    "class='ListColCenter' style='width: 25px; background:#" . $colors['warning'] . "'"
+);
+$tpl->assign('style_critical', "class='ListColCenter' style='padding:5px;background:#" . $colors['critical'] . "'");
+$tpl->assign('style_critical_top', "style='color:#" . $colors['critical'] . "'");
+$tpl->assign(
+    'style_critical_alert',
+    "class='ListColCenter' style='width: 25px; background:#" . $colors['critical'] . "'"
+);
+$tpl->assign('style_unknown', "class='ListColCenter' style='padding:5px;background:#" . $colors['unknown'] . "'");
+$tpl->assign('style_unknown_top', "");
+$tpl->assign(
+    'style_unknown_alert',
+    "class='ListColCenter' style='width: 25px; background:#" . $colors['unknown'] . "'"
+);
+$tpl->assign('style_pending', "class='ListColCenter' style='padding:5px;background:#" . $colors['undetermined'] . "'");
+$tpl->assign('style_pending_top', "");
+$tpl->assign(
+    'style_pending_alert',
+    "class='ListColCenter' style='width: 25px; background:#" . $colors['undetermined'] . "'"
+);
+$tpl->assign(
+    'style_maintenance',
+    "class='ListColCenter' style='padding:5px;background:#" . $colors['maintenance'] . "'"
+);
+$tpl->assign('style_maintenance_top', "style='color:#" . $colors['maintenance'] . "'");
 
 
-$tpl->assign('badge_UP', 		"class='ListColCenter state_badge host_up'");
-$tpl->assign('badge_DOWN' , 		"class='ListColCenter state_badge host_down'");
-$tpl->assign('badge_UNREACHABLE' , 	"class='ListColCenter state_badge host_unreachable'");
-$tpl->assign('badge_UNDETERMINED' , 		"class='ListColCenter state_badge badge_undetermined'");
-$tpl->assign('badge_MAINTENANCE' , 		"class='ListColCenter state_badge badge_downtime'");
+$tpl->assign('badge_UP', "class='ListColCenter state_badge host_up'");
+$tpl->assign('badge_DOWN', "class='ListColCenter state_badge host_down'");
+$tpl->assign('badge_UNREACHABLE', "class='ListColCenter state_badge host_unreachable'");
+$tpl->assign('badge_UNDETERMINED', "class='ListColCenter state_badge badge_undetermined'");
+$tpl->assign('badge_MAINTENANCE', "class='ListColCenter state_badge badge_downtime'");
 
 
-$tpl->assign('badge_ok', 		"class='ListColCenter state_badge service_ok'");
-$tpl->assign('badge_warning' , 		"class='ListColCenter state_badge service_warning'");
-$tpl->assign('badge_critical' , 	"class='ListColCenter state_badge service_critical'");
-$tpl->assign('badge_unknown' , 		"class='ListColCenter state_badge service_unknown'");
-$tpl->assign('badge_pending' , 		"class='ListColCenter state_badge badge_undetermined'");
-$tpl->assign('badge_maintenance' , 		"class='ListColCenter state_badge badge_downtime'");
+$tpl->assign('badge_ok', "class='ListColCenter state_badge service_ok'");
+$tpl->assign('badge_warning', "class='ListColCenter state_badge service_warning'");
+$tpl->assign('badge_critical', "class='ListColCenter state_badge service_critical'");
+$tpl->assign('badge_unknown', "class='ListColCenter state_badge service_unknown'");
+$tpl->assign('badge_pending', "class='ListColCenter state_badge badge_undetermined'");
+$tpl->assign('badge_maintenance', "class='ListColCenter state_badge badge_downtime'");
 
 $tpl->assign('actualTitle', _("Actual"));
 
 $tpl->assign('serviceTitle', _("Service"));
 $tpl->assign('hostTitle', _("Host name"));
-$tpl->assign("allTilte",  _("All"));
-$tpl->assign("averageTilte",  _("Average"));
+$tpl->assign("allTilte", _("All"));
+$tpl->assign("averageTilte", _("Average"));
 
 $tpl->assign('OKTitle', _("OK"));
 $tpl->assign('WarningTitle', _("Warning"));
@@ -224,9 +236,9 @@ $reportingTimePeriod = getreportingTimePeriod();
 /*
  * LCA
  */
-$lcaHoststr = $oreon->user->access->getHostsString("ID", $pearDBO);
-$lcaHostGroupstr = $oreon->user->access->getHostGroupsString();
-$lcaSvcstr 	= $oreon->user->access->getServicesString("ID", $pearDBO);
+$lcaHoststr = $centreon->user->access->getHostsString("ID", $pearDBO);
+$lcaHostGroupstr = $centreon->user->access->getHostGroupsString();
+$lcaSvcstr    = $centreon->user->access->getServicesString("ID", $pearDBO);
 
 /*
  * setting variables for link with services
@@ -238,8 +250,9 @@ $get_date_start = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
 $get_date_start = (isset($_GET["start"])) ? $_GET["start"] : $get_date_start;
 $get_date_end = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
 $get_date_end = (isset($_GET["end"])) ? $_GET["end"] : $get_date_end;
-if ($get_date_start == "" && $get_date_end == "" && $period == "")
-	$period = "yesterday";
+if ($get_date_start == "" && $get_date_end == "" && $period == "") {
+    $period = "yesterday";
+}
 $tpl->assign("get_date_start", $get_date_start);
 $tpl->assign("get_date_end", $get_date_end);
 $tpl->assign("get_period", $period);
@@ -253,8 +266,18 @@ $tpl->assign('period_choice', $period_choice);
 $formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
 $formPeriod->addElement('select', 'period', "", $periodList, array("id" => "presetPeriod"));
 $formPeriod->addElement('hidden', 'timeline', "1");
-$formPeriod->addElement('text', 'StartDate', _("From"), array("id"=>"StartDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();"));
-$formPeriod->addElement('text', 'EndDate', _("to"), array("id"=>"EndDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();"));
+$formPeriod->addElement(
+    'text',
+    'StartDate',
+    _("From"),
+    array("id"=>"StartDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();")
+);
+$formPeriod->addElement(
+    'text',
+    'EndDate',
+    _("to"),
+    array("id"=>"EndDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();")
+);
 $formPeriod->addElement('submit', 'button', _("Apply period"), array('class' => 'btc bt_success'));
 $formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
 
@@ -264,6 +287,6 @@ $formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_sta
 <script type='text/javascript'>
 function togglePeriodType()
 {
-	document.getElementById("presetPeriod").selectedIndex = 0;
+    document.getElementById("presetPeriod").selectedIndex = 0;
 }
 </script>

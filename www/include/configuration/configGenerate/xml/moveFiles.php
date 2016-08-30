@@ -31,13 +31,31 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL:$
- * SVN : $Id:$
- *
  */
 
 ini_set("display_errors", "Off");
+
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+
+require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
+
+$pearDB = new CentreonDB();
+
+/* Check Session */
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    print "Bad Session";
+    exit();
+}
+
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
@@ -85,23 +103,15 @@ try {
     $ret['host'] = $pollers;
 
     chdir(_CENTREON_PATH_ . "www");
-    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/nagiosCFG/";
+    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/engine/";
     $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
-    require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
-    require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
         exit;
     }
-    $oreon = $_SESSION['centreon'];
-    $centreon = $oreon;
+    $centreon = $_SESSION['centreon'];
+    $centreon = $centreon;
 
     /*  Set new error handler */
     set_error_handler('log_error');
@@ -110,25 +120,24 @@ try {
     $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
 
     $xml = new CentreonXML();
-    $pearDB = new CentreonDB();
 
     /*
      * Copying image in logos directory
      */
-    if (isset($oreon->optGen["nagios_path_img"]) && $oreon->optGen["nagios_path_img"]) {
+    if (isset($centreon->optGen["nagios_path_img"]) && $centreon->optGen["nagios_path_img"]) {
         $DBRESULT_imgs = $pearDB->query("SELECT `dir_alias`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
-        while ($images = $DBRESULT_imgs->fetchrow()){
-            if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"])) {
-                $mkdirResult = @mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
+        while ($images = $DBRESULT_imgs->fetchrow()) {
+            if (!is_dir($centreon->optGen["nagios_path_img"]."/".$images["dir_alias"])) {
+                $mkdirResult = @mkdir($centreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
             }
-            if (file_exists(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
-                $copyResult = @copy(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
+            if (file_exists(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"])) {
+                $copyResult = @copy(_CENTREON_PATH_."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $centreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
             }
         }
     }
 
     $tab_server = array();
-    $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost'),
+    $tabs = $centreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost'),
                                                          'order'      => array('name'),
                                                          'conditions' => array('ns_activate' => '1'),
                                                          'keys'       => array('id')));
@@ -164,18 +173,18 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-                if (!is_dir($oreon->Nagioscfg["cfg_dir"])) {
-                    throw new Exception(sprintf(_("Could not find configuration directory '%s' for monitoring engine '%s'. Please check it's path or create it"), $oreon->Nagioscfg["cfg_dir"], $host['name']));
+                if (!is_dir($centreon->Nagioscfg["cfg_dir"])) {
+                    throw new Exception(sprintf(_("Could not find configuration directory '%s' for monitoring engine '%s'. Please check it's path or create it"), $centreon->Nagioscfg["cfg_dir"], $host['name']));
                 }
                 /*
                  * Copy monitoring engine's configuration files
                  */
                 foreach (glob($nagiosCFGPath . $host["id"] . "/*.cfg") as $filename) {
-                    $succeded = @copy($filename, rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename));
+                    $succeded = @copy($filename, rtrim($centreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename));
                     if (!$succeded) {
                         throw new Exception(sprintf(_("Could not write to file '%s' for monitoring engine '%s'. Please add writing permissions for the webserver's user"), basename($filename), $host['name']));
                     } else {
-                        @chmod(rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename), 0664);
+                        @chmod(rtrim($centreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename), 0664);
                     }
                 }
                 /*
@@ -244,9 +253,10 @@ foreach ($generatePhpErrors as $error) {
 }
 $xml->endElement();
 $xml->endElement();
+
 header('Content-Type: application/xml');
 header('Cache-Control: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
+
 $xml->output();
-?>

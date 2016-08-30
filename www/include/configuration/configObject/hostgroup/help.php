@@ -18,5 +18,3 @@ $help["statusmap_image"] = dgettext("help", "Define an image that should be asso
 $help['hg_rrd_retention'] = dgettext("help", "RRD retention duration of all the services that are in this host group. If service is in multiple host groups, the highest retention value will be used.");
 $help['hg_comment'] = dgettext("help", "Comments on this host group.");
 $help['hg_activate'] = dgettext("help", "Whether this host group is enabled.");
-?>
-

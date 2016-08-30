@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -44,18 +41,18 @@
  */
 class CentreonGraphCurve
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -104,7 +101,7 @@ class CentreonGraphCurve
             . $selectedGraphCurves
             . " ORDER BY name";
 
-        $DBRESULT = $this->_db->query($queryGraphCurve);
+        $DBRESULT = $this->db->query($queryGraphCurve);
         while ($data = $DBRESULT->fetchRow()) {
             $graphCurveList[] = array(
                 'id' => $data['id'],
@@ -115,4 +112,3 @@ class CentreonGraphCurve
         return $graphCurveList;
     }
 }
-?>

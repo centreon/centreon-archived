@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,62 +36,65 @@
  *
  */
 
-	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-	require_once _CENTREON_PATH_."www/class/centreonSession.class.php";
-	require_once _CENTREON_PATH_."www/class/centreon.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_."www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_."www/class/centreon.class.php";
 
-	CentreonSession::start();
-	if (!isset($_SESSION['centreon'])) {
-	    die();
-	}
-	$oreon = $_SESSION["centreon"];
+CentreonSession::start();
+if (!isset($_SESSION['centreon'])) {
+    die();
+}
+$oreon = $_SESSION["centreon"];
 
-	// -----------------------------------------------------
-	$value = $_GET["value"];
-	foreach ($value as $key => $val)	{
-		if ($val)
-			if (!isset($oreon->optGen["color_".strtolower($key)])) {
-				//$color[] = $oreon->optGen["color_undetermined"];
-				$color[] = '#F0F0F0';
-				$val = str_replace(",", ".", $val);
-				$data[] = $val;
-				$legend[] = "";
-			} else {
-				$color[] = $oreon->optGen["color_".strtolower($key)];
-				$val = str_replace(",", ".", $val);
-				$data[] = $val;
-				$legend[] = "";
-			}
-	}
-	include_once(_CENTREON_PATH_ . '/www/lib/ofc-library/open-flash-chart.php' );
+// -----------------------------------------------------
+$value = $_GET["value"];
+foreach ($value as $key => $val) {
+    if ($val) {
+        if (!isset($oreon->optGen["color_".strtolower($key)])) {
+            //$color[] = $oreon->optGen["color_undetermined"];
+            $color[] = '#F0F0F0';
+            $val = str_replace(",", ".", $val);
+            $data[] = $val;
+            $legend[] = "";
+        } else {
+            $color[] = $oreon->optGen["color_".strtolower($key)];
+            $val = str_replace(",", ".", $val);
+            $data[] = $val;
+            $legend[] = "";
+        }
+    }
+}
+include_once(_CENTREON_PATH_ . '/www/lib/ofc-library/open-flash-chart.php');
 
-	$g = new graph();
-	$g->bg_colour = '#F3F6F6';
-	//
-	// PIE chart, 60% alpha
-	//
-	$g->pie(60,'#505050','#000000');
-	//
-	// pass in two arrays, one of data, the other data labels
-	//
+$g = new graph();
+$g->bg_colour = '#F3F6F6';
+//
+// PIE chart, 60% alpha
+//
+$g->pie(60, '#505050', '#000000');
+//
+// pass in two arrays, one of data, the other data labels
+//
 
-	$g->pie_values( $data, $legend );
-	//
-	// Colours for each slice, in this case some of the colours
-	// will be re-used (3 colurs for 5 slices means the last two
-	// slices will have colours colour[0] and colour[1]):
-	//
+$g->pie_values($data, $legend);
+//
+// Colours for each slice, in this case some of the colours
+// will be re-used (3 colurs for 5 slices means the last two
+// slices will have colours colour[0] and colour[1]):
+//
 
-	$g->pie_slice_colours($color);
+$g->pie_slice_colours($color);
 
-	$g->set_tool_tip( '#val#%' );
+$g->set_tool_tip('#val#%');
 
-	if (isset($_GET["service_name"]) && isset($_GET["host_name"]))
-		$g->title( utf8_encode($_GET["service_name"]) . " on " . utf8_encode($_GET["host_name"]), '{font-size:15px; color: #424242}' );
-	else if (isset($_GET["host_name"]))
-		$g->title( utf8_encode($_GET["host_name"]), '{font-size:18px; color: #424242}' );
-	header("Cache-Control: cache, must-revalidate");
-	header("Pragma: public");
-	echo $g->render();
-
-?>
+if (isset($_GET["service_name"]) && isset($_GET["host_name"])) {
+    $g->title(
+        utf8_encode($_GET["service_name"]) . " on " . utf8_encode($_GET["host_name"]),
+        '{font-size:15px; color: #424242}'
+    );
+} elseif (isset($_GET["host_name"])) {
+    $g->title(utf8_encode($_GET["host_name"]), '{font-size:18px; color: #424242}');
+}
+header("Cache-Control: cache, must-revalidate");
+header("Pragma: public");
+echo $g->render();

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -66,6 +66,9 @@ class MetaService extends AbstractObject {
         'notification_period',
         'notification_options',
         'register',
+    );
+    protected $attributes_default = array(
+        'notifications_enabled',
     );
     protected $attributes_hash = array(
         'macros'
@@ -137,11 +140,7 @@ class MetaService extends AbstractObject {
     }
     
     private function buildCacheMetaServices() {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-              $this->attributes_select
-            FROM meta_service
-            WHERE meta_activate = '1'
-        ");
+        $stmt = $this->backend_instance->db->prepare("SELECT $this->attributes_select FROM meta_service WHERE meta_activate = '1'");
         $stmt->execute();
         $this->meta_services = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
         foreach ($this->meta_services as $meta_id => $meta_infos) {
@@ -175,6 +174,7 @@ class MetaService extends AbstractObject {
             $meta_service['passive_checks_enabled'] = 0;
             $meta_service['host_name'] = '_Module_Meta';
             $meta_service['service_description'] = 'meta_' . $meta_id;
+            $meta_service['display_name'] = $meta_service['display_name'];
             $meta_service['check_command'] = 'check_meta!' . $meta_id;
             
             $this->generated_services[] = $meta_id;

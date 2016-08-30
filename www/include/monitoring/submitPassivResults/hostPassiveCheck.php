@@ -31,85 +31,75 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	$o = "hd";
+$o = "hd";
 
-	if (!isset ($oreon))
-		exit ();
+if (!isset($centreon)) {
+    exit();
+}
 
-	require_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 
-	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
-	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
+isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = null;
+isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = null;
 
-	$hObj = new CentreonHost($pearDB);
-	$path = "./include/monitoring/submitPassivResults/";
-	$broker = $oreon->broker->getBroker();
-	if ($broker == "ndo") {
-	    $pearDBndo = new CentreonDB("ndo");
-	} elseif ($broker == "broker") {
-        $pearDBndo = new CentreonDB("centstorage");
-	}
-	$aclObj = new CentreonACL($oreon->user->get_id());
+$hObj = new CentreonHost($pearDB);
+$path = "./include/monitoring/submitPassivResults/";
 
-	# HOST LCA
-	if (!$is_admin){
-		$hostTab = explode(',', $oreon->user->access->getHostsString('NAME', $pearDBndo));
-		foreach ($hostTab as $value) {
-			if ($value == "'".$host_name."'")
-				$flag_acl = 1;
-		}
-	}
+$pearDBndo = new CentreonDB("centstorage");
 
-	//$res = $pearDBndo->query($query);
-	$hostTab = array();
+$aclObj = new CentreonACL($centreon->user->get_id());
 
-	if ($is_admin || ($flag_acl && !$is_admin)){
+if (!$is_admin) {
+    $hostTab = explode(',', $centreon->user->access->getHostsString('NAME', $pearDBndo));
+    foreach ($hostTab as $value) {
+        if ($value == "'".$host_name."'") {
+            $flag_acl = 1;
+        }
+    }
+}
+$hostTab = array();
 
-		#Pear library
-		require_once "HTML/QuickForm.php";
-		require_once 'HTML/QuickForm/advmultiselect.php';
-		require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+if ($is_admin || ($flag_acl && !$is_admin)) {
+    require_once "HTML/QuickForm.php";
+    require_once 'HTML/QuickForm/advmultiselect.php';
+    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-		$form->addElement('header', 'title', _("Command Options"));
+    $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+    $form->addElement('header', 'title', _("Command Options"));
 
-		$hosts = array($host_name=>$host_name);
+    $hosts = array($host_name=>$host_name);
 
-		$form->addElement('select', 'host_name', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
+    $form->addElement('select', 'host_name', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
 
-		$form->addRule('host_name', _("Required Field"), 'required');
+    $form->addRule('host_name', _("Required Field"), 'required');
 
-		$return_code = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+    $return_code = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-		$form->addElement('select', 'return_code', _("Check result"),$return_code);
-		$form->addElement('text', 'output', _("Check output"), array("size"=>"100"));
-		$form->addElement('text', 'dataPerform', _("Performance data"), array("size"=>"100"));
+    $form->addElement('select', 'return_code', _("Check result"), $return_code);
+    $form->addElement('text', 'output', _("Check output"), array("size"=>"100"));
+    $form->addElement('text', 'dataPerform', _("Performance data"), array("size"=>"100"));
 
-		$form->addElement('hidden', 'author', $oreon->user->get_alias());
-		$form->addElement('hidden', 'cmd', $cmd);
-		$form->addElement('hidden', 'p', $p);
+    $form->addElement('hidden', 'author', $centreon->user->get_alias());
+    $form->addElement('hidden', 'cmd', $cmd);
+    $form->addElement('hidden', 'p', $p);
 
-		$form->addElement('submit', 'submit', _("Save"));
-		$form->addElement('reset', 'reset', _("Reset"));
+    $form->addElement('submit', 'submit', _("Save"));
+    $form->addElement('reset', 'reset', _("Reset"));
 
-		# Smarty template Init
-		$tpl = new Smarty();
-		$tpl = initSmartyTpl($path, $tpl);
+    # Smarty template Init
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl);
 
-		#Apply a template definition
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);
+    #Apply a template definition
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
 
-		$tpl->assign('form', $renderer->toArray());
-		$tpl->display("hostPassiveCheck.ihtml");
-	}
-?>
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->display("hostPassiveCheck.ihtml");
+}

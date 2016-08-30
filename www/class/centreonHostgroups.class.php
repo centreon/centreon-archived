@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
  /**
@@ -42,87 +39,87 @@
   * @author jmathis
   *
   */
- class CentreonHostgroups
+class CentreonHostgroups
 {
     /**
       *
-      * @var type 
+      * @var type
       */
- 	private $DB;
+    private $DB;
     
     /**
      *
-     * @var type 
+     * @var type
      */
- 	private $relationCache;
+    private $relationCache;
     
     /**
      *
-     * @var type 
+     * @var type
      */
- 	private $dataTree;
+    private $dataTree;
 
- 	/**
- 	 *
- 	 * Constructor
- 	 * @param $pearDB
- 	 */
- 	function __construct($pearDB)
- 	{
- 		$this->DB = $pearDB;
- 	}
+    /**
+     *
+     * Constructor
+     * @param $pearDB
+     */
+    public function __construct($pearDB)
+    {
+        $this->DB = $pearDB;
+    }
 
- 	/**
- 	 *
- 	 * Enter description here ...
- 	 * @param unknown_type $hg_id
- 	 * @param unknown_type $searchHost
- 	 * @param unknown_type $level
- 	 */
- 	public function getHostGroupHosts($hg_id = null)
- 	{
-		if (!$hg_id) {
-			return;
-		}
+    /**
+     *
+     * Enter description here ...
+     * @param unknown_type $hg_id
+     * @param unknown_type $searchHost
+     * @param unknown_type $level
+     */
+    public function getHostGroupHosts($hg_id = null)
+    {
+        if (!$hg_id) {
+            return;
+        }
 
-		if (!count($this->relationCache)) {
-			$this->setHgHgCache();
-		}
+        if (!count($this->relationCache)) {
+            $this->setHgHgCache();
+        }
 
-		$hosts = array();
-		$DBRESULT = $this->DB->query("SELECT hgr.host_host_id " .
-									"FROM hostgroup_relation hgr, host h " .
-									"WHERE hgr.hostgroup_hg_id = '".$this->DB->escape($hg_id)."' " .
-									"AND h.host_id = hgr.host_host_id " .
-									"ORDER by h.host_name");
-		while ($elem = $DBRESULT->fetchRow()) {
-			$ref[$elem["host_host_id"]] = $elem["host_host_id"];
-			$hosts[] = $elem["host_host_id"];
-		}
-		$DBRESULT->free();
-		unset($elem);
+        $hosts = array();
+        $DBRESULT = $this->DB->query("SELECT hgr.host_host_id " .
+                                    "FROM hostgroup_relation hgr, host h " .
+                                    "WHERE hgr.hostgroup_hg_id = '".$this->DB->escape($hg_id)."' " .
+                                    "AND h.host_id = hgr.host_host_id " .
+                                    "ORDER by h.host_name");
+        while ($elem = $DBRESULT->fetchRow()) {
+            $ref[$elem["host_host_id"]] = $elem["host_host_id"];
+            $hosts[] = $elem["host_host_id"];
+        }
+        $DBRESULT->free();
+        unset($elem);
 
-		if (isset($hostgroups) && count($hostgroups)) {
-			foreach ($hostgroups as $hg_id2) {
-				$ref[$hg_id2] = array();
-				$tmp = $this->getHostGroupHosts($hg_id2, "", 1);
-				foreach ($tmp as $id) {
-					print "     host: $id<br>";
-				}
-				unset($tmp);
-			}
-		}
-		return $hosts;
-	}
+        if (isset($hostgroups) && count($hostgroups)) {
+            foreach ($hostgroups as $hg_id2) {
+                $ref[$hg_id2] = array();
+                $tmp = $this->getHostGroupHosts($hg_id2, "", 1);
+                foreach ($tmp as $id) {
+                    print "     host: $id<br>";
+                }
+                unset($tmp);
+            }
+        }
+        return $hosts;
+    }
 
- 	/**
-	 * Get Hostgroup Name
-	 *
-	 * @param int $hg_id
-	 * @return string
-	 */
-	public function getHostgroupName($hg_id)
-	{
+    /**
+     * Get Hostgroup Name
+     *
+     * @param int $hg_id
+     * @return string
+     */
+    public function getHostgroupName($hg_id)
+    {
         static $names = array();
 
         if (!isset($names[$hg_id])) {
@@ -137,20 +134,21 @@
             return $names[$hg_id];
         }
         return "";
-	}
+    }
     
     
     /**
-	 * Get Hostgroup Id/Name
-	 *
-	 * @param int $hg_id
-	 * @return string
-	 */
-	public function getHostsgroups($hg_id = array())
-	{
+     * Get Hostgroup Id/Name
+     *
+     * @param int $hg_id
+     * @return string
+     */
+    public function getHostsgroups($hg_id = array())
+    {
         $arrayReturn = array();
         if (!empty($hg_id)) {
-            $query = "SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (" . $this->DB->escape(implode(",",$hg_id)).")";
+            $query = "SELECT hg_id, hg_name FROM hostgroup
+                WHERE hg_id IN (" . $this->DB->escape(implode(",", $hg_id)).")";
             $res = $this->DB->query($query);
             $arrayReturn = array();
             while ($row = $res->fetchRow()) {
@@ -158,17 +156,17 @@
             }
         }
         return $arrayReturn;
-	}
+    }
     
 
-	/**
-	 * Get Hostgroup Id
-	 *
-	 * @param string $hg_name
-	 * @return int
-	 */
-	public function getHostgroupId($hg_name)
-	{
+    /**
+     * Get Hostgroup Id
+     *
+     * @param string $hg_name
+     * @return int
+     */
+    public function getHostgroupId($hg_name)
+    {
         static $ids = array();
 
         if (!isset($ids[$hg_name])) {
@@ -183,67 +181,69 @@
             return $ids[$hg_name];
         }
         return 0;
-	}
-
-	/**
-	 *
-	 * Enter description here ...
-	 * @param $hg_id
-	 */
- 	function getHostGroupHostGroups($hg_id = null)
- 	{
-		if (!$hg_id) {
-			return;
-		}
-
-		$hosts = array();
-		$DBRESULT = $this->DB->query("SELECT hg_child_id " .
-									"FROM hostgroup_hg_relation, hostgroup " .
-									"WHERE hostgroup_hg_relation.hg_parent_id = '".$this->DB->escape($hg_id)."' " .
-									"AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
-									"ORDER BY hostgroup.hg_name");
-		while ($elem = $DBRESULT->fetchRow()) {
-			$hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
-		}
-		$DBRESULT->free();
-		unset($elem);
-		return $hosts;
-	}
-
-	/**
-	 *
-	 * Enter description here ...
-	 */
-	private function setHgHgCache()
-	{
-		$this->relationCache = array();
-		$DBRESULT = $this->DB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
-		while ($data = $DBRESULT->fetchRow()) {
-			if (!isset($this->relationCache[$data["hg_parent_id"]])) {
-				$this->relationCache[$data["hg_parent_id"]] = array();
-			}
-			$this->relationCache[$data["hg_parent_id"]][$data["hg_child_id"]] = 1;
-		}
-		$DBRESULT->free();
-		unset($data);
-	}
-
-	public function getAllHostgroupsInCache($DB)
-	{
-		$hostgroups = array();
-
-		$this->unsetCache();
-
-		$DBRESULT = $DB->query("SELECT * FROM hostgroup WHERE hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation)");
-		while ($data = $DBRESULT->fetchRow()) {
-			$this->dataTree[$data['hg_id']] = $this->getHostGroupHosts($data['hg_id'], $this->dataTree);
-		}
-		$DBRESULT->free();
-		return $hostgroups;
-	}
+    }
 
     /**
-     * 
+     *
+     * Enter description here ...
+     * @param $hg_id
+     */
+    public function getHostGroupHostGroups($hg_id = null)
+    {
+        if (!$hg_id) {
+            return;
+        }
+
+        $hosts = array();
+        $DBRESULT = $this->DB->query("SELECT hg_child_id " .
+                                    "FROM hostgroup_hg_relation, hostgroup " .
+                                    "WHERE hostgroup_hg_relation.hg_parent_id = '".$this->DB->escape($hg_id)."' " .
+                                    "AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
+                                    "ORDER BY hostgroup.hg_name");
+        while ($elem = $DBRESULT->fetchRow()) {
+            $hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
+        }
+        $DBRESULT->free();
+        unset($elem);
+        return $hosts;
+    }
+
+    /**
+     *
+     * Enter description here ...
+     */
+    private function setHgHgCache()
+    {
+        $this->relationCache = array();
+        $DBRESULT = $this->DB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
+        while ($data = $DBRESULT->fetchRow()) {
+            if (!isset($this->relationCache[$data["hg_parent_id"]])) {
+                $this->relationCache[$data["hg_parent_id"]] = array();
+            }
+            $this->relationCache[$data["hg_parent_id"]][$data["hg_child_id"]] = 1;
+        }
+        $DBRESULT->free();
+        unset($data);
+    }
+
+    public function getAllHostgroupsInCache($DB)
+    {
+        $hostgroups = array();
+
+        $this->unsetCache();
+
+        $DBRESULT = $DB->query(
+            "SELECT * FROM hostgroup WHERE hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation)"
+        );
+        while ($data = $DBRESULT->fetchRow()) {
+            $this->dataTree[$data['hg_id']] = $this->getHostGroupHosts($data['hg_id'], $this->dataTree);
+        }
+        $DBRESULT->free();
+        return $hostgroups;
+    }
+
+    /**
+     *
      */
     private function unsetCache()
     {
@@ -251,7 +251,7 @@
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -340,5 +340,3 @@
         return $items;
     }
 }
-
-?>

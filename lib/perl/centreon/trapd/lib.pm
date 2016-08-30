@@ -316,7 +316,7 @@ sub check_downtimes {
     # Check if host is in downtime - if yes: return 1
     if ($options{downtime} == 1) {
         # Real-Time
-        my ($dstatus, $sth) = $options{csdb}->query("SELECT host_id FROM hosts WHERE host_id = $options{host_id} AND scheduled_downtime_depth = 1 LIMIT 1");
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT host_id FROM hosts WHERE host_id = $options{host_id} AND scheduled_downtime_depth > 0 LIMIT 1");
         return -1 if ($dstatus == -1);
         my $data = $sth->fetchrow_hashref();
         if (defined($data)) {
@@ -338,7 +338,7 @@ sub check_downtimes {
     
     if ($options{downtime} == 1) {
         # Check some services only
-        my ($dstatus, $sth) = $options{csdb}->query("SELECT service_id FROM services WHERE service_id IN (" . join(',', keys %{$options{ref_services}}) . ") AND scheduled_downtime_depth = 1");
+        my ($dstatus, $sth) = $options{csdb}->query("SELECT service_id FROM services WHERE service_id IN (" . join(',', keys %{$options{ref_services}}) . ") AND scheduled_downtime_depth > 0");
         return -1 if ($dstatus == -1);
         $ref_result = $sth->fetchall_hashref('service_id');
     }

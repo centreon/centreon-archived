@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -58,13 +55,13 @@ foreach ($lines as $line) {
         }
         $star = "";
         if ($required) {
-            $star = "<span style='color:#f91e05'> *</span>";
+            $star = "<span style='color:#e00b3d'> *</span>";
         }
         $html .= "
                     <tr>
                     <td class='formlabel'>".$label.$star."</td>
                     <td class='formvalue'>
-                        <input type='text' name='".$key."' value='".$val."' />
+                        <input type='text' name='".$key."' value='".$val."' size='30' />
                         <label class='field_msg'></label>
                     </td>
                     </tr>";
