@@ -89,11 +89,20 @@ function hidePasswordInCommand($command_name, $service_id) {
 
     foreach ($arrMacroPassword as $macro) {
         $pattern = str_replace('$', '\$', $macro);
+		// If '$_MACRO$'
+        $command_line_with_macro = preg_replace('/\''.$pattern.'\'/', '(\'.*\')', $command_line_with_macro);
+		// Else $_MACRO$
         $command_line_with_macro = preg_replace('/'.$pattern.'/', '(.*)', $command_line_with_macro);
     }
 
     $command_line_with_macro = preg_replace('/\$[^$]+\$/', '.*', $command_line_with_macro);
-   
+
+    // Remove dual '.*' at the end of command due to $_SERVICEEXTRAOPTIONS$ for example
+    if (preg_match("/\.\*'?\s?\.\*$/", $command_line_with_macro)) {
+        $command_line_with_macro = preg_replace("/\.\*\s?\.\*$/", '.*', $command_line_with_macro);
+        $command_line_with_macro = preg_replace("/\.\*'\s?\.\*$/", ".*'", $command_line_with_macro);
+    }
+
     if (preg_match('/'.$command_line_with_macro.'/', $executed_check_command, $matches)) {
         for ($i = 1; $i <= count($matches); $i++) {
             $executed_check_command = str_replace ($matches[$i], '***', $executed_check_command);
