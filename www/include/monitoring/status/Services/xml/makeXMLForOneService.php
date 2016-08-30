@@ -185,7 +185,22 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->text(CentreonUtils::escapeSecure($pluginShortOuput), 0);
 	$obj->XML->endElement();
 
-	$tab_perf = preg_split("/\ /", $data["perfdata"]);
+        $perf_data = preg_split("/\ /", $data["perfdata"]);
+        if (strlen($perf_data[0]) > 100) {
+                $pluginShortOutput = sprintf("%.100s", $tab_perf[0])."...";
+        } else {
+                $pluginShortOutput = $perf_data[0];
+        }
+        $tab_perf = array();
+        if (isset($perf_data[0])) {
+                for ($x = 0; isset($perf_data[$x]) && $x < 5; $x++) {
+                        $tab_perf[] = $perf_data[$x];
+                }
+                if (isset($perf_data[5])) {
+                        $tab_perf[] = "...";
+                }
+        }
+
 	foreach ($tab_perf as $val) {
 		$obj->XML->startElement("performance_data");
 		$obj->XML->writeElement("perf_data", CentreonUtils::escapeSecure($val));
