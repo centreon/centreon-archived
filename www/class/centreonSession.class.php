@@ -96,7 +96,7 @@ class CentreonSession
     
     public static function getUser($sessionId, $pearDB)
     {
-        $session_id = str_replace(array('_', '%'), array('', ''), $session_id);
+        $sessionId = str_replace(array('_', '%'), array('', ''), $session_id);
         $DBRESULT = $pearDB->query(
             "SELECT user_id FROM session
                 WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'"

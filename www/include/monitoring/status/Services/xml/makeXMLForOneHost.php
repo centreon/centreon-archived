@@ -80,7 +80,7 @@ $centreonlang->bindLang();
 $host_id        = $obj->checkArgument("host_id", $_GET, 0);
 $enable         = $obj->checkArgument("enable", $_GET, "");
 $disable        = $obj->checkArgument("disable", $_GET, "disable");
-$dateFormat         = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
 /** ***************************************************
  * Get Host status
@@ -155,6 +155,7 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("hostname", CentreonUtils::escapeSecure($data["name"]), false);
     $obj->XML->writeElement("hostalias", CentreonUtils::escapeSecure($data["alias"]), false);
     $obj->XML->writeElement("address", CentreonUtils::escapeSecure($data["address"]));
+    $obj->XML->writeElement("poller_name", _("Polling instance"), 0);
     $obj->XML->writeElement("poller", $data["poller"]);
     $obj->XML->writeElement("color", $obj->backgroundHost[$data["state"]]);
     $obj->XML->startElement("current_state");
@@ -190,10 +191,9 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("timezone_name", _("Timezone"));
     $obj->XML->writeElement("timezone", str_replace(':', '', $data["timezone"]));
 
-
     /* Last State Info */
     if ($data["state"] == 0) {
-        $status = '';
+        $status = _('DOWN');
         $status_date = 0;
         if (isset($data["last_time_down"]) && $status_date < $data["last_time_down"]) {
             $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_down"]);
