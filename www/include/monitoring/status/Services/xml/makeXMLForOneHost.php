@@ -85,35 +85,37 @@ $dateFormat         = $obj->checkArgument("date_time_format_status", $_GET, "Y/m
 /** ***************************************************
  * Get Host status
  */
-$rq1 =  " SELECT state," .
-        " address," .
-        " name," .
-        " alias," .
-        " perfdata," .
-        " check_attempt," .
-        " state_type," .
-        " last_check, " .
-        " next_check, " .
-        " latency," .
-        " execution_time," .
-        " last_state_change," .
-        " last_notification," .
-        " next_host_notification," .
-        " last_hard_state_change," .
-        " last_hard_state," .
-        " last_time_up," .
-        " last_time_down," .
-        " last_time_unreachable," .
-        " notification_number," .
-        " scheduled_downtime_depth," .
-        " output," .
-        " notes," .
-        " notify," .
-        " event_handler_enabled," .
-        " icon_image, " .
-        " timezone" .
-        " FROM hosts " .
-        " WHERE host_id = " . $host_id .
+$rq1 =  " SELECT h.state," .
+        " h.address," .
+        " h.name," .
+        " h.alias," .
+        " i.name AS poller, " .
+        " h.perfdata," .
+        " h.check_attempt," .
+        " h.state_type," .
+        " h.last_check, " .
+        " h.next_check, " .
+        " h.latency," .
+        " h.execution_time," .
+        " h.last_state_change," .
+        " h.last_notification," .
+        " h.next_host_notification," .
+        " h.last_hard_state_change," .
+        " h.last_hard_state," .
+        " h.last_time_up," .
+        " h.last_time_down," .
+        " h.last_time_unreachable," .
+        " h.notification_number," .
+        " h.scheduled_downtime_depth," .
+        " h.output," .
+        " h.notes," .
+        " h.notify," .
+        " h.event_handler_enabled," .
+        " h.icon_image, " .
+        " h.timezone" .
+        " FROM hosts h, instances i " .
+        " WHERE h.host_id = " . $host_id .
+        " AND h.instance_id = i.instance_id " .
         " LIMIT 1";
 /*
  * Request
@@ -153,6 +155,7 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("hostname", CentreonUtils::escapeSecure($data["name"]), false);
     $obj->XML->writeElement("hostalias", CentreonUtils::escapeSecure($data["alias"]), false);
     $obj->XML->writeElement("address", CentreonUtils::escapeSecure($data["address"]));
+    $obj->XML->writeElement("poller", $data["poller"]);
     $obj->XML->writeElement("color", $obj->backgroundHost[$data["state"]]);
     $obj->XML->startElement("current_state");
     $obj->XML->writeAttribute("color", $obj->colorHost[$data["state"]]);

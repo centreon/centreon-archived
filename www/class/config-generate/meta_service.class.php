@@ -67,6 +67,9 @@ class MetaService extends AbstractObject {
         'notification_options',
         'register',
     );
+    protected $attributes_default = array(
+        'notifications_enabled',
+    );
     protected $attributes_hash = array(
         'macros'
     );
