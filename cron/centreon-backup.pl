@@ -45,7 +45,7 @@ use IO::Dir;
 
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_port $mysql_database_oreon $mysql_database_ods $centreon_config);
 use vars qw($BACKUP_ENABLED $BACKUP_DIR $TEMP_DIR);
-use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_LEVEL $BACKUP_RETENTION);
+use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_FULL $BACKUP_DATABASE_PARTIAL $BACKUP_RETENTION);
 use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF $ZEND_CONF);
 use vars qw($TEMP_DB_DIR $TEMP_CENTRAL_DIR $TEMP_CENTRAL_ETC_DIR $TEMP_CENTRAL_INIT_DIR $TEMP_CENTRAL_CRON_DIR $TEMP_CENTRAL_LOG_DIR $TEMP_CENTRAL_BIN_DIR $TEMP_CENTRAL_LIC_DIR $CENTREON_MODULES_PATH $TEMP_POLLERS $DISTANT_POLLER_BACKUP_DIR);
 use vars qw($BIN_GZIP $BIN_TAR);
@@ -129,7 +129,8 @@ $TEMP_CENTRAL_LIC_DIR = $TEMP_CENTRAL_DIR."/lic";
 $BACKUP_DATABASE_CENTREON = $backupOptions->{'backup_database_centreon'}->{'value'};
 $BACKUP_DATABASE_CENTREON_STORAGE = $backupOptions->{'backup_database_centreon_storage'}->{'value'};
 $BACKUP_DATABASE_TYPE = $backupOptions->{'backup_database_type'}->{'value'};
-$BACKUP_DATABASE_LEVEL = $backupOptions->{'backup_database_level'}->{'value'};
+$BACKUP_DATABASE_FULL = $backupOptions->{'backup_database_full'}->{'value'};
+$BACKUP_DATABASE_PARTIAL = $backupOptions->{'backup_database_partial'}->{'value'};
 $BACKUP_RETENTION = $backupOptions->{'backup_retention'}->{'value'};
 
 $BACKUP_CONFIGURATION_FILES = $backupOptions->{'backup_configuration_files'}->{'value'};
@@ -353,22 +354,28 @@ sub databasesBackup() {
 		}
 	}
 
-    # Do LVM snapshot backup or fall into degraded mode with mysqldump
-    my $partial_opt = '';
-    if ($BACKUP_DATABASE_LEVEL == '0') {
-        $partial_opt = '-p';
-    }
-
     if ($BACKUP_DATABASE_TYPE == '1') {
         # Do LVM snapshot backup or fall into degraded mode with mysqldump
-        my $partial_opt = '';
-        if ($BACKUP_DATABASE_LEVEL == '0') {
-            $partial_opt = '-p';
+
+        my @localtime = localtime(time);
+        my $dayOfWeek = @localtime[6];
+
+        my @fullBackupDays = split(/,/, $BACKUP_DATABASE_FULL);
+        if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
+            print "Dumping Db with LVM snapshot (full)\n";
+            `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            if ($? ne 0) {
+                print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
+            }
         }
-        print "Dumping Db with LVM snapshot\n";
-        `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today $partial_opt`;
-        if ($? ne 0) {
-            print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
+
+        my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
+        if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
+            print "Dumping Db with LVM snapshot (partial)\n";
+            `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            if ($? ne 0) {
+                print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
+            }
         }
     } else {
         my $mysql_database_ndo;
