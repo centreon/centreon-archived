@@ -29,22 +29,22 @@
             <h4>{$form.header.information}</h4>
           </td>
         </tr>
-        {if $o == "mc"}
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
-        {/if}
-        {if !$msg.tpl}
-        {if $service_type == "BYHOST"}
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
-        {/if}
-        {if $service_type == "BYHOSTGROUP"}
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
-        {/if}
-        {/if}
         {if $msg.tpl}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_alias"> {$form.service_alias.label}</td><td class="FormRowValue">{$form.service_alias.html}</td></tr>
         {/if}
         {if $o != "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_description"> {$form.service_description.label}</td><td class="FormRowValue">{$form.service_description.html}</td></tr>
+        {/if}
+        {if !$msg.tpl}
+        {if $o == "mc"}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
+        {/if}
+        {if $service_type == "BYHOST"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
+        {/if}
+        {if $service_type == "BYHOSTGROUP"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
+        {/if}
         {/if}
         <tr class="list_one">
             <td class="FormRowField"><img class="helpTooltip" name="use">{$form.service_template_model_stm_id.label}</td>
