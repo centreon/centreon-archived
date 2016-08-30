@@ -209,4 +209,34 @@ class CentreonMeta
         return $listMeta;
     }
 
+    /**
+     * Returns service details
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getParameters($id, $parameters = array())
+    {
+        $sElement = "*";
+        $values = array();
+        if (empty($id) || empty($parameters)) {
+            return array();
+        }
+
+        if (count($parameters) > 0) {
+            $sElement = implode(",", $parameters);
+        }
+
+        $query = "SELECT " . $sElement . " "
+            . "FROM meta_service "
+            . "WHERE meta_id = " . $this->db->escape($id) . " ";
+
+        $res = $this->db->query($query);
+
+        if ($res->numRows()) {
+            $values = $res->fetchRow();
+        }
+
+        return $values;
+    }
 }
