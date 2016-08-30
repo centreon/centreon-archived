@@ -19,7 +19,7 @@ function clonifyTableFields(attributeName,displayName){
     // </table2> </td> </tr clone_template> <tr control> <td> </td> </tr> </table1 clonable> </td1> </tr newdiv> .... </oldTable>
     for(var obj in GroupArray) {
         var td1 = jQuery('<td>').attr('colspan','2').css({'padding': '2px'});
-        var newdiv = jQuery('<tr>').addClass('elem-toCollapse elem-toCollapse2').append(td1);
+        var newdiv = jQuery('<tr>').addClass('elem-toCollapse').append(td1);
         var control = jQuery('<th>').append(jQuery('<span>').attr('id',obj+'_add').html('+ Add a new entry').css({
             'cursor': 'pointer',
             'color': '#009fdf'
@@ -94,13 +94,13 @@ function centreonCollapse() {
     tbody.find(".list_lvl_1").slice(1).addClass("close");
 
         tbody.each(function() {
+
             var elem = jQuery(this).find('.list_lvl_1');
             elem.addClass("header-collapse");
-            var nextElemChildren = elem.parent().siblings().find('tr.elem-toCollapse');
-
-
 
             elem.on('click', function() {
+
+                var nextElemChildren = elem.parent().siblings().find('tr.elem-toCollapse');
 
                 var elemChildren = jQuery(this).siblings('.elem-toCollapse');
 
