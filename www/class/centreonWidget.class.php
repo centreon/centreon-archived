@@ -452,10 +452,10 @@ class CentreonWidget
     public function updateUserWidgetPreferences($params, $hasPermission = false)
     {
         $query = "SELECT wv.widget_view_id
-        		  FROM widget_views wv, custom_view_user_relation cvur
-        		  WHERE cvur.custom_view_id = wv.custom_view_id
-        		  AND wv.widget_id = " . $this->db->escape($params['widget_id']) . "
-        		  AND (cvur.user_id = ".$this->db->escape($this->userId);
+                          FROM widget_views wv, custom_view_user_relation cvur
+                          WHERE cvur.custom_view_id = wv.custom_view_id
+                          AND wv.widget_id = " . $this->db->escape($params['widget_id']) . "
+                          AND (cvur.user_id = ".$this->db->escape($this->userId);
         if (count($this->userGroups)) {
             $cglist = implode(",", $this->userGroups);
             $query .= " OR cvur.usergroup_id IN ($cglist) ";
@@ -478,6 +478,8 @@ class CentreonWidget
                         $val = $val['column_'.$matches[1]]. ' ' .$val['order_'.$matches[1]];
                     } elseif (isset($val['from_'.$matches[1]]) && isset($val['to_'.$matches[1]])) {
                         $val = $val['from_'.$matches[1]].','.$val['to_'.$matches[1]];
+                    } else {
+                        $val = implode(',', $val);
                     }
                 }
                 if ($str != "") {
@@ -488,19 +490,19 @@ class CentreonWidget
         }
         if ($hasPermission == false) {
             $this->db->query("DELETE FROM widget_preferences
-        				  WHERE widget_view_id = " . $this->db->escape($widgetViewId) . "
-        				  AND user_id = " . $this->db->escape($this->userId) . "
-        				  AND parameter_id NOT IN (SELECT parameter_id FROM widget_parameters WHERE require_permission = '1')");
+                                          WHERE widget_view_id = " . $this->db->escape($widgetViewId) . "
+                                          AND user_id = " . $this->db->escape($this->userId) . "
+                                          AND parameter_id NOT IN (SELECT parameter_id FROM widget_parameters WHERE require_permission = '1')");
         } else {
             $this->db->query("DELETE FROM widget_preferences
-        				  WHERE widget_view_id = " . $this->db->escape($widgetViewId) . "
-        				  AND user_id = " . $this->db->escape($this->userId));
+                                          WHERE widget_view_id = " . $this->db->escape($widgetViewId) . "
+                                          AND user_id = " . $this->db->escape($this->userId));
         }
         if ($str != "") {
             $query = "INSERT INTO widget_preferences (widget_view_id, parameter_id, preference_value, user_id) VALUES $str";
         }
-	$this->db->query($query);
-	$this->customView->syncCustomView($params['custom_view_id']);
+        $this->db->query($query);
+        $this->customView->syncCustomView($params['custom_view_id']);
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -33,78 +33,22 @@
  *
  */
 
-class CentreonSession
+require_once "class/centreonWidget/Params/Select2.class.php";
+
+class CentreonWidgetParamsConnectorHostGroupMulti extends CentreonWidgetParamsSelect2
 {
-    /*
-	 * Constructor class
-	 *
-	 * @access public
-	 * @return 	object	object session
-	 */
-    public function __construct()
+    public function __construct($db, $quickform, $userId)
     {
-
+        parent::__construct($db, $quickform, $userId);
     }
 
-    public function start()
+    public function getParameters()
     {
-        session_start();
-    }
-
-    public function stop()
-    {
-        session_unset();
-        session_destroy();
-    }
-
-    public function restart()
-    {
-        self::stop();
-        self::start();
-        session_regenerate_id(true);
-    }
-
-    public function s_unset()
-    {
-        session_unset();
-    }
-
-    public function unregisterVar($registerVar)
-    {
-        unset($_SESSION[$registerVar]);
-    }
-
-    public function registerVar($registerVar)
-    {
-        if (!isset($_SESSION[$registerVar])) {
-            $_SESSION[$registerVar] = $$registerVar;
-        }
-    }
-
-    public function checkSession($sessionId, $pearDB)
-    {
-        $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
-        $DBRESULT = $pearDB->query(
-            "SELECT id FROM session WHERE `session_id` = '" . htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8") . "'"
+        return  array (
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+            'multiple' => true,
+            'linkedObject' => 'centreonHostgroups'
         );
-        if ($DBRESULT->numRows()) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-    
-    public static function getUser($sessionId, $pearDB)
-    {
-        $sessionId = str_replace(array('_', '%'), array('', ''), $session_id);
-        $DBRESULT = $pearDB->query(
-            "SELECT user_id FROM session
-                WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'"
-        );
-        $row = $DBRESULT->fetchRow();
-        if (!$row) {
-            return 0;
-        }
-        return $row['user_id'];
     }
 }

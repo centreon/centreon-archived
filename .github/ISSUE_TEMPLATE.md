@@ -10,6 +10,8 @@ You will be able to provide them later in order to reactivate it.
 
 When we need more information, we will reply in order to ask some element in order. If you do not answer 
 in the next 30 days, the ticket will be automaticaly closed.
+
+Thank you to describe your issue in English.
 -->
 
 ---------------------------------------------------

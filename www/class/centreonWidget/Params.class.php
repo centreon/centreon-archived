@@ -47,7 +47,10 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     protected $trigger;
     protected $acl;
     protected $monitoringDb;
-    
+    protected $multiType = array(
+        'serviceMulti'
+    );
+
 
     /**
      * Constructor
@@ -65,8 +68,8 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
         $this->userId = $userId;
         $this->userGroups = array();
         $query = "SELECT contactgroup_cg_id
-        		  FROM contactgroup_contact_relation
-        		  WHERE contact_contact_id = " . $this->db->escape($this->userId);
+                          FROM contactgroup_contact_relation
+                          WHERE contact_contact_id = " . $this->db->escape($this->userId);
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $this->userGroups[$row['contactgroup_cg_id']] = $row['contactgroup_cg_id'];
@@ -84,19 +87,19 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     protected function getUserPreferences($params)
     {
         $query = "SELECT preference_value
-            	  FROM widget_preferences wp, widget_views wv, custom_view_user_relation cvur
-            	  WHERE wp.parameter_id = " .$this->db->escape($params['parameter_id']) . "
-            	  AND wp.widget_view_id = wv.widget_view_id
-            	  AND wv.widget_id = ".$this->db->escape($params['widget_id'])."
-            	  AND wv.custom_view_id = cvur.custom_view_id
-            	  AND wp.user_id = ".$this->db->escape($this->userId) . "
-            	  AND (cvur.user_id = wp.user_id";
+                  FROM widget_preferences wp, widget_views wv, custom_view_user_relation cvur
+                  WHERE wp.parameter_id = " .$this->db->escape($params['parameter_id']) . "
+                  AND wp.widget_view_id = wv.widget_view_id
+                  AND wv.widget_id = ".$this->db->escape($params['widget_id'])."
+                  AND wv.custom_view_id = cvur.custom_view_id
+                  AND wp.user_id = ".$this->db->escape($this->userId) . "
+                  AND (cvur.user_id = wp.user_id";
         if (count($this->userGroups)) {
             $cglist = implode(",", $this->userGroups);
             $query .= " OR cvur.usergroup_id IN ($cglist) ";
         }
         $query .= ") AND cvur.custom_view_id = ". $this->db->escape($params['custom_view_id']) . "
-				  LIMIT 1";
+                                  LIMIT 1";
         $res = $this->db->query($query);
         if ($res->numRows()) {
             $row = $res->fetchRow();
@@ -134,29 +137,29 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     }
 
     /**
-     * Set Value
-     *
-     * @param array $params
-     * @return void
-     */
+    * Set Value
+    *
+    * @param array $params
+    * @return void
+    */
     public function setValue($params)
     {
-        $userPref = $this->getUserPreferences($params);
-        if (isset($userPref)) {
-            $this->quickform->setDefaults(array('param_' . $params['parameter_id'] => $userPref));
-        } elseif (isset($params['default_value']) && $params['default_value'] != "") {
-            $this->quickform->setDefaults(array('param_' . $params['parameter_id'] => $params['default_value']));
-        }
+	    $userPref = $this->getUserPreferences($params);
+	    if (isset($userPref)) {
+		    $this->quickform->setDefaults(array('param_' . $params['parameter_id'] => $userPref));
+	    } elseif (isset($params['default_value']) && $params['default_value'] != "") {
+		    $this->quickform->setDefaults(array('param_' . $params['parameter_id'] => $params['default_value']));
+	   }
     }
 
     /**
-     * Get Element
-     *
-     * @return HTML_Quickform
-     */
+    * Get Element
+    *
+    * @return HTML_Quickform
+    */
     public function getElement()
     {
-        return $this->element;
+	    return $this->element;
     }
 
     /**
@@ -168,8 +171,8 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     public function getListValues($paramId)
     {
         $query = "SELECT option_name, option_value
-           		  FROM widget_parameters_multiple_options
-           		  WHERE parameter_id = " . $this->db->escape($paramId);
+                          FROM widget_parameters_multiple_options
+                          WHERE parameter_id = " . $this->db->escape($paramId);
         $res = $this->db->query($query);
         $tab = array(null => null);
         while ($row = $res->fetchRow()) {
