@@ -88,11 +88,11 @@ class CentreonMetric extends CentreonWebService
         return $metrics;
     }
 
-//        h.host_name
-//        s.service_description
-//        m.metric_id
-//        m.metric_name
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     protected function getListByService()
     {
         if (false === isset($this->arguments['q'])) {
@@ -107,18 +107,6 @@ class CentreonMetric extends CentreonWebService
         } else {
             $range = '';
         }
-
-//        $query = "SELECT SQL_CALC_FOUND_ROWS h.name, s.description, m.metric_id, m.metric_name
-//                  FROM metrics m, hosts h, services s, index_data i
-//                  WHERE m.index_id = i.id
-//                  AND   h.host_id = i.host_id
-//                  AND   s.service_id = i.service_id
-//                  AND (  h.name LIKE '%". $q ."%'
-//                  OR    s.description LIKE '%". $q ."%'
-//                  OR    m.metric_name LIKE '%". $q ."%')
-//                  ORDER BY h.name, s.description, m.metric_name COLLATE utf8_general_ci "
-//                  .$range;
-//
         $query = "SELECT SQL_CALC_FOUND_ROWS m.metric_id, CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) AS fullname
                   FROM metrics m, hosts h, services s, index_data i
                   WHERE m.index_id = i.id
@@ -126,13 +114,12 @@ class CentreonMetric extends CentreonWebService
                   AND   s.service_id = i.service_id
                   AND   CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) LIKE '%". $q ."%'
                   ORDER BY CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) COLLATE utf8_general_ci "
-                  .$range;
-
+            .$range;
         $DBRESULT = $this->pearDBMonitoring->query($query);
         $total = $this->pearDB->numberRows();
         $metrics = array();
         while ($row = $DBRESULT->fetchRow()) {
-//            $fullName = $row['name']." - ". $row['description']. " - ". $row['metric_name'];
+            $fullName = $row['name']." - ". $row['description']. " - ". $row['metric_name'];
             $metrics[] = array(
                 'id' => $row['metric_id'],
                 'text' => $row['fullname']
