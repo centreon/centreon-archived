@@ -84,35 +84,34 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
      */
     function getJsInit()
     {
-        $additionnalJs = '';
-        $mainJsInit = '';
 
-        $label = $this->getLabel();
-        if (!empty($label)) {
-            $placeholder = 'placeholder: "' . $this->getLabel() . '",';
+        $allowClear = 'true';
+        if (false === $this->_allowClear || $this->_flagFrozen) {
+            $allowClear = 'false';
         }
+
+        $disabled = 'false';
         if ($this->_flagFrozen) {
-            $disabled = 'disabled: true,';
+            $disabled = 'true';
         }
 
-        $allowClear = 'allowClear: ';
-        if ($this->_allowClear) {
-            $allowClear .= 'true,';
-        } else {
-            $allowClear .= 'false,';
-        }
-
+        $ajaxOption = '';
+        $defaultData = '';
         if ($this->_ajaxSource) {
+            $ajaxOption = 'ajax: {
+                url: "' . $this->_availableDatasetRoute . '"
+            },';
+
             if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
-                $additionnalJs .= $this->setDefaultAjaxDatas();
+                $additionnalJs = $this->setDefaultAjaxDatas();
             } else {
                 $this->setDefaultFixedDatas();
             }
         } else {
-            $mainJsInit .= $this->setFixedDatas() . ',';
+            $defaultData = $this->setFixedDatas() . ',';
         }
 
-        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
+        $additionnalJs = ' jQuery(".select2-selection").each(function(){'
             . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
             . ' jQuery(this).resizable({ maxWidth: 500, '
             . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
@@ -123,61 +122,25 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
 
 
 
-        $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").centreonSelect2({
-                    tags: true,'
-                    . $allowClear .',
+        $javascriptString = '<script>
+            jQuery(function () {
+                var $currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").centreonSelect2({
+                    allowClear: ' . $allowClear .',
                     pageLimit: ' . $this->_pagination . ',
                     select2: {
-                        '.
-                        $placeholder.
-                        $disabled. '
+                        tags: true,
+                        ' . $ajaxOption . '
+                        ' . $defaultData . '
+                        placeholder: "' . $this->getLabel() . '",
+                        disabled: ' . $disabled . '
                     }
                 });
                 
                 ' . $additionnalJs . '
             });
-        
-        ';
+         </script>';
 
-
-
-        $mainJsInit .= 'multiple: ';
-        if ($this->_multiple) {
-            $mainJsInit .= 'true,';
-                $mainJsInit .= 'templateSelection: function (data, container) {
-                    if (data.element.hidden === true) {
-                        $(container).hide();
-                    }
-                    return data.text;
-                },';
-        } else {
-            $mainJsInit .= 'false,';
-        }
-
-        $strJsInitEnding = '});';
-
-        if (!$this->_allowClear) {
-            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").prevAll(".clearAllSelect2").on("click",function(){ '
-                . '$currentValues = jQuery("#' . $this->getName() . '").val(); '
-                . 'jQuery("#' . $this->getName() . '").val("");'
-                . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
-                . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
-                . ' }); ';
-        }
-
-        $finalJs = '<script type="text/javascript">'.
-            $strJsInitBegining .
-            $mainJsInit .
-            $strJsInitEnding .
-            $additionnalJs .
-            $this->_jsCallback .
-        '</script>';
-
-
-
-
-        
-        return $finalJs;
+        return $javascriptString;
     }
     
 }
