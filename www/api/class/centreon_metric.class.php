@@ -87,7 +87,51 @@ class CentreonMetric extends CentreonWebService
 
         return $metrics;
     }
-    
+
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    protected function getListByService()
+    {
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
+        }
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
+        $query = "SELECT SQL_CALC_FOUND_ROWS m.metric_id, CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) AS fullname
+                  FROM metrics m, hosts h, services s, index_data i
+                  WHERE m.index_id = i.id
+                  AND   h.host_id = i.host_id
+                  AND   s.service_id = i.service_id
+                  AND   CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) LIKE '%". $q ."%'
+                  ORDER BY CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) COLLATE utf8_general_ci "
+            .$range;
+        $DBRESULT = $this->pearDBMonitoring->query($query);
+        $total = $this->pearDB->numberRows();
+        $metrics = array();
+        while ($row = $DBRESULT->fetchRow()) {
+            $fullName = $row['name']." - ". $row['description']. " - ". $row['metric_name'];
+            $metrics[] = array(
+                'id' => $row['metric_id'],
+                'text' => $row['fullname']
+            );
+        }
+        return array(
+            'items' => $metrics,
+            'total' => $total
+        );
+    }
+
+
     /**
      * Get metrics datas for a service
      *
@@ -376,7 +420,7 @@ class CentreonMetric extends CentreonWebService
                 )';
         return $this->executeQueryPeriods($query, $start, $end);
     }
-    
+
     /**
      * Execute a query for a period
      *
