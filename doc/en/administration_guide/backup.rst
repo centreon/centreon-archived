@@ -1,10 +1,10 @@
-######
+======
 Backup
-######
+======
 
-============
+************
 How it works
-============
+************
 
 Daily execution
 ===============
@@ -48,9 +48,9 @@ Backup format :
 * yyyy-mm-dd-Central.tar.gz (other configuration files)
 
 
-=============
+*************
 Configuration
-=============
+*************
 
 This part covers the configuration of centreon-backup.
 

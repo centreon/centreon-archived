@@ -1,10 +1,10 @@
-######
+======
 Backup
-######
+======
 
-==============
+**************
 Fonctionnement
-==============
+**************
 
 Exécution journalière
 =====================
@@ -48,9 +48,9 @@ Format de la sauvegarde :
 * yyyy-mm-dd-Central.tar.gz (autres fichiers de configuration)
 
 
-=============
+*************
 Configuration
-=============
+*************
 
 Ce chapitre décrit la configuration de centreon-backup.
 
