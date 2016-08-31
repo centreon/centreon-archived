@@ -40,7 +40,7 @@ Backup format :
 Configuration files backup
 --------------------------
 
-All configuration files of central server can be backuped : MySQL, Zend, Apache, PHP, SNMP, centreon, centreon-broker)
+All configuration files of central server can be saved : MySQL, Zend, Apache, PHP, SNMP, centreon, centreon-broker)
 
 Backup format :
 
@@ -59,7 +59,7 @@ This part covers the configuration of centreon-backup.
 The following window is displayed:
 
 .. image:: /images/guide_exploitation/backup.png
-   :align: center
+:align: center
 
 * **Backup enabled** Enable/Disable backup
 * **Backup directory** Directory where backup will be stored
