@@ -486,24 +486,19 @@ class CentreonGMT
      */
     public function getHostLocations()
     {
-       if (count($this->hostLocations)) {
-           return $this->hostLocations;
-       }
+        if (count($this->hostLocations)) {
+            return $this->hostLocations;
+        }
 
-        $locations = array();
+        $this->hostLocations = array();
 
-        $query = 'SELECT h.host_id, hs.timezone '
-            . 'FROM ' . db . '.host h '
-            . 'LEFT JOIN ' . dbcstg . '.hosts hs ON h.host_id = hs.host_id ';
-
+        $query = 'SELECT host_id, timezone FROM hosts WHERE enabled = 1 ';
         $res  = $this->dbc->query($query);
         if (!PEAR::isError($res)) {
             while ($row = $res->fetchRow()) {
-                $locations[$row['host_id']] = $row['timezone'];
+                $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
             }
         }
-        $this->hostLocations = $locations;
-
         return $this->hostLocations;
     }
     
