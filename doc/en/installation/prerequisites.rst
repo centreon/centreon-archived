@@ -135,7 +135,7 @@ Files system description:
 * /var/log (at least 10 GB)
 * /var/lib/centreon (define in previous chapter)
 * /var/lib/centreon-broker (at least 5 GB)
-* /var/backup (use to backup you server)
+* /var/cache/centreon/backup (use to backup you server)
 
 MariaDB DBMS
 ============
@@ -146,7 +146,7 @@ Files system description:
 * swap (at least 1x RAM space)
 * /var/log (at least 10 GB)
 * /var/lib/mysql (define in previous chapter)
-* /var/backup (use to backup you server)
+* /var/cache/centreon/backup (use to backup you server)
 
 Monitoring poller
 =================
@@ -157,4 +157,4 @@ Files system description:
 * swap (at least 1x RAM space)
 * /var/log (at least 10 GB)
 * /var/lib/centreon-broker (at least 5 GB)
-* /var/backup (use to backup you server)
+* /var/cache/centreon/backup (use to backup you server)

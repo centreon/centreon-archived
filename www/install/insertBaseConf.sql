@@ -775,10 +775,16 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 18, 0, 2),
 (31, 8, 0, 3),
 (31, 9, 0, 4),
-(31, 34, 0, 5),
-(31, 28,0, 6),
-(31, 51, 1, 7),
-(31, 52, 1, 8);
+(31, 53, 1, 5),
+(31, 55, 0, 6),
+(31, 56, 0, 7),
+(31, 57, 0, 8),
+(31, 58, 0, 9),
+(31, 54, 1, 10),
+(31, 59, 0, 11),
+(31, 60, 0, 12),
+(31, 61, 0, 13),
+(31, 62, 0, 14);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -1245,8 +1251,9 @@ VALUES
 ('backup_database_centreon', '1'),
 ('backup_database_centreon_storage', '1'),
 ('backup_database_type', '1'),
-('backup_database_level', '0'),
-('backup_backup_directory', '/var/backup'),
+('backup_database_full', ''),
+('backup_database_partial', ''),
+('backup_backup_directory', '/var/cache/centreon/backup'),
 ('backup_tmp_directory', '/tmp/backup'),
 ('backup_retention', '7'),
 ('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),

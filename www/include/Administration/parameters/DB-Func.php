@@ -819,7 +819,6 @@ function updateBackupConfigData($db, $form, $centreon)
     $radiobutton = array(
         'backup_enabled',
         'backup_database_type',
-        'backup_database_level',
         'backup_export_scp_enabled'
     );
     foreach ($radiobutton as $value) {
@@ -833,6 +832,19 @@ function updateBackupConfigData($db, $form, $centreon)
     );
     foreach ($checkbox as $value) {
         $ret[$value] = isset($ret[$value]) && $ret[$value] ? 1 : 0;
+    }
+
+    $checkboxGroup = array(
+        'backup_database_full',
+        'backup_database_partial'
+    );
+    foreach ($checkboxGroup as $value) {
+        if (isset($ret[$value]) && count($ret[$value])) {
+            $valueKeys = array_keys($ret[$value]);
+            $ret[$value] = implode(',', $valueKeys);
+        } else {
+            $ret[$value] = '';
+        }
     }
 
     foreach ($ret as $key => $value) {

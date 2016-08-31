@@ -5,6 +5,10 @@ span.v_required_star {
 }
 
 /* collapse */
+.header-collapse:hover td{
+    background-color: #e4e4e4 !important;
+    cursor: pointer;
+}
 .elem-toCollapse {
     display: none;
     position: relative;

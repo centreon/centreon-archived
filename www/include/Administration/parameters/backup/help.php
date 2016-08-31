@@ -24,9 +24,13 @@ $help['tip_backup_database_type'] = dgettext(
     'help',
     'Backup type for centreon_storage database : mysqldump or LVM snapshot (need available space on MySQL LVM)'
 );
-$help['tip_backup_database_level'] = dgettext(
+$help['tip_backup_database_full'] = dgettext(
     'help',
-    'Backup level for centreon_storage database : full or partial. If partial, backup is done on last partition of partitioned tables'
+    'Full backup period'
+);
+$help['tip_backup_database_partial'] = dgettext(
+    'help',
+    'Partial backup period (available on partitioned tables)'
 );
 $help['tip_backup_directory'] = dgettext(
     'help',

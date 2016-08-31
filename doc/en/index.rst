@@ -17,6 +17,7 @@ Contents:
    exploitation_guide/index
    administration_guide/index
    knowledge_base/index
+   partitioning/index
    howto/index
    upgrade/index
    faq/index

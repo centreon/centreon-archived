@@ -45,7 +45,7 @@ use IO::Dir;
 
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_port $mysql_database_oreon $mysql_database_ods $centreon_config);
 use vars qw($BACKUP_ENABLED $BACKUP_DIR $TEMP_DIR);
-use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_LEVEL $BACKUP_RETENTION);
+use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_FULL $BACKUP_DATABASE_PARTIAL $BACKUP_RETENTION);
 use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF $ZEND_CONF);
 use vars qw($TEMP_DB_DIR $TEMP_CENTRAL_DIR $TEMP_CENTRAL_ETC_DIR $TEMP_CENTRAL_INIT_DIR $TEMP_CENTRAL_CRON_DIR $TEMP_CENTRAL_LOG_DIR $TEMP_CENTRAL_BIN_DIR $TEMP_CENTRAL_LIC_DIR $CENTREON_MODULES_PATH $TEMP_POLLERS $DISTANT_POLLER_BACKUP_DIR);
 use vars qw($BIN_GZIP $BIN_TAR);
@@ -129,7 +129,8 @@ $TEMP_CENTRAL_LIC_DIR = $TEMP_CENTRAL_DIR."/lic";
 $BACKUP_DATABASE_CENTREON = $backupOptions->{'backup_database_centreon'}->{'value'};
 $BACKUP_DATABASE_CENTREON_STORAGE = $backupOptions->{'backup_database_centreon_storage'}->{'value'};
 $BACKUP_DATABASE_TYPE = $backupOptions->{'backup_database_type'}->{'value'};
-$BACKUP_DATABASE_LEVEL = $backupOptions->{'backup_database_level'}->{'value'};
+$BACKUP_DATABASE_FULL = $backupOptions->{'backup_database_full'}->{'value'};
+$BACKUP_DATABASE_PARTIAL = $backupOptions->{'backup_database_partial'}->{'value'};
 $BACKUP_RETENTION = $backupOptions->{'backup_retention'}->{'value'};
 
 $BACKUP_CONFIGURATION_FILES = $backupOptions->{'backup_configuration_files'}->{'value'};
@@ -311,25 +312,6 @@ sub getZendConfFile() {
 	}
 }
 
-sub getNagiosPluginsdir($$$) {
-	my $localhost = shift;
-	my $poller_ip = shift;
-	my $ssh_port = shift;
-
-	if ($localhost =~ /^1$/) {
-		if (-d '/usr/lib/nagios/plugins' ) {
-			return '/usr/lib/nagios/plugins/' ;
-		}
-	} else {
-        my $result = `ssh centreon\@$poller_ip -p $ssh_port -C "ls -lah '/usr/lib/nagios/plugins'" | grep -i 'total' | wc -l | bc`;
-        if ($result == 1) {
-            return '/usr/lib/nagios/plugins';
-        }
-	}
-
-	return '';
-}
-
 ############################
 # Functions to make backup #
 ############################
@@ -353,24 +335,29 @@ sub databasesBackup() {
 		}
 	}
 
-    # Do LVM snapshot backup or fall into degraded mode with mysqldump
-    my $partial_opt = '';
-    if ($BACKUP_DATABASE_LEVEL == '0') {
-        $partial_opt = '-p';
-    }
-
+    my @localtime = localtime(time);
+    my $dayOfWeek = @localtime[6];
+    my @fullBackupDays = split(/,/, $BACKUP_DATABASE_FULL);
     if ($BACKUP_DATABASE_TYPE == '1') {
         # Do LVM snapshot backup or fall into degraded mode with mysqldump
-        my $partial_opt = '';
-        if ($BACKUP_DATABASE_LEVEL == '0') {
-            $partial_opt = '-p';
+
+        if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
+            print "Dumping Db with LVM snapshot (full)\n";
+            `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            if ($? ne 0) {
+                print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
+            }
         }
-        print "Dumping Db with LVM snapshot\n";
-        `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today $partial_opt`;
-        if ($? ne 0) {
-            print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
+
+        my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
+        if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
+            print "Dumping Db with LVM snapshot (partial)\n";
+            `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            if ($? ne 0) {
+                print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
+            }
         }
-    } else {
+    } elsif ( grep $_ == $dayOfWeek, @fullBackupDays ) {
         my $mysql_database_ndo;
         my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=".$mysql_host.";port=".$mysql_port, $mysql_user, $mysql_passwd,{'RaiseError' => 0, 'PrintError' => 0});
         if (!$dbh) {
@@ -713,7 +700,7 @@ sub centralBackup() {
 	################
 	# Make archive #
 	################
-       `cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-central.tar.gz backup`;
+    `cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-central.tar.gz backup`;
 	if ($? ne 0) {
 		print STDERR "Unable to make tar of backup\n";
 	}
@@ -745,19 +732,6 @@ sub monitoringengineBackup() {
 	my $today = sprintf("%d-%02d-%02d",(1900+$year),($mon+1),$mday);
 	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$year), ($mon+1), $mday, $hour, $min, $sec) . "] Start monitoring engine backup processus\n";
 
-    # Create path
-	mkpath($TEMP_POLLERS, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  ".$file.": " . $message . "\n";
-			}
-		}
-	}
-
 	my $sth2 = $dbh->prepare("SELECT n.nagios_name, n.cfg_dir, n.log_file, n.log_archive_path, ns.* FROM nagios_server ns, cfg_nagios n WHERE ns.id = n.nagios_server_id AND n.nagios_activate = '1' AND ns.localhost = '1';");
 	if (!$sth2->execute()) {
 		print STDERR "Error: " . $dbh->errstr . "\n";
@@ -775,32 +749,10 @@ sub monitoringengineBackup() {
 		$sth2->finish();
 	}
 
-	# Remove space
-	my $poller_name_dir = $poller_name;
-	$poller_name_dir =~ s/ /_/g;
-
-	# Create path for specific poller
-	my $ACTUAL_POLLER_BCK_DIR = $TEMP_POLLERS."/".$poller_name_dir;
-	mkpath($ACTUAL_POLLER_BCK_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file " . $file.": " . $message . "\n";
-			}
-		}
-	}
-
-	if (!defined($nagios_server->{ssh_port}) || $nagios_server->{ssh_port} == "") {
-		$nagios_server->{ssh_port} = 22;
-	}
-
 	###########
 	# Plugins #
 	###########
-	mkpath($ACTUAL_POLLER_BCK_DIR."/plugins", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_DIR."/plugins", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -811,9 +763,9 @@ sub monitoringengineBackup() {
 			}
 		}
 	}
-	my $plugins_dir = getNagiosPluginsdir(1, $nagios_server->{ns_ip_address}, $nagios_server->{ssh_port});
+	my $plugins_dir = "/usr/lib/nagios/plugins";
 	if ($plugins_dir ne "") {
-		`cp -pr $plugins_dir/* $ACTUAL_POLLER_BCK_DIR/plugins/`;
+		`cp -pr $plugins_dir/* $TEMP_DIR/plugins/`;
 		if ($? != 0) {
 			print STDERR "Unable to copy plugins\n";
 		}
@@ -822,7 +774,7 @@ sub monitoringengineBackup() {
 	########
 	# Logs #
 	########
-	mkpath($ACTUAL_POLLER_BCK_DIR."/logs", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_DIR."/logs", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -834,9 +786,9 @@ sub monitoringengineBackup() {
 		}
 	}
 
-	copy($nagios_server->{log_file}, ($ACTUAL_POLLER_BCK_DIR."/logs/centengine.log"));
+	copy($nagios_server->{log_file}, ($TEMP_DIR."/logs/centengine.log"));
 	my $logs_archive_directory = substr($nagios_server->{log_archive_path}, 0, rindex($nagios_server->{log_archive_path}, "/"));
-	mkpath($ACTUAL_POLLER_BCK_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
     if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -847,7 +799,7 @@ sub monitoringengineBackup() {
 			}
 		}
 	}
-	`cp -p $logs_archive_directory/* $ACTUAL_POLLER_BCK_DIR/logs/archives/`;
+	`cp -p $logs_archive_directory/* $TEMP_DIR/logs/archives/`;
 	if ($? != 0) {
 		print STDERR "Unable to copy monitoring engine logs archives\n";
 	}
@@ -855,7 +807,7 @@ sub monitoringengineBackup() {
 	#################
 	# Configuration #
 	#################
-	mkpath($ACTUAL_POLLER_BCK_DIR."/etc", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_DIR."/etc/centreon-engine", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -866,7 +818,7 @@ sub monitoringengineBackup() {
 			}
 		}
 	}
-	`cp -pr $nagios_server->{cfg_dir}/* $ACTUAL_POLLER_BCK_DIR/etc/`;
+	`cp -pr $nagios_server->{cfg_dir}/* $TEMP_DIR/etc/centreon-engine`;
 	if ($? != 0) {
 		print STDERR "Unable to copy Monitoring Engine configuration files\n";
 	}
@@ -874,17 +826,17 @@ sub monitoringengineBackup() {
 	#########################
 	# Script initialisation #
 	#########################
-	copy($nagios_server->{init_script}, ($ACTUAL_POLLER_BCK_DIR."/init_d_centengine"));
+	copy($nagios_server->{init_script}, ($TEMP_DIR."/init_d_centengine"));
 
 	###############
 	# Sudo rights #
 	###############
-	copy("/etc/sudoers", ($ACTUAL_POLLER_BCK_DIR."/etc_sudoers"));
+	copy("/etc/sudoers", ($TEMP_DIR."/etc_sudoers"));
 
 	############
 	# SSH keys #
 	############
-	mkpath($ACTUAL_POLLER_BCK_DIR."/ssh", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_DIR."/ssh", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -897,12 +849,12 @@ sub monitoringengineBackup() {
 	}
     my $centreon_home = "/var/spool/centreon";
     if (-d "$centreon_home/.ssh" ) {
-        `cp -pr $centreon_home/.ssh/* $ACTUAL_POLLER_BCK_DIR/ssh`;
+        `cp -pr $centreon_home/.ssh/* $TEMP_DIR/ssh`;
     } else {
         print STDERR "No SSH keys for Centreon\n";
     }
 
-    mkpath($ACTUAL_POLLER_BCK_DIR."/ssh-centreon-engine", {mode => 0755, error => \my $err_list});
+    mkpath($TEMP_DIR."/ssh-centreon-engine", {mode => 0755, error => \my $err_list});
     if (@$err_list) {
         for my $diag (@$err_list) {
             my ($file, $message) = %$diag;
@@ -916,15 +868,15 @@ sub monitoringengineBackup() {
 
     my $centreonengine_home = "/var/lib/centreon-engine/";
     if (-d "$centreonengine_home/.ssh") {
-        `cp -pr $centreonengine_home/.ssh/* $ACTUAL_POLLER_BCK_DIR/ssh-centreon-engine/`;
+        `cp -pr $centreonengine_home/.ssh/* $TEMP_DIR/ssh-centreon-engine/`;
     } else {
-        print STDERR "No ssh keys for Monitoring Engine\n";
+        print STDERR "No ssh keys for Centreon Engine\n";
     }
 
 	##################
 	# Make archives #
 	#################
-	`cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-Monitoring-Engine.tar.gz backup`;
+	`cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-centreon-engine.tar.gz backup`;
     if ($? ne 0) {
         print STDERR "Unable to make tar of backup\n";
     }
@@ -933,11 +885,11 @@ sub monitoringengineBackup() {
     # Export archives #
     ###################
     exportBackup();
-    move ($TEMP_POLLERS."/".$today."-Monitoring-Engine-".$nagios_server->{name}.".tar.gz", $BACKUP_DIR."/".$today."-Monitoring-Engine-".$nagios_server->{name}.".tar.gz");
+    move ($TEMP_DIR."/".$today."-centreon-engine.tar.gz", $BACKUP_DIR."/".$today."-centreon-engine.tar.gz");
 
 	# Remove all temp directory
 	chdir;
-	rmtree($TEMP_POLLERS, {mode => 0755, error => \my $err_list});
+	rmtree($TEMP_DIR, {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
