@@ -55,8 +55,7 @@ sub print_help();
 sub print_usage();
 sub trim($);
 
-#my $CENTREON_ETC = '@CENTREON_ETC@';
-my $CENTREON_ETC = '/etc/centreon';
+my $CENTREON_ETC = '@CENTREON_ETC@';
 my @licfiles;
 
 # Require DB configuration files
@@ -354,13 +353,12 @@ sub databasesBackup() {
 		}
 	}
 
+    my @localtime = localtime(time);
+    my $dayOfWeek = @localtime[6];
+    my @fullBackupDays = split(/,/, $BACKUP_DATABASE_FULL);
     if ($BACKUP_DATABASE_TYPE == '1') {
         # Do LVM snapshot backup or fall into degraded mode with mysqldump
 
-        my @localtime = localtime(time);
-        my $dayOfWeek = @localtime[6];
-
-        my @fullBackupDays = split(/,/, $BACKUP_DATABASE_FULL);
         if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
             print "Dumping Db with LVM snapshot (full)\n";
             `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
@@ -377,7 +375,7 @@ sub databasesBackup() {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
         }
-    } else {
+    } elsif ( grep $_ == $dayOfWeek, @fullBackupDays ) {
         my $mysql_database_ndo;
         my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=".$mysql_host.";port=".$mysql_port, $mysql_user, $mysql_passwd,{'RaiseError' => 0, 'PrintError' => 0});
         if (!$dbh) {
