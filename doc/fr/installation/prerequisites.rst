@@ -139,7 +139,7 @@ Description des partitions :
 * /var/log (au moins 10 GB)
 * /var/lib/centreon (défini dans le chapitre précédant)
 * /var/lib/centreon-broker (au moins 5 GB)
-* /var/backup (utilisé pour la sauvegarde)
+* /var/cache/centreon/backup (utilisé pour la sauvegarde)
 
 SGBD MariaDB
 ============
@@ -150,7 +150,7 @@ Description des partitions :
 * swap (au moins 1x la taille de la mémoire vive)
 * /var/log (au moins 10 GB)
 * /var/lib/mysql (défini dans le chapitre précédant)
-* /var/backup (utilisé pour la sauvegarde)
+* /var/cache/centreon/backup (utilisé pour la sauvegarde)
 
 Collecteur de supervision
 =========================
@@ -161,4 +161,4 @@ Description des partitions :
 * swap (au moins 1x la taille de la mémoire vive)
 * /var/log (au moins 10 GB)
 * /var/lib/centreon-broker (au moins 5 GB)
-* /var/backup (utilisé pour la sauvegarde)
+* /var/cache/centreon/backup (utilisé pour la sauvegarde)
