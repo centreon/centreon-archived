@@ -40,9 +40,20 @@ if (!isset($oreon)) {
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
+$checkboxGroup = array(
+    'backup_database_full',
+    'backup_database_partial'
+);
 $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE options.key LIKE 'backup_%'");
 while ($opt = $DBRESULT->fetchRow()) {
-    $gopt[$opt["key"]] = myDecode($opt["value"]);
+    if (in_array($opt["key"], $checkboxGroup)) {
+        $values = explode(',', $opt["value"]);
+        foreach ($values as $value) {
+            $gopt[$opt["key"]][trim($value)] = 1;
+        }
+    } else {
+        $gopt[$opt["key"]] = myDecode($opt["value"]);
+    }
 }
 $DBRESULT->free();
 
@@ -78,11 +89,22 @@ $backupDatabaseType[] = HTML_QuickForm::createElement('radio', 'backup_database_
 $backupDatabaseType[] = HTML_QuickForm::createElement('radio', 'backup_database_type', null, _("LVM Snapshot"), '1');
 $form->addGroup($backupDatabaseType, 'backup_database_type', _("Backup type"), '&nbsp;');
 $form->setDefaults(array('backup_database_type'=>'1'));
-$backupDatabaseLevel = array();
-$backupDatabaseLevel[] = HTML_QuickForm::createElement('radio', 'backup_database_level', null, _("Partial"), '0');
-$backupDatabaseLevel[] = HTML_QuickForm::createElement('radio', 'backup_database_level', null, _("Full"), '1');
-$form->addGroup($backupDatabaseLevel, 'backup_database_level', _("Backup level"), '&nbsp;');
-$form->setDefaults(array('backup_database_level'=>'1'));
+$backupDatabasePeriodFull[] = HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', _("Monday"));
+$backupDatabasePeriodFull[] = HTML_QuickForm::createElement('checkbox', '2', '&nbsp;', _("Tuesday"));
+$backupDatabasePeriodFull[] = HTML_QuickForm::createElement('checkbox', '3', '&nbsp;', _("Wednesday"));
+$backupDatabasePeriodFull[] = HTML_QuickForm::createElement('checkbox', '4', '&nbsp;', _("Thursday"));
+$backupDatabasePeriodFull[] = HTML_QuickForm::createElement('checkbox', '5', '&nbsp;', _("Friday"));
+$backupDatabasePeriodFull[] = HTML_QuickForm::createElement('checkbox', '6', '&nbsp;', _("Saturday"));
+$backupDatabasePeriodFull[] = HTML_QuickForm::createElement('checkbox', '0', '&nbsp;', _("Sunday"));
+$form->addGroup($backupDatabasePeriodFull, 'backup_database_full', _("Full backup"), '&nbsp;&nbsp;');
+$backupDatabasePeriodPartial[] = HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', _("Monday"));
+$backupDatabasePeriodPartial[] = HTML_QuickForm::createElement('checkbox', '2', '&nbsp;', _("Tuesday"));
+$backupDatabasePeriodPartial[] = HTML_QuickForm::createElement('checkbox', '3', '&nbsp;', _("Wednesday"));
+$backupDatabasePeriodPartial[] = HTML_QuickForm::createElement('checkbox', '4', '&nbsp;', _("Thursday"));
+$backupDatabasePeriodPartial[] = HTML_QuickForm::createElement('checkbox', '5', '&nbsp;', _("Friday"));
+$backupDatabasePeriodPartial[] = HTML_QuickForm::createElement('checkbox', '6', '&nbsp;', _("Saturday"));
+$backupDatabasePeriodPartial[] = HTML_QuickForm::createElement('checkbox', '0', '&nbsp;', _("Sunday"));
+$form->addGroup($backupDatabasePeriodPartial, 'backup_database_partial', _("Partial backup"), '&nbsp;&nbsp;');
 $form->addElement('text', 'backup_retention', _("Backup retention"), $attrsText2);
 $form->addRule('backup_retention', _("Mandatory field"), 'required');
 $form->addRule('backup_retention', _('Must be a number'), 'numeric');
