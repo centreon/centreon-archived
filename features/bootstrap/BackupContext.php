@@ -63,7 +63,7 @@ class BackupContext extends CentreonContext
      */
     public function theDataIsBackedUp($dataType)
     {
-        $file = '/var/cache/centreon/backup/' . date('Y-m-d-central.tar.gz');
+        $file = '/var/cache/centreon/backup/' . date('Y-m-d') . '-central.tar.gz';
         $this->container->execute('ls ' . $file, 'web');
     }
 }
