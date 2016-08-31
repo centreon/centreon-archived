@@ -1,45 +1,69 @@
 <?php
 
+use Centreon\Test\Behat\BackupConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ContactListPage;
-use Centreon\Test\Behat\ContactConfigurationPage;
-use Centreon\Test\Behat\CommandConfigurationPage;
-use Centreon\Test\Behat\ConfigurationPollersPage;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
 
 class BackupContext extends CentreonContext
 {
-    private $hostName;
-    private $serviceName;
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
-     * @When I check centreon scheduled task
+     *  @Given the next backup is configured to be :backupType
      */
-    public function iCheckCentreonScheduledTask()
+    public function theNextBackupIsConfiguredToBe($backupType)
     {
-        try {
-            $this->container->execute('ls /etc/cron.d/centreon', 'web', true);
-        } catch (\Exception $e) {
-            throw new \Exception('Centreon scheduled task does not exist');
+        // Set backup type.
+        $allDays = array(
+            BackupConfigurationPage::DAY_MONDAY,
+            BackupConfigurationPage::DAY_TUESDAY,
+            BackupConfigurationPage::DAY_WEDNESDAY,
+            BackupConfigurationPage::DAY_THURSDAY,
+            BackupConfigurationPage::DAY_FRIDAY,
+            BackupConfigurationPage::DAY_SATURDAY,
+            BackupConfigurationPage::DAY_SUNDAY
+        );
+        if ($backupType == 'full') {
+            $fullBackupDays = $allDays;
+            $partialBackupDays = array();
+        } else if ($backupType == 'partial') {
+            $fullBackupDays = array();
+            $partialBackupDays = $allDays;
+        } else {
+            throw new \Exception('Invalid backup type ' . $backupType);
         }
+
+        // Configure backup in Centreon Web.
+        $page = new BackupConfigurationPage($this);
+        $page->setProperties(array(
+            'enabled' => true,
+            'backup_centreon_db' => true,
+            'backup_centreon_storage_db' => true,
+            'backup_type' => BackupConfigurationPage::BACKUP_TYPE_LVM,
+            'full_backup_days' => $fullBackupDays,
+            'partial_backup_days' => $partialBackupDays
+        ));
+        $page->save();
     }
 
     /**
-     * @Then backup is scheduled
+     *  @When the backup process starts
      */
-    public function backupIsScheduled()
+    public function theBackupProcessStarts()
     {
+        // The backup task is scheduled to run sometime during the
+        // night. We will check that it is scheduled but for testing
+        // purposes we will launch it directly instead.
         $cron = $this->container->execute('cat /etc/cron.d/centreon', 'web', true);
         if (!preg_match('/centreon-backup.pl/m', $cron['output'])) {
             throw new \Exception('centreon-backup is not scheduled');
         }
+        $this->container->execute('/usr/share/centreon/cron/centreon-backup.pl', 'web');
+    }
+
+    /**
+     *  @Then the :dataType data is backed up
+     */
+    public function theDataIsBackedUp($dataType)
+    {
+        $file = '/var/cache/centreon/backup/' . date('Y-m-d-central.tar.gz');
+        $this->container->execute('ls ' . $file, 'web');
     }
 }
-
-?>
