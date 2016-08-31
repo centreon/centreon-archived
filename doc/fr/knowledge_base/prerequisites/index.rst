@@ -1,19 +1,20 @@
-=============
-Prerequisites
-=============
+==========
+Pré-requis
+==========
 
-****************************
-Centreon & Monitoring engine
-****************************
+********************************
+Centreon & Moteur de supervision
+********************************
 
-To use **Centreon Knowledge Base** you need at least **Centreon** 2.8.X.
-**Centreon Knowledge Base** supports **Centreon Engine**, **Nagios** (starting from version 3.X) and every **Nagios** compatible monitoring engine.
-
+Afin d'utiliser *Centreon Knowledge Base* vous avez besoin au minimum de *Centreon* 2.8.x.
+*Centreon Knowledge Base* supporte *Centreon Engine*, *Nagios* (depuis la version 3.x) et tout autre moteur de supervision compatible *Nagios*.
 
 *********
 Mediawiki
 *********
 
-**Centreon Knowledge Base** requires **MediaWiki** to be installed before (version >= 1.12) on your system. Mediawiki is provided with RPM packages on **Centreon Enterprise Server**.
+*Centreon Knowledge Base* requiert que *MediaWiki* (version = 1.12) soit installé sur votre serveur.
+Un paquet RPM de Mediawiki est disponible depuis le dépôt *Centreon Enterprise Server*.
 
-You can `download MediaWiki here <http://www.mediawiki.org/wiki/MediaWiki>`_ and access the `documentation here <http://www.mediawiki.org/wiki/User_hub>`_.
+Alternativement vous pouvez `télécharger MediaWiki ici <http://www.mediawiki.org/wiki/MediaWiki>`_
+et accéder à la `documentation ici <http://www.mediawiki.org/wiki/User_hub>`_.
