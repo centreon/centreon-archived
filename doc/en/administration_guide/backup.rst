@@ -1,6 +1,6 @@
-============
+############
 How it works
-============
+############
 
 Daily execution
 ===============
@@ -54,8 +54,8 @@ This part covers the configuration of centreon-backup.
 
 The following window is displayed:
 
-.. image :: /images/guide_exploitation/backup.png
-:align: center
+.. image:: /images/guide_exploitation/backup.png
+   :align: center
 
 * **Backup enabled** Enable/Disable backup
 * **Backup directory** Directory where backup will be stored
