@@ -1560,6 +1560,10 @@ ul.no-deco-list {
 }
 
 /* CLONE ELEMENT */
+.clone_template .FormRowField,
+.clone_template .FormRowValue {
+    width: 208px;
+}
 .clonable {
     list-style-type: none;
     margin: 0;
