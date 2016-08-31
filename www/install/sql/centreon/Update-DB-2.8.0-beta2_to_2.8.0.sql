@@ -6,3 +6,5 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
 ('serviceCategory', 1),
 ('hostCategory', 1),
 ('serviceMulti', 1);
+
+UPDATE `options` SET `value`='/var/cache/centreon/backup' WHERE `key`='backup_backup_directory';

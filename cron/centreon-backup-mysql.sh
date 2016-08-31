@@ -9,7 +9,7 @@
 
 # Save or not data_bin and logs tables (save by default)
 OPT_PARTIAL=0
-BACKUP_DIR="/var/backup"
+BACKUP_DIR="/var/cache/centreon/backup"
 DEBUG=0
 
 while getopts "pb:l:Dd:" option
