@@ -77,3 +77,134 @@ La fenêtre suivante est affichée:
 * **Remote user** Utilisateur distant pour l'export SCP
 * **Remote host** Hôte distant pour l'export SCP
 * **Remote directory** Répertoire distant pour l'export SCP
+
+
+******************************************
+Restauration d'un serveur central Centreon
+******************************************
+
+Le processus de restauration consiste en deux étapes :
+
+* Réinstaller la plate-forme suivant le documentation d'installation de CES. Ne pas oublier de faire la mise à jour du système.
+* Restaurer les différents fichiers de configuration, puis les bases de données Centreon.
+
+Restauration des fichiers de configuration de Centreon
+======================================================
+
+Avant de restaurer les bases de données, il faudra restaurer certains fichiers de configuration dans un premier temps::
+
+    # cd /var/backup
+    # tar -xvf AAAA-MM-JJ-central.tar.gz
+    # cd backup/central/etc/centreon
+    # cp * /etc/centreon/
+
+Restauration des bases de données
+=================================
+
+Une fois le serveur CES réinstallé (**même version de Centreon**), il suffit de décompresser les sauvegardes des bases de données centreon et centreon_storage::
+
+    # mysql
+    mysql> drop database centreon;
+    mysql> drop database centreon_storage;
+    mysql> CREATE database centreon;
+    mysql> CREATE database centreon_storage;
+    mysql> GRANT ALL ON centreon.* TO 'centreon'@'<adresse_ip_centreon>' IDENTIFIED BY 'password' ;
+    mysql> GRANT ALL ON centreon_storage.* TO 'centreon'@'<adresse_ip_centreon>' IDENTIFIED BY 'password' ;
+    mysql> exit;
+    # gzip -d AAAA-MM-JJ-centreon.sql.gz
+    # mysql centreon < AAAA-MM-JJ-centreon.sql
+    # gzip -d AAAA-MM-JJ-centreon_storage.sql.gz
+    # mysql centreon_storage < AAAA-MM-JJ-centreon_storage.sql
+
+.. note::
+Le mot de passe (**password** ci-dessus), est stocké dans les fichiers de configuration restaurés précédemment. Par exemple le champ **$mysql_passwd** dans le fichier "/etc/centreon/conf.pm".
+
+Ces opérations peuvent prendre un certain temps du fait de la taille de la base "centreon_storage".
+
+.. note::
+Par défaut, il n'y a pas de mot de passe pour le compte root de mysql lors de l'installation d'un serveur via CES.
+
+La manipulation ci-dessus est valide pour des versions identiques de Centreon.
+
+Restauration des clés SSH
+=========================
+
+Cette étape consiste à restaurer les clés SSH de l'utilisateur **centreon**, voir **centreon-engine** dans le cadre d'un environnement distribué.
+Leur restauration doit être manuelle. Il faut donc dans un premier temps extraire cette archive dans un répertoire temporaire puis déplacer un à un les fichiers suivant leur emplacement.
+
+Sur le serveur central::
+
+    # cd /var/backup
+    # tar -xvf AAAA-MM-JJ-centreon-engine.tar.gz
+    # cd backup/ssh
+    # mkdir -p /var/spool/centreon/.ssh/
+    # chmod 700 /var/spool/centreon/.ssh/
+    # cp -p id_rsa /var/spool/centreon/.ssh/
+    # cp -p id_rsa.pub /var/spool/centreon/.ssh/
+
+Test de connexion du central central vers les satellites::
+
+    # su - centreon
+    # ssh <adresse_ip_poller>
+
+Répondre "Oui" à la question.
+
+.. note::
+Cette opération est à effectuer si et seulement si votre plate-forme est en mode distribuée.
+
+Restauration des plugins
+========================
+
+Les plugins ont été sauvegardés dans l'archive : "AAAA-MM-JJ-centreon-engine.tar.gz". Leur restauration doit être manuelle.
+Il faut donc dans un premier temps extraire cette archive dans un répertoire temporaire puis déplacer un à un les fichiers suivant leur emplacement.
+
+Sur chaque collecteur, il faudra réaliser l'action suivante :
+
+::
+
+ # cd /var/backup
+ # tar -xvf AAAA-MM-JJ-centreon-engine.tar.gz
+ # cd backup/plugins
+ # cp -pRf * /usr/lib/nagios/plugins
+
+Restauration des scripts d'initialisation
+=========================================
+
+Certains points de contrôles concernant Oracle ou SAP entraînent la modification du script d'initialisation de l'ordonnanceur afin d'y ajouter des variables d'environnements.
+Si vous avez modifié le script d'initialisation de votre ordonnanceur, il faudra le restaurer.
+
+Dans un premier temps extraire cette archive dans un répertoire temporaire puis déplacer un à un les fichiers suivant leur emplacement::
+
+    # cd /var/backup
+    # tar -xvf AAAA-MM-JJ-centreon-engine.tar.gz
+    # cd backup
+    # cp init_d_centengine /etc/init.d/centengine
+
+Restauration des agents de supervision
+======================================
+
+Si vous utilisez les agents NRPE, ou NSCA il faudra les réinstaller puis restaurer leur configuration::
+
+    # cd /var/backup
+    # tar -xvf YYYY-MM-DD-centreon-engine.tar.gz
+    # cd backup/etc
+    # cp  nrpe.cfg /etc/centreon-engine/
+    # cp  nsca.cfg /etc/centreon-engine/
+
+.. note::
+Cette manipulation est à utiliser si et seulement si vous utilisez les agents NRPE ou NSCA. Si vous utiliser NSCA le fichier de configuration à copier n'est pas nrpe.cfg mais nsca.cfg.
+
+Génération de la configuration du central
+=========================================
+
+Une fois que toutes les étapes (nécessaires) effectuées, il faudra générer la configuration de chaque collecteur.
+
+Reconstruction des graphiques
+=============================
+
+Une fois que vous avez restauré votre plate-forme de supervision et que tout est en ordre, il faudra reconstruire les fichiers RRD afin de retrouver toutes vos "anciens" graphiques de performance.
+
+Pour reconstruire les graphiques de performance, il faudra vous rendre dans le menu ** Administration -> Options -> Centstorage -> Manage**.
+Sur cette page, il faudra sélectionner tous les services et cliquer sur **Rebuild RRD Database** pour la reconstruction des graphiques.
+
+**Le serveur central est maintenant restauré.**
