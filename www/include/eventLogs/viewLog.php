@@ -44,61 +44,42 @@ require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-require_once $centreon_path."/www/include/eventLogs/common-Func.php";
-
-$user_params = get_user_param($oreon->user->user_id, $pearDB);
-
-if (!isset($user_params["log_filter_host"])) {
-    $user_params["log_filter_host"] = true;
-}
-if (!isset($user_params["log_filter_svc"])) {
-    $user_params["log_filter_svc"] = true;
-}
-if (!isset($user_params["log_filter_host_down"])) {
-    $user_params["log_filter_host_down"] = true;
-}
-if (!isset($user_params["log_filter_host_up"])) {
-    $user_params["log_filter_host_up"] = true;
-}
-if (!isset($user_params["log_filter_host_unreachable"])) {
-    $user_params["log_filter_host_unreachable"] = true;
-}
-if (!isset($user_params["log_filter_svc_ok"])) {
-    $user_params["log_filter_svc_ok"] = true;
-}
-if (!isset($user_params["log_filter_svc_warning"])) {
-    $user_params["log_filter_svc_warning"] = true;
-}
-if (!isset($user_params["log_filter_svc_critical"])) {
-    $user_params["log_filter_svc_critical"] = true;
-}
-if (!isset($user_params["log_filter_svc_unknown"])) {
-    $user_params["log_filter_svc_unknown"] = true;
-}
-if (!isset($user_params["log_filter_notif"])) {
-    $user_params["log_filter_notif"] = false;
-}
-if (!isset($user_params["log_filter_error"])) {
-    $user_params["log_filter_error"] = true;
-}
-if (!isset($user_params["log_filter_alert"])) {
-    $user_params["log_filter_alert"] = true;
-}
-if (!isset($user_params["log_filter_oh"])) {
-    $user_params["log_filter_oh"] = false;
-}
-if (!isset($user_params["search_H"])) {
-    $user_params["search_H"] = "";
-}
-if (!isset($user_params["search_S"])) {
-    $user_params["search_S"] = "";
-}
-if (!isset($user_params['log_filter_period'])) {
-    $user_params['log_filter_period'] = "10800";
-}
-if (!isset($user_params['output'])) {
-    $user_params['output'] = "";
-}
+$user_params = array(
+    "log_filter_host" => true,
+    "log_filter_svc" => true,
+    "log_filter_host_down" => true,
+    "log_filter_host_up" => true,
+    "log_filter_host_unreachable" => true,
+    "log_filter_svc_ok" => true,
+    "log_filter_svc_warning" => true,
+    "log_filter_svc_critical" => true,
+    "log_filter_svc_unknown" => true,
+    "log_filter_notif" => false,
+    "log_filter_error" => true,
+    "log_filter_alert" => true,
+    "log_filter_oh" => false,
+    "search_H" => "",
+    "search_S" => "",
+    'log_filter_period' => "10800",
+    'output' => "",
+    "log_filter_host" => true,
+    "log_filter_svc" => true,
+    "log_filter_host_down" => true,
+    "log_filter_host_up" => true,
+    "log_filter_host_unreachable" => true,
+    "log_filter_svc_ok" => true,
+    "log_filter_svc_warning" => true,
+    "log_filter_svc_critical" => true,
+    "log_filter_svc_unknown" => true,
+    "log_filter_notif" => false,
+    "log_filter_error" => true,
+    "log_filter_alert" => true,
+    "log_filter_oh" => false,
+    "search_H" => "",
+    "search_S" => "",
+    'log_filter_period' => "10800",
+    'output' => ""
+);
 
 /*
  * Add QuickSearch ToolBar
@@ -111,14 +92,9 @@ $FlagSearchService = 1;
 $tpl = new Smarty();
 $tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
 
-if (isset($_GET["engine"])) {
-    if ($_GET["engine"] == "true") {
-        $engine = 'true';
-    } else {
-        $engine = 'false';
-    }
-} else {
-    $engine = 'false';
+$engine = 'false';
+if (isset($_GET["engine"]) && $_GET["engine"] == 'true') {
+    $engine = 'true';
 }
 
 $output = "";
