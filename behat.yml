@@ -67,3 +67,8 @@ default:
           paths: [ %paths.base%/features/Backup.feature ]
           contexts:
             - BackupContext
+
+    influxdb:
+      paths: [ %paths.base%/features/Influxdb.feature ]
+      contexts:
+        - InfluxdbContext
