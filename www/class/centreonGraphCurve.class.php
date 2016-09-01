@@ -78,7 +78,6 @@ class CentreonGraphCurve
                 $parameters['type'] = 'simple';
                 break;
         }
-
         return $parameters;
     }
 

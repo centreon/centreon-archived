@@ -71,7 +71,6 @@ class CentreonGraphVirtualMetric
                 $parameters['externalObject']['object'] = 'centreonService';
                 break;
         }
-
         return $parameters;
     }
 }
