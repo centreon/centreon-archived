@@ -50,7 +50,6 @@ if (!defined("_CENTREON_PATH_")) {
     exit(1);
 }
 
-
 $varlib = _CENTREON_VARLIB_;
 
 $centreonClasspath = _CENTREON_PATH_ . '/www/class';
@@ -78,17 +77,6 @@ $gmt = new CentreonGMT($pearDB);
  * Delete empty Downtimes
  */
 $pearDB->query("DELETE FROM `downtime` WHERE `dt_id` NOT IN (SELECT dt_id FROM downtime_host_relation)  AND `dt_id` NOT IN (SELECT dt_id FROM downtime_hostgroup_relation) AND `dt_id` NOT IN (SELECT dt_id FROM downtime_service_relation) AND `dt_id` NOT IN (SELECT dt_id FROM downtime_servicegroup_relation)");
-
-/*
- * Get broker
- */
-$res = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'broker'");
-if (PEAR::isError($res)) {
-    file_put_contents('php://stderr', "Error to connection in database.");
-    exit(1);
-}
-$row = $res->fetchRow();
-$broker = $row['value'];
 
 /*
  * Initialize the downtime class with broker

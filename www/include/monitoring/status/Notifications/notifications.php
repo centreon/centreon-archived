@@ -64,7 +64,7 @@ $host_class_label = array(0 => "success", 1 => "error", 2 => "alert");
 $sql = "SELECT name, description, s.state
         FROM services s, hosts h %s
         WHERE h.host_id = s.host_id
-        AND (description NOT LIKE 'meta_%%' OR description NOT LIKE 'ba_%%')
+        AND (description NOT LIKE 'meta_%%' AND description NOT LIKE 'ba_%%')
         AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
         %s
         UNION
@@ -84,9 +84,9 @@ $sql = "SELECT name, description, s.state
         UNION
         SELECT name, NULL, h.state
         FROM hosts h %s
-        WHERE h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
-        %s
-        AND name != '_Module_Meta'";
+        WHERE name NOT LIKE '_Module_%%'
+        AND h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        %s";
 if ($obj->is_admin) {
     $sql = sprintf($sql, "", "", "", "", "", "", "", "");
 } else {
