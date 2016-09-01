@@ -9,7 +9,7 @@ span.v_required_star {
     background-color: #e4e4e4 !important;
     cursor: pointer;
 }
-.elem-toCollapse {
+.collapse-wrapper .elem-toCollapse {
     display: none;
     position: relative;
 }
