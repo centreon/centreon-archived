@@ -137,6 +137,37 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     }
 
     /**
+     * Set Value
+     *
+     * @param array $params
+     * @return void
+     */
+    public function setValue($params)
+    {
+        $userPref = $this->getUserPreferences($params);
+        if (in_array($params['ft_typename'], $this->multiType)) {
+            if (is_string($userPref) && strpos($userPref, ',') > -1) {
+                $userPref = explode(',', $userPref);
+            }
+        }
+        if (isset($userPref)) {
+            $this->quickform->setDefaults(array('param_' . $params['parameter_id'] => $userPref));
+        } elseif (isset($params['default_value']) && $params['default_value'] != "") {
+            $this->quickform->setDefaults(array('param_' . $params['parameter_id'] => $params['default_value']));
+        }
+    }
+
+    /**
+     * Get Element
+     *
+     * @return HTML_Quickform
+     */
+    public function getElement()
+    {
+        return $this->element;
+    }
+
+    /**
      * Get List Values
      *
      * @param int $paramId
