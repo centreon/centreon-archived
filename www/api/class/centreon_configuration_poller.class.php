@@ -58,6 +58,16 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+        }
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -75,7 +85,11 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
             . "FROM nagios_server "
             . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
+            . "AND ns_activate = '1' ";
+        if (!$isAdmin) {
+            $queryPoller .= $acl->queryBuilder('AND', 'id', $acl->getPollerString('ID', $this->pearDB));
+        }
+        $queryPoller .= "ORDER BY name "
             . $range;
         
         $DBRESULT = $this->pearDB->query($queryPoller);

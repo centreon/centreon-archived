@@ -38,10 +38,10 @@ if (!isset($centreon)) {
 }
 
 include_once("./class/centreonUtils.class.php");
-
 include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
+include_once( $centreon_path . "www/include/monitoring/objectDetails/common-func.php");
 
 /*
  * Create Object env
@@ -164,6 +164,7 @@ if (!is_null($host_id)) {
             " s.notification_number AS current_notification_number," .
             " s.obsess_over_service," .
             " s.check_type," .
+            " s.check_command," .
             " s.state_type," .
             " s.latency as check_latency," .
             " s.execution_time as check_execution_time," .
@@ -197,6 +198,10 @@ if (!is_null($host_id)) {
         }
         $DBRESULT->free();
         
+        if ($is_admin || isset($authorized_actions['service_display_command'])) {
+            $service_status[$hskey]["command_line"] = hidePasswordInCommand($service_status[$hskey]["check_command"], $service_status[$hskey]["service_id"]);
+        }
+
         $service_status[$hskey]["current_stateid"] = $service_status[$hskey]["current_state"];
         $service_status[$hskey]["current_state"] = $tab_status_service[$service_status[$hskey]["current_state"]];
 
@@ -270,6 +275,8 @@ if (!is_null($host_id)) {
          * Ajust data for beeing displayed in template
          */
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+        $service_status[$hskey]['command_line'] = str_replace(' --', "\n\t--", $service_status[$hskey]['command_line']);
+        $service_status[$hskey]['performance_data'] = str_replace(' \'', "\n'", $service_status[$hskey]['performance_data']);
         $service_status[$hskey]["status_color"] = $centreon->optGen["color_".strtolower($service_status[$hskey]["current_state"])];
         
         $service_status[$hskey]["status_class"] = $tab_class_service[strtolower($service_status[$hskey]["current_state"])];
@@ -453,7 +460,7 @@ if (!is_null($host_id)) {
         $tpl->assign("m_mon_ticket", "Open Ticket");
         $tpl->assign("links", _("Links"));
         $tpl->assign("notifications", _("Notifications"));
-
+        $tpl->assign("m_mon_service_command_line", _("Executed Check Command Line"));
         $tpl->assign("m_mon_services_en_check_active", _("Active Checks"));
         $tpl->assign("m_mon_services_en_check_passif", _("Passive Checks"));
         $tpl->assign("m_mon_accept_passive", _("Passive Checks"));
@@ -485,6 +492,24 @@ if (!is_null($host_id)) {
             $tpl->assign("aclAct", $authorized_actions);
         }
 
+        /* Define if the service is a metaservice */
+        $isMetaservice = false;
+        $serviceDescriptionDisplay = $svc_description;
+        $hostNameDisplay = $host_name;
+        if ($host_name == '_Module_Meta') {
+            $isMetaservice = true;
+            $meta_id = $service_id;
+            if (preg_match('/meta_(\d+)/', $svc_description, $matches)) {
+                $meta_id = $matches[1];
+            }
+            $tpl->assign("meta_id", $meta_id);
+
+            $hostNameDisplay = '';
+            $serviceDisplayName = $svcObj->getParameters($service_id, array('display_name'));
+            $serviceDescriptionDisplay = $serviceDisplayName['display_name'];
+        }
+        $tpl->assign("is_meta", $isMetaservice);
+
         $tpl->assign("p", $p);
         $tpl->assign("o", $o);
         $tpl->assign("en", $en);
@@ -512,8 +537,8 @@ if (!is_null($host_id)) {
         }
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$hskey]);
-        $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
-        $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
+        $tpl->assign("host_name", CentreonUtils::escapeSecure($hostNameDisplay));
+        $tpl->assign("svc_description", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 

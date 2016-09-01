@@ -110,6 +110,7 @@ $form->addElement('checkbox', 'service_event_handler', _("Enable/Disable Event H
 $form->addElement('checkbox', 'service_flap_detection', _("Enable/Disable Flap Detection of a service"));
 $form->addElement('checkbox', 'service_passive_checks', _("Enable/Disable passive checks of a service"));
 $form->addElement('checkbox', 'service_submit_result', _("Submit result for a service"));
+$form->addElement('checkbox', 'service_display_command', _("Display executed command by monitoring engine"));
 
 // Hosts
 $form->addElement('checkbox', 'host_checks', _("Enable/Disable Checks for a host"));

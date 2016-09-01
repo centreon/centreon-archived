@@ -642,6 +642,7 @@ class CentreonConfigPoller
         }
         $this->testPollerId($pollerId);
         $centreonDir = CentreonUtils::getCentreonDir();
+        $pearDB = new \CentreonDB('centreon');
         $res = $pearDB->query("SELECT snmp_trapd_path_conf FROM nagios_server WHERE id = '".$pollerId."'");
         $row = $res->fetchRow();
         $trapdPath = $row['snmp_trapd_path_conf'];

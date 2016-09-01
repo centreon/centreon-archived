@@ -39,6 +39,9 @@ INSERT INTO `options` (`key`, `value`) VALUES ('kb_db_name', ''), ('kb_db_user',
 INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Knowledge Base', '501', '50133', 90, 1, './include/Administration/parameters/parameters.php', '&o=knowledgeBase' , NULL , '1', '1', NULL , NULL , NULL);
 UPDATE `topology` SET topology_name = 'Graphs' WHERE topology_name = 'Edit View' AND topology_page = '10201';
 
+-- Issue #4649 - [logAnalyserBroker] Doesn't work
+UPDATE `config` SET nagios_log_file = '/var/log/centreon-engine/centengine.log', archive_log = 1;
+
 
 -- Fix influxdb broker output in fresh isntall of centreon-2.8.0-beta1
 DELETE FROM cb_type_field_relation

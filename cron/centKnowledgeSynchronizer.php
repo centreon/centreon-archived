@@ -7,9 +7,18 @@
 require_once "/etc/centreon/centreon.conf.php";
 $centreon_path = "/usr/share/centreon/";
 $module_path = $centreon_path . "www/class/centreon-knowledge/";
+$CentreonURL = "http://localhost/centreon";
 require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $module_path . "procedures.class.php";
 require_once $module_path . "procedures_DB_Connector.class.php";
+
+$modules_path = $centreon_path . "www/include/configuration/configKnowledge/";
+require_once $modules_path . 'functions.php';
+
+// Initiate connexion
+$dbConnector = new CentreonDB();
+$conf = getWikiConfig($dbConnector);
+$WikiURL = $conf['kb_wiki_url'];
 
 // Define cron constants
 define('_WIKIURL_', $WikiURL);
@@ -217,9 +226,6 @@ function editLinkForService($dbConnector, $objName)
  ******     MAIN     *****
  *************************
  */
-
-// Initiate connexion
-$dbConnector = new CentreonDB();
 // Get all pages title that where changed
 $allPagesModificationInMediaWiki = array_merge(getCreatedPages(), getEditedPages());
 $centreonObjects = detectCentreonObjects($allPagesModificationInMediaWiki);

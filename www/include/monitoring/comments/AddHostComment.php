@@ -101,7 +101,8 @@ if ($centreon->user->access->checkAction("host_comment")) {
     $redirect->setValue($o);
 
     $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
-    $form->addElement('checkbox', 'persistant', _("Persistent"));
+    $persistant = $form->addElement('checkbox', 'persistant', _("Persistent"));
+    $persistant->setValue('1');
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
     $form->addRule('host_id', _("Required Field"), 'required');
