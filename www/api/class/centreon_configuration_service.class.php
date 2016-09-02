@@ -102,13 +102,14 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         }
 
         // Check for service type
-        if ('s' === isset($this->arguments['s'])) {
+        if (isset($this->arguments['s']) && ('s' === $this->arguments['s'])) {
             $s = $this->arguments['s'];
-        } elseif ('m' === isset($this->arguments['s'])) {
+        } elseif (isset($this->arguments['s']) && ('m' === $this->arguments['s'])) {
             $s = $this->arguments['s'];
         } else {
             $s = 'all';
         }
+
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
@@ -120,7 +121,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         switch ($t) {
             default:
             case 'host':
-                $serviceList = $this->getServicesByHost($q, $aclServices, $range, $g,$aclMetaServices, $s);
+                $serviceList = $this->getServicesByHost($q, $aclServices, $range, $g, $aclMetaServices, $s);
                 break;
             case 'hostgroup':
                 $serviceList = $this->getServicesByHostgroup($q, $aclServices, $range);
@@ -140,7 +141,6 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     {
 
         switch ($s) {
-            default:
             case 'all':
         $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_description, service_id, host_name, host_id
                 FROM ( "
