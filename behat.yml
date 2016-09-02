@@ -67,3 +67,8 @@ default:
           paths: [ %paths.base%/features/Backup.feature ]
           contexts:
             - BackupContext
+
+    meta_services_api:
+          paths: [ %paths.base%/features/MetaServicesApi.feature ]
+          contexts:
+            - MetaServicesApiContext
