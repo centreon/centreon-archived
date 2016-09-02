@@ -177,7 +177,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     /*
 	 * Get cfg_id
 	 */
-    $request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]."";
+    $request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]." ORDER BY nagios_activate DESC";
     $DBRESULT2 = $pearDB->query($request);
     if ($DBRESULT2->numRows()) {
         $cfg_id = $DBRESULT2->fetchRow();
