@@ -68,7 +68,7 @@ $help["notification_period"] = dgettext("help", "Specify the time period during 
 $help["notification_options"] = dgettext("help", "Define the states of the service for which notifications should be sent out. If you specify None as an option, no service notifications will be sent out. If you do not specify any notification options, monitoring engine will assume that you want notifications to be sent out for all possible states.");
 $help["first_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the first problem notification when this service enters a non-OK state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will start sending out notifications immediately.");
 $help["recovery_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the recovery notification when this host enters a non-UP state. The default time unit is 0 (this number will mean multiples of 1 minute). If you set this value to 0, monitoring engine will start sending out notifications immediately.");
-$help['use_only_contacts_from_host'] = dgettext("If this option is enabled, use host's notification parameters instead of service or from  template of service parameters inherited");
+$help['use_only_contacts_from_host'] = dgettext("help", "If this option is enabled, use host's notification parameters instead of service or from  template of service parameters inherited");
 
 /*
  * Relations

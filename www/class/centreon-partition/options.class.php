@@ -75,7 +75,9 @@ class Options
      */
     public function getOptionValue($label)
     {
-        return($this->options[$label]);
+        $value = isset($this->options[$label]) ? $this->options[$label] : NULL;
+
+        return $value;
     }
     
     /*

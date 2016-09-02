@@ -205,7 +205,6 @@ class CentreonGraphService extends CentreonGraph
                 }
             }
         }
-
         return $metrics;
     }
 
@@ -227,7 +226,6 @@ class CentreonGraphService extends CentreonGraph
         if (false == $row) {
             throw new OutOfRangeException();
         }
-
         return $row['id'];
     }
 }

@@ -4,8 +4,8 @@ Configuration
 
 Centreon Partitioning uses XML configuration files. There are already some configuration files for Centreon tables.
 
-Example
---------
+Example with partitioning-data_bin.xml
+--------------------------------------
 ::
 
   <?xml version="1.0" encoding="UTF-8"?>
@@ -15,9 +15,8 @@ Example
         <column>ctime</column>
         <type>date</type>
         <duration>daily</duration>
-        <timezone>Europe/London</timezone>
-        <retention>180</retention>
-        <retentionforward>4</retentionforward>
+        <retention>365</retention>
+        <retentionforward>10</retentionforward>
         <backup>
             <folder>/var/backups/</folder>
             <format>%Y-%m-%d</format>
