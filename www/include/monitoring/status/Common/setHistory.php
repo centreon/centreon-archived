@@ -35,33 +35,30 @@
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-if (isset($_POST["sid"])){
-
-	$path = _CENTREON_PATH_."/www";
-
-	require_once("$path/class/centreon.class.php");
-	require_once("$path/class/centreonSession.class.php");
-
-	session_id($_POST["sid"]);
-
-	CentreonSession::start();
-
-	$centreon = $_SESSION['centreon'];
-
-	if (isset($_POST["limit"]) && isset($_POST["url"]))
-		$centreon->historyLimit[$_POST["url"]] = $_POST["limit"];
-
-	if (isset($_POST["page"]) && isset($_POST["url"]))
-		$centreon->historyPage[$_POST["url"]] = $_POST["page"];
-
-	if (isset($_POST["search"]) && isset($_POST["url"]))
-		$centreon->historySearchService[$_POST["url"]] = addslashes($_POST["search"]);
-
-	if (isset($_POST["search_host"]) && isset($_POST["url"]))
-		$centreon->historySearch[$_POST["url"]] = addslashes($_POST["search_host"]);
-
-	if (isset($_POST["search_output"]) && isset($_POST["url"]))
-		$centreon->historySearchOutput[$_POST["url"]] = addslashes($_POST["search_output"]);
+CentreonSession::start();
+if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+    print "Bad Session ID";
+    exit();
 } else {
-	echo "Can't find SID !";
+    $centreon = $_SESSION['centreon'];
+
+    if (isset($_POST["limit"]) && isset($_POST["url"])) {
+        $centreon->historyLimit[$_POST["url"]] = $_POST["limit"];
+    }
+
+    if (isset($_POST["page"]) && isset($_POST["url"])) {
+	$centreon->historyPage[$_POST["url"]] = $_POST["page"];
+    }
+
+    if (isset($_POST["search"]) && isset($_POST["url"])) {
+	$centreon->historySearchService[$_POST["url"]] = addslashes($_POST["search"]);
+    }
+
+    if (isset($_POST["search_host"]) && isset($_POST["url"])) {
+	$centreon->historySearch[$_POST["url"]] = addslashes($_POST["search_host"]);
+    }
+
+    if (isset($_POST["search_output"]) && isset($_POST["url"])) {
+	$centreon->historySearchOutput[$_POST["url"]] = addslashes($_POST["search_output"]);
+    }
 }
