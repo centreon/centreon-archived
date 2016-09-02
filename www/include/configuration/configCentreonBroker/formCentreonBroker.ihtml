@@ -91,7 +91,7 @@
 
 <script type="text/javascript">
 
-    centreonCollapse();
+
     jQuery('#Form').centreonValidate();
 
 
@@ -144,6 +144,7 @@ function addInfo(type) {
     var params;
     var tbody = new Element('tbody');
     tbody.writeAttribute('id', id_name);
+    tbody.writeAttribute('class', 'collapse-wrapper');
     Element.insert($(type), {bottom: tbody});
     params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
     new Ajax.Updater(
@@ -157,6 +158,8 @@ function addInfo(type) {
                     checkTypeValidity('block_' + type);
                     jQuery("#"+id_name).centreonValidate();
                     clonifyTableFields('parentGroup','displaynamegroup');
+                    addCollapse();
+                    openNewElem(id_name);
                 }
             }
         }
@@ -200,6 +203,7 @@ function loadedConfiguration() {
 function changeTab(tab) {
     jQuery('#Form').centreonValidate('validate');
     purgeHideInput(tab);
+    initCollapsebyTab(tab);
     if(tab == "tab4"){
         clonifyTableFields('parentGroup','displaynamegroup');
     }
