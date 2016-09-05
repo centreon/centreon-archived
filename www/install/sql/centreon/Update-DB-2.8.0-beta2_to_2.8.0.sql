@@ -138,3 +138,7 @@ AND cb_field_id = (
     AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
     AND cbfg.groupname = 'status_column' LIMIT 1
     );
+
+-- Ticket #4687
+ALTER TABLE timeperiod MODIFY tp_alias varchar(200);
+

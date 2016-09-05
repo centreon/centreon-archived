@@ -1938,7 +1938,7 @@ CREATE TABLE `session` (
 CREATE TABLE `timeperiod` (
   `tp_id` int(11) NOT NULL AUTO_INCREMENT,
   `tp_name` varchar(200) DEFAULT NULL,
-  `tp_alias` varchar(20) DEFAULT NULL,
+  `tp_alias` varchar(200) DEFAULT NULL,
   `tp_sunday` varchar(2048) DEFAULT NULL,
   `tp_monday` varchar(2048) DEFAULT NULL,
   `tp_tuesday` varchar(2048) DEFAULT NULL,
