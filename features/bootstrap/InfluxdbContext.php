@@ -17,11 +17,12 @@ class InfluxdbContext extends CentreonContext
   private $serviceName = 'InlufxdbTestService';
   
     /**
-     *  @Given a Centreon server with Influxdb
+     *  @Given I am logged in a Centreon server with Influxdb
      */
     public function aCentreonServerWithInfluxdb()
     {
         $this->launchCentreonWebContainer('web_influxdb');
+        $this->iAmLoggedIn();
     }
   
     /**
@@ -30,13 +31,15 @@ class InfluxdbContext extends CentreonContext
     public function anInfluxdbOutputIsProperlyConfigured()
     {
       $this->visit('main.php?p=60909&o=c&id=1');
-      $this->assertFind('css', 'li#c4b')->click();
+      $this->assertFind('css', 'li#c4 > a:nth-child(1)')->click();
+      file_put_contents('/tmp/test.png', $this->getSession()->getDriver()->getScreenshot());
       $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
-      //$this->assertFind('css', 'a#add_output.btc.bt_success')->click();
-      $this->assertFind('css', 'input#output[4][name]')->setValue('TestInfluxdb');
-      $this->assertFild('css', 'intput#output[4][db_host]');
-      $this->assertFind('css', 'input#output[4][metrics_timeseries]')->setValue('metric.$HOST$.$SERVICE$');
-      $this->assertFind('css', 'input#output[4][status_timeseries]')->setValue('status.$HOST$.$SERVICE$');
+      $this->assertFind('css', 'a#add_output')->click();
+      sleep(5);
+      $this->assertFind('css', 'input#output\[4\]\[name\]')->setValue('TestInfluxdb');
+      $this->assertFild('css', 'intput#output\[4\]\[db_host\]');
+      $this->assertFind('css', 'input#output\[4\]\[metrics_timeseries\]')->setValue('metric.$HOST$.$SERVICE$');
+      $this->assertFind('css', 'input#output\[4\]\[status_timeseries\]')->setValue('status.$HOST$.$SERVICE$');
       $this->assertFind('named', array('id_or_name', 'output[4][metrics_column__value_0]'))->setValue('test');
       $this->assertFind('named', array('id_or_name', 'output[4][metrics_column__name_0]'))->setValue('test');
       $this->assertFind('named', array('id_or_name', 'output[4][status_column__value_0]'))->setValue('test');
