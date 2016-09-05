@@ -72,3 +72,8 @@ default:
           paths: [ %paths.base%/features/MetaServicesApi.feature ]
           contexts:
             - MetaServicesApiContext
+
+    influxdb:
+      paths: [ %paths.base%/features/Influxdb.feature ]
+      contexts:
+        - InfluxdbContext
