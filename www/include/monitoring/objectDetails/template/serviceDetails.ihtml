@@ -9,14 +9,14 @@
                     <td class="ListColHeaderLeft {$service_data.status_class}" style="padding-bottom: 4px !important;" >
                         <h3 style="color: #fff;">
                             <img src='./img/icons/service.png' style="vertical-align: middle;" class="ico-16"{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}> |
-                            {$m_mon_services} {$svc_description}
-                            {if !$is_meta}
+                            {$m_mon_services} {$svc_display_name}
+                            {if $is_meta == 'false'}
                             <p style="padding-left: 28px; font-size: 12px;float:right;">
                                 {$h.host_alias} | {$h.host_address}
                             </p>
                             {/if}
                         </h3>
-                        {if !$is_meta}
+                        {if $is_meta == 'false'}
                         <p style="margin-left: 30px;">{$h.host_name}</p>
                         {/if}
                         {if $sv_ext_notes_url}
@@ -195,7 +195,7 @@
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
                         <table class="table ListTable linkList">
-                            {if !$is_meta}
+                            {if $is_meta == 'false'}
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;">
                                     <h4>{$host_shortcut}</h4>
@@ -281,7 +281,7 @@
                         </table>
                     </td>
                 </tr>
-                {if !$is_meta && ($lcaTopo.20201 || $admin == 1)}
+                {if $is_meta == 'false' && ($lcaTopo.20201 || $admin == 1)}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;" nowrap="nowrap">
                         <table class="table linkList">
@@ -338,7 +338,7 @@
                                 {if ($aclAct.service_submit_result || $admin == true) && $service_data.passive_checks_enabled}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_submit_passive}</a></b>
+                                            <b><a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}&is_meta={$is_meta}'>{$m_mon_submit_passive}</a></b>
                                         </td>
                                     </tr>
                                 {/if}
@@ -479,7 +479,7 @@
                     </td>
                 </tr>
 
-                {if !$is_meta}
+                {if $is_meta == 'false'}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;">
                         <table class="ListTable table linkList">
