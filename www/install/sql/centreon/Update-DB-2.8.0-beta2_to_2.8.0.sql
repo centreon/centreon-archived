@@ -11,3 +11,134 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
 ('serviceMulti', 1);
 
 UPDATE `options` SET `value`='/var/cache/centreon/backup' WHERE `key`='backup_backup_directory';
+
+-- Update influxdb output
+INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, cb_fieldset_id, is_required, order_display) VALUES(
+(SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1),
+(SELECT cb_field_id FROM cb_field WHERE fieldname = 'cache' LIMIT 1),
+NULL,
+0,
+1
+);
+
+UPDATE cb_type_field_relation
+SET order_display = 2
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_host' LIMIT 1);
+
+UPDATE cb_type_field_relation
+SET order_display = 3
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_port' LIMIT 1);
+
+UPDATE cb_type_field_relation
+SET order_display = 4
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_user' LIMIT 1);
+
+UPDATE cb_type_field_relation
+SET order_display = 5
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_password' LIMIT 1);
+
+UPDATE cb_type_field_relation
+SET order_display = 6
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'metrics_timeseries' LIMIT 1);
+
+UPDATE cb_type_field_relation
+SET order_display = 7
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'name'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'metrics_column' LIMIT 1
+    );
+
+UPDATE cb_type_field_relation
+SET order_display = 8
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'value'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'metrics_column' LIMIT 1
+    );
+
+UPDATE cb_type_field_relation
+SET order_display = 9
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'type'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'metrics_column' LIMIT 1
+    );
+
+UPDATE cb_type_field_relation
+SET order_display = 10
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'is_tag'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'metrics_column' LIMIT 1
+    );
+
+UPDATE cb_type_field_relation
+SET order_display = 11
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'status_timeseries' LIMIT 1);
+
+UPDATE cb_type_field_relation
+SET order_display = 12
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'name'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'status_column' LIMIT 1
+    );
+
+UPDATE cb_type_field_relation
+SET order_display = 13
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'value'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'status_column' LIMIT 1
+    );
+
+UPDATE cb_type_field_relation
+SET order_display = 14
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'type'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'status_column' LIMIT 1
+    );
+
+UPDATE cb_type_field_relation
+SET order_display = 15
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'is_tag'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'status_column' LIMIT 1
+    );
+
+-- Ticket #4687
+ALTER TABLE timeperiod MODIFY tp_alias varchar(200);
+

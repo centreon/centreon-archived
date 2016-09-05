@@ -312,12 +312,17 @@ if (!$is_admin && !$haveAccess) {
     
         /* Get Graphs Listing */
         $graphLists = array();
-        $query =    "SELECT DISTINCT id, host_name, service_description, host_id, service_id " .
-                    " FROM index_data, metrics " . ((!$is_admin) ? ', centreon_acl acl' : '') .
-                    " WHERE metrics.index_id = index_data.id " .
-                        " AND index_data.host_id = '$host_id' ".
-                        ((!$is_admin) ? ' AND acl.host_id = index_data.host_id AND acl.service_id = index_data.service_id AND group_id IN ('.$centreon->user->access->getAccessGroupsString().')' : '') .
-                    " ORDER BY service_description ASC";
+        $query =    "SELECT DISTINCT i.id, i.host_name, i.service_description, i.host_id, i.service_id " .
+                    " FROM index_data i, metrics m, hosts h, services s" . ((!$is_admin) ? ', centreon_acl acl' : '') .
+                    " WHERE m.index_id = i.id " .
+                        " AND i.host_id = '$host_id' ".
+                        " AND i.host_id = h.host_id ".
+                        " AND h.enabled = 1 ".
+                        " AND i.host_id = s.host_id ".
+                        " AND i.service_id = s.service_id ".
+                        " AND s.enabled = 1 ".
+                        ((!$is_admin) ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND group_id IN ('.$centreon->user->access->getAccessGroupsString().')' : '') .
+                    " ORDER BY i.service_description ASC";
         $DBRESULT = $pearDBO->query($query);
         while ($g = $DBRESULT->fetchRow()) {
             $graphLists[$g["host_id"] . '_' . $g['service_id']] = $g['host_name'].";".$g['service_description'];

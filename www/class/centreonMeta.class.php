@@ -87,25 +87,48 @@ class CentreonMeta
     public function getRealServiceId($metaId)
     {
         static $services = null;
+        if (isset($services[$metaId])) {
+            return $services[$metaId];
+        }
         
-        if (is_null($services)) {
-            $sql = "SELECT s.service_id, s.service_description 
-                FROM service s, host_service_relation hsr
-                WHERE s.service_id = hsr.service_service_id
-                AND hsr.host_host_id = {$this->getRealHostId()}";
-            $res = $this->db->query($sql);
-            if ($res->numRows()) {
-                while ($row = $res->fetchRow()) {
-                    if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
-                        $services[$matches[1]] = $row['service_id'];
-                    }
-                }
+        $sql = 'SELECT s.service_id '
+            . 'FROM service s '
+            . 'WHERE s.service_description = "meta_' . $metaId . '" ';
+
+        $res = $this->db->query($sql);
+        if ($res->numRows()) {
+            while ($row = $res->fetchRow()) {
+                 $services[$metaId] = $row['service_id'];
             }
         }
+
         if (isset($services[$metaId])) {
             return $services[$metaId];
         }
         return 0;
+    }
+
+    /**
+     * Return metaservice id
+     *
+     * @param string $serviceDisplayName
+     * @return int
+     */
+    public function getMetaIdFromServiceDisplayName($serviceDisplayName)
+    {
+        $metaId = null;
+        $query = 'SELECT service_description '
+            . 'FROM service '
+            . 'WHERE display_name = "' . $serviceDisplayName . '" ';
+        $res = $this->db->query($query);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
+                $metaId = $matches[1];
+            }
+        }
+
+        return $metaId;
     }
     
     /**

@@ -16,23 +16,13 @@ Features
 --------
 
  - Range Partitioning
- - Create partitioned table 
  - Migrate existing table to partitioned table
+ - Update partitioned table
 
 Basic usage
 -----------
 
-All actions are done by the command line. It uses a XML configuration file::
+The migration is done by the command line. It uses a XML configuration file::
 
-  # php /usr/share/centreon-partitioning/bin/centreon-partitioning.php
-  Program options:
-    -h  print program usage
-  Execution mode:
-    -c <configuration file>       create tables and create partitions
-    -m <configuration file>       migrate existing table to partitioned table
-    -u <configuration file>       update partitionned tables with new partitions
-    -o <configuration file>       optimize tables
-    -p <configuration file>       purge tables
-    -b <configuration file>       backup last part for each table
-    -l <table> -s <database name> List all partitions for a table.
+  # php /usr/share/centreon/bin/centreon-partitioning.php -m <table>
 

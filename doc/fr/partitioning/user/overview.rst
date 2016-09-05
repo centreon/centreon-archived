@@ -15,24 +15,14 @@ Le partitionnement peut être utilisé sur des tables MyISAM ou InnoDB. Il y a c
 Fonctionnalités
 ---------------
 
- - Durée de partitionnement
- - Création de table partitionnées 
- - Partitionne des tables déjà existantes
+ - Partitionnement par durée
+ - Partitionnement des tables déjà existantes
+ - Mise à jour des tables partitionnées
 
 Usage
 -----
 
-Toutes les actions sont faites en ligne de commande. Un fichier de configuration XML est utilisé::
+La migration est réalisée en ligne de commande. Un fichier de configuration XML est utilisé::
 
-  # php /usr/share/centreon-partitioning/bin/centreon-partitioning.php
-  Program options:
-    -h  print program usage
-  Execution mode:
-    -c <configuration file>       create tables and create partitions
-    -m <configuration file>       migrate existing table to partitioned table
-    -u <configuration file>       update partitionned tables with new partitions
-    -o <configuration file>       optimize tables
-    -p <configuration file>       purge tables
-    -b <configuration file>       backup last part for each table
-    -l <table> -s <database name> List all partitions for a table.
+  # php /usr/share/centreon/bin/centreon-partitioning.php -m <table>
 
