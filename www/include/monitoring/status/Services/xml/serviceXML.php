@@ -304,6 +304,7 @@ $request .= " LIMIT " . ($num * $limit) . "," . $limit;
 /** * **************************************************
  * Get Pagination Rows
  */
+//var_dump($request);
 $DBRESULT = $obj->DBC->query($request);
 $numRows = $obj->DBC->numberRows();
 
@@ -391,15 +392,18 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeAttribute("class", $trClass);
         $obj->XML->writeElement("o", $ct++);
 
+        $isMeta = 0;
+        $data["host_display_name"] = $data["name"];
         if (!strncmp($data["name"], "_Module_Meta", strlen("_Module_Meta"))) {
-            $data["real_name"] = $data["name"];
-            $data["name"] = "Meta";
+            $isMeta = 1;
+            $data["host_display_name"] = "Meta";
             $data["host_state"] = "0";
         }
 
         if ($host_prev == $data["name"]) {
             $obj->XML->writeElement("hc", "transparent");
-            $obj->XML->writeElement("hrn", (isset($data["real_name"]) ? $data["real_name"] : 0));
+            $obj->XML->writeElement("isMeta", $isMeta);
+            $obj->XML->writeElement("hdn", $data["host_display_name"]);
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "1");
             $obj->XML->text(CentreonUtils::escapeSecure($data["name"]));
@@ -413,9 +417,9 @@ if (!PEAR::isError($DBRESULT)) {
             } else {
                 $obj->XML->writeElement("hc", $obj->general_opt['color_downtime']);
             }
-
+            $obj->XML->writeElement("isMeta", $isMeta);
             $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
-            $obj->XML->writeElement("hrn", (isset($data["real_name"]) ? $data["real_name"] : 0));
+            $obj->XML->writeElement("hdn", $data["host_display_name"]);
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "0");
             $obj->XML->text(CentreonUtils::escapeSecure($data["name"]), true, false);
@@ -464,11 +468,14 @@ if (!PEAR::isError($DBRESULT)) {
         /*
          * Add possibility to use display name
          */
-        if (isset($data["display_name"]) && $data["display_name"]) {
-            $obj->XML->writeElement("sd", CentreonUtils::escapeSecure($data["display_name"]), false);
+        if ($isMeta) {
+        //if (isset($data["display_name"]) && $data["display_name"]) {
+
+            $obj->XML->writeElement("sdn", CentreonUtils::escapeSecure($data["display_name"]), false);
         } else {
-            $obj->XML->writeElement("sd", CentreonUtils::escapeSecure($data["description"]), false);
+            $obj->XML->writeElement("sdn", CentreonUtils::escapeSecure($data["description"]), false);
         }
+        $obj->XML->writeElement("sd", CentreonUtils::escapeSecure($data["description"]), false);
 
         $obj->XML->writeElement("sico", $data["icon_image"]);
         $obj->XML->writeElement("sdl", CentreonUtils::escapeSecure(urlencode($data["description"])));

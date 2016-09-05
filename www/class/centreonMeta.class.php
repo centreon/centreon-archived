@@ -87,16 +87,18 @@ class CentreonMeta
     public function getRealServiceId($metaId)
     {
         static $services = null;
+        if (isset($services[$metaId])) {
+            return $services[$metaId];
+        }
         
-        if (is_null($services)) {
-            $sql = 'SELECT s.service_id '
-                . 'FROM service s '
-                . 'WHERE s.service_description = "meta_' . $metaId . '" ';
-            $res = $this->db->query($sql);
-            if ($res->numRows()) {
-                while ($row = $res->fetchRow()) {
-                    $services[$metaId] = $row['service_id'];
-                }
+        $sql = 'SELECT s.service_id '
+            . 'FROM service s '
+            . 'WHERE s.service_description = "meta_' . $metaId . '" ';
+
+        $res = $this->db->query($sql);
+        if ($res->numRows()) {
+            while ($row = $res->fetchRow()) {
+                 $services[$metaId] = $row['service_id'];
             }
         }
 

@@ -1,18 +1,14 @@
 {$form.javascript}
 <form {$form.attributes}>
-<div align=center>
-	 <table class="ListTableMedium" style="width:600px;">
+<div align='center'>
+	 <table class="ListTableMedium">
 	 	<tr class="ListHeader">
 		 	<td class="FormHeader" colspan="2">&nbsp;<img src="./img/icones/16x16/flag_red.gif">&nbsp;{$form.header.title}</td>
 	 	</tr>
-		<tr class="list_one">
-			<td class="FormRowField">{$hostlabel}</td>
-			<td class="FormRowValue">{$hostname}</td>
-		</tr>
-		<tr class="list_one">
-			<td class="FormRowField">{$servicelabel}</td>
-			<td class="FormRowValue">{$servicedescription}</td>
-		</tr>
+	 	<tr class="list_one">
+        	<td class="FormRowField">{t}Host{/t} / {t}Service{/t}</td>
+        	<td class="FormRowValue"><b>{$hostname} / {$servicedescription}</b></td>
+        </tr>
 		{if $en == 1}
 		<tr class="list_two">
 			<td class="FormRowField">{$form.notify.label}</td>
