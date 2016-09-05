@@ -262,4 +262,47 @@ class CentreonMeta
 
         return $values;
     }
+
+    /**
+     * Returns service id
+     *
+     * @param int $metaId
+     * @param string $metaName
+     * @return int
+     */
+    public function insertVirtualService($metaId, $metaName)
+    {
+        $serviceId = null;
+
+        $composedName = 'meta_' . $metaId;
+
+        $queryService = 'SELECT service_id '
+            . 'FROM service '
+            . 'WHERE service_register = "2" '
+            . 'AND service_description = "' . $composedName . '" '
+            . 'AND display_name = "' . $metaName . '" ';
+        $res = $this->db->query($queryService);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            $serviceId = $row['service_id'];
+        } else {
+            $query = 'INSERT INTO service (service_description, display_name, service_register) '
+                . 'VALUES '
+                . '("' . $composedName . '", "' . $metaName . '", "2")';
+            $this->db->query($query);
+            $query = 'INSERT INTO host_service_relation(host_host_id, service_service_id) '
+                . 'VALUES ('
+                . '(SELECT host_id FROM host WHERE host_name = "_Module_Meta" AND host_register = "2" LIMIT 1),'
+                . '(SELECT service_id FROM service WHERE service_description = "' . $composedName . '" AND service_register = "2" LIMIT 1)'
+                . ')';
+            $this->db->query($query);
+            $res = $this->db->query($queryService);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $serviceId = $row['service_id'];
+            }
+        }
+
+        return $serviceId;
+    }
 }
