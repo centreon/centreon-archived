@@ -441,7 +441,21 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS DISTINCT logs.* FROM logs ".$innerJoinEngineLog.
+$req = "SELECT SQL_CALC_FOUND_ROWS ".(!$is_admin ? "DISTINCT" : "")." 
+        logs.ctime, 
+        logs.host_id, 
+        logs.host_name, 
+        logs.service_id, 
+        logs.service_description, 
+        logs.msg_type, 
+        logs.notification_cmd, 
+        logs.notification_contact, 
+        logs.output, 
+        logs.retry, 
+        logs.status, 
+        logs.type, 
+        logs.instance_name
+        FROM logs ".$innerJoinEngineLog.
     ((!$is_admin) ?
     " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
     . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id)) "
