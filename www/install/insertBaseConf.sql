@@ -81,7 +81,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
 ('maxViewMonitoring','30'),
-('maxGraphPerformances','5'),
+('maxGraphPerformances','18'),
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
