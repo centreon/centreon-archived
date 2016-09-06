@@ -43,7 +43,9 @@ $transcoKey = array(
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
     "enable_gmt" => "yes",
-    "strict_hostParent_poller_management" => "yes"
+    "strict_hostParent_poller_management" => "yes",
+    'display_downtime_chart' => 'yes',
+    'display_comment_chart' => 'yes'
 );
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
@@ -153,7 +155,12 @@ $form->addGroup(
     '&nbsp;&nbsp;'
 );
 $displayCommentOnChart[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
-$form->addGroup($displayCommentOnChart, 'display_comment_chart', _("Display comment on chart"), '&nbsp;&nbsp;');
+$form->addGroup(
+    $displayCommentOnChart,
+    'display_comment_chart',
+    _("Display comment on chart"),
+    '&nbsp;&nbsp;'
+);
 
 /*
  * SSO
