@@ -38,6 +38,10 @@ default:
       contexts:
         - RestartCentreonEngineContext
 
+    acknowledgement:
+      paths: [ %paths.base%/features/Acknowledgement.feature ]
+      contexts:
+        - AcknowledgementContext
     acknowledgement_timeout:
       paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
       contexts:
@@ -72,3 +76,8 @@ default:
           paths: [ %paths.base%/features/MetaServicesApi.feature ]
           contexts:
             - MetaServicesApiContext
+
+    influxdb:
+      paths: [ %paths.base%/features/Influxdb.feature ]
+      contexts:
+        - InfluxdbContext

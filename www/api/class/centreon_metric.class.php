@@ -235,8 +235,18 @@ class CentreonMetric extends CentreonWebService
                 unset($serviceData[$i]['graph_type']);
             }
             
-            $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
-            $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
+            /* Get extra information (downtime/acknowledgment) */
+            $acks = array();
+            $downtimes = array();
+            $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
+            $res = $this->pearDB->query($query);
+            if (false === PEAR::isError($res)) {
+                $row = $res->fetchRow();
+                if (false === is_null($row) && $row['value'] === '1') {
+                    $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
+                    $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
+                }
+            }
             
             $result[] = array(
                 'service_id' => $id,
@@ -338,22 +348,31 @@ class CentreonMetric extends CentreonWebService
             $statusData = $graph->getData($rows);
             
             /* Get comments for this services */
-            $queryComment = 'SELECT entry_time, author, data
-                FROM comments
-                WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . '
-                    AND entry_type = 1 AND deletion_time IS NULL AND ' . $start . ' < entry_time
-                    AND ' . $end . ' > entry_time';
-            $res = $this->pearDBMonitoring->query($queryComment);
             $comments = array();
+            $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
+            $res = $this->pearDB->query($query);
             if (false === PEAR::isError($res)) {
-                while ($row = $res->fetchRow()) {
-                    $comments[] = array(
-                        'author' => $row['author'],
-                        'comment' => $row['data'],
-                        'time' => $row['entry_time']
-                    );
+                $row = $res->fetchRow();
+                if (false === is_null($row) && $row['value'] === '1') {
+                    $queryComment = 'SELECT entry_time, author, data
+                        FROM comments
+                        WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . '
+                            AND entry_type = 1 AND deletion_time IS NULL AND ' . $start . ' < entry_time
+                            AND ' . $end . ' > entry_time';
+                    $res = $this->pearDBMonitoring->query($queryComment);
+
+                    if (false === PEAR::isError($res)) {
+                        while ($row = $res->fetchRow()) {
+                            $comments[] = array(
+                                'author' => $row['author'],
+                                'comment' => $row['data'],
+                                'time' => $row['entry_time']
+                            );
+                        }
+                    }    
                 }
             }
+            
             
             $result[] = array(
                 'service_id' => $id,
@@ -435,10 +454,14 @@ class CentreonMetric extends CentreonWebService
                 'start' => $row['start'],
                 'end' => $row['end']
             );
-            if ($start > $row['start']) {
+            if ($start > $row['start']
+                || is_null($row['start'])
+                || $row['start'] === '') {
                 $period['start'] = $start;
             }
-            if ($end < $row['end']) {
+            if ($end < $row['end']
+                || is_null($row['end'])
+                || $row['end'] === '') {
                 $period['end'] = $end;
             }
             $periods[] = $period;
