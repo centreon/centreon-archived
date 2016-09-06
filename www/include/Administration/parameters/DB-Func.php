@@ -573,6 +573,18 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        'display_downtime_chart',
+        isset($ret["display_downtime_chart"]["yes"]) && $ret["display_downtime_chart"]["yes"] != null
+            ? htmlentities($ret["display_downtime_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+    updateOption(
+        $pearDB,
+        'display_comment_chart',
+        isset($ret["display_comment_chart"]["yes"]) && $ret["display_comment_chart"]["yes"] != null
+            ? htmlentities($ret["display_comment_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+    updateOption(
+        $pearDB,
         "enable_autologin",
         isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != null
             ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0"

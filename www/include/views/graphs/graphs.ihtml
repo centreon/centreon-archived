@@ -93,7 +93,7 @@
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
 <script>
 var defaultCharts = JSON.parse('{$defaultCharts}');
-var nbDisplayedCharts = 18;
+var nbDisplayedCharts = {$nbDisplayedCharts};
 var tooManyChartMsg = '{t}You cannot add more charts. The maximum charts is {/t}' + nbDisplayedCharts;
 </script>
 
