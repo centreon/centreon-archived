@@ -59,22 +59,27 @@ $pearDBndo = new CentreonDB("centstorage");
 $host_id = $hObj->getHostId($host_name);
 $hostDisplayName = $host_name;
 $serviceDisplayName = $service_description;
+
+if ($is_meta == 'true') {
+    $metaId = null;
+    if (preg_match('/meta_(\d+)/', $service_description, $matches)) {
+        $metaId = $matches[1];
+    }
+    $hostDisplayName = 'Meta';
+    $serviceId = $metaObj->getRealServiceId($metaId);
+    $serviceParameters = $serviceObj->getParameters($serviceId, array('display_name'));
+    $serviceDisplayName = $serviceParameters['display_name'];
+}
+
+
 if (!$is_admin && $host_id) {
     $flag_acl = 0;
     if ($is_meta == 'true') {
-        $metaId = null;
-        if (preg_match('/meta_(\d+)/', $service_description, $matches)) {
-            $metaId = $matches[1];
-        }
         $aclMetaServices = $centreon->user->access->getMetaServices();
         $aclMetaIds = array_keys($aclMetaServices);
         if (in_array($metaId, $aclMetaIds)) {
             $flag_acl = 1;
         }
-        $hostDisplayName = 'Meta';
-        $serviceId = $metaObj->getRealServiceId($metaId);
-        $serviceParameters = $serviceObj->getParameters($serviceId, array('display_name'));
-        $serviceDisplayName = $serviceParameters['display_name'];
     } else {
         $serviceTab = $centreon->user->access->getHostServices($pearDBndo, $host_id);
         if (in_array($service_description, $serviceTab)) {
@@ -90,20 +95,6 @@ if (($is_admin || $flag_acl) && $host_id) {
 
     $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
     $form->addElement('header', 'title', _("Command Options"));
-
-    $hosts = array($host_name => $hostDisplayName);
-
-    $services = array();
-    if ($is_meta == 'true') {
-        $services_id = getMyHostServices($host_id);
-    } else {
-        $services_id = getMyHostServices($host_id);
-    }
-
-    foreach ($services_id as $id => $value) {
-        $svc_desc = getMyServiceName($id);
-        $services[$svc_desc] = $svc_desc;
-    }
 
     $return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");
 
