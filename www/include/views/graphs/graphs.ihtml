@@ -94,7 +94,7 @@
 <script>
 var defaultCharts = JSON.parse('{$defaultCharts}');
 var nbDisplayedCharts = {$nbDisplayedCharts};
-var tooManyChartMsg = '{t}You cannot add more charts. The maximum charts is {/t}' + nbDisplayedCharts;
+var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}" + nbDisplayedCharts;
 </script>
 
 {literal}
