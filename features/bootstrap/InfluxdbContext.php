@@ -7,6 +7,7 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\HostConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\ConfigurationPollersPage;
 
 /**
  * Defines application features from the specific context.
@@ -36,28 +37,27 @@ class InfluxdbContext extends CentreonContext
       $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
       $this->assertFind('css', 'a#add_output')->click();
       sleep(5);
-      $this->assertFind('css', 'input#output\[4\]\[name\]')->setValue('TestInfluxdb');
-      $this->assertFild('css', 'intput#output\[4\]\[db_host\]');
-      $this->assertFind('css', 'input#output\[4\]\[metrics_timeseries\]')->setValue('metric.$HOST$.$SERVICE$');
-      $this->assertFind('css', 'input#output\[4\]\[status_timeseries\]')->setValue('status.$HOST$.$SERVICE$');
-      $this->assertFind('named', array('id_or_name', 'output[4][metrics_column__value_0]'))->setValue('test');
-      $this->assertFind('named', array('id_or_name', 'output[4][metrics_column__name_0]'))->setValue('test');
-      $this->assertFind('named', array('id_or_name', 'output[4][status_column__value_0]'))->setValue('test');
-      $this->assertFind('named', array('id_or_name', 'output[4][status_column__name_0]'))->setValue('test');
-      $this->assertFind('css', 'input#btc.bt_success')->click();
-      file_put_contents('/tmp/test.png', $this->getSession()->getDriver()->getScreenshot());
+      $this->assertFind('named', array('id', 'output[4][name]'))->setValue('TestInfluxdb');
+      $this->assertFind('named', array('id', 'output[4][db_host]'))->setValue('127.0.0.1');
+      $this->assertFind('named', array('id', 'output[4][metrics_timeseries]'))->setValue('metric.$HOST$.$SERVICE$');
+      $this->assertFind('named', array('id', 'output[4][status_timeseries]'))->setValue('status.$HOST$.$SERVICE$');
+      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+      $this->assertFind('css', '#validForm > p:nth-child(1) > input:nth-child(1)')->click();
     }
 
     /**
-     *  @And a passive service is configured
+     *  @Given a passive service is configured
      */
     public function aPassiveServiceIsConfigured() {
       $hostConfig = new HostConfigurationPage($this);
       $hostProperties = array(
         'name' => $this->hostName,
         'alias' => $this->hostName,
-        'active_checks_enabled' => FALSE,
-        'passive_checks_enabled' => TRUE
+        'active_checks_enabled' => "0",
+        'passive_checks_enabled' => "1"
       );
       $hostConfig->setProperties($hostProperties);
       $hostConfig->save();
@@ -66,20 +66,19 @@ class InfluxdbContext extends CentreonContext
       $serviceProperties = array(
         'description' => $this->serviceName,
         'hosts' => $this->hostName,
-        'alias' => $this->serviceName,
-        'active_checks_enabled' => FALSE,
-        'passive_checks_enabled' => TRUE
+        'active_checks_enabled' => "0",
+        'passive_checks_enabled' => "1"
       );
       $serviceConfig->setProperties($serviceProperties);
       $serviceConfig->save();
     }
     
     /**
-     * @And Broker and Engine are restarted
+     * @Given Broker and Engine are restarted
      */
     public function andBrokerAndEngineAreRestarted()
     {
-      (new ConfigurePollersPage($this))->restartEngine();
+      (new ConfigurationPollersPage($this))->restartEngine();
     }
 
     /**
@@ -87,7 +86,7 @@ class InfluxdbContext extends CentreonContext
      */
     public function whenNewMetricDataIsDiscoveredByTheEngine()
     {
-      $this->submitServiceResult($this->hostName, $this->serviceName, 'ok', '', 'test=1s;5;10;0;10');
+      $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', '', 'test=1s;5;10;0;10');
       sleep(5);
     }
 
