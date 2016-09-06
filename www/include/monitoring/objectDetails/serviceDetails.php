@@ -90,10 +90,10 @@ if (!is_null($host_id)) {
     }
 
     /* Define if the service is a metaservice */
-    $isMetaservice = false;
+    $isMetaservice = 'false';
     $meta_id = $service_id;
     if ($host_name == '_Module_Meta') {
-        $isMetaservice = true;
+        $isMetaservice = 'true';
         if (preg_match('/meta_(\d+)/', $svc_description, $matches)) {
             $meta_id = $matches[1];
         }
@@ -240,7 +240,7 @@ if (!is_null($host_id)) {
         $host = $DBRESULT->fetchrow();
         $DBRESULT->free();
 
-        if ($isMetaservice) {
+        if ($isMetaservice == 'true') {
             $metaParameters = $metaObj->getParameters($meta_id, array('max_check_attempts'));
             $total_current_attempts = $metaParameters['max_check_attempts'];
         } else {
@@ -518,7 +518,7 @@ if (!is_null($host_id)) {
 
         $serviceDescriptionDisplay = $svc_description;
         $hostNameDisplay = $host_name;
-        if ($isMetaservice) {
+        if ($isMetaservice == 'true') {
             $tpl->assign("meta_id", $meta_id);
 
             $hostNameDisplay = '';
@@ -548,15 +548,18 @@ if (!is_null($host_id)) {
         $tpl->assign("lcaTopo", $centreon->user->access->topology);
         $tpl->assign("count_comments_svc", count($tabCommentServices));
         $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils","escapeSecure"), $tabCommentServices));
+        $tpl->assign("host_id", $host_id);
+        $tpl->assign("service_id", $service_id);
         $centreonGraph = new CentreonGraph($centreon->user->user_id, null, 0, null);
         if (isset($host_id) && isset($service_id)) {
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
-            $tpl->assign("service_id", $service_id);
         }
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$hskey]);
-        $tpl->assign("host_name", CentreonUtils::escapeSecure($hostNameDisplay));
-        $tpl->assign("svc_description", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
+        $tpl->assign("host_display_name", CentreonUtils::escapeSecure($hostNameDisplay));
+        $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
+        $tpl->assign("svc_display_name", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
+        $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 
@@ -624,7 +627,7 @@ if (!is_null($host_id)) {
         $tpl->assign("lnk_host_status", _("View host status page"));
         $tpl->assign("lnk_serv_status", sprintf(_("View status of all services on host %s"), CentreonUtils::escapeSecure($host_name)));
         $tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), CentreonUtils::escapeSecure($host_name)));
-        $tpl->assign("lnk_serv_logs", sprintf(_("View logs for service %s"), CentreonUtils::escapeSecure($svc_description)));
+        $tpl->assign("lnk_serv_logs", sprintf(_("View logs for service %s"), CentreonUtils::escapeSecure($serviceDescriptionDisplay)));
 
         /*
          * Ext informations

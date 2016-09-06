@@ -109,26 +109,6 @@ class MetaService extends AbstractObject {
 
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $service_id = $row['service_id'];
-        } else {
-            $stmt = $this->backend_instance->db->prepare("INSERT INTO service
-                    (service_description, display_name, service_register)
-                VALUES
-                    (:meta_composed_name, :meta_name, '2')");
-            $stmt->bindParam(':meta_composed_name', $composed_name);
-            $stmt->bindParam(':meta_name', $meta_name);
-            $stmt->execute();
-            $stmt = $this->backend_instance->db->prepare("SELECT
-                    MAX(service_id) as sid
-                FROM service
-                WHERE service_description = :meta_composed_name
-                AND display_name = :meta_name
-                AND service_register = '2'");
-            $stmt->bindParam(':meta_composed_name', $composed_name);
-            $stmt->bindParam(':meta_name', $meta_name);
-            $stmt->execute();
-            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $service_id = $row['sid'];
-            }
         }
 
         if (!isset($service_id)) {

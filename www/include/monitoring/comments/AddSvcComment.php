@@ -39,6 +39,7 @@ if (!isset($centreon)) {
     
 include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_."www/class/centreonService.class.php";
 
 /*
  * Init GMT class
@@ -56,27 +57,26 @@ if ($centreon->user->access->checkAction("service_comment")) {
     isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = null;
     $cG ? $host_id = $cG : $host_id = $cP;
 
+    $host_name = null;
+    $svc_description = null;
     if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
         $host_id = getMyHostID($_GET["host_name"]);
         $service_id = getMyServiceID($_GET["service_description"], $host_id);
         $host_name = $_GET["host_name"];
         $svc_description = $_GET["service_description"];
-    } else {
-        $host_name = null;
-        $svc_description = null;
-    }
-
-    $data = array();
-    if (isset($host_id) && isset($service_id)) {
-        $data = array("host_id" => $host_id, "service_id" => $service_id);
+        if ($host_name == '_Module_Meta' && preg_match('/^meta_(\d+)/', $svc_description, $matches)) {
+            $host_name = 'Meta';
+            $serviceObj = new CentreonService($pearDB);
+            $serviceParameters = $serviceObj->getParameters($service_id, array('display_name'));
+            $svc_description = $serviceParameters['display_name'];
+        }
     }
 
     /*
 	 * Database retrieve information for differents
 	 * elements list we need on the page
 	 */
-
-    $query = "SELECT host_id, host_name FROM `host` WHERE host_register = '1' ".$centreon->user->access->queryBuilder("AND", "host_id", $hostStr)."ORDER BY host_name";
+    $query = "SELECT host_id, host_name FROM `host` WHERE host_register = '1' " . $centreon->user->access->queryBuilder("AND", "host_id", $hostStr) . "ORDER BY host_name";
     $DBRESULT = $pearDB->query($query);
     $hosts = array(null => null);
     while ($row = $DBRESULT->fetchRow()) {
@@ -90,14 +90,14 @@ if ($centreon->user->access->checkAction("service_comment")) {
     }
 
     $debug = 0;
-    $attrsTextI         = array("size"=>"3");
-    $attrsText      = array("size"=>"30");
-    $attrsTextarea  = array("rows"=>"7", "cols"=>"100");
+    $attrsTextI = array("size" => "3");
+    $attrsText = array("size" => "30");
+    $attrsTextarea = array("rows" => "7", "cols" => "100");
 
     /*
 	 * Form begin
 	 */
-    $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+    $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
     $form->addElement('header', 'title', _("Add a comment for Service"));
 
     /*
@@ -106,23 +106,26 @@ if ($centreon->user->access->checkAction("service_comment")) {
     $redirect = $form->addElement('hidden', 'o');
     $redirect->setValue($o);
 
-    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
-    $selSv = $form->addElement('select', 'service_id', _("Service"), $services);
+    if (isset($host_id) && isset($service_id)) {
+        $form->addElement('hidden', 'host_id', $host_id);
+        $form->addElement('hidden', 'service_id', $service_id);
+    } else {
+        $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" => "this.form.submit();"));
+        $form->addRule('host_id', _("Required Field"), 'required');
+
+        $form->addElement('select', 'service_id', _("Service"), $services);
+        $form->addRule('service_id', _("Required Field"), 'required');
+    }
+
     $persistant = $form->addElement('checkbox', 'persistant', _("Persistent"));
     $persistant->setValue('1');
-    $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-    /*
-	 * Add Rules
-	 */
-    $form->addRule('host_id', _("Required Field"), 'required');
-    $form->addRule('service_id', _("Required Field"), 'required');
+    $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
     $form->addRule('comment', _("Required Field"), 'required');
 
-    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
-    $form->setDefaults($data);
+    $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
     $valid = false;
     if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate()) {
@@ -149,6 +152,11 @@ if ($centreon->user->access->checkAction("service_comment")) {
         $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
         $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
         $form->accept($renderer);
+
+        if (isset($host_id) && isset($service_id)) {
+            $tpl->assign('host_name', $host_name);
+            $tpl->assign('service_description', $svc_description);
+        }
 
         $tpl->assign('form', $renderer->toArray());
         $tpl->assign('o', $o);

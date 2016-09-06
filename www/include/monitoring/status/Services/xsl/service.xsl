@@ -160,16 +160,16 @@
                     </xsl:element>
                 </xsl:if>
                 <xsl:choose>
-                    <xsl:when test="hrn = 0">
+                    <xsl:when test="isMeta = 0">
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
                             <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
                             <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
-                            <xsl:value-of select="hn"/>
+                            <xsl:value-of select="hdn"/>
                         </xsl:element>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:value-of select="hn"/>
+                        <xsl:value-of select="hdn"/>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:if>
@@ -184,10 +184,10 @@
                 </xsl:element>
             </xsl:if>
             <xsl:element name="a">
-                <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:if test="hrn != 0"><xsl:value-of select="hrn"/></xsl:if><xsl:if test="hrn = 0"><xsl:value-of select="hn"/></xsl:if>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
+                <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
                 <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
                 <xsl:attribute name="id">svc-<xsl:value-of select="hid"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
-                <xsl:value-of select="sd"/>
+                <xsl:value-of select="sdn"/>
             </xsl:element>
         </td>
         <td class="ListColRight" style="white-space:nowrap;">
