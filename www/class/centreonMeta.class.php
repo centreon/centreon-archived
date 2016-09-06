@@ -61,20 +61,31 @@ class CentreonMeta
     public function getRealHostId()
     {
         static $hostId = null;
-        
+
         if (is_null($hostId)) {
-            $sql = "SELECT host_id 
-                FROM host 
-                WHERE host_name = '_Module_Meta' 
-                LIMIT 1";
-            $res = $this->db->query($sql);
+            $queryHost = 'SELECT host_id '
+                . 'FROM host '
+                . 'WHERE host_name = "_Module_Meta" '
+                . 'AND host_register = "2" '
+                . 'LIMIT 1 ';
+            $res = $this->db->query($queryHost);
             if ($res->numRows()) {
                 $row = $res->fetchRow();
                 $hostId = $row['host_id'];
             } else {
-                $hostId = 0;
+                $query = 'INSERT INTO host (host_name, host_register) '
+                    . 'VALUES ("_Module_Meta", "2") ';
+                $this->db->query($query);
+                $res = $this->db->query($queryHost);
+                if ($res->numRows()) {
+                    $row = $res->fetchRow();
+                    $hostId = $row['host_id'];
+                } else {
+                    $hostId = 0;
+                }
             }
         }
+
         return $hostId;
     }
     
@@ -272,6 +283,7 @@ class CentreonMeta
      */
     public function insertVirtualService($metaId, $metaName)
     {
+        $hostId = $this->getRealHostId();
         $serviceId = null;
 
         $composedName = 'meta_' . $metaId;
@@ -292,7 +304,7 @@ class CentreonMeta
             $this->db->query($query);
             $query = 'INSERT INTO host_service_relation(host_host_id, service_service_id) '
                 . 'VALUES ('
-                . '(SELECT host_id FROM host WHERE host_name = "_Module_Meta" AND host_register = "2" LIMIT 1),'
+                . $hostId . ','
                 . '(SELECT service_id FROM service WHERE service_description = "' . $composedName . '" AND service_register = "2" LIMIT 1)'
                 . ')';
             $this->db->query($query);
