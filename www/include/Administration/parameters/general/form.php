@@ -142,6 +142,19 @@ $form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nb
 $options2[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
 
+/**
+ * Charts options
+ */
+$displayDowntimeOnChart[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup(
+    $displayDowntimeOnChart,
+    'display_downtime_chart',
+    _("Display downtime and acknowledgment on chart"),
+    '&nbsp;&nbsp;'
+);
+$displayCommentOnChart[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup($displayCommentOnChart, 'display_comment_chart', _("Display comment on chart"), '&nbsp;&nbsp;');
+
 /*
  * SSO
  */

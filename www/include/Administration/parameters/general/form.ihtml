@@ -59,6 +59,15 @@
     </tr>
  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
+  
+    <!-- Chart options -->
+    <tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{t}Chart options{/t}</h4>
+      </td>
+    </tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_downtime_chart">{$form.display_downtime_chart.label}</td><td class="FormRowValue">{$form.display_downtime_chart.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_comment_chart">{$form.display_comment_chart.label}</td><td class="FormRowValue">{$form.display_comment_chart.html}</td></tr>
 	
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">

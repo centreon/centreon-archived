@@ -184,7 +184,7 @@ class Broker extends AbstractObjectXML {
                 $object[$flow_count]['stats'] = array(
                     'type' => 'stats',
                     'name' => $config_name . '-stats',
-                    'fifo' => $retention_path . '/' . $config_name . '.stats',
+                    'json_fifo' => $retention_path . '/' . $config_name . '-stats.json',
                 );
                 $flow_count++;
             }

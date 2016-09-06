@@ -154,7 +154,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . $aclServices
                     . ") 
                 UNION ALL ( "
-                    . "SELECT DISTINCT ms.display_name AS service_description, ms.service_id, mh.host_name, mh.host_id "
+                    . "SELECT DISTINCT ms.display_name AS service_description, ms.service_id, 'Meta', mh.host_id "
                     . "FROM host mh, service ms "
                     . "WHERE mh.host_name = '_Module_Meta' "
                     . "AND mh.host_register = '2' "

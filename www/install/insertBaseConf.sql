@@ -81,7 +81,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
 ('maxViewMonitoring','30'),
-('maxGraphPerformances','5'),
+('maxGraphPerformances','18'),
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
@@ -139,7 +139,9 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('index_data', '1'), 
 ('interval_length', '60'),
 ('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/'),
-('selectPaginationSize', 60);
+('selectPaginationSize', 60),
+('display_downtime_chart','0'),
+('display_comment_chart','0');
 
 --
 -- Contenu de la table `giv_components_template`

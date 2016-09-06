@@ -138,3 +138,14 @@ AND cb_field_id = (
     AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
     AND cbfg.groupname = 'status_column' LIMIT 1
     );
+
+-- Ticket #4687
+ALTER TABLE timeperiod MODIFY tp_alias varchar(200);
+
+-- Update maximum number of chart in performance
+UPDATE `options` SET `value` = '18' WHERE `key` = 'maxGraphPerformances';
+
+-- Can enable/disable chart extended information #4679
+INSERT INTO `options` (`key`, `value`) VALUES
+('display_downtime_chart','0'),
+('display_comment_chart','0');

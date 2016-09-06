@@ -87,25 +87,48 @@ class CentreonMeta
     public function getRealServiceId($metaId)
     {
         static $services = null;
+        if (isset($services[$metaId])) {
+            return $services[$metaId];
+        }
         
-        if (is_null($services)) {
-            $sql = "SELECT s.service_id, s.service_description 
-                FROM service s, host_service_relation hsr
-                WHERE s.service_id = hsr.service_service_id
-                AND hsr.host_host_id = {$this->getRealHostId()}";
-            $res = $this->db->query($sql);
-            if ($res->numRows()) {
-                while ($row = $res->fetchRow()) {
-                    if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
-                        $services[$matches[1]] = $row['service_id'];
-                    }
-                }
+        $sql = 'SELECT s.service_id '
+            . 'FROM service s '
+            . 'WHERE s.service_description = "meta_' . $metaId . '" ';
+
+        $res = $this->db->query($sql);
+        if ($res->numRows()) {
+            while ($row = $res->fetchRow()) {
+                 $services[$metaId] = $row['service_id'];
             }
         }
+
         if (isset($services[$metaId])) {
             return $services[$metaId];
         }
         return 0;
+    }
+
+    /**
+     * Return metaservice id
+     *
+     * @param string $serviceDisplayName
+     * @return int
+     */
+    public function getMetaIdFromServiceDisplayName($serviceDisplayName)
+    {
+        $metaId = null;
+        $query = 'SELECT service_description '
+            . 'FROM service '
+            . 'WHERE display_name = "' . $serviceDisplayName . '" ';
+        $res = $this->db->query($query);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
+                $metaId = $matches[1];
+            }
+        }
+
+        return $metaId;
     }
     
     /**
@@ -238,5 +261,48 @@ class CentreonMeta
         }
 
         return $values;
+    }
+
+    /**
+     * Returns service id
+     *
+     * @param int $metaId
+     * @param string $metaName
+     * @return int
+     */
+    public function insertVirtualService($metaId, $metaName)
+    {
+        $serviceId = null;
+
+        $composedName = 'meta_' . $metaId;
+
+        $queryService = 'SELECT service_id '
+            . 'FROM service '
+            . 'WHERE service_register = "2" '
+            . 'AND service_description = "' . $composedName . '" '
+            . 'AND display_name = "' . $metaName . '" ';
+        $res = $this->db->query($queryService);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            $serviceId = $row['service_id'];
+        } else {
+            $query = 'INSERT INTO service (service_description, display_name, service_register) '
+                . 'VALUES '
+                . '("' . $composedName . '", "' . $metaName . '", "2")';
+            $this->db->query($query);
+            $query = 'INSERT INTO host_service_relation(host_host_id, service_service_id) '
+                . 'VALUES ('
+                . '(SELECT host_id FROM host WHERE host_name = "_Module_Meta" AND host_register = "2" LIMIT 1),'
+                . '(SELECT service_id FROM service WHERE service_description = "' . $composedName . '" AND service_register = "2" LIMIT 1)'
+                . ')';
+            $this->db->query($query);
+            $res = $this->db->query($queryService);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $serviceId = $row['service_id'];
+            }
+        }
+
+        return $serviceId;
     }
 }
