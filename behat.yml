@@ -38,6 +38,10 @@ default:
       contexts:
         - RestartCentreonEngineContext
 
+    acknowledgement:
+      paths: [ %paths.base%/features/Acknowledgement.feature ]
+      contexts:
+        - AcknowledgementContext
     acknowledgement_timeout:
       paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
       contexts:
