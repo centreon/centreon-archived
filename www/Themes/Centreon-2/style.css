@@ -2206,6 +2206,7 @@ textarea.default-textarea {
 .graph .chart-status {
   margin-top: 10px;
   margin-left: 40px;
+  overflow: visible;
 }
 
 .graph .c3-region.region-downtime {
