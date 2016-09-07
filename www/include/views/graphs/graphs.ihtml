@@ -1,5 +1,5 @@
 <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
-<link href="./include/views/graphs/javascript/centreon-status-chart.js" type="text/css" rel="stylesheet">
+<link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <div id="div1" style="position:relative;">
     <form {$form.attributes}>
