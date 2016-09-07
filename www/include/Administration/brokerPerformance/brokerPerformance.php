@@ -45,7 +45,7 @@ require_once "./class/centreonGMT.class.php";
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 function createArrayStats($arryFromJson) {
-    $io = array();
+    $io = array('class' => 'stats_lv1');
 
     if (isset($arryFromJson['state'])) {
         $io[_('State')] = $arryFromJson['state'];
@@ -144,6 +144,7 @@ function parseStatsFile($statfile)
                 $result['io'][$matches[1]][_('Failover')] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-failover\')">'.$matches[1].'-failover</a>';
                 $result['io'][$matches[1].'-failover'] = createArrayStats($json_stats[$key]['failover']);
                 $result['io'][$matches[1].'-failover']['type'] = 'output';
+                $result['io'][$matches[1].'-failover']['class'] = 'stats_lv2';
             }
 
             /* manage peers input */
@@ -153,6 +154,7 @@ function parseStatsFile($statfile)
                     $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')">'.$arrayPeers[$i].'</a><br>';
                     $result['io'][$matches[1].'-'.$i] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
                     $result['io'][$matches[1].'-'.$i]['type'] = 'input';
+                    $result['io'][$matches[1].'-'.$i]['class'] = 'stats_lv2';
                 }
             }
         }
