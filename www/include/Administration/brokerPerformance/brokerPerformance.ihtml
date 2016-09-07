@@ -29,7 +29,7 @@
             <p class="title">{$lang.modules}</p>
             <ul class="module_list">
             {foreach from=$perf_info.modules key=m_name item=m_status}
-                <li><span class="module_name">{$m_name}</span><span class="module_status {$m_status}">{$lang[$m_status]}</span></li>
+                <li><span class="module_name">{$m_name}</span><span class="module_status {$m_status}">{$m_status}</span></li>
             {/foreach}
             </ul>
         </td>
