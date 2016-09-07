@@ -147,7 +147,7 @@ function parseStatsFile($statfile)
             if (isset($json_stats[$key]['peers'])) {
                 $arrayPeers = explode (',', $json_stats[$key]['peers']);
                 for ($i = 1; $i < count($arrayPeers); $i++) {
-                    $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')">'.$arrayPeers[$i].'</a><br>';
+                    $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')" class="'.$matches[1].'-'.$i.'">'.$arrayPeers[$i].'</a><br>';
                     $result['io'][$matches[1].'-'.$i] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
                     $result['io'][$matches[1].'-'.$i]['type'] = 'input';
                 }
