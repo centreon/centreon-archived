@@ -1,20 +1,20 @@
 ==========
-Nagios CFG
+Engine CFG
 ==========
 
 Overview
 --------
 
-Object name: **NAGIOSCFG**
+Object name: **ENGINECFG**
 
 Show
 ----
 
-In order to list available Nagios conf, use the **SHOW** action::
+In order to list available Engine conf, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a show 
-  nagios id;nagios name;instance;nagios comment
-  1;Nagios CFG 1;Central;Default Nagios.cfg
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a show 
+  engine id;engine name;instance;engine comment
+  1;Engine CFG Central;Central;Default Engine.cfg
   [...]
 
 Columns are the following :
@@ -22,11 +22,11 @@ Columns are the following :
 ======= ===========================================
 Order	Description
 ======= ===========================================
-1	Nagios ID
+1	Engine ID
 
-2	Nagios configuration name
+2	Engine configuration name
 
-3	Instance that is linked to nagios.cfg
+3	Instance that is linked to engine.cfg
 
 4	Comments regarding the configuration file
 ======= ===========================================
@@ -35,9 +35,9 @@ Order	Description
 Add
 ---
 
-In order to add a Nagios conf, use the **ADD** action::
+In order to add a Engine conf, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a add -v "Nagios cfg for poller test;Poller test;Just a small comment" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a add -v "Engine cfg for poller NY;Poller-NY;Just a small comment" 
 
 Required fields are:
 
@@ -46,7 +46,7 @@ Order	 Description
 ======== ===========================================
 1	 Nagios configuration name
 
-2	 Instance that is linked to nagios.cfg
+2	 Instance that is linked to engine.cfg
 
 3	 Comment regarding the configuration file
 ======== ===========================================
@@ -55,24 +55,24 @@ Order	 Description
 Del
 ---
 
-If you want to remove a Nagios conf, use the **DEL** action. The name is used for identifying the configuration to delete::
+If you want to remove a Engine conf, use the **DEL** action. The name is used for identifying the configuration to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a del -v "Nagios cfg for poller test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a del -v "Engine cfg for poller NY" 
 
 
 Setparam
 --------
 
-If you want to change a specific parameter of a Nagios conf, use the **SETPARAM** action. The name is used for identifying the configuration to update::
+If you want to change a specific parameter of a Engine conf, use the **SETPARAM** action. The name is used for identifying the configuration to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a setparam -v "Nagios cfg for poller test;cfg_dir;/usr/local/nagios/etc" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a setparam -v "Engine cfg for poller NY;cfg_dir;/usr/local/engine/etc" 
 
 Arguments are composed of the following columns:
 
 ======= =================================
 Order	Column description
 ======= =================================
-1	Name of Nagios configuration
+1	Name of Engine configuration
 
 2	Parameter name
 
@@ -84,17 +84,17 @@ Parameters that you may change are:
 ================ =============================================================================================================================
 Column	         Description
 ================ =============================================================================================================================
-nagios_name	 Name
+engine_name	      Name
 
-instance	 Instance that is linked to nagios.cfg
+instance	 Instance that is linked to engine.cfg
 
-broker_module	 example: [...] -v "Nagios CFG 1;broker_module;/usr/local/nagios/bin/ndomod.o config_file=/usr/local/nagios/etc/ndomod.cfg", 
+broker_module	 example: [...] -v "Engine CFG 1;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
                  you can use a | delimiter for defining multiple broker modules
 
-nagios_activate	 *1* if activated, *0* otherwise
+engine_activate	 *1* if activated, *0* otherwise
 
-*	         Centreon CLAPI handles pretty much all the options available in a nagios configuration file. 
-                 Because the list is quite long, it is best to refer to the official documentation of Nagios
+*	         Centreon CLAPI handles pretty much all the options available in a Engine configuration file. 
+                 Because the list is quite long, it is best to refer to the official documentation of Engine
 ================ =============================================================================================================================
 
 
@@ -102,7 +102,7 @@ Addbrokermodule
 ---------------
 
 If you want to add new broker module without removing existing modules, use the **ADDBROKERMODULE**::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so"
 
 
 Arguments are composed of the following columns:
@@ -110,20 +110,20 @@ Arguments are composed of the following columns:
 ======= =================================
 Order	Column description
 ======= =================================
-1	Name of Nagios configuration
+1	Name of Engine configuration
 
 2	Module name
 ======= =================================
 
 To add multiple modules in one line, it will put the separator "|" between the name of the modules
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
 
 
 Delbrokermodule
 ---------------
 
 If you want to delete broker module, use the **DELBROKERMODULE**::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so"
 
 
 Arguments are composed of the following columns:
@@ -131,10 +131,10 @@ Arguments are composed of the following columns:
 ======= =================================
 Order	Column description
 ======= =================================
-1	Name of Nagios configuration
+1	Name of Engine configuration
 
 2	Module name
 ======= =================================
 
 To delete multiple modules in one line, it will put the separator "|" between the name of the modules
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
