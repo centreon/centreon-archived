@@ -90,7 +90,7 @@ class MetaServicesApiContext extends CentreonContext
         endwhile;
 
         if (($service == 0) || ($meta == 0)) {
-            throw new Exception('Mauvais service');
+            throw new Exception('Bad service');
         }
     }
 
@@ -115,7 +115,7 @@ class MetaServicesApiContext extends CentreonContext
         endwhile;
 
         if (($service == 0) || ($meta == 1)) {
-            throw new Exception('Mauvais service');
+            throw new Exception('Bad service');
         }
     }
 
@@ -140,7 +140,7 @@ class MetaServicesApiContext extends CentreonContext
         endwhile;
 
         if (($service == 1) || ($meta == 0)) {
-            throw new Exception('Mauvais service');
+            throw new Exception('Bad service');
         }
     }
 

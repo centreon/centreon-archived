@@ -95,7 +95,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* Add wiki page */
         $checkurl = 'Host:'.$this->hostName;
         if( !strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
-            throw new Exception(' Mauvaise url');
+            throw new Exception('Bad url');
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki host page');
@@ -126,7 +126,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* Add wiki page */
         $checkurl = 'Service:'.$this->serviceHostName.'_'.$this->serviceName;
         if( !strstr(urldecode($this->getSession()->getCurrentUrl()), $checkurl)) {
-           throw new Exception(' Mauvaise url');
+           throw new Exception('Bad url');
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki service page');
@@ -155,7 +155,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $originalValue = $fieldValue->getValue();
 
         if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')) {
-            throw new Exception(' Mauvaise url');
+            throw new Exception('Bad url');
         }
     }
 
@@ -175,7 +175,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $originalValue = $fieldValue->getValue();
 
         if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')) {
-            throw new Exception(' Mauvaise url');
+            throw new Exception('Bad url');
         }
     }
 

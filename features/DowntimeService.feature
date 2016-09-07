@@ -7,11 +7,10 @@ Feature: Set service downtime
     Given I am logged in a Centreon server
     And I have a meta service
 
-#  Scenario: Place a comment
-#    When I place a comment
-#    Then this one appears in the interface
+  Scenario: Place a comment
+    When I place a comment
+    Then this one appears in the interface
 
   Scenario: Set a downtime
     When I place a downtime
-#    Then this one appears in the interface
-#    And I dont receive any more notifications for this meta-service
+    Then this one appears in the interface in downtime
