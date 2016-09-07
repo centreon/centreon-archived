@@ -249,7 +249,7 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 # Apply configuration button
-$form->addElement('button', 'apply_configuration', _("Apply configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
+$form->addElement('button', 'apply_configuration', _("Export configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchP', $search);
