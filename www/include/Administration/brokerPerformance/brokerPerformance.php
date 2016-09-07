@@ -124,7 +124,10 @@ function parseStatsFile($statfile)
     );
 
     foreach ($json_stats as $key => $value) {
-        if (preg_match('/endpoint (.*)/', $key, $matches)) {
+        if (preg_match('/endpoint \(?(.*[^()])\)?/', $key, $matches)) {
+            if (preg_match('/.*external commands.*/', $matches[1])) {
+                $matches[1] = "external-commands";
+            }
 
             $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
             $result['io'][$matches[1]]['type'] = end(explode('-', $key));
