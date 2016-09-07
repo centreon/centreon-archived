@@ -37,7 +37,7 @@ Add
 
 In order to add a Centreon Engine conf, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a add -v "Centreon Engine cfg for poller test;Poller test;Just a small comment" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a add -v "Centreon Engine cfg for poller NY;Poller-NY;Just a small comment" 
 
 Required fields are:
 
@@ -57,7 +57,7 @@ Del
 
 If you want to remove a Centreon Engine conf, use the **DEL** action. The name is used for identifying the configuration to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a del -v "Centreon Engine cfg for poller test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a del -v "Centreon Engine cfg for poller NY" 
 
 
 Setparam
@@ -65,7 +65,7 @@ Setparam
 
 If you want to change a specific parameter of a Centreon Engine conf, use the **SETPARAM** action. The name is used for identifying the configuration to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a setparam -v "Centreon Engine cfg for poller test;cfg_dir;/usr/local/nagios/etc" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a setparam -v "Centreon Engine cfg for poller NY;cfg_dir;/usr/local/nagios/etc" 
 
 Arguments are composed of the following columns:
 
@@ -88,7 +88,7 @@ name	         Name
 
 instance	 Instance that is linked to centreon-engine.cfg
 
-broker_module	 example: [...] -v "Engine CFG 1;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
+broker_module	 example: [...] -v "Engine CFG NY;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
                  you can use a | delimiter for defining multiple broker modules
 
 activate	 *1* if activated, *0* otherwise
@@ -102,7 +102,7 @@ Addbrokermodule
 ---------------
 
 If you want to add new broker module without removing existing modules, use the **ADDBROKERMODULE**::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Centreon Engine cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so"
 
 
 Arguments are composed of the following columns:
@@ -116,14 +116,14 @@ Order	Column description
 ======= =====================================
 
 To add multiple modules in one line, it will put the separator "|" between the name of the modules::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Centreon Engine cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
 
 
 Delbrokermodule
 ---------------
 
 If you want to delete broker module, use the **DELBROKERMODULE**::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Centreon Engine cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so"
 
 
 Arguments are composed of the following columns:
@@ -137,4 +137,4 @@ Order	Column description
 ======= =====================================
 
 To delete multiple modules in one line, it will put the separator "|" between the name of the modules::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Centreon Engine cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"

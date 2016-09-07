@@ -81,3 +81,8 @@ default:
       paths: [ %paths.base%/features/Influxdb.feature ]
       contexts:
         - InfluxdbContext
+
+    meta_services_downtime:
+      paths: [ %paths.base%/features/DowntimeService.feature ]
+      contexts:
+        - DowntimeServiceContext

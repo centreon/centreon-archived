@@ -81,7 +81,7 @@ class MetaServicesApiContext extends CentreonContext
 
         $i = count($json->items)-1;
         while ((($service ==0 ) && ($meta ==0 )) || (0 <= $i)):
-            if ($json->items[$i]->text == '_Module_Meta - '.$this->metaName){
+            if ($json->items[$i]->text == 'Meta - '.$this->metaName){
                 $meta = 1;
             }elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
@@ -90,7 +90,7 @@ class MetaServicesApiContext extends CentreonContext
         endwhile;
 
         if (($service == 0) || ($meta == 0)) {
-            throw new Exception('Mauvais service');
+            throw new Exception('Bad service');
         }
     }
 
@@ -106,7 +106,7 @@ class MetaServicesApiContext extends CentreonContext
 
         $i = count($json->items)-1;
         while ((($service ==0 ) && ($meta ==0 )) || (0 <= $i)):
-            if ($json->items[$i]->text == '_Module_Meta - '.$this->metaName){
+            if ($json->items[$i]->text == 'Meta - '.$this->metaName){
                 $meta = 1;
             }elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
@@ -115,7 +115,7 @@ class MetaServicesApiContext extends CentreonContext
         endwhile;
 
         if (($service == 0) || ($meta == 1)) {
-            throw new Exception('Mauvais service');
+            throw new Exception('Bad service');
         }
     }
 
@@ -131,7 +131,7 @@ class MetaServicesApiContext extends CentreonContext
 
         $i = count($json->items)-1;
         while ((($service ==0 ) && ($meta ==0 )) || (0 <= $i)):
-            if ($json->items[$i]->text == '_Module_Meta - '.$this->metaName){
+            if ($json->items[$i]->text == 'Meta - '.$this->metaName){
                 $meta = 1;
             }elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
@@ -140,7 +140,7 @@ class MetaServicesApiContext extends CentreonContext
         endwhile;
 
         if (($service == 1) || ($meta == 0)) {
-            throw new Exception('Mauvais service');
+            throw new Exception('Bad service');
         }
     }
 

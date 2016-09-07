@@ -45,7 +45,7 @@ require_once "./class/centreonGMT.class.php";
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 function createArrayStats($arryFromJson) {
-    $io = array();
+    $io = array('class' => 'stats_lv1');
 
     if (isset($arryFromJson['state'])) {
         $io[_('State')] = $arryFromJson['state'];
@@ -124,7 +124,10 @@ function parseStatsFile($statfile)
     );
 
     foreach ($json_stats as $key => $value) {
-        if (preg_match('/endpoint (.*)/', $key, $matches)) {
+        if (preg_match('/endpoint \(?(.*[^()])\)?/', $key, $matches)) {
+            if (preg_match('/.*external commands.*/', $matches[1])) {
+                $matches[1] = "external-commands";
+            }
 
             $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
             $result['io'][$matches[1]]['type'] = end(explode('-', $key));
@@ -141,15 +144,17 @@ function parseStatsFile($statfile)
                 $result['io'][$matches[1]][_('Failover')] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-failover\')">'.$matches[1].'-failover</a>';
                 $result['io'][$matches[1].'-failover'] = createArrayStats($json_stats[$key]['failover']);
                 $result['io'][$matches[1].'-failover']['type'] = 'output';
+                $result['io'][$matches[1].'-failover']['class'] = 'stats_lv2';
             }
 
             /* manage peers input */
             if (isset($json_stats[$key]['peers'])) {
                 $arrayPeers = explode (',', $json_stats[$key]['peers']);
                 for ($i = 1; $i < count($arrayPeers); $i++) {
-                    $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')">'.$arrayPeers[$i].'</a><br>';
+                    $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')" class="'.$matches[1].'-'.$i.'">'.$arrayPeers[$i].'</a><br>';
                     $result['io'][$matches[1].'-'.$i] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
                     $result['io'][$matches[1].'-'.$i]['type'] = 'input';
+                    $result['io'][$matches[1].'-'.$i]['class'] = 'stats_lv2';
                 }
             }
         }
