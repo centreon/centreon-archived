@@ -471,6 +471,7 @@ $host_search_sql = "";
 if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     if ($engine == "false") {
         $req .= " AND `msg_type` NOT IN ('4','5') ";
+        $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
     }
 } else {
     foreach ($tab_host_ids as $host_id) {
@@ -520,15 +521,13 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     } else {
         $req .= "AND 0 ";
     }
-    $req .= " AND logs.host_name NOT LIKE '_Module_BAM%'";
+    $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
     $req .= $host_search_sql . $service_search_sql;
 }
 
 /*
  * calculate size before limit for pagination
  */
-
-
 if (isset($req) && $req) {
     /*
      * Add Suffix for order
