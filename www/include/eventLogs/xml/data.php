@@ -262,7 +262,7 @@ if ($error == 'true') {
 }
 
 $msg_req = '';
-$suffix_order = " ORDER BY ctime DESC, host_name ASC, log_id DESC, service_description ASC ";
+$suffix_order = " ORDER BY ctime DESC ";
 
 $host_msg_status_set = array();
 if ($up == 'true') {
