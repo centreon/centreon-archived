@@ -154,7 +154,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . $aclServices
                     . ") 
                 UNION ALL ( "
-                    . "SELECT DISTINCT ms.display_name AS service_description, ms.service_id, 'Meta', mh.host_id "
+                    . "SELECT DISTINCT ms.display_name AS service_description, ms.service_id, 'Meta' as host_name, mh.host_id "
                     . "FROM host mh, service ms "
                     . "WHERE mh.host_name = '_Module_Meta' "
                     . "AND mh.host_register = '2' "
@@ -179,7 +179,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . $range;
                 break;
             case 'm':
-                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ms.display_name AS service_description, ms.service_id, 'Meta', mh.host_id "
+                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ms.display_name AS service_description, ms.service_id, 'Meta' as host_name, mh.host_id "
                     . "FROM host mh, service ms "
                     . "WHERE mh.host_name = '_Module_Meta' "
                     . "AND mh.host_register = '2' "
