@@ -43,6 +43,7 @@
     },
     itemHeight: 20,
     tooltipDisplayTime: window.d3.time.format('%Y-%m-%d %H:%M:%S'),
+    tooltipAttach: 'bottom',
     data: {}
   };
   
@@ -154,7 +155,7 @@
     initTooltip: function () {
       var $$ = this;
       
-      $$.tooltip =$$.chartContainer.style('postion', 'relative')
+      $$.tooltip = $$.chartContainer.style('postion', 'relative')
         .append('div')
         .classed('cc3-tooltip', true)
         .style('position', 'absolute')
@@ -284,11 +285,11 @@
             .enter()
             .append('rect')
             .attr('x', function (d) { return $$.getXPos(d) })
-            .attr('y', $$.config.margin.top)
+            .attr('y', $$.config.margin.top + 2)
             .attr('width', function (d) {
               return (d.ending_time - d.starting_time) * $$.scaleFactor;
             })
-            .attr('height', $$.config.itemHeight)
+            .attr('height', $$.config.itemHeight - 2)
             .style('fill', function (d) { return $$.getColor(status[i], i); });
         }
       }
@@ -299,7 +300,7 @@
         .append('line')
         .attr('x1', function (d) { return $$.getXPosComment(d) })
         .attr('x2', function (d) { return $$.getXPosComment(d) })
-        .attr('y1', $$.config.margin.top - 5)
+        .attr('y1', $$.config.margin.top)
         .attr('y2', $$.config.margin.top + $$.config.itemHeight)
         .style('stroke', '#6F6F6F')
         .on('mousemove', function (d) {
@@ -389,7 +390,7 @@
       $$.tooltip.select('.cc3-tooltip-body > pre')
         .text(data.comment);
         
-      $$.tooltip.style($$.getTooltipPos(element)).style('display', 'block');
+      $$.tooltip.style('display', 'block').style($$.getTooltipPos(element));
     },
     tooltipCommentHide: function() {
       var $$ = this;
@@ -405,10 +406,20 @@
     getTooltipPos: function (element) {
       var $$ = this;
       var pos = $$.d3.mouse(element);
+      var sizeTooltip = $$.tooltip.node().getBoundingClientRect();
+      
+      var top = (pos[1] + 10) + 'px';
+      var left = (pos[0] + 20) + 'px';
+      if ($$.config.tooltipAttach === 'bottom') {
+        top = (pos[1] - sizeTooltip.height) + 'px';
+      }
+      if (pos[0] + sizeTooltip.width > $$.width) {
+        left = (pos[0] - sizeTooltip.width - 10) + 'px';
+      }
       
       return {
-        left: (pos[0] + 20) + 'px',
-        top: (pos[1] + 10) + 'px'
+        left: left,
+        top: top
       };
     },
     /**

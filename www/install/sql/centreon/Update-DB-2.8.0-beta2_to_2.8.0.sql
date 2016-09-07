@@ -142,3 +142,13 @@ AND cb_field_id = (
 -- Ticket #4687
 ALTER TABLE timeperiod MODIFY tp_alias varchar(200);
 
+-- Update maximum number of chart in performance
+UPDATE `options` SET `value` = '18' WHERE `key` = 'maxGraphPerformances';
+
+-- Can enable/disable chart extended information #4679
+INSERT INTO `options` (`key`, `value`) VALUES
+('display_downtime_chart','0'),
+('display_comment_chart','0');
+
+-- Add index for better performance on ods_view_details #4670
+CREATE INDEX `contact_index` ON `ods_view_details` (`contact_id`, `index_id`) USING BTREE;

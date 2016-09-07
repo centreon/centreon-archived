@@ -139,7 +139,7 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(meta_id)"])) {
                     $metaObj = new CentreonMeta($pearDB);
-                    $metaObj->insertVirtualService($meta_id["MAX(meta_id)"], $meta_name);
+                    $metaObj->insertVirtualService($maxIddele["MAX(meta_id)"], $meta_name);
                     $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
                     while ($Cg = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");

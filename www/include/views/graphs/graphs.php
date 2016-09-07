@@ -122,7 +122,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxGraphPerform
 $data = $DBRESULT->fetchRow();
 $graphsPerPage = $data['value'];
 if (empty($graphsPerPage)) {
-    $graphsPerPage = '5';
+    $graphsPerPage = '18';
 }
 
 if (isset($id_svc) && $id_svc) {
@@ -263,6 +263,7 @@ $form->accept($renderer);
 
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('periodORlabel', _("or"));
+$tpl->assign('nbDisplayedCharts', $graphsPerPage);
 $tpl->assign('from', _("From"));
 $tpl->assign('to', _("to"));
 $tpl->assign('displayStatus', _("Display Status"));
