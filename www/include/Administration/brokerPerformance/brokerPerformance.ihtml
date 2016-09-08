@@ -18,7 +18,7 @@
     {foreach from=$perf_info_array item=perf_info key=conf_name}
     <tr>
         <td class='list_lvl_1' colspan='2'>
-            {$conf_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}:&nbsp;{$perf_info.lastmodif}</span>
+            <p>{$conf_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}:&nbsp;{$perf_info.lastmodif}</span></p>
         </td>
     </tr>
     <tr>
@@ -29,20 +29,20 @@
             <p class="title">{$lang.modules}</p>
             <ul class="module_list">
             {foreach from=$perf_info.modules key=m_name item=m_status}
-                <li><span class="module_name">{$m_name}</span><span class="module_status {$m_status}">{$lang[$m_status]}</span></li>
+                <li><span class="module_name">{$m_name}</span><span class="module_status {$m_status}">{$m_status}</span></li>
             {/foreach}
             </ul>
         </td>
         <td style="vertical-align: top;">
         {foreach from=$perf_info.io key=io_name item=io_infos}
             <div class="broker_stats {$io_infos.class}">
-                <p class="title">{$io_name} - {$lang[$io_infos.type]}<span class="expand" onclick="toggleInfoBlock('{$io_name}')">[ + ]</span></p>
+                <p class="title" onclick="toggleInfoBlock('{$io_name}')"><span class="expand" >+</span>{$io_name} - {$lang[$io_infos.type]}</p>
                 <div class="informations_header" id="{$io_name}">
                     {foreach from=$io_infos key=info_key item=info_value}
                         {if $info_key != 'state' && $info_key != 'type' && $info_key != 'peers' && $info_key != 'filters' && $info_key != 'class'}
                         <div class="informations">
-                            <span class="info_name">{if $lang[$info_key]}{$lang[$info_key]}{else}{$info_key}{/if}</span>
-                            <span>{$info_value}</span>
+                            <p class="info_name">{if $lang[$info_key]}{$lang[$info_key]}{else}{$info_key}{/if}</p>
+                            <p class="info_value">{$info_value}</p>
                         </div>
                         {/if}
                     {/foreach}
@@ -59,13 +59,11 @@
                     {if count($io_infos.filters)}
                     <div class="informations">
                         <span class="info_name">{$lang.filters}</span>
-                        <span>
-                            <ul class="filters" id="filters_{$io_name}">
+                        <p class="info_name" id="filters_{$io_name}">
                             {foreach from=$io_infos.filters item=filter}
                                 <li>{$filter}</li>
                             {/foreach}
-                            </ul>
-                        </span>
+                        </p>
                     </div>
                     {/if}
                 </div>
@@ -103,7 +101,7 @@
                 var peer = idp.indexOf('peers_');
 
                 if(peer !== -1) {
-                    jQuery('div.informations_header#' + id).hide(); console.log(jQuery('.informations_header#' + id));
+                    jQuery('div.informations_header#' + id).hide();
                 }
             }
         }

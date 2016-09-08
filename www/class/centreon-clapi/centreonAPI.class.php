@@ -239,9 +239,9 @@ class CentreonAPI
             'class' => 'Instance',
             'export' => true
         );
-        $this->relationObject["NAGIOSCFG"] = array(
+        $this->relationObject["ENGINECFG"] = array(
             'module' => 'core',
-            'class' => 'NagiosCfg',
+            'class' => 'EngineCfg',
             'export' => true
         );
         $this->relationObject["CENTBROKERCFG"] = array(

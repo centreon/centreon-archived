@@ -454,6 +454,23 @@ jQuery(function () {
   });
   
   /* Initialize the select chart */
+  
+  /* Define general options for select-chart */
+  var minimumInputLength = 3;
+  var selectChartOptions = {
+    select2: {
+      ajax: {
+        url: './include/common/webServices/rest/internal.php?object=centreon_performance_service&action=list'
+      },
+      minimumInputLength: minimumInputLength
+    },
+    additionnalFilters: {
+      host: '#host_filter',
+      hostgroup: '#host_group_filter',
+      servicegroup: '#service_group_filter'
+    }
+  };
+  
   jQuery('#service_group_filter').centreonSelect2({
     select2: {
       ajax: {
@@ -487,18 +504,26 @@ jQuery(function () {
     }
   });
   
-  jQuery('#select-chart').centreonSelect2({
-    select2: {
-      ajax: {
-        url: './include/common/webServices/rest/internal.php?object=centreon_performance_service&action=list'
-      }
-    },
-    additionnalFilters: {
-      host: '#host_filter',
-      hostgroup: '#host_group_filter',
-      servicegroup: '#service_group_filter'
+  jQuery('#select-chart').centreonSelect2(selectChartOptions);
+  
+  /* Add event for change minimumInputLength */
+  function changeSelectChart() {
+    var newOptions = selectChartOptions;
+    var newInputLength = 3;
+    
+    if (jQuery('#host_group_filter').val() !== null
+      || jQuery('#service_group_filter').val() !== null
+      || jQuery('#host_filter').val() !== null) {
+      newInputLength = 0;
     }
-  });
+    
+    if (newInputLength !== minimumInputLength) {
+      minimumInputLength = newInputLength;
+      jQuery('#select-chart').centreonSelect2('updateSettings', {
+        minimumInputLength: newInputLength
+      });
+    }
+  }
   
   /* Active drag and drop */
   jQuery('.graphZone').sortable({

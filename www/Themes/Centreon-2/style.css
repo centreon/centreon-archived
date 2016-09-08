@@ -2321,6 +2321,10 @@ textarea.default-textarea {
     float: right;
 }
 
+ul.module_list {
+    min-width: 122px;
+}
+
 .broker_stats .informations_header {
     position: relative;
     height: auto;
@@ -2336,6 +2340,14 @@ textarea.default-textarea {
 
 .broker_stats {
     margin-bottom: 5px;
+}
+
+.broker_stats.stats_lv2 {
+    margin: 5px 36px;
+}
+
+.broker_stats.stats_lv2 p.title {
+    background-color: #e7e7e8;
 }
 
 .broker_stats .expand {
@@ -2377,8 +2389,13 @@ textarea.default-textarea {
     width: 80%;
 }
 
-.broker_stats .module_status, .broker_stats .expand {
+.broker_stats .expand {
     float: left;
+    padding: 0 6px;
+}
+
+.broker_stats .module_status {
+    float: right;
     padding: 0 6px;
 }
 
