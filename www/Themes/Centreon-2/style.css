@@ -2314,3 +2314,92 @@ textarea.default-textarea {
   display: block;
 }
 
+/* broker_stat */
+
+.broker_stats_lastmodif {
+    position: relative;
+    float: right;
+}
+
+ul.module_list {
+    min-width: 122px;
+}
+
+.broker_stats .informations_header {
+    position: relative;
+    height: auto;
+    width: 100%;
+}
+
+.broker_stats .informations {
+    overflow: hidden;
+    display: block;
+    padding: 4px;
+    position: relative;
+}
+
+.broker_stats {
+    margin-bottom: 5px;
+}
+
+.broker_stats.stats_lv2 {
+    margin: 5px 36px;
+}
+
+.broker_stats.stats_lv2 p.title {
+    background-color: #e7e7e8;
+}
+
+.broker_stats .expand {
+    cursor: pointer;
+}
+
+.broker_stats p.title {
+    cursor: pointer;
+    padding: 6px;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #e7e7e8;
+    border-top: 1px solid #e7e7e8;
+}
+
+.broker_stats ul.module_list {
+    margin: 3px;
+}
+
+.broker_stats ul.peers {
+    margin-left: 153px;
+}
+
+.broker_stats ul.filters {
+    margin-left: 153px;
+}
+
+.broker_stats ul li {
+    list-style: none;
+}
+
+.broker_stats .info_name {
+    float: left;
+    color: #09225c;
+    font-weight: 600;
+}
+
+.broker_stats .info_value {
+    float: right;
+    width: 80%;
+}
+
+.broker_stats .expand {
+    float: left;
+    padding: 0 6px;
+}
+
+.broker_stats .module_status {
+    float: right;
+    padding: 0 6px;
+}
+
+.broker_stats .loaded {
+    color: #88b917;
+}
+

@@ -152,3 +152,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 
 -- Add index for better performance on ods_view_details #4670
 CREATE INDEX `contact_index` ON `ods_view_details` (`contact_id`, `index_id`) USING BTREE;
+
+-- Replace Generate in breadcrumb by Export configuration
+UPDATE topology SET topology_name = 'Export configuration' WHERE topology_page = 60902;
