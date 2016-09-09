@@ -203,9 +203,9 @@ class CentreonAuth {
         if ($this->passwdOk == 2) {
             if ($this->autologin && $this->userInfos["contact_autologin_key"] && $this->userInfos["contact_autologin_key"] == $token) {
                 $this->passwdOk = 1;
-            } elseif (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
+            } elseif (!empty($password) && isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
                 $this->passwdOk = 1;
-            } elseif (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
+            } elseif (!empty($password) && isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
