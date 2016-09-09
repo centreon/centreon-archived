@@ -204,14 +204,16 @@
                                     <h4>{$serv_shortcut}</h4>
                                 </td>
                             </tr>
+                            {if $lcaTopo.201 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.201 || $admin == 1}
                                         <a href='./main.php?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
-                                    {/if}
+
                                 </td>
                                 <td></td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.6 || $lcaTopo.602 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
                                     {if $lcaTopo.6 || $admin == 1}
@@ -224,18 +226,18 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.20301 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.20301 || $admin == 1}
                                         <a href='./main.php?p=20301&h={$h.host_id}'>{$lnk_host_logs}</a>
-                                    {/if}
                                 </td>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.20301 || $admin == 1}
                                         <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
-                                    {/if}
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.307 || $lcaTopo.30702 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
                                     {if $lcaTopo.307 || $admin == 1}
@@ -249,34 +251,37 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.4 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.4 || $admin == 1}
                                         <a href='./main.php?p=20401&mode=0&svc_id={$h.host_name}'>{$lnk_host_graphs}</a>
-                                    {/if}
                                 </td>
                                 <td></td>
                             </tr>
+                            {/if}
                             {else}
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader" style="border-bottom:1px solid #d1d2d4;">
                                     <h4>{$serv_shortcut}</h4>
                                 </td>
                             </tr>
+                            {if $lcaTopo.60204 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.60204 || $admin == 1}
                                         <a href='./main.php?p=60204&o=c&meta_id={$meta_id}&o=c'>{$lnk_serv_config}</a>
-                                    {/if}
+
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.20301 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.20301 || $admin == 1}
                                         <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
-                                    {/if}
+
                                 </td>
                             </tr>
+                            {/if}
                             {/if}
                         </table>
                     </td>
