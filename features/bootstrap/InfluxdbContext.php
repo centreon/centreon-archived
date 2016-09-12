@@ -24,6 +24,7 @@ class InfluxdbContext extends CentreonContext
     {
         $this->launchCentreonWebContainer('web_influxdb');
         $this->iAmLoggedIn();
+        $this->container->execute('influx -execute "create database metrics"', 'influxdb');
     }
   
     /**
@@ -39,14 +40,31 @@ class InfluxdbContext extends CentreonContext
       sleep(5);
       $this->assertFind('named', array('id', 'output[4][name]'))->setValue('TestInfluxdb');
       $this->assertFind('named', array('id', 'output[4][db_host]'))->setValue('influxdb');
+      $this->assertFind('css', 'input[name="output[4][db_port]"]')->setValue('8086');
       $this->assertFind('named', array('id', 'output[4][db_user]'))->setValue('root');
       $this->assertFind('named', array('id', 'output[4][db_name]'))->setValue('metrics');
       $this->assertFind('named', array('id', 'output[4][metrics_timeseries]'))->setValue('metric.$HOST$.$SERVICE$');
       $this->assertFind('named', array('id', 'output[4][status_timeseries]'))->setValue('status.$HOST$.$SERVICE$');
-      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
-      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
-      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
-      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+
+
+      // Metrics columns
+      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)')->setValue('true');
+      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$METRICID$');
+      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('metric_id');
+      $this->assertFind('named', array('id', 'metrics_column___4_add'))->click();
+      sleep(1);
+      $this->assertFind('css', '#metrics_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+      $this->assertFind('css', '#metrics_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+      
+      // Status columns
+      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)')->setValue('true');
+      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$INDEXID$');
+      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('index_id');
+      $this->assertFind('named', array('id', 'status_column___4_add'))->click();
+      sleep(1);
+      $this->assertFind('css', '#status_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+      $this->assertFind('css', '#status_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
+
       $this->assertFind('css', '#validForm > p:nth-child(1) > input:nth-child(1)')->click();
     }
 
