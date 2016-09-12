@@ -18,5 +18,9 @@
 }
 
 .enable_chart {
-  display: none
+    position: absolute;
+    top: 48%;
+    left: 48%;
+    z-index: 10;
+    display: none;
 }
