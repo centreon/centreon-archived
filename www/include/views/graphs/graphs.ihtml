@@ -525,6 +525,10 @@ jQuery(function () {
     }
   }
   
+  jQuery('#host_group_filter').on('change', changeSelectChart);
+  jQuery('#service_group_filter').on('change', changeSelectChart);
+  jQuery('#host_filter').on('change', changeSelectChart);
+  
   /* Active drag and drop */
   jQuery('.graphZone').sortable({
     handle: '.title',
