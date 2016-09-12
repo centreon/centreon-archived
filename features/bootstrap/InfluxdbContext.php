@@ -38,7 +38,9 @@ class InfluxdbContext extends CentreonContext
       $this->assertFind('css', 'a#add_output')->click();
       sleep(5);
       $this->assertFind('named', array('id', 'output[4][name]'))->setValue('TestInfluxdb');
-      $this->assertFind('named', array('id', 'output[4][db_host]'))->setValue('127.0.0.1');
+      $this->assertFind('named', array('id', 'output[4][db_host]'))->setValue('influxdb');
+      $this->assertFind('named', array('id', 'output[4][db_user]'))->setValue('root');
+      $this->assertFind('named', array('id', 'output[4][db_name]'))->setValue('metrics');
       $this->assertFind('named', array('id', 'output[4][metrics_timeseries]'))->setValue('metric.$HOST$.$SERVICE$');
       $this->assertFind('named', array('id', 'output[4][status_timeseries]'))->setValue('status.$HOST$.$SERVICE$');
       $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('test');
@@ -56,6 +58,10 @@ class InfluxdbContext extends CentreonContext
       $hostProperties = array(
         'name' => $this->hostName,
         'alias' => $this->hostName,
+        'address' => 'localhost',
+        'max_check_attempts' => 1,
+        'normal_check_interval' => 1,
+        'retry_check_interval' => 1,
         'active_checks_enabled' => "0",
         'passive_checks_enabled' => "1"
       );
@@ -66,6 +72,9 @@ class InfluxdbContext extends CentreonContext
       $serviceProperties = array(
         'description' => $this->serviceName,
         'hosts' => $this->hostName,
+        'templates' => 'generic-service',
+        'check_command' => 'check_centreon_dummy',
+        'check_period' => '24x7',
         'active_checks_enabled' => "0",
         'passive_checks_enabled' => "1"
       );
@@ -86,6 +95,7 @@ class InfluxdbContext extends CentreonContext
      */
     public function whenNewMetricDataIsDiscoveredByTheEngine()
     {
+      sleep(5);
       $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', '', 'test=1s;5;10;0;10');
       sleep(5);
     }
