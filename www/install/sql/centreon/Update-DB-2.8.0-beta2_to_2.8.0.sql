@@ -32,7 +32,8 @@ WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influ
 AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_port' LIMIT 1);
 
 UPDATE cb_type_field_relation
-SET order_display = 4
+SET order_display = 4,
+is_required = 1
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
 AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_user' LIMIT 1);
 
@@ -41,21 +42,19 @@ SET order_display = 5
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
 AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_password' LIMIT 1);
 
-UPDATE cb_type_field_relation
-SET order_display = 6
-WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
-AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'metrics_timeseries' LIMIT 1);
+INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, cb_fieldset_id, is_required, order_display)
+VALUES (
+    (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1),
+    (SELECT cb_field_id FROM cb_field WHERE fieldname = 'db_name' LIMIT 1),
+    NULL,
+    1,
+    6
+);
 
 UPDATE cb_type_field_relation
 SET order_display = 7
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
-AND cb_field_id = (
-    SELECT cbf.cb_field_id
-    FROM cb_field cbf, cb_fieldgroup cbfg
-    WHERE cbf.fieldname = 'name'
-    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
-    AND cbfg.groupname = 'metrics_column' LIMIT 1
-    );
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'metrics_timeseries' LIMIT 1);
 
 UPDATE cb_type_field_relation
 SET order_display = 8
@@ -63,7 +62,7 @@ WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influ
 AND cb_field_id = (
     SELECT cbf.cb_field_id
     FROM cb_field cbf, cb_fieldgroup cbfg
-    WHERE cbf.fieldname = 'value'
+    WHERE cbf.fieldname = 'name'
     AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
     AND cbfg.groupname = 'metrics_column' LIMIT 1
     );
@@ -74,7 +73,7 @@ WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influ
 AND cb_field_id = (
     SELECT cbf.cb_field_id
     FROM cb_field cbf, cb_fieldgroup cbfg
-    WHERE cbf.fieldname = 'type'
+    WHERE cbf.fieldname = 'value'
     AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
     AND cbfg.groupname = 'metrics_column' LIMIT 1
     );
@@ -85,7 +84,7 @@ WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influ
 AND cb_field_id = (
     SELECT cbf.cb_field_id
     FROM cb_field cbf, cb_fieldgroup cbfg
-    WHERE cbf.fieldname = 'is_tag'
+    WHERE cbf.fieldname = 'type'
     AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
     AND cbfg.groupname = 'metrics_column' LIMIT 1
     );
@@ -93,10 +92,21 @@ AND cb_field_id = (
 UPDATE cb_type_field_relation
 SET order_display = 11
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
-AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'status_timeseries' LIMIT 1);
+AND cb_field_id = (
+    SELECT cbf.cb_field_id
+    FROM cb_field cbf, cb_fieldgroup cbfg
+    WHERE cbf.fieldname = 'is_tag'
+    AND cbf.cb_fieldgroup_id = cbfg.cb_fieldgroup_id
+    AND cbfg.groupname = 'metrics_column' LIMIT 1
+    );
 
 UPDATE cb_type_field_relation
 SET order_display = 12
+WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
+AND cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldname = 'status_timeseries' LIMIT 1);
+
+UPDATE cb_type_field_relation
+SET order_display = 13
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
 AND cb_field_id = (
     SELECT cbf.cb_field_id
@@ -107,7 +117,7 @@ AND cb_field_id = (
     );
 
 UPDATE cb_type_field_relation
-SET order_display = 13
+SET order_display = 14
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
 AND cb_field_id = (
     SELECT cbf.cb_field_id
@@ -118,7 +128,7 @@ AND cb_field_id = (
     );
 
 UPDATE cb_type_field_relation
-SET order_display = 14
+SET order_display = 15
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
 AND cb_field_id = (
     SELECT cbf.cb_field_id
@@ -129,7 +139,7 @@ AND cb_field_id = (
     );
 
 UPDATE cb_type_field_relation
-SET order_display = 15
+SET order_display = 16
 WHERE cb_type_id = (SELECT cb_type_id FROM cb_type WHERE type_shortname = 'influxdb' LIMIT 1)
 AND cb_field_id = (
     SELECT cbf.cb_field_id
