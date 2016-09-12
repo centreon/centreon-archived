@@ -16,6 +16,7 @@
  */
 
 require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
+require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 /**
  * Utils class for call HTTP JSON REST
@@ -30,15 +31,34 @@ class CentreonRestHttp
      * @var The content type : default application/json
      */
     private $contentType = 'application/json';
+
+    /**
+     * @var logFileThe The log file for call errors
+     */
+    private $logObj = null;
     
     /**
      * Constructor
      *
      * @param string $contentType The content type
      */
-    public function __contruct($contentType = 'application/json')
+    public function __construct($contentType = 'application/json', $logFile = null)
     {
         $this->contentType = $contentType;
+        if (!is_null($logFile)) {
+            $this->logObj = new CentreonLog(array(4 => $logFile));
+        }
+    }
+
+    private function insertLog($output, $url, $type = 'RestInternalServerErrorException')
+    {
+        if (is_null($this->logObj)) {
+            return;
+        }
+
+        $logOutput = '[' . $type . '] ' . $url . ' : ' . $output;
+
+        $this->logObj->insertLog(4, $logOutput);
     }
     
     /**
@@ -86,6 +106,7 @@ class CentreonRestHttp
         
         /* Manage HTTP status code */
         $exceptionClass = null;
+        $logMessage = 'Unknown HTTP error';
         switch ($headers['code']) {
             case 400:
                 $exceptionClass = 'RestBadRequestException';
@@ -98,6 +119,7 @@ class CentreonRestHttp
                 break;
             case 404:
                 $exceptionClass = 'RestNotFoundException';
+                $logMessage = 'Page not found';
                 break;
             case 405:
                 $exceptionClass = 'RestMethodNotAllowedException';
@@ -105,18 +127,18 @@ class CentreonRestHttp
             case 409:
                 $exceptionClass = 'RestConflictException';
                 break;
+            case 200:
+            case 201:
+                break;
             case 500:
+            default:
                 $exceptionClass = 'RestInternalServerErrorException';
                 break;
         }
         if (!is_null($exceptionClass)) {
-            if (isset($decodedContent['message'])) {
-                throw new $exceptionClass($decodedContent['message']);
-            }
-            throw new $exceptionClass();
-        }
-        if ($headers['code'] != 200 && $headers['code'] != 201) {
-            throw new RestInternalServerErrorException('Unknown HTTP error');
+            $message = isset($decodedContent['message']) ? $decodedContent['message'] : $logMessage;
+            $this->insertLog($message, $url, $exceptionClass);
+            throw new $exceptionClass($message);
         }
         
         /* Return the content */

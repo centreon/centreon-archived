@@ -134,7 +134,7 @@ class CentreonLog
      * Constructor
      */
 
-    public function __construct()
+    public function __construct($customLogs = array())
     {
         $this->errorType = array();
 
@@ -146,6 +146,13 @@ class CentreonLog
         $this->errorType[1] = $this->path . "/login.log";
         $this->errorType[2] = $this->path . "/sql-error.log";
         $this->errorType[3] = $this->path . "/ldap.log";
+
+        foreach ($customLogs as $key => $value) {
+            if (!preg_match('@' . $this->path . '@', $value)) {
+                $value = $this->path . '/' . $value;
+            }
+            $this->errorType[$key] = $value;
+        }
     }
 
     /*

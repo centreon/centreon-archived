@@ -5,8 +5,8 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\HostTemplateEditPage;
-use Centreon\Test\Behat\HostTemplateListPage;
+use Centreon\Test\Behat\HostTemplateConfigurationPage;
+use Centreon\Test\Behat\HostTemplateConfigurationListingPage;
 
 
 class DisableFieldsOnBlockedObjectsContext extends CentreonContext
@@ -17,7 +17,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
      */
     public function aBlockedObjectTemplate()
     {
-        $newHostTemplate = new HostTemplateEditPage($this);
+        $newHostTemplate = new HostTemplateConfigurationPage($this);
         $newHostTemplate->setProperties(array(
             'name' => 'myHostTemplate',
             'alias' => 'myAlias',
@@ -30,8 +30,9 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         $centreonDb = $this->getCentreonDatabase();
         $centreonDb->query("UPDATE host SET host_locked = 1 WHERE host_name = 'myHostTemplate'");
 
-        $hostTemplate = new HostTemplateListPage($this);
-        $hostTemplate = $hostTemplate->getTemplate('myHostTemplate');
+        $hostTemplate = new HostTemplateConfigurationListingPage($this);
+        $hostTemplate = $hostTemplate->getEntries();
+        $hostTemplate = $hostTemplate['myHostTemplate'];
 
         if (!$hostTemplate['locked']) {
             throw new \Exception('the host template' . $hostTemplate . 'is not locked');
@@ -44,8 +45,8 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
     public function iOpenTheForm()
     {
 
-        $hostTemplate = new HostTemplateListPage($this);
-        $editHostTemplate = $hostTemplate->edit('myHostTemplate');
+        $hostTemplate = new HostTemplateConfigurationListingPage($this);
+        $editHostTemplate = $hostTemplate->inspect('myHostTemplate');
 
         return $editHostTemplate;
     }
