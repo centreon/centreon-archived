@@ -42,6 +42,7 @@ require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__)."/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 
 if (file_exists(realpath(dirname(__FILE__)."/../centreonSession.class.php"))) {
     require_once realpath(dirname(__FILE__)."/../centreonSession.class.php");
@@ -59,6 +60,8 @@ require_once "centreon.Config.Poller.class.php";
  *
  */
 class CentreonAPI {
+
+    private static $_instance = null;
 
     public $dateStart;
     public $login;
@@ -233,11 +236,6 @@ class CentreonAPI {
             'export' => true
         );
 
-        $this->relationObject["TIMEPERIOD"] = array(
-            'module' => 'core',
-            'class' => 'TimePeriod',
-            'export' => false
-        );
         $this->relationObject["TP"] = array(
             'module' => 'core',
             'class' => 'TimePeriod',
@@ -345,6 +343,19 @@ class CentreonAPI {
         $this->optGen = $this->getOptGen();
         $version = $this->optGen["version"];
         $this->delim = ";";
+    }
+
+    /**
+     *
+     * @param void
+     * @return CentreonApi
+     */
+    public static function getInstance($user=null, $password=null, $action=null, $centreon_path=null, $options=null) {
+        if(is_null(self::$_instance)) {
+            self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
+        }
+
+        return self::$_instance;
     }
 
     /**
@@ -706,6 +717,33 @@ class CentreonAPI {
     }
 
     /**
+     * Export from a specific object
+     */
+    public function export_filter($action, $filter_id, $filter_name)
+    {
+        $exported = CentreonExported::getInstance();
+
+        if (is_null($action)) {
+            return 0;
+        }
+
+        if (!isset($this->objectTable[$action])) {
+            print "Unknown object : $action\n";
+            $this->setReturnCode(1);
+            $this->close();
+        }
+
+        $exported->ariane_push($action, $filter_id, $filter_name);
+        if ($exported->is_exported($action, $filter_id, $filter_name)) {
+            $exported->ariane_pop();
+            return 0;
+        }
+
+        $this->objectTable[$action]->export($filter_id, $filter_name);
+        $exported->ariane_pop();
+    }
+
+    /**
      * Export All configuration
      */
     public function export()
@@ -715,15 +753,34 @@ class CentreonAPI {
         $this->sortClassExport();
         
         $this->initAllObjects();
-        
-        // header
-        echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";        
-        if (count($this->aExport) > 0) {
-            foreach ($this->aExport as $oObjet) {
-                if (method_exists($this->objectTable[$oObjet], 'export')) {
-                    $this->objectTable[$oObjet]->export();
+
+        if (isset($this->options['select'])) {
+            CentreonExported::getInstance()->set_filter(1);
+            CentreonExported::getInstance()->set_options($this->options);
+            $selected = $this->options['select'];
+            if (!is_array($this->options['select'])) {
+                $selected = array($this->options['select']);
+            }
+            foreach ($selected as $select) {
+                $splits = explode(';', $select);
+                if (!isset($this->objectTable[$splits[0]])) {
+                    print "Unknown object : $splits[0]\n";
+                    $this->setReturnCode(1);
+                    $this->close();
+                 }
+                $this->export_filter($splits[0], $this->objectTable[$splits[0]]->getObjectId($splits[1]), $splits[1]);
+            }
+            # Don't want return \n
+            exit($this->return_code);
+        } else {
+            // header
+            echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
+            if (count($this->aExport) > 0) {
+                foreach ($this->aExport as $oObjet) {
+                    if (method_exists($this->objectTable[$oObjet], 'export')) {
+                        $this->objectTable[$oObjet]->export();
+                    }
                 }
-                
             }
         }
     }

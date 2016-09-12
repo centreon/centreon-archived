@@ -37,6 +37,7 @@
 
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once _CLAPI_LIB_."/Centreon/Object/Contact/Contact.php";
+require_once "centreonAPI.class.php";
 require_once "centreonClapiException.class.php";
 
 abstract class CentreonObject
@@ -51,6 +52,8 @@ abstract class CentreonObject
     const UNKNOWNPARAMETER = "Unknown parameter";
     const OBJECTALREADYLINKED = "Objects already linked";
     const OBJECTNOTLINKED = "Objects are not linked";
+
+    private $centreon_api = null;
 
     /**
      * Db adapter
@@ -123,6 +126,7 @@ abstract class CentreonObject
         $this->exportExcludedParams = array();
         $this->action = "";
         $this->delim = ";";
+        $this->api = CentreonAPI::getInstance();
     }
 
     /**
@@ -338,26 +342,26 @@ abstract class CentreonObject
 	 * @param string $parameters
 	 * @return void
 	 */
-	public function export()
+	public function export($filters=null)
 	{
-            $elements = $this->object->getList("*", -1, 0);
-            foreach ($elements as $element) {
-                $addStr = $this->action.$this->delim."ADD";
-                foreach ($this->insertParams as $param) {
-                    $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
-                    $addStr .= $this->delim.$element[$param];
-                }
-                $addStr .= "\n";
-                echo $addStr;
-                foreach ($element as $parameter => $value) {
-                    if (!in_array($parameter, $this->exportExcludedParams)) {
-                        if (!is_null($value) && $value != "") {
-                            $value = CentreonUtils::convertLineBreak($value);
-                            echo $this->action.$this->delim."setparam".$this->delim.$element[$this->object->getUniqueLabelField()].$this->delim.$parameter.$this->delim.$value."\n";
-                        }
-                    }
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        foreach ($elements as $element) {
+            $addStr = $this->action.$this->delim."ADD";
+            foreach ($this->insertParams as $param) {
+                $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
+                $addStr .= $this->delim.$element[$param];
+            }
+            $addStr .= "\n";
+            echo $addStr;
+            foreach ($element as $parameter => $value) {
+                if (!in_array($parameter, $this->exportExcludedParams)) {
+                    if (!is_null($value) && $value != "") {
+                        $value = CentreonUtils::convertLineBreak($value);
+                        echo $this->action.$this->delim."setparam".$this->delim.$element[$this->object->getUniqueLabelField()].$this->delim.$parameter.$this->delim.$value."\n";
+                     }
                 }
             }
+        }
     }
 
     /**

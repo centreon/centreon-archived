@@ -200,11 +200,15 @@ class CentreonContactGroup extends CentreonObject {
      *
      * @return void
      */
-    public function export() {
-        parent::export();
+    public function export($filter_id=null, $filter_name=null) {
+        $filters = null;
+        if (!is_null($filter)) {
+            $filters['cg_id'] = $filter_id;
+        }
         $obj = new Centreon_Object_Relation_Contact_Group_Contact();
-        $elements = $obj->getMergedParameters(array("cg_name"), array("contact_alias"), -1, 0, "cg_name");
+        $elements = $obj->getMergedParameters(array("cg_name"), array("contact_name", "contact_id"), -1, 0, "cg_name");
         foreach ($elements as $element) {
+            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
             echo $this->action . $this->delim . "addcontact" . $this->delim . $element['cg_name'] . $this->delim . $element['contact_alias'] . "\n";
         }
     }

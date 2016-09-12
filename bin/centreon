@@ -67,7 +67,14 @@ $shortopts .= "a:"; /* Action */
 $shortopts .= "i:"; /* Import Massive data */
 $shortopts .= "e"; /* Export all configuration */
 
-$options = getopt($shortopts);
+$longopts  = array(
+    "select:",
+    "filter-type:",
+    "filter-ariane:"
+);
+
+$options = getopt($shortopts, $longopts);
+
 if (isset($options['d'])) {
     $debug = 1;
 }
@@ -120,7 +127,13 @@ try {
  * Create Centreon API object
  */
 CentreonUtils::setUserName($options['u']);
-$api = new CentreonAPI((isset($options["u"]) ? $options["u"] : "") , (isset($options["p"]) ? $options["p"] : ""), (isset($options["a"]) ? $options["a"] : ""), $centreon_path, $options);
+$api = CentreonAPI::getInstance(
+    (isset($options["u"]) ? $options["u"] : "") ,
+    (isset($options["p"]) ? $options["p"] : ""),
+    (isset($options["a"]) ? $options["a"] : ""),
+    $centreon_path,
+    $options
+);
 
 if (isset($options["h"])) {
     $api->printHelp();

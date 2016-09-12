@@ -304,10 +304,14 @@ class CentreonTrap extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filter_id=null, $filter_name=null)
     {
-        $matchingObj = new Centreon_Object_Trap_Matching();
-        $elements = $this->object->getList("*", -1, 0);
+        $filters = null;
+        if (!is_null($filter_id)) {
+            $filters['traps_id'] = $filter_id;
+        }
+
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";
             foreach ($this->insertParams as $param) {
@@ -328,6 +332,7 @@ class CentreonTrap extends CentreonObject
                     }
                 }
             }
+            $matchingObj = new Centreon_Object_Trap_Matching();
             $matchingProps = $matchingObj->getList("*", -1, 0, null, null, array('trap_id' => $element['traps_id']));
             foreach ($matchingProps as $prop) {
                 echo $this->action.$this->delim.

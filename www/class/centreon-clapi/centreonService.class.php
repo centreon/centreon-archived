@@ -829,9 +829,13 @@ class CentreonService extends CentreonObject {
      *
      * @return void
      */
-    public function export() {
+    public function export($filter_id=null, $filter_name=null) {
+        $filters = array("service_register" => $this->register);
+        if (!is_null($filter_id)) {
+            $filters['service_id'] = $filter_id;
+        }
         $hostRel = new Centreon_Object_Relation_Host_Service();
-        $elements = $hostRel->getMergedParameters(array("host_name"), array('*'), -1, 0, null, null, array("service_register" => $this->register), "AND");
+        $elements = $hostRel->getMergedParameters(array("host_name", "host_id"), array('*'), -1, 0, null, null, $filters, "AND");
         $extendedObj = new Centreon_Object_Service_Extended();
         $commandObj = new Centreon_Object_Command();
         $tpObj = new Centreon_Object_Timeperiod();
@@ -841,9 +845,11 @@ class CentreonService extends CentreonObject {
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim;
                 if ($param == "service_template_model_stm_id") {
+                    $tmp_id = $element[$param];
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
+                        $this->api->export_filter('STPL', $tmp_id, $tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -855,19 +861,26 @@ class CentreonService extends CentreonObject {
             echo $addStr;
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
+                    $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
+                        $action_tmp = 'TP';
                         $tmpObj = $tpObj;
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
+                        $action_tmp = 'CMD';
                         $tmpObj = $commandObj;
                     }
                     if (isset($tmpObj)) {
                         $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
+                            $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
+                            $this->api->export_filter($action_tmp, $tmp_id, $value);
                         }
                         unset($tmpObj);
                     }
                     $value = CentreonUtils::convertLineBreak($value);
+                    # Host Filter
+                    $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
                     echo $this->action . $this->delim . "setparam" . $this->delim . $element['host_name'] . $this->delim . $element['service_description'] . $this->delim . $this->getClapiActionName($parameter) . $this->delim . $value . "\n";
                 }
             }
@@ -885,18 +898,21 @@ class CentreonService extends CentreonObject {
                 echo $this->action . $this->delim . "setmacro" . $this->delim . $element['host_name'] . $this->delim . $element['service_description'] . $this->delim . $this->stripMacro($macro['svc_macro_name']) . $this->delim . $macro['svc_macro_value'] . $this->delim . $macro['is_password'] . $this->delim . "'" .$macro['description'] ."'" . "\n";
             }
             $cgRel = new Centreon_Object_Relation_Contact_Group_Service();
-            $cgelements = $cgRel->getMergedParameters(array("cg_name"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
+            $cgelements = $cgRel->getMergedParameters(array("cg_name", "cg_id"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
             foreach ($cgelements as $cgelement) {
+                $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
                 echo $this->action . $this->delim . "addcontactgroup" . $this->delim . $element['host_name'] . $this->delim . $cgelement['service_description'] . $this->delim . $cgelement['cg_name'] . "\n";
             }
             $contactRel = new Centreon_Object_Relation_Contact_Service();
-            $celements = $contactRel->getMergedParameters(array("contact_alias"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
+            $celements = $contactRel->getMergedParameters(array("contact_name", "contact_id"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service_id" => $element['service_id']), "AND");
             foreach ($celements as $celement) {
+                $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
                 echo $this->action . $this->delim . "addcontact" . $this->delim . $element['host_name'] . $this->delim . $celement['service_description'] . $this->delim . $celement['contact_alias'] . "\n";
             }
             $trapRel = new Centreon_Object_Relation_Trap_Service();
-            $telements = $trapRel->getMergedParameters(array("traps_name"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service.service_id" => $element['service_id']), "AND");
+            $telements = $trapRel->getMergedParameters(array("traps_name", "traps_id"), array('service_description'), -1, 0, null, null, array("service_register" => $this->register, "service.service_id" => $element['service_id']), "AND");
             foreach ($telements as $telement) {
+                $this->api->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
                 echo $this->action . $this->delim . "addtrap" . $this->delim . $element['host_name'] . $this->delim . $telement['service_description'] . $this->delim . $telement['traps_name'] . "\n";
             }
         }
