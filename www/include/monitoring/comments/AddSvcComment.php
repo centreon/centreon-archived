@@ -76,7 +76,7 @@ if ($centreon->user->access->checkAction("service_comment")) {
 	 * Database retrieve information for differents
 	 * elements list we need on the page
 	 */
-    $query = "SELECT host_id, host_name FROM `host` WHERE host_register = '1' " . $centreon->user->access->queryBuilder("AND", "host_id", $hostStr) . "ORDER BY host_name";
+    $query = "SELECT host_id, host_name FROM `host` WHERE (host_register = '1'  OR host_register = '2' )" . $centreon->user->access->queryBuilder("AND", "host_id", $hostStr) . "ORDER BY host_name";
     $DBRESULT = $pearDB->query($query);
     $hosts = array(null => null);
     while ($row = $DBRESULT->fetchRow()) {
@@ -110,11 +110,15 @@ if ($centreon->user->access->checkAction("service_comment")) {
         $form->addElement('hidden', 'host_id', $host_id);
         $form->addElement('hidden', 'service_id', $service_id);
     } else {
-        $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" => "this.form.submit();"));
-        $form->addRule('host_id', _("Required Field"), 'required');
+        $disabled = " ";
+        $attrServices = array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_service&action=list&e=enable',
+            'multiple' => true,
+            'linkedObject' => 'centreonService'
+        );
+        $form->addElement('select2', 'service_id', _("Services"), array($disabled), $attrServices);
 
-        $form->addElement('select', 'service_id', _("Service"), $services);
-        $form->addRule('service_id', _("Required Field"), 'required');
     }
 
     $persistant = $form->addElement('checkbox', 'persistant', _("Persistent"));
@@ -122,7 +126,6 @@ if ($centreon->user->access->checkAction("service_comment")) {
 
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
     $form->addRule('comment', _("Required Field"), 'required');
-
 
     $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -135,7 +138,23 @@ if ($centreon->user->access->checkAction("service_comment")) {
         if (!isset($_POST["comment"])) {
             $_POST["comment"] = 0;
         }
-        AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
+
+        //global services comment
+        if(!isset($_POST["host_id"])):
+            foreach ($_POST["service_id"] as $value) {
+                $info = split('-', $value);
+                AddSvcComment(
+                    $info[0],
+                    $info[1],
+                    $_POST["comment"],
+                    $_POST["persistant"]
+                );
+            }
+        else:
+        //specific service comment
+            AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
+        endif;
+
         $valid = true;
         require_once($path."listComment.php");
     } else {
