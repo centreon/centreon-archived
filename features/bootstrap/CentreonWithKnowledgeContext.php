@@ -1,7 +1,6 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\HostConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
 
@@ -10,12 +9,9 @@ use Centreon\Test\Behat\ServiceConfigurationPage;
  */
 class CentreonWithKnowledgeContext extends CentreonContext
 {
-    private $pollers_page;
-
     public function __construct()
     {
         parent::__construct();
-        $this->pollers_page = new ConfigurationPollersPage($this);
         $this->hostName = 'MediawikiHost';
         $this->serviceHostName = 'Centreon-Server';
         $this->serviceName = 'MediawikiService';
@@ -52,7 +48,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
             'active_checks_enabled' => 0,
             'passive_checks_enabled' => 1));
         $hostPage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
@@ -74,7 +70,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
             'active_checks_enabled' => 0,
             'passive_checks_enabled' => 1));
         $servicePage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
@@ -105,7 +101,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
         sleep(2);
         /* Apply config */
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
@@ -136,7 +132,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
         sleep(2);
         /* Apply config */
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 

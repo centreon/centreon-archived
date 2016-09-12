@@ -4,7 +4,6 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\MetaServiceConfigurationPage;
 
 /**
@@ -33,7 +32,7 @@ class MetaServicesApiContext extends CentreonContext
             'normal_check_interval' => 1,
             'retry_check_interval' => 1));
         $metaservicePage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
