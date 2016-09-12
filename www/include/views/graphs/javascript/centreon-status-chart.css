@@ -16,3 +16,7 @@
   padding: 3px;
   font-size: 10px;
 }
+
+.enable_chart {
+  display: none
+}
