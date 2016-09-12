@@ -156,7 +156,7 @@
         };
       }
       
-      if (data.data.length > 5) {
+      if (data.data.length > 15) {
           datasToAppend = {
             x: parsedData.data.x,
             columns: [],
