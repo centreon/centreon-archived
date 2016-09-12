@@ -200,10 +200,11 @@ while ($data = $DBRESULT->fetchRow()) {
         $status = 2;
         $pollerInError = $data["name"];
     }
-    if ($pollerListInError != "") {
+    if ($pollerListInError != "" && $pollerInError != "") {
         $pollerListInError .= ", ";
     }
     $pollerListInError .= $pollerInError;
+    $pollerInError = '';
     
     /*
 	 * Activity
