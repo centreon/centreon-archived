@@ -151,7 +151,7 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
     $tab_comments_svc[$i]['data'] = htmlentities($tab_comments_svc[$i]['data']);
     if ($data['service_description'] != '') {
-        $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description']);
+        $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description'], ENT_QUOTES, 'UTF-8');
         $tab_comments_svc[$i]['comment_type'] = 'SVC';
     } else {
         $tab_comments_svc[$i]['service_description'] = '-';

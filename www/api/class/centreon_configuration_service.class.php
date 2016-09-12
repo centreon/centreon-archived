@@ -70,7 +70,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $isAdmin = $centreon->user->admin;
         $aclServices = '';
         $aclMetaServices = '';
-        
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
@@ -84,7 +84,14 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-        
+
+        // Check for service enable
+        if (false === isset($this->arguments['e'])) {
+            $e = '';
+        } else {
+            $e = $this->arguments['e'];
+        }
+
         // Check for service type
         if (false === isset($this->arguments['t'])) {
             $t = 'host';
@@ -121,7 +128,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         switch ($t) {
             default:
             case 'host':
-                $serviceList = $this->getServicesByHost($q, $aclServices, $range, $g, $aclMetaServices, $s);
+                $serviceList = $this->getServicesByHost($q, $aclServices, $range, $g, $aclMetaServices, $s, $e);
                 break;
             case 'hostgroup':
                 $serviceList = $this->getServicesByHostgroup($q, $aclServices, $range);
@@ -137,8 +144,19 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      * @param type $q
      * @param type $aclServices
      */
-    private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false, $aclMetaServices, $s)
+    private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false, $aclMetaServices, $s, $e)
     {
+
+        if( $e == 'enable'):
+            $enableQuery = 'AND s.service_activate = \'1\' AND h.host_activate = \'1\' ';
+            $enableQueryMeta = 'AND ms.service_activate = \'1\' AND mh.host_activate = \'1\' ';
+        elseif( $e == 'disable'):
+            $enableQuery = 'AND ( s.service_activate = \'0\' OR h.host_activate = \'0\' ) ';
+            $enableQueryMeta = 'AND ( ms.service_activate = \'0\' OR mh.host_activate = \'0\') ';
+        else:
+            $enableQuery = '';
+            $enableQueryMeta = '';
+        endif;
 
         switch ($s) {
             case 'all':
@@ -151,6 +169,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . "AND h.host_register = '1' "
                     . "AND s.service_register = '1' "
                     . "AND (s.service_description LIKE '%$q%' OR h.host_name LIKE '%$q%') "
+                    . $enableQuery
                     . $aclServices
                     . ") 
                 UNION ALL ( "
@@ -160,6 +179,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . "AND mh.host_register = '2' "
                     . "AND ms.service_register = '2' "
                     . "AND (ms.display_name LIKE '%$q%') "
+                    . $enableQueryMeta
                     . $aclMetaServices
                     .") 
                  )  as t_union "
@@ -174,6 +194,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . "AND h.host_register = '1' "
                     . "AND s.service_register = '1' "
                     . "AND (s.service_description LIKE '%$q%' OR h.host_name LIKE '%$q%') "
+                    . $enableQuery
                     . $aclServices
                     . "ORDER BY h.host_name, s.service_description "
                     . $range;
@@ -185,6 +206,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . "AND mh.host_register = '2' "
                     . "AND ms.service_register = '2' "
                     . "AND (ms.display_name LIKE '%$q%') "
+                    . $enableQueryMeta
                     . $aclMetaServices
                     . "ORDER BY mh.host_name, ms.service_description "
                     . $range;
@@ -192,9 +214,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         }
 
         $DBRESULT = $this->pearDB->query($queryService);
-        
         $total = $this->pearDB->numberRows();
-
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             if ($hasGraph) {
@@ -250,7 +270,6 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             'total' => $total
         );
     }
-
 
     /**
      *

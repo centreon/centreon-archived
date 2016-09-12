@@ -122,7 +122,7 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
             /* ----- Services ----- */
             $attrServices = array(
                 'datasourceOrigin' => 'ajax',
-                'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_service&action=list',
+                'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_service&action=list&e=enable',
                 'multiple' => true,
                 'linkedObject' => 'centreonService'
             );
