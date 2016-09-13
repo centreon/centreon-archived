@@ -7,7 +7,6 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\HostConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 
 /**
  * Defines application features from the specific context.
@@ -16,7 +15,7 @@ class InfluxdbContext extends CentreonContext
 {
   private $hostName = 'InfluxdbTestHost';
   private $serviceName = 'InlufxdbTestService';
-  
+
     /**
      *  @Given I am logged in a Centreon server with Influxdb
      */
@@ -26,7 +25,7 @@ class InfluxdbContext extends CentreonContext
         $this->iAmLoggedIn();
         $this->container->execute('influx -execute "create database metrics"', 'influxdb');
     }
-  
+
     /**
      * @Given an Influxdb output is properly configured
      */
@@ -93,7 +92,7 @@ class InfluxdbContext extends CentreonContext
       );
       $hostConfig->setProperties($hostProperties);
       $hostConfig->save();
-      
+
       $serviceConfig = new ServiceConfigurationPage($this);
       $serviceProperties = array(
         'description' => $this->serviceName,
@@ -107,13 +106,13 @@ class InfluxdbContext extends CentreonContext
       $serviceConfig->setProperties($serviceProperties);
       $serviceConfig->save();
     }
-    
+
     /**
      * @Given Broker and Engine are restarted
      */
     public function andBrokerAndEngineAreRestarted()
     {
-      (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
     /**

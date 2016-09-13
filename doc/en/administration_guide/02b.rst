@@ -51,6 +51,8 @@ General information
 
 .. note::
     The contact group can be groups coming from the LDAP directory connected to the Centreon interface.
+    
+   Groups created in Centreon interface should not have the same name as LDAP groups to avoid problems. 
 
 Authorizations information
 ==========================
