@@ -131,16 +131,9 @@ class InfluxdbContext extends CentreonContext
      */
     public function thenItIsSavedInInfluxdb()
     {
-//sleep(5);
-//        var_dump($this->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb'));
-
       $this->spin(function($context) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, '127.0.0.1:2003');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        return (false);
+        $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
+        return preg_match('/status\.InfluxdbTestHost\.InlufxdbTestService/m', $return['output']);
       });
 
     }
