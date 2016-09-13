@@ -67,14 +67,6 @@
 			</xsl:for-each>
 			</td>
 		</tr>
-                <tr class='list_one'>
-                        <td class="ColPopup">&#160;<xsl:value-of select="long_name"/></td>
-                        <td class="ColPopup">
-                        <xsl:for-each select="long_output_data">
-                                &#160;<xsl:value-of select="lo_data"/><br />
-                        </xsl:for-each>
-                        </td>
-                </tr>
 		<tr class="list_lvl_1">
 			<td class='ListColLvl1_name' colspan="2">
 				<h4><xsl:value-of select="tr1"/></h4>
