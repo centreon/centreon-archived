@@ -1,14 +1,13 @@
 <?php
+
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\MetaServiceConfigurationPage;
 use Centreon\Test\Behat\MonitoringServicesPage;
 use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
-
 
 /**
  * Defines application features from the specific context.
@@ -35,7 +34,7 @@ class DowntimeServiceContext extends CentreonContext
             'normal_check_interval' => 1,
             'retry_check_interval' => 1));
         $metaservicePage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
     /**
