@@ -19,7 +19,7 @@ function clonifyTableFields(attributeName,displayName){
     // </table2> </td> </tr clone_template> <tr control> <td> </td> </tr> </table1 clonable> </td1> </tr newdiv> .... </oldTable>
     for(var obj in GroupArray) {
         var td1 = jQuery('<td>').attr('colspan','2').css({'padding': '2px'});
-        var newdiv = jQuery('<tr>').addClass('elem-toCollapse').append(td1);
+        var newdiv = jQuery('<tr>').addClass('elem-toCollapse').attr('style', 'display:table-row').append(td1);
         var control = jQuery('<th>').append(jQuery('<span>').attr('id',obj+'_add').html('+ Add a new entry').css({
             'cursor': 'pointer',
             'color': '#009fdf'
