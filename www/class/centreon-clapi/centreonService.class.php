@@ -881,7 +881,9 @@ class CentreonService extends CentreonObject {
                     $value = CentreonUtils::convertLineBreak($value);
                     # Host Filter
                     $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
-                    echo $this->action . $this->delim . "setparam" . $this->delim . $element['host_name'] . $this->delim . $element['service_description'] . $this->delim . $this->getClapiActionName($parameter) . $this->delim . $value . "\n";
+                    if($this->getClapiActionName($parameter) != "host_id") {
+                        echo $this->action . $this->delim . "setparam" . $this->delim . $element['host_name'] . $this->delim . $element['service_description'] . $this->delim . $this->getClapiActionName($parameter) . $this->delim . $value . "\n";
+                    }
                 }
             }
             $params = $extendedObj->getParameters($element[$this->object->getPrimaryKey()], array("esi_notes", "esi_notes_url", "esi_action_url", "esi_icon_image", "esi_icon_image_alt"));
