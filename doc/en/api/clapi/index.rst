@@ -1,3 +1,5 @@
+.. _clapi-documentation:
+
 ================
 Command Line API
 ================

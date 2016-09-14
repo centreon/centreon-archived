@@ -27,7 +27,7 @@ on_centreon_rtd = os.environ.get('CENTREON_RTD', None) == 'True'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.todo', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.todo', 'sphinx.ext.intersphinx', 'sphinxcontrib.httpdomain']
 
 intersphinx_mapping = {
 	'centreon-engine': ('http://documentation.centreon.com/docs/centreon-engine/en/latest', None),
