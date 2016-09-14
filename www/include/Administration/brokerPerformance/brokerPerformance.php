@@ -48,6 +48,17 @@ function createArrayStats($arryFromJson) {
     $io = array('class' => 'stats_lv1');
 
     if (isset($arryFromJson['state'])) {
+        $io[_('State')]['value'] = $arryFromJson['state'];
+        if ($arryFromJson['state'] == "disconnected") {
+            $io[_('State')]['class'] = "badge service_critical";
+        } elseif ($arryFromJson['state'] == "listening" || $arryFromJson['state'] == "connected" || $arryFromJson['state'] == "connecting") {
+            $io[_('State')]['class'] = "badge service_ok";
+        } elseif ($arryFromJson['state'] == "sleeping" || $arryFromJson['state'] == "blocked") {
+            $io[_('State')]['class'] = "badge service_warning";
+        }
+    }
+
+    if (isset($arryFromJson['state'])) {
         $io[_('State')] = $arryFromJson['state'];
     }
 
