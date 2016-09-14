@@ -89,8 +89,10 @@ try {
     $views = $viewObj->getCustomViews();
 
     $rotationTimer = 0;
-    if (isset($_SESSION['rotation_timer'])) {
-        $rotationTimer = $_SESSION['rotation_timer'];
+    $contactParameters = $centreon->user->getContactParameters($db, array('widget_view_rotation'));
+
+    if (isset($contactParameters['widget_view_rotation'])) {
+        $rotationTimer = $contactParameters['widget_view_rotation'];
     }
 
     $i = 1;
@@ -319,6 +321,7 @@ try {
     $formAddWidget->accept($rendererAddWidget);
     $template->assign('widgetModels', $widgetModels);
     $template->assign('formAddWidget', $rendererAddWidget->toArray());
+    $template->assign('rotationTimer', $rotationTimer);
     
     $template->display("index.ihtml");
 } catch (CentreonCustomViewException $e) {
