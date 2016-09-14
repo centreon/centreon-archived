@@ -63,9 +63,55 @@ For the authentication follow the endpoint below:
   :statuscode 401: Account not enabled, the Centreon user cannot use the REST API
   :statuscode 403: Bad credentials
 
+Send command
+------------
 
-Getting started
-----------------
+.. http:post:: /api/index.php?action=send&object=centreon_monitoring_externalcmd
+
+  Send an external command to a poller
+  
+  **Example request**
+  
+  .. sourcecode:: http
+  
+    POST /api/index.php?action=action&object=centreon_monitoring_externalcmd
+    Host: api.domain.tld
+    Accept: application/json
+    centreon_auth_token: NTc1MDU3MGE3M2JiODIuMjA4OTA2OTc=
+    Body:
+      {
+        "commands": [
+          {
+            "poller_id": 1,
+            "timestamp": 1473865073,
+            "command": "ACKNOWLEDGE_HOST_PROBLEM;host;2;1;1;Admin;Problem ack"
+          }
+        ]
+      }
+      
+  .. sourcecode:: http
+  
+    HTTP/1.1 200 Ok
+    Vary: Accept
+    Content-Type: application/json
+    {
+      "success": true
+    }
+    
+  :query action: Must be send, define the action to execute
+  :reqheader centreon_auth_token: The authentication token
+  :<json array commands: The list of commands to execute
+  :<json number commands.poller_id: The poller id
+  :<json number commands.timestamp: The timestamp to execute
+  :<json string commands.command: The Centreon Engine command
+  :>json boolean success: If the command send to be executed
+  :statuscode 200: Command send to be executed
+  :statuscode 400: Bad parameters
+  :statuscode 500: Internal server error (custom message)
+
+
+CLAPI Wrapper
+-------------
 
 95% of actions you can do using Centreon command line API are available with the API rest.
 
