@@ -37,6 +37,7 @@
   
   function CentreonPopin(settings, $elem) {
     var self = this;
+    var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png" class="ico-18"></a>');
     var $newElem = $('<div></div>');
     self.settings = settings;
 
@@ -48,6 +49,13 @@
   
     self.$elem = $elem.parents('.centreon-popin').detach();
     self.$elem.appendTo('body');
+
+    /* Append close button */
+    closeBtn.appendTo($elem);
+    closeBtn.on('click', function () {
+      self.close();
+    });
+
 
     self.initOverlay();
     
