@@ -58,10 +58,6 @@ function createArrayStats($arryFromJson) {
         }
     }
 
-    if (isset($arryFromJson['state'])) {
-        $io[_('State')] = $arryFromJson['state'];
-    }
-
     if (isset($arryFromJson['status']) && $arryFromJson['status']) {
         $io[_('Status')] = $arryFromJson['status'];
     }
