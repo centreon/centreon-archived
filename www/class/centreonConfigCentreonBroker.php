@@ -596,25 +596,22 @@ class CentreonConfigCentreonBroker
                     foreach ($infos as $key => $info) {
                         $is_multiple = preg_match('/(.+?)_(\d+)$/', $key, $result);
                         if ($is_multiple) {
-                            if (!isset($groups_infos_multiple[$group])) {
-                                $groups_infos_multiple[$group] = array();
-                            }
-                            $newArray[$result[1]][$result[2]] = $infos[$key];
+                            $newArray[$result[1]] = $infos[$key];;
                             
                             unset($infos[$key]);
                         }
                     }
                     if (!empty($newArray)) {
-                        $newArray['blockId'] = $infos['blockId'];
-                        $groups_infos_multiple[$group][] = $newArray;
+                        $groups_infos_multiple[] = $newArray;
+                        $infos['multiple_fields'][] = $newArray;
                     }
                     $groups_infos[$group][] = $infos;
                 }
             }
         }
+
         foreach ($groups_infos as $group => $groups) {
             foreach ($groups as $gid => $infos) {
-                $gid = $gid + 1;
                 if (isset($infos['blockId'])) {
                     list($tagId, $typeId) = explode('_', $infos['blockId']);
                     $fieldtype = $this->getFieldtypes($typeId);
@@ -622,6 +619,34 @@ class CentreonConfigCentreonBroker
                         $lvl = 0;
                         $grp_id = 'NULL';
                         $parent_id = 'NULL';
+
+                        if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
+                                foreach ($fieldvalue as $index => $value) {
+                                    if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
+                                        $value = $value[$fieldname];
+                                    }
+                                    if (false === is_array($value)) {
+                                        $value = array($value);
+                                    }
+                                    foreach ($value as $fieldname2 => $value2) {
+                                        if (is_array($value2)) {
+                                            $explodedFieldname2 = explode('__', $fieldname2);
+                                            if (isset($fieldtype[$explodedFieldname2[1]]) && $fieldtype[$explodedFieldname2[1]] == 'radio') {
+                                                $value2 = $value2[$explodedFieldname2[1]];
+                                            }
+                                        }
+                                        $query = "INSERT INTO cfg_centreonbroker_info
+                                            (config_id, config_key, config_value, config_group, config_group_id,
+                                            grp_level, subgrp_id, parent_grp_id, fieldIndex)
+                                            VALUES (" . $id . ", '" . $fieldname2 . "', '" . $value2 . "', '" .
+                                                $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " .
+                                                $parent_id . ", " . $index . ") ";
+                                        $this->db->query($query);
+                                    }
+                                }
+                            continue;
+                        }
+
                         if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
                             $fieldvalue = $fieldvalue[$fieldname];
                         }
@@ -660,41 +685,6 @@ class CentreonConfigCentreonBroker
             }
         }
         
-        
-        foreach ($groups_infos_multiple as $group => $groups) {
-            foreach ($groups as $gid => $infos) {
-                $gid = $gid + 1;
-                if (isset($infos['blockId'])) {
-                    list($tagId, $typeId) = explode('_', $infos['blockId']);
-                    $fieldtype = $this->getFieldtypes($typeId);
-                    foreach ($infos as $fieldname => $fieldvalueArray) {
-                        if (is_array($fieldvalueArray)) {
-                            foreach ($fieldvalueArray as $index => $fieldvalue) {
-                                $lvl = 0;
-                                $grp_id = 'NULL';
-                                $parent_id = 'NULL';
-                                if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
-                                    $fieldvalue = $fieldvalue[$fieldname];
-                                }
-                                if (false === is_array($fieldvalue)) {
-                                    $fieldvalue = array($fieldvalue);
-                                }
-                                foreach ($fieldvalue as $value) {
-                                    $query = "INSERT INTO cfg_centreonbroker_info
-                                        (config_id, config_key, config_value, config_group, config_group_id,
-                                        grp_level, subgrp_id, parent_grp_id, fieldIndex)
-                                        VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" .
-                                            $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " .
-                                            $parent_id . ", " . $index . ") ";
-                                    $this->db->query($query);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         return true;
     }
 
