@@ -1,7 +1,6 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\HostConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
 
@@ -10,12 +9,9 @@ use Centreon\Test\Behat\ServiceConfigurationPage;
  */
 class CentreonWithKnowledgeContext extends CentreonContext
 {
-    private $pollers_page;
-
     public function __construct()
     {
         parent::__construct();
-        $this->pollers_page = new ConfigurationPollersPage($this);
         $this->hostName = 'MediawikiHost';
         $this->serviceHostName = 'Centreon-Server';
         $this->serviceName = 'MediawikiService';
@@ -27,9 +23,12 @@ class CentreonWithKnowledgeContext extends CentreonContext
      */
     public function iAmLoggedInACentreonServerWithWikiInstalled()
     {
-        $this->launchCentreonWebContainer('kb');
+        $this->launchCentreonWebContainer('web_kb');
+        $this->container->waitForAvailableUrl(
+            'http://' . $this->container->getHost() . ':' .
+            $this->container->getPort(80, 'mediawiki') . '/index.php/Main_Page'
+        );
         $this->iAmLoggedIn();
-
     }
 
 
@@ -49,7 +48,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
             'active_checks_enabled' => 0,
             'passive_checks_enabled' => 1));
         $hostPage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
@@ -71,7 +70,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
             'active_checks_enabled' => 0,
             'passive_checks_enabled' => 1));
         $servicePage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
@@ -92,7 +91,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* Add wiki page */
         $checkurl = 'Host:'.$this->hostName;
         if( !strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
-            throw new Exception(' Mauvaise url');
+            throw new Exception('Bad url');
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki host page');
@@ -102,7 +101,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
         sleep(2);
         /* Apply config */
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
@@ -123,7 +122,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* Add wiki page */
         $checkurl = 'Service:'.$this->serviceHostName.'_'.$this->serviceName;
         if( !strstr(urldecode($this->getSession()->getCurrentUrl()), $checkurl)) {
-           throw new Exception(' Mauvaise url');
+           throw new Exception('Bad url');
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki service page');
@@ -133,7 +132,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
         sleep(2);
         /* Apply config */
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
 
@@ -152,7 +151,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $originalValue = $fieldValue->getValue();
 
         if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')) {
-            throw new Exception(' Mauvaise url');
+            throw new Exception('Bad url');
         }
     }
 
@@ -172,7 +171,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $originalValue = $fieldValue->getValue();
 
         if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')) {
-            throw new Exception(' Mauvaise url');
+            throw new Exception('Bad url');
         }
     }
 

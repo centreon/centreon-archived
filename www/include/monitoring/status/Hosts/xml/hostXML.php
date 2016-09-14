@@ -377,7 +377,7 @@ while ($data = $DBRESULT->fetchRow()) {
         $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data['state']], $str);
 
         $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], $str)));
+        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["notes_url"], $str)));
     } else {
         $obj->XML->writeElement("hnu", "none");
     }

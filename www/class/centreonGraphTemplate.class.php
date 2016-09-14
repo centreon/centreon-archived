@@ -46,8 +46,6 @@
  */
 class CentreonGraphTemplate
 {
-    
-    
     /**
      *
      * @var type
@@ -60,7 +58,6 @@ class CentreonGraphTemplate
      */
     protected $instanceObj;
     
-
     /**
      * Constructor
      *
@@ -72,7 +69,8 @@ class CentreonGraphTemplate
         $this->db = $db;
         $this->instanceObj = new CentreonInstance($db);
     }
-        /**
+    
+    /**
      *
      * @param array $values
      * @return array
@@ -95,8 +93,6 @@ class CentreonGraphTemplate
                 'text' => $row['name']
             );
         }
-
         return $items;
-
     }
 }

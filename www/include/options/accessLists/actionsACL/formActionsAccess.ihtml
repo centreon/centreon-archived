@@ -91,6 +91,7 @@
 		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_flap_detection_of_a_service">{$form.service_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_flap_detection.html}</p></td></tr>
 		<tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_passive_checks_of_a_service">{$form.service_passive_checks.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_passive_checks.html}</p></td></tr>
 		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_service">{$form.service_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_submit_result.html}</p></td></tr>
+        <tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_display_command_for_a_service">{$form.service_display_command.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_display_command.html}</p></td></tr>
 		 
 		<!-- Hosts -->
 	 	<tr class="list_lvl_1">

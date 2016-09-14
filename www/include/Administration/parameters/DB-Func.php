@@ -573,6 +573,18 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        'display_downtime_chart',
+        isset($ret["display_downtime_chart"]["yes"]) && $ret["display_downtime_chart"]["yes"] != null
+            ? htmlentities($ret["display_downtime_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+    updateOption(
+        $pearDB,
+        'display_comment_chart',
+        isset($ret["display_comment_chart"]["yes"]) && $ret["display_comment_chart"]["yes"] != null
+            ? htmlentities($ret["display_comment_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+    updateOption(
+        $pearDB,
         "enable_autologin",
         isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != null
             ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0"
@@ -810,4 +822,61 @@ function updateCASConfigData($gopt_id = null)
     );
 
     $centreon->initOptGen($pearDB);
+}
+
+function updateBackupConfigData($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+
+    $radiobutton = array(
+        'backup_enabled',
+        'backup_database_type',
+        'backup_export_scp_enabled'
+    );
+    foreach ($radiobutton as $value) {
+        $ret[$value] = isset($ret[$value]) && isset($ret[$value][$value]) && $ret[$value][$value] ? 1 : 0;
+    }
+
+    $checkbox = array(
+        'backup_configuration_files',
+        'backup_database_centreon',
+        'backup_database_centreon_storage'
+    );
+    foreach ($checkbox as $value) {
+        $ret[$value] = isset($ret[$value]) && $ret[$value] ? 1 : 0;
+    }
+
+    $checkboxGroup = array(
+        'backup_database_full',
+        'backup_database_partial'
+    );
+    foreach ($checkboxGroup as $value) {
+        if (isset($ret[$value]) && count($ret[$value])) {
+            $valueKeys = array_keys($ret[$value]);
+            $ret[$value] = implode(',', $valueKeys);
+        } else {
+            $ret[$value] = '';
+        }
+    }
+
+    foreach ($ret as $key => $value) {
+        if (preg_match('/^backup_/', $key)) {
+            updateOption($db, $key, $value);
+        }
+    }
+
+    $centreon->initOptGen($db);
+}
+
+function updateKnowledgeBaseData($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+
+    foreach ($ret as $key => $value) {
+        if (preg_match('/^kb_/', $key)) {
+                updateOption($db, $key, $value);
+        }
+    }
+
+    $centreon->initOptGen($db);
 }

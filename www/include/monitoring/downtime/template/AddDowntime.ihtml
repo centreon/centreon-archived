@@ -46,10 +46,24 @@ Event.observe(window, "load", function() {
 			<tr class="ListHeader">
 				<td class="FormHeader" colspan="2">{t}Add downtime{/t}</td>
 			<tr>
+
+			{if isset($service_description)}
+			<tr class="list_one">
+				<td class="FormRowField">{t}Type{/t}</td>
+				<td class="FormRowValue"><b>Service</b></td>
+			</tr>
+			{elseif isset($host_name)}
+			<tr class="list_one">
+				<td class="FormRowField">{t}Type{/t} </td>
+				<td class="FormRowValue"><b>Host</b></td>
+			</tr>
+			{else}
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.downtimeType.label}</td>
 				<td  class="ListColLeft">{$form.downtimeType.html}</td>
 			</tr>
+			{/if}
+
 			<!--
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.host_or_centreon_time.label}</td>
@@ -65,10 +79,24 @@ Event.observe(window, "load", function() {
 				<td  class="ListColLeft">{$form.hostgroup_id.label}</td>
 				<td  class="ListColLeft">{$form.hostgroup_id.html}</td>
 			</tr>
+
+			{if isset($service_description)}
+				<tr class="list_two">
+					<td class="FormRowField">{t}Host{/t} / {t}Service{/t}</td>
+					<td class="FormRowValue"><b>{$host_name} / {$service_description}</b></td>
+				</tr>
+			{elseif isset($host_name)}
+				<tr class="list_two">
+					<td class="FormRowField">{t}Host{/t} </td>
+					<td class="FormRowValue"><b>{$host_name}</b></td>
+				</tr>
+			{else}
 			<tr class="list_two" id="service_input">
 				<td  class="ListColLeft">{$form.service_id.label}</td>
 				<td  class="ListColLeft">{$form.service_id.html}</td>
 			</tr>
+			{/if}
+
 			<tr class="list_two" id="servicegroup_input">
 				<td  class="ListColLeft">{$form.servicegroup_id.label}</td>
 				<td  class="ListColLeft">{$form.servicegroup_id.html}</td>
@@ -86,6 +114,9 @@ Event.observe(window, "load", function() {
 				<td  class="ListColLeft">{$form.duration.label}</td>
 				<td  class="ListColLeft">{$form.duration.html} {$form.duration_scale.html}</td>
 			</tr>
+            <tr>
+                <td colspan=2>{$form.timezone_warning.label}</td>
+            </tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.start.label}</td>
 				<td  class="ListColLeft">{$form.start.html}&nbsp;{$form.start_time.html}</td>

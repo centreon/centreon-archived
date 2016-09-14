@@ -1357,6 +1357,26 @@ table.ListTableSmallArg td {
 .list_lvl_1, .list_lvl_2 {
     vertical-align:middle;
 }
+.list_lvl_3 {
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 2px solid #fff;
+}
+
+.list_lvl_3 th, .list_lvl_3 td {
+    padding: 6px;
+    font-weight: normal;
+}
+
+.list_lvl_3 th {
+    color: #818285;
+}
+
+.list_lvl_3 th:first-child, .list_lvl_3 td:first-child {
+    width: 205px;
+    padding-left: 12px;
+}
+
 
 .ListColLvl2_name {padding-left:15px;}
 
@@ -1494,7 +1514,6 @@ td, a.infobulle:hover td {
     width: 600px;
     padding: 3px;
     border-radius: 4px;
-    box-shadow: 5px 5px 2px #d1d2d4;
     border: 1px solid #d1d2d4;
 }
 
@@ -1540,6 +1559,10 @@ ul.no-deco-list {
 }
 
 /* CLONE ELEMENT */
+.clone_template .FormRowField,
+.clone_template .FormRowValue {
+    width: 208px;
+}
 .clonable {
     list-style-type: none;
     margin: 0;
@@ -2117,6 +2140,7 @@ textarea.default-textarea {
   font-weight: bold;
   width: calc(100% - 4px);
   padding: 0 2px;
+  cursor: move;
 }
 
 .graph .title .actions {
@@ -2182,6 +2206,7 @@ textarea.default-textarea {
 .graph .chart-status {
   margin-top: 10px;
   margin-left: 40px;
+  overflow: visible;
 }
 
 .graph .c3-region.region-downtime {
@@ -2233,3 +2258,148 @@ textarea.default-textarea {
   background-position: right;
   background-repeat: no-repeat;
 }
+
+/* Refresh component for chart */
+.refresh {
+  margin: 0 6px 0 0;
+  padding: 0;
+  border: 1px solid #818285;
+  border-radius: 2px;
+  display: inline-block;
+  position: relative;
+  height: 16px;
+  cursor: pointer;
+}
+
+.refresh .icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.refresh .icon img {
+  margin: 1px;
+}
+
+.refresh .time {
+  line-height: 14px;
+  font-size: 12px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.refresh-list {
+  display: none;
+  position: absolute;
+  left: -1px;
+  top: 16px;
+  border: 1px solid #818285;
+  border-radius: 2px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 150;
+  background-color: #fff;
+}
+
+.refresh-list li {
+  padding: 2px 3px;
+  white-space: nowrap;
+}
+
+.refresh-list li:hover {
+  background-color: #5897fb;
+}
+
+.refresh-list.show {
+  display: block;
+}
+
+/* broker_stat */
+
+.broker_stats_lastmodif {
+    position: relative;
+    float: right;
+}
+
+ul.module_list {
+    min-width: 122px;
+}
+
+.broker_stats .informations_header {
+    position: relative;
+    height: auto;
+    width: 100%;
+}
+
+.broker_stats .informations {
+    overflow: hidden;
+    display: block;
+    padding: 4px;
+    position: relative;
+}
+
+.broker_stats {
+    margin-bottom: 5px;
+}
+
+.broker_stats.stats_lv2 {
+    margin: 5px 36px;
+}
+
+.broker_stats.stats_lv2 p.title {
+    background-color: #e7e7e8;
+}
+
+.broker_stats .expand {
+    cursor: pointer;
+}
+
+.broker_stats p.title {
+    cursor: pointer;
+    padding: 6px;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #e7e7e8;
+    border-top: 1px solid #e7e7e8;
+}
+
+.broker_stats ul.module_list {
+    margin: 3px;
+}
+
+.broker_stats ul.peers {
+    margin-left: 153px;
+}
+
+.broker_stats ul.filters {
+    margin-left: 153px;
+}
+
+.broker_stats ul li {
+    list-style: none;
+}
+
+.broker_stats .info_name {
+    float: left;
+    color: #09225c;
+    font-weight: 600;
+}
+
+.broker_stats .info_value {
+    float: right;
+    width: 80%;
+}
+
+.broker_stats .expand {
+    float: left;
+    padding: 0 6px;
+}
+
+.broker_stats .module_status {
+    float: right;
+    padding: 0 6px;
+}
+
+.broker_stats .loaded {
+    color: #88b917;
+}
+

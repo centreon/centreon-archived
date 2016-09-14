@@ -47,7 +47,6 @@ include_once "../../../../config/centreon.config.php";
 /*
  * Require Classes
  */
-require_once _CENTREON_PATH_ . "www/include/eventLogs/common-Func.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
@@ -55,8 +54,8 @@ require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 /**
  * Connect to DB
  */
-$pearDB     = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
 /* Check Session */
 CentreonSession::start();
@@ -128,116 +127,47 @@ if (isset($sid) && $sid) {
     $lca = array("LcaHost" => $access->getHostsServices($pearDBO, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 }
 
-(isset($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
-(isset($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : $limit = "30";
-(isset($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"]) : $StartDate = "";
-(isset($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"]) : $EndDate = "";
-(isset($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
-(isset($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
-(isset($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
-(isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
+$num = isset($_GET["num"]) ? htmlentities($_GET["num"]) : "0";
+$limit = isset($_GET["limit"]) ? htmlentities($_GET["limit"]) : "30";
+$StartDate = isset($_GET["StartDate"]) ? htmlentities($_GET["StartDate"]) : "";
+$EndDate = isset($_GET["EndDate"]) ? $EndDate = htmlentities($_GET["EndDate"]) : "";
+$StartTime = isset($_GET["StartTime"]) ? $StartTime = htmlentities($_GET["StartTime"]) : "";
+$EndTime = isset($_GET["EndTime"]) ? $EndTime = htmlentities($_GET["EndTime"]) : "";
+$auto_period = isset($_GET["period"]) ? $auto_period = htmlentities($_GET["period"]) : "-1";
+$engine = isset($_GET["engine"]) ? $engine = htmlentities($_GET["engine"]) : "false";
+$up = isset($_GET["up"]) ? htmlentities($_GET["up"]) : "true";
+$down = isset($_GET["down"]) ? htmlentities($_GET["down"]) : "true";
+$unreachable = isset($_GET["unreachable"]) ? htmlentities($_GET["unreachable"]) : "true";
+$ok = isset($_GET["ok"]) ? htmlentities($_GET["ok"]) : "true";
+$warning = isset($_GET["warning"]) ? htmlentities($_GET["warning"]) : "true";
+$critical = isset($_GET["critical"]) ? htmlentities($_GET["critical"]) : "true";
+$unknown = isset($_GET["unknown"]) ? htmlentities($_GET["unknown"]) : "true";
+$notification = isset($_GET["notification"]) ? htmlentities($_GET["notification"]) : "false";
+$alert = isset($_GET["alert"]) ? htmlentities($_GET["alert"]) : "true";
+$oh = isset($_GET["oh"]) ? htmlentities($_GET["oh"]) : "false";
+$error = isset($_GET["error"]) ? htmlentities($_GET["error"]) : "false";
 
-if ($engine == "false") {
-    (isset($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
-    (isset($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
-    (isset($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
-    (isset($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
-    (isset($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
-    (isset($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
-    (isset($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
-    (isset($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
-    (isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
-    (isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
-} else {
-    (isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
-}
-
-(isset($_GET["output"])) ? $output = urldecode($_GET["output"]) : $output = "";
-
-(isset($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
-(isset($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
-(isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
-(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
-(isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
+$output = isset($_GET["output"]) ? urldecode($_GET["output"]) : $output = "";
+$search_H = isset($_GET["search_H"]) ? htmlentities($_GET["search_H"]) : "VIDE";
+$search_S = isset($_GET["search_S"]) ? htmlentities($_GET["search_S"]) : "VIDE";
+$search_host = isset($_GET["search_host"]) ? htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : "";
+$search_service = isset($_GET["search_service"]) ? htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : "";
+$export = isset($_GET["export"]) ? htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : 0;
 
 $start = 0;
 $end = 0;
-if ($contact_id) {
-    $user_params = get_user_param($contact_id, $pearDB);
 
-    if (!isset($user_params["log_filter_host"])) {
-        $user_params["log_filter_host"] = 1;
-    }
-    if (!isset($user_params["log_filter_svc"])) {
-        $user_params["log_filter_svc"] = 1;
-    }
-    if (!isset($user_params["log_filter_host_down"])) {
-        $user_params["log_filter_host_down"] = 1;
-    }
-    if (!isset($user_params["log_filter_host_up"])) {
-        $user_params["log_filter_host_up"] = 1;
-    }
-    if (!isset($user_params["log_filter_host_unreachable"])) {
-        $user_params["log_filter_host_unreachable"] = 1;
-    }
-    if (!isset($user_params["log_filter_svc_ok"])) {
-        $user_params["log_filter_svc_ok"] = 1;
-    }
-    if (!isset($user_params["log_filter_svc_warning"])) {
-        $user_params["log_filter_svc_warning"] = 1;
-    }
-    if (!isset($user_params["log_filter_svc_critical"])) {
-        $user_params["log_filter_svc_critical"] = 1;
-    }
-    if (!isset($user_params["log_filter_svc_unknown"])) {
-        $user_params["log_filter_svc_unknown"] = 1;
-    }
-    if (!isset($user_params["log_filter_notif"])) {
-        $user_params["log_filter_notif"] = 1;
-    }
-    if (!isset($user_params["log_filter_error"])) {
-        $user_params["log_filter_error"] = 1;
-    }
-    if (!isset($user_params["log_filter_alert"])) {
-        $user_params["log_filter_alert"] = 1;
-    }
-    
-    if (!isset($user_params["search_H"])) {
-        $user_params["search_H"] = "";
-    }
-    if (!isset($user_params["search_S"])) {
-        $user_params["search_S"] = "";
-    }
-    if (!isset($user_params["output"])) {
-        $user_params["output"] = "";
-    }
-    
-    $alert = $user_params["log_filter_alert"];
-    $notification = $user_params["log_filter_notif"];
-    $error = $user_params["log_filter_error"];
-
-    $unknown = $user_params["log_filter_svc_unknown"];
-    $unreachable = $user_params["log_filter_host_unreachable"];
-    $up = $user_params["log_filter_host_up"];
-    $ok = $user_params["log_filter_svc_ok"];
-    $down = $user_params["log_filter_host_down"];
-    $warning = $user_params["log_filter_svc_warning"];
-    $critical = $user_params["log_filter_svc_critical"];
-    $oh = $user_params["log_filter_oh"];
-    if ($engine == "true") {
-        $ok = "false";
-        $up = "false";
-        $unknown = "false";
-        $unreachable = "false";
-        $down = "false";
-        $warning = "false";
-        $critical = "false";
-        $oh = "false";
-        $notification = "false";
-        $alert = "false";
-    }
-    $search_H = $user_params["search_H"];
-    $search_S = $user_params["search_S"];
+if ($engine == "true") {
+    $ok = "false";
+    $up = "false";
+    $unknown = "false";
+    $unreachable = "false";
+    $down = "false";
+    $warning = "false";
+    $critical = "false";
+    $oh = "false";
+    $notification = "false";
+    $alert = "false";
 }
 
 if ($StartDate != "" && $StartTime == "") {
@@ -271,9 +201,9 @@ $general_opt = getStatusColor($pearDB);
 $tab_color_service  = array(STATUS_OK => 'service_ok', STATUS_WARNING => 'service_warning', STATUS_CRITICAL => 'service_critical', STATUS_UNKNOWN => 'service_unknown', STATUS_PENDING => 'pending');
 $tab_color_host         = array(STATUS_UP => 'host_up', STATUS_DOWN => 'host_down', STATUS_UNREACHABLE => 'host_unreachable');
 
-$tab_type           = array("1" => "HARD", "0" => "SOFT");
-$tab_class          = array("0" => "list_one", "1" => "list_two");
-$tab_status_host    = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+$tab_type = array("1" => "HARD", "0" => "SOFT");
+$tab_class = array("0" => "list_one", "1" => "list_two");
+$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 $tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN");
 
 /*
@@ -332,7 +262,7 @@ if ($error == 'true') {
 }
 
 $msg_req = '';
-$suffix_order = " ORDER BY ctime DESC, host_name ASC, log_id DESC, service_description ASC ";
+$suffix_order = " ORDER BY ctime DESC ";
 
 $host_msg_status_set = array();
 if ($up == 'true') {
@@ -511,7 +441,21 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS DISTINCT logs.* FROM logs ".$innerJoinEngineLog.
+$req = "SELECT SQL_CALC_FOUND_ROWS ".(!$is_admin ? "DISTINCT" : "")." 
+        logs.ctime, 
+        logs.host_id, 
+        logs.host_name, 
+        logs.service_id, 
+        logs.service_description, 
+        logs.msg_type, 
+        logs.notification_cmd, 
+        logs.notification_contact, 
+        logs.output, 
+        logs.retry, 
+        logs.status, 
+        logs.type, 
+        logs.instance_name
+        FROM logs ".$innerJoinEngineLog.
     ((!$is_admin) ?
     " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
     . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id)) "
@@ -527,6 +471,7 @@ $host_search_sql = "";
 if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     if ($engine == "false") {
         $req .= " AND `msg_type` NOT IN ('4','5') ";
+        $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
     }
 } else {
     foreach ($tab_host_ids as $host_id) {
@@ -576,15 +521,13 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     } else {
         $req .= "AND 0 ";
     }
-    $req .= " AND logs.host_name NOT LIKE '_Module_BAM%'";
+    $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
     $req .= $host_search_sql . $service_search_sql;
 }
 
 /*
  * calculate size before limit for pagination
  */
-
-
 if (isset($req) && $req) {
     /*
      * Add Suffix for order
@@ -804,12 +747,3 @@ $buffer->writeElement("P", _("Poller"), 0);
 $buffer->endElement();
 $buffer->endElement();
 $buffer->output();
-
-/*
- * Saves user's period selection
- */
-if ($period != "-1") {
-    set_user_param($contact_id, $pearDB, "log_filter_period", $period);
-} else {
-    set_user_param($contact_id, $pearDB, "log_filter_period", "0");
-}

@@ -65,7 +65,7 @@ if (!isset($oreon)) {
     $form->addElement('header', 'ldap_search_result_output', _("Result"));
 
     $link = "LdapSearch()";
-    $form->addElement("button", "ldap_search_button", _("Search"), array("onClick"=>$link));
+    $form->addElement("button", "ldap_search_button", _("Search"), array("class"=>"btc bt_success", "onClick"=>$link));
 
     $tab = array();
     $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
@@ -95,7 +95,11 @@ if (!isset($oreon)) {
     $res = $pearDB->query($query);
     $ldapConfList = "";
 while ($row = $res->fetchRow()) {
-    $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/> " . $row['ar_name'];
+	if ($res->numRows() == 1) {
+        $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/ checked='true'> " . $row['ar_name'];
+    } else {
+        $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/> " . $row['ar_name'];
+    }
     $ldapConfList .= "<br/>";
     $ldapConfList .= _('Filter'). ": <input size='80' type='text' value='".$row['filter']."' name='ldap_search_filter[".$row['ar_id']."]'/>";
     $ldapConfList .= "<br/><br/>";
@@ -106,7 +110,7 @@ while ($row = $res->fetchRow()) {
 	 * Just watch a contact information
 	 */
 if ($o == "li") {
-    $subA = $form->addElement('submit', 'submitA', _("Import"));
+    $subA = $form->addElement('submit', 'submitA', _("Import"), array("class"=>"btc bt_success"));
 }
 
     $valid = false;

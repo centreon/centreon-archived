@@ -239,9 +239,9 @@ class CentreonAPI
             'class' => 'Instance',
             'export' => true
         );
-        $this->relationObject["NAGIOSCFG"] = array(
+        $this->relationObject["ENGINECFG"] = array(
             'module' => 'core',
-            'class' => 'NagiosCfg',
+            'class' => 'EngineCfg',
             'export' => true
         );
         $this->relationObject["CENTBROKERCFG"] = array(
@@ -929,12 +929,12 @@ class CentreonAPI
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
                     && !in_array($key, $this->aExport)) {
-                    $objName = "centreon" . $oObjet[$key]['class'];
+                    $objName = "CentreonClapi\centreon" . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
 
                     if (isset($objVars['aDepends'])) {
                         $bInsert = true;
-                        foreach ($objVars['aDepends'] as $oDependence) {
+                        foreach ($objVars['aDepends'] as $item => $oDependence) {
                             $keyDep = strtoupper($oDependence);
                             if (!in_array($keyDep, $this->aExport)) {
                                 $bInsert = false;

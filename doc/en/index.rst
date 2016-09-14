@@ -17,11 +17,18 @@ Contents:
    exploitation_guide/index
    administration_guide/index
    knowledge_base/index
+   partitioning/index
    howto/index
    upgrade/index
    faq/index
    developer/index
    api/index
+
+Cycle de vie des produits :
+
+.. toctree::
+
+    life_cycle/index
 
 Additional online resource:
 

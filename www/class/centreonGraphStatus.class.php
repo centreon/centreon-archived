@@ -300,7 +300,6 @@ class CentreonGraphStatus
         if (false == $row) {
             throw new OutOfRangeException();
         }
-
         return $row['id'];
     }
 }

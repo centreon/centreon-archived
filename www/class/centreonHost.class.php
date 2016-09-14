@@ -455,16 +455,32 @@ class CentreonHost
      */
     public function getHostPollerId($host_id)
     {
+        $pollerId= null;
+
         $rq = "SELECT nagios_server_id
  		       FROM ns_host_relation
  		       WHERE host_host_id = " . $this->db->escape($host_id) . "
  		       LIMIT 1";
         $res = $this->db->query($rq);
-        if (!$res->numRows()) {
-            return null;
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            $pollerId = $row['nagios_server_id'];
+        } else {
+            $hostName = $this->getHostName($host_id);
+            if (preg_match('/^_Module_Meta/', $hostName)) {
+                $rq = "SELECT id "
+                    . "FROM nagios_server "
+                    . "WHERE localhost = '1' "
+                    . "LIMIT 1 ";
+                $res = $this->db->query($rq);
+                if ($res->numRows()) {
+                    $row = $res->fetchRow();
+                    $pollerId = $row['id'];
+                }
+            }
         }
-        $row = $res->fetchRow();
-        return $row['nagios_server_id'];
+
+        return $pollerId;
     }
 
     /**
@@ -1154,6 +1170,95 @@ class CentreonHost
             }
         }
         return $templates;
+    }
+
+    /**
+     * Get host template ids
+     *
+     * @param int $hostId The host or host template Id
+     * @return array
+     */
+    public function getHostTemplateIds($hostId) {
+        $hostTemplateIds = array();
+
+        $sql = "SELECT htr.host_tpl_id "
+            . "FROM host_template_relation htr, host ht "
+            . "WHERE htr.host_host_id = '" . CentreonDB::escape($hostId) . "' "
+            . "AND htr.host_tpl_id = ht.host_id "
+            . "AND ht.host_activate = '1' "
+            . "ORDER BY `order` ASC ";
+
+        $DBRESULT = $this->db->query($sql);
+
+        while ($row = $DBRESULT->fetchRow()) {
+            $hostTemplateIds[] = $row['host_tpl_id'];
+        }
+
+        return $hostTemplateIds;
+    }
+
+    /**
+     * Get inherited values
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed already processed host ids
+     * @param int $depth depth to search values (-1 for infinite)
+     * @param array $fields fields to search
+     * @param array $values found values
+     * @return array
+     */
+    public function getInheritedValues(
+    $hostId,
+    $alreadyProcessed = array(),
+    $depth = -1,
+    $fields = array(),
+    $values = array()
+    ) {
+
+        if ($depth != 0) {
+            $depth--;
+
+            if (in_array($hostId, $alreadyProcessed)) {
+                return $values;
+            } else {
+                $queryFields = $fields ;
+                if (count($alreadyProcessed) && !count($fields)) {
+                    return $values;
+                } else if (!count($fields)) {
+                    $queryFields = " * ";
+                } else {
+                    $queryFields = implode(',', $fields);
+                }
+
+                $sql = "SELECT " . $queryFields . " "
+                    . "FROM host h "
+                    . "WHERE host_id =". CentreonDB::escape($hostId);
+
+                $DBRESULT = $this->db->query($sql);
+
+                while ($row = $DBRESULT->fetchRow()) {
+                    if (!count($alreadyProcessed)) {
+                        $fields = array_keys($row);
+                    }
+
+                    foreach ($row as $field => $value) {
+
+                        if (!isset($values[$field]) && !is_null($value) && $value != '') {
+                            unset($fields[$field]);
+                            $values[$field] = $value;
+                        }
+                    }
+                }
+
+                $alreadyProcessed[] = $hostId;
+
+                $hostTemplateIds = $this->getHostTemplateIds($hostId);
+                foreach ($hostTemplateIds as $hostTemplateId) {
+                    $values = $this->getInheritedValues($hostTemplateId, $alreadyProcessed, $depth, $fields, $values);
+                }
+            }
+        }
+        return $values;
     }
 
     /**

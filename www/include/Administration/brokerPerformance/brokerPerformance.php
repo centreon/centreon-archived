@@ -44,119 +44,126 @@ require_once "./class/centreonDB.class.php";
 require_once "./class/centreonGMT.class.php";
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
-function getCentreonBrokerModulesList()
-{
-    global $pearDB;
-    $list = array();
-    $query = 'SELECT name, libname, loading_pos
-	    	FROM cb_module
-	    	WHERE is_activated = "1"
-	    		AND libname IS NOT NULL
-	    	ORDER BY loading_pos, libname';
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
-        return $list;
+function createArrayStats($arryFromJson) {
+    $io = array('class' => 'stats_lv1');
+
+    if (isset($arryFromJson['state'])) {
+        $io[_('State')] = $arryFromJson['state'];
     }
-    while ($row = $res->fetchRow()) {
-        $file = $row['libname'];
-        $list[$file] = $row['name'];
+
+    if (isset($arryFromJson['status']) && $arryFromJson['status']) {
+        $io[_('Status')] = $arryFromJson['status'];
     }
-    return $list;
+
+    if (isset($arryFromJson['last_event_at']) && $arryFromJson['last_event_at'] != -1) {
+        $io[_('Last event at')] = date('Y-m-d H:i:s', $arryFromJson['last_event_at']);
+    }
+
+    if (isset($arryFromJson['last_connection_attempt']) && $arryFromJson['last_connection_attempt'] != -1) {
+        $io[_('Last connection attempt')] = date('Y-m-d H:i:s', $arryFromJson['last_connection_attempt']);
+    }
+
+    if (isset($arryFromJson['last_connection_success']) && $arryFromJson['last_connection_success'] != -1) {
+        $io[_('Last connection success')] = date('Y-m-d H:i:s', $arryFromJson['last_connection_success']);
+    }
+
+    if (isset($arryFromJson['one_peer_retention_mode'])) {
+        $io[_('One peer retention mode')] = $arryFromJson['one_peer_retention_mode'];
+    }
+
+    if (isset($arryFromJson['event_processing_speed'])) {
+        $io[_('Event processing speed')] = sprintf("%.2f events/s", $arryFromJson['event_processing_speed']);
+    }
+
+    if (isset($arryFromJson['queue file']) && isset($arryFromJson['queue file enabled']) && $arryFromJson['queue file enabled'] != "no") {
+        $io[_('Queue file')] = $arryFromJson['queue file'];
+    }
+
+    if (isset($arryFromJson['queue file enabled'])) {
+        $io[_('Queued file enabled')] = $arryFromJson['queue file enabled'];
+    }
+
+    if (isset($arryFromJson['queued_events'])) {
+        $io[_('Queued events')] = $arryFromJson['queued_events'];
+    }
+
+    if (isset($arryFromJson['memory file'])) {
+        $io[_('Memory file')] = $arryFromJson['memory file'];
+    }
+
+    if (isset($arryFromJson['read_filters']) && $arryFromJson['read_filters']) {
+        if ($arryFromJson['read_filters'] != 'all') {
+            $io[_('Input accepted events type')] = substr($arryFromJson['read_filters'], 22);
+        } else {
+            $io[_('Input accepted events type')] = $arryFromJson['read_filters'];
+        }
+    }
+
+    if (isset($arryFromJson['write_filters']) && $arryFromJson['write_filters']) {
+        if ($arryFromJson['write_filters'] != 'all') {
+            $io[_('Output accepted events type')] = substr($arryFromJson['write_filters'], 2);
+        } else {
+            $io[_('Output accepted events type')] = $arryFromJson['write_filters'];
+        }
+    }
+
+    return $io;
 }
 
 function parseStatsFile($statfile)
 {
-    $fieldDate = array('last event at', 'last connection attempt', 'last connection success');
-    $listModules = getCentreonBrokerModulesList();
-    $lastmodif = date('Y-m-d H:i:s', filemtime($statfile));
+    $jsonc_content = file_get_contents($statfile);
+    $json_stats = json_decode($jsonc_content, true);
 
-    if (!($fd = fopen($statfile, 'r+'))) {
-        $fd = fopen($statfile, 'r');
-    }
-    $lineBlock = null;
-    $failover = null;
-    $acceptedEvents = null;
+    $lastmodif = date('Y-m-d H:i:s', $json_stats['now']);
+
     $result = array(
         'lastmodif' => $lastmodif,
         'modules' => array(),
         'io' => array()
     );
-    stream_set_blocking($fd, false);
-    $read = array($fd);
-    $write = null;
-    $except= null;
-    $nbChanged = stream_select($read, $write, $except, 2);
-    if ($nbChanged) {
-        while ($line = fgets($fd)) {
-            $line = trim($line);
-            if ($line == '') {
-                $lineBlock = null;
-            } elseif (is_null($lineBlock)) {
-                if (strncmp('module ', $line, 7) == 0) {
-                    $lineBlock = 'module';
-                    list($tag, $module) = explode(' ', $line);
-                    $baseModuleFile = preg_replace('/^[0-9]+\-/', '', basename($module));
-                    if (isset($listModules[$baseModuleFile])) {
-                        $moduleName = $listModules[$baseModuleFile];
-                    } else {
-                        $moduleName = $baseModuleFile;
-                    }
-                } elseif (strncmp('input ', $line, 6) == 0 || strncmp('output ', $line, 7) == 0) {
-                    $lineBlock = 'io';
-                    list($tag, $ioName) = explode(' ', $line);
-                    $result['io'][$ioName] = array(
-                        'type' => $tag
-                    );
-                    if (!is_null($failover)) {
-                        $result['io'][$failover]['failover'] = '<a href="javascript:toggleInfoBlock(\'' . $ioName . '\')">' . $ioName . '</a>';
-                        $failover = null;
-                    }
-                }
-            } else {
-                if ($lineBlock == 'peers') {
-                    if (strstr($line, '=') === false) {
-                        $result['io'][$ioName]['peers'][] = $line;
-                    } else {
-                        $lineBlock = 'io';
-                    }
-                }
-                if ($lineBlock == 'module') {
-                    list($tag, $status) = explode('=', $line);
-                    if ($tag == 'state') {
-                        $result['modules'][$moduleName] = $status;
-                    }
-                    $lineBlock = null;
-                    $moduleName = null;
-                } elseif ($lineBlock == 'io') {
-                    if (!is_null($acceptedEvents) && ((preg_match('/=/', $line) == 1) || (preg_match('/output/', $line) == 1))) {
-                        $acceptedEvents = null;
-                    }
-                    if ($line == 'failover') {
-                        $failover = $ioName;
-                        $lineBlock = null;
-                    } elseif (!is_null($acceptedEvents)) {
-                        $result['io'][$ioName]['filters'][] = trim($line);
-                    } elseif (preg_match('/accepted events/', $line) == 1) {
-                        $acceptedEvents = 1;
-                        $result['io'][$ioName]['filters'] = array();
-                    } else {
-                        list($key, $value) = explode('=', $line);
-                        if ($key != 'peers') {
-                            if (in_array($key, $fieldDate) && $value != 0) {
-                                $result['io'][$ioName][$key] = date('Y-m-d H:i:s', $value);
-                            } else {
-                                $result['io'][$ioName][$key] = $value;
-                            }
-                        } else {
-                            $result['io'][$ioName][$key] = array();
-                            $lineBlock = 'peers';
-                        }
-                    }
+
+    foreach ($json_stats as $key => $value) {
+        if (preg_match('/endpoint \(?(.*[^()])\)?/', $key, $matches)) {
+            if (preg_match('/.*external commands.*/', $matches[1])) {
+                $matches[1] = "external-commands";
+            }
+
+            $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
+            $result['io'][$matches[1]]['type'] = end(explode('-', $key));
+
+            /* force type of io  */
+            if (preg_match('/.*external commands.*/', $key)) {
+                $result['io'][$matches[1]]['type'] = 'input';
+            } elseif (preg_match('/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/', $key)) {
+                $result['io'][$matches[1]]['type'] = 'output';
+            }
+
+            /* manage failover output */
+            if (isset($json_stats[$key]['failover'])) {
+                $result['io'][$matches[1]][_('Failover')] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-failover\')">'.$matches[1].'-failover</a>';
+                $result['io'][$matches[1].'-failover'] = createArrayStats($json_stats[$key]['failover']);
+                $result['io'][$matches[1].'-failover']['type'] = 'output';
+                $result['io'][$matches[1].'-failover']['class'] = 'stats_lv2';
+            }
+
+            /* manage peers input */
+            if (isset($json_stats[$key]['peers'])) {
+                $arrayPeers = explode (',', $json_stats[$key]['peers']);
+                for ($i = 1; $i < count($arrayPeers); $i++) {
+                    $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')" class="'.$matches[1].'-'.$i.'">'.$arrayPeers[$i].'</a><br>';
+                    $result['io'][$matches[1].'-'.$i] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
+                    $result['io'][$matches[1].'-'.$i]['type'] = 'input';
+                    $result['io'][$matches[1].'-'.$i]['class'] = 'stats_lv2';
                 }
             }
         }
+
+        /* Create list of loaded modules */
+        if (preg_match('/module \/.*\/\d+\-(.*)\.so/', $key, $matches)) {
+            $result['modules'][$matches[1]] = $json_stats[$key]['state'];
+        }
     }
-    fclose($fd);
     return $result;
 }
 
@@ -213,25 +220,9 @@ $tpl->assign('form', $renderer->toArray());
 $lang = array();
 $lang['modules'] = _('Modules');
 $lang['updated'] = _('Last update');
-$lang['loaded'] = _('Loaded');
-$lang['state'] = _('State');
 $lang['peers'] = _('Peers');
-$lang['last event at'] = _('Last event at');
-$lang['event processing speed'] = _('Event processing speed');
-$lang['last connection attempt'] = _('Last connection attempt');
-$lang['last connection success'] = _('Last connection success');
 $lang['input'] = _('Input');
 $lang['output'] = _('Output');
-$lang['failover'] = _('Failover');
-$lang['filters'] = _('Accepted events type');
-$lang['queued events'] = _('Queued events');
-$lang['file_read_path'] = _('File read path');
-$lang['file_read_offset'] = _('File read offset');
-$lang['file_write_path'] = _('File write path');
-$lang['file_write_offset'] = _('File write offset');
-$lang['file_max_size'] = _('File max size');
-$lang['temporary recovery mode'] = _('Temporary recovery mode');
-
 $tpl->assign('lang', $lang);
 $tpl->assign('poller_name', $pollerName);
 
@@ -252,7 +243,7 @@ if (PEAR::isError($res)) {
     $perf_info = array();
     $perf_err = array();
     while ($row = $res->fetchRow()) {
-        $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '.stats';
+        $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '-stats.json';
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
         }

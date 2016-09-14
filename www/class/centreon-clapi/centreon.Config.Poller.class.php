@@ -642,7 +642,15 @@ class CentreonConfigPoller
         }
         $this->testPollerId($pollerId);
         $centreonDir = CentreonUtils::getCentreonDir();
-        passthru("$centreonDir/bin/centGenSnmpttConfFile 2>&1");
+        $pearDB = new \CentreonDB('centreon');
+        $res = $pearDB->query("SELECT snmp_trapd_path_conf FROM nagios_server WHERE id = '".$pollerId."'");
+        $row = $res->fetchRow();
+        $trapdPath = $row['snmp_trapd_path_conf'];
+        if (!is_dir("{$trapdPath}/{$pollerId}")) {
+            mkdir("{$trapdPath}/{$pollerId}");
+        }
+        $filename = "{$trapdPath}/{$pollerId}/centreontrapd.sdb";
+        passthru("$centreonDir/bin/generateSqlLite '{$pollerId}' '{$filename}' 2>&1");
         exec("echo 'SYNCTRAP:" . $pollerId . "' >> " . $this->centcore_pipe, $stdout, $return);
         return $return;
     }

@@ -38,7 +38,8 @@ if (!isset($centreon)) {
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
-    require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonMeta.class.php';
 
 function testExistence($name = null)
 {
@@ -137,6 +138,8 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(meta_id)"])) {
+                    $metaObj = new CentreonMeta($pearDB);
+                    $metaObj->insertVirtualService($maxIddele["MAX(meta_id)"], $meta_name);
                     $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
                     while ($Cg = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
@@ -214,10 +217,10 @@ function insertMetaService($ret = array())
 {
     global $form, $pearDB, $centreon;
 
-            checkMetaHost();
+    checkMetaHost();
 
     if (!count($ret)) {
-                $ret = $form->getSubmitValues();
+        $ret = $form->getSubmitValues();
     }
 
     $rq = "INSERT INTO meta_service " .
@@ -254,7 +257,10 @@ function insertMetaService($ret = array())
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("meta", $meta_id["MAX(meta_id)"], CentreonDB::escape($ret["meta_name"]), "a", $fields);
-    
+
+    $metaObj = new CentreonMeta($pearDB);
+    $metaObj->insertVirtualService($meta_id["MAX(meta_id)"], CentreonDB::escape($ret["meta_name"]));
+
     return ($meta_id["MAX(meta_id)"]);
 }
 
@@ -318,6 +324,9 @@ function updateMetaService($meta_id = null)
     $centreon->CentreonLogAction->insertLog("meta", $meta_id, CentreonDB::escape($ret["meta_name"]), "c", $fields);
     
     $DBRESULT = $pearDB->query($rq);
+
+    $metaObj = new CentreonMeta($pearDB);
+    $metaObj->insertVirtualService($meta_id, CentreonDB::escape($ret["meta_name"]));
 }
 
 

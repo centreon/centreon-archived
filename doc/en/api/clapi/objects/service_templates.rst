@@ -198,6 +198,8 @@ service_notification_options       Notification options (w,u,c,r,f,s)
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
+.. _addhosttemplate-and-sethosttemplate
+
 Addhosttemplate and Sethosttemplate
 -----------------------------------
 

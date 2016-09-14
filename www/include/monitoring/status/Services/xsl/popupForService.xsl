@@ -62,6 +62,14 @@
 			<td class="ColPopup">&#160;<xsl:value-of select="state_type"/></td>
 		</tr>
 		<tr class='list_one'>
+			<td class="ColPopup">&#160;<xsl:value-of select="long_name"/></td>
+			<td class="ColPopup">
+			    <xsl:for-each select="long_output_data">
+			        &#160;<xsl:value-of select="lo_data"/><br />
+			    </xsl:for-each>
+			</td>
+		</tr>
+		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="performance_data_name"/></td>
 			<td class="ColPopup">
 			<xsl:for-each select="performance_data">

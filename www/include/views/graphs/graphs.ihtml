@@ -1,5 +1,5 @@
 <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
-<link href="./include/views/graphs/javascript/centreon-status-chart.js" type="text/css" rel="stylesheet">
+<link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <div id="div1" style="position:relative;">
     <form {$form.attributes}>
@@ -54,6 +54,22 @@
         </table>
     </form>
     <div class="graph-options">
+      <div class="refresh" id="chart-refresh">
+        <div class="icon refresh-icon">
+          <img class="ico-14" src="./img/icons/refresh.png">
+        </div>
+        <span class="time" style="display: none"></span>
+        <div class="icon">
+          <img class="ico-14 timer-icon" src="./img/icons/timer-gray.png">
+        </div>
+        <ul class="refresh-list">
+          <li data-interval="0">{t}None{/t}</li>
+          <li data-interval="1m">{t}1 minute{/t}</li>
+          <li data-interval="5m">{t}5 minutes{/t}</li>
+          <li data-interval="15m">{t}15 minutes{/t}</li>
+          <li data-interval="30m">{t}30 minutes{/t}</li>
+        </ul>
+      </div>
       <a href="javascript:switchCols(1)" class="ico-16 margin_right ico-col ico-col-1 active" alt="{t}One column{/t}" title="{t}One column{/t}">
       </a>
       <a href="javascript:switchCols(2)" class="ico-16 margin_right ico-col ico-col-2" alt="{t}Two columns{/t}" title="{t}Two columns{/t}">
@@ -77,8 +93,8 @@
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
 <script>
 var defaultCharts = JSON.parse('{$defaultCharts}');
-var nbDisplayedCharts = 18;
-var tooManyChartMsg = '{t}You cannot add more charts. The maximum charts is {/t}' + nbDisplayedCharts;
+var nbDisplayedCharts = {$nbDisplayedCharts};
+var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}" + nbDisplayedCharts;
 </script>
 
 {literal}
@@ -114,7 +130,67 @@ var source = jQuery('#graph-line').html();
 var templateGraph = Handlebars.compile(source);
 var autoRefresh = false;
   
+function initRefresh() {
+  var $refresh = jQuery('#chart-refresh');
+  $refresh.data('interval', 0);
+  $refresh.on('click', function () {
+    $refresh.find('.refresh-list')
+      .toggleClass('show');
+  });
+  
+  jQuery(document).on('click', function (e) {
+    var $elem = jQuery(e.target);
+    if ($refresh.has($elem).length === 0) {
+      $refresh.find('.refresh-list')
+        .removeClass('show');
+    }
+  });
+  
+  $refresh.delegate('.refresh-icon', 'click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    jQuery('.chart').centreonGraph('refreshData');
+  });
+  
+  $refresh.delegate('.refresh-list > li', 'click', function () {
+    var $interval = jQuery(this);
+    var interval = $interval.data('interval');
+    var text = $interval.text();
+    var parseInterval;
+    if (interval == 0) {
+      $refresh
+        .find('.time')
+        .hide()
+        .text('');
+      $refresh
+        .find('.timer-icon')
+        .attr('src', './img/icons/timer-gray.png');
+      jQuery('.chart').centreonGraph('setRefresh', 0);
+    } else {
+      parseInterval = interval.match(/(\d+)([a-z]+)/i);
+      $refresh
+        .find('.time')
+        .show()
+        .text(text);
+      $refresh
+        .find('.timer-icon')
+        .attr('src', './img/icons/timer-blue.png');
+      jQuery('.chart').centreonGraph(
+        'setRefresh',
+        moment.duration(
+          parseInt(parseInterval[1], 10),
+          parseInterval[2]
+        ).asSeconds()
+      );
+    }
+    $refresh.data('interval', interval);
+  });
+}
+  
 function addChart(id, name, times) {
+  var refreshInterval;
+  var parseInterval;
   if (charts.indexOf(id) !== -1) {
     return;
   }
@@ -135,6 +211,15 @@ function addChart(id, name, times) {
       changePeriod();
     }
   };
+  /* Add auto refresh */
+  refreshInterval = jQuery('#chart-refresh').data('interval');
+  if (refreshInterval != 0) {
+    parseInterval = refreshInterval.match(/(\d+)([a-z]+)/i);
+    times.refresh = moment.duration(
+      parseInt(parseInterval[1], 10),
+      parseInterval[2]
+    ).asSeconds();
+  }
   charts.push(id);
   jQuery('.graphZone').append(
     templateGraph({
@@ -265,6 +350,7 @@ function displayNav(end) {
 }
   
 jQuery(function () {
+  initRefresh();
   loadChart(defaultCharts);
   
   /* Add events */
@@ -368,6 +454,23 @@ jQuery(function () {
   });
   
   /* Initialize the select chart */
+  
+  /* Define general options for select-chart */
+  var minimumInputLength = 3;
+  var selectChartOptions = {
+    select2: {
+      ajax: {
+        url: './include/common/webServices/rest/internal.php?object=centreon_performance_service&action=list'
+      },
+      minimumInputLength: minimumInputLength
+    },
+    additionnalFilters: {
+      host: '#host_filter',
+      hostgroup: '#host_group_filter',
+      servicegroup: '#service_group_filter'
+    }
+  };
+  
   jQuery('#service_group_filter').centreonSelect2({
     select2: {
       ajax: {
@@ -401,17 +504,34 @@ jQuery(function () {
     }
   });
   
-  jQuery('#select-chart').centreonSelect2({
-    select2: {
-      ajax: {
-        url: './include/common/webServices/rest/internal.php?object=centreon_performance_service&action=list'
-      }
-    },
-    additionnalFilters: {
-      host: '#host_filter',
-      hostgroup: '#host_group_filter',
-      servicegroup: '#service_group_filter'
+  jQuery('#select-chart').centreonSelect2(selectChartOptions);
+  
+  /* Add event for change minimumInputLength */
+  function changeSelectChart() {
+    var newOptions = selectChartOptions;
+    var newInputLength = 3;
+    
+    if (jQuery('#host_group_filter').val() !== null
+      || jQuery('#service_group_filter').val() !== null
+      || jQuery('#host_filter').val() !== null) {
+      newInputLength = 0;
     }
+    
+    if (newInputLength !== minimumInputLength) {
+      minimumInputLength = newInputLength;
+      jQuery('#select-chart').centreonSelect2('updateSettings', {
+        minimumInputLength: newInputLength
+      });
+    }
+  }
+  
+  jQuery('#host_group_filter').on('change', changeSelectChart);
+  jQuery('#service_group_filter').on('change', changeSelectChart);
+  jQuery('#host_filter').on('change', changeSelectChart);
+  
+  /* Active drag and drop */
+  jQuery('.graphZone').sortable({
+    handle: '.title',
   });
 });
 </script>

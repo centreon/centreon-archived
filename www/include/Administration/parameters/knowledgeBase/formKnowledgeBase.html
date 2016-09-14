@@ -1,0 +1,46 @@
+{$form.javascript}
+<form {$form.attributes}>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {t}Knowledge base{/t}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Knowledge base configuration{/t}</h4>
+            </td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_name">&nbsp;{$form.kb_db_name.label}</td>
+            <td class="FormRowValue">{$form.kb_db_name.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_user">&nbsp;{$form.kb_db_user.label}</td>
+            <td class="FormRowValue">{$form.kb_db_user.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_password">&nbsp;{$form.kb_db_password.label}</td>
+            <td class="FormRowValue">{$form.kb_db_password.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_host">&nbsp;{$form.kb_db_host.label}</td>
+            <td class="FormRowValue">{$form.kb_db_host.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_prefix">&nbsp;{$form.kb_db_prefix.label}</td>
+            <td class="FormRowValue">{$form.kb_db_prefix.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_wiki_url">&nbsp;{$form.kb_wiki_url.label}</td>
+            <td class="FormRowValue">{$form.kb_wiki_url.html}</td>
+        </tr>
+    </table>
+    {if !$valid}
+    <div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
+    {else}
+    <div id="validForm"><p>{$form.change.html}</p></div>
+    {/if}
+    {$form.hidden}
+</form>
+{$helptext}

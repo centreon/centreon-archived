@@ -42,8 +42,13 @@ include_once("./class/centreonUtils.class.php");
 include("./include/common/autoNumLimit.php");
 
 $search = '';
-if (isset($_POST['searchSG']) && $_POST['searchSG']) {
-    $search = $_POST['searchSG'];
+if ((isset($_POST['searchSG']) && $_POST['searchSG']) || isset($centreon->sg_sg_search)) {
+    if (isset($_POST['searchSG']) && $_POST['searchSG']) {
+        $search = $_POST['searchSG'];
+        $centreon->sg_sg_search = $_POST['searchSG'];
+    } else {
+        $search = $centreon->sg_sg_search;
+    }
     $DBRESULT = $pearDB->query("SELECT COUNT(*)
                                 FROM servicegroup
                                 WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')".

@@ -15,8 +15,7 @@ CREATE TABLE `centreon_acl` (
   `host_id` int(11) DEFAULT NULL,
   `service_id` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
-  KEY `group_id_by_id` (`host_id`,`service_id`,`group_id`),
-  KEY `group_id_for_host` (`host_id`,`group_id`)
+  KEY `index1` (`group_id`,`host_id`,`service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -52,7 +51,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,365,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1', 0, 0);
+INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,365,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/centengine.log.log',0,'1', 0, 0);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -155,7 +154,8 @@ CREATE TABLE `log_action` (
   `action_type` varchar(255) NOT NULL,
   `log_contact_id` int(11) NOT NULL,
   PRIMARY KEY (`action_log_id`),
-  KEY `log_contact_id` (`log_contact_id`)
+  KEY `log_contact_id` (`log_contact_id`),
+  KEY `action_log_date` (`action_log_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

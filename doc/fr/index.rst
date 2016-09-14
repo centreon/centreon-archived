@@ -17,14 +17,22 @@ Sommaire :
    exploitation_guide/index
    administration_guide/index
    knowledge_base/index
+   partitioning/index
    howto/index
    upgrade/index
    faq/index
    developper/index
    api/index
 
+Cycle de vie des produits :
+
+.. toctree::
+
+    life_cycle/index
+
 Ressources en ligne supplémentaires :
 
 * `Demo <http://demo.centreon.com>`_
 * `Captures d'écran <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
+
 
