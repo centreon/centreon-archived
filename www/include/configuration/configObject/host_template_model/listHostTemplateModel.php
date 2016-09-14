@@ -58,12 +58,18 @@ while ($ehi = $DBRESULT->fetchRow()) {
 $DBRESULT->free();
 
 $search = '';
-if (isset($_POST['searchHT']) && $_POST['searchHT']) {
+if (isset($_POST['searchHT'])) {
     $search = $_POST['searchHT'];
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%') AND host_register = '0'");
-} else {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
+    $_SESSION['searchHT'] = $_POST['searchHT'];
+} else if (isset($_SESSION['searchHT']) && $_SESSION['searchHT'] != "") {
+    $search = $_SESSION['searchHT'];
 }
+
+$query = "SELECT COUNT(*) "
+    . "FROM host "
+    . "WHERE host_register = '0' "
+    . "AND (host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%') ";
+$DBRESULT = $pearDB->query($query);
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
 

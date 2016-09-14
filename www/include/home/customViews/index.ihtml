@@ -844,9 +844,10 @@ jQuery(function () {
   
   /* Initialize tabs */
   jQuery(".ui-tabs-panel").css('overflow', 'auto');
-  
+
+  var rotationTimer = {/literal}{$rotationTimer}{literal};
   jQuery("#rotation_timer").slider({
-    value: 0,
+    value: rotationTimer,
     min: 0,
     max: 300,
     step: 5,
@@ -854,9 +855,10 @@ jQuery(function () {
       jQuery("#timer_value").html(ui.value + " seconds");
     },
     stop: function(event, ui) {
-      setTimerLabel();
+      //setTimerLabel();
     }
   });
+  jQuery("#timer_value").html(rotationTimer + " seconds");
   jQuery("input[type=button]").button();
   
   
@@ -971,6 +973,7 @@ jQuery(function () {
       }
       jQuery("#tabs").tabs('select', getTabPos(data.current));
       infoEmptyTab();
+      jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
     }
   });
   
@@ -1024,6 +1027,7 @@ jQuery(function () {
     e.stopPropagation();
     toggleEdit();
   });
+
 });
 {/literal}
 </script>

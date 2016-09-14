@@ -1182,6 +1182,21 @@ a.infobulle:hover   {z-index:25;}
     border-radius: 4px;
     width: 30%;
 }
+
+.msg-field {
+    display: inline-block;
+    padding:6px 0;
+    text-align: center;
+}
+
+.msg-field.error {
+    color: #e00b3d;
+}
+
+.msg-field.success2 {
+    color: #597f00;
+}
+
 #centreonMsg    {
     top:50px;
     height:20px;

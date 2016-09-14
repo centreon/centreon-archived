@@ -115,7 +115,7 @@ try {
     } elseif ($action == "setDefault") {
         $viewObj->setDefault($customViewId);
     } elseif ($action == "setRotate" && isset($_POST['timer'])) {
-        $_SESSION['rotation_timer'] = $_POST['timer'];
+        $centreon->user->setContactParameters($db, array('widget_view_rotation' => $_POST['timer']));
     } elseif ($action == "defaultEditMode") {
         $_SESSION['customview_edit_mode'] = $_POST['editMode'];
     } elseif ($action == "get_share_info") {
