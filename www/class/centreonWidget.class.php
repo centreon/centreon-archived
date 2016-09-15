@@ -373,17 +373,21 @@ class CentreonWidget
      *
      * @return array
      */
-    public function getWidgetModels()
+    public function getWidgetModels($search = '')
     {
-         $query = "SELECT widget_model_id, title
-         		   FROM widget_models
-         		   ORDER BY title";
-         $res = $this->db->query($query);
-         $widgets = array();
-         while ($row = $res->fetchRow()) {
-             $widgets[$row['widget_model_id']] = $row['title'];
-         }
-         return $widgets;
+        $query = 'SELECT widget_model_id, title '
+            . 'FROM widget_models ';
+        $query .= ($search != '') ? 'WHERE title like "%' . $this->db->escape($search) . '%" ' : '';
+        $query .= 'ORDER BY title ';
+
+        $res = $this->db->query($query);
+
+        $widgets = array();
+        while ($row = $res->fetchRow()) {
+            $widgets[$row['widget_model_id']] = $row['title'];
+        }
+
+        return $widgets;
     }
 
     /**
