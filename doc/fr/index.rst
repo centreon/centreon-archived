@@ -10,6 +10,7 @@ Sommaire :
 
    a_propos/index
    release_notes/index
+   life_cycle/index
    installation/index
    migration/index
    quick_start/index
@@ -23,7 +24,6 @@ Sommaire :
    faq/index
    developper/index
    api/index
-   life_cycle/index
 
 Ressources en ligne supplémentaires :
 

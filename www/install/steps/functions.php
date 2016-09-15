@@ -227,6 +227,7 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['INSTALL_DIR_CENTREON'] = $conf_centreon['centreon_dir'];
     $_SESSION['CENTREON_ETC'] = $conf_centreon['centreon_etc'];
     $_SESSION['BIN_MAIL'] = $conf_centreon['mail'];
+    $_SESSION['BIN_RRDTOOL'] = $conf_centreon['rrdtool_dir'];
     $_SESSION['MONITORINGENGINE_USER'] = $conf_centreon['monitoring_user'];
     $_SESSION['MONITORINGENGINE_GROUP'] = $conf_centreon['monitoring_group'];
     $_SESSION['MONITORINGENGINE_ETC'] = $conf_centreon['monitoring_etc'];

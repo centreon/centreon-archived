@@ -1,7 +1,8 @@
 .. _Centreon-Partitioning:
 
+#####################
 Centreon-Partitioning
-=====================
+#####################
 
 ===========
 Présentaion

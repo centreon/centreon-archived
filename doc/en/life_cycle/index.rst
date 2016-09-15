@@ -19,7 +19,7 @@ This rule aims to provide operational support for around 2 years.
 +-----------------+---------------------------------------------------------+
 |      Status     |             Description                                 |
 +=================+=========================================================+
-|                 | Help and software support guaranteed |br|               | 
+|                 | Help and software support guaranteed |br|               |
 | SUPPORTED       | Bug fix(es) provided as part of a bug fix release |br|  |
 |                 | Product with end of life date not yet defined           |
 +-----------------+---------------------------------------------------------+
