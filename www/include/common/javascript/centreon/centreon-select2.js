@@ -552,7 +552,7 @@
           return object.id;
         });
         self.$elem.find('option').each(function (idx, element) {
-          if (tmpIds.indexOf($(element).val()) < 0) {
+          if (tmpIds.indexOf($(element).val()) >= 0) {
             $(element).remove();
           }
         });
@@ -563,7 +563,7 @@
           return object.id;
         });
         selectedElements = currentValues.filter(function (id) {
-          if (tmpIds.indexOf(id) < 0) {
+          if (tmpIds.indexOf(id) >= 0) {
             return true;
           }
           return false;

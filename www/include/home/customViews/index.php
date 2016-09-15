@@ -89,8 +89,10 @@ try {
     $views = $viewObj->getCustomViews();
 
     $rotationTimer = 0;
-    if (isset($_SESSION['rotation_timer'])) {
-        $rotationTimer = $_SESSION['rotation_timer'];
+    $contactParameters = $centreon->user->getContactParameters($db, array('widget_view_rotation'));
+
+    if (isset($contactParameters['widget_view_rotation'])) {
+        $rotationTimer = $contactParameters['widget_view_rotation'];
     }
 
     $i = 1;
@@ -254,6 +256,16 @@ try {
     );
     $formShareView->addElement('select2', 'user_id', _("User List"), array(), $attrContacts);
 
+    /*
+     * Widgets
+     */
+    $attrWidgets = array(
+        'datasourceOrigin' => 'ajax',
+        'multiple' => false,
+        'availableDatasetRoute' => './api/internal.php?object=centreon_administration_widget&action=list',
+        'allowClear' => false
+    );
+
     /**
      * User groups
      */
@@ -290,7 +302,8 @@ try {
     /**
      * Name
      */
-    $formAddWidget->addElement('text', 'widget_title', _("Widget Title"), $attrsText);
+    $formAddWidget->addElement('text', 'widget_title', _("Title"), $attrsText);
+    $formAddWidget->addElement('select2', 'widget_model_id', _("Widget"), array(), $attrWidgets);
 
     /**
      * Widgets
@@ -319,6 +332,7 @@ try {
     $formAddWidget->accept($rendererAddWidget);
     $template->assign('widgetModels', $widgetModels);
     $template->assign('formAddWidget', $rendererAddWidget->toArray());
+    $template->assign('rotationTimer', $rotationTimer);
     
     $template->display("index.ihtml");
 } catch (CentreonCustomViewException $e) {

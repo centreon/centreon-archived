@@ -48,7 +48,14 @@ function createArrayStats($arryFromJson) {
     $io = array('class' => 'stats_lv1');
 
     if (isset($arryFromJson['state'])) {
-        $io[_('State')] = $arryFromJson['state'];
+        $io[_('State')]['value'] = $arryFromJson['state'];
+        if ($arryFromJson['state'] == "disconnected") {
+            $io[_('State')]['class'] = "badge service_critical";
+        } elseif ($arryFromJson['state'] == "listening" || $arryFromJson['state'] == "connected" || $arryFromJson['state'] == "connecting") {
+            $io[_('State')]['class'] = "badge service_ok";
+        } elseif ($arryFromJson['state'] == "sleeping" || $arryFromJson['state'] == "blocked") {
+            $io[_('State')]['class'] = "badge service_warning";
+        }
     }
 
     if (isset($arryFromJson['status']) && $arryFromJson['status']) {
@@ -129,32 +136,39 @@ function parseStatsFile($statfile)
                 $matches[1] = "external-commands";
             }
 
-            $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
-            $result['io'][$matches[1]]['type'] = end(explode('-', $key));
+            if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected") || (!preg_match('/.*external commands.*/', $key))) {
+                $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
+                $result['io'][$matches[1]]['type'] = end(explode('-', $key));
 
-            /* force type of io  */
-            if (preg_match('/.*external commands.*/', $key)) {
-                $result['io'][$matches[1]]['type'] = 'input';
-            } elseif (preg_match('/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/', $key)) {
-                $result['io'][$matches[1]]['type'] = 'output';
-            }
+                /* force type of io  */
+                if (preg_match('/.*external commands.*/', $key)) {
+                    $result['io'][$matches[1]]['type'] = 'input';
+                } elseif (preg_match('/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/', $key)) {
+                    $result['io'][$matches[1]]['type'] = 'output';
+                }
 
-            /* manage failover output */
-            if (isset($json_stats[$key]['failover'])) {
-                $result['io'][$matches[1]][_('Failover')] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-failover\')">'.$matches[1].'-failover</a>';
-                $result['io'][$matches[1].'-failover'] = createArrayStats($json_stats[$key]['failover']);
-                $result['io'][$matches[1].'-failover']['type'] = 'output';
-                $result['io'][$matches[1].'-failover']['class'] = 'stats_lv2';
-            }
+                /* manage failover output */
+                if (isset($json_stats[$key]['failover'])) {
+                    $result['io'][$matches[1]][_('Failover')] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-failover\')">'.$matches[1].'-failover</a>';
+                    $result['io'][$matches[1].'-failover'] = createArrayStats($json_stats[$key]['failover']);
+                    $result['io'][$matches[1].'-failover']['type'] = 'output';
+                    $result['io'][$matches[1].'-failover']['class'] = 'stats_lv2';
+                    $result['io'][$matches[1].'-failover']['id'] = $matches[1].'-failover';
+                }
 
-            /* manage peers input */
-            if (isset($json_stats[$key]['peers'])) {
-                $arrayPeers = explode (',', $json_stats[$key]['peers']);
-                for ($i = 1; $i < count($arrayPeers); $i++) {
-                    $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')" class="'.$matches[1].'-'.$i.'">'.$arrayPeers[$i].'</a><br>';
-                    $result['io'][$matches[1].'-'.$i] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
-                    $result['io'][$matches[1].'-'.$i]['type'] = 'input';
-                    $result['io'][$matches[1].'-'.$i]['class'] = 'stats_lv2';
+                /* manage peers input */
+                if (isset($json_stats[$key]['peers'])) {
+                    $arrayPeers = explode (',', $json_stats[$key]['peers']);
+                    for ($i = 1; $i < count($arrayPeers); $i++) {
+                        $peerName = trim($arrayPeers[$i]);
+                        $id = str_replace(':', '_', $peerName);
+                        $id = str_replace('.', '_', $id);
+                        $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$id.'\')" class="'.$id.'">'.$peerName.'</a><br>';
+                        $result['io'][$peerName] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
+                        $result['io'][$peerName]['type'] = 'input';
+                        $result['io'][$peerName]['class'] = 'stats_lv2';
+                        $result['io'][$peerName]['id'] = $id;
+                    }
                 }
             }
         }

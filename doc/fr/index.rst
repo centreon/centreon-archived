@@ -1,7 +1,7 @@
 Bienvenue dans la documentation Centreon !
 ==========================================
 
-Centreon est un logiciel open source qui vous permet de superviser l'ensemble des éléments appartenant à votre système d'informations.
+Centreon est un logiciel open source qui vous permet de superviser l'ensemble des éléments de votre système d'informations.
 
 Sommaire :
 
@@ -23,12 +23,7 @@ Sommaire :
    faq/index
    developper/index
    api/index
-
-Cycle de vie des produits :
-
-.. toctree::
-
-    life_cycle/index
+   life_cycle/index
 
 Ressources en ligne supplémentaires :
 

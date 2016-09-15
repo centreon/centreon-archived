@@ -722,7 +722,6 @@ jQuery(function () {
             }
             logsEngine();
         });
-        jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
         jQuery( "#output" ).keypress(function(  event ) {
             if ( event.which == 13 ) {
                 logsEngine();

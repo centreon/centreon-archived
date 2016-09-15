@@ -83,6 +83,7 @@ In order to delete one host, use the **DEL** action. You have to list the availa
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
+.. _clapi-hosts-setparam:
 
 Setparam
 --------

@@ -23,12 +23,7 @@ Contents:
    faq/index
    developer/index
    api/index
-
-Cycle de vie des produits :
-
-.. toctree::
-
-    life_cycle/index
+   life_cycle/index
 
 Additional online resource:
 
