@@ -1,8 +1,8 @@
 .. _Centreon-Partitioning:
 
-#####################
-Centreon-Partitioning
-#####################
+####################################
+Partitionnement des bases de données
+####################################
 
 ===========
 Présentaion
