@@ -63,9 +63,150 @@ For the authentication follow the endpoint below:
   :statuscode 401: Account not enabled, the Centreon user cannot use the REST API
   :statuscode 403: Bad credentials
 
+Send command
+------------
 
-Getting started
-----------------
+.. http:post:: /api/index.php?action=send&object=centreon_monitoring_externalcmd
+
+  Send an external command to a poller
+  
+  **Example request**
+  
+  .. sourcecode:: http
+  
+    POST /api/index.php?action=action&object=centreon_monitoring_externalcmd
+    Host: api.domain.tld
+    Accept: application/json
+    centreon_auth_token: NTc1MDU3MGE3M2JiODIuMjA4OTA2OTc=
+    Body:
+      {
+        "commands": [
+          {
+            "poller_id": 1,
+            "timestamp": 1473865073,
+            "command": "ACKNOWLEDGE_HOST_PROBLEM;host;2;1;1;Admin;Problem ack"
+          }
+        ]
+      }
+      
+  .. sourcecode:: http
+  
+    HTTP/1.1 200 Ok
+    Vary: Accept
+    Content-Type: application/json
+    {
+      "success": true
+    }
+    
+  :query action: Must be send, define the action to execute
+  :reqheader centreon_auth_token: The authentication token
+  :<json object[] commands: The list of commands to execute
+  :<json number commands.poller_id: The poller id
+  :<json number commands.timestamp: The timestamp to execute
+  :<json string commands.command: The Centreon Engine command
+  :>json boolean success: If the command send to be executed
+  :statuscode 200: Command send to be executed
+  :statuscode 400: Bad parameters
+  :statuscode 500: Internal server error (custom message)
+  
+Get service metrics
+-------------------
+
+.. http:get:: /api/index.php?action=metricsDataByService&object=centreon_metric&ids=:ids&start=:start_time&end=:end_time
+
+  Get the metrics values of a service
+  
+  **Example request**
+  
+  .. sourcecode: http
+  
+    POST /api/index.php?action=metricsDataByService&object=centreon_metric&ids=1_1&start=1473910768&end=1473921568
+    Host: api.domain.tld
+    Accept: application/json
+    centreon_auth_token: NTc1MDU3MGE3M2JiODIuMjA4OTA2OTc=
+    
+  .. sourcecode: http
+  
+    HTTP/1.1 200 Ok
+    Vary: Accept
+    Content-Type: application/json
+    [
+      {
+        "service_id": "1_1",
+        "acknowledge": [
+          {
+            "start": 1473911100,
+            "end": 1473912100
+          }
+        ],
+        "downtime": [
+          {
+            "start": 1473911100,
+            "end": 1473912100
+          }
+        ],
+        "size": 200,
+        "times": [
+          1473910800,
+          1473911100,
+          1473911400,
+          1473911700
+        ],
+        "data": [
+          {
+            "color": "#336633",
+            "crit": 90,
+            "warn": 80,
+            "label": "cpu0",
+            "negative": false,
+            "stack": false,
+            "type": "line",
+            "unit": "%",
+            "data": [
+              1.2,
+              1.5,
+              0.4,
+              1.6
+            ]
+          }
+        ]
+      }
+    ]
+    
+  :query action: Must be metricsDataByService, define the action to execute
+  :query object: Must be centreon_metric, the object to use for the action
+  :query ids: The host id, service id formatted : hostId_serviceId. To get more of one service you can use the separator ','
+  :query start: The timestamp for begin of the period
+  :query end: The timestamp for end of the period
+  :reqheader centreon_auth_token: The authentication token
+  :>jsonarr string service_id: The service id formatted hostId_serviceId
+  :>jsonarr number size: The maximum number of points for a metric
+  :>jsonarr number[] times: The timestamp for metric points
+  :>jsonarr object[] acknowledge: The list of acknowledge in this period
+  :>jsonarr number acknowledge.start: The start timestamp of the acknowledge
+  :>jsonarr number acknowledge.end: The end timestamp of the acknowledge
+  :>jsonarr object[] downtime: The list of downtime in this period
+  :>jsonarr number downtime.start: The start timestamp of the downtime
+  :>jsonarr number downtime.end: The end timestamp of the downtime
+  :>jsonarr object[] data: The metrics for the service
+  :>jsonarr string data.color: The color of the curve
+  :>jsonarr float data.crit: The critical threshold
+  :>jsonarr float data.warn: The warning threshold
+  :>jsonarr string data.label: The label of the curve
+  :>jsonarr boolean data.negative: If the curve must be display in negative
+  :>jsonarr boolean data.stack: If the curve will be stack with another stack curve
+  :>jsonarr string data.type: The type of the curve line or area
+  :>jsonarr string data.unit: The unit of the metric
+  :>jsonarr float[] data.data: The points of the metric
+  :statuscode 200: Successful
+  :statuscode 400: Missing parameter
+  :statuscode 401: Unauthorized
+  :statuscode 404: Object not found
+  :statuscode 500: Internal server error (custom message)
+
+
+CLAPI Wrapper
+-------------
 
 95% of actions you can do using Centreon command line API are available with the API rest.
 
@@ -131,7 +272,7 @@ The endpoint for call clapi action is described below:
   :<json string action: The CLAPI action, option -a of CLAPI
   :<json string object: The CLAPI object, option -o of CLAPI
   :<json string [values]: The CLAPI values, option -v of CLAPI
-  :>json array result: The list of result
+  :>json object[] result: The list of result
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -143,7 +284,7 @@ The endpoint for call clapi action is described below:
   :statuscode 409: Object already exists
   :statuscode 409: Name is already in use
   :statuscode 409: Objects already linked
-  :statuscode 500: Internal server error (custom message)  
+  :statuscode 500: Internal server error (custom message)
 
 Examples
 ########
@@ -282,7 +423,7 @@ List hosts
   :reqheader centreon_auth_token: The authentication token
   :<json string action: show, action for listing
   :<json string object: HOST, object host
-  :>json array result: The list of result
+  :>json object[] result: The list of result
   :>json number result.id: The host id
   :>json string result.name: The host name
   :>json string result.alias: The host alias
@@ -340,7 +481,7 @@ Add host
   :<json string action: add, action for add
   :<json string object: HOST, object host
   :<json string values: The list of information for create a host
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -394,7 +535,7 @@ Delete host
   :<json string action: del, action for delete
   :<json string object: HOST, object host
   :<json string values: The host name of the host to delete
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -449,7 +590,7 @@ Set parameters
   :<json string action: setparam, action for set of paramater
   :<json string object: HOST, object host
   :<json string values: The host name of the host to update, the parameter key and the parameter value
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -506,7 +647,7 @@ Set instance poller
   :<json string action: setinstance, action for set an instance
   :<json string object: HOST, object host
   :<json string values: The host name of the host to link and the poller name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -582,7 +723,7 @@ Get macro
   :<json string action: getmacro, action for get list of macro
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of macros
+  :>json object[] result: The list of macros
   :>json string result.macro name: The macro name
   :>json string result.macro value: The macro value
   :>json number result.is_password: If the macro is a password
@@ -642,7 +783,7 @@ Set macro
   :<json string action: setmacro, action for set a macro
   :<json string object: HOST, object host
   :<json string values: The host name of the host, the macro name and the macro value
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -697,7 +838,7 @@ Delete macro
   :<json string action: delmacro, action for delete a macro
   :<json string object: HOST, object host
   :<json string values: The host name of the host and the macro name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -764,7 +905,7 @@ Get template
   :reqheader centreon_auth_token: The authentication token
   :<json string object: HOST, object host
   :<json string values: The host name of the host
-  :>json array result: The list of result
+  :>json object[] result: The list of result
   :>json number result.id: The host template id
   :>json string result.name: The host template name
   :statuscode 200: Successful
@@ -821,7 +962,7 @@ Set template
   :<json string action: settemplate, action for set a host template
   :<json string object: HOST, object host
   :<json string values: The host name of the host and the host template name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -877,7 +1018,7 @@ Add template
   :<json string action: addtemplate, action for add a host template
   :<json string object: HOST, object host
   :<json string values: The host name of the host and the host template name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -932,7 +1073,7 @@ Delete template
   :<json string action: deltemplate, action for unlink a host template
   :<json string object: HOST, object host
   :<json string values: The host name of the host and the host template name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -985,7 +1126,7 @@ Apply template
   :<json string action: applytpl, action for apply host template to the host
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1043,7 +1184,7 @@ Get parent
   :<json string action: getparent, action for get the host parent
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :>json number result.id: The host parent id
   :>json string result.name: The host parent name
   :statuscode 200: Successful
@@ -1100,7 +1241,7 @@ Add parent
   :<json string action: addparent, action for add a host parent to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the host parent name. To add more than one parent to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1155,7 +1296,7 @@ Set parent
   :<json string action: setparent, action for set a host parent to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the host parent name. To set more than one parent to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1209,7 +1350,7 @@ Delete parent
   :<json string action: delparent, action for delete a host parent to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the host parent name. To delete more than one parent to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1267,7 +1408,7 @@ Get contact group
   :<json string action: getcontactgroup, action for get the list of contact group from the host
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of result
+  :>json object[] result: The list of result
   :>json number id: The contact group id
   :>json string name: The contact group name
   :statuscode 200: Successful
@@ -1324,7 +1465,7 @@ Add contact group
   :<json string action: addcontactgroup, action for add a contact group to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the contact group name. To add more than one contact group to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1379,7 +1520,7 @@ Set contact group
   :<json string action: setcontactgroup, action for set a contact group to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the contact group name. To set more than one contact group to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1432,7 +1573,7 @@ Delete contact group
   :<json string action: delcontactgroup, action for delete a contact group to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the contact group name. To delete more than one contact group to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1490,7 +1631,7 @@ Get contact
   :<json string action: getcontact, action for get the list of contact from the host
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of result
+  :>json object[] result: The list of result
   :>json number id: The contact id
   :>json string name: The contact name
   :statuscode 200: Successful
@@ -1547,7 +1688,7 @@ Add contact
   :<json string action: addcontact, action for add a contact to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the contact name. To add more than one contact to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1602,7 +1743,7 @@ Set contact
   :<json string action: setcontact, action for set a contact to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the contact name. To set more than one contact to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1655,7 +1796,7 @@ Delete contact
   :<json string action: delcontact, action for delete a contact to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the contact name. To delete more than one contact to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1717,7 +1858,7 @@ Get hostgroup
   :<json string action: getcontact, action for get the list of host groups from the host
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of result
+  :>json object[] result: The list of result
   :>json number id: The host group id
   :>json string name: The host group name
   :statuscode 200: Successful
@@ -1774,7 +1915,7 @@ Add hostgroup
   :<json string action: addhostgroup, action for add a host group to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the host group name. To add more than one host group to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1829,7 +1970,7 @@ Set hostgroup
   :<json string action: sethostgroup, action for set a host group to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the host group name. To set more than one host group to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1882,7 +2023,7 @@ Delete hostgroup
   :<json string action: delhostgroup, action for delete a host group to the host
   :<json string object: HOST, object host
   :<json string values: The host name and the host group name. To delete more than one host group to a host, use the character '|'
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1945,7 +2086,7 @@ Enable
   :<json string action: enable, action for enable a host
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
@@ -1999,7 +2140,7 @@ Disable
   :<json string action: disable, action for disable a host
   :<json string object: HOST, object host
   :<json string values: The host name
-  :>json array result: The list of result, this array is empty
+  :>json object[] result: The list of result, this array is empty
   :statuscode 200: Successful
   :statuscode 400: Missing parameter
   :statuscode 400: Missing name parameter
