@@ -153,16 +153,21 @@ function parseStatsFile($statfile)
                     $result['io'][$matches[1].'-failover'] = createArrayStats($json_stats[$key]['failover']);
                     $result['io'][$matches[1].'-failover']['type'] = 'output';
                     $result['io'][$matches[1].'-failover']['class'] = 'stats_lv2';
+                    $result['io'][$matches[1].'-failover']['id'] = $matches[1].'-failover';
                 }
 
                 /* manage peers input */
                 if (isset($json_stats[$key]['peers'])) {
                     $arrayPeers = explode (',', $json_stats[$key]['peers']);
                     for ($i = 1; $i < count($arrayPeers); $i++) {
-                        $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-'.$i.'\')" class="'.$matches[1].'-'.$i.'">'.$arrayPeers[$i].'</a><br>';
-                        $result['io'][$matches[1].'-'.$i] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
-                        $result['io'][$matches[1].'-'.$i]['type'] = 'input';
-                        $result['io'][$matches[1].'-'.$i]['class'] = 'stats_lv2';
+                        $peerName = trim($arrayPeers[$i]);
+                        $id = str_replace(':', '_', $peerName);
+                        $id = str_replace('.', '_', $id);
+                        $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$id.'\')" class="'.$peerName.'">'.$peerName.'</a><br>';
+                        $result['io'][$peerName] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
+                        $result['io'][$peerName]['type'] = 'input';
+                        $result['io'][$peerName]['class'] = 'stats_lv2';
+                        $result['io'][$peerName]['id'] = $id;
                     }
                 }
             }
