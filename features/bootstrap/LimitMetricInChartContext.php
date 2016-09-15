@@ -9,6 +9,7 @@ use Centreon\Test\Behat\ServiceConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\MonitoringServicesPage;
 use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\GraphMonitoringPage;
 
 class LimitMetricInChartContext extends CentreonContext
 {
@@ -48,9 +49,14 @@ class LimitMetricInChartContext extends CentreonContext
         $serviceConfig->save();
         
         $this->restartAllPollers();
+
+        $perfdata = '';
+        for ($i = 0; $i < 20 ; $i++) {
+            $perfdata .= 'test' . $i . '=1s ';
+        }
         
         sleep(5);
-        $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', '', 'test=1s;5;10;0;10;5;10;0;10;5;10;0;10;5;10;0;10');
+        $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
         sleep(5);
     }
     
@@ -67,7 +73,8 @@ class LimitMetricInChartContext extends CentreonContext
      */
     public function iDisplayTheChartInPerformancePage()
     {
-        
+        $graphMonitoring = new GraphMonitoringPage($this);
+        $graphMonitoring->setFilterbyChart($this->hostName, $this->serviceName);
     }
     
     /**
@@ -82,15 +89,15 @@ class LimitMetricInChartContext extends CentreonContext
     /**
      * @Then a message says that the chart will not be displayed
      */
-    public function aMessageSaisThatTheChartWillNotBeDisplayed()
+    public function aMessageSaysThatTheChartWillNotBeDisplayed()
     {
         
     }
-    
+
     /**
-     * @Then a message says that the chart will not be displayed and a button is available to display the chart
+     * @Then a button is available to display the chart
      */
-    public function aMessageSaisThatTheChartWillNotBeDisplayedAndAButtonIsAvailableToDisplayTheChart()
+    public function aButtonIsAvailableToDisplayTheChart()
     {
         
     }
