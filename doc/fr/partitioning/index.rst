@@ -43,3 +43,9 @@ Le paramètre MySQL **open_files_limit** doit être fixé à 32000 dans la secti
   [server]
   open_files_limit = 32000
 
+
+Afin d'exploiter le module, vous pouvez suivre la documentation suivante :
+
+.. toctree::
+
+  user/index
