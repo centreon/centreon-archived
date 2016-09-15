@@ -19,13 +19,21 @@ Les versions correctives sont fournies dans le cadre de la diffusion de correcti
 
 Le schéma proposé a pour objectif de proposer un support opérationnel de 2 ans environ.
 
-+-----------------+------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------+
-|      Status     |                                 SUPPORTED                              |                             END OF LIFE                                  |           UNSUPPORTED                |
-+=================+========================================================================+==========================================================================+======================================+
-| **Description** | Aide et assistance logicielle garantie |br|                            | Aide et assistance logicielle toujours garantie |br|                     | Aide et assistance non garantie |br| |
-|                 | Fourniture de correction(s) dans le cadre d’une version corrective |br|| Fourniture de correction (s) dans le cadre d’une version corrective |br| | Pas de livraison de correctif        |
-|                 | Produit dont la date de fin de vie n’est pas encore définie            | Produit dont la date de fin de vie est définie                           |                                      |
-+-----------------+------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------+
++-----------------+--------------------------------------------------------------------------+
+|      Status     |             Description                                                  |
++=================+==========================================================================+
+|                 | Aide et assistance logicielle garantie |br|                              | 
+| SUPPORTED       | Fourniture de correction(s) dans le cadre d’une version corrective |br|  |
+|                 | Produit dont la date de fin de vie n’est pas encore définie              |
++-----------------+--------------------------------------------------------------------------+
+|                 | Aide et assistance logicielle toujours garantie |br|                     |
+| END OF LIFE     | Fourniture de correction (s) dans le cadre d’une version corrective |br| |
+|                 | Produit dont la date de fin de vie est définie                           |
++-----------------+--------------------------------------------------------------------------+
+|                 | Aide et assistance non garantie |br|                                     |
+| UNSUPPORTED     | Pas de livraison de correctif                                            |
+|				  |                                                                          |
++-----------------+--------------------------------------------------------------------------+
 
 |br|\
 
