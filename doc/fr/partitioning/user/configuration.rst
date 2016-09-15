@@ -5,7 +5,7 @@ Configuration
 Centreon Partitioning utilise des fichiers de configuration XML. Les fichiers des tables Centreon sont fournis.
 
 Exemple avec partitioning-data_bin.xml
---------------------------------------
+**************************************
 ::
 
   <?xml version="1.0" encoding="UTF-8"?>
@@ -34,7 +34,7 @@ Exemple avec partitioning-data_bin.xml
   </centreon-partitioning>
 
 Explication
------------
+***********
 
 Centreon Partitioning permet de créer des partitions journalières. Pour cela, votre table doit avoir un champ dont la valeur est un timestamp (temps en secondes depuis le 1er janvier 1970).
 
