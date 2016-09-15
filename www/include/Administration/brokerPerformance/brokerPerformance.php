@@ -163,7 +163,7 @@ function parseStatsFile($statfile)
                         $peerName = trim($arrayPeers[$i]);
                         $id = str_replace(':', '_', $peerName);
                         $id = str_replace('.', '_', $id);
-                        $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$id.'\')" class="'.$peerName.'">'.$peerName.'</a><br>';
+                        $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$id.'\')" class="'.$id.'">'.$peerName.'</a><br>';
                         $result['io'][$peerName] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
                         $result['io'][$peerName]['type'] = 'input';
                         $result['io'][$peerName]['class'] = 'stats_lv2';
