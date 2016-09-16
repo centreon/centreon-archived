@@ -20,7 +20,7 @@ Les versions correctives sont fournies dans le cadre de la diffusion de correcti
 Le schéma proposé a pour objectif de proposer un support opérationnel de 2 ans environ.
 
 +-----------------+--------------------------------------------------------------------------+
-|      Status     |             Description                                                  |
+| **Status**      | **Description**                                                          |
 +=================+==========================================================================+
 | SUPPORTED       | Fourniture de correction(s) dans le cadre d’une version corrective |br|  |
 |                 | Produit dont la date de fin de vie n’est pas encore définie              |
@@ -30,7 +30,7 @@ Le schéma proposé a pour objectif de proposer un support opérationnel de 2 an
 |                 | Produit dont la date de fin de vie est définie                           |
 +-----------------+--------------------------------------------------------------------------+
 | UNSUPPORTED     | Aide et assistance non garantie |br|                                     |
-|                 | Pas de livraison de correctif                                            |                                                                          |
+|                 | Pas de livraison de correctif                                            |
 +-----------------+--------------------------------------------------------------------------+
 
 |br|\
