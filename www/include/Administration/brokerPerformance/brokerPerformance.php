@@ -145,6 +145,8 @@ function parseStatsFile($statfile)
                     $result['io'][$matches[1]]['type'] = 'input';
                 } elseif (preg_match('/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/', $key)) {
                     $result['io'][$matches[1]]['type'] = 'output';
+                } elseif (preg_match('/.*(centreon-bam-monitoring|centreon-bam-reporting).*/', $key)) {
+                    $result['io'][$matches[1]]['type'] = 'output';
                 }
 
                 /* manage failover output */

@@ -228,7 +228,6 @@ $tpl->assign("secondes", _("s"));
 $tpl->assign("view_host_dtm", _("View downtimes of hosts"));
 $tpl->assign("host_dtm_link", "./main.php?p=".$p."&o=vh");
 $tpl->assign("cancel", _("Cancel"));
-$tpl->assign("delete", _("Delete"));
 $tpl->assign("limit", $limit);
 
 $tpl->assign("Host", _("Host Name"));
@@ -260,7 +259,6 @@ $tpl->display("listDowntime.ihtml");
 
 var msgArr = new Array();
 msgArr['cs'] = '<?php echo addslashes(_("Do you confirm the cancellation ?")); ?>';
-msgArr['ds'] = '<?php echo addslashes(_("Do you confirm the deletion ?")); ?>';
 msgArr['NoItemSelected'] = '<?php echo addslashes(_("Please select one or more items")); ?>';
 
 function doAction(slt, act) {
