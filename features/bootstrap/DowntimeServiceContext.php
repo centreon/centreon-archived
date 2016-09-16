@@ -1,12 +1,7 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\MetaServiceConfigurationPage;
-use Centreon\Test\Behat\MonitoringServicesPage;
 use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
 
 /**
@@ -32,7 +27,8 @@ class DowntimeServiceContext extends CentreonContext
             'check_period' => 5,
             'max_check_attempts' => 1,
             'normal_check_interval' => 1,
-            'retry_check_interval' => 1));
+            'retry_check_interval' => 1
+        ));
         $metaservicePage->save();
         $this->restartAllPollers();
     }
@@ -47,6 +43,7 @@ class DowntimeServiceContext extends CentreonContext
         sleep(1);
         $this->assertFind('css', 'textarea[name="comment"]')->setValue('downtime');
         $this->assertFind('css', 'input[name="submitA"]')->click();
+        sleep(3);
     }
 
     /**
@@ -60,24 +57,54 @@ class DowntimeServiceContext extends CentreonContext
         $this->assertFind('css', 'textarea[name="comment"]')->setValue('downtime');
         $this->assertFind('css', 'input[name="submitA"]')->click();
         sleep(3);
-
     }
 
+    /**
+     * @Then I cancel a downtime
+     */
+    public function iCancelADowntime()
+    {
+        $this->visit('main.php?p=21001');
+        $this->setConfirmBox(true);
+        $this->assertFind('css', 'input[name="select[SVC;_Module_Meta;1]"]')->click();
+        $this->getSession()->executeScript(
+            'javascript: doAction(\'select[name="o1"]\', \'cs\');'
+        );
+        sleep(2);
+
+    }
 
     /**
      * @Then this one appears in the interface
      */
-    public function thisOneAppearsInTheInterface ()
+    public function thisOneAppearsInTheInterface()
     {
         $this->visit('main.php?p=21002');
         $this->getSession()->getPage()->has('css', 'table.ListTable tbody tr.list_two td.ListColLeft a');
     }
 
+    /**
+     * @Then this one does not appear in the interface
+     */
+    public function thisOneDoesNotAppearInTheInterface()
+    {
+        $this->spin(function ($context) {
+            $page = new ServiceMonitoringDetailsPage(
+                $context,
+                '_Module_Meta',
+                'meta_1'
+            );
+            $props = $page->getProperties();
+            return !$props['in_downtime'];
+        },
+            3);
+
+    }
 
     /**
      * @Then this one appears in the interface in downtime
      */
-    public function thisOneAppearsInTheInterfaceInDowntime ()
+    public function thisOneAppearsInTheInterfaceInDowntime()
     {
         $this->spin(function ($context) {
             $page = new ServiceMonitoringDetailsPage(
@@ -90,9 +117,6 @@ class DowntimeServiceContext extends CentreonContext
         },
             3);
     }
-
-
-
 
 
 }

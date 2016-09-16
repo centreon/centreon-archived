@@ -293,10 +293,22 @@
       /* Prepare threshold */
       if (this.settings.threshold && dataRaw.data.length === 1) {
         nbPoints = dataRaw.data[0].data.length;
+        if (dataRaw.data[0].warn) {
+          data.colors.warn = '#ff9a13';
+          data.types.warn = 'line';
+          data.names.warn = 'Warning';
+          thresholdData = Array.apply(null, Array(nbPoints))
+              .map(function () {
+                return dataRaw.data[0].warn;
+              });
+          thresholdData.unshift('warn');
+          data.columns.push(thresholdData);
+          data.regions.warn = [{style: 'dashed'}];
+        }
         if (dataRaw.data[0].crit) {
           data.colors.crit = '#e00b3d';
           data.types.crit = 'line';
-          data.names.crit = 'Threshold critical';
+          data.names.crit = 'Critical';
           thresholdData = Array.apply(null, Array(nbPoints))
             .map(function () {
               return dataRaw.data[0].crit;
@@ -304,18 +316,6 @@
           thresholdData.unshift('crit');
           data.columns.push(thresholdData);
           data.regions.crit = [{style: 'dashed'}];
-        }
-        if (dataRaw.data[0].warn) {
-          data.colors.warn = '#ff9a13';
-          data.types.warn = 'line';
-          data.names.warn = 'Threshold warning';
-          thresholdData = Array.apply(null, Array(nbPoints))
-            .map(function () {
-              return dataRaw.data[0].warn;
-            });
-          thresholdData.unshift('warn');
-          data.columns.push(thresholdData);
-          data.regions.warn = [{style: 'dashed'}];
         }
       }
       

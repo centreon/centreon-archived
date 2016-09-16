@@ -272,7 +272,7 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 Avant d'aller plus loin
 =======================
 
-Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.2. Pour cela :
+Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur. Pour cela :
 
  #.	Connectez-vous en tant que 'root' sur le serveur central
  #.	Tapez la commande 
