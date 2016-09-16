@@ -48,7 +48,7 @@ class MetaCommand extends AbstractObject {
         
         $object = array();
         $object['command_name'] = 'check_meta';
-        $object['command_line'] = '$USER1$/check_meta_service -i $ARG1$';        
+        $object['command_line'] = '$CENTREONPLUGINS$/centreon_centreon_central.pl --plugin=apps::centreon::local::plugin --mode=metaservice --centreon-config=/etc/centreon/conf.pm --meta-id $ARG1$';
         $this->generateObjectInFile($object, 0);
         
         $object['command_name'] = 'check_meta_host_alive';
