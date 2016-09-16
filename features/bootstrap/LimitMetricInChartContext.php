@@ -15,6 +15,7 @@ class LimitMetricInChartContext extends CentreonContext
 {
     private $hostName = 'LimitMetricInChartTestHost';
     private $serviceName = 'LimitMetricInChartTestService';
+    private $chartPage = null;
   
     /**
      * @Given a service with several metrics
@@ -57,7 +58,7 @@ class LimitMetricInChartContext extends CentreonContext
         
         sleep(5);
         $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
-        sleep(5);
+        sleep(10);
     }
     
     /**
@@ -73,8 +74,13 @@ class LimitMetricInChartContext extends CentreonContext
      */
     public function iDisplayTheChartInPerformancePage()
     {
-        $graphMonitoring = new GraphMonitoringPage($this);
-        $graphMonitoring->setFilterbyChart($this->hostName, $this->serviceName);
+        $this->chartPage = new GraphMonitoringPage($this);
+        $this->chartPage->setFilterbyChart($this->hostName, $this->serviceName);
+        sleep(3);
+
+        if (!$this->chartPage->hasChart($this->hostName, $this->serviceName)) {
+            throw new \Exception('Chart ' . $this->hostName . ' - ' . $this->serviceName . ' does not exist.');
+        }
     }
     
     /**
@@ -91,7 +97,11 @@ class LimitMetricInChartContext extends CentreonContext
      */
     public function aMessageSaysThatTheChartWillNotBeDisplayed()
     {
-        
+        $chart = $this->chartPage->getChart($this->hostName, $this->serviceName);
+        $message = $this->assertFindIn($chart, 'css', '.c3-empty')->getText();
+        if ($message != "Too much metrics, the chart can't be displayed") {
+            throw new \Exception('Message which says "too much metrics" does not exist');
+        }
     }
 
     /**
@@ -99,6 +109,7 @@ class LimitMetricInChartContext extends CentreonContext
      */
     public function aButtonIsAvailableToDisplayTheChart()
     {
-        
+        $chart = $this->chartPage->getChart($this->hostName, $this->serviceName);
+        $this->assertFindButtonIn($chart, 'Display Chart');
     }
 }

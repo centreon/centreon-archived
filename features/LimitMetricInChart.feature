@@ -11,12 +11,14 @@ Feature: Limit metrics in chart
         When i display the chart in the popin
         Then a message says that the chart will not be displayed
 
-    Scenario: Display message and button in perfomance page
+    Scenario: Display message and button in performance page
         Given a service with several metrics
         When i display the chart in performance page
-        Then a message says that the chart will not be displayed and a button is available to display the chart
+        Then a message says that the chart will not be displayed
+        And a button is available to display the chart
 
     Scenario: Display message and button in service details page
         Given a service with several metrics
         When i display the chart in service details page
-        Then a message says that the chart will not be displayed and a button is available to display the chart
+        Then a message says that the chart will not be displayed
+        And a button is available to display the chart
