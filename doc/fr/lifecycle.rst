@@ -22,16 +22,15 @@ Le schéma proposé a pour objectif de proposer un support opérationnel de 2 an
 +-----------------+--------------------------------------------------------------------------+
 |      Status     |             Description                                                  |
 +=================+==========================================================================+
-|                 | Aide et assistance logicielle garantie |br|                              |
 | SUPPORTED       | Fourniture de correction(s) dans le cadre d’une version corrective |br|  |
 |                 | Produit dont la date de fin de vie n’est pas encore définie              |
 +-----------------+--------------------------------------------------------------------------+
-|                 | Aide et assistance logicielle toujours garantie |br|                     |
-| END OF LIFE     | Fourniture de correction (s) dans le cadre d’une version corrective |br| |
+| END OF LIFE     | Aide et assistance logicielle toujours garantie |br|                     |
+|                 | Fourniture de correction (s) dans le cadre d’une version corrective |br| |
 |                 | Produit dont la date de fin de vie est définie                           |
 +-----------------+--------------------------------------------------------------------------+
-|                 | Aide et assistance non garantie |br|                                     |
-| UNSUPPORTED     | Pas de livraison de correctif                                            |                                                                          |
+| UNSUPPORTED     | Aide et assistance non garantie |br|                                     |
+|                 | Pas de livraison de correctif                                            |                                                                          |
 +-----------------+--------------------------------------------------------------------------+
 
 |br|\
