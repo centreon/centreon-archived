@@ -1,8 +1,8 @@
 .. _knowledge_base:
 
-#######################
-Centreon Knowledge Base
-#######################
+####################
+Base de connaissance
+####################
 
 Intégré nativement depuis la version 2.8.0, **Centreon Knowledge Base** permet d'interfacer une base de connaissances
 techniques de procédures (wiki) avec Centreon.

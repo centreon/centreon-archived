@@ -12,5 +12,5 @@ Le contenu d'une procédure peut être d'ordre général ou spécifique:
 
 Une procédure peut être associée à un hôte ou un service.
 
-.. image:: ../../_static/images/knowledge/kb_change.png
+.. image:: ../../../_static/images/knowledge/kb_change.png
 
