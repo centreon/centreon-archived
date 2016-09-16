@@ -296,7 +296,7 @@
         if (dataRaw.data[0].crit) {
           data.colors.crit = '#e00b3d';
           data.types.crit = 'line';
-          data.names.crit = 'Threshold critical';
+          data.names.crit = 'Critical';
           thresholdData = Array.apply(null, Array(nbPoints))
             .map(function () {
               return dataRaw.data[0].crit;
@@ -308,7 +308,7 @@
         if (dataRaw.data[0].warn) {
           data.colors.warn = '#ff9a13';
           data.types.warn = 'line';
-          data.names.warn = 'Threshold warning';
+          data.names.warn = 'Warning';
           thresholdData = Array.apply(null, Array(nbPoints))
             .map(function () {
               return dataRaw.data[0].warn;
