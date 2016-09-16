@@ -2,7 +2,7 @@
 Centreon 2.8
 ############
 
-Please find here the release notes dedicated to the last 2.7.x version of Centreon.
+Please find here the release notes dedicated to the last 2.8.x version of Centreon.
 
 .. toctree::
     :maxdepth: 1

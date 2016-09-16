@@ -24,7 +24,7 @@ logiciels et installer ces derniers manuellement.
 La compilation manuelle de certains paquets peut être complexe.
 
 .. note::
-    Centreon recommande l'utilisation de la version packagée Centreon Enterprise Server. L'installation est détaillée au chapitre :ref:`Premier pas avec CES 3<firststepsces3>`
+    Centreon recommande l'utilisation de la version packagée Centreon ISO. L'installation est détaillée au chapitre :ref:`Premier pas avec Centreon ISO<firststepsces3>`
 
 Le dernier format disponible est orienté pour les développeurs ou les
 bêta-testeurs. Aucun support officiel ne pourra être délivré sur ces
