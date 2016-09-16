@@ -20,3 +20,4 @@ Guide d'administration
    02j
    02k
    backup
+   partitioning/index

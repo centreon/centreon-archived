@@ -256,6 +256,16 @@ try {
     );
     $formShareView->addElement('select2', 'user_id', _("User List"), array(), $attrContacts);
 
+    /*
+     * Widgets
+     */
+    $attrWidgets = array(
+        'datasourceOrigin' => 'ajax',
+        'multiple' => false,
+        'availableDatasetRoute' => './api/internal.php?object=centreon_administration_widget&action=list',
+        'allowClear' => false
+    );
+
     /**
      * User groups
      */
@@ -292,7 +302,8 @@ try {
     /**
      * Name
      */
-    $formAddWidget->addElement('text', 'widget_title', _("Widget Title"), $attrsText);
+    $formAddWidget->addElement('text', 'widget_title', _("Title"), $attrsText);
+    $formAddWidget->addElement('select2', 'widget_model_id', _("Widget"), array(), $attrWidgets);
 
     /**
      * Widgets
