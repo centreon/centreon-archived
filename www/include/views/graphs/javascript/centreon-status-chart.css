@@ -17,10 +17,18 @@
   font-size: 10px;
 }
 
-.enable_chart {
-    position: absolute;
-    top: 48%;
+.detail_button, .performance_button {
     left: 48%;
     z-index: 10;
     display: none;
+}
+
+.detail_button {
+    position: relative;
+    top: 52%;
+}
+
+.performance_button {
+    position: absolute;
+    top: 48%;
 }
