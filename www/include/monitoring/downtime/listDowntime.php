@@ -124,7 +124,10 @@ if ($view_all == 1) {
     $extrafields = "";
 }
 /* --------------- Services ---------------*/
-$request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields . " " .
+$request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
+ d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
+  d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
+   s.description as service_description " . $extrafields . " " .
     "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
     "WHERE d.host_id = s.host_id " .
     "AND d.service_id = s.service_id " .
@@ -134,30 +137,37 @@ if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
 if (!$is_admin) {
-    $request .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+    $request .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" .
+        $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $request .= (isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
     (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
     (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
     (isset($view_all) && $view_all == 0 ? "AND d.end_time > '" . time() . "' " : "") .
-    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
+    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ?
+        " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
     (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "");
 
 /* --------------- Hosts --------------- */
-$request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, '' as service_description " . $extrafields .
+$request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
+  d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
+  d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
+   '' as service_description " . $extrafields .
     "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") . " " .
     "WHERE d.host_id = h.host_id AND d.service_id IS NULL ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
 if (!$is_admin) {
-    $request .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+    $request .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" .
+        $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : "") .
     (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
     (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
     (isset($view_all) && $view_all == 0 ? "AND d.end_time > '" . time() . "' " : "") .
-    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
+    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ?
+        " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
     (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
     ") ORDER BY scheduled_start_time DESC " .
     "LIMIT " . $num * $limit . ", " . $limit;
@@ -169,11 +179,16 @@ for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
     $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
     $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
     $tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
-    $tab_downtime_svc[$i]['service_description'] = ($data['service_description'] != '' ? $data['service_description'] : '-');
-    $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(_("Y/m/d H:i"),
-            $tab_downtime_svc[$i]["scheduled_start_time"]) . " ";
-    $tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(_("Y/m/d H:i"),
-            $tab_downtime_svc[$i]["scheduled_end_time"]) . " ";
+    $tab_downtime_svc[$i]['service_description'] =
+        ($data['service_description'] != '' ? $data['service_description'] : '-');
+    $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(
+        _("Y/m/d H:i"),
+        $tab_downtime_svc[$i]["scheduled_start_time"]
+    ) . " ";
+    $tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(
+        _("Y/m/d H:i"),
+        $tab_downtime_svc[$i]["scheduled_end_time"]
+    ) . " ";
     if ($data['service_description'] != '') {
         $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
         $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
@@ -201,8 +216,10 @@ foreach ($tab_downtime_svc as $key => $value) {
                 $tab_downtime_svc[$key]["actual_end_time"] = _("Never Started");
             }
         } else {
-            $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(_("Y/m/d H:i"),
-                    $tab_downtime_svc[$key]["actual_end_time"]) . " ";
+            $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(
+                _("Y/m/d H:i"),
+                $tab_downtime_svc[$key]["actual_end_time"]
+            ) . " ";
         }
         $tab_downtime_svc[$key]["was_cancelled"] = $en[$tab_downtime_svc[$key]["was_cancelled"]];
     }
