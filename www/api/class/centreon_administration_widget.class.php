@@ -33,26 +33,50 @@
  *
  */
 
-class MetaCommand extends AbstractObject {
-    protected $generate_filename = 'meta_commands.cfg';
-    protected $object_name = 'command';
-    protected $attributes_write = array(
-        'command_name',
-        'command_line',
-    );
+
+require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
+require_once dirname(__FILE__) . "/webService.class.php";
+
+class CentreonAdministrationWidget extends CentreonWebService
+{
+    /**
+     * Constructor
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
     
-    public function generateObjects() {
-        if ($this->checkGenerate(0)) {
-            return 0;
+    /**
+     * Get the list of views
+     */
+    public function getList()
+    {
+        global $centreon;
+
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
         }
-        
-        $object = array();
-        $object['command_name'] = 'check_meta';
-        $object['command_line'] = '$CENTREONPLUGINS$/centreon_centreon_central.pl --plugin=apps::centreon::local::plugin --mode=metaservice --centreon-config=/etc/centreon/conf.pm --meta-id $ARG1$';
-        $this->generateObjectInFile($object, 0);
-        
-        $object['command_name'] = 'check_meta_host_alive';
-        $object['command_line'] = '$USER1$/check_ping -H $HOSTADDRESS$ -w 3000.0,80% -c 5000.0,100% -p 1';        
-        $this->generateObjectInFile($object, 0);
+
+        $iitems = array();
+
+        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
+        $widgets = $widgetObj->getWidgetModels($q);
+        foreach ($widgets as $widgetId => $widgetTitle) {
+            $items[] = array(
+                'id' => $widgetId,
+                'text' => $widgetTitle
+            );
+        }
+
+        return array(
+            'items' => $items,
+            'total' => count($items)
+        );
     }
 }

@@ -446,8 +446,12 @@ class CentreonContact extends CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function export()
+    public function export($filter_id=null, $filter_name=null)
     {
+        $filters = array("contact_register" => $this->register);
+        if (!is_null($filter_id)) {
+            $filters['contact_id'] = $filter_id;
+        }
         $elements = $this->object->getList(
             "*",
             -1,
@@ -469,10 +473,14 @@ class CentreonContact extends CentreonObject
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter == "timeperiod_tp_id") {
                         $parameter = self::HOST_NOTIF_TP;
+                        $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
+                        $this->api->export_filter('TP', $tmp_id, $value);
                     } elseif ($parameter == "timeperiod_tp_id2") {
                         $parameter = self::SVC_NOTIF_TP;
+                        $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
+                        $this->api->export_filter('TP', $tmp_id, $value);
                     } elseif ($parameter == "contact_lang") {
                         $parameter = "locale";
                     } elseif ($parameter == "contact_host_notification_options") {
@@ -481,8 +489,10 @@ class CentreonContact extends CentreonObject
                         $parameter = "servicenotifopt";
                     } elseif ($parameter == "contact_template_id") {
                         $parameter = "template";
+                        $tmp_id = $value;
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
                         $value  = $result[$this->object->getUniqueLabelField()];
+                        $this->api->export_filter('CONTACTTPL', $tmp_id, $value);
                     } elseif ($parameter == "contact_location") {
                         $parameter = self::CONTACT_LOCATION;
                         $result = $this->timezoneObject->getParameters(

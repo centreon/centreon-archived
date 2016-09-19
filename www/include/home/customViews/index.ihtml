@@ -197,27 +197,8 @@
                             <td class="FormRowValue" >{$formAddWidget.widget_title.html}</td>
                         </tr>
                         <tr>
-                            <td class="FormRowValue">{t}Filter title{/t}:</td>
-                            <td class="FormRowValue"><input type="text"  size="30"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <table class="subTable ListTable widget-list">
-                                    <tbody>
-                                      {foreach item=elem from=$widgetModels}
-                                      {cycle values='list_one,list_two' assign=rowStyle}
-                                        <tr class={$rowStyle}>
-                                          <td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
-                                          <td class="ListColLeft"
-                                              style="width:100%"
-                                              data-description="{$elem.description}"
-                                              data-author="{$elem.author}"
-                                              data-version="{$elem.version}">{$elem.title}</td>
-                                        </tr>
-                                      {/foreach}
-                                    </tbody>
-                                </table>
-                            </td>
+                            <td class="FormRowValue">{$formAddWidget.widget_model_id.label}</td>
+                            <td class="FormRowValue">{$formAddWidget.widget_model_id.html}</td>
                         </tr>
                         <tr>
                             <td colspan="2" class="button_group">
