@@ -1,5 +1,3 @@
-++ /usr/share/centreon/www/class/centreon-clapi/centreonExported.class.php	2016-09-08 13:36:16.486756873 +0200
-@@ -0,0 +1,152 @@
 <?php
 
 /**
