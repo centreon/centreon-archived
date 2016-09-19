@@ -8,9 +8,9 @@ Sommaire :
 .. toctree::
    :maxdepth: 2
 
-   a_propos/index
+   a_propos
    release_notes/index
-   life_cycle/index
+   lifecycle
    installation/index
    migration/index
    quick_start/index
@@ -19,7 +19,6 @@ Sommaire :
    administration_guide/index
    knowledge_base/index
    partitioning/index
-   howto/index
    upgrade/index
    faq/index
    developper/index

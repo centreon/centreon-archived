@@ -530,7 +530,7 @@ if (!PEAR::isError($DBRESULT)) {
                 $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
                 $data["notes_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["notes_url"]);
             }
-            $obj->XML->writeElement("snu", CentreonUtils::escapeSecure($obj->srvObj->replaceMacroInString($data["service_id"], $data["notes_url"])));
+            $obj->XML->writeElement("snu", CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["notes_url"])));
         } else {
             $obj->XML->writeElement("snu", 'none');
         }
@@ -550,7 +550,7 @@ if (!PEAR::isError($DBRESULT)) {
                 $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
                 $data["action_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["action_url"]);
             }
-            $obj->XML->writeElement("sau", CentreonUtils::escapeSecure($obj->srvObj->replaceMacroInString($data["service_id"], $data["action_url"])));
+            $obj->XML->writeElement("sau", CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"])));
         } else {
             $obj->XML->writeElement("sau", 'none');
         }

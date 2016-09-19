@@ -58,6 +58,12 @@ class CentreonGraph
     const OVER_MAX_LIMIT_PCT = 3;
 
     /*
+     * Engine infinite values
+     */
+    const ENGINE_HIGH_INFINITE = 340282346638528860000000000000000000000;
+    const ENGINE_LOW_INFINITE = -340282346638528860000000000000000000000;
+
+    /*
      * Objects
      */
     protected $DB;
@@ -654,14 +660,16 @@ class CentreonGraph
                         isset($ds_data["ds_stack"]) && $ds_data["ds_stack"] ? $ds_data["ds_stack"] : 0
                     );
                     if ($this->onecurve) {
-                        if (isset($metric["warn"]) && $metric["warn"] != 0) {
+                        if (isset($metric["warn"]) && $metric["warn"] != 0 &&
+                            $metric["warn"] != self::ENGINE_LOW_INFINITE && $metric["warn"] != self::ENGINE_HIGH_INFINITE) {
                             $this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
                             if (!isset($ds_data["ds_color_area_warn"]) || empty($ds_data["ds_color_area_warn"])) {
                                 $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] =
                                     $this->generalOpt["color_warning"];
                             }
                         }
-                        if (isset($metric["crit"]) && $metric["crit"] != 0) {
+                        if (isset($metric["crit"]) && $metric["crit"] != 0 &&
+                            $metric["crit"] != self::ENGINE_LOW_INFINITE && $metric["crit"] != self::ENGINE_HIGH_INFINITE) {
                             $this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
                             if (!isset($ds_data["ds_color_area_crit"]) || empty($ds_data["ds_color_area_crit"])) {
                                 $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] =
