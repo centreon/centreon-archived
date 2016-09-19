@@ -29,11 +29,8 @@
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
         <td>
-            <select name="o1" onChange="javascript: doAction(this, this.value); return true;">
-                <option value="0">{t}More actions...{/t}</option>
-                <option value="cs">{$cancel}</option>
-            </select>
             {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
+            {if $nb_downtime_svc}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
         </td>
         {php}
         include('./include/common/pagination.php');
@@ -92,11 +89,8 @@
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
         <td>
-            <select name="o2" onChange="javascript: doAction(this, this.value); return true;">
-                <option value="0">{t}More actions...{/t}</option>
-                <option value="cs">{$cancel}</option>
-            </select>
             {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
+            {if $nb_downtime_svc}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
         </td>
 	{php}
 	   include('./include/common/pagination.php');
@@ -107,3 +101,37 @@
 <input type='hidden' name='o'>
 {$form.hidden}	
 </form>
+
+{literal}
+<script language=javascript>
+    function doAction(slt, act, msg) {
+        var bChecked = isChecked();
+        if (slt.selectedIndex != 0 && !bChecked) {
+            alert('Please select one or more items');
+            return false;
+        }
+        if (slt.selectedIndex == 0) {
+            return false;
+        } else {
+            if (confirm(msg)) {
+                jQuery('input[name=o]').attr('value', act);
+                document.form.submit();
+            } else {
+                slt.value = 0;
+            }
+        }
+    }
+</script>
+{/literal}
+
+
+
+
+
+
+
+
+
+
+
+
