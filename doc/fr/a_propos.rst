@@ -15,7 +15,7 @@ du service de supervision. Il intègre depuis
 
 Au-delà des concepts de configuration qui sont les plus évolués dans l’écosystème 
 Nagios, Centreon apporte de nombreuses fonctionnalités telles que la consultation 
-de l'état des services et des machines supervisés, la métrologie, le reporting, 
+de l'état des services et des machines supervisées, la métrologie, le reporting, 
 l'accès aux évènements de supervision, la gestion avancée des utilisateurs via des 
 listes de contrôle d’accès (ACL), etc.
 

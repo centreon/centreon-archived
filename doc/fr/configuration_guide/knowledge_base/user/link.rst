@@ -6,7 +6,7 @@ Lien avec l'interface web de supervision
 La base de connaissance est accessible depuis l'interface web de Centreon 
 à travers un icône cliquable (voir ci dessous)
 
-.. image:: ../../_static/images/knowledge/screen_host_monitoring.png
+.. image:: ../../../_static/images/knowledge/screen_host_monitoring.png
    :align: center
 
 En cliquant sur l'icône, l'utilisateur est redirigé vers la base de connaissance 

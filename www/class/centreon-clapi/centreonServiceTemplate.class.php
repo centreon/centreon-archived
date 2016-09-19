@@ -802,7 +802,7 @@ class CentreonServiceTemplate extends CentreonObject
      * @param array $tree
      * @param Centreon_Object_Service_Extended $extendedObj
      */
-    protected function parseTemplateTree($tree)
+    protected function parseTemplateTree($tree, $filter_id=null)
     {
         $commandObj = new \Centreon_Object_Command();
         $tpObj = new \Centreon_Object_Timeperiod();
@@ -813,9 +813,11 @@ class CentreonServiceTemplate extends CentreonObject
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim;
                 if ($param == "service_template_model_stm_id") {
+                    $tmp_id = $element[$param];
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
+                        $this->api->export_filter('STPL', $tmp_id, $tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -827,15 +829,20 @@ class CentreonServiceTemplate extends CentreonObject
             echo $addStr;
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
+                    $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
+                        $action_tmp = 'TP';
                         $tmpObj = $tpObj;
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
+                        $action_tmp = 'CMD';
                         $tmpObj = $commandObj;
                     }
                     if (isset($tmpObj)) {
                         $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
+                            $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
+                            $this->api->export_filter($action_tmp, $tmp_id, $value);
                         }
                         unset($tmpObj);
                     }
@@ -896,34 +903,47 @@ class CentreonServiceTemplate extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filter_id=null, $filter_name=null)
     {
+        $filters = array("service_register" => $this->register);
+        if (!is_null($filter_id)) {
+            $filters['service_id'] = $filter_id;
+        }
         $elements = $this->object->getList(
             "*",
             -1,
             0,
             "service_template_model_stm_id",
             null,
-            array("service_register" => $this->register),
+            $filters,
             "AND"
         );
-        $templateTree = $this->sortTemplates($elements);
-        $macroObj = new \Centreon_Object_Service_Macro_Custom();
-        $this->parseTemplateTree($templateTree);
+        # No need to sort all service templates. We only export the current
+        if (is_null($filter_id)) {
+            $templateTree = $this->sortTemplates($elements);
+            $this->parseTemplateTree($templateTree);
+        } else {
+            $this->parseTemplateTree($elements, $filter_id);
+        }
 
         // contact groups
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Service();
+        $filters_cgRel = array("service_register" => $this->register);
+        if (!is_null($filter_id)) {
+            $filters_cgRel['service_id'] = $filter_id;
+        }
         $elements = $cgRel->getMergedParameters(
-            array("cg_name"),
+            array("cg_name", "cg_id"),
             array('service_description'),
             -1,
             0,
             null,
             null,
-            array("service_register" => $this->register),
+            $filters_cgRel,
             "AND"
         );
         foreach ($elements as $element) {
+            $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
             echo $this->action . $this->delim
                 . "addcontactgroup" . $this->delim
                 . $element['service_description'] . $this->delim
@@ -932,17 +952,22 @@ class CentreonServiceTemplate extends CentreonObject
 
         // contacts
         $contactRel = new \Centreon_Object_Relation_Contact_Service();
+        $filters_contactRel = array("service_register" => $this->register);
+        if (!is_null($filter_id)) {
+            $filters_contactRel['service_id'] = $filter_id;
+        }
         $elements = $contactRel->getMergedParameters(
-            array("contact_name"),
+            array("contact_name", "contact_id"),
             array('service_description'),
             -1,
             0,
             null,
             null,
-            array("service_register" => $this->register),
+            $filters_contactRel,
             "AND"
         );
         foreach ($elements as $element) {
+            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element['service_description'] . $this->delim
@@ -970,17 +995,22 @@ class CentreonServiceTemplate extends CentreonObject
 
         // traps
         $trapRel = new \Centreon_Object_Relation_Trap_Service();
+        $filters_trapRel = array("service_register" => $this->register);
+        if (!is_null($filter_id)) {
+            $filters_trapRel['traps_service_relation.service_id'] = $filter_id;
+        }
         $telements = $trapRel->getMergedParameters(
-            array("traps_name"),
+            array("traps_name", "traps_id"),
             array('service_description'),
             -1,
             0,
             null,
             null,
-            array("service_register" => $this->register),
+            $filters_trapRel,
             "AND"
         );
         foreach ($telements as $telement) {
+            $this->api->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
             echo $this->action . $this->delim
                 . "addtrap" . $this->delim
                 . $telement['service_description'] . $this->delim
@@ -989,14 +1019,18 @@ class CentreonServiceTemplate extends CentreonObject
 
         // hosts
         $hostRel = new \Centreon_Object_Relation_Host_Service();
+        $filters_hostRel = array("service_register" => $this->register);
+        if (!is_null($filter_id)) {
+            $filters_hostRel['service_id'] = $filter_id;
+        }
         $helements = $hostRel->getMergedParameters(
-            array("host_name"),
+            array("host_name", "host_id"),
             array('service_description'),
             -1,
             0,
             null,
             null,
-            array("service_register" => $this->register),
+            $filters_hostRel,
             "AND"
         );
         foreach ($helements as $helement) {

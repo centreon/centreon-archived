@@ -14,3 +14,8 @@ Feature: Set service downtime
   Scenario: Set a downtime
     When I place a downtime
     Then this one appears in the interface in downtime
+
+  Scenario: Cancel a downtime
+    When I place a downtime
+    Then I cancel a downtime
+    And this one does not appear in the interface
