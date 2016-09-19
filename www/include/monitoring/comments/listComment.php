@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 include("./include/common/autoNumLimit.php");
 
@@ -96,7 +96,7 @@ require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
 $tab_comments_svc = array();
 
@@ -106,7 +106,7 @@ $en = array("0" => _("No"), "1" => _("Yes"));
  * Service Comments
  */
 $rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
-  "FROM comments c, hosts h, services s ";
+    "FROM comments c, hosts h, services s ";
 if (!$is_admin) {
     $rq2 .= ", centreon_acl acl ";
 }
@@ -126,7 +126,7 @@ $rq2 .= ' UNION ';
  * Host Comments
  */
 $rq2 .= "SELECT c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, '' as service_id, h.name AS host_name, '' AS service_description " .
-  "FROM comments c, hosts h ";
+    "FROM comments c, hosts h ";
 if (!$is_admin) {
     $rq2 .= ", centreon_acl acl ";
 }
@@ -140,7 +140,7 @@ $rq2 .= (isset($search_service) && $search_service != "" ? " AND 1 = 0" : "");
 $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");
 $rq2 .= (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
 
-$rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+$rq2 .= " ORDER BY entry_time DESC LIMIT " . $num * $limit . ", " . $limit;
 
 $DBRESULT = $pearDBO->query($rq2);
 $rows = $pearDBO->numberRows();
@@ -167,11 +167,15 @@ include("./include/common/checkPagination.php");
  * Element we need when we reload the page
  */
 $form->addElement('hidden', 'p');
-$tab = array ("p" => $p);
+$tab = array("p" => $p);
 $form->setDefaults($tab);
 
 if ($oreon->user->access->checkAction("service_comment")) {
-    $tpl->assign('msgs', array("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a Service comment"), "addL2"=>"?p=".$p."&o=ah", "addT2"=>_("Add a Host comment"), "delConfirm"=>_("Do you confirm the deletion ?")));
+    $tpl->assign('msgs', array(
+        "addL" => "?p=" . $p . "&o=a",
+        "addT" => _("Add a comment"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    ));
 }
 
 $tpl->assign("p", $p);
@@ -179,17 +183,13 @@ $tpl->assign("o", $o);
 $tpl->assign("tab_comments_svc", $tab_comments_svc);
 $tpl->assign("nb_comments_svc", count($tab_comments_svc));
 $tpl->assign("no_svc_comments", _("No Comment for services."));
-
 $tpl->assign("cmt_service_comment", _("Services Comments"));
-$tpl->assign("host_comment_link", "./main.php?p=".$p."&o=vh");
+$tpl->assign("host_comment_link", "./main.php?p=" . $p . "&o=vh");
 $tpl->assign("view_host_comments", _("View comments of hosts"));
 $tpl->assign("delete", _("Delete"));
-
 $tpl->assign("search", $search_service);
-
 $tpl->assign("Host", _("Host Name"));
 $tpl->assign("Service", _("Service"));
-
 $tpl->assign("Output", _("Output"));
 $tpl->assign("user", _("Users"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
