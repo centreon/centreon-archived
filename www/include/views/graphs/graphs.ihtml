@@ -199,6 +199,8 @@
 <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
 <script src="./include/common/javascript/jquery/tourbus/jquery-tourbus.min.js"></script>
+<script src="./include/common/javascript/jquery/jquery.cookie.js"></script>
+<script src="./include/common/javascript/centreon/centreon-tour.js"></script>
 <script>
 var defaultCharts = JSON.parse('{$defaultCharts}');
 var nbDisplayedCharts = {$nbDisplayedCharts};
@@ -642,40 +644,11 @@ jQuery(function () {
     handle: '.title',
   });
   
-  var tour = jQuery('#first-tour').tourbus({
-    onStop: function () {
-      var tours = {};
-      if (window.localStorage.getItem('tours')) {
-        tours = JSON.parse(window.localStorage.getItem('tours'));
-      }
-      tours.v20401 = {
-        done: true,
-        version: '1.0.0'
-      };
-      window.localStorage.setItem('tours', JSON.stringify(tours));
-    },
-    onLegStart: function( leg, bus ) {
-      if(leg.rawData.highlight) {
-        jQuery(leg.rawData.focus).addClass('tourbus-highlight');
-        jQuery('.tourbus-overlay').show();
-      }
-    },
-    onLegEnd: function( leg, bus ) {
-      if( leg.rawData.highlight ) {
-        jQuery(leg.rawData.focus).removeClass('tourbus-highlight');
-        jQuery('.tourbus-overlay').hide();
-      }
-    }
+  jQuery('#first-tour').centreonTour({
+    name: 'v20401',
+    version: '2.8.0',
+    autostart: true
   });
-  var tours = {};
-  if (window.localStorage.getItem('tours')) {
-    tours = JSON.parse(window.localStorage.getItem('tours'));
-  }
-  if (!tours.hasOwnProperty('v20401')
-    || tours.v20401.done === false
-    || tours.v20401.version !== '1.0.0') {
-    tour.data('tourbus').depart();
-  }
 });
 </script>
 {/literal}
