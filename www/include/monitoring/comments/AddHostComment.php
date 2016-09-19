@@ -37,8 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
-include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 
 /*
  * Init GMT class
@@ -64,32 +64,39 @@ if ($centreon->user->access->checkAction("host_comment")) {
         $data = array("host_id" => $host_id);
     }
 
+    if (isset($_GET["host_name"])) {
+        $host_id = getMyHostID($_GET["host_name"]);
+        $host_name = $_GET["host_name"];
+        if ($host_name == '_Module_Meta') {
+            $host_name = 'Meta';
+        }
+    }
 
     /*
 	 * Database retrieve information for differents elements list we need on the page
 	 */
-    $hosts = array(""=>"");
+    $hosts = array("" => "");
     $query = "SELECT host_id, host_name " .
-            "FROM `host` " .
-            "WHERE host_register = '1' " .
-            "AND host_activate = '1'" .
-            $oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
-            "ORDER BY host_name";
+        "FROM `host` " .
+        "WHERE host_register = '1' " .
+        "AND host_activate = '1'" .
+        $oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
+        "ORDER BY host_name";
     $DBRESULT = $pearDB->query($query);
     while ($host = $DBRESULT->fetchRow()) {
-        $hosts[$host["host_id"]]= $host["host_name"];
+        $hosts[$host["host_id"]] = $host["host_name"];
     }
     $DBRESULT->free();
 
     $debug = 0;
-    $attrsTextI         = array("size"=>"3");
-    $attrsText      = array("size"=>"30");
-    $attrsTextarea  = array("rows"=>"7", "cols"=>"100");
+    $attrsTextI = array("size" => "3");
+    $attrsText = array("size" => "30");
+    $attrsTextarea = array("rows" => "7", "cols" => "100");
 
     /*
 	 * Form begin
 	 */
-    $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+    $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
     if ($o == "ah") {
         $form->addElement('header', 'title', _("Add a comment for Host"));
     }
@@ -100,12 +107,16 @@ if ($centreon->user->access->checkAction("host_comment")) {
     $redirect = $form->addElement('hidden', 'o');
     $redirect->setValue($o);
 
-    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
+    if (isset($host_id)) {
+        $form->addElement('hidden', 'host_id', $host_id);
+    } else {
+        $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
+        $form->addRule('host_id', _("Required Field"), 'required');
+    }
+
     $persistant = $form->addElement('checkbox', 'persistant', _("Persistent"));
     $persistant->setValue('1');
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
-
-    $form->addRule('host_id', _("Required Field"), 'required');
     $form->addRule('comment', _("Required Field"), 'required');
 
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
@@ -123,7 +134,7 @@ if ($centreon->user->access->checkAction("host_comment")) {
         }
         AddHostComment($_POST["host_id"], $_POST["comment"], $_POST["persistant"]);
         $valid = true;
-        require_once($path."listComment.php");
+        require_once($path . "listComment.php");
     } else {
         /*
 		 * Smarty template Init
@@ -131,6 +142,9 @@ if ($centreon->user->access->checkAction("host_comment")) {
         $tpl = new Smarty();
         $tpl = initSmartyTpl($path, $tpl, "template/");
 
+        if (isset($host_id)) {
+            $tpl->assign('host_name', $host_name);
+        }
         /*
 		 * Apply a template definition
 		 */
@@ -140,7 +154,7 @@ if ($centreon->user->access->checkAction("host_comment")) {
         $form->accept($renderer);
         $tpl->assign('form', $renderer->toArray());
         $tpl->assign('o', $o);
-        
+
         $tpl->display("AddHostComment.ihtml");
     }
 }
