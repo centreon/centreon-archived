@@ -67,11 +67,8 @@ class DowntimeServiceContext extends CentreonContext
         $this->visit('main.php?p=21001');
         $this->setConfirmBox(true);
         $this->assertFind('css', 'input[name="select[SVC;_Module_Meta;1]"]')->click();
-        $this->getSession()->executeScript(
-            'javascript: doAction(\'select[name="o1"]\', \'cs\');'
-        );
+        $this->assertFind('css', 'input[name="submit2"]')->click();
         sleep(2);
-
     }
 
     /**
