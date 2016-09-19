@@ -42,7 +42,6 @@ include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 
-
 /*
  * Init GMT class
  */
@@ -82,13 +81,23 @@ if (!$centreon->user->access->checkAction("service_comment")) {
         $serviceDisplayName = $serviceParameters['service_description'];
         $host_name = $hObj->getHostName($_GET['host_id']);
     }
-
     if (!isset($_GET['host_id'])) {
-
-        $dtType[] = HTML_QuickForm::createElement('radio', 'commentType', null, _("Host"), '1',
-            array('id' => 'host', 'onclick' => "toggleParams('host');"));
-        $dtType[] = HTML_QuickForm::createElement('radio', 'commentType', null, _("Services"), '2',
-            array('id' => 'service', 'onclick' => "toggleParams('service');"));
+        $dtType[] = HTML_QuickForm::createElement(
+            'radio',
+            'commentType',
+            null,
+            _("Host"),
+            '1',
+            array('id' => 'host', 'onclick' => "toggleParams('host');")
+        );
+        $dtType[] = HTML_QuickForm::createElement(
+            'radio',
+            'commentType',
+            null,
+            _("Services"),
+            '2',
+            array('id' => 'service', 'onclick' => "toggleParams('service');")
+        );
         $form->addGroup($dtType, 'commentType', _("Comment type"), '&nbsp;');
 
         /* ----- Hosts ----- */
@@ -104,7 +113,8 @@ if (!$centreon->user->access->checkAction("service_comment")) {
             /* ----- Services ----- */
             $attrServices = array(
                 'datasourceOrigin' => 'ajax',
-                'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_service&action=list&e=enable',
+                'availableDatasetRoute' =>
+                    './api/internal.php?object=centreon_configuration_service&action=list&e=enable',
                 'multiple' => true,
                 'linkedObject' => 'centreonService'
             );
@@ -166,7 +176,6 @@ if (!$centreon->user->access->checkAction("service_comment")) {
 
             $valid = true;
             require_once($path . "listComment.php");
-
         } elseif ($values['commentType']['commentType'] == 2) {
             /*
              * Set a comment for a service list
@@ -178,7 +187,7 @@ if (!$centreon->user->access->checkAction("service_comment")) {
             }
 
             //global services comment
-            if (!isset($_POST["host_id"])):
+            if (!isset($_POST["host_id"])) {
                 foreach ($_POST["service_id"] as $value) {
                     $info = explode('-', $value);
                     AddSvcComment(
@@ -188,10 +197,10 @@ if (!$centreon->user->access->checkAction("service_comment")) {
                         $_POST["persistant"]
                     );
                 }
-            else:
+            } else {
                 //specific service comment
                 AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
-            endif;
+            }
 
             $valid = true;
             require_once($path . "listComment.php");
@@ -225,5 +234,3 @@ if (!$centreon->user->access->checkAction("service_comment")) {
         $tpl->display("AddComment.html");
     }
 }
-
-

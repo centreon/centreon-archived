@@ -105,7 +105,8 @@ $en = array("0" => _("No"), "1" => _("Yes"));
 /*
  * Service Comments
  */
-$rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
+$rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id,
+ c.service_id, h.name AS host_name, s.description AS service_description " .
     "FROM comments c, hosts h, services s ";
 if (!$is_admin) {
     $rq2 .= ", centreon_acl acl ";
@@ -114,7 +115,8 @@ $rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_
 $rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {
-    $rq2 .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+    $rq2 .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" .
+        $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "");
 $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");
@@ -125,7 +127,8 @@ $rq2 .= ' UNION ';
 /*
  * Host Comments
  */
-$rq2 .= "SELECT c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id, '' as service_id, h.name AS host_name, '' AS service_description " .
+$rq2 .= "SELECT c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.host_id,
+ '' as service_id, h.name AS host_name, '' AS service_description " .
     "FROM comments c, hosts h ";
 if (!$is_admin) {
     $rq2 .= ", centreon_acl acl ";
@@ -134,7 +137,8 @@ $rq2 .= "WHERE c.host_id = h.host_id AND c.service_id IS NULL";
 $rq2 .= " AND c.expires = '0' AND h.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {
-    $rq2 .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+    $rq2 .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" .
+        $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $rq2 .= (isset($search_service) && $search_service != "" ? " AND 1 = 0" : "");
 $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "");
