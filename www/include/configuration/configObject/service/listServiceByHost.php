@@ -54,12 +54,11 @@ while ($ehi = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->free();
 
+$template = null;
 if (isset($_POST["template"])) {
     $template = $_POST["template"];
 } elseif (isset($_GET["template"])) {
     $template = $_GET["template"];
-} else {
-    $template = null;
 }
 
 if (isset($_POST["hostgroups"])) {
@@ -72,6 +71,28 @@ if (isset($_POST["hostgroups"])) {
     $hostgroups = $_SESSION['configuration_default_hostgroups'];
 } else {
     $hostgroups = null;
+}
+
+$hostStatus = 0;
+if (!is_null($template)) {
+    if (isset($_POST["statusHostFilter"]) || isset($_GET["statusHostFilter"])) {
+        $hostStatus = 1;
+    } else {
+        $hostStatus = 0;
+    }
+} elseif (isset($_SESSION["status_host_filter"])) {
+    $hostStatus = $_SESSION["status_host_filter"];
+}
+$_SESSION["status_host_filter"] = $hostStatus;
+
+/*
+ * Host Status Filter
+ */
+$hostStatusChecked = "";
+$sqlFilterCase2 = "AND host.host_activate = '1'";
+if ($hostStatus == 1) {
+    $hostStatusChecked = "checked";
+    $sqlFilterCase2 = "";
 }
 
 if (isset($_POST["status"])) {
@@ -98,7 +119,6 @@ $DBRESULT->free();
  * Status Filter
  */
 $statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-;
 $statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enable")."</option>";
 $statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disable")."</option>";
 
@@ -143,6 +163,7 @@ $searchS = '';
 $searchS_SQL = '';
 $searchS_GET = '';
 $tmp_search_s = '';
+
 if (isset($_GET['search_s'])) {
     $tmp_search_s = $_GET['search_s'];
     $centreon->svc_svc_search = $tmp_search_s;
@@ -201,7 +222,7 @@ $rq_body =  "esi.esi_icon_image, sv.service_id, sv.service_description, sv.servi
         ($centreon->user->admin ? "" : $acldbname.".centreon_acl acl, ").
         "host_service_relation hsr " .
         "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
-        "WHERE host.host_register = '1' $searchH_SQL AND host.host_activate = '1' AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
+        "WHERE host.host_register = '1' $searchH_SQL $sqlFilterCase2 " . " AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
                 "AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
                 ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
                 ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
@@ -385,7 +406,9 @@ $tpl->assign("searchH", $searchH);
 $tpl->assign("searchS", $searchS);
 $tpl->assign("hostgroupsFilter", $hostgroupsFilter);
 $tpl->assign("templateFilter", $templateFilter);
+$tpl->assign("statusHostFilter", $statusHostFilter);
 $tpl->assign("statusFilter", $statusFilter);
+$tpl->assign("hostStatusChecked", $hostStatusChecked);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
@@ -393,6 +416,7 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('Hosts', _("Hosts"));
 $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
+$tpl->assign('HostStatus', _("Disabled hosts"));
 $tpl->assign('Services', _("Services"));
 $tpl->assign('Search', _("Search"));
 $tpl->display("listService.ihtml");
