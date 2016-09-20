@@ -274,7 +274,11 @@ cd $SNAPSHOT_MOUNT
 if [ "$DO_ARCHIVE" -eq "0" ] ; then
 	eval cp --parent -pf $save_files \"$BACKUP_DIR_TOTAL/\"
 else
-	eval tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql.tar.gz\" $save_files
+    if [ $OPT_PARTIAL -eq 1 ] ; then
+	eval tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-partial.tar.gz\" $save_files
+    else
+        eval tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-full.tar.gz\" $save_files
+    fi
 fi
 cd -
 

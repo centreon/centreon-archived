@@ -49,7 +49,9 @@ Informations générales
 * Le champ **Statut** permet d'activer ou de désactiver le groupe d'accès
 
 .. note:: 
-    Les groupes de contacts peuvent être des groupes provenant de l'annuaireLDAP connecté à l'interface Centreon.
+    Les groupes de contacts peuvent être des groupes provenant de l'annuaire LDAP connecté à l'interface Centreon.
+
+    Les groupes créés sur Centreon ne doivent pas avoir le même nom que les groupes LDAP. Si c'est le cas, les groupes dans Centreon devront être renommés.
 
 Autorisations
 =============

@@ -55,7 +55,7 @@ sub print_help();
 sub print_usage();
 sub trim($);
 
-#my $CENTREON_ETC = '@CENTREON_ETC@';
+#my $CENTREON_ETC = '/etc/centreon';
 my $CENTREON_ETC = '/etc/centreon';
 my @licfiles;
 
@@ -343,16 +343,16 @@ sub databasesBackup() {
 
         if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
             print "Dumping Db with LVM snapshot (full)\n";
-            `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
         }
 
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
-        if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
+        if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
             print "Dumping Db with LVM snapshot (partial)\n";
-            `$centreon_config->{CentreonDir}bin/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -413,10 +413,16 @@ sub databasesBackup() {
 
 	# Export archives
 	exportBackup();
-    if (-r $TEMP_DB_DIR."/".$today."-mysql.tar.gz") {
-        move($TEMP_DB_DIR."/".$today."-mysql.tar.gz", $BACKUP_DIR."/".$today."-mysql.tar.gz");
-    } else {
+    if (-r $TEMP_DB_DIR."/".$today."-mysql-full.tar.gz") {
+        move($TEMP_DB_DIR."/".$today."-mysql-full.tar.gz", $BACKUP_DIR."/".$today."-mysql-full.tar.gz");
+    }
+    if (-r $TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz") {
+        move($TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz", $BACKUP_DIR."/".$today."-mysql-partial.tar.gz");
+    }
+    if (-r $TEMP_DB_DIR."/".$today."-centreon.sql.gz") {
     	move($TEMP_DB_DIR."/".$today."-centreon.sql.gz", $BACKUP_DIR."/".$today."-centreon.sql.gz");
+    }
+    if (-r $TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz") {
     	move($TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz", $BACKUP_DIR."/".$today."-centreon_storage.sql.gz");
     }
 
@@ -920,13 +926,13 @@ getbinaries();
 #	`$preexec_command`;
 #}
 
-if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
-    databasesBackup();
-}
-
 if ($BACKUP_CONFIGURATION_FILES == '1') {
     centralBackup();
     monitoringengineBackup();
+}
+
+if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
+    databasesBackup();
 }
 
 #if (defined($OPTION{'postexec'})) {

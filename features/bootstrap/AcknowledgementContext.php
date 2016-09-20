@@ -1,7 +1,6 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\MetaServiceConfigurationPage;
 use Centreon\Test\Behat\MonitoringServicesPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
@@ -28,7 +27,7 @@ class AcknowledgementContext extends CentreonContext
             'passive_checks_enabled' => 1
         ));
         $page->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
         $this->submitServiceResult(
             'Centreon-Server',
             'AcceptanceTestService',
@@ -53,7 +52,7 @@ class AcknowledgementContext extends CentreonContext
             'retry_check_interval' => 1
         ));
         $page->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
         $this->spin(function ($context) {
             $page = new ServiceMonitoringDetailsPage(
                 $context,

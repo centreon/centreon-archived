@@ -1,6 +1,5 @@
 // For the multiple type of groups, we have to group fields together in order to clone them.
 function clonifyTableFields(attributeName,displayName){
-
     // First, find the fields and group them in one array for each multiple group
     var GroupArray = {};
     var GroupDisplayName = {};
@@ -19,6 +18,8 @@ function clonifyTableFields(attributeName,displayName){
     // </table2> </td> </tr clone_template> <tr control> <td> </td> </tr> </table1 clonable> </td1> </tr newdiv> .... </oldTable>
     for(var obj in GroupArray) {
         var td1 = jQuery('<td>').attr('colspan','2').css({'padding': '2px'});
+//        var newdiv = jQuery('<tr>').addClass('elem-toCollapse').attr('style', 'display:table-row').append(td1);
+//        var newdiv = jQuery('<tr>').addClass('elem-toCollapse').attr('style', 'display:table-row').append(td1);
         var newdiv = jQuery('<tr>').addClass('elem-toCollapse').append(td1);
         var control = jQuery('<th>').append(jQuery('<span>').attr('id',obj+'_add').html('+ Add a new entry').css({
             'cursor': 'pointer',
@@ -43,7 +44,7 @@ function clonifyTableFields(attributeName,displayName){
         table2.append(jQuery('<tr>').addClass('elem-toCollapse').append(jQuery('<td>').css({'text-align': 'right', 'height': '1px'}).attr('rowspan','5').attr('colspan','2').append(remove)));
 
         if(GroupArray.hasOwnProperty(obj)){
-            var firsPostition = false;
+            var firstPosition = false;
             GroupArray[obj].each(function(element){
                 tdSize = jQuery(element).parents("tr").first().children('.FormRowField').first().width();
                 // since the element is in a subTab and because of the auto-sizing of each <td>,
@@ -52,14 +53,14 @@ function clonifyTableFields(attributeName,displayName){
                 jQuery(element).attr('alreadyProcessed','1');
 
                 var parent = jQuery(element).parents("tr").first().removeClass("elem-toCollapse");
-                if(!firsPostition){
-                    firsPostition = parent.prev();
+                if(!firstPosition){
+                    firstPosition = parent.prev();
                 }
                 parent.detach();
                 table2.prepend(parent);
             });
             //table1.prepend(control);
-            firsPostition.after(newdiv);
+            firstPosition.after(newdiv);
         }
 
     }
@@ -87,14 +88,13 @@ function addCollapse() {
 
     tbody.find(".list_one").addClass("elem-toCollapse");
     tbody.find(".list_two").addClass("elem-toCollapse");
-
 }
 
 function initCollapsebyTab(tab) {
     var tbody = jQuery("#" + tab + " .collapse-wrapper");
     var othertBodyInput = tbody.not(tbody.eq(0)).find(".elem-toCollapse input.v_required");
     othertBodyInput.qtip('destroy');
-    tbody.not(tbody.eq(0)).find(".elem-toCollapse").hide();
+    //tbody.not(tbody.eq(0)).find(".elem-toCollapse").hide();
 
     tbody.eq(0).find(".elem-toCollapse").show();
     tbody.eq(0).find(".list_lvl_1").addClass("open");
@@ -120,7 +120,6 @@ jQuery(function () {
        var nextElemChildren = tbody.parents('.tab').find('tr.elem-toCollapse').filter(function (idx, elem) {
            return !tbody.is(jQuery(elem).parent('.collapse-wrapper'));
        });
-       //console.log(nextElemChildren);
 
        var elemChildren = tbody.find('.elem-toCollapse');
 

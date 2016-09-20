@@ -36,12 +36,18 @@
         <td style="vertical-align: top;">
         {foreach from=$perf_info.io key=io_name item=io_infos}
             <div class="broker_stats {$io_infos.class}">
-                <p class="title" onclick="toggleInfoBlock('{$io_name}')"><span class="expand" >+</span>{$io_name} - {$lang[$io_infos.type]}</p>
-                <div class="informations_header" id="{$io_name}">
+                <p class="title" onclick="toggleInfoBlock('{$io_infos.id}')"><span class="expand" >+</span>{$io_name} - {$lang[$io_infos.type]}</p>
+                <div class="informations_header" id="{$io_infos.id}">
                     {foreach from=$io_infos key=info_key item=info_value}
-                        {if $info_key != 'state' && $info_key != 'type' && $info_key != 'peers' && $info_key != 'filters' && $info_key != 'class'}
+                    {if $info_key == 'State'}
+                    <div class="informations">
+                        <p class="info_name">{$info_key}</p>
+                        <p class="info_value"><span class='{$info_value.class}'>{$info_value.value}</span></p>
+                    </div>
+                    {/if}
+                        {if $info_key != 'State' && $info_key != 'type' && $info_key != 'peers' && $info_key != 'filters' && $info_key != 'class' && $info_key != 'state_style' && $info_key != 'id'}
                         <div class="informations">
-                            <p class="info_name">{if $lang[$info_key]}{$lang[$info_key]}{else}{$info_key}{/if}</p>
+                            <p class="info_name">{$info_key}</p>
                             <p class="info_value">{$info_value}</p>
                         </div>
                         {/if}

@@ -1,14 +1,10 @@
 <?php
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
-use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
-use Centreon\Test\Behat\MetaServiceConfigurationPage;
-use Centreon\Test\Behat\MonitoringServicesPage;
-use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
 
+use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\DowntimeConfigurationPage;
+use Centreon\Test\Behat\DowntimeConfigurationListingPage;
+use Centreon\Test\Behat\MetaServiceConfigurationPage;
+use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
 
 /**
  * Defines application features from the specific context.
@@ -33,9 +29,10 @@ class DowntimeServiceContext extends CentreonContext
             'check_period' => 5,
             'max_check_attempts' => 1,
             'normal_check_interval' => 1,
-            'retry_check_interval' => 1));
+            'retry_check_interval' => 1
+        ));
         $metaservicePage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
     /**
@@ -43,11 +40,13 @@ class DowntimeServiceContext extends CentreonContext
      */
     public function iPlaceADowntime()
     {
-        $this->visit('main.php?p=20201&o=svcd&host_name=_Module_Meta&service_description=meta_1');
-        $this->assertFind('css', '.ListTable.table.linkList tr.list_two:nth-child(4) a')->click();
-        sleep(1);
-        $this->assertFind('css', 'textarea[name="comment"]')->setValue('downtime');
-        $this->assertFind('css', 'input[name="submitA"]')->click();
+        $page = new DowntimeConfigurationPage($this);
+        $page->setProperties(array(
+            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
+            'service' => 'Meta - ' . $this->metaName,
+            'comment' => __METHOD__
+        ));
+        $page->save();
     }
 
     /**
@@ -61,24 +60,38 @@ class DowntimeServiceContext extends CentreonContext
         $this->assertFind('css', 'textarea[name="comment"]')->setValue('downtime');
         $this->assertFind('css', 'input[name="submitA"]')->click();
         sleep(3);
-
     }
 
+    /**
+     * @When I cancel a downtime
+     */
+    public function iCancelADowntime()
+    {
+        $this->spin(
+            function ($context) {
+                $page = new DowntimeConfigurationListingPage($this);
+                return count($page->getEntries()) > 0;
+            },
+            10
+        );
+        $page = new DowntimeConfigurationListingPage($this);
+        $page->selectEntry(0);
+        $page->cancel();
+    }
 
     /**
      * @Then this one appears in the interface
      */
-    public function thisOneAppearsInTheInterface ()
+    public function thisOneAppearsInTheInterface()
     {
         $this->visit('main.php?p=21002');
         $this->getSession()->getPage()->has('css', 'table.ListTable tbody tr.list_two td.ListColLeft a');
     }
 
-
     /**
-     * @Then this one appears in the interface in downtime
+     * @Then this one does not appear in the interface
      */
-    public function thisOneAppearsInTheInterfaceInDowntime ()
+    public function thisOneDoesNotAppearInTheInterface()
     {
         $this->spin(function ($context) {
             $page = new ServiceMonitoringDetailsPage(
@@ -87,13 +100,28 @@ class DowntimeServiceContext extends CentreonContext
                 'meta_1'
             );
             $props = $page->getProperties();
-            return $props['in_downtime'];
+            return !$props['in_downtime'];
         },
             3);
+
     }
 
-
-
-
-
+    /**
+     * @Then this one appears in the interface in downtime
+     */
+    public function thisOneAppearsInTheInterfaceInDowntime()
+    {
+        $this->spin(
+            function ($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    '_Module_Meta',
+                    'meta_1'
+                );
+                $props = $page->getProperties();
+                return $props['in_downtime'];
+            },
+            3
+        );
+    }
 }

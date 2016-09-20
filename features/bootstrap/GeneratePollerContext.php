@@ -5,7 +5,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
+use Centreon\Test\Behat\PollerConfigurationListingPage;
 
 /**
  * Defines application features from the specific context.
@@ -14,49 +14,45 @@ class GeneratePollerContext extends CentreonContext
 {
     private $pollers_page;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->pollers_page = new ConfigurationPollersPage($this);
-    }
-
     /**
-     * @Given a Centreon platform with multiple pollers
+     *  @Given a Centreon platform with multiple pollers
      */
     public function aCentreonPlatformWithMultiplePollers()
     {
-        $this->pollers_page->duplicatePoller('Central');
+        $this->pollers_page = new PollerConfigurationListingPage($this);
+        $this->setConfirmBox(true);
+        $this->pollers_page->selectEntry('Central');
+        $this->pollers_page->moreActions(PollerConfigurationListingPage::ACTION_DUPLICATE);
+        $this->pollers_page->enableEntry('Central_1');
     }
 
     /**
-     * @Given one poller is selected
+     *  @Given one poller is selected
      */
     public function onePollerIsSelected()
     {
-        $this->pollers_page->selectPoller('Central');
+        $this->pollers_page->selectEntry('Central');
     }
 
     /**
-     * @Given multiple pollers are selected
+     *  @Given multiple pollers are selected
      */
     public function multiplePollersAreSelected()
     {
-        $this->pollers_page->selectPoller('Central');
-        $this->pollers_page->selectPoller('Central_1');
+        $this->pollers_page->selectEntry('Central');
+        $this->pollers_page->selectEntry('Central_1');
     }
 
     /**
-     * @Given I click on the button :arg1
+     *  @Given I select another poller
      */
-    public function iClickOnTheButton($arg1)
+    public function iSelectAnotherPoller()
     {
-        sleep(10);
-        $applyConfigurationButton = $this->assertFind('css', 'input[name="' . $arg1 . '"]');
-        $applyConfigurationButton->click();
+        $this->pollers_page->setProperties(array('pollers' => 'Central_1'));
     }
 
     /**
-     * @Given no one poller is selected
+     *  @Given no poller is selected
      */
     public function noOnePollerIsSelected()
     {
@@ -65,57 +61,32 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     * @When I am redirected to generate page
+     *  @When I click on the configuration export button
+     */
+    public function iClickOnTheConfigurationExportButton()
+    {
+        $this->pollers_page = $this->pollers_page->exportConfiguration();
+    }
+
+    /**
+     *  @When I click on the export button
+     */
+    public function iClickOnTheExportButton()
+    {
+        // Cannot use pollers_page, as the export will fail.
+        $this->assertFindButton('Export')->click();
+    }
+
+    /**
+     *  @When I am redirected to generate page
      */
     public function iAmRedirectedToGeneratePage()
     {
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'select#nhost'
-                );
-            },
-            30
-        );
+        // Check was made by PollerConfigurationListingPage::exportConfiguration.
     }
 
     /**
-     * @When I select an other poller
-     */
-    public function iSelectAnOtherPoller()
-    {
-        $inputField = $this->assertFind('css', 'select#nhost');
-        $choice = $inputField->getParent()->find('css', '.select2-selection');
-        if (!$choice) {
-            throw new \Exception('No select2 choice found');
-        }
-        $choice->press();
-
-        $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 2;
-            },
-            30
-        );
-
-        $chosenResults = $this->getSession()->getPage()->findAll('css', '.select2-results li:not(.select2-results__option--highlighted)');
-        $found = FALSE;
-        foreach ($chosenResults as $result) {
-            if ($result->getText() == "Central_1") {
-                $result->click();
-                $found = TRUE;
-                break;
-            }
-        }
-        if (!$found) {
-            throw new \Exception('Could not find Central_1 in select2 list.');
-        }
-    }
-
-    /**
-     * @Then the pollers are already selected
+     *  @Then the pollers are already selected
      */
     public function thePollersAreAlreadySelected()
     {
@@ -131,11 +102,11 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     * @Then poller configuration is generated
+     *  @Then poller configuration is generated
      */
     public function pollerConfigurationIsGenerated()
     {
-        /* Wait configuration is generated */
+        /* Wait configuration is generated. */
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
@@ -143,10 +114,12 @@ class GeneratePollerContext extends CentreonContext
             30
         );
     }
+
     /**
-     * @Then an error message is displayed to inform that no one poller is selected
+     *  @Then an error message is displayed to inform that no poller is selected
      */
-    public function noPollerErrorMessage() {
+    public function noPollerErrorMessage()
+    {
         /* Wait error message is displayed */
         $this->spin(
             function ($context) {

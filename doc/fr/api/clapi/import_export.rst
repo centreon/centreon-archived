@@ -23,6 +23,24 @@ For instance:::
   HOST;ADD;Host-Test4;Test host;127.0.0.1;generic-host;Local Poller;Linux
   HOST;ADD;Host-Test5;Test host;127.0.0.1;generic-host;Local Poller;Linux
 
+Export of a subset of objects
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Compatibility: Centreon Web >= 2.7.7
+
+You can choose to export only predefined hosts or services.
+
+For example, to export all services linked to "srv-mssql-01" host you have to execute following command::
+
+    [root@centreon ~]# ./centreon -u admin -p centreon -e --select='HOST;srv-mssql-01' --filter-type='^(HOST|SERVICE)$'
+
+To export "memory" and "mssql-listener" services execute following command::
+
+    [root@centreon ~]# ./centreon -e --select='SERVICE;memory' --select='SERVICE;mssql-listener' --filter-type='^SERVICE$'
+
+To export all commands run::
+
+    [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a show | awk -F\; 'NR > 2 { print "--select=\"CMD;" $2 "\"" }' | xargs --verbose php ./centreon -u admin -p centreon -e
 
 Import
 ------

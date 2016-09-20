@@ -387,6 +387,71 @@ class CentreonUser
         }
         return null;
     }
+
+    /**
+     * Get Contact Parameters
+     *
+     * @param CentreonDB $db
+     * @param array $parameters
+     * @return array
+     */
+    public function getContactParameters($db, $parameters = array())
+    {
+        $values = array();
+
+        $queryParameters = '';
+        if (is_array($parameters) && count($parameters)) {
+            $queryParameters = 'AND cp_key IN ("';
+            $queryParameters .= implode('","', $parameters);
+            $queryParameters .= '") ';
+        }
+
+        $query = 'SELECT cp_key, cp_value '
+            . 'FROM contact_param '
+            . 'WHERE cp_contact_id = ' . $this->user_id . ' '
+            . $queryParameters;
+
+        $res = $db->query($query);
+        while ($row = $res->fetchRow()) {
+            $values[$row['cp_key']] = $row['cp_value'];
+        }
+
+        return $values;
+    }
+
+    /**
+     * Set Contact Parameters
+     *
+     * @param CentreonDB $db
+     * @param array $parameters
+     * @return null
+     */
+    public function setContactParameters($db, $parameters = array())
+    {
+        if (!count($parameters)) {
+            return null;
+        }
+
+        $keys = array_keys($parameters);
+
+        $deleteQuery = 'DELETE FROM contact_param '
+            . 'WHERE cp_contact_id = ' . $this->user_id . ' '
+            . 'AND  cp_key IN("'
+            . implode('","', $keys)
+            . '") ';
+        $db->query($deleteQuery);
+
+        $insertQuery = 'INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES ';
+        $first = true;
+        foreach ($parameters as $key => $value) {
+            if (!$first) {
+                $insertQuery .= ',';
+            }
+            $insertQuery .= '("' . $key . '","' . $value . '", ' . $this->user_id . ')';
+            $first = false;
+        }
+        $db->query($insertQuery);
+    }
   
   /**
    * Get token

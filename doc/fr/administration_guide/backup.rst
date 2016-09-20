@@ -1,6 +1,6 @@
-======
-Backup
-======
+============================
+Sauvegarde de la plate-forme
+============================
 
 **************
 Fonctionnement
@@ -15,7 +15,7 @@ Le script de sauvegarde est exécuté de manière journalière par une tâche pl
     # Cron for Centreon-Backup
     30 3 * * * root /usr/share/centreon/cron/centreon-backup.pl >> /var/log/centreon/centreon-backup.log 2&>1
 
-Chaque jour à 3H30, Le zscript de sauvegarde vérifie sur une sauvegarde doit être réalisée ce jour.
+Chaque jour à 3H30, Le script de sauvegarde vérifie sur une sauvegarde doit être réalisée ce jour.
 
 Types de sauvegarde
 ===================
@@ -25,11 +25,11 @@ Il y a deux types de sauvegarde : base de données et fichiers de configuration.
 Sauvegarde de la base de données
 --------------------------------
 
-La sauvegarde de la base de données peut être réalisée sur deux bases : **centreon** and **centreon_storage**
+La sauvegarde de la base de données peut être réalisée sur deux bases : **centreon** et **centreon_storage**
 
 Il y a deux types de sauvegarde :
 
-* MySQLdump : la commande mysqldump est utilisée pour sauvegarder la base de donnees. Attention, cette commande peut prendre un certain temps si la base est volumineuse.
+* MySQLdump : la commande mysqldump est utilisée pour sauvegarder la base de données. Attention, cette commande peut prendre un certain temps si la base est volumineuse.
 * LVM Snapshot : Copie binaire des fichiers MySQL. Vous devez avoir un volume logique dédiée à MySQL (ex: /var/lib/mysql) et 1Go d'espace disponible dans son groupe de volumes.
 
 Format de la sauvegarde :
@@ -173,7 +173,7 @@ Restauration des scripts d'initialisation
 Certains points de contrôles concernant Oracle ou SAP entraînent la modification du script d'initialisation de l'ordonnanceur afin d'y ajouter des variables d'environnements.
 Si vous avez modifié le script d'initialisation de votre ordonnanceur, il faudra le restaurer.
 
-Dans un premier temps extraire cette archive dans un répertoire temporaire puis déplacer un à un les fichiers suivant leur emplacement::
+Dans un premier temps extraire cette archive dans un répertoire temporaire puis déplacer un à un les fichiers suivant leurs emplacements::
 
     # cd /var/backup
     # tar -xvf AAAA-MM-JJ-centreon-engine.tar.gz
@@ -197,14 +197,14 @@ Cette manipulation est à utiliser si et seulement si vous utilisez les agents N
 Génération de la configuration du central
 =========================================
 
-Une fois que toutes les étapes (nécessaires) effectuées, il faudra générer la configuration de chaque collecteur.
+Une fois toutes les étapes (nécessaires) effectuées, il faudra générer la configuration de chaque collecteur.
 
 Reconstruction des graphiques
 =============================
 
-Une fois que vous avez restauré votre plate-forme de supervision et que tout est en ordre, il faudra reconstruire les fichiers RRD afin de retrouver toutes vos "anciens" graphiques de performance.
+Une fois que vous avez restauré votre plate-forme de supervision et que tout est en ordre, il faudra reconstruire les fichiers RRD afin de retrouver tous vos "anciens" graphiques de performance.
 
-Pour reconstruire les graphiques de performance, il faudra vous rendre dans le menu ** Administration -> Options -> Centstorage -> Manage**.
-Sur cette page, il faudra sélectionner tous les services et cliquer sur **Rebuild RRD Database** pour la reconstruction des graphiques.
+Pour reconstruire les graphiques de performance, il faudra vous rendre dans le menu **Administration -> Options -> Centstorage -> Manage**.
+Sur cette page, il faudra sélectionner tous les services et cliquer sur **Rebuild RRD Database**.
 
 **Le serveur central est maintenant restauré.**

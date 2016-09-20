@@ -542,12 +542,14 @@ class CentreonGMT
         
         if (isset($this->timezones[$gmt])) {
             $sTimezone = $gmt;
+        } else if (isset($this->timezoneById[$gmt])) {
+            $sTimezone = $this->timezoneById[$gmt];
         } else {
             $this->getCentreonTimezone();
             if (!empty($this->sDefaultTimezone) && !empty($this->timezones[$this->sDefaultTimezone])) {
                 $sTimezone = $this->timezones[$this->sDefaultTimezone];
             } else { //if we take the empty PHP
-                 $sTimezone = date_default_timezone_get();
+                $sTimezone = date_default_timezone_get();
             }
         }
         return $sTimezone;

@@ -74,10 +74,27 @@ class MetaService extends AbstractObject {
         'macros'
     );
     protected $attributes_array = array(
-        'contact_groups'
+        'contact_groups','contacts'
     );
     private $stmt_cg = null;
-    
+    private $stmt_contact = null;
+
+    private function getCtFromMetaId($meta_id) {
+        if (is_null($this->stmt_contact)) {
+            $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
+                    contact_id
+                FROM meta_contact
+                WHERE meta_id = :meta_id
+                ");
+        }
+        $this->stmt_contact->bindParam(':meta_id', $meta_id);
+        $this->stmt_contact->execute();
+        $this->meta_services[$meta_id]['contacts'] = array();
+        foreach ($this->stmt_contact->fetchAll(PDO::FETCH_COLUMN) as $ct_id) {
+            $this->meta_services[$meta_id]['contacts'][] = Contact::getInstance()->generateFromContactId($ct_id);
+        }
+    }
+
     private function getCgFromMetaId($meta_id) {
         if (is_null($this->stmt_cg)) {
             $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
@@ -146,6 +163,7 @@ class MetaService extends AbstractObject {
         
         foreach ($this->meta_services as $meta_id => &$meta_service) {
             $meta_service['macros'] = array('_SERVICE_ID' => $meta_service['service_id']);
+            $this->getCtFromMetaId($meta_id);
             $this->getCgFromMetaId($meta_id);            
             $meta_service['check_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['check_period_id']);
             $meta_service['notification_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['notification_period_id']);

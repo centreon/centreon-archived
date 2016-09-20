@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 include("./include/common/autoNumLimit.php");
 
@@ -109,7 +109,7 @@ $tpl = initSmartyTpl('./include/monitoring/downtime/', $tpl, "template/");
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
 $tab_downtime_svc = array();
 
@@ -124,54 +124,71 @@ if ($view_all == 1) {
     $extrafields = "";
 }
 /* --------------- Services ---------------*/
-$request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields . " " .
-        "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
-        "WHERE d.host_id = s.host_id " .
-        "AND d.service_id = s.service_id ".
-        "AND s.host_id = h.host_id ".
+$request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
+ d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
+  d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
+   s.description as service_description " . $extrafields . " " .
+    "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
+    "WHERE d.host_id = s.host_id " .
+    "AND d.service_id = s.service_id " .
+    "AND s.host_id = h.host_id " .
     "AND d.service_id IS NOT NULL ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
 if (!$is_admin) {
-    $request .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+    $request .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" .
+        $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $request .= (isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
-            (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
-            (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
-            (isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
-            (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
-            (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") ;
+    (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
+    (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
+    (isset($view_all) && $view_all == 0 ? "AND d.end_time > '" . time() . "' " : "") .
+    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ?
+        " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
+    (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "");
 
 /* --------------- Hosts --------------- */
-$request .=  ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name, '' as service_description " . $extrafields .
-        "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") . " " .
-        "WHERE d.host_id = h.host_id AND d.service_id IS NULL ";
+$request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
+  d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
+  d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
+   '' as service_description " . $extrafields .
+    "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") . " " .
+    "WHERE d.host_id = h.host_id AND d.service_id IS NULL ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
 if (!$is_admin) {
-    $request .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" . $centreon->user->access->getAccessGroupsString() . ") ";
+    $request .= " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND group_id IN (" .
+        $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : "") .
-            (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
-            (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
-            (isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
-            (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
-            (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
-            ") ORDER BY scheduled_start_time DESC " .
-            "LIMIT ".$num * $limit.", ".$limit;
+    (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
+    (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
+    (isset($view_all) && $view_all == 0 ? "AND d.end_time > '" . time() . "' " : "") .
+    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ?
+        " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
+    (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
+    ") ORDER BY scheduled_start_time DESC " .
+    "LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT_NDO = $pearDBO->query($request);
 
 $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
-        $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
+    $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
     $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
     $tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
-    $tab_downtime_svc[$i]['service_description'] = ($data['service_description'] != '' ? $data['service_description'] : '-');
-    $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(_("Y/m/d H:i"), $tab_downtime_svc[$i]["scheduled_start_time"])." ";
-    $tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(_("Y/m/d H:i"), $tab_downtime_svc[$i]["scheduled_end_time"])." ";
+    $tab_downtime_svc[$i]['service_description'] =
+        ($data['service_description'] != '' ? $data['service_description'] : '-');
+    $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(
+        _("Y/m/d H:i"),
+        $tab_downtime_svc[$i]["scheduled_start_time"]
+    ) . " ";
+    $tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(
+        _("Y/m/d H:i"),
+        $tab_downtime_svc[$i]["scheduled_end_time"]
+    ) . " ";
     if ($data['service_description'] != '') {
         $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
         $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
@@ -199,7 +216,10 @@ foreach ($tab_downtime_svc as $key => $value) {
                 $tab_downtime_svc[$key]["actual_end_time"] = _("Never Started");
             }
         } else {
-            $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(_("Y/m/d H:i"), $tab_downtime_svc[$key]["actual_end_time"])." ";
+            $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(
+                _("Y/m/d H:i"),
+                $tab_downtime_svc[$key]["actual_end_time"]
+            ) . " ";
         }
         $tab_downtime_svc[$key]["was_cancelled"] = $en[$tab_downtime_svc[$key]["was_cancelled"]];
     }
@@ -208,27 +228,28 @@ foreach ($tab_downtime_svc as $key => $value) {
  * Element we need when we reload the page
  */
 $form->addElement('hidden', 'p');
-$tab = array ("p" => $p);
+$tab = array("p" => $p);
 $form->setDefaults($tab);
 
 if ($oreon->user->access->checkAction("host_schedule_downtime")) {
-    $tpl->assign('msgs2', array ("addL2"=>"?p=".$p."&o=a", "addT2"=>_("Add downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
+    $tpl->assign('msgs2', array(
+        "addL2" => "?p=" . $p . "&o=a",
+        "addT2" => _("Add a downtime"),
+        "delConfirm" => _("Do you confirm the cancellation ?")
+    ));
 }
+
 
 $tpl->assign("p", $p);
 $tpl->assign("o", $o);
 
 $tpl->assign("tab_downtime_svc", $tab_downtime_svc);
 $tpl->assign("nb_downtime_svc", count($tab_downtime_svc));
-
 $tpl->assign("dtm_service_downtime", _("Services Downtimes"));
-
 $tpl->assign("secondes", _("s"));
-
 $tpl->assign("view_host_dtm", _("View downtimes of hosts"));
-$tpl->assign("host_dtm_link", "./main.php?p=".$p."&o=vh");
+$tpl->assign("host_dtm_link", "./main.php?p=" . $p . "&o=vh");
 $tpl->assign("cancel", _("Cancel"));
-$tpl->assign("delete", _("Delete"));
 $tpl->assign("limit", $limit);
 
 $tpl->assign("Host", _("Host Name"));
@@ -254,30 +275,3 @@ $tpl->assign('form', $renderer->toArray());
 
 /* Display Page */
 $tpl->display("listDowntime.ihtml");
-
-?>
-<script type='text/javascript'>
-
-var msgArr = new Array();
-msgArr['cs'] = '<?php echo addslashes(_("Do you confirm the cancellation ?")); ?>';
-msgArr['ds'] = '<?php echo addslashes(_("Do you confirm the deletion ?")); ?>';
-msgArr['NoItemSelected'] = '<?php echo addslashes(_("Please select one or more items")); ?>';
-
-function doAction(slt, act) {
-    var bChecked = isChecked();
-    if (slt.selectedIndex != 0 && !bChecked) {
-      alert(msgArr['NoItemSelected']); 
-      return false;
-    }
-    if (slt.selectedIndex == 0) {
-        return false;
-    } else { 
-        if (confirm(msgArr[act])) {
-                jQuery('input[name=o]').attr('value', act);
-                document.form.submit();
-        } else {
-                slt.value = 0;
-        }
-    }
-}
-</script>

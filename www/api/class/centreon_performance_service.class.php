@@ -102,7 +102,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $additionnalCondition .= 'AND i.host_id IN (' . join(',', $this->arguments['host']) . ')';
         }
         
-        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.service_description, i.service_id, i.host_name, i.host_id, m.index_id "
+        $query = "SELECT SQL_CALC_FOUND_ROWS i.service_description, i.service_id, i.host_name, i.host_id, m.index_id "
             . "FROM index_data i, metrics m ".(!$isAdmin ? ', centreon_acl acl ' : '')
             . $additionnalTables
             . 'WHERE i.id = m.index_id '
@@ -110,6 +110,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             . "AND (i.service_description LIKE '%$q%' OR i.host_name LIKE '%$q%') "
             . $additionnalCondition
             . $aclServices
+            . "GROUP BY i.id "
             . "ORDER BY i.host_name, i.service_description "
             . $range;
         $DBRESULT = $this->pearDBMonitoring->query($query);

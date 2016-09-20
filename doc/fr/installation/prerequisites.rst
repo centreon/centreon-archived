@@ -18,7 +18,7 @@ Logiciels
 Système d'exploitation
 ======================
 
-Si vous souhaitez **utiliser CES v3.x, le système d'exploitation sera CentOS en version v6**.
+Si vous souhaitez **utiliser Centreon ISO v3.x, le système d'exploitation sera CentOS en version v6**.
 Si vous préférez utiliser **Red Hat OS** vous devez installer une **version v6** du système.
 enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
 sera plus complexe à partir des fichiers sources de chaque composants.
