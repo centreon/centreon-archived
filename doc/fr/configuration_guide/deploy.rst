@@ -11,14 +11,12 @@ Procédure
 Lors de la création/suppression/modification des objets via l'interface de configuration, les changements effectués ne sont pas appliqués de manière automatique aux serveurs de supervision.
 Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de suivre la procédure suivante ci-dessous.
 
-.. note::
-   Celle-ci doit toujours être déroulée en 2 étapes.
-   
 Première étape
 ==============
 
 #. Rendez-vous dans le menu **Configuration** ==> **Collecteurs**
-#. Cliquez sur l'icône de génération de la configuration du collecteur.
+#. Choisissez les collecteurs sur lesquels exporter la configuration
+#. Cliquez sur **Appliquez la configurartion**
 
 .. image:: /images/guide_utilisateur/configuration/poller_menu_generate.png
     :align: center
