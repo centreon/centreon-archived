@@ -88,6 +88,11 @@ default:
         - DowntimeServiceContext
 
     show_disabled_hosts_services:
-          paths: [ %paths.base%/features/ShowDisabledHostsServices.feature ]
-          contexts:
-            - ShowDisabledHostsServicesContext
+      paths: [ %paths.base%/features/ShowDisabledHostsServices.feature ]
+      contexts:
+        - ShowDisabledHostsServicesContext
+
+    save_search_filter:
+      paths: [ %paths.base%/features/SaveSearchFilter.feature ]
+      contexts:
+        - SaveSearchFilterContext
