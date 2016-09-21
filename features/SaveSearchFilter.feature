@@ -12,3 +12,8 @@ Feature: Save last search for filter
         And I go back on the host template listing
         Then the search is fill by the previous search
 
+    Scenario: Search a string in traps
+        Given a search on the traps listing
+        When I change page
+        And I go back on the traps listing
+        Then the search is fill by the previous search
