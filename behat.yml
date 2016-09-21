@@ -86,3 +86,8 @@ default:
       paths: [ %paths.base%/features/DowntimeService.feature ]
       contexts:
         - DowntimeServiceContext
+
+    save_search_filter:
+      paths: [ %paths.base%/features/SaveSearchFilter.feature ]
+      contexts:
+        - SaveSearchFilterContext
