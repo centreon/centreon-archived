@@ -45,7 +45,8 @@ function getMyHostRow($host_id = null, $rowdata)
         exit();
     }
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_" . $rowdata . ", host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT host_" . $rowdata .
+            ", host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         if ($row["host_" . $rowdata]) {
             return $row["host_$rowdata"];
@@ -59,7 +60,14 @@ function getMyHostRow($host_id = null, $rowdata)
 
 function get_user_param($user_id, $pearDB)
 {
-    $list_param = array('ack_sticky', 'ack_notify', 'ack_persistent', 'ack_services', 'force_active', 'force_check');
+    $list_param = array(
+        'ack_sticky',
+        'ack_notify',
+        'ack_persistent',
+        'ack_services',
+        'force_active',
+        'force_check'
+    );
     $tab_row = array();
     foreach ($list_param as $param) {
         if (isset($_SESSION[$param])) {
@@ -99,7 +107,9 @@ function get_notified_infos_for_host($host_id)
         array_pop($hostStack);
 
         $DBRESULT = $pearDB->query("SELECT host_tpl_id, contact_additive_inheritance, cg_additive_inheritance
-                FROM host h, host_template_relation htr WHERE htr.host_host_id=h.host_id AND h.host_id = '" . $currentHost . "'");
+                FROM host h, host_template_relation htr
+                WHERE htr.host_host_id=h.host_id 
+                AND h.host_id = '" . $currentHost . "'");
 
         // Look for contactgroups
         if (($hostParam['cg_additive_inheritance'] == 1) || $firstTime) {

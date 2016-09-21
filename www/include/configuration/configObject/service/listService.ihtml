@@ -16,6 +16,7 @@
             {/if}
             <td><h4>{$Services}</h4></td>
 			<td><h4>{$ServiceTemplates}</h4></td>
+
 			<td><h4>{$ServiceStatus}</h4></td>
 		</tr>
         <tr>
@@ -27,6 +28,9 @@
 			<td><input type='text' name='searchS' value="{$searchS}" /></td>
 			<td><select name='template'>{$templateFilter}</select></td>
 			<td><select name='status'>{$statusFilter}</select></td>
+			{if (! isset($hostgroupsFilter))}
+			<td><h4><input type="checkbox" name='statusHostFilter' {$hostStatusChecked}/>{$HostStatus}</h4></td>
+			{/if}
 			<td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
         </tr>
       </tbody>
