@@ -82,6 +82,7 @@ $tpl = initSmartyTpl($path, $tpl);
 $openid = '0';
 $open_id_sub = '0';
 
+$defaultGraphs = array();
 $defaultServicesForGraph = array();
 $defaultHostsForGraph = array();
 $defaultMetasForGraph = array();
@@ -130,6 +131,7 @@ if (isset($id_svc) && $id_svc) {
     $grId = '';
     $tab_svcs = explode(",", $id_svc);
     foreach ($tab_svcs as $svc) {
+        $graphTitle = '';
         $tmp = explode(";", $svc);
         if (!isset($tmp[1])) {
             $id .= "HH_" . getMyHostID($tmp[0]).",";
@@ -145,13 +147,19 @@ if (isset($id_svc) && $id_svc) {
             $grId .= $res["meta_id"];
         } else {
             if (isset($tmp[1])) {
-                $id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
+                $hostId = getMyHostID($tmp[0]);
+                $serviceId = getMyServiceID($tmp[1], getMyHostID($tmp[0]));
+                $graphTitle = $tmp[0] . ' - ' . $tmp[1];
+                $id .= "HS_" . $ServiceId."_".$hostId.",";
                 $grId .= getMyHostID($tmp[0]) . '-' .  getMyServiceID($tmp[1], getMyHostID($tmp[0]));
             }
         }
 
         if (strpos($grId, '-')) {
-            $defaultServicesForGraph[$svc] = $grId;
+            $defaultGraphs[] = array(
+                'id' => $grId,
+                'text' => $graphTitle
+            );
         } elseif ($meta == 1) {
             $defaultMetasForGraph[$svc] = $grId;
         } else {
@@ -268,7 +276,7 @@ $tpl->assign('from', _("From"));
 $tpl->assign('to', _("to"));
 $tpl->assign('displayStatus', _("Display Status"));
 $tpl->assign('Apply', _("Apply"));
-$tpl->assign('defaultCharts', json_encode(array_values($defaultServicesForGraph)));
-$tpl->display("graphs.ihtml");
+$tpl->assign('defaultCharts', json_encode($defaultGraphs));
+$tpl->display("graphs.html");
 
 $multi = 1;
