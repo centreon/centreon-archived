@@ -133,21 +133,9 @@ L'assistant de fin d'installation de Centreon contrôle la disponibilité des mo
    :align: center
    :scale: 65%
 
-Choisissez l'option **centreon-engine**. 
-
-.. image :: /images/guide_utilisateur/amonitoringengine1.png
-   :align: center
-   :scale: 65%
-
 Cliquez sur **Next**. 
 
 .. image :: /images/guide_utilisateur/amonitoringengine2.png
-   :align: center
-   :scale: 65%
-
-Lors du choix du broker, choisissez **centreon-broker**.
-
-.. image :: /images/guide_utilisateur/abrokerinfo1.png
    :align: center
    :scale: 65%
 

@@ -18,7 +18,7 @@ Perform the following command from a user with sufficient rights:
 
  ::
 
-  $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+  $ wget http://yum.centreon.com/standard/3.4/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
 
 The repository is now installed.
 

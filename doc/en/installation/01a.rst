@@ -134,21 +134,9 @@ The End of installation wizard of Centreon checks the availability of the module
    :align: center
    :scale: 65%
 
-Choose the **centreon-engine** option. 
-
-.. image :: /images/user/amonitoringengine1.png
-   :align: center
-   :scale: 65%
-
 Click on **Next**.
 
 .. image :: /images/user/amonitoringengine2.png
-   :align: center
-   :scale: 65%
-
-For the choice of broker, choose **Centreon-broker**.
-
-.. image :: /images/user/abrokerinfo1.png
    :align: center
    :scale: 65%
 
