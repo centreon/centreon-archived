@@ -52,6 +52,7 @@ class Centreon
     public $optGen;
     public $redirectTo;
     public $modules;
+    public $hooks;
     public $plugins;
     public $status_graph_service;
     public $status_graph_host;
@@ -111,6 +112,11 @@ class Centreon
          * Grab Modules
          */
         $this->creatModuleList($pearDB);
+
+        /*
+         * Grab Hooks
+         */
+        $this->initHooks();
 
         /*
          * Create GMT object
@@ -180,6 +186,38 @@ class Centreon
             }
         }
         $DBRESULT->free();
+    }
+
+    public function initHooks()
+    {
+        $this->hooks = array();
+
+        foreach ($this->modules as $name => $parameters) {
+            $hookPaths = glob(_CENTREON_PATH_ . '/www/modules/' . $name . '/hooks/*.class.php');
+            foreach ($hookPaths as $hookPath) {
+                if (preg_match('/\/([^\/]+?)\.class\.php$/', $hookPath, $matches)) {
+                    require_once($hookPath);
+                    $explodedClassName = explode('_', $matches[1]);
+                    $className = '';
+                    foreach ($explodedClassName as $partClassName) {
+                        $className .= ucfirst(strtolower($partClassName));
+                    }
+                    if (class_exists($className)) {
+                        $hookName = '';
+                        for ($i = 1;$i < count($explodedClassName); $i++) {
+                            $hookName .= ucfirst(strtolower($explodedClassName[$i]));
+                        }
+                        $hookMethods = get_class_methods($className);
+                        foreach ($hookMethods as $hookMethod) {
+                            $this->hooks[$hookName][$hookMethod][] = array(
+                                'path' => $hookPath,
+                                'class' => $className
+                            );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
