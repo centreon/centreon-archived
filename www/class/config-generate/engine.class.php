@@ -45,8 +45,6 @@ class Engine extends AbstractObject {
         cfg_file as cfg_filename,
         
         log_file,
-        object_cache_file,
-        precached_object_file,
         status_file,
         check_result_path,
         use_check_result_path,
@@ -160,8 +158,6 @@ class Engine extends AbstractObject {
     protected $attributes_write = array(
         'resource_file',
         'log_file',
-        'object_cache_file',
-        'precached_object_file',
         'status_file',
         'check_result_path',
         'use_check_result_path', //cengine

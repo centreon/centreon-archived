@@ -475,8 +475,6 @@ CREATE TABLE `cfg_nagios` (
   `nagios_name` varchar(255) DEFAULT NULL,
   `log_file` varchar(255) DEFAULT NULL,
   `cfg_dir` varchar(255) DEFAULT NULL,
-  `object_cache_file` varchar(255) DEFAULT NULL,
-  `precached_object_file` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
   `check_result_path` varchar(255) DEFAULT NULL,
