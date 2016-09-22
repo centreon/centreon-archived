@@ -88,6 +88,7 @@ if ($id && $o == "d" && testModuleExistence($id)) {
             unset($oreon->modules[$moduleinfo["name"]]);
         }
     }
+    $centreon->initHooks();
 }
 
 /*
