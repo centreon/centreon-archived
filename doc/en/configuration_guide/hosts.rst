@@ -120,6 +120,7 @@ The fields presented below are fields that are only use by the CGI of the schedu
 
 *	The **VRML image** field defined the logo for the 3D engine of the host (not compatible with Centreon Engine).
 *	The **Status Map Image** field defined the logo for the scheduler CGI.
+*       The **Geo coordinates** field defined geographic coordinate (Latitude,Longitude) of the element. This is useful for Centreon Map module.
 *	The **2d Coords** and **3d Coords** fields indicates the 2D and 3D coordinates use by the CGI.
 
 Access groups
