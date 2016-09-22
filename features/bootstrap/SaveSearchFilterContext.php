@@ -1,9 +1,8 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
+
+use Centreon\Test\Behat\SnmpTrapsConfigurationListingPage;
+use Centreon\Test\Behat\HostTemplateConfigurationListingPage;
 use Centreon\Test\Behat\CentreonContext;
 
 /**
@@ -16,7 +15,7 @@ class SaveSearchFilterContext extends CentreonContext
     {
         parent::__construct();
         $this->search = '';
-        $this->searchInput = '';
+        $this->page = '';
     }
 
     /**
@@ -24,25 +23,9 @@ class SaveSearchFilterContext extends CentreonContext
      */
     public function aSearchOnTheHostTemplateListing()
     {
-
         $this->search = 'Servers';
-        $this->searchInput = 'input[name="searchHT"]';
-
-        $this->visit('/main.php?p=60103');
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    $this->searchInput
-                );
-            },
-            30
-        );
-
-        $this->assertFind('css', $this->searchInput)->setValue($this->search);
-        $this->assertFind('css', 'tbody tr td input.btc.bt_success')->click();
-        sleep(1);
+        $this->page = new HostTemplateConfigurationListingPage($this);
+        $this->page->setSearch($this->search);
     }
 
 
@@ -52,23 +35,8 @@ class SaveSearchFilterContext extends CentreonContext
     public function aSearchOnTheTrapsListing()
     {
         $this->search = 'ccm';
-        $this->searchInput = 'input[name="searchT"]';
-
-        $this->visit('/main.php?p=617');
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    $this->searchInput
-                );
-            },
-            30
-        );
-
-        $this->assertFind('css', $this->searchInput)->setValue($this->search);
-        $this->assertFind('css', 'tbody tr td input.btc.bt_success')->click();
-        sleep(1);
+        $this->page = new SnmpTrapsConfigurationListingPage($this);
+        $this->page->setSearch($this->search);
     }
 
 
@@ -132,7 +100,7 @@ class SaveSearchFilterContext extends CentreonContext
      */
     public function theSearchIsFillByThePreviousSearch()
     {
-        if ($this->search != $this->assertFind('css', $this->searchInput)->getValue()) {
+        if ($this->search != $this->page->getSearch()) {
             throw new \Exception('saved search not found');
         }
     }

@@ -21,7 +21,7 @@ Exécuter la commande suivante à partir d'un utilisateur possédant les droits 
 
   ::
 
-    $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+    $ wget http://yum.centreon.com/standard/3.4/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
 
 Le dépôt est maintenant installé.
 

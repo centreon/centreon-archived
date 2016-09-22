@@ -8,7 +8,9 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
 ('metricMulti', 1),
 ('serviceCategory', 1),
 ('hostCategory', 1),
-('serviceMulti', 1);
+('serviceMulti', 1),
+('serviceGroupMulti',1),
+('pollerMulti',1);
 
 UPDATE `options` SET `value`='/var/cache/centreon/backup' WHERE `key`='backup_backup_directory';
 
@@ -165,3 +167,7 @@ CREATE INDEX `contact_index` ON `ods_view_details` (`contact_id`, `index_id`) US
 
 -- Replace Generate in breadcrumb by Export configuration
 UPDATE topology SET topology_name = 'Export configuration' WHERE topology_page = 60902;
+
+-- Drop from nagios configuration
+ALTER TABLE `cfg_nagios` DROP COLUMN precached_object_file;
+ALTER TABLE `cfg_nagios` DROP COLUMN object_cache_file;

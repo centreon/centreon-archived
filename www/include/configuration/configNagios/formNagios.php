@@ -161,8 +161,6 @@ $form->addElement('text', 'status_update_interval', _("Status File Update Interv
 $form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 $form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 $form->addElement('text', 'cfg_file', _("Object Configuration File"), $attrsText2);
-$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
-$form->addElement('text', 'precached_object_file', _("Precached Object File"), $attrsText2);
 $form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
 $form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
 $form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
