@@ -96,3 +96,8 @@ default:
       paths: [ %paths.base%/features/SaveSearchFilter.feature ]
       contexts:
         - SaveSearchFilterContext
+
+    timezone_display_host_monitoring:
+      paths: [ %paths.base%/features/TimezoneInMonitoring.feature ]
+      contexts:
+        - TimezoneInMonitoringContext
