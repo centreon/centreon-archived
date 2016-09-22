@@ -501,7 +501,7 @@ jQuery(function () {
   jQuery('#host_filter').centreonSelect2({
     select2: {
       ajax: {
-        url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list'
+        url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list&h=all'
       },
       containerCssClass: 'filter-select'
     },
