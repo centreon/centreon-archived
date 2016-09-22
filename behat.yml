@@ -101,3 +101,9 @@ default:
       paths: [ %paths.base%/features/TimezoneInMonitoring.feature ]
       contexts:
         - TimezoneInMonitoringContext
+
+    downtime_start_and_stop:
+      paths: [ %paths.base%/features/DowntimeStartAndStop.feature ]
+      contexts:
+       - DowntimeStartAndStopContext
+
