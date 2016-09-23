@@ -27,18 +27,8 @@
       });
     }
     
-    /* Define tick for timeseries */
-    this.timeFormat = d3.time.format.multi([
-      [".%L", function(d) { return d.getMilliseconds(); }],
-      [":%S", function(d) { return d.getSeconds(); }],
-      ["%H:%M", function(d) { return d.getMinutes(); }],
-      ["%H:%M", function(d) { return d.getHours(); }],
-      ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
-      ["%m-%d", function(d) { return d.getDate() !== 1; }],
-      ["%Y-%m", function(d) { return d.getMonth(); }],
-      ["%Y", function() { return true; }]
-    ]);
-    
+    this.timeFormat = this.getTimeFormat();
+
     /* Color for status graph */
     this.colorScale = d3.scale.ordinal().range([
       '#88b917',
@@ -448,6 +438,28 @@
       }
     },
     /**
+     * Define tick for timeseries
+     */
+    getTimeFormat: function() {
+      var timeFormat;
+      if (this.settings.timeFormat != null) {
+        timeFormat = this.settings.timeFormat;
+      } else {
+        timeFormat = d3.time.format.multi([
+          [".%L", function(d) { return d.getMilliseconds(); }],
+          [":%S", function(d) { return d.getSeconds(); }],
+          ["%H:%M", function(d) { return d.getMinutes(); }],
+          ["%H:%M", function(d) { return d.getHours(); }],
+          ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
+          ["%m-%d", function(d) { return d.getDate() !== 1; }],
+          ["%Y-%m", function(d) { return d.getMonth(); }],
+          ["%Y", function() { return true; }]
+        ]);
+      }
+
+      return timeFormat;
+    },
+    /**
      * Resize the graph
      */
     resize: function () {
@@ -581,6 +593,7 @@
       start: null,
       end: null
     },
+    timeFormat: null,
     threshold: true
   };
 })(jQuery);
