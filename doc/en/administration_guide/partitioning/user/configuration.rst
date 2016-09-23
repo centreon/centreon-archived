@@ -1,11 +1,11 @@
-==============
+*************
 Configuration
-==============
+*************
 
 Centreon Partitioning uses XML configuration files. There are already some configuration files for Centreon tables.
 
 Example with partitioning-data_bin.xml
---------------------------------------
+======================================
 ::
 
   <?xml version="1.0" encoding="UTF-8"?>
@@ -46,6 +46,3 @@ The meaning of XML attributes/values:
  - tag 'timezone': your server timezone (you can have the timezone value in file '/etc/sysconfig/clock' for centos)
  - tag 'retention': number of days keeping
  - tag 'retentionforward': number of partition created by advance (useful for range partitioning)
-
-
-
