@@ -10,20 +10,17 @@ Contents:
 
    a_propos/index
    release_notes/index
+   lifecycle
    installation/index
    migration/index
    quick_start/index
    configuration_guide/index
    exploitation_guide/index
    administration_guide/index
-   knowledge_base/index
-   partitioning/index
-   howto/index
    upgrade/index
    faq/index
    developer/index
    api/index
-   life_cycle/index
 
 Additional online resource:
 
