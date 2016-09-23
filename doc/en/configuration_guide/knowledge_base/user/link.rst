@@ -6,7 +6,7 @@ Link from monitoring front end
 The technical procedure is available in Centreon front-end through a
 link icon:
 
-.. image:: ../../_static/images/knowledge/screen_host_monitoring.png
+.. image:: ../../../_static/images/knowledge/screen_host_monitoring.png
    :align: center
 
 By clicking on link icon, the user is redirected to the corresponding
