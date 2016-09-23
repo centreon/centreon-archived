@@ -35,6 +35,7 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonHost.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonHook.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHost extends CentreonConfigurationObjects
@@ -97,15 +98,33 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             $additionnalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (' .
                 join(',', $this->arguments['hostgroup']) . ') ';
         }
+
+        // Check for virtual hosts
+        $virtualHostCondition = '';
+        if (!isset($this->arguments['hostgroup']) && isset($this->arguments['h']) && $this->arguments['h'] == 'all') {
+            $allVirtualHosts = CentreonHook::execute('Host', 'getVirtualHosts');
+            foreach ($allVirtualHosts as $virtualHosts) {
+                foreach ($virtualHosts as $virtualHostId => $virtualHostName) {
+                    $virtualHostCondition .= 'UNION ALL ('
+                        . 'SELECT "' . $virtualHostName . '" as host_name, ' . $virtualHostId . ' as host_id '
+                        . ') ';
+                }
+            }
+        }
         
-        $queryHost = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id "
+        $queryHost = "SELECT SQL_CALC_FOUND_ROWS DISTINCT host_name, host_id "
+            . "FROM ( "
+            . "( SELECT DISTINCT h.host_name, h.host_id "
             . "FROM host h "
             . $additionnalTables
             . "WHERE h.host_register = '1' "
-            . "AND h.host_name LIKE '%$q%' "
             . $aclHosts
             . $additionnalCondition
-            . "ORDER BY h.host_name "
+            . ") "
+            . $virtualHostCondition
+            . ") t_union "
+            . "WHERE host_name LIKE '%" . $q . "%' "
+            . "ORDER BY host_name "
             . $range;
         
         $DBRESULT = $this->pearDB->query($queryHost);

@@ -42,7 +42,6 @@ $aDefaultBrokerDirective = array(
 $aInstanceDefaultValues = array(
     'log_file' => '/var/log/centreon-engine/centengine.log',
     'cfg_dir' => '/etc/centreon-engine/',
-    'object_cache_file' => '/var/log/centreon-engine/objects.cache',
     'temp_file' => '/var/log/centreon-engine/centengine.tmp',
     'status_file' => '/var/log/centreon-engine/status.dat',
     'status_update_interval' => '30',
@@ -176,7 +175,7 @@ function insertServerInCfgNagios($iId, $sName)
     $DBRESULT = $pearDB->query("SELECT nagios_id FROM `cfg_nagios` WHERE  nagios_server_id = '".$iId."'");
     
     if ($DBRESULT->numRows() == 0) {
-        $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `object_cache_file`, `temp_file`, `status_file`, 
+        $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `temp_file`, `status_file`, 
         `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, 
         `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, 
         `command_check_interval`, `command_file`, `lock_file`, `retain_state_information`, `state_retention_file`,`retention_update_interval`, `use_retained_program_state`, 
@@ -195,7 +194,6 @@ function insertServerInCfgNagios($iId, $sName)
 
         $rq .= "'".$sName."', '". $iId. "', '".$aInstanceDefaultValues['log_file'] ."', '" .
         $aInstanceDefaultValues['cfg_dir'] ."', '" .
-        $aInstanceDefaultValues['object_cache_file'] ."', '" .
         $aInstanceDefaultValues['temp_file'] ."', '" .
         $aInstanceDefaultValues['status_file'] ."', '" .
         $aInstanceDefaultValues['status_update_interval'] ."', '" .

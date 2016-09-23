@@ -208,7 +208,6 @@ function insertNagios($ret = array(), $brokerTab = array())
     
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , "
-        . "`precached_object_file`, `object_cache_file` , `temp_file` , "
         . "`check_result_path`, `max_check_result_file_age`, "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
         . "`enable_notifications` , `execute_service_checks` , "
@@ -264,10 +263,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'".htmlentities($ret["log_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["cfg_dir"]) && $ret["cfg_dir"] != null ?
         $rq .= "'".htmlentities($ret["cfg_dir"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-    isset($ret["precached_object_file"]) && $ret["precached_object_file"] != null ?
-        $rq .= "'".htmlentities($ret["precached_object_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-    isset($ret["object_cache_file"]) && $ret["object_cache_file"] != null ?
-        $rq .= "'".htmlentities($ret["object_cache_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["temp_file"]) && $ret["temp_file"] != null ?
         $rq .= "'".htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["check_result_path"]) && $ret["check_result_path"] != null ?
@@ -637,12 +632,6 @@ function updateNagios($nagios_id = null)
     isset($ret["cfg_dir"]) && $ret["cfg_dir"] != null ?
         $rq .= "cfg_dir = '".htmlentities($ret["cfg_dir"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "cfg_dir = NULL, ";
-    isset($ret["object_cache_file"]) && $ret["object_cache_file"] != null ?
-        $rq .= "object_cache_file = '".htmlentities($ret["object_cache_file"], ENT_QUOTES, "UTF-8")."',  "
-        : $rq .= "object_cache_file = NULL, ";
-    isset($ret["precached_object_file"]) && $ret["precached_object_file"] != null ?
-        $rq .= "precached_object_file = '".htmlentities($ret["precached_object_file"], ENT_QUOTES, "UTF-8")."',  "
-        : $rq .= "precached_object_file = NULL, ";
     isset($ret["temp_file"]) && $ret["temp_file"] != null ?
         $rq .= "temp_file = '".htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "temp_file = NULL, ";

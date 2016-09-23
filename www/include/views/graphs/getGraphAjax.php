@@ -96,13 +96,13 @@ function getServiceGraphByHost($host, $isAdmin, $lca)
  * @param bool $isAdmin If the contact is admin
  * @param array $lca The ACL of the contact
  */
-function getGraphByService($host, $svcId, $svcName, $isAdmin, $lca)
+function getGraphByService($host, $svcId, $title, $isAdmin, $lca)
 {
     if (service_has_graph($host, $svcId) && ($isAdmin || (!$isAdmin && isset($lca[$host][$svcId])))) {
         return array(
             'type' => 'service',
             'id' => $host . '_' . $svcId,
-            'title' => getMyHostName($host) . ' - ' . $svcName
+            'title' => $title
         );
     }
     return false;
@@ -137,9 +137,9 @@ if (isset($_POST['service_group_filter'])) {
 
 /* By service */
 if (isset($_POST['service_selector'])) {
-    foreach ($_POST['service_selector'] as $hostSvcId) {
-        list($hostId, $svcId) = explode('-', $hostSvcId);
-        $svcGraph = getGraphByService($hostId, $svcId, getMyServiceName($svcId), $isAdmin, $lca);
+    foreach ($_POST['service_selector'] as $selectedService) {
+        list($hostId, $svcId) = explode('-', $selectedService['id']);
+        $svcGraph = getGraphByService($hostId, $svcId, $selectedService['text'], $isAdmin, $lca);
         if ($svcGraph !== false) {
             $servicesReturn[] = $svcGraph;
         }

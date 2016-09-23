@@ -61,13 +61,6 @@ $nagios_comment["status_file"]="This is where the current status of all monitore
  . "The contentsof the status file are deleted every time Nagios "
  . "restarts. ";
 
-$nagios_comment["object_cache_file"] = "This directive is used to specify a file in which "
-    . "a cached copy of object definitions should be stored. "
-    . "The cache file is (re)created every time Nagios is (re)started and is used by the CGIs."
-    . "It is intended to speed up config file caching in the CGIs "
-    . "and allow you to edit the source object config files while "
-    . "Nagios is running without affecting the output displayed in the CGIs.";
-
 $nagios_comment["nagios_user"]=" NAGIOS USER "
  . "This determines the effective user that Nagios should run as.   "
  . "You can either supply a username or a UID. ";
