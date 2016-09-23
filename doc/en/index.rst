@@ -10,7 +10,7 @@ Contents:
 
    a_propos/index
    release_notes/index
-   lifecycle
+   life_cycle
    installation/index
    migration/index
    quick_start/index

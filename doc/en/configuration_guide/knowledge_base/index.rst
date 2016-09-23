@@ -1,8 +1,8 @@
 .. _knowledge_base:
 
-##############
+==============
 Knowledge Base
-##############
+==============
 
 In Centreon Open Source suite since 2.8.0 version, **Knowledge Base** allow you to easily associate a wiki with Centreon Web.
 
