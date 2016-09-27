@@ -17,8 +17,6 @@ Sommaire :
    configuration_guide/index
    exploitation_guide/index
    administration_guide/index
-   knowledge_base/index
-   partitioning/index
    upgrade/index
    faq/index
    developper/index

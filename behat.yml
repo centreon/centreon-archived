@@ -6,6 +6,8 @@ default:
         default:
           selenium2: ~
     Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
   suites:
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
@@ -102,3 +104,8 @@ default:
       paths: [ %paths.base%/features/SaveSearchFilter.feature ]
       contexts:
         - SaveSearchFilterContext
+
+    timezone_display_host_monitoring:
+      paths: [ %paths.base%/features/TimezoneInMonitoring.feature ]
+      contexts:
+        - TimezoneInMonitoringContext

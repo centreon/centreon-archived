@@ -52,8 +52,6 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file" />&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="temp_file" />&nbsp;{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="lock_file" />&nbsp;{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="object_cache_file" />&nbsp;{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="precached_object_file" />&nbsp;{$form.precached_object_file.label}</td><td class="FormRowValue">{$form.precached_object_file.html}</td></tr>		
 	
 			<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">

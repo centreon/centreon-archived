@@ -3,6 +3,7 @@
 
 use Centreon\Test\Behat\SnmpTrapsConfigurationListingPage;
 use Centreon\Test\Behat\HostTemplateConfigurationListingPage;
+use Centreon\Test\Behat\ServiceTemplateConfigurationListingPage;
 use Centreon\Test\Behat\CentreonContext;
 
 /**
@@ -45,18 +46,7 @@ class SaveSearchFilterContext extends CentreonContext
      */
     public function iChangePage()
     {
-        /* service configuration page */
-        $this->visit('/main.php?p=602');
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[name="searchS"]'
-                );
-            },
-            30
-        );
+       new ServiceTemplateConfigurationListingPage($this);
     }
 
     /**
@@ -64,17 +54,7 @@ class SaveSearchFilterContext extends CentreonContext
      */
     public function iGoBackOnTheHostTemplateListing()
     {
-        $this->visit('/main.php?p=60103');
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[name="searchHT"]'
-                );
-            },
-            30
-        );
+        new HostTemplateConfigurationListingPage($this);
     }
 
     /**
@@ -82,17 +62,7 @@ class SaveSearchFilterContext extends CentreonContext
      */
     public function iGoBackOnTheTrapsListing()
     {
-        $this->visit('/main.php?p=617');
-        /* Wait page loaded */
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[name="searchT"]'
-                );
-            },
-            30
-        );
+        new SnmpTrapsConfigurationListingPage($this);
     }
 
     /**
