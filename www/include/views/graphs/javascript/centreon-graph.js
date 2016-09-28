@@ -127,6 +127,7 @@
         x: {
           type: 'timeseries',
           tick: {
+            fit: false,
             format: this.timeFormat
           }
         },
