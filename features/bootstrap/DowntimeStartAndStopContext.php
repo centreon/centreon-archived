@@ -15,13 +15,15 @@ use Centreon\Test\Behat\DowntimeConfigurationListingPage;
  */
 class DowntimeStartAndStopContext extends CentreonContext
 {
+    protected $host = 'Centreon-Server';
+    protected $service = 'Memory';
+    protected $downtimeEndTime;
 
     public function __construct()
     {
         parent::__construct();
         $this->page = '';
         $this->ete = date('I');
-        $this->service = 'Memory';
         $this->dateStartLocal = '';
         $this->dateStartUtc = '';
         $this->dateEndLocal = '';
@@ -29,6 +31,83 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->duration = '';
     }
 
+    /**
+     * @Given a fixed downtime on a monitored element
+     */
+    public function aFixedDowntimeOnAMonitoredElement()
+    {
+        $this->restartAllPollers();
+
+        $page = new DowntimeConfigurationPage($this);
+
+        $downtimeEndTime = '+1 minutes';
+        $currentSeconds = date("s");
+        if ($currentSeconds >= 45) {
+            $downtimeEndTime = '+2 minutes';
+        }
+        $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
+        $page->setProperties(array(
+            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
+            'service' => $this->host . ' - ' . $this->service,
+            'comment' => 'Acceptance test',
+            'end_time' => $this->downtimeEndTime
+        ));
+        $page->save();
+    }
+
+    /**
+     * @Given the downtime is started
+     */
+    public function theDowntimeIsStarted()
+    {
+        $this->spin(
+            function() {
+                $found = false;
+                $page = new DowntimeConfigurationListingPage($this);
+                foreach ($page->getEntries() as $entry) {
+                    if ($entry['host'] == $this->host && $entry['service'] == $this->service) {
+                        $found = true;
+                    }
+                }
+                return $found;
+            }
+        );
+    }
+
+    /**
+     * @When the end date of the downtime happens
+     */
+    public function theEndDateOfTheDowntimeHappens()
+    {
+        $this->spin(
+            function() {
+                if (date("H:i") == $this->downtimeEndTime) {
+                    return true;
+                }
+            }, 80
+            , 'The end of the downtime is too late (' . $this->downtimeEndTime . ').'
+        );
+    }
+
+    /**
+     * @Then the downtime is stopped
+     */
+    public function theDowntimeIsStopped()
+    {
+        $this->spin(
+            function() {
+                $found = false;
+                $page = new DowntimeConfigurationListingPage($this);
+                foreach ($page->getEntries() as $entry) {
+                    if ($entry['host'] == $this->host && $entry['service'] == $this->service) {
+                        $found = true;
+                    }
+                }
+                return !$found;
+            }, 20
+            , 'Downtime is still running.'
+        );
+    }
 
     /**
      * @Given a downtime in configuration of a user in london timezone
