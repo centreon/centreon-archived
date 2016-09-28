@@ -5,6 +5,7 @@ Feature: downtime start and stop
 
   Background:
     Given I am logged in a Centreon server
+    And a passive service is monitored
 #    And I have a host in London timezone
 
 
@@ -13,12 +14,17 @@ Feature: downtime start and stop
 #    When I save a downtime
 #    Then the time of the start and end of the downtime took into account the timezone of the supervised element
 
-  Scenario: End of downtime
+  Scenario: End of fixed downtime
     Given a fixed downtime on a monitored element
     And the downtime is started
     When the end date of the downtime happens
     Then the downtime is stopped
 
+  Scenario: Start of flexible downtime
+    Given a flexible downtime on a monitored element
+    And the downtime period is started
+    When the monitored element is not OK
+    Then the downtime is started
 
 
 
