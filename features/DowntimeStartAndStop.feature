@@ -14,6 +14,11 @@ Feature: downtime start and stop
 #    When I save a downtime
 #    Then the time of the start and end of the downtime took into account the timezone of the supervised element
 
+  Scenario: Start of fixed downtime
+    Given a fixed downtime on a monitored element
+    When the downtime period is started
+    Then the downtime is started
+
   Scenario: End of fixed downtime
     Given a fixed downtime on a monitored element
     And the downtime is started
@@ -26,9 +31,11 @@ Feature: downtime start and stop
     When the monitored element is not OK
     Then the downtime is started
 
-
-
-
+  Scenario: End of flexible downtime
+    Given a flexible downtime on a monitored element
+    And the flexible downtime is started
+    When the downtime duration is finished
+    Then the downtime is stopped
 
 
 #  Scenario: Configure downtime

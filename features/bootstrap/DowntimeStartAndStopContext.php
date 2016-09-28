@@ -20,6 +20,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     protected $service = 'downtimeService';
     protected $downtimeStartTime;
     protected $downtimeEndTime;
+    protected $downtimeDuration = 20;
 
     public function __construct()
     {
@@ -107,6 +108,7 @@ class DowntimeStartAndStopContext extends CentreonContext
             'service' => $this->host . ' - ' . $this->service,
             'comment' => 'Acceptance test',
             'fixed' => false,
+            'duration' => $this->downtimeDuration,
             'start_time' => $this->downtimeStartTime,
             'end_time' => $this->downtimeEndTime
         ));
@@ -123,13 +125,23 @@ class DowntimeStartAndStopContext extends CentreonContext
                 $found = false;
                 $page = new DowntimeConfigurationListingPage($this);
                 foreach ($page->getEntries() as $entry) {
-                    if ($entry['host'] == $this->host && $entry['service'] == $this->service) {
+                    if ($entry['host'] == $this->host && $entry['service'] == $this->service && $entry['started'] == true) {
                         $found = true;
                     }
                 }
                 return $found;
             }
         );
+    }
+
+    /**
+     * @Given the flexible downtime is started
+     */
+    public function theFlexibleDowntimeIsStarted()
+    {
+        $this->theMonitoredElementIsNotOk();
+        $this->theDowntimePeriodIsStarted();
+        $this->theDowntimeIsStarted();
     }
 
     /**
@@ -145,6 +157,14 @@ class DowntimeStartAndStopContext extends CentreonContext
             }, 80
             , 'The downtime period did not start (' . $this->downtimeStartTime . ').'
         );
+    }
+
+    /**
+     * @When the downtime duration is finished
+     */
+    public function theDowntimeDurationIsFinished()
+    {
+        sleep($this->downtimeDuration);
     }
 
     /**
