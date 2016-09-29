@@ -33,6 +33,9 @@
  *
  */
 
+require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
+
 /**
  * Class for management downtime with ndo broker
  *
@@ -52,6 +55,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
     {
         parent::__construct($pearDB, $varlib);
         $this->dbb = new CentreonDB('centstorage');
+        $this->initPeriods();
     }
 
     /**
@@ -124,70 +128,254 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $row['internal_downtime_id'];
     }
 
-    /**
-     * Check if the downtime is scheduled
-     *
-     * Return array
-     *   array(
-     *      0 => array(
-     *          internal_id => 1,
-     *          downtime_type => 1
-     *      )
-     *  )
-     *
-     * @param int $dt_id The downtime id
-     * @param int $hostId The first object id (host_id)
-     * @param int $serviceId The second object id (service_id), is null if search a host
-     * @return array
-     */
-    public function isScheduled($dt_id, $hostId, $serviceId = null, $currentHostDate = null)
+    public function doSchedule($id, $currentHostDate, $start, $end)
     {
-        if (!defined("_DELAY_")) {
-            define('_DELAY_', '600'); /* Default 10 minutes */
-        }
+        $periods = $this->getPeriods($id);
+        $listSchedule = array();
 
-        static $downtimeHosts = array();
-        static $downtimeServices = array();
+        /* Convert HH::mm::ss to HH:mm */
+        $start = substr($start, 0, strrpos($start, ':'));
+        $end = substr($end, 0, strrpos($end, ':'));
 
-        if (is_null($currentHostDate)) {
-            $currentHostDate = "UNIX_TIMESTAMP()";
-        }
-            $currentHostDate += _DELAY_;
+        foreach ($periods as $period) {
+            if ($period['start_time'] != $start || $period['end_time'] != $end) {
+                continue;
+            }
 
-        if (!isset($downtimeHosts[$dt_id])) {
-            $downtimeHosts[$dt_id] = array();
-            $downtimeServices[$dt_id] = array();
+            $add = false;
 
+            $start_tomorrow = false;
+            if ($period['start_time'] == '00:00') {
+                $start_tomorrow = true;
+            }
 
-            $query = "SELECT internal_id as internal_downtime_id, type as downtime_type, host_id, service_id
-				FROM downtimes
-				WHERE start_time < ".$currentHostDate."
-                                AND end_time > ".$currentHostDate."
-				AND comment_data = '[Downtime cycle #" . $dt_id . "]'";
-            $res = $this->dbb->query($query);
-            while ($row = $res->fetchRow()) {
-                if (!isset($downtimeHosts[$dt_id][$row['host_id']]) &&
-                    ($row['service_id'] === "" ||is_null($row['service_id']))) {
-                    $downtimeHosts[$dt_id][$row['host_id']] = $row;
+            $dateOfMonth = $currentHostDate->format('w');
+            if ($dateOfMonth == 0) {
+                $dateOfMonth = 7;
+            }
+            if ($start_tomorrow) {
+                if ($dateOfMonth == 7) {
+                    $dateOfMonth = 1;
+                } else {
+                    $dateOfMonth++;
                 }
-                if (($row['service_id'] !== "" || is_null($row['service_id']))) {
-                    $downtimeServices[$dt_id][$row['host_id']][$row['service_id']] = $row;
+            }
+
+            if ($period['month_cycle'] == 'none') {
+                $dateOfMonth = $currentHostDate->format('j');
+
+                if (in_array($dateOfMonth, $period['day_of_month'])) {
+                    $add = true;
+                }
+            } elseif ($period['month_cycle'] == 'all') {
+                if (in_array($dateOfMonth, $period['day_of_week'])) {
+                    $add = true;
+                }
+            } else {
+                if ($dateOfMonth == $period['day_of_week']) {
+                    $monthName = $currentHostDate->format('F');
+                    $year = $currentHostDate->format('Y');
+                    $dayShortName = $currentHostDate->format('D');
+                    $dayInMonth = date(
+                        'd',
+                        strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year)
+                    );
+
+                    if ($dayInMonth == $currentHostDate->format('d')) {
+                        $add = true;
+                    }
+                }
+            }
+
+            if ($add) {
+                $timestamp_start = new DateTime();
+                $timestamp_start->setTimezone($currentHostDate->getTimezone());
+                $sStartTime = explode(":", $period['start_time']);
+                if (count($sStartTime) != 2) {
+                    throw new Exception("Invalid format ".$period['start_time']);
+                }
+
+                $timestamp_start->setTime($sStartTime[0], $sStartTime[1], '00');
+                if ($start_tomorrow) {
+                    $timestamp_start->add(new DateInterval('P1D'));
+                }
+
+
+                $oInterval = $currentHostDate->diff($timestamp_start);
+                $interval =  $oInterval->days * 86400 + $oInterval->h * 3600 + $oInterval->i * 60 + $oInterval->s;
+                if ($oInterval->invert) {
+                    $interval = - $interval;
+                }
+
+                # schedule downtime if approaching
+                if ($interval > 0 && $interval < _DELAY_) {
+                    $timestamp_stop = new DateTime();
+                    $timestamp_stop->setTimezone($currentHostDate->getTimezone());
+                    if ($start_tomorrow) {
+                        $timestamp_stop->add(new DateInterval('P1D'));
+                    }
+                    $sEndTime = explode(":", $period['end_time']);
+                    if (count($sEndTime) != 2) {
+                        throw new Exception("Invalid format ".$period['end_time']);
+                    }
+
+                    $timestamp_stop->setTime($sEndTime[0], $sEndTime[1], '00');
+
+                    $listSchedule[] = array($timestamp_start->format('c'), $timestamp_stop->format('c'));
                 }
             }
         }
-        $arr = array();
-        if (!is_null($serviceId)) {
-            if (isset($downtimeServices[$dt_id])
-                && isset($downtimeServices[$dt_id][$hostId]) && isset($downtimeServices[$dt_id][$hostId][$serviceId])) {
-                    $arr = $downtimeServices[$dt_id][$hostId][$serviceId];
+
+        return $listSchedule;
+    }
+
+    public function isWeeklyApproachingDowntime($startDelay, $endDelay, $daysOfWeek, $startTime, $endTime, $tomorrow)
+    {
+        $isApproaching = false;
+
+        $startDelayDayOfWeek = $startDelay->format('w');
+        $endDelayDayOfWeek = $endDelay->format('w');
+        $currentDayOfWeek = $startDelayDayOfWeek;
+        if ($tomorrow) {
+            $currentDayOfWeek = $endDelayDayOfWeek;
+        }
+        $daysOfWeek = explode(',', $daysOfWeek);
+        foreach ($daysOfWeek as $dayOfWeek) {
+            if ($currentDayOfWeek == $dayOfWeek &&
+                strtotime($startTime) >= strtotime($startDelay->format('H:i')) &&
+                strtotime($startTime) <= strtotime($endDelay->format('H:i'))) {
+                $isApproaching = true;
             }
-        } elseif (isset($downtimeHosts[$dt_id]) && isset($downtimeHosts[$dt_id][$hostId])) {
-            $arr = $downtimeHosts[$dt_id][$hostId];
         }
-        $listObj = array();
-        foreach ($arr as $row) {
-            $listObj[] = $row;
+
+        return $isApproaching;
+    }
+
+    private function getTimestampFromHourMinute($hourMinute, $tomorrow)
+    {
+        list($hour, $minute) = explode(':', $hourMinute);
+        $currentDate = new DateTime();
+        $currentDate->setTime($hour, $minute, '00');
+        if ($tomorrow) {
+            $currentDate->add(new DateInterval('P1D'));
         }
-        return $listObj;
+
+        return $currentDate->getTimestamp();
+    }
+
+    public function getApproachingDowntimes($delay)
+    {
+        $approachingDowntimes = array();
+
+        $downtimes = $this->getDowntime();
+
+        $hostObj = new CentreonHost($this->db);
+        $gmtObj = new CentreonGMT($this->db);
+
+        $startDelay =  new DateTime();
+        $delayInterval = new DateInterval('PT' . $delay . 'S');
+        $endDelay = new DateTime();;
+        $endDelay->add($delayInterval);
+        $midnightPlusDelay = new DateTime('00:00');
+        $midnightPlusDelay = $midnightPlusDelay->add($delayInterval);
+        $midnightPlusDelay = $midnightPlusDelay->format('H:i');
+
+        foreach ($downtimes as $downtime) {
+            /* Convert HH::mm::ss to HH:mm */
+            $downtime['dtp_start_time'] = substr($downtime['dtp_start_time'], 0, strrpos($downtime['dtp_start_time'], ':'));
+            $downtime['dtp_end_time'] = substr($downtime['dtp_end_time'], 0, strrpos($downtime['dtp_end_time'], ':'));
+
+            $tomorrow = false;
+            if (strtotime($downtime['dtp_start_time']) >= strtotime('00:00') &&
+                strtotime($downtime['dtp_start_time']) <= strtotime($midnightPlusDelay)) {
+                $tomorrow = true;
+            }
+
+            $startTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_start_time'], $tomorrow);
+            $endTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_end_time'], $tomorrow);
+
+            $currentHostDate = $gmtObj->getHostCurrentDatetime($downtime['host_id']);
+            $timezone = $currentHostDate->getTimezone();
+            $startDelay->setTimezone($timezone);
+            $endDelay->setTimezone($timezone);
+            $approaching = false;
+            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])) {
+                $approaching = $this->isWeeklyApproachingDowntime(
+                    $startDelay,
+                    $endDelay,
+                    $downtime['dtp_day_of_week'],
+                    $downtime['dtp_start_time'],
+                    $downtime['dtp_end_time'],
+                    $tomorrow
+                );
+            }
+
+            if ($approaching) {
+                $approachingDowntimes[] = array(
+                    'dt_id' => $downtime['dt_id'],
+                    'dt_activate' => $downtime['dt_activate'],
+                    'start' => $startTimestamp,
+                    'end' => $endTimestamp,
+                    'host_id' => $downtime['host_id'],
+                    'host_name' => $downtime['host_name'],
+                    'service_id' => $downtime['service_id'],
+                    'service_description' => $downtime['service_description'],
+                    'fixed' => $downtime['dtp_fixed'],
+                    'duration' => $downtime['dtp_duration'],
+                    'tomorrow' => $tomorrow
+                );
+            }
+var_dump($approachingDowntimes);
+
+            return $approachingDowntimes;
+//dtp_day_of_week
+            $currentHostHourMinute = $currentHostDate->format('H:i');
+//var_dump($currentHostHourMinute);
+            $currentHostTimestamp = $currentHostDate->getTimestamp();
+//var_dump($currentHostTimestamp);
+//var_dump($currentHostDate);
+            $currentHostDate->add($delayInterval);
+//var_dump($currentHostDate);
+
+
+            $start_tomorrow = false;
+            if ($period['start_time'] == '00:00') {
+                $start_tomorrow = true;
+            }
+
+            $weekDay = $currentHostDate->format('w');
+//var_dump($dateOfMonth);
+            if ($dateOfMonth == 0) {
+                $dateOfMonth = 7;
+            }
+            if ($start_tomorrow) {
+                if ($dateOfMonth == 7) {
+                    $dateOfMonth = 1;
+                } else {
+                    $dateOfMonth++;
+                }
+            }
+        }
+
+        return $approachingDowntimes;
+    }
+
+    public function isScheduled($downtime)
+    {
+        $isScheduled = false;
+
+        $query = 'SELECT internal_id as internal_downtime_id, type as downtime_type, host_id, service_id '
+            . 'FROM downtimes '
+            . 'WHERE start_time = ' . $downtime['start'] . ' '
+            . 'AND end_time = ' . $downtime['end'] . ' '
+            . 'AND host_id = ' . $downtime['host_id'] . ' '
+            . 'AND comment_data = "[Downtime cycle #' . $downtime['dt_id'] . ']"';
+        $query .= ($downtime['service_id'] != '') ? 'AND service_id = ' . $downtime['service_id'] . ' ' : '';
+        $res = $this->dbb->query($query);
+        while ($row = $res->fetchRow()) {
+            $isScheduled = true;
+        }
+
+        return $isScheduled;
     }
 }

@@ -50,6 +50,8 @@ class CentreonDowntime
     protected $remoteCommands;
     protected $remoteCmdFile = '';
     protected $varlib;
+    protected $periods = null;
+    protected $downtimes = null;
 
     /**
      * Construtor
@@ -64,6 +66,25 @@ class CentreonDowntime
         $this->remoteCommands = array();
         if (!is_null($varlib)) {
             $this->remoteCmdFile = $varlib . '/centcore.cmd';
+        }
+    }
+
+    public function initPeriods()
+    {
+        if (!is_null($this->periods)) {
+            return $this->periods;
+        }
+
+        $this->periods = array();
+
+        $query = 'SELECT dt_id, dtp_start_time, dtp_end_time, '
+            . 'dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, '
+            . 'dtp_fixed, dtp_duration '
+            . 'FROM downtime_period ';
+
+        $res = $this->db->query($query);
+        while ($row = $res->fetchRow()) {
+            $this->periods[$row['dt_id']][] = $row;
         }
     }
 
@@ -221,6 +242,39 @@ class CentreonDowntime
         return $list;
     }
 
+    public function getPeriods($id)
+    {
+        $this->initPeriods();
+
+        $periods = array();
+        if (!isset($this->periods[$id])) {
+            return $periods;
+        }
+
+        foreach ($this->periods[$id] as $period) {
+            $days = $period['dtp_day_of_week'];
+            /* Make a array if the cycle is all */
+            if ($period['dtp_month_cycle'] == 'all') {
+                $days = preg_split('/\,/', $days);
+            }
+            /* Convert HH:mm:ss to HH:mm */
+            $start_time = substr($period['dtp_start_time'], 0, strrpos($period['dtp_start_time'], ':'));
+            $end_time = substr($period['dtp_end_time'], 0, strrpos($period['dtp_end_time'], ':'));
+
+            $periods[] = array(
+                'start_time' => $start_time,
+                'end_time' => $end_time,
+                'day_of_week' => $days,
+                'month_cycle' => $period['dtp_month_cycle'],
+                'day_of_month' => preg_split('/\,/', $period['dtp_day_of_month']),
+                'fixed' => $period['dtp_fixed'],
+                'duration' => $period['dtp_duration']
+            );
+        }
+
+        return $periods;
+    }
+
     /**
      * Get informations for a downtime
      *
@@ -249,74 +303,6 @@ class CentreonDowntime
             'description' => $row['dt_description'],
             'activate' => $row['dt_activate'],
         );
-    }
-
-    /**
-     * Get the list of periods for a downtime
-     *
-     * <code>
-     * $return_array =
-     *   array(
-     *      array(
-     *          'start_time' => string, // The start time of the period (HH:mm)
-     *          'end_time' => string, // The end time of the period (HH:mm)
-     *          'day_of_week' => array, // The days in week, it is a array with the day number in the week (1 to 7)
-     *          'month_cycle' => string, // The cycle method (all: all in month, first: first in month,
-     *                                   // last: last in month, none: only the day of the month)
-     *          'day_of_month' => array, // The days of month
-     *          'fixed' => int, // If the downtime is fixed (0: flexible, 1: fixed)
-     *          'duration' => int // If the downtime is fexible, the duration of the downtime
-     *      ),...
-     *   )
-     * </code>
-     *
-     * @param int $id The downtime id
-     * @return array The list of periods
-     */
-    public function getPeriods($id)
-    {
-        static $periods = null;
-
-        if (is_null($periods)) {
-            $periods = array();
-
-            $query = "SELECT dt_id, dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month,
-                dtp_fixed, dtp_duration
-				FROM downtime_period";
-            
-            $res = $this->db->query($query);
-            while ($row = $res->fetchRow()) {
-                if (!isset($periods[$row['dt_id']])) {
-                    $periods[$row['dt_id']] = array();
-                }
-                $periods[$row['dt_id']][] = $row;
-            }
-        }
-
-        if (!isset($periods[$id])) {
-            return array();
-        }
-
-        $list = array();
-        foreach ($periods[$id] as $row) {
-            $days = $row['dtp_day_of_week'];
-            /* Make a array if the cycle is all */
-            if ($row['dtp_month_cycle'] == 'all') {
-                $days = preg_split('/\,/', $days);
-            }
-            $start_time = substr($row['dtp_start_time'], 0, strrpos($row['dtp_start_time'], ':'));
-            $end_time = substr($row['dtp_end_time'], 0, strrpos($row['dtp_end_time'], ':'));
-            $list[] = array(
-                'start_time' => $start_time,
-                'end_time' => $end_time,
-                'day_of_week' => $days,
-                'month_cycle' => $row['dtp_month_cycle'],
-                'day_of_month' => preg_split('/\,/', $row['dtp_day_of_month']),
-                'fixed' => $row['dtp_fixed'],
-                'duration' => $row['dtp_duration']
-            );
-        }
-        return $list;
     }
 
     /**
@@ -369,106 +355,161 @@ class CentreonDowntime
         return $list;
     }
 
+    public function getHostDowntimes()
+    {
+        $hostDowntimes = array();
+
+        $query = 'SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, '
+            . 'dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, '
+            . 'h.host_id, h.host_name, NULL as service_id, NULL as service_description, '
+            . 'FROM downtime_period dtp, downtime dt, '
+            . 'downtime_host_relation dtr, host h '
+            . 'WHERE dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id '
+            . 'AND dtr.host_host_id = h.host_id' ;
+
+        $res = $this->db->query($query);
+        if (false === PEAR::isError($res)) {
+            while ($row = $res->fetchRow()) {
+                $hostDowntimes[] = $row;
+            }
+        }
+
+        return $hostDowntimes;
+    }
+
+    public function getServiceDowntimes()
+    {
+        $serviceDowntimes = array();
+
+        $query = 'SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, '
+            . 'dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, '
+            . 'h.host_id, h.host_name, s.service_id, s.service_description '
+            . 'FROM downtime_period dtp, downtime dt, downtime_service_relation dtr, '
+            . 'service s, host h, host_service_relation hsr '
+            . 'WHERE dtp.dt_id = dtr.dt_id '
+            . 'AND dtp.dt_id = dt.dt_id '
+            . 'AND dtr.service_service_id = s.service_id '
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND hsr.host_host_id = h.host_id '
+            . 'AND h.host_id = dtr.host_host_id '
+            . 'UNION '
+            . 'SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, '
+            . 'dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, '
+            . 'dtp.dtp_duration, s.service_description as obj_name, '
+            . 'dtr.service_service_id as obj_id, h.host_name as host_name, h.host_id '
+            . 'FROM downtime_period dtp, downtime dt, downtime_service_relation dtr, service s, '
+            . 'host h, hostgroup_relation hgr, host_service_relation hsr '
+            . 'WHERE '
+            . 'dtp.dt_id = dtr.dt_id '
+            . 'AND dtp.dt_id = dt.dt_id '
+            . 'AND dtr.host_host_id = h.host_id '
+            . 'AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id '
+            . 'AND hgr.host_host_id = h.host_id '
+            . 'AND s.service_id = hsr.service_service_id '
+            . 'AND dtr.service_service_id = s.service_id';
+
+        $res = $this->db->query($query);
+        if (false === PEAR::isError($res)) {
+            while ($row = $res->fetchRow()) {
+                $serviceDowntimes[] = $row;
+            }
+        }
+
+        return $serviceDowntimes;
+    }
+
+    public function getHostgroupDowntimes()
+    {
+        $hostgroupDowntimes = array();
+
+        $query = 'SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, '
+            . 'dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, '
+            . 'h.host_id, h.host_name, NULL as service_id, NULL as service_description '
+            . 'FROM downtime_period dtp, downtime dt, '
+            . 'downtime_hostgroup_relation dhr, servicegroup sg, '
+            . 'host h, hostgroup_relation hgr '
+            . 'WHERE dtp.dt_id = dhr.dt_id '
+            . 'AND dtp.dt_id = dt.dt_id '
+            . 'AND dhr.hg_hg_id = hgr.hostgroup_hg_id '
+            . 'AND hgr.host_host_id = h.host_id ';
+
+        $res = $this->db->query($query);
+        if (false === PEAR::isError($res)) {
+            while ($row = $res->fetchRow()) {
+                $hostgroupDowntimes[] = $row;
+            }
+        }
+
+        return $hostgroupDowntimes;
+    }
+
+    public function getServicegroupDowntimes()
+    {
+        $servicegroupDowntimes = array();
+
+        $query = 'SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, '
+            . 'dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, '
+            . 'h.host_id, h.host_name, s.service_id, s.service_description '
+            . 'FROM downtime_period dtp, downtime dt, '
+            . 'downtime_servicegroup_relation dtr, servicegroup_relation sgr, '
+            . 'service s, host h '
+            . 'WHERE dtp.dt_id = dtr.dt_id '
+            . 'AND dtp.dt_id = dt.dt_id '
+            . 'AND dtr.sg_sg_id = sgr.servicegroup_sg_id '
+            . 'AND sgr.host_host_id = h.host_id '
+            . 'AND sgr.service_service_id = s.service_id '
+            . 'UNION DISTINCT '
+            . 'SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, '
+            . 'dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, '
+            . 'h.host_id, h.host_name, s.service_id, s.service_description '
+            . 'FROM downtime_period dtp, downtime dt, '
+            . 'downtime_servicegroup_relation dtr, '
+            . 'host_service_relation hsr, hostgroup_relation hgr, '
+            . 'service s, host h, servicegroup_relation sgr '
+            . 'WHERE dtp.dt_id = dtr.dt_id '
+            . 'AND dtp.dt_id = dt.dt_id '
+            . 'AND dtr.sg_sg_id = sgr.servicegroup_sg_id '
+            . 'AND sgr.hostgroup_hg_id IS NOT NULL '
+            . 'AND sgr.hostgroup_hg_id = hsr.hostgroup_hg_id '
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id '
+            . 'AND hgr.host_host_id = h.host_id ';
+
+        $res = $this->db->query($query);
+        if (false === PEAR::isError($res)) {
+            while ($row = $res->fetchRow()) {
+                $servicegroupDowntimes[] = $row;
+            }
+        }
+
+        return $servicegroupDowntimes;
+    }
+
     /**
      * Get the list of all downtimes
-     *
-     * <code>
-     * $return_array =
-     *  array(
-     *      'host' => array, // The list of downtime by host type (see the array after)
-     *      'hostgrp' => array, // The list of downtime by hostgroup type
-     *      'svc' => array, // The list of downtime by service type
-     *      'svcgrp' => array, // The list of downtime by servicegroup type
-     *  )
-     *
-     *  downtime_array(
-     *      'dt_id'' => int, // The downtime id
-     *      'dt_activate' => int, // 0 Downtime is deactivated, 1 Downtime is activated
-     *      'dtp_start_time' => string, // The start time of the period (HH:mm)
-     *      'dtp_end_time' => string, // The end time of the period (HH:mm)
-     *      'dtp_day_of_week' => array, // The days in week, it is a array with the day number in the week (1 to 7)
-     *      'dtp_month_cycle' => string, // The cycle method (all: all in month, first: first in month,
-     *                                   // last: last in month, none: only the day of the month)
-     *      'dtp_day_of_month' => array, // The days of month
-     *      'dtp_fixed' => int, // If the downtime is fixed (0: flexible, 1: fixed)
-     *      'dtp_duration' => int, // If the downtime is fexible, the duration of the downtime
-     *      'obj_name' => string, // The name of object (host_name, hg_name, service_description or sg_name)
-     *      'obj_id' => int, // The object id
-     *      'host_name' => string // The hostname for a service only for type service
-     *  )
-     * </code>
      *
      * @return array All downtimes
      */
     public function getDowntime()
     {
-        $list = array('host' => array(), 'hostgrp' => array(), 'svc' => array(), 'svcgrp' => array());
-        foreach (array_keys($list) as $type) {
-            switch ($type) {
-                case 'host':
-                    $name = ', h.host_name as obj_name, dtr.host_host_id as obj_id';
-                    $table = ', downtime_host_relation dtr, host h';
-                    $clause = ' AND dtr.host_host_id = h.host_id';
-                    break;
-                case 'hostgrp':
-                    $name = ', hg.hg_name as obj_name, dtr.hg_hg_id as obj_id';
-                    $table = ', downtime_hostgroup_relation dtr, hostgroup hg';
-                    $clause = ' AND dtr.hg_hg_id = hg.hg_id';
-                    break;
-                case 'svc':
-                    $query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time,
-                        dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed,
-                        dtp.dtp_duration, s.service_description as obj_name, dtr.service_service_id as obj_id,
-                        h.host_name as host_name, h.host_id
-								FROM downtime_period dtp, downtime dt, downtime_service_relation dtr,
-                                    service s, host h, host_service_relation hsr
-								WHERE 
-									dtp.dt_id = dtr.dt_id AND 
-									dtp.dt_id = dt.dt_id AND 
-									dtr.service_service_id = s.service_id AND 
-									hsr.service_service_id = s.service_id AND 
-									hsr.host_host_id = h.host_id AND
-									h.host_id = dtr.host_host_id
-								UNION 
-								SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time,
-                                    dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed,
-                                        dtp.dtp_duration, s.service_description as obj_name,
-                                        dtr.service_service_id as obj_id, h.host_name as host_name, h.host_id
-								FROM downtime_period dtp, downtime dt, downtime_service_relation dtr, service s,
-                                    host h, hostgroup_relation hgr, host_service_relation hsr
-								WHERE
-									dtp.dt_id = dtr.dt_id AND 
-									dtp.dt_id = dt.dt_id AND 
-									dtr.host_host_id = h.host_id AND
-									hsr.hostgroup_hg_id = hgr.hostgroup_hg_id AND
-									hgr.host_host_id = h.host_id AND
-									s.service_id = hsr.service_service_id AND			
-									dtr.service_service_id = s.service_id";
-                    break;
-                case 'svcgrp':
-                    $name = ', sg.sg_name as obj_name, dtr.sg_sg_id as obj_id';
-                    $table = ', downtime_servicegroup_relation dtr, servicegroup sg';
-                    $clause = ' AND dtr.sg_sg_id = sg.sg_id';
-                    break;
-                default:
-                    $name = '';
-                    $table = '';
-                    $clause = '';
-            }
-            if ($type != "svc") {
-                $query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week,
-                    dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration" . $name . "
-					FROM downtime_period dtp, downtime dt" . $table . "
-					WHERE  dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id" . $clause;
-            }
-            $res = $this->db->query($query);
-            if (false === PEAR::isError($res)) {
-                while ($row = $res->fetchRow()) {
-                    $list[$type][] = $row;
-                }
-            }
+        if (!is_null($this->downtimes)) {
+            return $this->downtimes;
         }
-        return $list;
+
+        $downtimes = array_merge(
+            $this->getHostDowntimes(),
+            $this->getServiceDowntimes(),
+            $this->getHostgroupDowntimes(),
+            $this->getServicegroupDowntimes()
+        );
+
+        /* Remove duplicate downtimes */
+        $downtimes = array_intersect_key($downtimes, array_unique(array_map('serialize', $downtimes)));
+        sort($downtimes);
+
+        $this->downtimes = $downtimes;
+
+        return $this->downtimes;
     }
 
     /**
@@ -825,129 +866,6 @@ class CentreonDowntime
             $query = "DELETE FROM downtime WHERE dt_id IN (" . join(', ', $ids) . ")";
             $this->db->query($query);
         }
-    }
-
-    /**
-     * Get the list of period to schedule for a time
-     *
-     * <code>
-     * $return_array =
-     *  array(
-     *      array(
-     *          int, // The start period time in timestamp
-     *          int, // The end period time in timestamp
-     *      )
-     *  )
-     * </code>
-     *
-     * @param int $id The downtime id
-     * @param int $currentHostDate The timestamp for scheduling
-     * @param string $start The start time for this period
-     * @param string $end The end time for this period
-     * @return array
-     * @see CentreonDowntime::getPeriods
-     */
-    public function doSchedule($id, $currentHostDate, $start, $end)
-    {
-        if (!defined("_DELAY_")) {
-            define('_DELAY_', '600');
-        }
-
-        $periods = $this->getPeriods($id);
-        $listSchedule = array();
-        $start = substr($start, 0, strrpos($start, ':'));
-        $end = substr($end, 0, strrpos($end, ':'));
-        
-        foreach ($periods as $period) {
-            if ($period['start_time'] != $start || $period['end_time'] != $end) {
-                continue;
-            }
-
-            $add = false;
-
-            $start_tomorrow = false;
-            if ($period['start_time'] == '00:00') {
-                $start_tomorrow = true;
-            }
-
-            $dateOfMonth = $currentHostDate->format('w');
-            if ($dateOfMonth == 0) {
-                $dateOfMonth = 7;
-            }
-            if ($start_tomorrow) {
-                if ($dateOfMonth == 7) {
-                    $dateOfMonth = 1;
-                } else {
-                    $dateOfMonth++;
-                }
-            }
-
-            if ($period['month_cycle'] == 'none') {
-                $dateOfMonth = $currentHostDate->format('j');
-
-                if (in_array($dateOfMonth, $period['day_of_month'])) {
-                    $add = true;
-                }
-            } elseif ($period['month_cycle'] == 'all') {
-                if (in_array($dateOfMonth, $period['day_of_week'])) {
-                    $add = true;
-                }
-            } else {
-                if ($dateOfMonth == $period['day_of_week']) {
-                    $monthName = $currentHostDate->format('F');
-                    $year = $currentHostDate->format('Y');
-                    $dayShortName = $currentHostDate->format('D');
-                    $dayInMonth = date(
-                        'd',
-                        strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year)
-                    );
-
-                    if ($dayInMonth == $currentHostDate->format('d')) {
-                        $add = true;
-                    }
-                }
-            }
-
-            if ($add) {
-                $timestamp_start = new DateTime();
-                $timestamp_start->setTimezone($currentHostDate->getTimezone());
-                $sStartTime = explode(":", $period['start_time']);
-                if (count($sStartTime) != 2) {
-                    throw new Exception("Invalid format ".$period['start_time']);
-                }
-
-                $timestamp_start->setTime($sStartTime[0], $sStartTime[1], '00');
-                if ($start_tomorrow) {
-                    $timestamp_start->add(new DateInterval('P1D'));
-                }
-
-
-                $oInterval = $currentHostDate->diff($timestamp_start);
-                $interval =  $oInterval->days * 86400 + $oInterval->h * 3600 + $oInterval->i * 60 + $oInterval->s;
-                if ($oInterval->invert) {
-                    $interval = - $interval;
-                }
-
-                # schedule downtime if approaching
-                if ($interval > 0 && $interval < _DELAY_) {
-                    $timestamp_stop = new DateTime();
-                    $timestamp_stop->setTimezone($currentHostDate->getTimezone());
-                    if ($start_tomorrow) {
-                        $timestamp_stop->add(new DateInterval('P1D'));
-                    }
-                    $sEndTime = explode(":", $period['end_time']);
-                    if (count($sEndTime) != 2) {
-                        throw new Exception("Invalid format ".$period['end_time']);
-                    }
-
-                    $timestamp_stop->setTime($sEndTime[0], $sEndTime[1], '00');
-
-                    $listSchedule[] = array($timestamp_start->format('c'), $timestamp_stop->format('c'));
-                }
-            }
-        }
-
-        return $listSchedule;
     }
 
     /**
