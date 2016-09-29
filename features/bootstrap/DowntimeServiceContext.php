@@ -26,7 +26,7 @@ class DowntimeServiceContext extends CentreonContext
         $metaservicePage = new MetaServiceConfigurationPage($this);
         $metaservicePage->setProperties(array(
             'name' => $this->metaName,
-            'check_period' => 5,
+            'check_period' => '24x7',
             'max_check_attempts' => 1,
             'normal_check_interval' => 1,
             'retry_check_interval' => 1

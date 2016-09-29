@@ -81,8 +81,10 @@ class CentreonWithKnowledgeContext extends CentreonContext
     {
         /* Go to the page to options page */
         $this->visit('/main.php?p=61001');
+
+
         $this->assertFind('css', '.list_two td:nth-child(5) a:nth-child(1)')->click();
-        sleep(5);
+
         $windowNames = $this->getSession()->getWindowNames();
         if(count($windowNames) > 1) {
             $this->getSession()->switchToWindow($windowNames[1]);
@@ -113,7 +115,6 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* Go to the page to options page */
         $this->visit('/main.php?p=61002');
         $this->assertFind('css', '.list_one:nth-child(4) td:nth-child(6) a:nth-child(1)')->click();
-        sleep(5);
         $windowNames = $this->getSession()->getWindowNames();
         if(count($windowNames) > 1) {
             $this->getSession()->switchToWindow($windowNames[1]);
@@ -144,9 +145,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* check url config */
         $this->visit('/main.php?p=60101');
         $this->assertFind('css', '.list_two td:nth-child(2) a:nth-child(1)')->click();
-        sleep(2);
         $this->assertFind('css', '#c5 a:nth-child(1)')->click();
-        sleep(2);
         $fieldValue = $this->assertFind('css', 'input[name="ehi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
@@ -164,9 +163,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* check url config */
         $this->visit('/main.php?p=60201');
         $this->assertFind('css', '.list_one:nth-child(8) td:nth-child(3) a')->click();
-        sleep(2);
         $this->assertFind('css', '#c5 a:nth-child(1)')->click();
-        sleep(2);
         $fieldValue = $this->assertFind('css', 'input[name="esi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
