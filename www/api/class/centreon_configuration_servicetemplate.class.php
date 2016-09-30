@@ -88,6 +88,8 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      */
     private function listClassic($q, $range = '')
     {
+        $serviceList = array();
+        
         $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
             . "FROM service "
             . "WHERE service_description LIKE '%$q%' "

@@ -10,6 +10,7 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\MonitoringServicesPage;
 use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
 use Centreon\Test\Behat\GraphMonitoringPage;
+use Centreon\Test\Behat\GraphServiceDetailsMonitoringPage;
 
 class LimitMetricInChartContext extends CentreonContext
 {
@@ -62,14 +63,6 @@ class LimitMetricInChartContext extends CentreonContext
     }
     
     /**
-     * @When i display the chart in the popin
-     */
-    public function iDisplayTheChartInThePopin()
-    {
-        
-    }
-    
-    /**
      * @When i display the chart in performance page
      */
     public function iDisplayTheChartInPerformancePage()
@@ -89,7 +82,7 @@ class LimitMetricInChartContext extends CentreonContext
     public function iDisplayTheChartInServiceDetailsPage()
     {
         $serviceMonitoringDetail = new ServiceMonitoringDetailsPage($this, $this->hostName, $this->serviceName);
-        $serviceMonitoringDetail->find();
+        $this->chartPage = new GraphServiceDetailsMonitoringPage($this);
     }
     
     /**

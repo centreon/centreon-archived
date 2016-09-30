@@ -164,7 +164,7 @@
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColCenter" colspan="2">
-                                    <div class="content">
+                                    <div id="chart-detailed-wrapper" class="content">
                                         <button id="display-graph-{$h.host_id}_{$service_id}" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service" class="btc bt_info detail_button">{t}Display Chart{/t}</button>
                                         <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service">
                                     </div>
