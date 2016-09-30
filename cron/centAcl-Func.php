@@ -152,14 +152,18 @@ function getServiceTemplateCategoryList($service_id = NULL) {
      */
     $loopBreak = array();
     while (1) {
-        if (isset($svcTplCache[$service_id]) && !isset($loopBreak[$service_id])) {
+        if (!isset($loopBreak[$service_id])) {
             if (isset($svcCatCache[$service_id])) {
                 foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
                     $tabCategory[$ct_id] = $ct_id;
                 }
             }
             $loopBreak[$service_id] = true;
-            $service_id = $svcTplCache[$service_id];
+	    $service_id = $svcTplCache[$service_id];
+	    if (!isset($svcTplCache[$service_id])){
+		$loopBreak[$service_id] = true;
+	    }
+
         } else {
             return $tabCategory;
         }
