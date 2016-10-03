@@ -260,7 +260,62 @@ class CentreonMetric extends CentreonWebService
         
         return $result;
     }
-    
+
+    /**
+     * Get metrics Data by poller
+     *
+     * @return array
+     * @throws Exception
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
+     */
+    public function getMetricsDataByPoller()
+    {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+        }
+
+        /* Validate options */
+        if (false === isset($this->arguments['start']) ||
+            false === is_numeric($this->arguments['start']) ||
+            false === isset($this->arguments['end']) ||
+            false === is_numeric($this->arguments['end']) ||
+            false === isset($this->arguments['end']) ||
+            false === is_numeric($this->arguments['id'])) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        $start = $this->arguments['start'];
+        $end = $this->arguments['end'];
+
+        /* Get the poller ID */
+        $id = $this->arguments['id'];
+
+        $result = array();
+
+        /* Get the numbers of points */
+        $rows = 200;
+        if (isset($this->arguments['rows'])) {
+            if (false === is_numeric($this->arguments['rows'])) {
+                throw new RestBadRequestException("Bad parameters");
+            }
+            $rows = $this->arguments['rows'];
+        }
+        if ($rows < 10) {
+            throw new RestBadRequestException("The rows must be greater as 10");
+        }
+
+        return $result;
+    }
+
     /**
      * Get the status for a service
      *
