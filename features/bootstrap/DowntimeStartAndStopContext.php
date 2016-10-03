@@ -5,8 +5,9 @@ use Centreon\Test\Behat\DowntimeConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
 use Centreon\Test\Behat\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\DowntimeConfigurationListingPage;
-use Centreon\Test\Behat\HostConfigurationPage;
+use Centreon\Test\Behat\HostConfigurationListingPage;
 use Centreon\Test\Behat\ServiceDowntimeConfigurationPage;
+
 
 /**
  * Defines application features from the specific context.
@@ -24,11 +25,8 @@ class DowntimeStartAndStopContext extends CentreonContext
         parent::__construct();
         $this->downtimeStartTime = date("H:i");
         $this->page = '';
-        $this->host = '';
-        $this->service = '';
         $this->dateStartUtc = '';
         $this->dateEndUtc = '';
-        $this->duration = '';
         $this->timezone = '';
         $this->timezoneUser = '';
     }
@@ -213,8 +211,6 @@ class DowntimeStartAndStopContext extends CentreonContext
      */
     public function aDowntimeInConfigurationOfAUserInOtherTimezone()
     {
-        $this->host = 'Centreon-Server';
-        $this->service = 'Memory';
         $this->timezoneUser = 'Asia/Tokyo';
 
         //user
@@ -234,6 +230,9 @@ class DowntimeStartAndStopContext extends CentreonContext
         ));
         $props = $this->page->getProperties();
 
+
+
+
         //convert local start hour in timestamp utc
         $dataTimeStart = new DateTime(
             $props['start_day'] . ' ' . $props['start_time'],
@@ -247,7 +246,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $dataTimeEnd->format('Y/m/d H:i');
         $this->dateEndUtc = $dataTimeEnd->getTimestamp();
 
-        $this->duration = $this->dateEndUtc - $this->dateStartUtc;
+        $this->downtimeDuration = $this->dateEndUtc - $this->dateStartUtc;
     }
 
     /**
@@ -255,44 +254,19 @@ class DowntimeStartAndStopContext extends CentreonContext
      */
     public function aRecurrentDowntimeOnService()
     {
-        $this->timezone = 'Asia/Magadan';
+        $this->timezone = 'Asia/Tokyo';
         $this->timezoneUser = 'Europe/Paris';
-        $this->host = 'asia';
-        $this->service = 'Tokyo';
-        $this->duration = 240;
+        $this->downtimeDuration = 240;
 
-        //host with timezone
-        $hostPage = new HostConfigurationPage($this);
+
+        $hostListingPage = new HostConfigurationListingPage($this);
+        $hostPage = $hostListingPage->inspect($this->host);
         $hostPage->setProperties(array(
-            'name' => $this->host,
-            'alias' => $this->host,
-            'address' => 'localhost',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'location' => $this->timezone,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1
+            'location' => $this->timezone
         ));
         $hostPage->save();
         $this->restartAllPollers();
 
-        //service of the host
-        $servicePage = new ServiceConfigurationPage($this);
-        $servicePage->setProperties(array(
-            'hosts' => $this->host,
-            'description' => $this->service,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1
-        ));
-        $servicePage->save();
-        $this->restartAllPollers();
 
         //get the time of the timezone + x seconds for the start
         $datetime = new DateTime();
@@ -306,9 +280,9 @@ class DowntimeStartAndStopContext extends CentreonContext
             $datetime->format('Y')
         );
         //get start and end timestamp of the time in timezone
-        $dateStartLocal += 1600;
+        $dateStartLocal += 120;
         var_dump(date('Y-m-d H:i', $dateStartLocal));
-        $dateEndLocal = $dateStartLocal + $this->duration;
+        $dateEndLocal = $dateStartLocal + $this->downtimeDuration;
         var_dump(date('Y-m-d H:i', $dateEndLocal));
 
         //check if the downtime is on two days and add time
@@ -327,7 +301,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $dataTimeStart = new DateTime($dateStart, timezone_open($this->timezone));
         $dataTimeStart->format('Y-m-d H:i');
         $this->dateStartUtc = $dataTimeStart->getTimestamp();
-        $this->dateEndUtc = $this->dateStartUtc + $this->duration;
+        $this->dateEndUtc = $this->dateStartUtc + $this->downtimeDuration;
 
         //add recurent downtime
         $this->page = new ServiceDowntimeConfigurationPage($this);
