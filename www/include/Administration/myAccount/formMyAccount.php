@@ -59,9 +59,9 @@ require_once $path."DB-Func.php";
  */
 $cct = array();
 if ($o == "c") {
-    $DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager, contact_js_effects, contact_autologin_key, default_page
+    $DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager, contact_js_effects, contact_autologin_key, default_page, contact_auth_type 
                                         FROM contact 
-                                        WHERE contact_id = '".$centreon->user->get_id()."' LIMIT 1");
+                                        WHERE contact_id = '".$centreon->user->get_id()."'");
     // Set base value
     $cct = array_map("myDecode", $DBRESULT->fetchRow());
     $res = $pearDB->query("SELECT cp_key, cp_value 
@@ -86,12 +86,18 @@ $form->addElement('header', 'title', _("Change my settings"));
 
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('text', 'contact_name', _("Name"), $attrsText);
-$form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText);
+if ($cct["contact_auth_type"] != 'ldap') {
+    $form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText);
+} else {
+    $form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText)->freeze();
+}
 $form->addElement('text', 'contact_email', _("Email"), $attrsText);
 $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
-$form->addElement('password', 'contact_passwd', _("Password"), array("size"=>"30", "autocomplete"=>"off", "id"=>"passwd1", "onFocus" => "resetPwdType(this);"));
-$form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size"=>"30", "autocomplete"=>"off", "id"=>"passwd2", "onFocus" => "resetPwdType(this);"));
-$form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick'=>'generatePassword("passwd");', 'class' => 'btc bt_info'));
+if ($cct["contact_auth_type"] != 'ldap') {
+    $form->addElement('password', 'contact_passwd', _("Password"), array("size"=>"30", "autocomplete"=>"off", "id"=>"passwd1", "onFocus" => "resetPwdType(this);"));
+    $form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size"=>"30", "autocomplete"=>"off", "id"=>"passwd2", "onFocus" => "resetPwdType(this);"));
+    $form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick'=>'generatePassword("passwd");', 'class' => 'btc bt_info'));
+}
 $form->addElement('text', 'contact_autologin_key', _("Autologin Key"), array("size" => "30", "id" => "aKey"));
 $form->addElement('button', 'contact_gen_akey', _("Generate"), array( 'onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info'));
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
@@ -212,6 +218,7 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
+$tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->display("formMyAccount.ihtml");
 ?>

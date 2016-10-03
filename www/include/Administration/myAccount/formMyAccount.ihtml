@@ -29,13 +29,15 @@
     		<tr class="list_two"><td class="FormRowField">{$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
-    		<tr class="list_lvl_1">
+    		{if $cct.contact_auth_type != 'ldap'}
+            <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{t}Password Management{/t}</h4>
                 </td>
             </tr>
             <tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html} {if $o}{$form.contact_gen_passwd.html}{/if}</td></tr>
     		<tr class="list_two"><td class="FormRowField">{$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
+            {/if}
     		<tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{t}Preferences{/t}</h4>
