@@ -2,10 +2,10 @@
 
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\DowntimeConfigurationPage;
+use Centreon\Test\Behat\ServiceConfigurationPage;
 use Centreon\Test\Behat\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\DowntimeConfigurationListingPage;
 use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
 use Centreon\Test\Behat\ServiceDowntimeConfigurationPage;
 
 /**
@@ -13,9 +13,16 @@ use Centreon\Test\Behat\ServiceDowntimeConfigurationPage;
  */
 class DowntimeStartAndStopContext extends CentreonContext
 {
+    protected $host = 'Centreon-Server';
+    protected $service = 'downtimeService';
+    protected $downtimeStartTime;
+    protected $downtimeEndTime;
+    protected $downtimeDuration = 20;
+
     public function __construct()
     {
         parent::__construct();
+        $this->downtimeStartTime = date("H:i");
         $this->page = '';
         $this->host = '';
         $this->service = '';
@@ -24,6 +31,181 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->duration = '';
         $this->timezone = '';
         $this->timezoneUser = '';
+    }
+
+    /**
+     * @Given a passive service is monitored
+     */
+    public function aPassiveServiceIsMonitored()
+    {
+        $page = new ServiceConfigurationPage($this);
+        $page->setProperties(array(
+            'hosts' => $this->host,
+            'description' => $this->service,
+            'templates' => 'generic-service',
+            'check_command' => 'check_centreon_dummy',
+            'check_period' => '24x7',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1,
+            'notifications_enabled' => 1,
+            'notify_on_recovery' => 1,
+            'notify_on_critical' => 1,
+            'recovery_notification_delay' => 1,
+            'cs' => 'admin_admin'
+        ));
+        $page->save();
+
+        $this->restartAllPollers();
+        $this->submitServiceResult($this->host, $this->service, 0, __FUNCTION__);
+    }
+
+    /**
+     * @Given a fixed downtime on a monitored element
+     */
+    public function aFixedDowntimeOnAMonitoredElement()
+    {
+
+        $page = new DowntimeConfigurationPage($this);
+
+        $downtimeEndTime = '+1 minutes';
+        $currentSeconds = date("s");
+        if ($currentSeconds >= 45) {
+            $downtimeEndTime = '+2 minutes';
+        }
+        $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
+        $page->setProperties(array(
+            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
+            'service' => $this->host . ' - ' . $this->service,
+            'comment' => 'Acceptance test',
+            'start_time' => $this->downtimeStartTime,
+            'end_time' => $this->downtimeEndTime
+        ));
+        $page->save();
+    }
+
+    /**
+     * @Given a flexible downtime on a monitored element
+     */
+    public function aFlexibleDowntimeOnAMonitoredElement()
+    {
+        $this->submitServiceResult($this->host, $this->service, 0, __FUNCTION__);
+
+        $page = new DowntimeConfigurationPage($this);
+
+        $downtimeEndTime = '+1 minutes';
+        $currentSeconds = date("s");
+        if ($currentSeconds >= 45) {
+            $downtimeEndTime = '+2 minutes';
+        }
+        $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
+        $page->setProperties(array(
+            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
+            'service' => $this->host . ' - ' . $this->service,
+            'comment' => 'Acceptance test',
+            'fixed' => false,
+            'duration' => $this->downtimeDuration,
+            'start_time' => $this->downtimeStartTime,
+            'end_time' => $this->downtimeEndTime
+        ));
+        $page->save();
+    }
+
+    /**
+     * @Given the downtime is started
+     */
+    public function theDowntimeIsStarted()
+    {
+        $this->spin(
+            function() {
+                $found = false;
+                $page = new DowntimeConfigurationListingPage($this);
+                foreach ($page->getEntries() as $entry) {
+                    if ($entry['host'] == $this->host && $entry['service'] == $this->service && $entry['started'] == true) {
+                        $found = true;
+                    }
+                }
+                return $found;
+            }
+        );
+    }
+
+    /**
+     * @Given the flexible downtime is started
+     */
+    public function theFlexibleDowntimeIsStarted()
+    {
+        $this->theMonitoredElementIsNotOk();
+        $this->theDowntimePeriodIsStarted();
+        $this->theDowntimeIsStarted();
+    }
+
+    /**
+     * @Given the downtime period is started
+     */
+    public function theDowntimePeriodIsStarted()
+    {
+        $this->spin(
+            function() {
+                if (date("H:i") >= $this->downtimeStartTime) {
+                    return true;
+                }
+            }, 80
+            , 'The downtime period did not start (' . $this->downtimeStartTime . ').'
+        );
+    }
+
+    /**
+     * @When the downtime duration is finished
+     */
+    public function theDowntimeDurationIsFinished()
+    {
+        sleep($this->downtimeDuration);
+    }
+
+    /**
+     * @When the monitored element is not OK
+     */
+    public function theMonitoredElementIsNotOk()
+    {
+        $this->submitServiceResult($this->host, $this->service, 2, __FUNCTION__);
+    }
+
+    /**
+     * @When the end date of the downtime happens
+     */
+    public function theEndDateOfTheDowntimeHappens()
+    {
+        $this->spin(
+            function() {
+                if (date("H:i") >= $this->downtimeEndTime) {
+                    return true;
+                }
+            }, 80
+            , 'The end of the downtime is too late (' . $this->downtimeEndTime . ').'
+        );
+    }
+
+    /**
+     * @Then the downtime is stopped
+     */
+    public function theDowntimeIsStopped()
+    {
+        $this->spin(
+            function() {
+                $found = false;
+                $page = new DowntimeConfigurationListingPage($this);
+                foreach ($page->getEntries() as $entry) {
+                    if ($entry['host'] == $this->host && $entry['service'] == $this->service) {
+                        $found = true;
+                    }
+                }
+                return !$found;
+            }, 20
+            , 'Downtime is still running.'
+        );
     }
 
     /**

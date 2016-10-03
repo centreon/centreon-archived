@@ -38,7 +38,7 @@
  * Configuration file
  */
 require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
-define('_DELAY_', '600'); /* Default 10 minutes */
+define('_DELAY_', '3600'); /* Default 10 minutes */
 
 /* Does not modified after */
 
