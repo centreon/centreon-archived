@@ -4,11 +4,9 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\DowntimeConfigurationPage;
 use Centreon\Test\Behat\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\DowntimeConfigurationListingPage;
-
-//   echo date("Y m d H:i:s");
-//   echo gmdate("Y m d H:i:s");
-//   int mktime (H, i,s,n,j,Y)
-
+use Centreon\Test\Behat\HostConfigurationPage;
+use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\ServiceDowntimeConfigurationPage;
 
 /**
  * Defines application features from the specific context.
@@ -19,80 +17,150 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
         parent::__construct();
         $this->page = '';
-        $this->ete = date('I');
-        $this->service = 'Centreon-Server - Memory';
-        $this->dateStartLocal = '';
+        $this->host = '';
+        $this->service = '';
         $this->dateStartUtc = '';
-        $this->dateEndLocal = '';
         $this->dateEndUtc = '';
         $this->duration = '';
+        $this->timezone = '';
+        $this->timezoneUser = '';
     }
 
-
     /**
-     * @Given a downtime in configuration of a user in london timezone
+     * @Given a downtime in configuration of a user in other timezone
      */
-    public function aDowntimeInConfigurationOfAUserInLondon()
+    public function aDowntimeInConfigurationOfAUserInOtherTimezone()
     {
+        $this->host = 'Centreon-Server';
+        $this->service = 'Memory';
+        $this->timezoneUser = 'Asia/Tokyo';
 
         //user
         $user = new CurrentUserConfigurationPage($this);
         $user->setProperties(array(
-            'location' => 'Europe/London'
+            'location' => $this->timezone
         ));
         $user->save();
-
         $this->restartAllPollers();
 
         //downtime
-        $this->dateStartUtc = mktime(gmdate('H'), gmdate('i'), 0, gmdate('m'), gmdate('d'), gmdate('Y'));
         $this->page = new DowntimeConfigurationPage($this);
         $this->page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
-            'service' => $this->service,
+            'service' => $this->host . ' - ' . $this->service,
             'comment' => 'service comment'
         ));
         $props = $this->page->getProperties();
-        $dataDay = explode('/', $props['start_day']);
-        $dataTime = explode(':', $props['start_time']);
-        $dateStartLondon = mktime($dataTime[0], $dataTime[1], 0, $dataDay[1], $dataDay[2], $dataDay[0]);
 
-        $dataDayEnd = explode('/', $props['end_day']);
-        $dataTimeEnd = explode(':', $props['end_time']);
-        $dateEndLondon = mktime($dataTimeEnd[0], $dataTimeEnd[1], 0, $dataDayEnd[1], $dataDayEnd[2], $dataDayEnd[0]);
-        $this->duration = $dateEndLondon - $dateStartLondon;
-        $this->dateEndUtc = (int)$this->dateStartUtc + $this->duration;
+        //convert local start hour in timestamp utc
+        $dataTimeStart = new DateTime(
+            $props['start_day'] . ' ' . $props['start_time'],
+            timezone_open($this->timezoneUser)
+        );
+        $dataTimeStart->format('Y/m/d H:i');
+        $this->dateStartUtc = $dataTimeStart->getTimestamp();
 
-        $dst = 0;
-        if ($this->ete == 1) {
-            $dst = 3600;
-        }
+        //convert local end hour in timestamp utc
+        $dataTimeEnd = new DateTime($props['end_day'] . ' ' . $props['end_time'], timezone_open($this->timezoneUser));
+        $dataTimeEnd->format('Y/m/d H:i');
+        $this->dateEndUtc = $dataTimeEnd->getTimestamp();
 
-        $dateStartLondon -= $dst;
-        $dateEndLondon -= $dst;
-
-        if ($this->dateStartUtc != $dateStartLondon) {
-            throw new \Exception('Error bad timezone in start downtime configuration');
-        }
-
-        if ($this->dateEndUtc != $dateEndLondon) {
-            throw new \Exception('Error bad timezone in end downtime configuration');
-        }
+        $this->duration = $this->dateEndUtc - $this->dateStartUtc;
     }
 
-
     /**
-     * @Given a downtime in configuration
+     * @Given a recurrent downtime on an other timezone service
      */
-    public function aDowntimeInConfiguration()
+    public function aRecurrentDowntimeOnService()
     {
-        $this->page = new DowntimeConfigurationPage($this);
-        $this->page->setProperties(array(
-            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
-            'service' => $this->service,
-            'duration' => 60,
-            'comment' => 'service comment'
+        $this->timezone = 'Asia/Magadan';
+        $this->timezoneUser = 'Europe/Paris';
+        $this->host = 'asia';
+        $this->service = 'Tokyo';
+        $this->duration = 240;
+
+        //host with timezone
+        $hostPage = new HostConfigurationPage($this);
+        $hostPage->setProperties(array(
+            'name' => $this->host,
+            'alias' => $this->host,
+            'address' => 'localhost',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'location' => $this->timezone,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
         ));
+        $hostPage->save();
+        $this->restartAllPollers();
+
+        //service of the host
+        $servicePage = new ServiceConfigurationPage($this);
+        $servicePage->setProperties(array(
+            'hosts' => $this->host,
+            'description' => $this->service,
+            'templates' => 'generic-service',
+            'check_command' => 'check_centreon_dummy',
+            'check_period' => '24x7',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
+        ));
+        $servicePage->save();
+        $this->restartAllPollers();
+
+        //get the time of the timezone + x seconds for the start
+        $datetime = new DateTime();
+        $datetime->setTimezone(new DateTimeZone($this->timezone));
+        $dateStartLocal = mktime(
+            $datetime->format('H'),
+            $datetime->format('i'),
+            0,
+            $datetime->format('m'),
+            $datetime->format('d'),
+            $datetime->format('Y')
+        );
+        //get start and end timestamp of the time in timezone
+        $dateStartLocal += 1600;
+        var_dump(date('Y-m-d H:i', $dateStartLocal));
+        $dateEndLocal = $dateStartLocal + $this->duration;
+        var_dump(date('Y-m-d H:i', $dateEndLocal));
+
+        //check if the downtime is on two days and add time
+        if (date('Y-m-d', $dateStartLocal) != date('Y-m-d', $dateEndLocal)) {
+            $dateStartLocal +=300;
+            $dateEndLocal +=300;
+        }
+
+
+        var_dump('888888888888888888888888888888888');
+        var_dump(date('Y-m-d H:i', $dateStartLocal));
+        var_dump(date('Y-m-d H:i', $dateEndLocal));
+
+        //convert the local timestamp to utc time
+        $dateStart = date('Y-m-d H:i', $dateStartLocal);
+        $dataTimeStart = new DateTime($dateStart, timezone_open($this->timezone));
+        $dataTimeStart->format('Y-m-d H:i');
+        $this->dateStartUtc = $dataTimeStart->getTimestamp();
+        $this->dateEndUtc = $this->dateStartUtc + $this->duration;
+
+        //add recurent downtime
+        $this->page = new ServiceDowntimeConfigurationPage($this);
+
+        //set downtime properties
+        $this->page->setProperties(array(
+            'name' => 'test',
+            'alias' => $this->service,
+            'periods' => array(7, 1, 2, 3, 4, 5, 6),
+            'start' => date("H:i", $dateStartLocal),
+            'end' => date("H:i", $dateEndLocal),
+            'svc_relation' => $this->host . ' - ' . $this->service
+        ));
+
+        $this->page->save();
     }
 
     /**
@@ -104,50 +172,57 @@ class DowntimeStartAndStopContext extends CentreonContext
     }
 
     /**
+     * @When this one gives a downtime
+     */
+    public function thisOneGivesADowntime()
+    {
+        /* cron */
+        $this->container->execute("php /usr/share/centreon/cron/downtimeManager.php", 'web');
+    }
+
+    /**
      * @Then the time of the start and end of the downtime took into account the timezone of the supervised element
      */
-    public function TheTimeUseTheTimezone()
+    public function theDowntimeUseTheTimezone()
     {
+        $dataDowntime = array();
+        $this->spin(
+            function ($context) use (&$dataDowntime) {
+                $listPage = new DowntimeConfigurationListingPage($this);
+                $listPage->displayDowntimeCycle();
+                $dataDowntime = $listPage->getEntries();
+                if (count($dataDowntime)) {
+                    return true;
+                }
+            },
+            30
+        );
 
-        $listePage = new DowntimeConfigurationListingPage($this);
-        $dataDowntime = $listePage->getEntries();
-
+        //get the start and stop time of the downtime in user timezone
         $dateStart = $dataDowntime[0]['start'];
         $dateEnd = $dataDowntime[0]['end'];
 
-        //dst
-        $dst = 0;
-        if ($this->ete == 1) {
-            $dst = 3600;
+        //convert the user timestamp to utc time
+        $dateStart = date('Y-m-d H:i', $dateStart);
+        $dataTimeStart = new DateTime($dateStart, timezone_open($this->timezoneUser));
+        $dataTimeStart->format('Y-m-d H:i');
+        $dateStartUtc = $dataTimeStart->getTimestamp();
+
+        $dateEnd = date('Y-m-d H:i', $dateEnd);
+        $dataTimeEnd = new DateTime($dateEnd, timezone_open($this->timezoneUser));
+        $dataTimeEnd->format('Y-m-d H:i');
+        $dateEndUtc = $dataTimeEnd->getTimestamp();
+
+        if ($this->dateStartUtc != $dateStartUtc) {
+            throw new \Exception(
+                'Error bad timezone in start downtime configuration:'.$this->dateStartUtc .'!='.$dateStartUtc
+            );
         }
 
-        $dateStart -= $dst;
-        $dateEnd -= $dst;
-
-        if ($this->dateStartUtc != $dateStart) {
-            throw new \Exception('Error bad timezone in start downtime configuration');
+        if ($this->dateEndUtc != $dateEndUtc) {
+            throw new \Exception(
+                'Error bad timezone in end downtime configuration:'.$this->dateEndUtc .'!='.$dateEndUtc
+            );
         }
-
-        if ($this->dateEndUtc != $dateEnd) {
-            throw new \Exception('Error bad timezone in end downtime configuration');
-        }
-
     }
-
-
-    public function ParisTimestamp($heures, $minutes, $secondes, $mois, $jours, $annees)
-    {
-        //reference datetime
-        date_default_timezone_set('Europe/Paris');
-        return mktime($heures, $minutes, $secondes, $mois, $jours, $annees);
-    }
-
-
-    public function LondonTimestamp($heures, $minutes, $secondes, $mois, $jours, $annees)
-    {
-        //reference datetime
-        date_default_timezone_set('Europe/London');
-        return mktime($heures, $minutes, $secondes, $mois, $jours, $annees);
-    }
-
 }
