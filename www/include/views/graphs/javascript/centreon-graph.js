@@ -195,7 +195,7 @@
         status: 'statusByService',
         service: 'metricsDataByService'
       };
-      var url = './api/internal.php?object=centreon_metric';
+      var url = '/centreon/api/internal.php?object=centreon_metric';
       url += '&action=' + action[this.type] ;
       url += '&ids=' + this.id;
       url += '&start=' + start + '&end=' + end;
