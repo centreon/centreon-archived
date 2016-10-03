@@ -36,7 +36,7 @@ $help["admin"] = dgettext("help", "Specify if the user has administrative permis
 $help["autologin_key"] = dgettext("help", "Token used for autologin. Refer to the Centreon documentation to know more about its usage.");
 $help["auth_type"] = dgettext("help", "Specify the source for user credentials. Choose between Centreon and LDAP, whereas LDAP is only available when configured in Administration Options.");
 $help["location"] = dgettext("help", "Select the timezone, in which the user resides, from the list. The timezones are listed as time difference to Greenwich Mean Time (GMT) in hours.");
-
+$help["reach_api"] = dgettext("help", "Allow this user to access to Centreon Rest API with its account.");
 
 /*
  * Additional Information

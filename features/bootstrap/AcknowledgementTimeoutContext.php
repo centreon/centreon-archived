@@ -4,7 +4,6 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\MonitoringServicesPage;
 use Centreon\Test\Behat\MonitoringHostsPage;
 use Centreon\Test\Behat\HostConfigurationPage;
@@ -43,7 +42,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
             'passive_checks_enabled' => 1,
             'acknowledgement_timeout' => 1));
         $hostPage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
     /**
@@ -65,7 +64,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
             'passive_checks_enabled' => 1,
             'acknowledgement_timeout' => 1));
         $servicePage->save();
-        (new ConfigurationPollersPage($this))->restartEngine();
+        $this->restartAllPollers();
     }
 
     /**

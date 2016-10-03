@@ -1,9 +1,8 @@
-
 --
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.0-beta1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.1');
 
 --
 -- Contenu de la table `contact`
@@ -82,7 +81,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
 ('maxViewMonitoring','30'),
-('maxGraphPerformances','5'),
+('maxGraphPerformances','18'),
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
@@ -140,7 +139,9 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('index_data', '1'), 
 ('interval_length', '60'),
 ('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/'),
-('selectPaginationSize', 60);
+('selectPaginationSize', 60),
+('display_downtime_chart','0'),
+('display_comment_chart','0');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -769,17 +770,24 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (30, 8, 0, 3),
 (30, 9, 0, 4),
 (30, 34, 0, 5),
-(30, 28, 0, 6),
 (30, 51, 1, 7),
 (30, 52, 1, 8),
-(31, 7, 1, 1),
-(31, 18, 0, 2),
-(31, 8, 0, 3),
-(31, 9, 0, 4),
-(31, 34, 0, 5),
-(31, 28,0, 6),
-(31, 51, 1, 7),
-(31, 52, 1, 8);
+(31, 63, 0, 1),
+(31, 7, 1, 2),
+(31, 18, 0, 3),
+(31, 8, 1, 4),
+(31, 9, 0, 5),
+(31, 10, 1, 6),
+(31, 53, 1, 7),
+(31, 55, 0, 8),
+(31, 56, 0, 9),
+(31, 57, 0, 10),
+(31, 58, 0, 11),
+(31, 54, 1, 12),
+(31, 59, 0, 13),
+(31, 60, 0, 14),
+(31, 61, 0, 15),
+(31, 62, 0, 16);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -805,8 +813,16 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceCategories',1),
                                            ('metric',1), 
                                            ('ba', 1),
-                                           ('bv', 1); 	  
-
+                                           ('bv', 1),
+                                           ('hostCategoriesMulti', 1),
+                                           ('hostGroupMulti', 1),
+                                           ('hostMulti', 1),
+                                           ('metricMulti', 1),
+                                           ('serviceCategory', 1),
+                                           ('hostCategory', 1),
+                                           ('serviceMulti', 1),
+                                           ('pollerMulti', 1),
+                                           ('serviceGroupMulti', 1);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
                         ('Africa/Abidjan', '-00:00', '-00:00'),
@@ -1231,3 +1247,19 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
 INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VALUES
 ('en', 'English', 'en.png'),
 ('fr', 'French', 'fr.png');
+
+-- Insert Centreon Backup base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+('backup_enabled', '0'),
+('backup_configuration_files', '1'),
+('backup_database_centreon', '1'),
+('backup_database_centreon_storage', '1'),
+('backup_database_type', '1'),
+('backup_database_full', ''),
+('backup_database_partial', ''),
+('backup_backup_directory', '/var/cache/centreon/backup'),
+('backup_tmp_directory', '/tmp/backup'),
+('backup_retention', '7'),
+('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
+('backup_zend_conf', '/etc/php.d/zendguard.ini');

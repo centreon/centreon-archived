@@ -194,6 +194,9 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("long_name", _("Extended Status Information"), 0);
     foreach ($longOutput as $val) {
         if ($val != "") {
+            if (strlen($val) > 100) {
+                $val = sprintf("%.100s", $val) . '...';
+            }
             $obj->XML->startElement("long_output_data");
             $obj->XML->writeElement("lo_data", $val);
             $obj->XML->endElement();
@@ -201,7 +204,12 @@ if ($data = $DBRESULT->fetchRow()) {
     }
 
     $tab_perf = preg_split("/\ /", $data["perfdata"]);
-    foreach ($tab_perf as $val) {
+    $perf_data = array();
+    if(count($tab_perf) > 5) {
+    	$perf_data = array_slice($tab_perf,0,4);
+    	$perf_data[5] = "...";
+    }
+    foreach ($perf_data as $val) {
         $obj->XML->startElement("performance_data");
         $obj->XML->writeElement("perf_data", CentreonUtils::escapeSecure($val));
         $obj->XML->endElement();

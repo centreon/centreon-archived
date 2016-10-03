@@ -4,7 +4,6 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\ContactListPage;
 use Centreon\Test\Behat\ContactConfigurationPage;
 use Centreon\Test\Behat\CommandConfigurationPage;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 use Centreon\Test\Behat\HostConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
 
@@ -43,5 +42,3 @@ class PartitioningContext extends CentreonContext
         });
     }
 }
-
-?>

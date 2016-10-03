@@ -6,6 +6,8 @@ default:
         default:
           selenium2: ~
     Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
   suites:
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
@@ -38,6 +40,10 @@ default:
       contexts:
         - RestartCentreonEngineContext
 
+    acknowledgement:
+      paths: [ %paths.base%/features/Acknowledgement.feature ]
+      contexts:
+        - AcknowledgementContext
     acknowledgement_timeout:
       paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
       contexts:
@@ -62,3 +68,44 @@ default:
       paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
       contexts:
         - DisableFieldsOnBlockedObjectsContext
+
+    backup:
+          paths: [ %paths.base%/features/Backup.feature ]
+          contexts:
+            - BackupContext
+
+    meta_services_api:
+          paths: [ %paths.base%/features/MetaServicesApi.feature ]
+          contexts:
+            - MetaServicesApiContext
+
+    influxdb:
+      paths: [ %paths.base%/features/Influxdb.feature ]
+      contexts:
+        - InfluxdbContext
+
+    meta_services_downtime:
+      paths: [ %paths.base%/features/DowntimeService.feature ]
+      contexts:
+        - DowntimeServiceContext
+        
+    limit_metric_in_chart:
+      paths: [ %paths.base%/features/LimitMetricInChart.feature ]
+      contexts:
+        - LimitMetricInChartContext
+    
+
+    show_disabled_hosts_services:
+      paths: [ %paths.base%/features/ShowDisabledHostsServices.feature ]
+      contexts:
+        - ShowDisabledHostsServicesContext
+
+    save_search_filter:
+      paths: [ %paths.base%/features/SaveSearchFilter.feature ]
+      contexts:
+        - SaveSearchFilterContext
+
+    timezone_display_host_monitoring:
+      paths: [ %paths.base%/features/TimezoneInMonitoring.feature ]
+      contexts:
+        - TimezoneInMonitoringContext

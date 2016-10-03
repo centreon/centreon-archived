@@ -570,6 +570,8 @@ $cloneSetMacro[] = $form->addElement(
     array('id' => 'macroFrom_#index#')
 );
 
+$form->addElement('header', 'information', _("Service Basic Information"));
+
 /**
  * Acknowledgement timeout
  */

@@ -37,7 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
+require _CENTREON_PATH_ . '/www/class/centreonService.class.php';
+
+$serviceObj = new CentreonService($pearDB);
 $gmtObj = new CentreonGMT($pearDB);
+
 /**
  * Notice that this timestamp is actually the server's time and not the UNIX time
  * In the future this behaviour should be changed and UNIX timestamps should be used
@@ -79,22 +83,8 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$openid = '0';
-$open_id_sub = '0';
 
-$defaultServicesForGraph = array();
-$defaultHostsForGraph = array();
-$defaultMetasForGraph = array();
-
-if (isset($_GET["openid"])) {
-    $openid = $_GET["openid"];
-    $open_id_type = substr($openid, 0, 2);
-    $open_id_sub = substr($openid, 3, strlen($openid));
-}
-
-(isset($_GET["host_id"]) && $open_id_type == "HH") ? $_GET["host_id"] = $open_id_sub : $_GET["host_id"] = null;
-
-$id = 1;
+$defaultGraphs = array();
 
 function getGetPostValue($str)
 {
@@ -112,52 +102,48 @@ function getGetPostValue($str)
  * Get Arguments
  */
 
-$id    = getGetPostValue("id");
-$id_svc = getGetPostValue("svc_id");
-$meta    = getGetPostValue("meta");
-$search = getGetPostValue("search");
-$search_service = getGetPostValue("search_service");
+$svc_id = getGetPostValue("svc_id");
 
 $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxGraphPerformances' LIMIT 1");
 $data = $DBRESULT->fetchRow();
 $graphsPerPage = $data['value'];
 if (empty($graphsPerPage)) {
-    $graphsPerPage = '5';
+    $graphsPerPage = '18';
 }
 
-if (isset($id_svc) && $id_svc) {
-    $id = "";
-    $grId = '';
-    $tab_svcs = explode(",", $id_svc);
+if (isset($svc_id) && $svc_id) {
+    $tab_svcs = explode(",", $svc_id);
     foreach ($tab_svcs as $svc) {
-        $tmp = explode(";", $svc);
-        if (!isset($tmp[1])) {
-            $id .= "HH_" . getMyHostID($tmp[0]).",";
-            $grId .= getMyHostID($tmp[0]);
-        }
-        if ((isset($tmp[0]) && $tmp[0] == "") || $meta == 1) {
-            $DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
-            $res = $DBRESULT->fetchRow();
-            $DBRESULT->free();
-            $id .= "MS_".$res["meta_id"].",";
-            $meta = 1;
-            $svc = $tmp[1];
-            $grId .= $res["meta_id"];
-        } else {
-            if (isset($tmp[1])) {
-                $id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0]))."_".getMyHostID($tmp[0]).",";
-                $grId .= getMyHostID($tmp[0]) . '-' .  getMyServiceID($tmp[1], getMyHostID($tmp[0]));
-            }
+        $graphId = null;
+        $graphTitle = null;
+        if (is_numeric($svc)) {
+            $fullName = $serviceObj->getMonitoringFullName($svc);
+            $serviceParameters = $serviceObj->getParameters($svc, array('host_id'), true);
+            $hostId = $serviceParameters['host_id'];
+            $graphId = $hostId . '-' . $svc;
+            $graphTitle = $fullName;
+        } else if (preg_match('/^(\d+);(\d+)/', $svc, $matches)) {
+            $hostId = $matches[1];
+            $serviceId = $matches[2];
+            $graphId = $hostId . '-' . $serviceId;
+            $graphTitle = $serviceObj->getMonitoringFullName($serviceId);
+        } else if (preg_match('/^(.+);(.+)/', $svc, $matches)) {
+            list($hostname, $serviceDescription) = explode(";", $svc);
+            $hostId = getMyHostID($hostname);
+            $serviceId = getMyServiceID($serviceDescription, $hostId);
+            $graphId = $hostId . '-' . $serviceId;
+            $graphTitle = $serviceObj->getMonitoringFullName($serviceId);
         }
 
-        if (strpos($grId, '-')) {
-            $defaultServicesForGraph[$svc] = $grId;
-        } elseif ($meta == 1) {
-            $defaultMetasForGraph[$svc] = $grId;
-        } else {
-            $defaultHostsForGraph[$svc] = $grId;
+        if (!is_null($graphId) && !is_null($graphTitle) && $graphTitle != '') {
+            $defaultGraphs[] = array(
+                'id' => $graphId,
+                'text' => $graphTitle
+            );
         }
+
     }
+
 }
 
 /* Get Period if is in url */
@@ -176,24 +162,26 @@ if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
 $form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
 $form->addElement('header', 'title', _("Choose the source to graph"));
 
-$periods = array(    ""=>"",
-                    "3h"        => _("Last 3 Hours"),
-                    "6h"        => _("Last 6 Hours"),
-                    "12h"        => _("Last 12 Hours"),
-                    "1d"        => _("Last 24 Hours"),
-                    "2d"           => _("Last 2 Days"),
-                    "3d"        => _("Last 3 Days"),
-                    "4d"           => _("Last 4 Days"),
-                    "5d"           => _("Last 5 Days"),
-                    "7d"           => _("Last 7 Days"),
-                    "14d"          => _("Last 14 Days"),
-                    "28d"          => _("Last 28 Days"),
-                    "30d"          => _("Last 30 Days"),
-                    "31d"          => _("Last 31 Days"),
-                    "2M"           => _("Last 2 Months"),
-                    "4M"           => _("Last 4 Months"),
-                    "6M"           => _("Last 6 Months"),
-                    "1y"           => _("Last Year"));
+$periods = array(
+    "" => "",
+    "3h" => _("Last 3 Hours"),
+    "6h" => _("Last 6 Hours"),
+    "12h" => _("Last 12 Hours"),
+    "1d" => _("Last 24 Hours"),
+    "2d" => _("Last 2 Days"),
+    "3d" => _("Last 3 Days"),
+    "4d" => _("Last 4 Days"),
+    "5d" => _("Last 5 Days"),
+    "7d" => _("Last 7 Days"),
+    "14d" => _("Last 14 Days"),
+    "28d" => _("Last 28 Days"),
+    "30d" => _("Last 30 Days"),
+    "31d" => _("Last 31 Days"),
+    "2M" => _("Last 2 Months"),
+    "4M" => _("Last 4 Months"),
+    "6M" => _("Last 6 Months"),
+    "1y" => _("Last Year")
+);
 $sel = $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"changeInterval()"));
 $form->addElement(
     'text',
@@ -263,11 +251,12 @@ $form->accept($renderer);
 
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('periodORlabel', _("or"));
+$tpl->assign('nbDisplayedCharts', $graphsPerPage);
 $tpl->assign('from', _("From"));
 $tpl->assign('to', _("to"));
 $tpl->assign('displayStatus', _("Display Status"));
 $tpl->assign('Apply', _("Apply"));
-$tpl->assign('defaultCharts', json_encode(array_values($defaultServicesForGraph)));
-$tpl->display("graphs.ihtml");
+$tpl->assign('defaultCharts', json_encode($defaultGraphs));
+$tpl->display("graphs.html");
 
 $multi = 1;

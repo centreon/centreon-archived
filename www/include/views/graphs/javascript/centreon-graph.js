@@ -10,6 +10,7 @@
     this.chartSvg = null;
     this.chartData = null;
     this.refreshEvent = null;
+    this.forceDisplay = false;
     parseInterval = settings.interval.match(/(\d+)([a-z]+)/i);
     this.interval = {
       number: parseInterval[1],
@@ -27,18 +28,8 @@
       });
     }
     
-    /* Define tick for timeseries */
-    this.timeFormat = d3.time.format.multi([
-      [".%L", function(d) { return d.getMilliseconds(); }],
-      [":%S", function(d) { return d.getSeconds(); }],
-      ["%H:%M", function(d) { return d.getMinutes(); }],
-      ["%H:%M", function(d) { return d.getHours(); }],
-      ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
-      ["%m-%d", function(d) { return d.getDate() !== 1; }],
-      ["%Y-%m", function(d) { return d.getMonth(); }],
-      ["%Y", function() { return true; }]
-    ]);
-    
+    this.timeFormat = this.getTimeFormat();
+
     /* Color for status graph */
     this.colorScale = d3.scale.ordinal().range([
       '#88b917',
@@ -137,6 +128,7 @@
         x: {
           type: 'timeseries',
           tick: {
+            fit: false,
             format: this.timeFormat
           }
         },
@@ -147,6 +139,7 @@
         }
       };
       var parsedData = this.buildMetricData(data);
+      
       axis = jQuery.extend({}, axis, parsedData.axis);
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
@@ -154,12 +147,26 @@
         };
       }
       
+      if (data.data.length > 15) {
+          datasToAppend = {
+            x: parsedData.data.x,
+            columns: [],
+            names: {},
+            types: {},
+            colors: {},
+            regions: {},
+            empty: { label: { text: "Too much metrics, the chart can't be displayed" } }
+          }
+      } else {
+          datasToAppend = parsedData.data;
+      }
+      
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
         size: {
           height: this.settings.height
         },
-        data: parsedData.data,
+        data: datasToAppend,
         axis: axis,
         tooltip: {
           format: {
@@ -167,7 +174,7 @@
               return moment(x).format('YYYY-MM-DD HH:mm:ss');
             },
             value: function (value, ratio, id) {
-              /* Test if the curse is inversed */
+              /* Test if the curve is inversed */
               if (self.isInversed(id)) {
                 return self.inverseRoundTick(value);
               }
@@ -181,6 +188,15 @@
         },
         regions: self.buildRegions(data)
       });
+      
+      if (data.data.length > 15) {
+          jQuery("#display-graph-" + self.id).css('display', 'block');
+          jQuery("#display-graph-" + self.id).on('click', function (e){
+              self.chart.load(parsedData.data)
+              self.chart.regions(self.buildRegions(data));
+              jQuery(this).css('display', 'none');
+          });
+      }
     },
     /**
      * Load data from rest api in ajax
@@ -212,10 +228,8 @@
               self.buildStatusData(data[0])
             );
           } else {
-            self.chart.load(
-              self.buildMetricData(data[0]).data
-            );
-            self.chart.regions(self.buildRegions(data[0]));
+              self.chart.load(self.buildMetricData(data[0]).data);
+              self.chart.regions(self.buildRegions(data[0]));
           }
         }
       });
@@ -237,8 +251,10 @@
         names: {},
         types: {},
         colors: {},
-        regions: {}
+        regions: {},
+        empty: { label: { text: "There's no data" } }
       };
+      
       var units = {};
       var axis = {};
       var column;
@@ -253,25 +269,26 @@
         return time * 1000;
       });
       times.unshift('times');
-      data.columns.push(times);
-      for (i = 0; i < dataRaw.data.length; i++) {
-        name = 'data' + (i + 1);
-        column = dataRaw.data[i].data;
-        column.unshift(name);
-        data.columns.push(column);
-        legend = dataRaw.data[i].label;
-        if (dataRaw.data[i].unit) {
-          legend += '(' + dataRaw.data[i].unit + ')';
-          if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-            units[dataRaw.data[i].unit] = name;
-          }
-        }
-        data.names[name] = legend;
-        data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
-          convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
-        data.colors[name] = dataRaw.data[i].color;
-      }
       
+        data.columns.push(times);
+        for (i = 0; i < dataRaw.data.length; i++) {
+          name = 'data' + (i + 1);
+          column = dataRaw.data[i].data;
+          column.unshift(name);
+          data.columns.push(column);
+          legend = dataRaw.data[i].label;
+          if (dataRaw.data[i].unit) {
+            legend += '(' + dataRaw.data[i].unit + ')';
+            if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
+              units[dataRaw.data[i].unit] = name;
+            }
+          }
+          data.names[name] = legend;
+          data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
+            convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
+          data.colors[name] = dataRaw.data[i].color;
+        }
+
       if (Object.keys(units).length === 2) {
         axesName = 'y';
         for (unit in units) {
@@ -287,16 +304,28 @@
         }
         axis.y2.show = true;
       }
-      
+
       data.x = 'times';
-      
+
       /* Prepare threshold */
       if (this.settings.threshold && dataRaw.data.length === 1) {
         nbPoints = dataRaw.data[0].data.length;
+        if (dataRaw.data[0].warn) {
+          data.colors.warn = '#ff9a13';
+          data.types.warn = 'line';
+          data.names.warn = 'Warning';
+          thresholdData = Array.apply(null, Array(nbPoints))
+              .map(function () {
+                return dataRaw.data[0].warn;
+              });
+          thresholdData.unshift('warn');
+          data.columns.push(thresholdData);
+          data.regions.warn = [{style: 'dashed'}];
+        }
         if (dataRaw.data[0].crit) {
           data.colors.crit = '#e00b3d';
           data.types.crit = 'line';
-          data.names.crit = 'Threshold critical';
+          data.names.crit = 'Critical';
           thresholdData = Array.apply(null, Array(nbPoints))
             .map(function () {
               return dataRaw.data[0].crit;
@@ -305,20 +334,8 @@
           data.columns.push(thresholdData);
           data.regions.crit = [{style: 'dashed'}];
         }
-        if (dataRaw.data[0].warn) {
-          data.colors.warn = '#ff9a13';
-          data.types.warn = 'line';
-          data.names.warn = 'Threshold warning';
-          thresholdData = Array.apply(null, Array(nbPoints))
-            .map(function () {
-              return dataRaw.data[0].warn;
-            });
-          thresholdData.unshift('warn');
-          data.columns.push(thresholdData);
-          data.regions.warn = [{style: 'dashed'}];
-        }
       }
-      
+
       /* Add group */
       data.groups = this.buildGroups(dataRaw);
       
@@ -448,6 +465,28 @@
       }
     },
     /**
+     * Define tick for timeseries
+     */
+    getTimeFormat: function() {
+      var timeFormat;
+      if (this.settings.timeFormat != null) {
+        timeFormat = this.settings.timeFormat;
+      } else {
+        timeFormat = d3.time.format.multi([
+          [".%L", function(d) { return d.getMilliseconds(); }],
+          [":%S", function(d) { return d.getSeconds(); }],
+          ["%H:%M", function(d) { return d.getMinutes(); }],
+          ["%H:%M", function(d) { return d.getHours(); }],
+          ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
+          ["%m-%d", function(d) { return d.getDate() !== 1; }],
+          ["%Y-%m", function(d) { return d.getMonth(); }],
+          ["%Y", function() { return true; }]
+        ]);
+      }
+
+      return timeFormat;
+    },
+    /**
      * Resize the graph
      */
     resize: function () {
@@ -498,13 +537,15 @@
       var self = this;
       this.refresh = interval;
       
+      if (this.refreshEvent !== null) {
+        clearInterval(this.refreshEvent);
+        this.refreshEvent = null;
+      }
+      
       if (this.refresh > 0) {
         this.refreshEvent = setInterval(function () {
           self.refreshData();
         }, self.refresh * 1000);
-      } else if (this.refreshEvent !== null) {
-        clearInterval(this.refreshEvent);
-        this.refreshEvent = null;
       }
     },
     /**
@@ -559,9 +600,8 @@
       if (typeof options === "string") {
         methodReturn = data[options].apply(data, args);
       }
-
-      return (methodReturn === undefined) ? $set : methodReturn;
     });
+    return (methodReturn === undefined) ? $set : methodReturn;
   };
   
   $.fn.centreonGraph.defaults = {
@@ -580,6 +620,7 @@
       start: null,
       end: null
     },
+    timeFormat: null,
     threshold: true
   };
 })(jQuery);

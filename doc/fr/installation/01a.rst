@@ -133,21 +133,9 @@ L'assistant de fin d'installation de Centreon contrôle la disponibilité des mo
    :align: center
    :scale: 65%
 
-Choisissez l'option **centreon-engine**. 
-
-.. image :: /images/guide_utilisateur/amonitoringengine1.png
-   :align: center
-   :scale: 65%
-
 Cliquez sur **Next**. 
 
 .. image :: /images/guide_utilisateur/amonitoringengine2.png
-   :align: center
-   :scale: 65%
-
-Lors du choix du broker, choisissez **centreon-broker**.
-
-.. image :: /images/guide_utilisateur/abrokerinfo1.png
    :align: center
    :scale: 65%
 
@@ -272,7 +260,7 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 Avant d'aller plus loin
 =======================
 
-Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.2. Pour cela :
+Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur. Pour cela :
 
  #.	Connectez-vous en tant que 'root' sur le serveur central
  #.	Tapez la commande 

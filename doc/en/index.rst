@@ -10,14 +10,13 @@ Contents:
 
    a_propos/index
    release_notes/index
+   life_cycle
    installation/index
    migration/index
    quick_start/index
    configuration_guide/index
    exploitation_guide/index
    administration_guide/index
-   knowledge_base/index
-   howto/index
    upgrade/index
    faq/index
    developer/index

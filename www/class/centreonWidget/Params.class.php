@@ -158,13 +158,13 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     }
 
     /**
-     * Get Element
-     *
-     * @return HTML_Quickform
-     */
+    * Get Element
+    *
+    * @return HTML_Quickform
+    */
     public function getElement()
     {
-        return $this->element;
+	    return $this->element;
     }
 
     /**

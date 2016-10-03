@@ -16,3 +16,19 @@
   padding: 3px;
   font-size: 10px;
 }
+
+.detail_button, .performance_button {
+    left: 48%;
+    z-index: 10;
+    display: none;
+}
+
+.detail_button {
+    position: relative;
+    top: 52%;
+}
+
+.performance_button {
+    position: absolute;
+    top: 48%;
+}

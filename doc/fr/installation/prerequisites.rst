@@ -18,7 +18,7 @@ Logiciels
 Système d'exploitation
 ======================
 
-Si vous souhaitez **utiliser CES v3.x, le système d'exploitation sera CentOS en version v6**.
+Si vous souhaitez **utiliser Centreon ISO v3.x, le système d'exploitation sera CentOS en version v6**.
 Si vous préférez utiliser **Red Hat OS** vous devez installer une **version v6** du système.
 enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
 sera plus complexe à partir des fichiers sources de chaque composants.
@@ -139,7 +139,7 @@ Description des partitions :
 * /var/log (au moins 10 GB)
 * /var/lib/centreon (défini dans le chapitre précédant)
 * /var/lib/centreon-broker (au moins 5 GB)
-* /var/backup (utilisé pour la sauvegarde)
+* /var/cache/centreon/backup (utilisé pour la sauvegarde)
 
 SGBD MariaDB
 ============
@@ -150,7 +150,7 @@ Description des partitions :
 * swap (au moins 1x la taille de la mémoire vive)
 * /var/log (au moins 10 GB)
 * /var/lib/mysql (défini dans le chapitre précédant)
-* /var/backup (utilisé pour la sauvegarde)
+* /var/cache/centreon/backup (utilisé pour la sauvegarde)
 
 Collecteur de supervision
 =========================
@@ -161,4 +161,4 @@ Description des partitions :
 * swap (au moins 1x la taille de la mémoire vive)
 * /var/log (au moins 10 GB)
 * /var/lib/centreon-broker (au moins 5 GB)
-* /var/backup (utilisé pour la sauvegarde)
+* /var/cache/centreon/backup (utilisé pour la sauvegarde)

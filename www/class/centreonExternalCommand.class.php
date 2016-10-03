@@ -271,11 +271,11 @@ class CentreonExternalCommand
          * Check if $host is an id or a name
          */
         if (preg_match("/^[0-9]*$/", $host)) {
-            $DBRESULT = $this->DBC->query("SELECT instances.instance_id FROM hosts, instances WHERE hosts.host_id = '" . 
-                CentreonDB::escape($host) . "' AND instances.instance_id = hosts.instance_id AND hosts.enabled='1' LIMIT 1");
+            $DBRESULT = $this->DBC->query("SELECT instance_id FROM hosts WHERE hosts.host_id = '" . 
+                CentreonDB::escape($host) . "' AND hosts.enabled = '1'");
         } else {
-            $DBRESULT = $this->DBC->query("SELECT instances.instance_id FROM hosts, instances WHERE hosts.name = '" . 
-                CentreonDB::escape($host) . "' AND instances.instance_id = hosts.instance_id AND hosts.enabled='1' LIMIT 1");
+            $DBRESULT = $this->DBC->query("SELECT instance_id FROM hosts WHERE hosts.name = '" . 
+                CentreonDB::escape($host) . "' AND hosts.enabled = '1' LIMIT 1");
         }
         $row = $DBRESULT->fetchRow();
         if (isset($row['instance_id'])) {
@@ -437,7 +437,10 @@ class CentreonExternalCommand
                 $start,
                 $this->GMT->getMyGTMFromUser($centreon->user->get_id())
             );
-            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getMyGTMFromUser($centreon->user->get_id()));
+            $end_time = $this->GMT->getUTCDateFromString(
+                $end,
+                $this->GMT->getMyGTMFromUser($centreon->user->get_id())
+            );
         } else {
             $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
             $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));

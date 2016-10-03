@@ -88,12 +88,12 @@ class CentreonInstance
     {
         $pollers = array();
         if (!empty($poller_id)) {
-            $query = "SELECT instance_id, instance_name
-                FROM instance
-                WHERE instance_id IN (".$this->dbo->escape(implode(",", $poller_id)).") ";
+            $query = "SELECT i.instance_id, i.name
+                FROM instances i
+                WHERE i.instance_id IN (".$this->dbo->escape(implode(",", $poller_id)).") ";
             $res = $this->dbo->query($query);
             while ($row = $res->fetchRow()) {
-                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['instance_name']);
+                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['name']);
             }
         }
         

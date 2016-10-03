@@ -35,6 +35,7 @@
 
 namespace CentreonClapi;
 
+require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__)."/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
@@ -57,6 +58,7 @@ require_once "centreon.Config.Poller.class.php";
  */
 class CentreonAPI
 {
+    private static $_instance = null;
 
     public $dateStart;
     public $login;
@@ -224,11 +226,6 @@ class CentreonAPI
             'class' => 'ServiceTemplate',
             'export' => true
         );
-        $this->relationObject["TIMEPERIOD"] = array(
-            'module' => 'core',
-            'class' => 'TimePeriod',
-            'export' => false
-        );
         $this->relationObject["TP"] = array(
             'module' => 'core',
             'class' => 'TimePeriod',
@@ -239,9 +236,9 @@ class CentreonAPI
             'class' => 'Instance',
             'export' => true
         );
-        $this->relationObject["NAGIOSCFG"] = array(
+        $this->relationObject["ENGINECFG"] = array(
             'module' => 'core',
-            'class' => 'NagiosCfg',
+            'class' => 'EngineCfg',
             'export' => true
         );
         $this->relationObject["CENTBROKERCFG"] = array(
@@ -303,8 +300,20 @@ class CentreonAPI
         foreach ($objectsPath as $objectPath) {
             if (preg_match('/([\w-]+)\/centreon-clapi\/class\/centreon(\w+).class.php/', $objectPath, $matches)) {
                 if (isset($matches[1]) && isset($matches[2])) {
+                    $finalNamespace = substr($matches[1], 0, stripos($matches[1], '-server'));
+                    
+                    $finalNamespace = implode(
+                        '',
+                        array_map(
+                            function($n) {
+                            return ucfirst($n);
+                            },
+                            explode('-', $finalNamespace)
+                        )
+                    );
                     $this->relationObject[strtoupper($matches[2])] = array(
                         'module' => $matches[1],
+                        'namespace' => $finalNamespace,
                         'class' => $matches[2],
                         'export' => true
                     );
@@ -318,6 +327,19 @@ class CentreonAPI
         $this->optGen = $this->getOptGen();
         $version = $this->optGen["version"];
         $this->delim = ";";
+    }
+
+    /**
+     *
+     * @param void
+     * @return CentreonApi
+     */
+    public static function getInstance($user=null, $password=null, $action=null, $centreon_path=null, $options=null) {
+        if(is_null(self::$_instance)) {
+            self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
+        }
+
+        return self::$_instance;
     }
 
     /**
@@ -587,10 +609,17 @@ class CentreonAPI
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
+                
+                if ($this->relationObject[$this->object]['module'] === 'core') {
+                    $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
+                } else {
+                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" . $this->relationObject[$this->object]['class'];
+                }
             } else {
                 $objName = "";
             }
+            
+            
             if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
                 print "Object $this->object not found in Centreon API.\n";
                 return 1;
@@ -712,6 +741,33 @@ class CentreonAPI
     }
 
     /**
+     * Export from a specific object
+     */
+    public function export_filter($action, $filter_id, $filter_name)
+    {
+        $exported = CentreonExported::getInstance();
+
+        if (is_null($action)) {
+            return 0;
+        }
+
+        if (!isset($this->objectTable[$action])) {
+            print "Unknown object : $action\n";
+            $this->setReturnCode(1);
+            $this->close();
+        }
+
+        $exported->ariane_push($action, $filter_id, $filter_name);
+        if ($exported->is_exported($action, $filter_id, $filter_name)) {
+            $exported->ariane_pop();
+            return 0;
+        }
+
+        $this->objectTable[$action]->export($filter_id, $filter_name);
+        $exported->ariane_pop();
+    }
+
+    /**
      * Export All configuration
      */
     public function export()
@@ -722,12 +778,32 @@ class CentreonAPI
 
         $this->initAllObjects();
 
-        // header
-        echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
-        if (count($this->aExport) > 0) {
-            foreach ($this->aExport as $oObjet) {
-                if (method_exists($this->objectTable[$oObjet], 'export')) {
-                    $this->objectTable[$oObjet]->export();
+        if (isset($this->options['select'])) {
+            CentreonExported::getInstance()->set_filter(1);
+            CentreonExported::getInstance()->set_options($this->options);
+            $selected = $this->options['select'];
+            if (!is_array($this->options['select'])) {
+                $selected = array($this->options['select']);
+            }
+            foreach ($selected as $select) {
+                $splits = explode(';', $select);
+                if (!isset($this->objectTable[$splits[0]])) {
+                    print "Unknown object : $splits[0]\n";
+                    $this->setReturnCode(1);
+                    $this->close();
+                 }
+                $this->export_filter($splits[0], $this->objectTable[$splits[0]]->getObjectId($splits[1]), $splits[1]);
+              }
+            # Don't want return \n
+            exit($this->return_code);
+        } else {
+            // header
+            echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
+            if (count($this->aExport) > 0) {
+                foreach ($this->aExport as $oObjet) {
+                    if (method_exists($this->objectTable[$oObjet], 'export')) {
+                        $this->objectTable[$oObjet]->export();
+                    }
                 }
             }
         }
@@ -929,12 +1005,12 @@ class CentreonAPI
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
                     && !in_array($key, $this->aExport)) {
-                    $objName = "centreon" . $oObjet[$key]['class'];
+                    $objName = "CentreonClapi\Centreon" . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
 
                     if (isset($objVars['aDepends'])) {
                         $bInsert = true;
-                        foreach ($objVars['aDepends'] as $oDependence) {
+                        foreach ($objVars['aDepends'] as $item => $oDependence) {
                             $keyDep = strtoupper($oDependence);
                             if (!in_array($keyDep, $this->aExport)) {
                                 $bInsert = false;

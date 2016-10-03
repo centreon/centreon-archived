@@ -165,11 +165,14 @@ class CentreonGraphService extends CentreonGraph
         fwrite($pipes[0], $commandLine);
         fclose($pipes[0]);
 
+        $str = '';
+        stream_set_blocking($pipes[1], 0);
         do {
             $status = proc_get_status($process);
+            $str .= stream_get_contents($pipes[1]);
         } while ($status['running']);
-
-        $str = stream_get_contents($pipes[1]);
+        
+        $str .= stream_get_contents($pipes[1]);
 
         /* Remove text of the end of the stream */
         $str = preg_replace("/<\/xport>(.*)$/s", "</xport>", $str);
@@ -205,7 +208,6 @@ class CentreonGraphService extends CentreonGraph
                 }
             }
         }
-
         return $metrics;
     }
 
@@ -227,7 +229,6 @@ class CentreonGraphService extends CentreonGraph
         if (false == $row) {
             throw new OutOfRangeException();
         }
-
         return $row['id'];
     }
 }

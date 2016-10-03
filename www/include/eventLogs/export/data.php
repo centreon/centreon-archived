@@ -125,8 +125,8 @@ if ($engine == "false") {
     echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
     echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";
     echo "\n";
-    echo _("Day").";"._("Time").";"._("Output").";"."\n";
+    echo _("Day").";"._("Time").";"._("Poller").";"._("Output").";"."\n";
     foreach ($xml->line as $line) {
-        echo "\"".$line->date."\";\"".$line->time."\";\"".$line->output."\";"."\n";
+        echo "\"".$line->date."\";\"".$line->time."\";\"".$line->poller."\";\"".$line->output."\";"."\n";
     }
 }

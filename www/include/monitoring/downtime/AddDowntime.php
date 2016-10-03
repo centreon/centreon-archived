@@ -37,8 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
-include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
+
 
 /*
  * Init GMT class
@@ -47,6 +50,9 @@ $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 
+$hObj = new CentreonHost($pearDB);
+$serviceObj = new CentreonService($pearDB);
+
 if (!$centreon->user->access->checkAction("schedule_downtime")) {
     require_once("../errors/alt_error.php");
 } else {
@@ -54,14 +60,14 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
      * Init
      */
     $debug = 0;
-    $attrsTextI     = array("size" => "3");
-    $attrsText      = array("size" => "30");
-    $attrsTextarea  = array("rows" => "7", "cols" => "80");
+    $attrsTextI = array("size" => "3");
+    $attrsText = array("size" => "30");
+    $attrsTextarea = array("rows" => "7", "cols" => "80");
 
     /*
      * Form begin
      */
-    $form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
+    $form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
 
     /*
      * Indicator basic information
@@ -69,56 +75,111 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     $redirect = $form->addElement('hidden', 'o');
     $redirect->setValue($o);
 
-    $dtType[] = HTML_QuickForm::createElement('radio', 'downtimeType', null, _("Host"), '1', array('id' => 'host', 'onclick' => "toggleParams('host');"));
-    $dtType[] = HTML_QuickForm::createElement('radio', 'downtimeType', null, _("Services"), '2', array('id' => 'service', 'onclick' => "toggleParams('service');"));
-    $dtType[] = HTML_QuickForm::createElement('radio', 'downtimeType', null, _("Hostgroup"), '0', array('id' => 'hostgroup', 'onclick' => "toggleParams('hostgroup');"));
-    $dtType[] = HTML_QuickForm::createElement('radio', 'downtimeType', null, _("Servicegroup"), '3', array('id' => 'servicegroup', 'onclick' => "toggleParams('servicegroup');"));
-    $dtType[] = HTML_QuickForm::createElement('radio', 'downtimeType', null, _("Poller"), '4', array('id' => 'poller', 'onclick' => "toggleParams('poller');"));
-    $form->addGroup($dtType, 'downtimeType', _("Downtime type"), '&nbsp;');
-    
-    // uncomment this section : the user can choose to set a downtime based on the host time or the centreon user time.
-    /*
-    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
-    $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
-    $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
-    $form->setDefaults(array('host_or_centreon_time' => '0'));   
-    */
-    
-    /* ----- Hosts ----- */
-    $attrHosts = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_host&action=list',
-        'multiple' => true,
-        'linkedObject' => 'centreonHost'
-    );
-    $form->addElement('select2', 'host_id', _("Hosts"), array(), $attrHosts);
-    
-    /* ----- Services ----- */
-    $attrServices = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_service&action=list',
-        'multiple' => true,
-        'linkedObject' => 'centreonService'
-    );
-    $form->addElement('select2', 'service_id', _("Services"), array(), $attrServices);
+    if (isset($_GET["host_id"]) && !isset($_GET["service_id"])) {
+        $disabled = "disabled";
+        $host_name = $hObj->getHostName($_GET['host_id']);
+    } elseif (isset($_GET["host_id"]) && isset($_GET["service_id"])) {
+        $disabled = "disabled";
+        $serviceParameters = $serviceObj->getParameters($_GET['service_id'], array('service_description'));
+        $serviceDisplayName = $serviceParameters['service_description'];
+        $host_name = $hObj->getHostName($_GET['host_id']);
+    } else {
+        $disabled = " ";
+    }
 
-    /* ----- HostGroups ----- */
-    $attrHostgroups = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_hostgroup&action=list',
-        'multiple' => true,
-        'linkedObject' => 'centreonHostgroups'
-    );
-    $form->addElement('select2', 'hostgroup_id', _("Hostgroups"), array(), $attrHostgroups);
+    if (!isset($_GET['host_id'])) {
+        $dtType[] = HTML_QuickForm::createElement(
+            'radio',
+            'downtimeType',
+            null,
+            _("Host"),
+            '1',
+            array($disabled, 'id' => 'host', 'onclick' => "toggleParams('host');")
+        );
+        $dtType[] = HTML_QuickForm::createElement(
+            'radio',
+            'downtimeType',
+            null,
+            _("Services"),
+            '2',
+            array($disabled, 'id' => 'service', 'onclick' => "toggleParams('service');")
+        );
+        $dtType[] = HTML_QuickForm::createElement(
+            'radio',
+            'downtimeType',
+            null,
+            _("Hostgroup"),
+            '0',
+            array($disabled, 'id' => 'hostgroup', 'onclick' => "toggleParams('hostgroup');")
+        );
+        $dtType[] = HTML_QuickForm::createElement(
+            'radio',
+            'downtimeType',
+            null,
+            _("Servicegroup"),
+            '3',
+            array($disabled, 'id' => 'servicegroup', 'onclick' => "toggleParams('servicegroup');")
+        );
+        $dtType[] = HTML_QuickForm::createElement(
+            'radio',
+            'downtimeType',
+            null,
+            _("Poller"),
+            '4',
+            array($disabled, 'id' => 'poller', 'onclick' => "toggleParams('poller');")
+        );
+        $form->addGroup($dtType, 'downtimeType', _("Downtime type"), '&nbsp;');
 
-    /* ----- Servicegroups ----- */
-    $attrServicegroups = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_servicegroup&action=list',
-        'multiple' => true,
-        'linkedObject' => 'centreonServicegroups'
-    );
-    $form->addElement('select2', 'servicegroup_id', _("Servicegroups"), array(), $attrServicegroups);
+        // uncomment this section :
+        // the user can choose to set a downtime based on the host time or the centreon user time.
+        /*
+        $host_or_centreon_time[] =
+        HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
+        $host_or_centreon_time[] =
+        HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
+        $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');
+        $form->setDefaults(array('host_or_centreon_time' => '0'));
+        */
+
+        /* ----- Hosts ----- */
+        $attrHosts = array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_host&action=list',
+            'multiple' => true,
+            'linkedObject' => 'centreonHost'
+        );
+        $form->addElement('select2', 'host_id', _("Hosts"), array(), $attrHosts);
+
+        if (!isset($_GET['service_id'])) {
+            /* ----- Services ----- */
+            $attrServices = array(
+                'datasourceOrigin' => 'ajax',
+                'availableDatasetRoute' =>
+                    './api/internal.php?object=centreon_configuration_service&action=list&e=enable',
+                'multiple' => true,
+                'linkedObject' => 'centreonService'
+            );
+            $form->addElement('select2', 'service_id', _("Services"), array($disabled), $attrServices);
+        }
+
+        /* ----- HostGroups ----- */
+        $attrHostgroups = array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_hostgroup&action=list',
+            'multiple' => true,
+            'linkedObject' => 'centreonHostgroups'
+        );
+        $form->addElement('select2', 'hostgroup_id', _("Hostgroups"), array(), $attrHostgroups);
+
+        /* ----- Servicegroups ----- */
+        $attrServicegroups = array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_servicegroup&action=list',
+            'multiple' => true,
+            'linkedObject' => 'centreonServicegroups'
+        );
+        $form->addElement('select2', 'servicegroup_id', _("Servicegroups"), array(), $attrServicegroups);
+    }
 
     /* ----- Pollers ----- */
     $attrPoller = array(
@@ -131,12 +192,20 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     /* Host Parents */
     $attrPoller1 = array_merge(
         $attrPoller,
-        array('defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=defaultValues&target=resources&field=instance_id&id='.$resource_id)
+        array(
+            'defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=defaultValues' .
+        '&target=resources&field=instance_id&id=' . $resource_id)
     );
 
     $form->addElement('select2', 'poller_id', _("Pollers"), array(), $attrPoller1);
-    
-    $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
+
+    $chbx = $form->addElement(
+        'checkbox',
+        'persistant',
+        _("Fixed"),
+        null,
+        array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()')
+    );
     if (isset($centreon->optGen['monitoring_dwt_fixed']) && $centreon->optGen['monitoring_dwt_fixed']) {
         $chbx->setChecked(true);
     }
@@ -145,16 +214,23 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     $form->addElement('text', 'start_time', '', array('size' => 5, 'class' => 'timepicker'));
     $form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
     $form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
+    $form->addElement('text', 'timezone_warning', _("*The timezone used is configured on your user settings"));
 
-    $defaultDuration = 3600;    
+    $defaultDuration = 3600;
     if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {
         $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
     }
     $form->setDefaults(array('duration' => $defaultDuration));
-    
-    $form->addElement('select', 'duration_scale', _("Scale of time"), array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days")));
+
+    $form->addElement(
+        'select',
+        'duration_scale',
+        _("Scale of time"),
+        array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days"))
+    );
     $defaultScale = 's';
-    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) && $centreon->optGen['monitoring_dwt_duration_scale']) {
+    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
+        $centreon->optGen['monitoring_dwt_duration_scale']) {
         $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
     }
     $form->setDefaults(array('duration_scale' => $defaultScale));
@@ -183,10 +259,14 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
         $data["host_id"] = $_GET["host_id"];
         $data["downtimeType"] = 1;
         $focus = 'host';
+        $form->addElement('hidden', 'host_id', $_GET['host_id']);
+        $form->addElement('hidden', 'downtimeType[downtimeType]', $data["downtimeType"]);
     } elseif (isset($_GET["host_id"]) && isset($_GET["service_id"])) {
-        $data["service_id"] = $_GET["host_id"].'-'.$_GET["service_id"];
+        $data["service_id"] = $_GET["host_id"] . '-' . $_GET["service_id"];
         $data["downtimeType"] = 2;
         $focus = 'service';
+        $form->addElement('hidden', 'service_id', $data["service_id"]);
+        $form->addElement('hidden', 'downtimeType[downtimeType]', $data["downtimeType"]);
     } else {
         $data["downtimeType"] = 1;
         $focus = 'host';
@@ -199,6 +279,7 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     /* Push the downtime */
     if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate()) {
         $values = $form->getSubmitValues();
+
         if (!isset($_POST["persistant"]) || !in_array($_POST["persistant"], array('0', '1'))) {
             $_POST["persistant"] = '0';
         }
@@ -214,7 +295,7 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
             } else {
                 $duration_scale = 's';
             }
-                
+
             switch ($duration_scale) {
                 default:
                 case 's':
@@ -232,12 +313,13 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
             }
         }
 
-        if (isset($_POST['host_or_centreon_time']['host_or_centreon_time']) && $_POST['host_or_centreon_time']['host_or_centreon_time']) {
+        if (isset($_POST['host_or_centreon_time']['host_or_centreon_time']) &&
+            $_POST['host_or_centreon_time']['host_or_centreon_time']) {
             $host_or_centreon_time = $_POST['host_or_centreon_time']['host_or_centreon_time'];
         } else {
             $host_or_centreon_time = "0";
         }
-            
+
         $dt_w_services = false;
         if ($values['with_services']['with_services'] == 1) {
             $dt_w_services = true;
@@ -247,12 +329,18 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
             /*
              * Set a downtime for only host
              */
+
+            //catch fix input host_id
+            if (!is_array($_POST["host_id"])) {
+                $_POST["host_id"] = array($_POST["host_id"]);
+            }
+
             foreach ($_POST["host_id"] as $host_id) {
                 $ecObj->addHostDowntime(
                     $host_id,
                     $_POST["comment"],
-                    $_POST["start"].' '.$_POST['start_time'],
-                    $_POST["end"].' '.$_POST['end_time'],
+                    $_POST["start"] . ' ' . $_POST['start_time'],
+                    $_POST["end"] . ' ' . $_POST['end_time'],
                     $_POST["persistant"],
                     $duration,
                     $dt_w_services,
@@ -272,7 +360,7 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
                         $ecObj->addHostDowntime(
                             $host_id,
                             $_POST["comment"],
-                            $_POST["start"] . ' '. $_POST["start_time"],
+                            $_POST["start"] . ' ' . $_POST["start_time"],
                             $_POST["end"] . ' ' . $_POST["end_time"],
                             $_POST["persistant"],
                             $duration,
@@ -286,6 +374,12 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
             /*
              * Set a downtime for a service list
              */
+
+            //catch fix input service_id
+            if (!is_array($_POST["service_id"])) {
+                $_POST["service_id"] = array($_POST["service_id"]);
+            }
+
             foreach ($_POST["service_id"] as $value) {
                 $info = split('-', $value);
                 if ($centreon->user->access->admin || in_array($info[0], $host_acl_id)) {
@@ -321,22 +415,19 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
                     );
                 }
             }
-            
-       } elseif ($values['downtimeType']['downtimeType'] == 4) {
+        } elseif ($values['downtimeType']['downtimeType'] == 4) {
             /*
              * Set a downtime for poller
              */
             foreach ($_POST['poller_id'] as $poller_id) {
-                
                 $host_id = preg_split('/,/', str_replace("'", "", $hostStr));
-
                 $DBRESULT = $pearDBO->query("SELECT host_id FROM hosts WHERE instance_id = $poller_id AND enabled = 1");
                 while ($row = $DBRESULT->fetchRow()) {
                     if ($centreon->user->access->admin || isset($host_acl_id[$host_id])) {
                         $ecObj->addHostDowntime(
                             $row['host_id'],
                             $_POST["comment"],
-                            $_POST["start"] . ' '. $_POST["start_time"],
+                            $_POST["start"] . ' ' . $_POST["start_time"],
                             $_POST["end"] . ' ' . $_POST["end_time"],
                             $_POST["persistant"],
                             $duration,
@@ -363,6 +454,14 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
         $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
         $form->accept($renderer);
         $tpl->assign('form', $renderer->toArray());
+
+        if (isset($_GET['service_id']) && isset($_GET['host_id'])) {
+            $tpl->assign('host_name', $host_name);
+            $tpl->assign('service_description', $serviceDisplayName);
+        } elseif (isset($_GET['host_id'])) {
+            $tpl->assign('host_name', $host_name);
+        }
+
         $tpl->assign('seconds', _("seconds"));
         $tpl->assign('o', $o);
         $tpl->assign('focus', $focus);
@@ -372,25 +471,25 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
 ?>
 <script type='text/javascript'>
 
-jQuery(function() {
-    setDurationField();
-    
-    <?php 
-    if (isset($data["service_id"])) {
-        print "toggleParams('service');";
-    }
-    ?>
-    
-});
+    jQuery(function () {
+        setDurationField();
 
-function setDurationField() {
-    var durationField = document.getElementById('duration');
-    var fixedCb = document.getElementById('fixed');
+        <?php
+        if (isset($data["service_id"])) {
+            print "toggleParams('service');";
+        }
+        ?>
 
-    if (fixedCb.checked == true) {
-        durationField.disabled = true;
-    } else {
-        durationField.disabled = false;
+    });
+
+    function setDurationField() {
+        var durationField = document.getElementById('duration');
+        var fixedCb = document.getElementById('fixed');
+
+        if (fixedCb.checked == true) {
+            durationField.disabled = true;
+        } else {
+            durationField.disabled = false;
+        }
     }
-}
 </script>

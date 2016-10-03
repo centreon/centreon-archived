@@ -63,16 +63,19 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      */
     public function getList()
     {
+
         global $centreon;
         
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclServices = '';
-        
+        $aclMetaServices = '';
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServices .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+            $aclMetaServices .= 'AND ms.service_id IN (' . $acl->getMetaServiceString('ID', $this->pearDBMonitoring) . ') ';
         }
         
         // Check for select2 'q' argument
@@ -81,7 +84,14 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-        
+
+        // Check for service enable
+        if (false === isset($this->arguments['e'])) {
+            $e = '';
+        } else {
+            $e = $this->arguments['e'];
+        }
+
         // Check for service type
         if (false === isset($this->arguments['t'])) {
             $t = 'host';
@@ -98,24 +108,34 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             }
         }
 
+        // Check for service type
+        if (isset($this->arguments['s']) && ('s' === $this->arguments['s'])) {
+            $s = $this->arguments['s'];
+        } elseif (isset($this->arguments['s']) && ('m' === $this->arguments['s'])) {
+            $s = $this->arguments['s'];
+        } else {
+            $s = 'all';
+        }
+
+
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        
+
         switch ($t) {
             default:
             case 'host':
-                $serviceList = $this->getServicesByHost($q, $aclServices, $range, $g);
+                $serviceList = $this->getServicesByHost($q, $aclServices, $range, $g, $aclMetaServices, $s, $e);
                 break;
             case 'hostgroup':
                 $serviceList = $this->getServicesByHostgroup($q, $aclServices, $range);
                 break;
         }
-        
+
+
         return $serviceList;
     }
     
@@ -124,32 +144,87 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      * @param type $q
      * @param type $aclServices
      */
-    private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false)
+    private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false, $aclMetaServices, $s, $e)
     {
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '1' AND s.service_register = '1' "
-            . "AND (s.service_description LIKE '%$q%' OR h.host_name LIKE '%$q%') "
-            . $aclServices
-            . "ORDER BY h.host_name, s.service_description "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
-        
-        $total = $this->pearDB->numberRows();
 
+        if( $e == 'enable'):
+            $enableQuery = 'AND s.service_activate = \'1\' AND h.host_activate = \'1\' ';
+            $enableQueryMeta = 'AND ms.service_activate = \'1\' AND mh.host_activate = \'1\' ';
+        elseif( $e == 'disable'):
+            $enableQuery = 'AND ( s.service_activate = \'0\' OR h.host_activate = \'0\' ) ';
+            $enableQueryMeta = 'AND ( ms.service_activate = \'0\' OR mh.host_activate = \'0\') ';
+        else:
+            $enableQuery = '';
+            $enableQueryMeta = '';
+        endif;
+
+        switch ($s) {
+            case 'all':
+        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id
+                FROM ( "
+                    . "( SELECT DISTINCT CONCAT(h.host_name, ' - ', s.service_description) as fullname, s.service_id, h.host_id "
+                    . "FROM host h, service s, host_service_relation hsr "
+                    . "WHERE hsr.host_host_id = h.host_id "
+                    . "AND hsr.service_service_id = s.service_id "
+                    . "AND h.host_register = '1' "
+                    . "AND s.service_register = '1' "
+                    . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE '%$q%' "
+                    . $enableQuery
+                    . $aclServices
+                    . ") 
+                UNION ALL ( "
+                    . "SELECT DISTINCT CONCAT('Meta - ', ms.display_name) as fullname, ms.service_id, mh.host_id "
+                    . "FROM host mh, service ms "
+                    . "WHERE mh.host_name = '_Module_Meta' "
+                    . "AND mh.host_register = '2' "
+                    . "AND ms.service_register = '2' "
+                    . "AND CONCAT('Meta - ', ms.display_name) LIKE '%$q%' "
+                    . $enableQueryMeta
+                    . $aclMetaServices
+                    .") 
+                 )  as t_union "
+                . "ORDER BY fullname "
+                . $range;
+                break;
+            case 's':
+                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(h.host_name, ' - ', s.service_description) as fullname, s.service_id, h.host_id "
+                    . "FROM host h, service s, host_service_relation hsr "
+                    . 'WHERE hsr.host_host_id = h.host_id '
+                    . "AND hsr.service_service_id = s.service_id "
+                    . "AND h.host_register = '1' "
+                    . "AND s.service_register = '1' "
+                    . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE '%$q%' "
+                    . $enableQuery
+                    . $aclServices
+                    . "ORDER BY fullname "
+                    . $range;
+                break;
+            case 'm':
+                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT('Meta - ', ms.display_name) as fullname, ms.service_id, mh.host_id "
+                    . "FROM host mh, service ms "
+                    . "WHERE mh.host_name = '_Module_Meta' "
+                    . "AND mh.host_register = '2' "
+                    . "AND ms.service_register = '2' "
+                    . "AND CONCAT('Meta - ', ms.display_name) LIKE '%$q%' "
+                    . $enableQueryMeta
+                    . $aclMetaServices
+                    . "ORDER BY fullname "
+                    . $range;
+                break;
+        }
+
+        $DBRESULT = $this->pearDB->query($queryService);
+        $total = $this->pearDB->numberRows();
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             if ($hasGraph) {
                 if (service_has_graph($data['host_id'], $data['service_id'], $this->pearDBMonitoring)) {
-                    $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+                    $serviceCompleteName = $data['fullname'];
                     $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
                     $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
                 }
             } else {
-                $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+                $serviceCompleteName = $data['fullname'];
                 $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
                 $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
             }
@@ -168,14 +243,14 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      */
     private function getServicesByHostgroup($q, $aclServices, $range = '')
     {
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, hg.hg_name, hg.hg_id "
+        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(hg.hg_name, ' - ', s.service_description) as fullname, s.service_id, hg.hg_id "
             . "FROM hostgroup hg, service s, host_service_relation hsr "
             . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND s.service_register = '1' "
-            . "AND (s.service_description LIKE '%$q%' OR hg.hg_name LIKE '%$q%') "
+            . "AND CONCAT(hg.hg_name, ' - ', s.service_description) LIKE '%$q%' "
             . $aclServices
-            . "ORDER BY hg.hg_name, s.service_description "
+            . "ORDER BY fullname "
             . $range;
         
         $DBRESULT = $this->pearDB->query($queryService);
@@ -184,7 +259,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteName = $data['fullname'];
             $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
             
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
@@ -195,7 +270,6 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             'total' => $total
         );
     }
-
 
     /**
      *

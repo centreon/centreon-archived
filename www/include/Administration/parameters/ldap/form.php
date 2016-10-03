@@ -53,7 +53,7 @@ if (isset($_REQUEST['ar_id'])) {
 /**
  * Ldap form
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p . "&o=" . $o);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 

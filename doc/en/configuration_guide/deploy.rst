@@ -17,7 +17,8 @@ First step
 ==========
 
 #. Go into the menu: **Configuration** ==> **Pollers**
-#. Click on the Generate action icon for the poller
+#. Choose the pollers which you want to export configuration
+#. Click on **Apply configuration**
 
 .. image:: /images/user/configuration/poller_menu_generate.png
    :align: center

@@ -37,8 +37,8 @@ include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
 
 class CentreonGMT
 {
-
-    protected $listGTM;
+    protected $timezoneById;
+    protected $timezones;
     protected $myGMT;
     public $use;
     /**
@@ -87,10 +87,12 @@ class CentreonGMT
     {
         $this->db = $DB;
         $this->dbc = new CentreonDB("centstorage");
+
         /*
          * Define Table of GMT line
          */
-        $this->listGTM = $this->getList();
+        $this->timezoneById = $this->getList();
+
         /*
          * Flag activ / inactiv
          */
@@ -121,7 +123,7 @@ class CentreonGMT
      */
     public function getGMTList()
     {
-        return $this->listGTM;
+        return $this->timezoneById;
     }
 
     /**
@@ -142,12 +144,12 @@ class CentreonGMT
     public function getMyTimezone()
     {
         if (is_null($this->myTimezone)) {
-            if (isset($this->listGTM[$this->myGMT])) {
-                $this->myTimezone = $this->listGTM[$this->myGMT];
+            if (isset($this->timezoneById[$this->myGMT])) {
+                $this->myTimezone = $this->timezoneById[$this->myGMT];
             } else {
                 $this->getCentreonTimezone();
-                if (!empty($this->sDefaultTimezone) && !empty($this->listGTM[$this->sDefaultTimezone])) {
-                    $this->myTimezone = $this->listGTM[$this->sDefaultTimezone];
+                if (!empty($this->sDefaultTimezone) && !empty($this->timezoneById[$this->sDefaultTimezone])) {
+                    $this->myTimezone = $this->timezoneById[$this->sDefaultTimezone];
                 } else { //if we take the empty PHP
                     $this->myTimezone = date_default_timezone_get();
                 }
@@ -178,7 +180,7 @@ class CentreonGMT
     public function getMyGMTForRRD()
     {
         $sOffset = '';
-        if (count($this->listGTM) == 0) {
+        if (count($this->timezoneById) == 0) {
             $this->getList();
         }
 
@@ -276,7 +278,7 @@ class CentreonGMT
             $iTimestamp = $sDate->getTimestamp();
             $sOffset = $sDate->getOffset();
             $sLocalOffset = $localDate->getOffset();
-            $return = $iTimestamp + (($sOffset - $sLocalOffset) * $reverseOffset);
+            $return = $iTimestamp - (($sOffset - $sLocalOffset) * $reverseOffset);
         }
         
         return $return;
@@ -442,7 +444,8 @@ class CentreonGMT
  
         $aDatas[null] = null;
         while ($row = $res->fetchRow()) {
-            $aDatas[$row['timezone_id']] =  $row['timezone_name'];
+            $this->timezones[$row['timezone_name']] =  $row['timezone_id'];
+            $aDatas[$row['timezone_id']] = $row['timezone_name'];
             $this->aListTimezone[$row['timezone_id']] = $row;
         }
          
@@ -486,24 +489,19 @@ class CentreonGMT
      */
     public function getHostLocations()
     {
-       if (count($this->hostLocations)) {
-           return $this->hostLocations;
-       }
+        if (count($this->hostLocations)) {
+            return $this->hostLocations;
+        }
 
-        $locations = array();
+        $this->hostLocations = array();
 
-        $query = 'SELECT h.host_id, hs.timezone '
-            . 'FROM ' . db . '.host h '
-            . 'LEFT JOIN ' . dbcstg . '.hosts hs ON h.host_id = hs.host_id ';
-
+        $query = 'SELECT host_id, timezone FROM hosts WHERE enabled = 1 ';
         $res  = $this->dbc->query($query);
         if (!PEAR::isError($res)) {
             while ($row = $res->fetchRow()) {
-                $locations[$row['host_id']] = $row['timezone'];
+                $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
             }
         }
-        $this->hostLocations = $locations;
-
         return $this->hostLocations;
     }
     
@@ -525,7 +523,6 @@ class CentreonGMT
             }
             $this->sDefaultTimezone = $sTimezone;
         }
-        
         return $this->sDefaultTimezone;
     }
     
@@ -539,18 +536,20 @@ class CentreonGMT
     private function getActiveTimezone($gmt)
     {
         $sTimezone = "";
-        if (count($this->listGTM) == 0) {
+        if (count($this->timezones) == 0) {
             $this->getList();
         }
         
-        if (isset($this->listGTM[$gmt]) && !empty($this->listGTM[$gmt])) {
-            $sTimezone = $this->listGTM[$gmt];
+        if (isset($this->timezones[$gmt])) {
+            $sTimezone = $gmt;
+        } else if (isset($this->timezoneById[$gmt])) {
+            $sTimezone = $this->timezoneById[$gmt];
         } else {
             $this->getCentreonTimezone();
-            if (!empty($this->sDefaultTimezone) && !empty($this->listGTM[$this->sDefaultTimezone])) {
-                $sTimezone = $this->listGTM[$this->sDefaultTimezone];
+            if (!empty($this->sDefaultTimezone) && !empty($this->timezones[$this->sDefaultTimezone])) {
+                $sTimezone = $this->timezones[$this->sDefaultTimezone];
             } else { //if we take the empty PHP
-                 $sTimezone = date_default_timezone_get();
+                $sTimezone = date_default_timezone_get();
             }
         }
         return $sTimezone;

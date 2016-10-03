@@ -810,6 +810,8 @@ function insertService($ret = array(), $macro_on_demand = null)
     }
 
     $ret["service_description"] = $service->checkIllegalChar($ret["service_description"]);
+    $find = '/\s{2,}/';
+    $ret["service_description"] = preg_replace($find, ' ', $ret["service_description"]);
 
     if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null) {
         $ret["command_command_id_arg2"] = str_replace("\n", "//BR//", $ret["command_command_id_arg2"]);

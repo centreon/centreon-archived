@@ -78,7 +78,7 @@ $form->setDefaults(array('restart_mode' => '1'));
 /* Add multiselect for pollers */
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
-    'allowClear' => false,
+    'allowClear' => true,
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
     'multiple' => true
 );

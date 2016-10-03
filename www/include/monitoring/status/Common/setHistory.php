@@ -38,9 +38,12 @@ require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.confi
 $path = _CENTREON_PATH_."/www";
 require_once("$path/class/centreon.class.php");
 require_once("$path/class/centreonSession.class.php");
+require_once("$path/class/centreonDB.class.php");
+
+$DB = new CentreonDB();
 
 CentreonSession::start();
-if (!CentreonSession::checkSession(session_id(), $obj->DB)) {
+if (!CentreonSession::checkSession(session_id(), $DB)) {
     print "Bad Session ID";
     exit();
 } else {

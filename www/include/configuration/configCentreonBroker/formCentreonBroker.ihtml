@@ -87,7 +87,14 @@
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/brokerConfig.js"></script>
+
+
 <script type="text/javascript">
+
+
+    jQuery('#Form').centreonValidate();
+
+
 function mk_paginationFF(){};
 function set_header_title(){};
 
@@ -137,6 +144,7 @@ function addInfo(type) {
     var params;
     var tbody = new Element('tbody');
     tbody.writeAttribute('id', id_name);
+    tbody.writeAttribute('class', 'collapse-wrapper');
     Element.insert($(type), {bottom: tbody});
     params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
     new Ajax.Updater(
@@ -150,11 +158,13 @@ function addInfo(type) {
                     checkTypeValidity('block_' + type);
                     jQuery("#"+id_name).centreonValidate();
                     clonifyTableFields('parentGroup','displaynamegroup');
+                    addCollapse();
+                    openNewElem(id_name);
                 }
             }
         }
     );
-        
+
 }
 
 function deleteRow(type, id) {
@@ -193,6 +203,7 @@ function loadedConfiguration() {
 function changeTab(tab) {
     jQuery('#Form').centreonValidate('validate');
     purgeHideInput(tab);
+    initCollapsebyTab(tab);
     if(tab == "tab4"){
         clonifyTableFields('parentGroup','displaynamegroup');
     }
@@ -217,85 +228,5 @@ function formValidate() {
     }
     return true;
 }
-
-jQuery(function() {
-    jQuery('#Form').centreonValidate();
-});
-
-// For the multiple type of groups, we have to group fields together in order to clone them.
-function clonifyTableFields(attributeName,displayName){
-    
-    // First, find the fields and group them in one array for each multiple group
-    var GroupArray = {};
-    var GroupDisplayName = {};
-    jQuery("["+attributeName+"]:not([alreadyProcessed])").each(function(ind,el){
-        var groupname = jQuery(el).attr(attributeName);
-        if(!GroupArray[groupname]){
-            GroupArray[groupname] = [];
-        }
-        GroupArray[groupname].push(el);
-        GroupDisplayName[groupname] = jQuery(el).attr(displayName);
-    });
-
-    // Then we group the fields like this abose :
-    // <oldTable> .... <tr newdiv> <td1> <table1 clonable> <tr clone_template > <td> <table2> 
-    // <oldTr1> <oldTd1> <input1/> </oldTd1> </oldTr1> <oldTr2> <oldTd2> <input2/> </oldTd2> </olTtr2>  --> detached from oldTable
-    // </table2> </td> </tr clone_template> <tr control> <td> </td> </tr> </table1 clonable> </td1> </tr newdiv> .... </oldTable> 
-    for(var obj in GroupArray) {
-        var td1 = jQuery('<td>').attr('colspan','2');
-        var newdiv = jQuery('<tr>').append(td1);
-        var theader = jQuery('<thead>').append(jQuery('<tr>').append(jQuery('<th>').css('padding','6px 0').css('background-color','#f4f4f4').css('border-bottom','1px solid #e7e7e8').css('border-top','1px solid #e7e7e8').html(GroupDisplayName[obj])));
-        var table1 = jQuery('<table>').addClass('formTable').addClass('table').css('margin','auto').attr('id',obj ).addClass('clonable').css('list-style-type','inherit');
-        table1.append(theader);
-        td1.append(table1);
-        var table2 = jQuery('<table>').addClass('formTable').addClass('table').css('margin','auto');
-        var clone_template = jQuery('<tr>').attr('id',obj +"_template" ).addClass('clone_template').append(jQuery('<td>').attr('colspan','2').append(table2));
-        table1.append(clone_template).append(jQuery('<tr>').attr('id',obj +"_noforms_template" ));
-        var control = jQuery('<tr>').attr('id',obj+'_controls').append(jQuery('<td>').attr('id',obj+'_add').append(jQuery('<span>').html('+ Add a new entry').css('cursor','pointer')));
-        var img = jQuery('<img>').attr('src','./img/icons/circle-cross.png').addClass('ico-14').css('vertical-align','middle');
-        var remove = jQuery('<span>').css('cursor','pointer').attr('id', obj+'_remove_current').append(img);
-        table2.append(jQuery('<tr>').append(jQuery('<td>').css('text-align','right').attr('colspan','2').append(remove)));
-        
-        if(GroupArray.hasOwnProperty(obj)){
-            var firsPostition = false;
-            GroupArray[obj].each(function(element){
-                tdSize = jQuery(element).parents("tr").first().children('.FormRowField').first().width();
-                // since the element is in a subTab and because of the auto-sizing of each <td>,
-                // we have to set the width of the <td> to the old value, this break responsive design for thoose fields 
-                jQuery(element).parents("tr").first().children('.FormRowField').first().css('width',tdSize);
-                jQuery(element).attr('alreadyProcessed','1');
-                
-                var parent = jQuery(element).parents("tr").first();
-                if(!firsPostition){
-                    firsPostition = parent.prev();
-                }
-                parent.detach();
-                table2.append(parent);
-            });
-            table1.append(control);
-            firsPostition.after(newdiv);
-        }
-        var footer = jQuery('<tfoot>').append(jQuery('<tr>').append(jQuery('<td>').css('padding','6px 0').css('background-color','#f4f4f4').css('border-bottom','1px solid #e7e7e8').css('border-top','1px solid #e7e7e8')));
-        table1.append(footer);
-    }
-
-    // Finaly, we make each group of fields clonable (if not alreadyProcessed)
-    jQuery(".clonable:not([alreadyProcessed])").each(function(idx, el) {
-        jQuery(el).attr('alreadyProcessed','1');
-        var suffixid = jQuery(el).attr('id');
-        jQuery(el).sheepIt({
-            separator: '',
-            allowRemoveLast: true,
-            allowRemoveCurrent: true,
-            allowRemoveAll: true,
-            minFormsCount: 0,
-            maxFormsCount: 200,
-            continuousIndex : false,
-            iniFormsCount: jQuery("#clone-count-" + suffixid).data("clone-count-" + suffixid),
-            data: jQuery("#clone-values-" + suffixid).data("clone-values-" + suffixid)
-        });
-    });
-}
-
-</script> 
+</script>
 {/literal}

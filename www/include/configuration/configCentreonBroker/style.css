@@ -5,14 +5,22 @@ span.v_required_star {
 }
 
 /* collapse */
-.elem-toCollapse {
+.header-collapse:hover td{
+    background-color: #e4e4e4 !important;
+    cursor: pointer;
+}
+.collapse-wrapper .elem-toCollapse {
     display: none;
+    position: relative;
+}
+.elem-toCollapse .FormRowValue input {
+    position: relative;
 }
 .elem-header {
     cursor: pointer;
 }
-.elem-header:hover {
-
+.elem-header:hover td {
+    background: #e7e7e8 !important;
 }
 .elem-header td:first-child {
     position: relative;

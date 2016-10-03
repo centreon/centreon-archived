@@ -56,21 +56,6 @@ $help["cfg_dir"] = dgettext(
     "Directory where Centreon will export Monitoring Engine object configuration files to. "
     . "Monitoring Engine will parse all .cfg files in this directory."
 );
-$help["object_cache_file"] = dgettext(
-    "help",
-    "Specify a file in which a cached copy of object definitions should be stored. "
-    . "The cache file is (re)created every time Monitoring Engine is (re)started "
-    . "and is used by the CGIs. It is intended to speed up config file caching "
-    . "in the CGIs and allow you to edit the source object config files while "
-    . "Monitoring Engine is running without affecting the output displayed in the CGIs."
-);
-$help["precached_object_file"] = dgettext(
-    "help",
-    "Specify a file in which a pre-processed, pre-cached copy of object definitions "
-    . "should be stored. This file can be used to drastically improve startup times "
-    . "in large/complex Monitoring Engine installations. Read more information on how "
-    . "to speed up start times in section \"Fast Startup Options\" in Monitoring Engine documentation."
-);
 $help["temp_file"] = dgettext(
     "help",
     "This is a temporary file that Monitoring Engine periodically creates and "

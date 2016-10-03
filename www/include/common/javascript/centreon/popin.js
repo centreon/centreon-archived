@@ -49,13 +49,14 @@
   
     self.$elem = $elem.parents('.centreon-popin').detach();
     self.$elem.appendTo('body');
-    
+
     /* Append close button */
     closeBtn.appendTo($elem);
     closeBtn.on('click', function () {
       self.close();
     });
-    
+
+
     self.initOverlay();
     
     if(self.settings.url !== null){
@@ -77,7 +78,7 @@
         }
     }
   }
-  
+
   CentreonPopin.prototype = {
     initOverlay: function () {
       var self = this;
@@ -119,6 +120,11 @@
       this.opened = false;
       this.$elem.hide();
       $('#centreonPopinOverlay').hide();
+
+      /* Execute callback if defined on settings */
+      if (typeof(this.settings.onClose) === 'function') {
+        this.settings.onClose();
+      }
     }
   };
   
@@ -135,9 +141,8 @@
       if (typeof options === 'string') {
         methodReturn = data[options].apply(data, args);
       }
-      
-      return (methodReturn === undefined) ? $set : methodReturn;
     });
+    return (methodReturn === undefined) ? $set : methodReturn;
   };
   
   $.fn.centreonPopin.defaults = {
@@ -145,6 +150,7 @@
     open: false,
     url : null,
     ajaxType : null,
-    postDatas : null
+    postDatas : null,
+    onClose: null
   };
 })(jQuery, window);

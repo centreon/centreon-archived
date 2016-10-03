@@ -72,6 +72,9 @@ class Config
      */
     public function parseXML($xmlfile)
     {
+        if (!file_exists($xmlfile)) {
+            throw new \Exception("Config file '" . $xmlfile . "' does not exist\n");
+        }
         $node = new SimpleXMLElement(file_get_contents($xmlfile));
         foreach ($node->table as $table_config) {
             $table = new MysqlTable(

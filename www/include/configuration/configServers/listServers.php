@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -79,7 +79,7 @@ $pollerstring = implode(',', array_keys($nagios_servers));
 $nagiosInfo = array();
 $DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances WHERE deleted = 0");
 while ($info = $DBRESULT->fetchRow()) {
-    $nagiosInfo[$info["instance_name"]] = $info;
+    $nagiosInfo[$info["instance_id"]] = $info;
 }
 $DBRESULT->free();
 
@@ -88,8 +88,8 @@ $DBRESULT->free();
  */
 $DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 ");
 while ($info = $DBRESULT->fetchRow()) {
-    if (isset($nagiosInfo[$info["instance_name"]])) {
-        $nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+    if (isset($nagiosInfo[$info["instance_id"]])) {
+        $nagiosInfo[$info["instance_id"]]["version"] = $info["program_name"] . " " . $info["program_version"];
     }
 }
 $DBRESULT->free();
@@ -155,8 +155,8 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     }
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
 
-    if (!isset($nagiosInfo[$config["name"]]["is_currently_running"])) {
-        $nagiosInfo[$config["name"]]["is_currently_running"] = 0;
+    if (!isset($nagiosInfo[$config["id"]]["is_currently_running"])) {
+        $nagiosInfo[$config["id"]]["is_currently_running"] = 0;
     }
 
     /*
@@ -168,16 +168,16 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
      * Manage flag for update time
      */
     $lastUpdateTimeFlag = 0;
-    if (!isset($nagiosInfo[$config["name"]]["last_alive"])) {
+    if (!isset($nagiosInfo[$config["id"]]["last_alive"])) {
         $lastUpdateTimeFlag = 0;
-    } elseif (time() - $nagiosInfo[$config["name"]]["last_alive"] > 10 * 60) {
+    } elseif (time() - $nagiosInfo[$config["id"]]["last_alive"] > 10 * 60) {
         $lastUpdateTimeFlag = 1;
     }
 
     /*
 	 * Get cfg_id
 	 */
-    $request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]."";
+    $request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]." AND nagios_activate = '1'";
     $DBRESULT2 = $pearDB->query($request);
     if ($DBRESULT2->numRows()) {
         $cfg_id = $DBRESULT2->fetchRow();
@@ -192,16 +192,16 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
                  "RowMenu_ip_address" => $config["ns_ip_address"],
                  "RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
                  "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
-                 "RowMenu_is_running" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
-                 "RowMenu_is_runningFlag" => $nagiosInfo[$config["name"]]["is_currently_running"],
+                 "RowMenu_is_running" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
+                 "RowMenu_is_runningFlag" => $nagiosInfo[$config["id"]]["is_currently_running"],
                  "RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
                  "RowMenu_hasChanged" => $hasChanged ? _("Yes") : _("No"),
                  "RowMenu_hasChangedFlag" => $hasChanged,
-                 "RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
-                 "RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["program_start_time"]) : "-",
-                 "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["name"]]["last_alive"]) && $nagiosInfo[$config["name"]]["last_alive"]) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["last_alive"]) : "-",
+                 "RowMenu_version" => (isset($nagiosInfo[$config["id"]]["version"]) ? $nagiosInfo[$config["id"]]["version"] : _("N/A")),
+                 "RowMenu_startTime" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["id"]]["program_start_time"]) : "-",
+                 "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["id"]]["last_alive"]) && $nagiosInfo[$config["id"]]["last_alive"]) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["id"]]["last_alive"]) : "-",
                  "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag,
-                 "RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
+                 "RowMenu_pid" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["id"]]["process_id"] : "-",
                  "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
                  "RowMenu_badge" => $config["ns_activate"] ? "service_ok" : "service_critical",
                  "RowMenu_statusVal" => $config["ns_activate"],
@@ -249,7 +249,7 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 # Apply configuration button
-$form->addElement('button', 'apply_configuration', _("Apply configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
+$form->addElement('button', 'apply_configuration', _("Export configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchP', $search);

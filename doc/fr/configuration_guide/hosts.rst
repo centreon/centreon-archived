@@ -115,6 +115,7 @@ Les champs présentés ci-dessous sont des champs utilisés uniquement par la CG
 
 *	Le champ **Image VRML** définit le logo pour le moteur 3D de l'hôte (non compatible avec Centreon Engine).
 *	Le champ **Image de la carte des états** définit le logo pour la CGI de l'ordonnanceur.
+*	Le champ **Coordonnées géographique** indique les coordonnées géographiques (Latitude,Longitude) de l'élément. Ces informations sont utiles dans le logiciel Centreon Map.
 *	Le champ **Coordonnées 2D et 3D** indiquent les coordonnées 2D et 3D utilisées par la CGI.
 
 Access groups
