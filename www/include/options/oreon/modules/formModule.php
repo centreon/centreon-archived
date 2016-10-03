@@ -108,6 +108,7 @@ if ($operationType === 'install') {
              */
             $oreon->creatModuleList($pearDB);
             $oreon->user->access->updateTopologyStr();
+            $oreon->initHooks();
         } else {
             $tpl->assign("output4", _("Unable to install module"));
         }
@@ -162,6 +163,7 @@ if ($operationType === 'install') {
                             }
                             $oreon->creatModuleList($pearDB);
                             $oreon->user->access->updateTopologyStr();
+                            $oreon->initHooks();
                         } else {
                             $tpl->assign("output4", _("Unable to install module"));
                         }

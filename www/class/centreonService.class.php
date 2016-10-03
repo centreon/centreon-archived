@@ -33,6 +33,8 @@
  *
  */
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonHook.class.php';
 
 /**
  *  Class that contains various methods for managing services
@@ -44,6 +46,12 @@ class CentreonService
      * @var type
      */
     protected $db;
+
+    /**
+     *
+     * @var type
+     */
+    protected $dbMon;
     
     /**
      *
@@ -56,9 +64,14 @@ class CentreonService
      *
      *  @param CentreonDB $db
      */
-    public function __construct($db)
+    public function __construct($db, $dbMon = null)
     {
         $this->db = $db;
+        if (is_null($dbMon)) {
+            $this->dbMon = new CentreonDB('centstorage');
+        } else {
+            $this->dbMon = $dbMon;
+        }
         $this->instanceObj = new CentreonInstance($db);
     }
 
@@ -1631,7 +1644,7 @@ class CentreonService
      * @param int $id
      * @return array
      */
-    public function getParameters($id, $parameters = array())
+    public function getParameters($id, $parameters = array(), $monitoringDB = false)
     {
         $sElement = "*";
         $arr = array();
@@ -1642,9 +1655,17 @@ class CentreonService
             $sElement = implode(",", $parameters);
         }
 
+        $table = 'service';
+        $db = $this->db;
+        if ($monitoringDB) {
+            $table = 'services';
+            $db = $this->dbMon;
+        }
         
-        $res = $this->db->query("SELECT ".$sElement." FROM service 
-                WHERE service_id = ".$this->db->escape($id));
+        $res = $db->query(
+            "SELECT " . $sElement . " "
+            . "FROM " . $table . " "
+            . "WHERE service_id = " . $db->escape($id));
         
         if ($res->numRows()) {
             $arr = $res->fetchRow();
@@ -1779,5 +1800,29 @@ class CentreonService
         $hosts = array_unique($hosts);
 
         return $hosts;
+    }
+
+    public function getMonitoringFullName($serviceId)
+    {
+        $name = null;
+
+        $result = CentreonHook::execute('Service', 'getMonitoringFullName', $serviceId);
+        foreach ($result as $fullName) {
+            if (!is_null($fullName) && $fullName != '') {
+                return $fullName;
+            }
+        }
+
+        $query = 'SELECT CONCAT (h.name, " - ", s.description) as fullname '
+            . 'FROM hosts h, services s '
+            . 'WHERE h.host_id = s.host_id '
+            . 'AND s.enabled = "1" '
+            . 'AND s.service_id = ' . $serviceId;
+        $result = $this->dbMon->query($query);
+        while ($row = $result->fetchRow()) {
+            $name = $row['fullname'];
+        }
+
+        return $name;
     }
 }

@@ -355,11 +355,18 @@ jQuery(function () {
   
   /* Add events */
   jQuery('#select-chart').on('change', function () {
-    var charts = jQuery('#select-chart').val();
+    var charts = [];
+    
+    jQuery('#select-chart > option').each(function() {
+      charts.push({
+          id: jQuery(this).val(),
+          text: jQuery(this).text()
+      });
+    });
     
     if (charts !== null && charts.length > 0) {
       loadChart(charts, function () {
-        jQuery('#select-chart').val('');
+        jQuery('#select-chart > option').remove();
         jQuery('#select-chart')
           .trigger('change')
           .select2('close');  
@@ -494,7 +501,7 @@ jQuery(function () {
   jQuery('#host_filter').centreonSelect2({
     select2: {
       ajax: {
-        url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list'
+        url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list&h=all'
       },
       containerCssClass: 'filter-select'
     },

@@ -44,7 +44,7 @@ class CentreonHook
     {
     }
 
-    public static function execute($category, $method)
+    public static function execute($category, $method, $parameters = null)
     {
         global $centreon;
 
@@ -56,7 +56,7 @@ class CentreonHook
                 $hookClass = $hook['class'];
                 require_once $hookPath;
                 $object = new $hookClass();
-                $result[] = $object->$method();
+                $result[] = $object->$method($parameters);
             }
         }
 

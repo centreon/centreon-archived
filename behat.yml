@@ -6,6 +6,8 @@ default:
         default:
           selenium2: ~
     Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
   suites:
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
