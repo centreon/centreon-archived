@@ -201,7 +201,7 @@ class DowntimeStartAndStopContext extends CentreonContext
                     }
                 }
                 return !$found;
-            }, 20
+            }, 40
             , 'Downtime is still running.'
         );
     }
@@ -281,20 +281,13 @@ class DowntimeStartAndStopContext extends CentreonContext
         );
         //get start and end timestamp of the time in timezone
         $dateStartLocal += 120;
-        var_dump(date('Y-m-d H:i', $dateStartLocal));
         $dateEndLocal = $dateStartLocal + $this->downtimeDuration;
-        var_dump(date('Y-m-d H:i', $dateEndLocal));
 
         //check if the downtime is on two days and add time
         if (date('Y-m-d', $dateStartLocal) != date('Y-m-d', $dateEndLocal)) {
             $dateStartLocal +=300;
             $dateEndLocal +=300;
         }
-
-
-        var_dump('888888888888888888888888888888888');
-        var_dump(date('Y-m-d H:i', $dateStartLocal));
-        var_dump(date('Y-m-d H:i', $dateEndLocal));
 
         //convert the local timestamp to utc time
         $dateStart = date('Y-m-d H:i', $dateStartLocal);
