@@ -214,31 +214,32 @@ class CentreonInstance
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
-    {
-        $selectedInstances = '';
-        $aInstanceList = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
-        } else {
-            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
-        }
-        
-        $queryInstance = "SELECT DISTINCT p.name as name, p.id  as id"
-            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
-            . " WHERE r.resource_id = rel.resource_id "
-            . " AND p.id = rel.instance_id "
-            . $selectedInstances
-            . " ORDER BY p.name";
-        $DBRESULT = $this->db->query($queryInstance);
-        while ($data = $DBRESULT->fetchRow()) {
-            $aInstanceList[] = array(
-                'id' => $data['id'],
-                'text' => $data['name']
-            );
-        }
-        
-        return $aInstanceList;
-    }
+     {
+         $selectedInstances = '';
+         $items= array();
+
+         $explodedValues = implode('', $values);
+         if (empty($explodedValues)) {
+             $explodedValues = "''";
+         }else {
+                 $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+         }
+
+         $query = "SELECT DISTINCT p.name as name, p.id  as id"
+             . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
+             . " WHERE r.resource_id = rel.resource_id"
+             . " AND p.id = rel.instance_id "
+             . " AND p.id IN (" . $explodedValues . ")"
+             . $selectedInstances
+             . " ORDER BY p.name";
+         $DBRESULT = $this->db->query($query);
+         while ($data = $DBRESULT->fetchRow()) {
+                 $items[] = array(
+                         'id' => $data['id'],
+                 'text' => $data['name']
+             );
+         }
+
+         return $items;
+     }
 }

@@ -10,6 +10,7 @@
     this.chartSvg = null;
     this.chartData = null;
     this.refreshEvent = null;
+    this.forceDisplay = false;
     parseInterval = settings.interval.match(/(\d+)([a-z]+)/i);
     this.interval = {
       number: parseInterval[1],
@@ -138,6 +139,7 @@
         }
       };
       var parsedData = this.buildMetricData(data);
+      
       axis = jQuery.extend({}, axis, parsedData.axis);
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
@@ -145,12 +147,26 @@
         };
       }
       
+      if (data.data.length > 15) {
+          datasToAppend = {
+            x: parsedData.data.x,
+            columns: [],
+            names: {},
+            types: {},
+            colors: {},
+            regions: {},
+            empty: { label: { text: "Too much metrics, the chart can't be displayed" } }
+          }
+      } else {
+          datasToAppend = parsedData.data;
+      }
+      
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
         size: {
           height: this.settings.height
         },
-        data: parsedData.data,
+        data: datasToAppend,
         axis: axis,
         tooltip: {
           format: {
@@ -158,7 +174,7 @@
               return moment(x).format('YYYY-MM-DD HH:mm:ss');
             },
             value: function (value, ratio, id) {
-              /* Test if the curse is inversed */
+              /* Test if the curve is inversed */
               if (self.isInversed(id)) {
                 return self.inverseRoundTick(value);
               }
@@ -172,6 +188,15 @@
         },
         regions: self.buildRegions(data)
       });
+      
+      if (data.data.length > 15) {
+          jQuery("#display-graph-" + self.id).css('display', 'block');
+          jQuery("#display-graph-" + self.id).on('click', function (e){
+              self.chart.load(parsedData.data)
+              self.chart.regions(self.buildRegions(data));
+              jQuery(this).css('display', 'none');
+          });
+      }
     },
     /**
      * Load data from rest api in ajax
@@ -186,7 +211,7 @@
         status: 'statusByService',
         service: 'metricsDataByService'
       };
-      var url = './api/internal.php?object=centreon_metric';
+      var url = '/centreon/api/internal.php?object=centreon_metric';
       url += '&action=' + action[this.type] ;
       url += '&ids=' + this.id;
       url += '&start=' + start + '&end=' + end;
@@ -203,10 +228,8 @@
               self.buildStatusData(data[0])
             );
           } else {
-            self.chart.load(
-              self.buildMetricData(data[0]).data
-            );
-            self.chart.regions(self.buildRegions(data[0]));
+              self.chart.load(self.buildMetricData(data[0]).data);
+              self.chart.regions(self.buildRegions(data[0]));
           }
         }
       });
@@ -228,8 +251,10 @@
         names: {},
         types: {},
         colors: {},
-        regions: {}
+        regions: {},
+        empty: { label: { text: "There's no data" } }
       };
+      
       var units = {};
       var axis = {};
       var column;
@@ -244,25 +269,26 @@
         return time * 1000;
       });
       times.unshift('times');
-      data.columns.push(times);
-      for (i = 0; i < dataRaw.data.length; i++) {
-        name = 'data' + (i + 1);
-        column = dataRaw.data[i].data;
-        column.unshift(name);
-        data.columns.push(column);
-        legend = dataRaw.data[i].label;
-        if (dataRaw.data[i].unit) {
-          legend += '(' + dataRaw.data[i].unit + ')';
-          if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-            units[dataRaw.data[i].unit] = name;
-          }
-        }
-        data.names[name] = legend;
-        data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
-          convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
-        data.colors[name] = dataRaw.data[i].color;
-      }
       
+        data.columns.push(times);
+        for (i = 0; i < dataRaw.data.length; i++) {
+          name = 'data' + (i + 1);
+          column = dataRaw.data[i].data;
+          column.unshift(name);
+          data.columns.push(column);
+          legend = dataRaw.data[i].label;
+          if (dataRaw.data[i].unit) {
+            legend += '(' + dataRaw.data[i].unit + ')';
+            if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
+              units[dataRaw.data[i].unit] = name;
+            }
+          }
+          data.names[name] = legend;
+          data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
+            convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
+          data.colors[name] = dataRaw.data[i].color;
+        }
+
       if (Object.keys(units).length === 2) {
         axesName = 'y';
         for (unit in units) {
@@ -278,9 +304,9 @@
         }
         axis.y2.show = true;
       }
-      
+
       data.x = 'times';
-      
+
       /* Prepare threshold */
       if (this.settings.threshold && dataRaw.data.length === 1) {
         nbPoints = dataRaw.data[0].data.length;
@@ -309,7 +335,7 @@
           data.regions.crit = [{style: 'dashed'}];
         }
       }
-      
+
       /* Add group */
       data.groups = this.buildGroups(dataRaw);
       

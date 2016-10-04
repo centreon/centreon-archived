@@ -300,8 +300,20 @@ class CentreonAPI
         foreach ($objectsPath as $objectPath) {
             if (preg_match('/([\w-]+)\/centreon-clapi\/class\/centreon(\w+).class.php/', $objectPath, $matches)) {
                 if (isset($matches[1]) && isset($matches[2])) {
+                    $finalNamespace = substr($matches[1], 0, stripos($matches[1], '-server'));
+                    
+                    $finalNamespace = implode(
+                        '',
+                        array_map(
+                            function($n) {
+                            return ucfirst($n);
+                            },
+                            explode('-', $finalNamespace)
+                        )
+                    );
                     $this->relationObject[strtoupper($matches[2])] = array(
                         'module' => $matches[1],
+                        'namespace' => $finalNamespace,
                         'class' => $matches[2],
                         'export' => true
                     );
@@ -597,10 +609,17 @@ class CentreonAPI
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
+                
+                if ($this->relationObject[$this->object]['module'] === 'core') {
+                    $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
+                } else {
+                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" . $this->relationObject[$this->object]['class'];
+                }
             } else {
                 $objName = "";
             }
+            
+            
             if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
                 print "Object $this->object not found in Centreon API.\n";
                 return 1;
