@@ -25,8 +25,8 @@ class DowntimeStartAndStopContext extends CentreonContext
         parent::__construct();
         $this->downtimeStartTime = date("H:i");
         $this->page = '';
-        $this->dateStartUtc = '';
-        $this->dateEndUtc = '';
+        $this->dateStartTimestamp = '';
+        $this->dateEndTimestamp = '';
         $this->timezone = '';
         $this->timezoneUser = '';
     }
@@ -239,14 +239,14 @@ class DowntimeStartAndStopContext extends CentreonContext
             timezone_open($this->timezoneUser)
         );
         $dataTimeStart->format('Y/m/d H:i');
-        $this->dateStartUtc = $dataTimeStart->getTimestamp();
+        $this->dateStartTimestamp = $dataTimeStart->getTimestamp();
 
         //convert local end hour in timestamp utc
         $dataTimeEnd = new DateTime($props['end_day'] . ' ' . $props['end_time'], timezone_open($this->timezoneUser));
         $dataTimeEnd->format('Y/m/d H:i');
-        $this->dateEndUtc = $dataTimeEnd->getTimestamp();
+        $this->dateEndTimestamp = $dataTimeEnd->getTimestamp();
 
-        $this->downtimeDuration = $this->dateEndUtc - $this->dateStartUtc;
+        $this->downtimeDuration = $this->dateEndTimestamp - $this->dateStartTimestamp;
     }
 
     /**
@@ -269,32 +269,24 @@ class DowntimeStartAndStopContext extends CentreonContext
 
 
         //get the time of the timezone + x seconds for the start
-        $datetime = new DateTime();
-        $datetime->setTimezone(new DateTimeZone($this->timezone));
-        $dateStartLocal = mktime(
-            $datetime->format('H'),
-            $datetime->format('i'),
-            0,
-            $datetime->format('m'),
-            $datetime->format('d'),
-            $datetime->format('Y')
-        );
-        //get start and end timestamp of the time in timezone
-        $dateStartLocal += 120;
-        $dateEndLocal = $dateStartLocal + $this->downtimeDuration;
+        $datetimeStartLocal = new DateTime('now +120seconds', new DateTimeZone($this->timezone));
+        $datetimeStartLocal->setTime($datetimeStartLocal->format('H'), $datetimeStartLocal->format('i'), '00');
+        $datetimeEndLocal = new DateTime('now +' . ($this->downtimeDuration + 120) . 'seconds', new DateTimeZone($this->timezone));
+        $datetimeEndLocal->setTime($datetimeEndLocal->format('H'), $datetimeEndLocal->format('i'), '00');
+
 
         //check if the downtime is on two days and add time
-        if (date('Y-m-d', $dateStartLocal) != date('Y-m-d', $dateEndLocal)) {
-            $dateStartLocal +=300;
-            $dateEndLocal +=300;
+        if ($datetimeStartLocal->format('d') != $datetimeEndLocal->format('d')) {
+            $datetimeStartLocal->add(new DateInterval('PT5M'));
+            $datetimeEndLocal->add(new DateInterval('PT5M'));
         }
 
-        //convert the local timestamp to utc time
-        $dateStart = date('Y-m-d H:i', $dateStartLocal);
-        $dataTimeStart = new DateTime($dateStart, timezone_open($this->timezone));
-        $dataTimeStart->format('Y-m-d H:i');
-        $this->dateStartUtc = $dataTimeStart->getTimestamp();
-        $this->dateEndUtc = $this->dateStartUtc + $this->downtimeDuration;
+        $startHour = $datetimeStartLocal->format('H:i');
+        $endHour = $datetimeEndLocal->format('H:i');
+
+        //convert the local time to utc time
+        $this->dateStartTimestamp = $datetimeStartLocal->getTimestamp();
+        $this->dateEndTimestamp = $datetimeEndLocal->getTimestamp();
 
         //add recurent downtime
         $this->page = new ServiceDowntimeConfigurationPage($this);
@@ -304,8 +296,8 @@ class DowntimeStartAndStopContext extends CentreonContext
             'name' => 'test',
             'alias' => $this->service,
             'periods' => array(7, 1, 2, 3, 4, 5, 6),
-            'start' => date("H:i", $dateStartLocal),
-            'end' => date("H:i", $dateEndLocal),
+            'start' => $startHour,
+            'end' => $endHour,
             'svc_relation' => $this->host . ' - ' . $this->service
         ));
 
@@ -330,7 +322,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     }
 
     /**
-     * @Then the time of the start and end of the downtime took into account the timezone of the supervised element
+     * @Then the downtime start and end uses host timezone
      */
     public function theDowntimeUseTheTimezone()
     {
@@ -347,30 +339,26 @@ class DowntimeStartAndStopContext extends CentreonContext
             30
         );
 
-        //get the start and stop time of the downtime in user timezone
+        //get the start and stop time ('Y-m-d H:i') of the downtime in user timezone
         $dateStart = $dataDowntime[0]['start'];
         $dateEnd = $dataDowntime[0]['end'];
 
         //convert the user timestamp to utc time
-        $dateStart = date('Y-m-d H:i', $dateStart);
-        $dataTimeStart = new DateTime($dateStart, timezone_open($this->timezoneUser));
-        $dataTimeStart->format('Y-m-d H:i');
-        $dateStartUtc = $dataTimeStart->getTimestamp();
+        $dataTimeStart = new DateTime($dateStart, new DateTimeZone($this->timezoneUser));
+        $dateStartTimestamp = $dataTimeStart->getTimestamp();
 
-        $dateEnd = date('Y-m-d H:i', $dateEnd);
-        $dataTimeEnd = new DateTime($dateEnd, timezone_open($this->timezoneUser));
-        $dataTimeEnd->format('Y-m-d H:i');
-        $dateEndUtc = $dataTimeEnd->getTimestamp();
+        $dataTimeEnd = new DateTime($dateEnd, new DateTimeZone($this->timezoneUser));
+        $dateEndTimestamp = $dataTimeEnd->getTimestamp();
 
-        if ($this->dateStartUtc != $dateStartUtc) {
+        if ($this->dateStartTimestamp != $dateStartTimestamp) {
             throw new \Exception(
-                'Error bad timezone in start downtime configuration:'.$this->dateStartUtc .'!='.$dateStartUtc
+                'Error bad timezone in start downtime configuration: ' . $this->dateStartTimestamp . ' != ' . $dateStartTimestamp
             );
         }
 
-        if ($this->dateEndUtc != $dateEndUtc) {
+        if ($this->dateEndTimestamp != $dateEndTimestamp) {
             throw new \Exception(
-                'Error bad timezone in end downtime configuration:'.$this->dateEndUtc .'!='.$dateEndUtc
+                'Error bad timezone in end downtime configuration: ' . $this->dateEndTimestamp . ' != ' . $dateEndTimestamp
             );
         }
     }
