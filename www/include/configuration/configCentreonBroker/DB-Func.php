@@ -119,7 +119,7 @@ function getCentreonBrokerInformation($id)
 {
     global $pearDB;
 
-    $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate, correlation_activate,
+    $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate,
                     config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
                     retention_path
                   FROM cfg_centreonbroker 
@@ -144,7 +144,6 @@ function getCentreonBrokerInformation($id)
         "ns_nagios_server" => $row['ns_nagios_server'],
         "activate" => $row['config_activate'],
         "stats_activate" => $row['stats_activate'],
-        "correlation_activate" => $row['correlation_activate'],
         "write_timestamp" => $row['config_write_timestamp'],
         "write_thread_id" => $row['config_write_thread_id'],
         "event_queue_max_size" => $row['event_queue_max_size'],

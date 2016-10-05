@@ -239,17 +239,25 @@ class Correlation extends AbstractObjectXML {
         }
         if (is_null($this->stmt_correlation)) {
             $this->stmt_correlation = $this->backend_instance->db->prepare("SELECT
-              config_value
+              config_id, config_group_id
             FROM cfg_centreonbroker_info
-            WHERE config_key = 'file' AND config_group = 'correlation'
+            WHERE config_key = 'type' AND config_value = 'correlation'
             ");
         }
         $this->stmt_correlation->execute();
         $this->has_correlation = 0;
         if ($this->stmt_correlation->rowCount()) {
             $row = $this->stmt_correlation->fetch(PDO::FETCH_ASSOC);
-            $this->has_correlation = 1;
+            $configId = $row['config_id'];
+            $correlationGroupId = $row['config_group_id'];
+            $query = 'SELECT config_value FROM cfg_centreonbroker_info
+                WHERE config_key = "file" AND config_id = ' . $configId . ' AND config_group_id = ' .
+                $correlationGroupId;
+            $stmt = $this->backend_instance->db->query($query);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->correlation_file_path = $row['config_value'];
+            $this->has_correlation = 1;
+            
         }
     }
 

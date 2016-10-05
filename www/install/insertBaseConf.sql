@@ -446,7 +446,8 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (12, 'Failover', NULL, NULL, 0, 1),
 (17, 'Dumper', 'dumper.so', 20, 0, 1),
 (18, 'Graphite', 'graphite.so', 21, 0, 1),
-(19, 'InfluxDB', 'influxdb.so', 22, 0, 1);
+(19, 'InfluxDB', 'influxdb.so', 22, 0, 1),
+(20, 'Correlation', 'correlation.so', 30, 0, 1);
 
 
 --
@@ -469,7 +470,8 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (28, 'Database configuration reader', 'db_cfg_reader', 17),
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
 (30, 'Storage - Graphite', 'graphite', 18),
-(31, 'Storage - InfluxDB', 'influxdb', 19);
+(31, 'Storage - InfluxDB', 'influxdb', 19),
+(32, 'Correlation', 'correlation', 20);
 
 --
 -- Contenu de la table `cb_field`
@@ -533,7 +535,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
 (67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
-(69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL);
+(69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
+(70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -579,7 +582,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (8, 58, 'false'),
 (9, 61, 'string'),
 (10, 62, 'false'),
-(1, 63, 'yes');
+(1, 63, 'yes'),
+(1, 70, 'no');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -656,7 +660,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 28, 1),
 (1, 29, 1),
 (1, 30, 0),
-(1, 31, 0);
+(1, 31, 0),
+(1, 32, 1);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -787,7 +792,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 59, 0, 13),
 (31, 60, 0, 14),
 (31, 61, 0, 15),
-(31, 62, 0, 16);
+(31, 62, 0, 16),
+(32, 29, 1, 1),
+(32, 70, 0, 2);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
