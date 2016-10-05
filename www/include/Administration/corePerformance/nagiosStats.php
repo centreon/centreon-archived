@@ -105,6 +105,18 @@ if (isset($selectedPoller) && $selectedPoller) {
                         "host_states" => "nagios_hosts_states.rrd",
                         "service_states" => "nagios_services_states.rrd",
                         "cmd_buffer" => "nagios_cmd_buffer.rrd");
+    
+    $title = array(
+            "active_host_check" => _("Host Check Execution Time"),
+            "active_host_last" => _("Hosts Actively Checked"),
+            "host_latency" => _("Host check latency"),
+            "active_service_check" => _("Service Check Execution Time"),
+            "active_service_last" => _("Services Actively Checked"),
+            "service_latency" => _("Service check latency"),
+            "cmd_buffer" => _("Commands in buffer"),
+            "host_states" => _("Host status"),
+            "service_states" => _("Service status")
+        );
 
     $path = "./include/Administration/corePerformance/";
 
@@ -140,5 +152,6 @@ if (isset($selectedPoller) && $selectedPoller) {
         $tpl->assign("pollerName", $pollerName);
     }
     $tpl->assign("options", $options);
+    $tpl->assign("title", $title);
     $tpl->assign("session_id", session_id());
     $tpl->display("nagiosStats.ihtml");

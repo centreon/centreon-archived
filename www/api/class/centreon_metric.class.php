@@ -35,6 +35,7 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGraphPoller.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphStatus.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
@@ -150,7 +151,6 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
         
-        /* Validate options */
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
@@ -284,23 +284,22 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (false === isset($this->arguments['start']) ||
+        if (false === isset($this->arguments['ids']) ||
+            false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end']) ||
-            false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['id'])) {
+            false === is_numeric($this->arguments['end'])) {
             throw new RestBadRequestException("Bad parameters");
         }
-
+        
+        $explodedId = explode('-', $this->arguments['ids']);
+        $id = $explodedId[0];
+        $graphName = $explodedId[1];
+        
+        
         $start = $this->arguments['start'];
         $end = $this->arguments['end'];
-
-        /* Get the poller ID */
-        $id = $this->arguments['id'];
-
-        $result = array();
-
+        
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
@@ -312,7 +311,40 @@ class CentreonMetric extends CentreonWebService
         if ($rows < 10) {
             throw new RestBadRequestException("The rows must be greater as 10");
         }
-
+        
+        $result = array();
+        // Init graph object
+        try {
+            $graphPollerObject = new CentreonGraphPoller($this->pearDB, $this->pearDBMonitoring, $id, $userId, $start, $end);
+            $graphPollerObject->setGraphName($graphName);
+        } catch(\Exception $e) {
+            throw new RestNotFoundException("Graph not found");
+        }
+        $pollerDatas = $graphPollerObject->getData($rows);
+        
+        for ($i = 0; $i < count($pollerDatas); $i++) {
+            if (isset($pollerDatas[$i]['data'])) {
+                $times = array_keys($pollerDatas[$i]['data']);
+                $values = array_map(
+                    array($this, "convertNaN"),
+                    array_values($pollerDatas[$i]['data'])
+                );
+            }
+            $pollerDatas[$i]['data'] = $values;
+            $pollerDatas[$i]['label'] = $pollerDatas[$i]['legend'];
+            unset($pollerDatas[$i]['legend']);
+            $pollerDatas[$i]['type'] = $pollerDatas[$i]['graph_type'];
+            unset($pollerDatas[$i]['graph_type']);
+        }
+        
+        $result[] = array(
+            'data' => $pollerDatas,
+            'times' => $times,
+            'size' => $rows,
+            'acknowledge' => array(),
+            'downtime' => array()
+        );
+        
         return $result;
     }
 
