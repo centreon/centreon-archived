@@ -1,4 +1,4 @@
-Feature: downtime start and stop
+Feature: Downtime start and stop
   As a Centreon user
   I want to be certain that the downtimes work correctly
   To release quality products
@@ -10,7 +10,7 @@ Feature: downtime start and stop
   Scenario: Configure downtime
     Given a downtime in configuration of a user in other timezone
     When I save a downtime
-    Then the time of the start and end of the downtime took into account the timezone of the supervised element
+    Then the downtime start and end uses host timezone
 
   Scenario: Start of fixed downtime
     Given a fixed downtime on a monitored element
@@ -38,4 +38,4 @@ Feature: downtime start and stop
   Scenario: Configure recurrent downtime
     Given a recurrent downtime on an other timezone service
     When this one gives a downtime
-    Then the time of the start and end of the downtime took into account the timezone of the supervised element
+    Then the downtime start and end uses host timezone
