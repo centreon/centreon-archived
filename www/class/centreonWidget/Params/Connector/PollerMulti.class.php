@@ -42,7 +42,7 @@ class CentreonWidgetParamsConnectorPollerMulti extends CentreonWidgetParamsSelec
         parent::__construct($db, $quickform, $userId);
     }
 
-    public function getParameters($paramId)
+    public function getParameters()
     {
         static $tab;
 
