@@ -1,4 +1,4 @@
-Feature: downtime start and stop
+Feature: Downtime start and stop
   As a Centreon user
   I want to be certain that the downtimes work correctly
   To release quality products
@@ -39,4 +39,3 @@ Feature: downtime start and stop
     Given a recurrent downtime on an other timezone service
     When this one gives a downtime
     Then the downtime start and end uses host timezone
-

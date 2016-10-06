@@ -117,11 +117,11 @@ class DowntimeStartAndStopContext extends CentreonContext
     public function theDowntimeIsStarted()
     {
         $this->spin(
-            function() {
+            function ($context) {
                 $found = false;
-                $page = new DowntimeConfigurationListingPage($this);
+                $page = new DowntimeConfigurationListingPage($context);
                 foreach ($page->getEntries() as $entry) {
-                    if ($entry['host'] == $this->host && $entry['service'] == $this->service && $entry['started'] == true) {
+                    if ($entry['host'] == $context->host && $entry['service'] == $context->service && $entry['started'] == true) {
                         $found = true;
                     }
                 }
@@ -146,12 +146,13 @@ class DowntimeStartAndStopContext extends CentreonContext
     public function theDowntimePeriodIsStarted()
     {
         $this->spin(
-            function() {
-                if (date("H:i") >= $this->downtimeStartTime) {
+            function ($context) {
+                if (date("H:i") >= $context->downtimeStartTime) {
                     return true;
                 }
-            }, 80
-            , 'The downtime period did not start (' . $this->downtimeStartTime . ').'
+            },
+            80,
+            'The downtime period did not start (' . $this->downtimeStartTime . ').'
         );
     }
 
@@ -177,12 +178,13 @@ class DowntimeStartAndStopContext extends CentreonContext
     public function theEndDateOfTheDowntimeHappens()
     {
         $this->spin(
-            function() {
-                if (date("H:i") >= $this->downtimeEndTime) {
+            function ($context) {
+                if (date("H:i") >= $context->downtimeEndTime) {
                     return true;
                 }
-            }, 80
-            , 'The end of the downtime is too late (' . $this->downtimeEndTime . ').'
+            },
+            80,
+            'The end of the downtime is too late (' . $this->downtimeEndTime . ').'
         );
     }
 
@@ -192,17 +194,18 @@ class DowntimeStartAndStopContext extends CentreonContext
     public function theDowntimeIsStopped()
     {
         $this->spin(
-            function() {
+            function ($context) {
                 $found = false;
-                $page = new DowntimeConfigurationListingPage($this);
+                $page = new DowntimeConfigurationListingPage($context);
                 foreach ($page->getEntries() as $entry) {
-                    if ($entry['host'] == $this->host && $entry['service'] == $this->service) {
+                    if ($entry['host'] == $context->host && $entry['service'] == $context->service) {
                         $found = true;
                     }
                 }
                 return !$found;
-            }, 40
-            , 'Downtime is still running.'
+            },
+            40,
+            'Downtime is still running.'
         );
     }
 
@@ -329,14 +332,13 @@ class DowntimeStartAndStopContext extends CentreonContext
         $dataDowntime = array();
         $this->spin(
             function ($context) use (&$dataDowntime) {
-                $listPage = new DowntimeConfigurationListingPage($this);
+                $listPage = new DowntimeConfigurationListingPage($context);
                 $listPage->displayDowntimeCycle();
                 $dataDowntime = $listPage->getEntries();
                 if (count($dataDowntime)) {
                     return true;
                 }
-            },
-            30
+            }
         );
 
         //get the start and stop time ('Y-m-d H:i') of the downtime in user timezone
