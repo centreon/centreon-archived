@@ -209,10 +209,11 @@
       var self = this;
       var action = {
         status: 'statusByService',
-        service: 'metricsDataByService'
+        service: 'metricsDataByService',
+        poller : 'metricsDataByPoller'
       };
-      var url = '/centreon/api/internal.php?object=centreon_metric';
-      url += '&action=' + action[this.type] ;
+      var url = './api/internal.php?object=centreon_metric';
+      url += '&action=' + action[this.type];
       url += '&ids=' + this.id;
       url += '&start=' + start + '&end=' + end;
       $.ajax({
@@ -274,7 +275,7 @@
         for (i = 0; i < dataRaw.data.length; i++) {
           name = 'data' + (i + 1);
           column = dataRaw.data[i].data;
-          column.unshift(name);
+          column.unshift(name); 
           data.columns.push(column);
           legend = dataRaw.data[i].label;
           if (dataRaw.data[i].unit) {

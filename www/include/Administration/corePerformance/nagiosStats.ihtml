@@ -1,3 +1,5 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+<link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
 <form {$form.attributes}>
 <table class="ajaxOption table">
   <tr>
@@ -15,23 +17,39 @@
 {foreach from=$host_list key=key item=item}
 {assign var='cpt2' value=$cpt}
 {assign var='cpt' value=$cpt+1}
-	<table class="ListTable">
-	 	<tr class="ListHeader">
-	 		<td class="FormHeader">&nbsp;&nbsp;{$pollerName}</td>
-	 	</tr>
-		{assign var='counter' value=0}
-		<tr>
-			<td align="center">
-	 		{foreach from=$options key=keyOptions item=itemOptions} 		
-		 		{if $startPeriod}
-		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}&start={$startPeriod}" style="margin: 5px;">
-		 		{else}
-		 		<img src="./include/Administration/corePerformance/getStats.php?ns_id={$key}&key={$keyOptions}  style="margin: 5px;"">
-		 		{/if}	 	
-	 		{assign var='counter' value=$counter+1}
-		 	{/foreach}
-	 		</td>
-	 	</tr>	 	
-	 </table>
+    <table class="ListTable">
+        <tr class="ListHeader">
+                <td class="FormHeader">&nbsp;&nbsp;{$pollerName}</td>
+        </tr>
+        {assign var='counter' value=0}
+        <tr>
+            <td align="center">
+            {foreach from=$options key=keyOptions item=itemOptions} 		
+                    {if $startPeriod}
+                        <h4>{$title.$keyOptions}</h4>
+                    <div class="chart" id="graph-{$key}-{$keyOptions}" data-graph-id="{$key}-{$keyOptions}" data-graph-type="poller"></div>
+                    {else}
+                        <div class="chart" id="graph-{$key}-{$keyOptions}" data-graph-id="{$key}-{$keyOptions}" data-graph-type="poller"></div>
+                    {/if}	 	
+            {assign var='counter' value=$counter+1}
+            {/foreach}
+            </td>
+        </tr>	 	
+     </table>
 {/foreach}
 </form>
+
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/handlebars-v4.0.5.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/common/javascript/charts/d3-timeline.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+<script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
+<script src="./include/common/javascript/centreon/centreon-select2.js"></script>
+
+<script>
+    jQuery('.chart').centreonGraph('refreshData');
+</script>
