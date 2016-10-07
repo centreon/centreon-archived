@@ -125,11 +125,6 @@ $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', nul
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("No"), 0);
 $form->addGroup($stats_activate, 'stats_activate', _("Statistics"), '&nbsp;');
 
-$correlation_activate = array();
-$correlation_activate[] = HTML_QuickForm::createElement('radio', 'correlation_activate', null, _("Yes"), 1);
-$correlation_activate[] = HTML_QuickForm::createElement('radio', 'correlation_activate', null, _("No"), 0);
-$form->addGroup($correlation_activate, 'correlation_activate', _("Correlation"), '&nbsp;');
-
 $tags = $cbObj->getTags();
 
 $tabs = array();
@@ -152,7 +147,6 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
         "write_timestamp" => '1',
         "write_thread_id" => '1',
         "stats_activate" => '1',
-        "correlation_activate" => '0',
         "activate" => '1'
     ));
     $tpl->assign('config_id', 0);

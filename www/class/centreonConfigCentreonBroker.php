@@ -64,8 +64,6 @@ class CentreonConfigCentreonBroker
         <td><div class="ams">{label_3}</div>{selected}</td>
         </tr></table>{javascript}';
 
-    const CORRELATION_STRING = 'correlation_file';
-
     /**
      * Construtor
      *
@@ -496,7 +494,7 @@ class CentreonConfigCentreonBroker
          */
         $query = "INSERT INTO cfg_centreonbroker "
                 . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, "
-                . "config_write_thread_id, stats_activate, correlation_activate, retention_path, "
+                . "config_write_thread_id, stats_activate, retention_path, "
                 . "event_queue_max_size) "
                 . "VALUES (
                 '" . $this->db->escape($values['name']) . "', 
@@ -506,7 +504,6 @@ class CentreonConfigCentreonBroker
                 '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
                 '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                '" . $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
                 '" . $this->db->escape($values['retention_path']) . "',
                 ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))
                 . ")";
@@ -553,8 +550,6 @@ class CentreonConfigCentreonBroker
                 config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                correlation_activate = '" .
-                $this->db->escape($values['correlation_activate']['correlation_activate']) . "',
                 retention_path = '" . $this->db->escape($values['retention_path']) . "',
                 event_queue_max_size = " .
                 (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . "
@@ -790,9 +785,19 @@ class CentreonConfigCentreonBroker
      */
     public function getCorrelationFile()
     {
-        $query = "SELECT config_value
+        $query = "SSELECT
+              config_id, config_group_id
             FROM cfg_centreonbroker_info
-            WHERE config_key = 'file' AND config_group = 'correlation'";
+            WHERE config_key = 'type' AND config_value = 'correlation'";
+        $res = $this->db->query($query);
+        if (PEAR::isError($res) || $res->numRows() == 0) {
+            return false;
+        }
+        $row = $res->fetchRow();
+        $configId = $row['config_id'];
+        $correlationGroupId = $row['config_group_id'];
+        $query = 'SELECT config_value FROM cfg_centreonbroker_info
+            WHERE config_key = "file" AND config_id = ' . $configId . ' AND config_group_id = ' . $correlationGroupId;
         $res = $this->db->query($query);
         if (PEAR::isError($res) || $res->numRows() == 0) {
             return false;
