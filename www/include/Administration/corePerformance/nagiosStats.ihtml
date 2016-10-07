@@ -11,32 +11,31 @@
     <td>{$form.start.html}</td>
   </tr>
 </table>
-<br>
-<a name="generate">
 {assign var='cpt' value=0}
-{foreach from=$host_list key=key item=item}
-{assign var='cpt2' value=$cpt}
-{assign var='cpt' value=$cpt+1}
-    <table class="ListTable">
-        <tr class="ListHeader">
-                <td class="FormHeader">&nbsp;&nbsp;{$pollerName}</td>
-        </tr>
-        {assign var='counter' value=0}
-        <tr>
-            <td align="center">
-            {foreach from=$options key=keyOptions item=itemOptions} 		
-                    {if $startPeriod}
-                        <h4>{$title.$keyOptions}</h4>
-                    <div class="chart" id="graph-{$key}-{$keyOptions}" data-graph-id="{$key}-{$keyOptions}" data-graph-type="poller"></div>
-                    {else}
-                        <div class="chart" id="graph-{$key}-{$keyOptions}" data-graph-id="{$key}-{$keyOptions}" data-graph-type="poller"></div>
-                    {/if}	 	
-            {assign var='counter' value=$counter+1}
-            {/foreach}
-            </td>
-        </tr>	 	
-     </table>
-{/foreach}
+	{assign var='cpt2' value=$cpt}
+	{assign var='cpt' value=$cpt+1}
+	<div class="graphs">
+	<div class="graphZone col3">
+		{foreach from=$options key=keyOptions item=itemOptions}
+			<div class="graph">
+				<div class="list_lvl_1">
+					<div class="ListColLvl1_name">
+						<h4>{$title.$keyOptions}</h4>
+					</div>
+				</div>
+				{assign var='counter' value=0}
+				<div class="content">
+					{if $startPeriod}
+					<div class="chart" id="graph-{$pollerId}-{$keyOptions}" data-graph-id="{$pollerId}-{$keyOptions}" data-graph-type="poller"></div>
+					{else}
+					<div class="chart" id="graph-{$pollerId}-{$keyOptions}" data-graph-id="{$pollerId}-{$keyOptions}" data-graph-type="poller"></div>
+					{/if}
+					{assign var='counter' value=$counter+1}
+				</div>
+			</div>
+		{/foreach}
+	</div>
+</div>
 </form>
 
 <script src="./include/common/javascript/moment-with-locales.js"></script>
@@ -49,7 +48,25 @@
 <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
 <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
-
+{literal}
 <script>
-    jQuery('.chart').centreonGraph('refreshData');
+
+	var graphSettings = {
+		period : {
+			start: {/literal}{$startTime}{literal},
+			end: {/literal}{$endTime}{literal}
+		}
+	};
+
+
+    jQuery('.chart').centreonGraph(graphSettings);
+
+	jQuery('#start').addClass('pollerFilters');
+	jQuery('#pollers').addClass('pollerFilters');
+
+	jQuery('.pollerFilters').on('change', function() {
+		console.log('gg');
+		jQuery('#form').submit();
+	});
 </script>
+{/literal}

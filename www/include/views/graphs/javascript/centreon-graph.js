@@ -456,8 +456,8 @@
         end = moment();
         start.subtract(this.interval.number, this.interval.unit);
       } else {
-        start = moment(this.settings.period.start);
-        end = moment(this.settings.period.end);
+        start = moment(this.settings.period.start  * 1000);
+        end = moment(this.settings.period.end  * 1000);
       }
         
       return {
