@@ -212,7 +212,7 @@
         service: 'metricsDataByService',
         poller : 'metricsDataByPoller'
       };
-      var url = './api/internal.php?object=centreon_metric';
+      var url = self.settings.url;
       url += '&action=' + action[this.type];
       url += '&ids=' + this.id;
       url += '&start=' + start + '&end=' + end;
@@ -470,7 +470,7 @@
      */
     getTimeFormat: function() {
       var timeFormat;
-      if (this.settings.timeFormat != null) {
+      if (this.settings.timeFormat !== null) {
         timeFormat = this.settings.timeFormat;
       } else {
         timeFormat = d3.time.format.multi([
@@ -622,6 +622,7 @@
       end: null
     },
     timeFormat: null,
-    threshold: true
+    threshold: true,
+    url: './api/internal.php?object=centreon_metric'
   };
 })(jQuery);
