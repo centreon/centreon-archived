@@ -151,8 +151,6 @@ max_check_attempts                   Maximum number of attempt before a HARD sta
 
 name	                             Host name
 
-normal_check_interval                value in minutes
-
 notes	                             Notes
 
 notes_url	                     Notes URL
