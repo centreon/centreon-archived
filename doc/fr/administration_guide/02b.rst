@@ -275,7 +275,9 @@ Le tableau ci-dessous décrit l'ensemble des actions qui peuvent être autorisé
 +----------------------------------------+-----------------------------------------------------------------------+
 | Soumettre un résultat pour un service  | Autoriser la soumission d'un résultat pour un service                 |
 +----------------------------------------+-----------------------------------------------------------------------+
-
+| Afficher la commande exécutée          | Autoriser l'affichage de la commande exécutée pour un service         |
+| par le moteur de collecte              |                                                                       |
++----------------------------------------+-----------------------------------------------------------------------+
 
 Le tableau ci-dessous décrit l'ensemble des actions qui peuvent être autorisées sur les hôtes :
 

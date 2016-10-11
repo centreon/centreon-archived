@@ -29,7 +29,7 @@ This rule aims to provide operational support for around 2 years.
 +-----------------+---------------------------------------------------------+
 |                 | Help and support non guaranteed |br|                    |
 | UNSUPPORTED     | No fix(es) delivery                                     |
-|				  |                                                         |
+|		  |                                                         |
 +-----------------+---------------------------------------------------------+
 
 |br|\
