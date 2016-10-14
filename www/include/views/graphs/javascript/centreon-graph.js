@@ -67,6 +67,8 @@
      *   * metaservice
      */
     loadGraphId: function () {
+      var start = this.$elem.data('graphPeriodStart');
+      var end = this.$elem.data('graphPeriodEnd');
       this.type = this.$elem.data('graphType');
       this.id = this.$elem.data('graphId');
       if (this.type === null || this.type === undefined) {
@@ -74,6 +76,12 @@
       }
       if (this.id === null  || this.type === undefined) {
         this.id = this.settings.graph.id;
+      }
+      if (start !== null) {
+        this.settings.period.start = start;
+      }
+      if (end !== null) {
+        this.settings.period.start = end;
       }
       
       if (this.type === null || this.id === null) {
