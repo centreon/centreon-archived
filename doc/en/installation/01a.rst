@@ -245,7 +245,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 Before going further
 ====================
 
-it is necessary update the CES 3.3 server. To do this:
+it is necessary update the server. To do this:
 
  #.	Log in as a ‘root’ on the central server
  #.	Enter this command

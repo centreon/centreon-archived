@@ -67,6 +67,8 @@
      *   * metaservice
      */
     loadGraphId: function () {
+      var start = this.$elem.data('graphPeriodStart');
+      var end = this.$elem.data('graphPeriodEnd');
       this.type = this.$elem.data('graphType');
       this.id = this.$elem.data('graphId');
       if (this.type === null || this.type === undefined) {
@@ -74,6 +76,12 @@
       }
       if (this.id === null  || this.type === undefined) {
         this.id = this.settings.graph.id;
+      }
+      if (start !== null) {
+        this.settings.period.start = start;
+      }
+      if (end !== null) {
+        this.settings.period.start = end;
       }
       
       if (this.type === null || this.id === null) {
@@ -212,7 +220,7 @@
         service: 'metricsDataByService',
         poller : 'metricsDataByPoller'
       };
-      var url = './api/internal.php?object=centreon_metric';
+      var url = self.settings.url;
       url += '&action=' + action[this.type];
       url += '&ids=' + this.id;
       url += '&start=' + start + '&end=' + end;
@@ -456,8 +464,8 @@
         end = moment();
         start.subtract(this.interval.number, this.interval.unit);
       } else {
-        start = moment(this.settings.period.start);
-        end = moment(this.settings.period.end);
+        start = moment(this.settings.period.start  * 1000);
+        end = moment(this.settings.period.end  * 1000);
       }
         
       return {
@@ -470,7 +478,7 @@
      */
     getTimeFormat: function() {
       var timeFormat;
-      if (this.settings.timeFormat != null) {
+      if (this.settings.timeFormat !== null) {
         timeFormat = this.settings.timeFormat;
       } else {
         timeFormat = d3.time.format.multi([
@@ -622,6 +630,7 @@
       end: null
     },
     timeFormat: null,
-    threshold: true
+    threshold: true,
+    url: './api/internal.php?object=centreon_metric'
   };
 })(jQuery);

@@ -57,44 +57,94 @@ if (!isset($oreon)) {
 	 * Get Poller List
 	 */
     $pollerList = array();
-    $defaultPoller = null;
+    $defaultPoller = array();
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `name`");
-while ($data = $DBRESULT->fetchRow()) {
-    if ($data['localhost']) {
-        $defaultPoller = $data['id'];
+
+    while ($data = $DBRESULT->fetchRow()) {
+        if ($data['localhost']) {
+            $defaultPoller[$data['name']] = $data['id'];
+            $pollerId = $data['id'];
+        }
     }
-    $pollerList[$data["id"]] = $data["name"];
-}
     $DBRESULT->free();
+
     isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
-    $form->addElement('select', 'pollers', _("Poller"), $pollerList, array("onChange" =>"this.form.submit();"));
-if (isset($selectedPoller) && $selectedPoller) {
-    $form->setDefaults(array('pollers' => $selectedPoller));
-    $host_list[$selectedPoller] = $pollerList[$selectedPoller];
-    $tab_server[$selectedPoller] = $pollerList[$selectedPoller];
-    $pollerName = $pollerList[$selectedPoller];
-} else {
-    $form->setDefaults(array('pollers' => null));
-}
+
+    $attrPollers = array(
+        'datasourceOrigin' => 'ajax',
+        'allowClear' => false,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list',
+        'multiple' => false,
+        'defaultDataset' => $defaultPoller,
+        'linkedObject' => 'centreonInstance'
+    );
+    $form->addElement('select2', 'pollers', _("Poller"), array(), $attrPollers);
 
     /*
-	 * Get Periode
+	 * Get Period
 	 */
-    $time_period = array("last3hours"   => _("Last 3 hours"),
-                        "today"         => _("Today"),
-                        "yesterday"     => _("Yesterday"),
-                        "last4days"     => _("Last 4 days"),
-                        "lastweek"      => _("Last week"),
-                        "lastmonth"     => _("Last month"),
-                        "last6month"    => _("Last 6 months"),
-                        "lastyear"      => _("Last year"));
+    $time_period = array(
+        "last3hours"  => _("Last 3 hours"),
+        "today" => _("Today"),
+        "yesterday" => _("Yesterday"),
+        "last4days" => _("Last 4 days"),
+        "lastweek" => _("Last week"),
+        "lastmonth" => _("Last month"),
+        "last6month" => _("Last 6 months"),
+        "lastyear" => _("Last year")
+    );
 
-    $selTP = $form->addElement('select', 'start', _("Period"), $time_period, array("onChange" =>"this.form.submit();"));
-    if (isset($_POST["start"])) {
-        $form->setDefaults(array('start' => $_POST["start"]));
+    $defaultPeriod = array();
+    $currentPeriod = '';
+    if (isset($_POST['start']) && ($_POST != '')) {
+        $defaultPeriod[$time_period[$_POST['start']]] = $_POST['start'];
+        $currentPeriod .= $_POST['start'];
     } else {
-        $form->setDefaults(array('start' => "today"));
+        $defaultPeriod[$time_period['today']] = 'today';
+        $currentPeriod .= 'today';
     }
+
+    switch ($currentPeriod) {
+        case "last3hours":
+            $start = time() - (60*60*3);
+            break;
+        case "today":
+            $start = time() - (60*60*24);
+            break;
+        case "yesterday":
+            $start = time() - (60*60*48);
+            break;
+        case "last4days":
+            $start = time() - (60*60*96);
+            break;
+        case "lastweek":
+            $start = time() - (60*60*168);
+            break;
+        case "lastmonth":
+            $start = time() - (60*60*24*30);
+            break;
+        case "last6month":
+            $start = time() - (60*60*24*30*6);
+            break;
+        case "lastyear":
+            $start = time() - (60*60*24*30*12);
+            break;
+    }
+
+    /*
+    * Get end values
+    */
+    $end = time();
+
+
+
+    $periodSelect = array(
+        'allowClear' => false,
+        'multiple' => false,
+        'defaultDataset' => $defaultPeriod
+    );
+
+    $selTP = $form->addElement('select2', 'start', _("Period"), $time_period, $periodSelect);
 
     $options = array(   "active_host_check" => "nagios_active_host_execution.rrd",
                         "active_service_check" => "nagios_active_service_execution.rrd",
@@ -152,6 +202,9 @@ if (isset($selectedPoller) && $selectedPoller) {
         $tpl->assign("pollerName", $pollerName);
     }
     $tpl->assign("options", $options);
+    $tpl->assign("startTime", $start);
+    $tpl->assign("endTime", $end);
+    $tpl->assign("pollerId", $pollerId);
     $tpl->assign("title", $title);
     $tpl->assign("session_id", session_id());
-    $tpl->display("nagiosStats.ihtml");
+    $tpl->display("nagiosStats.html");

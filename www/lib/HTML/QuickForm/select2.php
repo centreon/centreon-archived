@@ -322,6 +322,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             }
         } else {
             $defaultData = $this->setFixedDatas() . ',';
+            $this->setDefaultFixedDatas();
         }
 
         $javascriptString = '<script>
@@ -359,8 +360,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             if (empty($option["attr"]["value"])) {
                 $option["attr"]["value"] = -1;
             }
-            $datas .= '{id: ' . $option["attr"]["value"] . ', text: "' . $option['text'] . '"},';
 
+            if (!is_numeric($option["attr"]["value"])) {
+                $option["attr"]["value"] = '"' . $option["attr"]["value"] .'"';
+            }
+
+            $datas .= '{id: ' . $option["attr"]["value"] . ', text: "' . $option['text'] . '"},';
             if (!empty($strValues) && in_array($option['attr']['value'], $strValues, true)) {
                 $option['attr']['selected'] = 'selected';
                 $this->_defaultSelectedOptions .= "<option" . $this->_getAttrString($option['attr']) . '>' .
@@ -403,6 +408,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             }
         } else {
             foreach ($this->_defaultDataset as $elementName => $elementValue) {
+
                 $currentOption = '<option selected="selected" value="'
                     . $elementValue . '">'
                     . $elementName . "</option>";
@@ -485,14 +491,21 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     {
         if ('updateValue' == $event) {
             $value = $this->_findValue($caller->_constantValues);
+
             if (null === $value) {
-                $value = $this->_findValue($caller->_submitValues);
+                if (count($this->_defaultDataset) === 0) {
+                    $value = $this->_findValue($caller->_submitValues);
+                } else {
+                    $value = $this->_defaultDataset;
+                }
+
                 // Fix for bug #4465 & #5269
                 // XXX: should we push this to element::onQuickFormEvent()?
                 if (null === $value && (!$caller->isSubmitted() || !$this->getMultiple())) {
                     $value = $this->_findValue($caller->_defaultValues);
                 }
             }
+
             if (null !== $value) {
                 if (!is_array($value)) {
                     $value = array($value);

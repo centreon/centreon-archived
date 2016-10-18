@@ -270,7 +270,7 @@ class centreonGraphPoller
             
             $info = array(
                 "data" => array(),
-                "legend" => $this->title[$this->graphName],
+                "legend" => $metric,
                 "graph_type" => "line",
                 "unit" => null,
                 "color" => $this->colors[$metric],

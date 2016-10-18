@@ -2048,7 +2048,7 @@ class CentreonACL
                 . "FROM host "
                 . $emptyJoin
                 . "WHERE host_register = '1' "
-                . "AND host_activate = '1' "
+                //. "AND host_activate = '1' "
                 . $request['conditions']
                 . $searchCondition;
         } else {
@@ -2062,7 +2062,7 @@ class CentreonACL
                 . "ON $db_name_acl.centreon_acl.host_id = host.host_id "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") "
                 . "WHERE host.host_register = '1' "
-                . "AND host.host_activate = '1' "
+                //. "AND host.host_activate = '1' "
                 . $emptyJoin
                 . $request['conditions']
                 . $searchCondition;
