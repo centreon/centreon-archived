@@ -72,7 +72,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHostCategoryIds = $acl->getHostCategoriesString('ID');
-            if (strlen($aclHostCategoryIds)) {
+            if ($aclHostCategoryIds != "''") {
                 $aclHostCategories .= 'AND hc.hc_id IN (' . $aclHostCategoryIds . ') ';
             }
         }
