@@ -27,7 +27,6 @@ $help['tip_broker_engine_used_by_centreon'] = dgettext('help', 'Broker module us
  */
 
 $help['tip_start_script_for_correlator_engine'] = dgettext('help', 'Init script for broker daemon.');
-$help['tip_broker_socket_path'] = dgettext('help', "Centreon Broker socket path for send external command.");
 
 /**
  * Mailer path

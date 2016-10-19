@@ -34,3 +34,10 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'correlation'), 29, 1, 1),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'correlation'), (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Correlation passive'), 0, 2);
+
+-- update broker socket path
+DELETE FROM `options` WHERE `key` = 'broker_socket_path';
+UPDATE cfg_centreonbroker
+SET command_file = CONCAT(retention_path, '/command.sock')
+WHERE config_name = 'central-broker-master';
+
