@@ -1,7 +1,7 @@
 -- 
 --  Creation and config of central broker
 --
-INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`) VALUES (1,'central-broker-master','central-broker.xml','1','0','1', 1 , 50000, '@CENTREONBROKER_VARLIB@');
+INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`, `command_file`) VALUES (1,'central-broker-master','central-broker.xml','1','0','1', 1 , 50000, '@CENTREONBROKER_VARLIB@', '@CENTREONBROKER_VARLIB@/command.sock');
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (1,'name','central-broker-master-input','input',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (1,'port','5669','input',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (1,'buffering_timeout','0','input',1);

@@ -66,12 +66,15 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        $aclHostcategories = '';
+        $aclHostCategories = '';
         
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclHostcategories .= 'AND hc.hc_id IN (' . $acl->getHostCategoriesString('ID') . ') ';
+            $aclHostCategoryIds = $acl->getHostCategoriesString('ID');
+            if ($aclHostCategoryIds != "''") {
+                $aclHostCategories .= 'AND hc.hc_id IN (' . $aclHostCategoryIds . ') ';
+            }
         }
         /*
 		 * Check for select2 't' argument
@@ -102,7 +105,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         $queryHostcategory = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id "
             . "FROM hostcategories hc "
             . "WHERE hc.hc_name LIKE '%$q%' "
-            . $aclHostcategories;
+            . $aclHostCategories;
         if (!empty($t) && $t == 'c') {
             $queryHostcategory .= "AND level IS NULL ";
         }
