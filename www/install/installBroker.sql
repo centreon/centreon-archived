@@ -58,7 +58,7 @@ CREATE TABLE `comments` (
   `source` smallint(6) DEFAULT NULL,
   `type` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
-  UNIQUE KEY `entry_time` (`entry_time`,`host_id`,`service_id`),
+  UNIQUE KEY `entry_time` (`entry_time`,`host_id`,`service_id`, `instance_id`, `internal_id`),
   KEY `internal_id` (`internal_id`),
   KEY `host_id` (`host_id`),
   KEY `instance_id` (`instance_id`),
