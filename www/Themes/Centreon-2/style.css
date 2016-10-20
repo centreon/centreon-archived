@@ -45,7 +45,7 @@ html {
 body {
     font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
     color:#555;
-    font-size:11px;
+    font-size:12px;
     height: 100%;
 }
 .link a {
@@ -2331,6 +2331,10 @@ textarea.default-textarea {
 
 /* broker_stat */
 
+.broker_stats {
+    position: relative;
+}
+
 .broker_stats_lastmodif {
     position: relative;
     float: right;
@@ -2365,8 +2369,8 @@ ul.module_list {
     background-color: #e7e7e8;
 }
 
-.broker_stats .expand {
-    cursor: pointer;
+.broker_stats.stats_lv2  p.title:hover {
+    background-color: #d1d2d4;
 }
 
 .broker_stats p.title {
@@ -2375,6 +2379,27 @@ ul.module_list {
     background-color: #f4f4f4;
     border-bottom: 1px solid #e7e7e8;
     border-top: 1px solid #e7e7e8;
+}
+
+.broker_stats  p.title:hover {
+    background-color: #e7e7e8;
+}
+
+.broker_stats .expand {
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 6px 6px;
+    border-color: transparent transparent #a7a9ac transparent;
+    transition: transform 0.2s;
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+.expand-icon {
+    transform: rotate(-45deg);
 }
 
 .broker_stats ul.module_list {
@@ -2402,11 +2427,6 @@ ul.module_list {
 .broker_stats .info_value {
     float: right;
     width: 80%;
-}
-
-.broker_stats .expand {
-    float: left;
-    padding: 0 6px;
 }
 
 .broker_stats .module_status {

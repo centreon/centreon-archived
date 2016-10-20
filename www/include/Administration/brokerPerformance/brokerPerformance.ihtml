@@ -36,7 +36,7 @@
         <td style="vertical-align: top;">
         {foreach from=$perf_info.io key=io_name item=io_infos}
             <div class="broker_stats {$io_infos.class}">
-                <p class="title" onclick="toggleInfoBlock('{$io_infos.id}')"><span class="expand" >+</span>{$io_name} - {$lang[$io_infos.type]}</p>
+                <p class="title {$io_infos.id}" onclick="toggleInfoBlock('{$io_infos.id}')"><span class="expand" ></span>{$io_name} - {$lang[$io_infos.type]}</p>
                 <div class="informations_header" id="{$io_infos.id}">
                     {foreach from=$io_infos key=info_key item=info_value}
                     {if $info_key == 'State'}
@@ -52,16 +52,6 @@
                         </div>
                         {/if}
                     {/foreach}
-                    {if count($io_infos.peers)}
-                    <div class="informations">
-                        <p class="info_name">{$lang.peers}</p>
-                        <p class="info_value" id="peers_{$io_name}">
-                            {foreach from=$io_infos.peers item=peer}
-                                <span>{$peer}</span>
-                            {/foreach}
-                        </p>
-                    </div>
-                    {/if}
                     {if count($io_infos.filters)}
                     <div class="informations">
                         <span class="info_name">{$lang.filters}</span>
@@ -88,35 +78,28 @@
     elem.each(function() {
         var id = jQuery(this).attr('id');
         var failover = id.indexOf('-failover');
+        var peers = id.indexOf('-peers');
+
+        var expand = jQuery('.title.' + id + ' .expand');
 
         if(failover !== -1) {
-         jQuery('#' + id).hide();
+            jQuery('#' + id).hide();
+            expand.addClass('expand-icon');
          }
+        if(peers !== -1) {
+            jQuery('#' + id).hide();
+            expand.addClass('expand-icon');
+        }
     });
 
     var link = jQuery('.informations').find('a');
 
-    link.each(function(i, el) {
-        id = jQuery(el).attr('class');
-
-        if (id !== typeof undefined && id !== undefined) {
-            var p = jQuery(this).parents('p');
-            var idp = p.attr('id');
-
-            if (idp !== typeof undefined && idp !== undefined) {
-                var peer = idp.indexOf('peers_');
-
-                if(peer !== -1) {
-                    jQuery('div.informations_header#' + id).hide();
-                }
-            }
-        }
-
-    })
-
-function toggleInfoBlock(id) {
-    var elem = jQuery('#' + id);
-    elem.slideToggle();
-}
+    function toggleInfoBlock(id) {
+        var elem = jQuery('#' + id);
+        elem.slideToggle( 'slow', function() {
+            expand = jQuery('.title.' + id + ' .expand');
+            expand.toggleClass('expand-icon');
+        });
+    }
 </script>
 {/literal}
