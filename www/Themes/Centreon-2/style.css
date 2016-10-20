@@ -1023,10 +1023,6 @@ div.menuLeft {
 /* ------ END : Tabs -----*/
 
 /* ------ START : Forms ------ */
-.formTable {
-
-}
-
 .formTable .ListHeader,
 .table .ListHeader{
     background: #fff;
@@ -1372,6 +1368,7 @@ table.ListTableSmallArg td {
 .list_lvl_1, .list_lvl_2 {
     vertical-align:middle;
 }
+
 .list_lvl_3 {
     text-align: left;
     vertical-align: middle;
@@ -2385,7 +2382,7 @@ ul.module_list {
     background-color: #e7e7e8;
 }
 
-.broker_stats .expand {
+.expand {
     cursor: pointer;
     width: 0;
     height: 0;

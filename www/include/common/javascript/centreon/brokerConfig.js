@@ -94,11 +94,11 @@ function initCollapsebyTab(tab) {
     var tbody = jQuery("#" + tab + " .collapse-wrapper");
     var othertBodyInput = tbody.not(tbody.eq(0)).find(".elem-toCollapse input.v_required");
     othertBodyInput.qtip('destroy');
-    //tbody.not(tbody.eq(0)).find(".elem-toCollapse").hide();
 
     tbody.eq(0).find(".elem-toCollapse").show();
     tbody.eq(0).find(".list_lvl_1").addClass("open");
-    tbody.find(".list_lvl_1").slice(1).addClass("close");
+    tbody.eq(0).find(".list_lvl_1 .expand").addClass("expand");
+    tbody.find(".list_lvl_1 .expand").slice(1).addClass("expand-icon");
 }
 
 function openNewElem(id_name) {
@@ -126,13 +126,15 @@ jQuery(function () {
        if(elemChildren.is(':visible')) {
            elemChildren.hide();
            elem.removeClass('open').addClass('close');
+           elem.find('.expand').addClass("expand-icon");
        }
        else {
            elemChildren.show();
-           jQuery(this).addClass('open').removeClass('close');
-           tbody.eq(0).find(".list_lvl_1").removeClass("open").addClass('close');
+           elem.addClass('open').removeClass('close');
+           elem.find('.expand').removeClass("expand-icon");
            nextElemChildren.hide();
-           nextElemChildren.siblings(".list_lvl_1").removeClass("open").addClass('close');
+           console.log(nextElemChildren.siblings(".list_lvl_1"));
+           nextElemChildren.siblings(".list_lvl_1").find('.expand').addClass("expand-icon");
        }
    });
 });

@@ -51,7 +51,6 @@
 	<div id='tab{math equation="x + y" x=$smarty.foreach.tabForeach2.index y=2}' class='tab'>
 		<table class="formTable table" id="{$tab.id}">
 			<tbody id="{$tab.id}_0">
-                </tr>
 				<tr class="list_lvl_1">
                   <td class="ListColLvl1_name" colspan="2">
                     <h4>{$tab.name}</h4>
