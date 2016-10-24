@@ -78,6 +78,10 @@ The following window is displayed:
 * **Remote host** Remote host for SCP export
 * **Remote directory** Remote directory for SCP export
 
+.. warning::
+
+    **Temporary directory** can not be a folder of **Backup directory**.
+
 
 **********************************
 Restore of Centreon central server
