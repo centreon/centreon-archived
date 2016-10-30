@@ -109,26 +109,69 @@ $ext_cmd_add['svc'][] = '[%u] SCHEDULE_SVC_DOWNTIME;%s;%s;%u;%u;%u;0;%u;Downtime
 $ext_cmd_del['svc'][] = '[%u] DEL_SVC_DOWNTIME;%u';
 $unix_time = time();
 
+var_dump($downtimes);
 foreach ($downtimes as $downtime) {
 
-    if (!$downtimeObj->isScheduled($downtime)) {
-        foreach ($ext_cmd_add['host'] as $cmd) {
-           $cmd = sprintf(
-               $cmd,
-               $unix_time,
-               $downtime['host_name'],
-               $downtime['start'],
-               $downtime['end'],
-               $downtime['fixed'],
-               $downtime['duration'],
-               $downtime['dt_id']
-           );
-           $downtimeObj->setCommand($downtime['host_id'], $cmd);
+    $isScheduled = $downtimeObj->isScheduled($downtime);
+var_dump($isScheduled);
+
+    if (!$isScheduled && $downtime['dt_activate'] == '1') {
+        if ($downtime['service_id'] != '') {
+            foreach ($ext_cmd_add['svc'] as $cmd) {
+                $cmd = sprintf(
+                    $cmd,
+                    $unix_time,
+                    $downtime['host_name'],
+                    $downtime['service_description'],
+                    $downtime['start'],
+                    $downtime['end'],
+                    $downtime['fixed'],
+                    $downtime['duration'],
+                    $downtime['dt_id']
+                );
+                $downtimeObj->setCommand($downtime['host_id'], $cmd);
+            }
+        } else {
+            foreach ($ext_cmd_add['host'] as $cmd) {
+                $cmd = sprintf(
+                    $cmd,
+                    $unix_time,
+                    $downtime['host_name'],
+                    $downtime['start'],
+                    $downtime['end'],
+                    $downtime['fixed'],
+                    $downtime['duration'],
+                    $downtime['dt_id']
+                );
+                $downtimeObj->setCommand($downtime['host_id'], $cmd);
+            }
         }
-        # Send the external commands
-       $downtimeObj->sendCommands();
-        var_dump('toto');
+    } else if ($isScheduled && $downtime['dt_activate'] == '0') {
+        if ($downtime['service_id'] != '') {
+            foreach ($ext_cmd_del['svc'] as $cmd) {
+                $cmd = sprintf(
+                    $cmd,
+                    $unix_time,
+                    $downtime['dt_id']
+                );
+                $downtimeObj->setCommand($downtime['host_id'], $cmd);
+            }
+        } else {
+            foreach ($ext_cmd_del['host'] as $cmd) {
+                $cmd = sprintf(
+                    $cmd,
+                    $unix_time,
+                    $downtime['dt_id']
+                );
+                $downtimeObj->setCommand($downtime['host_id'], $cmd);
+            }
+        }
     }
+}
+
+# Send the external commands
+$downtimeObj->sendCommands();
+/*
 die();
 
 

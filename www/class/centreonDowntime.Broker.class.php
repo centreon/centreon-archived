@@ -229,21 +229,24 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $listSchedule;
     }
 
-    public function isWeeklyApproachingDowntime($startDelay, $endDelay, $daysOfWeek, $startTime, $endTime, $tomorrow)
+    public function isWeeklyApproachingDowntime($startDelay, $endDelay, $daysOfWeek, $startTimestamp, $endTimestamp, $tomorrow)
     {
         $isApproaching = false;
 
-        $startDelayDayOfWeek = $startDelay->format('w');
-        $endDelayDayOfWeek = $endDelay->format('w');
-        $currentDayOfWeek = $startDelayDayOfWeek;
         if ($tomorrow) {
-            $currentDayOfWeek = $endDelayDayOfWeek;
+            $currentDayOfWeek = $endDelay->format('w');
+        } else {
+            $currentDayOfWeek = $startDelay->format('w');
         }
+
         $daysOfWeek = explode(',', $daysOfWeek);
         foreach ($daysOfWeek as $dayOfWeek) {
+            if ($dayOfWeek == 7) {
+                $dayOfWeek = 0;
+            }
             if ($currentDayOfWeek == $dayOfWeek &&
-                strtotime($startTime) >= strtotime($startDelay->format('H:i')) &&
-                strtotime($startTime) <= strtotime($endDelay->format('H:i'))) {
+                $startTimestamp >= $startDelay->getTimestamp() &&
+                $startTimestamp <= $endDelay->getTimestamp()) {
                 $isApproaching = true;
             }
         }
@@ -251,10 +254,79 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $isApproaching;
     }
 
-    private function getTimestampFromHourMinute($hourMinute, $tomorrow)
+    public function isMonthlyApproachingDowntime($startDelay, $endDelay, $daysOfMonth, $startTimestamp, $endTimestamp, $tomorrow)
+    {
+        $isApproaching = false;
+
+        if ($tomorrow) {
+            $currentDayOfMonth = $endDelay->format('d');
+        } else {
+            $currentDayOfMonth = $startDelay->format('d');
+        }
+
+        if (preg_match('/^0(\d)$/', $currentDayOfMonth, $matches)) {
+            $currentDayOfMonth = $matches[1];
+        }
+
+        $daysOfMonth = explode(',', $daysOfMonth);
+        foreach ($daysOfMonth as $dayOfMonth) {
+            if ($currentDayOfMonth == $dayOfMonth &&
+                $startTimestamp >= $startDelay->getTimestamp() &&
+                $startTimestamp <= $endDelay->getTimestamp()) {
+                $isApproaching = true;
+            }
+        }
+
+        return $isApproaching;
+    }
+
+    public function isSpecificDateDowntime($startDelay, $endDelay, $dayOfWeek, $cycle, $startTimestamp, $endTimestamp, $tomorrow)
+    {
+        $isApproaching = false;
+
+        if ($dayOfWeek == 7) {
+            $dayOfWeek = 0;
+        }
+
+        $daysOfWeekAssociation = array(
+            0 => 'sunday',
+            1 => 'monday',
+            2 => 'tuesday',
+            3 => 'wednesday',
+            4 => 'thursday',
+            5 => 'friday',
+            6 => 'saturday',
+            7 => 'sunday'
+        );
+        $dayOfWeek = $daysOfWeekAssociation[$dayOfWeek];
+
+        if ($tomorrow) {
+            $currentMonth = $endDelay->format('M');
+            $currentYear =  $endDelay->format('Y');
+            $currentDay = $endDelay->format('Y-m-d');
+        } else {
+            $currentMonth = $startDelay->format('M');
+            $currentYear = $startDelay->format('Y');
+            $currentDay = $startDelay->format('Y-m-d');
+        }
+
+        $cycleDay = new DateTime($cycle . ' ' . $dayOfWeek . ' of ' . $currentMonth . ' ' . $currentYear);
+        $cycleDay = $cycleDay->format('Y-m-d');
+
+        if ($currentDay == $cycleDay &&
+            $startTimestamp >= $startDelay->getTimestamp() &&
+            $startTimestamp <= $endDelay->getTimestamp()) {
+            $isApproaching = true;
+        }
+
+        return $isApproaching;
+    }
+
+    private function getTimestampFromHourMinute($hourMinute, $timezone, $tomorrow)
     {
         list($hour, $minute) = explode(':', $hourMinute);
         $currentDate = new DateTime();
+        $currentDate->setTimezone($timezone);
         $currentDate->setTime($hour, $minute, '00');
         if ($tomorrow) {
             $currentDate->add(new DateInterval('P1D'));
@@ -272,40 +344,70 @@ class CentreonDowntimeBroker extends CentreonDowntime
         $hostObj = new CentreonHost($this->db);
         $gmtObj = new CentreonGMT($this->db);
 
-        $startDelay =  new DateTime();
         $delayInterval = new DateInterval('PT' . $delay . 'S');
-        $endDelay = new DateTime();;
+
+        $startDelay =  new DateTime();
+        $endDelay = new DateTime();
         $endDelay->add($delayInterval);
-        $midnightPlusDelay = new DateTime('00:00');
-        $midnightPlusDelay = $midnightPlusDelay->add($delayInterval);
-        $midnightPlusDelay = $midnightPlusDelay->format('H:i');
 
         foreach ($downtimes as $downtime) {
-            /* Convert HH::mm::ss to HH:mm */
-            $downtime['dtp_start_time'] = substr($downtime['dtp_start_time'], 0, strrpos($downtime['dtp_start_time'], ':'));
-            $downtime['dtp_end_time'] = substr($downtime['dtp_end_time'], 0, strrpos($downtime['dtp_end_time'], ':'));
-
-            $tomorrow = false;
-            if (strtotime($downtime['dtp_start_time']) >= strtotime('00:00') &&
-                strtotime($downtime['dtp_start_time']) <= strtotime($midnightPlusDelay)) {
-                $tomorrow = true;
-            }
-
-            $startTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_start_time'], $tomorrow);
-            $endTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_end_time'], $tomorrow);
 
             $currentHostDate = $gmtObj->getHostCurrentDatetime($downtime['host_id']);
             $timezone = $currentHostDate->getTimezone();
             $startDelay->setTimezone($timezone);
             $endDelay->setTimezone($timezone);
+
+            $midnightDate = new DateTime();
+            $midnightDate->setTimezone($timezone);
+            $midnightDate->setTime('00', '00', '00');
+            $midnightPlusDelayDate = new DateTime();
+            $midnightPlusDelayDate->setTimezone($timezone);
+            $midnightPlusDelayDate->setTime('00', '00', '00');
+            $midnightPlusDelayDate = $midnightPlusDelayDate->add($delayInterval);
+            $midnight = $midnightDate->format('H:i');
+            $midnightPlusDelay = $midnightPlusDelayDate->format('H:i');
+
+            /* Convert HH::mm::ss to HH:mm */
+            $downtime['dtp_start_time'] = substr($downtime['dtp_start_time'], 0, strrpos($downtime['dtp_start_time'], ':'));
+            $downtime['dtp_end_time'] = substr($downtime['dtp_end_time'], 0, strrpos($downtime['dtp_end_time'], ':'));
+
+            $tomorrow = false;
+            if (strtotime($downtime['dtp_start_time']) >= strtotime($midnight) &&
+                strtotime($downtime['dtp_start_time']) <= strtotime($midnightPlusDelay) && 
+                strtotime($startDelay->format('H:i')) < strtotime($midnight)) {
+                $tomorrow = true;
+            }
+
+            $startTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_start_time'], $timezone, $tomorrow);
+            $endTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_end_time'], $timezone, $tomorrow);
+
             $approaching = false;
-            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])) {
+            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && $downtime['dtp_month_cycle'] == 'none') {
                 $approaching = $this->isWeeklyApproachingDowntime(
                     $startDelay,
                     $endDelay,
                     $downtime['dtp_day_of_week'],
-                    $downtime['dtp_start_time'],
-                    $downtime['dtp_end_time'],
+                    $startTimestamp,
+                    $endTimestamp,
+                    $tomorrow
+                );
+            } else if (preg_match('/^\d+(,\d+)*$/', $downtime['dtp_day_of_month'])) {
+                $approaching = $this->isMonthlyApproachingDowntime(
+                    $startDelay,
+                    $endDelay,
+                    $downtime['dtp_day_of_month'],
+                    $startTimestamp,
+                    $endTimestamp,
+                    $tomorrow
+                );
+            } else if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && $downtime['dtp_month_cycle'] != 'none') {
+                $approaching = $this->isSpecificDateDowntime(
+                    $startDelay,
+                    $endDelay,
+                    $downtime['dtp_day_of_week'],
+                    $downtime['dtp_month_cycle'],
+                    $startTimestamp,
+                    $endTimestamp,
                     $tomorrow
                 );
             }
@@ -325,36 +427,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
                     'tomorrow' => $tomorrow
                 );
             }
-var_dump($approachingDowntimes);
-
-            return $approachingDowntimes;
-//dtp_day_of_week
-            $currentHostHourMinute = $currentHostDate->format('H:i');
-//var_dump($currentHostHourMinute);
-            $currentHostTimestamp = $currentHostDate->getTimestamp();
-//var_dump($currentHostTimestamp);
-//var_dump($currentHostDate);
-            $currentHostDate->add($delayInterval);
-//var_dump($currentHostDate);
-
-
-            $start_tomorrow = false;
-            if ($period['start_time'] == '00:00') {
-                $start_tomorrow = true;
-            }
-
-            $weekDay = $currentHostDate->format('w');
-//var_dump($dateOfMonth);
-            if ($dateOfMonth == 0) {
-                $dateOfMonth = 7;
-            }
-            if ($start_tomorrow) {
-                if ($dateOfMonth == 7) {
-                    $dateOfMonth = 1;
-                } else {
-                    $dateOfMonth++;
-                }
-            }
         }
 
         return $approachingDowntimes;
@@ -369,10 +441,10 @@ var_dump($approachingDowntimes);
             . 'WHERE start_time = ' . $downtime['start'] . ' '
             . 'AND end_time = ' . $downtime['end'] . ' '
             . 'AND host_id = ' . $downtime['host_id'] . ' '
-            . 'AND comment_data = "[Downtime cycle #' . $downtime['dt_id'] . ']"';
+            . 'AND comment_data = "[Downtime cycle #' . $downtime['dt_id'] . ']" ';
         $query .= ($downtime['service_id'] != '') ? 'AND service_id = ' . $downtime['service_id'] . ' ' : '';
         $res = $this->dbb->query($query);
-        while ($row = $res->fetchRow()) {
+        if ($res->numRows()) {
             $isScheduled = true;
         }
 

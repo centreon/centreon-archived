@@ -361,7 +361,7 @@ class CentreonDowntime
 
         $query = 'SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, '
             . 'dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, '
-            . 'h.host_id, h.host_name, NULL as service_id, NULL as service_description, '
+            . 'h.host_id, h.host_name, NULL as service_id, NULL as service_description '
             . 'FROM downtime_period dtp, downtime dt, '
             . 'downtime_host_relation dtr, host h '
             . 'WHERE dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id '
