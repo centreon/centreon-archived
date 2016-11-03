@@ -147,6 +147,12 @@ if ($operationType === 'install') {
                         $upgrade_ok = upgradeModuleInDB($id, $upgrade_conf[$moduleinfo["name"]]);
                         if ($upgrade_ok) {
                             $tpl->assign("output1", _("Module installed and registered"));
+                            # PHP update if need
+                            $php_file = "upgrade.pre.php";
+                            $php_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
+                            if ($upgrade_conf[$moduleinfo["name"]]["php_files"] && file_exists($php_file_path)) {
+                                include_once($php_file_path);
+                            }
                             # SQL update if need
                             $sql_file = "upgrade.sql";
                             $sql_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
