@@ -719,6 +719,7 @@
   };
 
   $.fn.centreonSelect2 = function (options) {
+
     var args = Array.prototype.slice.call(arguments, 1);
     var settings = $.extend({}, $.fn.centreonSelect2.defaults, options);
     var methodReturn;
@@ -728,12 +729,14 @@
 
       if (!data) {
         $this.data("centreonSelect2", ( data = new CentreonSelect2(settings, $this)));
+        data.addNiceScroll();
       }
 
       if (typeof options === "string") {
         methodReturn = data[options].apply(data, args);
       }
     });
+
     return (methodReturn === undefined) ? $set : methodReturn;
   };
 
