@@ -197,7 +197,7 @@ class CentreonServicetemplates extends CentreonService
 
         $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
             . "FROM service "
-            . "AND service_register = '0' ";
+            . "WHERE service_register = '0' ";
 
         if ($enable) {
             $query .= "AND service_activate = '1' ";
@@ -212,7 +212,7 @@ class CentreonServicetemplates extends CentreonService
 
         $serviceTemplates = array();
         while ($row = $res->fetchRow()) {
-            $serviceTemplates[$row['serivce_id']] = $row['service_description'];
+            $serviceTemplates[$row['service_id']] = $row['service_description'];
         }
 
         return $serviceTemplates;
