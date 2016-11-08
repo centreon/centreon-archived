@@ -134,17 +134,8 @@ class CentreonGMT
     {
         return $this->myGMT;
     }
-//
-//    public function getTimezoneFromId($id)
-//    {
-//        $timezone = null;
-//        if (isset($this->timezoneById[$id])) {
-//            $timezone = $this->timezoneById[$id];
-//        }
-//
-//        return $timezone;
-//    }
 
+    
     /**
      * This method return timezone of user
      *
@@ -329,8 +320,7 @@ class CentreonGMT
             $pearDB = $DB;
         }
         
-        $DBRESULT = $pearDB->query("SELECT `
-}contact_location` FROM `contact`, `session` " .
+        $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact`, `session` " .
                 "WHERE `session`.`user_id` = `contact`.`contact_id` " .
                 "AND `session_id` = '" . CentreonDB::escape($sid) . "' LIMIT 1");
         if (PEAR::isError($DBRESULT)) {
