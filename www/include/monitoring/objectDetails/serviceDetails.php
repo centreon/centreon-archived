@@ -411,8 +411,7 @@ if (!is_null($host_id)) {
         }
         !$service_status[$hskey]["last_state_change"] ? $service_status[$hskey]["last_state_change"] = "" : $service_status[$hskey]["last_state_change"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["last_state_change"]);
         $service_status[$hskey]["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
-        !$service_status[$hskey]["is_flapping"] ? $service_status[$hskey]["is_flapping"] = $en[$service_status[$hskey]["is_flapping"]] : $service_status[$hskey]["is_flapping"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["is_flapping"]);
-
+        $service_status[$hskey]["is_flapping"] ? $service_status[$hskey]["is_flapping"] = $en[$service_status[$hskey]["is_flapping"]] : $service_status[$hskey]["is_flapping"] = "N/A";
 
         if ($service_status[$hskey]["problem_has_been_acknowledged"]) {
             $service_status[$hskey]["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";

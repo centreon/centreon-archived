@@ -132,13 +132,17 @@ function parseStatsFile($statfile)
 
     foreach ($json_stats as $key => $value) {
         if (preg_match('/endpoint \(?(.*[^()])\)?/', $key, $matches)) {
-            if (preg_match('/.*external commands.*/', $matches[1])) {
-                $matches[1] = "external-commands";
-            }
+
+                if (preg_match('/.*external commands.*/', $matches[1])) {
+                    $matches[1] = "external-commands";
+                }
 
             if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected") || (!preg_match('/.*external commands.*/', $key))) {
                 $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
                 $result['io'][$matches[1]]['type'] = end(explode('-', $key));
+                $result['io'][$matches[1]]['id'] = end(explode(' ', $key));
+                $result['io'][$matches[1]]['id'] = rtrim($result['io'][$matches[1]]['id'], ')');
+
 
                 /* force type of io  */
                 if (preg_match('/.*external commands.*/', $key)) {
@@ -151,7 +155,6 @@ function parseStatsFile($statfile)
 
                 /* manage failover output */
                 if (isset($json_stats[$key]['failover'])) {
-                    $result['io'][$matches[1]][_('Failover')] = '<a href="javascript:toggleInfoBlock(\''.$matches[1].'-failover\')">'.$matches[1].'-failover</a>';
                     $result['io'][$matches[1].'-failover'] = createArrayStats($json_stats[$key]['failover']);
                     $result['io'][$matches[1].'-failover']['type'] = 'output';
                     $result['io'][$matches[1].'-failover']['class'] = 'stats_lv2';
@@ -165,11 +168,11 @@ function parseStatsFile($statfile)
                         $peerName = trim($arrayPeers[$i]);
                         $id = str_replace(':', '_', $peerName);
                         $id = str_replace('.', '_', $id);
-                        $result['io'][$matches[1]]['peers'][$i] = '<a href="javascript:toggleInfoBlock(\''.$id.'\')" class="'.$id.'">'.$peerName.'</a><br>';
+                        $result['io'][$matches[1]]['peers'][$i] = $peerName;
                         $result['io'][$peerName] = createArrayStats($json_stats[$key][$matches[1].'-'.$i]);
                         $result['io'][$peerName]['type'] = 'input';
                         $result['io'][$peerName]['class'] = 'stats_lv2';
-                        $result['io'][$peerName]['id'] = $id;
+                        $result['io'][$peerName]['id'] = $id . '-peers';
                     }
                 }
             }

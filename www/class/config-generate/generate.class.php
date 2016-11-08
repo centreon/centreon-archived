@@ -170,7 +170,7 @@ class Generate {
         $this->resetObjectsEngine();
 
         Host::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
-        $this->generateModuleObjects();
+        $this->generateModuleObjects(1);
         Engine::getInstance()->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
@@ -179,6 +179,7 @@ class Generate {
         if (Correlation::getInstance()->hasCorrelation()) {
             Correlation::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
         }
+        $this->generateModuleObjects(2);
         Broker::getInstance()->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
         
@@ -246,13 +247,17 @@ class Generate {
         }
     }
 
-    public function generateModuleObjects() {
+    public function generateModuleObjects($type = 1) {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                $module_object::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+                if (($type == 1 && $module_object::getInstance()->isEngineObject() == true) ||
+                    ($type == 2 && $module_object::getInstance()->isBrokerObject() == true)) {
+                    $module_object::getInstance()->generateFromPollerId($this->current_poller['id'],
+                        $this->current_poller['localhost']);
+                }
             }
         }
     }

@@ -68,7 +68,7 @@ if (isset($pearDB)) {
         . 'AND service_register = "2" ';
     $res = $pearDB->query($query);
     while ($row = $res->fetchRow()) {
-        if (preg_match('/meta_(\d+)/', $row['service_description'], $maches)) {
+        if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
             $metaId = $matches[1];
             $virtualServices[$matches[1]]['service_id'] = $row['service_id'];
         }
@@ -82,7 +82,7 @@ if (isset($pearDB)) {
         . 'AND s.service_description LIKE "meta_%" ';
     $res = $pearDB->query($query);
     while ($row = $res->fetchRow()) {
-        if (preg_match('/meta_(\d+)/', $row['service_description'], $maches)) {
+        if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
             $metaId = $matches[1];
             $virtualServices[$matches[1]]['relation'] = true;
         }

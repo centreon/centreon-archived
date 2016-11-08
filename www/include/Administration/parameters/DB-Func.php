@@ -160,12 +160,6 @@ function updateNagiosConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "broker_socket_path",
-        isset($ret["broker_socket_path"]) && $ret["broker_socket_path"] != null
-            ? $pearDB->escape($ret["broker_socket_path"]) : "NULL"
-    );
-    updateOption(
-        $pearDB,
         "interval_length",
         isset($ret["interval_length"]) && $ret["interval_length"] != null
             ? $pearDB->escape($ret["interval_length"]) : "NULL"

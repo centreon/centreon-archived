@@ -247,6 +247,9 @@ The table below describes all the actions that can be authorised on services:
 +----------------------------------------+-----------------------------------------------------------------------+
 | Submit result for a service            | Allows users to submit result to a service                            |
 +----------------------------------------+-----------------------------------------------------------------------+
+| Display executed command by            | Allow the display of the executed command for a service               | 
+|  monitoring engine                     |                                                                       |
++----------------------------------------+-----------------------------------------------------------------------+
 
 The table below describes the all the actions that can be authorised on hosts:
 

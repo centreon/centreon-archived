@@ -495,7 +495,7 @@ class CentreonConfigCentreonBroker
         $query = "INSERT INTO cfg_centreonbroker "
                 . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, "
                 . "config_write_thread_id, stats_activate, retention_path, "
-                . "event_queue_max_size) "
+                . "event_queue_max_size, command_file) "
                 . "VALUES (
                 '" . $this->db->escape($values['name']) . "', 
                 '" . $this->db->escape($values['filename']) . "', 
@@ -505,7 +505,8 @@ class CentreonConfigCentreonBroker
                 '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
                 '" . $this->db->escape($values['retention_path']) . "',
-                ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))
+                ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
+                '" . $this->db->escape($values['command_file']) . "' "
                 . ")";
         if (PEAR::isError($this->db->query($query))) {
             return false;
@@ -527,7 +528,6 @@ class CentreonConfigCentreonBroker
         $row = $res->fetchRow();
         $id = $row['config_id'];
         $this->updateCentreonBrokerInfos($id, $values);
-        $this->updateCommand($id);
     }
 
     /**
@@ -551,14 +551,13 @@ class CentreonConfigCentreonBroker
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
                 retention_path = '" . $this->db->escape($values['retention_path']) . "',
-                event_queue_max_size = " .
-                (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . "
+                event_queue_max_size = " . (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
+                command_file = '" . $this->db->escape($values['command_file']) . "'
             WHERE config_id = " . $id;
         if (PEAR::isError($this->db->query($query))) {
             return false;
         }
         $this->updateCentreonBrokerInfos($id, $values);
-        $this->updateCommand($id);
     }
 
     /**
@@ -1197,25 +1196,6 @@ class CentreonConfigCentreonBroker
             ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
         }
         return $elemStr;
-    }
-    
-    /**
-     * Update the command file field
-     *
-     * @param int $configId The configuration ID
-     */
-    public function updateCommand($configId)
-    {
-        global $oreon;
-        
-        if (isset($oreon->optGen['broker_socket_path'])) {
-            $this->globalCommandFile = "'" . $oreon->optGen['broker_socket_path'] . "'";
-        } else {
-            $this->globalCommandFile = "NULL";
-        }
-        $query = "UPDATE cfg_centreonbroker
-            SET command_file = " . $this->globalCommandFile . " WHERE config_id = " . $configId;
-        $this->db->query($query);
     }
     
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Broker extends AbstractObjectXML {
+class Broker extends AbstractObjectXML
+{
     protected $engine = null;
     protected $broker = null;
     protected $generate_filename = null;
@@ -77,8 +79,9 @@ class Broker extends AbstractObjectXML {
     protected $stmt_broker = null;
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
-    
-    private function generate($poller_id) {
+
+    private function generate($poller_id)
+    {
         if (is_null($this->stmt_broker)) {
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
@@ -121,29 +124,43 @@ class Broker extends AbstractObjectXML {
             $object['log_thread_id'] = $row['config_write_thread_id'];
             $object['event_queue_max_size'] = $row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
-            
-            
+
+
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
-            $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+            $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
             # Flow parameters
             foreach ($resultParameters as $key => $value) {
                 foreach ($value as $subvalue) {
-                    
-                    if(!isset($subvalue['fieldIndex']) || $subvalue['fieldIndex'] == "" || is_null($subvalue['fieldIndex'])){
+                    if (!isset($subvalue['fieldIndex']) ||
+                        $subvalue['fieldIndex'] == "" ||
+                        is_null($subvalue['fieldIndex'])
+                    ) {
                         if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
                             continue;
-                        } else if(trim($subvalue['config_value']) == '' && !in_array($subvalue['config_key'], $this->authorized_empty_field)) {
-                            continue;
-                        } else if ($subvalue['config_key'] == 'category') {
-                            $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
                         } else {
-                            $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
+                            if (trim($subvalue['config_value']) == '' &&
+                                !in_array(
+                                    $subvalue['config_key'],
+                                    $this->authorized_empty_field
+                                )
+                            ) {
+                                continue;
+                            } else {
+                                if ($subvalue['config_key'] == 'category') {
+                                    $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
+                                        $subvalue['config_value'];
+                                } else {
+                                    $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                                        $subvalue['config_value'];
+                                }
+                            }
                         }
-                    }else{
+                    } else {
                         $res = explode('__', $subvalue['config_key'], 3);
-                        $object[$subvalue['config_group_id']][$key][$subvalue['fieldIndex']][$res[0]][$res[1]] = $subvalue['config_value'];
+                        $object[$subvalue['config_group_id']][$key][$subvalue['fieldIndex']][$res[0]][$res[1]] =
+                            $subvalue['config_value'];
                     }
                     $flow_count++;
                 }
@@ -152,7 +169,10 @@ class Broker extends AbstractObjectXML {
             foreach ($object as &$subvalue) {
                 if (is_array($subvalue)) {
                     foreach ($subvalue as $config_type => &$flow) {
-                        if ($config_type == 'output' && isset($flow['name']) && !isset($flow['failover']) && isset($flow['type']) && $flow['type'] != 'file') {
+                        if ($config_type == 'output' && isset($flow['name']) &&
+                            !isset($flow['failover']) && isset($flow['type']) &&
+                            $flow['type'] != 'file'
+                        ) {
                             $flow['failover'] = $flow['name'] . '-' . $config_type . '-failover';
                             $object[$flow_count][$config_type] = array(
                                 'type' => 'file',
@@ -188,15 +208,15 @@ class Broker extends AbstractObjectXML {
                 );
                 $flow_count++;
             }
-        
+
             # Generate file
             $this->generateFile($object, true, 'centreonBroker');
             $this->writeFile($this->backend_instance->getPath());
         }
-
     }
 
-    private function getEngineParameters($poller_id) {
+    private function getEngineParameters($poller_id)
+    {
         if (is_null($this->stmt_engine_parameters)) {
             $this->stmt_engine_parameters = $this->backend_instance->db->prepare("SELECT
               $this->attributes_engine_parameters
@@ -212,11 +232,12 @@ class Broker extends AbstractObjectXML {
             $this->engine['name'] = $row['name'];
             $this->engine['broker_modules_path'] = $row['centreonbroker_module_path'];
         } catch (Exception $e) {
-            throw new Exception('Exception received : ' .  $e->getMessage() . "\n");
+            throw new Exception('Exception received : ' . $e->getMessage() . "\n");
         }
     }
 
-    public function generateFromPoller($poller) {
+    public function generateFromPoller($poller)
+    {
         $this->generate($poller['id']);
     }
 }

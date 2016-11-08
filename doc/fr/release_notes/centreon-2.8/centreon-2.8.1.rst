@@ -1,10 +1,10 @@
 ###############
-Centreon 2.8.0
+Centreon 2.8.1
 ###############
 
-Released September 16th, 2016
+Released November 14th, 2016
  
-The 2.8.0 release for Centreon Web is now available for download. The release notes for 2.8.0 version is the follow one:
+The 2.8.1 release for Centreon Web is now available for download. The release notes for 2.8.0 version is the follow one:
  
 Changes
 -------

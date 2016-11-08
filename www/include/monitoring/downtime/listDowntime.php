@@ -235,7 +235,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
     $tpl->assign('msgs2', array(
         "addL2" => "?p=" . $p . "&o=a",
         "addT2" => _("Add a downtime"),
-        "delConfirm" => _("Do you confirm the cancellation ?")
+        "delConfirm" => addslashes(_("Do you confirm the cancellation ?"))
     ));
 }
 

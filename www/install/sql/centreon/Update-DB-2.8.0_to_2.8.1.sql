@@ -22,11 +22,22 @@ CREATE TABLE IF NOT EXISTS `downtime_cache` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Add correlation output for Centreon broker
-INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_bundle`, `is_activated`) VALUES (20, 'Correlation', 'correlation.so', 30, 0, 1);
-INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_id`) VALUES (32, 'Correlation', 'correlation', 20);
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL);
-INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES (1, 70, 'no');
-INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) VALUES (1, 32, 1);
+INSERT INTO `cb_module` (`name`, `libname`, `loading_pos`, `is_bundle`, `is_activated`) VALUES ('Correlation', 'correlation.so', 30, 0, 1);
+INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
+  VALUES ('Correlation', 'correlation', (SELECT `cb_module_id` FROM `cb_module` WHERE `libname` = 'correlation.so'));
+INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`)
+  VALUES ('passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL);
+INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`)
+  VALUES (1, (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Correlation passive'), 'no');
+INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
+  VALUES (1, (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'correlation'), 1);
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
-(32, 29, 1, 1),
-(32, 70, 0, 2);
+((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'correlation'), 29, 1, 1),
+((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'correlation'), (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Correlation passive'), 0, 2);
+
+-- update broker socket path
+DELETE FROM `options` WHERE `key` = 'broker_socket_path';
+UPDATE cfg_centreonbroker
+SET command_file = CONCAT(retention_path, '/command.sock')
+WHERE config_name = 'central-broker-master';
+

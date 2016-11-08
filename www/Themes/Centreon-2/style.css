@@ -45,7 +45,7 @@ html {
 body {
     font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
     color:#555;
-    font-size:11px;
+    font-size:12px;
     height: 100%;
 }
 .link a {
@@ -1023,10 +1023,6 @@ div.menuLeft {
 /* ------ END : Tabs -----*/
 
 /* ------ START : Forms ------ */
-.formTable {
-
-}
-
 .formTable .ListHeader,
 .table .ListHeader{
     background: #fff;
@@ -1372,6 +1368,7 @@ table.ListTableSmallArg td {
 .list_lvl_1, .list_lvl_2 {
     vertical-align:middle;
 }
+
 .list_lvl_3 {
     text-align: left;
     vertical-align: middle;
@@ -2331,6 +2328,10 @@ textarea.default-textarea {
 
 /* broker_stat */
 
+.broker_stats {
+    position: relative;
+}
+
 .broker_stats_lastmodif {
     position: relative;
     float: right;
@@ -2365,8 +2366,8 @@ ul.module_list {
     background-color: #e7e7e8;
 }
 
-.broker_stats .expand {
-    cursor: pointer;
+.broker_stats.stats_lv2  p.title:hover {
+    background-color: #d1d2d4;
 }
 
 .broker_stats p.title {
@@ -2375,6 +2376,27 @@ ul.module_list {
     background-color: #f4f4f4;
     border-bottom: 1px solid #e7e7e8;
     border-top: 1px solid #e7e7e8;
+}
+
+.broker_stats  p.title:hover {
+    background-color: #e7e7e8;
+}
+
+.expand {
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 6px 6px;
+    border-color: transparent transparent #a7a9ac transparent;
+    transition: transform 0.2s;
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+.expand-icon {
+    transform: rotate(-45deg);
 }
 
 .broker_stats ul.module_list {
@@ -2404,11 +2426,6 @@ ul.module_list {
     width: 80%;
 }
 
-.broker_stats .expand {
-    float: left;
-    padding: 0 6px;
-}
-
 .broker_stats .module_status {
     float: right;
     padding: 0 6px;
@@ -2418,3 +2435,30 @@ ul.module_list {
     color: #88b917;
 }
 
+/* Tour plugin */
+.tourbus-content {
+    margin-bottom: 10px;
+}
+
+.tourbus-action {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.tourbus-overlay {
+  display: none;
+  background: #666;
+  opacity: 0.5;
+  z-index: 9997;
+  min-height: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+}
+.tourbus-highlight {
+  background: white;
+  position: relative;
+  box-shadow: inset 0 0 2px rgba( 0, 0, 0, 0.2 );
+  z-index: 9998;
+}

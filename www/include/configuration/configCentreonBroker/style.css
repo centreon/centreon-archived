@@ -4,6 +4,10 @@ span.v_required_star {
     color: red;
 }
 
+.collapse-wrapper .list_lvl_1 .ListColLvl1_name {
+    padding: 6px;
+}
+
 /* collapse */
 .header-collapse:hover td{
     background-color: #e4e4e4 !important;
@@ -35,10 +39,4 @@ span.v_required_star {
     color: #231f20;
     font-size: 12px;
     font-weight: bold;
-}
-.elem-header.open td:first-child:before {
-    content: "-";
-}
-.elem-header.close td:first-child:before {
-    content: "+";
 }
