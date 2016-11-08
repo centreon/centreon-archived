@@ -50,6 +50,37 @@ class CentreonCriticality
     {
         $this->db = $db;
     }
+
+    /**
+     * @param array $values
+     * @param array $options
+     * @return array
+     */
+    public function getObjectForSelect2($values = array(), $options = array())
+    {
+        $items = array();
+
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        }
+
+        # get list of selected criticities
+        $query = "SELECT sc_id, sc_name "
+            . "FROM service_categories "
+            . "WHERE sc_id IN (" . $explodedValues . ") "
+            . "ORDER BY sc_name ";
+
+        $resRetrieval = $this->db->query($query);
+        while ($row = $resRetrieval->fetchRow()) {
+            $items[] = array(
+                'id' => $row['sc_id'],
+                'text' => $row['sc_name']
+            );
+        }
+
+        return $items;
+    }
     
     /**
      * Get data of a criticality object
