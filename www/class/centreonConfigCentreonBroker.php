@@ -784,7 +784,7 @@ class CentreonConfigCentreonBroker
      */
     public function getCorrelationFile()
     {
-        $query = "SSELECT
+        $query = "SELECT
               config_id, config_group_id
             FROM cfg_centreonbroker_info
             WHERE config_key = 'type' AND config_value = 'correlation'";
