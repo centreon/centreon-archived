@@ -77,8 +77,8 @@ if (isset($_POST["centreon_token"])
         $centreon = new Centreon($centreonAuth->userInfos);
         $_SESSION["centreon"] = $centreon;
 
-        $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$centreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
-
+        $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, ?, ?)");
+        $pearDB->execute($DBRESULT, array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]));
         if (!isset($_POST["submit"])) {
             if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
                 header('Location: main.php?p='.$centreon->user->default_page);
