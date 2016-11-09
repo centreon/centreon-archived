@@ -189,6 +189,7 @@ if (!is_null($host_id)) {
             " s.last_notification as last_notification," .
             " h.name AS host_name," .
             " s.description as service_description, " .
+            " s.display_name, " .
             " s.notes_url, " .
             " s.notes, " .
             " s.action_url, " .
@@ -201,26 +202,26 @@ if (!is_null($host_id)) {
 
         $tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
         $tab_class_service = array("ok" => 'service_ok', "warning" => 'service_warning', "critical" => 'service_critical', "unknown" => 'service_unknown', 'pending' => 'pending');
-        while ($ndo = $DBRESULT->fetchRow()) {
-            if (isset($ndo['performance_data'])) {
-                $ndo['performance_data'] = $ndo['performance_data'];
+        while ($data = $DBRESULT->fetchRow()) {
+            if (isset($data['performance_data'])) {
+                $data['performance_data'] = $data['performance_data'];
             }
-            if ($ndo["service_description"] == $svc_description) {
-                $service_status[$hskey] = $ndo;
+            if ($data["service_description"] == $svc_description) {
+                $service_status = $data;
             }
-            if (!isset($tab_status[$ndo["current_state"]])) {
-                $tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
+            if (!isset($tab_status[$data["current_state"]])) {
+                $tab_status[$tab_status_service[$data["current_state"]]] = 0;
             }
-            $tab_status[$tab_status_service[$ndo["current_state"]]]++;
+            $tab_status[$tab_status_service[$data["current_state"]]]++;
         }
         $DBRESULT->free();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status[$hskey]["command_line"] = hidePasswordInCommand($service_status[$hskey]["check_command"], $service_status[$hskey]["service_id"]);
+            $service_status["command_line"] = hidePasswordInCommand($service_status["check_command"], $service_status["service_id"]);
         }
 
-        $service_status[$hskey]["current_stateid"] = $service_status[$hskey]["current_state"];
-        $service_status[$hskey]["current_state"] = $tab_status_service[$service_status[$hskey]["current_state"]];
+        $service_status["current_stateid"] = $service_status["current_state"];
+        $service_status["current_state"] = $tab_status_service[$service_status["current_state"]];
 
         /*
          * start ndo host detail
@@ -297,130 +298,129 @@ if (!is_null($host_id)) {
          * Ajust data for beeing displayed in template
          */
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-        $service_status[$hskey]['command_line'] = str_replace(' --', "\n\t--", $service_status[$hskey]['command_line']);
-        $service_status[$hskey]['performance_data'] = str_replace(' \'', "\n'", $service_status[$hskey]['performance_data']);
-        $service_status[$hskey]["status_color"] = $centreon->optGen["color_" . strtolower($service_status[$hskey]["current_state"])];
+        $service_status['command_line'] = str_replace(' --', "\n\t--", $service_status['command_line']);
+        $service_status['performance_data'] = str_replace(' \'', "\n'", $service_status['performance_data']);
+        $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
 
-        $service_status[$hskey]["status_class"] = $tab_class_service[strtolower($service_status[$hskey]["current_state"])];
+        $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
 
 
-        $service_status[$hskey]["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["last_check"]);
-        $service_status[$hskey]["next_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["next_check"]);
-        !$service_status[$hskey]["check_latency"] ? $service_status[$hskey]["check_latency"] = "< 1 second" : $service_status[$hskey]["check_latency"] = $service_status[$hskey]["check_latency"] . " seconds";
-        !$service_status[$hskey]["check_execution_time"] ? $service_status[$hskey]["check_execution_time"] = "< 1 second" : $service_status[$hskey]["check_execution_time"] = $service_status[$hskey]["check_execution_time"] . " seconds";
+        $service_status["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_check"]);
+        $service_status["next_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_check"]);
+        !$service_status["check_latency"] ? $service_status["check_latency"] = "< 1 second" : $service_status["check_latency"] = $service_status["check_latency"] . " seconds";
+        !$service_status["check_execution_time"] ? $service_status["check_execution_time"] = "< 1 second" : $service_status["check_execution_time"] = $service_status["check_execution_time"] . " seconds";
 
-        !$service_status[$hskey]["last_notification"] ? $service_status[$hskey]["notification"] = "" : $service_status[$hskey]["last_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["last_notification"]);
+        !$service_status["last_notification"] ? $service_status["notification"] = "" : $service_status["last_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_notification"]);
 
-        if (isset($service_status[$hskey]["next_notification"]) && !$service_status[$hskey]["next_notification"]) {
-            $service_status[$hskey]["next_notification"] = "";
-        } elseif (!isset($service_status[$hskey]["next_notification"])) {
-            $service_status[$hskey]["next_notification"] = "N/A";
+        if (isset($service_status["next_notification"]) && !$service_status["next_notification"]) {
+            $service_status["next_notification"] = "";
+        } elseif (!isset($service_status["next_notification"])) {
+            $service_status["next_notification"] = "N/A";
         } else {
-            $service_status[$hskey]["next_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["next_notification"]);
+            $service_status["next_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_notification"]);
         }
 
-        $hskey = $hskey;
-        $service_status[$hskey]["long_plugin_output"] = "";
-        $service_status[$hskey]["plugin_output2"] = str_replace("\n", '\n', $service_status[$hskey]["plugin_output2"]);
-        $outputTmp = explode('\n', $service_status[$hskey]["plugin_output2"]);
+        $service_status["long_plugin_output"] = "";
+        $service_status["plugin_output2"] = str_replace("\n", '\n', $service_status["plugin_output2"]);
+        $outputTmp = explode('\n', $service_status["plugin_output2"]);
         if (count($outputTmp)) {
             $i = 0;
             while (isset($outputTmp[$i])) {
                 if (!$i) {
-                    $service_status[$hskey]["plugin_output"] = htmlentities($outputTmp[$i], ENT_QUOTES, 'UTF-8') . "<br />";
+                    $service_status["plugin_output"] = htmlentities($outputTmp[$i], ENT_QUOTES, 'UTF-8') . "<br />";
                 } else {
-                    $service_status[$hskey]["long_plugin_output"] .= htmlentities($outputTmp[$i], ENT_QUOTES, 'UTF-8') . "<br />";
+                    $service_status["long_plugin_output"] .= htmlentities($outputTmp[$i], ENT_QUOTES, 'UTF-8') . "<br />";
                 }
                 $i++;
             }
         }
-        $service_status[$hskey]["plugin_output"] = utf8_encode($service_status[$hskey]["plugin_output"]);
-        $service_status[$hskey]["plugin_output"] = str_replace("'", "", $service_status[$hskey]["plugin_output"]);
-        $service_status[$hskey]["plugin_output"] = str_replace("\"", "", $service_status[$hskey]["plugin_output"]);
-        $service_status[$hskey]["plugin_output"] = str_replace("\\n", "<br>", $service_status[$hskey]["plugin_output"]);
-        $service_status[$hskey]["plugin_output"] = str_replace('\n', "<br>", $service_status[$hskey]["plugin_output"]);
+        $service_status["plugin_output"] = utf8_encode($service_status["plugin_output"]);
+        $service_status["plugin_output"] = str_replace("'", "", $service_status["plugin_output"]);
+        $service_status["plugin_output"] = str_replace("\"", "", $service_status["plugin_output"]);
+        $service_status["plugin_output"] = str_replace("\\n", "<br>", $service_status["plugin_output"]);
+        $service_status["plugin_output"] = str_replace('\n', "<br>", $service_status["plugin_output"]);
 
         /*
          * Added for long_plugin_output <gavinw>
          */
-        if (isset($service_status[$hskey]["long_plugin_output"])) {
-            $service_status[$hskey]["long_plugin_output"] = str_replace("<b>", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("</b>", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("<br>", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("'", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("\"", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace('\n', '<br />', $service_status[$hskey]["long_plugin_output"]);
+        if (isset($service_status["long_plugin_output"])) {
+            $service_status["long_plugin_output"] = str_replace("<b>", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("</b>", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("<br>", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("'", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("\"", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace('\n', '<br />', $service_status["long_plugin_output"]);
         }
-        if (isset($service_status[$hskey]["notes_url"]) && $service_status[$hskey]["notes_url"]) {
-            $service_status[$hskey]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$hskey]["notes_url"]);
-            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$hskey]["notes_url"]);
-            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICESTATE\$", $service_status[$hskey]["current_state"], $service_status[$hskey]["notes_url"]);
-            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICESTATEID\$", $service_status[$hskey]["current_stateid"], $service_status[$hskey]["notes_url"]);
+        if (isset($service_status["notes_url"]) && $service_status["notes_url"]) {
+            $service_status["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["notes_url"]);
+            $service_status["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["notes_url"]);
+            $service_status["notes_url"] = str_replace("\$SERVICESTATE\$", $service_status["current_state"], $service_status["notes_url"]);
+            $service_status["notes_url"] = str_replace("\$SERVICESTATEID\$", $service_status["current_stateid"], $service_status["notes_url"]);
             if ($host_id) {
-                $service_status[$hskey]["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$hskey]["notes_url"]);
-                $service_status[$hskey]["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$hskey]["notes_url"]);
+                $service_status["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["notes_url"]);
+                $service_status["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["notes_url"]);
             }
         }
-        if (isset($service_status[$hskey]["action_url"]) && $service_status[$hskey]["action_url"]) {
-            $service_status[$hskey]["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$hskey]["action_url"]);
-            $service_status[$hskey]["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$hskey]["action_url"]);
-            $service_status[$hskey]["action_url"] = str_replace("\$SERVICESTATE\$", $service_status[$hskey]["current_state"], $service_status[$hskey]["action_url"]);
-            $service_status[$hskey]["action_url"] = str_replace("\$SERVICESTATEID\$", $service_status[$hskey]["current_stateid"], $service_status[$hskey]["action_url"]);
+        if (isset($service_status["action_url"]) && $service_status["action_url"]) {
+            $service_status["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["action_url"]);
+            $service_status["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["action_url"]);
+            $service_status["action_url"] = str_replace("\$SERVICESTATE\$", $service_status["current_state"], $service_status["action_url"]);
+            $service_status["action_url"] = str_replace("\$SERVICESTATEID\$", $service_status["current_stateid"], $service_status["action_url"]);
             if ($host_id) {
-                $service_status[$hskey]["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$hskey]["action_url"]);
-                $service_status[$hskey]["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$hskey]["action_url"]);
+                $service_status["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["action_url"]);
+                $service_status["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["action_url"]);
             }
         }
 
-        $service_status[$hskey]["plugin_output"] = $service_status[$hskey]["plugin_output"];
-        $service_status[$hskey]["plugin_output"] = str_replace("'", "", $service_status[$hskey]["plugin_output"]);
-        $service_status[$hskey]["plugin_output"] = str_replace("\"", "", $service_status[$hskey]["plugin_output"]);
-        $service_status[$hskey]["plugin_output"] = str_replace("\\n", "<br>", $service_status[$hskey]["plugin_output"]);
-        $service_status[$hskey]["plugin_output"] = str_replace('\n', "<br>", $service_status[$hskey]["plugin_output"]);
+        $service_status["plugin_output"] = $service_status["plugin_output"];
+        $service_status["plugin_output"] = str_replace("'", "", $service_status["plugin_output"]);
+        $service_status["plugin_output"] = str_replace("\"", "", $service_status["plugin_output"]);
+        $service_status["plugin_output"] = str_replace("\\n", "<br>", $service_status["plugin_output"]);
+        $service_status["plugin_output"] = str_replace('\n', "<br>", $service_status["plugin_output"]);
 
         /*
          * Added for long_plugin_output <gavinw>
          */
-        if (isset($service_status[$hskey]["long_plugin_output"])) {
-            $service_status[$hskey]["long_plugin_output"] = str_replace("<b>", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("</b>", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("<br>", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("'", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace("\"", "", $service_status[$hskey]["long_plugin_output"]);
-            $service_status[$hskey]["long_plugin_output"] = str_replace('\n', '<br />', $service_status[$hskey]["long_plugin_output"]);
+        if (isset($service_status["long_plugin_output"])) {
+            $service_status["long_plugin_output"] = str_replace("<b>", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("</b>", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("<br>", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("'", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace("\"", "", $service_status["long_plugin_output"]);
+            $service_status["long_plugin_output"] = str_replace('\n', '<br />', $service_status["long_plugin_output"]);
         }
-        if (isset($service_status[$hskey]["notes_url"]) && $service_status[$hskey]["notes_url"]) {
-            $service_status[$hskey]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$hskey]["notes_url"]);
-            $service_status[$hskey]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$hskey]["notes_url"]);
+        if (isset($service_status["notes_url"]) && $service_status["notes_url"]) {
+            $service_status["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["notes_url"]);
+            $service_status["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["notes_url"]);
             if ($host_id) {
-                $service_status[$hskey]["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$hskey]["notes_url"]);
-                $service_status[$hskey]["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$hskey]["notes_url"]);
+                $service_status["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["notes_url"]);
+                $service_status["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["notes_url"]);
             }
         }
-        if (isset($service_status[$hskey]["action_url"]) && $service_status[$hskey]["action_url"]) {
-            $service_status[$hskey]["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$hskey]["action_url"]);
-            $service_status[$hskey]["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$hskey]["action_url"]);
+        if (isset($service_status["action_url"]) && $service_status["action_url"]) {
+            $service_status["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["action_url"]);
+            $service_status["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["action_url"]);
             if ($host_id) {
-                $service_status[$hskey]["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$hskey]["action_url"]);
-                $service_status[$hskey]["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$hskey]["action_url"]);
+                $service_status["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["action_url"]);
+                $service_status["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["action_url"]);
             }
         }
 
-        if (isset($service_status[$hskey]["last_time_" . strtolower($service_status[$hskey]["current_state"])])) {
-            !$service_status[$hskey]["last_state_change"] ? $service_status[$hskey]["duration"] = CentreonDuration::toString($service_status[$hskey]["last_time_" . strtolower($service_status[$hskey]["current_state"])]) : $service_status[$hskey]["duration"] = centreonDuration::toString(time() - $service_status[$hskey]["last_state_change"]);
+        if (isset($service_status["last_time_" . strtolower($service_status["current_state"])])) {
+            !$service_status["last_state_change"] ? $service_status["duration"] = CentreonDuration::toString($service_status["last_time_" . strtolower($service_status["current_state"])]) : $service_status["duration"] = centreonDuration::toString(time() - $service_status["last_state_change"]);
         }
-        !$service_status[$hskey]["last_state_change"] ? $service_status[$hskey]["last_state_change"] = "" : $service_status[$hskey]["last_state_change"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$hskey]["last_state_change"]);
-        $service_status[$hskey]["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
-        $service_status[$hskey]["is_flapping"] ? $service_status[$hskey]["is_flapping"] = $en[$service_status[$hskey]["is_flapping"]] : $service_status[$hskey]["is_flapping"] = "N/A";
+        !$service_status["last_state_change"] ? $service_status["last_state_change"] = "" : $service_status["last_state_change"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_state_change"]);
+        $service_status["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
+        $service_status["is_flapping"] ? $service_status["is_flapping"] = $en[$service_status["is_flapping"]] : $service_status["is_flapping"] = "N/A";
 
-        if ($service_status[$hskey]["problem_has_been_acknowledged"]) {
-            $service_status[$hskey]["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
+        if ($service_status["problem_has_been_acknowledged"]) {
+            $service_status["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
         }
 
-        if (isset($service_status[$hskey]["scheduled_downtime_depth"]) &&
-            $service_status[$hskey]["scheduled_downtime_depth"]
+        if (isset($service_status["scheduled_downtime_depth"]) &&
+            $service_status["scheduled_downtime_depth"]
         ) {
-            $service_status[$hskey]["scheduled_downtime_depth"] = 1;
+            $service_status["scheduled_downtime_depth"] = 1;
         }
 
         $status = null;
@@ -441,7 +441,12 @@ if (!is_null($host_id)) {
         /*
          * Assign translations
          */
-        $tpl->assign("m_mon_services", _("Service"));
+        if ($isMetaservice == 'false') {
+            $tpl->assign("m_mon_services", _("Service"));
+        } else { 
+            $tpl->assign("m_mon_services", _("Meta Service"));
+        }
+        
         $tpl->assign("m_mon_status_info", _("Status Details"));
         $tpl->assign("m_mon_on_host", _("on host"));
         $tpl->assign("m_mon_services_status", _("Service Status"));
@@ -519,10 +524,8 @@ if (!is_null($host_id)) {
         $hostNameDisplay = $host_name;
         if ($isMetaservice == 'true') {
             $tpl->assign("meta_id", $meta_id);
-
             $hostNameDisplay = '';
-            $serviceDisplayName = $svcObj->getParameters($service_id, array('display_name'));
-            $serviceDescriptionDisplay = $serviceDisplayName['display_name'];
+            $serviceDescriptionDisplay = $service_status['display_name'];
         }
 
         $tpl->assign("is_meta", $isMetaservice);
@@ -554,7 +557,7 @@ if (!is_null($host_id)) {
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
         }
         $tpl->assign("host_data", $host_status[$host_name]);
-        $tpl->assign("service_data", $service_status[$hskey]);
+        $tpl->assign("service_data", $service_status);
         $tpl->assign("host_display_name", CentreonUtils::escapeSecure($hostNameDisplay));
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
         $tpl->assign("svc_display_name", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
@@ -631,16 +634,16 @@ if (!is_null($host_id)) {
         /*
          * Ext informations
          */
-        $notesurl = $hostObj->replaceMacroInString($host_id, $service_status[$hskey]["notes_url"]);
+        $notesurl = $hostObj->replaceMacroInString($host_id, $service_status["notes_url"]);
         $notesurl = $svcObj->replaceMacroInString($service_id, $notesurl);
-        if (isset($service_status[$hskey]["instance_name"])) {
-            $notesurl = str_replace("\$INSTANCENAME\$", $service_status[$hskey]["instance_name"], $notesurl);
+        if (isset($service_status["instance_name"])) {
+            $notesurl = str_replace("\$INSTANCENAME\$", $service_status["instance_name"], $notesurl);
         }
 
-        $actionurl = $hostObj->replaceMacroInString($host_id, $service_status[$hskey]["action_url"]);
+        $actionurl = $hostObj->replaceMacroInString($host_id, $service_status["action_url"]);
         $actionurl = $svcObj->replaceMacroInString($service_id, $actionurl);
-        if (isset($service_status[$hskey]["instance_name"])) {
-            $actionurl = str_replace("\$INSTANCENAME\$", $service_status[$hskey]["instance_name"], $actionurl);
+        if (isset($service_status["instance_name"])) {
+            $actionurl = str_replace("\$INSTANCENAME\$", $service_status["instance_name"], $actionurl);
         }
 
         $tpl->assign("sv_ext_notes", CentreonUtils::escapeSecure(getMyServiceExtendedInfoField($service_id, "esi_notes")));
@@ -669,8 +672,8 @@ if (!is_null($host_id)) {
             $tools[$key]['url'] = str_replace("@host_name@", $host_name, $tools[$key]['url']);
             $tools[$key]['url'] = str_replace("@svc_description@", $svc_description, $tools[$key]['url']);
             $tools[$key]['url'] = str_replace("@svc_id@", $service_id, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@current_state@", $service_status[$hskey]["current_state"], $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@plugin_output@", $service_status[$hskey]["plugin_output"], $tools[$key]['url']);
+            $tools[$key]['url'] = str_replace("@current_state@", $service_status["current_state"], $tools[$key]['url']);
+            $tools[$key]['url'] = str_replace("@plugin_output@", $service_status["plugin_output"], $tools[$key]['url']);
         }
 
         if (count($tools) > 0) {
@@ -682,9 +685,7 @@ if (!is_null($host_id)) {
 } else {
     echo "<div class='msg' align='center'>"._("The related host no longer exists in Centreon configuration. Please reload the configuration.")."</div>";
 }
-
 ?>
-
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
     var glb_confirm = '<?php  echo _("Submit command?"); ?>';
