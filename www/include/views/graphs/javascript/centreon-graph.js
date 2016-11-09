@@ -458,14 +458,22 @@
     getTimes: function () {
       var start;
       var end;
+
       if (this.settings.period.start === null ||
         this.settings.period.end === null) {
         start = moment();
         end = moment();
+
         start.subtract(this.interval.number, this.interval.unit);
       } else {
-        start = moment(this.settings.period.start  * 1000);
-        end = moment(this.settings.period.end  * 1000);
+
+          if (typeof(this.settings.period.start) === "number") {
+            this.settings.period.start = this.settings.period.start * 1000;
+            this.settings.period.end = this.settings.period.end * 1000;
+          }
+
+        start = moment(this.settings.period.start);
+        end = moment(this.settings.period.end);
       }
         
       return {
