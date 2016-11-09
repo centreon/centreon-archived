@@ -634,6 +634,21 @@ function locate_plugindir() {
 }
 
 #----
+## Define where is centreon plugins directory
+## @Globals     CENTREON_PLUGINS, DEFAULT_CENTREON_PLUGINS
+#----
+function locate_centreon_plugins() {
+        testdir_clean "$CENTREON_PLUGINS" "CENTREON_PLUGINS"
+        if [ -z "$CENTREON_PLUGINS" ] ; then
+                answer_with_testdir "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
+                echo_success "$(gettext "Path" ) $CENTREON_PLUGINS" "$ok"
+        fi
+        CENTREON_PLUGINS=`trim ${CENTREON_PLUGINS%/}`
+        export CENTREON_PLUGINS
+        log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
+}
+
+#----
 ## Define where is your init.d (rc.d) directory
 ## check on system where is a init.d or rc.d directory to install centreon services
 ## On GNU/Linux, most of distrib use /etc/init.d
@@ -1557,6 +1572,7 @@ function createConfFile()
 \$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
 \$conf_centreon['centreon_engine_connectors'] = "$CENTREON_ENGINE_CONNECTORS";
+\$conf_centreon['centreon_plugins'] = "$CENTREON_PLUGINS";
 
 __EOT__
 
@@ -1611,6 +1627,7 @@ function createCentreonInstallConf() {
 	MONITORINGENGINE_LOG=$MONITORINGENGINE_LOG
 	MONITORINGENGINE_USER=$MONITORINGENGINE_USER
 	PLUGIN_DIR=$PLUGIN_DIR
+	CENTREON_PLUGINS=$CENTREON_PLUGINS
 	__EOT__
 
 	echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
@@ -1685,6 +1702,7 @@ function createCentPluginsInstallConf() {
 	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentPlugins.conf
 	# Use in CentPlugins.sh
 	PLUGIN_DIR=$PLUGIN_DIR
+	CENTREON_PLUGINS=$CENTREON_PLUGINS
 	INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	NAGIOS_ETC=$NAGIOS_ETC

@@ -65,6 +65,7 @@ check_broker_user
 ## Ask for plugins directory
 locate_monitoringengine_log
 locate_plugindir
+locate_centreon_plugins
 
 ## Add default value for centreon engine connector
 if [ -z "$CENTREON_ENGINE_CONNECTORS" ]; then

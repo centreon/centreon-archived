@@ -41,3 +41,8 @@ UPDATE cfg_centreonbroker
 SET command_file = CONCAT(retention_path, '/command.sock')
 WHERE config_name = 'central-broker-master';
 
+-- Insert Macro for PP
+INSERT INTO `cfg_resource` (`resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES ('$CENTREONPLUGINS$', '@CENTREONPLUGINS@', 'Centreon Plugin Path', '1');
+INSERT INTO `cfg_resource_instance_relations` (`resource_id`, `instance_id` )
+  SELECT r.resource_id, ns.id FROM cfg_resource r, nagios_server ns WHERE r.resource_name = '$CENTREONPLUGINS$'
+;

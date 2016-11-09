@@ -201,8 +201,6 @@ ALTER TABLE contact ADD COLUMN `reach_api` int(11) DEFAULT '0' AFTER `contact_or
 -- INITCHANGETAB js is defined by default
 DELETE FROM topology_JS WHERE Init = 'initChangeTab';
 
--- Insert Macro for PP
--- INSERT INTO `cfg_resource` (`resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES ('$CENTREONPLUGINS$', '@CENTREONPLUGINs@', 'Centreon Plugin Path', '1');
 DELETE FROM topology WHERE topology_page = 50120;
 
 -- Insert geo_coords
