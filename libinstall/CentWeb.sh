@@ -325,7 +325,7 @@ check_result $? "$(gettext "Change right for install directory")"
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
         $INSTALL_DIR_CENTREON/config >> "$LOG_FILE" 2>&1
-cp -f $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
+cp -Rf $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
 
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/config
 
