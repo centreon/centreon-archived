@@ -474,9 +474,6 @@
 
         start = moment(this.settings.period.start);
         end = moment(this.settings.period.end);
-
-        console.log(typeof(start));
-        //console.log(end, this.settings.period.end);
       }
         
       return {
