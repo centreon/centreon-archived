@@ -46,7 +46,6 @@ require_once _CENTREON_PATH_ . '/www/class/centreonBroker.class.php';
 
 $pearDB = new CentreonDB();
 
-//$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
 session_start();
 $mySessionId = session_id();
 /**
@@ -54,15 +53,17 @@ $mySessionId = session_id();
  */
 if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {
     $token = isset($_GET['token']) ? $_GET['token'] : $_GET['akey'];
-    $DBRESULT = $pearDB->query("SELECT * FROM `contact`
-    				WHERE `contact_alias` = '".$pearDB->escape($_GET["username"])."'
-    				AND `contact_activate` = '1'
-    				AND `contact_autologin_key` = '".$pearDB->escape($token)."' LIMIT 1");
+    $DBRESULT = $pearDB->prepare("SELECT * FROM `contact`
+                                WHERE `contact_alias` = ?
+                                AND `contact_activate` = '1'
+                                AND `contact_autologin_key` = ? LIMIT 1");
+    $DBRESULT = $pearDB->execute($DBRESULT, array($_GET["username"], $token));
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
-            $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".$mySessionId."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+            $DBRESULT = $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, '', ?, ?)");
+            $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"], $token));
         }
     } else {
         die('Invalid token');
@@ -72,11 +73,12 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
 $index = isset($_GET['index']) ? $_GET['index'] : 0;
 $pearDBO = new CentreonDB("centstorage");
 if (isset($_GET["hostname"]) && isset($_GET["service"])) {
-    $DBRESULT = $pearDBO->query("SELECT `id`
+    $DBRESULT = $pearDBO->prepare("SELECT `id`
                                  FROM index_data
-    				 WHERE host_name = '".$pearDB->escape($_GET["hostname"])."'
-    				 AND service_description = '".$pearDB->escape($_GET["service"])."'
-    				 LIMIT 1");
+                                 WHERE host_name = ?
+                                 AND service_description = ?
+                                 LIMIT 1");
+    $DBRESULT = $pearDBO->execute($DBRESULT, array($_GET["hostname"], $_GET["service"]));
     if ($DBRESULT->numRows()) {
         $res = $DBRESULT->fetchRow();
         $index = $res["id"];
@@ -89,10 +91,8 @@ if (isset($_GET['chartId'])) {
     if (false === isset($hostId) || false === isset($serviceId)) {
         die('Resource not found');
     }
-    $res = $pearDBO->query('SELECT id
-        FROM index_data
-        WHERE host_id = ' . $pearDBO->escape($hostId) .
-        ' AND service_id = ' . $pearDBO->escape($serviceId));
+    $res = $pearDBO->prepare('SELECT id FROM index_data WHERE host_id = ? AND service_id = ?');
+    $res = $pearDBO->execute($res, array($hostId, $serviceId)); 
     if ($res->numRows()) {
         $row = $res->fetchRow();
         $index = $row['id'];     
@@ -201,5 +201,6 @@ $obj->displayImageFlow();
  * Closing session
  */
 if (isset($_GET['akey'])) {
-    $pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($mySessionId)."'AND user_id = (SELECT contact_id from contact where contact_autologin_key = '".$_GET['akey']."')");
+    $DBRESULT = $pearDB->prepare("DELETE FROM session WHERE session_id = ? AND user_id = (SELECT contact_id from contact where contact_autologin_key = ?)");
+    $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $_GET['akey']));
 }

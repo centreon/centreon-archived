@@ -137,7 +137,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
      * include javascript
      */
     $res = null;
-    $DBRESULT = $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+    $DBRESULT = $pearDB->prepare("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = ? AND (o = ? OR o IS NULL)");
+    $DBRESULT = $pearDB->execute($DBRESULT, array($p, $o));
     while ($topology_js = $DBRESULT->fetchRow()) {
         if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js") {
             if ($topology_js['PathName_js'] != "") {
