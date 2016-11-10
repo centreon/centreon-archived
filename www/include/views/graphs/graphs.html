@@ -331,6 +331,7 @@ function addChart(id, name, times) {
       parseInterval[2]
     ).asSeconds();
   }
+
   charts.push(id);
   jQuery('.graphZone').append(
     templateGraph({
@@ -345,16 +346,6 @@ function addChart(id, name, times) {
 }
 
 function loadChart(chart, callback) {
-  var i = 0;
-  var exclude = [
-    'StartDate',
-    'StartTime',
-    'EndDate',
-    'EndTime',
-    'period',
-    'displayStatus'
-  ];
-  var postData = {};
   var times = {};
   var end;
   chart = chart ? chart : [];
@@ -366,11 +357,13 @@ function loadChart(chart, callback) {
   if (jQuery('select[name="period"]').val() === '') {
     times = {
       period: {
-        start: jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val(),
-        end: jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val()
+        startTime: jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val(),
+        endTime: jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val()
       }
     };
+
     end = end;
+
   } else {
     times = {
       interval: jQuery('select[name="period"]').val()
@@ -386,8 +379,7 @@ function loadChart(chart, callback) {
       service_selector: chart
     },
     success: function (data) {
-      var i = 0;
-      for (i = 0; i < data.length; i++) {
+      for (var i = 0; i < data.length; i++) {
         if (charts.length >= nbDisplayedCharts) {
           alert(tooManyChartMsg);
           break;
@@ -403,7 +395,7 @@ function loadChart(chart, callback) {
 }
   
 function switchCols(number) {
-  var className = null;
+
   jQuery('.graphZone').removeClass(function (index, css) {
     return (css.match(/\bcol\S+/g) || []).join(' ');
   });

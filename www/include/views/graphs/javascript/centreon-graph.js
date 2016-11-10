@@ -53,6 +53,7 @@
     });
     
     this.setRefresh(this.settings.refresh);
+
   }
 
   CentreonGraph.prototype = {
@@ -77,11 +78,11 @@
       if (this.id === null  || this.type === undefined) {
         this.id = this.settings.graph.id;
       }
-      if (start !== null) {
-        this.settings.period.start = start;
+      if (start !== null && start !== undefined) {
+        this.settings.period.startTime = start;
       }
-      if (end !== null) {
-        this.settings.period.start = end;
+      if (end !== null && end !== undefined ) {
+        this.settings.period.startTime = end;
       }
       
       if (this.type === null || this.id === null) {
@@ -459,21 +460,23 @@
       var start;
       var end;
 
-      if (this.settings.period.start === null ||
-        this.settings.period.end === null) {
+      if (this.settings.period.startTime === null ||
+        this.settings.period.endTime === null) {
+
         start = moment();
         end = moment();
 
         start.subtract(this.interval.number, this.interval.unit);
+
       } else {
 
-          if (typeof(this.settings.period.start) === "number") {
-            this.settings.period.start = this.settings.period.start * 1000;
-            this.settings.period.end = this.settings.period.end * 1000;
+          if (typeof(this.settings.period.startTime) === "number") {
+            this.settings.period.startTime = this.settings.period.startTime * 1000;
+            this.settings.period.endTime = this.settings.period.endTime * 1000;
           }
 
-        start = moment(this.settings.period.start);
-        end = moment(this.settings.period.end);
+        start = moment(this.settings.period.startTime);
+        end = moment(this.settings.period.endTime);
       }
         
       return {
@@ -522,8 +525,8 @@
     setInterval: function (interval) {
       var parseInterval = interval.match(/(\d+)([a-z]+)/i);
       this.settings.period = {
-        start: null,
-        end: null
+        startTime: null,
+        endTime: null
       };
       this.interval = {
         number: parseInterval[1],
@@ -539,8 +542,8 @@
      */
     setPeriod: function (start, end) {
       this.settings.period = {
-        start: start,
-        end: end
+        startTime: start,
+        endTime: end
       };
       this.refreshData();
     },
@@ -634,8 +637,8 @@
     },
     interval: '3h',
     period: {
-      start: null,
-      end: null
+      startTime: null,
+      endTime: null
     },
     timeFormat: null,
     threshold: true,
