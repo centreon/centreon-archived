@@ -1,11 +1,11 @@
-###############
+##############
 Centreon 2.8.1
-###############
+##############
 
 Released November 14th, 2016
- 
-The 2.8.1 release for Centreon Web is now available for download. The release notes for 2.8.0 version is the follow one:
- 
+
+The 2.8.1 release for Centreon Web is now available for download. Here are its release notes.
+
 Changes
 -------
 
@@ -14,8 +14,8 @@ Changes
 * Integration of Centreon Backup module in Centreon;
 * Integration of Centreon Knowledge Base module in Centreon;
 * Integration of Centreon Partitioning module in Centreon;
-* New design to display charts using C3JS. 
-* New filters available to select display charts 
+* New design to display charts using C3JS.
+* New filters available to select display charts
 * Possibility to display charts on 1, 2 or 3 columns;
 * Apply zoom on one chart apply zoom for all displayed charts;
 * Merge of meta-services and services real-time monitoring display;
@@ -67,8 +67,13 @@ Removed Features
 Known bugs or issues
 --------------------
 
-* Centreon Engine performance chart still in RRDTools PNG format;
-* Zoom out on chart change period on filters;
+* This release is not yet compatible with other commercial products
+  from Centreon, like Centreon MBI, Centreon BAM or Centreon Map.
+  If your are using any of these products, you are strongly advised
+  **NOT** to update Centreon Web until new releases of the forementioned
+  products are available and specifically mention Centreon Web 2.8
+  compatibility ;
+* Centreon Engine performance chart still in RRDTools PNG format ;
+* Zoom out on chart change period on filters ;
 * User with ACL can't see it own previously created meta service ;
 * Problem with recurrent downtimes and DST ;
-

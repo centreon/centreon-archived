@@ -2264,13 +2264,6 @@ textarea.default-textarea {
   background-size: cover;
 }
 
-.filter-select {
-  background-image: url('../../img/icons/filter.png');
-  background-size: 18px;
-  background-position: right;
-  background-repeat: no-repeat;
-}
-
 /* Refresh component for chart */
 .refresh {
   margin: 0 6px 0 0;

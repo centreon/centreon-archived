@@ -6,7 +6,7 @@ Using packages
 
 Centreon supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
 
-These packages have been successfully tested on CentOS and Red Hat environments in 6.x version.
+These packages have been successfully tested on CentOS and Red Hat environments in 6.x and 7.x versions.
 
 *************
 Prerequisites
@@ -14,11 +14,24 @@ Prerequisites
 
 To install Centreon software from the CES repository, you should first install the file linked to the repository.
 
-Perform the following command from a user with sufficient rights:
+Perform the following command from a user with sufficient rights.
 
- ::
+CES Repository
+--------------
 
-  $ wget http://yum.centreon.com/standard/3.4/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+For CentOS 6.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+For CentOS 7.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
 
 The repository is now installed.
 
@@ -28,24 +41,22 @@ Any operating system
 SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
 
  ::
-    
+
   SELINUX=disabled
 
-PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line : 
+PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
 
  ::
-	   
+
   date.timezone = Europe/Paris
 
-After saving the file, please don't forget to restart apache server. 
+After saving the file, please don't forget to restart apache server.
 
 The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
 *********************
 Centreon installation
 *********************
-
-You should choose between one of the two configuration processes of your monitoring platform. Centreon recommends the first choice based on the “Centreon Engine” scheduler and the “Centreon Broker” stream multiplexer.
 
 Install a central server
 ------------------------
@@ -89,7 +100,7 @@ If you don’t have any private SSH keys on the central server for the Centreon 
  $ ssh-keygen -t rsa
 
 Copy this key on the collector:
- 
+
  ::
 
  $ ssh-copy-id centreon@your_poller_ip
@@ -175,3 +186,61 @@ The installation is now finished, click on the ``Finish`` button, you will be re
     :align: center
 
 Enter your credentials to log in.
+
+
+.. _installation_ppm:
+
+*****************************
+Easy monitoring configuration
+*****************************
+
+Centreon is great in itself, highly versatile  and can be configured to
+fit the very specifics of your monitored infrastructure. However you
+might find useful to use Centreon IMP to get you started in minutes.
+Centreon IMP provides you Plugin Packs which are bundled configuration
+templates that highly reduce the time needed to properly monitor the
+most common services of your network.
+
+Centreon IMP needs the technical components Centreon License Manager
+and Centreon Plugin Pack Manager to work.
+
+Install packages
+----------------
+
+When using CES, installation of Centreon Plugin Pack Manager is very
+easy. You'll see that Centreon License Manager will be installed too
+as a dependency.
+
+::
+
+   $ yum install centreon-pp-manager
+
+Web install
+-----------
+
+Once the packages installed, you need to enable the module in Centreon.
+So get to the Administration -> Extensions -> Modules page.
+
+.. image:: /_static/images/installation/ppm_1.png
+   :align: center
+
+Install Centreon License Manager (dependency of Centreon Plugin Pack Manager) first.
+
+.. image:: /_static/images/installation/ppm_2.png
+   :align: center
+
+Then install Centreon Plugin Pack Manager itself.
+
+.. image:: /_static/images/installation/ppm_3.png
+   :align: center
+
+You're now ready to got to Administration -> Extensions -> Plugin packs -> Setup.
+You'll find there 6 free Plugin Packs to get you started. 5 more are
+available after free registration and 150+ if you subscribe to the IMP
+offer (more information on `our website <https://www.centreon.com>`_).
+
+.. image:: /_static/images/installation/ppm_4.png
+   :align: center
+
+You can continue to configure your monitoring with Centreon IMP by
+following :ref:`this guide <impconfiguration>`.

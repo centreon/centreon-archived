@@ -4,35 +4,102 @@
 Mise à jour RPM
 ===============
 
+La version 3.4 de Centreon Entreprise Server (CES) est l'ensemble Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+Deux versions de CES 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
 
-La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6. 
+.. warning::
+   Cette release n'est pas encore intégralement compatible avec la
+   totalité des logiciels commerciaux de Centreon tels que Centreon MBI,
+   Centreon BAM ou Centreon Map. Si vous utilisez l'un de ces produits
+   nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
+   Web tant que de nouvelles versions des produits précédents, indiquant
+   clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
+   disponibles. La seule exception à cette exclusion concerne EMS/EPP.
 
 *********
 Prérequis
 *********
 
-Les prérequis nécessaires au fonctionnement de Centreon 2.7 ont évolué par rapport aux précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
+Les prérequis nécessaires au fonctionnement de Centreon Web 2.8 ont
+évolué par rapport aux précédentes versions. Il est important de suivre
+les recommandations suivantes pour avoir une plate-forme fonctionnelle.
 
-* Apache = 2.2
-* Centreon Engine >= 1.5.0
-* Centreon Broker >= 2.11.0
-* CentOS = 6.x ou RedHat >= 6.x
-* MariaDB = 5.5.35 ou MySQL = 5.1.73
-* Net-SNMP = 5.5
-* PHP >= 5.3.0
-* Qt = 4.7.4
-* RRDtools = 1.4.7
+**Centreon vous recommande d'utiliser MariaDB** à la place de MySQL.
 
-Vous partez d'un serveur déjà existant : nous vous donnons ici toutes les étapes pour faire une migration sans perte de données.
++----------+-----------+
+| Software | Version   |
++==========+===========+
+| MariaDB  | >= 5.5.35 |
++----------+-----------+
+| MySQL    | >= 5.1.73 |
++----------+-----------+
+
+***********************
+Dépendances logicielles
+***********************
+
+The following table describes the dependent software:
+
++----------+-----------+
+| Software | Version   |
++==========+===========+
+| Apache   | 2.2       |
++----------+-----------+
+| GnuTLS   | >= 2.0    |
++----------+-----------+
+| Net-SNMP | 5.5       |
++----------+-----------+
+| openssl  | >= 1.0.1e |
++----------+-----------+
+| PHP      | >= 5.3.0  |
++----------+-----------+
+| Qt       | >= 4.7.4  |
++----------+-----------+
+| RRDtools | 1.4.7     |
++----------+-----------+
+| zlib     | 1.2.3     |
++----------+-----------+
+
+*********
+Dépôt CES
+*********
+
+Si vous êtes déjà un utilisateur de CES, vous devez mettre à jour votre
+fichier .repo pour utiliser les logiciels faisant partie de CES 3.4
+(essentiellement Centreon Web 2.8 et les composants associés). Entrez
+les commandes suivantes en fonction de votre système d'exploitation.
+
+CentOS 6
+========
+
+::
+
+   $ rm -f /etc/yum.repos.d/ces-standard.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+CentOS 7
+========
+
+::
+
+   $ rm -f /etc/yum.repos.d/ces-standard.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+***********
+Mise à jour
+***********
 
 1. Arrêt des instances de collecte
 ==================================
 
-Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention 
-actif pour Centreon-Broker.
+.. warning::
+   Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention
+   actif pour Centreon-Broker.
 
 Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
- 
+
    ::
 
    # /etc/init.d/centengine stop
@@ -41,24 +108,24 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 2. Mise à jour l’ensemble des paquets
 =====================================
 
-Pour installer la nouvelle version de centreon depuis une CES 3.2, lancez la commande suivante : 
+Pour installer la nouvelle version de Centreon depuis une CES 3.4, lancez la commande suivante :
 
    ::
 
    # yum update centreon
 
 .. warning::
-   Si vous rencontrez des problèmes de dépendances avec le package centreon-engine-webservices, merci de le supprimer car il est maintenant obsolète. Lancez la commande suivante :  
+   Si vous rencontrez des problèmes de dépendances avec le package centreon-engine-webservices, merci de le supprimer car il est maintenant obsolète. Lancez la commande suivante :
    # yum remove centreon-engine-webservices
 
-Si vous venez de la version 2.7.0-RC2 de Centreon, pour contourner le problème de nom des RPM qui vous provoque des problème de dépendances RPM, tappez la commande suivante : 
+Si vous venez de la version 2.7.0-RC2 de Centreon, pour contourner le problème de nom des RPM qui vous provoque des problème de dépendances RPM, tappez la commande suivante :
 
   ::
 
   # yum downgrade centreon-2.7.0 centreon-plugins-2.7.0 centreon-base-config-centreon-engine-2.7.0 centreon-plugin-meta-2.7.0 centreon-common-2.7.0 centreon-web-2.7.0 centreon-trap-2.7.0 centreon-perl-libs-2.7.0
 
 
-3. Redémarrez le serveur Apache 
+3. Redémarrez le serveur Apache
 ===============================
 
 Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serveur apache afin de prendre en compte la nouvelle extension.
@@ -67,8 +134,8 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
 
    # /etc/init.d/httpd restart
 
-4. Réalisez la mise à jour Web de Centreon 2.7.0
-================================================
+4. Réalisez la mise à jour Web de Centreon 2.8
+==============================================
 
 Suivez le wizard de mise à jour Web afin de terminer les mises à jours pour les modifications au niveau de la base SQL soient appliquées. Durant cette phase, un nouveau fichier de configuration va être également créé.
 
@@ -109,35 +176,93 @@ Finalisation
 5. Exportez la configuration vers l’ensemble des pollers
 ========================================================
 
-Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération (attention la page de génération a été supprimée).
- 
+Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération.
+
 6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
 =======================================================================================
 
-Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes : 
+Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes :
 
   ::
 
    # /etc/init.d/centengine start
    # /etc/init.d/cbd start
 
+
+**********************
+Mise à jour de EMS/EPP
+**********************
+
+.. note::
+   Pas utilisateur de EMS/EPP ? Vous trouverez cependant les Plugins
+   Packs Centreon extrêmement utiles pour vous aider à configurer votre
+   supervision en quelques minutes. Vous trouverez les informations
+   d'installation dans notre :ref:`documentation en ligne <installation_ppm>`.
+
+
+Si vous utilisez des modules Centreon, vous devrez les mettre à jour
+également pour qu'ils continuent de fonctionner de manière
+satisfaisante. Cela est particulièrement vrai pour les utilisateurs
+de EMS/EPP.
+
+Mise à jour du dépôt
+====================
+
+Comme pour CES, le fichier .repo doit être mis à jour pour utiliser la
+version 3.4. N'hésitez pas à contacter le support Centreon si vous ne
+savez pas comment réaliser cette opération.
+
+Mise à jour des paquets
+=======================
+
+Entrez la commande suivante sur le serveur central pour mettre à jour
+Centreon Plugin Pack Manager, les Plugin Packs et leurs plugins
+associés.
+
+::
+
+   # yum update centreon-pp-manager ces-plugins-* ces-pack-*
+
+
+Vous devrez également lancer la commande suivante sur chaque collecteur
+utilisant les Plugin Packs.
+
+::
+
+   # yum update ces-plugins-*
+
+
+Mise à jour web
+===============
+
+Vous devez maintenant lancer la mise à jour via l'interface web. Pour
+cela rendez-vous à la page Administration -> Extensions -> Modules.
+
+.. image:: /_static/images/upgrade/ppm_1.png
+   :align: center
+
+Installez tout d'abord Centreon License Manager (dépendance de PPM)
+puis Centreon Plugin Pack Manager.
+
+.. image:: /_static/images/upgrade/ppm_2.png
+   :align: center
+
+Bien, votre module fonctionne de nouveau.
+
 *********************************************
 Les risques identifiés lors de la mise à jour
 *********************************************
 
-Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.7 de Centreon couplée à la version 1.5 de Engine et 2.11 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
+Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.8 de Centreon couplée à la version 1.6 de Engine et 3.0 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
 
-Les risques sont les suivants : 
+Les risques sont les suivants :
 ===============================
 
-* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 2.11.0 et Centreon Engine 1.5.0) sont des prérequis au fonctionnement de Centreon 2.7.0. 
+* Incompatibilité avec la plupart des produits commerciaux : Centreon MBI, Centreon BAM et Centreon Map ne sont pas encore compatible avec Centreon Web 2.8.
+* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 3.0 et Centreon Engine 1.6) sont des prérequis au fonctionnement de Centreon Web 2.8
 * Problèmes de mise à jour des schémas de base de données
-* Passage de toutes les tables MySQL en InnoDB (sauf logs et data_bin qui ne seront pas migrées automatiquement)
-* Changement au niveau de la table hostgroup et servicegroup dans la base storage
-* Les temporaries et les failovers sont définis par défaut sur Centreon Broker : Il est donc possible que cela entre en conflit avec la configuration existant avant la mise à jour. Bien vérifier après la mise à jour qu’il ne reste pas des anciens fichiers et que cela n’a pas bloqué le broker générant ainsi des pertes de données
-* Problème de cache navigateur : le cache du navigateur doit être vidée à la fin de la mise à jour et web et également après la première connexion.		
-* Problème avec des dépendances php (intl) : un nouveau prérequis PHP a été ajouté. Suite à la mise à jour RPM, il est nécessaire de redémarrer Apache pour que celui-ci soit chargé.
-* Problème de compatibilité avec des modules installés : le style de la 2.7.0 change complètement des versions précédentes. Les modules Centreon doivent donc être adaptés en conséquence. Ne migrez pas si vos modules ne sont pas compatibles.
-* Génération de conf qui ne se génère pas normalement : le moteur de génération de la configuration a été réécrit. Il y a donc un risque d’erreurs dans les configurations exportées.
-* Bascule direct de NDOutils vers Centreon Broker au passage de la version 2.7 : Centreon 2.7.0 n’est plus compatible avec Nagios et NDOutils. Des problèmes surviendront en cas de tentative de mise à jour d’une machine fonctionnant avec Nagios/NDOutils vers la version 2.7.0.
-
+* Les nouveau graphiques de performances ont des échelles affichant trop de détails
+* Des erreurs PHP de type warning apparaissent dans le journal d'évènement d'Apache
+* Le zoom affecte tous les graphiques
+* Le retour arrière du zoom des graphiques est absent
+* L'export CSV ne fonctionne pas pour les eventlogs

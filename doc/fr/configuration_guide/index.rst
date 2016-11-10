@@ -2,7 +2,7 @@
 Guide de configuration
 ======================
 
-Vous trouverez dans ce chapitre toutes les informations nécessaire sà la prise en main de l'interface de configuration de Centreon. Sachez que la configuration est une étape importante dans la prise en main de votre système. 
+Vous trouverez dans ce chapitre toutes les informations nécessaire sà la prise en main de l'interface de configuration de Centreon. Sachez que la configuration est une étape importante dans la prise en main de votre système.
 
 Pensez à mettre en place une stratégie de globalisation de la configuration afin de pouvoir faire des actions globales de configurations. Pour cela des mecanismes sont en place dans Centreon pour vous simplifier la vie tels que :ref:`les modèles d'hôtes et de services <hosttemplates>`.
 
@@ -18,8 +18,9 @@ Pensez à mettre en place une stratégie de globalisation de la configuration af
    groups
    category
    models
+   imp
    advanced_configuration/index
-   poller/index 
+   poller/index
    deploy
    knowledge_base/index
 
