@@ -474,6 +474,9 @@
         myEnd = this.settings.period.endTime;
         if (typeof(this.settings.period.startTime) === "number") {
           myStart = this.settings.period.startTime * 1000;
+        }
+        
+        if (typeof(this.settings.period.endTime) === "number") {
           myEnd = this.settings.period.endTime * 1000;
         }
 
