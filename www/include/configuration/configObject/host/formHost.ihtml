@@ -509,8 +509,8 @@ jQuery(function() {
             jQuery(elem).find("input[name^='macroValue']").css("background","white");
         });
 
-        {/literal}{if $form.frozen == true}{literal}
         var $passwordCheckbox = jQuery(elem).find("input[id^='macroPassword_']");
+        {/literal}{if $form.frozen == true}{literal}
         if ($passwordCheckbox.is(':checked')) {
             $passwordCheckbox.replaceWith('[x]');
         } else {
