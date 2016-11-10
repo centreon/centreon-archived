@@ -125,7 +125,7 @@
         self.$elem.trigger('change', currentValues);
       });
 
-      $(this.parent).prepend(this.clearButton);
+      $(this.parent).append(this.clearButton);
     },
     /**
      * Initialize the multiple

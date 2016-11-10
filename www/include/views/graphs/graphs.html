@@ -6,18 +6,32 @@
     <form {$form.attributes}>
         <table class="ajaxOption table">
             <tr>
-                <th><h5>{t}Filters{/t}</h5></th>
+                <th><h5>{t}Chart Filters{/t}</h5></th>
             </tr>
             <tr>
-                <td class="tour-add-chart"><h4>{t}Chart{/t}</h4></td>
-                <td><h4>{t}Host{/t}</h4></td>
-                <td><h4>{t}Hostgroup{/t}</h4></td>
-                <td><h4>{t}Servicegroup{/t}</h4></td>
+              <td class="tour-add-chart"><h4>{t}Chart{/t}</h4></td>
+              <td class="tour-choose-period tour-global-period"><h4>{t}Period{/t}</h4></td>
+              <td class="tour-define-period tour-global-period"><h4>{t}From{/t}</h4></td>
+              <td class="tour-define-period tour-global-period"><h4>{t}To{/t}</h4></td>
+            </tr>
+          <tr>
+            <td class="log-select tour-add-chart" id="tour-add-chart">
+              <select id="select-chart" multiple size="1"></select>
+            </td>
+            <td class="tour-choose-period tour-global-period" id="tour-choose-period">{$form.period.html}</td>
+            <td class="tour-define-period tour-global-period" id="tour-define-period">{$form.StartDate.html} {$form.StartTime.html}</td>
+            <td class="tour-define-period tour-global-period">{$form.EndDate.html} {$form.EndTime.html}</td>
+          </tr>
+          <tr>
+            <td class="divider" colspan="4"><hr></td>
+          </tr>
+            <tr>
+                <td><h4>{t}Filter by Host{/t}</h4></td>
+                <td><h4>{t}Filter by Hostgroup{/t}</h4></td>
+                <td><h4>{t}Filter by Servicegroup{/t}</h4></td>
             </tr>
             <tr>
-                <td class="log-select tour-add-chart" id="tour-add-chart">
-                    <select id="select-chart" multiple size="1"></select>
-                </td>
+
                 <td class="log-select">
                     <select 
                         id="host_filter"
@@ -39,18 +53,6 @@
                         size="1">
                     </select>
                 </td>
-            </tr>
-            <tr>
-                <td class="tour-choose-period tour-global-period"><h4>{t}Period{/t}</h4></td>
-                <td class="tour-define-period tour-global-period"><h4>{t}From{/t}</h4></td>
-                <td class="tour-define-period tour-global-period"><h4>{t}To{/t}</h4></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="tour-choose-period tour-global-period" id="tour-choose-period">{$form.period.html}</td>
-                <td class="tour-define-period tour-global-period" id="tour-define-period">{$form.StartDate.html} {$form.StartTime.html}</td>
-                <td class="tour-define-period tour-global-period">{$form.EndDate.html} {$form.EndTime.html}</td>
-                <td></td>
             </tr>
         </table>
     </form>
