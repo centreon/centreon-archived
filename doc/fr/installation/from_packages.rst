@@ -117,6 +117,7 @@ noterez que Centreon Plugin Pack Manager installe également Centreon
 License Manager en tant que dépendance.
 
 ::
+
    $ yum install centreon-pp-manager
 
 Installation web
@@ -124,8 +125,19 @@ Installation web
 
 Une fois les paquets installés, il est nécessaire d'activer les modules
 dans Centreon. Rendez-vous à la page Administration -> Extensions -> Modules.
-Installez tout d'abord Centreon License Manager, puis Centreon Plugin
-Pack Manager.
+
+.. image:: /_static/images/installation/ppm_1.png
+   :align: center
+
+Installez tout d'abord Centreon License Manager.
+
+.. image:: /_static/images/installation/ppm_2.png
+   :align: center
+
+Puis installez Centreon Plugin Pack Manager.
+
+.. image:: /_static/images/installation/ppm_3.png
+   :align: center
 
 Vous pouvez maintenant vous rendre à la page Administration -> Extensions
 -> Plugin packs -> Setup. Vous y trouverez vos six premiers Plugin Packs
@@ -133,3 +145,6 @@ gratuits pour vous aider à démarrer. Cinq Plugin Packs supplémentaires
 sont débloqués après vous être inscrit et plus de 150 sont disponibles
 si vous souscrivez à l'offre IMP (plus d'informations sur
 `notre site web <https://www.centreon.com>`_).
+
+.. image:: /_static/images/installation/ppm_4.png
+   :align: center

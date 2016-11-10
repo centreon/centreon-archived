@@ -196,6 +196,7 @@ easy. You'll see that Centreon License Manager will be installed too
 as a dependency.
 
 ::
+
    $ yum install centreon-pp-manager
 
 Web install
