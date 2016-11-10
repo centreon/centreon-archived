@@ -196,10 +196,13 @@ Easy monitoring configuration
 
 Centreon is great in itself, highly versatile  and can be configured to
 fit the very specifics of your monitored infrastructure. However you
-might find useful to use Centreon Plugin Pack Manager to get you started
-in minutes. Centreon Plugin Packs are bundled configuration templates
-that highly reduce the time needed to properly monitor the most common
-services of your network.
+might find useful to use Centreon IMP to get you started in minutes.
+Centreon IMP provides you Plugin Packs which are bundled configuration
+templates that highly reduce the time needed to properly monitor the
+most common services of your network.
+
+Centreon IMP needs the technical components Centreon License Manager
+and Centreon Plugin Pack Manager to work.
 
 Install packages
 ----------------
@@ -238,3 +241,6 @@ offer (more information on `our website <https://www.centreon.com>`_).
 
 .. image:: /_static/images/installation/ppm_4.png
    :align: center
+
+You can continue to configure your monitoring with Centreon IMP by
+following :ref:`this guide <impconfiguration>`.

@@ -116,11 +116,14 @@ Configurez votre supervision facilement
 
 En lui-même Centreon est un excellent outil de supervision et peut être
 configuré pour correspondre exactement à vos besoins. Cependant vous
-trouverez peut-être utile d'utiliser Centreon Plugins Pack Manager pour
-vous aider à configurer rapidement votre supervision. Les Plugin Packs
-de Centreon sont des paquets contenant des modèles de configuration qui
-réduisent drastiquement le temps nécessaire pour superviser la plupart
-des services de votre réseau.
+trouverez peut-être utile d'utiliser Centreon IMP pour vous aider à
+configurer rapidement votre supervision. Centreon IMP vous fournit des
+Plugin Packs qui sont des paquets contenant des modèles de configuration
+qui réduisent drastiquement le temps nécessaire pour superviser la
+plupart des services de votre réseau.
+
+Centreon IMP nécessite les composants techniques Centreon License
+Manager et Centreon Plugin Pack Manager pour fonctionner.
 
 Installation système
 --------------------
@@ -161,3 +164,6 @@ si vous souscrivez à l'offre IMP (plus d'informations sur
 
 .. image:: /_static/images/installation/ppm_4.png
    :align: center
+
+Vous pouvez continuer à configurer votre supervision en utilisant
+Centreon IMP en suivant :ref:`ce guide <impconfiguration>`.
