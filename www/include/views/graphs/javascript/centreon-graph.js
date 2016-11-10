@@ -470,13 +470,18 @@
 
       } else {
 
-          if (typeof(this.settings.period.startTime) === "number") {
-            this.settings.period.startTime = this.settings.period.startTime * 1000;
-            this.settings.period.endTime = this.settings.period.endTime * 1000;
-          }
+        myStart = this.settings.period.startTime;
+        myEnd = this.settings.period.endTime;
+        if (typeof(this.settings.period.startTime) === "number") {
+          myStart = this.settings.period.startTime * 1000;
+        }
+        
+        if (typeof(this.settings.period.endTime) === "number") {
+          myEnd = this.settings.period.endTime * 1000;
+        }
 
-        start = moment(this.settings.period.startTime);
-        end = moment(this.settings.period.endTime);
+        start = moment(myStart);
+        end = moment(myEnd);
       }
         
       return {
