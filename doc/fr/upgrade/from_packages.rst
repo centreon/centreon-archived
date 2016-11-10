@@ -4,8 +4,16 @@
 Mise à jour RPM
 ===============
 
+La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6.
 
-La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6. 
+.. warning::
+   Cette release n'est pas encore intégralement compatible avec la
+   totalité des logiciels commerciaux de Centreon tels que Centreon MBI,
+   Centreon BAM ou Centreon Map. Si vous utilisez l'un de ces produits
+   nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
+   Web tant que de nouvelles versions des produits précédents, indiquant
+   clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
+   disponibles.
 
 *********
 Prérequis
@@ -28,11 +36,11 @@ Vous partez d'un serveur déjà existant : nous vous donnons ici toutes les éta
 1. Arrêt des instances de collecte
 ==================================
 
-Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention 
+Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention
 actif pour Centreon-Broker.
 
 Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
- 
+
    ::
 
    # /etc/init.d/centengine stop
@@ -41,24 +49,24 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 2. Mise à jour l’ensemble des paquets
 =====================================
 
-Pour installer la nouvelle version de centreon depuis une CES 3.2, lancez la commande suivante : 
+Pour installer la nouvelle version de centreon depuis une CES 3.2, lancez la commande suivante :
 
    ::
 
    # yum update centreon
 
 .. warning::
-   Si vous rencontrez des problèmes de dépendances avec le package centreon-engine-webservices, merci de le supprimer car il est maintenant obsolète. Lancez la commande suivante :  
+   Si vous rencontrez des problèmes de dépendances avec le package centreon-engine-webservices, merci de le supprimer car il est maintenant obsolète. Lancez la commande suivante :
    # yum remove centreon-engine-webservices
 
-Si vous venez de la version 2.7.0-RC2 de Centreon, pour contourner le problème de nom des RPM qui vous provoque des problème de dépendances RPM, tappez la commande suivante : 
+Si vous venez de la version 2.7.0-RC2 de Centreon, pour contourner le problème de nom des RPM qui vous provoque des problème de dépendances RPM, tappez la commande suivante :
 
   ::
 
   # yum downgrade centreon-2.7.0 centreon-plugins-2.7.0 centreon-base-config-centreon-engine-2.7.0 centreon-plugin-meta-2.7.0 centreon-common-2.7.0 centreon-web-2.7.0 centreon-trap-2.7.0 centreon-perl-libs-2.7.0
 
 
-3. Redémarrez le serveur Apache 
+3. Redémarrez le serveur Apache
 ===============================
 
 Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serveur apache afin de prendre en compte la nouvelle extension.
@@ -110,11 +118,11 @@ Finalisation
 ========================================================
 
 Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération (attention la page de génération a été supprimée).
- 
+
 6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
 =======================================================================================
 
-Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes : 
+Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes :
 
   ::
 
@@ -127,17 +135,16 @@ Les risques identifiés lors de la mise à jour
 
 Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.7 de Centreon couplée à la version 1.5 de Engine et 2.11 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
 
-Les risques sont les suivants : 
+Les risques sont les suivants :
 ===============================
 
-* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 2.11.0 et Centreon Engine 1.5.0) sont des prérequis au fonctionnement de Centreon 2.7.0. 
+* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 2.11.0 et Centreon Engine 1.5.0) sont des prérequis au fonctionnement de Centreon 2.7.0.
 * Problèmes de mise à jour des schémas de base de données
 * Passage de toutes les tables MySQL en InnoDB (sauf logs et data_bin qui ne seront pas migrées automatiquement)
 * Changement au niveau de la table hostgroup et servicegroup dans la base storage
 * Les temporaries et les failovers sont définis par défaut sur Centreon Broker : Il est donc possible que cela entre en conflit avec la configuration existant avant la mise à jour. Bien vérifier après la mise à jour qu’il ne reste pas des anciens fichiers et que cela n’a pas bloqué le broker générant ainsi des pertes de données
-* Problème de cache navigateur : le cache du navigateur doit être vidée à la fin de la mise à jour et web et également après la première connexion.		
+* Problème de cache navigateur : le cache du navigateur doit être vidée à la fin de la mise à jour et web et également après la première connexion.
 * Problème avec des dépendances php (intl) : un nouveau prérequis PHP a été ajouté. Suite à la mise à jour RPM, il est nécessaire de redémarrer Apache pour que celui-ci soit chargé.
 * Problème de compatibilité avec des modules installés : le style de la 2.7.0 change complètement des versions précédentes. Les modules Centreon doivent donc être adaptés en conséquence. Ne migrez pas si vos modules ne sont pas compatibles.
 * Génération de conf qui ne se génère pas normalement : le moteur de génération de la configuration a été réécrit. Il y a donc un risque d’erreurs dans les configurations exportées.
 * Bascule direct de NDOutils vers Centreon Broker au passage de la version 2.7 : Centreon 2.7.0 n’est plus compatible avec Nagios et NDOutils. Des problèmes surviendront en cas de tentative de mise à jour d’une machine fonctionnant avec Nagios/NDOutils vers la version 2.7.0.
-

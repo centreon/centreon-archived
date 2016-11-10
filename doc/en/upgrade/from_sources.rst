@@ -7,6 +7,14 @@ From sources
 In order to upgrade Centreon from sources, :ref:`download <downloads>` the
 latest Centreon package.
 
+.. warning::
+   This release is not yet compatible with other commercial products
+   from Centreon, like Centreon MBI, Centreon BAM or Centreon Map.
+   If your are using any of these products, you are strongly advised
+   **NOT** to update Centreon Web until new releases of the forementioned
+   products are available and specifically mention Centreon Web 2.8
+   compatibility.
+
 ******************
 Shell installation
 ******************
@@ -73,7 +81,7 @@ Load the previous installation parameters::
   Do you want to use the last Centreon install parameters ?
   [y/n], default to [y]:
   > y
-  
+
   Using:  /etc/centreon/instCentCore.conf
   /etc/centreon/instCentPlugins.conf
   /etc/centreon/instCentStorage.conf
@@ -84,15 +92,15 @@ Answer y to components you want to upgrade::
   Do you want to install : Centreon Web Front
   [y/n], default to [n]:
   > y
-  
+
   Do you want to install : Centreon CentCore
   [y/n], default to [n]:
   > y
-  
+
   Do you want to install : Centreon Nagios Plugins
   [y/n], default to [n]:
   > y
-  
+
   Do you want to install : Centreon Snmp Traps process
   [y/n], default to [n]:
   > y
@@ -108,7 +116,7 @@ The path to binaries for Centreon Web::
   ------------------------------------------------------------------------
   	Start CentWeb Installation
   ------------------------------------------------------------------------
-  
+
   Where is your Centreon binaries directory
   default to [/usr/local/centreon/bin]
   >
@@ -118,12 +126,12 @@ The path for extra data for Centreon Web::
 
   Where is your Centreon data information directory
   default to [/usr/local/centreon/data]
-  > 
-  
+  >
+
   Do you want me to create this directory ? [/usr/local/centreon/data]
   [y/n], default to [n]:
   > y
-  Path /usr/local/centreon/data 
+  Path /usr/local/centreon/data
   /usr/bin/perl                                              OK
   Finding Apache user :                                      www-data
   Finding Apache group :                                     www-data
@@ -133,7 +141,7 @@ between monitoring applications::
 
   What is the Centreon group ? [centreon]
   default to [centreon]
-  > 
+  >
 
   Do you want me to create this group ? [centreon]
   [y/n], default to [n]:
@@ -143,8 +151,8 @@ The user of Centreon applications::
 
   What is the Centreon user ? [centreon]
   default to [centreon]
-  > 
-  
+  >
+
   Do you want me to create this user ? [centreon]
   [y/n], default to [n]:
   > y
@@ -159,10 +167,10 @@ For example:
 * Centreon Broker : *centreon-broker*
 * ndo2db : *nagios*
 
-:: 
+::
 
   What is the Broker user ? (optional)
-  > 
+  >
 
 The path to monitoring engine log directory.
 
@@ -180,7 +188,7 @@ The path to monitoring plugins::
 
   Where is your monitoring plugins (libexec) directory ?
   default to [/usr/lib/nagios/plugins]
-  > 
+  >
 
 ::
 
@@ -236,11 +244,11 @@ For more security, you can backup the file **/etc/sudoers**.
 
 ::
 
-  Do you want me to reconfigure your sudo ? (WARNING) 
+  Do you want me to reconfigure your sudo ? (WARNING)
   [y/n], default to [n]:
   > y
   Configuring Sudo                                           OK
-  
+
   ------------------------------------------------------------------------
   	Configure Apache server
   ------------------------------------------------------------------------
@@ -284,7 +292,7 @@ For more security, you can backup the file **/etc/sudoers**.
   Install import-mysql-indexes                               OK
   Prepare indexes schema                                     OK
   Install indexes schema                                     OK
-  
+
   ------------------------------------------------------------------------
   Pear Modules
   ------------------------------------------------------------------------
@@ -312,7 +320,7 @@ For more security, you can backup the file **/etc/sudoers**.
   Log                             1.9.11      1.12.7         OK
   Archive_Zip                     0.1.2       0.1.2          OK
   All PEAR modules                                           OK
-  
+
   ------------------------------------------------------------------------
   		Centreon Post Install
   ------------------------------------------------------------------------
@@ -341,13 +349,13 @@ New information is required.
   Change right : /var/run/centreon                           OK
   Change macros for centstorage init script                  OK
   Replace CentCore default script Macro                      OK
-  
+
   Do you want me to install CentStorage init script ?
   [y/n], default to [n]:
   > y
   CentStorage init script installed                          OK
   CentStorage default script installed                       OK
-  
+
   Do you want me to install CentStorage run level ?
   [y/n], default to [n]:
   > y
@@ -392,13 +400,13 @@ New information is required.
   Install Centreon Core logrotate.d file                     OK
   Replace CentCore init script Macro                         OK
   Replace CentCore default script Macro                      OK
-  
+
   Do you want me to install CentCore init script ?
   [y/n], default to [n]:
   > y
   CentCore init script installed                             OK
   CentCore default script installed                          OK
-  
+
   Do you want me to install CentCore run level ?
   [y/n], default to [n]:
   > y

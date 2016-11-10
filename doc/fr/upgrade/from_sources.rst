@@ -6,24 +6,33 @@ A partir des sources
 
 Pour mettre à jour Centreon depuis les sources, :ref:`télécharger <downloads>` la dernière version de Centreon.
 
+.. warning::
+   Cette release n'est pas encore intégralement compatible avec la
+   totalité des logiciels commerciaux de Centreon tels que Centreon MBI,
+   Centreon BAM ou Centreon Map. Si vous utilisez l'un de ces produits
+   nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
+   Web tant que de nouvelles versions des produits précédents, indiquant
+   clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
+   disponibles.
+
 ******************
 Installation shell
 ******************
 
 Extraire le paquet :
-  
+
   ::
 
   $ tar xvfz centreon-2.x.x.tar.gz
 
 Se déplacer de répertoire :
-  
+
   ::
 
   $ cd centreon-2.x.x
 
 Exécuter le script :
-  
+
   ::
 
   $ ./install -u /etc/centreon
@@ -76,34 +85,34 @@ Choix des composants principaux
 -------------------------------
 
 Chargement des paramètres d'installation précédents :
-  
+
   ::
 
     Do you want to use the last Centreon install parameters ?
     [y/n], default to [y]:
     > y
-    
+
     Using:  /etc/centreon/instCentCore.conf
     /etc/centreon/instCentPlugins.conf
     /etc/centreon/instCentStorage.conf
     /etc/centreon/instCentWeb.conf
 
 Sélectionner les composants à mettre à jour :
-  
+
   ::
 
     Do you want to install : Centreon Web Front
     [y/n], default to [n]:
     > y
-    
+
     Do you want to install : Centreon CentCore
     [y/n], default to [n]:
     > y
-    
+
     Do you want to install : Centreon Nagios Plugins
     [y/n], default to [n]:
     > y
-    
+
     Do you want to install : Centreon Snmp Traps process
     [y/n], default to [n]:
     > y
@@ -115,72 +124,72 @@ Mise à jour de l'interface web
 De nouvelle informaitons sont nécessaires.
 
 Le chemin vers les binaires de centreon :
-  
+
   ::
 
     ------------------------------------------------------------------------
     	Start CentWeb Installation
     ------------------------------------------------------------------------
-    
+
     Where is your Centreon binaries directory
     default to [/usr/local/centreon/bin]
     >
     Path /usr/local/centreon/bin                               OK
 
 Le chemin de données supplémentaires pour Centreon Web :
-  
+
   ::
 
     Where is your Centreon data information directory
     default to [/usr/local/centreon/data]
-    > 
-    
+    >
+
     Do you want me to create this directory ? [/usr/local/centreon/data]
     [y/n], default to [n]:
     > y
-    Path /usr/local/centreon/data 
+    Path /usr/local/centreon/data
     /usr/bin/perl                                              OK
     Finding Apache user :                                      www-data
     Finding Apache group :                                     www-data
 
-Le groupe applicatif Centreon. Ce groupe est utilisé pour les droits 
+Le groupe applicatif Centreon. Ce groupe est utilisé pour les droits
 d'accès entre les applications Centreon :
-  
+
   ::
-    
+
     What is the Centreon group ? [centreon]
     default to [centreon]
-    > 
+    >
 
     Do you want me to create this group ? [centreon]
     [y/n], default to [n]:
     > y
 
 L'utilisateur applicatif Centreon :
-  
+
   ::
-    
+
     What is the Centreon user ? [centreon]
     default to [centreon]
-    > 
-    
+    >
+
     Do you want me to create this user ? [centreon]
     [y/n], default to [n]:
     > y
 
 
-L'utilisateur du module broker. Cet utilisateur est utilisé pour ajouter 
-des droits à Centreon sur les répertoires de configuration et journaux. 
+L'utilisateur du module broker. Cet utilisateur est utilisé pour ajouter
+des droits à Centreon sur les répertoires de configuration et journaux.
 Si vide, l'utilisateur du moteur de supervision sera utilisé.
 
 Par exemple :
 
 * Centreon Broker : *centreon-broker*
 
-  :: 
+  ::
 
     What is the Broker user ? (optional)
-    > 
+    >
 
 Le chemin vers les journaux. Par exmeple :
 
@@ -192,7 +201,7 @@ Le chemin vers les sondes de supervision :
 
     Where is your monitoring plugins (libexec) directory ?
     default to [/usr/lib/nagios/plugins]
-    > 
+    >
 
   ::
 
@@ -201,7 +210,7 @@ Le chemin vers les sondes de supervision :
     Add group centreon to user nagios                          OK
     Add group nagios to user www-data                          OK
     Add group nagios to user centreon                          OK
-    
+
     ------------------------------------------------------------------------
     	Configure Sudo
     ------------------------------------------------------------------------
@@ -211,7 +220,7 @@ Le chemin vers le script de démarrage de l'ordonnanceur. Par exemple :
 * Centreon Engine : */etc/init.d/centengine*
 
 
-Le chemin vers le répertoire de configuratino du broker. Par exemple : 
+Le chemin vers le répertoire de configuratino du broker. Par exemple :
 
 * Centreon Broker : */etc/centreon-broker*
 
@@ -225,11 +234,11 @@ Pour plus de sécurité, sauvegarder le fichier **/etc/sudoers**.
 
   ::
 
-    Do you want me to reconfigure your sudo ? (WARNING) 
+    Do you want me to reconfigure your sudo ? (WARNING)
     [y/n], default to [n]:
     > y
     Configuring Sudo                                           OK
-    
+
     ------------------------------------------------------------------------
     	Configure Apache server
     ------------------------------------------------------------------------
@@ -272,7 +281,7 @@ Pour plus de sécurité, sauvegarder le fichier **/etc/sudoers**.
     Install import-mysql-indexes                               OK
     Prepare indexes schema                                     OK
     Install indexes schema                                     OK
-    
+
     ------------------------------------------------------------------------
     Pear Modules
     ------------------------------------------------------------------------
@@ -300,7 +309,7 @@ Pour plus de sécurité, sauvegarder le fichier **/etc/sudoers**.
     Log                             1.9.11      1.12.7         OK
     Archive_Zip                     0.1.2       0.1.2          OK
     All PEAR modules                                           OK
-    
+
     ------------------------------------------------------------------------
     		Centreon Post Install
     ------------------------------------------------------------------------
@@ -329,13 +338,13 @@ De nouvelle informaitons sont nécessaires.
     Change right : /var/run/centreon                           OK
     Change macros for centstorage init script                  OK
     Replace CentCore default script Macro                      OK
-    
+
     Do you want me to install CentStorage init script ?
     [y/n], default to [n]:
     > y
     CentStorage init script installed                          OK
     CentStorage default script installed                       OK
-    
+
     Do you want me to install CentStorage run level ?
     [y/n], default to [n]:
     > y
@@ -380,13 +389,13 @@ De nouvelle informations sont nécessaires.
     Install Centreon Core logrotate.d file                     OK
     Replace CentCore init script Macro                         OK
     Replace CentCore default script Macro                      OK
-    
+
     Do you want me to install CentCore init script ?
     [y/n], default to [n]:
     > y
     CentCore init script installed                             OK
     CentCore default script installed                          OK
-    
+
     Do you want me to install CentCore run level ?
     [y/n], default to [n]:
     > y

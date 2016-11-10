@@ -6,16 +6,24 @@ Upgrade using RPM
 
 The CES v3.3 includes Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 and are based on CentOS 6 operating system.
 
+.. warning::
+   This release is not yet compatible with other commercial products
+   from Centreon, like Centreon MBI, Centreon BAM or Centreon Map.
+   If your are using any of these products, you are strongly advised
+   **NOT** to update Centreon Web until new releases of the forementioned
+   products are available and specifically mention Centreon Web 2.8
+   compatibility.
+
 Prerequisites
 =============
 
-The prerequisites for Centreon web 2.7 are evolved. It is strongly recommended 
+The prerequisites for Centreon web 2.7 are evolved. It is strongly recommended
 to follow the instructions to set up your platform:
-**Centreon advises you to use MariaDB** instead of MySQL. 
+**Centreon advises you to use MariaDB** instead of MySQL.
 
 +----------+-----------+
 | Software | Version   |
-+==========+===========+ 
++==========+===========+
 | MariaDB  | >= 5.5.35 |
 +----------+-----------+
 | MySQL    | >= 5.1.73 |
@@ -71,17 +79,17 @@ In order to update the Centreon monitoring interface, simply run the following c
  # yum update centreon
 
 .. warning::
-   If you encounter dependency problems with centreon-engine-webservices, please remove this RPM that is now deprecated. Run the following line: 
+   If you encounter dependency problems with centreon-engine-webservices, please remove this RPM that is now deprecated. Run the following line:
    # yum remove centreon-engine-webservices
 
-If you come from Centreon 2.7.0-RC2, in order to avoid the rpm naming problem please launch the following command line: 
+If you come from Centreon 2.7.0-RC2, in order to avoid the rpm naming problem please launch the following command line:
 
-  :: 
+  ::
 
   # yum downgrade centreon-2.7.0 centreon-plugins-2.7.0 centreon-base-config-centreon-engine-2.7.0 centreon-plugin-meta-2.7.0 centreon-common-2.7.0 centreon-web-2.7.0 centreon-trap-2.7.0 centreon-perl-libs-2.7.0
 
 
-Restart web server 
+Restart web server
 ******************
 
 Due to the installation of PHP-intl it is necessary to restart the Apache web server
@@ -139,7 +147,7 @@ menu and click on the generate configuration icon (new icon).
 
 .. note::
     La generate page was removed from Centreon web. You have to select your poller and to click on the new icon.
- 
+
 Restart all Centreon components on all poller
 *********************************************
 
@@ -158,7 +166,7 @@ To reduce risks and issues during update to Centreon web 2.7 linked to Centreon
 Engine 1.5 and Centreon Broker 2.11 we shared to you a list of known issues.
 Please check this points during and after your upgrade.
 
-Known issues 
+Known issues
 ************
 
 * Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 2.11.0 and Centreon Engine 1.5.0) are prerequisites for Centreon web 2.7.0
@@ -171,4 +179,3 @@ Known issues
 * Incompatibility with Centreon modules already installed. Since v2.7.0 version Centreon web interface have a new look. If you have modules please don't upgrade Centreon web.
 * Generation of configuration issue: the Centreon configuration generation engine was entirely rewritten. There is therefore a risk of errors in the exported configurations
 * Abrupt change from NDOutils to Centreon Broker during Centreon web 2.7.0 update. Centreon web 2.7.0 is no more compatible with Nagios and NDOutils. Numerus issues will appear if you want to update your platform based on Nagios and NDOutils.
-
