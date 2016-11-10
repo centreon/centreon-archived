@@ -248,6 +248,7 @@ Please check this points during and after your upgrade.
 Known issues
 ************
 
+* Not compatible with most commercial products : Centreon MBI, Centreon BAM and Centreon Map are not yet compatible with Centreon Web 2.8.
 * Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.6) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
 * Change database engine from MyISAM to InnoDB for all tables (except logs and data_bin tables)
