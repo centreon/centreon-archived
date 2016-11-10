@@ -60,6 +60,33 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
+**************
+Repository CES
+**************
+
+Si vous êtes déjà un utilisateur de CES, vous devez mettre à jour votre
+fichier .repo pour utiliser les logiciels faisant partie de CES 3.4
+(essentiellement Centreon Web 2.8 et les composants associés). Entrez
+les commandes suivantes en fonction de votre système d'exploitation.
+
+CentOS 6
+********
+
+::
+
+   $ rm -f /etc/yum.repos.d/ces-standard.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+CentOS 7
+********
+
+::
+
+   $ rm -f /etc/yum.repos.d/ces-standard.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
 ***********
 Mise à jour
 ***********
