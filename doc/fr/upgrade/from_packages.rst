@@ -4,7 +4,8 @@
 Mise à jour RPM
 ===============
 
-La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 basé sur une distribution CentOS 6.
+La version 3.4 de Centreon Entreprise Server (CES) est l'ensemble Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+Deux versions de CES 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
 
 .. warning::
    Cette release n'est pas encore intégralement compatible avec la
@@ -19,25 +20,56 @@ La version 3.3 de CES est l'ensemble Centreon web 2.7, Centreon Engine 1.5, Cent
 Prérequis
 *********
 
-Les prérequis nécessaires au fonctionnement de Centreon 2.7 ont évolué par rapport aux précédentes versions. Il est important de suivre les recommandations suivantes pour pouvoir avoir une plate-forme fonctionnelle :
+Les prérequis nécessaires au fonctionnement de Centreon Web 2.8 ont
+évolué par rapport aux précédentes versions. Il est important de suivre
+les recommandations suivantes pour avoir une plate-forme fonctionnelle.
 
-* Apache = 2.2
-* Centreon Engine >= 1.5.0
-* Centreon Broker >= 2.11.0
-* CentOS = 6.x ou RedHat >= 6.x
-* MariaDB = 5.5.35 ou MySQL = 5.1.73
-* Net-SNMP = 5.5
-* PHP >= 5.3.0
-* Qt = 4.7.4
-* RRDtools = 1.4.7
+**Centreon vous recommande d'utiliser MariaDB** à la place de MySQL.
 
-Vous partez d'un serveur déjà existant : nous vous donnons ici toutes les étapes pour faire une migration sans perte de données.
++----------+-----------+
+| Software | Version   |
++==========+===========+
+| MariaDB  | >= 5.5.35 |
++----------+-----------+
+| MySQL    | >= 5.1.73 |
++----------+-----------+
+
+***********************
+Dépendances logicielles
+***********************
+
+The following table describes the dependent software:
+
++----------+-----------+
+| Software | Version   |
++==========+===========+
+| Apache   | 2.2       |
++----------+-----------+
+| GnuTLS   | >= 2.0    |
++----------+-----------+
+| Net-SNMP | 5.5       |
++----------+-----------+
+| openssl  | >= 1.0.1e |
++----------+-----------+
+| PHP      | >= 5.3.0  |
++----------+-----------+
+| Qt       | >= 4.7.4  |
++----------+-----------+
+| RRDtools | 1.4.7     |
++----------+-----------+
+| zlib     | 1.2.3     |
++----------+-----------+
+
+***********
+Mise à jour
+***********
 
 1. Arrêt des instances de collecte
 ==================================
 
-Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention
-actif pour Centreon-Broker.
+.. warning::
+   Avant de commencer la mise à jour, assurez vous de ne pas avoir de fichier de rétention
+   actif pour Centreon-Broker.
 
 Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 
@@ -49,7 +81,7 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 2. Mise à jour l’ensemble des paquets
 =====================================
 
-Pour installer la nouvelle version de centreon depuis une CES 3.2, lancez la commande suivante :
+Pour installer la nouvelle version de Centreon depuis une CES 3.4, lancez la commande suivante :
 
    ::
 
@@ -75,8 +107,8 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
 
    # /etc/init.d/httpd restart
 
-4. Réalisez la mise à jour Web de Centreon 2.7.0
-================================================
+4. Réalisez la mise à jour Web de Centreon 2.8
+==============================================
 
 Suivez le wizard de mise à jour Web afin de terminer les mises à jours pour les modifications au niveau de la base SQL soient appliquées. Durant cette phase, un nouveau fichier de configuration va être également créé.
 
@@ -117,7 +149,7 @@ Finalisation
 5. Exportez la configuration vers l’ensemble des pollers
 ========================================================
 
-Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération (attention la page de génération a été supprimée).
+Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération.
 
 6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
 =======================================================================================
@@ -133,12 +165,12 @@ Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le
 Les risques identifiés lors de la mise à jour
 *********************************************
 
-Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.7 de Centreon couplée à la version 1.5 de Engine et 2.11 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
+Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.8 de Centreon couplée à la version 1.6 de Engine et 3.0 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
 
 Les risques sont les suivants :
 ===============================
 
-* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 2.11.0 et Centreon Engine 1.5.0) sont des prérequis au fonctionnement de Centreon 2.7.0.
+* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 3.0 et Centreon Engine 1.6) sont des prérequis au fonctionnement de Centreon Web 2.8
 * Problèmes de mise à jour des schémas de base de données
 * Passage de toutes les tables MySQL en InnoDB (sauf logs et data_bin qui ne seront pas migrées automatiquement)
 * Changement au niveau de la table hostgroup et servicegroup dans la base storage

@@ -4,7 +4,8 @@
 Upgrade using RPM
 =================
 
-The CES v3.3 includes Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.11 and are based on CentOS 6 operating system.
+Centreon Entreprise Server (CES) v3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+It comes in two operating system flavors, either CentOS 6 or CentOS 7.
 
 .. warning::
    This release is not yet compatible with other commercial products
@@ -17,8 +18,9 @@ The CES v3.3 includes Centreon web 2.7, Centreon Engine 1.5, Centreon Broker 2.1
 Prerequisites
 =============
 
-The prerequisites for Centreon web 2.7 are evolved. It is strongly recommended
-to follow the instructions to set up your platform:
+The prerequisites for Centreon Web 2.8 have evolved. It is strongly recommended
+to follow the instructions to set up your platform.
+
 **Centreon advises you to use MariaDB** instead of MySQL.
 
 +----------+-----------+
@@ -143,10 +145,7 @@ Generate and export configuration to all poller
 
 To conclude the installation it is necessary to generate Centreon Engine and
 Centreon Broker configuration. To perform this operation go to **Configuration > Poller**
-menu and click on the generate configuration icon (new icon).
-
-.. note::
-    La generate page was removed from Centreon web. You have to select your poller and to click on the new icon.
+menu and click on the generate configuration icon.
 
 Restart all Centreon components on all poller
 *********************************************
@@ -162,14 +161,14 @@ Then, if all is ok, go on the Centreon interface and log out and follow the step
 The identified risks during update
 ==================================
 
-To reduce risks and issues during update to Centreon web 2.7 linked to Centreon
-Engine 1.5 and Centreon Broker 2.11 we shared to you a list of known issues.
+To reduce risks and issues during update to Centreon Web 2.8 linked to Centreon
+Engine 1.6 and Centreon Broker 3.0 we shared to you a list of known issues.
 Please check this points during and after your upgrade.
 
 Known issues
 ************
 
-* Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 2.11.0 and Centreon Engine 1.5.0) are prerequisites for Centreon web 2.7.0
+* Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.6) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
 * Change database engine from MyISAM to InnoDB for all tables (except logs and data_bin tables)
 * Update hostgroup and servicegroup tables schemas

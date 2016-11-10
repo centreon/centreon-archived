@@ -202,7 +202,7 @@ d'installation des prérequis :
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.7.0                                   #
+  #                                    v2.8.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -352,7 +352,7 @@ l'utilisateur sera vraisemblablement *centreon-engine*.
   >
 
 Cet utilisateur exécute le multiplexeur de flux Centreon Broker. Si vous avez suivi
-`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-broker/en/2.11/installation/index.html#using-sources>`_
+`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 l'utilisateur sera vraisemblablement *centreon-broker*.
 
 ::

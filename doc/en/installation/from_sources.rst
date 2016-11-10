@@ -182,7 +182,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.7.0                                   #
+  #                                    v2.8.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -333,7 +333,7 @@ the user will likely be *centreon-engine*.
   >
 
 This is the user used to run the stream broker (Centreon Broker). If you followed the
-`official installation procedure <https://documentation.centreon.com/docs/centreon-broker/en/2.11/installation/index.html#using-sources>`_
+`official installation procedure <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 the user will likely be *centreon-broker*.
 
  ::
