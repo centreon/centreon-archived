@@ -14,11 +14,24 @@ Prerequisites
 
 To install Centreon software from the CES repository, you should first install the file linked to the repository.
 
-Perform the following command from a user with sufficient rights:
+Perform the following command from a user with sufficient rights.
 
- ::
+CES Repository
+--------------
 
-  $ wget http://yum.centreon.com/standard/3.4/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+For CentOS 6.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+For CentOS 7.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
 
 The repository is now installed.
 

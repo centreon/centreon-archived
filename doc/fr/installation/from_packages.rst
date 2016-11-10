@@ -15,14 +15,27 @@ Red Hat en version 6.x et 7.x.
 Prérequis
 *********
 
+Dépôt CES
+---------
+
 Afin d'installer les logiciels Centreon à partir des dépôts CES, vous
 devez au préalable installer le fichier lié au dépôt.
 
-Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants :
+Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants.
 
-  ::
+Pour CentOS 6.
 
-    $ wget http://yum.centreon.com/standard/3.4/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+Pour CentOS 7.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
 
 Le dépôt est maintenant installé.
 

@@ -60,9 +60,9 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
-**************
-Repository CES
-**************
+*********
+Dépôt CES
+*********
 
 Si vous êtes déjà un utilisateur de CES, vous devez mettre à jour votre
 fichier .repo pour utiliser les logiciels faisant partie de CES 3.4
@@ -205,8 +205,8 @@ Si vous utilisez des modules Centreon, vous devrez les mettre à jour
 satisfaisante. Cela est particulièrement vrai pour les utilisateurs
 de EMS/EPP.
 
-Mise à jour du repository
-=========================
+Mise à jour du dépôt
+====================
 
 Comme pour CES, le fichier .repo doit être mis à jour pour utiliser la
 version 3.4. N'hésitez pas à contacter le support Centreon si vous ne
