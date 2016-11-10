@@ -261,11 +261,8 @@ Les risques sont les suivants :
 * Incompatibilité avec la plupart des produits commerciaux : Centreon MBI, Centreon BAM et Centreon Map ne sont pas encore compatible avec Centreon Web 2.8.
 * Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 3.0 et Centreon Engine 1.6) sont des prérequis au fonctionnement de Centreon Web 2.8
 * Problèmes de mise à jour des schémas de base de données
-* Passage de toutes les tables MySQL en InnoDB (sauf logs et data_bin qui ne seront pas migrées automatiquement)
-* Changement au niveau de la table hostgroup et servicegroup dans la base storage
-* Les temporaries et les failovers sont définis par défaut sur Centreon Broker : Il est donc possible que cela entre en conflit avec la configuration existant avant la mise à jour. Bien vérifier après la mise à jour qu’il ne reste pas des anciens fichiers et que cela n’a pas bloqué le broker générant ainsi des pertes de données
-* Problème de cache navigateur : le cache du navigateur doit être vidée à la fin de la mise à jour et web et également après la première connexion.
-* Problème avec des dépendances php (intl) : un nouveau prérequis PHP a été ajouté. Suite à la mise à jour RPM, il est nécessaire de redémarrer Apache pour que celui-ci soit chargé.
-* Problème de compatibilité avec des modules installés : le style de la 2.7.0 change complètement des versions précédentes. Les modules Centreon doivent donc être adaptés en conséquence. Ne migrez pas si vos modules ne sont pas compatibles.
-* Génération de conf qui ne se génère pas normalement : le moteur de génération de la configuration a été réécrit. Il y a donc un risque d’erreurs dans les configurations exportées.
-* Bascule direct de NDOutils vers Centreon Broker au passage de la version 2.7 : Centreon 2.7.0 n’est plus compatible avec Nagios et NDOutils. Des problèmes surviendront en cas de tentative de mise à jour d’une machine fonctionnant avec Nagios/NDOutils vers la version 2.7.0.
+* Les nouveau graphiques de performances ont des échelles affichant trop de détails
+* Des erreurs PHP de type warning apparaissent dans le journal d'évènement d'Apache
+* Le zoom affecte tous les graphiques
+* Le retour arrière du zoom des graphiques est absent
+* L'export CSV ne fonctionne pas pour les eventlogs

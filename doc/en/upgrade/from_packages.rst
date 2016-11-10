@@ -251,11 +251,8 @@ Known issues
 * Not compatible with most commercial products : Centreon MBI, Centreon BAM and Centreon Map are not yet compatible with Centreon Web 2.8.
 * Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.6) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
-* Change database engine from MyISAM to InnoDB for all tables (except logs and data_bin tables)
-* Update hostgroup and servicegroup tables schemas
-* The Centreon Broker temporaries and failovers are now manage by Centreon web by default. It may have a conflict with existing configuration of Centreon Broker. Please check the configuration and logs of all Centreon Broker to be sure that all broker are running and no data are lost.
-* Browser cache issue: you have to clean browser cache after Centreon web migration and just after first connection.
-* PHP dependency issue: a new PHP component is needed by Centreon web interface. You have to restart Apache web server.
-* Incompatibility with Centreon modules already installed. Since v2.7.0 version Centreon web interface have a new look. If you have modules please don't upgrade Centreon web.
-* Generation of configuration issue: the Centreon configuration generation engine was entirely rewritten. There is therefore a risk of errors in the exported configurations
-* Abrupt change from NDOutils to Centreon Broker during Centreon web 2.7.0 update. Centreon web 2.7.0 is no more compatible with Nagios and NDOutils. Numerus issues will appear if you want to update your platform based on Nagios and NDOutils.
+* Scales in peformance graphs display too many steps
+* PHP Warning issues when user access to performance graphs menu in Centreon Web
+* When you zoom on a graph the zoom is applied for all graphs
+* You can't cancel zoom
+* CSV export doesn't work for eventlogs
