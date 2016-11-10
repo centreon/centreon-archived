@@ -70,7 +70,7 @@ fichier .repo pour utiliser les logiciels faisant partie de CES 3.4
 les commandes suivantes en fonction de votre système d'exploitation.
 
 CentOS 6
-********
+========
 
 ::
 
@@ -79,7 +79,7 @@ CentOS 6
 
 
 CentOS 7
-********
+========
 
 ::
 
