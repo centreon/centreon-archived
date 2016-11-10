@@ -174,6 +174,9 @@ The installation is now finished, click on the ``Finish`` button, you will be re
 
 Enter your credentials to log in.
 
+
+.. _installation_ppm:
+
 *****************************
 Easy monitoring configuration
 *****************************

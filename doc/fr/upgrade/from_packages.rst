@@ -14,7 +14,7 @@ Deux versions de CES 3.4 sont disponibles, en fonction du système d'exploitatio
    nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
    Web tant que de nouvelles versions des produits précédents, indiquant
    clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
-   disponibles.
+   disponibles. La seule exception à cette exclusion concerne EMS/EPP.
 
 *********
 Prérequis
@@ -160,6 +160,67 @@ Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le
 
    # /etc/init.d/centengine start
    # /etc/init.d/cbd start
+
+
+**********************
+Mise à jour de EMS/EPP
+**********************
+
+.. note::
+   Pas utilisateur de EMS/EPP ? Vous trouverez cependant les Plugins
+   Packs Centreon extrêmement utiles pour vous aider à configurer votre
+   supervision en quelques minutes. Vous trouverez les informations
+   d'installation dans notre :ref:`documentation en ligne <installation_ppm>`.
+
+
+Si vous utilisez des modules Centreon, vous devrez les mettre à jour
+également pour qu'ils continuent de fonctionner de manière
+satisfaisante. Cela est particulièrement vrai pour les utilisateurs
+de EMS/EPP.
+
+Mise à jour du repository
+=========================
+
+Comme pour CES, le fichier .repo doit être mis à jour pour utiliser la
+version 3.4. N'hésitez pas à contacter le support Centreon si vous ne
+savez pas comment réaliser cette opération.
+
+Mise à jour des paquets
+=======================
+
+Entrez la commande suivante sur le serveur central pour mettre à jour
+Centreon Plugin Pack Manager, les Plugin Packs et leurs plugins
+associés.
+
+::
+
+   # yum update centreon-pp-manager ces-plugins-* ces-pack-*
+
+
+Vous devrez également lancer la commande suivante sur chaque collecteur
+utilisant les Plugin Packs.
+
+::
+
+   # yum update ces-plugins-*
+
+
+Mise à jour web
+===============
+
+Vous devez maintenant lancer la mise à jour via l'interface web. Pour
+cela rendez-vous à la page Administration -> Extensions -> Modules.
+
+.. image:: /_static/images/upgrade/ppm_1.png
+   :align: center
+
+Installez tout d'abord Centreon License Manager (dépendance de PPM)
+puis Centreon Plugin Pack Manager.
+
+.. image:: /_static/images/upgrade/ppm_2.png
+   :align: center
+
+Bien, votre module fonctionne de nouveau.
 
 *********************************************
 Les risques identifiés lors de la mise à jour

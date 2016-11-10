@@ -94,6 +94,9 @@ Vous devez copier cette clé sur le collecteur :
 
   $ ssh-copy-id centreon@your_poller_ip
 
+
+.. _installation_ppm:
+
 ***************************************
 Configurez votre supervision facilement
 ***************************************
