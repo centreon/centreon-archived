@@ -1,8 +1,8 @@
 .. _firststepsces3:
 
-=========
-Using CES
-=========
+==============
+Using Centreon
+==============
 
 ************
 Installation
@@ -256,4 +256,60 @@ it is necessary update the server. To do this:
 
 Allow the update to run fully and then restart the server in case of a kernel update.
 
-Start your configuration by clicking `here<configuration_start>>`.
+.. _installation_ppm:
+
+*****************************
+Easy monitoring configuration
+*****************************
+
+Centreon is great in itself, highly versatile  and can be configured to
+fit the very specifics of your monitored infrastructure. However you
+might find useful to use Centreon IMP to get you started in minutes.
+Centreon IMP provides you Plugin Packs which are bundled configuration
+templates that highly reduce the time needed to properly monitor the
+most common services of your network.
+
+Centreon IMP needs the technical components Centreon License Manager
+and Centreon Plugin Pack Manager to work.
+
+Install packages
+----------------
+
+When using CES, installation of Centreon Plugin Pack Manager is very
+easy. You'll see that Centreon License Manager will be installed too
+as a dependency.
+
+::
+
+   $ yum install centreon-pp-manager
+
+Web install
+-----------
+
+Once the packages installed, you need to enable the module in Centreon.
+So get to the Administration -> Extensions -> Modules page.
+
+.. image:: /_static/images/installation/ppm_1.png
+   :align: center
+
+Install Centreon License Manager (dependency of Centreon Plugin Pack Manager) first.
+
+.. image:: /_static/images/installation/ppm_2.png
+   :align: center
+
+Then install Centreon Plugin Pack Manager itself.
+
+.. image:: /_static/images/installation/ppm_3.png
+   :align: center
+
+You're now ready to got to Administration -> Extensions -> Plugin packs -> Setup.
+You'll find there 6 free Plugin Packs to get you started. 5 more are
+available after free registration and 150+ if you subscribe to the IMP
+offer (more information on `our website <https://www.centreon.com>`_).
+
+.. image:: /_static/images/installation/ppm_4.png
+   :align: center
+
+You can continue to configure your monitoring with Centreon IMP by
+following :ref:`this guide <impconfiguration>`.
+

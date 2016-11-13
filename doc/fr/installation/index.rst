@@ -21,4 +21,5 @@ Enfin, vous pourrez procéder à l'installation de la plate-forme.
    downloads
    01a
    from_packages
+   from_VM
    from_sources

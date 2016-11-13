@@ -20,4 +20,5 @@ Finally, you can install the platform.
     downloads
     01a
     from_packages
+    from_VM
     from_sources
