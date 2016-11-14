@@ -92,8 +92,8 @@ Stop Centreon components
 
 Stop Centreon Broker and Centreon Engine on **all poller**::
 
-   # /etc/init.d/centengine stop
-   # /etc/init.d/cbd stop
+   # service centengine stop
+   # service cbd stop
 
 Update components
 *****************
@@ -123,7 +123,7 @@ to load new extension.
 
  ::
 
-   # /etc/init.d/httpd restart
+   # service httpd restart
 
 Conclude update via Centreon web interface
 ******************************************
@@ -176,8 +176,8 @@ Restart all Centreon components on all poller
 
 Start Centreon Broker and Centreon Engine on **all poller**::
 
-   # /etc/init.d/centengine start
-   # /etc/init.d/cbd start
+   # service centengine start
+   # service cbd start
 
 
 Then, if all is ok, go on the Centreon interface and log out and follow the steps :

@@ -170,7 +170,7 @@ If the following error message appears: **Add innodb_file_per_table=1 in my.cnf 
 
 ::
 
-  /etc/init.d/mysql restart
+  service mysql restart
 
 5.  Click on **Refresh**
 
@@ -209,7 +209,7 @@ To start monitoring engine :
 
 ::
  
-  /etc/init.d/cbd start
+  service cbd start
 
 Monitoring is now working.
 

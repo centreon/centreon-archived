@@ -102,8 +102,8 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 
    ::
 
-   # /etc/init.d/centengine stop
-   # /etc/init.d/cbd stop
+   # service centengine stop
+   # service cbd stop
 
 2. Mise à jour l’ensemble des paquets
 =====================================
@@ -132,7 +132,7 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
 
    ::
 
-   # /etc/init.d/httpd restart
+   # service httpd restart
 
 4. Réalisez la mise à jour Web de Centreon 2.8
 ==============================================
@@ -185,8 +185,8 @@ Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le
 
   ::
 
-   # /etc/init.d/centengine start
-   # /etc/init.d/cbd start
+   # service centengine start
+   # service cbd start
 
 
 **********************

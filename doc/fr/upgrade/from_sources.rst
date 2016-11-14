@@ -52,7 +52,7 @@ revenir à l'étape [Step 01] et installer les prérequis :
     #                         Centreon (www.centreon.com)                         #
     #                          Thanks for using Centreon                          #
     #                                                                             #
-    #                                    v2.6.0                                   #
+    #                                    v2.8.1                                   #
     #                                                                             #
     #                               infos@centreon.com                            #
     #                                                                             #
