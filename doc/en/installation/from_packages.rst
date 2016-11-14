@@ -115,41 +115,42 @@ The End of installation wizard of Centreon is displayed, click on **Next**.
 
 .. image :: /images/user/acentreonwelcome.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
 
 .. image :: /images/user/acentreoncheckmodules.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Click on **Next**.
 
 .. image :: /images/user/amonitoringengine2.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Click on **Next**.
 
 .. image :: /images/user/abrokerinfo2.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Define the data concerning the admin user, click on **Next**.
 
 .. image :: /images/user/aadmininfo.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
 
 .. image :: /images/user/adbinfo.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
 
 1.  Log-on to the ‘root’ user on your server
+
 2.  Modify this file 
 
 ::
@@ -160,26 +161,24 @@ If the following error message appears: **Add innodb_file_per_table=1 in my.cnf 
 
 .. raw:: latex 
 
-        \begin{lstlisting}
+::
+
   [mysqld] 
   innodb_file_per_table=1
-        \end{lstlisting}
 
 4.  Restart mysql service
 
-.. raw:: latex
+::
 
-        \begin{lstlisting}
   /etc/init.d/mysql restart
-        \end{lstlisting}
 
-5.  click on **Refresh**
+5.  Click on **Refresh**
 
 The End of installation wizard configures the databases, click on **Next**.
 
 .. image :: /images/user/adbconf.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 The installation is finished, click on Finish.
 
@@ -187,13 +186,13 @@ At this stage a publicity allows to know the latest Centreon . If your platform 
 
 .. image :: /images/user/aendinstall.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 You can now log in.
 
 .. image :: /images/user/aconnection.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Start monitoring
 ================

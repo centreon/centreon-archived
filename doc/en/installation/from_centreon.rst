@@ -164,35 +164,34 @@ By default, the ‘localhost’ server is defined and the root password is empty
 
 If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
 
-1.	Log-on to the ‘root’ user on your server
-2.	Modify this file 
+1.    Log-on to the ‘root’ user on your server
+
+2.    Modify this file 
 
 ::
+
 	/etc/my.cnf
-3.	Add these lines to the file
 
-.. raw:: latex 
+3.    Add these lines to the file
 
-\begin{lstlisting}
+::
+
 	[mysqld] 
 	innodb_file_per_table=1
-\end{lstlisting}
 
-4.	Restart mysql service
+4.    Restart mysql service
 
-.. raw:: latex
+::
 
-\begin{lstlisting}
 	/etc/init.d/mysql restart
-\end{lstlisting}
 
-5.	click on **Refresh**
+5.    Click on **Refresh**
 
 The End of installation wizard configures the databases, click on **Next**.
 
 .. image :: /images/user/adbconf.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 The installation is finished, click on Finish.
 
@@ -200,7 +199,7 @@ At this stage a publicity allows to know the latest Centreon . If your platform 
 
 .. image :: /images/user/aendinstall.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 You can now log in.
 
@@ -218,7 +217,7 @@ To start monitoring engine :
  3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
  4.	Check **Move Export Files** and **Restart Monitoring Engine**
  5.	Click on **Export** again
- 6.     Log into the ‘root’ user on your server
+ 6.   Log into the ‘root’ user on your server
  7.	Start Centreon Broker
 
 ::
@@ -241,7 +240,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 *       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
 *       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 *       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
-*	The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
+*	     The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
 *       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
 
 Before going further
