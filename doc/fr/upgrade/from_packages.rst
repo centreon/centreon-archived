@@ -16,6 +16,12 @@ Deux versions de CES 3.4 sont disponibles, en fonction du système d'exploitatio
    clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
    disponibles. La seule exception à cette exclusion concerne EMS/EPP.
 
+.. warning::
+   Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise 
+   pas le module centreon knowledgebase (aussi appelé Centreon KB). Si c'est le 
+   cas, veuillez le désinstaller. Le module Centreon KB est maintenant intégré 
+   à la version 2.8.
+
 *********
 Prérequis
 *********

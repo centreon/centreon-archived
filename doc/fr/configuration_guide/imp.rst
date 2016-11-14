@@ -58,8 +58,9 @@ Installer un Plugin Pack
 
 Pour installer un pack, cliquer sur l’icone d’installation.
 
-Avant installation.
-
+============================
+|Avant installation |
+===================================
 .. image:: /_static/images/configuration/imp5.png
    :align: center
 

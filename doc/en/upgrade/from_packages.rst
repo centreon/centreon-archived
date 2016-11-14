@@ -15,9 +15,11 @@ It comes in two operating system flavors, either CentOS 6 or CentOS 7.
    products are available and specifically mention Centreon Web 2.8
    compatibility. A notable exception to this notice is EMS/EPP.
 
-.. note:: 
-   If your centreon contains the centreon knowlegdebase module, please first
-   uninstall the module (from the web) in order to avoid upgrade problem. 
+.. warning:: 
+   If your centreon contains the centreon knowlegdebase module (AKA Centreon KB), 
+   please first uninstall the module (from the web) in order to avoid upgrade problem.
+   Centreon KB is now embedded into Centreon since the version 2.8.0. 
+
 
 Prerequisites
 =============
