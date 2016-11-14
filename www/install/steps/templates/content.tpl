@@ -28,7 +28,7 @@
 
                     jQuery(document).ready(function() {
                         jQuery.ajax({
-                            url: 'https://advertising.centreon.com/centreon-2.8.0-beta1/pub.json',
+                            url: 'https://advertising.centreon.com/centreon-2.8.1/pub.json',
                             type: 'GET',
                             dataType: 'jsonp',
                             crossDomain: true
