@@ -1,10 +1,10 @@
 .. _upgrade_from_packages:
 
-=================
-Upgrade using RPM
-=================
+=============
+From Packages
+=============
 
-Centreon Entreprise Server (CES) v3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
 It comes in two operating system flavors, either CentOS 6 or CentOS 7.
 
 .. warning::
@@ -14,6 +14,10 @@ It comes in two operating system flavors, either CentOS 6 or CentOS 7.
    **NOT** to update Centreon Web until new releases of the forementioned
    products are available and specifically mention Centreon Web 2.8
    compatibility. A notable exception to this notice is EMS/EPP.
+
+.. notice:: 
+   If your centreon containt centreon knowlegdebase and is installed, please first
+   uninstall the module in order to avoid upgrade problem. 
 
 Prerequisites
 =============
