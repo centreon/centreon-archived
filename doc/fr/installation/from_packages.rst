@@ -15,14 +15,27 @@ Red Hat en version 6.x et 7.x.
 Prérequis
 *********
 
+Dépôt CES
+---------
+
 Afin d'installer les logiciels Centreon à partir des dépôts CES, vous
 devez au préalable installer le fichier lié au dépôt.
 
-Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants :
+Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants.
 
-  ::
+Pour CentOS 6.
 
-    $ wget http://yum.centreon.com/standard/3.4/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+Pour CentOS 7.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
 
 Le dépôt est maintenant installé.
 
@@ -94,17 +107,23 @@ Vous devez copier cette clé sur le collecteur :
 
   $ ssh-copy-id centreon@your_poller_ip
 
+
+.. _installation_ppm:
+
 ***************************************
 Configurez votre supervision facilement
 ***************************************
 
 En lui-même Centreon est un excellent outil de supervision et peut être
 configuré pour correspondre exactement à vos besoins. Cependant vous
-trouverez peut-être utile d'utiliser Centreon Plugins Pack Manager pour
-vous aider à configurer rapidement votre supervision. Les Plugin Packs
-de Centreon sont des paquets contenant des modèles de configuration qui
-réduisent drastiquement le temps nécessaire pour superviser la plupart
-des services de votre réseau.
+trouverez peut-être utile d'utiliser Centreon IMP pour vous aider à
+configurer rapidement votre supervision. Centreon IMP vous fournit des
+Plugin Packs qui sont des paquets contenant des modèles de configuration
+qui réduisent drastiquement le temps nécessaire pour superviser la
+plupart des services de votre réseau.
+
+Centreon IMP nécessite les composants techniques Centreon License
+Manager et Centreon Plugin Pack Manager pour fonctionner.
 
 Installation système
 --------------------
@@ -114,6 +133,7 @@ noterez que Centreon Plugin Pack Manager installe également Centreon
 License Manager en tant que dépendance.
 
 ::
+
    $ yum install centreon-pp-manager
 
 Installation web
@@ -121,8 +141,19 @@ Installation web
 
 Une fois les paquets installés, il est nécessaire d'activer les modules
 dans Centreon. Rendez-vous à la page Administration -> Extensions -> Modules.
-Installez tout d'abord Centreon License Manager, puis Centreon Plugin
-Pack Manager.
+
+.. image:: /_static/images/installation/ppm_1.png
+   :align: center
+
+Installez tout d'abord Centreon License Manager.
+
+.. image:: /_static/images/installation/ppm_2.png
+   :align: center
+
+Puis installez Centreon Plugin Pack Manager.
+
+.. image:: /_static/images/installation/ppm_3.png
+   :align: center
 
 Vous pouvez maintenant vous rendre à la page Administration -> Extensions
 -> Plugin packs -> Setup. Vous y trouverez vos six premiers Plugin Packs
@@ -130,3 +161,9 @@ gratuits pour vous aider à démarrer. Cinq Plugin Packs supplémentaires
 sont débloqués après vous être inscrit et plus de 150 sont disponibles
 si vous souscrivez à l'offre IMP (plus d'informations sur
 `notre site web <https://www.centreon.com>`_).
+
+.. image:: /_static/images/installation/ppm_4.png
+   :align: center
+
+Vous pouvez continuer à configurer votre supervision en utilisant
+Centreon IMP en suivant :ref:`ce guide <impconfiguration>`.

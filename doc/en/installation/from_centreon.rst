@@ -1,8 +1,8 @@
 .. _firststepsces3:
 
-=========
-Using CES
-=========
+==============
+Using Centreon
+==============
 
 ************
 Installation
@@ -11,7 +11,7 @@ Installation
 Step 1 : Start
 ==============
 
-To install, start your server on the support (created from the ISO file) of the Centreon Enterprise Server.
+To install, start your server on the support (created from the ISO file) of the Centreon.
 Start with the **Install or upgrade an existing system** option
 
 .. image :: /images/user/abootmenu.png
@@ -23,6 +23,7 @@ Click on **Next**
 .. image :: /images/user/adisplayicon.png
    :align: center
    :scale: 65%
+
 
 Step 2 : Choice of language
 ===========================
@@ -38,6 +39,7 @@ Select the keyboard used by your system and click on **Next**.
 .. image :: /images/user/akeyboard.png
    :align: center
    :scale: 65%
+
 
 Step 3 : General configuration
 ==============================
@@ -78,6 +80,7 @@ Select the partitioning options that suit you best. Then validate.
    :align: center
    :scale: 65%
 
+
 Step 4 : Component selection
 ============================
 
@@ -112,6 +115,7 @@ When the installation is finished, click on **Restart**.
    :align: center
    :scale: 65%
 
+
 *************
 Configuration
 *************
@@ -126,71 +130,68 @@ The End of installation wizard of Centreon is displayed, click on **Next**.
 
 .. image :: /images/user/acentreonwelcome.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
 
 .. image :: /images/user/acentreoncheckmodules.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Click on **Next**.
 
 .. image :: /images/user/amonitoringengine2.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Click on **Next**.
 
 .. image :: /images/user/abrokerinfo2.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Define the data concerning the admin user, click on **Next**.
 
 .. image :: /images/user/aadmininfo.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
 
 .. image :: /images/user/adbinfo.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
 
-1.	Log-on to the ‘root’ user on your server
-2.	Modify this file 
+1.    Log-on to the ‘root’ user on your server
+
+2.    Modify this file 
 
 ::
 
 	/etc/my.cnf
 
-3.	Add these lines to the file
+3.    Add these lines to the file
 
-.. raw:: latex 
+::
 
-        \begin{lstlisting}
 	[mysqld] 
 	innodb_file_per_table=1
-        \end{lstlisting}
 
-4.	Restart mysql service
+4.    Restart mysql service
 
-.. raw:: latex
+::
 
-        \begin{lstlisting}
-	/etc/init.d/mysql restart
-        \end{lstlisting}
+	service mysql restart
 
-5.	click on **Refresh**
+5.    Click on **Refresh**
 
 The End of installation wizard configures the databases, click on **Next**.
 
 .. image :: /images/user/adbconf.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 The installation is finished, click on Finish.
 
@@ -198,7 +199,7 @@ At this stage a publicity allows to know the latest Centreon . If your platform 
 
 .. image :: /images/user/aendinstall.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 You can now log in.
 
@@ -216,12 +217,12 @@ To start monitoring engine :
  3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
  4.	Check **Move Export Files** and **Restart Monitoring Engine**
  5.	Click on **Export** again
- 6.     Log into the ‘root’ user on your server
+ 6.   Log into the ‘root’ user on your server
  7.	Start Centreon Broker
 
 ::
  
-	/etc/init.d/cbd start
+	service cbd start
 
 Monitoring is now working.
 
@@ -239,7 +240,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 *       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
 *       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 *       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
-*	The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
+*	     The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
 *       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
 
 Before going further
@@ -256,4 +257,60 @@ it is necessary update the server. To do this:
 
 Allow the update to run fully and then restart the server in case of a kernel update.
 
-Start your configuration by clicking `here<configuration_start>>`.
+.. _installation_ppm:
+
+*****************************
+Easy monitoring configuration
+*****************************
+
+Centreon is great in itself, highly versatile  and can be configured to
+fit the very specifics of your monitored infrastructure. However you
+might find useful to use Centreon IMP to get you started in minutes.
+Centreon IMP provides you Plugin Packs which are bundled configuration
+templates that highly reduce the time needed to properly monitor the
+most common services of your network.
+
+Centreon IMP needs the technical components Centreon License Manager
+and Centreon Plugin Pack Manager to work.
+
+Install packages
+----------------
+
+When using CES, installation of Centreon Plugin Pack Manager is very
+easy. You'll see that Centreon License Manager will be installed too
+as a dependency.
+
+::
+
+   $ yum install centreon-pp-manager
+
+Web install
+-----------
+
+Once the packages installed, you need to enable the module in Centreon.
+So get to the Administration -> Extensions -> Modules page.
+
+.. image:: /_static/images/installation/ppm_1.png
+   :align: center
+
+Install Centreon License Manager (dependency of Centreon Plugin Pack Manager) first.
+
+.. image:: /_static/images/installation/ppm_2.png
+   :align: center
+
+Then install Centreon Plugin Pack Manager itself.
+
+.. image:: /_static/images/installation/ppm_3.png
+   :align: center
+
+You're now ready to got to Administration -> Extensions -> Plugin packs -> Setup.
+You'll find there 6 free Plugin Packs to get you started. 5 more are
+available after free registration and 150+ if you subscribe to the IMP
+offer (more information on `our website <https://www.centreon.com>`_).
+
+.. image:: /_static/images/installation/ppm_4.png
+   :align: center
+
+You can continue to configure your monitoring with Centreon IMP by
+following :ref:`this guide <impconfiguration>`.
+

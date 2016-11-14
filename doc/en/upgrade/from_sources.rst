@@ -44,7 +44,7 @@ go back to [Step 01] and install the prerequisites::
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.6.6                                   #
+  #                                    v2.8.1                                   #
   #                                                                             #
   #                               infos@centreon.com                            #
   #                                                                             #

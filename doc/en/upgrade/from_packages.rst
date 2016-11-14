@@ -1,10 +1,10 @@
 .. _upgrade_from_packages:
 
-=================
-Upgrade using RPM
-=================
+=============
+From Packages
+=============
 
-Centreon Entreprise Server (CES) v3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
 It comes in two operating system flavors, either CentOS 6 or CentOS 7.
 
 .. warning::
@@ -13,7 +13,13 @@ It comes in two operating system flavors, either CentOS 6 or CentOS 7.
    If your are using any of these products, you are strongly advised
    **NOT** to update Centreon Web until new releases of the forementioned
    products are available and specifically mention Centreon Web 2.8
-   compatibility.
+   compatibility. A notable exception to this notice is EMS/EPP.
+
+.. warning:: 
+   If your centreon contains the centreon knowlegdebase module (AKA Centreon KB), 
+   please first uninstall the module (from the web) in order to avoid upgrade problem.
+   Centreon KB is now embedded into Centreon since the version 2.8.0. 
+
 
 Prerequisites
 =============
@@ -56,9 +62,33 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
-*******
-Upgrade
-*******
+CES repository upgrade
+======================
+
+If you are already a CES user, you need to update your CES .repo file to
+get software that is part of CES 3.4 (namely Centreon Web 2.8 and
+associated components). Run the commands for your operating system.
+
+CentOS 6
+********
+
+::
+
+   $ rm -f /etc/yum.repos.d/ces-standard.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+CentOS 7
+********
+
+::
+
+   $ rm -f /etc/yum.repos.d/ces-standard.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+Core components upgrade
+=======================
 
 Stop Centreon components
 ************************
@@ -68,8 +98,8 @@ Stop Centreon components
 
 Stop Centreon Broker and Centreon Engine on **all poller**::
 
-   # /etc/init.d/centengine stop
-   # /etc/init.d/cbd stop
+   # service centengine stop
+   # service cbd stop
 
 Update components
 *****************
@@ -99,7 +129,7 @@ to load new extension.
 
  ::
 
-   # /etc/init.d/httpd restart
+   # service httpd restart
 
 Conclude update via Centreon web interface
 ******************************************
@@ -152,11 +182,67 @@ Restart all Centreon components on all poller
 
 Start Centreon Broker and Centreon Engine on **all poller**::
 
-   # /etc/init.d/centengine start
-   # /etc/init.d/cbd start
+   # service centengine start
+   # service cbd start
 
 
 Then, if all is ok, go on the Centreon interface and log out and follow the steps :
+
+EMS/EPP upgrade
+===============
+
+.. note::
+   Not a EMS/EPP user ? You might still find Centreon Plugin Packs very
+   useful to configure your monitoring system in minutes. You will find
+   installation guidance in the :ref:`online documentation <installation_ppm>`.
+
+
+If you use additional Centreon modules you might need to update them too,
+for them to work properly with your new Centreon version. This is
+particularly true for EMS/EPP users.
+
+Repository update
+*****************
+
+Just like for CES, the .repo file needs to be updated to use the 3.4
+release. Please ask Centreon support team if you do not know how to
+perform this operation.
+
+Package update
+**************
+
+Run the following command on your central server to update Centreon
+Plugin Pack Manager, the Plugin Packs and their associated plugins.
+
+::
+
+   # yum update centreon-pp-manager ces-plugins-* ces-pack-*
+
+
+You will also need to run the following command on every poller using
+the Plugin Packs.
+
+::
+
+   # yum update ces-plugins-*
+
+
+Web update
+**********
+
+You now need to run the web update manually. For this purpose, go to
+Administration -> Extensions -> Modules.
+
+.. image:: /_static/images/upgrade/ppm_1.png
+   :align: center
+
+Install Centreon License Manager (PPM dependency) and update Centreon
+Plugin Pack Manager.
+
+.. image:: /_static/images/upgrade/ppm_2.png
+   :align: center
+
+Good, your module is working again !
 
 The identified risks during update
 ==================================
@@ -168,13 +254,11 @@ Please check this points during and after your upgrade.
 Known issues
 ************
 
+* Not compatible with most commercial products : Centreon MBI, Centreon BAM and Centreon Map are not yet compatible with Centreon Web 2.8.
 * Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.6) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
-* Change database engine from MyISAM to InnoDB for all tables (except logs and data_bin tables)
-* Update hostgroup and servicegroup tables schemas
-* The Centreon Broker temporaries and failovers are now manage by Centreon web by default. It may have a conflict with existing configuration of Centreon Broker. Please check the configuration and logs of all Centreon Broker to be sure that all broker are running and no data are lost.
-* Browser cache issue: you have to clean browser cache after Centreon web migration and just after first connection.
-* PHP dependency issue: a new PHP component is needed by Centreon web interface. You have to restart Apache web server.
-* Incompatibility with Centreon modules already installed. Since v2.7.0 version Centreon web interface have a new look. If you have modules please don't upgrade Centreon web.
-* Generation of configuration issue: the Centreon configuration generation engine was entirely rewritten. There is therefore a risk of errors in the exported configurations
-* Abrupt change from NDOutils to Centreon Broker during Centreon web 2.7.0 update. Centreon web 2.7.0 is no more compatible with Nagios and NDOutils. Numerus issues will appear if you want to update your platform based on Nagios and NDOutils.
+* Scales in peformance graphs display too many steps
+* PHP Warning issues when user access to performance graphs menu in Centreon Web
+* When you zoom on a graph the zoom is applied for all graphs
+* You can't cancel zoom
+* CSV export doesn't work for eventlogs

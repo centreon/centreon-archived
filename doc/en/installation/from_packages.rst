@@ -14,11 +14,24 @@ Prerequisites
 
 To install Centreon software from the CES repository, you should first install the file linked to the repository.
 
-Perform the following command from a user with sufficient rights:
+Perform the following command from a user with sufficient rights.
 
- ::
+CES Repository
+--------------
 
-  $ wget http://yum.centreon.com/standard/3.4/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+For CentOS 6.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
+
+For CentOS 7.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+
 
 The repository is now installed.
 
@@ -98,81 +111,127 @@ Copy this key on the collector:
 Web Installation
 ================
 
-.. note::
+The End of installation wizard of Centreon is displayed, click on **Next**.
 
-Make sure that your Apache and MySQL servers are up and running before continuing.
+.. image :: /images/user/acentreonwelcome.png
+   :align: center
+   :scale: 85%
 
-Open your favorite web browser and go to the address:
+The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
+
+.. image :: /images/user/acentreoncheckmodules.png
+   :align: center
+   :scale: 85%
+
+Click on **Next**.
+
+.. image :: /images/user/amonitoringengine2.png
+   :align: center
+   :scale: 85%
+
+Click on **Next**.
+
+.. image :: /images/user/abrokerinfo2.png
+   :align: center
+   :scale: 85%
+
+Define the data concerning the admin user, click on **Next**.
+
+.. image :: /images/user/aadmininfo.png
+   :align: center
+   :scale: 85%
+
+By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
+
+.. image :: /images/user/adbinfo.png
+   :align: center
+   :scale: 85%
+
+If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
+
+1.  Log-on to the ‘root’ user on your server
+
+2.  Modify this file 
 
 ::
 
- http://SERVER_ADDRESS/centreon
+  /etc/my.cnf
 
-You should see the following page:
+3.  Add these lines to the file
 
-.. image:: /_static/images/installation/setup_1.png
-    :align: center
+.. raw:: latex 
 
-Click on the **Next** button:
+::
 
-.. image:: /_static/images/installation/setup_2.png
-    :align: center
+  [mysqld] 
+  innodb_file_per_table=1
 
-If a package is missing install it and click on the **Refresh** button. Click on the **Next** button as soon as everything is **OK**:
+4.  Restart mysql service
 
-.. image:: /_static/images/installation/setup_3_1.png
-    :align: center
+::
 
-Select your monitoring engine. Depending on the selection, the settings are different.
+  service mysql restart
 
-For Centreon Engine:
+5.  Click on **Refresh**
 
-.. image:: /_static/images/installation/setup_3_2.png
-    :align: center
+The End of installation wizard configures the databases, click on **Next**.
 
-Click on the **Next** button as soon as all the fields are filled.
+.. image :: /images/user/adbconf.png
+   :align: center
+   :scale: 85%
 
-.. image:: /_static/images/installation/setup_4.png
-    :align: center
+The installation is finished, click on Finish.
 
-Select your Stream Multiplexer. Depending on the selection, the settings are different.
+At this stage a publicity allows to know the latest Centreon . If your platform is connected to the Internet you have the latest information , if the information present in this version will be offered.
 
-For Centreon Broker:
+.. image :: /images/user/aendinstall.png
+   :align: center
+   :scale: 85%
 
-.. image:: /_static/images/installation/setup_4_2.png
-    :align: center
+You can now log in.
 
-Click on the **Next** button when all parameters are filled.
+.. image :: /images/user/aconnection.png
+   :align: center
+   :scale: 85%
 
-.. image:: /_static/images/installation/setup_5.png
-    :align: center
+Start monitoring
+================
 
-Fill the form with your data. Be sure to remember your password. Click on the **next** button.
+To start monitoring engine :
+ 
+ 1. On web interface, go to **Configuration** ==> **Monitoring engines**
+ 2. Leave the default options and click on **Export**
+ 3. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 4. Check **Move Export Files** and **Restart Monitoring Engine**
+ 5. Click on **Export** again
+ 6.     Log into the ‘root’ user on your server
+ 7. Start Centreon Broker
 
-.. image:: /_static/images/installation/setup_6.png
-    :align: center
+::
+ 
+  service cbd start
 
-Fill the form with information about your database. Click on the **Next** button.
+Monitoring is now working.
 
-.. image:: /_static/images/installation/setup_7.png
-    :align: center
+Introduction to the web interface
+=================================
 
-The database structure will be installed during this process. All must be validated by **OK**.
 
-.. note::
-    The installation process may ask you to change the settings of the MySQL server to **add innodb_file_per_table=1** in the configuration file.
+Centreon web interface is made up of several menus, each menu has a specific function:
 
-Click on the **Next** button.
+.. image :: /images/user/amenu.png
+   :align: center
 
-.. image:: /_static/images/installation/setup_8.png
-    :align: center
+|
 
-The installation is now finished, click on the ``Finish`` button, you will be redirected to the login screen:
+*       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
+*       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
+*       The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
+*       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
 
-.. image:: /images/user/aconnection.png
-    :align: center
 
-Enter your credentials to log in.
+.. _installation_ppm:
 
 *****************************
 Easy monitoring configuration
@@ -180,10 +239,13 @@ Easy monitoring configuration
 
 Centreon is great in itself, highly versatile  and can be configured to
 fit the very specifics of your monitored infrastructure. However you
-might find useful to use Centreon Plugin Pack Manager to get you started
-in minutes. Centreon Plugin Packs are bundled configuration templates
-that highly reduce the time needed to properly monitor the most common
-services of your network.
+might find useful to use Centreon IMP to get you started in minutes.
+Centreon IMP provides you Plugin Packs which are bundled configuration
+templates that highly reduce the time needed to properly monitor the
+most common services of your network.
+
+Centreon IMP needs the technical components Centreon License Manager
+and Centreon Plugin Pack Manager to work.
 
 Install packages
 ----------------
@@ -193,6 +255,7 @@ easy. You'll see that Centreon License Manager will be installed too
 as a dependency.
 
 ::
+
    $ yum install centreon-pp-manager
 
 Web install
@@ -221,3 +284,6 @@ offer (more information on `our website <https://www.centreon.com>`_).
 
 .. image:: /_static/images/installation/ppm_4.png
    :align: center
+
+You can continue to configure your monitoring with Centreon IMP by
+following :ref:`this guide <impconfiguration>`.

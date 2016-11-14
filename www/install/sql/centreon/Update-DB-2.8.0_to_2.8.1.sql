@@ -46,3 +46,7 @@ INSERT INTO `cfg_resource` (`resource_name`, `resource_line`, `resource_comment`
 INSERT INTO `cfg_resource_instance_relations` (`resource_id`, `instance_id` )
   SELECT r.resource_id, ns.id FROM cfg_resource r, nagios_server ns WHERE r.resource_name = '$CENTREONPLUGINS$'
 ;
+
+-- KB  double topology_page
+DELETE FROM `topology` WHERE `topology_page` = 610;
+INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topology_page` ,`topology_order` ,`topology_group` ,`topology_url` ,`topology_url_opt` ,`topology_popup` ,`topology_modules` ,`topology_show` ,`topology_style_class` ,`topology_style_id` ,`topology_OnClick`) VALUES (NULL , 'Knowledge Base', '6', '610', '65', '36', NULL, NULL , NULL , '1', '1', NULL , NULL , NULL);

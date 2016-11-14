@@ -179,7 +179,7 @@ Effectuez l'opération ci-dessous :
 
 ::
 
-	/etc/init.d/mysql restart
+	service mysql restart
 
 5.	Cliquez sur **Refresh**
 
@@ -236,7 +236,7 @@ Pour démarrer l'ordonnanceur de supervision :
  6. Connectez-vous avec l'utilisateur 'root' sur votre serveur
  7.	Démarrez le composant Centreon Broker::
  
-	/etc/init.d/cbd start
+	service cbd start
 
 La supervision est maintenant opérationnelle.
 
