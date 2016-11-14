@@ -19,7 +19,7 @@ Enfin, vous pourrez procéder à l'installation de la plate-forme.
    architecture/index
    installation/index
    downloads
-   01a
+   from_centreon
    from_packages
    from_VM
    from_sources

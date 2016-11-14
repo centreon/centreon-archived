@@ -18,7 +18,7 @@ Finally, you can install the platform.
     architecture/index
     installation/index
     downloads
-    01a
+    from_centreon
     from_packages
     from_VM
     from_sources

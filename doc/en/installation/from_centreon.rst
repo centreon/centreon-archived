@@ -11,7 +11,7 @@ Installation
 Step 1 : Start
 ==============
 
-To install, start your server on the support (created from the ISO file) of the Centreon Enterprise Server.
+To install, start your server on the support (created from the ISO file) of the Centreon.
 Start with the **Install or upgrade an existing system** option
 
 .. image :: /images/user/abootmenu.png
@@ -23,6 +23,7 @@ Click on **Next**
 .. image :: /images/user/adisplayicon.png
    :align: center
    :scale: 65%
+
 
 Step 2 : Choice of language
 ===========================
@@ -38,6 +39,7 @@ Select the keyboard used by your system and click on **Next**.
 .. image :: /images/user/akeyboard.png
    :align: center
    :scale: 65%
+
 
 Step 3 : General configuration
 ==============================
@@ -78,6 +80,7 @@ Select the partitioning options that suit you best. Then validate.
    :align: center
    :scale: 65%
 
+
 Step 4 : Component selection
 ============================
 
@@ -112,6 +115,7 @@ When the installation is finished, click on **Restart**.
    :align: center
    :scale: 65%
 
+
 *************
 Configuration
 *************
@@ -126,37 +130,37 @@ The End of installation wizard of Centreon is displayed, click on **Next**.
 
 .. image :: /images/user/acentreonwelcome.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
 
 .. image :: /images/user/acentreoncheckmodules.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Click on **Next**.
 
 .. image :: /images/user/amonitoringengine2.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Click on **Next**.
 
 .. image :: /images/user/abrokerinfo2.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 Define the data concerning the admin user, click on **Next**.
 
 .. image :: /images/user/aadmininfo.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
 
 .. image :: /images/user/adbinfo.png
    :align: center
-   :scale: 65%
+   :scale: 85%
 
 If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
 
@@ -164,25 +168,23 @@ If the following error message appears: **Add innodb_file_per_table=1 in my.cnf 
 2.	Modify this file 
 
 ::
-
 	/etc/my.cnf
-
 3.	Add these lines to the file
 
 .. raw:: latex 
 
-        \begin{lstlisting}
+\begin{lstlisting}
 	[mysqld] 
 	innodb_file_per_table=1
-        \end{lstlisting}
+\end{lstlisting}
 
 4.	Restart mysql service
 
 .. raw:: latex
 
-        \begin{lstlisting}
+\begin{lstlisting}
 	/etc/init.d/mysql restart
-        \end{lstlisting}
+\end{lstlisting}
 
 5.	click on **Refresh**
 
