@@ -15,13 +15,10 @@ Red Hat en version 6.x et 7.x.
 Prérequis
 *********
 
-Dépôt CES
----------
+Dépôt Centreon
+--------------
 
-Afin d'installer les logiciels Centreon à partir des dépôts CES, vous
-devez au préalable installer le fichier lié au dépôt.
-
-Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants.
+Afin d'installer les logiciels Centreon à partir des dépôts CES, vous devez au préalable installer le fichier lié au dépôt. Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants.
 
 Pour CentOS 6.
 
@@ -135,6 +132,7 @@ License Manager en tant que dépendance.
 ::
 
    $ yum install centreon-pp-manager
+
 
 Installation web
 ----------------

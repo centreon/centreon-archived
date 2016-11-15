@@ -199,19 +199,30 @@ Start monitoring
 
 To start monitoring engine :
  
- 1. On web interface, go to **Configuration** ==> **Monitoring engines**
- 2. Leave the default options and click on **Export**
- 3. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 4. Check **Move Export Files** and **Restart Monitoring Engine**
- 5. Click on **Export** again
- 6.     Log into the ‘root’ user on your server
- 7. Start Centreon Broker
+ 1.   On web interface, go to **Configuration** ==> **Monitoring engines**
+ 2.   Leave the default options and click on **Export**
+ 3.   Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 4.   Check **Move Export Files** and **Restart Monitoring Engine**
+ 5.   Click on **Export** again
+ 6.   Log into the ‘root’ user on your server
+ 7.   Start Centreon Broker
 
 ::
  
   service cbd start
+8.   Start Centreon Engine
 
-Monitoring is now working.
+::
+ 
+   service centengine start
+
+ 8.   Start centcore
+
+::
+ 
+   service centcore start
+
+Monitoring is now working. You can start to monitor your IT !
 
 Introduction to the web interface
 =================================

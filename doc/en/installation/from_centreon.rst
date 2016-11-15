@@ -162,29 +162,6 @@ By default, the ‘localhost’ server is defined and the root password is empty
    :align: center
    :scale: 85%
 
-If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
-
-1.    Log-on to the ‘root’ user on your server
-
-2.    Modify this file 
-
-::
-
-	/etc/my.cnf
-
-3.    Add these lines to the file
-
-::
-
-	[mysqld] 
-	innodb_file_per_table=1
-
-4.    Restart mysql service
-
-::
-
-	service mysql restart
-
 5.    Click on **Refresh**
 
 The End of installation wizard configures the databases, click on **Next**.
@@ -223,8 +200,19 @@ To start monitoring engine :
 ::
  
 	service cbd start
+ 8.   Start Centreon Engine
 
-Monitoring is now working.
+::
+ 
+   service centengine start
+
+ 8.   Start centcore
+
+::
+ 
+   service centcore start
+
+Monitoring is now working. You can start to monitor your IT !
 
 Introduction to the web interface
 =================================
