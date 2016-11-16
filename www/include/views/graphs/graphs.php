@@ -98,6 +98,10 @@ function getGetPostValue($str)
     return urldecode($value);
 }
 
+// Init
+$aclObj = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+$centreonPerformanceServiceGraphObj = new CentreonPerformanceService($pearDBO, $aclObj);
+
 /*
  * Get Arguments
  */
@@ -133,6 +137,10 @@ if (isset($svc_id) && $svc_id) {
             $serviceId = getMyServiceID($serviceDescription, $hostId);
             $graphId = $hostId . '-' . $serviceId;
             $graphTitle = $serviceObj->getMonitoringFullName($serviceId);
+        } else {
+            $hostId = getMyHostID($svc);
+            $serviceList = $centreonPerformanceServiceGraphObj->getList(array('host' => array($hostId)));
+            $defaultGraphs = array_merge($defaultGraphs, $serviceList);
         }
 
         if (!is_null($graphId) && !is_null($graphTitle) && $graphTitle != '') {
@@ -141,9 +149,7 @@ if (isset($svc_id) && $svc_id) {
                 'text' => $graphTitle
             );
         }
-
     }
-
 }
 
 /* Get Period if is in url */
