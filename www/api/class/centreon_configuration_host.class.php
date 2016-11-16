@@ -165,7 +165,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         
         $hostObj = new CentreonHost($this->pearDB);
         $serviceList = array();
-        $serviceListRaw = $hostObj->getServices($id);
+        $serviceListRaw = $hostObj->getServices($id, false, $allServices);
         
         foreach ($serviceListRaw as $service_id => $service_description) {
             if ($allServices || service_has_graph($id, $service_id)) {
