@@ -46,12 +46,18 @@ class CentreonMedia
      * @var type
      */
     protected $db;
-    
+
     /**
      *
      * @var type
      */
     protected $filenames;
+
+    /**
+     *
+     * @var type
+     */
+    protected $mediadirectoryname = '';
 
     /**
      * Constructor
@@ -70,23 +76,38 @@ class CentreonMedia
      */
     public function getMediaDirectory()
     {
-        $query = "SELECT options.value FROM options WHERE options.key = 'nagios_path_img'";
-        $result = $this->db->query($query);
-        if (\PEAR::isError($result)) {
-            throw new \Exception('Error while getting media directory ');
-        }
-
         $mediaDirectory = '';
-        if ($result->numRows()) {
-            $row = $result->fetchRow();
-            $mediaDirectory = $row['value'];
-        }
+        if (empty($this->mediadirectoryname)) {
+            $query = "SELECT options.value FROM options WHERE options.key = 'nagios_path_img'";
+            $result = $this->db->query($query);
+            if (\PEAR::isError($result)) {
+                throw new \Exception('Error while getting media directory ');
+            }
 
-        if (trim($mediaDirectory) == '') {
-            throw new \Exception('Error while getting media directory ');
+
+            if ($result->numRows()) {
+                $row = $result->fetchRow();
+                $mediaDirectory = $row['value'];
+            }
+
+            if (trim($mediaDirectory) == '') {
+                throw new \Exception('Error while getting media directory ');
+            }
+        } else {
+            $mediaDirectory .= $this->mediadirectoryname;
         }
 
         return $mediaDirectory;
+    }
+
+    /**
+     * Get media directory path
+     * @return string
+     * @throws \Exception
+     */
+    public function setMediaDirectory($dirname)
+    {
+        $this->mediadirectoryname = $dirname;
     }
 
     /**
@@ -138,9 +159,7 @@ class CentreonMedia
     public function addDirectory($dirname, $dirAlias = null)
     {
         $dirname = $this->sanitizePath($dirname);
-
         if (is_null($this->getDirectoryId($dirname))) {
-
             if (is_null($dirAlias)) {
                 $dirAlias = $dirname;
             }
@@ -150,9 +169,7 @@ class CentreonMedia
                 throw new \Exception('Error while creating directory ' . $dirname);
             }
         }
-
         $this->createDirectory($dirname);
-
         return $this->getDirectoryId($dirname);
     }
 
@@ -165,7 +182,7 @@ class CentreonMedia
         $mediaDirectory = $this->getMediaDirectory();
 
         $fullPath = $mediaDirectory . '/' . $dirname;
-        
+
         file_put_contents('/tmp/test.txt', $fullPath);
 
         // Create directory
@@ -193,12 +210,12 @@ class CentreonMedia
         }
 
         $query = "SELECT img.img_id " .
-                "FROM view_img_dir dir, view_img_dir_relation rel, view_img img " .
-                "WHERE dir.dir_id = rel.dir_dir_parent_id " .
-                "AND rel.img_img_id = img.img_id " .
-                "AND img.img_path = '" . $imagename . "' " .
-                "AND dir.dir_name = '" . $dirname . "' " .
-                "LIMIT 1";
+            "FROM view_img_dir dir, view_img_dir_relation rel, view_img img " .
+            "WHERE dir.dir_id = rel.dir_dir_parent_id " .
+            "AND rel.img_img_id = img.img_id " .
+            "AND img.img_path = '" . $imagename . "' " .
+            "AND dir.dir_name = '" . $dirname . "' " .
+            "LIMIT 1";
         $RES = $this->db->query($query);
         $img_id = null;
         if ($RES->numRows()) {
@@ -257,10 +274,21 @@ class CentreonMedia
         }
         $extension = substr($fileName, ($position + 1));
         $files = array();
-        $allowedExt = array('zip', 'tar', 'gz', 'tgzip',
-                            'tgz', 'bz', 'tbzip',
-                            'tbz', 'bzip', 'bz2',
-                            'tbzip2', 'tbz2', 'bzip2');
+        $allowedExt = array(
+            'zip',
+            'tar',
+            'gz',
+            'tgzip',
+            'tgz',
+            'bz',
+            'tbzip',
+            'tbz',
+            'bzip',
+            'bz2',
+            'tbzip2',
+            'tbz2',
+            'bzip2'
+        );
         if (!in_array(strtolower($extension), $allowedExt)) {
             throw new Exception('Unknown extension');
         }
@@ -310,7 +338,7 @@ class CentreonMedia
     public function addImage($parameters, $binary = null)
     {
         $imageId = null;
-        
+
         if (!isset($parameters['img_name']) || !isset($parameters['img_path']) || !isset($parameters['dir_name'])) {
             throw new \Exception('Cannot add media : missing parameters');
         }

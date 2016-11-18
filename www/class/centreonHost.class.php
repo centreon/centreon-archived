@@ -167,20 +167,20 @@ class CentreonHost
      * @param bool $withHg If use hostgroup relation
      * @return array
      */
-    public function getServices($hostId, $withHg = false)
+    public function getServices($hostId, $withHg = false, $withDisabledServices = false)
     {
         /*
          * Get service for a host
          */
-        $queryGetServices = 'SELECT s.service_id, s.service_description
- 	    	FROM service s, host_service_relation hsr, host h
- 	    	WHERE s.service_id = hsr.service_service_id
- 	    		AND s.service_register = "1"
- 	    		AND s.service_activate = "1"
- 	    		AND h.host_id = hsr.host_host_id
- 	    		AND h.host_register = "1"
- 	    		AND h.host_activate = "1"
- 	    		AND hsr.host_host_id = ' . CentreonDB::escape($hostId);
+        $queryGetServices = 'SELECT s.service_id, s.service_description '
+            . 'FROM service s, host_service_relation hsr, host h '
+ 	    	. 'WHERE s.service_id = hsr.service_service_id '
+            . 'AND s.service_register = "1" '
+            . ($withDisabledServices ? '' : 'AND s.service_activate = "1" ')
+            . 'AND h.host_id = hsr.host_host_id '
+            . 'AND h.host_register = "1" '
+            . 'AND h.host_activate = "1" '
+            . 'AND hsr.host_host_id = ' . CentreonDB::escape($hostId);
         $res = $this->db->query($queryGetServices);
         if (PEAR::isError($res)) {
             return array();
@@ -193,18 +193,18 @@ class CentreonHost
          * With hostgroup
          */
         if ($withHg) {
-            $queryGetServicesWithHg = 'SELECT s.service_id, s.service_description
-     	    	FROM service s, host_service_relation hsr, hostgroup_relation hgr, host h, hostgroup hg
-     	    	WHERE s.service_id = hsr.service_service_id
-     	    		AND s.service_register = "1"
-     	    		AND s.service_activate = "1"
-     	    		AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
-     	    		AND h.host_id = hgr.host_host_id
-     	    		AND h.host_register = "1"
-     	    		AND h.host_activate = "1"
-     	    		AND hg.hg_id = hgr.hostgroup_hg_id
-     	    		AND hg.hg_activate = "1"
-     	    		AND hgr.host_host_id = ' . CentreonDB::escape($hostId);
+            $queryGetServicesWithHg = 'SELECT s.service_id, s.service_description '
+     	    	. 'FROM service s, host_service_relation hsr, hostgroup_relation hgr, host h, hostgroup hg '
+                . 'WHERE s.service_id = hsr.service_service_id '
+                . 'AND s.service_register = "1" '
+                . ($withDisabledServices ? '' : 'AND s.service_activate = "1" ')
+                . 'AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id '
+                . 'AND h.host_id = hgr.host_host_id '
+                . 'AND h.host_register = "1" '
+                . 'AND h.host_activate = "1" '
+                . 'AND hg.hg_id = hgr.hostgroup_hg_id '
+                . 'AND hg.hg_activate = "1" '
+                . 'AND hgr.host_host_id = ' . CentreonDB::escape($hostId);
             $res = $this->db->query($queryGetServices);
             if (PEAR::isError($res)) {
                 return array();
