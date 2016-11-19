@@ -1016,7 +1016,6 @@ class CentreonHost extends CentreonObject
             null,
             null,
             $filters_cgRel,
-            array("host_register" => $this->register),
             "AND"
         );
         foreach ($elements as $element) {
