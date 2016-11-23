@@ -214,7 +214,7 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     $form->addElement('text', 'start_time', '', array('size' => 5, 'class' => 'timepicker'));
     $form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
     $form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
-    $form->addElement('text', 'timezone_warning', _("*The timezone used is configured on your user settings"));
+    $form->addElement('text', 'timezone_warning', _(" The timezone used is configured on your user settings"));
 
     $defaultDuration = 3600;
     if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {
@@ -273,8 +273,8 @@ if (!$centreon->user->access->checkAction("schedule_downtime")) {
     }
 
     $form->setDefaults($data);
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
     /* Push the downtime */
     if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate()) {
