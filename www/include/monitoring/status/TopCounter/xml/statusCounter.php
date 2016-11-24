@@ -178,7 +178,7 @@ $timeUnit = 300;
 $pollerListInError = "";
 $inactivInstance = "";
 
-$request =  "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0";
+$request =  "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND running=0";
 $DBRESULT = $obj->DBC->query($request);
 $inactivInstance = "";
 $pollerInError = "";
