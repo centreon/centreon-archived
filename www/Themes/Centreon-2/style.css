@@ -1179,6 +1179,11 @@ a.infobulle:hover   {z-index:25;}
     width: 30%;
 }
 
+.msg strong {
+    display: block;
+    font-size: 18px;
+}
+
 .msg-field {
     display: inline-block;
     padding:6px 0;
