@@ -670,6 +670,7 @@ vertical-align: middle;
 
 .Resume_light_table th span {
     background-color: #00a499;
+    margin-right: 5px;
 }
 
 .Resume_light_table td span img{
