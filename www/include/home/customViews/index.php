@@ -148,6 +148,9 @@ try {
         }
     }
 
+    asort($arrayView);
+    asort($arrayViewShared);
+
     $attrsText      = array("size"=>"30");
     $formAddView->addElement('select', 'viewLoad', _("Public views list"), $arrayView);
     $formAddView->addElement('select', 'viewLoadShare', _("Shared views list"), $arrayViewShared);
