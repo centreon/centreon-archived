@@ -1056,23 +1056,7 @@ if ($o != "mc") {
     $form->addRule('host_address', _("Compulsory Address"), 'required');
     $form->registerRule('cg_group_exists', 'callback', 'testCg');
     $form->addRule('host_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
-
-    /*
-     * If we are using a Template, no need to check the value, we hope there are in the Template
-     */
-    $mustApplyFormRule = false;
-    if (isset($_REQUEST['tpSelect'])) {
-        foreach ($_REQUEST['tpSelect'] as $val) {
-            if ($val != "") {
-                $mustApplyFormRule = false;
-            }
-        }
-    } else {
-        $mustApplyFormRule = true;
-    }
-    if ($mustApplyFormRule) {
-        $form->addRule('host_alias', _("Compulsory Alias"), 'required');
-    }
+    
 } elseif ($o == "mc") {
     if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
