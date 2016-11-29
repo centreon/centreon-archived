@@ -38,40 +38,108 @@
  */
 class RestException extends Exception
 {
-
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }
 
 class RestBadRequestException extends RestException
 {
     protected $code = 400;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
 }
 
 class RestUnauthorizedException extends RestException
 {
     protected $code = 401;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
 }
 
 class RestForbiddenException extends RestException
 {
     protected $code = 403;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
 }
 
 class RestNotFoundException extends RestException
 {
     protected $code = 404;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
 }
 
 class RestMethodNotAllowedException extends RestException
 {
     protected $code = 405;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
 }
 
 class RestConflictException extends RestException
 {
     protected $code = 409;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
 }
 
 class RestInternalServerErrorException extends RestException
 {
     protected $code = 500;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
+}
+
+class RestBadGatewayException extends RestException
+{
+    protected $code = 502;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
+}
+
+class RestServiceUnavailableException extends RestException
+{
+    protected $code = 503;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
+}
+
+class RestGatewayTimeOutException extends RestException
+{
+    protected $code = 504;
+    
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
 }

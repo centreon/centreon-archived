@@ -171,6 +171,15 @@ class CentreonWebService
             case 500:
                 header("HTTP/1.1 500 Internal Server Error");
                 break;
+            case 502:
+                header("HTTP/1.1 502 Bad Gateway");
+                break;
+            case 503:
+                header("HTTP/1.1 503 Service Unavailable");
+                break;
+            case 504:
+                header("HTTP/1.1 504 Gateway Time-out");
+                break;
             case 400:
                 header("HTTP/1.1 400 Bad Request");
                 break;
