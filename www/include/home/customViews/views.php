@@ -74,6 +74,7 @@ try {
     $columnClass = "";
     $viewId = $viewObj->getCurrentView();
     $permission = $viewObj->checkPermission($viewId);
+    $permissionDelete = $viewObj->checkPermissionDelete($viewId);
     $ownership = $viewObj->checkOwnership($viewId);
     $widgets = array();
     $columnClass = "column_1";
@@ -115,6 +116,7 @@ var deleteWdgtMessage = "<?php echo _("Deleting this widget might impact users w
 var deleteViewMessage = "<?php echo _("Deleting this view might impact other users. Are you sure you want to do it?");?>";
 var setDefaultMessage = "<?php echo _("Set this view as your default view?");?>";
 var permission = <?php echo ($permission === true) ? 1 : 0; ?>;
+var permissionDelete = <?php echo ($permissionDelete === true) ? 1 : 0; ?>;
 var ownership = <?php echo ($ownership === true) ? 1 : 0; ?>;
 var wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
 var trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
@@ -162,6 +164,23 @@ jQuery(function() {
             jQuery('.shareView').button('enable');
         }
         jQuery('.deleteView').button('enable');
+		if (!permissionDelete) {
+			jQuery('.deleteView').button({ icons : { primary: 'ui-icon-closethick'}});
+			jQuery('.deleteView .ui-button-text').text('<?php echo _('Hide view'); ?>');
+			
+		} else {
+			jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}});
+			jQuery('.deleteView .ui-button-text').text('<?php echo _('Delete view'); ?>');
+		}
+		
+		jQuery('.deleteView').on('click', function (event) {
+			if (!permissionDelete) {
+				jQuery('#deleteViewConfirm').centreonPopin("close");
+				submitDeleteView();
+			} else {
+				jQuery("#deleteViewConfirm").centreonPopin("open");
+			}
+		});
 
         jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
             .find(".portlet-header")
