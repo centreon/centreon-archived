@@ -371,12 +371,14 @@ class CentreonLDAP
         }
         $infos = array();
         foreach ($entry[0] as $info => $value) {
-            if ($value['count'] == 1) {
-                $infos[$info] = $value[0];
-            } elseif ($value['count'] > 1) {
-                $infos[$info] = array();
-                for ($i = 0; $i < $value['count']; $i++) {
-                    $infos[$info][$i] = $value[$i];
+            if (isset($value['count'])) {
+                if ($value['count'] == 1) {
+                    $infos[$info] = $value[0];
+                } elseif ($value['count'] > 1) {
+                    $infos[$info] = array();
+                    for ($i = 0; $i < $value['count']; $i++) {
+                        $infos[$info][$i] = $value[$i];
+                    }
                 }
             }
         }

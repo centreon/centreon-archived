@@ -296,7 +296,7 @@ class CentreonAuth
              */
             $DBRESULT = $this->pearDB->query(
                 "SELECT * FROM `contact`
-                    WHERE `contact_alias` = '" . $usernameForQuery . "'
+                    WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'
                         AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
             );
             if ($DBRESULT->numRows()) {
