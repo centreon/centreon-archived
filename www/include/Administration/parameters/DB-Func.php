@@ -567,6 +567,24 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        'proxy_protocol',
+        isset($ret["proxy_protocol"]) && $ret["proxy_protocol"] != null
+            ? htmlentities($ret["proxy_protocol"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'proxy_url',
+        isset($ret["proxy_url"]) && $ret["proxy_url"] != null
+            ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'proxy_port',
+        isset($ret["proxy_port"]) && $ret["proxy_port"] != null
+            ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
         'display_downtime_chart',
         isset($ret["display_downtime_chart"]["yes"]) && $ret["display_downtime_chart"]["yes"] != null
             ? htmlentities($ret["display_downtime_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
