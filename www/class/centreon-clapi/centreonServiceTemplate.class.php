@@ -975,6 +975,7 @@ class CentreonServiceTemplate extends CentreonObject
         }
 
         // macros
+        $macroObj = new \Centreon_Object_Service_Macro_Custom();
         $macros = $macroObj->getList(
             "*",
             -1,
@@ -990,7 +991,7 @@ class CentreonServiceTemplate extends CentreonObject
                 . $element['service_description'] . $this->delim
                 . $this->stripMacro($macro['svc_macro_name']) . $this->delim
                 . $macro['svc_macro_value'] . $this->delim
-                . "'" .$macro['description'] ."'". "\n";
+                . "'" . $macro['description'] . "'" . "\n";
         }
 
         // traps
