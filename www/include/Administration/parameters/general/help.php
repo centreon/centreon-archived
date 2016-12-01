@@ -110,6 +110,22 @@ $help['tip_centreon_support_email'] = dgettext(
 );
 
 /*
+ * Proxy options
+ */
+$help['tip_proxy_protocol'] = dgettext(
+    'help',
+    'Used protocol to join proxy.'
+);
+$help['tip_proxy_url'] = dgettext(
+    'help',
+    'URL of the proxy.'
+);
+$help['tip_proxy_port'] = dgettext(
+    'help',
+    'Port of the proxy.'
+);
+
+/*
  * Chart options
  */
 $help['tip_display_downtime_chart'] = dgettext(

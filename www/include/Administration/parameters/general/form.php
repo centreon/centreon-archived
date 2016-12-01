@@ -144,6 +144,18 @@ $form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nb
 $options2[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
 
+
+/*
+ * Proxy options
+ */
+$proxy_protocol = array("http" => _("HTTP"), "https" => _("HTTPS"));
+$form->addElement('select', 'proxy_protocol', _("Proxy protocol"), $proxy_protocol);
+
+$form->addElement('text', 'proxy_url', _("Proxy URL"), $attrsText);
+
+$form->addElement('text', 'proxy_port', _("Proxy port"), $attrsText2);
+
+
 /**
  * Charts options
  */
