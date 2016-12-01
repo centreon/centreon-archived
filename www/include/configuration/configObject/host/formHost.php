@@ -273,8 +273,6 @@ if (($o == "c" || $o == "w") && $host_id) {
  */
 $cdata = CentreonData::getInstance();
 
-
-
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
     json_encode($aMacros),
     ENT_QUOTES
@@ -772,11 +770,12 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_notifopts' => '0'));
 }
 
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
+$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'notifD', 'onClick' => 'uncheckNotifOption(this);'));
+$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'notifU', 'onClick' => 'uncheckNotifOption(this);'));
+$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'notifR', 'onClick' => 'uncheckNotifOption(this);'));
+$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'notifF', 'onClick' => 'uncheckNotifOption(this);'));
+$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'notifDS', 'onClick' => 'uncheckNotifOption(this);'));
+$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'notifN', 'onClick' => 'uncheckNotifOption(this);'));
 $form->addGroup($hostNotifOpt, 'host_notifOpts', _("Notification Options"), '&nbsp;&nbsp;');
 
 $hostStalOpt[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
@@ -1200,5 +1199,18 @@ if ($valid) {
         showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
         showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
         showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
+
+        function uncheckNotifOption(object)
+        {
+            if (object.id == "notifN" && object.checked) {
+                document.getElementById('notifD').checked = false;
+                document.getElementById('notifU').checked = false;
+                document.getElementById('notifR').checked = false;
+                document.getElementById('notifF').checked = false;
+                document.getElementById('notifDS').checked = false;
+            } else {
+                document.getElementById('notifN').checked = false;
+            }
+        }
     </script>
 <?php } ?>
