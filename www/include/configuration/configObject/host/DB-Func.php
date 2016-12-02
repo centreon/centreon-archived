@@ -892,9 +892,6 @@ function insertHostExtInfos($host_id = null, $ret)
     if (isset($ret["ehi_icon_image"]) && strrchr("REP_", $ret["ehi_icon_image"])) {
         $ret["ehi_icon_image"] = null;
     }
-    if (isset($ret["ehi_vrml_image"]) && strrchr("REP_", $ret["ehi_vrml_image"])) {
-        $ret["ehi_vrml_image"] = null;
-    }
     if (isset($ret["ehi_statusmap_image"]) && strrchr("REP_", $ret["ehi_statusmap_image"])) {
         $ret["ehi_statusmap_image"] = null;
     }
@@ -904,7 +901,7 @@ function insertHostExtInfos($host_id = null, $ret)
     $rq = "INSERT INTO `extended_host_information` " .
             "( `ehi_id` , `host_host_id` , `ehi_notes` , `ehi_notes_url` , " .
             "`ehi_action_url` , `ehi_icon_image` , `ehi_icon_image_alt` , " .
-            "`ehi_vrml_image` , `ehi_statusmap_image` , `ehi_2d_coords` , " .
+            "`ehi_statusmap_image` , `ehi_2d_coords` , " .
             "`ehi_3d_coords` )" .
             "VALUES ( ";
     $rq .= "NULL, " . $host_id . ", ";
@@ -913,7 +910,6 @@ function insertHostExtInfos($host_id = null, $ret)
     isset($ret["ehi_action_url"]) && $ret["ehi_action_url"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_action_url"]) . "', " : $rq .= "NULL, ";
     isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_icon_image"]) . "', " : $rq .= "NULL, ";
     isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_icon_image_alt"]) . "', " : $rq .= "NULL, ";
-    isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_vrml_image"]) . "', " : $rq .= "NULL, ";
     isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_statusmap_image"]) . "', " : $rq .= "NULL, ";
     isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_2d_coords"]) . "', " : $rq .= "NULL, ";
     isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_3d_coords"]) . "' " : $rq .= "NULL ";
@@ -1557,9 +1553,6 @@ function updateHostExtInfos($host_id = null, $ret = array())
     if (isset($ret["ehi_icon_image"]) && strrchr("REP_", $ret["ehi_icon_image"])) {
         $ret["ehi_icon_image"] = null;
     }
-    if (isset($ret["ehi_vrml_image"]) && strrchr("REP_", $ret["ehi_vrml_image"])) {
-        $ret["ehi_vrml_image"] = null;
-    }
     if (isset($ret["ehi_statusmap_image"]) && strrchr("REP_", $ret["ehi_statusmap_image"])) {
         $ret["ehi_statusmap_image"] = null;
     }
@@ -1577,8 +1570,6 @@ function updateHostExtInfos($host_id = null, $ret = array())
     isset($ret["ehi_icon_image"]) && $ret["ehi_icon_image"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_icon_image"]) . "', " : $rq .= "NULL, ";
     $rq .= "ehi_icon_image_alt = ";
     isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_icon_image_alt"]) . "', " : $rq .= "NULL, ";
-    $rq .= "ehi_vrml_image = ";
-    isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_vrml_image"]) . "', " : $rq .= "NULL, ";
     $rq .= "ehi_statusmap_image = ";
     isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != null ? $rq .= "'" . CentreonDB::escape($ret["ehi_statusmap_image"]) . "', " : $rq .= "NULL, ";
     $rq .= "ehi_2d_coords = ";
@@ -1616,9 +1607,6 @@ function updateHostExtInfos_MC($host_id = null)
     }
     if (isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != null) {
         $rq .= "ehi_icon_image_alt = '" . CentreonDB::escape($ret["ehi_icon_image_alt"]) . "', ";
-    }
-    if (isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != null) {
-        $rq .= "ehi_vrml_image = '" . CentreonDB::escape($ret["ehi_vrml_image"]) . "', ";
     }
     if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != null) {
         $rq .= "ehi_statusmap_image = '" . CentreonDB::escape($ret["ehi_statusmap_image"]) . "', ";

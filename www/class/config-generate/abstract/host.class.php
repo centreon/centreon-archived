@@ -81,7 +81,6 @@ abstract class AbstractHost extends AbstractObject {
         ehi_action_url as action_url,
         ehi_icon_image as icon_image_id,
         ehi_icon_image_alt as icon_image_alt,
-        ehi_vrml_image as vrml_image_id,
         ehi_statusmap_image as statusmap_image_id,
         host_location,
         host_acknowledgement_timeout as acknowledgement_timeout
@@ -116,7 +115,6 @@ abstract class AbstractHost extends AbstractObject {
         'action_url',
         'icon_image',
         'icon_image_alt',
-        'vrml_image',
         'statusmap_image',
         'timezone',
         'acknowledgement_timeout'
@@ -150,9 +148,6 @@ abstract class AbstractHost extends AbstractObject {
         $media = Media::getInstance();
         if (!isset($host['icon_image'])) {
             $host['icon_image'] = $media->getMediaPathFromId($host['icon_image_id']);
-        }
-        if (!isset($host['vrml_image'])) {
-            $host['vrml_image'] = $media->getMediaPathFromId($host['vrml_image_id']);
         }
         if (!isset($host['statusmap_image'])) {
             $host['statusmap_image'] = $media->getMediaPathFromId($host['statusmap_image_id']);
