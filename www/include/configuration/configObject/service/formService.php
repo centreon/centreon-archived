@@ -692,12 +692,13 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_notifopts' => '0'));
 }
 
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
+$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"), array('id' => 'notifW', 'onClick' => 'uncheckNotifOption(this);'));
+$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"), array('id' => 'notifU', 'onClick' => 'uncheckNotifOption(this);'));
+$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"), array('id' => 'notifC', 'onClick' => 'uncheckNotifOption(this);'));
+$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'notifR', 'onClick' => 'uncheckNotifOption(this);'));
+$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'notifF', 'onClick' => 'uncheckNotifOption(this);'));
+$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'notifDS', 'onClick' => 'uncheckNotifOption(this);'));
+$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'notifN', 'onClick' => 'uncheckNotifOption(this);'));
 $form->addGroup($serviceNotifOpt, 'service_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
 $serviceStalOpt[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok"));
@@ -1118,5 +1119,19 @@ if ($valid) {
     <script type="text/javascript">
         setTimeout('transformForm()', 200);
         showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
+
+        function uncheckNotifOption(object)
+        {
+            if (object.id == "notifN" && object.checked) {
+                document.getElementById('notifW').checked = false;
+                document.getElementById('notifU').checked = false;
+                document.getElementById('notifC').checked = false;
+                document.getElementById('notifR').checked = false;
+                document.getElementById('notifF').checked = false;
+                document.getElementById('notifDS').checked = false;
+            } else {
+                document.getElementById('notifN').checked = false;
+            }
+        }
     </script>
-<?php } ?>
+<?php }
