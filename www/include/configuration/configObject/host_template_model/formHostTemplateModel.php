@@ -761,7 +761,6 @@ $form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 $form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 $form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
-$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
@@ -881,11 +880,6 @@ $tpl->assign("sort2", _("Notification"));
 $tpl->assign("sort3", _("Relations"));
 $tpl->assign("sort4", _("Data Processing"));
 $tpl->assign("sort5", _("Host Extended Infos"));
-$tpl->assign("initJS", "<script type='text/javascript'>
-						jQuery(function () {
-						init();
-						initAutoComplete('Form','city_name','sub');
-						});</script>");
 $tpl->assign('javascript', '
         <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
@@ -925,7 +919,7 @@ if ($form->validate() && $from_list_menu == false) {
 if ($valid) {
     require_once($path."listHostTemplateModel.php");
 } else {
-    #Apply a template definition
+    /* Apply a template definition */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -952,7 +946,6 @@ if ($valid) {
 ?>
 <script type="text/javascript">
         showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
-        showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
         showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
         
         function uncheckNotifOption(object)

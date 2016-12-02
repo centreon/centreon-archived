@@ -60,12 +60,10 @@ if (($o == "c" || $o == "w") && $hg_id) {
      */
     $hg = array_map("myDecode", $DBRESULT->fetchRow());
 
-
     /*
      * Get Parent Groups
      */
     $hostGroupParents = array();
-    //$hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
 
     /*
      *  Set HostGroup Childs
@@ -81,18 +79,6 @@ if (($o == "c" || $o == "w") && $hg_id) {
     }
     $DBRESULT->free();
     unset($hosts);
-
-    /*
-     *  Set HostGroup Childs
-     */
-    /*
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
-    for ($i = 0; $hgs = $DBRESULT->fetchRow(); $i++) {
-        $hg["hg_hg"][$i] = $hgs["hg_child_id"];
-    }
-    $DBRESULT->free();
-    unset($hgs);
-    */
 }
 
 /*
@@ -217,7 +203,7 @@ $form->addElement('text', 'hg_notes', _("Notes"), $attrsText);
 $form->addElement('text', 'hg_notes_url', _("Notes URL"), $attrsTextLong);
 $form->addElement('text', 'hg_action_url', _("Action URL"), $attrsTextLong);
 $form->addElement('select', 'hg_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('hg_icon_image_img',this.form.elements['hg_icon_image'].value)"));
-$form->addElement('select', 'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)"));
+$form->addElement('select', 'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image',this.form.elements['hg_map_icon_image'].value)"));
 
 /*
  * Further informations
@@ -251,12 +237,6 @@ function myReplace()
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('hg_name', 'myReplace');
 $form->addRule('hg_name', _("Compulsory Name"), 'required');
-$form->addRule('hg_alias', _("Compulsory Alias"), 'required');
-
-if (!$oreon->user->admin) {
-    //$form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
-}
-
 $form->registerRule('exist', 'callback', 'testHostGroupExistence');
 $form->addRule('hg_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
@@ -292,10 +272,6 @@ if ($o == "w") {
 }
 
 $tpl->assign('p', $p);
-$tpl->assign("initJS", "<script type='text/javascript'>
-							jQuery(function () {
-							initAutoComplete('Form','city_name','sub');
-							});</script>");
 $tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>");
 $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 

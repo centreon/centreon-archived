@@ -76,8 +76,6 @@ $tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 $tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
-$tpl->assign("headerMenu_hostgroupAct", _("Enabled HostGroups"));
-$tpl->assign("headerMenu_hostgroupDeact", _("Disabled HostGroups"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 /*
@@ -159,7 +157,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
                          "RowMenu_select" => $selectedElements->toHtml(),
                          "RowMenu_name" => CentreonUtils::escapeSecure($hg["hg_name"]),
                          "RowMenu_link" => "?p=".$p."&o=c&hg_id=".$hg['hg_id'],
-                         "RowMenu_desc" => CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"])),
+                         "RowMenu_desc" => ($hg["hg_alias"] == '' ? '-' : CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"]))),
                          "RowMenu_status" => $hg["hg_activate"] ? _("Enabled") : _("Disabled"),
                          "RowMenu_badge" => $hg["hg_activate"] ? "service_ok" : "service_critical",
                          "RowMenu_hostAct" => $nbrhostAct,

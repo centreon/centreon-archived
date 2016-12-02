@@ -955,7 +955,6 @@ $form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 $form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 $form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id" => "ehi_icon_image", "onChange" => "showLogo('ehi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
-$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id" => "ehi_vrml_image", "onChange" => "showLogo('ehi_vrml_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array("id" => "ehi_statusmap_image", "onChange" => "showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
@@ -1197,7 +1196,6 @@ if ($valid) {
     ?>
     <script type="text/javascript">
         showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
-        showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
         showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
 
         function uncheckNotifOption(object)
