@@ -59,7 +59,7 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
-if (!isset($_POST['poller']) || !isset($_POST['sid'])) {
+if (!isset($_POST['poller'])) {
     exit;
 }
 
