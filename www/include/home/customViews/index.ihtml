@@ -589,8 +589,11 @@ function displayBtnToggleEdit() {
 function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
-  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))) {
-    $el.removeClass('edit');
+  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))
+    || modeEdit === undefined) {
+    if ($el.hasClass('edit')){
+        $el.removeClass('edit');
+    }
     jQuery('#actionBar').hide();
     jQuery('.portlet-header').each(function(index) {
         var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
