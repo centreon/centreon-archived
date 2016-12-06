@@ -148,7 +148,7 @@ try {
     foreach ($poller as $host) {
         if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
+                $scriptD = str_replace("@INIT_D@/", '', $host['init_script']);
                 if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
                     $msg_restart[$host["id"]] = shell_exec("sudo systemctl reload $scriptD");
                 } else {
@@ -174,7 +174,7 @@ try {
             }
         } elseif ($ret["restart_mode"] == 2) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
+                $scriptD = str_replace("@INIT_D@/", '', $host['init_script']);
                 if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
                     $msg_restart[$host["id"]] = shell_exec("sudo systemctl restart $scriptD");
                 } else {
