@@ -61,6 +61,7 @@ class CentreonInstance extends CentreonObject
         parent::__construct();
         $this->object = new \Centreon_Object_Instance();
         $this->params = array('localhost'                   => '0',
+                              'use_sudo'                    => '1',
                               'ns_activate'                 => '1',
                               'ssh_port'                    => '22',
                               'nagios_bin'                  => '/usr/sbin/centengine',
@@ -135,7 +136,7 @@ class CentreonInstance extends CentreonObject
 
         $pollerState = CentreonConfigPoller::getPollerState();
 
-        $params = array('id', 'name', 'localhost', 'ns_ip_address', 'ns_activate', 'ns_status', 'init_script',
+        $params = array('id', 'name', 'localhost', 'use_sudo', 'ns_ip_address', 'ns_activate', 'ns_status', 'init_script',
                            'nagios_bin', 'nagiostats_bin', 'ssh_port');
         $paramString = str_replace("_", " ", implode($this->delim, $params));
         $paramString = str_replace("ns ", "", $paramString);

@@ -47,6 +47,7 @@ class CentreonExternalCommand
     protected $cmdTab;
     protected $pollerTab;
     public $localhostTab = array();
+    public $useSudoTab = array();
     protected $actions = array();
     protected $GMT;
     protected $obj; // Centreon Obj
@@ -64,10 +65,11 @@ class CentreonExternalCommand
         $this->DB = new CentreonDB();
         $this->DBC = new CentreonDB('centstorage');
 
-        $rq = "SELECT id FROM `nagios_server` WHERE localhost = '1'";
+        $rq = "SELECT id, use_sudo FROM `nagios_server` WHERE localhost = '1'";
         $DBRES = $this->DB->query($rq);
         while ($row = $DBRES->fetchRow()) {
             $this->localhostTab[$row['id']] = "1";
+            $this->useSudoTab[$row['id']] = $row['use_sudo'];
         }
         $DBRES->free();
 

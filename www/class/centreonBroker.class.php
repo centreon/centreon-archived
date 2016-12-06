@@ -75,15 +75,19 @@ class CentreonBroker
      */
     protected function execLocalScript($script, $action)
     {
+        $useSudo = $this->getUseSudo("SELECT `use_sudo` FROM nagios_server "
+                . "WHERE `is_default` = '1' "
+                    . "AND `localhost` = '1' "
+                    . "AND `ns_activate` = '1'");
         $scriptD = str_replace("/etc/init.d/", '', $script);
         if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
             shell_exec("sudo systemctl $action $scriptD");
         } else {
             exec("ps -edf | grep cbd | grep -v grep", $output, $return_vars);
             if (count($output) == 0) {
-                shell_exec("sudo $script restart");
+                shell_exec(($useSudo=='1'?"sudo ":"")."$script restart");
             } else {
-                shell_exec("sudo $script $action");
+                shell_exec(($useSudo=='1'?"sudo ":"")."$script $action");
             }
         }
     }
@@ -103,6 +107,23 @@ class CentreonBroker
             $scriptName = trim($row['value']);
         }
         return $scriptName;
+    }
+    
+    /**
+     * Get use sudo
+     *
+     * @param string $sql;
+     * @return string
+     */
+    protected function getUseSudo($sql)
+    {
+        $res = $this->db->query($sql);
+        $row = $res->fetchRow();
+        $use_sudo = "1";
+        if (isset($row['use_sudo']) && trim($row['use_sudo']) != '') {
+            $use_sudo = trim($row['use_sudo']);
+        }
+        return $use_sudo;
     }
         
     /**
