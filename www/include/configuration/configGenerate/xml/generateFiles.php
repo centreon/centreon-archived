@@ -77,6 +77,7 @@ if ($_POST['sid'] != session_id()) {
     exit;
 }
 $centreon = $_SESSION['centreon'];
+$username = $centreon->user->name;
 $centreon = $centreon;
 $xml = new CentreonXML();
 
@@ -118,11 +119,11 @@ try {
 
     # Generate configuration
     if ($pollers == '0') {
-        $config_generate->configPollers();
+        $config_generate->configPollers($username);
     } else {
         foreach ($pollers as $poller) {
             $config_generate->reset();
-            $config_generate->configPollerFromId($poller);
+            $config_generate->configPollerFromId($poller, $username);
         }
     }
 

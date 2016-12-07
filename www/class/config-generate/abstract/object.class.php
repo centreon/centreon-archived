@@ -77,6 +77,10 @@ abstract class AbstractObject {
         $this->createFile($this->backend_instance->getPath());
     }
     
+    public function setUserName($username='unknown') {
+        $this->backend_instance->setUserName($username);
+    }
+    
     private function setHeader() {
         $header = 
 "###################################################################\n" .
