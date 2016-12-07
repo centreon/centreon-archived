@@ -165,14 +165,13 @@ class Generate {
     }
     
     private function configPoller($username='unknown') {
+        $this->backend_instance->setUserName($username);
         $this->backend_instance->initPath($this->current_poller['id']);
         $this->backend_instance->setPollerId($this->current_poller['id']);
         $this->resetObjectsEngine();
 
-        Host::getInstance()->setUserName($username);
         Host::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
         $this->generateModuleObjects(1);
-        Engine::getInstance()->setUserName($username);
         Engine::getInstance()->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
