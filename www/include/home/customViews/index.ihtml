@@ -79,18 +79,18 @@
                                     <h3 style="color:#00bfb3;">{$formEditView.header.title}</h3>
                                 </td>
                             </tr>
-                            <tr class="create_field">
+                            <tr>
                                 <td class="FormRowField">{$formEditView.name.label}</td>
                                 <td class="FormRowValue">
                                     <div>{$formEditView.name.html}</div>
                                     <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
                                 </td>
                             </tr>
-                            <tr class="create_field">
+                            <tr>
                                 <td class="FormRowField">{$formEditView.layout.label}</td>
                                 <td class="FormRowValue">{$formEditView.layout.html}</td>
                             </tr>
-                            <tr class="create_field">
+                            <tr>
                                 <td class="FormRowField">{$formEditView.public.label}</td>
                                 <td class="FormRowValue">{$formEditView.public.html}</td>
                             </tr>
