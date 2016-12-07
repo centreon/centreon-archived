@@ -86,9 +86,11 @@ class CentreonRestHttp
         $headers[] = 'Connection: close';
         /* Create stream context */
 
+
         $httpOpts = array(
             'http' => array(
                 'proxy' => $this->proxy,
+                'request_fulluri' => true,
                 'ignore_errors' => true,
                 'protocol_version' => '1.1',
                 'method' => $method,

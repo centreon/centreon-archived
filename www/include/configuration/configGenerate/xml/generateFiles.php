@@ -77,10 +77,8 @@ if ($_POST['sid'] != session_id()) {
     exit;
 }
 $centreon = $_SESSION['centreon'];
-$centreon = $centreon;
+
 $xml = new CentreonXML();
-
-
 $config_generate = new Generate();
 
 $pollers = explode(',', $_POST['poller']);

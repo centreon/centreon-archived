@@ -98,9 +98,7 @@ class CentreonServicetemplates extends CentreonService
         } else {
             $selectedServices = '';
             $explodedValues = implode(',', $values);
-            if (empty($explodedValues)) {
-                $explodedValues = "''";
-            } else {
+            if (!empty($explodedValues)) {
                 $selectedServices .= "AND s.service_id IN ($explodedValues) ";
             }
 
