@@ -590,7 +590,7 @@ function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
   if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))
-    || modeEdit === undefined) {
+    || typeof modeEdit === "undefined") {
     if ($el.hasClass('edit')){
         $el.removeClass('edit');
     }
