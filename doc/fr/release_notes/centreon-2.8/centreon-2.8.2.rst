@@ -2,18 +2,27 @@
 Centreon 2.8.2
 ##############
 
-Released December 6th, 2016.
+Released December 8th, 2016.
 
 The 2.8.2 release for Centreon Web is now available for download. Here are its release notes.
+
+Features
+--------
+
+* #4779 : Centreon Web supports proxy configuration for use with its
+  modules requiring external web access. This notably concerns Centreon
+  Plugin Pack Manager (component of the Centreon IMP offer).
+
+Bug Fixes
+---------
+
+* #4791: Can't delete host command on host/host template form ;
+* #4773: Centreon Clapi call and empty line at beginning ;
+* #4752: Options missing in notification tab ;
 
 Known bugs or issues
 --------------------
 
-* This release is not yet compatible with some commercial products
-  from Centreon, notably Centreon EPP. If your are using any of our
-  commercial products, you are strongly advised **NOT** to update
-  Centreon Web until new releases of these products are available and
-  specifically mention Centreon Web 2.8 compatibility ;
 * Centreon Engine performance chart still in RRDTools PNG format ;
 * Zoom out on chart change period on filters ;
 * User with ACL can't see it own previously created meta service ;
