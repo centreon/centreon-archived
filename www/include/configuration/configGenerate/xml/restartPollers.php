@@ -107,10 +107,6 @@ try {
     $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/engine/";
     $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
 
-    session_start();
-    if ($_POST['sid'] != session_id()) {
-        exit;
-    }
     $centreon = $_SESSION['centreon'];
 
     /*  Set new error handler */
