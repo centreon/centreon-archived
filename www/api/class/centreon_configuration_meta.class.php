@@ -53,6 +53,18 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclMetaservices = '';
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclMetaservices .= 'AND meta_id IN (' . $acl->getMetaServiceString() . ') ';
+        }
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -70,6 +82,7 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         $queryMeta = "SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name "
             . "FROM meta_service "
             . "WHERE meta_name LIKE '%$q%' "
+            . $aclMetaservices
             . "ORDER BY meta_name "
             . $range;
         
