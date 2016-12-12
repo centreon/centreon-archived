@@ -54,17 +54,23 @@ class CentreonAuthSSO extends CentreonAuth
     
         $this->options_sso = $generalOptions;
         
-        if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1) {
-            if (!isset($this->options_sso['sso_header_username']) || $this->options_sso['sso_header_username'] == '') {
-                $this->options_sso['sso_enable'] = 0;
-            } else {
-                $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
-                if ($this->checkSsoClient()) {
-                        $this->sso_mandatory = 1;
-                        $username = $this->sso_username;
+        if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
+            isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '') {
+            $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
+            if ($this->check_sso_client()) {
+                $this->sso_mandatory = 1;
+                $username = $this->sso_username;
+                if (isset($this->options_sso['sso_username_pattern']) &&
+                    $this->options_sso['sso_username_pattern'] != '') {
+                    $username = preg_replace(
+                        $this->options_sso['sso_username_pattern'],
+                        $this->options_sso['sso_username_replace'],
+                        $username
+                    );
                 }
             }
         }
+
         parent::__construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token);
         if ($this->error != '' && $this->sso_mandatory == 1) {
             $this->error .= " SSO Protection (user=" . $this->sso_username . ').';
@@ -77,12 +83,24 @@ class CentreonAuthSSO extends CentreonAuth
     protected function checkSsoClient()
     {
         if (isset($this->options_sso['sso_mode']) && $this->options_sso['sso_mode'] == 1) {
-            # Mixed. Only trusted site for sso.
-            if (preg_match('/' . $_SERVER['REMOTE_ADDR'] . '(\s|,|$)/', $this->options_sso['sso_trusted_clients'])) {
-                    # SSO
-                    return 1;
+            # Mixed
+            $blacklist = explode(',', $this->options_sso['sso_blacklist_clients']);
+
+            foreach ($blacklist as $value) {
+                $value = trim($value);
+                if (preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                    return 0;
+                }
             }
-            return 0;
+
+            $whitelist = explode(',', $this->options_sso['sso_trusted_clients']);
+            foreach ($whitelist as $value) {
+                $value = trim($value);
+                if (preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                    return 1;
+                }
+            }
+
         } else {
             # Only SSO (no login from local users)
             return 1;
@@ -91,8 +109,7 @@ class CentreonAuthSSO extends CentreonAuth
 
     protected function checkPassword($password, $token, $autoimport = false)
     {
-        if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
-           $this->login) {
+        if ($this->sso_mandatory == 1) {
            # Mode LDAP autoimport. Need to call it
             if ($autoimport) {
                 # Password is only because it needs one...
