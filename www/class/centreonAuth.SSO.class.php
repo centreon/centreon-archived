@@ -57,7 +57,7 @@ class CentreonAuthSSO extends CentreonAuth
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
             isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '') {
             $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
-            if ($this->check_sso_client()) {
+            if ($this->checkSsoClient()) {
                 $this->sso_mandatory = 1;
                 $username = $this->sso_username;
                 if (isset($this->options_sso['sso_username_pattern']) &&
@@ -84,11 +84,11 @@ class CentreonAuthSSO extends CentreonAuth
     {
         if (isset($this->options_sso['sso_mode']) && $this->options_sso['sso_mode'] == 1) {
             # Mixed
-            $blacklist = explode(',', $this->options_sso['sso_blacklist_clients']);
 
+            $blacklist = explode(',', $this->options_sso['sso_blacklist_clients']);
             foreach ($blacklist as $value) {
                 $value = trim($value);
-                if (preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
                     return 0;
                 }
             }
@@ -96,7 +96,7 @@ class CentreonAuthSSO extends CentreonAuth
             $whitelist = explode(',', $this->options_sso['sso_trusted_clients']);
             foreach ($whitelist as $value) {
                 $value = trim($value);
-                if (preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
                     return 1;
                 }
             }
