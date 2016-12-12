@@ -59,11 +59,19 @@ $form->addElement('text', 'kb_db_user', _("Knowledge base database user"));
 $form->addElement('password', 'kb_db_password', _("Knowledge base Database password"));
 $form->addElement('text', 'kb_db_host', _("Knowledge base Database host"));
 $form->addRule('kb_db_host', _("Mandatory field"), 'required');
-$form->addElement('button', 'test_connection', _("Test DB connection"), array("class" => "btc bt_success", "onClick"=>"javascript:checkWikiConnection()"));
+$form->addElement(
+    'button',
+    'test_connection',
+    _("Test DB connection"),
+    array("class" => "btc bt_success", "onClick"=>"javascript:checkWikiConnection()")
+);
 $form->addElement('text', 'kb_db_prefix', _("Knowledge base Database prefix"));
 $form->addElement('text', 'kb_wiki_url', _("Knowledge base url"));
 $form->addRule('kb_wiki_url', _("Mandatory field"), 'required');
-
+$form->addElement('text', 'kb_wiki_account', _("Knowledge wiki account (with delete right)"));
+$form->addRule('kb_wiki_account', _("Mandatory field"), 'required');
+$form->addElement('password', 'kb_wiki_password', _("Knowledge wiki account password"));
+$form->addRule('kb_wiki_password', _("Mandatory field"), 'required');
 
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');

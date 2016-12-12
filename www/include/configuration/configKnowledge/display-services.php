@@ -77,7 +77,7 @@ require_once "./include/common/autoNumLimit.php";
 /*
  * Add paths
  */
-set_include_path(get_include_path() . PATH_SEPARATOR . $modules_path );
+set_include_path(get_include_path() . PATH_SEPARATOR . $modules_path);
 
 /*
  * Pear library
@@ -86,8 +86,8 @@ require_once "HTML/QuickForm.php";
 require_once "HTML/QuickForm/advmultiselect.php";
 require_once "HTML/QuickForm/Renderer/ArraySmarty.php";
 
-require_once $centreon_path."/www/class/centreon-knowledge/procedures_DB_Connector.class.php";
-require_once $centreon_path."/www/class/centreon-knowledge/procedures.class.php";
+require_once $centreon_path . "/www/class/centreon-knowledge/procedures_DB_Connector.class.php";
+require_once $centreon_path . "/www/class/centreon-knowledge/procedures.class.php";
 
 $conf = getWikiConfig($pearDB);
 $WikiURL = $conf['kb_wiki_url'];
@@ -99,7 +99,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($modules_path, $tpl);
 
 $currentPage = "services";
-require_once $modules_path.'search.php';
+require_once $modules_path . 'search.php';
 
 /*
  * Init Status Template
@@ -110,7 +110,15 @@ $status = array(
 );
 $line = array(0 => "list_one", 1 => "list_two");
 
-$proc = new procedures(3, $conf['kb_db_name'], $conf['kb_db_user'], $conf['kb_db_host'], $conf['kb_db_password'], $pearDB, $conf['kb_db_prefix']);
+$proc = new procedures(
+    3,
+    $conf['kb_db_name'],
+    $conf['kb_db_user'],
+    $conf['kb_db_host'],
+    $conf['kb_db_password'],
+    $pearDB,
+    $conf['kb_db_prefix']
+);
 $proc->setHostInformations();
 $proc->setServiceInformations();
 
@@ -251,6 +259,9 @@ include("./include/common/checkPagination.php");
 if (isset($templateHostArray)) {
     $tpl->assign("templateHostArray", $templateHostArray);
 }
+
+$WikiVersion = getWikiVersion($WikiURL . '/api.php');
+$tpl->assign("WikiVersion", $WikiVersion);
 $tpl->assign("WikiURL", $WikiURL);
 $tpl->assign("content", $diff);
 $tpl->assign("services", $serviceList);
@@ -283,10 +294,8 @@ $tpl->assign('defaultOrderby', 'host_name');
  * Apply a template definition
  */
 
-if (Mediawikiconfigexist($WikiURL)):
-    $tpl->display($modules_path."templates/display.ihtml");
-else:
-    $tpl->display($modules_path."templates/NoWiki.ihtml");
-endif;
-
-?>
+if (Mediawikiconfigexist($WikiURL)) {
+    $tpl->display($modules_path . "templates/display.ihtml");
+} else {
+    $tpl->display($modules_path . "templates/NoWiki.ihtml");
+}
