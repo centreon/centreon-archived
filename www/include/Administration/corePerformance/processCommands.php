@@ -97,7 +97,7 @@ if (!$oreon->user->access->checkAction($cmd)) {
 	 */
 if ($cmd == "global_start") {
     if (isset($command->localhostTab[$poller])) {
-        shell_exec("sudo " . $nagios_init_script . " start");
+        shell_exec(($command->useSudoTab[$poller]=='1'?"sudo ":"") . $nagios_init_script . " start");
     } else {
         shell_exec("echo 'START:".$poller."' >> $centcore_pipe");
     }

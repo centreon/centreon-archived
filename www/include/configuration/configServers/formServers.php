@@ -130,6 +130,11 @@ $Tab[] = HTML_QuickForm::createElement('radio', 'is_default', null, _("No"), '0'
 $form->addGroup($Tab, 'is_default', _("Is default poller ?"), '&nbsp;');
 
 $Tab = array();
+$Tab[] = HTML_QuickForm::createElement('radio', 'use_sudo', null, _("Yes"), '1');
+$Tab[] = HTML_QuickForm::createElement('radio', 'use_sudo', null, _("No"), '0');
+$form->addGroup($Tab, 'use_sudo', _("Use sudo ?"), '&nbsp;');
+
+$Tab = array();
 $Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
 $Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 $form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
@@ -197,6 +202,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     "init_system" => $monitoring_engines["init_system"],
     "ns_activate" => '1',
     "is_default"  =>  '0',
+    "use_sudo"  =>  '1',
     "ssh_port"  =>  '22',
     "ssh_private_key"  =>  '~/.ssh/rsa.id',
     "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],

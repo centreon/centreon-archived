@@ -129,13 +129,13 @@ try {
         $msg_restart = array();
     }
 
-    $tabs = $centreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost', 'init_script'),
+    $tabs = $centreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost', 'init_script', 'use_sudo'),
                                                          'order'      => array('name'),
                                                          'conditions' => array('ns_activate' => '1'),
                                                          'keys'       => array('id')));
     foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
-            $poller[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"], 'init_script' => $tab['init_script']);
+            $poller[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"], 'init_script' => $tab['init_script'], 'use_sudo' => $tab['use_sudo']);
         }
     }
 
@@ -150,9 +150,9 @@ try {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
                 if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
-                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl reload $scriptD");
+                    $msg_restart[$host["id"]] = shell_exec(($host['use_sudo']=='1'?"sudo ":"")."systemctl reload $scriptD");
                 } else {
-                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " reload");
+                    $msg_restart[$host["id"]] = shell_exec(($host['use_sudo']=='1'?"sudo ":"") . $host['init_script'] . " reload");
                 }
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
@@ -176,9 +176,9 @@ try {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
                 if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
-                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl restart $scriptD");
+                    $msg_restart[$host["id"]] = shell_exec(($host['use_sudo']=='1'?"sudo ":"")."systemctl restart $scriptD");
                 } else {
-                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " restart");
+                    $msg_restart[$host["id"]] = shell_exec(($host['use_sudo']=='1'?"sudo ":"") . $host['init_script'] . " restart");
                 }
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {

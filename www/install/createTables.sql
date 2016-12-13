@@ -1693,6 +1693,7 @@ CREATE TABLE `nagios_server` (
   `name` varchar(40) DEFAULT NULL,
   `localhost` enum('0','1') DEFAULT NULL,
   `is_default` int(11) DEFAULT '0',
+  `use_sudo` int(11) DEFAULT '1',
   `last_restart` int(11) DEFAULT NULL,
   `ns_ip_address` varchar(255) DEFAULT NULL,
   `ns_activate` enum('1','0') DEFAULT '1',

@@ -539,6 +539,16 @@ sub sendConfigFile($){
     }
 }
 
+sub getSudoPoller($conf){
+    my $self = shift;
+
+    if ($conf->{use_sudo} =~ /0/){
+        return "";
+    } else {
+        return " ".$self->{sudo}." ";
+    }
+}
+
 ##################################################
 # Function for initialize Nagios :
 # Parameters :
@@ -561,13 +571,13 @@ sub initEngine($$){
         $self->{logger}->writeLogError("Cannot manage undefined poller...");
         return ;
     }
-
+    
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
         if ($conf->{init_system} eq 'systemd') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemctl $options ".$conf->{init_script};
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} . $self->getSudoPoller($conf) . "systemctl $options ".$conf->{init_script};
         } elsif ($conf->{init_system} eq 'systemv') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
+            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} . $self->getSudoPoller($conf) . $conf->{init_script}." ".$options;
         } else {
            $self->{logger}->writeLogError("Unknown init system for poller $id");
            return;
@@ -578,7 +588,7 @@ sub initEngine($$){
     }
 
     # Logs Actions
-    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} ".$conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
+    $self->{logger}->writeLogInfo("Init Script : '". $self->getSudoPoller($conf) . $conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
     my $line;
     if (defined($stdout)) {
         foreach $line (split(/\n/, $stdout)){
@@ -671,7 +681,7 @@ sub getInfos($) {
     if (defined($ns_server->{ns_ip_address}) && $ns_server->{ns_ip_address}) {
         # Launch command
         if (defined($ns_server->{localhost}) && $ns_server->{localhost}) {
-            $cmd = "$self->{sudo} ".$ns_server->{nagios_bin};
+            $cmd =  $self->getSudoPoller($ns_server) . $ns_server->{nagios_bin};
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
@@ -732,14 +742,14 @@ sub initCentreonTrapd {
         && defined($ns_server->{init_script_centreontrapd}) && $ns_server->{init_script_centreontrapd} ne "") {
         # Launch command
         if (defined($ns_server->{localhost}) && $ns_server->{localhost}) {
-            $cmd = "$self->{sudo} ".$ns_server->{init_script_centreontrapd} . " " . $start_type;
+            $cmd = $self->getSudoPoller($ns_server).$ns_server->{init_script_centreontrapd} . " " . $start_type;
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
                                                                   timeout => 120
                                                                   );
         } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} . $self->getSudoPoller($ns_server) . $ns_server->{init_script_centreontrapd}. " " . $start_type;
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},

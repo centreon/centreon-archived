@@ -227,7 +227,7 @@ class CentreonConfigPoller
 
         $msg_restart = "";
         if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_restart = exec("sudo " . $nagios_init_script . " reload", $stdout, $return_code);
+            $msg_restart = exec(($host['use_sudo']=='1'?"sudo ":"") . $nagios_init_script . " reload", $stdout, $return_code);
         } else {
             exec("echo 'RELOAD:".$host["id"]."' >> ". $this->centcore_pipe, $stdout, $return_code);
             $msg_restart .= _("OK: A reload signal has been sent to '".$host["name"]."'");
@@ -318,7 +318,7 @@ class CentreonConfigPoller
 
         $msg_restart = "";
         if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_restart = exec(escapeshellcmd("sudo " . $nagios_init_script . " restart"), $lines, $return_code);
+            $msg_restart = exec(escapeshellcmd(($host['use_sudo']=='1'?"sudo ":"") . $nagios_init_script . " restart"), $lines, $return_code);
         } else {
             exec("echo 'RESTART:".$host["id"]."' >> ". $this->centcore_pipe, $stdout, $return_code);
             $msg_restart = _("OK: A restart signal has been sent to '".$host["name"]."'");
