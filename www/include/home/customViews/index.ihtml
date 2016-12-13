@@ -156,6 +156,10 @@
                             <td class="FormRowValue">{$formShareView.locked.html}</td>
                         </tr>
                         <tr>
+                            <td class="FormRowField">{$formShareView.deleteable.label}</td>
+                            <td class="FormRowValue">{$formShareView.deleteable.html}</td>
+                        </tr>
+                        <tr>
                             <td  class="FormRowField FormHeader" colspan="2">{$formShareView.user_id.label}</td>
                         </tr>
                         <tr>
@@ -530,6 +534,7 @@ function submitShareView()
   var postData = {
     custom_view_id: viewId,
     'locked[locked]': jQuery("#formShareView").find('input[name="locked[locked]"]:checked').val(),
+    'deleteable[deleteable]': jQuery("#formShareView").find('input[name="deleteable[deleteable]"]:checked').val(),
     action: 'share',
     centeon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
   };

@@ -249,6 +249,14 @@ try {
     $formShareView->addGroup($locked, 'locked', _("Locked?"), '&nbsp;');
     $formShareView->setDefaults(array('locked' => '1'));
 
+     /**
+     * Deleteable
+     */
+    $deleteable[] = HTML_QuickForm::createElement('radio', 'deleteable', null, _("Yes"), '1');
+    $deleteable[] = HTML_QuickForm::createElement('radio', 'deleteable', null, _("No"), '0');
+    $formShareView->addGroup($deleteable, 'deleteable', _("Deleteable ?"), '&nbsp;');
+    $formShareView->setDefaults(array('deleteable' => '0'));
+
     /**
      * Users
      */
