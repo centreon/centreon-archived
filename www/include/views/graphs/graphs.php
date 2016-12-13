@@ -173,25 +173,33 @@ if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
 $form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
 $form->addElement('header', 'title', _("Choose the source to graph"));
 
-$periods = array(	""=>"",
-					"10800"		=> _("Last 3 Hours"),
-					"21600"		=> _("Last 6 Hours"),
-					"43200"		=> _("Last 12 Hours"),
-					"86400"		=> _("Last 24 Hours"),
-					"172800"	=> _("Last 2 Days"),
-					"259200"	=> _("Last 3 Days"),
-					"302400"	=> _("Last 4 Days"),
-					"432000"	=> _("Last 5 Days"),
-					"604800"	=> _("Last 7 Days"),
-					"1209600"	=> _("Last 14 Days"),
-					"2419200"	=> _("Last 28 Days"),
-					"2592000"	=> _("Last 30 Days"),
-					"2678400"	=> _("Last 31 Days"),
-					"5184000"	=> _("Last 2 Months"),
-					"10368000"	=> _("Last 4 Months"),
-					"15552000"	=> _("Last 6 Months"),
-					"31104000"	=> _("Last Year"));
-$sel = $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
+$periods = array(
+    "" => "",
+    "10800"		=> _("Last 3 Hours"),
+    "21600"		=> _("Last 6 Hours"),
+    "43200"		=> _("Last 12 Hours"),
+    "86400"		=> _("Last 24 Hours"),
+    "172800"	=> _("Last 2 Days"),
+    "259200"	=> _("Last 3 Days"),
+    "302400"	=> _("Last 4 Days"),
+    "432000"	=> _("Last 5 Days"),
+    "604800"	=> _("Last 7 Days"),
+    "1209600"	=> _("Last 14 Days"),
+    "2419200"	=> _("Last 28 Days"),
+    "2592000"	=> _("Last 30 Days"),
+    "2678400"	=> _("Last 31 Days"),
+    "5184000"	=> _("Last 2 Months"),
+    "10368000"	=> _("Last 4 Months"),
+    "15552000"	=> _("Last 6 Months"),
+    "31104000"	=> _("Last Year")
+);
+$sel = $form->addElement(
+    'select',
+    'period',
+    _("Graph Period"),
+    $periods,
+    array("onchange" => "resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])")
+);
 $form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "datepicker", "size"=>10));
 $form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
 $form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>10));
@@ -661,11 +669,12 @@ function getListOfHosts() {
     if ($selectedOptions !== null) {
         jQuery.each($selectedOptions, function(index, value) {
             jQuery.ajax({
-                url: './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=services&id=' + value + '&g=1',
+                url: './include/common/webServices/rest/internal.php?object=centreon_performance_service&action=list&host=' + value,
 				async: false,
 				success: function(data) {
-					jQuery.each(data, function(id, description) {
-						finalValue = 'HS_' + id + '_' + value;
+					jQuery.each(data.items, function(index, service) {
+                        graphServiceIds = service.id.split('-');
+						finalValue = 'HS_' + graphServiceIds[1] + '_' + graphServiceIds[0];
 						if (jQuery.inArray(finalValue, $hostsServicesForGraph) === -1) {
 							$hostsServicesForGraph.push(finalValue);
 						}
