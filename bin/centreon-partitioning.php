@@ -42,12 +42,6 @@ require_once _CENTREON_PATH_ . '/www/class/centreon-partition/mysqlTable.class.p
 require_once _CENTREON_PATH_ . '/www/class/centreon-partition/options.class.php';
 
 $options = new Options();
-/*
-if ($options->isMissingOptions()) {
-    $options->printHelp();
-    exit(1);
-}
-*/
 
 $table = $options->getOptionValue('m');
 if (is_null($table)) {
