@@ -16,8 +16,7 @@ Feature: Centreon with knowledge
         When I add a procedure concerning this service in MediaWiki
         Then a link towards this service procedure is available in configuration
 
-
-
-
-
-
+    Scenario: Delete Knowledge Page
+        Given the knowledge configuration page with procedure
+        When I delete a wiki procedure
+        Then the page is deleted and the option disappear

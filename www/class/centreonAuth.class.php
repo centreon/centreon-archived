@@ -290,6 +290,8 @@ class CentreonAuth
              */
             $this->userInfos['contact_alias'] = $username;
             $this->userInfos['contact_auth_type'] = "ldap";
+            $this->userInfos['contact_email'] = '';
+            $this->userInfos['contact_pager'] = '';
             $this->checkPassword($password, "", true);
             /*
              * Reset userInfos with imported informations

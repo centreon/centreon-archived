@@ -55,7 +55,7 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();
 }
 
-if (!isset($_POST['poller']) || !isset($_POST['debug'])) {
+if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit();
 }
 
@@ -72,19 +72,23 @@ $DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
 
+session_start();
+if ($_POST['sid'] != session_id()) {
+    exit;
+}
 $centreon = $_SESSION['centreon'];
-$centreon = $centreon;
 
-/* Init Context */
-$config_generate = new Generate();
 $xml = new CentreonXML();
+$config_generate = new Generate();
 
 $pollers = explode(',', $_POST['poller']);
+$comment = ($_POST['comment'] == "true") ? 1 : 0;
 $debug = ($_POST['debug'] == "true") ? 1 : 0;
 $generate = ($_POST['generate'] == "true") ? 1 : 0;
 
 $ret = array();
 $ret['host'] = $pollers;
+$ret['comment'] = $comment;
 $ret['debug'] = $debug;
 
 /*  Set new error handler */

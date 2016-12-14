@@ -324,6 +324,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $defaultData = $this->setFixedDatas() . ',';
             $this->setDefaultFixedDatas();
         }
+        
+        $additionnalJs .= ' ' . $this->_jsCallback;
 
         $javascriptString = '<script>
             jQuery(function () {

@@ -765,11 +765,12 @@ function updateContactContactGroup($contact_id = null, $ret = array())
     if (!$contact_id) {
         return;
     }
-    $rq = "DELETE FROM contactgroup_contact_relation
-            WHERE contact_contact_id = '" . intval($contact_id) . "'
-                AND contactgroup_cg_id IN (SELECT cg_id
-                    FROM contactgroup
-                    WHERE cg_type = 'local')";
+    $rq = "DELETE FROM contactgroup_contact_relation "
+        . "WHERE contact_contact_id = '" . intval($contact_id) . "' "
+        . "AND ( "
+        . "    contactgroup_cg_id IN (SELECT cg_id FROM contactgroup WHERE cg_type = 'local') "
+        . "    OR contact_contact_id IN (SELECT contact_id FROM contact WHERE contact_auth_type = 'local') "
+        . ") ";
     $DBRESULT = $pearDB->query($rq);
 
     if (isset($ret["contact_cgNotif"])) {

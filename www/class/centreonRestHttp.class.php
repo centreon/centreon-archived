@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
+require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
+
 
 /**
  * Utils class for call HTTP JSON REST
@@ -33,10 +36,15 @@ class CentreonRestHttp
     private $contentType = 'application/json';
 
     /**
+     * @var using a proxy
+     */
+    private $proxy = null;
+
+    /**
      * @var logFileThe The log file for call errors
      */
     private $logObj = null;
-    
+
     /**
      * Constructor
      *
@@ -44,6 +52,7 @@ class CentreonRestHttp
      */
     public function __construct($contentType = 'application/json', $logFile = null)
     {
+        $this->getProxy();
         $this->contentType = $contentType;
         if (!is_null($logFile)) {
             $this->logObj = new CentreonLog(array(4 => $logFile));
@@ -60,7 +69,7 @@ class CentreonRestHttp
 
         $this->logObj->insertLog(4, $logOutput);
     }
-    
+
     /**
      * Call the http rest endpoint
      *
@@ -76,14 +85,19 @@ class CentreonRestHttp
         $headers[] = 'Content-type: ' . $this->contentType;
         $headers[] = 'Connection: close';
         /* Create stream context */
+
+
         $httpOpts = array(
             'http' => array(
+                'proxy' => $this->proxy,
+                'request_fulluri' => true,
                 'ignore_errors' => true,
                 'protocol_version' => '1.1',
                 'method' => $method,
                 'header' => join("\r\n", $headers)
             )
         );
+
         /* Add body json data */
         if (false === is_null($data)) {
             $httpOpts['http']['content'] = json_encode($data);
@@ -103,7 +117,7 @@ class CentreonRestHttp
             /* Get headers */
             $headers = $this->parseHttpMeta($http_response_header);
         }
-        
+
         /* Manage HTTP status code */
         $exceptionClass = null;
         $logMessage = 'Unknown HTTP error';
@@ -140,11 +154,11 @@ class CentreonRestHttp
             $this->insertLog($message, $url, $exceptionClass);
             throw new $exceptionClass($message);
         }
-        
+
         /* Return the content */
         return $decodedContent;
     }
-    
+
     /**
      * Parse stream meta to convert to http headers
      *
@@ -162,7 +176,7 @@ class CentreonRestHttp
             if (preg_match('!^HTTP/1.1 (\d+) (.+)!', $meta, $matches)) {
                 $headers['code'] = $matches[1];
                 $headers['status'] = $matches[2];
-            /* Parse content type return */
+                /* Parse content type return */
             } elseif (preg_match('/Content-Type: (.*)/', $meta, $matches)) {
                 $infos = explode(';', $matches[1]);
                 $headers['content-type'] = $infos[0];
@@ -179,5 +193,33 @@ class CentreonRestHttp
         }
 
         return $headers;
+    }
+
+
+    /**
+     * get proxy data
+     *
+     */
+    private function getProxy()
+    {
+        $db = new CentreonDB();
+        $query = "SELECT `key`, `value` FROM `options` 
+                  WHERE (`key` = 'proxy_protocol'
+                  OR `key` = 'proxy_url'
+                  OR `key` = 'proxy_port')";
+        $res = $db->query($query);
+        while ($row = $res->fetchRow()) {
+            $dataProxy[$row['key']] = $row['value'];
+        }
+
+        if (isset($dataProxy['proxy_url']) && $dataProxy['proxy_url'] != '') {
+            if ($dataProxy['proxy_protocol']) {
+                $this->proxy .= $dataProxy['proxy_protocol'] . '://';
+            }
+            $this->proxy .= $dataProxy['proxy_url'];
+            if ($dataProxy['proxy_port']) {
+                $this->proxy .= ':' . $dataProxy['proxy_port'];
+            }
+        }
     }
 }

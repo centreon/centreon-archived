@@ -148,7 +148,7 @@ $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin sh
 /*
  * Proxy options
  */
-$proxy_protocol = array("http" => _("HTTP"), "https" => _("HTTPS"));
+$proxy_protocol = array("tcp" => _("TCP"), "http" => _("HTTP"), "https" => _("HTTPS"));
 $form->addElement('select', 'proxy_protocol', _("Proxy protocol"), $proxy_protocol);
 
 $form->addElement('text', 'proxy_url', _("Proxy URL"), $attrsText);
@@ -195,7 +195,9 @@ $form->addGroup($sso_mode, 'sso_mode', _("SSO mode"), '&nbsp;');
 $form->setDefaults(array('sso_mode'=>'1'));
 
 $form->addElement('text', 'sso_trusted_clients', _('SSO trusted client addresses'), array('size' => 50));
-
+$form->addElement('text', 'sso_blacklist_clients', _('SSO blacklist client addresses'), array('size' => 50));
+$form->addElement('text', 'sso_username_pattern', _('SSO pattern matching login'), array('size' => 50));
+$form->addElement('text', 'sso_username_replace', _('SSO pattern replace login'), array('size' => 50));
 $form->addElement('text', 'sso_header_username', _('SSO login header'), array('size' => 30));
 $form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
 
