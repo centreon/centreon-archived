@@ -51,7 +51,7 @@ if (isset($_GET['dt_id'])) {
     $id = 0;
 }
 
-    $path = _CENTREON_PATH_ . "/www/include/configuration/configDowntime/";
+    $path = _CENTREON_PATH_ . "www/include/monitoring/recurrentDowntime/";
 
     $downtime = new CentreonDowntime($pearDB);
 
