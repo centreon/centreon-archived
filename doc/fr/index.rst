@@ -19,6 +19,7 @@ Sommaire :
    administration_guide/index
    upgrade/index
    faq/index
+   howto/index
    developper/index
    api/index
 
