@@ -30,10 +30,13 @@ The following window is displayed:
 * **Enable Autologin** box authorises the users to log into the web interface via the autologin mechanism
 * **Display Autologin shortcut** box serves to display the connection short-cut at the top right
 * **Enable SSO authentication** box enables SSO authentication
-* **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed)
-* **SSO trusted client addresses** field indicates which are the trusted clients for SSO. The trusted clients are separated by commas
-* **SSO login header** field indicates the variables of the header that will be used as a login / pseudo
-* **Timezone** field indicates timezone of your monitoring server
+* **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed). The mixed mode requires trsuted client addresses.
+* **SSO trusted client addresses** field indicates which are hte IP/DNS of the trusted clients (corresponding to the reverse proxy) for SSO. The trusted clients are separated by comas.
+* **SSO blacklist client addresses** field indicates which are IP/DNS of the trusted clients for SSO. The trusted clients are separated by comas.
+* **SSO login header** field indicates the variables of the header that will be used as a login / pseudo (i.e HTTP_AUTH_USER).
+* **SSO pattern matching login** field indicates the pattern to search for in the username. If you want to remove the domain of the email: /@.*/
+* **SSO pattern replace login** field indicates the string to replace previous pattern.
+* **Timezone** field indicates timezone of your monitoring server.
 * If the **Enable strict mode for host parentship management** box is checked, the operator cannot define parental relationships of a host in objects supervised by different pollers.
 * **Centreon Support Email** field indicates the e-mail address of the **Customer’s service support centre** for the Centreon platform. This e-mail address will be displayed at the bottom of the page on the link **Centreon Support**
 
