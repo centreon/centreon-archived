@@ -1,3 +1,4 @@
+.. _centreon_parameters:
 ===================================================
 Options d'administration de la plate-forme Centreon
 ===================================================
@@ -45,6 +46,11 @@ La fenêtre suivante s'affiche :
 * Le champ **Timezone par défaut de l'hôte** permet de définit un timezone par défaut pour application du décalage horaire
 * Si la case **Activer le mode strict de gestion des relations de parentés** est cochée, alors l'opérateur ne peut définir de relation de parentés d'hôte en objets supervisés par des collecteurs différents.
 * Le champ **Adresse mail de contact du support (de la plate-forme de supervision)** indique l'adresse email de support **Centre des services du client** pour la plate-forme Centreon. Cette adresse mail sera affichée en bas de page sur le lien **Centre des services**
+
+.. Warning::
+
+    La fonctionnalité SSO doit être activée seulement dans un environnement dédié et sécurisé pour le SSO. Les accès direct des utilisateurs à Centreon Web doivent être désactivés.
+
 
 ***********
 Supervision

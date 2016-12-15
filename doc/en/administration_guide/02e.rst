@@ -1,3 +1,4 @@
+.. _centreon_parameters:
 ===============================================
 Administration options of the Centreon platform
 ===============================================
@@ -39,6 +40,11 @@ The following window is displayed:
 * **Timezone** field indicates timezone of your monitoring server.
 * If the **Enable strict mode for host parentship management** box is checked, the operator cannot define parental relationships of a host in objects supervised by different pollers.
 * **Centreon Support Email** field indicates the e-mail address of the **Customer’s service support centre** for the Centreon platform. This e-mail address will be displayed at the bottom of the page on the link **Centreon Support**
+
+.. Warning::
+
+    SSO feature has only to be enabled in a secured and dedicated environment for SSO. Direct access to Centreon UI from users have to be disabled.
+
 
 **********
 Monitoring

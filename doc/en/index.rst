@@ -19,6 +19,7 @@ Contents:
    administration_guide/index
    upgrade/index
    faq/index
+   howto/index
    developer/index
    api/index
 
