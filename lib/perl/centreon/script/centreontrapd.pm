@@ -339,6 +339,7 @@ sub reload {
     my $self = shift;
 
     $self->{logger}->writeLogInfo("Reload in progress for main process...");
+    
     # reopen file
     if ($self->{logger}->is_file_mode()) {
         $self->{logger}->file_mode($self->{logger}->{file_name});
@@ -348,7 +349,7 @@ sub reload {
         $self->{logger_unknown}->file_mode($self->{centreontrapd_config}->{unknown_trap_file});
     }
     
-    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb}, $self->{csdb});
+    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file});
     if ($self->{centreontrapd_config}->{mode} == 0) {
     	centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
     }
