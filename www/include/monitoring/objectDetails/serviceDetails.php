@@ -298,7 +298,7 @@ if (!is_null($host_id)) {
          * Ajust data for beeing displayed in template
          */
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-        $service_status['command_line'] = str_replace(' --', "\n\t--", $service_status['command_line']);
+        $service_status['command_line'] = str_replace(' -', "\n\t-", $service_status['command_line']);
         $service_status['performance_data'] = str_replace(' \'', "\n'", $service_status['performance_data']);
         $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
 
