@@ -55,8 +55,7 @@ sub print_help();
 sub print_usage();
 sub trim($);
 
-#my $CENTREON_ETC = '/etc/centreon';
-my $CENTREON_ETC = '/etc/centreon';
+my $CENTREON_ETC = '@CENTREON_ETC@';
 my @licfiles;
 
 # Require DB configuration files
@@ -706,7 +705,7 @@ sub centralBackup() {
 	################
 	# Make archive #
 	################
-    `cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-central.tar.gz backup`;
+    `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-central.tar.gz backup`;
 	if ($? ne 0) {
 		print STDERR "Unable to make tar of backup\n";
 	}
@@ -882,7 +881,7 @@ sub monitoringengineBackup() {
 	##################
 	# Make archives #
 	#################
-	`cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-centreon-engine.tar.gz backup`;
+	`cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-centreon-engine.tar.gz backup`;
     if ($? ne 0) {
         print STDERR "Unable to make tar of backup\n";
     }
