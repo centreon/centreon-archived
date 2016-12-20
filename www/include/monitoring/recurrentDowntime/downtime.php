@@ -52,10 +52,6 @@ if (!isset($centreon)) {
     isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
     $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-//    isset($_GET["type"]) ? $typeG = $_GET["type"] : $typeG = null;
-//    isset($_POST["type"]) ? $typeP = $_POST["type"] : $typeP = null;
-//    $typeG ? $type = $typeG : $type = $typeP;
-
     require_once "HTML/QuickForm.php";
     require_once 'HTML/QuickForm/advmultiselect.php';
     require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
