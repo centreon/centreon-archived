@@ -104,12 +104,13 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $additionnalCondition .= 'AND i.host_id IN (' . join(',', $this->arguments['host']) . ') ';
         }
 
-        $virtualServicesCondition = $this->getVirtualServicesCondition($additionnalCondition, $acl);
+        $virtualServicesCondition = $this->getVirtualServicesCondition($additionnalTables, $additionnalCondition, $acl);
         
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id '
             . 'FROM ( '
             . '( SELECT CONCAT(i.host_name, " - ", i.service_description) as fullname, i.host_id, i.service_id, m.index_id '
             . 'FROM index_data i, metrics m ' . (!$isAdmin ? ', centreon_acl acl ' : '')
+            . $additionnalTables
             . 'WHERE i.id = m.index_id '
             . 'AND i.host_name NOT LIKE "_Module_%" '
             . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN ('.$acl->getAccessGroupsString().') ' : '')
@@ -121,7 +122,6 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             . 'GROUP BY host_id, service_id '
             . 'ORDER BY fullname '
             . $range;
-
 
         $DBRESULT = $this->pearDBMonitoring->query($query);
         $serviceList = array();
@@ -137,11 +137,11 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         );
     }
 
-    private function getVirtualServicesCondition($additionnalCondition, $aclObj = null)
+    private function getVirtualServicesCondition($additionnalTables, $additionnalCondition, $aclObj = null)
     {
         /* First, get virtual services for metaservices */
         $metaServiceCondition = '';
-        if (!is_null($acl0bj)) {
+        if (!is_null($aclObj)) {
             $metaServices = $aclObj->getMetaServices();
             $virtualServices = array();
             foreach ($metaServices as $metaServiceId => $metaServiceName) {
@@ -159,6 +159,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $virtualServicesCondition = 'UNION ALL ('
             . 'SELECT CONCAT("Meta - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id '
             . 'FROM index_data i, metrics m, services s '
+            . $additionnalTables
             . 'WHERE i.id = m.index_id '
             . $additionnalCondition
             . $metaServiceCondition
@@ -173,6 +174,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                     $virtualServicesCondition .= 'UNION ALL ('
                         . 'SELECT CONCAT("' . $hostname . ' - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id '
                         . 'FROM index_data i, metrics m, services s '
+                        . $additionnalTables
                         . 'WHERE i.id = m.index_id '
                         . $additionnalCondition
                         . 'AND s.service_id IN (' . implode(',', $virtualServiceIds) . ') '
