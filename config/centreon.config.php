@@ -4,7 +4,7 @@
  */
 
 /* MySQL configuration file */
-define('_CENTREON_ETC_', '/etc/centreon/');
+define('_CENTREON_ETC_', '@CENTREON_ETC@');
 
 if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
     include_once _CENTREON_ETC_ . '/centreon.conf.php';
