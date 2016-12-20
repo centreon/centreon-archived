@@ -74,10 +74,7 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
         $o = $_POST["o2"];
     }
 }
-//var_dump($o);
-
-
-    /*
+    	 /*
 	 * Set the real page
 	 */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
