@@ -36,8 +36,6 @@ use warnings;
 
 package centreon::reporting::CentreonProcessStateEvents;
 
-#use vars qw (%serviceStates %hostStates %servicStateIds %hostStateIds);
-
 # Constructor
 # parameters:
 # $logger: instance of class CentreonLogger
@@ -51,7 +49,6 @@ sub new {
     $self->{"hostEvents"} = shift;
     $self->{"serviceEvents"} = shift;
     $self->{"centreonDownTime"} = shift;
-    $self->{"dbLayer"} = shift;
     bless $self, $class;
 
     return $self;
@@ -65,7 +62,6 @@ sub parseServiceLog {
     my $self = shift;
     # parameters:
     my ($start ,$end) = (shift,shift);
-    my %serviceStates = ("OK" => 0, "WARNING" => 1, "CRITICAL" => 2, "UNKNOWN" => 3, "PENDING" => 4);
     my $service = $self->{"service"};
     my $nagiosLog = $self->{"nagiosLog"};
     my $events = $self->{"serviceEvents"};
@@ -78,14 +74,14 @@ sub parseServiceLog {
 
     while (my $row = $logs->fetchrow_hashref()) {
         my $id  = $row->{host_name}.";;".$row->{service_description};
+        print "\n- ".$id."\n";
         if (defined($allIds->{$id})) {
-            my $statusCode = $row->{status};            
-            if ($self->{dbLayer} eq "ndo") {
-                $statusCode = $serviceStates{$row->{status}};
-            }            
+            print "OK".$row->{status}."..";
+            my $statusCode = $row->{status};
             if (defined($currentEvents->{$id})) {
-                my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id | in_downtime. The last one is optionnal                
-                if ($statusCode ne "" && defined($eventInfos->[1]) && $eventInfos->[1] ne "" && $eventInfos->[1] != $statusCode) {                                        
+                my $eventInfos =  $currentEvents->{$id}; 
+                # $eventInfos is a reference to a table containing : incident start time | status | state_event_id | in_downtime. The last one is optionnal                
+                if ($statusCode ne "" && defined($eventInfos->[1]) && $eventInfos->[1] ne "" && $eventInfos->[1] != $statusCode) {
                     my ($hostId, $serviceId) = split (";;", $allIds->{$id});
                     my $result = {};
                     if ($eventInfos->[2] != 0) {
@@ -108,10 +104,8 @@ sub parseServiceLog {
                 @tab = ($row->{ctime}, $statusCode, 0, 0, 0);                
                 $currentEvents->{$id} = \@tab;
             }
-
         }
     }
-
     $self->insertLastServiceEvents($end, $currentEvents, $allIds, $downTime);
 }
 
@@ -125,7 +119,6 @@ sub parseHostLog {
     # parameters:
     my ($start ,$end) = (shift,shift);
 
-    my %hostStates = ("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2, "UNKNOWN" => 3, "PENDING" => 4);
     my $host = $self->{"host"};
     my $nagiosLog = $self->{"nagiosLog"};
     my $events = $self->{"hostEvents"};
@@ -140,9 +133,7 @@ sub parseHostLog {
         my $id  = $row->{host_name};
         if (defined($allIds->{$id})) {
             my $statusCode = $row->{status};            
-            if ($self->{dbLayer} eq "ndo") {
-                $statusCode = $hostStates{$row->{status}};
-            }
+            
             if (defined($currentEvents->{$id})) {
                 my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
                 if ($statusCode ne "" && defined($eventInfos->[1]) && $eventInfos->[1] ne "" && $eventInfos->[1] != $statusCode) {
