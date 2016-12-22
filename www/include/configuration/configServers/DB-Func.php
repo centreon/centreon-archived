@@ -202,10 +202,10 @@ function insertServerInDB()
     if (isset($ret['name'])) {
         $sName = $ret['name'];
     }
-    $iIdNagios = insertServerInCfgNagios($id, $sName);
+    $iIdNagios = $obj->insertServerInCfgNagios(-1, $id, $sName);
 
     if (!empty($iIdNagios)) {
-        insertBrokerDefaultDirectives($iIdNagios, 'ui');
+        $obj->insertBrokerDefaultDirectives($iIdNagios, 'ui');
     }
     addUserRessource($id);
     return ($id);

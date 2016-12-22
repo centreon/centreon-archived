@@ -53,7 +53,7 @@ class CentreonMainCfg
     private function setBrokerOptions()
     {
         $this->aDefaultBrokerDirective = array(
-            'ui' => '/usr/lib64/centreon-engine/externalcmd.so',
+            'ui' => '/usr/lib643333333/centreon-engine/externalcmd.so',
             'wizard' => '/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml'
         );
     }
@@ -140,8 +140,8 @@ class CentreonMainCfg
             'event_broker_options' => '-1',
             'translate_passive_host_checks' => '2',
             'nagios_server_id' => '1',
-            'enable_predictive_host_dependency_checks' => '0',
-            'enable_predictive_service_dependency_checks' => '0',
+            'enable_predictive_host_dependency_checks' => '1',
+            'enable_predictive_service_dependency_checks' => '1',
             'passive_host_checks_are_soft' => '2',
             'use_large_installation_tweaks' => '1',
             'enable_environment_macros' => '2',
@@ -154,8 +154,27 @@ class CentreonMainCfg
             'daemon_dumps_core' => '0',
             'cfg_file' => 'centengine.cfg',
             'use_check_result_path' => '0',
-            'cached_host_check_horizon' => '60'
+            'cached_host_check_horizon' => '60',
+            'log_pid' => 1
         );
+    }
+
+    /**
+     * Get Default values
+     *
+     */
+    public function getDefaultMainCfg()
+    {
+        return $this->aInstanceDefaultValues;
+    }
+
+    /**
+     * Get Default values
+     *
+     */
+    public function getDefaultBrokerOptions()
+    {
+        return $this->aDefaultBrokerDirective;
     }
 
     /**
@@ -334,4 +353,3 @@ class CentreonMainCfg
         return $entries;
     }
 }
-
