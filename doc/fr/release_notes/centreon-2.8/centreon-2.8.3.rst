@@ -1,5 +1,5 @@
 ##############
-Centreon 2.8.2
+Centreon 2.8.3
 ##############
 
 Released January 11th, 2017.
