@@ -77,6 +77,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_search_limit','60'),
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
+('broker','broker'),
 ('oreon_path','@INSTALL_DIR_CENTREON@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
