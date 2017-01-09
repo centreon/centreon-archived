@@ -1,5 +1,0 @@
-<?php 
-
-$db = $this->getMonitoringDb();
-
-echo "ok";

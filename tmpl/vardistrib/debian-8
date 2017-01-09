@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Use default variables.
+. "$BASE_DIR/tmpl/vardistrib/defaults"
+
+# Set platform-specific directories.
+PEAR_PATH="/usr/share/php"
+PLUGIN_DIR="/usr/lib/nagios/plugins"
+SUDO_FILE="/etc/sudoers.d/centreon"
+SNMP_ETC="/etc/snmp"

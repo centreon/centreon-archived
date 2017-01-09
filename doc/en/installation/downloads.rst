@@ -1,0 +1,26 @@
+.. _downloads:
+
+=========
+Downloads
+=========
+
+*******
+Formats
+*******
+
+Open Source software supplied by Centreon is generally available in 4 formats:
+
+* ISO Linux (recommended)
+* RPM packages (recommended)
+* OVA Archive
+* Archives containing the sources
+
+RPM packages and ISO linux are the best format to obtain our software. They are packaged by Centreon experts and relieve you of any concern over the installation process.
+
+.. note::
+ Centreon recommends using the Centreon packaged version. Installation is detailed in the chapter entitled: :ref:`Using Centreon<firststepsces3>`
+
+If your platform does not support RPM packages, you should use archives containing the sources of stable versions of our software and install them manually. Manual compilation of some packages can be complex.
+
+For downloading Centreon sources, please refer to our `website <https://download.centreon.com>`.
+

@@ -1,0 +1,30 @@
+{$form.javascript}
+<form {$form.attributes}>
+<div align='center'>
+	 <table class="ListTableMedium">
+	 	<tr class="ListHeader">
+		 	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+	 	</tr>
+		<tr class="list_one">
+			<td class="FormRowField">{t}Host{/t} / {t}Service{/t}</td>
+			<td class="FormRowValue"><b>{$host_name} / {$service_description}</b></td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.return_code.label}</td>
+			<td class="FormRowValue">{$form.return_code.html}</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.output.label}</td>
+			<td class="FormRowValue">{$form.output.html}</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.dataPerform.label}</td>
+			<td class="FormRowValue">{$form.dataPerform.html}</td>
+		</tr>
+	</table>
+	<br>
+	<p class="oreonbutton">{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+</div>
+<input name="o" type="hidden" value="svcd" />
+	{$form.hidden}
+</form>

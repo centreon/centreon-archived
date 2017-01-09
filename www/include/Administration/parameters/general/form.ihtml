@@ -1,0 +1,124 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+<table class="formTable table">
+ 	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$form.header.title}</h3>
+      </td>
+    </tr>
+ 	
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.oreon}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_web_directory">{$form.oreon_web_path.label}</td><td class="FormRowValue">{$form.oreon_web_path.html}</td></tr>
+ 	
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_max_page_size}</h4>
+      </td>
+    </tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page_for_monitoring">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_graph_per_page_for_performances">{$form.maxGraphPerformances.label}</td><td class="FormRowValue">{$form.maxGraphPerformances.html}</td></tr>
+    <tr class="list_two">
+      <td class="FormRowField"><img class="helpTooltip" name="tip_select_paginagion_size">{$form.selectPaginationSize.label}</td>
+      <td class="FormRowValue">{$form.selectPaginationSize.html}</td>
+    </tr>
+	
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_expiration_properties}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sessions_expiration_time">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}&nbsp;{$time_min}</td></tr>
+	
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_refresh_properties}</h4>
+      </td>
+    </tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
+ 	
+    <tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_global_display}</h4>
+      </td>
+    </tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">{$form.global_sort_type.label}</td><td class="FormRowValue">{$form.global_sort_type.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">{$form.global_sort_order.label}</td><td class="FormRowValue">{$form.global_sort_order.html}</td></tr>
+    
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_problem_display}</h4>
+      </td>
+    </tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
+
+    <!-- Proxy options -->
+    <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{t}Proxy options{/t}</h4>
+        </td>
+      </tr>
+  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_protocol">{$form.proxy_protocol.label}</td><td class="FormRowValue">{$form.proxy_protocol.html}</td></tr>
+  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_url">{$form.proxy_url.label}</td><td class="FormRowValue">{$form.proxy_url.html}</td></tr>
+  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_port">{$form.proxy_port.label}</td><td class="FormRowValue">{$form.proxy_port.html}</td></tr>
+
+    <!-- Chart options -->
+    <tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{t}Chart options{/t}</h4>
+      </td>
+    </tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_downtime_chart">{$form.display_downtime_chart.label}</td><td class="FormRowValue">{$form.display_downtime_chart.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_comment_chart">{$form.display_comment_chart.label}</td><td class="FormRowValue">{$form.display_comment_chart.html}</td></tr>
+	
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_auth}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_autologin">{$form.enable_autologin.label}</td><td class="FormRowValue">{$form.enable_autologin.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_autologin_shortcut">{$form.display_autologin_shortcut.label}</td><td class="FormRowValue">{$form.display_autologin_shortcut.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_enable">{$form.sso_enable.label}</td><td class="FormRowValue">{$form.sso_enable.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_mode">{$form.sso_mode.label}</td><td class="FormRowValue">{$form.sso_mode.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_trusted_clients">{$form.sso_trusted_clients.label}</td><td class="FormRowValue">{$form.sso_trusted_clients.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_blacklist_clients">{$form.sso_blacklist_clients.label}</td><td class="FormRowValue">{$form.sso_blacklist_clients.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">{$form.sso_header_username.label}</td><td class="FormRowValue">{$form.sso_header_username.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_username_pattern">{$form.sso_username_pattern.label}</td><td class="FormRowValue">{$form.sso_username_pattern.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_username_replace">{$form.sso_username_replace.label}</td><td class="FormRowValue">{$form.sso_username_replace.html}</td></tr>
+
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_time_zone}</h4>
+      </td>
+    </tr>
+     	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_default_timezone">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
+ 	
+  	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$support}</h4>
+      </td>
+    </tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_support_email">{$form.centreon_support_email.label}</td><td class="FormRowValue">{$form.centreon_support_email.html}</td></tr>
+
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+ </table>
+{if !$valid}
+	<div id="validForm" class="oreonbutton">
+		<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+{else}
+	<div id="validForm" class="oreonbutton">
+		<p>{$form.change.html}</p>
+	</div>
+{/if}
+{$form.hidden}
+</form>
+{$helptext}

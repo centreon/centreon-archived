@@ -1,0 +1,8 @@
+{
+  "name": "centreon",
+  "version": "2.7.3",
+  "description": "## Generic",
+  "devDependencies": {
+    "phantomjs": "^2.1.3"
+  }
+}

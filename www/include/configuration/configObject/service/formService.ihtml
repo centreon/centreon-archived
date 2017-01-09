@@ -1,0 +1,575 @@
+{$form.javascript}
+{$javascript}
+<form {$form.attributes}>
+<div class="headerTabContainer">
+    <ul id="mainnav">
+        <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{t}General Information{/t}</a></li>
+        <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Notifications{/t}</a></li>
+        <li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{t}Relations{/t}</a></li>
+        <li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{t}Data Processing{/t}</a></li>     
+        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Extended Info{/t}</a></li>       
+    </ul>
+    <div id="validFormTop">
+    {if $o == "a" || $o == "c" || $o == "mc"}
+        <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{$form.change.html}</p>
+    {/if}
+    </div>
+</div>
+<div id="tab1" class="tab">
+    <table class="formTable table">
+        <tr class="ListHeader" colspan="2">
+          <td class="FormHeader">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+        {if $msg.tpl}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_alias"> {$form.service_alias.label}</td><td class="FormRowValue">{$form.service_alias.html}</td></tr>
+        {/if}
+        {if $o != "mc"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_description"> {$form.service_description.label}</td><td class="FormRowValue">{$form.service_description.html}</td></tr>
+        {/if}
+        {if !$msg.tpl}
+        {if $o == "mc"}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
+        {/if}
+        {if $service_type == "BYHOST"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
+        {/if}
+        {if $service_type == "BYHOSTGROUP"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
+        {/if}
+        {/if}
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="use">{$form.service_template_model_stm_id.label}</td>
+            <td class="FormRowValue">
+                {$form.service_template_model_stm_id.html}
+                {if $o == "a" || $o == "c"}
+                    &nbsp;<img src='./img/icons/show_template.png' title="Show template" class="ico-16"style='cursor:pointer;vertical-align:middle;' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
+                    &nbsp;<img src='./img/icons/edit_mode.png' title="Edit template" class="ico-14" style='cursor:pointer;vertical-align:middle;' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
+                {/if}
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Service Check Options{/t}</h4>
+          </td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="check_command"> {$form.command_command_id.label}</td>
+            <td class="FormRowValue">
+                {$form.command_command_id.html}
+                {if $o == "a" || $o == "c"}
+                &nbsp;<img class='ico-14' src='./img/icons/info.png' style='cursor:help;vertical-align:middle;' onClick="window.open('main.php?p=60801&command_id='+ document.Form.elements['command_command_id'].options[document.Form.elements['command_command_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+                {/if}
+            </td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="macro"> {$custom_macro_label} <br>
+                <div class="macro_legend">
+                    <p><span class="state_badge" style="background-color: #ffcb6b;"></span>{$template_inheritance}</p>
+                    <p><span class="state_badge" style="background-color: #b6fca7;"></span>{$command_inheritance}</p>
+                </div>
+            </td>
+            <td class="FormRowValue">
+                {include file="file:$centreon_path/www/include/common/templates/cloneMacro.ihtml" cloneId="macro" cloneSet=$cloneSetMacro}
+            </td>
+        </tr>
+        {if $o == "a" || $o == "c" || $o == "w" || $o == "mc"}
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="check_command_args">{$form.command_command_id_arg.label}
+            </td>
+            <td class="FormRowValue">
+                {$form.hiddenArg.html}{$argChecker}
+                <div id='dynamicDiv'></div>
+            </td>
+        </tr>
+        {/if}
+        {if $o == "mc"}
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="check_command_args"> {$form.command_command_id_arg.label}</td>
+            <td class="FormRowValue">{$form.command_command_id_arg.html}&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" style='cursor:pointer;' alt="*"  onClick="set_arg('example1','command_command_id_arg');"></a><input type="text" name="example1" disabled></td>
+        </tr>
+        {/if}
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Service Scheduling Options{/t}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_period"> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_attempts"> {$form.service_max_check_attempts.label}</td><td class="FormRowValue">{$form.service_max_check_attempts.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_interval"> {$form.service_normal_check_interval.label}</td><td class="FormRowValue">{$form.service_normal_check_interval.html}&nbsp;{$time_unit}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retry_interval"> {$form.service_retry_check_interval.label}</td><td class="FormRowValue">{$form.service_retry_check_interval.html}&nbsp;{$time_unit}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="active_checks_enabled"> {$form.service_active_checks_enabled.label}</td><td class="FormRowValue">{$form.service_active_checks_enabled.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="passive_checks_enabled"> {$form.service_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.service_passive_checks_enabled.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="is_volatile"> {$form.service_is_volatile.label}</td><td class="FormRowValue">{$form.service_is_volatile.html}</td></tr>
+    </table>
+</div>
+<div id="tab2" class="tab"> 
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title2}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Notification status{/t}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.service_notifications_enabled.label}</td><td class="FormRowValue">{$form.service_notifications_enabled.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Notification receivers{/t}</h4>
+            </td>
+        </tr>
+        {if !$isServiceTemplate}
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_only_contacts_from_host"> {$form.service_use_only_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_use_only_contacts_from_host.html}</td></tr>
+        {/if}
+        {if $o == "mc"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
+        {/if} 
+        {if $o == "mc"}
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
+            <td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cs.label}</td>
+            <td class="FormRowValue">{$form.service_cs.html}</td>
+        </tr>
+        {else}
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.service_cs.label}</td>
+            <td class="FormRowValue">{$form.service_cs.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"></td>
+            <td class="FormRowValue">{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance"></td>
+        </tr>
+        {/if}
+        {if $o == "mc"}
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
+            <td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cgs.label}</td>
+            <td class="FormRowValue">{$form.service_cgs.html}</td>
+        </tr>
+        {else}
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cgs.label}</td>
+            <td class="FormRowValue">{$form.service_cgs.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"></td>
+            <td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
+        </tr>
+        {/if}            
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Notification options{/t}</h4>
+            </td>
+        </tr>
+        {if $o == "mc"}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_notification_interval.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_notification_interval.html}</td></tr>
+        {/if}       
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.service_notification_interval.label}</td><td class="FormRowValue">{$form.service_notification_interval.html}&nbsp;{$time_unit}</td></tr>
+        {if $o == "mc"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_timeperiod.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_timeperiod.html}</td></tr>
+        {/if}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
+        {if $o == "mc"}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopts.label}</td><td class="FormRowValue">{$form.mc_mod_notifopts.html}</td></tr>
+        {/if}   
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.service_notifOpts.label}</td><td class="FormRowValue">{$form.service_notifOpts.html}</td></tr>
+        {if $o == "mc"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_first_notification_delay.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_first_notification_delay.html}</td></tr>
+        {/if}   
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="first_notification_delay"> {$form.service_first_notification_delay.label}</td><td class="FormRowValue">{$form.service_first_notification_delay.html}&nbsp;{$time_unit}</td></tr>
+        {if $o == "mc"}
+        <tr class="list_one">
+        {else}
+        <tr class="list_two">
+        {/if}
+        <td class="FormRowField"><img class="helpTooltip" name="recovery_notification_delay"> {$form.service_recovery_notification_delay.label}</td><td class="FormRowValue">{$form.service_recovery_notification_delay.html}&nbsp;{$time_unit}</td></tr>
+        {if $o == "a" || $o == "c"}
+        <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+        {/if}
+    </table>
+</div>
+<div id="tab3" class="tab">
+    <table class="formTable table">
+        <tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title2}</h3>
+          </td>
+        </tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.links}</h4>
+          </td>
+        </tr>
+        {if !$msg.tpl}
+            {if $o == "mc"}
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sgs.label}</td><td class="FormRowValue">{$form.mc_mod_sgs.html}</td></tr>
+            {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
+        {else}
+            {if $o == "mc"}
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
+            {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_templates"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
+        {/if}
+        <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.traps}</h4>
+        </td>
+        </tr>
+        {if $o == "mc"}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_traps.label}</td><td class="FormRowValue">{$form.mc_mod_traps.html}</td></tr>
+        {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="snmptraps"> {$form.service_traps.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.mnftr.html}{$form.service_traps.html}</p></td></tr>
+     </table>
+</div>
+<div id="tab4" class="tab">
+    <table class="formTable table">
+        <tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title3}</h3>
+          </td>
+        </tr>
+        
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.treatment}</h4>
+          </td>
+        </tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_service"> {$form.service_obsess_over_service.label}</td><td class="FormRowValue">{$form.service_obsess_over_service.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_acknowledgement_timeout"> {$form.service_acknowledgement_timeout.label}</td><td class="FormRowValue">{$form.service_acknowledgement_timeout.html}&nbsp;{$time_unit}</td></tr>
+
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$Freshness_Control_options}</h4>
+          </td>
+        </tr>   
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_freshness"> {$form.service_check_freshness.label}</td><td class="FormRowValue">{$form.service_check_freshness.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="freshness_threshold"> {$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
+
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$Flapping_Options}</h4>
+          </td>
+        </tr>       
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.service_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.service_flap_detection_enabled.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}&nbsp;%</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}&nbsp;%</td></tr>
+
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$History_Options}</h4>
+          </td>
+        </tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retain_status_information"> {$form.service_retain_status_information.label}</td><td class="FormRowValue">{$form.service_retain_status_information.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retain_nonstatus_information"> {$form.service_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.service_retain_nonstatus_information.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="stalking_options"> {$form.service_stalOpts.label}</td><td class="FormRowValue">{$form.service_stalOpts.html}</td></tr>
+
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$Event_Handler}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_enabled"> {$form.service_event_handler_enabled.label}</td><td class="FormRowValue">{$form.service_event_handler_enabled.html}</td></tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="event_handler"> {$form.command_command_id2.label}</td>
+            <td class="FormRowValue">
+                {$form.command_command_id2.html}
+                {if $o == "a" || $o == "c"}
+                &nbsp;<img src='./img/icons/info.png' class='ico-14' style='cursor:help;vertical-align:middle;' onClick="window.open('main.php?p=60801&command_id='+ document.Form.elements['command_command_id2'].options[document.Form.elements['command_command_id2'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+                {/if}
+            </td>
+        </tr>
+        {if $v > "1"}       
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_args"> {$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
+        {if $o == "a" || $o == "c"}
+        &nbsp;<img src="./img/icons/arrow-left.png" class="ico-14" style='cursor: pointer;margin: 0 6px;vertical-align: middle;' alt="*" onClick="set_arg('example2','command_command_id_arg2');"><input type="text" name="example2" disabled>
+        {/if}
+        </td></tr>
+        {/if}
+     </table>
+</div>
+<div id='tab5' class='tab'>
+     <table class="formTable table">
+        <tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title4}</h3>
+          </td>
+        </tr>
+
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.oreon}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="graph_template"> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
+        
+        {if $o == "mc"}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sc.label}</td><td class="FormRowValue">{$form.mc_mod_sc.html}</td></tr>
+        {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="categories"> {$form.service_categories.label}</td><td class="FormRowValue">{$form.service_categories.html}</td></tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.nagios}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notes_url"> {$form.esi_notes_url.label}</td><td class="FormRowValue">{$form.esi_notes_url.html}</td></tr>
+        {if $msg.nagios >= 2}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notes"> {$form.esi_notes.label}</td><td class="FormRowValue">{$form.esi_notes.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="action_url"> {$form.esi_action_url.label}</td><td class="FormRowValue">{$form.esi_action_url.html}</td></tr>
+        {/if}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.esi_icon_image.label}</td><td class="FormRowValue">{$form.esi_icon_image.html}&nbsp;&nbsp;<img id='esi_icon_image_img' src='./img/blank.gif'></td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="icon_image_alt"> {$form.esi_icon_image_alt.label}</td><td class="FormRowValue">{$form.esi_icon_image_alt.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
+        {if $form.geo_coords.label}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
+        {/if}
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField">{$form.service_activate.label}</td><td class="FormRowValue">{$form.service_activate.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue">{$form.service_comment.html}</td></tr>
+     </table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c" || $o == "mc"}
+    <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+    <p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}  
+</form>
+{$helptext}
+
+<script>
+
+var alert_check_interval = "{$alert_check_interval}";
+
+{literal}
+jQuery('input[name=service_normal_check_interval]').change(function() {
+    if (parseInt(jQuery(this).val()) >= 1440) {
+        alert(alert_check_interval);
+    }
+});
+
+jQuery(function() {
+
+    sheepIt = jQuery("#macro").sheepIt({
+        separator: '',
+        allowRemoveLast: true,
+        allowRemoveCurrent: true,
+        allowRemoveAll: true,
+        minFormsCount: 0,
+        maxFormsCount: 200,
+        continuousIndex : false,
+        iniFormsCount: jQuery("#clone-count-macro").data("clone-count-macro"),
+        data: jQuery("#clone-values-macro").data("clone-values-macro"),
+        afterAdd: function(source, newForm) {
+            jQuery(newForm).find("input[id^='macroPassword_']").parent().show();
+        }
+    });
+
+    jQuery(".onemacro").each(function(idx,elem) {
+        var from = jQuery(elem).find('input[name^=macroFrom]').val();
+        if (from === "direct") {
+        } else if (from === "fromTpl") {
+            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+        } else {
+            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+        }
+
+        // Set a 'Macro value' field as password field, on edit mode
+        if (jQuery(elem).find("input[id^='macroPassword']").is(':checked')) {
+            jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+        }
+
+        {/literal}{if $form.frozen == false}{literal}
+        // Display undo button on template macro
+        if (typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined') {
+            if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1") {
+                var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
+                var tplValue = tplValueField.val();
+
+                // Reset macro value on click on undo button
+                tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function() {
+                    jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                    jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                }));
+            }
+        }
+        {/literal}{/if}{literal}
+
+        jQuery(elem).find("input[name^='macroInput']").on("input",function() {
+            jQuery(elem).find('input[name^=macroFrom]').val("direct");
+            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+        });
+        jQuery(elem).find("input[name^='macroValue']").on("input",function() {
+            jQuery(elem).find('input[name^=macroFrom]').val("direct");
+            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+        });
+
+        var $passwordCheckbox = jQuery(elem).find("input[id^='macroPassword_']");
+        {/literal}{if $form.frozen == true}{literal}
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.replaceWith('[x]');
+        } else {
+            $passwordCheckbox.replaceWith('[ ]');
+        }
+        {/literal}{else}{literal}
+        if ($passwordCheckbox.is(':checked')) {
+            $passwordCheckbox.parent('span').empty();
+        }
+        {/literal}{/if}{literal}
+
+    });
+
+    jQuery(".macroclone").sortable({
+           handle: ".clonehandle",
+           axis: "y",
+           helper: "clone",
+           opacity: 0.5,
+           placeholder: "clone-placeholder",
+           tolerance: "pointer"
+        }
+    );
+
+    function bindInhertance() {
+        if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "1") {
+            jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").attr('disabled', 'disabled').removeAttr('checked');
+            jQuery("input[name='contact_additive_inheritance']").attr('disabled', 'disabled');
+            jQuery("input[name='cg_additive_inheritance']").attr('disabled', 'disabled');
+            jQuery("#service_cs").attr('disabled', 'disabled');
+            jQuery("#service_cs").select2("val", "");
+            jQuery("#service_cgs").attr('disabled', 'disabled');
+            jQuery("#service_cgs").select2("val", "");
+        } else {
+            jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").removeAttr('disabled');
+            jQuery("input[name='contact_additive_inheritance']").removeAttr('disabled');
+            jQuery("input[name='cg_additive_inheritance']").removeAttr('disabled');
+            jQuery("#service_cs").removeAttr('disabled');
+            jQuery("#service_cgs").removeAttr('disabled');
+        }
+    }
+    
+    bindInhertance();
+    jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']").on('click',function() {
+        bindInhertance();
+    });
+
+    
+    jQuery('select[name=service_template_model_stm_id], select[name=command_command_id]').on('change',function(event,data) {
+        if (typeof data != "undefined" && typeof data.origin != undefined && data.origin == "select2defaultinit") {
+            return false;
+    }
+    {/literal}{if $o != "mc"}{literal} 
+    jQuery.ajax({
+        url: "./include/configuration/configObject/service/refreshMacroAjax.php",
+        type: "POST",
+        dataType : "json",
+        data: this.form.serialize(),
+        success : function(json) {
+            jQuery("#clone-count-macro").data("clone-count-macro",json.count);
+            jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
+            sheepIt.removeAllForms();
+            for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
+                sheepIt.addForm();  
+            }
+
+            sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
+
+            jQuery(".macroclone").sortable({
+                   handle: ".clonehandle",
+                   axis: "y",
+                   helper: "clone",
+                   opacity: 0.5,
+                   placeholder: "clone-placeholder",
+                   tolerance: "pointer"
+                }
+            );
+
+            jQuery(".onemacro").each(function(idx, elem) {
+                var from = jQuery(elem).find('input[name^=macroFrom]').val();
+                if (from === "direct") {
+                } else if (from === "fromTpl") {
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                } else {
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+                }
+
+                if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+                    jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                }
+
+                {/literal}{if $form.frozen == false}{literal}
+                // Display undo button on template macro
+                if (typeof jQuery(elem).find("input[name^='macroTplValToDisplay']") != 'undefined') {
+                    if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1") {
+                        var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
+                        var tplValue = tplValueField.val();
+                        
+                        var tplInputField = jQuery(elem).find("input[name^='macroInput']");
+                        var tplInput = tplInputField.val();
+
+                        // Reset macro value on click on undo button
+                        tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function() {
+                            jQuery(elem).find("input[name^='macroValue']").val(tplValue);
+                            jQuery(elem).find("input[name^='macroInput']").val(tplInput);
+                            jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
+                            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                        }));
+                    }
+                }
+                {/literal}{/if}{literal}
+
+                jQuery(elem).find("input[name^='macroInput']").on("input",function() {
+                    jQuery(elem).find('input[name^=macroFrom]').val("direct");
+                    jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+                    jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+                });
+                jQuery(elem).find("input[name^='macroValue']").on("input",function() {
+                    jQuery(elem).find('input[name^=macroFrom]').val("direct");
+                    jQuery(elem).find("input[name^='macroInput']").css("background", "white");
+                    jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+                });
+
+                if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
+                    jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                } 
+            });
+        }
+        });
+    {/literal}{/if}{literal}
+    });
+});
+
+{/literal}
+</script>

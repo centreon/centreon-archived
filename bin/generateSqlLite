@@ -1,0 +1,566 @@
+#!/usr/bin/env php
+<?php
+require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
+
+define("OK", 0);
+define("NOK", 1);
+
+$programName = $argv[0];
+
+if ($argc < 3) {
+    echo "$programName: Missing argument\n";
+    exit(NOK);
+}
+
+$server_id = (int)$argv[1];
+$dbfilename = $argv[2];
+if (!is_writable(dirname($dbfilename))) {
+    echo "$programName: Cannot write into $dbfilename\n";
+    exit(NOK);
+}
+
+if (is_file($dbfilename)) {
+    unlink($dbfilename);
+}
+
+try {
+    $mysql_host = $conf_centreon["hostCentreon"];
+    $mysql_port = $conf_centreon["port"];
+    $mysql_database = $conf_centreon["db"];
+    $mysql_user = $conf_centreon["user"];
+    $mysql_password = $conf_centreon["password"];
+    $db_centreon = new PDO("mysql:dbname=pdo;host=" . $mysql_host . ";port=" . $mysql_port . ";dbname=" . $mysql_database,
+    $mysql_user, $mysql_password);
+    $db_centreon->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Get pollers
+    $stmt = $db_centreon->prepare("SELECT ns_ip_address, id
+        FROM nagios_server
+        WHERE id = :server_id");
+    $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result_pollers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get engine command file
+    $stmt = $db_centreon->prepare("SELECT command_file
+        FROM cfg_nagios
+        WHERE nagios_server_id = :server_id AND nagios_activate = '1'");
+    $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result_cfg_engine = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // get host relations with poller
+    $stmt = $db_centreon->prepare("SELECT nagios_server_id, host_host_id
+        FROM ns_host_relation
+        WHERE nagios_server_id = :server_id");
+    $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result_pollers_relations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // get hosts
+    $stmt = $db_centreon->prepare("SELECT host.host_id, host.host_name, host.host_address, host.host_snmp_community, host.host_snmp_version
+        FROM host, ns_host_relation 
+        WHERE ns_host_relation.nagios_server_id = :server_id 
+        AND ns_host_relation.host_host_id = host.host_id 
+        AND host.host_activate = '1'");
+    $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result_hosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // get hosts templates
+    $stmt = $db_centreon->prepare("SELECT host.host_id, host.host_snmp_community, host.host_snmp_version
+        FROM host 
+        WHERE host_register = '0' AND host_activate = '1'");
+    $stmt->execute();
+    $result_host_templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // get host relations
+    $stmt = $db_centreon->prepare("SELECT host_tpl_id, host_host_id, `order` FROM host_template_relation");
+    $stmt->execute();
+    $result_host_templates_relation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // get host macros
+    $stmt = $db_centreon->prepare("SELECT host_host_id, host_macro_name, host_macro_value FROM on_demand_macro_host");
+    $stmt->execute();
+    $result_host_macros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // get services
+    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id, extended_service_information.esi_notes
+        FROM host, host_service_relation, ns_host_relation, service LEFT JOIN extended_service_information ON service.service_id = extended_service_information.service_service_id
+        WHERE ns_host_relation.nagios_server_id = :server_id 
+        AND ns_host_relation.host_host_id = host.host_id 
+        AND host.host_id = host_service_relation.host_host_id 
+        AND host_service_relation.service_service_id = service.service_id 
+        AND service.service_activate = '1'");
+    $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result_host_services = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // get services by hostgroup
+    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id, hostgroup_relation.hostgroup_hg_id, extended_service_information.esi_notes
+        FROM host, host_service_relation, hostgroup_relation, ns_host_relation, service LEFT JOIN extended_service_information ON service.service_id = extended_service_information.service_service_id
+        WHERE ns_host_relation.nagios_server_id = :server_id 
+        AND ns_host_relation.host_host_id = host.host_id 
+        AND host.host_id = hostgroup_relation.host_host_id 
+        AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id 
+        AND host_service_relation.service_service_id = service.service_id 
+        AND service.service_activate = '1'");
+    $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result_services_from_hg = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // get service templates
+    $stmt = $db_centreon->prepare("SELECT service.service_id, service.service_description, service.service_template_model_stm_id 
+        FROM service 
+        WHERE service.service_register = '0' 
+        AND service.service_activate = '1'");
+    $stmt->execute();
+    $result_services_template = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // get trap info
+    $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, severity_id, traps_submit_result_enable, 
+        traps_execution_command, traps_reschedule_svc_enable, traps_execution_command_enable, traps_args, 
+        traps_routing_mode, traps_routing_value, traps_log, traps_name, traps_exec_method, traps_downtime, traps_routing_filter_services, traps_advanced_treatment, traps_advanced_treatment_default,
+        traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type, manufacturer_id, traps_output_transform
+        FROM traps");
+    $stmt->execute();
+    $result_traps = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $db_centreon->prepare("SELECT tmo_id, trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status, severity_id 
+        FROM traps_matching_properties");
+    $stmt->execute();
+    $result_traps_matching = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $db_centreon->prepare("SELECT traps_id, service_id 
+        FROM traps_service_relation");
+    $stmt->execute();
+    $result_traps_relation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt = $db_centreon->prepare("SELECT trap_id, tpe_string, tpe_order
+        FROM traps_preexec");
+    $stmt->execute();
+    $result_traps_preexec = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt = $db_centreon->prepare("SELECT traps_group_id, traps_id
+        FROM traps_group_relation");
+    $stmt->execute();
+    $result_traps_group = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get trap Vendor
+    $stmt = $db_centreon->prepare("SELECT id, name
+        FROM traps_vendor");
+    $stmt->execute();
+    $result_traps_vendor = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get Severities
+    $stmt = $db_centreon->prepare("SELECT sc_id, sc_name, `level`
+        FROM service_categories WHERE `level` IS NOT NULL");
+    $stmt->execute();
+    $result_severities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+} catch (PDOException $e ) {
+    echo "Error on poller (id:$server_id): " . $e->getMessage() . "\n";
+    exit(NOK);
+}
+
+try {
+    $dbh_sqlite = new PDO('sqlite:'.$dbfilename);
+    $dbh_sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $dbh_sqlite->beginTransaction();
+    
+    $dbh_sqlite->exec("
+            CREATE TABLE IF NOT EXISTS `nagios_server` (
+                `id` int(11) UNIQUE NOT NULL,
+                `ns_ip_address` varchar(200) DEFAULT NULL
+            );
+            
+            CREATE TABLE IF NOT EXISTS `cfg_nagios` (
+                `command_file` varchar(255) DEFAULT NULL,
+                `nagios_activate` int(11) DEFAULT '1'
+            );
+            
+            CREATE TABLE IF NOT EXISTS `ns_host_relation` (
+                `host_host_id` int(11) DEFAULT NULL,
+                `nagios_server_id` int(11) DEFAULT NULL
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_nhr_host_host_id ON ns_host_relation (host_host_id);
+            
+            CREATE TABLE IF NOT EXISTS `host` (
+                `host_id` int(11) UNIQUE NOT NULL,
+                `host_name` varchar(200) DEFAULT NULL,
+                `host_address` varchar(255) DEFAULT NULL,
+                `host_snmp_community` varchar(255) DEFAULT NULL,
+                `host_snmp_version` varchar(255) DEFAULT NULL,
+                `host_activate` int(11) DEFAULT '1'
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_host_host_id ON host (host_id);
+
+            CREATE TABLE IF NOT EXISTS `service` (
+                `service_id` int(11) UNIQUE NOT NULL,
+                `service_description` varchar(200) DEFAULT NULL,
+                `service_template_model_stm_id` int(11) DEFAULT NULL,
+                `service_activate` int(11) DEFAULT '1'
+                );
+                
+            CREATE INDEX IF NOT EXISTS idx_service_service_id ON service (service_id);
+            
+            CREATE TABLE IF NOT EXISTS `extended_service_information` (
+                `service_service_id` int(11) UNIQUE NOT NULL,
+                `esi_notes` text DEFAULT NULL
+                );
+            
+            CREATE INDEX IF NOT EXISTS idx_esi_service_service_id ON extended_service_information (service_service_id);
+
+            CREATE TABLE IF NOT EXISTS `hostgroup_relation` (
+                `host_host_id` int(11) DEFAULT NULL,
+                `hostgroup_hg_id` int(11) DEFAULT NULL
+                );
+
+            CREATE INDEX IF NOT EXISTS idx_hr_host_host_id ON hostgroup_relation (host_host_id);
+
+            CREATE TABLE IF NOT EXISTS `host_template_relation` (
+                `host_host_id` int(11) DEFAULT NULL,
+                `host_tpl_id` int(11) DEFAULT NULL,
+                `order` int(11) DEFAULT NULL
+                );
+            
+            CREATE INDEX IF NOT EXISTS idx_htr_host_host_id ON host_template_relation (host_host_id);
+            
+            CREATE TABLE IF NOT EXISTS `on_demand_macro_host` (
+                `host_macro_name` varchar(255) NOT NULL,
+                `host_macro_value` varchar(255) NOT NULL,
+                `host_host_id` int(11) DEFAULT NULL
+                );
+              
+            CREATE INDEX IF NOT EXISTS idx_odmh_host_host_id ON on_demand_macro_host (host_host_id);
+            
+            CREATE TABLE IF NOT EXISTS `host_service_relation` (
+                `service_service_id` int(11) DEFAULT NULL,
+                `host_host_id` int(11) DEFAULT NULL,
+                `hostgroup_hg_id` int(11) DEFAULT NULL
+                );
+
+            CREATE INDEX IF NOT EXISTS idx_hsr_host_host_id ON host_service_relation (host_host_id);
+
+            CREATE TABLE IF NOT EXISTS `traps_service_relation` (
+                    `traps_id` int(11) DEFAULT NULL,
+                    `service_id` int(11) DEFAULT NULL
+                    );
+
+            CREATE INDEX IF NOT EXISTS idx_tsr_mult_ids ON traps_service_relation (service_id, traps_id);            
+            
+            CREATE TABLE IF NOT EXISTS `traps` (
+                    `traps_id` int(11) UNIQUE NOT NULL,
+                    `traps_name` varchar(255) DEFAULT NULL,
+                    `traps_oid` varchar(255) DEFAULT NULL,
+                    `traps_args` varchar(255) DEFAULT NULL,
+                    `traps_status` int(11) DEFAULT NULL,
+                    `severity_id` int(11) DEFAULT NULL,
+                    `manufacturer_id` int(11) DEFAULT NULL,
+                    `traps_reschedule_svc_enable` int(11) DEFAULT '0',
+                    `traps_execution_command` varchar(255) DEFAULT NULL,
+                    `traps_execution_command_enable` int(11) DEFAULT '0',
+                    `traps_submit_result_enable` int(11) DEFAULT '0',
+                    `traps_advanced_treatment` int(11) DEFAULT '0',
+                    `traps_advanced_treatment_default` int(11) DEFAULT '0',
+                    `traps_timeout` int(11) DEFAULT NULL,
+                    `traps_exec_interval` int(11) DEFAULT NULL,
+                    `traps_exec_interval_type` int(11) DEFAULT '0',
+					`traps_downtime` int(11) DEFAULT '0',
+                    `traps_log` int(11) DEFAULT '0',
+                    `traps_routing_mode` int(11) DEFAULT '0',
+                    `traps_routing_value` varchar(255) DEFAULT NULL,
+                    `traps_routing_filter_services` varchar(255) DEFAULT NULL,
+                    `traps_output_transform` varchar(255) DEFAULT NULL,
+                    `traps_exec_method` int(11) DEFAULT '0',
+                    `traps_customcode` text DEFAULT NULL
+                    );
+
+            CREATE INDEX IF NOT EXISTS idx_t_traps_oid ON traps (traps_oid);
+
+            CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
+                    `tmo_id` int(11) DEFAULT NULL,
+                    `trap_id` int(11) DEFAULT NULL,
+                    `tmo_order` int(11) DEFAULT NULL,
+                    `tmo_regexp` varchar(255) DEFAULT NULL,
+                    `tmo_string` varchar(255) DEFAULT NULL,
+                    `tmo_status` int(11) DEFAULT NULL,
+                    `severity_id` int(11) DEFAULT NULL
+                    );
+
+            CREATE INDEX IF NOT EXISTS idx_tmp_trap_id ON traps_matching_properties (trap_id);
+
+            CREATE TABLE IF NOT EXISTS `traps_preexec` (
+                    `trap_id` int(11) DEFAULT NULL,
+                    `tpe_order` int(11) DEFAULT NULL,
+                    `tpe_string` varchar(512) DEFAULT NULL
+                    );
+                    
+            CREATE INDEX IF NOT EXISTS idx_tprexec_trap_id ON traps_preexec (trap_id);
+            
+            CREATE TABLE IF NOT EXISTS `traps_group_relation` (
+                    `traps_group_id` int(11) DEFAULT NULL,
+                    `traps_id` int(11) DEFAULT NULL
+                    );
+                    
+            CREATE INDEX IF NOT EXISTS idx_tg_traps_id ON traps_group_relation (traps_id);
+            CREATE INDEX IF NOT EXISTS idx_tg_traps_group_id ON traps_group_relation (traps_group_id);
+
+            CREATE TABLE IF NOT EXISTS `traps_vendor` (
+                `id` int(11) DEFAULT NULL,
+                `name` int(11) DEFAULT NULL
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_tv_id ON traps_vendor (`id`);
+            
+            CREATE TABLE IF NOT EXISTS `service_categories` (
+                `sc_id` int(11) DEFAULT NULL,
+                `sc_name` varchar(255) DEFAULT NULL,
+                `level` int(11) DEFAULT NULL
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_sc_sc_id ON service_categories (`sc_id`);
+            
+            ");
+
+            
+            // Poller
+            $stmt = $dbh_sqlite->prepare("INSERT INTO nagios_server (`id`, ns_ip_address) VALUES (
+                    :id, :ns_ip_address)");
+            foreach ($result_pollers as $value) {
+                $stmt->bindParam(':id', $value['id'], PDO::PARAM_INT);
+                $stmt->bindParam(':ns_ip_address', $value['ns_ip_address'], PDO::PARAM_STR);
+                $stmt->execute();	
+            }
+            
+            // Engine command file
+            $stmt = $dbh_sqlite->prepare("INSERT INTO cfg_nagios (`command_file`) VALUES (
+                    :command_file)");
+            foreach ($result_cfg_engine as $value) {
+                $stmt->bindParam(':command_file', $value['command_file'], PDO::PARAM_STR);
+                $stmt->execute();	
+            }
+            
+            // poller/host relation
+            $stmt = $dbh_sqlite->prepare("INSERT INTO ns_host_relation (host_host_id, nagios_server_id) VALUES (
+                    :host_host_id, :nagios_server_id)");
+            foreach ($result_pollers_relations as $value) {
+                $stmt->bindParam(':host_host_id', $value['host_host_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':nagios_server_id', $value['nagios_server_id'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
+            // Insert host
+            $stmt = $dbh_sqlite->prepare("INSERT INTO host (host_id, host_name, host_address, host_snmp_community, host_snmp_version) VALUES (
+                    :host_id, :host_name, :host_address, :host_snmp_community, :host_snmp_version)");
+            foreach ($result_hosts as $value) {
+                $stmt->bindParam(':host_id', $value['host_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':host_name', $value['host_name'], PDO::PARAM_STR);
+                $stmt->bindParam(':host_address', $value['host_address'], PDO::PARAM_STR);
+                $stmt->bindParam(':host_snmp_community', $value['host_snmp_community'], PDO::PARAM_STR);
+                $stmt->bindParam(':host_snmp_version', $value['host_snmp_version'], PDO::PARAM_STR);
+                $stmt->execute();	
+            }
+            $stmt = $dbh_sqlite->prepare("INSERT INTO host (host_id, host_snmp_community, host_snmp_version) VALUES (
+                    :host_id, :host_snmp_community, :host_snmp_version)");
+            foreach ($result_host_templates as $value) {
+                $stmt->bindParam(':host_id', $value['host_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':host_snmp_community', $value['host_snmp_community'], PDO::PARAM_STR);
+                $stmt->bindParam(':host_snmp_version', $value['host_snmp_version'], PDO::PARAM_STR);
+                $stmt->execute();	
+            }
+            
+            // Insert host template relations
+            $stmt = $dbh_sqlite->prepare("INSERT INTO host_template_relation (host_host_id, host_tpl_id, `order`) VALUES (
+                    :host_host_id, :host_tpl_id, :order)");
+            foreach ($result_host_templates_relation as $value) {
+                $stmt->bindParam(':host_host_id', $value['host_host_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':host_tpl_id', $value['host_tpl_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':order', $value['order'], PDO::PARAM_INT);                
+                $stmt->execute();	
+            }
+            
+            // Insert Host macro
+            $stmt = $dbh_sqlite->prepare("INSERT INTO on_demand_macro_host (host_macro_name, host_macro_value, host_host_id) VALUES (
+                    :host_macro_name, :host_macro_value, :host_host_id)");
+            foreach ($result_host_macros as $value) {
+                $stmt->bindParam(':host_macro_name', $value['host_macro_name'], PDO::PARAM_STR);
+                $stmt->bindParam(':host_macro_value', $value['host_macro_value'], PDO::PARAM_STR);
+                $stmt->bindParam(':host_host_id', $value['host_host_id'], PDO::PARAM_INT);                
+                $stmt->execute();	
+            }
+
+            // Insert direct services
+            $insertedServices = array();            
+            foreach ($result_host_services as $value) {
+                if (!isset($insertedServices[$value['service_id']])) {
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
+                        :service_id, :service_description, :service_template_model_stm_id)");
+                    $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
+                    $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
+                    $stmt->execute();
+                    $insertedServices[$value['service_id']] = true;
+                
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO host_service_relation (service_service_id, host_host_id) VALUES (
+                        :service_service_id, :host_host_id)");
+                    $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':host_host_id', $value['host_id'], PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO extended_service_information (service_service_id, esi_notes) VALUES (
+                        :service_service_id, :esi_notes)");
+                    $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':esi_notes', $value['esi_notes'], PDO::PARAM_STR);
+                    $stmt->execute();
+                }
+            }
+            // Insert services by hostgroup
+            foreach ($result_services_from_hg as $value) {
+                if (!isset($insertedServices[$value['service_id']])) {
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
+                        :service_id, :service_description, :service_template_model_stm_id)");
+                    $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
+                    $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
+                    $stmt->execute();
+                    
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO extended_service_information (service_service_id, esi_notes) VALUES (
+                    :service_service_id, :esi_notes)");
+                    $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':esi_notes', $value['esi_notes'], PDO::PARAM_STR);
+                    $stmt->execute();
+                
+                    $insertedServices[$value['service_id']] = true;
+                }
+
+                $stmt = $dbh_sqlite->prepare("INSERT INTO hostgroup_relation (host_host_id, hostgroup_hg_id) VALUES (
+                    :host_host_id, :hostgroup_hg_id)");
+                $stmt->bindParam(':host_host_id', $value['host_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':hostgroup_hg_id', $value['hostgroup_hg_id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                $stmt = $dbh_sqlite->prepare("INSERT INTO host_service_relation (service_service_id, hostgroup_hg_id) VALUES (
+                    :service_service_id, :hostgroup_hg_id)");
+                $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':hostgroup_hg_id', $value['hostgroup_hg_id'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            // Insert service templates
+            $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
+                    :service_id, :service_description, :service_template_model_stm_id)");
+            foreach ($result_services_template as $value) {
+                $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
+                $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+
+            // Insert traps
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps (traps_id, traps_name, traps_oid, traps_args, traps_status, severity_id, manufacturer_id,
+                                            traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, traps_submit_result_enable, 
+                                            traps_advanced_treatment, traps_advanced_treatment_default, traps_timeout, traps_customcode,
+                                            traps_exec_interval, traps_exec_interval_type, traps_log,
+                                            traps_routing_mode, traps_routing_value, traps_exec_method, traps_downtime, traps_output_transform, traps_routing_filter_services) VALUES (
+                    :traps_id, :traps_name, :traps_oid, :traps_args, :traps_status, :severity_id, :manufacturer_id,
+                    :traps_reschedule_svc_enable, :traps_execution_command, :traps_execution_command_enable, :traps_submit_result_enable,
+                    :traps_advanced_treatment, :traps_advanced_treatment_default, :traps_timeout, :traps_customcode,
+                    :traps_exec_interval, :traps_exec_interval_type, :traps_log,
+                    :traps_routing_mode, :traps_routing_value,
+                    :traps_exec_method, :traps_downtime, :traps_output_transform, :traps_routing_filter_services)");
+            foreach ($result_traps as $value) {
+                $stmt->bindParam(':traps_id', $value['traps_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_name', $value['traps_name'], PDO::PARAM_STR);
+                $stmt->bindParam(':traps_oid', $value['traps_oid'], PDO::PARAM_STR);
+                $stmt->bindParam(':traps_args', $value['traps_args'], PDO::PARAM_STR);
+                $stmt->bindParam(':traps_status', $value['traps_status'], PDO::PARAM_INT);
+                $stmt->bindParam(':severity_id', $value['severity_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':manufacturer_id', $value['manufacturer_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_reschedule_svc_enable', $value['traps_reschedule_svc_enable'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_execution_command', $value['traps_execution_command'], PDO::PARAM_STR);
+                $stmt->bindParam(':traps_execution_command_enable', $value['traps_execution_command_enable'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_submit_result_enable', $value['traps_submit_result_enable'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_advanced_treatment', $value['traps_advanced_treatment'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_advanced_treatment_default', $value['traps_advanced_treatment_default'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_timeout', $value['traps_timeout'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_customcode', $value['traps_customcode'], PDO::PARAM_STR);
+                $stmt->bindParam(':traps_exec_interval', $value['traps_exec_interval'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_exec_interval_type', $value['traps_exec_interval_type'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_log', $value['traps_log'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_routing_mode', $value['traps_routing_mode'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_routing_value', $value['traps_routing_value'], PDO::PARAM_STR);
+                $stmt->bindParam(':traps_exec_method', $value['traps_exec_method'], PDO::PARAM_INT);
+				$stmt->bindParam(':traps_output_transform', $value['traps_output_transform'], PDO::PARAM_STR);
+				$stmt->bindParam(':traps_routing_filter_services', $value['traps_routing_filter_services'], PDO::PARAM_STR);
+				$stmt->bindParam(':traps_downtime', $value['traps_downtime'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_matching_properties (tmo_id, trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status, severity_id) VALUES (
+                    :tmo_id, :trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status, :severity_id)");
+            foreach ($result_traps_matching as $value) {
+                $stmt->bindParam(':tmo_id', $value['tmo_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':trap_id', $value['trap_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':tmo_order', $value['tmo_order'], PDO::PARAM_INT);
+                $stmt->bindParam(':tmo_regexp', $value['tmo_regexp'], PDO::PARAM_STR);
+                $stmt->bindParam(':tmo_string', $value['tmo_string'], PDO::PARAM_STR);
+                $stmt->bindParam(':tmo_status', $value['tmo_status'], PDO::PARAM_INT);
+                $stmt->bindParam(':severity_id', $value['severity_id'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_service_relation (traps_id, service_id) VALUES (
+                    :traps_id, :service_id)");
+            foreach ($result_traps_relation as $value) {
+                $stmt->bindParam(':traps_id', $value['traps_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES (
+                    :trap_id, :tpe_string, :tpe_order)");
+            foreach ($result_traps_preexec as $value) {
+                $stmt->bindParam(':trap_id', $value['trap_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':tpe_string', $value['tpe_string'], PDO::PARAM_STR);
+                $stmt->bindParam(':tpe_order', $value['tpe_order'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_group_relation (traps_group_id, traps_id) VALUES (
+                    :traps_group_id, :traps_id)");
+            foreach ($result_traps_group as $value) {
+                $stmt->bindParam(':traps_group_id', $value['traps_group_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_id', $value['traps_id'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
+            // Insert traps vendor
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_vendor (`id`, `name`) VALUES (
+                    :id, :name)");
+            foreach ($result_traps_vendor as $value) {
+                $stmt->bindParam(':id', $value['id'], PDO::PARAM_INT);
+                $stmt->bindParam(':name', $value['name'], PDO::PARAM_STR);
+                $stmt->execute();
+            }
+            
+            // Insert severities
+            $stmt = $dbh_sqlite->prepare("INSERT INTO service_categories (`sc_id`, `sc_name`, `level`) VALUES (
+                    :sc_id, :sc_name, :level)");
+            foreach ($result_severities as $value) {
+                $stmt->bindParam(':sc_id', $value['sc_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':sc_name', $value['sc_name'], PDO::PARAM_STR);
+                $stmt->bindParam(':level', $value['level'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
+            $dbh_sqlite->commit();
+            echo "Poller (id:$server_id): Sqlite database successfully created\n";
+            exit(OK);
+} catch (PDOException $e ) {
+    $dbh_sqlite->rollback();
+    echo "Error on poller (id:$server_id): " . $e->getMessage() . " (file: " . $e->getFile() . ", line: " . $e->getLine() . ")\n";
+    exit(NOK);
+}

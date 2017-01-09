@@ -1,0 +1,69 @@
+<table class="ListTable table">
+    <tr class="list_lvl_1">
+    <td class="ListColLvl1_name">
+        <h4>{$meta.meta} -  {$meta.name}&nbsp;({$meta.calc_type})</h4>
+    </td>
+    </tr>
+</table>
+<br />
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form'  method='POST'>
+<input type='hidden' name='o' id='o' value='42'>
+    <table class="ToolbarTable table">
+        <tr class="ToolbarTR">
+            { if $mode_access == 'w' }
+            <td>
+                {$msg.options} {$form.o1.html}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{$msg.addL1}" class="btc bt_success">{$msg.addT}</a>
+            </td>
+            { else }
+            <td>&nbsp;</td>
+            { /if }
+            <input name="p" value="{$p}" type="hidden">
+        </tr>
+    </table>
+    <table class="ListTable">
+        <tr class="ListHeader">
+            <td class="ListColHeaderPicker">
+                <input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>           
+            </td>
+            <td class="ListColLeft">{$headerMenu_host}</td>
+            <td class="ListColLeft">{$headerMenu_service}</td>
+            <td class="ListColCenter">{$headerMenu_metric}</td>
+            <td class="ListColCenter">{$headerMenu_status}</td>
+            <td class="ListColRight">{$headerMenu_options}</td>
+        </tr>
+        {section name=elem loop=$elemArr1}
+        <tr class={$elemArr1[elem].MenuClass}>
+            <td class="ListColPicker">{$elemArr1[elem].RowMenu_select}</td>
+            <td class="ListColLeft"><a href="{$elemArr1[elem].RowMenu_link}">{$elemArr1[elem].RowMenu_host}</a></td>
+            <td class="ListColLeft"><a href="{$elemArr1[elem].RowMenu_link}">{$elemArr1[elem].RowMenu_service}</a></td>
+            <td class="ListColCenter">{$elemArr1[elem].RowMenu_metric}</td>
+            <td class="ListColCenter"><span class="badge {$elemArr1[elem].RowMenu_badge}">{$elemArr1[elem].RowMenu_status}</span></td>
+            <td class="ListColRight">{if $mode_access == 'w' }{$elemArr1[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+        </tr>
+        {/section}
+    </table>
+    <table class="ToolbarTable table">
+        <tr class="ToolbarTR">
+            { if $mode_access == 'w' }
+            <td>
+                {$msg.options} {$form.o2.html}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{$msg.addL1}" class="btc bt_success">{$msg.addT}</a>
+            </td>
+            { else }
+            <td>&nbsp;</td>
+            { /if }
+            <input name="p" value="{$p}" type="hidden">
+        </tr>
+    </table>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+{$form.hidden}
+</form>
+{literal}
+<script type='text/javascript'>
+    setDisabledRowStyle();
+</script>
+{/literal}

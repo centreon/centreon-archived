@@ -1,0 +1,107 @@
+<table width='100%'>
+    <tr>
+        <td id='database_partitioning' width='60%' style='vertical-align:top;'>
+            <h2>Database partitioning</h2>
+            <hr>
+
+            <div  class="headerTabContainer">
+                <ul id="mainnav">
+                    {assign var=val value=1}
+                    {foreach from=$partitioning key=table item=item}
+                    {if $val == 1}
+                    <li class="a" id='c{$val}'>
+                    {else}
+                    <li class="b" id='c{$val}'>
+                    {/if}
+                        <a href="#"  style='cursor:pointer' onclick="javascript:montre('{$val}');">{$table}</a>
+                    </li>
+                    {assign var=val value=$val+1}
+                    {/foreach}
+                </ul>
+            </div>
+
+            {assign var=val value=1}
+            {foreach from=$partitioning key=table item=item}
+            <div id='tab{$val}' class='tab'>
+                {if $item|@count gt 1}
+                <table class="ListTable">
+                   <tr class="ListHeader">
+                       <td class="FormHeader" colspan="6">{t}Partitioning Properties{/t}</td>
+                   </tr>
+                   <tr class="list_lvl_1">
+                       <td class="ListColLvl1_name">{t}Partition name{/t}</td>
+                       <td class="ListColLvl1_name">{t}Creation time{/t}</td>
+                       <td class="ListColLvl1_name">{t}Number of entries{/t}</td>
+                       <td class="ListColLvl1_name">{t}Data size{/t}</td>
+                       <td class="ListColLvl1_name">{t}Index size{/t}</td>
+                       <td class="ListColLvl1_name">{t}Total size{/t}</td>
+                   </tr>
+                   {foreach from=$item item=partition}
+                   <tr class="list_one">
+                       <td class="FormRowField">{$partition.PARTITION_NAME}</td>
+                       <td class="FormRowValue">{$partition.CREATE_TIME}</td>
+                       <td class="FormRowValue">{$partition.TABLE_ROWS}</td>
+                       <td class="FormRowValue">{$partition.DATA_LENGTH} {t}MB{/t}</td>
+                       <td class="FormRowValue">{$partition.INDEX_LENGTH} {t}MB{/t}</td>
+                       <td class="FormRowValue">{$partition.TOTAL_LENGTH} {t}MB{/t}</td>
+                   </tr>
+                   {/foreach}
+                </table>
+                {else}
+                <H3> Table is not partitioned </H3>
+                {/if}
+            </div>
+            {assign var=val value=$val+1}
+            {/foreach}
+
+        <td width='2%' style='vertical-align:top;'>&nbsp;</td>
+        <td id='database_informations' width='38%' style='vertical-align:top;'>
+            <h2>{t}Database Informations{/t}</h2>
+            <hr>
+            <table class="ListTable">
+                <tr class="ListHeader">
+                    <td class="FormHeader" colspan="3">{t}Database Engine{/t}</td>
+                </tr>
+                <tr class="list_one">
+                    <td class="FormRowField">{t}Engine Name{/t}</td>
+                    <td class="FormRowValue">{$dataCentreon.engine}</td>
+                </tr>
+                <tr class="list_two">			 		
+                    <td class="FormRowField">{t}Version{/t}</td>
+                    <td class="FormRowValue">{$dataCentstorage.version}</td>
+                </tr>
+           </table>
+           <br>
+           <table class="ListTable">
+               <tr class="ListHeader">
+                   <td class="FormHeader" colspan="3">{t}Centreon DataBase Statistics{/t}</td>
+               </tr>
+               <tr class="list_lvl_1">
+                   <td class="ListColLvl1_name">&nbsp;</td>
+                   <td class="ListColLvl1_name">{$conf_centreon.db}</td>
+                   <td class="ListColLvl1_name">{$conf_centreon.dbcstg}</td> 
+               </tr>
+               <tr class="list_one">
+                   <td class="FormRowField">{t}Data size{/t}</td>
+                   <td class="FormRowValue">{$dataCentreon.dbsize} {t}MB{/t}</td>
+                   <td class="FormRowValue">{$dataCentstorage.dbsize} {t}MB{/t}</td>
+               </tr>
+               <tr class="list_two">
+                   <td class="FormRowField">{t}Index size{/t}</td>
+                   <td class="FormRowValue">{$dataCentreon.indexsize} {t}MB{/t}</td>
+                   <td class="FormRowValue">{$dataCentstorage.indexsize} {t}MB{/t}</td>
+                </tr>
+                <tr class="list_one">
+                    <td class="FormRowField">{t}Number of entries{/t}</td>
+                    <td class="FormRowValue">{$dataCentreon.rows}</td>
+                    <td class="FormRowValue">{$dataCentstorage.rows}</td>
+                </tr>
+                <tr class="list_two">
+                    <td class="FormRowField">{t}Data free{/t}</td>
+                    <td class="FormRowValue">{$dataCentreon.datafree} {t}MB{/t}</td>
+                    <td class="FormRowValue">{$dataCentstorage.datafree} {t}MB{/t}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

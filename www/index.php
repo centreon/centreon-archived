@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give Centreon
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,50 +33,99 @@
  *
  *
  */
-require_once "../bootstrap.php";
 
-$requestUri = explode('/', filter_input(INPUT_SERVER, 'REQUEST_URI'));
+require_once realpath(dirname(__FILE__).'/../config/centreon.config.php');
 
-if (file_exists("install.php") && (isset($requestUri[2]) && ($requestUri[2] != 'static'))) {
-    
-    $sectionToInit = array(
-        'configuration',
-        'template'
-    );
-    $bootstrap = new \Centreon\Internal\Bootstrap();
-    $bootstrap->init($sectionToInit);
-    $baseUrl = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'base_url'), '/');
-    header('Location: '.$baseUrl . '/install.php');
-    
+$etc = _CENTREON_ETC_;
+
+define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
+
+ini_set('display_errors', 'Off');
+
+clearstatcache(true, "$etc/centreon.conf.php");
+if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
+    header("Location: ./install/setup.php");
+    return;
+} elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
+    require_once("$etc/centreon.conf.php");
+    header("Location: ./install/upgrade.php");
 } else {
+    if (file_exists("$etc/centreon.conf.php")) {
+        require_once("$etc/centreon.conf.php");
+        $freeze = 0;
+    } else {
+        $freeze = 0;
+    }
+}
+
+require_once "$classdir/centreon.class.php";
+require_once "$classdir/centreonSession.class.php";
+require_once "$classdir/centreonAuth.SSO.class.php";
+require_once "$classdir/centreonLog.class.php";
+require_once "$classdir/centreonDB.class.php";
+require_once SMARTY_DIR."Smarty.class.php";
+
+/*
+ * Get auth type
+ */
+global $pearDB;
+$pearDB = new CentreonDB();
+
+$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+while ($generalOption = $DBRESULT->fetchRow()) {
+    $generalOptions[$generalOption["key"]] = $generalOption["value"];
+}
+$DBRESULT->free();
+
+/*
+ * detect installation dir
+ */
+$file_install_acces = 0;
+if (file_exists("./install/setup.php")) {
+    $error_msg = "Installation Directory '". getcwd() .
+        "/install/' is accessible. Delete this directory to prevent security problem.";
+    $file_install_acces = 1;
+}
+
+/*
+ * Set PHP Session Expiration time
+ */
+ini_set("session.gc_maxlifetime", "31536000");
+
+CentreonSession::start();
+
+if (isset($_GET["disconnect"])) {
+    $centreon = & $_SESSION["centreon"];
     
-    try {
-        $bootstrap = new \Centreon\Internal\Bootstrap();
-        $bootstrap->init();
-    } catch (\Exception $e) {
-        echo $e;
-    }
+    /*
+     * Init log class
+     */
+    if (is_object($centreon)) {
+        $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+        $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
 
-    new \Centreon\Internal\Session();
-    session_start();
+        $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
 
-    /* Dispatch route */
-    $router = \Centreon\Internal\Di::getDefault()->get('router');
-    try {
-        $router->dispatch();
-    } catch (\Exception $e) {
-        // Something wrong happens during request processing
-        // If we are in "dev" environment, we are dumping a raw text-only stacktrace full screen
-        // If we are in "prod" environment, we are loading a TPL to output a "nice" error page
-        $tmpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $router->response()->code(500);
-        if ("dev" === \Centreon\Internal\Di::getDefault()->get('config')->get('global', 'env')) {
-            $tmpl->assign("exceptionMessage", $e->getMessage());
-            $tmpl->assign("strace", $e->getTraceAsString());
-            $router->response()->body($tmpl->fetch('500-devel.tpl'));
-        } else {
-            $router->response()->body($tmpl->fetch('500.tpl'));
-        }
-        $router->response()->send();
+        CentreonSession::restart();
     }
+}
+
+/*
+ * Already connected
+ */
+if (isset($_SESSION["centreon"])) {
+    $centreon = & $_SESSION["centreon"];
+    header('Location: main.php');
+}
+
+/*
+ * Check PHP version
+ *
+ *  Centreon 2.x doesn't support PHP < 5.3
+ *
+ */
+if (version_compare(phpversion(), '5.3') < 0) {
+    echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
+} else {
+    include_once("./include/core/login/login.php");
 }

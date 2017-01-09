@@ -1,0 +1,19 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table class="ListTable">
+            <tr class="ListHeader">
+                <td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.title}</td>
+            </tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td>
+            </tr>
+            <tr>
+                    <td class="FormRowField">{$form.viewLoad.label}</td>
+                    <td class="FormRowValue">{$form.viewLoad.html}</td>
+                </tr>
+	</table>
+	{$form.hidden}
+	<div id="validForm">
+		<p class="oreonbutton">{$form.submit.html}&nbsp;{$form.reset.html}</p>
+	</div>
+</form>

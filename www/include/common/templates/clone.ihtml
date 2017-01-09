@@ -1,0 +1,41 @@
+<div id="{$cloneId}_controls">
+    <div id="{$cloneId}_add">
+        <span style="cursor:pointer;">
+            {assign var=isFrozen value=0}
+            {foreach from=$cloneSet item=v}
+                {if $v->isFrozen()}
+                    {assign var=isFrozen value=1}
+                {/if}
+            {/foreach}
+            {if $isFrozen == 0}
+                {t} + Add a new entry{/t}
+            {/if}
+        </span>
+    </div>
+</div>
+<ul id="{$cloneId}" class="clonable no-deco-list">
+    <li class="clone_template" id="{$cloneId}_template">
+        <hr style='margin:2;'/>
+        <div class="clone-cell">
+            {foreach from=$cloneSet item=v}
+                {if $v->isFrozen()}
+                    {$v->getLabel()} : {$v->unfreeze()}{$v->setAttribute('disabled', 'disabled')}{$v->toHtml()}
+                {else}
+                    {$v->getLabel()}  {$v->toHtml()}
+                {/if}
+            {/foreach}
+            {if $isFrozen == 0}
+                <span style="margin-left: 4px;cursor: pointer;">
+                    <img src="./img/icons/move.png" class="clonehandle ico-14" style="vertical-align:middle;">
+                </span>
+                <a id="{$cloneId}_remove_current" style="margin-right: 4px;">
+                    <img src="./img/icons/circle-cross.png" class="ico-14" style="vertical-align:middle;">
+                </a>
+            {/if}
+        </div>
+        <input type="hidden" name="clone_order_{$cloneId}_#index#" id="clone_order_#index#" />
+    </li>
+    <li id="{$cloneId}_noforms_template">
+        <p class="muted">{t}Nothing here, use the "Add" button{/t}</p>
+    </li>
+</ul>

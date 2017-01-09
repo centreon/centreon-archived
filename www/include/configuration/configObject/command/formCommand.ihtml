@@ -1,0 +1,100 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name"  colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_name"> {$form.command_name.label}</td><td class="FormRowValue">{$form.command_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="command_type"> {$form.command_type.label}</td><td class="FormRowValue">{$form.command_type.html}</td></tr>
+		<tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="command_line_help"> {$form.command_line.label}</td>
+			<td>
+				<table border="0">
+				<tr>
+				<td>
+					&nbsp;{$form.command_line.html}
+				</td>
+				{if $o == "a" || $o == "c"}
+				<td>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(1)" />
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					{$form.resource.html}
+					<br /><br />
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(2)" />
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					{$form.plugins.html}
+     				&nbsp;<img alt='{$cmd_help}' title='{$cmd_help}' src='./img/icons/info.png' class='ico-14' onClick="window.open('main.php?p=60801&command_name='+ document.Form.plugins.value + '&o=h&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">
+					<br /><br />
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(3)" />
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					{$form.macros.html}
+				</td>
+				{/if}
+				</tr>
+				</table>
+			</td>
+		</tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_shell"> {$form.enable_shell.label}</td><td class="FormRowValue">{$form.enable_shell.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="arg_example"> {$form.command_example.label}</td><td class="FormRowValue">{if $o != "w"}{$form.command_example.html} &nbsp;{$form.command_hostaddress.label}&nbsp;{$form.command_hostaddress.html}&nbsp;<img alt='{$cmd_play}' title='{$cmd_play}' src='./img/icones/16x16/media_play.gif' onClick="window.open('main.php?p=60801&command_hostaddress='+ document.Form.command_hostaddress.value +'&command_example='+ document.Form.command_example.value +'&command_line='+ document.Form.command_line.value + '&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">{/if}</td></tr>
+		<tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="arg_description"> {$arg_desc_label}</td>
+			<td class="FormRowValue">
+                {if $o != "w"}{$form.desc_arg.html}&nbsp;{$form.clear_arg.html}<br/><br/>{/if}
+				 <div id="listOfArgDiv">
+				    {$form.listOfArg.html}
+				 </div>
+			</td>
+		</tr>
+                <tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="macro_description"> {$macro_desc_label}</td>
+			<td class="FormRowValue">
+				<div id="listOfMacroDiv">
+				    {$form.desc_macro.html}
+				</div>
+                                <div id="listOfArgDiv">
+				    {$form.listOfMacros.html}
+				</div>
+			</td>
+		</tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="connectors"> {$form.connectors.label}</td><td class="FormRowValue">{$form.connectors.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="graph_template"> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_activate"> {$form.command_activate.label}</td><td class="FormRowValue">{$form.command_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="command_comment"> {$form.command_comment.label}</td><td class="FormRowValue">{$form.command_comment.html}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}

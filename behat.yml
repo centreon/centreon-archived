@@ -1,0 +1,117 @@
+default:
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://127.0.0.1/centreon
+      sessions:
+        default:
+          selenium2: ~
+    Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
+  suites:
+    generate_poller_features:
+      paths: [ %paths.base%/features/GeneratePoller.feature ]
+      contexts:
+        - GeneratePollerContext
+    pagination_select2:
+      paths: [ %paths.base%/features/PaginationSelect2.feature ]
+      contexts:
+        - PaginationSelect2Context
+    save_search_select2:
+      paths: [ %paths.base%/features/SaveSearchSelect2.feature ]
+      contexts:
+        - SaveSearchSelect2Context
+    select_all_select2:
+      paths: [ %paths.base%/features/SelectAllSelect2.feature ]
+      contexts:
+        - SelectAllSelect2Context
+
+    empty_default_configuration:
+      paths: [ %paths.base%/features/EmptyDefaultConfiguration.feature ]
+      contexts:
+        - EmptyDefaultConfigurationContext
+
+    generate_service_contact_configuration:
+      paths: [ %paths.base%/features/GenerateServiceContact.feature ]
+      contexts:
+        - GenerateServiceContactContext
+    centreon_engine_restart:
+      paths: [ %paths.base%/features/RestartCentreonEngine.feature ]
+      contexts:
+        - RestartCentreonEngineContext
+
+    acknowledgement:
+      paths: [ %paths.base%/features/Acknowledgement.feature ]
+      contexts:
+        - AcknowledgementContext
+    acknowledgement_timeout:
+      paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
+      contexts:
+        - AcknowledgementTimeoutContext
+
+    recovery_notification_delay:
+      paths: [ %paths.base%/features/RecoveryNotificationDelay.feature ]
+      contexts:
+        - RecoveryNotificationDelayContext
+
+    partitioning:
+      paths: [ %paths.base%/features/Partitioning.feature ]
+      contexts:
+        - PartitioningContext
+
+    centreon_knowledge_base:
+      paths: [ %paths.base%/features/CentreonWithKnowledge.feature ]
+      contexts:
+        - CentreonWithKnowledgeContext
+
+    disable_fields_on_blocked_objects:
+      paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
+      contexts:
+        - DisableFieldsOnBlockedObjectsContext
+
+    backup:
+          paths: [ %paths.base%/features/Backup.feature ]
+          contexts:
+            - BackupContext
+
+    meta_services_api:
+          paths: [ %paths.base%/features/MetaServicesApi.feature ]
+          contexts:
+            - MetaServicesApiContext
+
+    influxdb:
+      paths: [ %paths.base%/features/Influxdb.feature ]
+      contexts:
+        - InfluxdbContext
+
+    meta_services_downtime:
+      paths: [ %paths.base%/features/DowntimeService.feature ]
+      contexts:
+        - DowntimeServiceContext
+        
+    limit_metric_in_chart:
+      paths: [ %paths.base%/features/LimitMetricInChart.feature ]
+      contexts:
+        - LimitMetricInChartContext
+    
+
+    show_disabled_hosts_services:
+      paths: [ %paths.base%/features/ShowDisabledHostsServices.feature ]
+      contexts:
+        - ShowDisabledHostsServicesContext
+
+    save_search_filter:
+      paths: [ %paths.base%/features/SaveSearchFilter.feature ]
+      contexts:
+        - SaveSearchFilterContext
+
+    timezone_display_host_monitoring:
+      paths: [ %paths.base%/features/TimezoneInMonitoring.feature ]
+      contexts:
+        - TimezoneInMonitoringContext
+
+    downtime_start_and_stop:
+      paths: [ %paths.base%/features/DowntimeStartAndStop.feature ]
+      contexts:
+       - DowntimeStartAndStopContext
+

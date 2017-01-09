@@ -1,0 +1,508 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<table class="table">
+    <tr>
+        <td style="width: 70%;vertical-align:top; padding-right:8px;">
+            <table class="table"> <!-- Left Table -->
+                <tr class='ListHeader'> <!-- Header -->
+                    <td class="ListColHeaderLeft {$host_data.status_class}" >
+                        <h3 style="color: #fff;">
+                            <img src='./img/icons/host.png' width="16px" style="vertical-align:middle;" {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}> {$host_data.name} / {$host_data.alias} <span>[{$host_data.address}]</span>
+                        </h3>
+                        {if $sv_ext_notes_url}
+                        <a href="{$sv_ext_notes_url}" target="_blank">
+                            <img src='./img/icons/link.png' class="ico-14" style="vertical-align:middle;" title="{if $sv_ext_notes} {$sv_ext_notes} {else} {$sv_ext_notes_url} {/if}">
+                        </a>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td style='vertical-align:top; padding-bottom: 8px !important;'></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div  class="headerTabContainer">
+                            <ul id="mainnav">
+                                <li class="a" id='c1'><a href="#" style='cursor:pointer' onclick="javascript:montre('1');">{t}Service Status{/t}</a></li>
+                                <li class="b" id='c2'><a href="#" style='cursor:pointer' onclick="javascript:montre('2');">{t}Performances{/t}</a></li>
+                                <li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{t}Host Informations{/t}</a></li>
+                                <li class="b" id='c4'><a href="#" style='cursor:pointer' onclick="javascript:montre('4');">{t}Comments{/t}</a></li>
+                            </ul>
+                        </div>
+                        <div id='tab1' class='tab'>
+                            <div id="forAjax" >
+                                <table class="ListTable">
+                                    <tr class='list_lvl_1'>
+                                        <td class="ListColHeaderLeft FormHeader" colspan="7"><h4>{$m_mon_host_services}</h4></td>
+                                    </tr>
+                                    <tr class='ListHeader'>
+                                        <td class="ListColHeaderCenter">{$header_service_description}</td>
+                                        <td></td>
+                                        <td class="ListColHeaderCenter">{$header_service_status}</td>
+                                        <td class="ListColHeaderCenter">{$header_service_duration}</td>
+                                        <td class="ListColHeaderCenter">{$header_service_output}</td>
+                                    </tr>
+                                    {foreach item=hs from=$hosts_services}
+                                    <tr class="{$hs.line_class}">
+                                        <td class="ListColLeft ListColNoWrap ColPopup" style='white-space:nowrap'>
+                                            <a href="./main.php?p=20201&o=svcd&host_name={$hs.host_name}&service_description={$hs.service_description}">{$hs.service_description}</a>
+                                        </td>
+                                        <td>
+                                            {if $hs.svc_index > 0}
+                                            <a href="main.php?p=204&amp;mode=0&amp;svc_id={$hs.hnl};{$hs.sdl}">
+                                                <img id="{$host_id}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
+                                            </a>
+                                            {/if}
+                                            {if $hs.acknowledged != 0}
+                                            <img src="./img/icons/technician.png" class="ico-20" title="{t}Acknowledged{/t}" />
+                                            {/if}
+                                            {if $hs.in_downtime > 0}
+                                            <img src="./img/icons/warning.png" class="ico-18" title="{t}In Downtime{/t}" />
+                                            {/if}
+                                            <!--
+                                            <a href="main.php?p=203&amp;svc={$hs.host_id}_{$hs.svc_id}">
+                                                Log
+                                            </a>
+                                            <a href="main.php?p=60201&o=c&service_id={$hs.svc_id}">
+                                                Config
+                                            </a>
+                                            -->
+                                        </td>
+                                        <td class="ListColCenter ListColNoWrap"><span class="badge {$hs.status_class}">{$hs.current_state}</span></td>
+                                        <td class="ListColCenter ListColNoWrap">{$hs.duration}</td>
+                                        <td class="ListColLeft">{$hs.short_output}</td>
+                                    </tr>
+                                    {/foreach}
+                                </table>
+                            </div>
+                        </div>
+                        <div id='tab2' class='tab'>
+                            <table class="ListTable">
+                                <tr class='list_lvl_1'>
+                                    <td class="ListColHeaderLeft FormHeader"><h4>{t}Graphs{/t}</h4></td>
+                                </tr>
+                                {foreach key=graphId item=HS from=$graphs}
+                                {assign var=names value=';'|explode:$HS}
+                                <tr>
+                                    <td class="ListColLeft ColPopup" style='text-align:center;'>
+                                        <h3 class="detail-chart-title">
+                                            {$names[1]} <a href='./main.php?p=204&mode=0&svc_id={$HS}'>
+                                            <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
+                                        </a>
+                                        </h3>
+                                        <div class="chart" data-graph-id="{$graphId}" data-graph-type="service"></div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            </table>
+                        </div>
+                        <div id='tab3' class='tab'>
+                            <table class="ListTable">
+                                <tr class='list_lvl_1'>
+                                    <td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_info}</h4></td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_host_status}</td>
+                                    <td class="ListColLeft ColPopup"><span class="badge {$host_data.status_class}"  >{$host_data.current_state}</span></td>
+                                </tr>
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup ">{$m_mon_host_status_info}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.plugin_output}</td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_performance_data}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.performance_data}</td>
+                                </tr>
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup">{t}Poller Name{/t}</td>
+                                    <td class="ListColLeft ColPopup"><span>{$host_data.instance_name}</span></td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_current_attempt}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.current_attempt}/{$host_data.max_check_attempts} {$host_data.state_type}</td>
+                                </tr>
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_host_last_check}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.last_check}</td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_next_check}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.next_check}</td>
+                                </tr>
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_last_change}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.last_state_change}</td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_current_state_duration}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.duration}</td>
+                                </tr>
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_last_notification}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.last_notification}</td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_next_notification}</td>
+                                    <td class="ListColLeft ListColNoWrap">{if ($host_data.next_notification == 0)} N/A {else}{$host_data.next_notification}{/if}</td>
+                                </tr>
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_notification_nb}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.current_notification_number}</td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_host_flapping}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.is_flapping} ({$host_data.percent_state_change} %)</td>
+                                </tr>
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_downtime_sc}</td>
+                                    <td class="ListColLeft ListColNoWrap">
+                                        <span >{$en[$host_data.scheduled_downtime_depth]}</span>
+                                    </td>
+                                </tr>
+                                <tr class='list_one'>
+                                    <td class="ListColLeft ColPopup">{t}Timezone{/t}</td>
+                                    <td class="ListColLeft ColPopup"><span>{$host_data.timezone}</span></td>
+                                </tr>
+                                {if $host_data.comments}
+                                <tr class='list_two'>
+                                    <td class="ListColLeft ColPopup">{$m_mon_host_comment}</td>
+                                    <td class="ListColLeft ListColNoWrap">{$host_data.comments}</td>
+                                </tr>
+                                {/if}
+                            </table>
+                            <br />
+                            <table width='100%'>
+                                <tr>
+                                    <td style="vertical-align:top;">
+                                        <table class="ListTable table linkList">
+                                            <tr class='list_lvl_1'>
+                                                <td class="ListColHeaderLeft FormHeader" colspan="3">
+                                                    <h4>{$options}</h4>
+                                                </td>
+                                            </tr>
+                                            <tr class='list_one'>
+                                                <td class="ListColLeft">{$m_mon_host_checks_active}</td>
+                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.active_checks_enabled]}"  >{$en_disable[$host_data.active_checks_enabled]}</span>
+                                                </td>
+                                                <td class="ListColRight ColPopup" id="host_checks">
+                                                    {if $aclAct.host_checks || $admin == 1}
+                                                    <a href="#" onClick="send_command('host_checks', '{$en_inv[$host_data.active_checks_enabled]}');"><img src={$img_en[$host_data.active_checks_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}" /></a>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            <tr class='list_two'>
+                                                <td class="ListColLeft">{$m_mon_host_checks_passive}</td>
+                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.passive_checks_enabled]}"  >{$en_disable[$host_data.passive_checks_enabled]}</span>
+                                                </td>
+                                                <td class="ListColRight ColPopup">
+                                                    {if $aclAct.host_checks || $admin == 1}
+                                                    <a href="#" onClick="send_command('host_passive_checks', '{$en_inv[$host_data.passive_checks_enabled]}');">
+                                                        <img src={$img_en[$host_data.passive_checks_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.passive_checks_enabled]} {$m_mon_passive_check_this_host}" /></a>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            {if $aclAct.host_notifications || $admin == true}
+                                            <tr class='list_one'>
+                                                <td class="ListColLeft">{$m_mon_host_notification}</td>
+                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.notifications_enabled]}"  >{$en_disable[$host_data.notifications_enabled]}</span>
+                                                </td>
+                                                <td class="ListColRight ColPopup" id="host_notifications">
+                                                    {if $aclAct.host_notifications || $admin == 1}
+                                                    <a href="#" onClick="send_command('host_notifications', '{$en_inv[$host_data.notifications_enabled]}');"><img src={$img_en[$host_data.notifications_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}" /></a>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            {/if}
+                                            {if $admin == true}
+                                            <tr class='list_two'>
+                                                <td class="ListColLeft">{$m_mon_obsess_over_host}</td>
+                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.obsess_over_host]}"  >{$en_disable[$host_data.obsess_over_host]}</span>
+                                                </td>
+                                                <td class="ListColRight ColPopup" id="host_obsess">
+                                                    {if $aclAct.obsess_over_host || $admin == 1}
+                                                    <a href="#" onClick="send_command('host_obsess', '{$en_inv[$host_data.obsess_over_host]}');"><img src={$img_en[$host_data.obsess_over_host]} class="ico-16" alt="{$en_inv_text[$host_data.obsess_over_host]} {$m_mon_obsess_over_host}" /></a>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            {/if}
+                                            {if $aclAct.host_event_handler || $admin == true}
+                                            <tr class='list_one'>
+                                                <td class="ListColLeft">{$m_mon_event_handler}</td>
+                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.event_handler_enabled]}"  >{$en_disable[$host_data.event_handler_enabled]}</span>
+                                                </td>
+                                                <td class="ListColRight ColPopup" id="host_event_handler">
+                                                    {if $aclAct.host_event_handler || $admin == 1}
+                                                    <a href="#" onClick="send_command('host_event_handler', '{$en_inv[$host_data.event_handler_enabled]}');"><img src={$img_en[$host_data.event_handler_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}" /></a>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            {/if}
+                                            {if $aclAct.host_flap_detection || $admin == true}
+                                            <tr class='list_two'>
+                                                <td class="ListColLeft">{$m_mon_flap_detection}</td>
+                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.flap_detection_enabled]}" >{$en_disable[$host_data.flap_detection_enabled]}</span>
+                                                </td>
+                                                <td class="ListColRight ColPopup" id="host_flap_detection">
+                                                    {if $aclAct.host_flap_detection || $admin == 1}
+                                                    <a href="#" onClick="send_command('host_flap_detection', '{$en_inv[$host_data.flap_detection_enabled]}');">
+                                                        <img src={$img_en[$host_data.flap_detection_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}" /></a>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            {/if}
+                                            {if $host_data.current_state != UP}
+                                            {if $aclAct.host_acknowledgement && !$host_data.problem_has_been_acknowledged || $aclAct.host_disacknowledgement && $host_data.problem_has_been_acknowledged || $admin == true}
+                                            <tr class='list_one'>
+                                                <td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
+                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.problem_has_been_acknowledged]}" >{$en[$host_data.problem_has_been_acknowledged]}</span>
+                                                </td>
+                                                <td class="ListColRight ColPopup">
+                                                    <a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$host_data.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'><img src={$img_en[$host_data.problem_has_been_acknowledged]} class="ico-16" alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}" /></a>
+                                                </td>
+                                            </tr>
+                                            {/if}
+                                            {/if}
+                                        </table>
+                                    </td>
+                                    <td style='padding:5px;'></td>
+                                    <td>
+                                        <table class="ListTable table linkList">
+                                            <tr class='list_lvl_1'  >
+                                                <td class="ListColHeaderLeft FormHeader" colspan="2">
+                                                    <h4>{$links}</h4>
+                                                </td>
+                                            </tr>
+                                            <tr class='list_one'>
+                                                <td class="ListColLeft ColPopup">{$hostgroups_label}:</td>
+                                                <td class="ListColLeft ColPopup">
+                                                    {foreach item=hg from=$hostgroups}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$hg}<br>
+                                                    {/foreach}
+                                                </td>
+                                            </tr>
+                                            <tr class='list_one'>
+                                                <td class="ListColLeft ColPopup">{$hostcategorie_label}:</td>
+                                                <td class="ListColLeft ColPopup">
+                                                    {foreach item=hc from=$hostcategorie}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$hc}<br>
+                                                    {/foreach}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <br>
+                                        <table class="ListTable table linkList">
+                                            <tr class='list_lvl_1' >
+                                                <td class="ListColHeaderLeft FormHeader" colspan="2">
+                                                    <h4>{$notifications}</h4>
+                                                </td>
+                                            </tr>
+                                            <tr class='list_one' >
+                                                <td class="ListColLeft ColPopup">{$contactgroups_label}:</td>
+                                                <td class="ListColLeft ColPopup">
+                                                    {foreach item=cg from=$contactgroups}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$cg}<br>
+                                                    {/foreach}
+                                                </td>
+                                            </tr>
+                                            <tr class='list_two'>
+                                                <td class="ListColLeft ColPopup">{$contacts_label}:</td>
+                                                <td class="ListColLeft ColPopup">
+                                                    {foreach item=c from=$contacts}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$c}<br>
+                                                    {/foreach}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id='tab4' class='tab'>
+                            <table class="ListTable">
+                                <tr class='list_lvl_1'>
+                                    <td class="ListColHeaderCenter FormHeader">{$cmt_host_name}</td>
+                                    <td class="ListColHeaderCenter FormHeader" width="120">{$cmt_entry_time}</td>
+                                    <td class="ListColHeaderCenter FormHeader" width="120">{$cmt_author}</td>
+                                    <td class="ListColHeaderCenter FormHeader">{$cmt_comment}</td>
+                                    <td class="ListColHeaderCenter FormHeader" width="50">{$cmt_persistent}</td>
+                                </tr>
+                                {foreach item=tch from=$tab_comments_host}
+                                <tr class={cycle values="list_two, list_one"}>
+                                    <td class="ListColLeft">{$tch.host_name}</td>
+                                    <td class="ListColRight">{$tch.comment_time}</td>
+                                    <td class="ListColCenter">{$tch.author_name}</td>
+                                    <td class="ListColLeft">{$tch.comment_data}</td>
+                                    <td class="ListColCenter">{$tch.is_persistent}</td>
+                                </tr>
+                                {/foreach}
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
+            <table class="table ListTable linkList">
+                <tr class='list_lvl_1'>
+                    <td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_info}</h4></td>
+                </tr>
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">{$m_mon_host_status}</td>
+                    <td class="ListColLeft ColPopup"><span class="badge {$host_data.status_class}"  >{$host_data.current_state}</span></td>
+                </tr>
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup ">{$m_mon_host_status_info}</td>
+                    <td class="ListColLeft ListColNoWrap">{$host_data.plugin_output}</td>
+                </tr>
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">{t}Poller Name{/t}</td>
+                    <td class="ListColLeft ColPopup"><span>{$host_data.instance_name}</span></td>
+                </tr>
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">{$m_mon_current_attempt}</td>
+                    <td class="ListColLeft ListColNoWrap">{$host_data.current_attempt}/{$host_data.max_check_attempts} {$host_data.state_type}</td>
+                </tr>
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">{$m_mon_host_last_check}</td>
+                    <td class="ListColLeft ListColNoWrap">{$host_data.last_check}</td>
+                </tr>
+            </table>
+            <br />
+            <table class="table ListTable linkList">
+                <tr class='list_lvl_1'>
+                    <td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;">
+                        <h4>{t}Host commands and shortcuts{/t}</h4>
+                    </td>
+                </tr>
+                {if $lcaTopo.60101 || $admin == 1}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">
+                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $lcaTopo.20301 || $admin == 1}
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">
+                        <a href='./main.php?p=20301&h={$host_id}'>{$lnk_host_logs}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $lcaTopo.20301 || $admin == 1}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">
+                        <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc'>{$lnk_all_services}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $lcaTopo.307 || $admin == 1}
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">
+                        <a href='./main.php?p=307&host={$host_id}'>{$lnk_host_reports}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $lcaTopo.20401 || $admin == 1}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">
+                        <a href='./main.php?p=20401&mode=0&svc_id={$host_data.host_name}'>{$lnk_host_graphs}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.host_schedule_downtime || $admin == 1}
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup" id="host_downtime">
+                        <a href='main.php?p=21001&o=a&host_id={$host_data.host_id}'>{$m_mon_SCH_downtime}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.host_comment || $admin == 1}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup" id="host_comment">
+                        <a href='main.php?p=21002&o=ah&host_name={$host_data.host_name}'>{$m_mon_add_comment}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.host_notifications_for_services || $admin == 1}
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup" id="host_notifications_for_services">
+                        <a href="#" onClick="send_command('host_notifications_for_services', '1');">{$m_mon_disable_not_all_services}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.host_notifications_for_services || $admin == 1}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup" id="host_notifications_for_services">
+                        <a href="#" onClick="send_command('host_notifications_for_services', '0');">{$m_mon_enable_not_all_services}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.service_schedule_check || $admin == 1}
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup" id ="host_schedule_check">
+                        <a href="#" onClick="send_command('host_schedule_check', '0');">{$m_mon_SCH_immediate_check}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.service_schedule_forced_check || $admin == 1}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup" id="host_schedule_check">
+                        <a href="#" onClick="send_command('host_schedule_check', '1');">{$m_mon_SCH_immediate_check_f}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if ($aclAct.host_submit_result || $admin == true) && $host_data.passive_checks_enabled}
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup">
+                        <a href='./main.php?p={$p}&o=hpc&cmd=16&host_name={$host_data.host_name}'>{$m_mon_submit_passive}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.host_checks_for_services || $admin == 1}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup" id="host_checks_for_services">
+                        <a href="#" onClick="send_command('host_checks_for_services', '1');">{$m_mon_diable_check_all_svc}</a>
+                    </td>
+                </tr>
+                {/if}
+                {if $aclAct.host_checks_for_services || $admin == 1}
+                <tr class='list_one'>
+                    <td class="ListColLeft ColPopup" id="host_checks_for_services">
+                        <a href="#" onClick="send_command('host_checks_for_services', '0');">{$m_mon_enable_check_all_svc}</a>
+                    </td>
+                </tr>
+                {/if}
+                {section name=tool loop=$tools}
+                <tr class='list_two'>
+                    <td class="ListColLeft ColPopup">
+                        {if $tools[tool].popup == ""}
+                        <a href="{$tools[tool].url}" target="{$tools[tool].target}">
+                            {else}
+                            <a href="#tools" name="tools" onClick="window.open('{$tools[tool].url}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width={$tools[tool].width}, height={$tools[tool].height}');">
+                                {/if}
+                                &#9679;&nbsp;{$tools[tool].name}</a></td>
+                </tr>
+                {/section}
+            </table>
+        </td>
+    </tr>
+</table>
+<div id="div_img" class="img_volante"></div>
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/common/javascript/charts/d3-timeline.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+{literal}
+<script>
+    jQuery(function () {
+        var times = {
+            height: 240,
+            interval: '12h'
+        };
+        jQuery('.chart').centreonGraph(times);
+    });
+</script>
+{/literal}

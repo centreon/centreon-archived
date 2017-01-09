@@ -1,0 +1,9 @@
+# Configuration for /etc/init.d/centreontrapd
+
+# If run centstorage at startup default: NO
+RUN_AT_STARTUP="NO"
+
+# Centreon user default: centreon
+CENTREON_USER="@CENTREON_USER@"
+
+OPTIONS="--logfile=@CENTREON_LOG@/centreontrapd.log --severity=error --config=@CENTREON_ETC@/conf.pm"

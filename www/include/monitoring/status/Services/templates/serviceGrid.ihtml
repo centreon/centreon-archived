@@ -1,0 +1,61 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form'>
+    <input name="p" value="{$p}" type="hidden">
+    <input name="o" value="svc" type="hidden">
+    {assign var='nbCol' value='4'}
+    {if $poller_listing}
+        {assign var='nbCol' value='$nbCol+1'}
+    {/if}
+<table class="ajaxOption table">
+    <tbody>
+        <tr>
+            <th colspan="{$nbCol}"><h5>{t}Filters{/t}</h5></th>
+        </tr>
+        <tr>
+            <td><h4>{$typeDisplay2}</h4></td>
+            <td><h4>{$typeDisplay}</h4></td>
+            <td><h4>{$search}</h4></td>
+            <td><h4>{$pollerStr}</h4></td>
+            <td><h4>{$hgStr}</h4></td>
+        </tr>
+        <tr>
+            <td>{$form.typeDisplay2.html}</td>
+            <td>{$form.typeDisplay.html}</td>
+            <td><input size="15" id="host_search" class="search_input" name="host_search" type="text" /></td>
+            <td><span id="instance_selected"></span></td>
+            <td><span id="hostgroups_selected"></span></td>
+        </tr>
+    </tbody>
+</table>
+<table class="ToolbarTable table">
+    <tr class="ToolbarTR">
+        <td>
+        <input name="p" value="{$p}" type="hidden">
+        <div class="Toolbar_TDSelectAction_Top">
+          <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></a></span>
+          <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></a></span>
+          <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
+          <span class="consol_button"><a id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></a></span>
+          <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
+            </div>
+        </td>
+        <td id="pagination1" class="ToolbarPagination"></td>
+        <td id="sel1" class="Toolbar_pagelimit"></td>
+    </tr>
+</table>
+<div id="forAjax"></div>
+<table class="ToolbarTable table">
+    <tr class="ToolbarTR">
+        <td width='150'><input name="p" value="{$p}" type="hidden"></td>
+        <td id="pagination2" class="ToolbarPagination"></td>
+        <td id="sel2" class="Toolbar_pagelimit"></td>
+    </tr>
+</table>
+{if $host_name}
+    <input type='hidden' name='host_name' value='{$host_name}'>
+{/if}
+<input name='cmd' id='cmd' value='42' type='hidden'>
+<input name='o' value='{$o}' type='hidden'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+{$form.hidden}
+</form>

@@ -1,0 +1,48 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+<table class="formTable table">
+ 	<tr class="ListHeader">
+    <td class="FormHeader" colspan="2">
+      <h3>| {t}Performance Data Management{/t}</h3>
+    </td>
+  </tr>	
+ 	<tr class="list_lvl_1">
+    <td class="ListColLvl1_name" colspan="2">
+      <h4>{$form.header.folder}</h4>
+    </td>
+  </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_path_to_rrdtool_database_for_metrics">{$form.RRDdatabase_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_path_to_rrdtool_database_for_status">{$form.RRDdatabase_status_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_status_path.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_path_to_rrdtool_database_for_nagios_statistics">{$form.RRDdatabase_nagios_stats_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_nagios_stats_path.html}</td></tr>
+	
+  <tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.retention}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_reporting_retention">{$form.reporting_retention.label}</td><td class="FormRowValue">{$form.reporting_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+  <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_logs_retention_duration">{$form.archive_retention.label}</td><td class="FormRowValue">{$form.archive_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>  
+  <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_retention_duration_for_data_in_mysql">{$form.len_storage_mysql.label}</td><td class="FormRowValue">{$form.len_storage_mysql.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+  <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_database_size">{$form.len_storage_rrd.label}</td><td class="FormRowValue">{$form.len_storage_rrd.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+  <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_retention_duration_for_data_in_downtimes">{$form.len_storage_downtimes.label}</td><td class="FormRowValue">{$form.len_storage_downtimes.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_retention_duration_for_data_in_comments">{$form.len_storage_comments.label}</td><td class="FormRowValue">{$form.len_storage_comments.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+  
+  <tr class="list_lvl_1">
+    <td class="ListColLvl1_name" colspan="2">
+      <h4>{$form.header.audit}</h4>
+    </td>
+  </tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_audit_log_option">{$form.audit_log_option.label}</td><td class="FormRowValue">{$form.audit_log_option.html}</td></tr> 
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+</table>	
+{if !$valid}
+	<div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
+{else}
+	<div id="validForm" class="oreonbutton">
+		<p>{$form.change.html}</p>
+	</div>
+{/if}
+{$form.hidden}
+</form>
+{$helptext}

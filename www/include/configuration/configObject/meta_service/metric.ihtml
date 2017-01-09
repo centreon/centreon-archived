@@ -1,0 +1,35 @@
+{$form.javascript}
+<div>
+    <form {$form.attributes}>
+            <table class="ListTable">
+                    <tr class="ListHeader">
+                    	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                    <tr>
+                    <tr class="list_one">
+                		<td>{$form.host_id.label}</td>
+                		<td>{$form.host_id.html}</td>
+                    </tr>
+	                <tr class="list_two">
+                        <td>{$form.metric_sel.label}</td>                   	 	
+                        <td>{$form.metric_sel.html}</td>
+	                </tr>
+                    <tr class="list_one">
+                        <td>{$form.msr_comment.label}</td>
+                        <td>{$form.msr_comment.html}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td>{$form.activate.label}</td>
+                        <td>{$form.activate.html}</td>
+                    </tr>
+            </table>
+            <div id="validForm">
+            {if $o == "as" || $o == "cs"}
+                    <p>{$form.action.html}</p>
+                    <p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+            {else if $o == "ws"}
+                    <p>{$form.change.html}</p>
+            {/if}
+            </div>
+            {$form.hidden}
+    </form>
+</div>

@@ -1,0 +1,63 @@
+<!-- begin contener -->
+<div id="contener">
+{assign var="cpt" value=0}
+<table id="Tcontener">
+	<tr>
+		<td id="Tmenu" class="TcTD">
+			<div id="{$Menu3Color}">
+				<div class="menuLeft">
+				{foreach from=$elemArr3 item=curr_id}				
+					<div class="title_menu">{if $cpt}<br />{/if}<h4>{$curr_id.title}</h4></div>
+					<div style="margin:0px;padding-top:6px;">
+						<ul>
+						{foreach from=$curr_id.tab item=curr_id2}
+							<li{if $curr_id2.MenuIsOnClick} onclick="{$curr_id2.MenuOnClick}()"{/if} id="menu_{$curr_id2.Menu3ID}">
+							{if $curr_id2.Menu3Popup}
+								<a href={$curr_id2.Menu3UrlPopup} target="_blank" title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>											
+							{else}
+								{if $curr_id2.MenuIsOnClick}{$curr_id2.Menu3Name}{else}<a href={$curr_id2.Menu3Url} title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>{/if}
+							{/if}
+							</li>
+							<li>
+							<ul>
+	                            {foreach from=$elemArr4[$curr_id2.Menu3ID] item=menu4}
+	                                <li {if $menu4.MenuIsOnClick}onclick="{$menu4.MenuOnClick}()"{/if}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;
+	                                {if $menu4.Menu4Popup}{if $menu4.MenuIsOnClick}{$menu4.Menu4Name}{else}<a href={$menu4.Menu4UrlPopup} target="_blank" style="white-space:nowrap;" title="{$menu4.Menu4Name}">{$menu4.Menu4Name}</a>{/if}
+	                                {else}{if $menu4.MenuIsOnClick}{$menu4.Menu4Name}{else}<a href={$menu4.Menu4Url} style="white-space:nowrap;" title="{$menu4.Menu4Name}">{$menu4.Menu4Name}</a>{/if}
+	                                {/if}
+	                                </li>
+	                            {/foreach}
+	                        </ul>{if $elemArr4[$curr_id2.Menu3ID]}{/if}
+	                    </li>
+						{/foreach}
+			        	</ul>
+					</div>
+					{assign var="cpt" value=1}
+				{/foreach}
+				</div>
+				{if $amIadmin}
+				<div class="menuLeft">
+					<div class="title_menu"><h4>{$connected_users}</h4></div>
+	  	            <div  style="margin:0px;padding-top:6px;">
+	  	             	<ul>
+		  	            {foreach item=user from=$tab_user}
+		  	            	<li>
+								{if $user.admin == 1}
+								<img src='./img/icons/admin.png' style="vertical-align: middle;" class="ico-18" title='{$user.ip}'>
+								{else}
+								<img src='./img/icons/user.png' class="ico-18" style="vertical-align: middle;" title='{$user.ip}'>
+								{/if}
+								{if $user.alias == $UserName}
+								<a href="{$UserInfoUrl}" style="vertical-align: middle;">{$user.alias}</a>
+								{else}
+								{$user.alias}
+								{/if}
+		  	             	</li>
+		  	            {/foreach} 
+						</ul>
+					</div>
+				</div>
+				{/if}
+			</div>
+		</td>
+		<td id="Tmainpage" class="TcTD" valign="top">

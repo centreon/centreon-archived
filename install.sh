@@ -1,226 +1,461 @@
 #!/bin/bash
+#----
+## @Synopsis	Install Script for Centreon project
+## @Copyright	Copyright 2008, Guillaume Watteeux
+## @License	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+## Centreon Install Script
+## Use 
+## <pre>
+## Usage: bash install.sh [OPTION]
+## Options:
+##  -f	Input file with all variables define (use for with template)
+##  -u	Input file with all variables define for update centreon
+##  -v	Verbose mode
+##  -h	print usage
+## </pre>
+#----
+###################################################################
+# Centreon is developped with GPL Licence 2.0 
+#
+# GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#
+# Developped by : Julien Mathis - Romain Le Merlus 
+# Contribute	: Guillaume Watteeux - Maximilien Bersoult
+#
+###################################################################
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+#    For information : infos@centreon.com
+####################################################################
+#
+# SVN: $URL$
+# SVN: $Rev: 11632 $
+# SVN: $Author$
+# SVN: $Date: 2011-02-08 18:04:05 +0100 (mar., 08 févr. 2011) $
+# SVN  $Id$
+#
+#
+# Todo list
+# - upgrade process 
+# -- 1.x --> 2.x
+# -- 2.x --> 2.x+1
+# -- on upgrade, overwrite existing ? backup ? 
 
-########################################################################
-# Install script for Centreon 3 master on CentOS 6 (RH 6)
-########################################################################
+# Define centreon version
+version="2.9.0"
 
-# Install base packages
-yum install -y gcc rrdtool rrdtool-devel curl wget ntpdate
+# Debug
+#set -x
 
-# To prevent restored VM having a bad date
-ntpdate pool.ntp.org
+#----
+## Usage informations for install.sh
+## @Sdtout	Usage informations
+#----
+function usage() {
+	local program=$0
+	echo -e "$(gettext "Usage: $program -f <file>")"
+	echo -e "  -i\t$(gettext "install centreon")"
+	echo -e "  -f\t$(gettext "file with all variable")"
+	echo -e "  -u\t$(gettext "upgrade centreon with specify your directory with instCent* files")"
+	echo -e "  -v\t$(gettext "verbose mode")"
+	exit 1
+}
 
-# Install LA*P stack
-yum install -y centos-release-SCL
-yum install -y php54 php54-php-cli php54-php-mysql php54-php-xml php54-php-pdo php54-php-mbstring php54-php-devel php54-php php54-php-process php54-php-pear php54-php-gd
-# FIXME for compat' with shebang of centreonConsole
-ln -sf /opt/rh/php54/root/usr/bin/php /usr/bin/php
+# define where is a centreon source 
+BASE_DIR=$(dirname $0)
+## set directory
+BASE_DIR=$( cd $BASE_DIR; pwd )
+export BASE_DIR
+if [ -z "${BASE_DIR#/}" ] ; then
+	echo -e "I think it is not right to have Centreon source on slash"
+	exit 1
+fi
+INSTALL_DIR="$BASE_DIR/libinstall"
+export INSTALL_DIR
+INSTALL_VARS_DIR="$BASE_DIR/varinstall"
+export INSTALL_VARS_DIR
+PERL_LIB_DIR=`eval "\`perl -V:installvendorlib\`"; echo $installvendorlib`
+# for freebsd
+if [ "$PERL_LIB_DIR" = "" -o "$PERL_LIB_DIR" = "UNKNOWN" ]; then
+    PERL_LIB_DIR=`eval "\`perl -V:installsitelib\`"; echo $installsitelib`
+fi
+# define a locale directory for use gettext (LC_MESSAGE)
+TEXTDOMAINDIR=$BASE_DIR/locale
+export TEXTDOMAINDIR
+TEXTDOMAIN=install.sh
+export TEXTDOMAIN
 
-# Replace timezone in /opt/rh/php54/root/etc/php.ini
-sed -i 's/^\(;date.timezone.*\)/\1\ndate.timezone = Europe\/Paris/' /opt/rh/php54/root/etc/php.ini
+# init variables
+line="------------------------------------------------------------------------"
+export line
 
-# Add Centreon repos (CES + internal dev)
+## log default vars 
+. $INSTALL_VARS_DIR/vars
 
-rpm -Uvh http://yum.centreon.com/standard/3.0/stable/noarch/RPMS/ces-release-3.0-1.noarch.rpm
+## Test if gettext was installed
+# I use PATH variable to find
+found="0"
+OLDIFS="$IFS"
+IFS=:
+for p in $PATH ; do
+	[ -x "$p/gettext" ] && found="1"
+done
+IFS=$OLDIFS
+if [ $found -eq 1 ] ; then 
+	. $INSTALL_DIR/gettext.sh
+else
+	# if not, use my gettext dummy :p
+	PATH="$PATH:$INSTALL_DIR"
+fi
 
-cat << EOF > /etc/yum.repos.d/ces-standard.repo
-[ces-standard-unstable]
-name=Centreon Enterprise Server development RPM repository for ces $releasever
-baseurl=http://yum.centreon.com/standard/3.0/unstable/x86_64/
-enabled=1
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CES
-EOF
+## load all functions used in this script
+. $INSTALL_DIR/functions
 
-# Install mariadb server and client
+## Use TRAPs to call clean_and_exit when user press
+## CRTL+C or exec kill -TERM.
+trap clean_and_exit SIGINT SIGTERM
 
-yum install -y MariaDB MariaDB-client
+## Define a default log file
+LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 
-service mysql start
-mysql -u root -e "grant all privileges on centreon.* to 'centreon'@'localhost' identified by 'centreon';"
-mysql -u root -e "create database centreon;"
+## Valid if you are root 
+if [ "${FORCE_NO_ROOT:-0}" -ne 0 ]; then
+	USERID=$(id -u)
+	if [ "$USERID" != "0" ]; then
+	    echo -e "$(gettext "You must exec with root user")"
+	    exit 1
+	fi
+fi
 
-# Configure Apache
-cat << EOF > /etc/httpd/conf.d/centreon.conf
-<VirtualHost *:80>
-  DocumentRoot /srv/centreon/www
+_tmp_install_opts="0"
+silent_install="0"
+upgrade="0"
+user_install_vars=""
+inst_upgrade_dir=""
+use_upgrade_files="0"
 
-  <Directory "/srv/centreon/www">
-          Options +Indexes +FollowSymLinks
-          AllowOverride All
-          Order allow,deny
-          Allow from all
-  
-        php_value output_buffering 4096
-  </Directory>
-</VirtualHost>
-EOF
-service httpd start
+#define cinstall options
+cinstall_opts=""
 
-# Broker
-# Note "*" is important to install modules
-yum install -y centreon-broker*
-service cbd start
+## Getopts :)
+# When you use options, by default I set silent_install to 1.
+while getopts "if:u:hv" Options
+do
+	case ${Options} in
+		i )	silent_install="0"
+			_tmp_install_opts="1"
+			;;
+		f )	silent_install="1"
+			user_install_vars="${OPTARG}"
+			_tmp_install_opts="1"
+			;;
+		u )	silent_install="1"
+			inst_upgrade_dir="${OPTARG%/}"
+			cinstall_opts="$cinstall_opts -f"
+			upgrade="1" 
+			_tmp_install_opts="1"
+			;;
+		v )	cinstall_opts="$cinstall_opts -v" 
+			# need one variable to parse debug log 
+			;;
+		\?|h)	usage ; exit 0 ;;
+		* )	usage ; exit 1 ;;
+	esac
+done
 
-# Engine
-yum install -y centreon-engine
-chown centreon-engine.centreon-engine /etc/centreon-engine
-chmod 775 /etc/centreon-engine
-usermod -G centreon-engine,centreon-broker centreon-engine
-# FIXME, default conf/layout not good
-rm -rf /etc/centreon-engine/objects/*
-service centengine start
+if [ "$_tmp_install_opts" -eq 0 ] ; then
+	usage
+	exit 1
+fi
 
-# Configure sudo
-cat << EOF > /etc/sudoers.d/centreon
-## BEGIN: CENTREON SUDO
-#Add by CENTREON installation script
-User_Alias      CENTREON=apache,nagios,centreon,centreon-engine,centreon-broker
-Defaults:CENTREON !requiretty
-## Centreontrapd Restart
-CENTREON   ALL = NOPASSWD: /etc/init.d/centreontrapd restart
-## CentStorage
-CENTREON   ALL = NOPASSWD: /etc/init.d/centstorage *
-# Centengine Restart
-CENTREON   ALL = NOPASSWD: /etc/init.d/centengine restart
-# Centengine stop
-CENTREON   ALL = NOPASSWD: /etc/init.d/centengine start
-# Centengine stop
-CENTREON   ALL = NOPASSWD: /etc/init.d/centengine stop
-# Centengine reload
-CENTREON   ALL = NOPASSWD: /etc/init.d/centengine reload
-# Centengine test config
-CENTREON   ALL = NOPASSWD: /usr/sbin/centengine -v *
-# Centengine test for optim config
-CENTREON   ALL = NOPASSWD: /usr/sbin/centengine -s *
-# Broker Central restart
-CENTREON   ALL = NOPASSWD: /etc/init.d/cbd restart
-# Broker Central reload
-CENTREON   ALL = NOPASSWD: /etc/init.d/cbd reload
-# Broker Central start
-CENTREON   ALL = NOPASSWD: /etc/init.d/cbd start
-# Broker Central stop
-CENTREON   ALL = NOPASSWD: /etc/init.d/cbd stop
-## END: CENTREON SUDO
-EOF
+#Export variable for all programs
+export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir
 
-chmod 440 /etc/sudoers.d/centreon
+## init LOG_FILE
+# backup old log file...
+[ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
+if [ -e "$LOG_FILE" ] ; then
+	mv "$LOG_FILE" "$LOG_FILE.`date +%Y%m%d-%H%M%S`"
+fi
+# Clean (and create) my log file
+${CAT} << __EOL__ > "$LOG_FILE"
+__EOL__
 
-# Install SNMP
-yum install -y perl-Net-SNMP.noarch net-snmp-perl.x86_64 net-snmp.x86_64 net-snmp-utils.x86_64
-cat << EOF > /etc/snmp/snmpd.conf
-####
-# First, map the community name "public" into a "security name"
+# Init GREP,CAT,SED,CHMOD,CHOWN variables
+define_specific_binary_vars
 
-#       sec.name  source          community
-com2sec notConfigUser  default       public
+${CAT} << __EOT__
+###############################################################################
+#                                                                             #
+#                         Centreon (www.centreon.com)                         #
+#                          Thanks for using Centreon                          #
+#                                                                             #
+#                                    v$version                                   #
+#                                                                             #
+#                               infos@centreon.com                            #
+#                                                                             #
+#                   Make sure you have installed and configured               #
+#                   sudo - sed - php - apache - rrdtool - mysql               #
+#                                                                             #
+###############################################################################
+__EOT__
 
-####
-# Second, map the security name into a group name:
+## Test all binaries
+BINARIES="rm cp mv ${CHMOD} ${CHOWN} echo more mkdir find ${GREP} ${CAT} ${SED}"
 
-#       groupName      securityModel securityName
-group   notConfigGroup v1           notConfigUser
-group   notConfigGroup v2c           notConfigUser
+echo "$line"
+echo -e "\t$(gettext "Checking all needed binaries")"
+echo "$line"
 
-####
-# Third, create a view for us to let the group have rights to:
+binary_fail="0"
+# For the moment, I check if all binary exists in path.
+# After, I must look a solution to use complet path by binary
+for binary in $BINARIES; do
+	if [ ! -e ${binary} ] ; then 
+		pathfind "$binary"
+		if [ "$?" -eq 0 ] ; then
+			echo_success "${binary}" "$ok"
+		else 
+			echo_failure "${binary}" "$fail"
+			log "ERR" "$(gettext "\$binary not found in \$PATH")"
+			binary_fail=1
+		fi
+	else
+		echo_success "${binary}" "$ok"
+	fi
+done
 
-# Make at least  snmpwalk -v 1 localhost -c public system fast again.
-#       name           incl/excl     subtree         mask(optional)
-view centreon included .1.3.6.1
-view    systemview    included   .1.3.6.1.2.1.1
-view    systemview    included   .1.3.6.1.2.1.25.1.1
+# Script stop if one binary wasn't found
+if [ "$binary_fail" -eq 1 ] ; then
+	echo_info "$(gettext "Please check fail binary and retry")"
+	exit 1
+fi
 
-####
-# Finally, grant the group read-only access to the systemview view.
+# When you exec this script without file, you must valid a GPL licence.
+if [ "$silent_install" -ne 1 ] ; then 
+	echo -e "\n$(gettext "You will now read Centreon Licence.\\n\\tPress enter to continue.")"
+	read 
+	tput clear 
+	more "$BASE_DIR/LICENSE"
 
-#       group          context sec.model sec.level prefix read   write  notif
-access notConfigGroup "" any noauth exact centreon none none
-access  notConfigGroup ""      any       noauth    exact  systemview none none
+	yes_no_default "$(gettext "Do you accept GPL license ?")" 
+	if [ "$?" -ne 0 ] ; then 
+		echo_info "$(gettext "You do not agree to GPL license ? Okay... have a nice day.")"
+		exit 1
+	else
+		log "INFO" "$(gettext "You accepted GPL license")"
+	fi
+else 
+	if [ "$upgrade" -eq 0 ] ; then
+		. $user_install_vars
+	fi
+fi
 
-includeAllDisks 10%
-EOF
+# Check if is an upgrade or new install
+# Use this on silent install ???
+# Check for old configfile
+# use for centreon1.x upgrade
+#### Move on upgrade specific script.
+#if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a "$silent_install" -ne 1 ] ; then 
+#	is_single "$CENTREON_CONF_1_4"
+#	if [ "$?" -eq 1 ] ; then
+#		echo -e "$(gettext "Please select a good centreon config file")"
+#		select_in_array "CENTREON_CONF" "${CENTREON_CONF_1_4[@]}"
+#	fi
+#fi
 
-service snmpd start
+if [ "$upgrade" -eq 1 ] ; then
+	# Test if instCent* file exist
+	if [ "$(ls $inst_upgrade_dir/instCent* | wc -l )" -ge 1 ] ; then
+		inst_upgrade_dir=${inst_upgrade_dir%/}
+		echo "$line"
+		echo -e "\t$(gettext "Detecting old installation")"
+		echo "$line"
+		echo_success "$(gettext "Finding configuration file in:") $inst_upgrade_dir" "$ok"
+		log "INFO" "$(gettext "Old configuration found in ") $(ls $inst_upgrade_dir/instCent*)"
+		echo_info "$(gettext "You seem to have an existing Centreon.")\n"
+		yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
+		if [ "$?" -eq 0 ] ; then
+			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)"
+			use_upgrade_files="1"
+		fi
+	fi
+fi
 
-# Install centreon-plugins
-git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
-chmod 755 /usr/lib/nagios/plugins/centreon-plugins/centreon_plugins.pl
+if [ "$silent_install" -ne 1 ] ; then 
+	echo "$line"
+	echo -e "\t$(gettext "Please choose what you want to install")"
+	echo "$line"
+fi
 
-chown root /usr/lib/nagios/plugins/check_icmp
-chmod u+s /usr/lib/nagios/plugins/check_icmp
+## init install process
+# I prefer split install script.
+# 0 = do not install
+# 1 = install
+# 2 = question in console
+[ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW="2"
+## For a moment, isn't possible to install standalone CentStorage daemon
+## without CentWeb
+[ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE="0"
+[ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE="2"
+[ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS="2"
+[ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS="2"
 
-# Install php module for rrdtools
-yum install -y php54-php-pecl-rrd
+## install centreon perl lib
+if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
+    mkdir "$PERL_LIB_DIR/centreon/"
+    log "INFO" "$(gettext "Created perl library directory")"
+fi
 
-# On to the PHP soft now, first let's install composer + update Centreon dependencies
-curl -sS https://getcomposer.org/installer | scl enable php54 "php -- --install-dir=/tmp"
-mv /tmp/composer.phar /usr/local/bin/composer
-cd /srv/centreon
-scl enable php54 "/usr/local/bin/composer update"
+## resquest centreon_www
+if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then 
+	yes_no_default "$(gettext "Do you want to install") : Centreon Web Front"
+	if [ "$?" -eq 0 ] ; then
+		PROCESS_CENTREON_WWW="1"
+		log "INFO" "$(gettext "You chose to install") : Centreon Web Front"
+		## CentStorage dependency
+		PROCESS_CENTSTORAGE="1"
+	fi
+fi
 
-# Edit centreon.ini
-sed -i 's/^\(username.=.*\)/username=centreon/' /srv/centreon/config/centreon.ini
-sed -i 's/^\(password.=.*\)/password=centreon/' /srv/centreon/config/centreon.ini
+## resquest centreon_centcore
+if [ "$PROCESS_CENTCORE" -eq 2 ] ; then 
+	yes_no_default "$(gettext "Do you want to install") : Centreon CentCore"
+	if [ "$?" -eq 0 ] ; then
+		PROCESS_CENTCORE="1"
+		log "INFO" "$(gettext "You chose to install") : Centreon CentCore"
+	fi
+fi
 
-external/bin/centreonConsole core:internal:install
-external/bin/centreonConsole core:module:manage:install --module=centreon-broker
-external/bin/centreonConsole core:module:manage:install --module=centreon-engine
-external/bin/centreonConsole core:module:manage:install --module=centreon-performance 
-external/bin/centreonConsole core:module:manage:install --module=centreon-bam
-\cp -r modules/CentreonAdministrationModule/static/centreon-administration/ www/static/
-\cp -r modules/CentreonPerformanceModule/static/centreon-performance/ www/static/
-\cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
+## resquest centreon_plugins
+if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then 
+	yes_no_default "$(gettext "Do you want to install") : Centreon Nagios Plugins"
+	if [ "$?" -eq 0 ] ; then
+		PROCESS_CENTREON_PLUGINS="1"
+		log "INFO" "$(gettext "You chose to install") : Centreon Nagios Plugins"
+	fi
+fi
 
-chown apache.apache /srv/centreon/www/uploads/images
-chown apache.apache /srv/centreon/www/uploads/imagesthumb/
+## resquest centreon_snmp_traps
+if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then 
+	yes_no_default "$(gettext "Do you want to install") : CentreonTrapd process"
+	if [ "$?" -eq 0 ] ; then
+		PROCESS_CENTREON_SNMP_TRAPS="1"
+		log "INFO" "$(gettext "You chose to install") : CentreonTrapd process"
+	fi
+fi
 
-usermod -a -G centreon-engine apache
-usermod -a -G centreon-broker apache
+## Start Centreon Web Front install
+if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then 
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentWeb.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentWeb.conf"
 
-# Check and create group/user centreon
-getent group centreon &>/dev/null || groupadd -r centreon
-getent passwd centreon &>/dev/null || useradd -g centreon -m -d /var/lib/centreon -r centreon
-usermod -a -G centreon apache
+		. $inst_upgrade_dir/instCentWeb.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+			[ -n "$NAGIOS_BINARY" ] && MONITORINGENGINE_BINARY=$NAGIOS_BINARY
+			[ -n "$NAGIOS_INIT_SCRIPT" ] && MONITORINGENGINE_INIT_SCRIPT=$NAGIOS_INIT_SCRIPT
+		fi
+	fi
+	. $INSTALL_DIR/CentWeb.sh
+fi
 
-# Needed to apply new groups to the process
-service httpd restart
+## Start CentStorage install
+if [ "$PROCESS_CENTSTORAGE" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentStorage.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentStorage.conf"
 
-# Create default generation directory
-mkdir -p /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
-chown centreon: /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
-chmod g+ws /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
-setfacl -R -m d:u:centreon:rwX,d:g:centreon:rwX,d:o:r-X /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
+		. $inst_upgrade_dir/instCentStorage.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+		fi
+	fi
+	. $INSTALL_DIR/CentStorage.sh
+fi
 
-# Create RRD paths
-mkdir /var/lib/centreon
-mkdir /var/lib/centreon/metrics
-mkdir /var/lib/centreon/status
-mkdir /var/lib/centreon/centplugins
-chown -R centreon-broker /var/lib/centreon/metrics
-chown -R centreon-broker /var/lib/centreon/status
-chown -R centreon-engine /var/lib/centreon/centplugins
+## Start CentCore install
+if [ "$PROCESS_CENTCORE" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentCore.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentCore.conf"
 
-# Start services
-# Nothing to do, they should already be running due to previous steps
+		. $inst_upgrade_dir/instCentCore.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+		fi
+	fi
+	. $INSTALL_DIR/CentCore.sh
+fi
 
-# Activate services on boot
-chkconfig --level 2345 mysql on
-chkconfig --level 2345 httpd on
-chkconfig --level 2345 cbd on
-chkconfig --level 2345 centengine on
-chkconfig --level 2345 snmpd on
+## Start CentPlugins install
+if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentPlugins.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentPlugins.conf"
+
+		. $inst_upgrade_dir/instCentPlugins.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+			[ -n "$NAGIOS_PLUGIN" ] && PLUGIN_DIR=$NAGIOS_PLUGIN
+		fi
+	fi
+	. $INSTALL_DIR/CentPlugins.sh
+fi
+
+## Start CentPluginsTraps install
+if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
+	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentPlugins.conf" ] ; then
+		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentPlugins.conf"
+
+		. $inst_upgrade_dir/instCentPlugins.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+			[ -n "$NAGIOS_PLUGIN" ] && PLUGIN_DIR=$NAGIOS_PLUGIN
+		fi
+	fi
+	. $INSTALL_DIR/CentPluginsTraps.sh
+fi
+
+## Purge working directories
+purge_centreon_tmp_dir "silent"
+server=$(hostname -f)
+
+${CAT} << __EOT__
+###############################################################################
+#                                                                             #
+#                 Go to the URL : http://$server/centreon/                    #
+#                   	     to finish the setup                              #
+#                                                                             #
+#           Report bugs at https://github.com/centreon/centreon/issues        #
+#                                                                             #
+#                         Thanks for using Centreon.                          #
+#                          -----------------------                            #
+#                        Contact : infos@centreon.com                         #
+#                          http://www.centreon.com                            #
+#                                                                             #
+###############################################################################
+__EOT__
 
 
-# Update centreon-broker default configuration
-sed -i -e 's/<poller_id>.*<\/poller_id>/<poller_id>1<\/poller_id>/' /etc/centreon-broker/poller-module.xml
-sed -i -e 's/<poller_name>.*<\/poller_name>/<poller_name>Central<\/poller_name>/' /etc/centreon-broker/poller-module.xml
-sed -i -e 's/<broker_id>.*<\/broker_id>/<broker_id>3<\/broker_id>/' /etc/centreon-broker/poller-module.xml
-sed -i -e 's/<broker_name>.*<\/broker_name>/<broker_name>poller-module-3<\/broker_name>/' /etc/centreon-broker/poller-module.xml
+exit 0
 
-/etc/init.d/cbd restart
-/etc/init.d/centengine restart
-
-# FIXME We should add somewhere a oif checks like SE Linux disbaled + PHP version and so on
-
-# End of script

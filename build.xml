@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="centreon-web" basedir="." default="main">
+  <property name="builddir" value="./build"/>
+
+  <target name="prepare">
+    <mkdir dir="${builddir}"/>
+    <mkdir dir="${builddir}/coverage"/>
+  </target>
+
+  <!--
+  <target name="unittest" depends="prepare">
+    <coverage-setup database="${builddir}/coverage.db">
+      <fileset dir="www/modules/centreon-pp-manager/core">
+        <include name="**/*.php"/>
+      </fileset>
+      <fileset dir="www/modules/centreon-pp-manager/webServices">
+        <include name="**/*.php"/>
+      </fileset>
+    </coverage-setup>
+    <phpunit bootstrap="tests/php/bootstrap.php" codecoverage="true">
+      <formatter type="plain" usefile="false"/>
+      <formatter type="xml" outfile="${builddir}/phpunit.xml"/>
+      <formatter type="clover" outfile="${builddir}/coverage.xml"/>
+      <batchtest>
+        <fileset dir="tests/php/class/">
+          <include name="**/*Test.php" />
+        </fileset>
+      </batchtest>
+    </phpunit>
+  </target>
+  -->
+
+  <target name="codestyle" depends="prepare">
+    <phpcodesniffer standard="PSR2">
+      <formatter type="full" usefile="false"/>
+      <formatter type="checkstyle" outfile="${builddir}/checkstyle.xml"/>
+      <fileset dir="www">
+        <include name="**/*.php"/>
+	<exclude name="lib/HTML/QuickForm.php"/>
+	<exclude name="lib/HTML/QuickForm/**/*.php"/>
+      </fileset>
+    </phpcodesniffer>
+  </target>
+
+  <target name="main"></target>
+</project>

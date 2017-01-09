@@ -1,0 +1,32 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+      - php
+  phpcodesniffer:
+    enabled: true
+    config:
+      file_extensions: "php"
+      ignore_warnings: true
+      standard: "PSR2"
+      checks:
+        PSR2 Classes ClassDeclaration MissingNamespace:
+          enabled: false
+ratings:
+  paths:
+  - "**.php"
+exclude_paths:
+- GPL_LIB/**/*
+- features/**/*
+- doc/**/*
+- tmpl/**/*
+- log/**/*
+- config/**/*
+- logrotate/**/*
+- snmptrapd/**/*
+- varinstall/**/*
+- lib/Zend/**/*
+- www/lib/HTML/**/*
+- www/install/**/*

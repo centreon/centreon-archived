@@ -1,0 +1,69 @@
+{$form.javascript}
+<form {$form.attributes}>
+    <input type="hidden" name="level" value="1">
+    <table class="formTable table" style="margin:0 auto;">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.infos}</h4>
+            </td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="host">&nbsp;{$form.host.label}
+            </td>
+            <td class="FormRowValue">
+                {$form.host.html}
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.result}</h4>
+            </td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="generate">&nbsp;{$form.generate.label}
+            </td>
+            <td class="FormRowValue">
+                {$form.generate.html}
+            </td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="apply">&nbsp;{$form.apply.label}
+            </td>
+            <td class="FormRowValue">
+                {$form.apply.html}
+            </td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="signal">&nbsp;{$form.signal.label}
+            </td>
+            <td>
+                {$form.signal.html}
+            </td>
+        </tr>
+    </table>
+    <div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
+    <br /><br /><br /><br />
+    {if $msg_generate}
+        <div id='tab1' class='tab'>
+            <table class="ListTable">
+                <tr class="ListHeader">
+                    <td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
+                </tr>
+                <tr class="list_two_fixe">
+                    <td class="ListColLvl1_name">{$msg_generate}</td>
+                </tr>
+            </table>
+        </div>
+    {/if}
+{$form.hidden}
+</form>
+{$helptext}

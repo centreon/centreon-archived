@@ -1,0 +1,68 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="popupDowntime" align=center>
+		 <table class="table">
+            <tr><td colspan='2' class="FormHeader"><h3 style="color: #00bfb3;">{$form.header.title}</h3></td></tr>
+			<tr>
+                <td colspan=2>{$form.timezone_warning.label}</td>
+			</tr>
+            <tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.start.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>
+                                    {$form.start.html}&nbsp;{$form.start_time.html}
+                                </td>
+			</tr>
+                        <tr>
+				<td  class="FormRowField" style='padding-left:15px;'>{$form.host_or_centreon_time.label}</td>
+				<td  class="FormRowField" style='padding-left:15px;'>{$form.host_or_centreon_time.html}</td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.end.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>
+                                    {$form.end.html}&nbsp;{$form.end_time.html}
+                                </td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.duration.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.duration.html} {$form.duration_scale.html}</td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.fixed.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="fixed" onClick="toggleFields(this);" {$defaultFixed}></td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$authorlabel}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$authoralias}</td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;padding-right:15px;'>{$form.comment.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;padding-right:15px;'>{$form.comment.html}</td>
+			</tr>
+			{if $cmd == '75'}
+			<tr>
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.downtimehostservice.label}</td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="downtimehostservice" {$defaultSetDwtOnSvc}></td>
+	        </tr>
+			{/if}
+		</table>
+		<div id="validForm">
+			<p>{$form.action.html}</p>
+			<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		</div>
+	</div>	
+	{$form.hidden}
+	<input name="o" type="hidden" value="{$o}" />
+	<input name="p" type="hidden" value="{$p}" />
+	<input name="cmd" type="hidden" value="{$cmd}" />
+	{foreach item=it from=$select}	
+		<input name="select[{$it}]" type="hidden" value="1" />
+	{/foreach}
+</form>
+{literal}
+<script type="text/javascript">
+    jQuery(function() {
+        jQuery(".datepicker").datepicker();
+        jQuery(".timepicker").timepicker();
+    });
+</script>
+{/literal}

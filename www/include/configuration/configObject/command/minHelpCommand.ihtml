@@ -1,0 +1,10 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table class="formTable table">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><h3>| {$form.header.title}</h3></td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><h4>{$form.header.information}</h4></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.command_line.label}</td><td class="FormRowValue">{$command_line}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.command_help.label}</td><td class="FormRowValue">{$msg}</td></tr>
+	</table>
+	{$form.hidden}
+</form>

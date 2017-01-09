@@ -1,0 +1,29 @@
+<table class="ListTable">
+	<tr class="ListHeader">
+		<td class="ListColHeaderLeft">{$labels.title}</td>
+		<td class="ListColHeaderLeft">{$labels.description}</td>
+		<td class="ListColHeaderLeft">{$labels.version}</td>
+		<td class="ListColHeaderLeft">{$labels.author}</td>
+		<td class="ListColHeaderRight">{$labels.actions}</td>		
+	</tr>
+	{foreach item=elem from=$widgets}		
+		{cycle values='list_one,list_two' assign=rowStyle}
+		<tr class={$rowStyle}>
+			<td class="ListColLeft">{$elem.title}</td>
+			<td class="ListColLeft">{$elem.description}</td>
+			<td class="ListColLeft">{$elem.version}</td>
+			<td class="ListColLeft">{$elem.author}</td>
+			<td class="ListColRight" id="widget_{$elem.directory}">
+				{if $elem.is_installed}
+				<img class='uninstallBtn ico-16 margin_right' src='./img/icons/delete.png' style="cursor: pointer;">
+				{/if}
+				{if $elem.install}
+				<img class='installBtn ico-16 margin_right' src="./img/icons/generate_conf.png" style="cursor: pointer;">
+				{/if}
+				{if $elem.upgrade}
+				<img class='upgradeBtn ico-16 margin_right' src='./img/icons/upgrade.png' style="cursor: pointer;">
+				{/if}
+			</td>
+		</tr>
+	{/foreach}
+</table>

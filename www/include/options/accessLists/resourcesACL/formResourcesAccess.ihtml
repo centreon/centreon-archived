@@ -1,0 +1,152 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+{$form.javascript}
+<form {$form.attributes}>
+<div class="headerTabContainer">
+<ul id="mainnav">
+	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
+	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
+</ul>
+<div id="validFormTop">
+{if $o == "a" || $o == "c"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+</div>
+<div id='tab1' class="tab">
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>	 	
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_access_list_name">{$form.acl_res_name.label}</td><td class="FormRowValue">{$form.acl_res_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_description">{$form.acl_res_alias.label}</td><td class="FormRowValue">{$form.acl_res_alias.html}</td></tr>
+			 	
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.contacts_infos}</h4>
+          </td>
+        </tr>	 	
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_linked_groups">{$form.acl_groups.label}</td><td class="FormRowValue">{$form.acl_groups.html}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_res_activate.label}</td><td class="FormRowValue">{$form.acl_res_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.acl_res_comment.label}</td><td class="FormRowValue">{$form.acl_res_comment.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+</div>
+<div id='tab2' class="tab">
+	<table class="formTable table">
+		<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.Host_infos}</h4>
+          </td>
+        </tr>
+	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_hosts">&nbsp;{$form.acl_hosts.label}</td><td class="FormRowValue">{$form.all_hosts.label}&nbsp;{$form.all_hosts.html}<br/>{$form.acl_hosts.html}</td></tr>	 	
+	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_host_groups">&nbsp;{$form.acl_hostgroup.label}</td><td class="FormRowValue">{$form.all_hostgroups.label}&nbsp;{$form.all_hostgroups.html}<br/>{$form.acl_hostgroup.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_exclude_hosts_from_selected_host_groups"><img src='./img/icons/warning.png' class="ico-16">&nbsp;{$form.acl_hostexclude.label}</td><td class="FormRowValue">{$form.acl_hostexclude.html}</td></tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.help}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowValue" colspan="2">{$form.header.HSharedExplain}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+</div>
+<div id='tab3' class="tab">
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.Host_infos}</h4>
+          </td>
+        </tr>	 	
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_service_groups">&nbsp;{$form.acl_sg.label}</td><td class="FormRowValue">{$form.all_servicegroups.label}&nbsp;{$form.all_servicegroups.html}<br/>{$form.acl_sg.html}</td></tr>	
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.help}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowValue" colspan="2">{$form.header.SSharedExplain}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+</div>
+<div id='tab4' class="tab">
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.Host_infos}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_meta_services">{$form.acl_meta.label}</td><td class="FormRowValue">{$form.acl_meta.html}</td></tr>	
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.help}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowValue" colspan="2">{$form.header.MSSharedExplain}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+</div>
+<div id='tab5' class="tab">
+	<table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.services}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_poller_filter">&nbsp;{$form.acl_pollers.label}</td><td class="FormRowValue">{$form.acl_pollers.html}</td></tr>	 	
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_host_category_filter">&nbsp;{$form.acl_hc.label}</td><td class="FormRowValue">{$form.acl_hc.html}</td></tr>	
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_service_category_filter">&nbsp;{$form.acl_sc.label}</td><td class="FormRowValue">{$form.acl_sc.html}</td></tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.help}</h4>
+          </td>
+        </tr>
+		<tr class="list_two"><td class="FormRowValue" colspan="2">{$form.header.FilterExplain}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p>{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+{$helptext}

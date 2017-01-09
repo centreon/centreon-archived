@@ -1,7 +1,0 @@
-[
-  {
-    "name": "displayJsStatus",
-    "moduleHook": "displayJsStatusTopCounter",
-    "moduleHookDescription": "Display the top counter"
-  }
-]

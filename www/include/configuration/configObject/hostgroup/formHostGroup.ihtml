@@ -1,0 +1,66 @@
+{$form.javascript}{$javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="formTable table">
+		<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+          </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.hg_name.label}</td><td class="FormRowValue">{$form.hg_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.hg_alias.label}</td><td class="FormRowValue">{$form.hg_alias.html}</td></tr>
+	
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.relation}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="members"> {$form.hg_hosts.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hosts.html}</p></td></tr>		
+
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.extended}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notes"> {$form.hg_notes.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_notes.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notes_url"> {$form.hg_notes_url.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_notes_url.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="action_url"> {$form.hg_action_url.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_action_url.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.hg_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_icon_image.html}&nbsp;&nbsp;<img id='hg_icon_image_img' src='./img/blank.gif'></p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.hg_map_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_map_icon_image.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
+		
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+       	</tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hg_rrd_retention"> {$form.hg_rrd_retention.label}</td><td class="FormRowValue">{$form.hg_rrd_retention.html} {$days}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hg_comment"> {$form.hg_comment.label}</td><td class="FormRowValue">{$form.hg_comment.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hg_activate"> {$form.hg_activate.label}</td><td class="FormRowValue">{$form.hg_activate.html}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}

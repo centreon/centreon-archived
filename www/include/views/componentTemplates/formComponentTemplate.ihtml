@@ -1,0 +1,150 @@
+{$form.javascript}
+<form {$form.attributes}>
+ <table class="formTable table">
+ 	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$form.header.ftitle}</h3>
+      </td>
+    </tr>
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.information}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_template_name">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+	<tr class="list_two">
+		<td class="FormRowField">
+			{if $o == "a" || $o == "c"}
+				<div style="text-decoration: underline;"><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
+				{$form.hsr_text.label}
+			{/if}
+			{if $o == "w"}
+				<div><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
+			{/if}
+			
+		</td>
+		<td id="td_list_hsr" class="FormRowValue">
+			{$form.host_id.html}
+		</td>
+	</tr>
+	<tr class="list_one">
+		<td class="FormRowField"><img class="helpTooltip" name="tip_data_source_name">{$form.ds_name.label}</td>
+		<td id="td_ds"><table id="table_ds" border="0"><tr>
+			<td id="td_ds_html" class="FormRowValue" style="padding: 0px; border-width: 0px;">{$form.ds_name.html}</td>
+			{if $o == "a" || $o == "c"}
+				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
+					&nbsp;<img src="./img/icons/arrow-left.png" class="ico-14" onclick="insertValueQuery()" />&nbsp;
+				</td>
+			{/if}
+		</tr></table></td>
+	</tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.options}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_stack">{$form.ds_stack.label}</td><td class="FormRowValue">{$form.ds_stack.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order">{$form.ds_order.label}</td><td class="FormRowValue">{$form.ds_order.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_invert">{$form.ds_invert.label}</td><td class="FormRowValue">{$form.ds_invert.html}</td></tr>
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.color}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_thickness">{$form.ds_tickness.label}</td><td class="FormRowValue">{$form.ds_tickness.html}px</td></tr>
+	<tr class="list_two">
+		<td class="FormRowField"><img class="helpTooltip" name="tip_line_color">{$form.ds_color_line.label}</td>
+		{if $o == "a" || $o == "c"}
+			<td id="td_ds_color_line" class="FormRowValue">
+                {$form.ds_color_line_mode.html}<br/>
+                <span class="pull-left">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}</span>
+                <label>
+                    <span style="margin-left: 5px" class="pull-left">{$form.ds_random_color_line.html}</span>
+                    {$form.ds_random_color_line.label}
+                </label>
+            </td>
+		{/if}
+		{if $o == "w"}
+			<td id="td_ds_color_line" class="FormRowValue" style="font-size: 11px; font-family: Courier New;">{$form.ds_color_line_read.html}</td>
+		
+		{/if}
+	</tr>
+	<tr class="list_one">
+		<td class="FormRowField"><img class="helpTooltip" name="tip_area_color">{$form.ds_color_area.label}</td>
+		<td class="FormRowField">
+			<table>
+				<tr>
+					{if $o == "a" || $o == "c"}
+						<td id="td_ds_color_area" class="FormRowValue" style="padding: 0px 5px 0px 0px; border-width: 0px 1px 0px 0px;">{$form.ds_color_area.html}&nbsp;&nbsp;{$form.ds_color_area_color.html}</td>
+						<td id="td_ds_color_area_warn" class="FormRowValue" style="padding: 0px 5px 0px 5px; border-width: 0px 1px;">{$form.ds_color_area_warn.html}&nbsp;&nbsp;{$form.ds_color_area_warn_color.html}</td>
+						<td id="td_ds_color_area_crit" class="FormRowValue" style="padding: 0px 0px 0px 5px; border-width: 0px 0px 0px 1px;">{$form.ds_color_area_crit.html}&nbsp;&nbsp;{$form.ds_color_area_crit_color.html}</td>
+					{/if}
+					{if $o == "w"}
+						<td id="td_ds_color_area" class="FormRowValue" style="padding: 0px 5px 0px 0px; border-width: 0px 1px 0px 0px; font-size: 11px; font-family: Courier New;">{$form.ds_color_area_read.html}</td>
+						<td id="td_ds_color_area_warn" class="FormRowValue" style="padding: 0px 5px 0px 5px; border-width: 0px 1px; font-size: 11px; font-family: Courier New;">{$form.ds_color_area_warn_read.html}</td>
+						<td id="td_ds_color_area_crit" class="FormRowValue" style="padding: 0px 0px 0px 5px; border-width: 0px 0px 0px 1px; font-size: 11px; font-family: Courier New;">{$form.ds_color_area_crit_read.html}</td>
+					{/if}
+				</tr>
+			</table>
+	</tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_transparency">{$form.ds_transparency.label}</td><td class="FormRowValue">{$form.ds_transparency.html}%</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_filling">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>
+	
+	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.legend}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_legend_name">{$form.ds_legend.label}</td><td class="FormRowValue">{$form.ds_legend.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_only_the_legend">{$form.ds_hidecurve.label}</td><td class="FormRowValue">{$form.ds_hidecurve.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_empty_line_after_this_legend">{$form.ds_jumpline.label}</td><td class="FormRowValue">{$form.ds_jumpline.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_max_value">{$form.ds_max.label}</td><td class="FormRowValue">{$form.ds_max.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_print_min_value">{$form.ds_min.label}</td><td class="FormRowValue">{$form.ds_min.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_minmax_int">{$form.ds_minmax_int.label}</td><td class="FormRowValue">{$form.ds_minmax_int.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_print_average">{$form.ds_average.label}</td><td class="FormRowValue">{$form.ds_average.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_last_value">{$form.ds_last.label}</td><td class="FormRowValue">{$form.ds_last.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_total_value">{$form.ds_total.label}</td><td class="FormRowValue">{$form.ds_total.html}</td></tr>
+	<!--<tr class="list_two"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>-->
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required.note}</td></tr>
+	{/if}
+</table>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p>{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+{$helptext}
+<script type="text/javascript">
+{literal}
+function activate_color_selection(e) {
+    var $this = jQuery(this);
+
+    if (jQuery('input[name="compo_id"]').attr('value') == '1' && $this.attr('value') == '0') {
+        jQuery('input:radio[name*="ds_color_line_mode"]:nth(0)').attr('checked', true);
+        return;
+    }
+
+    if ($this.attr('value') == '1') {
+        jQuery('input[name="ds_color_line"]').attr('disabled', '');
+        jQuery('input[name="ds_color_line_color"]').attr('disabled', '');
+    } else {
+        jQuery('input[name="ds_color_line"]').removeAttr('disabled');
+        jQuery('input[name="ds_color_line_color"]').removeAttr('disabled');
+    }
+}
+
+jQuery(document).ready(function() {
+   jQuery('input[name$="_color"]').click(function(e) {
+       popup_color_picker(jQuery(this).attr('name').replace(/_color$/g, ''), 'Line color');
+   });
+   jQuery('input[name$="_color"]').click(activate_color_selection);
+   activate_color_selection.apply(jQuery('input[name$="_color"]:checked'));
+});
+{/literal}
+</script>

@@ -1,0 +1,78 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+
+<form name='form' method='POST'>
+    <table class="ajaxOption table">
+    <tbody>
+      <tr>
+        <th><h5>{t}Filters{/t}</h5></th>
+      </tr>
+      <tr>
+        <td><h4>{t}Timeperiod{/t}</h4></td>
+      </tr>
+      <tr>
+        <td><input type="text" name="searchTP" value="{$searchTP}"></td>
+        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+      </tr>
+    </tbody>
+    </table>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			{ if $mode_access == 'w' }
+			<td>
+				{$msg.options} {$form.o1.html}
+				&nbsp;&nbsp;&nbsp;
+				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderRight">{$headerMenu_options}</td>
+		</tr>
+		{section name=elem loop=$elemArr}
+		<tr class={$elemArr[elem].MenuClass}>
+			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+			<td class="ListColLeft">
+				<span><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></span>
+				<span style='float: right;'><a href='{$elemArr[elem].resultingLink}'><img src='./img/icones/16x16/table_view.gif'></a></span>
+			</td>
+			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
+			<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+		</tr>
+		{/section}
+	
+	</table>
+
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			{ if $mode_access == 'w' }
+			<td>
+				{$msg.options} {$form.o2.html}
+				&nbsp;&nbsp;&nbsp;
+				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+
+<input type='hidden' name='o' id='o' value='42'>
+
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+{$form.hidden}
+</form>

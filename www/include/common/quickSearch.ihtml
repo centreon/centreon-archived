@@ -1,0 +1,15 @@
+<div id="QuickSearch">
+	<form action='?p={$p}' {$form_search_attributes} name='search' id='formsearch'>
+		<span class="quick_search2">
+			{$form_search.search.label}&nbsp;&nbsp;{$form_search.search.html}&nbsp;&nbsp;{if $FlagSearchService}{$form_search.search_service.html}{/if}{$form_search.submit.html}&nbsp;<img src="./img/icones/16x16/brush2.png" title="{$cleanSearch}" onClick="javascript:document.getElementById('input_search').value='';document.getElementById('input_service').value='';document.search.input_search.focus();">
+		</span>
+		{if $displayHSOptions == 1}
+		<span class="quick_search2">
+			&nbsp;{$form_search.search_type_host.html}&nbsp;&nbsp;{$form_search.search_type_host.label}
+			&nbsp;{$form_search.search_type_service.html}&nbsp;&nbsp;{$form_search.search_type_service.label}		
+		</span>
+		{/if}
+		{$form_search.hidden}
+		<input type='submit' style='position: absolute; left: -9999px;'>
+	</form>
+</div>

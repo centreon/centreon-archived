@@ -1,0 +1,36 @@
+{$form.javascript}
+{$insertValueQuery}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+		<tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}General Information{/t}</h4>
+            </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="traps">{$form.traps.label}</td><td class="FormRowValue">{$form.traps.html}</td></tr>	
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}

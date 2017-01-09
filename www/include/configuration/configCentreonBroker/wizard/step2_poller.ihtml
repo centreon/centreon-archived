@@ -1,0 +1,17 @@
+<div class="content">
+   <input type="hidden" name="end" value="false" />
+   <form id="step2">
+       <p class="title">{$lang.central_configuration_without_poller}</p>
+       <p class="form"><label for="step2_configname">{$lang.configuration_name}</label><input type="text" name="step2_configname" id="step2_configname" class="v_required" /></p>
+       <p class="form"><label for="step2_requester_id">{$lang.requester}</label>
+       <select name="step2_requester_id">
+       {foreach from=$requesters item=requester}
+       <option value="{$requester.id}">{$requester.name}</option>
+       {/foreach}
+       </select></p>
+       <p class="form"><label for="step2_central_address">{$lang.central_address}</label><input type="text" name="step2_central_address" id="step2_central_address" class="v_required" /></p>
+       <p class="title2">{$lang.informations} :</p>
+       <p class="form">{$lang.additional_daemon}&nbsp;:&nbsp;{$lang.none}</p>
+       <p class="form">{$lang.communication_port}&nbsp;:&nbsp;5669</p>
+   </form>
+</div>

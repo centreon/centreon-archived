@@ -1,0 +1,6 @@
+<div class="content">
+    <p class="title">{$lang.configuration_saved}</p>
+</div>
+<div class="buttonbar">
+    <span class="button"><a href="./main.php?p=60909">{t}Back to Centreon Broker configuration menu{/t}</a></span>
+</div>

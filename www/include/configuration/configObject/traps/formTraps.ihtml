@@ -1,0 +1,195 @@
+{$form.javascript}
+{$insertValueQuery}
+<form {$form.attributes}>
+        <div class="headerTabContainer">
+        <ul id="mainnav">
+            <li class="a" id='c1'><a href="#"  style='cursor:pointer' onclick="javascript:montre('1');">{$tabTitle_1}</a></li>
+            <li class="b" id='c2'><a href="#" style='cursor:pointer' onclick="javascript:montre('2');">{$tabTitle_2}</a></li>
+            <li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{$tabTitle_3}</a></li>
+        </ul>
+        <div id="validFormTop">
+	     {if $o == "a" || $o == "c"}
+		    <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	     {else if $o == "w"}
+		    <p class="oreonbutton">{$form.change.html}</p>
+	     {/if}
+        </div>
+	</div>
+	<div id='tab1' class='tab'>
+	<table class="formTable table">
+        <tbody>
+            <tr class="ListHeader">
+                <td class="FormHeader" colspan="2">
+                    <h3>| {$form.header.title}</h3>
+                </td>
+            </tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$subtitle0}</h4>
+                </td>
+            </tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trapname"> {$form.traps_name.label}</td><td class="FormRowValue">{$form.traps_name.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="oid"> {$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="vendor"> {$form.manufacturer_id.label}</td><td class="FormRowValue">{$form.manufacturer_id.html}</td></tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$subtitle0}</h4>
+                     </td>
+                   </tr>
+                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trap_args"> {$form.traps_args.label}</td><td class="FormRowValue">{$form.traps_args.html}</td></tr>
+                   <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="trap_status"> {$form.traps_status.label}</td><td class="FormRowValue">{$form.traps_status.html}</td></tr>
+                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="severity"> {$form.severity.label}</td><td class="FormRowValue">{$form.severity.html}</td></tr>
+                   <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="trap_advanced"> {$form.traps_advanced_treatment.label}</td><td class="FormRowValue">{$form.traps_advanced_treatment.html}</td></tr>                   
+                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="traps_advanced_treatment_default"> {$form.traps_advanced_treatment_default.label}</td><td class="FormRowValue">{$form.traps_advanced_treatment_default.html}</td></tr>
+                   <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="trap_adv_args"> {$trap_adv_args}</td>
+                        <td class="FormRowValue">
+                            {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="matchingrules" cloneSet=$cloneSetMaching}
+                        </td>
+                   </tr>
+                   <tr class="list_lvl_1">
+                     <td class="ListColLvl1_name" colspan="2">
+                       <h4>{$subtitle1}</h4>
+                     </td>
+                   </tr>
+                   <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="submit_result_enabled"> {$form.traps_submit_result_enable.label}</td><td class="FormRowValue">{$form.traps_submit_result_enable.html}</td></tr>
+
+                   <tr class="list_lvl_1">
+                     <td class="ListColLvl1_name" colspan="2">
+                       <h4>{$subtitle2}</h4>
+                     </td>
+                   </tr>
+                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="reschedule_enabled"> {$form.traps_reschedule_svc_enable.label}</td><td class="FormRowValue">{$form.traps_reschedule_svc_enable.html}</td></tr>
+
+                   <tr class="list_lvl_1">
+                     <td class="ListColLvl1_name" colspan="2">
+                       <h4>{$subtitle3}</h4>
+                     </td>
+                   </tr>
+                   <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="command_enabled"> {$form.traps_execution_command_enable.label}</td><td class="FormRowValue">{$form.traps_execution_command_enable.html}</td></tr>
+                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_args"> {$form.traps_execution_command.label}</td><td class="FormRowValue">{$form.traps_execution_command.html}</td></tr>
+
+                   <tr class="list_lvl_1">
+                     <td class="ListColLvl1_name" colspan="2">
+                       <h4>{$subtitle4}</h4>
+                     </td>
+                   </tr>
+                   <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="comments"> {$form.traps_comments.label}</td><td class="FormRowValue">{$form.traps_comments.html}</td></tr>
+                   <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+           </tbody>
+	</table>
+	</div>
+        <div id="tab2" class="tab">
+            <table class="formTable table">
+                <tbody>
+                    <tr class="ListHeader">
+                      <td class="FormHeader" colspan="2">
+                        <h3>| {$form.header.title}</h3>
+                      </td>
+                    </tr>
+                    <tr class="list_lvl_1">
+                      <td class="ListColLvl1_name" colspan="2">
+                        <h4>{$resourceTxt}</h4>
+                      </td>
+                    </tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="services"> {$serviceTxt}</td>
+                        <td class="FormRowValue">
+                            {$form.host_filter.html}
+                            {$form.services.html}
+                        </td>
+                    </tr>
+                    {if $admin}
+                    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_templates"> {$serviceTemplateTxt}</td><td class="FormRowValue">{$form.service_templates.html}</td></tr>
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+        <div id="tab3" class="tab">
+            <table class="formTable table">
+                <tbody>
+                    <tr class="ListHeader">
+                      <td class="FormHeader" colspan="2">
+                        <h3>| {$form.header.title}</h3>
+                      </td>
+                    </tr>
+                    <tr class="list_lvl_1">
+                      <td class="ListColLvl1_name" colspan="2">
+                        <h4>{$routingDefTxt}</h4>
+                      </td>
+                    </tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_routing_mode">&nbsp;{$form.traps_routing_mode.label}</td>
+                        <td class="FormRowValue">{$form.traps_routing_mode.html}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_routing_value">&nbsp;{$form.traps_routing_value.label}</td>
+                        <td class="FormRowValue">{$form.traps_routing_value.html}</td>
+                    </tr>
+					<tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_routing_filter_services">&nbsp;{$form.traps_routing_filter_services.label}</td>
+                        <td class="FormRowValue">{$form.traps_routing_filter_services.html}</td>
+                    </tr>
+                    <tr class="list_lvl_1">
+                      <td class="ListColLvl1_name" colspan="2">
+                        <h4>{$preexecTxt}</h4>
+                      </td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField">
+                            <img class="helpTooltip" name="preexeccmd">&nbsp;{$preexeccmd_str}
+                        </td>
+                        <td class="FormRowValue">
+                            {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="preexec" cloneSet=$cloneSet}
+                        </td>
+                    </tr>
+                    <tr class="list_lvl_1">
+                      <td class="ListColLvl1_name" colspan="2">
+                        <h4>{t}Misc{/t}</h4>
+                      </td>
+                    </tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_log">&nbsp;{$form.traps_log.label}</td>
+                        <td class="FormRowValue">{$form.traps_log.html}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_timeout">&nbsp;{$form.traps_timeout.label}</td>
+                        <td class="FormRowValue">{$form.traps_timeout.html}&nbsp;{t}seconds{/t}</td>
+                    </tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_exec_interval">&nbsp;{$form.traps_exec_interval.label}</td>
+                        <td class="FormRowValue">{$form.traps_exec_interval.html}&nbsp;{t}seconds{/t}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_exec_interval_type">&nbsp;{$form.traps_exec_interval_type.label}</td>
+                        <td class="FormRowValue">{$form.traps_exec_interval_type.html}</td>
+                    </tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_exec_method">&nbsp;{$form.traps_exec_method.label}</td>
+                        <td class="FormRowValue">{$form.traps_exec_method.html}</td>
+                    </tr>
+					<tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_downtime">&nbsp;{$form.traps_downtime.label}</td>
+                        <td class="FormRowValue">{$form.traps_downtime.html}</td>
+                    </tr>
+					<tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_output_transform">&nbsp;{$form.traps_output_transform.label}</td>
+                        <td class="FormRowValue">{$form.traps_output_transform.html}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_customcode">&nbsp;{$form.traps_customcode.label}</td>
+                        <td class="FormRowValue">{$form.traps_customcode.html}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}

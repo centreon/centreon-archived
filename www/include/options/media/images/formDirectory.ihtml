@@ -1,0 +1,26 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id='tab1' class='tab'>
+	 <table class="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_destination_directory">{$form.dir_name.label}</td><td class="FormRowValue">{$form.dir_name.html}</td></tr>
+	{if $o =='cd'} 
+		<tr class="list_two"><td class="FormRowField">{$form.dir_comment.label}</td><td class="FormRowValue">{$form.dir_comment.html}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+	{elseif $o == "m"}
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_images">{$form.dir_imgs.label}</td><td class="FormRowValue">{$form.dir_imgs.html}</td></tr>
+	{/if}
+
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "cd"}
+		<p>{$form.action.html}</p>
+		<p class="oreonbutton">{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
+	{elseif $o == "m"}
+		<p class="oreonbutton">{$form.submitM.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}

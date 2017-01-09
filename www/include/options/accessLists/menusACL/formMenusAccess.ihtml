@@ -1,0 +1,159 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+{$form.javascript}
+<form {$form.attributes}>
+<div id="validFormTop">
+{if $o == "a" || $o == "c"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+<div id='tab1' class="tab">
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr> 	
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_acl_definition">{$form.acl_topo_name.label}</td><td class="FormRowValue">{$form.acl_topo_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_alias">{$form.acl_topo_alias.label}</td><td class="FormRowValue">{$form.acl_topo_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_topo_activate.label}</td><td class="FormRowValue">{$form.acl_topo_activate.html}</td></tr>
+	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_linked_groups">{$form.acl_groups.label}</td><td class="FormRowValue">{$form.acl_groups.html}</td></tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.pages}</h4>
+          </td>
+        </tr>
+		<tr class="list_one">
+			<td colspan="2">
+			<table width="60%">
+				<tr>
+					<td>
+						<ul class="arbo_a">
+						{foreach key=key item=a from=$acl_topos2}
+							<li>
+							<table cellpadding=0 cellspacing=0 border=0 margin=0 padding=0 width="100%" style='padding-bottom:3px;'>
+								<tr style='background-color:#BBBBBB;'>
+								{if $a.childNumber != 0}
+									<td width="400"><img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');">&nbsp;<label for="{$a.id}">{$a.name}</label> : </td> 
+								{else}
+									<td width="400"><li><img src='img/icones/1x1/blank.gif' width='16'>&nbsp;<label for="{$a.id}">{$a.name}</label> : </td>
+								{/if}
+									<td style='text-align:right;padding-right:10px;'>
+									{if $a.readonly == 1}
+										<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="checkbox" {if $a.access > 0}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+									{ else }
+										{$label_none}&nbsp;<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="radio" {if $a.access == 0}checked="checked"{/if} value="0" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />&nbsp;
+										{$label_readwrite}&nbsp;<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="radio" {if $a.access == 1}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />&nbsp;
+										{$label_readonly}&nbsp;<input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="radio" {if $a.access == 2}checked="checked"{/if} value="2" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+									{ /if }
+									</td>
+								</tr>
+							</table>
+							<ul class="arbo_b" id="{$a.c_id}">
+							{assign var='group' value='0'}					
+							{foreach key=key item=b from=$a.childs}
+							<table cellpadding=0 cellspacing=0 border=0 margin=0 width='100%'>
+							<tr style='background-color:#CCCCCC'>
+								{if $b.childNumber != 0}
+								<td>
+									<li><img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');">&nbsp;<label for="{$b.id}">{$b.name}</label> : 
+								</td>
+								{else}
+								<td>
+									<li><img src='img/icones/1x1/blank.gif' width='16'>&nbsp;<label for="{$b.id}">{$b.name}</label> : 
+								</td>
+								{/if}
+								<td style='text-align:right;padding-right:10px;'>
+								{if $b.readonly == 1}
+									<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="checkbox"  {if $b.access > 0}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+								{else}
+									{$label_none}&nbsp;<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="radio" {if $b.access == 0}checked="checked"{/if} value="0" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />&nbsp;
+									{$label_readwrite}&nbsp;<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="radio" {if $b.access == 1}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />&nbsp;
+									{$label_readonly}&nbsp;<input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="radio" {if $b.access == 2}checked="checked"{/if} value="2" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+								{ /if }
+								</td>
+							</tr>
+							</table>
+								<ul class="arbo_c" id="{$b.c_id}">
+								{foreach key=key item=c from=$b.childs}
+								<table cellpadding=0 cellspacing=0 border=0 margin=0 width='100%'>
+								{if $group != $c.group}
+								<tr style='background-color:#DDDDDD'>
+									<td width="400" colspan="2"><b>{$c.group}</b></td>
+								</tr>
+								{/if}
+								<tr style='background-color:#DDDDDD'>
+									{if $c.childNumber != 0}
+									<td><li><img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.gif"  onclick="toggleDisplay('{$c.c_id}');">&nbsp;<label for="{$c.id}">{$c.name}</label> : </td>
+									{else}
+									<td><li><img src='img/icones/1x1/blank.gif' width='16'>&nbsp;<label for="{$c.id}">{$c.name}</label> : </td>
+									{/if}
+									<td style='text-align:right;padding-right:10px;'>
+									{ if $c.readonly == 1 }
+									<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="checkbox" {if $c.access > 0}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+									{ else }
+									{$label_none}&nbsp;<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="radio" {if $c.access == 0}checked="checked"{/if} value="0" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />&nbsp;
+									{ $label_readwrite }&nbsp;<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="radio" {if $c.access == 1}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />&nbsp;
+									{ $label_readonly }&nbsp;<input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="radio" {if $c.access == 2}checked="checked"{/if} value="2" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+									{ /if }
+									</td>
+								</tr>
+								</table>
+									<ul class="arbo_d" id="{$c.c_id}">
+										{foreach key=key item=d from=$c.childs}
+										<table cellpadding=0 cellspacing=0 border=0 margin=0>
+											<tr style='background-color:#DDDDDD'>
+												<td width="170"><li> - <label for="{$d.id}">{$d.name}</label> : </td>
+												<td width="170">
+												{ if $c.readonly == 1 }
+												<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="checkbox" {if $d.access > 0}checked="checked"{/if} value="1" />
+												{ else }
+												{$label_none}&nbsp;<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="radio" {if $d.access == 0}checked="checked"{/if} value="0" />&nbsp;
+												{$label_readwrite}&nbsp;<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="radio" {if $d.access == 1}checked="checked"{/if} value="1" />&nbsp;
+												{$label_readonly}&nbsp;<input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="radio" {if $d.access == 2}checked="checked"{/if} value="2" />
+												{ /if }
+												</td>
+											</tr>
+										</table>
+										{/foreach}
+									</ul>
+								</li>
+								{assign var='group' value=$c.group}
+								{/foreach}
+								</ul>
+							</li>
+							{/foreach}
+							</ul>
+						</li>
+						{/foreach}
+						</ul>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.acl_comments.label}</td><td class="FormRowValue">{$form.acl_comments.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p>{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+{$helptext}

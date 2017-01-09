@@ -1,0 +1,92 @@
+{$form.javascript}
+<form {$form.attributes}>
+<div class="headerTabContainer">
+    <ul id="mainnav">
+        <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{t}General Information{/t}</a></li>
+        <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Time Range Exceptions{/t}</a></li>    
+    </ul>
+    <div id="validFormTop">
+    {if $o == "a" || $o == "c"}
+        <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{$form.change.html}</p>
+    {/if}
+    </div>
+</div>
+<div id='tab1' class='tab'>
+    <table class="formTable table">
+        <tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Timeperiods{/t}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="timeperiod_name"> {$form.tp_name.label}</td><td class="FormRowValue">{$form.tp_name.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.tp_alias.label}</td><td class="FormRowValue">{$form.tp_alias.html}</td></tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Basic Settings{/t}</h4>
+          </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_sunday.label}</td><td class="FormRowValue">{$form.tp_sunday.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_monday.label}</td><td class="FormRowValue">{$form.tp_monday.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_tuesday.label}</td><td class="FormRowValue">{$form.tp_tuesday.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_wednesday.label}</td><td class="FormRowValue">{$form.tp_wednesday.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_thursday.label}</td><td class="FormRowValue">{$form.tp_thursday.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_friday.label}</td><td class="FormRowValue">{$form.tp_friday.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="weekday"> {$form.tp_saturday.label}</td><td class="FormRowValue">{$form.tp_saturday.html}</td></tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Advanced settings{/t}</h4>
+          </td>
+        </tr>           
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="include"> {$form.tp_include.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
+     </table>
+</div>
+<div id="tab2" class="tab"> 
+    <table class="formTable table">
+        <tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Time Range exceptions{/t}</h4>
+          </td>
+        </tr>
+        <tr class="list_two">
+            <td class='FormRowField'><img class="helpTooltip" name="exception"> {$exceptionLabel}<input type="hidden" name="nbOfExceptions" id="hiddenExInput" style='display:none'></td>
+            <td class='FormRowValue'>
+            {if $o != "w"}
+                <span style='cursor:pointer' onClick="javascript:addBlankInput();">+ {t}Add new entry{/t}</span>
+            {/if}
+                <table id="exceptionTable" class="ListTableSmall" style='padding-top:0px' width="400px">
+                    <tr class="ListColHeader">
+                        <td class="ListColLeft" with='45%'>{$tRDay}</td>
+                        <td class="ListColLeft" with='45%'>{$tRHours}</td>
+                        <td class="ListColLeft">&nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        {if $o == "a" || $o == "c"}
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+        {/if}
+    </table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+    <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+    <p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+{$helptext}
+

@@ -1,0 +1,148 @@
+{$form.javascript}{literal}
+<script type="text/javascript">
+function toggleParams(type) 
+{
+	if (type == 'host') {
+		Effect.Fade('hostgroup_input', { duration : 0 });
+		Effect.Fade('poller_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
+		Effect.Appear('host_input', { duration : 0 });
+	} else if (type == 'hostgroup') {
+		Effect.Fade('poller_input', { duration : 0 });
+		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
+		Effect.Appear('hostgroup_input', { duration : 0 });
+	} else if (type == 'service') {
+		Effect.Fade('hostgroup_input', { duration : 0 });
+		Effect.Fade('poller_input', { duration : 0 });
+		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
+		Effect.Appear('service_input', { duration : 0 });
+	} else if (type == 'servicegroup') {
+		Effect.Fade('hostgroup_input', { duration : 0 });
+		Effect.Fade('poller_input', { duration : 0 });
+		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Appear('servicegroup_input', { duration : 0 });
+	} else {
+		Effect.Fade('hostgroup_input', { duration : 0 });
+		Effect.Fade('host_input', { duration : 0 });
+		Effect.Fade('service_input', { duration : 0 });
+		Effect.Fade('servicegroup_input', { duration : 0 });
+		Effect.Appear('poller_input', { duration : 0 });
+	}
+}
+Event.observe(window, "load", function() {
+	toggleParams('{/literal}{$focus}{literal}'); 
+});
+
+</script>
+{/literal}
+	<form {$form.attributes}>
+		<table class="formTable table">
+			<tr class="ListHeader">
+				<td class="FormHeader" colspan="2">
+					<h3>| {t}Add downtime{/t}</h3>
+				</td>
+			</tr>
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2">
+					<h4>{t}General informations{/t}</h4>
+				</td>
+			</tr>
+
+			{if isset($service_description)}
+			<tr class="list_one">
+				<td class="FormRowField">{t}Type{/t}</td>
+				<td class="FormRowValue"><b>Service</b></td>
+			</tr>
+			{elseif isset($host_name)}
+			<tr class="list_two">
+				<td class="FormRowField">{t}Type{/t} </td>
+				<td class="FormRowValue"><b>Host</b></td>
+			</tr>
+			{else}
+			<tr class="list_one">
+				<td  class="FormRowField">{$form.downtimeType.label}</td>
+				<td  class="FormRowValue">{$form.downtimeType.html}</td>
+			</tr>
+			{/if}
+
+			<!--
+			<tr class="list_one">
+				<td  class="ListColLeft">{$form.host_or_centreon_time.label}</td>
+				<td  class="ListColLeft">{$form.host_or_centreon_time.html}</td>
+			</tr>
+			-->
+			<!-- Object choice -->
+			<tr class="list_two" id="host_input">
+				<td  class="FormRowField">{$form.host_id.label}</td>
+				<td  class="FormRowValue">{$form.host_id.html}</td>
+			</tr>
+			<tr class="list_one" id="hostgroup_input">
+				<td  class="FormRowField">{$form.hostgroup_id.label}</td>
+				<td  class="FormRowValue">{$form.hostgroup_id.html}</td>
+			</tr>
+
+			{if isset($service_description)}
+				<tr class="list_two">
+					<td class="FormRowField">{t}Host{/t} / {t}Service{/t}</td>
+					<td class="FormRowValue"><b>{$host_name} / {$service_description}</b></td>
+				</tr>
+			{elseif isset($host_name)}
+				<tr class="list_one">
+					<td class="FormRowField">{t}Host{/t} </td>
+					<td class="FormRowValue"><b>{$host_name}</b></td>
+				</tr>
+			{else}
+			<tr class="list_two" id="service_input">
+				<td  class="FormRowField">{$form.service_id.label}</td>
+				<td  class="FormRowValue">{$form.service_id.html}</td>
+			</tr>
+			{/if}
+
+			<tr class="list_one" id="servicegroup_input">
+				<td  class="FormRowField">{$form.servicegroup_id.label}</td>
+				<td  class="FormRowValue">{$form.servicegroup_id.html}</td>
+			</tr>
+			<tr class="list_two" id="poller_input">
+				<td  class="FormRowField">{$form.poller_id.label}</td>
+				<td  class="FormRowValue">{$form.poller_id.html}</td>
+			</tr>
+			<!-- End Object Choice -->
+			<tr class="list_one">
+				<td  class="FormRowField">{$form.persistant.label}</td>
+				<td  class="FormRowValue">{$form.persistant.html}</td>
+			</tr>
+			<tr class="list_two">
+				<td  class="FormRowField">{$form.duration.label}</td>
+				<td  class="FormRowValue">{$form.duration.html} {$form.duration_scale.html}</td>
+			</tr>
+            <tr class="list_one">
+                <td colspan="2" class="FormRowValue"><span style="color:#ff9a13">{$form.timezone_warning.label}</span></td>
+            </tr>
+			<tr class="list_two">
+				<td  class="FormRowField">{$form.start.label}</td>
+				<td  class="FormRowValue">{$form.start.html}&nbsp;{$form.start_time.html}</td>
+			</tr>
+			<tr class="list_one">
+				<td  class="FormRowField">{$form.end.label}</td>
+				<td  class="FormRowValue">{$form.end.html}&nbsp;{$form.end_time.html}</td>
+			</tr>
+			<tr class="list_two">
+				<td  class="FormRowField">{$form.with_services.label}</td>
+				<td  class="FormRowValue">{$form.with_services.html}</td>
+			</tr>
+			<tr class="list_one">
+				<td  class="FormRowField" valign='top'>{$form.comment.label}</td>
+				<td  class="FormRowValue">{$form.comment.html}</td>
+			</tr>
+		</table>		
+		<div id="validForm">
+			<p>{$form.action.html}</p>
+			<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		</div>
+		{$form.hidden}
+	</form>

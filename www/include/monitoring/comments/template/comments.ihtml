@@ -1,0 +1,79 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>		
+<form name="form" method='GET'>
+<hidden name="p" value='{$p}'>
+<hidden name="o" value='{$o}'>
+<table class="ajaxOption table">
+  <tbody>
+    <tr>
+      <th colspan="4"><h5>{t}Filters{/t}</h5></th>
+    </tr>
+	<tr>
+        <td><h4>{t}Host name{/t}</h4></td>
+		<td><h4>{t}Service{/t}</h4></td>
+		<td><h4>{t}Output{/t}</h4></td>
+	</tr>
+    <tr>
+      <td><input type='text' name='search_host' value="{$search_host}" /></td>
+      <td><input type='text' name='search_service' value="{$search_service}" /></td>
+      <td><input type='text' name='search_output' value="{$search_output}" /></td>
+      <td><input type='submit' name='SearchB' class="btc bt_success" value='{$Search}' /></td>
+    </tr>
+  </tbody>
+</table>
+<table class="ToolbarTable table">
+	<tr class="ToolbarTR">
+	  <td>
+          {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
+          {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
+          </td>
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+</table>
+<table class="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+		<td class="ListColHeaderCenter" width="150">{t}Host Name{/t}</td>
+		<td class="ListColHeaderCenter" width="120">{t}Service Description{/t}</td>
+		<td class="ListColHeaderCenter" width="110">{t}Entry time{/t}</td>
+		<td class="ListColHeaderCenter" width="120">{t}Authors{/t}</td>
+		<td class="ListColHeaderCenter">{t}Comments{/t}</td>
+		<td class="ListColHeaderCenter" width="60">{t}Persistent{/t}</td>
+	</tr>
+{if $nb_comments_svc} 
+	{foreach item=tcs from=$tab_comments_svc}
+	<tr class={cycle values="list_two, list_one"}>
+		<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.comment_type};{$tcs.host_name_link};{$tcs.internal_id}]'></td>
+		<td class="ListColLeft"><a href='./main.php?p=20202&o=hd&host_name={$tcs.host_name_link}'>{$tcs.host_name}</a></td>
+		<td class="ListColLeft"><a href='./main.php?p=202&o=svcd&host_name={$tcs.host_name_link}&service_description={$tcs.service_description}'>{$tcs.service_description}</a></td>
+		<td class="ListColCenter">{$tcs.entry_time}</td>
+		<td class="ListColCenter">{$tcs.author}</td>
+		<td class="ListColNoWrap">{$tcs.data}</td>
+		<td class="ListColCenter">{$tcs.persistent}</td>
+	</tr>
+	{/foreach}
+{else}
+<table class="ListTable">
+  <tr>
+    <td>
+      <center><b>{$no_svc_comments}</b></center>
+    </td>
+  </tr>
+{/if}
+</table>
+<table class="ToolbarTable table">
+	<tr class="ToolbarTR">
+	  <td>
+          {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
+          {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
+          </td>
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+</table>
+<input type="hidden" name="o" value="ds">
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
+{$form.hidden}
+</form>

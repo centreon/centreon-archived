@@ -1,7 +1,0 @@
-[
-    {
-        "name": "displayLeftMenu",
-        "moduleHook": "displayBookmarkedViews",
-        "moduleHookDescription": "Display bookmarked views in left menu"
-    }
-]

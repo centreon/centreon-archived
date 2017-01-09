@@ -1,0 +1,105 @@
+#wizard {
+  position: relative;
+  margin-top: 20px;
+  background-color: #F7FAFF;
+  height: 400px;
+  width: 700px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 3px;
+  border: 1px solid #e7e7e8;
+  overflow: hidden;
+  -webkit-user-select: none;
+  margin-bottom: 20px;
+}
+
+#wizard .btc {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+#wizard .frames {
+  height: 400px;
+  width: 0px;
+}
+
+#wizard .frame {
+  height: 400px;
+  width: 700px;
+  float: left;
+  overflow-x: auto;
+  position: relative;
+}
+
+#wizard .frame .content {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 95%;
+}
+
+#wizard .frame .content p.title {
+  font-size: 16px;
+  color: #009fdf;
+  margin: 22px 0;
+}
+
+#wizard .frame .content p.title2 {
+  margin-top: 6px;
+  font-size: 16px;
+  font-style: italic;
+}
+
+#wizard .frame .content p.form {
+  margin-top: 4px;
+}
+
+#wizard .frame .content p.error {
+  color: red;
+  font-style: italic;
+}
+
+#wizard .frame .content label {
+  width: 200px;
+  line-height: 18px;
+  margin-right: 5px;
+  margin-left: 0px;
+}
+
+#wizard .frame .content label.left {
+  display: block;
+  float: left;
+  margin-left: 5px;
+}
+
+#wizard .frame .content label span.v_required_star {
+   font-size: 12px;
+   color: #e00b3d;
+}
+
+#wizard .frame .content input[type="text"] {
+  font-size: 14px;
+}
+
+#wizard .frame .content input.number4 {
+  width: 40px;
+}
+
+#wizard .buttonbar {
+  position: absolute;
+  bottom: 20px;
+  right: 50px;
+}
+
+#wizard .buttonbar .click {
+  background: -webkit-gradient(
+    linear, left top, left bottom,
+    from(#B5B5B5),
+    color-stop(0.50, #B5B5B5),
+    to(#FFFFFF)
+  );
+}
+
+span.button a {
+    text-decoration: none;
+}

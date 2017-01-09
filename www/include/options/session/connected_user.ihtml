@@ -1,0 +1,22 @@
+<div align="center">
+<form id="Form">
+	<table class="ListTableMedium">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{ $wi_user }</td>
+			<td class="ListColHeaderCenter">{ $distant_location }</td>
+			<td class="ListColHeaderCenter">{ $wi_where }</td>
+			<td class="ListColHeaderCenter">{ $wi_last_req }</td>
+			<td class="ListColHeaderCenter">&nbsp;</td>
+		</tr>
+		{foreach name=outer item=sd from=$session_data }
+		<tr class="{$sd.class}">
+			<td class="ListColLeft">{if $sd.admin == 1}<img src='./img/icons/admin.png' class="ico-18">{else}<img src='./img/icons/user.png' class="ico-18">{/if}&nbsp;&nbsp;<a href='./main.php?p=60301&o=w&contact_id={$sd.user_id}'>{$sd.user_alias}</a></td>
+			<td class="ListColCenter">{$sd.ip_address}</td>
+			<td class="ListColCenter"><a href='./main.php?p={$sd.current_page}'>{$sd.topology_name}</a></td>
+			<td class="ListColCenter" align=right>{$sd.last_reload}</td>
+			<td class="ListColCenter" align=right>{$sd.actions}</td>
+		</tr>
+		{/foreach}
+	</table>
+</form>
+</div>

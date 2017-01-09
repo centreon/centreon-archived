@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<dataset>
-    <cfg_options group="default" key="variable1" value="value1"/>
-    <cfg_options group="default" key="variable2" value="test"/>
-</dataset>

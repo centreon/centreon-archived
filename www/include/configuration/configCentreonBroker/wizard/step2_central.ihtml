@@ -1,0 +1,11 @@
+<div class="content">
+   <input type="hidden" name="end" value="false" />
+   <form id="step2">
+       <p class="title">{$lang.central_configuration_with_poller}</p>
+       <p class="form"><label for="step2_prefix_configname">{$lang.configuration_name}</label><input type="text" name="step2_prefix_configname" id="step2_prefix_configname" class="v_required" /></p>
+       <p class="title2">{$lang.informations} :</p>
+       <p class="form">{$lang.requester}&nbsp;:&nbsp;{$requester}</p>
+       <p class="form">{$lang.additional_daemon}&nbsp;:&nbsp;2</p>
+       <input type="hidden" name="step2_requester_id" value="{$requester_id}" />
+   </form>
+</div>

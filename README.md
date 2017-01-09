@@ -45,3 +45,4 @@ first.
 * Toufik Mechouet
 * Rabaa Ridene
 * Remi Werquin
+* Quentin Garnier

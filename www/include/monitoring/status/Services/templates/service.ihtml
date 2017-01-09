@@ -1,0 +1,102 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form'>
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="svc" type="hidden">
+<table class="ajaxOption table">
+    <tr>
+        <th colspan="6"><h5>{$filters}</h5></th>
+    </tr>
+    <tr>
+        <td><h4>{$statusService}</h4></td>
+        <td><h4>{$form.statusFilter.label}</h4></td>
+        {if $criticalityUsed}
+        <td><h4>{$form.criticality.label}</h4></td>
+        {/if}
+        {if $poller_listing}
+        <td><h4>{$pollerStr}</h4></td>
+        {/if}
+    </tr>
+    <tr>
+      <td>{$form.statusService.html}</td>
+      <td>{$form.statusFilter.html}</td>
+      {if $criticalityUsed}
+      <td>{$form.criticality.html}</td>
+      {/if}
+      {if $poller_listing}
+      <td><span id="instance_selected"></span></td>
+      {/if}
+    </tr>
+    <tr>
+        <td><h4>{$hostStr}</h4></td>
+        <td><h4>{$serviceStr}</h4></td>
+        <td><h4>{$hgStr}</h4></td>
+        <td><h4>{$sgStr}</h4></td>
+        <td><h4>{$outputStr}</h4></td>
+    </tr>
+    <tr>
+        <td><input type='text' name='host_search' id='host_search'></td>
+        <td><input type='text' name='search' id='input_search'></td>
+        <td id="hostgroups_selected"></td>
+        <td id="servicegroups_selected"></td>
+        <td><input type='text' name='output_search' id='output_search'></td>
+    </tr>
+</table>
+<table class="ToolbarTable table">
+    <tr class="ToolbarTR">
+        <td>
+        <span class="consol_button">{$form.o1.html}</span>
+        <input name="p" value="{$p}" type="hidden">
+
+        <div class="Toolbar_TDSelectAction_Top">
+            <span class="consol_button">
+                <div id="JS_monitoring_refresh" style="cursor:pointer" onclick="javascript:monitoring_refresh('');">
+                    <img src='./img/icons/refresh.png' title='Refresh'>
+                </div>
+            </span>
+            <span class="consol_button">
+                <div id="JS_monitoring_play" style="cursor:pointer" class="cachediv"  onclick="javascript:monitoring_play('');">
+                    <img src='./img/icons/media_play.png' title='Play'>
+                </div>
+            </span>
+
+            <span class="consol_button"><img id="JS_monitoring_play_gray" src='./img/icons/media_play_gray.png' class="ico-20" title='Play'></span>
+            <span class="consol_button">
+                <div class="" id="JS_monitoring_pause" style="cursor:pointer" onclick="javascript:monitoring_pause('');">
+                    <img src='./img/icons/media_pause.png' title='Pause'>
+                </div>
+            </span>
+            <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' title='Pause'></span>
+        </div>
+    </td>
+
+    <td id="pagination1" class="ToolbarPagination"></td>
+    <td id="sel1" class="Toolbar_pagelimit"></td>
+    </tr>
+</table>
+<div id="forAjax"></div>
+<table class="ToolbarTable table">
+    <tr class="ToolbarTR">
+        <td class="Toolbar_TDSelectAction_Bottom" width="330">
+            <span class="consol_button">{$form.o2.html}</span>
+            <input name="p" value="{$p}" type="hidden">
+        </td>
+        <td id="pagination2" class="ToolbarPagination"></td>
+        <td id="sel2" class="Toolbar_pagelimit"></td>
+    </tr>
+</table>
+{if $host_name}
+<input type='hidden' name='host_name' value='{$host_name}'>
+{/if}
+<input name='cmd' id='cmd' value='42' type='hidden'>
+<input name='o' value='{$o}' type='hidden'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+{$form.hidden}
+</form>
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/common/javascript/charts/d3-timeline.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>

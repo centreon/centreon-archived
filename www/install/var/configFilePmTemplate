@@ -1,0 +1,28 @@
+#############################################
+# File Added by Centreon
+#
+
+$centreon_config = {
+       VarLib => "--CENTREON_VARLIB--",
+       CentreonDir => "--CENTREONDIR--",
+       "centreon_db" => "--CONFDB--",
+       "centstorage_db" => "--STORAGEDB--",
+       "db_host" => "--ADDRESS--:--DBPORT--",
+       "db_user" => "--DBUSER--",
+       "db_passwd" => '--DBPASS--'
+};
+
+# Central or Poller ?
+$instance_mode = "--INSTANCEMODE--";
+
+# Centreon Centcore Command File
+$cmdFile = "--CENTREON_VARLIB--/centcore.cmd";
+
+# Deprecated format of Config file. 
+$mysql_user = "--DBUSER--";
+$mysql_passwd = '--DBPASS--';
+$mysql_host = "--ADDRESS--:--DBPORT--";
+$mysql_database_oreon = "--CONFDB--";
+$mysql_database_ods = "--STORAGEDB--";
+
+1;

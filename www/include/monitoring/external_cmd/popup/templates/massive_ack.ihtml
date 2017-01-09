@@ -1,0 +1,49 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="popupAcknowledgement" align=center>
+		 <table class="table">
+                     <tr><td class="FormHeader" colspan='2'><h3 style="color: #00bfb3;">{$form.header.title}</h3></td></tr>
+			<tr>
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.sticky.label}</td>
+                    <td class="FormRowValue" style='padding-left:15px;'>{$form.sticky.html}</td>
+	        </tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.notify.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$form.notify.html}</td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.persistent.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$form.persistent.html}</td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$authorlabel}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$authoralias}</td>
+			</tr>
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;padding-right:15px;'>{$form.comment.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;padding-right:15px;'>{$form.comment.html}</td>
+			</tr>
+			{if $cmd == '72'}
+			<tr>
+	            <td class="FormRowField" style='padding-left:15px;'>{$form.ackhostservice.label}</td>
+                    <td class="FormRowValue" style='padding-left:15px;'>{$form.ackhostservice.html}</td>
+	        </tr>
+			{/if}
+			<tr>
+				<td class="FormRowField" style='padding-left:15px;'>{$form.force_check.label}</td>
+                                <td class="FormRowValue" style='padding-left:15px;'>{$form.force_check.html}</td>
+			</tr>
+		</table>
+		<div id="validForm">
+			<p>{$form.action.html}</p>
+			<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		</div>
+	</div>	
+	{$form.hidden}
+	<input name="o" type="hidden" value="{$o}" />
+	<input name="p" type="hidden" value="{$p}" />
+	<input name="cmd" type="hidden" value="{$cmd}" />
+	{foreach item=it from=$select}	
+		<input name="select[{$it}]" type="hidden" value="1" />
+	{/foreach}
+</form>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<centreon-partitioning>
+    <table name="logs" schema="centreon_storage">
+        <activate>1</activate>
+        <column>ctime</column>
+        <type>date</type>
+        <duration>daily</duration>
+        <retention>31</retention>
+        <retentionforward>10</retentionforward>        
+        <backup>
+            <folder>/var/backups/</folder>
+            <format>%Y-%m-%d</format>
+        </backup>
+        <createstmt>
+CREATE TABLE `logs` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ctime` int(11) DEFAULT NULL,
+  `host_id` int(11) DEFAULT NULL,
+  `host_name` varchar(255) DEFAULT NULL,
+  `instance_name` varchar(255) NOT NULL,
+  `issue_id` int(11) DEFAULT NULL,
+  `msg_type` tinyint(4) DEFAULT NULL,
+  `notification_cmd` varchar(255) DEFAULT NULL,
+  `notification_contact` varchar(255) DEFAULT NULL,
+  `output` text,
+  `retry` int(11) DEFAULT NULL,
+  `service_description` varchar(255) DEFAULT NULL,
+  `service_id` int(11) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `type` smallint(6) DEFAULT NULL,
+  KEY `log_id` (`log_id`),
+  KEY `host_name` (`host_name`(64)),
+  KEY `service_description` (`service_description`(64)),
+  KEY `status` (`status`),
+  KEY `instance_name` (`instance_name`),
+  KEY `ctime` (`ctime`),
+  KEY `rq1` (`host_id`,`service_id`,`msg_type`,`status`,`ctime`),
+  KEY `rq2` (`host_id`,`msg_type`,`status`,`ctime`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+        </createstmt>
+    </table>
+</centreon-partitioning>
