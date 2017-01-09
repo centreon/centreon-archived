@@ -44,6 +44,26 @@ Le paramètre MySQL **open_files_limit** doit être fixé à 32000 dans la secti
   [server]
   open_files_limit = 32000
 
+.. note::
+
+  En installant via l'ISO de Centreon, ce paramètres est déjà convenablement configuré. Si vous installez les rpm sur votre propre install RedHat ou CentOS, vous serez obligé de le faire vous même. 
+  N'oubliez pas de redémarrer le service mysql / mariadb si vous avez besoin de configurer ce paramètre dans le fichier my.cnf. 
+
+
+
+Si vous utilisez systemd, il est nécessaire de créer le fichier "/etc/systemd/system/mariadb.service.d/mariadb.conf" :
+
+::
+
+  [Service]
+  LimitNOFILE=32000
+
+Puis recharger systemd et MySQL :
+
+::
+
+  $ systemctl daemon-reload
+  $ systemctl restart mysql
 
 Afin d'exploiter le module, vous pouvez suivre la documentation suivante :
 

@@ -1,3 +1,4 @@
+.. _centreon_parameters:
 ===============================================
 Administration options of the Centreon platform
 ===============================================
@@ -21,21 +22,32 @@ The following window is displayed:
 * **Centreon Web Directory** field indicates the web directory on which Centreon is installed 
 * **Limit per page (default)** field defines the number of objects displayed per **Configuration** page
 * **Limit per page for Monitoring** field defines the number of objects displayed per page in the **Monitoring** menu
+* **Graph per page for Performances** field defines the maximum number of displayed charts on **Performance** page
+* **Number of elements loaded in select** field defines the maximum number in select box
 * **Sessions Expiration Time** field, expressed in minutes, indicates the maximum session duration
 * **Refresh Interval for statistics** field, expressed in seconds, indicates the refreshment interval for the statistics page
 * **Refresh Interval for monitoring** field, expressed in seconds, indicates the refreshment interval for the objects on the monitoring page
-* **Display Template** field indicates the theme to be used for the Centreon web interface
 * **Sort problems by** field is used to choose how to sort the incidents in the **Monitoring** menu
 * **Order sort problems** field indicates the display order for incidents, by rising or falling order of gravity
+* **Proxy protocol** fields defines the type of proxy to use (TCP, HTTP, HTTPS)
+* **Proxy URL** fields defines the URL/IP to access to the proxy
+* **Proxy port** fields defines the port to access to the proxy
+* **Display downtime and acknowledgment on chart** allows to display downtime and acknowledgment on chart
+* **Display comment on chart** allows to display comment from service on chart
 * **Enable Autologin** box authorises the users to log into the web interface via the autologin mechanism
 * **Display Autologin shortcut** box serves to display the connection short-cut at the top right
 * **Enable SSO authentication** box enables SSO authentication
-* **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed)
-* **SSO trusted client addresses** field indicates which are the trusted clients for SSO. The trusted clients are separated by commas
-* **SSO login header** field indicates the variables of the header that will be used as a login / pseudo
-* **Timezone** field indicates timezone of your monitoring server
-* If the **Enable strict mode for host parentship management** box is checked, the operator cannot define parental relationships of a host in objects supervised by different pollers.
+* **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed). The mixed mode requires trsuted client addresses.
+* **SSO trusted client addresses** field indicates which are hte IP/DNS of the trusted clients (corresponding to the reverse proxy) for SSO. The trusted clients are separated by comas.
+* **SSO login header** field indicates the variables of the header that will be used as a login / pseudo (i.e HTTP_AUTH_USER).
+* **Timezone** field indicates timezone of your monitoring server.
 * **Centreon Support Email** field indicates the e-mail address of the **Customer’s service support centre** for the Centreon platform. This e-mail address will be displayed at the bottom of the page on the link **Centreon Support**
+
+.. note::
+    If your proxy is CNTLM, use "TCP", "localhost" and your port in Centreon web configuration.
+
+.. Warning::
+    SSO feature has only to be enabled in a secured and dedicated environment for SSO. Direct access to Centreon UI from users have to be disabled.
 
 **********
 Monitoring

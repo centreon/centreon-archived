@@ -617,6 +617,14 @@ try {
             $cpt++;
             $pearDB->query("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " . $pearDB->escape($acl_group_id));
         }
+        
+        /**
+         * Include module specific ACL evaluation
+         */
+        $extensionsPaths = getModulesExtensionsPaths($pearDB);
+        foreach ($extensionsPaths as $extensionPath) {
+            require_once $extensionPath . 'centAcl.php';
+        }
     }
     
     /*

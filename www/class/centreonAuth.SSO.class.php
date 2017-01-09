@@ -55,7 +55,8 @@ class CentreonAuthSSO extends CentreonAuth
         $this->options_sso = $generalOptions;
         
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
-            isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '') {
+            isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '' &&
+            isset($_SERVER[$this->options_sso['sso_header_username']])) {
             $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
             if ($this->checkSsoClient()) {
                 $this->sso_mandatory = 1;

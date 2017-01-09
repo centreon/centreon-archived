@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.2');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.3');
 
 --
 -- Contenu de la table `contact`
@@ -77,6 +77,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_search_limit','60'),
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
+('broker','broker'),
 ('oreon_path','@INSTALL_DIR_CENTREON@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
@@ -1270,3 +1271,12 @@ VALUES
 ('backup_retention', '7'),
 ('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
 ('backup_zend_conf', '/etc/php.d/zendguard.ini');
+
+-- Insert Centreon Knowledge base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES ('kb_db_name', ''),
+('kb_db_user', ''),
+('kb_db_password', ''),
+('kb_db_host', ''),
+('kb_db_prefix', ''),
+('kb_WikiURL', '');

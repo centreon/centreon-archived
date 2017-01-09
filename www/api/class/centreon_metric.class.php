@@ -113,6 +113,8 @@ class CentreonMetric extends CentreonWebService
                   WHERE m.index_id = i.id
                   AND   h.host_id = i.host_id
                   AND   s.service_id = i.service_id
+                  AND   h.enabled = 1 
+                  AND   s.enabled = 1
                   AND   CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) LIKE '%". $q ."%'
                   ORDER BY CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) COLLATE utf8_general_ci "
             .$range;

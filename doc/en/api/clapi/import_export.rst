@@ -4,7 +4,7 @@ Import/Export
 
 Export
 ------
-At some point, you might need to export all of the object configuration parameters into a plain text file, either for synchronizing or backuping purpose.
+At some point, you might need to export all of the object configuration parameters (with the exception of escalation) into a plain text file, either for synchronizing or backuping purpose.
 This export feature is ran like this::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -e > /tmp/clapi-export.txt 
