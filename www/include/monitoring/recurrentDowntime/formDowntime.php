@@ -105,11 +105,11 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
         'multiple' => true,
         'linkedObject' => 'centreonServicegroups'
     );
-    
+
     /*
 	 * Init QuickFrom
 	 */
-    $form = new HTML_QuickForm('form_dt', 'post', "?p=$p&type=$type");
+    $form = new HTML_QuickForm('form_dt', 'post', "?p=$p");
     if ($o == "a") {
         $form->addElement('header', 'title', _("Add a downtime"));
     } elseif ($o == "c") {
@@ -117,6 +117,7 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
     } elseif ($o == "w") {
         $form->addElement('header', 'title', _("View a downtime"));
     }
+
 
     $form->addElement('header', 'periods', _("Periods"));
 
@@ -245,6 +246,7 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
 
 
     $valid = false;
+
     if ($form->validate()) {
         $values = $form->getSubmitValues();
         $valid = true;
@@ -360,4 +362,5 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
         $tpl->assign('form', $renderer->toArray());
 
         $tpl->display("formDowntime.ihtml");
+
     }
