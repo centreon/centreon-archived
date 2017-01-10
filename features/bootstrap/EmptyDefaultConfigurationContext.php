@@ -16,10 +16,10 @@ class EmptyDefaultConfigurationContext extends CentreonContext
                 $p = '/main.php?p=60103';
                 break;
             case 'service template':
-                $p = '/main.php?p=60106';
+                $p = '/main.php?p=60206';
                 break;
             case 'command':
-                $p = 'main.php?p=60801&type=2';
+                $p = '/main.php?p=60801&type=2';
                 break;
             default:
                 throw new Exception('Page not know');
@@ -27,7 +27,7 @@ class EmptyDefaultConfigurationContext extends CentreonContext
         }
         $this->visit($p);
     }
-    
+
     /**
      * @Then no item is display
      */
