@@ -110,4 +110,33 @@ function setMacrosDescriptions() {
     Modalbox.hide();
 }
 
+function checkType(value) {
+    var action = jQuery('form#Form').attr('action');
+    switch(value) {
+        case '1':
+            action = action.replace(/p=\d+/,'p=60802');
+            break;
+        case '2':
+            action = action.replace(/p=\d+/,'p=60801');
+            break;
+        case '3':
+            action = action.replace(/p=\d+/,'p=60803');
+            break;
+        case '4':
+            action = action.replace(/p=\d+/,'p=60807');
+            break;
+        default:
+            action = action.replace(/p=\d+/,'p=60801');
+            break;
+    }
+
+    if (action.match(/&type=/)) {
+        action = action.replace(/&type=\d+/, '&type=' + value);
+    } else {
+        action += '&type=' + value;
+    }
+
+    jQuery('form#Form').attr('action', action);
+}
+
 </script>

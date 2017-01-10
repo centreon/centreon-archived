@@ -30,7 +30,7 @@ jQuery(function(){
 
         if ($$('input[name="dt_id"]')[0].value) {
             jQuery.ajax({
-		url: './include/configuration/configDowntime/ajaxPeriods.php?dt_id=' + $$('input[name="dt_id"]')[0].value,
+		url: './include/monitoring/recurrentDowntime/ajaxPeriods.php?dt_id=' + $$('input[name="dt_id"]')[0].value,
 		success: function(data, status) {
                     listPeriod = data;
                     jQuery.each(listPeriod, function(infos, index){
@@ -78,7 +78,7 @@ function getServices(host_id) {
 	var arg = 'host_id='+host_id;
 	var xhrT = getXhrHost4Svc();
 	
-	xhrT.open("POST","./include/configuration/configDowntime/GetXMLHost4Services.php", true);
+	xhrT.open("POST","./include/monitoring/recurrentDowntime/GetXMLHost4Services.php", true);
 	xhrT.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	xhrT.send(arg);
 	
