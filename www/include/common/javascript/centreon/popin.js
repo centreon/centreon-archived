@@ -118,7 +118,7 @@
     },
     close: function () {
       this.opened = false;
-      this.$elem.remove();
+      this.$elem.hide();
       $('#centreonPopinOverlay').hide();
 
       /* Execute callback if defined on settings */
