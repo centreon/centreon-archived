@@ -18,13 +18,12 @@ Le plugins issues de Centreon Plugins dont l'éventail fonctionnel est un des pl
 170 environnements couverts soit environ 2000 indicateurs de supervision vous permet de déployer 
 votre supervison rapidement et simplement. 
 
-
 Vous souhaitez utiliser IMP ? Rien de plus simple. Suivez les instructions ic dessous.
 
 Pré-requis
 ----------
 
-1. Centreon 3.4
+**1. Centreon 3.4**
 
 Pour pouvoir utiliser Centreon IMP, vous devez installer la dernière version 3.4 de 
 Centreon. Cette version intègre la dernière version de Centreon Web c'est à dire la 
@@ -34,7 +33,7 @@ Cette version 3.4 est installable soit en "fresh install" avec l'ISO d'installat
 soit en mettant à jour votre platefirme Centreon déjà installée. Pour ces deux étapes, 
 rendez-vous dans les rubriques appropriées de la documentation.
 
-2. Une connexion internet
+**2. Une connexion internet**
 
 Votre serveur de supervision Centreon central, doit avoir une connexion internet. Cette 
 connexion internet permettra de procéder à la récupération des packs via internet afin de 
@@ -145,8 +144,9 @@ procédure mise à disposition avec votre pack, vous avez la liste des rpm à in
 supervision puisse démarrer. 
 
 .. note:
-    Pensez à déployer tous les rpms sur chaque poller qui le nécessitent. Sinon votre supervision ne 
-    pourra pas fonctionner.
+   Pensez à déployer tous les rpms sur chaque poller qui le nécessitent. Sinon votre supervision ne 
+   pourra pas fonctionner.
+
 
 3. Maintenant souscrivez !
 --------------------------
