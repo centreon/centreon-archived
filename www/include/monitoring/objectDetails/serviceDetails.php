@@ -298,7 +298,7 @@ if (!is_null($host_id)) {
          * Ajust data for beeing displayed in template
          */
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-        $service_status['command_line'] = str_replace(' --', "\n\t--", $service_status['command_line']);
+        $service_status['command_line'] = str_replace(' -', "\n\t-", $service_status['command_line']);
         $service_status['performance_data'] = str_replace(' \'', "\n'", $service_status['performance_data']);
         $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
 
@@ -688,9 +688,9 @@ if (!is_null($host_id)) {
 ?>
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
-    var glb_confirm = '<?php  echo _("Submit command?"); ?>';
-    var command_sent = '<?php echo _("Command sent"); ?>';
-    var command_failure = '<?php echo _("Failed to execute command");?>';
+    var glb_confirm = "<?php  echo _("Submit command?"); ?>";
+    var command_sent = "<?php echo _("Command sent"); ?>";
+    var command_failure = "<?php echo _("Failed to execute command");?>";
     var host_id = '<?php echo $host_id;?>';
     var svc_id = '<?php echo $service_id;?>';
     var labels = new Array();

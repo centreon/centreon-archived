@@ -39,6 +39,14 @@
             <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_wiki_url">&nbsp;{$form.kb_wiki_url.label}</td>
             <td class="FormRowValue">{$form.kb_wiki_url.html}</td>
         </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_wiki_account">&nbsp;{$form.kb_wiki_account.label}</td>
+            <td class="FormRowValue">{$form.kb_wiki_account.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_wiki_account_password">&nbsp;{$form.kb_wiki_password.label}</td>
+            <td class="FormRowValue">{$form.kb_wiki_password.html}</td>
+        </tr>
     </table>
     {if !$valid}
     <div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>

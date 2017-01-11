@@ -83,9 +83,21 @@ $help['sso_trusted_clients'] = dgettext(
     'help',
     'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
 );
+$help['sso_blacklist_clients'] = dgettext(
+    'help',
+    'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
+);
 $help['sso_header_username'] = dgettext(
     'help',
     'The header variable that will be used as login. i.e: $_SERVER[\'HTTP_AUTH_USER\']'
+);
+$help['sso_username_pattern'] = dgettext(
+    'help',
+    'The pattern to search for in the username. If i want to remove the domain of the email: /@.*/'
+);
+$help['sso_username_replace'] = dgettext(
+    'help',
+    'The string to replace.'
 );
 
 /**

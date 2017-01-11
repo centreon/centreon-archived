@@ -1,3 +1,4 @@
+.. _centreon_parameters:
 ===================================================
 Options d'administration de la plate-forme Centreon
 ===================================================
@@ -35,13 +36,21 @@ La fenêtre suivante s'affiche :
 * La case **Activer la connexion automatique** autorise les utilisateurs à se connecter à l'interface web via le mécanisme de connexion automatique
 * La case **Afficher le raccourci de connexion automatique** permet d'afficher le raccourci de connexion en haut à droite
 * La case **Activer l'authentification SSO** active l'authentification SSO
-* Le champ **Mode SSO** indique si l'authentification doit avoir lieu uniquement par SSO ou bien en utilisant l'authentification locale également (Mixte)
-* Le champ **Adresses des clients SSO de confiance** indique quels sont les clients de confiance pour le SSO. Chaque client de confiance est séparé par une virgule
+* Le champ **Mode SSO** indique si l'authentification doit avoir lieu uniquement par SSO ou bien en utilisant l'authentification locale également (Mixte). Le mode mixte nécessite l'adresse des clients de confiance.
+* Le champ **Adresses des clients SSO de confiance** indique quels sont les adresses IP/DNS des clients de confiance pour le SSO (correspond à l'adresse du reverse proxy). Chaque client de confiance est séparé par une virgule.
+* Le champ **Adresses des clients sur liste noire** indique quels sont les adresses IP/DNS des clients
 * Le champ **Entête HTTP SSO** indique la variable de l'en-tête qui sera utilisée comme login/pseudo.
+* Le champ **Expression régulière SSO de recherche sur le login** indique l'expression régulière de recherche sur le nom d'utilisateur. Si vous souhaitez supprimer le domaine de l'adresse mail: /@.*/
+* Le champ **Expression régulière SSO de remplacement sur le login** indique la chaine de caractères remplaçant l'expression régulière précédente.
 * La case **Activer la gestion des décalages horaire** active la gestion du décalage horaire
 * Le champ **Timezone par défaut de l'hôte** permet de définit un timezone par défaut pour application du décalage horaire
 * Si la case **Activer le mode strict de gestion des relations de parentés** est cochée, alors l'opérateur ne peut définir de relation de parentés d'hôte en objets supervisés par des collecteurs différents.
 * Le champ **Adresse mail de contact du support (de la plate-forme de supervision)** indique l'adresse email de support **Centre des services du client** pour la plate-forme Centreon. Cette adresse mail sera affichée en bas de page sur le lien **Centre des services**
+
+.. Warning::
+
+    La fonctionnalité SSO doit être activée seulement dans un environnement dédié et sécurisé pour le SSO. Les accès direct des utilisateurs à Centreon Web doivent être désactivés.
+
 
 ***********
 Supervision

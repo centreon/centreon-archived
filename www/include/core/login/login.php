@@ -47,10 +47,28 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 global $path;
 
 /**
+ * Getting Centreon Version
+ */
+$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+$release = $DBRESULT->fetchRow();
+
+/**
+ * Defining Login Form
+ */
+$form = new HTML_QuickForm('Form', 'post', './index.php');
+$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
+$form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
+$submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
+
+$loginValidate = $form->validate();
+
+require_once(dirname(__FILE__) . "/processLogin.php");
+
+/**
  * Set login messages (errors)
  */
 $loginMessages = array();
-if (isset($msg_error)) {
+if (isset($msg_error) && $msg_error != '') {
     $loginMessages[] = $msg_error;
 } elseif (isset($_POST["centreon_token"])) {
     $loginMessages[] = _('Your credentials are incorrect.');
@@ -68,22 +86,6 @@ if (isset($msg) && $msg) {
     $loginMessages[] = $msg;
 }
     
-/**
- * Getting Centreon Version
- */
-$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-$release = $DBRESULT->fetchRow();
-
-/**
- * Defining Login Form
- */
-$form = new HTML_QuickForm('Form', 'post', './index.php');
-$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
-$form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
-$submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
-
-$loginValidate = $form->validate();
-
 /**
  * Adding hidden value
  */
@@ -133,5 +135,3 @@ $tpl->assign('form', $renderer->toArray());
  * Display login Page
  */
 $tpl->display("login.ihtml");
-
-require_once("./include/core/login/processLogin.php");

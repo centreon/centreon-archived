@@ -45,6 +45,21 @@ MySQL open_files_limit parameter must be set to 32000 in [server] section :
   open_files_limit = 32000
 
 
+
+If you use systemd, you need to create file "/etc/systemd/system/mariadb.service.d/mariadb.conf" :
+
+::
+
+  [Service]
+  LimitNOFILE=32000
+
+Then reload systemd and MySQL :
+
+::
+
+  $ systemctl daemon-reload
+  $ systemctl restart mysql
+
 Contents:
 
 .. toctree::
