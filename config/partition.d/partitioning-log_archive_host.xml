@@ -35,7 +35,7 @@ CREATE TABLE `log_archive_host` (
   KEY `host_index` (`host_id`),
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </createstmt>
     </table>
 </centreon-partitioning>

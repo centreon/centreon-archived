@@ -36,7 +36,7 @@ CREATE TABLE `logs` (
   KEY `ctime` (`ctime`),
   KEY `rq1` (`host_id`,`service_id`,`msg_type`,`status`,`ctime`),
   KEY `rq2` (`host_id`,`msg_type`,`status`,`ctime`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </createstmt>
     </table>
 </centreon-partitioning>
