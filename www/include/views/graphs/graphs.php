@@ -95,7 +95,7 @@ function getGetPostValue($str)
     if (isset($_POST[$str]) && $_POST[$str]) {
         $value = $_POST[$str];
     }
-    return urldecode($value);
+    return rawurldecode($value);
 }
 
 // Init
