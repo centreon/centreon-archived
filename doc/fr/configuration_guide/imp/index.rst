@@ -9,12 +9,13 @@ Qu'est ce que IMP ?
 
 IMP (Instant Monitoring Platform) est une solution permettant de vous faire gagner beaucoup 
 de temps dans la mise en place de votre supervision. L'objectif est IMP est de réduire le temps de 
-mise en place de vos point de contrôle et également de réduire le temps de maintenance de votre 
-plateforme. Des plugins packagés avec des templates près à l'emploi couplé à une documentation 
+mise en place de vos points de contrôle et également de réduire le temps de maintenance de votre 
+plateforme. Des plugins packagés avec des templates près à l'emploi couplés à une documentation 
 de déploiement (monitoring procedure) doit vous permettre de démarrer votre supervision au maximum 
-30 minutes après l'installation du système Centreon.
+30 minutes après l'installation du système Centreon. Tous ces packs sont maintenus par nos équipes 
+et des mises à jour régulières vous permettent d'améliorer de façon continue votre contrôles.
 
-Le plugins issues de Centreon Plugins dont l'éventail fonctionnel est un des plus riches du marché : 
+Les plugins issus de Centreon Plugins dont l'éventail fonctionnel est un des plus riches du marché : 
 170 environnements couverts soit environ 2000 indicateurs de supervision vous permet de déployer 
 votre supervison rapidement et simplement. 
 
@@ -41,7 +42,7 @@ les installer sur votre système de supervision Centreon.
 
 .. note::
     Si votre serveur de Centreon n'a pas accès directement à internet, pensez à 
-    configurer un proxy pour qu'il puisse se connecter à notre portail. Cette fonctionnalité 
+    configurer un proxy pour qu'il puisse se connecter à notre site web. Cette fonctionnalité 
     est disponible depuis la version 2.8.2 de Centreon Web. Si vous n'avez pas cette version, 
     pensez à mettre à jour votre plate-forme.
 
@@ -50,10 +51,10 @@ Connectez votre plate-forme à Centreon
 --------------------------------------
 
 Pour récupérer les plugins packs, votre système Centreon a besoin de se connecter au 
-portail utilisateur Centreon. 
+site web utilisateur Centreon. 
 
-Sans compte Centreon sur le portail, votre serveur pourra récupérer dans un premier temps 5 plugin 
-packs. Si vous connectez votre système à Centreon en créant un compte sur le portail, vous pourrez 
+Sans compte Centreon sur le site web Centreon, votre serveur pourra récupérer dans un premier temps 5 plugin 
+packs. Si vous connectez votre système à Centreon en créant un compte sur le site web, vous pourrez 
 ensuite en récupérer 6 de plus. En souscrivant à l'offre IMP, vous aurez accès au catalogue 
 entier de plugin packs soit à ce jour 170 environnements ce qui représente environ 2000 modèles 
 de services près à l'emploi.
@@ -71,14 +72,14 @@ de services près à l'emploi.
 +---------------+-----------------+----------------+-------------------+
 
 
-Pour connecter votre plate-forme au portail Centreon, suivez les étapes décrites ci dessous : 
+Pour connecter votre plate-forme au site web de Centreon, suivez les étapes décrites ci dessous : 
 
 1. Aller sur le site web de Centreon et créez votre compte Centreon
 -------------------------------------------------------------------
 
 TODO : Screenshots
 
-2. Connectez votre plate-forme au portail Centreon
+2. Connectez votre plate-forme au site Centreon
 --------------------------------------------------
 
 Allez dans Administration -> Extensions -> Subscription et connectez-vous avec 
@@ -89,7 +90,7 @@ avez créé sur le site web de Centreon.
    :align: center
 
 En cliquant sur la flêche a côté du champ "Password", vous allez effecter la 
-demande connexion avec le portail Centreon. La création d'un compte Centreon online 
+demande connexion avec le site Centreon. La création d'un compte Centreon online 
 est gratuite et vous donne accès à 11 Plugin Packs
 
 .. image:: /_static/images/configuration/imp4.png
