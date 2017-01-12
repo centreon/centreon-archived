@@ -19,8 +19,11 @@ Système d'exploitation
 ======================
 
 Si vous souhaitez **utiliser Centreon ISO v3.x, le système d'exploitation sera CentOS en version v6**.
-Si vous préférez utiliser **Red Hat OS** vous devez installer une **version v6** du système.
-enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
+
+Si vous préférez utiliser **Red Hat OS** vous devez installer une **version v6** du système puis y 
+installer les rpms disponible dans nos repository de téléchargement.
+
+Enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
 sera plus complexe à partir des fichiers sources de chaque composants.
 
 SGBD
@@ -31,7 +34,7 @@ SGBD
 +----------+-----------+
 | Logiciel | Version   |
 +==========+===========+
-| MariaDB  | >= 5.5.48 |
+| MariaDB  | >= 10.1.x |
 +----------+-----------+
 | MySQL    | >= 5.6.x  |
 +----------+-----------+
@@ -86,14 +89,15 @@ Le tableau suivant présente les prérequis pour une installation de CES v3.x :
 .. note::
     Les vCPU doivent avoir une fréquence avoisinant les 3 GHz
 
-Ces informations sont à mettre en corrélation avec vos besoins techniques liés au découpage géographique ou topologiques. Pour voir ce qu'il est possible de faire avec centreon à ce sujet, reportez vous au chapitre :ref:`Architectures possibles <architectures>`.
+Ces informations sont à mettre en corrélation avec vos besoins techniques liés au découpage géographique ou topologiques 
+de votre système. Pour voir ce qu'il est possible de faire avec centreon à ce sujet, reportez vous au chapitre :ref:`Architectures possibles <architectures>`.
 
 
 *****************************
 Définition de l'espace disque
 *****************************
 
-L'espace disque utilisé pour sauvegarder les données issues de la collecte dépend
+L'espace disque utilisé pour supporter les données issues de la collecte dépend
 de plusieurs critères :
 
 * Fréquence des contrôles
