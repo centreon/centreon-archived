@@ -30,7 +30,7 @@ Pour pouvoir utiliser Centreon IMP, vous devez installer la dernière version 3.
 Centreon. Cette version intègre la dernière version de Centreon Web c'est à dire la 
 version 2.8.x. 
 
-Cette version 3.4 est installable soit en "fresh install" avec `l'ISO d'installation de Centreon<https://download.centreon.com/>`
+Cette version 3.4 est installable soit en "fresh install" avec `l'ISO d'installation de Centreon <https://download.centreon.com/>`_
 soit en mettant à jour votre plateforme Centreon déjà installée. Pour ces deux étapes, 
 rendez-vous dans les rubriques appropriées de la documentation.
 
@@ -131,8 +131,7 @@ Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux
 ----------------------------------------------------------------
 
 Pour installer des plugin packs, cliquez sur le bouton “Setup” pour accéder 
-au catalogue ou allez à la page Administration -> Configuration -> Plugin packs
- -> Setup.
+au catalogue ou allez à la page Administration -> Configuration -> Plugin packs -> Setup.
 
 .. image:: /_static/images/configuration/imp1.png
    :align: center
@@ -169,7 +168,7 @@ N'oubliez pas que chaque pack nécessite également le déploiement de plugins. 
 procédure mise à disposition avec votre pack, vous avez la liste des dépendances sous forme de rpm 
 à installer pour que votre supervision puisse démarrer. 
 
-.. note:
+.. note::
     Pensez à déployer tous les rpms sur chaque poller qui le nécessitent. Sinon votre supervision ne 
     pourra pas fonctionner.
 
@@ -196,9 +195,11 @@ Votre abonnement Centreon IMP permet de mettre à jour les packs de supervision 
 fonctionnels.
 
 Si vous décidez d'arrêter votre abonnement Centreon IMP, vous ne pourrez plus avoir accès à ces 
-mises à jour et aux améliorations. Les packs installés ne seront pas supprimés et resteront disponibles.
+mises à jour et aux futures améliorations. Les packs installés ne seront pour autant pas supprimés et 
+resteront disponibles. Les hôtes et les points de contrôles déployés grace aux plugin packs resteront 
+inchangés. 
 
 .. note:: 
-    Si vous avez des questions ou des problèmes relatives à l'installation de IMP, vous pouvez contacter
-    nos équipes techniques via l'adresse email suivant : imp@centreon.com.
+    Si vous avez des questions ou des problèmes relatifs à l'installation de IMP, vous pouvez contacter
+    nos équipes techniques via l'adresse email suivant : imp at centreon dot com.
 
