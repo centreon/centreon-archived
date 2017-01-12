@@ -73,29 +73,25 @@ de services près à l'emploi.
 
 Quels plugin packs sont disponibles à chaque niveau ?
 
-+------------------------+----------------------------+
-| Souscriptions          | Contenu                    |
-+========================+============================+
-|Plugins packs gratuits  | Cisco standard (SNMP)      |
-| -                      | Linux (SNMP)               |
-| -                      | MySQL                      |
-| -                      | Printer standard (SNMP)    |
-| -                      | UPS Standard (SNMP)        |
-| -                      | Windows (SNMP)             |
-| -                      | Centreon (central)         |
-| -                      | Centreon DB                |
-| -                      | Centreon Poller            |
-| -                      | Centreon Map               |
-| -                      | Centreon MBI               |
-+------------------------+----------------------------+
-|Avec un compte          | DHCP                       |
-|utilisateur             | DNS                        |
-| -                      | FTP                        |
-| -                      | HTTP                       |
-| -                      | LDAP                       |
-+------------------------+----------------------------+
-|Avec une souscription   | Tous les packs du catalogue|
-+------------------------+----------------------------+
+- Plugins packs gratuits : 
+    - Cisco standard (SNMP)
+    - Linux (SNMP)
+    - MySQL
+    - Printer standard (SNMP)
+    - UPS Standard (SNMP)
+    - Windows (SNMP)
+    - Centreon (central)
+    - Centreon DB
+    - Centreon Poller
+    - Centreon Map
+    - Centreon MBI
+- Avec un compte utilisateur : 
+    - DHCP
+    - DNS
+    - FTP
+    - HTTP
+    - LDAP
+- Avec une souscription : Tous les packs du catalogue
 
 Le catalogue de plugin packs est disponible `ici<https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
