@@ -74,6 +74,8 @@ de services près à l'emploi.
 Quels plugin packs sont disponibles à chaque niveau ?
 
 +------------------------+---------------------------------------------+
+| Souscription           | Contenu                                     |
++========================+=============================================+
 |Plugins packs gratuits  | Cisco standard (SNMP)					   |
 |                        | Linux (SNMP)								   |
 |                        | MySQL                                       |
@@ -92,8 +94,10 @@ Quels plugin packs sont disponibles à chaque niveau ?
 |                        | HTTP                                        |
 |                        | LDAP                                        |
 +------------------------+---------------------------------------------+
-|Avec une souscription   | `Tous les packs du catalogue<https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`|
+|Avec une souscription   | Tous les packs du catalogue                 |
 +------------------------+---------------------------------------------+
+
+Le catalogue de plugin packs est disponible `ici<https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`.
 
 .. note::
 	Nous savons tous que 11 = 6, mais nous préférons ne pas compter les plugins 
@@ -102,13 +106,13 @@ Quels plugin packs sont disponibles à chaque niveau ?
 Pour connecter votre plate-forme au site web de Centreon, suivez les étapes décrites ci dessous : 
 
 
-1. Aller sur le site web de Centreon et créez votre compte Centreon
--------------------------------------------------------------------
+1. Allez créez votre compte Centreon sur le site Centreon
+---------------------------------------------------------
 
 TODO : Screenshots
 
 2. Connectez votre plate-forme au site Centreon
---------------------------------------------------
+-----------------------------------------------
 
 Allez dans Administration -> Extensions -> Subscription et connectez-vous avec 
 votre compte Centreon online. Le compte à utiliser sur Centreon est le compte 
