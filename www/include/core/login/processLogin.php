@@ -34,8 +34,8 @@
  */
         
 if (isset($_POST["centreon_token"])
-    || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($_GET["p"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
-    || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($_POST["p"]) && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
+    || (isset($_GET["autologin"]) && $_GET["autologin"]  && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
+    || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
     || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)) {
     /*
      * Init log class
@@ -59,7 +59,7 @@ if (isset($_POST["centreon_token"])
         $useraliasP = $form->getSubmitValue('useralias');
         $passwordP = $form->getSubmitValue('password');
     }
-    
+
     $useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;
     $passwordG ? $password = $passwordG : $password = $passwordP;
 
@@ -80,7 +80,9 @@ if (isset($_POST["centreon_token"])
         $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, ?, ?, ?)");
         $pearDB->execute($DBRESULT, array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]));
         if (!isset($_POST["submit"])) {
-            if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+            if (isset ($_GET["p"]) && $_GET["p"] != '') {
+                header('Location: main.php?p='.$_GET["p"]);
+            } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
                 header('Location: main.php?p='.$centreon->user->default_page);
             } else {
                 header('Location: main.php');
