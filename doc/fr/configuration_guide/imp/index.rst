@@ -97,7 +97,7 @@ Quels plugin packs sont disponibles à chaque niveau ?
 |Avec une souscription   | Tous les packs du catalogue                 |
 +------------------------+---------------------------------------------+
 
-Le catalogue de plugin packs est disponible `ici<https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`.
+Le catalogue de plugin packs est disponible `ici<https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
 .. note::
 	Nous savons tous que 11 = 6, mais nous préférons ne pas compter les plugins 
