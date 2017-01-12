@@ -77,22 +77,22 @@ Quels plugin packs sont disponibles à chaque niveau ?
 | Souscriptions          | Contenu                    |
 +========================+============================+
 |Plugins packs gratuits  | Cisco standard (SNMP)      |
-|                        | Linux (SNMP)               |
-|                        | MySQL                      |
-|                        | Printer standard (SNMP)    |
-|                        | UPS Standard (SNMP)        |
-|                        | Windows (SNMP)             |
-|                        | Centreon (central)         |
-|                        | Centreon DB                |
-|                        | Centreon Poller            |
-|                        | Centreon Map               |
-|                        | Centreon MBI               |
+| -                      | Linux (SNMP)               |
+| -                      | MySQL                      |
+| -                      | Printer standard (SNMP)    |
+| -                      | UPS Standard (SNMP)        |
+| -                      | Windows (SNMP)             |
+| -                      | Centreon (central)         |
+| -                      | Centreon DB                |
+| -                      | Centreon Poller            |
+| -                      | Centreon Map               |
+| -                      | Centreon MBI               |
 +------------------------+----------------------------+
 |Avec un compte          | DHCP                       |
 |utilisateur             | DNS                        |
-|                        | FTP                        |
-|                        | HTTP                       |
-|                        | LDAP                       |
+| -                      | FTP                        |
+| -                      | HTTP                       |
+| -                      | LDAP                       |
 +------------------------+----------------------------+
 |Avec une souscription   | Tous les packs du catalogue|
 +------------------------+----------------------------+
