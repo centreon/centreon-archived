@@ -85,15 +85,13 @@ Quels plugin packs sont disponibles à chaque niveau ?
     - Centreon Poller
     - Centreon Map
     - Centreon MBI
-- Avec un compte utilisateur : 
+- Avec un compte utilisateur gratuit : 
     - DHCP
     - DNS
     - FTP
     - HTTP
     - LDAP
-- Avec une souscription : Tous les packs du catalogue
-
-Le catalogue de plugin packs est disponible `ici<https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
+- Avec une souscription : `Tous les packs du catalogue<https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
 .. note::
     Nous savons tous que 11 = 6, mais nous préférons ne pas compter les plugins 
