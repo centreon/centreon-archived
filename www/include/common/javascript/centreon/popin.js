@@ -56,7 +56,6 @@
       self.close();
     });
 
-
     self.initOverlay();
     
     if(self.settings.url !== null){
@@ -69,10 +68,12 @@
                $elem.append(html);
                 if (self.settings.open) {
                     self.open();
+                    self.reset();
                 }
            }
         });
     }else{
+        self.reset();
         if (self.settings.open) {
            self.open();
         }
@@ -100,6 +101,14 @@
     setUrl : function(url){
         this.settings.url = url;
     },
+
+    reset: function() {
+      var self = this;
+      $('.bt_default').on('click', function () {
+        self.close();
+      });
+    },
+
     setCenter: function () {
       var windowH = $(window).height();
       var windowW = $(window).width();
@@ -118,7 +127,12 @@
     },
     close: function () {
       this.opened = false;
-      this.$elem.hide();
+
+      if (this.settings.url !== null) {
+        this.$elem.remove();
+      } else {
+        this.$elem.hide();
+      }
       $('#centreonPopinOverlay').hide();
 
       /* Execute callback if defined on settings */
