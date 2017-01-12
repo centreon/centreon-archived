@@ -126,9 +126,13 @@
       var windowW = $(window).width();
       var modalH = this.$elem.height();
       var modalW = this.$elem.width();
+      var top = (windowH - modalH) / 2;
+      top = (top < 0) ? 0 : top;
+      var left = (windowW - modalW) / 2;
+      left = (left < 0) ? 0 : left;
       this.$elem.css({
-        top: ((windowH - modalH) / 2) + "px",
-        left: ((windowW - modalW) / 2) + "px"
+        top: top + "px",
+        left: left + "px"
       });
     },
     open: function () {
