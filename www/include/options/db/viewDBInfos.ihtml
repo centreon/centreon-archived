@@ -1,7 +1,7 @@
 <table width='100%'>
     <tr>
         <td id='database_partitioning' width='60%' style='vertical-align:top;'>
-            <h2>Database partitioning</h2>
+            <h2>{t}Database partitioning{/t}</h2>
             <hr>
 
             <div  class="headerTabContainer">
