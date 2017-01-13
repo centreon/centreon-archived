@@ -35,8 +35,7 @@ class AutologinContext extends CentreonContext
 
         $this->currentPage->save();
 
-        $this->currentPage = new CentreonContext($this);
-        $this->currentPage->iAmLoggOut($this);
+        $this->iAmLoggedOut();
 
     }
 
