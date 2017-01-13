@@ -39,7 +39,7 @@
  * @author Maximilien Bersoult <mbersoult@centreon.com>
  */
 
-require_once _CENTREON_PATH_."www/include/configuration/common-Func.php";
+require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 class CentreonConfigCentreonBroker
 {
@@ -489,6 +489,8 @@ class CentreonConfigCentreonBroker
      */
     public function insertConfig($values)
     {
+        $objMain = new CentreonMainCfg();
+
         /*
          * Insert the Centreon Broker configuration
          */
@@ -513,9 +515,9 @@ class CentreonConfigCentreonBroker
         }
         
         $iIdServer = $values['ns_nagios_server'];
-        $iId = insertServerInCfgNagios($iIdServer, $values['name']);
+        $iId = $objMain->insertServerInCfgNagios(-1, $iIdServer, $values['name']);
         if (!empty($iId)) {
-            insertBrokerDefaultDirectives($iId, 'wizard');
+            $objMain->insertBrokerDefaultDirectives($iId, 'wizard');
         }
         /*
          * Get the ID

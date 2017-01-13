@@ -42,6 +42,8 @@ if (!$centreon->user->admin && isset($nagios_id)
     return null;
 }
 
+require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
+$objMain = new CentreonMainCfg();
 
 /*
  * Database retrieve information for Nagios
@@ -65,11 +67,12 @@ if (($o == "c" || $o == "w") && $nagios_id) {
  */
 $mainCfg = new CentreonConfigEngine($pearDB);
 $cdata = CentreonData::getInstance();
-$dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
-if (is_null($nagios_id)) {
+if ($o != "a") {
+    $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+} else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
+    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml";
 }
-
 $cdata->addJsData(
     'clone-values-broker',
     htmlspecialchars(
@@ -726,7 +729,7 @@ foreach ($debugLevel as $key => $val) {
 $form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 $form->setDefaults($nagios_d);
 
-$form->setDefaults($aInstanceDefaultValues);
+$form->setDefaults($objMain->getDefaultMainCfg());
 
 $form->setDefaults(array('action' => '1'));
 
