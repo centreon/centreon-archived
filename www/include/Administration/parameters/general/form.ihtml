@@ -21,8 +21,8 @@
         <h4>{$genOpt_max_page_size}</h4>
       </td>
     </tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page_for_monitoring">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page_for_monitoring">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_graph_per_page_for_performances">{$form.maxGraphPerformances.label}</td><td class="FormRowValue">{$form.maxGraphPerformances.html}</td></tr>
     <tr class="list_two">
       <td class="FormRowField"><img class="helpTooltip" name="tip_select_paginagion_size">{$form.selectPaginationSize.label}</td>
@@ -41,8 +41,8 @@
         <h4>{$genOpt_refresh_properties}</h4>
       </td>
     </tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
  	
     <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
@@ -67,7 +67,7 @@
         </td>
       </tr>
   	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_protocol">{$form.proxy_protocol.label}</td><td class="FormRowValue">{$form.proxy_protocol.html}</td></tr>
-  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_url">{$form.proxy_url.label}</td><td class="FormRowValue">{$form.proxy_url.html}</td></tr>
+  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_url">{$form.proxy_url.label}</td><td class="FormRowValue">{$form.proxy_url.html}</td></tr>
   	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_port">{$form.proxy_port.label}</td><td class="FormRowValue">{$form.proxy_port.html}</td></tr>
 
     <!-- Chart options -->
@@ -89,9 +89,9 @@
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_enable">{$form.sso_enable.label}</td><td class="FormRowValue">{$form.sso_enable.html}</td></tr>
     <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_mode">{$form.sso_mode.label}</td><td class="FormRowValue">{$form.sso_mode.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_trusted_clients">{$form.sso_trusted_clients.label}</td><td class="FormRowValue">{$form.sso_trusted_clients.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_blacklist_clients">{$form.sso_blacklist_clients.label}</td><td class="FormRowValue">{$form.sso_blacklist_clients.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">{$form.sso_header_username.label}</td><td class="FormRowValue">{$form.sso_header_username.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_username_pattern">{$form.sso_username_pattern.label}</td><td class="FormRowValue">{$form.sso_username_pattern.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_blacklist_clients">{$form.sso_blacklist_clients.label}</td><td class="FormRowValue">{$form.sso_blacklist_clients.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">{$form.sso_header_username.label}</td><td class="FormRowValue">{$form.sso_header_username.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_username_pattern">{$form.sso_username_pattern.label}</td><td class="FormRowValue">{$form.sso_username_pattern.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_username_replace">{$form.sso_username_replace.label}</td><td class="FormRowValue">{$form.sso_username_replace.html}</td></tr>
 
 	<tr class="list_lvl_1">
@@ -99,7 +99,7 @@
         <h4>{$genOpt_time_zone}</h4>
       </td>
     </tr>
-     	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_default_timezone">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
+     	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_timezone">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
  	
   	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
