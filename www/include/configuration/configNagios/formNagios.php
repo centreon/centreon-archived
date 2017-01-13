@@ -891,6 +891,8 @@ if ($valid) {
     $tpl->assign('ServiceCheckSchedulingOptions', _("Service Check Scheduling Options"));
     $tpl->assign('AutoRescheduling', _("Auto Rescheduling"));
     $tpl->assign('Optimization', _("Optimization"));
+    $tpl->assign('Advanced', _("Advanced"));
+    $tpl->assign('AdminInfo', _("Admin information"));
     $tpl->assign('DebugConfiguration', _("Debug Configuration"));
     $tpl->assign('Debug', _("Debug"));
     $tpl->assign("Seconds", _("seconds"));
