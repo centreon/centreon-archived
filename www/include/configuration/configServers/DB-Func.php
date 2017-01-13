@@ -196,16 +196,19 @@ function updateServerInDB($id = null)
 function insertServerInDB()
 {
     global $form;
+
+    $srvObj = new CentreonMainCfg();
+
     $sName = '';
     $id = insertServer();
     $ret = $form->getSubmitValues();
     if (isset($ret['name'])) {
         $sName = $ret['name'];
     }
-    $iIdNagios = insertServerInCfgNagios($id, $sName);
+    $iIdNagios = $srvObj->insertServerInCfgNagios($id, $sName);
 
     if (!empty($iIdNagios)) {
-        insertBrokerDefaultDirectives($iIdNagios, 'ui');
+        $srvObj->insertBrokerDefaultDirectives($iIdNagios, 'ui');
     }
     addUserRessource($id);
     return ($id);
