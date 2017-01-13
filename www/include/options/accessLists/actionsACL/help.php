@@ -23,6 +23,12 @@ $help['tip_display_top_counter_pollers_statistics'] = dgettext('help', 'The moni
 $help['tip_display_poller_listing'] = dgettext('help', 'The poller filter will be available to users in the monitoring consoles.');
 
 /**
+ * Generation of files
+ */
+$help['tip_display_generate_cfg'] = dgettext('help', 'Allows user to generate and export configuration, and restart poller.');
+$help['tip_display_generate_trap'] = dgettext('help', 'Allows user to generate and export configuration, and restart centreontrapd process.');
+
+/**
  * Global Nagios Actions (External Process Commands)
  */
 
