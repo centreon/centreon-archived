@@ -54,6 +54,7 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
+$centreon = $_SESSION['centreon'];
 
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit();
@@ -71,12 +72,6 @@ $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
-
-session_start();
-if ($_POST['sid'] != session_id()) {
-    exit;
-}
-$centreon = $_SESSION['centreon'];
 
 $xml = new CentreonXML();
 $config_generate = new Generate();
