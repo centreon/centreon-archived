@@ -363,16 +363,15 @@
               </td>
             </tr>
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2"><h4></h4></td></tr>
+              <td class="ListColLvl1_name" colspan="2"><h4>{$Advanced}</h4></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_user">&nbsp;{$form.nagios_user.label}</td><td class="FormRowValue">{$form.nagios_user.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_group">&nbsp;{$form.nagios_group.label}</td><td class="FormRowValue">{$form.nagios_group.html}</td></tr>
-			<tr class="list_lvl_1"><h4></h4></td></tr>	
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="date_format">&nbsp;{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="illegal_object_name_chars">&nbsp;{$form.illegal_object_name_chars.label}</td><td class="FormRowValue">{$form.illegal_object_name_chars.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="illegal_macro_output_chars">&nbsp;{$form.illegal_macro_output_chars.label}</td><td class="FormRowValue">{$form.illegal_macro_output_chars.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_regexp_matching">&nbsp;{$form.use_regexp_matching.label}</td><td class="FormRowValue">{$form.use_regexp_matching.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_true_regexp_matching">&nbsp;{$form.use_true_regexp_matching.label}</td><td class="FormRowValue">{$form.use_true_regexp_matching.html}</td></tr>
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4></h4></td></tr>		
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$AdminInfo}</h4></td></tr>		
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin_email">&nbsp;{$form.admin_email.label}</td><td class="FormRowValue">{$form.admin_email.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin_pager">&nbsp;{$form.admin_pager.label}</td><td class="FormRowValue">{$form.admin_pager.html}</td></tr>
 			<tr class="list_lvl_1">
