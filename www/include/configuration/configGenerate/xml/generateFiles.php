@@ -49,7 +49,7 @@ require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 $pearDB = new CentreonDB();
 
 /* Check Session */
-CentreonSession::start();
+CentreonSession::start(1);
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();

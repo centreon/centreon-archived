@@ -44,6 +44,8 @@ include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 session_start();
+session_write_close();
+
 $oreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();
