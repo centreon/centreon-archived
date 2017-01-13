@@ -48,7 +48,7 @@
                    {/foreach}
                 </table>
                 {else}
-                <H3> Table is not partitioned </H3>
+                <H3>{t} Table is not partitioned {/t}</H3>
                 {/if}
             </div>
             {assign var=val value=$val+1}
