@@ -30,7 +30,7 @@
     <tr class="ListHeader">
         <td class="ListColHeaderCenter" style='width:120px'>{t}Date{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Modificaton type{/t}</td>       
-        <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Objets{/t}</td>
+        <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Objects{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Object Name{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Authors{/t}</td>
     </tr>
