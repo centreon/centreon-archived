@@ -74,9 +74,7 @@ sub parseServiceLog {
 
     while (my $row = $logs->fetchrow_hashref()) {
         my $id  = $row->{host_name}.";;".$row->{service_description};
-        print "\n- ".$id."\n";
         if (defined($allIds->{$id})) {
-            print "OK".$row->{status}."..";
             my $statusCode = $row->{status};
             if (defined($currentEvents->{$id})) {
                 my $eventInfos =  $currentEvents->{$id}; 
