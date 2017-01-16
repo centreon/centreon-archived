@@ -119,3 +119,8 @@ default:
       paths: [ %paths.base%/features/CommandArguments.feature ]
       contexts:
        - CommandArgumentsContext
+
+    autologin:
+      paths: [ %paths.base%/features/Autologin.feature ]
+      contexts:
+       - AutologinContext
