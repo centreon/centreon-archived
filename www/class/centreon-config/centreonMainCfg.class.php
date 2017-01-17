@@ -241,8 +241,8 @@ class CentreonMainCfg
         $rq .= "'Centreon Engine ".$sName."', '". $iId. "', '".$baseValues['log_file'] ."', '" .
         $baseValues['cfg_dir'] ."', '" .
         $baseValues['temp_file'] ."', '" .
-        $baseValues['status_file'] ."', '" .
-        $baseValues['status_update_interval'] ."', '" .
+        $baseValues['status_file'] ."', " .
+        ($baseValues['status_update_interval'] == 0 ? "NULL" : $baseValues['status_update_interval']) .", '" .
         $baseValues['nagios_user'] ."', '" .
         $baseValues['nagios_group'] ."', '" .
         $baseValues['enable_notifications'] ."', '" .
@@ -253,8 +253,8 @@ class CentreonMainCfg
         $baseValues['enable_event_handlers'] ."', '" .
         $baseValues['log_rotation_method'] ."', '" .
         $baseValues['log_archive_path'] ."', '" .
-        $baseValues['check_external_commands'] ."', '" .
-        $baseValues['external_command_buffer_slots'] ."', '" .
+        $baseValues['check_external_commands'] ."', " .
+        ($baseValues['external_command_buffer_slots'] == 0 || !isset($baseValues['external_command_buffer_slots']) ? "NULL" : $baseValues['external_command_buffer_slots']) .", '" .
         $baseValues['command_check_interval'] ."', '" .
         $baseValues['command_file'] ."', '" .
         $baseValues['lock_file'] ."', '" .
@@ -279,8 +279,8 @@ class CentreonMainCfg
         $baseValues['max_service_check_spread'] ."', '" .
         $baseValues['max_host_check_spread'] ."', '" .
         $baseValues['check_result_reaper_frequency'] ."', '" .
-        $baseValues['max_check_result_reaper_time'] ."', '" .
-        $baseValues['interval_length'] ."', '" .
+        $baseValues['max_check_result_reaper_time'] ."', " .
+        $baseValues['interval_length'] .", '" .
         $baseValues['auto_reschedule_checks'] ."', '" .
         $baseValues['use_aggressive_host_checking'] ."', '" .
         $baseValues['enable_flap_detection'] ."', '" .
@@ -325,12 +325,14 @@ class CentreonMainCfg
         $baseValues['debug_file'] ."', '" .
         $baseValues['debug_level'] ."', '" .
         $baseValues['debug_level_opt'] ."', '" .
-        $baseValues['debug_verbosity'] ."', '" .
-        $baseValues['max_debug_file_size'] ."', '" .
+        $baseValues['debug_verbosity'] ."', " .
+        ($baseValues['max_debug_file_size'] == 0 ? "NULL" : $baseValues['max_debug_file_size']) .", '" .
         $baseValues['daemon_dumps_core'] ."', '" .
         $baseValues['cfg_file'] ."', '" .
         $baseValues['use_check_result_path'] ."'";
         $rq .= ")";
+
+        print $rq;
 
         $res = $this->DB->query($rq);
         if (PEAR::isError($res)) {
