@@ -274,10 +274,10 @@ class CentreonMainCfg
         $baseValues['sleep_time'] ."', '" .
         $baseValues['service_inter_check_delay_method'] ."', '" .
         $baseValues['host_inter_check_delay_method'] ."', '" .
-        $baseValues['service_interleave_factor'] ."', '" .
-        $baseValues['max_concurrent_checks'] ."', '" .
-        $baseValues['max_service_check_spread'] ."', '" .
-        $baseValues['max_host_check_spread'] ."', '" .
+        $baseValues['service_interleave_factor'] ."', " .
+        ($baseValues['max_concurrent_checks'] == 0 || !isset($baseValues['max_concurrent_checks']) ? "NULL" : $baseValues['max_concurrent_checks']) .", " .
+        ($baseValues['max_service_check_spread'] == 0 || !isset($baseValues['max_service_check_spread']) ? "NULL" : $baseValues['max_service_check_spread']) .", " .
+        ($baseValues['max_host_check_spread'] == 0 || !isset($baseValues['max_host_check_spread']) ? "NULL" : $baseValues['max_host_check_spread']) .", '" .
         $baseValues['check_result_reaper_frequency'] ."', '" .
         $baseValues['max_check_result_reaper_time'] ."', " .
         $baseValues['interval_length'] .", '" .
