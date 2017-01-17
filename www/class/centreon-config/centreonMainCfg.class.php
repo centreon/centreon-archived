@@ -246,12 +246,14 @@ class CentreonMainCfg
         $baseValues['nagios_user'] ."', '" .
         $baseValues['nagios_group'] ."', '" .
         $baseValues['enable_notifications'] ."', '" .
+
         $baseValues['execute_service_checks'] ."', '" .
         $baseValues['accept_passive_service_checks'] ."', '" .
         $baseValues['execute_host_checks'] ."', '" .
         $baseValues['accept_passive_host_checks'] ."', '" .
         $baseValues['enable_event_handlers'] ."', '" .
         $baseValues['log_rotation_method'] ."', '" .
+
         $baseValues['log_archive_path'] ."', '" .
         $baseValues['check_external_commands'] ."', " .
         ($baseValues['external_command_buffer_slots'] == 0 || !isset($baseValues['external_command_buffer_slots']) ? "NULL" : $baseValues['external_command_buffer_slots']) .", '" .
@@ -271,6 +273,7 @@ class CentreonMainCfg
         $baseValues['log_initial_states'] ."', '" .
         $baseValues['log_external_commands'] ."', '" .
         $baseValues['log_passive_checks'] ."', '" .
+
         $baseValues['sleep_time'] ."', '" .
         $baseValues['service_inter_check_delay_method'] ."', '" .
         $baseValues['host_inter_check_delay_method'] ."', '" .
@@ -331,8 +334,6 @@ class CentreonMainCfg
         $baseValues['cfg_file'] ."', '" .
         $baseValues['use_check_result_path'] ."'";
         $rq .= ")";
-
-        print $rq;
 
         $res = $this->DB->query($rq);
         if (PEAR::isError($res)) {
