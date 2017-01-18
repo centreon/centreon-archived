@@ -40,19 +40,17 @@ require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
-session_start();
+/*
+ * Connect to DB
+ */
+$pearDB = new CentreonDB();
 
-global $centreon, $pearDB;
+session_start();
 
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();
 }
 $centreon = $_SESSION['centreon'];
-
-/*
- * Connect to DB
- */
-$pearDB = new CentreonDB();
 
 /*
  * GMT management
