@@ -192,6 +192,11 @@ if (!isset($_GET['o'])) {
 /*
  * Values
  */
+if (isset($_GET['filters']) && $_GET['filters'] == 'clean') {
+    $centreon->historySearch[$url] = null;
+    $centreon->historySearchOutput[$url] = null;
+    $centreon->historySearchService[$url] = null;
+}
 if (isset($centreon->historySearch[$url])) {
     $tpl->assign("hostSearchValue", $centreon->historySearch[$url]);
 }
