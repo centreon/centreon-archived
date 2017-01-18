@@ -59,92 +59,7 @@ if (($o == "c" || $o == "w") && $hg_id) {
      * Set base value
      */
     $hg = array_map("myDecode", $DBRESULT->fetchRow());
-
-
-    /*
-     * Get Parent Groups
-     */
-    $hostGroupParents = array();
-    //$hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
-
-    /*
-     *  Set HostGroup Childs
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
-    for ($i = 0; $hosts = $DBRESULT->fetchRow();) {
-        if (!$oreon->user->admin && false === strpos($hoststring, "'".$hosts['host_id']."'")) {
-            $initialValues['hg_hosts'][] = $hosts['host_id'];
-        } else {
-            $hg["hg_hosts"][$i] = $hosts["host_id"];
-            $i++;
-        }
-    }
-    $DBRESULT->free();
-    unset($hosts);
-
-    /*
-     *  Set HostGroup Childs
-     */
-    /*
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
-    for ($i = 0; $hgs = $DBRESULT->fetchRow(); $i++) {
-        $hg["hg_hg"][$i] = $hgs["hg_child_id"];
-    }
-    $DBRESULT->free();
-    unset($hgs);
-    */
 }
-
-/*
- * Hosts comes from DB -> Store in $hosts Array
- */
-$aclFrom = "";
-$aclCond = "";
-if (!$centreon->user->admin) {
-    $aclFrom = ", $aclDbName.centreon_acl acl ";
-    $aclCond = " AND h.host_id = acl.host_id
-                 AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
-}
-$hosts = array();
-$DBRESULT = $pearDB->query("SELECT DISTINCT h.host_id, h.host_name
-                                FROM host h $aclFrom
-                                WHERE host_register = '1' $aclCond
-                                ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $hosts[$host["host_id"]] = $host["host_name"];
-}
-$DBRESULT->free();
-unset($host);
-
-/*
- * Hostgroups comes from DB -> Store in $hosts Array
- */
-
-$EDITCOND = "";
-if ($o == "w" || $o == "c") {
-    $EDITCOND = " WHERE `hg_id` != '".$hg_id."' ";
-}
-
-$hostGroups = array();
-$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
-while ($hgs = $DBRESULT->fetchRow()) {
-    if (!isset($hostGroupParents[$hgs["hg_id"]])) {
-        $hostGroups[$hgs["hg_id"]] = $hgs["hg_name"];
-    }
-}
-$DBRESULT->free();
-unset($hgs);
-
-/*
- * Contact Groups comes from DB -> Store in $cgs Array
- */
-$cgs = array();
-$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-while ($cg = $DBRESULT->fetchRow()) {
-    $cgs[$cg["cg_id"]] = $cg["cg_name"];
-}
-$DBRESULT->free();
-unset($cg);
 
 /*
  * IMG comes from DB -> Store in $extImg Array
@@ -252,10 +167,6 @@ $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('hg_name', 'myReplace');
 $form->addRule('hg_name', _("Compulsory Name"), 'required');
 $form->addRule('hg_alias', _("Compulsory Alias"), 'required');
-
-if (!$oreon->user->admin) {
-    //$form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
-}
 
 $form->registerRule('exist', 'callback', 'testHostGroupExistence');
 $form->addRule('hg_name', _("Name is already in use"), 'exist');

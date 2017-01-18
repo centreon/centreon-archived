@@ -73,82 +73,10 @@ if (($o == "c" || $o == "w") && $meta_id) {
     foreach ($tmp as $key => $value) {
         $ms["ms_notifOpts"][trim($value)] = 1;
     }
-    
-    /*
-	 * Set Contacts
-	 */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = " . $meta_id);
-    for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCs[$notifC['contact_id']])) {
-            $initialValues['ms_cs'][] = $notifC['contact_id'];
-        } else {
-            $ms["ms_cs"][$i] = $notifC["contact_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-	 * Set Contact Group
-	 */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
-    for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && !isset($notifCgs[$notifCg['cg_cg_id']])) {
-            $initialValues['ms_cgs'][] = $notifCg["cg_cg_id"];
-        } else {
-            $ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
-        }
-    }
-    $DBRESULT->free();
 }
 
 require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
-
-$metrics = array(null=>null);
-$DBRESULT = $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
-while ($metric = $DBRESULT->fetchRow()) {
-    $metrics[$metric["metric_name"]] = $metric["metric_name"];
-}
-$DBRESULT->free();
-
-/*
- * Timeperiods comes from DB -> Store in $tps Array
- */
-$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($tp = $DBRESULT->fetchRow()) {
-    $tps[$tp["tp_id"]] = $tp["tp_name"];
-}
-$DBRESULT->free();
-
-/*
- * Check commands comes from DB -> Store in $checkCmds Array
- */
-$checkCmds = array(null=>null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-/*
- * Escalations comes from DB -> Store in $escs Array
- */
-$escs = array();
-$DBRESULT = $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
-while ($esc = $DBRESULT->fetchRow()) {
-    $escs[$esc["esc_id"]] = $esc["esc_name"];
-}
-$DBRESULT->free();
-
-/*
- * Meta Service Dependencies comes from DB -> Store in $deps Array
- */
-$deps = array();
-$DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
-while ($dep = $DBRESULT->fetchRow()) {
-    $deps[$dep["meta_id"]] = $dep["meta_name"];
-}
-$DBRESULT->free();
 
 /*
  * Calc Type

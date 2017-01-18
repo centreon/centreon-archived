@@ -46,50 +46,7 @@ if (($o == "c" || $o == "w") && $tp_id) {
 	 */
     $tp = array_map("myDecode", $DBRESULT->fetchRow());
     $tp["contact_exclude"] = array();
-
-    /*
-	 * Retrieves inclusions
-	 */
-    $res = $pearDB->query("SELECT * FROM timeperiod_include_relations WHERE timeperiod_id = '".$tp_id."'");
-    $tp["tp_include"] = array();
-    while ($row = $res->fetchRow()) {
-        $tp["tp_include"][] = $row['timeperiod_include_id'];
-    }
-
-    /*
-	 * Retrieves exclusions
-	 */
-    $res = $pearDB->query("SELECT * FROM timeperiod_exclude_relations WHERE timeperiod_id = '". $tp_id."'");
-    $tp["tp_exclude"] = array();
-    while ($row = $res->fetchRow()) {
-        $tp["tp_exclude"][] = $row['timeperiod_exclude_id'];
-    }
 }
-
-$includeTP = array();
-$excludeTP = array();
-$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_id != '". $tp_id ."'");
-while ($data = $DBRESULT->fetchRow()) {
-    $excludeTP[$data["tp_id"]] = $data["tp_name"];
-    $includeTP[$data["tp_id"]] = $data["tp_name"];
-}
-$DBRESULT->free();
-unset($data);
-
-/*
- *  Gets list of timeperiod exceptions
- */
-$j = 0;
-$DBRESULT = $pearDB->query("SELECT exception_id, timeperiod_id, days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '". $tp_id ."' ORDER BY `days`");
-while ($exceptionTab = $DBRESULT->fetchRow()) {
-    $exception_id[$j] = $exceptionTab["exception_id"];
-    $exception_days[$j] = $exceptionTab["days"];
-    $exception_timerange[$j] = $exceptionTab["timerange"];
-    $exception_timeperiod_id[$j] = $exceptionTab["timeperiod_id"];
-    $j++;
-}
-$DBRESULT->free();
-
 
 /*
  * Var information to format the element

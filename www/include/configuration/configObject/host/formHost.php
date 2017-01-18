@@ -156,69 +156,6 @@ if (($o == "c" || $o == "w") && $host_id) {
     $DBRESULT->free();
 
     /*
-     * Set Contact Group
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '" . $host_id . "'");
-    for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCgs[$notifCg['contactgroup_cg_id']])) {
-            $initialValues['host_cgs'][] = $notifCg['contactgroup_cg_id'];
-        } else {
-            $host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Contacts
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '" . $host_id . "'");
-    for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCs[$notifC['contact_id']])) {
-            $initialValues['host_cs'][] = $notifC['contact_id'];
-        } else {
-            $host["host_cs"][$i] = $notifC["contact_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Host Parents
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation, host WHERE host_id = host_parent_hp_id AND host_host_id = '" . $host_id . "' ORDER BY host_name");
-    for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++) {
-        if (!$centreon->user->admin && false === strpos($aclHostString, "'" . $parent['host_parent_hp_id'] . "'")) {
-            $initialValues['host_parents'][] = $parent['host_parent_hp_id'];
-        } else {
-            $host["host_parents"][$i] = $parent["host_parent_hp_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Host Childs
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation, host WHERE host_id = host_host_id AND host_parent_hp_id = '" . $host_id . "' ORDER BY host_name");
-    for ($i = 0; $child = $DBRESULT->fetchRow(); $i++) {
-        if (!$centreon->user->admin && false === strpos($aclHostString, "'" . $child['host_host_id'] . "'")) {
-            $initialValues['host_childs'][] = $child['host_host_id'];
-        } else {
-            $host["host_childs"][$i] = $child["host_host_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Host Group Parents
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '" . $host_id . "'");
-    for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
-        if (in_array($hg["hostgroup_hg_id"], array_keys($hgs))) {
-            $host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
      * Set Host Category Parents
      */
     $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id 
@@ -289,56 +226,8 @@ $cdata->addJsData('clone-values-template', htmlspecialchars(
 $cdata->addJsData('clone-count-template', count($tplArray));
 
 /*
- * Database retrieve information for differents elements list we need on the page
- * Host Templates comes from DB -> Store in $hTpls Array
- */
-
-$hTpls = array();
-$DBRESULT = $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '" . $host_id . "' ORDER BY host_name");
-$nbMaxTemplates = 0;
-while ($hTpl = $DBRESULT->fetchRow()) {
-    if (!$hTpl["host_name"]) {
-        $hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"]) . "'";
-    }
-    $hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
-    $nbMaxTemplates++;
-}
-$DBRESULT->free();
-
-/*
- * Timeperiods comes from DB -> Store in $tps Array
- */
-$tps = array(null => null);
-$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($tp = $DBRESULT->fetchRow()) {
-    $tps[$tp["tp_id"]] = $tp["tp_name"];
-}
-$DBRESULT->free();
-
-/*
- * Check commands comes from DB -> Store in $checkCmds Array
- */
-$checkCmds = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-/*
- * Check commands comes from DB -> Store in $checkCmds Array
- */
-$checkCmdEvent = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-/*
  * Nagios Server comes from DB -> Store in $nsServer Array
  */
-
 $nsServers = array();
 if ($o == "mc") {
     $nsServers[null] = null;
@@ -351,43 +240,6 @@ while ($nsServer = $DBRESULT->fetchRow()) {
     $nsServers[$nsServer["id"]] = $nsServer["name"];
 }
 $DBRESULT->free();
-
-/*
- * Host Categories comes from DB -> Store in $hcs Array
- */
-$hcs = array();
-$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories WHERE level IS NULL " .
-        ($hcString != "''" ? $acl->queryBuilder('AND', 'hc_id', $hcString) : "") .
-        " ORDER BY hc_name");
-while ($hc = $DBRESULT->fetchRow()) {
-    $hcs[$hc["hc_id"]] = $hc["hc_name"];
-}
-$DBRESULT->free();
-
-/*
- * Host Parents comes from DB -> Store in $hostPs Array
- */
-$aclFrom = "";
-$aclCond = "";
-if (!$centreon->user->admin) {
-    $aclFrom = ", $aclDbName.centreon_acl acl ";
-    $aclCond = " AND h.host_id = acl.host_id
-                 AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
-}
-$hostPs = array();
-$DBRESULT = $pearDB->query("SELECT h.host_id, h.host_name, host_template_model_htm_id
-                                FROM host h $aclFrom
-                                WHERE h.host_id != '" . $host_id . "'
-                                AND host_register = '1' $aclCond
-                                ORDER BY h.host_name");
-while ($hostP = $DBRESULT->fetchRow()) {
-    if (!$hostP["host_name"]) {
-        $hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"]) . "'";
-    }
-    $hostPs[$hostP["host_id"]] = $hostP["host_name"];
-}
-$DBRESULT->free();
-
 
 /*
  * IMG comes from DB -> Store in $extImg Array

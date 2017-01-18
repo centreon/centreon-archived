@@ -100,37 +100,6 @@ if (($o == "c" || $o == "w") && $contact_id) {
     $DBRESULT->free();
 
     /**
-     * Set Contact Group Parents
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '" . intval($contact_id) . "'");
-    for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-        if (!$centreon->user->admin && !isset($cgs[$notifCg['contactgroup_cg_id']])) {
-            $initialValues['contact_cgNotif'][] = $notifCg["contactgroup_cg_id"];
-        } else {
-            $cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /**
-     * Set Host Notification Commands
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '" . intval($contact_id) . "'");
-    for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
-        $cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
-    }
-    $DBRESULT->free();
-
-    /**
-     * Set Service Notification Commands
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '" . intval($contact_id) . "'");
-    for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
-        $cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
-    }
-    $DBRESULT->free();
-
-    /**
      * Get DLAP auth informations
      */
     $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
@@ -163,34 +132,10 @@ if ($o == "mc") {
 }
 
 /**
- * Timeperiods comes from DB -> Store in $notifsTps Array
- * When we make a massive change, give the possibility to not crush value
- */
-$notifTps = array(null => null);
-$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($notifTp = $DBRESULT->fetchRow()) {
-    $notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
-}
-$DBRESULT->free();
-
-/**
- * Notification commands comes from DB -> Store in $notifsCmds Array
- */
-$notifCmds = array();
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
-while ($notifCmd = $DBRESULT->fetchRow()) {
-    $notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
-}
-$DBRESULT->free();
-
-/**
  * Contact Groups comes from DB -> Store in $notifCcts Array
  */
 $notifCgs = array();
-/* $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-  while ($notifCg = $DBRESULT->fetchRow())
-  $notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-  $DBRESULT->free(); */
+
 $cg = new CentreonContactgroup($pearDB);
 $notifCgs = $cg->getListContactgroup(false);
 
@@ -200,24 +145,6 @@ if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == '
         $cgLdap = $ldap->listGroupsForUser($cct['contact_ldap_dn']);
     }
 }
-
-/**
- * Get ACL Groups List
- */
-$aclGroups = array();
-$aclCond = "";
-if (!$centreon->user->admin) {
-    $aclCond = " WHERE acl_group_id IN (" . $acl->getAccessGroupsString() . ") ";
-}
-$sql = "SELECT acl_group_id, acl_group_name 
-    FROM acl_groups 
-    {$aclCond}
-    ORDER BY acl_group_name";
-$DBRESULT = $pearDB->query($sql);
-while ($aclGroup = $DBRESULT->fetchRow()) {
-    $aclGroups[$aclGroup["acl_group_id"]] = $aclGroup["acl_group_name"];
-}
-$DBRESULT->free();
 
 /**
  * Contacts Templates

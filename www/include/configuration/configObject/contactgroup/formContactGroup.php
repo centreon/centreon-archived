@@ -68,65 +68,6 @@ if (($o == "c" || $o == "w") && $cg_id) {
      * Set base value
      */
     $cg = array_map("myDecode", $DBRESULT->fetchRow());
-
-    /*
-     * Set Contact Childs
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT `contact_contact_id` FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'");
-    for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
-        if (!$centreon->user->admin && !isset($allowedContacts[$contacts['contact_contact_id']])) {
-            $initialValues['cg_contacts'][] = $contacts["contact_contact_id"];
-        } else {
-            $cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Get acl group
-     */
-    $sql = "SELECT acl_group_id 
-        FROM acl_group_contactgroups_relations 
-        WHERE cg_cg_id = " .$pearDB->escape($cg_id);
-    $res = $pearDB->query($sql);
-    for ($i = 0; $aclgroup = $res->fetchRow(); $i++) {
-        if (!$centreon->user->admin && !isset($allowedAclGroups[$aclgroup['acl_group_id']])) {
-            $initialValues['cg_acl_groups'][] = $aclgroup["acl_group_id"];
-        } else {
-            $cg["cg_acl_groups"][$i] = $aclgroup["acl_group_id"];
-        }
-    }
-}
-
-/*
- * Contacts comes from DB -> Store in $contacts Array
- */
-$contacts = array();
-$DBRESULT = $pearDB->query("SELECT DISTINCT `contact_id`, `contact_name`, `contact_register` 
-                                FROM `contact` ".
-                               $acl->queryBuilder('WHERE', 'contact_id', $contactstring).
-                               " ORDER BY `contact_name`");
-while ($contact = $DBRESULT->fetchRow()) {
-    $contacts[$contact["contact_id"]] = $contact["contact_name"];
-    if ($contact['contact_register'] == 0) {
-        $contacts[$contact["contact_id"]] .= "(Template)";
-    }
-}
-unset($contact);
-$DBRESULT->free();
-
-$aclgroups = array();
-$aclCondition = "";
-if (!$centreon->user->admin) {
-    $aclCondition = " WHERE acl_group_id IN (".$acl->getAccessGroupsString().") ";
-}
-$sql = "SELECT acl_group_id, acl_group_name
-    FROM acl_groups
-    {$aclCondition}
-    ORDER BY acl_group_name";
-$res = $pearDB->query($sql);
-while ($aclg = $res->fetchRow()) {
-    $aclgroups[$aclg['acl_group_id']] = $aclg['acl_group_name'];
 }
 
 $attrsText      = array("size"=>"30");
@@ -200,15 +141,13 @@ $form->addElement('textarea', 'cg_comment', _("Comments"), $attrsTextarea);
 $form->addElement('hidden', 'cg_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
-
-    $init = $form->addElement('hidden', 'initialValues');
-    $init->setValue(serialize($initialValues));
+$init = $form->addElement('hidden', 'initialValues');
+$init->setValue(serialize($initialValues));
     
 /*
  * Set rules
  */
 $form->applyFilter('__ALL__', 'myTrim');
-//$form->applyFilter('cg_name', 'myReplace');
 $form->addRule('cg_name', _("Compulsory Name"), 'required');
 $form->addRule('cg_alias', _("Compulsory Alias"), 'required');
 

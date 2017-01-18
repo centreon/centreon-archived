@@ -97,17 +97,6 @@ if (($o == "c" || $o == "w") && $sg_id) {
     $sg = array_map("myDecode", $DBRESULT->fetchRow());
 }
 
-$query = "SELECT host_id, host_name, service_id, service_description
-             FROM host, service, host_service_relation
-             WHERE host_id = host_host_id
-             AND service_id = service_service_id
-             AND host_register = '0' ORDER BY host_name";
-$res = $pearDB->query($query);
-while ($row = $res->fetchRow()) {
-    $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-    $tServices[$row["host_id"]."-".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-}
-
 #
 # End of "database-retrieved" information
 ##########################################################
@@ -159,33 +148,6 @@ $form->addElement('text', 'sg_name', _("Name"), $attrsText);
 $form->addElement('text', 'sg_alias', _("Description"), $attrsText);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
-##
-## Services Selection
-##
-$hostFilter = array(null => null,
-        0    => sprintf('__%s__', _('ALL')));
-$hostFilter = ($hostFilter + $acl->getHostAclConf(
-    null,
-    'broker',
-    array('fields'  => array('host.host_id', 'host.host_name'),
-                                                       'keys'    => array('host_id'),
-                                                       'get_row' => 'host_name',
-                                                       'order'   => array('host.host_name')),
-    false
-));
-
-$form->addElement('header', 'relation', _("Relations"));
-if (isset($_REQUEST['sg_hServices']) && count($_REQUEST['sg_hServices'])) {
-    $sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
-           WHERE h.host_id = hsr.host_host_id
-           AND hsr.service_service_id = s.service_id
-           AND CONCAT_WS('-', h.host_id, s.service_id) IN ('".implode("','", $_REQUEST['sg_hServices'])."')";
-    $res = $pearDB->query($sql);
-    while ($row = $res->fetchRow()) {
-        $k = $row['host_id'] . '-' . $row['service_id'];
-        $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
-    }
-}
 $attrService1 = array_merge(
     $attrServices,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=sg_hServices&id=' . $sg_id)
@@ -240,10 +202,6 @@ $form->addRule('sg_alias', _("Compulsory Description"), 'required');
 $form->registerRule('exist', 'callback', 'testServiceGroupExistence');
 $form->addRule('sg_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
-
-#
-##End of form definition
-#
 
 # Smarty template Init
 $tpl = new Smarty();

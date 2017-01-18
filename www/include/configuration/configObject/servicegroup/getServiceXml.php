@@ -41,14 +41,14 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 
-session_start();
+CentreonSession::start();
 
 if (!isset($_SESSION['centreon']) || !isset($_POST['host_id'])) {
-    exit;
+    exit();
 }
 $centreon = $_SESSION['centreon'];
 $db = new CentreonDB();
-$pearDB = $db; // global var
+
 $hostId = $_POST['host_id'];
 $acl = $centreon->user->access;
 $xml = new CentreonXML();

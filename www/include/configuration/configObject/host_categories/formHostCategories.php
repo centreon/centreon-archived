@@ -47,35 +47,6 @@ if (!$oreon->user->admin) {
     }
 }
 
-/*
- * Hosts comes from DB -> Store in $hosts Array
- */
-$hosts = array();
-$ishost = array();
-$DBRESULT = $pearDB->query("SELECT host_id, host_name
-                                FROM host
-                                WHERE host_register = '1'
-                                ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $ishost[$host['host_id']] = $host['host_name'];
-    if ($oreon->user->admin || false !== strpos($hoststring, "'".$host['host_id']."'")) {
-        $hosts[$host["host_id"]] = $host["host_name"];
-    }
-}
-$DBRESULT->free();
-unset($host);
-
-/*
- * Hosts comes from DB -> Store in $hosts Array
- */
-$hostTpl = array();
-$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $hostTpl[$host["host_id"]] = $host["host_name"];
-}
-$DBRESULT->free();
-unset($host);
-
 $initialValues = array();
 
 /*
@@ -90,54 +61,7 @@ if (($o == "c" || $o == "w") && $hc_id) {
     $hc = array_map("myDecode", $DBRESULT->fetchRow());
     $hc['hc_severity_level'] = $hc['level'];
     $hc['hc_severity_icon'] = $hc['icon_id'];
-    /*
-     *  Set hostcategories Childs => Hosts
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
-    for ($i = 0, $i2 = 0; $host = $DBRESULT->fetchRow();) {
-        if (isset($ishost[$host["host_host_id"]])) {
-            if (!$oreon->user->admin && false === strpos($hoststring, "'".$host['host_host_id']."'")) {
-                $initialValues['hc_hosts'][] = $host['host_host_id'];
-            } else {
-                $hc["hc_hosts"][$i] = $host["host_host_id"];
-                $i++;
-            }
-        }
-        if (isset($hostTpl[$host["host_host_id"]])) {
-            $hc["hc_hostsTemplate"][$i2] = $host["host_host_id"];
-            $i2++;
-        }
-    }
-    $DBRESULT->free();
-    unset($host);
 }
-
-/*
- * hostcategories comes from DB -> Store in $hosts Array
- */
-$EDITCOND = "";
-if ($o == "w" || $o == "c") {
-    $EDITCOND = " WHERE `hc_id` != '".$hc_id."' ";
-}
-
-$hostCategories = array();
-$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories $EDITCOND ORDER BY hc_name");
-while ($hcs = $DBRESULT->fetchRow()) {
-    $hostGroups[$hcs["hc_id"]] = $hcs["hc_name"];
-}
-$DBRESULT->free();
-unset($hcs);
-
-/*
- * Contact Groups comes from DB -> Store in $cgs Array
- */
-$cgs = array();
-$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-while ($cg = $DBRESULT->fetchRow()) {
-    $cgs[$cg["cg_id"]] = $cg["cg_name"];
-}
-$DBRESULT->free();
-unset($cg);
 
 /*
  * IMG comes from DB -> Store in $extImg Array

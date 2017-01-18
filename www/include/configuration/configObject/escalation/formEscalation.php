@@ -40,44 +40,9 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-/* Init connection to storage db */
-require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
-$brk = new CentreonBroker($pearDB);
-
-/* hosts */
-$hosts = $acl->getHostAclConf(
-    null,
-    'broker',
-    array(
-        'fields'  => array('host.host_id', 'host.host_name'),
-        'keys'    => array('host_id'),
-        'get_row' => 'host_name',
-        'order'   => array('host.host_name')
-    )
-);
-
-/* notification contact groups */
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-if ($oreon->user->admin) {
-    $notifCgs = $cg->getListContactgroup(true);
-} else {
-    $cgAcl = $acl->getContactGroupAclConf(
-        array(
-            'fields'  => array('cg_id', 'cg_name'),
-            'get_row' => 'cg_name',
-            'keys'    => array('cg_id'),
-            'order'   => array('cg_name')
-        )
-    );
-    $cgLdap = $cg->getListContactgroup(true, true);
-    $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-}
-
 /*
  * Database retrieve information for Escalation
  */
-$initialValues = array();
 $esc = array();
 if (($o == "c" || $o == "w") && $esc_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
@@ -97,45 +62,6 @@ if (($o == "c" || $o == "w") && $esc_id) {
         $esc["escalation_options2"][trim($value)] = 1;
     }
 }
-
-/*
- * Database retrieve information for differents elements list we need on the page
- */
-
-#
-# Host comes from DB -> Store in $hosts Array
-$hosts = array();
-$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $hosts[$host["host_id"]] = $host["host_name"];
-}
-$DBRESULT->free();
-
-# Meta Services comes from DB -> Store in $metas Array
-$metas = array();
-$DBRESULT = $pearDB->query(
-    "SELECT meta_id, meta_name
-    FROM meta_service ".
-    $acl->queryBuilder("WHERE", "meta_id", $acl->getMetaServiceString()).
-    " ORDER BY meta_name"
-);
-while ($meta = $DBRESULT->fetchRow()) {
-    $metas[$meta["meta_id"]] = $meta["meta_name"];
-}
-$DBRESULT->free();
-
-# Contact Groups comes from DB -> Store in $cgs Array
-$cgs = array();
-$cg = new CentreonContactgroup($pearDB);
-$cgs = $cg->getListContactgroup(true);
-
-# TimePeriods comes from DB -> Store in $tps Array
-$tps = array();
-$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($tp = $DBRESULT->fetchRow()) {
-    $tps[$tp["tp_id"]] = $tp["tp_name"];
-}
-$DBRESULT->free();
 
 #
 # End of "database-retrieved" information
