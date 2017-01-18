@@ -41,7 +41,6 @@ include_once("./class/centreonUtils.class.php");
 require_once("./include/common/autoNumLimit.php");
 require_once(_CENTREON_PATH_ . "/www/class/centreonHost.class.php");
 
-
 /*
  * Init Host Method
  */
@@ -145,7 +144,6 @@ if (isset($search) && $search) {
                     OR host_address LIKE '%".$pearDB->escape($search)."%') AND ";
 }
 
-
 if ($template) {
     $templateFROM = ", host_template_relation htr ";
     $templateWHERE = " htr.host_host_id = h.host_id AND htr.host_tpl_id = '$template' AND ";
@@ -219,8 +217,7 @@ $aclFrom = "";
 $aclCond = "";
 if (!$centreon->user->admin) {
     $aclFrom = ", $aclDbName.centreon_acl acl";
-    $aclCond = " AND h.host_id = acl.host_id
-                 AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+    $aclCond = " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
 }
 
 if ($hostgroup) {
