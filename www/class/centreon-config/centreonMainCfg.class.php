@@ -42,14 +42,14 @@ class CentreonMainCfg
 
     private $DB;
 
-    public function __construct() 
+    public function __construct()
     {
         $this->DB = new CentreonDB();
         $this->setBrokerOptions();
         $this->setEngineOptions();
-           
+
     }
-    
+
     private function setBrokerOptions()
     {
         $this->aDefaultBrokerDirective = array(
@@ -188,7 +188,7 @@ class CentreonMainCfg
         if (empty($iId) || !in_array($source, array('ui', 'wizard'))) {
             return false;
         }
-        
+
         $DBRESULT = $this->DB->query("SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '".$iId."'");
         if ($DBRESULT->numRows() == 0) {
             $sQuery = "INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) VALUES ('". $this->aDefaultBrokerDirective[$source] ."', ". $iId .")";
@@ -213,7 +213,7 @@ class CentreonMainCfg
         if (!isset($this->aInstanceDefaultValues) || !isset($iId)) {
             return false;
         }
-        
+
         $res = $this->DB->query("SELECT * FROM cfg_nagios WHERE  nagios_server_id = ".$source."");
         if ($res->numRows() == 0) {
             $baseValues = $this->aInstanceDefaultValues;
@@ -221,118 +221,133 @@ class CentreonMainCfg
             $baseValues = $res->fetchRow();
         }
 
-        $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `temp_file`, `status_file`, 
-        `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, 
-        `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, 
-        `command_check_interval`, `command_file`, `lock_file`, `retain_state_information`, `state_retention_file`,`retention_update_interval`, `use_retained_program_state`, 
-        `use_retained_scheduling_info`, `use_syslog`, `log_notifications`, `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_initial_states`, 
-        `log_external_commands`, `log_passive_checks`, `sleep_time`, `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`, 
-        `max_concurrent_checks`, `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, `max_check_result_reaper_time`, `interval_length`, 
-        `auto_reschedule_checks`, `use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, `high_service_flap_threshold`, `low_host_flap_threshold`, 
-        `high_host_flap_threshold`, `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, `notification_timeout`, `ocsp_timeout`, 
-        `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, `obsess_over_hosts`, `process_performance_data`, `host_perfdata_file_mode`, `service_perfdata_file_mode`, 
-        `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`, 
-        `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, 
-        `event_broker_options`, `translate_passive_host_checks`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, 
+        $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `temp_file`, `status_file`,
+        `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`,
+        `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`,
+        `command_check_interval`, `command_file`, `lock_file`, `retain_state_information`, `state_retention_file`,`retention_update_interval`, `use_retained_program_state`,
+        `use_retained_scheduling_info`, `use_syslog`, `log_notifications`, `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_initial_states`,
+        `log_external_commands`, `log_passive_checks`, `sleep_time`, `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`,
+        `max_concurrent_checks`, `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, `max_check_result_reaper_time`, `interval_length`,
+        `auto_reschedule_checks`, `use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, `high_service_flap_threshold`, `low_host_flap_threshold`,
+        `high_host_flap_threshold`, `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, `notification_timeout`, `ocsp_timeout`,
+        `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, `obsess_over_hosts`, `process_performance_data`, `host_perfdata_file_mode`, `service_perfdata_file_mode`,
+        `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`,
+        `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`,
+        `event_broker_options`, `translate_passive_host_checks`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`,
         `use_large_installation_tweaks`, `enable_environment_macros`, `use_setpgid`,
         `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, `cfg_file`, `use_check_result_path`) ";
-        $rq .= "VALUES (";
+        $rq .= "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?," .
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $rq .= "'Centreon Engine ".$sName."', '". $iId. "', '".$baseValues['log_file'] ."', '" .
-        $baseValues['cfg_dir'] ."', '" .
-        $baseValues['temp_file'] ."', '" .
-        $baseValues['status_file'] ."', '" .
-        $baseValues['status_update_interval'] ."', '" .
-        $baseValues['nagios_user'] ."', '" .
-        $baseValues['nagios_group'] ."', '" .
-        $baseValues['enable_notifications'] ."', '" .
-        $baseValues['execute_service_checks'] ."', '" .
-        $baseValues['accept_passive_service_checks'] ."', '" .
-        $baseValues['execute_host_checks'] ."', '" .
-        $baseValues['accept_passive_host_checks'] ."', '" .
-        $baseValues['enable_event_handlers'] ."', '" .
-        $baseValues['log_rotation_method'] ."', '" .
-        $baseValues['log_archive_path'] ."', '" .
-        $baseValues['check_external_commands'] ."', '" .
-        $baseValues['external_command_buffer_slots'] ."', '" .
-        $baseValues['command_check_interval'] ."', '" .
-        $baseValues['command_file'] ."', '" .
-        $baseValues['lock_file'] ."', '" .
-        $baseValues['retain_state_information'] ."', '" .
-        $baseValues['state_retention_file' ] ."', '" .
-        $baseValues['retention_update_interval'] ."', '" .
-        $baseValues['use_retained_program_state'] ."', '" .
-        $baseValues['use_retained_scheduling_info'] ."', '" .
-        $baseValues['use_syslog'] ."', '" .
-        $baseValues['log_notifications'] ."', '" .
-        $baseValues['log_service_retries'] ."', '" .
-        $baseValues['log_host_retries'] ."', '" .
-        $baseValues['log_event_handlers'] ."', '" .
-        $baseValues['log_initial_states'] ."', '" .
-        $baseValues['log_external_commands'] ."', '" .
-        $baseValues['log_passive_checks'] ."', '" .
-        $baseValues['sleep_time'] ."', '" .
-        $baseValues['service_inter_check_delay_method'] ."', '" .
-        $baseValues['host_inter_check_delay_method'] ."', '" .
-        $baseValues['service_interleave_factor'] ."', '" .
-        $baseValues['max_concurrent_checks'] ."', '" .
-        $baseValues['max_service_check_spread'] ."', '" .
-        $baseValues['max_host_check_spread'] ."', '" .
-        $baseValues['check_result_reaper_frequency'] ."', '" .
-        $baseValues['max_check_result_reaper_time'] ."', '" .
-        $baseValues['interval_length'] ."', '" .
-        $baseValues['auto_reschedule_checks'] ."', '" .
-        $baseValues['use_aggressive_host_checking'] ."', '" .
-        $baseValues['enable_flap_detection'] ."', '" .
-        $baseValues['low_service_flap_threshold'] ."', '" .
-        $baseValues['high_service_flap_threshold'] ."', '" .
-        $baseValues['low_host_flap_threshold'] ."', '" .
-        $baseValues['high_host_flap_threshold'] ."', '" .
-        $baseValues['soft_state_dependencies'] ."', '" .
-        $baseValues['service_check_timeout'] ."', '" .
-        $baseValues['host_check_timeout'] ."', '" .
-        $baseValues['event_handler_timeout'] ."', '" .
-        $baseValues['notification_timeout'] ."', '" .
-        $baseValues['ocsp_timeout'] ."', '" .
-        $baseValues['ochp_timeout'] ."', '" .
-        $baseValues['perfdata_timeout'] ."', '" .
-        $baseValues['obsess_over_services'] ."', '" .
-        $baseValues['obsess_over_hosts'] ."', '" .
-        $baseValues['process_performance_data'] ."', '" .
-        $baseValues['host_perfdata_file_mode'] ."', '" .
-        $baseValues['service_perfdata_file_mode'] ."', '" .
-        $baseValues['check_for_orphaned_services'] ."', '" .
-        $baseValues['check_for_orphaned_hosts'] ."', '" .
-        $baseValues['check_service_freshness'] ."', '" .
-        $baseValues['check_host_freshness'] ."', '" .
-        $baseValues['date_format'] ."', '" .
-        htmlentities($baseValues['illegal_object_name_chars'], ENT_QUOTES, "UTF-8") ."', '" .
-        htmlentities($baseValues['illegal_macro_output_chars'], ENT_QUOTES, "UTF-8") ."', '" .
-        $baseValues['use_regexp_matching'] ."', '" .
-        $baseValues['use_true_regexp_matching'] ."', '" .
-        $baseValues['admin_email'] ."', '" .
-        $baseValues['admin_pager'] ."', '" .
-        $baseValues['nagios_comment'] ."', '" .
-        $baseValues['nagios_activate'] ."', '" .
-        $baseValues['event_broker_options'] ."', '" .
-        $baseValues['translate_passive_host_checks'] ."', '" .
-        $baseValues['enable_predictive_host_dependency_checks'] ."', '" .
-        $baseValues['enable_predictive_service_dependency_checks'] ."', '" .
-        $baseValues['passive_host_checks_are_soft'] ."', '" .
-        $baseValues['use_large_installation_tweaks'] ."', '" .
-        $baseValues['enable_environment_macros'] ."', '" .
-        $baseValues['use_setpgid'] ."', '" .
-        $baseValues['debug_file'] ."', '" .
-        $baseValues['debug_level'] ."', '" .
-        $baseValues['debug_level_opt'] ."', '" .
-        $baseValues['debug_verbosity'] ."', '" .
-        $baseValues['max_debug_file_size'] ."', '" .
-        $baseValues['daemon_dumps_core'] ."', '" .
-        $baseValues['cfg_file'] ."', '" .
-        $baseValues['use_check_result_path'] ."'";
-        $rq .= ")";
+        $params = array(
+            'Centreon Engine ' . $sName,
+            $iId,
+            $baseValues['log_file'],
+            $baseValues['cfg_dir'],
+            $baseValues['temp_file'],
+            $baseValues['status_file'],
+            $baseValues['status_update_interval'],
+            $baseValues['nagios_user'],
+            $baseValues['nagios_group'],
+            $baseValues['enable_notifications'],
 
-        $res = $this->DB->query($rq);
+            $baseValues['execute_service_checks'],
+            $baseValues['accept_passive_service_checks'],
+            $baseValues['execute_host_checks'],
+            $baseValues['accept_passive_host_checks'],
+            $baseValues['enable_event_handlers'],
+            $baseValues['log_rotation_method'],
+
+            $baseValues['log_archive_path'],
+            $baseValues['check_external_commands'],
+            $baseValues['external_command_buffer_slots'],
+            $baseValues['command_check_interval'],
+            $baseValues['command_file'],
+            $baseValues['lock_file'],
+            $baseValues['retain_state_information'],
+            $baseValues['state_retention_file' ],
+            $baseValues['retention_update_interval'],
+            $baseValues['use_retained_program_state'],
+            $baseValues['use_retained_scheduling_info'],
+            $baseValues['use_syslog'],
+            $baseValues['log_notifications'],
+            $baseValues['log_service_retries'],
+            $baseValues['log_host_retries'],
+            $baseValues['log_event_handlers'],
+            $baseValues['log_initial_states'],
+            $baseValues['log_external_commands'],
+            $baseValues['log_passive_checks'],
+
+            $baseValues['sleep_time'],
+            $baseValues['service_inter_check_delay_method'],
+            $baseValues['host_inter_check_delay_method'],
+            $baseValues['service_interleave_factor'],
+            $baseValues['max_concurrent_checks'],
+            $baseValues['max_service_check_spread'],
+            $baseValues['max_host_check_spread'],
+            $baseValues['check_result_reaper_frequency'],
+            $baseValues['max_check_result_reaper_time'],
+            $baseValues['interval_length'],
+            $baseValues['auto_reschedule_checks'],
+            $baseValues['use_aggressive_host_checking'],
+            $baseValues['enable_flap_detection'],
+            $baseValues['low_service_flap_threshold'],
+            $baseValues['high_service_flap_threshold'],
+            $baseValues['low_host_flap_threshold'],
+            $baseValues['high_host_flap_threshold'],
+            $baseValues['soft_state_dependencies'],
+            $baseValues['service_check_timeout'],
+            $baseValues['host_check_timeout'],
+            $baseValues['event_handler_timeout'],
+            $baseValues['notification_timeout'],
+            $baseValues['ocsp_timeout'],
+            $baseValues['ochp_timeout'],
+            $baseValues['perfdata_timeout'],
+            $baseValues['obsess_over_services'],
+            $baseValues['obsess_over_hosts'],
+            $baseValues['process_performance_data'],
+            $baseValues['host_perfdata_file_mode'],
+            $baseValues['service_perfdata_file_mode'],
+            $baseValues['check_for_orphaned_services'],
+            $baseValues['check_for_orphaned_hosts'],
+            $baseValues['check_service_freshness'],
+            $baseValues['check_host_freshness'],
+            $baseValues['date_format'],
+            htmlentities($baseValues['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"),
+            htmlentities($baseValues['illegal_macro_output_chars'], ENT_QUOTES, "UTF-8"),
+            $baseValues['use_regexp_matching'],
+            $baseValues['use_true_regexp_matching'],
+            $baseValues['admin_email'],
+            $baseValues['admin_pager'],
+            $baseValues['nagios_comment'],
+            $baseValues['nagios_activate'],
+            $baseValues['event_broker_options'],
+            $baseValues['translate_passive_host_checks'],
+            $baseValues['enable_predictive_host_dependency_checks'],
+            $baseValues['enable_predictive_service_dependency_checks'],
+            $baseValues['passive_host_checks_are_soft'],
+            $baseValues['use_large_installation_tweaks'],
+            $baseValues['enable_environment_macros'],
+            $baseValues['use_setpgid'],
+            $baseValues['debug_file'],
+            $baseValues['debug_level'],
+            $baseValues['debug_level_opt'],
+            $baseValues['debug_verbosity'],
+            $baseValues['max_debug_file_size'],
+            $baseValues['daemon_dumps_core'],
+            $baseValues['cfg_file'],
+            $baseValues['use_check_result_path']
+        );
+        foreach ($params as &$param) {
+            if (empty($param))
+                $param = null;
+        }
+
+        $stmt = $this->DB->prepare($rq);
+        if (PEAR::isError($stmt)) {
+            return false;
+        }
+        $res = $this->DB->execute($stmt, $params);
         if (PEAR::isError($res)) {
             return false;
         }
@@ -343,7 +358,7 @@ class CentreonMainCfg
     }
 
     /* Get Broker Module Entries */
-    public function getBrokerModules($id) 
+    public function getBrokerModules($id)
     {
         $DBRESULT = $this->DB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id = ".$id."");
         while ($row = $DBRESULT->fetchRow()) {
