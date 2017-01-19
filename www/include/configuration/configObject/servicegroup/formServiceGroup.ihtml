@@ -14,7 +14,6 @@
             <h3>| {$form.header.title}</h3>
           </td>
         </tr>
-	 	
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.information}</h4>
@@ -22,21 +21,14 @@
         </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroup_name"> {$form.sg_name.label}</td><td class="FormRowValue">{$form.sg_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.sg_alias.label}</td><td class="FormRowValue">{$form.sg_alias.html}</td></tr>
-	 	
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.relation}</h4>
           </td>
         </tr>
-		<tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="members"> {$form.sg_hServices.label}</td>
-			<td class="FormRowValue">
-				{$form.sg_hServices.html}
-			</td>
-		</tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="members"> {$form.sg_hServices.label}</td><td class="FormRowValue">{$form.sg_hServices.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hg_members"> {$form.sg_hgServices.label}</td><td class="FormRowValue">{$form.sg_hgServices.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="st_members"> {$form.sg_tServices.label}</td><td class="FormRowValue">{$form.sg_tServices.html}</td></tr> 
-		
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.furtherInfos}</h4>
