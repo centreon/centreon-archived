@@ -4,7 +4,16 @@ Import/Export
 
 Export
 ------
-At some point, you might need to export all of the object configuration parameters into a plain text file, either for synchronizing or backuping purpose.
+At some point, you might need to export all of the object configuration parameters
+into a plain text file, either for synchronizing or backuping purpose.
+
+The following items will not be exported:
+
+* Escalation
+* ACL (ACL Groups, ACL Resources, ACL actions)
+* LDAP settings
+* Global Centreon settings
+
 This export feature is ran like this::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -e > /tmp/clapi-export.txt 
