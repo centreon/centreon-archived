@@ -118,13 +118,13 @@
 				&nbsp;&nbsp;&nbsp;{$line}
 				{/if}
 				{if $stt == 1}
-				<a href="{$WikiURL}/index.php?title=Service:{$elem}" target='_blank'>View wiki page</a>
+				<a href="{$WikiURL}/index.php?title=Service:{$elem}" target='_blank'>{t}View wiki page{/t}</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Service:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
+				<a href="{$WikiURL}/index.php?title=Service:{$elem}&action=edit" target='_blank'>{t}Edit wiki page{/t}</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Service:{$elem}&action=history" target='_blank'>View History</a>
+				<a href="{$WikiURL}/index.php?title=Service:{$elem}&action=history" target='_blank'>{t}View History{/t}</a>
 				-
-				<a style="cursor:pointer" onclick="deleteWiki('Service:{$elem}')">Delete wiki page</a>
+				<a style="cursor:pointer" onclick="deleteWiki('Service:{$elem}')">{t}Delete wiki page{/t}</a>
 				&nbsp;&nbsp;&nbsp;
 				{/if}
 			</td>
@@ -168,35 +168,31 @@
 				{/if}
 				{if $stt == 1}
 				{if $selection == 3}
-				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}" target='_blank'>View wiki page</a>
+				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}" target='_blank'>{t}View wiki page{/t}</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}&action=edit" target='_blank'>Edit wiki
-					page</a>
+				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}&action=history" target='_blank'>View
-					History</a>
+				<a href="{$WikiURL}/index.php?title=Service-Template:{$elem}&action=history" target='_blank'>View history</a>
 				-
-				<a style="cursor:pointer" onclick="deleteWiki('Service-Template:{$elem}')">Delete wiki page</a>
+				<a style="cursor:pointer" onclick="deleteWiki('Service-Template:{$elem}')">{t}Delete wiki page{/t}</a>
 				&nbsp;&nbsp;&nbsp;
 				{elseif $selection == 2}
-				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}" target='_blank'>View wiki page</a>
+				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}" target='_blank'>{t}View wiki page{/t}</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}&action=edit" target='_blank'>Edit wiki
-					page</a>
+				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}&action=history" target='_blank'>View
-					History</a>
+				<a href="{$WikiURL}/index.php?title=Host-Template:{$elem}&action=history" target='_blank'>View history</a>
 				-
-				<a style="cursor:pointer" onclick="deleteWiki('Host-Template:{$elem}')">Delete wiki page</a>
+				<a style="cursor:pointer" onclick="deleteWiki('Host-Template:{$elem}')">{t}Delete wiki page{/t}</a>
 				&nbsp;&nbsp;&nbsp;
 				{else}
-				<a href="{$WikiURL}/index.php?title=Host:{$elem}" target='_blank'>View wiki page</a>
+				<a href="{$WikiURL}/index.php?title=Host:{$elem}" target='_blank'>{t}View wiki page{/t}</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Host:{$elem}&action=edit" target='_blank'>Edit wiki page</a>
+				<a href="{$WikiURL}/index.php?title=Host:{$elem}&action=edit" target='_blank'>{t}Edit wiki page{/t}</a>
 				-
-				<a href="{$WikiURL}/index.php?title=Host:{$elem}&action=history" target='_blank'>View History</a>
+				<a href="{$WikiURL}/index.php?title=Host:{$elem}&action=history" target='_blank'>{t}View History{/t}</a>
 				-
-				<a style="cursor:pointer" onclick="deleteWiki('Host:{$elem}')">Delete wiki page</a>
+				<a style="cursor:pointer" onclick="deleteWiki('Host:{$elem}')">{t}Delete wiki page{/t}</a>
 
 				{/if}
 				{/if}
