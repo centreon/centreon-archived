@@ -46,6 +46,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 $pearDB = new CentreonDB();
 
 session_start();
+session_write_close();
 
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();

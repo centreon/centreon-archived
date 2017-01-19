@@ -49,11 +49,12 @@ require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 $pearDB = new CentreonDB();
 
 /* Check Session */
-CentreonSession::start();
+CentreonSession::start(1);
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
+$centreon = $_SESSION['centreon'];
 
 if (!isset($_POST['poller']) || !isset($_POST['debug'])) {
     exit();
@@ -71,9 +72,6 @@ $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
-
-session_start();
-$centreon = $_SESSION['centreon'];
 
 $xml = new CentreonXML();
 $config_generate = new Generate();
