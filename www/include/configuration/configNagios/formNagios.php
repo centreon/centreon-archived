@@ -906,7 +906,7 @@ if ($valid) {
         _("Warning: this value can be dangerous, use -1 if you have any doubt.")
     );
     $tpl->assign('cloneSet', $cloneSet);
-    $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('centreon_path', _CENTREON_PATH_);
     $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
     $tpl->assign("aggressive_host_warning", _("This option must be disable in order to avoid latency problem."));
     $tpl->display("formNagios.ihtml");

@@ -34,6 +34,8 @@
  */
 
 session_start();
+session_write_close();
+
 $action = "start";
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
