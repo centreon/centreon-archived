@@ -243,4 +243,11 @@ class CentreonForm
     {
         return $this->form->getElement($element);
     }
+
+    public function myTrim($str)
+    {
+        $str = rtrim($str, '\\');
+        return (trim($str));
+    }
+
 }
