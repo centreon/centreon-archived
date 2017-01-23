@@ -47,6 +47,8 @@ require_once _CENTREON_PATH_ . '/www/class/centreonBroker.class.php';
 $pearDB = new CentreonDB();
 
 session_start();
+session_write_close();
+
 $mySessionId = session_id();
 /**
  * Checks for token
