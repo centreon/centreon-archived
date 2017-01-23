@@ -57,7 +57,7 @@ class CentreonForm
         $this->path = $path;
         $this->o = $o;
         $this->applyFilter('__ALL__', array('this', 'myTrim'));
-        $this->form->setRequiredNote();
+        $this->setRequiredNote();
         $this->setFormAttributes();
         $this->s2Config = new CentreonFormSelect2();
         $this->initSmarty($path);
@@ -68,12 +68,12 @@ class CentreonForm
     {
         $this->attibutes['text'] = array("size" => "30");
         $this->attibutes['text-small'] = array("size" => "6");
-        $this->attibutes['attrs-long'] = array("size" => "60");
+        $this->attibutes['text-long'] = array("size" => "60");
 
         $this->attibutes['select'] = array("style" => "width: 270px; height: 100px;");
         $this->attibutes['select-small'] = array("style" => "width: 270px; height: 50px;");
         $this->attibutes['select-big'] = array("style" => "width: 270px; height: 130px;");
-        $this->attibutes['textarea'] = array("rows" => "4", "cols" => "80");
+        $this->attibutes['textarea'] = array("rows" => "6", "cols" => "100");
         $this->attibutes['multiSelect'] = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
     }
 
@@ -123,7 +123,7 @@ class CentreonForm
 
     public function addHidden($name, $value = null)
     {
-        $redirect = $form->addElement('hidden', 'o');
+        $redirect = $this->form->addElement('hidden', 'o');
         if (isset($value)) {
             $redirect->setValue($o);            
         }
@@ -164,32 +164,29 @@ class CentreonForm
     public function addRadioButton($name, $label, $values, $defaultValue = null, $options = null)
     {
         foreach ($values as $key => $value) {
-            $item[] = HTML_QuickForm::createElement('radio', $name, null, $key, $value);
+            $item[] = HTML_QuickForm::createElement('radio', $name, null, $value, $key);
         }
         $input = $this->form->addGroup($item, $name, $label, $this->separator);
         $this->form->setDefaults(array($name => $defaultValue));
         return $input;
     }
 
-    public function addSubmitButton($name, $label, $options)
+    public function addSubmitButton($name, $label, $options = null)
     {
-        return $this->form->addElement("submit", $name, $label, array_merge($options, "class" => "btc bt_default"));
+        $options["class"] = "btc bt_default";
+        return $this->form->addElement("submit", $name, $label, $options);
     }
 
-    public function addResetButton($name, $label, $options)
+    public function addResetButton($name, $label, $options = null)
     {
-        return $this->form->addElement("reset", $name, $label, array_merge($options, "class" => "btc bt_default"));
+        $options["class"] = "btc bt_default";
+        return $this->form->addElement("button", $name, $label, $options);
     }
 
     public function addSelect2($name, $label, $type, $defaultDatasetParams)
     {
         $value = $this->s2Config->getData($type, $defaultDatasetParams);
-        $this->form->addElement('select2', $name, $label, array(), $value);
-    }
-
-    public function setRules() 
-    {
-
+        return $this->form->addElement('select2', $name, $label, array(), $value);
     }
 
     public function validate()

@@ -90,44 +90,15 @@ $obj->addInputText('cg_alias', _("Alias"));
  * Contacts Selection
  */
 $obj->addHeader('notification', _("Relations"));
-
-
-$attrContacts = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonContact'
-);
-$attrAclgroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonAclGroup'
-);
-
-
-$attrContact1 = array_merge(
-    $attrContacts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=contactgroup&field=cg_contacts&id=' . $cg_id)
-);
-$obj->addSelect2('cg_contacts', _("Linked Contacts"), array(), $attrContact1);
-
-
-/*
- * Acl group selection
- */
-$attrAclgroup1 = array_merge(
-    $attrAclgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=defaultValues&target=contactgroup&field=cg_acl_groups&id=' . $cg_id)
-);
-$obj->addSelect2('cg_acl_groups', _("Linked ACL groups"), array(), $attrAclgroup1);
+$obj->addSelect2('cg_contacts', _("Linked Contacts"), 'contact', array('object' => 'centreon_configuration_contact', 'action' => 'defaultValues', 'target' => 'contactgroup', 'field' => 'cg_contacts', 'id' => $cg_id));
+$obj->addSelect2('cg_acl_groups', _("Linked ACL groups"), 'aclgroup', array('object' => 'centreon_administration_aclgroup', 'action' => 'defaultValues', 'target' => 'contactgroup', 'field' => 'cg_acl_groups', 'id' => $cg_id));
 
 /*
  * Further informations
  */
 $obj->addHeader('furtherInfos', _("Additional Information"));
 $obj->addRadioButton('cg_activate', _("Status"), array(0 => _("Disabled"), 1 => _("Enabled")), 1);
-$obj->addTextarea('cg_comment', _("Comments"));
+$obj->addInputTextarea('cg_comment', _("Comments"));
 $obj->addHidden('hidden', 'cg_id');
 $obj->addHidden('hidden', 'o', $o);
 $obj->addHidden('hidden', 'initialValues', serialize($initialValues));
@@ -150,7 +121,7 @@ if ($o == "w") {
      * Just watch a Contact Group information
      */
     if ($centreon->user->access->page($p) != 2) {
-        $obj->addSubmitButton("change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
+        $obj->addSubmitButton("change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
     }
     $obj->setDefaults($cg);
     $obj->freeze();
@@ -158,15 +129,15 @@ if ($o == "w") {
     /*
      * Modify a Contact Group information
      */
-    $subC = $obj->addSubmitButton('submitC', _("Save"));
-    $res = $obj->addResetButton('reset', _("Reset"));
+    $obj->addSubmitButton('submitC', _("Save"));
+    $obj->addResetButton('reset', _("Reset"));
     $obj->setDefaults($cg);
 } elseif ($o == "a") {
     /*
      * Add a Contact Group information
      */
-    $subA = $obj->addSubmitButton('submitA', _("Save"));
-    $res = $obj->addResetButton('reset', _("Reset"));
+    $obj->addSubmitButton('submitA', _("Save"));
+    $obj->addResetButton('reset', _("Reset"));
 }
 
 $valid = false;

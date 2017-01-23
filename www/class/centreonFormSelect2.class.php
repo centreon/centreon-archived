@@ -33,7 +33,7 @@
  *
  */
 
-class CentreonFormData
+class CentreonFormSelect2
 {
     private $attributes;
     private $apiURL;
@@ -41,34 +41,34 @@ class CentreonFormData
 
     public function __construct()
     {
-        $this->apiURL = "./api/rest/internal.php";
+        $this->apiURL = "./api/internal.php";
         $this->setAttributes();
     }
 
-    private function setAttributes();
+    private function setAttributes()
     {
         $this->attributes = array();
-        $this->setObject('timeperiod', true, 'centreonTimeperiod', true);
-        $this->setObject('timezone', true, 'centreonGMT', true);
-        $this->setObject('command', false, 'centreonCommand', false);
-        $this->setObject('notif_command', false, 'centreonCommand', false, 1);
-        $this->setObject('check_command', false, 'centreonCommand', false, 2);
-        $this->setObject('misc_command', false, 'centreonCommand', false, 3);
-        $this->setObject('disco_command', false, 'centreonCommand', false, 4);
-        $this->setObject('command', false, 'centreonCommand', false);
-        $this->setObject('contact', true, 'centreonContact', true);
-        $this->setObject('contactgroup', true, 'centreonContactgroup', true);
-        $this->setObject('host', true, 'centreonHost', true);
-        $this->setObject('hosttemplates', true, 'centreonHosttemplates', true);
-        $this->setObject('hostgroup', true, 'centreonHostgroups', true);
-        $this->setObject('hostcategory', true, 'centreonHostcategories', true);
-        $this->setObject('service', true, 'centreonService', true);
-        $this->setObject('servicetemplate', true, 'centreonServicetemplates', true);
-        $this->setObject('meta', true, 'centreonMeta', true);
-        $this->setObject('aclgroup', true, 'centreonAclGroup', true);
-        $this->setObject('servicecategory', true, 'centreonServicecategories', true);
-        $this->setObject('trap', true, 'centreonTraps', true);
-        $this->setObject('graphtemplate', true, 'centreonGraphTemplate', false);
+        $this->setObject('timeperiod', 'configuration', true, 'centreonTimeperiod', true);
+        $this->setObject('timezone', 'configuration', true, 'centreonGMT', true);
+        $this->setObject('command', 'configuration', false, 'centreonCommand', false);
+        $this->setObject('notif_command', 'configuration', false, 'centreonCommand', false, 1);
+        $this->setObject('check_command', 'configuration', false, 'centreonCommand', false, 2);
+        $this->setObject('misc_command', 'configuration', false, 'centreonCommand', false, 3);
+        $this->setObject('disco_command', 'configuration', false, 'centreonCommand', false, 4);
+        $this->setObject('command', 'configuration', false, 'centreonCommand', false);
+        $this->setObject('contact', 'configuration', true, 'centreonContact', true);
+        $this->setObject('contactgroup', 'configuration', true, 'centreonContactgroup', true);
+        $this->setObject('host', 'configuration', true, 'centreonHost', true);
+        $this->setObject('hosttemplates', 'configuration', true, 'centreonHosttemplates', true);
+        $this->setObject('hostgroup', 'configuration', true, 'centreonHostgroups', true);
+        $this->setObject('hostcategory', 'configuration', true, 'centreonHostcategories', true);
+        $this->setObject('service', 'configuration', true, 'centreonService', true);
+        $this->setObject('servicetemplate', 'configuration', true, 'centreonServicetemplates', true);
+        $this->setObject('meta', 'configuration', true, 'centreonMeta', true);
+        $this->setObject('aclgroup', 'administration', true, 'centreonAclGroup', true);
+        $this->setObject('servicecategory', 'configuration', true, 'centreonServicecategories', true);
+        $this->setObject('trap', 'configuration', true, 'centreonTraps', true);
+        $this->setObject('graphtemplate', 'configuration', true, 'centreonGraphTemplate', false);
     }
 
     public function getData($object, $defaultDatasetParams)
@@ -79,22 +79,23 @@ class CentreonFormData
                 foreach ($defaultDatasetParams as $param => $value) {
                     $url .= $param . "=" . $value . "&";
                 }
-                return array_merge($this->attributes[$object], array('defaultDatasetRoute', $url));
+                $this->attributes[$object]['defaultDatasetRoute'] = $url;
+                return $this->attributes[$object];
             } else {
                 return $this->attributes[$object];
             }
         }
     }
 
-    private function setObject($object, $multiple, $classObject, $availableDataSetRoute = false, $type = '')
+    private function setObject($object, $domain, $multiple, $classObject, $availableDataSetRoute = false, $type = '')
     {
         $this->attributes[$object] = array(
             'datasourceOrigin' => 'ajax',
-            'multiple' => $multiple,
+            'multiple' => ($multiple ? true : false),
             'linkedObject' => $classObject
         );
-        if (isset($availableDatasetRoute) && $availableDatasetRoute) {
-            $this->attributes[$object]['availableDatasetRoute'] = $this->apiURL.'?object=centreon_configuration_'.$object.'&action=list';
+        if (isset($availableDataSetRoute) && $availableDataSetRoute) {
+            $this->attributes[$object]['availableDatasetRoute'] = $this->apiURL.'?object=centreon_'.$domain.'_'.$object.'&action=list';
             if ($type != '') {
                 $this->attributes[$object]['availableDatasetRoute'] .= "&t=$type";
             }
