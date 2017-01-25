@@ -173,7 +173,7 @@ Pour installer un pack, cliquer sur l’icône d’installation.
 +---------------------------------------------------+------------------------------------------------------+
 |              **avant installation**               |               **après installation**                 |
 +---------------------------------------------------+------------------------------------------------------+
-| .. image:: /_static/images/configuration/imp5.png  |  .. image:: /_static/images/configuration/imp6.png    |
+| .. image:: /_static/images/configuration/imp5.png |  .. image:: /_static/images/configuration/imp6.png   |
 +---------------------------------------------------+------------------------------------------------------+
 
 N'oubliez pas que chaque pack nécessite également le déploiement de plugins. Dans chaque monitoring 
