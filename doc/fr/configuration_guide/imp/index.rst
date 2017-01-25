@@ -185,7 +185,7 @@ procédure mise à disposition avec votre pack, vous avez la liste des dépendan
     pourra pas fonctionner.
 
 
-3. Maintenant souscrivez !
+4. Maintenant souscrivez !
 --------------------------
 
 Vous pouvez souscrire à l'Offre IMP selon différentes formules : sur une durée de 1 mois, 
