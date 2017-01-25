@@ -51,12 +51,10 @@ Connectez votre plate-forme à Centreon
 --------------------------------------
 
 Pour récupérer les plugins packs, votre système Centreon a besoin de se connecter au 
-site web Centreon. 
-
-Sans compte Centreon sur le site web, votre serveur pourra récupérer dans un premier temps 6 plugin 
-packs. Si vous connectez ensuite votre système au site web Centreon en créant un compte gratuit, vous pourrez 
-ensuite en récupérer 6 de plus. En souscrivant à l'offre IMP, vous aurez accès au catalogue 
-entier de plugin packs soit à ce jour 170 environnements près à l'emploi.
+site web Centreon. Sans compte Centreon sur le site web, votre serveur pourra récupérer dans un premier 
+temps 6 plugin packs. Si vous connectez ensuite votre système au site web Centreon en créant un compte 
+gratuit, vous pourrez ensuite en récupérer 6 de plus. En souscrivant à l'offre IMP, vous aurez accès au 
+catalogue entier de plugin packs soit à ce jour 170 environnements près à l'emploi.
 
 +---------------+-----------------+----------------+-------------------+
 |               | Without Account | Simple Account | With subscription |
@@ -105,26 +103,26 @@ Pour connecter votre plate-forme au site web de Centreon, suivez les étapes dé
 Allez sur le site web de Centreon et rendez vous sur la page de souscription à `IMP <https://www.centreon.com/imp-subscribe/>`_. Cliquez
 sur "Try it" dans la première colonne du tableau comparatif des offres.
 
-.. image:: /_static/images/configuration/create_account_03.png
+.. image:: /_static/images/configuration/website/create_account_03.png
    :align: center
 
 Créez maintenant votre compte utilisateur. Ce compte sera utile ensuite pour enregistrer votre plateforme 
 auprès de Centreon afin d'avoir accès aux plugin packs gratuits.
 
-.. image:: /_static/images/configuration/create_account_04.png
+.. image:: /_static/images/configuration/website/create_account_04.png
    :align: center
 
 Votre compte est maintenant créé. Vous pouvez enregistrer votre plate-forme auprès de Centreon.
 
-.. image:: /_static/images/configuration/create_account_05.png
+.. image:: /_static/images/configuration/website/create_account_05.png
    :align: center
 
 
 2. Connectez votre plate-forme au site Centreon
 -----------------------------------------------
 
-Allez dans Administration -> Extensions -> Subscription et connectez-vous avec 
-votre compte Centreon. Le compte à utiliser est le compte que vous avez créé sur le site web 
+Sur votre Centreon, allez dans Administration -> Extensions -> Subscription et connectez-vous 
+avec votre compte Centreon. Le compte à utiliser est le compte que vous avez créé sur le site web 
 de Centreon (étape précédente).
 
 .. image:: /_static/images/configuration/imp3.png
@@ -138,34 +136,33 @@ accès à 11 Plugin Packs.
 .. image:: /_static/images/configuration/imp4.png
    :align: center
 
-Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux plugins packs. 
+Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux plugins packs. Si 
+vous avez acheté une souscription auprès de Centreon, vous pouvez maintenant lier cette 
+souscription à votre plate-forme de supervision. Pour cela, cliquez sur le bouton "Link". 
 
-.. note::
-    Avec ce compte vous pouvez connecter plusieurs plate-forme à la fois pour faire vos tests.
-
-Si vous avez acheté une souscription auprès de Centreon, vous pouvez maintenant lier la 
-souscription à votre plate-forme. Pour cela, cliquez sur le bouton "Link". 
+Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
 
 .. image:: /_static/images/configuration/website/link_01.png
    :align: center
 
-Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
+.. note::
+    Avec ce compte vous pouvez connecter plusieurs plate-forme à la fois pour faire vos tests.
+
+Confirmez que c'est réellement ce que vous souhaitez faire.
 
 .. image:: /_static/images/configuration/website/link_02.png
+   :align: center
+
+Vous avez maintenant accès à tous les plugins packs du catalogue. Cliquer sur le bouton "install" 
+pour procéder à la l'installation des plugins packs de votre choix.
+
+.. image:: /_static/images/configuration/website/link_03.png
    :align: center
 
 .. note::
     Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur, 
     vous serez obligé de passer par le service client. Nous n'avons pas encore intégrer à nos outils 
     en ligne la possibilité de le faire. Pour cela, contactez imp at centreon dot com. 
-
-Confirmez que c'est réellement ce que vous souhaitez faire.
-
-.. image:: /_static/images/configuration/website/link_03.png
-   :align: center
-
-Vous avez maintenant accès à tous les plugins packs du catalogue. Cliquer sur le bouton "install" 
-pour procéder à la l'installation des plugins packs de votre choix.
 
 
 3. Parcourez le catalogue et installez vos premiers Plugin Packs
@@ -200,7 +197,7 @@ Pour installer un pack, cliquer sur l’icône d’installation.
 +---------------------------------------------------+------------------------------------------------------+
 |              **avant installation**               |               **après installation**                 |
 +---------------------------------------------------+------------------------------------------------------+
-| .. image:: _static/images/configuration/imp5.png  |  .. image:: _static/images/configuration/imp6.png    |
+| .. image:: /_static/images/configuration/imp5.png  |  .. image:: /_static/images/configuration/imp6.png    |
 +---------------------------------------------------+------------------------------------------------------+
 
 N'oubliez pas que chaque pack nécessite également le déploiement de plugins. Dans chaque monitoring 
