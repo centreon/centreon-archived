@@ -27,18 +27,18 @@ Prerequisites
 To use Centreon IMP you need the latest version of Centreon 3.4. This version include
 Centreon Web 2.8.
 
-You can install Centreon 3.4 using the ISO or by updrading your Centreon platform.
+You can install Centreon 3.4 using the ISO or by upgrading your Centreon platform.
 Please read documentation to install or upgrade your platform.
 
 2. An Internet access
 
 Your Centreon central monitoring server must have an access to Internet. This access
-allow to get the list of available Plugin Packs and to install theose on your platform.
+allow to get the list of available Plugin Packs and to install those on your platform.
 
 .. note::
     If your server doesn't have a direct access to Internet you can configure a proxy
     to access to Internet. The proxy configuration is available since Centreon web 2.8.2
-    version. If you doesn't have this version, please perform an uprade of your platform.
+    version. If you doesn't have this version, please perform an upgrade of your platform.
 
 Link your Centreon platform to Centreon IMP
 -------------------------------------------
@@ -46,28 +46,28 @@ Link your Centreon platform to Centreon IMP
 To get the Plugin Packs, your Centreon platform must have an access to Centreon user
 portal.
 
-Without Centreon user portal, your Centreon server will have access to 6 ugin Packs. If 
+Without Centreon user portal, your Centreon server will have access to 6 Plugin Packs. If 
 you create a Centreon user portal account and you use it to connect your Centreon platform,
-you will have acess to 5 more Plugin Packs. By subscribing to Centreon IMP offer, you will
+you will have access to 5 more Plugin Packs. By subscribing to Centreon IMP offer, you will
 have access to +170 Plugin Packs is around 2000 monitoring indicators which allow to deploy
 your monitoring easily and quickly.
 
-------------------------------------------------------------------------
++---------------+-----------------+----------------+-------------------+
 |               | Without Account | Simple Account | With subscription |
-------------------------------------------------------------------------
++---------------+-----------------+----------------+-------------------+
 | 6 bases Packs |        x        |        x       |         x         |
-------------------------------------------------------------------------
++---------------+-----------------+----------------+-------------------+
 | 5 added Packs |                 |        x       |         x         |
-------------------------------------------------------------------------
++---------------+-----------------+----------------+-------------------+
 | +150 Packs    |                 |                |         x         |
-------------------------------------------------------------------------
++---------------+-----------------+----------------+-------------------+
 |         total |    6 packs      |      11 packs  |     +170 Packs    |
-------------------------------------------------------------------------
++---------------+-----------------+----------------+-------------------+
 
 To connect your Centreon platform to Centreon user portal, please follow instructions below:
 
-1. Go to Centreon user portal and create you account
-----------------------------------------------------
+1. Go to Centreon user portal and create your account
+-----------------------------------------------------
 
 TODO : Screenshots
 
@@ -81,7 +81,7 @@ your account to access to Centreon user portal.
 .. image:: /_static/images/configuration/imp3.png
    :align: center
 
-Bu clicking on the arrow icon next to "Password" field you wll connect your Centreon
+Bu clicking on the arrow icon next to "Password" field you will connect your Centreon
 platform to Centreon portal. The creation of an account on the Centreon user portal
 is free and allow to access to 11 Plugin Packs.
 
@@ -93,19 +93,19 @@ Your platform is now connected: you can access to 6 more Plugin Packs.
 .. note::
     With your account you can connect multiple platforms at a time to do your tests.
 
-3. Discover the catalog and install your fisrt Plugin Packs
+3. Discover the catalog and install your first Plugin Packs
 -----------------------------------------------------------
 
-To install Plugin Packs, click on the **Setup** buttom to access to the Plugin
+To install Plugin Packs, click on the **Setup** button to access to the Plugin
 Packs catalog, or go to the **Configuration > Plugin pack** menu.
 
 .. image:: /_static/images/configuration/imp1.png
    :align: center
 
 List of Plugin Packs appears. Only part of the catalog can be accessed according to 
-your subscription. If your subscription. is no longer valid or if you use Centreon IMP
-trial oofer, only the fisrt 11 Plugin Packs are available. The non available Plugin
-Pack will be freezed.
+your subscription. If your subscription is no longer valid or if you use Centreon IMP
+trial offer, only the first 11 Plugin Packs are available. The non-available Plugin
+Pack will be freeze.
 
 You can search Plugin Packs using:
 
@@ -138,15 +138,15 @@ install the plugin needed.
 3. Get your subscription!
 -------------------------
 
-You can subscribe to IMP according different period of renewall: 1 month, 6 months or
+You can subscribe to IMP according different period of renewal: 1 month, 6 months or
 12 months. The price decreases according to the duration of commitment.
 
 After subscribing, go to the **Administration -> Extensions -> Subscription** menu and 
-connect your Centreon platform using your Centreon user protal credentials.
+connect your Centreon platform using your Centreon user portal credentials.
 
 .. note::
-    Centreon online account creation is free and gives you access to 11 professionnal Plugin Packs.
-    What are you waiting for ?
+    Centreon online account creation is free and gives you access to 11 professional Plugin Packs.
+    What are you waiting for?
 
 Click on the "Link" button
 
