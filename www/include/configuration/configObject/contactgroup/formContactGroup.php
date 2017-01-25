@@ -55,7 +55,7 @@ if (!$centreon->user->admin && $cg_id) {
 /* 
  * Initiate Objets
  */
-$obj = new CentreonForm($path, $p);
+$obj = new CentreonForm($path, $p, $o);
 
 $initialValues = array();
         
