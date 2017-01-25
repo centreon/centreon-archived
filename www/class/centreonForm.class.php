@@ -49,7 +49,7 @@ class CentreonForm
     private $helpData;
     private $o;
 
-    public function __construct($path, $p)
+    public function __construct($path, $p, $o)
     {
         $this->form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
         $this->separator = '&nbsp;';
@@ -173,14 +173,22 @@ class CentreonForm
 
     public function addSubmitButton($name, $label, $options = null)
     {
-        $options["class"] = "btc bt_default";
-        return $this->form->addElement("submit", $name, $label, $options);
+        if (!isset($options)) {
+            $options = array();
+        }
+        $options["class"] = "btc bt_success";
+        $input = $this->form->addElement("submit", $name, $label, $options);
+        return $input;
     }
 
     public function addResetButton($name, $label, $options = null)
     {
+        if (!isset($options)) {
+            $options = array();
+        }
         $options["class"] = "btc bt_default";
-        return $this->form->addElement("button", $name, $label, $options);
+        $input = $this->form->addElement("reset", $name, $label, $options);
+        return $input;
     }
 
     public function addSelect2($name, $label, $type, $defaultDatasetParams)
@@ -220,7 +228,7 @@ class CentreonForm
     {
         $this->tpl = new Smarty();
         $this->tpl = initSmartyTpl($path, $this->tpl);
-        $this->tpl->assign('o', $o);
+        $this->assign('o', $this->o);
     }
 
     public function assign($name, $value)
