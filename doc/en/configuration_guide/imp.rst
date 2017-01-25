@@ -1,93 +1,164 @@
 .. _impconfiguration:
 
-====================================
-Easy configuration with Centreon IMP
-====================================
+=============================================
+Simplified configuration of Centreon with IMP
+=============================================
 
-Browsing the Plugin Packs catalogue
------------------------------------
+What is IMP? 
+------------
 
-If you are a Centreon IMP user you can monitor new services in seconds
-thanks to our online Plugin Pack catalogue. Go to
-Administration -> Extensions -> Plugin packs -> Setup.
+IMP (Instant Monitoring Platform) is a solution to allow to reduce the TTM (Time To Monitoring).
+Indeed, IMP allows to reduce time to deploy your monitoring and reduce time to maintain in 
+working condition your Centreon platform. Templates of monitoring ready to use including monitoring 
+procedure that allow to start your monitoring less than 30 minutes after the installation of your 
+Centreon platform.
+
+Centreon Plugins' project offer a large range of functionality and is one of the richest in the 
+market: +170 environments is around 2000 monitoring indicators which allow to deploy your monitoring
+easily and quickly.
+
+Want to use IMP? Please follow the instructions below.
+
+Prerequisites
+-------------
+
+1. Centreon 3.4
+
+To use Centreon IMP you need the latest version of Centreon 3.4. This version include
+Centreon Web 2.8.
+
+You can install Centreon 3.4 using the ISO or by updrading your Centreon platform.
+Please read documentation to install or upgrade your platform.
+
+2. An Internet access
+
+Your Centreon central monitoring server must have an access to Internet. This access
+allow to get the list of available Plugin Packs and to install theose on your platform.
+
+.. note::
+    If your server doesn't have a direct access to Internet you can configure a proxy
+    to access to Internet. The proxy configuration is available since Centreon web 2.8.2
+    version. If you doesn't have this version, please perform an uprade of your platform.
+
+Link your Centreon platform to Centreon IMP
+-------------------------------------------
+
+To get the Plugin Packs, your Centreon platform must have an access to Centreon user
+portal.
+
+Without Centreon user portal, your Centreon server will have access to 6 ugin Packs. If 
+you create a Centreon user portal account and you use it to connect your Centreon platform,
+you will have acess to 5 more Plugin Packs. By subscribing to Centreon IMP offer, you will
+have access to +170 Plugin Packs is around 2000 monitoring indicators which allow to deploy
+your monitoring easily and quickly.
+
+------------------------------------------------------------------------
+|               | Without Account | Simple Account | With subscription |
+------------------------------------------------------------------------
+| 6 bases Packs |        x        |        x       |         x         |
+------------------------------------------------------------------------
+| 5 added Packs |                 |        x       |         x         |
+------------------------------------------------------------------------
+| +150 Packs    |                 |                |         x         |
+------------------------------------------------------------------------
+|         total |    6 packs      |      11 packs  |     +170 Packs    |
+------------------------------------------------------------------------
+
+To connect your Centreon platform to Centreon user portal, please follow instructions below:
+
+1. Go to Centreon user portal and create you account
+----------------------------------------------------
+
+TODO : Screenshots
+
+2. Link your Centreon platform
+------------------------------
+
+Go to the **Administration -> Extensions -> Subscription** menu and connect your
+Centreon Platform using your Centreon user portal credentials. The credentials is
+your account to access to Centreon user portal.
+
+.. image:: /_static/images/configuration/imp3.png
+   :align: center
+
+Bu clicking on the arrow icon next to "Password" field you wll connect your Centreon
+platform to Centreon portal. The creation of an account on the Centreon user portal
+is free and allow to access to 11 Plugin Packs.
+
+.. image:: /_static/images/configuration/imp4.png
+   :align: center
+
+Your platform is now connected: you can access to 6 more Plugin Packs.
+
+.. note::
+    With your account you can connect multiple platforms at a time to do your tests.
+
+3. Discover the catalog and install your fisrt Plugin Packs
+-----------------------------------------------------------
+
+To install Plugin Packs, click on the **Setup** buttom to access to the Plugin
+Packs catalog, or go to the **Configuration > Plugin pack** menu.
 
 .. image:: /_static/images/configuration/imp1.png
    :align: center
 
-If you have a valid paid subscription, all Plugin Packs will be
-displayed, indicating they are available. If you do not have a paid
-subscription, or are trying the discovery offer, only a select number
-of Plugin Packs will be shown. Most of them will be disabled.
+List of Plugin Packs appears. Only part of the catalog can be accessed according to 
+your subscription. If your subscription. is no longer valid or if you use Centreon IMP
+trial oofer, only the fisrt 11 Plugin Packs are available. The non available Plugin
+Pack will be freezed.
 
-You can do a search of a Plugin Pack by:
+You can search Plugin Packs using:
 
   * Keyword
   * Category
   * Status
   * Last update
 
-To access to a Plugin Pack description click on icon of Plugin Pack.
+To access to the description of a pack, click on its icon.
 
 .. image:: /_static/images/configuration/imp2.png
    :align: center
 
-Setup your account and license
-------------------------------
-
-If you have not already done so, go to Administration -> Extensions -> Subscription.
-Sign in with your Centreon online account.
-
-.. note::
-   Centreon online account creation is free and gives you access to 11
-   professionnal Plugin Packs. What are you waiting for ?
-
-.. image:: /_static/images/configuration/imp3.png
-   :align: center
-
-Your are now authenticated. Click on "Setup" button to access the
-Plugin Packs catalog. If you bought a subscription, click on "Link"
-button instead.
-
-.. image:: /_static/images/configuration/imp4.png
-   :align: center
-
-Installing a Plugin Pack
-------------------------
-
-To install a Plugin Pack, click on the install icon.
-
-Before installation.
+To install a pack, click on installation icon.
 
 .. image:: /_static/images/configuration/imp5.png
    :align: center
 
-After installation.
+Example of an installed pack.
 
 .. image:: /_static/images/configuration/imp6.png
    :align: center
 
-Removing a Plugin Pack
-----------------------
+Don't forget that each pack use a plugin to work. Each monitoring procedure will help you to
+install the plugin needed.
 
-To remove a Plugin Pack, click on the uninstall icon.
+.. note::
+    Install plugins on each poller required. Otherwise your supervision will not work.
 
-Before uninstallation.
+3. Get your subscription!
+-------------------------
 
-.. image:: /_static/images/configuration/imp7.png
+You can subscribe to IMP according different period of renewall: 1 month, 6 months or
+12 months. The price decreases according to the duration of commitment.
+
+After subscribing, go to the **Administration -> Extensions -> Subscription** menu and 
+connect your Centreon platform using your Centreon user protal credentials.
+
+.. note::
+    Centreon online account creation is free and gives you access to 11 professionnal Plugin Packs.
+    What are you waiting for ?
+
+Click on the "Link" button
+
+.. image:: /_static/images/configuration/imp4.png
    :align: center
 
-After uninstallation.
+Your Centreon IMP subscription ensures that the Plugin Packs are updated as technology
+requirements and needs evolve. This may include enhancements or new additions.
 
-.. image:: /_static/images/configuration/imp8.png
-   :align: center
+If you decide to stop your Centreon IMP subscription, you will not have access to these 
+updates and additions. The Plugin Packs you have been using will not be uninstalled.
 
-Updates and additions
----------------------
-
-Your Centreon IMP subscription ensures that the Plugin Packs
-are updated as technology requirements and needs evolve. This may
-include enhancements or new additions.
-
-If you decide to stop your Centreon IMP subscription, you will not have
-access to these updates and additions. The Plugin Packs you have
-been using will not be uninstalled.
+.. note::
+    If you have some difficulties to use IMP you can contact your technical team using
+    imp @ cnetreon.com email.
