@@ -56,8 +56,7 @@ site web Centreon.
 Sans compte Centreon sur le site web, votre serveur pourra récupérer dans un premier temps 6 plugin 
 packs. Si vous connectez ensuite votre système au site web Centreon en créant un compte gratuit, vous pourrez 
 ensuite en récupérer 6 de plus. En souscrivant à l'offre IMP, vous aurez accès au catalogue 
-entier de plugin packs soit à ce jour 170 environnements ce qui représente environ 2000 modèles 
-de services près à l'emploi.
+entier de plugin packs soit à ce jour 170 environnements près à l'emploi.
 
 +---------------+-----------------+----------------+-------------------+
 |               | Without Account | Simple Account | With subscription |
@@ -103,21 +102,38 @@ Pour connecter votre plate-forme au site web de Centreon, suivez les étapes dé
 1. Allez créez votre compte Centreon sur le site Centreon
 ---------------------------------------------------------
 
-TODO : Screenshots
+Allez sur le site web de Centreon et rendez vous sur la page de souscription à `IMP <https://www.centreon.com/imp-subscribe/>`_. Cliquez
+sur "Try it" dans la première colonne du tableau comparatif des offres.
+
+.. image:: /_static/images/configuration/imp/create_account_03.png
+   :align: center
+
+Créez maintenant votre compte utilisateur. Ce compte sera utile ensuite pour enregistrer votre plateforme 
+auprès de Centreon afin d'avoir accès aux plugin packs gratuits.
+
+.. image:: /_static/images/configuration/imp/create_account_04.png
+   :align: center
+
+Votre compte est maintenant créé. Vous pouvez enregistrer votre plate-forme auprès de Centreon.
+
+.. image:: /_static/images/configuration/imp/create_account_05.png
+   :align: center
+
 
 2. Connectez votre plate-forme au site Centreon
 -----------------------------------------------
 
 Allez dans Administration -> Extensions -> Subscription et connectez-vous avec 
-votre compte Centreon online. Le compte à utiliser sur Centreon est le compte 
-que vous avez créé sur le site web de Centreon.
+votre compte Centreon. Le compte à utiliser est le compte que vous avez créé sur le site web 
+de Centreon (étape précédente).
 
 .. image:: /_static/images/configuration/imp3.png
    :align: center
 
 En cliquant sur la flêche a côté du champ "Password", vous allez effecter la 
-demande de connexion avec le site Centreon. Pour rappel,  la création d'un compte Centreon sur 
-le site web est gratuite et vous donne accès à 11 Plugin Packs.
+demande de connexion  avec le site Centreon et d'enregistrement auprès du service IMP. 
+Pour rappel, la création d'un compte Centreon sur  le site web est gratuite et vous donne 
+accès à 11 Plugin Packs.
 
 .. image:: /_static/images/configuration/imp4.png
    :align: center
@@ -126,6 +142,31 @@ Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux
 
 .. note::
     Avec ce compte vous pouvez connecter plusieurs plate-forme à la fois pour faire vos tests.
+
+Si vous avez acheté une souscription auprès de Centreon, vous pouvez maintenant lier la 
+souscription à votre plate-forme. Pour cela, cliquez sur le bouton "Link". 
+
+.. image:: /_static/images/configuration/link_01.png
+   :align: center
+
+Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
+
+.. image:: /_static/images/configuration/link_02.png
+   :align: center
+
+.. note::
+    Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur, 
+    vous serez obligé de passer par le service client. Nous n'avons pas encore intégrer à nos outils 
+    en ligne la possibilité de le faire. Pour cela, contactez imp at centreon dot com. 
+
+Confirmez que c'est réellement ce que vous souhaitez faire.
+
+.. image:: /_static/images/configuration/link_03.png
+   :align: center
+
+Vous avez maintenant accès à tous les plugins packs du catalogue. Cliquer sur le bouton "install" 
+pour procéder à la l'installation des plugins packs de votre choix.
+
 
 3. Parcourez le catalogue et installez vos premiers Plugin Packs
 ----------------------------------------------------------------
