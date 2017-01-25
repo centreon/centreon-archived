@@ -117,7 +117,6 @@ Votre compte est maintenant créé. Vous pouvez enregistrer votre plate-forme au
 .. image:: /_static/images/configuration/website/create_account_05.png
    :align: center
 
-
 2. Connectez votre plate-forme au site Centreon
 -----------------------------------------------
 
@@ -136,34 +135,11 @@ accès à 11 Plugin Packs.
 .. image:: /_static/images/configuration/imp4.png
    :align: center
 
-Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux plugins packs. Si 
-vous avez acheté une souscription auprès de Centreon, vous pouvez maintenant lier cette 
-souscription à votre plate-forme de supervision. Pour cela, cliquez sur le bouton "Link". 
-
-Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
-
-.. image:: /_static/images/configuration/website/link_01.png
-   :align: center
+Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux plugins packs. 
 
 .. note::
-    Avec ce compte vous pouvez connecter plusieurs plate-forme à la fois pour faire vos tests.
-
-Confirmez que c'est réellement ce que vous souhaitez faire.
-
-.. image:: /_static/images/configuration/website/link_02.png
-   :align: center
-
-Vous avez maintenant accès à tous les plugins packs du catalogue. Cliquer sur le bouton "install" 
-pour procéder à la l'installation des plugins packs de votre choix.
-
-.. image:: /_static/images/configuration/website/link_03.png
-   :align: center
-
-.. note::
-    Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur, 
-    vous serez obligé de passer par le service client. Nous n'avons pas encore intégrer à nos outils 
-    en ligne la possibilité de le faire. Pour cela, contactez imp at centreon dot com. 
-
+    Avec ce compte vous pouvez connecter gratuitement plusieurs plate-forme à la fois pour faire 
+    vos tests.
 
 3. Parcourez le catalogue et installez vos premiers Plugin Packs
 ----------------------------------------------------------------
@@ -219,12 +195,25 @@ Pour souscrire, allez dans Administration -> Extensions -> Subscription et conne
 avec votre compte Centreon que vous avez péalablement créé sur le site web de Centreon. Procédez au 
 paiement de la souscription après avoir séléctionné votre durée de souscription.
 
-Cliquez plutôt sur le bouton "Link".
+Si vous avez acheté une souscription auprès de Centreon, vous pouvez maintenant lier cette 
+souscription à votre plate-forme de supervision. Pour cela, cliquez sur le bouton "Link". 
 
-.. image:: /_static/images/configuration/imp4.png
+Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
+
+.. image:: /_static/images/configuration/website/link_01.png
    :align: center
 
-Vous avez maintenant accès à tous les plugin packs. Vous pouvez installer les packs que vous souhaitez !
+Confirmez que c'est réellement ce que vous souhaitez faire.
+
+.. image:: /_static/images/configuration/website/link_02.png
+   :align: center
+
+Vous avez maintenant accès à tous les plugins packs du catalogue. Cliquer sur le bouton "install" 
+pour procéder à la l'installation des plugins packs de votre choix. En cliquant sur ce dernier, vous allez 
+être redirigé vers la page d'installation des plugins packs.
+
+.. image:: /_static/images/configuration/website/link_03.png
+   :align: center
 
 Votre abonnement Centreon IMP permet de mettre à jour les packs de supervision en tenant compte des 
 évolutions des Systèmes d’Information. Cela peut inclure des améliorations ou de nouveaux ajouts 
@@ -234,6 +223,11 @@ Si vous décidez d'arrêter votre abonnement Centreon IMP, vous ne pourrez plus 
 mises à jour et aux futures améliorations. Les packs installés ne seront pour autant pas supprimés et 
 resteront disponibles. Les hôtes et les points de contrôles déployés grace aux plugin packs resteront 
 inchangés. 
+
+.. note::
+    Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur, 
+    vous serez obligé de passer par le service client. Nous n'avons pas encore intégrer à nos outils 
+    en ligne la possibilité de le faire. Pour cela, contactez imp at centreon dot com. 
 
 .. note:: 
     Si vous avez des questions ou des problèmes relatifs à l'installation de IMP, vous pouvez contacter
