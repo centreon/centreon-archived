@@ -105,18 +105,18 @@ Pour connecter votre plate-forme au site web de Centreon, suivez les étapes dé
 Allez sur le site web de Centreon et rendez vous sur la page de souscription à `IMP <https://www.centreon.com/imp-subscribe/>`_. Cliquez
 sur "Try it" dans la première colonne du tableau comparatif des offres.
 
-.. image:: /_static/images/configuration/imp/create_account_03.png
+.. image:: /_static/images/configuration/create_account_03.png
    :align: center
 
 Créez maintenant votre compte utilisateur. Ce compte sera utile ensuite pour enregistrer votre plateforme 
 auprès de Centreon afin d'avoir accès aux plugin packs gratuits.
 
-.. image:: /_static/images/configuration/imp/create_account_04.png
+.. image:: /_static/images/configuration/create_account_04.png
    :align: center
 
 Votre compte est maintenant créé. Vous pouvez enregistrer votre plate-forme auprès de Centreon.
 
-.. image:: /_static/images/configuration/imp/create_account_05.png
+.. image:: /_static/images/configuration/create_account_05.png
    :align: center
 
 
@@ -146,12 +146,12 @@ Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux
 Si vous avez acheté une souscription auprès de Centreon, vous pouvez maintenant lier la 
 souscription à votre plate-forme. Pour cela, cliquez sur le bouton "Link". 
 
-.. image:: /_static/images/configuration/link_01.png
+.. image:: /_static/images/configuration/website/link_01.png
    :align: center
 
 Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
 
-.. image:: /_static/images/configuration/link_02.png
+.. image:: /_static/images/configuration/website/link_02.png
    :align: center
 
 .. note::
@@ -161,7 +161,7 @@ Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
 
 Confirmez que c'est réellement ce que vous souhaitez faire.
 
-.. image:: /_static/images/configuration/link_03.png
+.. image:: /_static/images/configuration/website/link_03.png
    :align: center
 
 Vous avez maintenant accès à tous les plugins packs du catalogue. Cliquer sur le bouton "install" 
@@ -197,8 +197,8 @@ Pour accéder à la description d’un pack de supervision cliquer sur son icôn
 
 Pour installer un pack, cliquer sur l’icône d’installation.
 
-+---------------------------------------------------+------------------------------------------------------+  
-|              **avant installation**               |               **après installation**                 |                
++---------------------------------------------------+------------------------------------------------------+
+|              **avant installation**               |               **après installation**                 |
 +---------------------------------------------------+------------------------------------------------------+
 | .. image:: _static/images/configuration/imp5.png  |  .. image:: _static/images/configuration/imp6.png    |
 +---------------------------------------------------+------------------------------------------------------+
