@@ -90,6 +90,7 @@ foreach ($centreon->modules as $module_name => $infos) {
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
+<script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
 <?php
 
 /*
