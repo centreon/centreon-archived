@@ -279,14 +279,14 @@ class CentreonTimeperiod
     public function getLinkedHostsByName($timeperiodName, $register = false)
     {
         $registerClause = '';
-        if ($register == '0' || $register == '1') {
+        if ($register === '0' || $register === '1') {
             $registerClause = 'AND h.host_register = "' . $register . '" ';
         }
 
         $linkedHosts = array();
         $query = 'SELECT DISTINCT h.host_name '
             . 'FROM host h, timeperiod t '
-            . 'WHERE (h.timeperiod_tp_id = t.tp_id OR h.timeperiod_tp_id2  = t.tp_id) '
+            . 'WHERE (h.timeperiod_tp_id = t.tp_id OR h.timeperiod_tp_id2 = t.tp_id) '
             . $registerClause
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
@@ -311,7 +311,7 @@ class CentreonTimeperiod
     public function getLinkedServicesByName($timeperiodName, $register = false)
     {
         $registerClause = '';
-        if ($register == '0' || $register == '1') {
+        if ($register === '0' || $register === '1') {
             $registerClause = 'AND s.service_register = "' . $register . '" ';
         }
 
