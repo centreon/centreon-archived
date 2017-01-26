@@ -123,6 +123,14 @@ Votre compte est maintenant créé. Vous pouvez enregistrer votre plate-forme au
 2. Connectez votre plate-forme au site Centreon
 -----------------------------------------------
 
+.. note::
+    Si le menu **Administration -> Extensions -> Subscription** n'est pas disponible sur votre Centreon,
+    rendez-vous dans le menu **Administration -> Extensions -> Modules** et installez les modules
+    suivants en cliquant sur l'icône d'installation situé à droite :
+    
+    * centreon-pp-manager
+    * centreon-license-manager
+
 Sur votre Centreon, allez dans le menu **Administration -> Extensions -> Subscription** et connectez-vous 
 avec votre compte Centreon. Le compte à utiliser est le compte que vous avez créé sur le site web 
 de Centreon (étape précédente).

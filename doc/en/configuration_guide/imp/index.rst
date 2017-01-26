@@ -1,6 +1,6 @@
 .. _impconfiguration:
 
-implified configuration of Centreon with IMP
+Simplified configuration of Centreon with IMP
 =============================================
 
 What is IMP?
@@ -23,7 +23,7 @@ Prerequisites
 
 **1. Centreon 3.4**
 
-To use Centreon IMP you need the latest version of Centreon 3.4. This version include
+To use Centreon IMP you need the latest version of Centreon 3.4. This version includes
 Centreon Web 2.8.
 
 You can install Centreon 3.4 using the `ISO of Centreon <https://download.centreon.com/>`_ 
@@ -33,12 +33,12 @@ Please read documentation to install or upgrade your platform.
 **2. An Internet access**
 
 Your Centreon central monitoring server must have an access to Internet. This access
-allow to get the list of available Plugin Packs and to install those on your platform.
+allows to get the list of available Plugin Packs and to install those on your platform.
 
 .. note::
-    If your server doesn't have a direct access to Internet you can configure a proxy
+    If your server doesn't have a direct access to Internet, you can configure a proxy
     to access to Internet. The proxy configuration is available since Centreon web 2.8.2
-    version. If you doesn't have this version, please perform an upgrade of your platform.
+    version. If you don't have this version, please perform an upgrade of your platform.
 
 Link your Centreon platform to Centreon IMP
 -------------------------------------------
@@ -66,25 +66,25 @@ your monitoring easily and quickly.
 
 What are Plugin Packs available for each level?
 
-* Standard Plugin Packs: 
-** Cisco standard (SNMP)
-**  Linux (SNMP)
-**  MySQL
-**  Printer standard (SNMP)
-**  UPS Standard (SNMP)
-**  Windows (SNMP)
-**  Centreon (central)
-**  Centreon DB
-**  Centreon Poller
-**  Centreon Map
-**  Centreon MBI
-* With Centreon user portal account: 
-**  DHCP
-**  DNS
-**  FTP
-**  HTTP
-**  LDAP
-* With IMP subscription: `All the packs in the catalog <https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
+- Standard Plugin Packs: 
+    -  Cisco standard (SNMP)
+    - Linux (SNMP)
+    - MySQL
+    - Printer standard (SNMP)
+    - UPS Standard (SNMP)
+    - Windows (SNMP)
+    - Centreon (central)
+    - Centreon DB
+    - Centreon Poller
+    - Centreon Map
+    - Centreon MBI
+- With Centreon user portal account: 
+    - DHCP
+    - DNS
+    - FTP
+    - HTTP
+    - LDAP
+- With IMP subscription: `All the packs in the catalog <https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
 .. note::
     Yes 11 is different than 6 but we prefer to do not count Centreon Plugin Packs
@@ -118,8 +118,16 @@ Your account is now available. You can link your Centreon platform.
 2. Link your Centreon platform
 ------------------------------
 
+.. note::
+    If the **Administration -> Extensions -> Subscription** is not available on your Centreon,
+    please go to the **Administration -> Extensions -> Modules** menu and install the following
+    modules by clicking on the "install" icon on the right:
+    
+    * centreon-pp-manager
+    * centreon-license-manager
+
 Go to the **Administration -> Extensions -> Subscription** menu and connect your
-Centreon Platform using your Centreon user portal credentials. The credentials is
+Centreon Platform using your Centreon user portal credentials. The credentials are
 your account to access to Centreon user portal.
 
 .. image:: /_static/images/configuration/imp3.png
@@ -217,9 +225,9 @@ updates and additions. The Plugin Packs you have been using will not be uninstal
 
 .. note::
     If you wish to move your IMP subscription to another Centreon server, you need to ask Centreon
-    customer support. We did'nt yet add this fonctionnality to your Centreon web site. Please
+    customer support. We didn't yet add this functionality to your Centreon web site. Please
     contact us: imp at centreon dot com.
 
 .. note::
     If you have some difficulties to use IMP you can contact your technical team using
-    imp at cnetreon dot com email.
+    imp at centreon dot com email.
