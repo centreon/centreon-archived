@@ -50,7 +50,7 @@ if (!$oreon->user->admin) {
 /* 
  * Initiate Objets
  */
-$obj = new CentreonForm($path, $p);
+$obj = new CentreonForm($path, $p, $o);
 
 /*
  * Database retrieve information for HostGroup
@@ -62,31 +62,10 @@ if (($o == "c" || $o == "w") && $hg_id) {
 }
 
 /*
- * IMG comes from DB -> Store in $extImg Array
- */
-$extImg = return_image_list(1);
-
-/*
- * Define Templatse
- */
-$attrHosts = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonHost'
-);
-$attrHostgroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonHostgroups'
-);
-
-/*
  * Create formulary
  */
 
-$tabLabel = array("a" => _("Add a Host Group"), "c" => _("Modify a Host Group"), "w" => _("View a Host Group"))
+$tabLabel = array("a" => _("Add a Host Group"), "c" => _("Modify a Host Group"), "w" => _("View a Host Group"));
 $obj->addHeader('title', $tabLabel[$o]);
 
 /*
@@ -99,8 +78,7 @@ $obj->addInputText('hg_alias', _("Alias"));
 /*
  * Hosts Selection
  */
-$obj->addSelect2('hg_hosts', _("Linked Hosts"), 'hostgroup', './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . $hg_id);
-$obj->addSelect2('hg_hg', _("Linked Host Groups"), 'hostgroup', './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=hostgroups&field=hg_hg&id=' . $hg_id);
+$obj->addSelect2('hg_hosts', _("Linked Hosts"), 'hostgroup', array('object' => 'centreon_configuration_host', 'action' => 'defaultValues', 'target' => 'hostgroups', 'field' => 'hg_hosts', 'id' => $hg_id));
 
 /*
  * Extended information
@@ -124,12 +102,14 @@ $obj->addInputSelect('hg_map_icon_image', _("Map Icon"), $extImg, array("onChang
 $obj->addInputText('hg_rrd_retention', _('RRD retention'), 'text-small');
 $obj->addInputText('geo_coords', _("Geo coordinates"), 'text-small');
 $obj->addHeader('furtherInfos', _("Additional Information"));
-$obj->addTextarea('hg_comment', _("Comments"));
-$obj->addRadioButton('cg_activate', _("Status"), array(0 => _("Disabled"), 1 => _("Enabled")), 1);
+$obj->addInputTextarea('hg_comment', _("Comments"));
+$obj->addRadioButton('hg_activate', _("Status"), array(0 => _("Disabled"), 1 => _("Enabled")), 1);
 
-$obj->addHidden('hidden', 'hg_id');
-$obj->addHidden('hidden', 'o', $o);
+$obj->addHidden('hg_id');
 
+/* 
+ * define Rules 
+ */
 $obj->registerRule('exist', 'callback', 'testHostGroupExistence');
 
 $obj->addRule('hg_name', _("Compulsory Name"), 'required');
@@ -160,20 +140,11 @@ if ($o == "w") {
     $obj->addResetButton('reset', _("Reset"));
 }
 
-/* 
- * Javascript
- */
-$obj->assign("initJS", "<script type='text/javascript'>
-							jQuery(function () {
-							initAutoComplete('Form','city_name','sub');
-							});</script>");
-$obj->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>");
-
 $valid = false;
 if ($obj->validate()) {
     $hgObj = $obj->getElement('hg_id');
     if ($obj->getSubmitValue("submitA")) {
-        $hgObj->setValue(insertHostGroupInDB());
+        $hgObj->setValue(insertHostGroupInDB($obj->getSubmitValues()));
     } elseif ($obj->getSubmitValue("submitC")) {
         updateHostGroupInDB($hgObj->getValue());
     }

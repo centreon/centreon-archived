@@ -68,7 +68,6 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 }
 
 $acl = $centreon->user->access;
-$dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl();
 $hgs = $acl->getHostGroupAclConf(null, 'broker');
 
@@ -77,7 +76,7 @@ function mywrap($el)
     return "'".$el."'";
 }
 $hgString = implode(',', array_map('mywrap', array_keys($hgs)));
-$hoststring = $acl->getHostsString('ID', $dbmon);
+$hoststring = $acl->getHostsString('ID', $pearDBO);
 
 switch ($o) {
     case "a":

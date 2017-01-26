@@ -106,9 +106,14 @@ class CentreonForm
         $this->form->freeze();
     }
 
-    public function getSubmitValue()
+    public function getSubmitValue($elem)
     {
-        return $this->form->getSubmitValue();
+        return $this->form->getSubmitValue($elem);
+    }
+
+    public function getSubmitValues()
+    {
+        return $this->form->getSubmitValues();
     }
 
     public function isSubmitted()
@@ -123,9 +128,9 @@ class CentreonForm
 
     public function addHidden($name, $value = null)
     {
-        $redirect = $this->form->addElement('hidden', 'o');
+        $redirect = $this->form->addElement('hidden', $name);
         if (isset($value)) {
-            $redirect->setValue($o);            
+            $redirect->setValue($value);            
         }
     }
 
@@ -199,6 +204,7 @@ class CentreonForm
 
     public function validate()
     {
+        print "Validate";
         return $this->form->validate();
     }
 
@@ -229,6 +235,7 @@ class CentreonForm
         $this->tpl = new Smarty();
         $this->tpl = initSmartyTpl($path, $this->tpl);
         $this->assign('o', $this->o);
+        $this->addHidden('o', $this->o);
     }
 
     public function assign($name, $value)
