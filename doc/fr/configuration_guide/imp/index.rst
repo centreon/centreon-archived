@@ -10,14 +10,14 @@ Qu'est ce que IMP ?
 IMP (Instant Monitoring Platform) est une solution permettant de vous faire gagner beaucoup 
 de temps lors de la mise en place de votre supervision. L'objectif est IMP est de simplifier la 
 mise en place de vos points de contrôle et également de réduire le temps de maintenance de votre 
-plate-forme. Des plugins packagés avec des templates près à l'emploi couplés à une documentation 
+plate-forme. Des plugins packagés avec des modèles près à l'emploi couplés à une documentation 
 de déploiement (monitoring procedure) doit vous permettre de démarrer votre supervision au maximum 
 30 minutes après l'installation du système Centreon. Tous ces packs sont maintenus par nos équipes 
 et des mises à jour régulières vous permettent d'améliorer de façon continue vos contrôles.
 
 Les plugins sont issus de Centreon Plugins dont l'éventail fonctionnel est un des plus riches du 
-marché : 170 environnements couverts soit environ 2000 indicateurs de supervision vous permettent 
-de déployer votre supervison rapidement et simplement. 
+marché : +170 environnements couverts soit environ 2000 indicateurs de supervision vous permettent 
+de déployer votre supervision rapidement et simplement. 
 
 Vous souhaitez utiliser IMP ? Rien de plus simple. Suivez les instructions ci-dessous.
 
@@ -50,11 +50,11 @@ les installer sur votre système de supervision Centreon.
 Connectez votre plate-forme à Centreon 
 --------------------------------------
 
-Pour récupérer les plugins packs, votre système Centreon a besoin de se connecter au 
+Pour récupérer les Plugin Packs, votre système Centreon a besoin de se connecter au 
 site web Centreon. Sans compte Centreon sur le site web, votre serveur pourra récupérer dans un premier 
-temps 6 plugin packs. Si vous connectez ensuite votre système au site web Centreon en créant un compte 
+temps 6 Plugin Packs. Si vous connectez ensuite votre système au site web Centreon en créant un compte 
 gratuit, vous pourrez ensuite en récupérer 6 de plus. En souscrivant à l'offre IMP, vous aurez accès au 
-catalogue entier de plugin packs soit à ce jour 170 environnements près à l'emploi.
+catalogue entier de Plugin Packs soit à ce jour +170 environnements près à l'emploi.
 
 +---------------+-----------------+----------------+-------------------+
 |               | Without Account | Simple Account | With subscription |
@@ -68,7 +68,7 @@ catalogue entier de plugin packs soit à ce jour 170 environnements près à l'e
 |         total |    6 packs      |      11 packs  |     +170 Packs    |
 +---------------+-----------------+----------------+-------------------+
 
-Quels plugin packs sont disponibles à chaque niveau ?
+Quels Plugin Packs sont disponibles à chaque niveau ?
 
 - Plugins packs gratuits : 
     - Cisco standard (SNMP)
@@ -104,30 +104,33 @@ Allez sur le site web de Centreon et rendez vous sur la page de souscription à 
 sur "Try it" dans la première colonne du tableau comparatif des offres.
 
 .. image:: /_static/images/configuration/website/create_account_03.png
-   :align: center
+    :width: 1000 px
+    :align: center
 
 Créez maintenant votre compte utilisateur. Ce compte sera utile ensuite pour enregistrer votre plateforme 
-auprès de Centreon afin d'avoir accès aux plugin packs gratuits.
+auprès de Centreon afin d'avoir accès aux Plugin Packs gratuits.
 
 .. image:: /_static/images/configuration/website/create_account_04.png
-   :align: center
+    :width: 1000 px
+    :align: center
 
 Votre compte est maintenant créé. Vous pouvez enregistrer votre plate-forme auprès de Centreon.
 
 .. image:: /_static/images/configuration/website/create_account_05.png
-   :align: center
+    :width: 1000 px
+	:align: center
 
 2. Connectez votre plate-forme au site Centreon
 -----------------------------------------------
 
-Sur votre Centreon, allez dans Administration -> Extensions -> Subscription et connectez-vous 
+Sur votre Centreon, allez dans le menu **Administration -> Extensions -> Subscription** et connectez-vous 
 avec votre compte Centreon. Le compte à utiliser est le compte que vous avez créé sur le site web 
 de Centreon (étape précédente).
 
 .. image:: /_static/images/configuration/imp3.png
    :align: center
 
-En cliquant sur la flêche a côté du champ "Password", vous allez effecter la 
+En cliquant sur la flèche à côté du champ "Password", vous allez effectuer la 
 demande de connexion  avec le site Centreon et d'enregistrement auprès du service IMP. 
 Pour rappel, la création d'un compte Centreon sur  le site web est gratuite et vous donne 
 accès à 11 Plugin Packs.
@@ -135,7 +138,7 @@ accès à 11 Plugin Packs.
 .. image:: /_static/images/configuration/imp4.png
    :align: center
 
-Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux plugins packs. 
+Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux Plugin Packs. 
 
 .. note::
     Avec ce compte vous pouvez connecter gratuitement plusieurs plate-forme à la fois pour faire 
@@ -144,19 +147,19 @@ Vous êtes maintenant connecté ! Vous pouvez maintenant accéder aux 5 nouveaux
 3. Parcourez le catalogue et installez vos premiers Plugin Packs
 ----------------------------------------------------------------
 
-Pour installer des plugin packs, cliquez sur le bouton “Setup” pour accéder 
-au catalogue ou allez à la page Administration -> Configuration -> Plugin packs -> Setup.
+Pour installer des Plugin Packs, cliquez sur le bouton “Setup” pour accéder 
+au catalogue ou allez à la page **Configuration -> Plugin packs**.
 
 .. image:: /_static/images/configuration/imp1.png
    :align: center
 
-Le listing des plugin packs apparait. Seule une partie du catalogue peut être accessible
-en fonction de votre subscription. Si votre souscription n’est plus valide ou si vous 
+Le listing des Plugin Packs apparait. Seule une partie du catalogue peut être accessible
+en fonction de votre suscription. Si votre souscription n’est plus valide ou si vous 
 êtes en mode découverte de l’offre Centreon IMP (sans souscription), seule une partie
-du catalogue sera accessible. Les éléments non disponible au téléchargement seront 
+du catalogue sera accessible. Les éléments non disponibles au téléchargement seront 
 alors grisés et les boutons d'installation ou de mise à jour seront alors indisponibles.
 
-Vous povez effectuer des recherches grâce aux options à votre disposition :
+Vous pouvez effectuer des recherches grâce aux options à votre disposition :
 
   * Mot clé (Keyword)
   * Catégorie (Category)
@@ -191,8 +194,8 @@ procédure mise à disposition avec votre pack, vous avez la liste des dépendan
 Vous pouvez souscrire à l'Offre IMP selon différentes formules : sur une durée de 1 mois, 
 6 mois ou 1 an. Le tarif est bien évidemment plus attractif en fonction de la durée d'engagement.
 
-Pour souscrire, allez dans Administration -> Extensions -> Subscription et connectez-vous 
-avec votre compte Centreon que vous avez péalablement créé sur le site web de Centreon. Procédez au 
+Pour souscrire, allez dans **Administration -> Extensions -> Subscription** et connectez-vous 
+avec votre compte Centreon que vous avez préalablement créé sur le site web de Centreon. Procédez au 
 paiement de la souscription après avoir séléctionné votre durée de souscription.
 
 Si vous avez acheté une souscription auprès de Centreon, vous pouvez maintenant lier cette 
@@ -201,19 +204,22 @@ souscription à votre plate-forme de supervision. Pour cela, cliquez sur le bout
 Choisissez votre souscription et cliquez sur "Link" pour valider votre choix.
 
 .. image:: /_static/images/configuration/website/link_01.png
-   :align: center
+    :width: 1000 px
+    :align: center
 
 Confirmez que c'est réellement ce que vous souhaitez faire.
 
 .. image:: /_static/images/configuration/website/link_02.png
-   :align: center
+    :width: 1000 px
+    :align: center
 
-Vous avez maintenant accès à tous les plugins packs du catalogue. Cliquer sur le bouton "install" 
-pour procéder à la l'installation des plugins packs de votre choix. En cliquant sur ce dernier, vous allez 
-être redirigé vers la page d'installation des plugins packs.
+Vous avez maintenant accès à tous les Plugin Packs du catalogue. Cliquer sur le bouton "install" 
+pour procéder à la l'installation des Plugin Packs de votre choix. En cliquant sur ce dernier, vous allez 
+être redirigé vers la page d'installation des Plugin Packs.
 
 .. image:: /_static/images/configuration/website/link_03.png
-   :align: center
+    :width: 1000 px
+    :align: center
 
 Votre abonnement Centreon IMP permet de mettre à jour les packs de supervision en tenant compte des 
 évolutions des Systèmes d’Information. Cela peut inclure des améliorations ou de nouveaux ajouts 
@@ -221,12 +227,12 @@ fonctionnels.
 
 Si vous décidez d'arrêter votre abonnement Centreon IMP, vous ne pourrez plus avoir accès à ces 
 mises à jour et aux futures améliorations. Les packs installés ne seront pour autant pas supprimés et 
-resteront disponibles. Les hôtes et les points de contrôles déployés grace aux plugin packs resteront 
+resteront disponibles. Les hôtes et les points de contrôles déployés grâce aux Plugin Packs resteront 
 inchangés. 
 
 .. note::
     Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur, 
-    vous serez obligé de passer par le service client. Nous n'avons pas encore intégrer à nos outils 
+    vous serez obligé de passer par le service client. Nous n'avons pas encore intégré à nos outils 
     en ligne la possibilité de le faire. Pour cela, contactez imp at centreon dot com. 
 
 .. note:: 
