@@ -56,6 +56,7 @@ function testHostGroupExistence($name = null)
 {
     global $pearDB, $form, $centreon;
     $id = null;
+    
     if (isset($form)) {
         $id = $form->getSubmitValue('hg_id');
     }
@@ -216,7 +217,7 @@ function updateHostGroupInDB($hg_id = null, $ret = array(), $increment = false)
 
 function insertHostGroup($ret = array())
 {
-    global $form, $pearDB, $centreon, $is_admin;
+    global $pearDB, $form, $centreon, $is_admin;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();

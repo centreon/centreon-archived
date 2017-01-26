@@ -40,7 +40,7 @@ require_once __DIR__.'/centreonFormSelect2.class.php';
 
 class CentreonForm 
 {
-    private $form;
+    public $form;
     private $tpl;
     private $renderer;
     private $attibutes;
@@ -56,12 +56,17 @@ class CentreonForm
         $this->helpData = array();
         $this->path = $path;
         $this->o = $o;
-        $this->applyFilter('__ALL__', array('this', 'myTrim'));
+        //$this->applyFilter('__ALL__', array('this', 'myTrim'));
         $this->setRequiredNote();
         $this->setFormAttributes();
         $this->s2Config = new CentreonFormSelect2();
         $this->initSmarty($path);
         $this->getHelpData();
+    }
+
+    public function getForm()
+    {
+        return $this->form;
     }
 
     private function setFormAttributes()
@@ -204,7 +209,6 @@ class CentreonForm
 
     public function validate()
     {
-        print "Validate";
         return $this->form->validate();
     }
 

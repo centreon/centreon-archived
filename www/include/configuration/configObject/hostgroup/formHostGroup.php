@@ -78,7 +78,7 @@ $obj->addInputText('hg_alias', _("Alias"));
 /*
  * Hosts Selection
  */
-$obj->addSelect2('hg_hosts', _("Linked Hosts"), 'hostgroup', array('object' => 'centreon_configuration_host', 'action' => 'defaultValues', 'target' => 'hostgroups', 'field' => 'hg_hosts', 'id' => $hg_id));
+$obj->addSelect2('hg_hosts', _("Linked Hosts"), 'host', array('object' => 'centreon_configuration_host', 'action' => 'defaultValues', 'target' => 'hostgroups', 'field' => 'hg_hosts', 'id' => $hg_id));
 
 /*
  * Extended information
@@ -114,7 +114,10 @@ $obj->registerRule('exist', 'callback', 'testHostGroupExistence');
 
 $obj->addRule('hg_name', _("Compulsory Name"), 'required');
 $obj->addRule('hg_alias', _("Compulsory Alias"), 'required');
-$obj->addRule('hg_name', _("Name is already in use"), 'exist');
+
+if ($o ==  "a") {
+    $obj->addRule('hg_name', _("Name is already in use"), 'exist');
+}
 
 if ($o == "w") {
     /*
@@ -142,14 +145,14 @@ if ($o == "w") {
 
 $valid = false;
 if ($obj->validate()) {
-    $hgObj = $obj->getElement('hg_id');
+    $form = $obj->getForm();
     if ($obj->getSubmitValue("submitA")) {
-        $hgObj->setValue(insertHostGroupInDB($obj->getSubmitValues()));
+        insertHostGroupInDB();
     } elseif ($obj->getSubmitValue("submitC")) {
-        updateHostGroupInDB($hgObj->getValue());
+        $hg_id = $obj->getElement('hg_id')->getValue();
+        updateHostGroupInDB($hg_id, $obj->getSubmitValues());
     }
     $o = null;
-    $hgObj = $obj->getElement('hg_id');
     $valid = true;
 }
 
