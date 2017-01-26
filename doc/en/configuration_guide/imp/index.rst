@@ -121,7 +121,7 @@ Your account is now available. You can link your Centreon platform.
 .. note::
     If the **Administration -> Extensions -> Subscription** is not available on your Centreon,
     please go to the **Administration -> Extensions -> Modules** menu and install the following
-    modules by clicking on the "install" icon on the left:
+    modules by clicking on the "install" icon on the right:
     
     * centreon-pp-manager
     * centreon-license-manager
