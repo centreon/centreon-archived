@@ -64,8 +64,8 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
         $row = $DBRESULT->fetchRow();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
-            $DBRESULT = $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, '', ?, ?)");
-            $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"], $token));
+            $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, '', ?, ?)");
+            $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"]));
         }
     } else {
         die('Invalid token');
