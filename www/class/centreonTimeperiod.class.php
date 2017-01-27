@@ -90,7 +90,7 @@ class CentreonTimeperiod
      * @param string $name
      * @return string
      */
-    public function getTimeperiodIdByName($name)
+    public function getTimperiodIdByName($name)
     {
         $query = "SELECT tp_id FROM timeperiod 
                 WHERE tp_name = '" . $this->db->escape($name) . "'";
