@@ -8,7 +8,7 @@ Qu'est ce que IMP ?
 -------------------
 
 IMP (Instant Monitoring Platform) est une solution permettant de vous faire gagner beaucoup 
-de temps lors de la mise en place de votre supervision. L'objectif est IMP est de simplifier la 
+de temps lors de la mise en place de votre supervision. L'objectif de IMP est de simplifier la 
 mise en place de vos points de contrôle et également de réduire le temps de maintenance de votre 
 plate-forme. Des plugins packagés avec des modèles près à l'emploi couplés à une documentation 
 de déploiement (monitoring procedure) doit vous permettre de démarrer votre supervision au maximum 
