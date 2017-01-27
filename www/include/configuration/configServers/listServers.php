@@ -157,7 +157,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	/*
 	 * Manage flag for changes
 	 */
-	$hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
+        $confChangedMessage = _("N/A");
+        if ($config["ns_activate"]) {
+            $hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
+            $confChangedMessage = $hasChanged ? _("Yes") : _("No");
+        }
 
 	/*
              * Manage flag for update time
@@ -190,7 +194,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 			     "RowMenu_is_running" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
 			     "RowMenu_is_runningFlag" => $nagiosInfo[$config["name"]]["is_currently_running"],
 			     "RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
-			     "RowMenu_hasChanged" => $hasChanged ? _("Yes") : _("No"),
+			     "RowMenu_hasChanged" => $confChangedMessage,
 			     "RowMenu_hasChangedFlag" => $hasChanged,
 			     "RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
 			     "RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["program_start_time"]) : "-",
