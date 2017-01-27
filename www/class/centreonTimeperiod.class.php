@@ -362,4 +362,37 @@ class CentreonTimeperiod
 
         return $linkedContacts;
     }
+
+    /**
+     * Returns array of Timeperiods linked to the timeperiod
+     *
+     * @param string $timeperiodName
+     * @return array
+     * @throws Exception
+     */
+    public function getLinkedTimeperiodsByName($timeperiodName)
+    {
+        $linkedTimeperiods = array();
+
+        $query = 'SELECT DISTINCT t.tp_name '
+            . 'FROM timeperiod t '
+            . 'WHERE t.tp_id IN ( '
+            . 'SELECT tir1.timeperiod_id FROM timeperiod_include_relations tir1 '
+            . 'UNION '
+            . 'SELECT tir2.timeperiod_include_id FROM timeperiod_include_relations tir2 '
+            . ') '
+            . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
+
+        $result = $this->db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked timeperiods of ' . $timeperiodName);
+        }
+
+        while ($row = $result->fetchRow()) {
+            $linkedTimeperiods[] = $row['tp_name'];
+        }
+
+        return $linkedTimeperiods;
+    }
 }
