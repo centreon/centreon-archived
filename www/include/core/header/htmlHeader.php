@@ -94,6 +94,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
+    <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
     <?php
 
     /*

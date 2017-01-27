@@ -276,19 +276,18 @@ class CentreonTimeperiod
      *
      * @return array
      */
-    public function getLinkedHostsByName($timeperiodName, $checkTemplates = true)
+    public function getLinkedHostsByName($timeperiodName, $register = false)
     {
-        if ($checkTemplates) {
-            $register = 0;
-        } else {
-            $register = 1;
+        $registerClause = '';
+        if ($register === '0' || $register === '1') {
+            $registerClause = 'AND h.host_register = "' . $register . '" ';
         }
 
-        $linkedCommands = array();
+        $linkedHosts = array();
         $query = 'SELECT DISTINCT h.host_name '
             . 'FROM host h, timeperiod t '
-            . 'WHERE h.timeperiod_tp_id  = t.tp_id '
-            . 'AND h.host_register = "' . $register . '" '
+            . 'WHERE (h.timeperiod_tp_id = t.tp_id OR h.timeperiod_tp_id2 = t.tp_id) '
+            . $registerClause
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
         $result = $this->db->query($query);
@@ -298,10 +297,10 @@ class CentreonTimeperiod
         }
 
         while ($row = $result->fetchRow()) {
-            $linkedCommands[] = $row['host_name'];
+            $linkedHosts[] = $row['host_name'];
         }
 
-        return $linkedCommands;
+        return $linkedHosts;
     }
 
     /**
@@ -309,19 +308,18 @@ class CentreonTimeperiod
      *
      * @return array
      */
-    public function getLinkedServicesByName($timeperiodName, $checkTemplates = true)
+    public function getLinkedServicesByName($timeperiodName, $register = false)
     {
-        if ($checkTemplates) {
-            $register = 0;
-        } else {
-            $register = 1;
+        $registerClause = '';
+        if ($register === '0' || $register === '1') {
+            $registerClause = 'AND s.service_register = "' . $register . '" ';
         }
 
-        $linkedCommands = array();
+        $linkedServices = array();
         $query = 'SELECT DISTINCT s.service_description '
             . 'FROM service s, timeperiod t '
-            . 'WHERE s.timeperiod_tp_id  = t.tp_id '
-            . 'AND s.service_register = "' . $register . '" '
+            . 'WHERE (s.timeperiod_tp_id = t.tp_id OR s.timeperiod_tp_id2 = t.tp_id) '
+            . $registerClause
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
         $result = $this->db->query($query);
@@ -331,9 +329,35 @@ class CentreonTimeperiod
         }
 
         while ($row = $result->fetchRow()) {
-            $linkedCommands[] = $row['service_description'];
+            $linkedServices[] = $row['service_description'];
         }
 
-        return $linkedCommands;
+        return $linkedServices;
+    }
+
+    /**
+     * Returns array of Contacts linked to the timeperiod
+     *
+     * @return array
+     */
+    public function getLinkedContactsByName($timeperiodName)
+    {
+        $linkedContacts = array();
+        $query = 'SELECT DISTINCT c.command_name '
+            . 'FROM command c, timeperiod t '
+            . 'WHERE (c.timeperiod_tp_id = t.tp_id OR c.timeperiod_tp_id2 = t.tp_id) '
+            . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
+
+        $result = $this->db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked contacts of ' . $timeperiodName);
+        }
+
+        while ($row = $result->fetchRow()) {
+            $linkedContacts[] = $row['command_name'];
+        }
+
+        return $linkedContacts;
     }
 }
