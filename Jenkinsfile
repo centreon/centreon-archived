@@ -31,3 +31,50 @@ stage('Unit tests') {
     }
   }
 }
+
+stage('Package') {
+  parallel 'centos6': {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-package.sh centos6'
+    }
+  },
+  'centos7': {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-package.sh centos7'
+    }
+  }
+}
+
+stage('Bundle') {
+  parallel 'centos6': {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh 6'
+    }
+  },
+  'centos7': {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh 7'
+    }
+  }
+}
+
+stage('Acceptance tests') {
+  parallel 'centos6': {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos6'
+      junit 'xunit-reports/**/*.xml'
+    }
+  },
+  'centos7': {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos7'
+      junit 'xunit-reports/**/*.xml'
+    }
+  }
+}
