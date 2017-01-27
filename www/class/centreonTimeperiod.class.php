@@ -338,13 +338,15 @@ class CentreonTimeperiod
     /**
      * Returns array of Contacts linked to the timeperiod
      *
+     * @param string $timeperiodName
      * @return array
+     * @throws Exception
      */
     public function getLinkedContactsByName($timeperiodName)
     {
         $linkedContacts = array();
-        $query = 'SELECT DISTINCT c.command_name '
-            . 'FROM command c, timeperiod t '
+        $query = 'SELECT DISTINCT c.contact_name '
+            . 'FROM contact c, timeperiod t '
             . 'WHERE (c.timeperiod_tp_id = t.tp_id OR c.timeperiod_tp_id2 = t.tp_id) '
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
@@ -355,7 +357,7 @@ class CentreonTimeperiod
         }
 
         while ($row = $result->fetchRow()) {
-            $linkedContacts[] = $row['command_name'];
+            $linkedContacts[] = $row['contact_name'];
         }
 
         return $linkedContacts;
