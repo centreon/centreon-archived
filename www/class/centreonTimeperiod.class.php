@@ -374,14 +374,17 @@ class CentreonTimeperiod
     {
         $linkedTimeperiods = array();
 
-        $query = 'SELECT DISTINCT t.tp_name '
-            . 'FROM timeperiod t '
-            . 'WHERE t.tp_id IN ( '
-            . 'SELECT tir1.timeperiod_id FROM timeperiod_include_relations tir1 '
+        $query = 'SELECT DISTINCT t1.tp_name '
+            . 'FROM timeperiod t1, timeperiod_include_relations tir1, timeperiod t2 '
+            . 'WHERE t1.tp_id = tir1.timeperiod_id '
+            . 'AND t2.tp_id = tir1.timeperiod_include_id '
+            . 'AND t2.tp_name = "' . $this->db->escape($timeperiodName) . '" '
             . 'UNION '
-            . 'SELECT tir2.timeperiod_include_id FROM timeperiod_include_relations tir2 '
-            . ') '
-            . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
+            . 'SELECT DISTINCT t3.tp_name '
+            . 'FROM timeperiod t3, timeperiod_include_relations tir2, timeperiod t4 '
+            . 'WHERE t3.tp_id = tir2.timeperiod_include_id '
+            . 'AND t4.tp_id = tir2.timeperiod_id '
+            . 'AND t4.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
         $result = $this->db->query($query);
 
