@@ -433,7 +433,7 @@ class CentreonConfigPoller
 
         $poller_id = $this->getPollerId($variables);
 
-        $config_generate->configPollerFromId($poller_id);
+        $config_generate->configPollerFromId($poller_id, $login);
 
         /* Change files owner */
         $apacheUser = $this->getApacheUser();

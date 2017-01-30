@@ -73,6 +73,11 @@ $DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
 
+$username = 'unknown';
+if (isset($centreon->user->name)) {
+    $username = $centreon->user->name;
+}
+
 $xml = new CentreonXML();
 $config_generate = new Generate();
 
@@ -109,11 +114,11 @@ try {
 
     # Generate configuration
     if ($pollers == '0') {
-        $config_generate->configPollers();
+        $config_generate->configPollers($username);
     } else {
         foreach ($pollers as $poller) {
             $config_generate->reset();
-            $config_generate->configPollerFromId($poller);
+            $config_generate->configPollerFromId($poller, $username);
         }
     }
 
