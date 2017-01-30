@@ -2111,15 +2111,14 @@ class CentreonACL
                 . "SELECT " . $request['fields'] . " "
                 . "FROM host h, hostgroup_relation hgr, service s, host_service_relation hsr "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' "
-                . "AND h.host_activate = '1' AND h.host_register = '1' "
+                . "AND h.host_activate = '1' "
+                . "AND h.host_register = '1' "
                 . "AND h.host_id = hgr.host_host_id "
                 . "AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id "
                 . "AND hsr.service_service_id = s.service_id "
                 . ") as t ";
         } else {
-            $query = "(" . $request['select'] . $request['simpleFields'] . " "
-                . "FROM ( "
-                . "SELECT " . $request['fields'] . " "
+            $query = "SELECT " . $request['fields'] . " "
                 . "FROM host_service_relation hsr, host h, service s, $db_name_acl.centreon_acl "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND h.host_activate = '1' "
@@ -2128,12 +2127,12 @@ class CentreonACL
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND s.service_activate = '1' "
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
-                . "AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' "
+                . "AND $db_name_acl.centreon_acl.service_id IS NOT NULL "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") "
                 . "UNION "
                 . "SELECT " . $request['fields'] . " "
                 . "FROM host h, hostgroup_relation hgr, "
-                . "service s, host_service_relation hsr, " . $db_name_acl . ".centreon_acl "
+                . "service s, host_service_relation hsr, $db_name_acl.centreon_acl "
                 . "WHERE h.host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND h.host_activate = '1' "
                 . "AND h.host_register = '1' "
@@ -2141,9 +2140,8 @@ class CentreonACL
                 . "AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id "
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
-                . "AND $db_name_acl.centreon_acl.host_id = '" . CentreonDB::escape($host_id) . "' "
-                . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") "
-                . ") as t ";
+                . "AND $db_name_acl.centreon_acl.service_id IS NOT NULL "
+                . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") ";
         }
 
         $query .= $request['order'] . $request['pages'];

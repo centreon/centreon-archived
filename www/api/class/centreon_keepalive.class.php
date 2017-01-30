@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,30 +33,30 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
-require_once _CENTREON_PATH_ . '/www/include/common/common-Func.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
-require_once _CENTREON_PATH_."www/class/centreonCommand.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
+require_once dirname(__FILE__) . "/webService.class.php";
 
-/*
- * Validate the session
+/**
+ * Class CentreonKeepalive
  */
-session_start();
-session_write_close();
-
-$db = new CentreonDB();
-
-$hostObj = new CentreonHost($db);
-
-
-$aMacros = $hostObj->ajaxMacroControl($_POST);
-
-$countMacro = count($aMacros);
-
-
-$arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
-
-echo json_encode($arrayReturn);
-
-die;
+class CentreonKeepalive extends CentreonWebService
+{
+    /**
+     * Constructor
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    
+    /**
+     * Keep alive
+     */
+    public function getKeepAlive()
+    {
+        $session = new CentreonSession();
+        $session->updateSession($this->pearDB);
+    }
+}

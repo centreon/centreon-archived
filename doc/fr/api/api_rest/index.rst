@@ -70,7 +70,7 @@ Using POST methode and the URL below:  ::
 +---------------------+---------------------------------+
 | Content-Type        | application/json                |
 +---------------------+---------------------------------+
-| centreon_auth_token | the value of authToken you got  |
+| centreon-auth-token | the value of authToken you got  |
 |                     | on the authentification response|
 +---------------------+---------------------------------+
 

@@ -44,7 +44,10 @@ include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
+
 session_start();
+session_write_close();
+
 $sid = session_id();
 if (isset($sid)) {
     $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");

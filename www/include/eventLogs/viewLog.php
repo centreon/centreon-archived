@@ -605,7 +605,7 @@ function getArgsForHost() {
                      flagfirst = false;
                  }
                  urlargs += val;
-                 args += "ST_" + val;
+                 args += "SG_" + val;
              }
          });
      }

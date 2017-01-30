@@ -258,7 +258,7 @@ class CentreonConfigPoller
 
         $pollerId = $this->getPollerId($pollerId);
 
-        $instanceObj = new CentreonInstance($this->_DB);
+        $instanceObj = new \CentreonInstance($this->_DB);
         $cmds = $instanceObj->getCommandData($pollerId);
         $result = 0;
         foreach ($cmds as $cmd) {

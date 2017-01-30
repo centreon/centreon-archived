@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `data_bin` (
   `value` float DEFAULT NULL,
   `status` enum('0','1','2','3','4') DEFAULT NULL,
   KEY `index_metric` (`id_metric`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </createstmt>
     </table>
 </centreon-partitioning>

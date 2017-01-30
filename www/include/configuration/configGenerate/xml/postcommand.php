@@ -46,7 +46,7 @@ require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
 $db = new CentreonDB();
 
 /* Check Session */
-CentreonSession::start();
+CentreonSession::start(1);
 if (!CentreonSession::checkSession(session_id(), $db)) {
     print "Bad Session";
     exit();
