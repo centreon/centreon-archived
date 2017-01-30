@@ -423,7 +423,7 @@ foreach ($tab_id as $openid) {
                 $tab = preg_split("/\:/", $svc_name);
                 $host_name = $tab[3];
                 if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
-                    $tab_svc[$hostId][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+                    $tab_svc[$tmp_host_id][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
                 }
             }
         }
