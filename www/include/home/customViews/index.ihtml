@@ -580,7 +580,11 @@ function initColorbox(selector, url, w, h)
 function displayBtnToggleEdit() {
   if (jQuery('.tabs_header').children().length > 0
       && jQuery('.portlet').length > 0) {
-    toggleEdit(modeEdit);
+    if (typeof modeEdit === "undefined"){
+        toggleEdit(undefined);
+    } else {
+        toggleEdit(modeEdit);
+    }
   } else {
     toggleEdit(true);
   }
