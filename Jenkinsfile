@@ -26,7 +26,9 @@ stage('Unit tests') {
       step([
         $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
         pattern: '**/codestyle.xml',
-        unstableTotalAll: '6500'
+        usePreviousBuildAsReference: '1',
+        useStableBuildAsReference: '1',
+        unstableTotalAll: '0'
       ])
     }
   }
