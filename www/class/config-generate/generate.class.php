@@ -163,8 +163,9 @@ class Generate {
         Correlation::getInstance()->reset();
         $this->resetModuleObjects();
     }
-    
-    private function configPoller() {
+
+    private function configPoller($username='unknown') {
+        $this->backend_instance->setUserName($username);
         $this->backend_instance->initPath($this->current_poller['id']);
         $this->backend_instance->setPollerId($this->current_poller['id']);
         $this->resetObjectsEngine();
@@ -195,25 +196,25 @@ class Generate {
             $this->backend_instance->cleanPath();
         }
     }
-    
-    public function configPollerFromId($poller_id) {
+
+    public function configPollerFromId($poller_id, $username='unknown') {
         try {
             if (is_null($this->current_poller)) {
                 $this->getPollerFromId($poller_id);
             }
-            $this->configPoller();
+            $this->configPoller($username);
         } catch (Exception $e) {
             throw new Exception('Exception received : ' .  $e->getMessage() . " [file: " . $e->getFile()  . "] [line: " . $e->getLine() . "]\n");
             $this->backend_instance->cleanPath();
         }
     }
-    
-    public function configPollers() {
+
+    public function configPollers($username='unknown') {
         $stmt = $this->backend_instance->db->prepare("SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server WHERE ns_activate = '1'");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $this->current_poller = $value;
-            $this->configPollerFromId($this->current_poller['id']);
+            $this->configPollerFromId($this->current_poller['id'], $username);
         }
     }
 
