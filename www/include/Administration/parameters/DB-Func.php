@@ -626,9 +626,27 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "sso_blacklist_clients",
+        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != NULL
+            ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
+    );
+    updateOption(
+        $pearDB,
         "sso_header_username",
         isset($ret["sso_header_username"]) && $ret["sso_header_username"] != null
             ? $pearDB->escape($ret["sso_header_username"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "sso_username_pattern",
+        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != NULL
+            ? $pearDB->escape($ret["sso_username_pattern"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "sso_username_replace",
+        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != NULL
+            ? $pearDB->escape($ret["sso_username_replace"]) : ""
     );
     updateOption(
         $pearDB,

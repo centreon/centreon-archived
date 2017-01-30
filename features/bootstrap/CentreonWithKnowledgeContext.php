@@ -46,7 +46,8 @@ class CentreonWithKnowledgeContext extends CentreonContext
             'normal_check_interval' => 1,
             'retry_check_interval' => 1,
             'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1));
+            'passive_checks_enabled' => 1
+        ));
         $hostPage->save();
         $this->restartAllPollers();
     }
@@ -68,9 +69,20 @@ class CentreonWithKnowledgeContext extends CentreonContext
             'normal_check_interval' => 1,
             'retry_check_interval' => 1,
             'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1));
+            'passive_checks_enabled' => 1
+        ));
         $servicePage->save();
         $this->restartAllPollers();
+    }
+
+    /**
+     * @Given the knowledge configuration page with procedure
+     */
+    public function theKnowledgeConfigurationPageWithProcedure()
+    {
+        $this->aHostConfigured();
+        $this->iAddAProcedureConcerningThisHostInMediawiki();
+        $this->aLinkTowardThisHostProcedureIsAvailableInConfiguration();
     }
 
 
@@ -82,17 +94,16 @@ class CentreonWithKnowledgeContext extends CentreonContext
         /* Go to the page to options page */
         $this->visit('/main.php?p=61001');
 
-
         $this->assertFind('css', '.list_two td:nth-child(5) a:nth-child(1)')->click();
 
         $windowNames = $this->getSession()->getWindowNames();
-        if(count($windowNames) > 1) {
+        if (count($windowNames) > 1) {
             $this->getSession()->switchToWindow($windowNames[1]);
         }
 
         /* Add wiki page */
-        $checkurl = 'Host:'.$this->hostName;
-        if( !strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
+        $checkurl = 'Host:' . $this->hostName;
+        if (!strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
             throw new Exception('Bad url');
         }
 
@@ -116,14 +127,14 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->visit('/main.php?p=61002');
         $this->assertFind('css', '.list_one:nth-child(4) td:nth-child(6) a:nth-child(1)')->click();
         $windowNames = $this->getSession()->getWindowNames();
-        if(count($windowNames) > 1) {
+        if (count($windowNames) > 1) {
             $this->getSession()->switchToWindow($windowNames[1]);
         }
 
         /* Add wiki page */
-        $checkurl = 'Service:'.$this->serviceHostName.'_'.$this->serviceName;
-        if( !strstr(urldecode($this->getSession()->getCurrentUrl()), $checkurl)) {
-           throw new Exception('Bad url');
+        $checkurl = 'Service:' . $this->serviceHostName . '_' . $this->serviceName;
+        if (!strstr(urldecode($this->getSession()->getCurrentUrl()), $checkurl)) {
+            throw new Exception('Bad url');
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki service page');
@@ -136,6 +147,15 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $this->restartAllPollers();
     }
 
+    /**
+     * @When I delete a wiki procedure
+     */
+    public function iDeleteAWikiProcedure()
+    {
+        /* Go to the page to options page */
+        $this->visit('/main.php?p=61001');
+        $this->assertFind('css', '.list_two td:nth-child(5) a:nth-child(4)')->click();
+    }
 
     /**
      * @Then a link towards this host procedure is available in configuration
@@ -149,11 +169,12 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $fieldValue = $this->assertFind('css', 'input[name="ehi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
-        if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')) {
+        if (!strstr($originalValue,
+            './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')
+        ) {
             throw new Exception('Bad url');
         }
     }
-
 
     /**
      * @Then a link towards this service procedure is available in configuration
@@ -167,9 +188,29 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $fieldValue = $this->assertFind('css', 'input[name="esi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
-        if( !strstr($originalValue, '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')) {
+        if (!strstr($originalValue,
+            './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')
+        ) {
             throw new Exception('Bad url');
         }
     }
 
+
+    /**
+     * @Then the page is deleted and the option disappear
+     */
+    public function thePageIsDeletedAndTheOptionDisappear()
+    {
+        $this->spin(
+            function ($context) {
+                if (' No wiki page defined ' == $this->assertFind('css', '.list_two td:nth-child(4) font')->getHtml()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            30,
+            'Delete option id display'
+        );
+    }
 }

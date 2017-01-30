@@ -37,6 +37,10 @@ if (!isset($centreon)) {
     exit();
 }
 
+require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
+
+$objMain = new CentreonMainCfg();
+
 if (!$centreon->user->admin && $server_id  && count($serverResult)) {
     if (!isset($serverResult[$server_id])) {
         $msg = new CentreonMsg();

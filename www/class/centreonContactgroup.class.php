@@ -86,7 +86,13 @@ class CentreonContactgroup
 
         # Get ldap contactgroups
         if ($withLdap && $dbOnly === false) {
-            $contactgroups = $contactgroups + $this->getLdapContactgroups();
+            $ldapContactgroups = $this->getLdapContactgroups();
+            $contactgroupNames = array_values($contactgroups);
+            foreach ($ldapContactgroups as $id => $name) {
+                if (!in_array($name, $contactgroupNames)) {
+                    $contactgroups[$id] = $name;
+                }
+            }
         }
 
         return $contactgroups;
@@ -429,12 +435,11 @@ class CentreonContactgroup
         $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             if (isset($row['cg_ldap_dn']) && $row['cg_ldap_dn'] != "") {
-                $cgId = '[' . $row['ar_id'] . ']' . $row['cg_name'];
                 $cgName = $this->formatLdapContactgroupName($row['cg_name'], $row['ar_name']);
             } else {
-                $cgId = $row['cg_id'];
                 $cgName = $row['cg_name'];
             }
+            $cgId = $row['cg_id'];
 
             # hide unauthorized contactgroups
             $hide = false;

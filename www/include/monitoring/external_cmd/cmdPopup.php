@@ -41,6 +41,8 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 session_start();
+session_write_close();
+
 $centreon = $_SESSION['centreon'];
 
 global $centreon, $pearDB;

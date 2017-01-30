@@ -50,7 +50,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
   $pearDB = new CentreonDB();
 
 /* Check Session */
-CentreonSession::start();
+CentreonSession::start(1);
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
@@ -59,7 +59,7 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
-if (!isset($_POST['poller']) || !isset($_POST['mode']) || !isset($_POST['sid'])) {
+if (!isset($_POST['poller']) || !isset($_POST['mode'])) {
     exit();
 }
 
@@ -107,10 +107,6 @@ try {
     $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/engine/";
     $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
 
-    session_start();
-    if ($_POST['sid'] != session_id()) {
-        exit;
-    }
     $centreon = $_SESSION['centreon'];
 
     /*  Set new error handler */

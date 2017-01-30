@@ -57,7 +57,7 @@ $pearDBO    = new CentreonDB("centstorage");
 /**
  * Security check
  */
-CentreonSession::start();
+CentreonSession::start(1);
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
