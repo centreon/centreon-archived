@@ -22,7 +22,6 @@ stage('Unit tests') {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
       sh '/opt/centreon-build/jobs/web/pipeline/mon-web-unittest.sh centos7'
-      def ut = readProperties file: 'ut.properties'
       step([
         $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
         pattern: '**/codestyle.xml',
