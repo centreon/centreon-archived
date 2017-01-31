@@ -136,6 +136,14 @@ $help['tip_proxy_port'] = dgettext(
     'help',
     'Port of the proxy.'
 );
+$help['tip_proxy_user'] = dgettext(
+    'help',
+    'User of the proxy (Only if you use basic authentication).'
+);
+$help['tip_proxy_password'] = dgettext(
+    'help',
+    'Password of the proxy (Only if you use basic authentication).'
+);
 
 /*
  * Chart options
