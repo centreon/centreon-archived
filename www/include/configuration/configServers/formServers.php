@@ -182,7 +182,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
                                  "init_script" => "/etc/init.d/centengine",
                                  "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata");
     
-    $scriptD = str_replace("/etc/init.d/", '', $cfg_server['init_script']);
+    $scriptD = str_replace("@INIT_D@/", '', $cfg_server['init_script']);
     if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
         $monitoring_engines['init_system'] = 'systemd';
     } else {

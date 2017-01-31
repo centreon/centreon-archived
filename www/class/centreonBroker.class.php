@@ -75,7 +75,7 @@ class CentreonBroker
      */
     protected function execLocalScript($script, $action)
     {
-        $scriptD = str_replace("/etc/init.d/", '', $script);
+        $scriptD = str_replace("@INIT_D@/", '', $script);
         if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
             shell_exec("sudo systemctl $action $scriptD");
         } else {
