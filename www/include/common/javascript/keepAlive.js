@@ -2,6 +2,6 @@
 setInterval(function(){
     jQuery.ajax({
         method: 'GET',
-        url: './api/internal.php?object=centreon_keepalive&action=keepalive'
+        url: './include/common/webServices/rest/internal.php?object=centreon_keepalive&action=keepalive'
     });
 },15000);
