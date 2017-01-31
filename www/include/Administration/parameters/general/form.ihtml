@@ -69,6 +69,8 @@
   	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_protocol">{$form.proxy_protocol.label}</td><td class="FormRowValue">{$form.proxy_protocol.html}</td></tr>
   	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_url">{$form.proxy_url.label}</td><td class="FormRowValue">{$form.proxy_url.html}</td></tr>
   	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_port">{$form.proxy_port.label}</td><td class="FormRowValue">{$form.proxy_port.html}</td></tr>
+  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_user">{$form.proxy_user.label}</td><td class="FormRowValue">{$form.proxy_user.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_password">{$form.proxy_password.label}</td><td class="FormRowValue">{$form.proxy_password.html}</td></tr>
 
     <!-- Chart options -->
     <tr class="list_lvl_1">

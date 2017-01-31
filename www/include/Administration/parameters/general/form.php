@@ -155,6 +155,8 @@ $form->addElement('text', 'proxy_url', _("Proxy URL"), $attrsText);
 
 $form->addElement('text', 'proxy_port', _("Proxy port"), $attrsText2);
 
+$form->addElement('text', 'proxy_user', _("Proxy user"), $attrsText);
+$form->addElement('password', 'proxy_password', _("Proxy password"), $attrsText);
 
 /**
  * Charts options

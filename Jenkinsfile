@@ -5,7 +5,7 @@ stage('Source') {
       checkout scm
     }
     sh '/opt/centreon-build/jobs/web/pipeline/mon-web-source.sh'
-    def source = readProperties file: 'source.properties'
+    source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
   }
@@ -80,7 +80,9 @@ try {
     }
   }
 }
-catch (e) {
-  slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
-  throw e;
+finally {
+  buildStatus = currentBuild.result ?: 'SUCCESS';
+  if (buildStatus != 'SUCCESS') {
+    slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
+  }
 }
