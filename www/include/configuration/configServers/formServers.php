@@ -114,7 +114,7 @@ $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
-$form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText);
+$form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
 $form->addElement('select', 'init_system', _("Init System"), array('systemv' => "systemv", "systemd" => "systemd"));
 
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
@@ -179,7 +179,7 @@ $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database
 if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     $monitoring_engines = array( "nagios_bin" => "/usr/sbin/centengine",
                                  "nagiostats_bin" => "/usr/sbin/centenginestats",
-                                 "init_script" => "/etc/init.d/centengine",
+                                 "init_script" => "centengine",
                                  "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata");
     
     $scriptD = str_replace("/etc/init.d/", '', $cfg_server['init_script']);
@@ -206,7 +206,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
     "centreonbroker_cfg_path" => "/etc/centreon-broker",
     "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
-    "init_script_centreontrapd" => "/etc/init.d/centreontrapd",
+    "init_script_centreontrapd" => "centreontrapd",
     "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"));
 } else {
     if (isset($cfg_server)) {
