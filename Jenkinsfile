@@ -80,7 +80,9 @@ try {
     }
   }
 }
-catch (e) {
-  slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
-  throw e;
+finally {
+  buildStatus = currentBuild.result ?: 'SUCCESS';
+  if (buildStatus != 'SUCCESS') {
+    slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
+  }
 }
