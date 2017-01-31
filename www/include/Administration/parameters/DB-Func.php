@@ -568,31 +568,31 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         'proxy_protocol',
-        isset($ret["proxy_protocol"]) && $ret["proxy_protocol"] != NULL
+        isset($ret["proxy_protocol"]) && $ret["proxy_protocol"] != null
             ? htmlentities($ret["proxy_protocol"], ENT_QUOTES, "UTF-8"): "NULL"
     );
     updateOption(
         $pearDB,
         'proxy_url',
-        isset($ret["proxy_url"]) && $ret["proxy_url"] != NULL
+        isset($ret["proxy_url"]) && $ret["proxy_url"] != null
             ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8"): "NULL"
     );
     updateOption(
         $pearDB,
         'proxy_port',
-        isset($ret["proxy_port"]) && $ret["proxy_port"] != NULL
+        isset($ret["proxy_port"]) && $ret["proxy_port"] != null
             ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8"): "NULL"
     );
     updateOption(
         $pearDB,
         'proxy_user',
-        isset($ret["proxy_user"]) && $ret["proxy_user"] != NULL
+        isset($ret["proxy_user"]) && $ret["proxy_user"] != null
             ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8"): "NULL"
     );
     updateOption(
         $pearDB,
         'proxy_password',
-        isset($ret["proxy_password"]) && $ret["proxy_password"] != NULL
+        isset($ret["proxy_password"]) && $ret["proxy_password"] != null
             ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8"): "NULL"
     );
     updateOption(
