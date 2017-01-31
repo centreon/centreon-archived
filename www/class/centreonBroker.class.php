@@ -78,6 +78,9 @@ class CentreonBroker
         $scriptD = str_replace("/etc/init.d/", '', $script);
         if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
             shell_exec("sudo systemctl $action $scriptD");
+
+          //  shell_exec("sudo service $script $action");
+
         } else {
             exec("ps -edf | grep cbd | grep -v grep", $output, $return_vars);
             if (count($output) == 0) {
