@@ -20,13 +20,12 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
-
 /**
  * Utils class for call HTTP JSON REST
  *
  * @author Centreon
  * @version 1.0.0
- * @package centreon-license-manager
+ * @package centreon
  */
 class CentreonRestHttp
 {
@@ -39,6 +38,11 @@ class CentreonRestHttp
      * @var using a proxy
      */
     private $proxy = null;
+
+    /**
+     * @var proxy authentication information
+     */
+    private $proxyAuthentication = null;
 
     /**
      * @var logFileThe The log file for call errors
@@ -84,9 +88,11 @@ class CentreonRestHttp
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
         $headers[] = 'Connection: close';
+        if (!is_null($this->proxyAuthentication)) {
+            $headers[] = 'Proxy-Authorization: Basic ' . $this->proxyAuthentication;
+        }
+
         /* Create stream context */
-
-
         $httpOpts = array(
             'http' => array(
                 'proxy' => $this->proxy,
@@ -203,10 +209,11 @@ class CentreonRestHttp
     private function getProxy()
     {
         $db = new CentreonDB();
-        $query = "SELECT `key`, `value` FROM `options` 
-                  WHERE (`key` = 'proxy_protocol'
-                  OR `key` = 'proxy_url'
-                  OR `key` = 'proxy_port')";
+        $query = 'SELECT `key`, `value` '
+            . 'FROM `options` '
+            . 'WHERE `key` IN ( '
+            . '"proxy_protocol", "proxy_url", "proxy_port", "proxy_user", "proxy_password" '
+            . ') ';
         $res = $db->query($query);
         while ($row = $res->fetchRow()) {
             $dataProxy[$row['key']] = $row['value'];
@@ -219,6 +226,14 @@ class CentreonRestHttp
             $this->proxy .= $dataProxy['proxy_url'];
             if ($dataProxy['proxy_port']) {
                 $this->proxy .= ':' . $dataProxy['proxy_port'];
+            }
+
+            /* Proxy basic authentication */
+            if (isset($dataProxy['proxy_user']) && !empty($dataProxy['proxy_user']) &&
+                isset($dataProxy['proxy_password']) && !empty($dataProxy['proxy_password'])) {
+                $this->proxyAuthentication = base64_encode(
+                    $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password']
+                );
             }
         }
     }
