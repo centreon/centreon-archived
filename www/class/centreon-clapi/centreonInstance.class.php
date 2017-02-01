@@ -47,9 +47,9 @@ require_once "Centreon/Object/Relation/Instance/Host.php";
  */
 class CentreonInstance extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ADDRESS           = 1;
-    const ORDER_SSH_PORT          = 2;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ADDRESS = 1;
+    const ORDER_SSH_PORT = 2;
 
     /**
      * Constructor
@@ -60,17 +60,25 @@ class CentreonInstance extends CentreonObject
     {
         parent::__construct();
         $this->object = new \Centreon_Object_Instance();
-        $this->params = array('localhost'                   => '0',
-                              'ns_activate'                 => '1',
-                              'ssh_port'                    => '22',
-                              'nagios_bin'                  => '/usr/sbin/centengine',
-                              'nagiostats_bin'              => '/usr/bin/centenginestats',
-                              'init_script'                 => '/etc/init.d/centengine',
-                              'centreonbroker_cfg_path'     => '/etc/centreon-broker',
-                              'centreonbroker_module_path'  => '/usr/share/centreon/lib/centreon-broker',
-                              'centreonconnector_path'      => '/usr/lib64/centreon-connector');
+        $this->params = array(
+            'localhost' => '0',
+            'ns_activate' => '1',
+            'ssh_port' => '22',
+            'nagios_bin' => '/usr/sbin/centengine',
+            'nagiostats_bin' => '/usr/bin/centenginestats',
+            'init_script' => 'centengine',
+            'centreonbroker_cfg_path' => '/etc/centreon-broker',
+            'centreonbroker_module_path' => '/usr/share/centreon/lib/centreon-broker',
+            'centreonconnector_path' => '/usr/lib64/centreon-connector'
+        );
         $this->insertParams = array('name', 'ns_ip_address', 'ssh_port');
-        $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey(), 'last_restart'));
+        $this->exportExcludedParams = array_merge(
+            $this->insertParams,
+            array(
+                $this->object->getPrimaryKey(),
+                'last_restart'
+            )
+        );
         $this->action = "INSTANCE";
         $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->activateField = "ns_activate";
@@ -117,7 +125,7 @@ class CentreonInstance extends CentreonObject
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -130,13 +138,23 @@ class CentreonInstance extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
 
         $pollerState = CentreonConfigPoller::getPollerState();
 
-        $params = array('id', 'name', 'localhost', 'ns_ip_address', 'ns_activate', 'ns_status', 'init_script',
-                           'nagios_bin', 'nagiostats_bin', 'ssh_port');
+        $params = array(
+            'id',
+            'name',
+            'localhost',
+            'ns_ip_address',
+            'ns_activate',
+            'ns_status',
+            'init_script',
+            'nagios_bin',
+            'nagiostats_bin',
+            'ssh_port'
+        );
         $paramString = str_replace("_", " ", implode($this->delim, $params));
         $paramString = str_replace("ns ", "", $paramString);
         $paramString = str_replace("nagios ", "", $paramString);
@@ -194,9 +212,18 @@ class CentreonInstance extends CentreonObject
     {
         $relObj = new \Centreon_Object_Relation_Instance_Host();
         $fields = array('host_id', 'host_name', 'host_address');
-        $elems = $relObj->getMergedParameters(array(), $fields, -1, 0, "host_name", "ASC", array('name' => $instanceName), 'AND');
+        $elems = $relObj->getMergedParameters(
+            array(),
+            $fields,
+            -1,
+            0,
+            "host_name",
+            "ASC",
+            array('name' => $instanceName),
+            'AND'
+        );
         foreach ($elems as $elem) {
-            echo $elem['host_id'].$this->delim.$elem['host_name'].$this->delim.$elem['host_address']."\n";
+            echo $elem['host_id'] . $this->delim . $elem['host_name'] . $this->delim . $elem['host_address'] . "\n";
         }
     }
 }
