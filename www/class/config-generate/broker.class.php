@@ -80,6 +80,24 @@ class Broker extends AbstractObjectXML
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
 
+    private function generateWatchdog($watchdogParameters)
+    {
+        $this->writer->startElement('centreonbroker');
+
+        foreach ($watchdogParameters as $parameters){
+            $this->writer->startElement('cbd');
+            $this->writeElement('name', $parameters['name'], true);
+            $this->writeElement('configuration_file', $parameters['configuration_file'], true);
+            $this->writeElement('run', 1, true);
+            $this->writeElement('reload', 1, true);
+            $this->writer->endElement();
+        }
+        $this->writeElement('log', '/var/log/centreon-broker/watchdog.log', true);
+        $this->generate_filename = 'watchdog.xml';
+        $this->writer->endElement();
+        $this->writeFile($this->backend_instance->getPath());
+    }
+
     private function generate($poller_id)
     {
         if (is_null($this->stmt_broker)) {
@@ -103,8 +121,14 @@ class Broker extends AbstractObjectXML
             ");
         }
 
+        $watchdog = array();
+
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
+            if ($row['config_name'] == 'central-module-master'){
+                continue;
+            }
+
             $this->generate_filename = $row['config_filename'];
             $object = array();
             $flow_count = 0;
@@ -125,6 +149,13 @@ class Broker extends AbstractObjectXML
             $object['event_queue_max_size'] = $row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
 
+
+            $watchdog[] = array(
+                'name' =>  $row['config_name'],
+                'configuration_file' => $row['config_filename'],
+                'run' => 1,
+                'reaload' => 1
+            );
 
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
@@ -213,6 +244,7 @@ class Broker extends AbstractObjectXML
             $this->generateFile($object, true, 'centreonBroker');
             $this->writeFile($this->backend_instance->getPath());
         }
+        $this->generateWatchdog($watchdog);
     }
 
     private function getEngineParameters($poller_id)
