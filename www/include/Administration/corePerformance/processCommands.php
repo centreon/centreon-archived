@@ -81,7 +81,7 @@ if (!$oreon->user->access->checkAction($cmd)) {
 $DBRESULT = $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
 $serveurs = $DBRESULT->fetchrow();
 unset($DBRESULT);
-(isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
+(isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "centengine";
 unset($serveurs);
 
 /*
@@ -95,7 +95,7 @@ $command = new CentreonExternalCommand($oreon);
 
 if ($cmd == "global_start") {
     if (isset($command->localhostTab[$poller])) {
-        shell_exec("sudo " . $nagios_init_script . " start");
+        shell_exec("sudo service" . $nagios_init_script . " start");
     } else {
         shell_exec("echo 'START:".$poller."' >> $centcore_pipe");
     }
