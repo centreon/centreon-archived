@@ -309,15 +309,6 @@ try {
     $formAddWidget->addElement('select2', 'widget_model_id', _("Widget"), array(), $attrWidgets);
 
     /**
-     * Widgets
-     */
-    $widgetList = $widgetObj->getWidgetModels();
-    $widgetModels = array();
-    foreach ($widgetList as $widgetModelId => $widgetModelName) {
-        $widgetModels[$widgetModelId] = $widgetObj->getWidgetInfoById($widgetModelId);
-    }
-
-    /**
      * Submit button
      */
     $formAddWidget->addElement('submit', 'submit', _("Submit"), array("class" => "btc bt_success"));
@@ -333,7 +324,6 @@ try {
     $rendererAddWidget->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $rendererAddWidget->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $formAddWidget->accept($rendererAddWidget);
-    $template->assign('widgetModels', $widgetModels);
     $template->assign('formAddWidget', $rendererAddWidget->toArray());
     $template->assign('rotationTimer', $rotationTimer);
     

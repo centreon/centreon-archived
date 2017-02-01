@@ -7,7 +7,6 @@
 require_once "/etc/centreon/centreon.conf.php";
 $centreon_path = "/usr/share/centreon/";
 $module_path = $centreon_path . "www/class/centreon-knowledge/";
-$CentreonURL = "http://localhost/centreon";
 require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $module_path . "procedures.class.php";
 require_once $module_path . "procedures_DB_Connector.class.php";
@@ -22,7 +21,6 @@ $WikiURL = $conf['kb_wiki_url'];
 
 // Define cron constants
 define('_WIKIURL_', $WikiURL);
-define('_CENTREONURL_', $CentreonURL);
 
 // Last time the cron has been executed
 $startTimestamp = time() - (3600*24);
@@ -179,7 +177,7 @@ function editLinkForHost($dbConnector, $hostName)
     $resHost = $dbConnector->query($querySelect);
     $tuple = $resHost->fetchRow();
 
-    $valueToAdd = _CENTREONURL_.'/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
+    $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
     $queryUpdate = "UPDATE extended_host_information "
         ."SET ehi_notes_url = '$valueToAdd' "
         ."WHERE host_host_id = '".$tuple['host_id']."'";
@@ -213,7 +211,7 @@ function editLinkForService($dbConnector, $objName)
     $resService = $dbConnector->query($querySelect);
     $tuple = $resService->fetchRow();
 
-    $valueToAdd = _CENTREONURL_.'/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+    $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
     $queryUpdate = "UPDATE extended_service_information "
         ."SET esi_notes_url = '$valueToAdd' "
         ."WHERE service_service_id = '".$tuple['service_id']."'";

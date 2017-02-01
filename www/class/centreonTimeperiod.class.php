@@ -110,7 +110,7 @@ class CentreonTimeperiod
      * @param integer $tpId
      * @return string
      */
-    public function getTimperiodException($tpId)
+    public function getTimeperiodException($tpId)
     {
         $query = "SELECT `exception_id` FROM `timeperiod_exceptions`
                 WHERE `timeperiod_id` = " . (int)$tpId;
@@ -178,13 +178,13 @@ class CentreonTimeperiod
     }
 
     /**
-     * Insert in database a timperiod exception
+     * Insert in database a timeperiod exception
      *
      * @param integer $tpId
      * @param array $parameters Values to insert (days and timerange)
      * @throws Exception
      */
-    public function setTimperiodException($tpId, $parameters)
+    public function setTimeperiodException($tpId, $parameters)
     {
         foreach ($parameters as $exception) {
             $sQuery = "INSERT INTO `timeperiod_exceptions` "
@@ -202,13 +202,13 @@ class CentreonTimeperiod
     }
 
     /**
-     * Insert in database a timperiod dependency
+     * Insert in database a timeperiod dependency
      *
      * @param integer $timeperiodId
      * @param integer $depId
      * @throws Exception
      */
-    public function setTimperiodDependency($timeperiodId, $depId)
+    public function setTimeperiodDependency($timeperiodId, $depId)
     {
         $sQuery = "INSERT INTO `timeperiod_include_relations` "
             . "(`timeperiod_id`,`timeperiod_include_id`) "
@@ -222,12 +222,12 @@ class CentreonTimeperiod
     }
 
     /**
-     * Delete in database a timperiod exception
+     * Delete in database a timeperiod exception
      *
      * @param integer $tpId
      * @throws Exception
      */
-    public function deleteTimperiodException($tpId)
+    public function deleteTimeperiodException($tpId)
     {
         $sQuery = "DELETE FROM `timeperiod_exceptions` WHERE `timeperiod_id` = " . (int)$tpId;
         $res = $this->db->query($sQuery);
@@ -238,12 +238,12 @@ class CentreonTimeperiod
     }
 
     /**
-     * Delete in database a timperiod include
+     * Delete in database a timeperiod include
      *
      * @param integer $tpId
      * @throws Exception
      */
-    public function deleteTimperiodInclude($tpId)
+    public function deleteTimeperiodInclude($tpId)
     {
         $sQuery = "DELETE FROM `timeperiod_include_relations` WHERE `timeperiod_id` = " . (int)$tpId;
         $res = $this->db->query($sQuery);
@@ -254,7 +254,7 @@ class CentreonTimeperiod
     }
 
     /**
-     * Delete timperiod in database
+     * Delete timeperiod in database
      *
      * @param string $tp_name timperiod name
      * @throws Exception
@@ -276,19 +276,18 @@ class CentreonTimeperiod
      *
      * @return array
      */
-    public function getLinkedHostsByName($timeperiodName, $checkTemplates = true)
+    public function getLinkedHostsByName($timeperiodName, $register = false)
     {
-        if ($checkTemplates) {
-            $register = 0;
-        } else {
-            $register = 1;
+        $registerClause = '';
+        if ($register === '0' || $register === '1') {
+            $registerClause = 'AND h.host_register = "' . $register . '" ';
         }
 
-        $linkedCommands = array();
+        $linkedHosts = array();
         $query = 'SELECT DISTINCT h.host_name '
             . 'FROM host h, timeperiod t '
-            . 'WHERE h.timeperiod_tp_id  = t.tp_id '
-            . 'AND h.host_register = "' . $register . '" '
+            . 'WHERE (h.timeperiod_tp_id = t.tp_id OR h.timeperiod_tp_id2 = t.tp_id) '
+            . $registerClause
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
         $result = $this->db->query($query);
@@ -298,10 +297,10 @@ class CentreonTimeperiod
         }
 
         while ($row = $result->fetchRow()) {
-            $linkedCommands[] = $row['host_name'];
+            $linkedHosts[] = $row['host_name'];
         }
 
-        return $linkedCommands;
+        return $linkedHosts;
     }
 
     /**
@@ -309,19 +308,18 @@ class CentreonTimeperiod
      *
      * @return array
      */
-    public function getLinkedServicesByName($timeperiodName, $checkTemplates = true)
+    public function getLinkedServicesByName($timeperiodName, $register = false)
     {
-        if ($checkTemplates) {
-            $register = 0;
-        } else {
-            $register = 1;
+        $registerClause = '';
+        if ($register === '0' || $register === '1') {
+            $registerClause = 'AND s.service_register = "' . $register . '" ';
         }
 
-        $linkedCommands = array();
+        $linkedServices = array();
         $query = 'SELECT DISTINCT s.service_description '
             . 'FROM service s, timeperiod t '
-            . 'WHERE s.timeperiod_tp_id  = t.tp_id '
-            . 'AND s.service_register = "' . $register . '" '
+            . 'WHERE (s.timeperiod_tp_id = t.tp_id OR s.timeperiod_tp_id2 = t.tp_id) '
+            . $registerClause
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
         $result = $this->db->query($query);
@@ -331,9 +329,73 @@ class CentreonTimeperiod
         }
 
         while ($row = $result->fetchRow()) {
-            $linkedCommands[] = $row['service_description'];
+            $linkedServices[] = $row['service_description'];
         }
 
-        return $linkedCommands;
+        return $linkedServices;
+    }
+
+    /**
+     * Returns array of Contacts linked to the timeperiod
+     *
+     * @param string $timeperiodName
+     * @return array
+     * @throws Exception
+     */
+    public function getLinkedContactsByName($timeperiodName)
+    {
+        $linkedContacts = array();
+        $query = 'SELECT DISTINCT c.contact_name '
+            . 'FROM contact c, timeperiod t '
+            . 'WHERE (c.timeperiod_tp_id = t.tp_id OR c.timeperiod_tp_id2 = t.tp_id) '
+            . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
+
+        $result = $this->db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked contacts of ' . $timeperiodName);
+        }
+
+        while ($row = $result->fetchRow()) {
+            $linkedContacts[] = $row['contact_name'];
+        }
+
+        return $linkedContacts;
+    }
+
+    /**
+     * Returns array of Timeperiods linked to the timeperiod
+     *
+     * @param string $timeperiodName
+     * @return array
+     * @throws Exception
+     */
+    public function getLinkedTimeperiodsByName($timeperiodName)
+    {
+        $linkedTimeperiods = array();
+
+        $query = 'SELECT DISTINCT t1.tp_name '
+            . 'FROM timeperiod t1, timeperiod_include_relations tir1, timeperiod t2 '
+            . 'WHERE t1.tp_id = tir1.timeperiod_id '
+            . 'AND t2.tp_id = tir1.timeperiod_include_id '
+            . 'AND t2.tp_name = "' . $this->db->escape($timeperiodName) . '" '
+            . 'UNION '
+            . 'SELECT DISTINCT t3.tp_name '
+            . 'FROM timeperiod t3, timeperiod_include_relations tir2, timeperiod t4 '
+            . 'WHERE t3.tp_id = tir2.timeperiod_include_id '
+            . 'AND t4.tp_id = tir2.timeperiod_id '
+            . 'AND t4.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
+
+        $result = $this->db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked timeperiods of ' . $timeperiodName);
+        }
+
+        while ($row = $result->fetchRow()) {
+            $linkedTimeperiods[] = $row['tp_name'];
+        }
+
+        return $linkedTimeperiods;
     }
 }

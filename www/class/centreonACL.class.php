@@ -424,9 +424,13 @@ class CentreonACL
                         $DBRESULT2 = $pearDB->query($query2);
                         while ($topo_page = $DBRESULT2->fetchRow()) {
                             $topology[] = $topo_page["topology_topology_id"];
-                            if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])
-                                || !$tmp_topo_page[$topo_page['topology_topology_id']]) {
+                            if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
                                 $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
+                            } else if ($topo_page["access_right"] == 1) { // Read/Write
+                                $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
+                            } else if ($topo_page["access_right"] == 2 &&
+                                $tmp_topo_page[$topo_page["topology_topology_id"]] == 0) {
+                                $tmp_topo_page[$topo_page["topology_topology_id"]] = 2;
                             }
                         }
                         $DBRESULT2->free();

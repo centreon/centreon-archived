@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,11 +33,13 @@
  *
  */
 
-
-require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
 require_once dirname(__FILE__) . "/webService.class.php";
 
-class CentreonAdministrationWidget extends CentreonWebService
+/**
+ * Class CentreonKeepalive
+ */
+class CentreonKeepalive extends CentreonWebService
 {
     /**
      * Constructor
@@ -50,28 +52,11 @@ class CentreonAdministrationWidget extends CentreonWebService
     }
     
     /**
-     * Get the list of views
+     * Keep alive
      */
-    public function getList()
+    public function getKeepAlive()
     {
-        global $centreon;
-
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
-
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-
-        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
-
-        return $widgetObj->getWidgetModels($q, $range);
+        $session = new CentreonSession();
+        $session->updateSession($this->pearDB);
     }
 }

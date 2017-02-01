@@ -37,7 +37,7 @@ ini_set("display_errors", "Off");
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
-require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
@@ -47,7 +47,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 
-  $pearDB = new CentreonDB();
+$pearDB = new CentreonDB();
 
 /* Check Session */
 CentreonSession::start(1);
@@ -104,16 +104,16 @@ try {
     $ret['restart_mode'] = $_POST['mode'];
 
     chdir(_CENTREON_PATH_ . "www");
-    $nagiosCFGPath = _CENTREON_PATH_."/filesGeneration/engine/";
-    $centreonBrokerPath = _CENTREON_PATH_."/filesGeneration/broker/";
+    $nagiosCFGPath = _CENTREON_PATH_ . "/filesGeneration/engine/";
+    $centreonBrokerPath = _CENTREON_PATH_ . "/filesGeneration/broker/";
 
     $centreon = $_SESSION['centreon'];
 
     /*  Set new error handler */
     set_error_handler('log_error');
-    
+
     if (defined('_CENTREON_VARLIB_')) {
-        $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
+        $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
     } else {
         $centcore_pipe = "/var/lib/centreon/centcore.cmd";
     }
@@ -125,13 +125,20 @@ try {
         $msg_restart = array();
     }
 
-    $tabs = $centreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost', 'init_script'),
-                                                         'order'      => array('name'),
-                                                         'conditions' => array('ns_activate' => '1'),
-                                                         'keys'       => array('id')));
+    $tabs = $centreon->user->access->getPollerAclConf(array(
+        'fields' => array('name', 'id', 'localhost', 'init_script'),
+        'order' => array('name'),
+        'conditions' => array('ns_activate' => '1'),
+        'keys' => array('id')
+    ));
     foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
-            $poller[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"], 'init_script' => $tab['init_script']);
+            $poller[$tab["id"]] = array(
+                "id" => $tab["id"],
+                "name" => $tab["name"],
+                "localhost" => $tab["localhost"],
+                'init_script' => $tab['init_script']
+            );
         }
     }
 
@@ -140,45 +147,37 @@ try {
      */
     $brk = new CentreonBroker($pearDB);
     $brk->reload();
-    
+
     foreach ($poller as $host) {
         if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
-                if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
-                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl reload $scriptD");
-                } else {
-                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " reload");
-                }
+                $msg_restart[$host["id"]] = shell_exec("sudo service " . $host['init_script'] . " reload");
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
-                    fwrite($fh, "RELOAD:".$host["id"]."\n");
+                    fwrite($fh, "RELOAD:" . $host["id"] . "\n");
                     fclose($fh);
                 } else {
                     throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
                 }
-                
+
                 // Manage Error Message
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
                 }
                 if ($return != 0) {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to ".$host["name"]."\n");
+                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to "
+                        . $host["name"] . "\n");
                 } else {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to ".$host["name"].". Check $centcore_pipe properties.\n");
+                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to "
+                        . $host["name"] . ". Check $centcore_pipe properties.\n");
                 }
             }
         } elseif ($ret["restart_mode"] == 2) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $scriptD = str_replace("/etc/init.d/", '', $host['init_script']);
-                if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
-                    $msg_restart[$host["id"]] = shell_exec("sudo systemctl restart $scriptD");
-                } else {
-                    $msg_restart[$host["id"]] = shell_exec("sudo " . $host['init_script'] . " restart");
-                }
+                $msg_restart[$host["id"]] = shell_exec("sudo service " . $host['init_script'] . " restart");
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
-                    fwrite($fh, "RESTART:".$host["id"]."\n");
+                    fwrite($fh, "RESTART:" . $host["id"] . "\n");
                     fclose($fh);
                 } else {
                     throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
@@ -189,38 +188,46 @@ try {
                     $msg_restart[$host["id"]] = "";
                 }
                 if ($return != 0) {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
+                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to "
+                        . $host["name"] . "\n");
                 } else {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to ".$host["name"].". Check $centcore_pipe properties.\n");
+                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to "
+                        . $host["name"] . ". Check $centcore_pipe properties.\n");
                 }
             }
         }
-        $DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."'");
+        $DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '"
+            . time() . "' WHERE `id` = '" . $host["id"] . "'");
     }
 
     foreach ($msg_restart as $key => $str) {
         $msg_restart[$key] = str_replace("\n", "<br>", $str);
     }
-    
+
     /* Find restart / reload action from modules */
     foreach ($centreon->modules as $key => $value) {
         $addModule = true;
         if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
-            $module_license_validity = zend_loader_install_license(_CENTREON_PATH_ . "www/modules/".$key."license/merethis_lic.zl", true);
+            $module_license_validity = zend_loader_install_license(
+                _CENTREON_PATH_ . "www/modules/" . $key . "license/merethis_lic.zl",
+                true
+            );
             if ($module_license_validity == false) {
                 $addModule = false;
             }
         }
-        
+
         if ($addModule) {
-            if ($value["restart"] && $files = glob(_CENTREON_PATH_ . "www/modules/".$key."/restart_pollers/*.php")) {
+            if ($value["restart"]
+                && $files = glob(_CENTREON_PATH_ . "www/modules/" . $key . "/restart_pollers/*.php")
+            ) {
                 foreach ($files as $filename) {
                     include $filename;
                 }
             }
         }
     }
-    
+
     $xml->startElement("response");
     $xml->writeElement("status", "<b><font color='green'>OK</font></b>");
     $xml->writeElement("statuscode", STATUS_OK);

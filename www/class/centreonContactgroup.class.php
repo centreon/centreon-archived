@@ -223,7 +223,7 @@ class CentreonContactgroup
                     /*
                      * Test is the group a not move or delete in ldap
                      */
-                    if (false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
+                    if (empty($row['cg_ldap_dn']) || false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
                         $dn = $ldapConn->findGroupDn($row['cg_name']);
                         if (false === $dn) {
                             /*
@@ -238,7 +238,7 @@ class CentreonContactgroup
                             /*
                              * Update the ldap group in contactgroup
                              */
-                            $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $row['cg_ldap_dn'] . "'
+                            $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $dn . "'
                                 WHERE cg_id = " . $row['cg_id'];
                             if (PEAR::isError($this->db->query($queryUpdateDn))) {
                                 $msg[] = "Error in update contactgroup for ldap group : " . $row['cg_name'];

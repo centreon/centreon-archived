@@ -18,7 +18,7 @@ Pensez à mettre en place une stratégie de globalisation de la configuration af
    groups
    category
    models
-   imp
+   imp/index
    advanced_configuration/index
    poller/index
    deploy
