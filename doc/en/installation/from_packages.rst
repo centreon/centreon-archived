@@ -4,7 +4,7 @@
 Using packages
 ==============
 
-Centreo supplies RPM for its products via the Centreon Open Sources version available free of charge on our repository (ex CES).
+Centreon supplies RPM for its products via the Centreon Open Sources version available free of charge on our repository (ex CES).
 
 These packages have been successfully tested on CentOS and Red Hat environments in 6.x and 7.x versions.
 
