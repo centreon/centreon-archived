@@ -4,9 +4,8 @@
 A partir des dépôts
 ===================
 
-Centreon fournit RPM pour ses produits au travers de la solution Centreon
-Entreprise Server (CES) en version Open Sources et disponible gratuitement
-sur notre dépôt.
+Centreon fournit des RPM pour ses produits au travers de la solution Centreon Open Sources
+(ex CES) disponible gratuitement sur notre dépôt.
 
 Ces paquets ont été testés avec succès sur les environnements CentOS et
 Red Hat en version 6.x et 7.x.
@@ -39,6 +38,9 @@ Le dépôt est maintenant installé.
 Pour tous les OS
 ----------------
 
+Désactiver SELinux
+^^^^^^^^^^^^^^^^^^
+
 SELinux doit être désactivé. Pour cela vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
 
  ::
@@ -52,6 +54,26 @@ La timezone par défaut de PHP doit être configurée. Pour cela, aller dans le 
  date.timezone = Europe/Paris
 
 Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apache de votre serveur.
+
+Pare-feu
+^^^^^^^^
+
+Paramétrer le pare-feu système ou désactiver ce dernier. Pour désactiver ce dernier exécuter les commandes suivantes :
+
+* **iptables** ::
+
+    # /etc/init.d/iptables save
+    # /etc/init.d/iptables stop
+    # chkconfig iptables off
+
+* **firewalld** ::
+
+    # systemctl stop firewalld
+    # systemctl disable firewalld
+    # systemctl status firewalld
+
+Système de gestino de base de données
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information nous recommandons MariaDB.
 
