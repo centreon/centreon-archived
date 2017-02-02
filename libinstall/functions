@@ -713,12 +713,12 @@ function locate_broker_etc()
 
 function locate_broker_init_script()
 {
-	if [ -z "$BROKER_INIT_SCRIPT" ]; then
+	if [ -z "cbd" ]; then
 		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?")" "NO_DEFAULT" "BROKER_INIT_SCRIPT"
 	fi
 	BROKER_INIT_SCRIPT=`trim ${BROKER_INIT_SCRIPT}`
 	export BROKER_INIT_SCRIPT
-	log "INFO" "BROKER_INIT_SCRIPT: $BROKER_INIT_SCRIPT"
+	log "INFO" "BROKER_INIT_SCRIPT: cbd"
 }
 
 #----
@@ -1324,7 +1324,7 @@ function prepare_sudo_config() {
 	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "$(gettext "What is the Monitoring engine binary ?")" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
-	[ -z "$BROKER_INIT_SCRIPT" ] && locate_broker_init_script
+	[ -z "cbd" ] && locate_broker_init_script
 	# Prepare sudo.conf
 	
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
@@ -1333,69 +1333,41 @@ function prepare_sudo_config() {
 	User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
 	Defaults:CENTREON !requiretty
 	# Monitoring engine Restart
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
+	CENTREON   ALL = NOPASSWD: service centengine restart
 	# Monitoring engine reload
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
+	CENTREON   ALL = NOPASSWD: service centengine reload
 	# Snmptrapd Restart
-	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
+	CENTREON   ALL = NOPASSWD: service snmptrapd restart
 	# Centreontrapd restart
-	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
+	CENTREON   ALL = NOPASSWD: service centreontrapd restart
 	# Centreontrapd reload
-	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
+	CENTREON   ALL = NOPASSWD: service centreontrapd reload
 	__EOT__
 
-	# Systemd compatibility
-	if [ -e "/etc/systemd/system/cbd.service" ] ; then 
-		${CAT} <<- __EOT__ > $directory/centreon.sudo
-		## BEGIN: CENTREON SUDO
-		# Add by CENTREON installation script
-		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
-		Defaults:CENTREON !requiretty
-		# Monitoring engine Restart
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
-		# Monitoring engine reload
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
-		# Broker engine Start
-		CENTREON   ALL = NOPASSWD: systemctl start cbd
-		# Broker engine Stop
-		CENTREON   ALL = NOPASSWD: systemctl stop cbd
-		# Broker engine Restart
-		CENTREON   ALL = NOPASSWD: systemctl restart cbd
-		# Broker engine reload
-		CENTREON   ALL = NOPASSWD: systemctl reload
-		# Snmptrapd Restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
-		# Centreontrapd restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
-		# Centreontrapd reload
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
-		__EOT__
-	else 
-		${CAT} <<- __EOT__ > $directory/centreon.sudo
-		## BEGIN: CENTREON SUDO
-		# Add by CENTREON installation script
-		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
-		Defaults:CENTREON !requiretty
-		# Monitoring engine Restart
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
-		# Monitoring engine reload
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
-		# Broker engine Start
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT start
-		# Broker engine Stop
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT stop
-		# Broker engine Restart
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT restart
-		# Broker engine reload
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT reload
-		# Snmptrapd Restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
-		# Centreontrapd restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
-		# Centreontrapd reload
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
-		__EOT__
-	fi
+    ${CAT} <<- __EOT__ > $directory/centreon.sudo
+    ## BEGIN: CENTREON SUDO
+    # Add by CENTREON installation script
+    User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
+    Defaults:CENTREON !requiretty
+    # Monitoring engine Restart
+    CENTREON   ALL = NOPASSWD: service centengine restart
+    # Monitoring engine reload
+    CENTREON   ALL = NOPASSWD: service centengine reload
+    # Broker engine Start
+    CENTREON   ALL = NOPASSWD: service cbd start
+    # Broker engine Stop
+    CENTREON   ALL = NOPASSWD: service cbd stop
+    # Broker engine Restart
+    CENTREON   ALL = NOPASSWD: service cbd restart
+    # Broker engine reload
+    CENTREON   ALL = NOPASSWD: service cbd reload
+    # Snmptrapd Restart
+    CENTREON   ALL = NOPASSWD: service snmptrapd restart
+    # Centreontrapd restart
+    CENTREON   ALL = NOPASSWD: service centreontrapd restart
+    # Centreontrapd reload
+    CENTREON   ALL = NOPASSWD: service centreontrapd reload
+    __EOT__
 
 	echo "## END: CENTREON SUDO" >> $directory/centreon.sudo
 	echo "" >> $directory/centreon.sudo	
@@ -1537,11 +1509,11 @@ function createConfFile()
 \$conf_centreon['broker_user'] = "$BROKER_USER";
 \$conf_centreon['broker_group'] = "$BROKER_GROUP";
 \$conf_centreon['broker_etc'] = "$BROKER_ETC";
-\$conf_centreon['broker_init_script'] = "$BROKER_INIT_SCRIPT";
+\$conf_centreon['broker_init_script'] = "cbd";
 \$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
 \$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
-\$conf_centreon['monitoring_init_script'] = "$MONITORINGENGINE_INIT_SCRIPT";
+\$conf_centreon['monitoring_init_script'] = "centengine";
 \$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
 \$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
@@ -1594,9 +1566,9 @@ function createCentreonInstallConf() {
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	BROKER_ETC=$BROKER_ETC
 	BROKER_USER=$BROKER_USER
-	BROKER_INIT_SCRIPT=$BROKER_INIT_SCRIPT
+	BROKER_INIT_SCRIPT=cbd
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
-	MONITORINGENGINE_INIT_SCRIPT=$MONITORINGENGINE_INIT_SCRIPT
+	MONITORINGENGINE_INIT_SCRIPT=centengine
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
 	MONITORINGENGINE_LOG=$MONITORINGENGINE_LOG
 	MONITORINGENGINE_USER=$MONITORINGENGINE_USER
@@ -1735,8 +1707,8 @@ function locate_monitoringengine_init_script()
 	local val_ref=$3
 	local res="not_define"
 	local first=0
-	if [ -n "$MONITORINGENGINE_INIT_SCRIPT" -a -x "$MONITORINGENGINE_INIT_SCRIPT" ]; then
-		log "INFO" "$(gettext "Use default variable") : $MONITORINGENGINE_INIT_SCRIPT"
+	if [ -n "centengine" -a -x "centengine" ]; then
+		log "INFO" "$(gettext "Use default variable") : centengine"
 		return 0
 	fi
 	while [ ! -x "$res" ]; do
