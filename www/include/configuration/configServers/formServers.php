@@ -160,6 +160,7 @@ $cloneSetCmd[] = $form->addElement(
 $form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
 $form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
+$form->addElement('text', 'config_value', _("Centreon Broker log"), $attrsText2);
 
 /*
  * Centreon Connector

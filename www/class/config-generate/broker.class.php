@@ -46,12 +46,13 @@ class Broker extends AbstractObjectXML
         config_filename,
         config_write_timestamp,
         config_write_thread_id,
+        config_activate,
         ns_nagios_server,
-        stats_activate,
-        correlation_activate,
         event_queue_max_size,
+        command_file,
         retention_path,
-        command_file
+        stats_activate,
+        correlation_activate
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -67,7 +68,8 @@ class Broker extends AbstractObjectXML
     protected $attributes_engine_parameters = '
         id,
         name,
-        centreonbroker_module_path
+        centreonbroker_module_path,
+        centreonbroker_cfg_path
     ';
     protected $exclude_parameters = array(
         'blockId'
@@ -79,24 +81,6 @@ class Broker extends AbstractObjectXML
     protected $stmt_broker = null;
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
-
-    private function generateWatchdog($watchdogParameters)
-    {
-        $this->writer->startElement('centreonbroker');
-
-        foreach ($watchdogParameters as $parameters){
-            $this->writer->startElement('cbd');
-            $this->writeElement('name', $parameters['name'], true);
-            $this->writeElement('configuration_file', $parameters['configuration_file'], true);
-            $this->writeElement('run', 1, true);
-            $this->writeElement('reload', 1, true);
-            $this->writer->endElement();
-        }
-        $this->writeElement('log', '/var/log/centreon-broker/watchdog.log', true);
-        $this->generate_filename = 'watchdog.xml';
-        $this->writer->endElement();
-        $this->writeFile($this->backend_instance->getPath());
-    }
 
     private function generate($poller_id)
     {
@@ -149,13 +133,14 @@ class Broker extends AbstractObjectXML
             $object['event_queue_max_size'] = $row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
 
-
             $watchdog[] = array(
-                'name' =>  $row['config_name'],
-                'configuration_file' => $row['config_filename'],
-                'run' => 1,
-                'reaload' => 1
-            );
+                'cbd' => array(
+                    'name' => $row['config_name'],
+                    'configuration_file' => $this->engine['broker_cfg_path'].'/'.$row['config_filename'],
+                    'run' => 1,
+                    'reaload' => 1
+               )
+             );
 
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
@@ -244,7 +229,12 @@ class Broker extends AbstractObjectXML
             $this->generateFile($object, true, 'centreonBroker');
             $this->writeFile($this->backend_instance->getPath());
         }
-        $this->generateWatchdog($watchdog);
+        $watchdog[] = array(
+            'log' => '/var/log/centreon-broker/watchdog.log');
+        $this->generate_filename = 'watchdog.xml';
+        $this->generateFile($watchdog, true, 'centreonbroker');
+        $this->writeFile($this->backend_instance->getPath());
+
     }
 
     private function getEngineParameters($poller_id)
@@ -263,6 +253,7 @@ class Broker extends AbstractObjectXML
             $this->engine['id'] = $row['id'];
             $this->engine['name'] = $row['name'];
             $this->engine['broker_modules_path'] = $row['centreonbroker_module_path'];
+            $this->engine['broker_cfg_path'] = $row['centreonbroker_cfg_path'];
         } catch (Exception $e) {
             throw new Exception('Exception received : ' . $e->getMessage() . "\n");
         }
