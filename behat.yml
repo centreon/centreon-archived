@@ -124,3 +124,8 @@ default:
       paths: [ %paths.base%/features/Autologin.feature ]
       contexts:
        - AutologinContext
+
+    ldap:
+      paths: [ %paths.base%/features/Ldap.feature ]
+      contexts:
+      - LdapContext

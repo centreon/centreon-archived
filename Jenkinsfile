@@ -79,6 +79,13 @@ try {
       }
     }
   }
+
+  stage('Delivery') {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+    }
+  }
 }
 finally {
   buildStatus = currentBuild.result ?: 'SUCCESS';
