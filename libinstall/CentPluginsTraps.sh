@@ -26,7 +26,6 @@ locate_centreon_etcdir
 locate_centreon_rundir
 locate_centreon_logdir
 locate_snmp_etcdir
-locate_init_d
 locate_centreontrapd_bindir
 
 check_centreon_user
@@ -128,7 +127,7 @@ if [ "$RC" -eq "0" ] ; then
 	log "INFO" "$(gettext "CentreonTrapd init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 				 $TMP_DIR/final/centreontrapd.init.d \
-                 $INIT_D/centreontrapd >> $LOG_FILE 2>&1
+                 sudo service centreontrapd >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentreonTrapd init script installed")"
 	log "INFO" "$(gettext "CentreonTrapd init script installed")"
 	RC="1"

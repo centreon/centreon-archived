@@ -32,9 +32,6 @@ locate_centcore_bindir
 check_centreon_group
 check_centreon_user
 
-## Other requirement
-locate_init_d
-
 ## Populate temporaty source directory
 copyInTempFile 2>>$LOG_FILE
 
@@ -132,7 +129,7 @@ if [ "$RC" -eq "0" ] ; then
 	log "INFO" "$(gettext "CentCore init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMP_DIR/final/centcore.init.d \
-        $INIT_D/centcore >> $LOG_FILE 2>&1
+        sudo service centcore >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentCore init script installed")"
 	log "INFO" "$(gettext "CentCore init script installed")"
 	RC="1"

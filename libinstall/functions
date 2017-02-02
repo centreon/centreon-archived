@@ -648,31 +648,6 @@ function locate_centreon_plugins() {
         log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
 }
 
-#----
-## Define where is your init.d (rc.d) directory
-## check on system where is a init.d or rc.d directory to install centreon services
-## On GNU/Linux, most of distrib use /etc/init.d
-## On FreeBSD, use /usr/local/etc/rc.d
-## It's possible to add most of directory.
-## @Globals	INIT.D, DEFAULT_INIT_D 
-#----
-function locate_init_d() {
-	testdir_clean "$INIT_D" "INIT_D" 
-	if [ -z "$INIT_D" ] ; then
-		if [ -d "/etc/init.d" ] ; then
-			INIT_D="/etc/init.d"
-		elif [ -d "/usr/local/etc/rc.d" ] ; then
-			INIT_D="/usr/local/etc/rc.d"
-		# Add most of init.d 
-		else 
-			answer_with_testdir "$(gettext "Where is your init.d directory ?")" "$DEFAULT_INIT_D" "INIT_D"
-			echo_success "$(gettext "Path" ) $INIT_D" "$ok"
-		fi
-	fi
-	INIT_D=`trim ${INIT_D%/}`
-	export INIT_D
-	log "INFO" "INIT_D: $INIT_D"
-}
 
 #----
 ## Ask where is the monitoring engine binary
@@ -1350,7 +1325,6 @@ function prepare_sudo_config() {
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
 	[ -z "$BROKER_INIT_SCRIPT" ] && locate_broker_init_script
-	[ -z "$INIT_D" ] && locate_init_d
 	# Prepare sudo.conf
 	
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
