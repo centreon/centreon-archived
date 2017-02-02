@@ -4,9 +4,8 @@
 A partir des dépôts
 ===================
 
-Centreon fournit RPM pour ses produits au travers de la solution Centreon
-Entreprise Server (CES) en version Open Sources et disponible gratuitement
-sur notre dépôt.
+Centreon fournit des RPM pour ses produits au travers de la solution Centreon Open Sources
+(ex CES) disponible gratuitement sur notre dépôt.
 
 Ces paquets ont été testés avec succès sur les environnements CentOS et
 Red Hat en version 6.x et 7.x.
@@ -18,7 +17,9 @@ Prérequis
 Dépôt Centreon
 --------------
 
-Afin d'installer les logiciels Centreon à partir des dépôts CES, vous devez au préalable installer le fichier lié au dépôt. Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants.
+Afin d'installer les logiciels Centreon à partir des dépôts, vous devez au préalable installer 
+le fichier lié au dépôt. Exécuter la commande suivante à partir d'un utilisateur possédant les
+droits suffisants.
 
 Pour CentOS 6.
 
@@ -39,21 +40,61 @@ Le dépôt est maintenant installé.
 Pour tous les OS
 ----------------
 
+Désactiver SELinux
+^^^^^^^^^^^^^^^^^^
+
 SELinux doit être désactivé. Pour cela vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
 
- ::
+::
 
- SELINUX=disabled
+    SELINUX=disabled
+
+Fuseau horaire PHP
+^^^^^^^^^^^^^^^^^^
 
 La timezone par défaut de PHP doit être configurée. Pour cela, aller dans le répertoire /etc/php.d et créer un fichier nommé php-timezone.ini contenant la ligne suivante :
 
- ::
+::
 
- date.timezone = Europe/Paris
+    date.timezone = Europe/Paris
 
 Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apache de votre serveur.
 
+Pare-feu
+^^^^^^^^
+
+Paramétrer le pare-feu système ou désactiver ce dernier. Pour désactiver ce dernier exécuter les commandes suivantes :
+
+* **iptables** (CentOS v6) ::
+
+    # /etc/init.d/iptables save
+    # /etc/init.d/iptables stop
+    # chkconfig iptables off
+
+* **firewalld** (CentOS v7) ::
+
+    # systemctl stop firewalld
+    # systemctl disable firewalld
+    # systemctl status firewalld
+
+Système de gestion de base de données
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information nous recommandons MariaDB.
+
+Pour les système CentOS / RHEL en verison 7, il est nécessaire de modifidier la limitation **LimitNOFILE**.
+Pour cela, modifier le fichier **/etc/systemd/system/mysqld.service** et modifier la valeur pour avoir
+
+::
+
+    LimitNOFILE=32000
+
+Sauvegarder le fichier et exécuter les commandes suivantes
+
+::
+
+    # systemctl daemon-reload
+    # service mysqld restart
 
 ************************
 Installation de Centreon
