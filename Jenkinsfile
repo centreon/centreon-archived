@@ -58,13 +58,13 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh 6'
+        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh centos6'
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh 7'
+        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
