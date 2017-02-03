@@ -31,6 +31,9 @@ try {
         ])
       }
     }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Unit tests stage failure.');
+    }
   }
 
   stage('Package') {
@@ -46,6 +49,9 @@ try {
         sh '/opt/centreon-build/jobs/web/pipeline/mon-web-package.sh centos7'
       }
     }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Package stage failure.');
+    }
   }
 
   stage('Bundle') {
@@ -60,6 +66,9 @@ try {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh 7'
       }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Bundle stage failure.');
     }
   }
 
@@ -78,12 +87,18 @@ try {
         junit 'xunit-reports/**/*.xml'
       }
     }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Acceptance tests stage failure.');
+    }
   }
 
   stage('Delivery') {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
       sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Delivery stage failure.');
     }
   }
 }
