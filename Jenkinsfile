@@ -78,6 +78,7 @@ try {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos6'
         junit 'xunit-reports/**/*.xml'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
     },
     'centos7': {
@@ -85,6 +86,7 @@ try {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos7'
         junit 'xunit-reports/**/*.xml'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
