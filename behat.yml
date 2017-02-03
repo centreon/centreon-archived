@@ -129,3 +129,8 @@ default:
       paths: [ %paths.base%/features/Ldap.feature ]
       contexts:
       - LdapContext
+
+    share_custom_views:
+      paths: [ %paths.base%/features/ShareCustomViews.feature ]
+      contexts:
+      - ShareCustomViewsContext
