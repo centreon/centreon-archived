@@ -2222,7 +2222,6 @@ function updateHostHostCategory($host_id, $ret = array()) {
     if (!$host_id) {
         return;
     }
-
     $rq = "DELETE FROM hostcategories_relation ";
     $rq .= "WHERE host_host_id = '" . $host_id . "' ";
     $rq .= "AND NOT EXISTS(
@@ -2232,7 +2231,7 @@ function updateHostHostCategory($host_id, $ret = array()) {
                             AND hc.level IS NOT NULL) ";
     $DBRESULT = $pearDB->query($rq);
 
-    $ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : array();
+    $ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : $ret = $form->getSubmitValue("host_hcs");
     $hcsNEW = array();
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO hostcategories_relation ";
