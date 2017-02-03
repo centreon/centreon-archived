@@ -119,6 +119,11 @@ $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
 $form->addGroup($status, 'activate', _("Status"), '&nbsp;');
 
+$centreonbroker = array();
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'centreonbroker_watchdog_log', null, _("Daemon"), 1);
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'centreonbroker_watchdog_log', null, _("Module"), 0);
+$form->addGroup($centreonbroker, 'centreonbroker_watchdog_log', _("Broker Options"), '&nbsp;');
+
 $stats_activate = array();
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("Yes"), 1);
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("No"), 0);
