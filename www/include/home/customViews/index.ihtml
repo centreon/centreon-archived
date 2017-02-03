@@ -580,7 +580,11 @@ function initColorbox(selector, url, w, h)
 function displayBtnToggleEdit() {
   if (jQuery('.tabs_header').children().length > 0
       && jQuery('.portlet').length > 0) {
-    toggleEdit(modeEdit);
+    if (typeof modeEdit === "undefined"){
+        toggleEdit(false);
+    } else {
+        toggleEdit(modeEdit);
+    }
   } else {
     toggleEdit(true);
   }
@@ -589,8 +593,11 @@ function displayBtnToggleEdit() {
 function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
-  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))) {
-    $el.removeClass('edit');
+  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))
+    || (typeof modeEdit === "undefined"  && $el.hasClass('edit'))) {
+    if ($el.hasClass('edit')){
+        $el.removeClass('edit');
+    }
     jQuery('#actionBar').hide();
     jQuery('.portlet-header').each(function(index) {
         var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
