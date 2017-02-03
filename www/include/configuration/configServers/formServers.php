@@ -160,7 +160,7 @@ $cloneSetCmd[] = $form->addElement(
 $form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
 $form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
-$form->addElement('text', 'config_value', _("Centreon Broker log"), $attrsText2);
+$form->addElement('text', 'centreonbroker_logs_path', _("Centreon Broker logs"), $attrsText2);
 
 /*
  * Centreon Connector
@@ -207,6 +207,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
     "centreonbroker_cfg_path" => "/etc/centreon-broker",
     "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
+    "centreonbroker_logs_path" => "/var/log/centreon-broker/watchdog.log",
     "init_script_centreontrapd" => "/etc/init.d/centreontrapd",
     "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"));
 } else {

@@ -222,7 +222,7 @@ function insertServer($ret = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-    $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, `nagios_bin`, `nagiostats_bin`, `init_system`, `init_script`, `init_script_centreontrapd`, `snmp_trapd_path_conf`, `nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, `ssh_private_key`, `is_default`, `ns_activate`) ";
+    $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, `nagios_bin`, `nagiostats_bin`, `init_system`, `init_script`, `init_script_centreontrapd`, `snmp_trapd_path_conf`, `nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, `ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`) ";
     $rq .= "VALUES (";
     isset($ret["name"]) && $ret["name"] != null ? $rq .= "'".htmlentities(trim($ret["name"]), ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != null ? $rq .= "'".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
@@ -240,7 +240,8 @@ function insertServer($ret = array())
     isset($ret["centreonconnector_path"]) && $ret["centreonconnector_path"] != null ? $rq .= "'".htmlentities(trim($ret["centreonconnector_path"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != null ? $rq .= "'".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["is_default"]["is_default"]) && $ret["is_default"]["is_default"] != null ? $rq .= "'".htmlentities(trim($ret["is_default"]["is_default"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-    isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."'  "  : $rq .= "NULL)";
+    isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."',  "  : $rq .= "NULL, ";
+    isset($ret["centreonbroker_logs_path"]) && $ret["centreonbroker_logs_path"] != null ? $rq .= "'".htmlentities(trim($ret["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL";
     $rq .= ")";
 
     $DBRESULT = $pearDB->query($rq);
@@ -321,6 +322,7 @@ function updateServer($id = null)
     isset($ret["centreonconnector_path"]) && $ret["centreonconnector_path"] != null ? $rq .= "centreonconnector_path = '".htmlentities(trim($ret["centreonconnector_path"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "centreonconnector_path = NULL, ";
     isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != null ? $rq .= "ssh_private_key = '".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ssh_private_key = NULL, ";
     isset($ret["is_default"]) && $ret["is_default"] != null ? $rq .= "is_default = '".htmlentities(trim($ret["is_default"]["is_default"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "is_default = NULL, ";
+    isset($ret["centreonbroker_logs_path"]) && $ret["centreonbroker_logs_path"] != null ? $rq .= "centreonbroker_logs_path = '".htmlentities(trim($ret["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "centreonbroker_logs_path = NULL, ";
     $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
     $rq .= "WHERE id = '".$id."'";
     $DBRESULT = $pearDB->query($rq);

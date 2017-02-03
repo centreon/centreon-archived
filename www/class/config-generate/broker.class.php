@@ -46,7 +46,6 @@ class Broker extends AbstractObjectXML
         config_filename,
         config_write_timestamp,
         config_write_thread_id,
-        config_activate,
         ns_nagios_server,
         event_queue_max_size,
         command_file,

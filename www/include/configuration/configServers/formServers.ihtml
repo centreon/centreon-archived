@@ -50,7 +50,7 @@
     </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
-         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="config_value"> {$form.config_value.label}</td><td class="FormRowValue">{$form.config_value.html}</td></tr>
+         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_logs_path"> {$form.centreonbroker_logs_path.label}</td><td class="FormRowValue">{$form.centreonbroker_logs_path.html}</td></tr>
     <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.CentreonConnector}</h4>
