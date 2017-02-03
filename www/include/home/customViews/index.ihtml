@@ -581,7 +581,7 @@ function displayBtnToggleEdit() {
   if (jQuery('.tabs_header').children().length > 0
       && jQuery('.portlet').length > 0) {
     if (typeof modeEdit === "undefined"){
-        toggleEdit(undefined);
+        toggleEdit(false);
     } else {
         toggleEdit(modeEdit);
     }
@@ -594,7 +594,7 @@ function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
   if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))
-    || typeof modeEdit === "undefined") {
+    || (typeof modeEdit === "undefined"  && $el.hasClass('edit'))) {
     if ($el.hasClass('edit')){
         $el.removeClass('edit');
     }
