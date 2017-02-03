@@ -38,51 +38,55 @@ DEFINE('STEP_NUMBER', 2);
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once 'functions.php';
-$template = getTemplate('./templates');
 
+$template = getTemplate('./templates');
 $title = _('Dependency check up');
-$requiredLib = explode("\n", file_get_contents('../var/phplib'));
+
+$contents = "<table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>"
+    . "<tr>"
+    . "<th>"  . _('Module name') . "</th>"
+    . "<th>" . _('File') . "</th>"
+    . "<th>" . _('Status') . "</th>"
+    . "</tr>";
+
 /**
  * PHP Libraries 
  */
-$contents = "<table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>";
 $allClear = 1;
-$contents .= "<tr>
-                <th>"._('Module name')."</th>
-                <th>"._('File')."</th>
-                <th>"._('Status')."</th>
-             </tr>";
+$requiredLib = explode("\n", file_get_contents('../var/phplib'));
 foreach ($requiredLib as $line) {
     if (!$line) {
         continue;
     }
-    $contents .= "<tr>";
+
     list($name, $lib) = explode(":", $line);
-    $contents .= "<td>".$name."</td>";
-    $contents .= "<td>".$lib.".so</td>";
-    $contents .= "<td>";    
+
+    $contents .= "<tr>"
+        . "<td>" . $name . "</td>"
+        . "<td>" . $lib . ".so</td>"
+        . "<td>";
     if (extension_loaded($lib)) {
         $libMessage = '<span style="color:#88b917; font-weight:bold;">'._('Loaded').'</span>';
     } else {
         $libMessage = '<span style="color:#e00b3d; font-weight:bold;">'._('Not loaded').'</span>';
         $allClear = 0;
     }
-    $contents .= $libMessage;
-    $contents .= "</td>";
-    $contents .= "</tr>";
+    $contents .= $libMessage
+        . "</td>"
+        . "</tr>";
 }
 
 /* Test if timezone is set */
 if (!ini_get('date.timezone')) {
     $allClear = 0;
 
-    $contents .= "<tr>";
-    $contents .= "<td>Timezone</td>";
-    $contents .= "<td>"._("Set the default timezone in php.ini file") ."</td>";
-    $contents .= "<td>";    
-    $contents .= '<span style="color:#f91e05; font-weight:bold;">'._('Not initialized').'</span>';
-    $contents .= "</td>";
-    $contents .= "</tr>";
+    $contents .= "<tr>"
+        . "<td>Timezone</td>"
+        . "<td>" . _("Set the default timezone in php.ini file") . "</td>"
+        . "<td>"
+        . '<span style="color:#f91e05; font-weight:bold;">' . _('Not initialized') . '</span>'
+        . "</td>"
+        . "</tr>";
 }
 
 $contents .= "</table>";
@@ -90,7 +94,6 @@ $contents .= "</table>";
 /**
  * PEAR Libraries 
  */
-//@todo
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
 $template->assign('content', $contents);
