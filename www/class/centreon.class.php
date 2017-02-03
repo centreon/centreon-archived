@@ -165,7 +165,7 @@ class Centreon
     {
         $this->modules = array();
         $DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
-        while ($result = $DBRESULT->fetchRow()) {
+        while ($result = $DBRESULT->fetch()) {
             $this->modules[$result["name"]] = array("name" => $result["name"],
                                                     "gen" => false, "restart" => false,
                                                     "sql" => $result["sql_files"],
@@ -185,7 +185,7 @@ class Centreon
                 $this->modules[$result["name"]]["license"] = true;
             }
         }
-        $DBRESULT->free();
+        $DBRESULT = null;
     }
 
     public function initHooks()
@@ -256,8 +256,8 @@ class Centreon
                                     AND nagios_server.localhost = '1' 
                                     ORDER BY cfg_nagios.nagios_activate 
                                     DESC LIMIT 1");
-        $this->Nagioscfg = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $this->Nagioscfg = $DBRESULT->fetchColumn();
+        $DBRESULT = null;
     }
 
     /**
@@ -273,10 +273,10 @@ class Centreon
 
         $this->optGen = array();
         $DBRESULT = $pearDB->query("SELECT * FROM `options`");
-        while ($opt = $DBRESULT->fetchRow()) {
+        while ($opt = $DBRESULT->fetch()) {
             $this->optGen[$opt["key"]] = $opt["value"];
         }
-        $DBRESULT->free();
+        $DBRESULT = null;
         unset($opt);
     }
 
@@ -291,13 +291,13 @@ class Centreon
         global $pearDB;
 
         $DBRESULT = $pearDB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $DBRESULT->fetchColumn()) {
             $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
             foreach ($tab as $char) {
                 $name = str_replace($char, "", $name);
             }
         }
-        $DBRESULT->free();
+        $DBRESULT = null;
         return $name;
     }
 }

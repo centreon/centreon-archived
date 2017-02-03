@@ -43,7 +43,7 @@ $pearDB = new CentreonDB();
  */
 $options = array();
 $DBRESULT = $pearDB->query("SELECT * FROM options");
-while ($res = $DBRESULT->fetchRow()) {
+while ($res = $DBRESULT->fetch()) {
     $options[$res["key"]] = $res["value"];
 }
 unset($res);

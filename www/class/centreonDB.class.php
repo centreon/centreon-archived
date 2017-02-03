@@ -33,7 +33,6 @@
  *
  */
 include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
-require_once("DB.php");
 
 class CentreonDB
 {
@@ -55,8 +54,6 @@ class CentreonDB
     protected $lineRead;
     protected $debug;
     
-    protected static $aForbiden = array('UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
-
     /**
      * Constructor
      *
@@ -69,8 +66,6 @@ class CentreonDB
     public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
         try {
-           
-
             $conf_centreon['hostCentreon'] = hostCentreon;
             $conf_centreon['hostCentstorage'] = hostCentstorage;
             $conf_centreon['user'] = user;
@@ -84,7 +79,10 @@ class CentreonDB
 
             $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
-            $this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
+            $this->options = array(
+                PDO::ATTR_CASE => PDO::CASE_LOWER
+                // 'debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE
+            );
 
             /*
              * Add possibility to change SGDB port
@@ -102,6 +100,7 @@ class CentreonDB
                     $this->connectToCentstorage($conf_centreon);
                     $this->connect();
                     break;
+                case "centreon":
                 case "default":
                     $this->connectToCentreon($conf_centreon);
                     $this->connect();
@@ -154,7 +153,7 @@ class CentreonDB
     
     public function execute($stmt, $arrayValues)
     {
-        return $this->db->execute($stmt, $arrayValues);
+        return $stmt->execute($arrayValues);
     }
     
     public function rollback()
@@ -218,7 +217,7 @@ class CentreonDB
     }
 
     /**
-     * estrablish centreon DB connector
+     * establish centreon DB connector
      *
      * @access protected
      * @return  void
@@ -233,13 +232,14 @@ class CentreonDB
             'phptype' => $this->db_type,
             'username' => $conf_centreon["user"],
             'password' => $conf_centreon["password"],
-            'hostspec' => $conf_centreon["hostCentreon"] . ":" . $conf_centreon["port"],
+            'hostspec' => $conf_centreon["hostCentreon"],
+            'port'     => $conf_centreon["port"],
             'database' => $conf_centreon["db"],
         );
     }
 
     /**
-     * estrablish Centstorage DB connector
+     * establish Centstorage DB connector
      *
      * @access protected
      * @return  void
@@ -254,70 +254,29 @@ class CentreonDB
             'phptype' => $this->db_type,
             'username' => $conf_centreon["user"],
             'password' => $conf_centreon["password"],
-            'hostspec' => $conf_centreon["hostCentstorage"] . ":" . $conf_centreon["port"],
+            'hostspec' => $conf_centreon["hostCentstorage"],
+            'port'     => $conf_centreon["port"],
             'database' => $conf_centreon["dbcstg"],
         );
     }
 
     /**
-     * estrablish NDO DB connector
+     *  The connection is established here
      *
-     * @access protected
-     * @return  void
+     *  @return void
      */
-    protected function connectToNDO($conf_centreon)
+    public function connect()
     {
-        $DBRESULT = $this->db->query(
-            "SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db
-                WHERE activate = '1' LIMIT 1"
-        );
-        if (PEAR::isError($DBRESULT)) {
-            print "DB Error : " . $DBRESULT->getDebugInfo() . "<br />";
-        }
-
-        if (!$DBRESULT->numRows()) {
-            throw new Exception('No broker connection found');
-        }
-
-        $confNDO = $DBRESULT->fetchRow();
-        unset($DBRESULT);
-
-        if (!isset($confNDO['db_port'])) {
-            $confNDO['db_port'] = "3306";
-        }
-
-        $this->dsn = array(
-            'phptype' => $this->db_type,
-            'username' => $confNDO['db_user'],
-            'password' => $confNDO['db_pass'],
-            'hostspec' => $confNDO['db_host'] . ":" . $confNDO['db_port'],
-            'database' => $confNDO['db_name'],
-        );
-    }
-
-    /**
-     * estrablish DB connector
-     *
-     * @access protected
-     * @return void
-     */
-    protected function connect()
-    {
-        $this->db = DB::connect($this->dsn, $this->options);
-        $i = 0;
-        while (PEAR::isError($this->db) && ($i < $this->retry)) {
-            $this->db = DB::connect($this->dsn, $this->options);
-            $i++;
-        }
-        if ($i == $this->retry) {
-            if ($this->debug) {
-                $this->log->insertLog(2, $this->db->getMessage() . " (retry : $i)");
-            }
-            throw new Exception(
-                'Database Error: Could not connect to database. <br />Please contact your administrator.'
+        try {
+            $this->db = new \Pdo(
+                $this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
+                ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
+                $this->dsn['username'],
+                $this->dsn['password'],
+                $this->options
             );
-        } else {
-            $this->db->setFetchMode(DB_FETCHMODE_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
         }
     }
 
@@ -329,7 +288,7 @@ class CentreonDB
      */
     public function disconnect()
     {
-        $this->db->disconnect();
+        $this->db = null;
     }
     
     /**
@@ -367,38 +326,40 @@ class CentreonDB
             $str = htmlspecialchars($str);
         }
         
-        $escapedStr = mysql_real_escape_string($str);
+        $escapedStr = mysqli_real_escape_string($str);
         
         return $escapedStr;
     }
 
     /**
-     * launch a query
+     *  Query
      *
-     * @access public
-     * @param   string  $query_string   query
-     * @return  object  query result
+     *  @return void
      */
-    public function query($query_string = null, $placeHolders = array())
+    public function query($queryString = null)
     {
-        $this->requestExecuted++;
-        if (count($placeHolders)) {
-            $this->db->query("SET NAMES 'utf8'");
-            $DBRES = $this->db->query($query_string, $placeHolders);
-        } else {
-            $this->db->query("SET NAMES 'utf8'");
-            $DBRES = $this->db->query($query_string);
+        /*
+    	 * LOG all request
+    	 */
+        if ($this->debug) {
+            $string = str_replace("`", "", $queryString);
+            $string = str_replace('*', "\*", $string);
+            $this->log->insertLog(2, " QUERY : " . $string);
         }
-        if (PEAR::isError($DBRES)) {
-            if ($this->debug) {
-                $this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
-            } else {
-                throw new Exception($DBRES->getMessage());
-            }
-        } else {
-            $this->requestSuccessful++;
+
+        /*
+    	 * Launch request
+    	 */
+        try {
+            $this->db->query("SET NAMES 'utf8'");
+            $dbres = $this->db->query($queryString);
+            $this->queryNumber++;
+            $this->successQueryNumber++;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
         }
-        return $DBRES;
+
+        return $dbres;
     }
 
     /**
@@ -410,52 +371,20 @@ class CentreonDB
      */
     public function getAll($query_string = null, $placeHolders = array())
     {
+        $rows = array();
         $this->requestExecuted++;
-        if (count($placeHolders)) {
-            $DBRES = $this->db->getAll($query_string, $placeHolders);
-        } else {
-            $DBRES = $this->db->getAll($query_string);
-        }
-        if (PEAR::isError($DBRES)) {
-            if ($this->debug) {
-                $this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
-            }
-        } else {
+
+        try {
+            $result = $this->db->query($query_string);
+            $rows = $result->fetchAll();
             $this->requestSuccessful++;
-        }
-        return $DBRES;
-    }
-
-    /**
-     * Check NDO user grants
-     * Check if user is able to modify schema.
-     *
-     * @access protected
-     * @param   char    $grant  User Name
-     * @return  int     result flag
-     */
-    public function hasGrants($grant = "")
-    {
-        if ($grant == "") {
-            return 0;
-        }
-
-        $db_name = $this->dsn["database"];
-        $db_nameSec = str_replace("_", "\\\_", $this->dsn["database"]);
-        $db_nameSec = str_replace("-", "\\\-", $db_nameSec);
-
-        $DBRESULT = $this->query("show grants");
-        while ($result = $DBRESULT->fetchRow()) {
-            foreach ($result as $key => $value) {
-            }
-            $expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `" . $db_name . "`.\*/";
-            $expr2 = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `" . $db_nameSec . "`.\*/";
-            if (preg_match($expr, $value, $matches) || preg_match($expr2, $value, $matches)) {
-                if ($matches[1] == "ALL PRIVILEGES" || strstr($matches[1], $grant)) {
-                    return 1;
-                }
+        } catch (\Exception $e) {
+            if ($this->debug) {
+                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
             }
         }
+
+        return $rows;
     }
 
     /**
@@ -484,7 +413,7 @@ class CentreonDB
     {
         $number = 0;
         $DBRESULT = $this->query("SELECT FOUND_ROWS() AS number");
-        $data = $DBRESULT->fetchRow();
+        $data = $DBRESULT->fetch();
         if (isset($data["number"])) {
             $number = $data["number"];
         }
@@ -496,12 +425,6 @@ class CentreonDB
      */
     public static function checkInjection($sString)
     {
-       /*
-        if (preg_match('/\s'.implode('|', self::$aForbiden) . '\s/i', $sString)) {
-            throw new Exception("sql injection detected in string QUERY : " . $sString);
-            return 1;
-        }
-        */
         return 0;
     }
 
@@ -534,20 +457,20 @@ class CentreonDB
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
             if ($DBRESULT = $this->db->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")) {
-                while ($data = $DBRESULT->fetchRow()) {
+                while ($data = $DBRESULT->fetch()) {
                     $info['dbsize'] += $data['Data_length'] + $data['Index_length'];
                     $info['indexsize'] += $data['Index_length'];
                     $info['rows'] += $data['Rows'];
                     $info['datafree'] += $data['Data_free'];
                 }
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
             }
             foreach ($info as $key => $value) {
                 if ($key != "rows" && $key != "version" && $key != "engine") {
                     $info[$key] = round($value / $unitMultiple, 2);
                 }
                 if ($key == "version") {
-                    $tab = split('-', $value);
+                    $tab = explode('-', $value);
                     $info["version"] = $tab[0];
                     $info["engine"] = $tab[1];
                 }

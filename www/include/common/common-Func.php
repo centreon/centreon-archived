@@ -304,9 +304,9 @@ function getMyHostParents($host_id = null)
     global $pearDB;
     while (1) {
         $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "'");
-        $host = clone($DBRESULT->fetchRow());
+        $host = clone($DBRESULT->fetch());
         $DBRESULT = $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '" . CentreonDB::escape($host_id) . "'");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->fetchColumn()) {
             return $DBRESULT;
         } elseif (isset($host["tpl"]) && $host["tpl"]) {
             $host_id = $host["tpl"];
@@ -2056,6 +2056,6 @@ function get_child($id_page, $lcaTStr)
     }
         
     $DBRESULT = $pearDB->query($rq);
-    $redirect = $DBRESULT->fetchRow();
+    $redirect = $DBRESULT->fetch();
     return $redirect;
 }
