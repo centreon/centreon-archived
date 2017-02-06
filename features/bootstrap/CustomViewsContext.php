@@ -34,7 +34,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2, true);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView(1, 'guest');
+        $page->shareView('guest');
     }
 
     /**
