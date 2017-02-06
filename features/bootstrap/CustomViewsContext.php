@@ -30,9 +30,57 @@ class CustomViewsContext extends CentreonContext
     public function aPubliclySharedCustomView()
     {
         $page = new CustomViewsPage($this);
+
+        $page->showEditBar();
         $page->createNewView($this->customViewName, 2, true);
-        $page->addWidget('First widget', 'host-monitoring');
-        $page->addWidget('Second widget', 'service-monitoring');
+
+        $this->spin(
+            function ($context)  {
+                return $this->assertFind('css', '#ui-tabs-1');
+            },
+            30,
+            'First custom view not create'
+        );
+
+        $page->createNewView($this->customViewName, 2, true);
+
+        $this->spin(
+            function ($context)  {
+                return $this->assertFind('css', '#ui-tabs-2');
+            },
+            30,
+            'Second custom view not create'
+        );
+
+        $page->addWidget('First widget', 'Host Monitoring');
+
+        $this->spin(
+            function ($context)  {
+                return $this->assertFind('css', 'div.portlet-header span#title_1');
+            },
+            30,
+            'First widget not create'
+        );
+
+        $page->addWidget('Second widget', 'Service Monitoring');
+
+        $this->spin(
+            function ($context)  {
+                return $this->assertFind('css', 'div.portlet-header span#title_2');
+            },
+            30,
+            'Second widget not create'
+        );
+
+
+
+        $page->shareView(1, 'guest');
+
+
+
+        sleep(999999);
+
+        $this -> iAmLoggedOut();
     }
 
     /**
@@ -42,6 +90,7 @@ class CustomViewsContext extends CentreonContext
     public function aUserIsUsingThisSharedView()
     {
         /* $page = new ContactConfigurationBranch($this); */
+
     }
 
     /**
@@ -91,8 +140,12 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanAddTheSharedView()
     {
-        /* $page = new CustomViewsPage($this); */
-        /* $page->loadView($this->customViewName); */
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
+
+        $page = new CustomViewsPage($this);
+        $page->loadView($this->customViewName);
+
     }
 
     /**
@@ -100,7 +153,9 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
-        // XXX
+        if(!$this->assertFind('css', '.editView btnAction')->getAttribute('aria-disabled')){
+            throw new Exception('The user can edit the view');
+        };
     }
 
     /**
