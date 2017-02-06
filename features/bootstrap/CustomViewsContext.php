@@ -52,10 +52,17 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Given a user is using the shared view
+     *  @Given a user is using the public view
+     */
+    public function aUserIsUsingThePublicView()
+    {
+        // XXX
+    }
+
+    /**
      *  @Given the user is using the shared view
      */
-    public function aUserIsUsingThisSharedView()
+    public function theUserIsUsingTheSharedView()
     {
         /* $page = new ContactConfigurationBranch($this); */
 
