@@ -12,12 +12,12 @@ Feature: Custom views
         Then he can add the public view
         And he cannot modify the content of the shared view
 
-#    Scenario: Remove public share
-#        Given a publicly shared custom view
-#        And a user is using the shared view
-#        When he removes the shared view
-#        Then the view is not visible anymore
-#        And the user can use it again
+    Scenario: Remove public share
+        Given a publicly shared custom view
+        And a user is using the public view
+        When he removes the shared view
+        Then the view is not visible anymore
+        And the user can use it again
 
 #    Scenario: Share read-only custom view with users
 #        Given a custom view shared in read only with a user

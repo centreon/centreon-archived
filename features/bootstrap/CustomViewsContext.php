@@ -6,6 +6,7 @@ use Centreon\Test\Behat\CustomViewsPage;
 class CustomViewsContext extends CentreonContext
 {
     private $customViewName;
+    private $user;
 
     /**
      *  Build a new context.
@@ -13,6 +14,7 @@ class CustomViewsContext extends CentreonContext
     public function __construct()
     {
         $this->customViewName = 'AcceptanceTestCustomView';
+        $this->user = 'user1';
     }
 
     /**
@@ -61,8 +63,9 @@ class CustomViewsContext extends CentreonContext
      */
     public function anotherUserWishesToAddANewCustomView()
     {
-        // Nothing to do here, the view creation will be made
-        // with a single call, in the next step.
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
     }
 
     /**
@@ -104,10 +107,6 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanAddTheSharedView()
     {
-
-        $this->parameters['centreon_user'] = $this->user ;
-        $this->iAmLoggedIn();
-
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->loadView(null, $this->customViewName);
@@ -118,7 +117,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
-        if(!$this->assertFind('css', '.editView btnAction')->getAttribute('aria-disabled')){
+        if (!$this->assertFind('css', '.editView btnAction')->getAttribute('aria-disabled')) {
             throw new Exception('The user can edit the view');
         };
     }
