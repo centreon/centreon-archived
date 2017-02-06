@@ -81,8 +81,9 @@ class CentreonDB extends \PDO
 
             $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
+
             $this->options = array(
-                PDO::ATTR_CASE => PDO::CASE_LOWER
+                //PDO::ATTR_CASE => PDO::CASE_LOWER
             );
 
             /*

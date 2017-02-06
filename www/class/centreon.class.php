@@ -233,7 +233,7 @@ class Centreon
                                     AND nagios_server.localhost = '1' 
                                     ORDER BY cfg_nagios.nagios_activate 
                                     DESC LIMIT 1");
-        $this->Nagioscfg = $DBRESULT->fetchAll();
+        $this->Nagioscfg = $DBRESULT->fetch();
         $DBRESULT = null;
     }
 
