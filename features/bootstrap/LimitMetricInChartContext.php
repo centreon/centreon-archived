@@ -17,7 +17,7 @@ class LimitMetricInChartContext extends CentreonContext
     private $hostName = 'LimitMetricInChartTestHost';
     private $serviceName = 'LimitMetricInChartTestService';
     private $chartPage = null;
-  
+
     /**
      * @Given a service with several metrics
      */
@@ -49,19 +49,19 @@ class LimitMetricInChartContext extends CentreonContext
         );
         $serviceConfig->setProperties($serviceProperties);
         $serviceConfig->save();
-        
+
         $this->restartAllPollers();
 
         $perfdata = '';
         for ($i = 0; $i < 20 ; $i++) {
             $perfdata .= 'test' . $i . '=1s ';
         }
-        
+
         sleep(5);
         $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
         sleep(10);
     }
-    
+
     /**
      * @When i display the chart in performance page
      */
@@ -75,7 +75,7 @@ class LimitMetricInChartContext extends CentreonContext
             throw new \Exception('Chart ' . $this->hostName . ' - ' . $this->serviceName . ' does not exist.');
         }
     }
-    
+
     /**
      * @When i display the chart in service details page
      */
@@ -84,13 +84,18 @@ class LimitMetricInChartContext extends CentreonContext
         $serviceMonitoringDetail = new ServiceMonitoringDetailsPage($this, $this->hostName, $this->serviceName);
         $this->chartPage = new GraphServiceDetailsMonitoringPage($this);
     }
-    
+
     /**
      * @Then a message says that the chart will not be displayed
      */
     public function aMessageSaysThatTheChartWillNotBeDisplayed()
     {
         $chart = $this->chartPage->getChart($this->hostName, $this->serviceName);
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', '.c3-empty');
+            }
+        );
         $message = $this->assertFindIn($chart, 'css', '.c3-empty')->getText();
         if ($message != "Too much metrics, the chart can't be displayed") {
             throw new \Exception('Message which says "too much metrics" does not exist');

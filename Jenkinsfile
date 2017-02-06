@@ -31,6 +31,9 @@ try {
         ])
       }
     }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Unit tests stage failure.');
+    }
   }
 
   stage('Package') {
@@ -46,20 +49,26 @@ try {
         sh '/opt/centreon-build/jobs/web/pipeline/mon-web-package.sh centos7'
       }
     }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Package stage failure.');
+    }
   }
 
   stage('Bundle') {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh 6'
+        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh centos6'
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh 7'
+        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh centos7'
       }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Bundle stage failure.');
     }
   }
 
@@ -69,6 +78,7 @@ try {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos6'
         junit 'xunit-reports/**/*.xml'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
     },
     'centos7': {
@@ -76,7 +86,11 @@ try {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos7'
         junit 'xunit-reports/**/*.xml'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Acceptance tests stage failure.');
     }
   }
 
@@ -84,6 +98,9 @@ try {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
       sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Delivery stage failure.');
     }
   }
 }

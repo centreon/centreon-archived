@@ -6,3 +6,5 @@ UPDATE `options` SET `value` = 'cbd' WHERE `key` = 'broker_correlator_script' AN
 UPDATE `nagios_server` SET `init_script` = 'centengine' WHERE `init_script` = '/etc/init.d/centengine';
 UPDATE `nagios_server` SET `init_script_centreontrapd` = 'centreontrapd' WHERE `init_script_centreontrapd` = '/etc/init.d/centreontrapd';
 
+-- Missing 'integer' type, mostly used for auto-refresh preference.
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES ('integer', 0);

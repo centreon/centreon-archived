@@ -1,6 +1,7 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\CommentConfigurationPage;
 use Centreon\Test\Behat\DowntimeConfigurationPage;
 use Centreon\Test\Behat\DowntimeConfigurationListingPage;
 use Centreon\Test\Behat\MetaServiceConfigurationPage;
@@ -54,12 +55,11 @@ class DowntimeServiceContext extends CentreonContext
      */
     public function iPlaceAComment()
     {
-        $this->visit('main.php?p=20201&o=svcd&host_name=_Module_Meta&service_description=meta_1');
-        $this->assertFind('css', '.ListTable.table.linkList tr.list_one:nth-child(5) a')->click();
-        sleep(1);
-        $this->assertFind('css', 'textarea[name="comment"]')->setValue('downtime');
-        $this->assertFind('css', 'input[name="submitA"]')->click();
-        sleep(3);
+        $page = new CommentConfigurationPage($this, '_Module_Meta', 'meta_1');
+        $page->setProperties(array(
+            'comment' => 'Acceptance test downtime comment.'
+        ));
+        $page->save();
     }
 
     /**
@@ -71,8 +71,7 @@ class DowntimeServiceContext extends CentreonContext
             function ($context) {
                 $page = new DowntimeConfigurationListingPage($this);
                 return count($page->getEntries()) > 0;
-            },
-            10
+            }
         );
         $page = new DowntimeConfigurationListingPage($this);
         $page->selectEntry(0);

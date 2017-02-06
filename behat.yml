@@ -88,12 +88,12 @@ default:
       paths: [ %paths.base%/features/DowntimeService.feature ]
       contexts:
         - DowntimeServiceContext
-        
+
     limit_metric_in_chart:
       paths: [ %paths.base%/features/LimitMetricInChart.feature ]
       contexts:
         - LimitMetricInChartContext
-    
+
 
     show_disabled_hosts_services:
       paths: [ %paths.base%/features/ShowDisabledHostsServices.feature ]
@@ -114,7 +114,7 @@ default:
       paths: [ %paths.base%/features/DowntimeStartAndStop.feature ]
       contexts:
        - DowntimeStartAndStopContext
-       
+
     command_arguments:
       paths: [ %paths.base%/features/CommandArguments.feature ]
       contexts:
@@ -130,7 +130,7 @@ default:
       contexts:
       - LdapContext
 
-    share_custom_views:
-      paths: [ %paths.base%/features/ShareCustomViews.feature ]
+    custom_views:
+      paths: [ %paths.base%/features/CustomViews.feature ]
       contexts:
-      - ShareCustomViewsContext
+      - CustomViewsContext
