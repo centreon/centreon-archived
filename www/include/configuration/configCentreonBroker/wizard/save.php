@@ -284,8 +284,6 @@ $central_rrd_configuration = array(
     )
 );
 
-var_dump($central_rrd_configuration);
-
 /*
  * Get values
  */
