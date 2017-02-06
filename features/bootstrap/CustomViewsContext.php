@@ -32,7 +32,8 @@ class CustomViewsContext extends CentreonContext
             'name' => 'user1',
             'email' => 'user1@localhost',
             'password' => 'centreon',
-            'password2' => 'centreon'
+            'password2' => 'centreon',
+            'admin' => '1'
         ));
 
         $page->save();
@@ -48,7 +49,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2, true);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView('guest');
+        $page->shareView($this->user);
     }
 
     /**
@@ -73,7 +74,12 @@ class CustomViewsContext extends CentreonContext
      */
     public function aCustomViewSharedInReadOnlyWithAUser()
     {
-        // XXX
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView($this->user);
     }
 
     /**
@@ -132,6 +138,7 @@ class CustomViewsContext extends CentreonContext
         $this->iAmLoggedIn();
 
         $page = new CustomViewsPage($this);
+
         $page->showEditBar(true);
         $page->loadView(null, $this->customViewName);
     }
@@ -141,7 +148,10 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
-        if (!$this->assertFind('css', '.editView btnAction')->getAttribute('aria-disabled')) {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        if (!$this->assertFind('css', 'button.editView')->getAttribute('aria-disabled')) {
             throw new Exception('The user can edit the view');
         };
     }
