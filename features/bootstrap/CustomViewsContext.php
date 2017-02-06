@@ -30,6 +30,7 @@ class CustomViewsContext extends CentreonContext
     public function aPubliclySharedCustomView()
     {
         $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2, true);
         $page->addWidget('First widget', 'host-monitoring');
         $page->addWidget('Second widget', 'service-monitoring');
@@ -87,12 +88,23 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
+     *  @Then he can add the public view
+     */
+    public function heCanAddThePublicView()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->loadView($this->customViewName);
+    }
+
+    /**
      *  @Then he can add the shared view
      */
     public function heCanAddTheSharedView()
     {
-        /* $page = new CustomViewsPage($this); */
-        /* $page->loadView($this->customViewName); */
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->loadView(null, $this->customViewName);
     }
 
     /**

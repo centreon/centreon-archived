@@ -9,7 +9,7 @@ Feature: Custom views
     Scenario: Share public custom view
         Given a publicly shared custom view
         When a user wishes to add a new custom view
-        Then he can add the shared view
+        Then he can add the public view
         And he cannot modify the content of the shared view
 
     Scenario: Remove public share
