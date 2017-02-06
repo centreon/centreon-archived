@@ -93,10 +93,6 @@ class CentreonDB extends \PDO
             }
 
             switch (strtolower($db)) {
-                case "centreon":
-                    $this->connectToCentreon($conf_centreon);
-                    $this->connect();
-                    break;
                 case "centstorage":
                     $this->connectToCentstorage($conf_centreon);
                     $this->connect();
