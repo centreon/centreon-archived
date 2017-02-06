@@ -1,7 +1,7 @@
 -- 
 --  Creation and config of central broker
 --
-INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`, `command_file`) VALUES (1,'central-broker-master','central-broker.xml','1','0','1', 1 , 50000, '@CENTREONBROKER_VARLIB@', '@CENTREONBROKER_VARLIB@/command.sock');
+INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`, `command_file`, `daemon`) VALUES (1,'central-broker-master','central-broker.xml','1','0','1', 1 , 50000, '@CENTREONBROKER_VARLIB@', '@CENTREONBROKER_VARLIB@/command.sock', 1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (1,'name','central-broker-master-input','input',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (1,'port','5669','input',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (1,'buffering_timeout','0','input',1);
@@ -82,7 +82,7 @@ INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`
 --  Creation and config of central rrd
 --
 
-INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`) VALUES (2,'central-rrd-master','central-rrd.xml','1','0','1',1 , 50000, '@CENTREONBROKER_VARLIB@');
+INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`, `daemon`) VALUES (2,'central-rrd-master','central-rrd.xml','1','0','1',1 , 50000, '@CENTREONBROKER_VARLIB@', 1);
 
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (2,'name','central-rrd-master-input','input',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (2,'port','5670','input',1);
@@ -128,7 +128,7 @@ INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`
 --
 --  Creation and config of central module
 --
-INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`) VALUES (3,'central-module-master','central-module.xml','0','0', '1', 1 , 50000, '@MONITORING_VAR_LIB@');
+INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_filename`, `config_write_timestamp`, `config_write_thread_id`, `config_activate`, `ns_nagios_server`, `event_queue_max_size`, `retention_path`, `daemon`) VALUES (3,'central-module-master','central-module.xml','0','0', '1', 1 , 50000, '@MONITORING_VAR_LIB@', 0);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (3,'name','@CENTREONBROKER_LOG@/central-module-master.log','logger',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (3,'config','yes','logger',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (3,'debug','no','logger',1);
