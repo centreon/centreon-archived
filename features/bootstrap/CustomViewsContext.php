@@ -7,6 +7,7 @@ use Centreon\Test\Behat\ContactConfigurationPage;
 class CustomViewsContext extends CentreonContext
 {
     private $customViewName;
+    private $user;
 
     /**
      *  Build a new context.
@@ -14,6 +15,7 @@ class CustomViewsContext extends CentreonContext
     public function __construct()
     {
         $this->customViewName = 'AcceptanceTestCustomView';
+        $this->user = 'user1';
     }
 
     /**
@@ -46,7 +48,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2, true);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView(1, 'guest');
+        $page->shareView('guest');
     }
 
     /**
@@ -73,8 +75,9 @@ class CustomViewsContext extends CentreonContext
      */
     public function anotherUserWishesToAddANewCustomView()
     {
-        // Nothing to do here, the view creation will be made
-        // with a single call, in the next step.
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
     }
 
     /**
@@ -116,6 +119,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanAddTheSharedView()
     {
+
         $this->iAmLoggedOut();
         $this->parameters['centreon_user'] = $this->user ;
         $this->iAmLoggedIn();
@@ -130,7 +134,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
-        if(!$this->assertFind('css', '.editView btnAction')->getAttribute('aria-disabled')){
+        if (!$this->assertFind('css', '.editView btnAction')->getAttribute('aria-disabled')) {
             throw new Exception('The user can edit the view');
         };
     }
