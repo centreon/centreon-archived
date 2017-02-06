@@ -10,11 +10,11 @@ Feature: Custom views
         Given a user sharing publicly a custom view
         When another user wishes to add a new custom view
         Then he can add the shared view
-        And cannot modify the content of the shared view
+        And he cannot modify the content of the shared view
 
     Scenario: Remove public share
         Given a user sharing publicly a custom view
         And another user is using this shared view
-        When this other user is not using the shared view anymore
+        When this other user removes the shared view
         Then the view is not visible anymore
         And the user can use it again
