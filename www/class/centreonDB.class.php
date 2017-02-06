@@ -32,9 +32,11 @@
  * For more information : contact@centreon.com
  *
  */
-include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
 
-class CentreonDB
+include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
+require_once realpath(dirname(__FILE__) . "/centreonDBStatement.class.php");
+
+class CentreonDB extends \PDO
 {
 
     private static $instance = array();
@@ -117,6 +119,15 @@ class CentreonDB
             if (false === $silent) {
                 $this->debug = 1;
             }
+
+            parent::__construct($this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
+                ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
+                $this->dsn['username'],
+                $this->dsn['password'],
+                $this->options
+            );
+            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this->db->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('CentreonDBStatement', array($this->db)));
         } catch (Exception $e) {
             if (false === $silent && php_sapi_name() != "cli") {
                 $this->displayConnectionErrorPage($e->getMessage());
@@ -275,6 +286,8 @@ class CentreonDB
                 $this->dsn['password'],
                 $this->options
             );
+            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this->db->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('CentreonDBStatement', array($this->db)));
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -325,9 +338,9 @@ class CentreonDB
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
         }
-        
-        $escapedStr = mysqli_real_escape_string($str);
-        
+
+        $escapedStr = addslashes($str);
+
         return $escapedStr;
     }
 
@@ -350,16 +363,18 @@ class CentreonDB
         /*
     	 * Launch request
     	 */
+        $sth = null;
         try {
             $this->db->query("SET NAMES 'utf8'");
-            $dbres = $this->db->query($queryString);
+            $sth = $this->db->prepare($queryString);
+            $sth->execute();
             $this->queryNumber++;
             $this->successQueryNumber++;
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
 
-        return $dbres;
+        return $sth;
     }
 
     /**
