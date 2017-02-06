@@ -20,8 +20,8 @@ class CustomViewsContext extends CentreonContext
      */
     public function iAmLoggedInCentreonWithWidgets()
     {
-        /* $this->launchCentreonWebContainer('web_widgets'); */
-        /* $this->iAmLoggedIn(); */
+        $this->launchCentreonWebContainer('web_widgets');
+        $this->iAmLoggedIn();
     }
 
     /**
@@ -29,10 +29,10 @@ class CustomViewsContext extends CentreonContext
      */
     public function aPubliclySharedCustomView()
     {
-        /* $page = new CustomViewsPage($this); */
-        /* $page->createNewView($this->customViewName, 2, true); */
-        /* $page->addWidget('First widget', 'host-monitoring'); */
-        /* $page->addWidget('Second widget', 'service-monitoring'); */
+        $page = new CustomViewsPage($this);
+        $page->createNewView($this->customViewName, 2, true);
+        $page->addWidget('First widget', 'host-monitoring');
+        $page->addWidget('Second widget', 'service-monitoring');
     }
 
     /**
