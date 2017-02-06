@@ -30,18 +30,7 @@ class CustomViewsContext extends CentreonContext
     public function aPubliclySharedCustomView()
     {
         $page = new CustomViewsPage($this);
-
-        $page->showEditBar();
-        $page->createNewView($this->customViewName, 2, true);
-
-        $this->spin(
-            function ($context)  {
-                return $this->assertFind('css', '#ui-tabs-1');
-            },
-            30,
-            'First custom view not create'
-        );
-
+        $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2, true);
 
         $this->spin(
@@ -136,16 +125,27 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
+     *  @Then he can add the public view
+     */
+    public function heCanAddThePublicView()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->loadView($this->customViewName);
+    }
+
+    /**
      *  @Then he can add the shared view
      */
     public function heCanAddTheSharedView()
     {
+
         $this->parameters['centreon_user'] = $this->user ;
         $this->iAmLoggedIn();
 
         $page = new CustomViewsPage($this);
-        $page->loadView($this->customViewName);
-
+        $page->showEditBar(true);
+        $page->loadView(null, $this->customViewName);
     }
 
     /**
