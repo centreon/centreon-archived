@@ -32,44 +32,9 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2, true);
-
-        $this->spin(
-            function ($context)  {
-                return $this->assertFind('css', '#ui-tabs-2');
-            },
-            30,
-            'Second custom view not create'
-        );
-
         $page->addWidget('First widget', 'Host Monitoring');
-
-        $this->spin(
-            function ($context)  {
-                return $this->assertFind('css', 'div.portlet-header span#title_1');
-            },
-            30,
-            'First widget not create'
-        );
-
         $page->addWidget('Second widget', 'Service Monitoring');
-
-        $this->spin(
-            function ($context)  {
-                return $this->assertFind('css', 'div.portlet-header span#title_2');
-            },
-            30,
-            'Second widget not create'
-        );
-
-
-
         $page->shareView(1, 'guest');
-
-
-
-        sleep(999999);
-
-        $this -> iAmLoggedOut();
     }
 
     /**
