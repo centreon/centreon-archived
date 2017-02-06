@@ -66,9 +66,10 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
     $sql = "SELECT vmetric_id FROM virtual_metrics WHERE ";
     $sql .= "vmetric_name = '".($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
     $sql .= "AND index_id = '".($index_id == null ? $gsvs["index_id"] : $index_id)."'";
-    $DBRESULT = $pearDB->query($sql);
-    if (PEAR::isError($DBRESULT)) {
-        print "DB Error : ".$DBRESULT->getDebugInfo();
+    try {
+        $DBRESULT = $pearDB->query($sql);
+    } catch (\PDOException $e) {
+        print "DB Error : ".$e->getMessage();
     }
     $vmetric = $DBRESULT->fetchRow();
     $nR = $DBRESULT->numRows();
@@ -77,9 +78,10 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
     $sql = "SELECT metric_id FROM metrics WHERE ";
     $sql .= "metric_name = '".($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
     $sql .= "AND index_id = '".($index_id == null ? $gsvs["index_id"] : $index_id)."'";
-    $DBRESULT = $pearDBO->query($sql);
-    if (PEAR::isError($DBRESULT)) {
-        print "DB Error : ".$DBRESULT->getDebugInfo();
+    try {
+        $DBRESULT = $pearDBO->query($sql);
+    } catch (\PDOException $e) {
+        print "DB Error : ".$e->getMessage();
     }
     $metric = $DBRESULT->fetchRow();
     $nR = $nR + $DBRESULT->numRows();
@@ -96,9 +98,10 @@ function deleteVirtualMetricInDB($vmetrics = array())
 {
     global $pearDB;
     foreach ($vmetrics as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM virtual_metrics WHERE vmetric_id = '".$key."'");
-        if (PEAR::isError($DBRESULT)) {
-            print "DB Error : ".$DBRESULT->getDebugInfo();
+        try {
+            $DBRESULT = $pearDB->query("DELETE FROM virtual_metrics WHERE vmetric_id = '" . $key . "'");
+        } catch (\PDOException $e) {
+            print "DB Error : ".$e->getMessage();
         }
     }
 }
@@ -107,10 +110,10 @@ function multipleVirtualMetricInDB($vmetrics = array(), $nbrDup = array())
 {
     global $pearDB;
     foreach ($vmetrics as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM virtual_metrics WHERE vmetric_id = '".$key."' LIMIT 1");
-
-        if (PEAR::isError($DBRESULT)) {
-            print "DB Error : ".$DBRESULT->getDebugInfo();
+        try {
+            $DBRESULT = $pearDB->query("SELECT * FROM virtual_metrics WHERE vmetric_id = '" . $key . "' LIMIT 1");
+        } catch (\PDOException $e) {
+            print "DB Error : ".$e->getMessage();
         }
         $row = $DBRESULT->fetchRow();
         $row["vmetric_id"] = '';
@@ -130,9 +133,10 @@ function multipleVirtualMetricInDB($vmetrics = array(), $nbrDup = array())
                 $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
             }
             $val ? $rq = "INSERT INTO virtual_metrics VALUES (".$val.")" : $rq = null;
-            $DBRESULT2 = $pearDB->query($rq);
-            if (PEAR::isError($DBRESULT2)) {
-                print "DB Error : ".$DBRESULT2->getDebugInfo();
+            try {
+                $DBRESULT2 = $pearDB->query($rq);
+            } catch (\PDOException $e) {
+                print "DB Error : ".$e->getMessage();
             }
         }
     }

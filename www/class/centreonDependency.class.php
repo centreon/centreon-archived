@@ -62,8 +62,9 @@ class CentreonDependency
             dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
         	FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc
         	WHERE dsp.dependency_dep_id = dsc.dependency_dep_id';
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array();
         }
         $listServices = array();
@@ -74,8 +75,9 @@ class CentreonDependency
             $querySg = 'SELECT dsgp.servicegroup_sg_id as parent_sg, dsgc.servicegroup_sg_id as child_sg
             	FROM dependency_servicegroupParent_relation dsgp, dependency_servicegroupChild_relation dsgc
             	WHERE dsgp.dependency_dep_id = dsgc.dependency_dep_id';
-            $res = $this->db->query($querySg);
-            if (PEAR::isError($res)) {
+            try {
+                $res = $this->db->query($querySg);
+            } catch (\PDOException $e) {
                 return $listServices;
             }
             $sgObj = new CentreonServicegroups($this->db);
@@ -108,8 +110,9 @@ class CentreonDependency
         $query = 'SELECT dhp.host_host_id as parent_host_id, dhc.host_host_id as child_host_id
         	FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc
         	WHERE dhp.dependency_dep_id = dhc.dependency_dep_id';
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array();
         }
         $listHosts = array();
@@ -120,8 +123,9 @@ class CentreonDependency
             $queryHg = 'SELECT dhgp.hostgroup_hg_id as parent_hg, dhgc.hostgroup_hg_id as child_hg
             	FROM dependency_hostgroupParent_relation dhgp, dependency_hostgroupChild_relation dhgc
             	WHERE dhgp.dependency_dep_id = dhgc.dependency_dep_id';
-            $res = $this->db->query($queryHg);
-            if (PEAR::isError($res)) {
+            try {
+                $res = $this->db->query($queryHg);
+            } catch (\PDOException $e) {
                 return $listHosts;
             }
             $hgObj = new CentreonHostgroups($this->db);
@@ -151,8 +155,9 @@ class CentreonDependency
             dsc.service_service_id as child_service_id
         	FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc
             WHERE dhp.dependency_dep_id = dsc.dependency_dep_id";
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array();
         }
         $listHostService = array();
@@ -174,8 +179,9 @@ class CentreonDependency
             dhc.host_host_id as child_host_id
             FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc
             WHERE dsp.dependency_dep_id = dhc.dependency_dep_id";
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array();
         }
         $listServiceHost = array();

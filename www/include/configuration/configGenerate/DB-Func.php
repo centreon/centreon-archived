@@ -818,8 +818,13 @@ function getLocalhostId()
 {
     global $pearDB;
     $query = "SELECT id FROM nagios_server WHERE localhost = '1'";
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res) || $res->numRows() == 0) {
+    $error = false;
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
+        $error = true;
+    }
+    if ($error || $res->numRows() == 0) {
         return false;
     }
     $row = $res->fetchRow();
@@ -839,8 +844,9 @@ function getListIndexData()
     $queryGetRelation = "SELECT id, host_id, service_id
 	    	                 FROM index_data
                              ORDER BY host_id";
-    $res = $pearDBO->query($queryGetRelation);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDBO->query($queryGetRelation);
+    } catch (\PDOException $e) {
         throw new Exception('Bad query');
     }
     $listRelation = array();
@@ -887,8 +893,9 @@ function getChildren($infos)
                 AND config_group = '" . $infos['config_group'] . "'
                 AND config_group_id = " . $infos['config_group_id'] . "
                 AND parent_grp_id = " . $infos['subgrp_id'];
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return null;
     }
     while ($row = $res->fetchRow()) {

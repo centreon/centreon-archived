@@ -223,8 +223,9 @@ class CentreonWidget
         $lastId = $this->getLastInsertedWidgetId($params['widget_title']);
         /* Get view layout */
         $query = "SELECT layout FROM custom_views WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new CentreonWidgetException('No view found');
         }
         $row = $res->fetchRow();
@@ -237,8 +238,9 @@ class CentreonWidget
         /* Prepare first position */
         $matrix = array();
         $query = "SELECT widget_order FROM widget_views WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new CentreonWidgetException('No view found');
         }
         while ($position = $res->fetchRow()) {

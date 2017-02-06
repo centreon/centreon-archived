@@ -34,6 +34,7 @@
  */
 
 include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
+require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
 
 class CentreonGMT
 {
@@ -46,18 +47,6 @@ class CentreonGMT
      * @var array
      */
     protected $aListTimezone;
-
-    /**
-     *
-     * @var type
-     */
-    protected $db;
-
-    /**
-     *
-     * @var type
-     */
-    protected $dbc;
 
     /**
      *
@@ -83,11 +72,8 @@ class CentreonGMT
      */
     protected $myOffset;
 
-    public function __construct($DB)
+    public function __construct()
     {
-        $this->db = $DB;
-        $this->dbc = new CentreonDB("centstorage");
-
         /*
          * Define Table of GMT line
          */
@@ -309,26 +295,22 @@ class CentreonGMT
      * @param type $DB
      * @return int
      */
-    public function getMyGMTFromSession($sid = null, $DB = null)
+    public function getMyGMTFromSession($sid = null)
     {
-        global $pearDB;
-        
         if (!isset($sid)) {
             return 0;
         }
-        if (!isset($pearDB) && isset($DB)) {
-            $pearDB = $DB;
-        }
-        
-        $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact`, `session` " .
+
+        try {
+            $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `contact_location` FROM `contact`, `session` " .
                 "WHERE `session`.`user_id` = `contact`.`contact_id` " .
                 "AND `session_id` = '" . CentreonDB::escape($sid) . "' LIMIT 1");
-        if (PEAR::isError($DBRESULT)) {
+            $info = $DBRESULT->fetchRow();
+            $DBRESULT->free();
+            $this->myGMT = $info["contact_location"];
+        } catch (\PDOException $e) {
             $this->myGMT = 0;
         }
-        $info = $DBRESULT->fetchRow();
-        $DBRESULT->free();
-        $this->myGMT = $info["contact_location"];
     }
     
     /**
@@ -339,22 +321,18 @@ class CentreonGMT
      */
     public function getMyGTMFromUser($userId, $DB = null)
     {
-        global $pearDB;
-        
         if (!empty($userId)) {
-        
-            if (!isset($pearDB) && isset($DB)) {
-                $pearDB = $DB;
-            }
 
-            $DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact` " .
-                    "WHERE `contact`.`contact_id` = " . $userId ." LIMIT 1");
-            if (PEAR::isError($DBRESULT)) {
+            try {
+                $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `contact_location` FROM `contact` " .
+                    "WHERE `contact`.`contact_id` = " . $userId . " LIMIT 1");
+                $info = $DBRESULT->fetchRow();
+                $DBRESULT->free();
+                $this->myGMT = $info["contact_location"];
+            } catch (\PDOException $e) {
                 $this->myGMT = 0;
             }
-            $info = $DBRESULT->fetchRow();
-            $DBRESULT->free();
-            $this->myGMT = $info["contact_location"];
+
         } else {
             $this->myGMT = 0;
         }
@@ -437,11 +415,12 @@ class CentreonGMT
         $aDatas = array();
         
         $queryList = "SELECT timezone_id, timezone_name, timezone_offset FROM timezone ORDER BY timezone_name asc";
-        $res = $this->db->query($queryList);
-        if (PEAR::isError($res)) {
+        try {
+            $res = CentreonDBInstance::getConfInstance()->query($queryList);
+        } catch (\PDOException $e ) {
             return array();
         }
- 
+
         $aDatas[null] = null;
         while ($row = $res->fetchRow()) {
             $this->timezones[$row['timezone_name']] =  $row['timezone_id'];
@@ -472,7 +451,7 @@ class CentreonGMT
             . "WHERE timezone_id IN (" . $explodedValues . ") "
             . "ORDER BY timezone_name ";
         
-        $resRetrieval = $this->db->query($query);
+        $resRetrieval = CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['timezone_id'],
@@ -496,11 +475,13 @@ class CentreonGMT
         $this->hostLocations = array();
 
         $query = 'SELECT host_id, timezone FROM hosts WHERE enabled = 1 ';
-        $res  = $this->dbc->query($query);
-        if (!PEAR::isError($res)) {
+        try {
+            $res = CentreonDBInstance::getMonInstance()->query($query);
             while ($row = $res->fetchRow()) {
                 $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
             }
+        } catch (\PDOException $e) {
+            // Nothing to do
         }
         return $this->hostLocations;
     }
@@ -516,10 +497,12 @@ class CentreonGMT
             $sTimezone = '';
 
             $query = "SELECT `value` FROM `options` WHERE `key` = 'gmt' LIMIT 1";
-            $res  = $this->db->query($query);
-            if (!PEAR::isError($res)) {
+            try {
+                $res = CentreonDBInstance::getConfInstance()->query($query);
                 $row = $res->fetchRow();
                 $sTimezone = $row["value"];
+            } catch (\Exception $e) {
+                // Nothing to do
             }
             $this->sDefaultTimezone = $sTimezone;
         }

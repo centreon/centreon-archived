@@ -128,7 +128,8 @@ class CentreonConnector
         /**
          * Inserting into database
          */
-        $success = $this->dbConnection->query('INSERT INTO `connector` (
+        try {
+            $success = $this->dbConnection->query('INSERT INTO `connector` (
                                         `name`,
                                         `description`,
                                         `command_line`,
@@ -136,14 +137,14 @@ class CentreonConnector
                                         `created`,
                                         `modified`
                                     ) VALUES (?, ?, ?, ?, ?, ?)', array(
-            $connector['name'],
-            $connector['description'],
-            $connector['command_line'],
-            $connector['enabled'],
-            $now = time(),
-            $now
-                ));
-        if (PEAR::isError($success)) {
+                $connector['name'],
+                $connector['description'],
+                $connector['command_line'],
+                $connector['enabled'],
+                $now = time(),
+                $now
+            ));
+        } catch (\PDOException $e) {
             throw new RuntimeException('Cannot insert connector; Check the database schema');
         }
 
@@ -151,11 +152,12 @@ class CentreonConnector
          * in case last inserted id needed
          */
         if ($returnId) {
-            $lastIdQueryResult = $this->dbConnection->query(
-                'SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1',
-                array($connector['name'])
-            );
-            if (PEAR::isError($lastIdQueryResult)) {
+            try {
+                $lastIdQueryResult = $this->dbConnection->query(
+                    'SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1',
+                    array($connector['name'])
+                );
+            } catch (\PDOException $e) {
                 throw new RuntimeException('Cannot get last insert ID');
             }
             $lastId = $lastIdQueryResult->fetchRow();
@@ -164,10 +166,11 @@ class CentreonConnector
             } else {
                 if (isset($connector["command_id"])) {
                     foreach ($connector["command_id"] as $key => $value) {
-                        $updateResult = $this->dbConnection->query(
-                            "UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'"
-                        );
-                        if (PEAR::isError($updateResult)) {
+                        try {
+                            $updateResult = $this->dbConnection->query(
+                                "UPDATE `command` SET connector_id = '" . $lastId['id'] . "' WHERE `command_id` = '$value'"
+                            );
+                        } catch (\PDOException $e) {
                             throw new RuntimeException('Cannot update connector');
                         }
                     }
@@ -189,7 +192,8 @@ class CentreonConnector
         if (!is_numeric($id)) {
             throw new InvalidArgumentException('Id is not integer');
         }
-        $result = $this->dbConnection->query('SELECT
+        try {
+            $result = $this->dbConnection->query('SELECT
                                                 `id`,
                                                 `name`,
                                                 `description`,
@@ -203,7 +207,7 @@ class CentreonConnector
                                                 `id` = ?
                                              LIMIT
                                                 1', array($id));
-        if (PEAR::isError($result)) {
+        } catch (\PDOException $e) {
             throw new RuntimeException('Cannot select connector');
         }
 
@@ -270,28 +274,31 @@ class CentreonConnector
             }
             $sqlParts = implode(', ', $sqlParts);
             $values[] = $id;
-            $updateResult = $this->dbConnection->query(
-                "UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ? LIMIT 1",
-                $values
-            );
-            if (PEAR::isError($updateResult)) {
+            try {
+                $updateResult = $this->dbConnection->query(
+                    "UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ? LIMIT 1",
+                    $values
+                );
+            } catch (\PDOException $e) {
                 throw new RuntimeException('Cannot update connector');
             }
         }
 
-        $updateResult = $this->dbConnection->query(
-            "UPDATE `command` SET connector_id = NULL WHERE `connector_id` = $id"
-        );
-        if (PEAR::isError($updateResult)) {
+        try {
+            $updateResult = $this->dbConnection->query(
+                "UPDATE `command` SET connector_id = NULL WHERE `connector_id` = $id"
+            );
+        } catch (\PDOException $e) {
             throw new RuntimeException('Cannot update connector');
         }
         
         if (isset($connector["command_id"])) {
             foreach ($connector["command_id"] as $key => $value) {
-                $updateResult = $this->dbConnection->query(
-                    "UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'"
-                );
-                if (PEAR::isError($updateResult)) {
+                try {
+                    $updateResult = $this->dbConnection->query(
+                        "UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'"
+                    );
+                } catch (\PDOException $e) {
                     throw new RuntimeException('Cannot update connector');
                 }
             }
@@ -312,8 +319,9 @@ class CentreonConnector
         if (!is_numeric($id)) {
             throw new InvalidArgumentException('Id should be integer');
         }
-        $deleteResult = $this->dbConnection->query('DELETE FROM `connector` WHERE `id` = ? LIMIT 1', array($id));
-        if (PEAR::isError($deleteResult)) {
+        try {
+            $this->dbConnection->query('DELETE FROM `connector` WHERE `id` = ? LIMIT 1', array($id));
+        } catch (\PDOException $e) {
             throw new RuntimeException('Cannot delete connector');
         }
         return $this;
@@ -377,9 +385,10 @@ class CentreonConnector
             $sql .= $clause;
         }
         $sql .= $restrictSql;
-        $connectorsResult = $this->dbConnection->query($sql);
 
-        if (PEAR::isError($connectorsResult)) {
+        try {
+            $connectorsResult = $this->dbConnection->query($sql);
+        } catch (\PDOException $e) {
             throw new RuntimeException('Cannot select connectors');
         }
         $connectors = array();
@@ -452,15 +461,20 @@ class CentreonConnector
         if (!is_bool($onlyEnabled)) {
             throw new InvalidArgumentException('Parameter "onlyEnabled" should be boolean');
         }
-        if ($onlyEnabled) {
-            $countResult = $this->dbConnection->query(
-                'SELECT COUNT(*) AS \'count\' FROM `connector` WHERE `enabled` = 1'
-            );
-        } else {
-            $countResult = $this->dbConnection->query('SELECT COUNT(*) \'count\' FROM `connector`');
+        $error = false;
+        try {
+            if ($onlyEnabled) {
+                $countResult = $this->dbConnection->query(
+                    'SELECT COUNT(*) AS \'count\' FROM `connector` WHERE `enabled` = 1'
+                );
+            } else {
+                $countResult = $this->dbConnection->query('SELECT COUNT(*) \'count\' FROM `connector`');
+            }
+        } catch (\PDOException $e) {
+            $error = true;
         }
 
-        if (PEAR::isError($countResult) || !($count = $countResult->fetchRow())) {
+        if ($error || !($count = $countResult->fetchRow())) {
             throw new RuntimeException('Cannot count connectors');
         }
 
@@ -492,11 +506,12 @@ class CentreonConnector
             }
         }
 
-        $existsResult = $this->dbConnection->query(
-            'SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1',
-            array($name)
-        );
-        if (PEAR::isError($existsResult)) {
+        try {
+            $existsResult = $this->dbConnection->query(
+                'SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1',
+                array($name)
+            );
+        } catch (\PDOException $e) {
             throw new RuntimeException(
                 'Cannot verify if connector name already in use; Query not valid; Check the database schema'
             );

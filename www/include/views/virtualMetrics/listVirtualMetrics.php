@@ -46,9 +46,10 @@ if (isset($_POST['searchVM']) && $_POST['searchVM']) {
     $SearchTool = " WHERE vmetric_name LIKE '%".$search."%'";
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM virtual_metrics".$SearchTool);
-if (PEAR::isError($DBRESULT)) {
-    print "DB Error : ".$DBRESULT->getDebugInfo();
+try {
+    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM virtual_metrics" . $SearchTool);
+} catch (\PDOException $e) {
+    print "DB Error : ".$e->getMessage();
 }
 
 $tmp = $DBRESULT->fetchRow();
@@ -73,9 +74,10 @@ $tpl->assign("headerMenu_hidden", _("Hidden"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 $rq = "SELECT  * FROM virtual_metrics $SearchTool ORDER BY index_id,vmetric_name LIMIT ".$num * $limit.", ".$limit;
-$DBRESULT = $pearDB->query($rq);
-if (PEAR::isError($DBRESULT)) {
-    print "Mysql Error : ".$DBRESULT->getDebugInfo();
+try {
+    $DBRESULT = $pearDB->query($rq);
+} catch (\PDOException $e) {
+    print "Mysql Error : ".$e->getMessage();
 }
     
 $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -99,15 +101,17 @@ for ($i = 0; $vmetric = $DBRESULT->fetchRow(); $i++) {
         $moptions = "<a href='main.php?p=".$p."&vmetric_id=".$vmetric['vmetric_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right'  border='0' alt='"._("Enabled")."'></a>";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$vmetric['vmetric_id']."]'></input>";
-    $dbindd     = $pearDBO->query("SELECT id,host_id,service_id FROM index_data WHERE id = '".$vmetric['index_id']."'");
-    if (PEAR::isError($dbindd)) {
-        print "DB Error : ".$dbindd->getDebugInfo()."<br />";
+    try {
+        $dbindd = $pearDBO->query("SELECT id,host_id,service_id FROM index_data WHERE id = '" . $vmetric['index_id'] . "'");
+    } catch (\PDOException $e) {
+        print "DB Error : ".$e->getMessage()."<br />";
     }
     $indd = $dbindd->fetchRow();
     $dbindd->free();
-    $dbhsrname = $pearDB->query("(SELECT concat(h.host_name,' > ',s.service_description) full_name FROM host_service_relation AS hsr, host AS h, service AS s WHERE hsr.host_host_id = h.host_id AND hsr.service_service_id = s.service_id AND h.host_id = '".$indd["host_id"]."' AND s.service_id = '".$indd["service_id"]."') UNION (SELECT concat(h.host_name,' > ',s.service_description) full_name FROM host_service_relation AS hsr, host AS h, service AS s, hostgroup_relation AS hr WHERE hsr.hostgroup_hg_id = hr.hostgroup_hg_id AND hr.host_host_id = h.host_id AND hsr.service_service_id = s.Service_id AND h.host_id = '".$indd["host_id"]."' AND s.service_id = '".$indd["service_id"]."') ORDER BY full_name");
-    if (PEAR::isError($dbhsrname)) {
-        print "DB Error : ".$dbhsrname->getDebugInfo()."<br />";
+    try {
+        $dbhsrname = $pearDB->query("(SELECT concat(h.host_name,' > ',s.service_description) full_name FROM host_service_relation AS hsr, host AS h, service AS s WHERE hsr.host_host_id = h.host_id AND hsr.service_service_id = s.service_id AND h.host_id = '" . $indd["host_id"] . "' AND s.service_id = '" . $indd["service_id"] . "') UNION (SELECT concat(h.host_name,' > ',s.service_description) full_name FROM host_service_relation AS hsr, host AS h, service AS s, hostgroup_relation AS hr WHERE hsr.hostgroup_hg_id = hr.hostgroup_hg_id AND hr.host_host_id = h.host_id AND hsr.service_service_id = s.Service_id AND h.host_id = '" . $indd["host_id"] . "' AND s.service_id = '" . $indd["service_id"] . "') ORDER BY full_name");
+    } catch (\PDOException $e) {
+        print "DB Error : ".$e->getMessage()."<br />";
     }
     $hsrname = $dbhsrname->fetchRow();
     $dbhsrname->free();

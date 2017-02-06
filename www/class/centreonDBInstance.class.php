@@ -33,58 +33,44 @@
  *
  */
 
-require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
+include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
+require_once realpath(dirname(__FILE__) . "/centreonDB.class.php");
 
-/*
- *  Class that contains various methods for managing hosts
- */
-
-class CentreonHosttemplates extends CentreonHost
+class CentreonDBInstance
 {
+
+    private static $confInstance;
+    private static $monInstance;
+
+    private $instance;
+
     /**
-     *
-     * @param array $values
-     * @return array
+     * CentreonDBInstance constructor.
+     * @param string $db
      */
-    public function getObjectForSelect2($values = array(), $options = array())
+    private function __construct($db = "centreon")
     {
-        return parent::getObjectForSelect2($values, $options, '0');
+        $this->instance = new \CentreonDB($db);
     }
-    
-    /**
-     * Returns array of host linked to the template
-     *
-     * @return array
-     */
-    public function getLinkedHostsByName($hostTemplateName, $checkTemplates = true)
+
+    public function getInstance()
     {
-        if ($checkTemplates) {
-            $register = 0;
-        } else {
-            $register = 1;
+        return $this->instance;
+    }
+
+    public static function getConfInstance()
+    {
+        if (is_null(self::$confInstance)) {
+            self::$confInstance = new \CentreonDBInstance('centreon');
         }
+        return self::$confInstance->getInstance();
+    }
 
-        $linkedHosts = array();
-        $query = 'SELECT DISTINCT h.host_name '
-            . 'FROM host_template_relation htr, host h, host ht '
-            . 'WHERE htr.host_tpl_id = ht.host_id '
-            . 'AND htr.host_host_id = h.host_id '
-            . 'AND ht.host_register = "0" '
-            . 'AND h.host_register = "' . $register . '" '
-            . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" ';
-
-        try {
-            $result = $this->db->query($query);
-        } catch (\PDOException $e) {
-            throw new \Exception('Error while getting linked hosts of ' . $hostTemplateName);
+    public static function getMonInstance()
+    {
+        if (is_null(self::$monInstance)) {
+            self::$monInstance = new \CentreonDBInstance('centstorage');
         }
-
-        while ($row = $result->fetchRow()) {
-            $linkedHosts[] = $row['host_name'];
-        }
-
-        return $linkedHosts;
+        return self::$monInstance->getInstance();
     }
 }

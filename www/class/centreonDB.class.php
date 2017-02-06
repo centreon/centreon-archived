@@ -55,7 +55,7 @@ class CentreonDB extends \PDO
     protected $requestSuccessful;
     protected $lineRead;
     protected $debug;
-    
+
     /**
      * Constructor
      *
@@ -65,7 +65,7 @@ class CentreonDB extends \PDO
      *                       otherwise it will throw an Exception
      * @return void
      */
-    public function __construct($db = "centreon", $retry = 3, $silent = false)
+    public function __construct($db = "centreon", $retry = 3, $silent = true)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
@@ -83,7 +83,6 @@ class CentreonDB extends \PDO
             $this->retry = $retry;
             $this->options = array(
                 PDO::ATTR_CASE => PDO::CASE_LOWER
-                // 'debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE
             );
 
             /*
@@ -349,8 +348,12 @@ class CentreonDB extends \PDO
      *
      *  @return void
      */
-    public function query($queryString = null)
+    public function query($queryString = null, $parameters = null)
     {
+        if (!is_null($parameters) && !is_array($parameters)) {
+            $parameters = array($parameters);
+        }
+
         /*
     	 * LOG all request
     	 */
@@ -367,7 +370,7 @@ class CentreonDB extends \PDO
         try {
             $this->db->query("SET NAMES 'utf8'");
             $sth = $this->db->prepare($queryString);
-            $sth->execute();
+            $sth->execute($parameters);
             $this->queryNumber++;
             $this->successQueryNumber++;
         } catch (PDOException $e) {

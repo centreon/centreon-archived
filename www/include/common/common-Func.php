@@ -1778,9 +1778,10 @@ function getNDOPrefix()
 {
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
-    if (PEAR::isError($DBRESULT)) {
-        print "DB Error : " . $DBRESULT->getDebugInfo() . "<br />";
+    try {
+        $DBRESULT = $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
+    } catch (\PDOException $e) {
+        print "DB Error : " . $e->getMessage() . "<br />";
     }
     $conf_ndo = $DBRESULT->fetchRow();
     unset($DBRESULT);
@@ -1976,8 +1977,9 @@ if (!function_exists("array_column")) {
 function getCentreonVersion($pearDB)
 {
     $query = 'SELECT `value` FROM `informations` WHERE `key` = "version"';
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return null;
     }
     $row = $res->fetchRow();

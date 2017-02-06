@@ -252,10 +252,9 @@ $queryStatName = "SELECT config_name,retention_path "
     . "FROM cfg_centreonbroker "
     . "WHERE stats_activate='1' "
     . "AND ns_nagios_server = " . CentreonDB::escape($selectedPoller) . " ";
-$res = $pearDB->query($queryStatName);
-if (PEAR::isError($res)) {
-    $tpl->assign('msg_err', _('Error in getting stats filename'));
-} else {
+try {
+    $res = $pearDB->query($queryStatName);
+
     if (!$res->numRows()) {
         $tpl->assign('msg_err', _('No statistics file defined for this poller'));
     }
@@ -274,6 +273,8 @@ if (PEAR::isError($res)) {
     }
     $tpl->assign('perf_err', $perf_err);
     $tpl->assign('perf_info_array', $perf_info);
+} catch (\PDOException $e) {
+    $tpl->assign('msg_err', _('Error in getting stats filename'));
 }
 
 $tpl->display('brokerPerformance.ihtml');

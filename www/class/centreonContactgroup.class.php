@@ -177,14 +177,16 @@ class CentreonContactgroup
         	VALUES
         	('" . $this->db->escape($cg_name) . "', '" . $this->db->escape($cg_name) . "', '1', 'ldap', '" .
                 $this->db->escape($ldap_dn) . "', " . CentreonDB::escape($ar_id) . ")";
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return 0;
         }
         $query = "SELECT cg_id FROM contactgroup
             WHERE cg_ldap_dn = '" . $this->db->escape($ldap_dn) . "' AND ar_id = " . CentreonDB::escape($ar_id);
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return 0;
         }
         $row = $res->fetchRow();
@@ -230,7 +232,9 @@ class CentreonContactgroup
                              * Delete the ldap group in contactgroup
                              */
                             $queryDelete = "DELETE FROM contactgroup WHERE cg_id = " . $row['cg_id'];
-                            if (PEAR::isError($this->db->query($queryDelete))) {
+                            try {
+                                $this->db->query($queryDelete);
+                            } catch (\PDOException $e) {
                                 $msg[] = "Error in delete contactgroup for ldap group : " . $row['cg_name'];
                             }
                             continue;
@@ -240,11 +244,12 @@ class CentreonContactgroup
                              */
                             $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $dn . "'
                                 WHERE cg_id = " . $row['cg_id'];
-                            if (PEAR::isError($this->db->query($queryUpdateDn))) {
+                            try {
+                                $this->db->query($queryUpdateDn);
+                                $row['cg_ldap_dn'] = $dn;
+                            } catch (\PDOException $e) {
                                 $msg[] = "Error in update contactgroup for ldap group : " . $row['cg_name'];
                                 continue;
-                            } else {
-                                $row['cg_ldap_dn'] = $dn;
                             }
                         }
                     }
@@ -259,8 +264,9 @@ class CentreonContactgroup
                     $queryContact = "SELECT contact_id FROM contact
                         WHERE contact_ldap_dn IN ('" .
                             join("', '", array_map('mysql_real_escape_string', $members)) . "')";
-                    $resContact = $this->db->query($queryContact);
-                    if (PEAR::isError($resContact)) {
+                    try {
+                        $resContact = $this->db->query($queryContact);
+                    } catch (\PDOException $e) {
                         $msg[] = "Error in getting contact id form members.";
                         continue;
                     }
@@ -268,7 +274,9 @@ class CentreonContactgroup
                         $queryAddRelation = "INSERT INTO contactgroup_contact_relation
                             (contactgroup_cg_id, contact_contact_id)
             	            VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
-                        if (PEAR::isError($this->db->query($queryAddRelation))) {
+                        try {
+                            $this->db->query($queryAddRelation);
+                        } catch (\PDOException $e) {
                             $msg[] ="Error insert relation between contactgroup " . $row['cg_id'] .
                                 " and contact " . $rowContact['contact_id'];
                         }
@@ -324,8 +332,9 @@ class CentreonContactgroup
                 /* Query test if exists */
                 $query = "SELECT COUNT(*) as nb FROM contactgroup
                     WHERE cg_name = '" . $pearDB->escape($cg_name) ."' AND cg_type != 'ldap' ";
-                $res = $pearDB->query($query);
-                if (PEAR::isError($res)) {
+                try {
+                    $res = $pearDB->query($query);
+                } catch (\PDOException $e) {
                     return false;
                 }
                 $row = $res->fetchRow();

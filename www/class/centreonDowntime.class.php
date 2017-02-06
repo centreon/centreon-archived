@@ -116,8 +116,9 @@ class CentreonDowntime
         }
         /* Get the number of rows with a COUNT(*) */
         $query = "SELECT COUNT(*) FROM downtime" . $this->search;
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return 0;
         }
         $row = $res->fetchRow();
@@ -163,8 +164,9 @@ class CentreonDowntime
                 FROM downtime " . ($this->search == '' ? "" : "WHERE ") . $this->search .
                 " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
         }
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array();
         }
         $list = array();
@@ -227,8 +229,9 @@ class CentreonDowntime
     public function getInfos($id)
     {
         $query = "SELECT dt_name, dt_description, dt_activate FROM downtime WHERE dt_id=" . $id;
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array('name' => '', 'description' => '', 'activate' => '');
         }
         $row = $res->fetchRow();
@@ -301,11 +304,13 @@ class CentreonDowntime
             . 'WHERE dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id '
             . 'AND dtr.host_host_id = h.host_id' ;
 
+        try {
         $res = $this->db->query($query);
-        if (false === PEAR::isError($res)) {
             while ($row = $res->fetchRow()) {
                 $hostDowntimes[] = $row;
             }
+        } catch (\PDOException $e) {
+            // Nothing to do
         }
 
         return $hostDowntimes;
@@ -342,11 +347,13 @@ class CentreonDowntime
             . 'AND s.service_id = hsr.service_service_id '
             . 'AND dtr.service_service_id = s.service_id';
 
+        try {
         $res = $this->db->query($query);
-        if (false === PEAR::isError($res)) {
-            while ($row = $res->fetchRow()) {
+        while ($row = $res->fetchRow()) {
                 $serviceDowntimes[] = $row;
             }
+        } catch (\PDOException $e) {
+            // Nothind to do
         }
 
         return $serviceDowntimes;
@@ -367,11 +374,13 @@ class CentreonDowntime
             . 'AND dhr.hg_hg_id = hgr.hostgroup_hg_id '
             . 'AND hgr.host_host_id = h.host_id ';
 
-        $res = $this->db->query($query);
-        if (false === PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
             while ($row = $res->fetchRow()) {
                 $hostgroupDowntimes[] = $row;
             }
+        } catch (\PDOException $e) {
+            // Nothind to do
         }
 
         return $hostgroupDowntimes;
@@ -409,11 +418,13 @@ class CentreonDowntime
             . 'AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id '
             . 'AND hgr.host_host_id = h.host_id ';
 
+        try {
         $res = $this->db->query($query);
-        if (false === PEAR::isError($res)) {
-            while ($row = $res->fetchRow()) {
+        while ($row = $res->fetchRow()) {
                 $servicegroupDowntimes[] = $row;
             }
+        } catch (\PDOException $e) {
+            // Nothing to do
         }
 
         return $servicegroupDowntimes;
@@ -462,8 +473,9 @@ class CentreonDowntime
         foreach ($ids as $id) {
             if (isset($nb[$id])) {
                 $query = "SELECT dt_name, dt_description, dt_activate FROM downtime WHERE dt_id = " . $id;
-                $res = $this->db->query($query);
-                if (PEAR::isError($res)) {
+                try {
+                    $res = $this->db->query($query);
+                } catch (\PDOException $e) {
                     return;
                 }
                 $row = $res->fetchRow();
@@ -480,53 +492,53 @@ class CentreonDowntime
                         /* Insert the new downtime */
                         $rq = "INSERT INTO downtime (dt_name, dt_description, dt_activate)
 								VALUES ('" . $dt_name . "_" . $index . "', '" . $dt_desc . "', '" . $dt_activate . "')";
-                        $res = $this->db->query($rq);
-                        if (PEAR::isError($res)) {
+                        try {
+                            $res = $this->db->query($rq);
+                        } catch (\PDOException $e) {
                             return;
-                        } else {
-                            /* Get the new downtime id */
-                            $query = "SELECT dt_id FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
-                            $res = $this->db->query($query);
-                            $row = $res->fetchRow();
-                            $res->free();
-                            $id_new = $row['dt_id'];
-                            /* Copy the periods for new downtime */
-                            $query = "INSERT INTO downtime_period (dt_id, dtp_start_time, dtp_end_time,
-                                dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration,
-                                dtp_activate)
-								SELECT " . $id_new . ", dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle,
-                                dtp_day_of_month, dtp_fixed, dtp_duration, dtp_activate
-								FROM downtime_period WHERE dt_id = " . $id;
-                            $res = $this->db->query($query);
-
-                            /*
-        					 * Duplicate Relations for hosts
-        					 */
-                            $this->db->query("INSERT INTO downtime_host_relation (dt_id, host_host_id)
-                                SELECT $id_new, host_host_id FROM downtime_host_relation WHERE dt_id = '$id'");
-
-                            /*
-        					 * Duplicate Relations for hostgroups
-        					 */
-                            $this->db->query("INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id)
-                                SELECT $id_new, hg_hg_id FROM downtime_hostgroup_relation WHERE dt_id = '$id'");
-
-                            /*
-        					 * Duplicate Relations for services
-        					 */
-                            $this->db->query("INSERT INTO downtime_service_relation
-                                (dt_id, host_host_id, service_service_id)
-                                SELECT $id_new, host_host_id, service_service_id
-                                    FROM downtime_service_relation WHERE dt_id = '$id'");
-
-                            /*
-        					 * Duplicate Relations for servicegroups
-        					 */
-                            $this->db->query("INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id)
-                                SELECT $id_new, sg_sg_id FROM downtime_servicegroup_relation WHERE dt_id = '$id'");
-
-                            $i++;
                         }
+                        /* Get the new downtime id */
+                        $query = "SELECT dt_id FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
+                        $res = $this->db->query($query);
+                        $row = $res->fetchRow();
+                        $res->free();
+                        $id_new = $row['dt_id'];
+                        /* Copy the periods for new downtime */
+                        $query = "INSERT INTO downtime_period (dt_id, dtp_start_time, dtp_end_time,
+                            dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration,
+                            dtp_activate)
+                            SELECT " . $id_new . ", dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle,
+                            dtp_day_of_month, dtp_fixed, dtp_duration, dtp_activate
+                            FROM downtime_period WHERE dt_id = " . $id;
+                        $res = $this->db->query($query);
+
+                        /*
+                         * Duplicate Relations for hosts
+                         */
+                        $this->db->query("INSERT INTO downtime_host_relation (dt_id, host_host_id)
+                            SELECT $id_new, host_host_id FROM downtime_host_relation WHERE dt_id = '$id'");
+
+                        /*
+                         * Duplicate Relations for hostgroups
+                         */
+                        $this->db->query("INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id)
+                            SELECT $id_new, hg_hg_id FROM downtime_hostgroup_relation WHERE dt_id = '$id'");
+
+                        /*
+                         * Duplicate Relations for services
+                         */
+                        $this->db->query("INSERT INTO downtime_service_relation
+                            (dt_id, host_host_id, service_service_id)
+                            SELECT $id_new, host_host_id, service_service_id
+                                FROM downtime_service_relation WHERE dt_id = '$id'");
+
+                        /*
+                         * Duplicate Relations for servicegroups
+                         */
+                        $this->db->query("INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id)
+                            SELECT $id_new, sg_sg_id FROM downtime_servicegroup_relation WHERE dt_id = '$id'");
+
+                        $i++;
                     }
                     $index++;
                 }
@@ -550,12 +562,19 @@ class CentreonDowntime
 
         $query = "INSERT INTO downtime (dt_name, dt_description, dt_activate)
             VALUES ('" . CentreonDB::escape($name) . "', '" . CentreonDB::escape($desc) . "', '" . $activate . "')";
-        if (PEAR::isError($this->db->query($query))) {
+        try {
+            $this->db->query($query);
+        } catch (\PDOException $e) {
             return false;
         }
         $query = "SELECT dt_id FROM downtime WHERE dt_name = '" . CentreonDB::escape($name) . "'";
-        $res = $this->db->query($query);
-        if (PEAR::isError($res) || $res->numRows() == 0) {
+        $error = false;
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
+            $error = true;
+        }
+        if ($error || $res->numRows() == 0) {
             return false;
         }
         $row = $res->fetchRow();
