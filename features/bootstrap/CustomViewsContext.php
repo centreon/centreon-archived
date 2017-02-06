@@ -2,6 +2,7 @@
 
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\CustomViewsPage;
+use Centreon\Test\Behat\ContactConfigurationPage;
 
 class CustomViewsContext extends CentreonContext
 {
@@ -22,6 +23,17 @@ class CustomViewsContext extends CentreonContext
     {
         $this->launchCentreonWebContainer('web_widgets');
         $this->iAmLoggedIn();
+
+        $page = new ContactConfigurationPage($this);
+        $page->setProperties(array(
+            'alias' => 'user1',
+            'name' => 'user1',
+            'email' => 'user1@localhost',
+            'password' => 'centreon',
+            'password2' => 'centreon'
+        ));
+
+        $page->save();
     }
 
     /**
@@ -104,7 +116,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanAddTheSharedView()
     {
-
+        $this->iAmLoggedOut();
         $this->parameters['centreon_user'] = $this->user ;
         $this->iAmLoggedIn();
 
