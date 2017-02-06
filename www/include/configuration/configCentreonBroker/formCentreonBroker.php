@@ -120,9 +120,9 @@ $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled
 $form->addGroup($status, 'activate', _("Status"), '&nbsp;');
 
 $centreonbroker = array();
-$centreonbroker[] = HTML_QuickForm::createElement('radio', 'centreonbroker_watchdog_log', null, _("Daemon"), 1);
-$centreonbroker[] = HTML_QuickForm::createElement('radio', 'centreonbroker_watchdog_log', null, _("Module"), 0);
-$form->addGroup($centreonbroker, 'centreonbroker_watchdog_log', _("Broker Options"), '&nbsp;');
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Daemon"), 1);
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Module"), 0);
+$form->addGroup($centreonbroker, 'activate_watchdog', _("Broker Options"), '&nbsp;');
 
 $stats_activate = array();
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("Yes"), 1);
@@ -151,7 +151,8 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
         "write_timestamp" => '1',
         "write_thread_id" => '1',
         "stats_activate" => '1',
-        "activate" => '1'
+        "activate" => '1',
+        "activate_watchdog" => '1'
     ));
     $tpl->assign('config_id', 0);
 } else {

@@ -495,7 +495,7 @@ class CentreonConfigCentreonBroker
          * Insert the Centreon Broker configuration
          */
         $query = "INSERT INTO cfg_centreonbroker "
-                . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, "
+                . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
                 . "config_write_thread_id, stats_activate, retention_path, "
                 . "event_queue_max_size, command_file) "
                 . "VALUES (
@@ -503,6 +503,7 @@ class CentreonConfigCentreonBroker
                 '" . $this->db->escape($values['filename']) . "', 
                 " . $this->db->escape($values['ns_nagios_server']) . ", 
                 '" . $this->db->escape($values['activate']['activate']) . "',
+                '" . $this->db->escape($values['activate_watchdog']['activate_watchdog']) . "',
                 '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
                 '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
@@ -548,7 +549,8 @@ class CentreonConfigCentreonBroker
                 config_name = '" . $this->db->escape($values['name']) . "', 
                 config_filename = '"  . $this->db->escape($values['filename']) . "', 
                 ns_nagios_server = "  . $this->db->escape($values['ns_nagios_server']) . ",
-                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "', 
+                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "',
+                daemon = '"  . $this->db->escape($values['activate_watchdog']['activate_watchdog']) . "', 
                 config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
