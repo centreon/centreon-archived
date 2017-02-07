@@ -133,14 +133,16 @@ class Broker extends AbstractObjectXML
             $object['event_queue_max_size'] = $row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
 
-            $watchdog[] = array(
-                'cbd' => array(
-                    'name' => $row['config_name'],
-                    'configuration_file' => $this->engine['broker_cfg_path'].'/'.$row['config_filename'],
-                    'run' => 1,
-                    'reaload' => 1
-               )
-             );
+            if ($row['daemon'] == '1') {
+                $watchdog[] = array(
+                    'cbd' => array(
+                        'name' => $row['config_name'],
+                        'configuration_file' => $this->engine['broker_cfg_path'].'/'.$row['config_filename'],
+                        'run' => 1,
+                        'reaload' => 1
+                    )
+                );
+            }
 
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
