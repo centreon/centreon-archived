@@ -28,8 +28,8 @@ class CustomViewsContext extends CentreonContext
 
         $page = new ContactConfigurationPage($this);
         $page->setProperties(array(
-            'alias' => 'user1',
-            'name' => 'user1',
+            'alias' => $this->user,
+            'name' => $this->user,
             'email' => 'user1@localhost',
             'password' => 'centreon',
             'password2' => 'centreon',
@@ -57,7 +57,8 @@ class CustomViewsContext extends CentreonContext
      */
     public function aUserIsUsingThePublicView()
     {
-        // XXX
+        $this->anotherUserWishesToAddANewCustomView();
+        $this->heCanAddThePublicView();
     }
 
     /**
@@ -65,8 +66,8 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserIsUsingTheSharedView()
     {
-        /* $page = new ContactConfigurationBranch($this); */
-
+        $this->anotherUserWishesToAddANewCustomView();
+        $this->heCanAddTheSharedView();
     }
 
     /**
@@ -96,9 +97,11 @@ class CustomViewsContext extends CentreonContext
     /**
      *  @When he removes the shared view
      */
-    public function thisOtherUserRemovesTheSharedView()
+    public function heRemovesTheSharedView()
     {
-        // XXX
+        $page = new CustomViewsPage($this);
+        $page->showEditBar();
+        $page->deleteView();
     }
 
     /**
@@ -132,13 +135,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanAddTheSharedView()
     {
-
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
-        $this->iAmLoggedIn();
-
         $page = new CustomViewsPage($this);
-
         $page->showEditBar(true);
         $page->loadView(null, $this->customViewName);
     }
@@ -150,10 +147,11 @@ class CustomViewsContext extends CentreonContext
     {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-
-        if (!$this->assertFind('css', 'button.editView')->getAttribute('aria-disabled')) {
-            throw new Exception('The user can edit the view');
-        };
+        $this->spin(
+            function ($context) {
+                return ($this->assertFind('css', 'button.editView')->getAttribute('aria-disabled'));
+            }
+        );
     }
 
     /**
@@ -161,15 +159,27 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewIsNotVisibleAnymore()
     {
-        // XXX
+        $this->spin(
+            function ($context) {
+                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
+            }
+        );
     }
 
     /**
-     *  @Then the user can use it again
+     *  @Then the user can use the public view again
      */
-    public function theUserCanUseItAgain()
+    public function theUserCanUseThePublicViewAgain()
     {
-        // XXX
+        $this->aUserIsUsingThePublicView();
+    }
+
+    /**
+     *  @Then the user can use the shared view again
+     */
+    public function theUserCanUseTheSharedViewAgain()
+    {
+        $this->theUserIsUsingTheSharedView();
     }
 
     /**

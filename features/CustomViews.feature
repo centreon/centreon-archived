@@ -17,7 +17,7 @@ Feature: Custom views
         And a user is using the public view
         When he removes the shared view
         Then the view is not visible anymore
-        And the user can use it again
+        And the user can use the public view again
 
 #    Scenario: Share read-only custom view with users
 #        Given a custom view shared in read only with a user
@@ -30,7 +30,7 @@ Feature: Custom views
 #        And the user is using the shared view
 #        When he removes the shared view
 #        Then the view is not visible anymore
-#        And the user can use it again
+#        And the user can use the shared view again
 
 #    Scenario: Update a read only custom view shared with users
 #        Given a custom view shared in read only with a user
