@@ -43,7 +43,6 @@ require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.p
 /**
  * Include Classes / Methods
  */
-require_once _CENTREON_PATH_ . "www/include/eventLogs/common-Func.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
