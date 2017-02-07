@@ -27,6 +27,7 @@ try {
           $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
           pattern: '**/codestyle.xml',
           usePreviousBuildAsReference: true,
+          useDeltaValues: true,
           failedNewAll: '0'
         ])
       }
