@@ -19,4 +19,5 @@ if(isset($pearDB)) {
             . 'SET daemon = '
             . $daemon;
     }
+    $pearDB->query($query);
 }
