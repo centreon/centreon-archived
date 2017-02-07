@@ -18,6 +18,6 @@ if(isset($pearDB)) {
         $query = 'UPDATE cfg_centreonbroker '
             . 'SET daemon = '
             . $daemon;
+        $pearDB->query($query);
     }
-    $pearDB->query($query);
 }
