@@ -39,10 +39,11 @@ if (isset($pearDBO)) {
     $query = "SELECT count(*) AS number
                 FROM INFORMATION_SCHEMA.COLUMNS 
                 WHERE table_name = 'hosts' 
-                AND table_schema = '".$conf_centreon['db']."' 
+                AND table_schema = '".$conf_centreon['dbcstg']."' 
                 AND column_name = 'timezone'";
     $res = $pearDBO->query($query);
-    if (!$res->numRows()) {
+    $data = $res->fetchRow();
+    if ($data['number'] == 0) {
         $pearDBO->query('ALTER TABLE services ADD INDEX last_hard_state_change (last_hard_state_change)');
         $pearDBO->query('ALTER TABLE `hosts` ADD COLUMN `timezone` varchar(64) DEFAULT NULL AFTER `statusmap_image`');
     }
