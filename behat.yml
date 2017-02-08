@@ -59,10 +59,10 @@ default:
       contexts:
         - PartitioningContext
 
-    centreon_knowledge_base:
-      paths: [ %paths.base%/features/CentreonWithKnowledge.feature ]
+    knowledge_base:
+      paths: [ %paths.base%/features/KnowledgeBase.feature ]
       contexts:
-        - CentreonWithKnowledgeContext
+        - KnowledgeBaseContext
 
     disable_fields_on_blocked_objects:
       paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
