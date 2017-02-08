@@ -123,7 +123,7 @@ try {
 }
 finally {
   buildStatus = currentBuild.result ?: 'SUCCESS';
-  if (buildStatus != 'SUCCESS') {
+  if ((buildStatus != 'SUCCESS') && (env.BRANCH_NAME == '2.8.x')) {
     slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
   }
 }
