@@ -88,7 +88,8 @@ class Broker extends AbstractObjectXML
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM cfg_centreonbroker
-            WHERE ns_nagios_server = :poller_id AND config_activate = '1' AND daemon ='1'
+            WHERE ns_nagios_server = :poller_id
+            AND config_activate = '1'
             ");
         }
         $this->stmt_broker->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
