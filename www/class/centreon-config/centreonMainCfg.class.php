@@ -192,8 +192,9 @@ class CentreonMainCfg
         $DBRESULT = $this->DB->query("SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '".$iId."'");
         if ($DBRESULT->numRows() == 0) {
             $sQuery = "INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) VALUES ('". $this->aDefaultBrokerDirective[$source] ."', ". $iId .")";
-            $res = $this->DB->query($sQuery);
-            if (PEAR::isError($res)) {
+            try {
+                $res = $this->DB->query($sQuery);
+            } catch (\PDOException $e) {
                 return false;
             }
         }
@@ -343,12 +344,10 @@ class CentreonMainCfg
                 $param = null;
         }
 
-        $stmt = $this->DB->prepare($rq);
-        if (PEAR::isError($stmt)) {
-            return false;
-        }
-        $res = $this->DB->execute($stmt, $params);
-        if (PEAR::isError($res)) {
+        try {
+            $stmt = $this->DB->prepare($rq);
+            $res = $this->DB->execute($stmt, $params);
+        } catch (\PDOException $e) {
             return false;
         }
 

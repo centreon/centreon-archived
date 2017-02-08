@@ -32,6 +32,8 @@
  * For more information : contact@centreon.com
  */
 
+require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
+
 /**
  * Class for Access Control List management
  *
@@ -161,8 +163,6 @@ class CentreonACL
      */
     private function setAccessGroups()
     {
-        global $pearDB;
-
         if (is_null($this->parentTemplates)) {
             $this->loadParentTemplates();
         }
@@ -174,7 +174,7 @@ class CentreonACL
                 . "AND acl.acl_group_activate = '1' "
                 . "AND agcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") "
                 . "ORDER BY acl.acl_group_name ASC";
-            $DBRESULT = $pearDB->query($query);
+            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 $this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
             }
@@ -188,7 +188,7 @@ class CentreonACL
                 . "AND cgcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") "
                 . "ORDER BY acl.acl_group_name ASC";
 
-            $DBRESULT = $pearDB->query($query);
+            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 $this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
             }
@@ -201,15 +201,13 @@ class CentreonACL
      */
     private function setResourceGroups()
     {
-        global $pearDB;
-
         $query = "SELECT acl.acl_res_id, acl.acl_res_name "
             . "FROM acl_resources acl, acl_res_group_relations argr "
             . "WHERE acl.acl_res_id = argr.acl_res_id "
             . "AND acl.acl_res_activate = '1' "
             . "AND argr.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
             . "ORDER BY acl.acl_res_name ASC";
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $this->resourceGroups[$row['acl_res_id']] = $row['acl_res_name'];
         }
@@ -221,15 +219,13 @@ class CentreonACL
      */
     private function setHostGroups()
     {
-        global $pearDB;
-
         $query = "SELECT hg.hg_id, hg.hg_name, hg.hg_alias, arhr.acl_res_id "
             . "FROM hostgroup hg, acl_resources_hg_relations arhr "
             . "WHERE hg.hg_id = arhr.hg_hg_id "
             . "AND hg.hg_activate = '1' "
             . "AND arhr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY hg.hg_name ASC ";
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $this->hostGroups[$row['hg_id']] = $row['hg_name'];
             $this->hostGroupsAlias[$row['hg_id']] = $row['hg_alias'];
@@ -243,15 +239,13 @@ class CentreonACL
      */
     private function setPollers()
     {
-        global $pearDB;
-
         $query = "SELECT ns.id, ns.name, arpr.acl_res_id "
             . "FROM nagios_server ns, acl_resources_poller_relations arpr "
             . "WHERE ns.id = arpr.poller_id "
             . "AND ns.ns_activate = '1' "
             . "AND arpr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY ns.name ASC ";
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         if ($DBRESULT->numRows()) {
             while ($row = $DBRESULT->fetchRow()) {
                 $this->pollers[$row['id']] = $row['name'];
@@ -274,15 +268,13 @@ class CentreonACL
      */
     private function setServiceGroups()
     {
-        global $pearDB;
-
         $query = "SELECT sg.sg_id, sg.sg_name, sg.sg_alias, arsr.acl_res_id "
             . "FROM servicegroup sg, acl_resources_sg_relations arsr "
             . "WHERE sg.sg_id = arsr.sg_id "
             . "AND sg.sg_activate = '1' "
             . "AND arsr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY sg.sg_name ASC";
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $this->serviceGroups[$row['sg_id']] = $row['sg_name'];
             $this->serviceGroupsAlias[$row['sg_id']] = $row['sg_alias'];
@@ -296,8 +288,6 @@ class CentreonACL
      */
     private function setServiceCategories()
     {
-        global $pearDB;
-
         $query = "SELECT sc.sc_id, sc.sc_name, arsr.acl_res_id "
             . "FROM service_categories sc, acl_resources_sc_relations arsr "
             . "WHERE sc.sc_id = arsr.sc_id "
@@ -305,7 +295,7 @@ class CentreonACL
             . "AND arsr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY sc.sc_name ASC ";
 
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $this->serviceCategories[$row['sc_id']] = $row['sc_name'];
             $this->serviceCategoriesFilter[$row['acl_res_id']][$row['sc_id']] = $row['sc_id'];
@@ -318,8 +308,6 @@ class CentreonACL
      */
     private function setHostCategories()
     {
-        global $pearDB;
-
         $query = "SELECT hc.hc_id, hc.hc_name, arhr.acl_res_id "
             . "FROM hostcategories hc, acl_resources_hc_relations arhr "
             . "WHERE hc.hc_id = arhr.hc_id "
@@ -327,7 +315,7 @@ class CentreonACL
             . "AND arhr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY hc.hc_name ASC ";
 
-        $res = $pearDB->query($query);
+        $res = \CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $res->fetchRow()) {
             $this->hostCategories[$row['hc_id']] = $row['hc_name'];
         }
@@ -338,14 +326,12 @@ class CentreonACL
      */
     private function setMetaServices()
     {
-        global $pearDB;
-
         $query = "SELECT ms.meta_id, ms.meta_name, arsr.acl_res_id " .
                 "FROM meta_service ms, acl_resources_meta_relations arsr " .
                 "WHERE ms.meta_id = arsr.meta_id " .
                 "AND arsr.acl_res_id IN (" . $this->getResourceGroupsString() . ") " .
                 "ORDER BY ms.meta_name ASC";
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         $this->metaServiceStr = "";
         while ($row = $DBRESULT->fetchRow()) {
             $this->metaServices[$row['meta_id']] = $row['meta_name'];
@@ -365,8 +351,6 @@ class CentreonACL
      */
     private function setActions()
     {
-        global $pearDB;
-
         $query = "SELECT ar.acl_action_name "
             . "FROM acl_group_actions_relations agar, acl_actions a, acl_actions_rules ar "
             . "WHERE a.acl_action_id = agar.acl_action_id "
@@ -374,7 +358,7 @@ class CentreonACL
             . "AND a.acl_action_activate = '1' "
             . "AND agar.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
             . "ORDER BY ar.acl_action_name ASC ";
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $this->actions[$row['acl_action_name']] = $row['acl_action_name'];
         }
@@ -386,13 +370,11 @@ class CentreonACL
      */
     private function setTopology()
     {
-        global $pearDB;
-
         if ($this->admin) {
             $query = "SELECT topology_page "
                 . "FROM topology "
                 . "WHERE topology_page IS NOT NULL ";
-            $DBRES = $pearDB->query($query);
+            $DBRES = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $DBRES->fetchRow()) {
                 $this->topology[$row['topology_page']] = 1;
             }
@@ -406,7 +388,7 @@ class CentreonACL
                     . "WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id "
                     . "AND acl_topology.acl_topo_activate = '1' "
                     . "AND acl_group_topology_relations.acl_group_id IN (" . $this->getAccessGroupsString() . ") ";
-                $DBRESULT = $pearDB->query($query);
+                $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
 
                 if (!$DBRESULT->numRows()) {
                     $this->topology[1] = 1;
@@ -421,7 +403,7 @@ class CentreonACL
                             . "WHERE acl_topology.acl_topo_activate = '1' "
                             . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
                             . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' ";
-                        $DBRESULT2 = $pearDB->query($query2);
+                        $DBRESULT2 = \CentreonDBInstance::getConfInstance()->query($query2);
                         while ($topo_page = $DBRESULT2->fetchRow()) {
                             $topology[] = $topo_page["topology_topology_id"];
                             if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
@@ -445,7 +427,7 @@ class CentreonACL
                         . "FROM topology FORCE INDEX (`PRIMARY`) "
                         . "WHERE topology_page IS NOT NULL "
                         . $ACL;
-                    $DBRESULT3 = $pearDB->query($query3);
+                    $DBRESULT3 = \CentreonDBInstance::getConfInstance()->query($query3);
                     while ($topo_page = $DBRESULT3->fetchRow()) {
                         $this->topology[$topo_page["topology_page"]] = $tmp_topo_page[$topo_page["topology_id"]];
                     }
@@ -822,7 +804,7 @@ class CentreonACL
     
     public function checkHost($hostId)
     {
-        $pearDBO = new CentreonDB("centstorage");
+        $pearDBO = \CentreonDBInstance::getMonInstance();
         $hostArray = $this->getHostsArray("ID", $pearDBO);
         if (in_array($hostId, $hostArray)) {
             return true;
@@ -832,7 +814,7 @@ class CentreonACL
     
     public function checkService($serviceId)
     {
-        $pearDBO = new CentreonDB("centstorage");
+        $pearDBO = \CentreonDBInstance::getMonInstance();
         $serviceArray = $this->getServicesArray("ID", $pearDBO);
         if (in_array($serviceId, $serviceArray)) {
             return true;
@@ -877,7 +859,7 @@ class CentreonACL
         }
 
         $hosts = array();
-        $DBRES = $pearDBndo->query($query);
+        $DBRES = \CentreonDBInstance::getMonInstance()->query($query);
         while ($row = $DBRES->fetchRow()) {
             if ($escape === true) {
                 $hosts[] = CentreonDB::escape($row[$fieldName]);
@@ -1378,8 +1360,6 @@ class CentreonACL
      */
     public function getHostsServices($pearDBMonitoring, $get_service_description = null)
     {
-        global $pearDB;
-
         $tab = array();
         if ($this->admin) {
             $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
@@ -1389,7 +1369,7 @@ class CentreonACL
                 . "LEFT JOIN service s on hsr.service_service_id = s.service_id "
                 . "WHERE h.host_activate = '1' "
                 . "AND (s.service_activate = '1' OR s.service_id is null) ";
-            $DBRESULT = $pearDB->query($query);
+            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 if (!is_null($get_service_description)) {
                     $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
@@ -1406,7 +1386,7 @@ class CentreonACL
                     . "FROM hostgroup_relation hgr, service s, host_service_relation hsr "
                     . "WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
                     . "AND s.service_id = hsr.service_service_id ";
-                $DBRESULT = $pearDB->query($query);
+                $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
                 while ($elem = $DBRESULT->fetchRow()) {
                     $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];
                 }
@@ -1442,8 +1422,6 @@ class CentreonACL
 
     public function getHostServices($pearDBMonitoring, $host_id, $get_service_description = null)
     {
-        global $pearDB;
-
         $tab = array();
         if ($this->admin) {
             $query = "SELECT DISTINCT h.host_id, s.service_id, s.service_description "
@@ -1453,7 +1431,7 @@ class CentreonACL
                 . "AND h.host_id = '" . CentreonDB::escape($host_id) . "'"
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND s.service_activate = '1' ";
-            $DBRESULT = $pearDB->query($query);
+            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 $tab[$row['service_id']] = $row['service_description'];
             }
@@ -1465,7 +1443,7 @@ class CentreonACL
                 . "WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' "
                 . "AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
                 . "AND service_id = hsr.service_service_id ";
-            $DBRESULT = $pearDB->query($query);
+            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
             while ($elem = $DBRESULT->fetchRow()) {
                 $tab[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
             }
@@ -1552,8 +1530,6 @@ class CentreonACL
      */
     public function getHostgroupHosts($hg_id, $pearDBndo)
     {
-        global $pearDB;
-
         $tab = array();
         $query = "SELECT DISTINCT h.host_id, h.host_name "
             . "FROM hostgroup_relation hgr, host h "
@@ -1562,7 +1538,7 @@ class CentreonACL
             . $this->queryBuilder("AND", "h.host_id", $this->getHostsString("ID", $pearDBndo))
             . " ORDER BY h.host_name ";
 
-        $DBRESULT = $pearDB->query($query);
+        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $tab[$row['host_id']] = $row['host_name'];
         }
@@ -1574,12 +1550,10 @@ class CentreonACL
      */
     public function updateACL($data = null)
     {
-        global $pearDB, $pearDBO, $centreon_path;
-
         if (!$this->admin) {
             $groupIds = array_keys($this->accessGroups);
             if (is_array($groupIds) && count($groupIds)) {
-                $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_changed = '1' "
+                $DBRESULT = \CentreonDBInstance::getConfInstance()->query("UPDATE acl_groups SET acl_group_changed = '1' "
                                            . "WHERE acl_group_id IN (" . implode(",", $groupIds) . ")");
 
                 // Manage changes
@@ -1591,8 +1565,8 @@ class CentreonACL
                         // Put new entries in the table with group_id
                         foreach ($groupIds as $group_id) {
                             $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
-                                . "VALUES ('" . $host_id . "', NULL, " . $group_id . ")";
-                            $pearDBO->query($request2);
+                                . "VALUES ('" . $data["id"] . "', NULL, " . $group_id . ")";
+                            \CentreonDBInstance::getMonInstance()->query($request2);
                         }
 
                         // Insert services
@@ -1600,28 +1574,28 @@ class CentreonACL
                         foreach ($svc as $svc_id => $svc_name) {
                             $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                 . "VALUES ('" . $data["id"] . "', '" . $svc_id . "', " . $group_id . ")";
-                            $pearDBO->query($request2);
+                            \CentreonDBInstance::getMonInstance()->query($request2);
                         }
                     } elseif ($data['action'] == 'DUP' && isset($data['duplicate_host'])) {
                         // Get current configuration into Centreon_acl table
                         $request = "SELECT group_id FROM centreon_acl " .
                             "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NULL";
-                        $DBRESULT = $pearDBO->query($request);
+                        $DBRESULT = \CentreonDBInstance::getMonInstance()->query($request);
                         while ($row = $DBRESULT->fetchRow()) {
                             // Insert New Host
                             $request1 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                 . "VALUES ('" . $data["id"] . "', NULL, " . $row['group_id'] . ")";
-                            $pearDBO->query($request1);
+                            \CentreonDBInstance::getMonInstance()->query($request1);
 
                             // Insert services
                             $request = "SELECT service_id, group_id FROM centreon_acl "
                                 . "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NOT NULL";
-                            $DBRESULT = $pearDBO->query($request);
+                            $DBRESULT = \CentreonDBInstance::getMonInstance()->query($request);
                             while ($row = $DBRESULT->fetchRow()) {
                                 $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                     . "VALUES ('" . $data["id"] . "', "
                                     . "'" . $row["service_id"] . "', " . $row['group_id'] . ")";
-                                $pearDBO->query($request2);
+                                \CentreonDBInstance::getMonInstance()->query($request2);
                             }
                         }
                     }
@@ -1637,24 +1611,24 @@ class CentreonACL
                             foreach ($groupIds as $group_id) {
                                 $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                     . "VALUES ('" . $host_id . "', '" . $data["id"] . "', " . $group_id . ")";
-                                $pearDBO->query($request2);
+                                \CentreonDBInstance::getMonInstance()->query($request2);
                             }
                         } elseif ($data['action'] == 'DUP' && isset($data['duplicate_service'])) {
                             // Get current configuration into Centreon_acl table
                             $request = "SELECT group_id FROM centreon_acl "
                                 . "WHERE host_id = $host_id AND service_id = " . $data['duplicate_service'];
-                            $DBRESULT = $pearDBO->query($request);
+                            $DBRESULT = \CentreonDBInstance::getMonInstance()->query($request);
                             while ($row = $DBRESULT->fetchRow()) {
                                 $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                     . "VALUES ('" . $host_id . "', '" . $data["id"] . "', " . $row['group_id'] . ")";
-                                $pearDBO->query($request2);
+                                \CentreonDBInstance::getMonInstance()->query($request2);
                             }
                         }
                     }
                 }
             }
         } else {
-            $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+            \CentreonDBInstance::getConfInstance()->query("UPDATE `acl_resources` SET `changed` = '1'");
         }
     }
 
@@ -1679,8 +1653,6 @@ class CentreonACL
      */
     private function loadParentTemplates()
     {
-        global $pearDB;
-
         /* Get parents template */
         $this->parentTemplates = array();
         $currentContact = $this->userID;
@@ -1689,15 +1661,15 @@ class CentreonACL
             $query = 'SELECT contact_template_id
                 FROM contact
                 WHERE contact_id = ' . $currentContact;
-            $res = $pearDB->query($query);
-            if (PEAR::isError($res)) {
-                $currentContact = 0;
-            } else {
+            try {
+                $res = \CentreonDBInstance::getConfInstance()->query($query);
                 if ($row = $res->fetchRow()) {
                     $currentContact = $row['contact_template_id'];
                 } else {
                     $currentContact = 0;
                 }
+            } catch (\PDOException $e) {
+                $currentContact = 0;
             }
         }
     }
@@ -1724,8 +1696,6 @@ class CentreonACL
      */
     private function constructRequest($options, $hasWhereClause = false)
     {
-        global $pearDB;
-
         $requests = array();
 
         // Manage select clause
@@ -1787,7 +1757,7 @@ class CentreonACL
                     }
                     $requests['conditions'] .= $clause . " " . $key . " " . $op . " ('" . $inValues . "') ";
                 } else {
-                    $requests['conditions'] .= $clause . " " . $key . " " . $op . " '" . $pearDB->escape($value) . "' ";
+                    $requests['conditions'] .= $clause . " " . $key . " " . $op . " '" . \CentreonDBInstance::getConfInstance()->escape($value) . "' ";
                 }
             }
             if (!$first) {
@@ -1842,12 +1812,11 @@ class CentreonACL
      */
     private function constructResult($sql, $options)
     {
-        global $pearDB;
-
         $result = array();
 
-        $res = $pearDB->query($sql);
-        if (PEAR::isError($res)) {
+        try {
+            $res = \CentreonDBInstance::getConfInstance()->query($sql);
+        } catch (\PDOException $e) {
             return $result;
         }
 
@@ -1866,7 +1835,7 @@ class CentreonACL
         if (isset($options['total']) && $options['total'] == true) {
             return array(
                 'items' => $result,
-                'total' => $pearDB->numberRows()
+                'total' => \CentreonDBInstance::getConfInstance()->numberRows()
             );
         } else {
             return $result;
@@ -2408,8 +2377,6 @@ class CentreonACL
      */
     public function duplicateHostAcl($hosts = array())
     {
-        global $pearDB;
-
         $sql = "INSERT INTO %s 
                     (host_host_id, acl_res_id)
                     (SELECT %d, acl_res_id 
@@ -2418,8 +2385,8 @@ class CentreonACL
         $tbHost = "acl_resources_host_relations";
         $tbHostEx = "acl_resources_hostex_relations";
         foreach ($hosts as $copyId => $originalId) {
-            $pearDB->query(sprintf($sql, $tbHost, $copyId, $tbHost, $originalId));
-            $pearDB->query(sprintf($sql, $tbHostEx, $copyId, $tbHostEx, $originalId));
+            \CentreonDBInstance::getConfInstance()->query(sprintf($sql, $tbHost, $copyId, $tbHost, $originalId));
+            \CentreonDBInstance::getConfInstance()->query(sprintf($sql, $tbHostEx, $copyId, $tbHostEx, $originalId));
         }
     }
 
@@ -2431,8 +2398,6 @@ class CentreonACL
      */
     public function duplicateHgAcl($hgs = array())
     {
-        global $pearDB;
-
         $sql = "INSERT INTO %s 
                     (hg_hg_id, acl_res_id)
                     (SELECT %d, acl_res_id 
@@ -2440,7 +2405,7 @@ class CentreonACL
                     WHERE hg_hg_id = %d)";
         $tb = "acl_resources_hg_relations";
         foreach ($hgs as $copyId => $originalId) {
-            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+            \CentreonDBInstance::getConfInstance()->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
         }
     }
 
@@ -2452,8 +2417,6 @@ class CentreonACL
      */
     public function duplicateSgAcl($sgs = array())
     {
-        global $pearDB;
-
         $sql = "INSERT INTO %s 
                     (sg_id, acl_res_id)
                     (SELECT %d, acl_res_id 
@@ -2461,7 +2424,7 @@ class CentreonACL
                     WHERE sg_id = %d)";
         $tb = "acl_resources_sg_relations";
         foreach ($sgs as $copyId => $originalId) {
-            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+            \CentreonDBInstance::getConfInstance()->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
         }
     }
 
@@ -2473,8 +2436,6 @@ class CentreonACL
      */
     public function duplicateHcAcl($hcs = array())
     {
-        global $pearDB;
-
         $sql = "INSERT INTO %s 
                     (hc_id, acl_res_id)
                     (SELECT %d, acl_res_id 
@@ -2482,7 +2443,7 @@ class CentreonACL
                     WHERE hc_id = %d)";
         $tb = "acl_resources_hc_relations";
         foreach ($hcs as $copyId => $originalId) {
-            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+            \CentreonDBInstance::getConfInstance()->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
         }
     }
 
@@ -2494,8 +2455,6 @@ class CentreonACL
      */
     public function duplicateScAcl($scs = array())
     {
-        global $pearDB;
-
         $sql = "INSERT INTO %s 
                     (sc_id, acl_res_id)
                     (SELECT %d, acl_res_id 
@@ -2503,7 +2462,7 @@ class CentreonACL
                     WHERE sc_id = %d)";
         $tb = "acl_resources_sc_relations";
         foreach ($scs as $copyId => $originalId) {
-            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+            \CentreonDBInstance::getConfInstance()->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
         }
     }
 }

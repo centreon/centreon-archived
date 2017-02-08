@@ -280,8 +280,9 @@ class CentreonAuthLDAP
                     ar_id = ".$this->arId."
 					WHERE contact_id = " . $this->contactInfos['contact_id'];
 
-                $ret = $this->pearDB->query($queryUpdateExtInfos);
-                if (PEAR::isError($ret)) {
+                try {
+                    $this->pearDB->query($queryUpdateExtInfos);
+                } catch (\PDOException $e) {
                     $this->CentreonLog->insertLog(3, 'Error in update ldap informations for user ' .
                        html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                     return false;
@@ -315,7 +316,8 @@ class CentreonAuthLDAP
                     htmlentities($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8') . "', '" .
                     htmlentities($userDisplay, ENT_QUOTES, 'UTF-8') . "', 'ldap', '" . $userDn . "', " . $this->arId .
                     ", " . $userEmail . ", " . $userPager . ", '1', '1', '1', '2')";
-                if (false === PEAR::isError($this->pearDB->query($query))) {
+                try {
+                    $this->pearDB->query($query);
                     /*
                      * Get the contact_id
                      */
@@ -347,6 +349,8 @@ class CentreonAuthLDAP
                         $this->pearDB->query($query);
                     }
                     return true;
+                } catch (\PDOException $e) {
+                    // Nothing
                 }
             }
         }

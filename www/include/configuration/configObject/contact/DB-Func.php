@@ -855,8 +855,9 @@ function insertLdapContactInDB($tmpContacts = array())
          * Get the contact_id
          */
         $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $pearDB->escape($tmpContacts["dn"][$select_key]) . "'";
-        $res = $pearDB->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $pearDB->query($query);
+        } catch (\PDOException $e) {
             return false;
         }
         $row = $res->fetchRow();
@@ -884,8 +885,9 @@ function insertLdapContactInDB($tmpContacts = array())
         $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
         if (count($listGroup) > 0) {
             $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join("','", $listGroup) . "')";
-            $res = $pearDB->query($query);
-            if (PEAR::isError($res)) {
+            try {
+                $res = $pearDB->query($query);
+            } catch (\PDOException $e) {
                 return false;
             }
             /*

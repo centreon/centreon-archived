@@ -57,12 +57,13 @@ class PartEngine
         $request .= "WHERE TABLE_NAME='".$table->getName()."' ";
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $request .= "AND PARTITION_DESCRIPTION = 'MAXVALUE' ";
-        
-        $DBRESULT = $db->query($request);
-        if (PEAR::isError($DBRESULT)) {
+
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get partition maxvalue information for table "
-                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                . $tableName . ", " . $e->getMessage() . "\n"
             );
         }
         
@@ -70,11 +71,12 @@ class PartEngine
             #print "[".date(DATE_RFC822)."][createMaxvaluePartition] Create new part pmax for table " . $tableName . "\n";
             $request = "ALTER TABLE ".$tableName;
             $request .= " ADD PARTITION (PARTITION `pmax` VALUES LESS THAN MAXVALUE)";
-            $DBRESULT = $db->query($request);
-            if (PEAR::isError($DBRESULT)) {
+            try {
+                $DBRESULT = $db->query($request);
+            } catch (\PDOException $e) {
                 throw new Exception(
                     "Error: cannot add a maxvalue partition for table "
-                    . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                    . $tableName . ", " . $e->getMessage() . "\n"
                 );
             }
         }
@@ -120,11 +122,11 @@ class PartEngine
                 . ")";
         }
 
-        $DBRESULT = $db->query($request);
-
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception("Error: cannot add a new partition 'p" . ($ntime[5] + 1900) . $month . $day
-                . "' for table " . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n");
+                . "' for table " . $tableName . ", " . $e->getMessage() . "\n");
         }
 
         return $current_time;
@@ -237,20 +239,22 @@ class PartEngine
                 . $table->getSchema() . "," . $DBRESULT->getDebugInfo() . "\n"
             );
         }
-        
-        $DBRESULT = $db->query("use ".$table->getSchema());
-        if (PEAR::isError($DBRESULT)) {
+
+        try {
+            $DBRESULT = $db->query("use " . $table->getSchema());
+        } catch (\PDOException $e) {
             throw new Exception(
                 "SQL Error: Cannot use database "
-                . $table->getSchema() . "," . $DBRESULT->getDebugInfo() . "\n"
+                . $table->getSchema() . "," . $e->getMessage() . "\n"
             );
         }
 
-        $DBRESULT = $db->query($table->getCreateStmt().$partition_part);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($table->getCreateStmt() . $partition_part);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot create table " . $tableName . " with partitions, "
-                . $DBRESULT->getDebugInfo() . "\n"
+                . $e->getMessage() . "\n"
             );
         }
         if ($table->getType() == 'date') {
@@ -269,11 +273,16 @@ class PartEngine
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $request .= "GROUP BY TABLE_NAME";
 
-        $DBRESULT = $db->query($request);
-        if (PEAR::isError($DBRESULT) || !$DBRESULT->numRows()) {
+        $error = false;
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
+            $error = true;
+        }
+        if ($error || !$DBRESULT->numRows()) {
             throw new Exception(
                 "Error: cannot get table " . $table->getSchema() . "." . $table->getName()
-                . " last partition range, " . $DBRESULT->getDebugInfo() . "\n"
+                . " last partition range \n"
             );
         }
         $row = $DBRESULT->fetchRow();
@@ -308,19 +317,21 @@ class PartEngine
         $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
         $request .= $condition;
-        
-        $DBRESULT = $db->query($request);
-        if (PEAR::isError($DBRESULT)) {
+
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception("Error : Cannot get partitions to purge for table "
-                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n");
+                . $tableName . ", " . $e->getMessage() . "\n");
         }
         
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE " . $tableName . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
-            $DBRESULT2 =& $db->query($request);
-            if (PEAR::isError($DBRESULT2)) {
+            try {
+                $DBRESULT2 =& $db->query($request);
+            } catch (\PDOException $e) {
                 throw new Exception("Error : Cannot drop partition " . $row["PARTITION_NAME"] . " of table "
-                    . $tableName . ", " . $DBRESULT2->getDebugInfo() . "\n");
+                    . $tableName . ", " . $e->getMessage() . "\n");
             }
         }
     }
@@ -347,12 +358,13 @@ class PartEngine
          * Renaming existing table with the suffix '_old'
          */
         echo "[".date(DATE_RFC822)."][migrate] Renaming table ".$tableName." TO ".$tableName."_old\n";
-        $DBRESULT = $db->query("RENAME TABLE ".$tableName." TO ".$tableName."_old");
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query("RENAME TABLE " . $tableName . " TO " . $tableName . "_old");
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error: Cannot rename table " . $tableName
                 . " to " . $tableName . "_old, "
-                . $DBRESULT->getDebugInfo() . "\n"
+                . $e->getMessage() . "\n"
             );
         }
         
@@ -365,11 +377,12 @@ class PartEngine
         // dumping data from existing table
         echo "[".date(DATE_RFC822)."][migrate] Insert data from ".$tableName."_old to new table\n";
         $request = "INSERT INTO " . $tableName . " SELECT * FROM " . $tableName."_old";
-        $DBRESULT = $db->query($request);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error: Cannot copy " . $tableName . "_old data to new table "
-                . $DBRESULT->getDebugInfo() . "\n"
+                . $e->getMessage() . "\n"
             );
         }
     }
@@ -385,14 +398,16 @@ class PartEngine
         }
         
         //verifying if table is partitioned
-        $DBRESULT = $db->query("use ".$table->getSchema());
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query("use " . $table->getSchema());
+        } catch (\PDOException $e) {
             throw new Exception("Error: cannot use database ".$table->getSchema()."\n");
         }
-        
-        $DBRESULT = $db->query("SHOW TABLE STATUS LIKE '".$table->getName()."'");
-        if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error: cannot get table ".$tableName." status, ".$DBRESULT->getDebugInfo()."\n");
+
+        try {
+            $DBRESULT = $db->query("SHOW TABLE STATUS LIKE '" . $table->getName() . "'");
+        } catch (\PDOException $e) {
+            throw new Exception("Error: cannot get table ".$tableName." status, ".$e->getMessage()."\n");
         }
         if (!$DBRESULT->numRows()) {
             throw new Exception("Error: cannot get table ".$tableName." status\n");
@@ -428,22 +443,23 @@ class PartEngine
         $request = "SELECT PARTITION_NAME FROM information_schema.`PARTITIONS` ";
         $request .= "WHERE `TABLE_NAME`='".$table->getName()."' ";
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
-        $DBRESULT = $db->query($request);
-
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get table schema information  for "
-                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                . $tableName . ", " . $e->getMessage() . "\n"
             );
         }
 
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE ".$tableName." OPTIMIZE PARTITION `".$row["PARTITION_NAME"]."`;";
-            $DBRESULT2 = $db->query($request);
-            if (PEAR::isError($DBRESULT2)) {
+            try {
+                $DBRESULT2 = $db->query($request);
+            } catch (\PDOException $e) {
                 throw new Exception(
                     "Optimize error : Cannot optimize partition " . $row["PARTITION_NAME"]
-                    . " of table " . $tableName . ", " . $DBRESULT2->getDebugInfo() . "\n"
+                    . " of table " . $tableName . ", " . $e->getMessage() . "\n"
                 );
             }
         }
@@ -472,11 +488,12 @@ class PartEngine
         $request .= "WHERE `TABLE_NAME`='".$table->getName()."' ";
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $request .= "ORDER BY PARTITION_NAME DESC ";
-        $DBRESULT = $db->query($request);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get table schema information  for "
-                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                . $tableName . ", " . $e->getMessage() . "\n"
             );
         }
 
@@ -518,11 +535,12 @@ class PartEngine
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $request .= "ORDER BY  PARTITION_ORDINAL_POSITION desc ";
         $request .= "LIMIT 2";
-        $DBRESULT = $db->query($request);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get table schema information  for "
-                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                . $tableName . ", " . $e->getMessage() . "\n"
             );
         }
         $count = 0;
@@ -550,13 +568,13 @@ class PartEngine
         $request .= " AND " . $table->getColumn() . " < " . $end;
         $request .= " INTO OUTFILE '" . $filename . "'";
 
-        $DBRESULT = $db->query($request);
-
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "FATAL : Cannot dump table " . $tableName
                 . " into file " . $filename . ", "
-                . $DBRESULT->getDebugInfo() . "\n"
+                . $e->getMessage() . "\n"
             );
         }
     }
@@ -590,8 +608,9 @@ class PartEngine
             . 'AND TABLE_NAME="' . $table->getName() . '" '
             . 'AND TABLE_SCHEMA="' . $table->getSchema() . '" ';
 
-        $DBRESULT = $db->query($query);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($query);
+        } catch (\PDOException $e) {
             throw new Exception('Cannot get partition information');
         }
 
@@ -614,11 +633,12 @@ class PartEngine
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $request .= "AND PARTITION_NAME = 'pmax' ";
 
-        $DBRESULT = $db->query($request);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $db->query($request);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get partition maxvalue information for table "
-                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                . $table->getName() . ", " . $e->getMessage() . "\n"
             );
         }
 

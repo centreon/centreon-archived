@@ -33,58 +33,46 @@
  *
  */
 
-require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
+include_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/centreonDB.class.php");
 
-/*
- *  Class that contains various methods for managing hosts
- */
-
-class CentreonHosttemplates extends CentreonHost
+class CentreonDBStatement extends \PDOStatement
 {
-    /**
-     *
-     * @param array $values
-     * @return array
-     */
-    public function getObjectForSelect2($values = array(), $options = array())
-    {
-        return parent::getObjectForSelect2($values, $options, '0');
+    public $dbh;
+
+    public $fetchAll;
+
+    protected function __construct($dbh) {
+        $this->dbh = $dbh;
+        $this->fetchAll = null;
     }
-    
-    /**
-     * Returns array of host linked to the template
-     *
-     * @return array
-     */
-    public function getLinkedHostsByName($hostTemplateName, $checkTemplates = true)
+
+    public function fetch()
     {
-        if ($checkTemplates) {
-            $register = 0;
+        if (is_null($this->fetchAll)) {
+            return parent::fetch();
+        } else if (count($this->fetchAll) <= 0) {
+            return false;
         } else {
-            $register = 1;
+            return array_shift($this->fetchAll);
         }
+    }
 
-        $linkedHosts = array();
-        $query = 'SELECT DISTINCT h.host_name '
-            . 'FROM host_template_relation htr, host h, host ht '
-            . 'WHERE htr.host_tpl_id = ht.host_id '
-            . 'AND htr.host_host_id = h.host_id '
-            . 'AND ht.host_register = "0" '
-            . 'AND h.host_register = "' . $register . '" '
-            . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" ';
+    public function fetchRow()
+    {
+        return $this->fetch();
+    }
 
-        try {
-            $result = $this->db->query($query);
-        } catch (\PDOException $e) {
-            throw new \Exception('Error while getting linked hosts of ' . $hostTemplateName);
+    public function free()
+    {
+        $this->closeCursor();
+    }
+
+    public function numRows()
+    {
+        if (is_null($this->fetchAll)) {
+            $this->fetchAll = $this->fetchAll();
         }
-
-        while ($row = $result->fetchRow()) {
-            $linkedHosts[] = $row['host_name'];
-        }
-
-        return $linkedHosts;
+        return count($this->fetchAll);
     }
 }

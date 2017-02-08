@@ -422,22 +422,22 @@ class MysqlTable
      */
     public function exists()
     {
-        $DBRESULT = $this->db->query("use " . $this->schema);
-
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $this->db->query("use " . $this->schema);
+        } catch (\PDOException $e) {
             throw new Exception(
                 "SQL Error: Cannot use database "
-                . $this->schema . "," . $DBRESULT->getDebugInfo() . "\n"
+                . $this->schema . "," . $e->getMessage() . "\n"
             );
             return(false);
         }
 
-        $DBRESULT = $this->db->query("show tables like '" . $this->name . "'");
-
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $this->db->query("show tables like '" . $this->name . "'");
+        } catch (\PDOException $e) {
             throw new Exception(
                 "SQL Error: Cannot execute query,"
-                . $DBRESULT->getDebugInfo() . "\n"
+                . $e->getMessage() . "\n"
             );
             return(false);
         }
@@ -456,13 +456,13 @@ class MysqlTable
      */
     public function columnExists()
     {
-        $DBRESULT = $this->db->query(
-            "describe " . $this->schema . "." . $this->name
-        );
-
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $this->db->query(
+                "describe " . $this->schema . "." . $this->name
+            );
+        } catch (\PDOException $e) {
             throw new Exception(
-                "SQL query error : " . $DBRESULT->getDebugInfo() . "\n"
+                "SQL query error : " . $e->getMessage() . "\n"
             );
         }
 

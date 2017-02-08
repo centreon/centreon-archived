@@ -78,16 +78,19 @@ class procedures_DB_Connector {
     /*
      *  The connection is established here
      */
-    public function connect() {
-
-    	$this->privatePearDB =& DB::connect($this->dsn, $this->options);
+    public function connect()
+	{
 		$i = 0;
-		while (PEAR::isError($this->privatePearDB) && ($i < $this->retry)) {
-			$this->privatePearDB =& DB::connect($this->dsn, $this->options);
-			$i++;
+		while ($i < $this->retry) {
+	        try {
+                $this->privatePearDB =& DB::connect($this->dsn, $this->options);
+                $i = $this->retry;
+            } catch (\PDOException $e) {
+	        	$i++;
+            }
 		}
 		if ($i == $this->retry) {
-			$this->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
+			$this->log->insertLog(2, $e->getMessage() . " (retry : $i)");
 			$this->displayConnectionErrorPage();
 		} else {
 			$this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
@@ -116,9 +119,11 @@ class procedures_DB_Connector {
     		$query = str_replace("*", "\*", $query);
     		exec("echo '$query' >> $log_centreon/procedure.log");
     	}
-    	$DBRES = $this->privatePearDB->query($query_string);
-    	if (PEAR::isError($DBRES))
-    		$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+    	try {
+            $DBRES = $this->privatePearDB->query($query_string);
+        } catch (\PDOException $e) {
+            $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
+        }
     	return $DBRES;
     }
 }

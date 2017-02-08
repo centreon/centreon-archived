@@ -241,13 +241,15 @@ class CentreonMetric extends CentreonWebService
             $acks = array();
             $downtimes = array();
             $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
-            $res = $this->pearDB->query($query);
-            if (false === PEAR::isError($res)) {
+            try {
+                $res = $this->pearDB->query($query);
                 $row = $res->fetchRow();
                 if (false === is_null($row) && $row['value'] === '1') {
                     $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
                     $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
                 }
+            } catch (\PDOException $e) {
+                // Nothing to do
             }
             
             $result[] = array(
@@ -439,8 +441,8 @@ class CentreonMetric extends CentreonWebService
             /* Get comments for this services */
             $comments = array();
             $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
-            $res = $this->pearDB->query($query);
-            if (false === PEAR::isError($res)) {
+            try {
+                $res = $this->pearDB->query($query);
                 $row = $res->fetchRow();
                 if (false === is_null($row) && $row['value'] === '1') {
                     $queryComment = 'SELECT entry_time, author, data
@@ -448,18 +450,18 @@ class CentreonMetric extends CentreonWebService
                         WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . '
                             AND entry_type = 1 AND deletion_time IS NULL AND ' . $start . ' < entry_time
                             AND ' . $end . ' > entry_time';
-                    $res = $this->pearDBMonitoring->query($queryComment);
 
-                    if (false === PEAR::isError($res)) {
-                        while ($row = $res->fetchRow()) {
-                            $comments[] = array(
-                                'author' => $row['author'],
-                                'comment' => $row['data'],
-                                'time' => $row['entry_time']
-                            );
-                        }
-                    }    
+                    $res = $this->pearDBMonitoring->query($queryComment);
+                    while ($row = $res->fetchRow()) {
+                        $comments[] = array(
+                            'author' => $row['author'],
+                            'comment' => $row['data'],
+                            'time' => $row['entry_time']
+                        );
+                    }
                 }
+            } catch (\PDOException $e) {
+                // Nothing to do
             }
             
             

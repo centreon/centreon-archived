@@ -113,8 +113,9 @@ class CentreonConfigCentreonBroker
         $query = "SELECT cb_tag_id, tagname
             FROM cb_tag
             ORDER BY tagname";
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array();
         }
         $this->tagsCache = array();
@@ -138,8 +139,9 @@ class CentreonConfigCentreonBroker
         $query = "SELECT tagname
             FROM cb_tag
             WHERE cb_tag_id = %d";
-        $res = $this->db->query(sprintf($query, $tagId));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $tagId));
+        } catch (\PDOException $e) {
             return null;
         }
         $row = $res->fetchRow();
@@ -163,8 +165,9 @@ class CentreonConfigCentreonBroker
         $query = "SELECT type_shortname
             FROM cb_type
             WHERE cb_type_id = %d";
-        $res = $this->db->query(sprintf($query, $typeId));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $typeId));
+        } catch (\PDOException $e) {
             return null;
         }
         $row = $res->fetchRow();
@@ -189,8 +192,9 @@ class CentreonConfigCentreonBroker
         $query = 'SELECT type_name
             FROM cb_type
             WHERE cb_type_id = %d';
-        $res = $this->db->query(sprintf($query, $typeId));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $typeId));
+        } catch (\PDOException $e) {
             return null;
         }
         $row = $res->fetchRow();
@@ -218,8 +222,9 @@ class CentreonConfigCentreonBroker
         $query = "SELECT m.name, t.cb_type_id, t.type_name, ttr.cb_type_uniq
             FROM cb_module m, cb_type t, cb_tag_type_relation ttr
             WHERE m.cb_module_id = t.cb_module_id AND ttr.cb_type_id = t.cb_type_id AND ttr.cb_tag_id = %d";
-        $res = $this->db->query(sprintf($query, $tagId));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $tagId));
+        } catch (\PDOException $e) {
             return array();
         }
         $this->blockCache[$tagId] = array();
@@ -455,8 +460,9 @@ class CentreonConfigCentreonBroker
                             WHERE t2.cb_module_id = mr2.cb_module_id AND
                                 mr2.inherit_config = 1 AND t2.cb_type_id = %d)))
             ORDER BY tfr.order_display";
-        $res = $this->db->query(sprintf($query, $typeId, $typeId));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $typeId, $typeId));
+        } catch (\PDOException $e) {
             return false;
         }
         while ($row = $res->fetchRow()) {
@@ -510,7 +516,9 @@ class CentreonConfigCentreonBroker
                 ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 '" . $this->db->escape($values['command_file']) . "' "
                 . ")";
-        if (PEAR::isError($this->db->query($query))) {
+        try {
+            $this->db->query($query);
+        } catch (\PDOException $e) {
             return false;
         }
         
@@ -523,8 +531,9 @@ class CentreonConfigCentreonBroker
          * Get the ID
          */
         $query = "SELECT config_id FROM cfg_centreonbroker WHERE config_name = '" . $values['name'] . "'";
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return false;
         }
         $row = $res->fetchRow();
@@ -556,7 +565,9 @@ class CentreonConfigCentreonBroker
                 event_queue_max_size = " . (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 command_file = '" . $this->db->escape($values['command_file']) . "'
             WHERE config_id = " . $id;
-        if (PEAR::isError($this->db->query($query))) {
+        try {
+            $this->db->query($query);
+        } catch (\PDOException $e) {
             return false;
         }
         $this->updateCentreonBrokerInfos($id, $values);
@@ -701,8 +712,9 @@ class CentreonConfigCentreonBroker
             AND config_group = '%s'
             AND subgrp_id IS NULL
             ORDER BY config_group_id";
-        $res = $this->db->query(sprintf($query, $config_id, $tag));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $config_id, $tag));
+        } catch (\PDOException $e) {
             return array();
         }
         $formsInfos = array();
@@ -790,8 +802,13 @@ class CentreonConfigCentreonBroker
               config_id, config_group_id
             FROM cfg_centreonbroker_info
             WHERE config_key = 'type' AND config_value = 'correlation'";
-        $res = $this->db->query($query);
-        if (PEAR::isError($res) || $res->numRows() == 0) {
+        $error = false;
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
+            $error = true;
+        }
+        if ($error || $res->numRows() == 0) {
             return false;
         }
         $row = $res->fetchRow();
@@ -799,8 +816,13 @@ class CentreonConfigCentreonBroker
         $correlationGroupId = $row['config_group_id'];
         $query = 'SELECT config_value FROM cfg_centreonbroker_info
             WHERE config_key = "file" AND config_id = ' . $configId . ' AND config_group_id = ' . $correlationGroupId;
-        $res = $this->db->query($query);
-        if (PEAR::isError($res) || $res->numRows() == 0) {
+        $error = false;
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
+            $error = true;
+        }
+        if ($error || $res->numRows() == 0) {
             return false;
         }
         $row = $res->fetchRow();
@@ -860,8 +882,9 @@ class CentreonConfigCentreonBroker
             WHERE config_id = %d AND config_group = '%s'
             AND config_key = 'blockId'
             ORDER BY config_group_id";
-        $res = $this->db->query(sprintf($query, $config_id, $tag));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $config_id, $tag));
+        } catch (\PDOException $e) {
             return array();
         }
         $helps = array();
@@ -903,8 +926,9 @@ class CentreonConfigCentreonBroker
         $query = "SELECT v.value_name, v.value_value
             FROM cb_list_values v, cb_list l
                 WHERE l.cb_list_id = v.cb_list_id AND l.cb_field_id = %d";
-        $res = $this->db->query(sprintf($query, $fieldId));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $fieldId));
+        } catch (\PDOException $e) {
             return array();
         }
         $ret = array();
@@ -929,8 +953,9 @@ class CentreonConfigCentreonBroker
         $query = "SELECT default_value
             FROM cb_list
             WHERE cb_field_id = %d";
-        $res = $this->db->query(sprintf($query, $fieldId));
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query(sprintf($query, $fieldId));
+        } catch (\PDOException $e) {
             return null;
         }
         $row = $res->fetchRow();
@@ -1003,15 +1028,16 @@ class CentreonConfigCentreonBroker
         /*
          * Execute the query
          */
-        switch ($s_db) {
-            case 'centreon':
-                $res = $this->db->query($query);
-                break;
-            case 'centreon_storage':
-                $res = $pearDBO->query($query);
-                break;
-        }
-        if (PEAR::isError($res)) {
+        try {
+            switch ($s_db) {
+                case 'centreon':
+                    $res = $this->db->query($query);
+                    break;
+                case 'centreon_storage':
+                    $res = $pearDBO->query($query);
+                    break;
+            }
+        } catch (\PDOException $e) {
             return false;
         }
         $infos = array();
@@ -1128,14 +1154,15 @@ class CentreonConfigCentreonBroker
     public function getParentGroups($groupId, &$isMultiple = false, &$displayName = "")
     {
         $elemStr = '';
-        $res = $this->db->query(
-            sprintf(
-                "SELECT groupname, group_parent_id, multiple, displayname
+        try {
+            $res = $this->db->query(
+                sprintf(
+                    "SELECT groupname, group_parent_id, multiple, displayname
                 FROM cb_fieldgroup WHERE cb_fieldgroup_id = %d",
-                $groupId
-            )
-        );
-        if (PEAR::isError($res)) {
+                    $groupId
+                )
+            );
+        } catch (\PDOException $e) {
             return '';
         }
         $row = $res->fetchRow();
@@ -1173,21 +1200,26 @@ class CentreonConfigCentreonBroker
     {
         $elemStr = $info['config_key'];
         if ($info['grp_level'] != 0) {
-            $res = $this->db->query(sprintf(
-                "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
+            $error = false;
+            try {
+                $res = $this->db->query(sprintf(
+                    "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
                FROM cfg_centreonbroker_info
                WHERE config_id = %d 
                    AND config_group = '%s'
            AND subgrp_id = %d
            AND grp_level = %d
            AND config_group_id = %d",
-                $configId,
-                $configGroup,
-                $info['parent_grp_id'],
-                $info['grp_level'] - 1,
-                $info['config_group_id']
-            ));
-            if (PEAR::isError($res) || $res->numRows() == 0) {
+                    $configId,
+                    $configGroup,
+                    $info['parent_grp_id'],
+                    $info['grp_level'] - 1,
+                    $info['config_group_id']
+                ));
+            } catch (\PDOException $e) {
+                $error = true;
+            }
+            if ($error || $res->numRows() == 0) {
                 return $elemStr;
             }
             $row = $res->fetchRow();
