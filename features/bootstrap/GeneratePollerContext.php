@@ -110,8 +110,7 @@ class GeneratePollerContext extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
-            },
-            30
+            }
         );
     }
 
@@ -127,8 +126,7 @@ class GeneratePollerContext extends CentreonContext
                     'css',
                     '#noSelectedPoller[style*="display: inline"]'
                 );
-            },
-            5
+            }
         );
     }
 }

@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.4');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.5');
 
 --
 -- Contenu de la table `contact`
@@ -830,7 +830,8 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('hostCategory', 1),
                                            ('serviceMulti', 1),
                                            ('pollerMulti', 1),
-                                           ('serviceGroupMulti', 1);
+                                           ('serviceGroupMulti', 1),
+                                           ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
                         ('Africa/Abidjan', '-00:00', '-00:00'),

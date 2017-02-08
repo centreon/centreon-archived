@@ -42,7 +42,6 @@ locate_rrdtool
 locate_mail
 locate_cron_d
 locate_logrotate_d
-locate_init_d
 locate_php_bin
 locate_pear
 locate_perl

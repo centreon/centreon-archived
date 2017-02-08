@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,47 +31,20 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-
-require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
-require_once dirname(__FILE__) . "/webService.class.php";
-
-class CentreonAdministrationWidget extends CentreonWebService
-{
-    /**
-     * Constructor
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-    
-    /**
-     * Get the list of views
-     */
-    public function getList()
-    {
-        global $centreon;
-
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
-
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-
-        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
-
-        return $widgetObj->getWidgetModels($q, $range);
+/* Update comments unique key */
+if (isset($pearDBO)) {
+    $query = "SELECT count(*) AS number
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE table_name = 'hosts' 
+                AND table_schema = '".$conf_centreon['dbcstg']."' 
+                AND column_name = 'timezone'";
+    $res = $pearDBO->query($query);
+    $data = $res->fetchRow();
+    if ($data['number'] == 0) {
+        $pearDBO->query('ALTER TABLE services ADD INDEX last_hard_state_change (last_hard_state_change)');
+        $pearDBO->query('ALTER TABLE `hosts` ADD COLUMN `timezone` varchar(64) DEFAULT NULL AFTER `statusmap_image`');
     }
 }

@@ -373,21 +373,25 @@ class CentreonWidget
      *
      * @return array
      */
-    public function getWidgetModels($search = '')
+    public function getWidgetModels($search = '', $range = '')
     {
-        $query = 'SELECT widget_model_id, title '
+        $query = 'SELECT SQL_CALC_FOUND_ROWS widget_model_id, title '
             . 'FROM widget_models ';
         $query .= ($search != '') ? 'WHERE title like "%' . $this->db->escape($search) . '%" ' : '';
-        $query .= 'ORDER BY title ';
+        $query .= 'ORDER BY title ' . $range;
 
         $res = $this->db->query($query);
+        $total = $this->db->numberRows();
 
         $widgets = array();
-        while ($row = $res->fetchRow()) {
-            $widgets[$row['widget_model_id']] = $row['title'];
+        while ($data = $res->fetchRow()) {
+            $widgets[] = array('id' => $data['widget_model_id'], 'text' => $data['title']);
         }
 
-        return $widgets;
+        return array(
+            'items' => $widgets,
+            'total' => $total
+        );
     }
 
     /**
