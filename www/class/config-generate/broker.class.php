@@ -109,10 +109,6 @@ class Broker extends AbstractObjectXML
 
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
-            if ($row['config_name'] == 'central-module-master'){
-                continue;
-            }
-
             $this->generate_filename = $row['config_filename'];
             $object = array();
             $flow_count = 0;
@@ -232,7 +228,8 @@ class Broker extends AbstractObjectXML
             $this->writeFile($this->backend_instance->getPath());
         }
         $watchdog[] = array(
-            'log' => '/var/log/centreon-broker/watchdog.log');
+            'log' => '/var/log/centreon-broker/watchdog.log'
+        );
         $this->generate_filename = 'watchdog.xml';
         $this->generateFile($watchdog, true, 'centreonbroker');
         $this->writeFile($this->backend_instance->getPath());
