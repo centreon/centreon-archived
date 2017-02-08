@@ -95,14 +95,30 @@ try {
     }
   }
 
-  stage('Delivery') {
-    node {
-      sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+  if (env.BRANCH_NAME == '2.8.x') {
+    stage('Delivery') {
+      node {
+        sh 'cd /opt/centreon-build && git pull && cd -'
+        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure.');
+      }
     }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Delivery stage failure.');
-    }
+    build 'mon-automation-bundle-centos6'
+    build 'mon-automation-bundle-centos7'
+    build 'mon-lm-bundle-centos6'
+    build 'mon-lm-bundle-centos7'
+    build 'mon-ppe-bundle-centos6'
+    build 'mon-ppe-bundle-centos7'
+    build 'mon-ppm-bundle-centos6'
+    build 'mon-ppm-bundle-centos7'
+    build 'des-bam-bundle-centos6'
+    build 'des-bam-bundle-centos7'
+    build 'des-map-bundle-centos6'
+    build 'des-map-bundle-centos7'
+    build 'des-mbi-bundle-centos6'
+    build 'des-mbi-bundle-centos7'
   }
 }
 finally {
