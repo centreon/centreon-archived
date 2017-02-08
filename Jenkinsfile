@@ -105,20 +105,20 @@ try {
         error('Delivery stage failure.');
       }
     }
-    build 'mon-automation-bundle-centos6'
-    build 'mon-automation-bundle-centos7'
-    build 'mon-lm-bundle-centos6'
-    build 'mon-lm-bundle-centos7'
-    build 'mon-ppe-bundle-centos6'
-    build 'mon-ppe-bundle-centos7'
-    build 'mon-ppm-bundle-centos6'
-    build 'mon-ppm-bundle-centos7'
-    build 'des-bam-bundle-centos6'
-    build 'des-bam-bundle-centos7'
-    build 'des-map-bundle-centos6'
-    build 'des-map-bundle-centos7'
-    build 'des-mbi-bundle-centos6'
-    build 'des-mbi-bundle-centos7'
+    build job: 'mon-automation-bundle-centos6', wait: false
+    build job: 'mon-automation-bundle-centos7', wait: false
+    build job: 'mon-lm-bundle-centos6', wait: false
+    build job: 'mon-lm-bundle-centos7', wait: false
+    build job: 'mon-ppe-bundle-centos6', wait: false
+    build job: 'mon-ppe-bundle-centos7', wait: false
+    build job: 'mon-ppm-bundle-centos6', wait: false
+    build job: 'mon-ppm-bundle-centos7', wait: false
+    build job: 'des-bam-bundle-centos6', wait: false
+    build job: 'des-bam-bundle-centos7', wait: false
+    build job: 'des-map-bundle-centos6', wait: false
+    build job: 'des-map-bundle-centos7', wait: false
+    build job: 'des-mbi-bundle-centos6', wait: false
+    build job: 'des-mbi-bundle-centos7', wait: false
   }
 }
 finally {
