@@ -117,7 +117,8 @@ class CentreonCentbrokerCfg extends CentreonObject
                     "event_queue_max_size",
                     "retention_path",
                     "stats_activate",
-                    "correlation_activate"
+                    "correlation_activate",
+                    "daemon"
                 );
                 if (!in_array($params[1], $parametersWithoutPrefix)) {
                     $params[1] = 'config_'.$params[1];
@@ -592,6 +593,11 @@ class CentreonCentbrokerCfg extends CentreonObject
                 . $element['config_name'] . $this->delim
                 . "correlation_activate" . $this->delim
                 . $element['correlation_activate'] . "\n";
+            echo $this->action . $this->delim
+                . "SETPARAM" . $this->delim
+                . $element['config_name'] . $this->delim
+                . "daemon" . $this->delim
+                . $element['daemon'] . "\n";
             $sql = "SELECT config_key, config_value, config_group, config_group_id
             		FROM cfg_centreonbroker_info
             		WHERE config_id = ?
