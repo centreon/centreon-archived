@@ -12,12 +12,10 @@ if(isset($pearDB)) {
         $daemon = 0;
         if ($row['nb'] > 0) {
             $daemon = 1;
-        } else {
-            $daemon = 0;
         }
         $query = 'UPDATE cfg_centreonbroker '
-            . 'SET daemon = '
-            . $daemon;
+            . 'SET daemon = ' . $daemon . ' '
+            . 'WHERE config_id = ' . $row['config_id'];
         $pearDB->query($query);
     }
 }
