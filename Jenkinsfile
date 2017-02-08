@@ -95,19 +95,35 @@ try {
     }
   }
 
-  stage('Delivery') {
-    node {
-      sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+  if (env.BRANCH_NAME == '2.8.x') {
+    stage('Delivery') {
+      node {
+        sh 'cd /opt/centreon-build && git pull && cd -'
+        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure.');
+      }
     }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Delivery stage failure.');
-    }
+    build job: 'mon-automation-bundle-centos6', wait: false
+    build job: 'mon-automation-bundle-centos7', wait: false
+    build job: 'mon-lm-bundle-centos6', wait: false
+    build job: 'mon-lm-bundle-centos7', wait: false
+    build job: 'mon-ppe-bundle-centos6', wait: false
+    build job: 'mon-ppe-bundle-centos7', wait: false
+    build job: 'mon-ppm-bundle-centos6', wait: false
+    build job: 'mon-ppm-bundle-centos7', wait: false
+    build job: 'des-bam-bundle-centos6', wait: false
+    build job: 'des-bam-bundle-centos7', wait: false
+    build job: 'des-map-bundle-centos6', wait: false
+    build job: 'des-map-bundle-centos7', wait: false
+    build job: 'des-mbi-bundle-centos6', wait: false
+    build job: 'des-mbi-bundle-centos7', wait: false
   }
 }
 finally {
   buildStatus = currentBuild.result ?: 'SUCCESS';
-  if (buildStatus != 'SUCCESS') {
+  if ((buildStatus != 'SUCCESS') && (env.BRANCH_NAME == '2.8.x')) {
     slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
   }
 }
