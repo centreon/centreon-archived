@@ -15,6 +15,7 @@ class CustomViewsContext extends CentreonContext
     public function __construct()
     {
         $this->customViewName = 'AcceptanceTestCustomView';
+        $this->newCustomViewName = 'NewAcceptanceTestCustomView';
         $this->user = 'user1';
     }
 
@@ -65,8 +66,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserIsUsingTheSharedView()
     {
-        /* $page = new ContactConfigurationBranch($this); */
-
+        $this->heCanAddTheSharedView();
     }
 
     /**
@@ -89,8 +89,12 @@ class CustomViewsContext extends CentreonContext
     public function anotherUserWishesToAddANewCustomView()
     {
         $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
         $this->iAmLoggedIn();
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $page->editView($this->newCustomViewName);
     }
 
     /**
@@ -98,7 +102,9 @@ class CustomViewsContext extends CentreonContext
      */
     public function thisOtherUserRemovesTheSharedView()
     {
-        // XXX
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->deleteView();
     }
 
     /**
@@ -106,7 +112,9 @@ class CustomViewsContext extends CentreonContext
      */
     public function theOwnerModifiesTheCustomView()
     {
-        // XXX
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
     }
 
     /**
@@ -114,7 +122,12 @@ class CustomViewsContext extends CentreonContext
      */
     public function theOwnerRemovesTheView()
     {
-        // XXX
+        $this->iAmLoggedOut();
+        $this->iAmLoggedIn();
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->deleteView();
     }
 
     /**
@@ -132,7 +145,6 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanAddTheSharedView()
     {
-
         $this->iAmLoggedOut();
         $this->parameters['centreon_user'] = $this->user ;
         $this->iAmLoggedIn();
@@ -161,7 +173,9 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewIsNotVisibleAnymore()
     {
-        // XXX
+        if (!$this->assertFind('css', 'div.info_box h4 img')) {
+            throw new Exception('The view is not remove');
+        };
     }
 
     /**
@@ -169,7 +183,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserCanUseItAgain()
     {
-        // XXX
+        $this->heCanAddTheSharedView();
     }
 
     /**
@@ -177,7 +191,13 @@ class CustomViewsContext extends CentreonContext
      */
     public function theChangesAreReflectedOnAllUsersDisplayingTheCustomView()
     {
-        // XXX
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->loadView(null, $this->customViewName);
     }
 
     /**
@@ -185,6 +205,11 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewIsRemovedForAllUsersDisplayingTheCustomView()
     {
-        // XXX
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
+
+        new CustomViewsPage($this);
+        $this->theViewIsNotVisibleAnymore();
     }
 }
