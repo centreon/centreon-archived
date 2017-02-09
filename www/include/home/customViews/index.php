@@ -138,13 +138,13 @@ try {
         . "           WHERE contact_contact_id = " . $db->escape($centreon->user->user_id)
         . "           ) "
         . " ) AND cvur.is_consumed = 1 "
-        . " AND (cvur.is_public = 1 OR  cvur.is_share = 1)";
+        . " AND (cvur.is_public = 1 OR  cvur.is_share = 1 OR  cv.public = 1)";
+
     $DBRES = $db->query($query);
 
     while ($row = $DBRES->fetchRow()) {
         $arrayViewUse[$row['custom_view_id']] = $row['name'];
     }
-
 
     $query = "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
         . " UNION "
