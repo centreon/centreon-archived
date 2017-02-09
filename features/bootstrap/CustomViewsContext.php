@@ -243,10 +243,15 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
 
+        $this->spin(
+            function ($context) {
+                return ($this->assertFind('css', 'a#ui-tabs-1'));
+            }
+        );
 
-        throw new Exception('eeeee');
-
-
+        if($this->assertFind('css', 'a#ui-tabs-1')->getText() == $this->newCustomViewName){
+            throw new Exception("View not updated");
+        }
     }
 
     /**
