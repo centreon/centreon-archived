@@ -146,9 +146,6 @@ try {
         $arrayViewUse[$row['custom_view_id']] = $row['name'];
     }
 
-
-    var_dump($arrayViewUse);
-
     $query = "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
         . " UNION "
         . " SELECT cv.*, '0' as from_public FROM custom_views cv "
