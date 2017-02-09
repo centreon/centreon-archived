@@ -8,3 +8,8 @@ UPDATE `nagios_server` SET `init_script_centreontrapd` = 'centreontrapd' WHERE `
 
 -- Missing 'integer' type, mostly used for auto-refresh preference.
 INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES ('integer', 0);
+
+-- custom views share options
+ALTER TABLE custom_view_user_relation ADD is_public tinyint(1) NOT NULL DEFAULT 0 AFTER is_consumed;
+ALTER TABLE custom_view_user_relation ADD is_share tinyint(1) NOT NULL DEFAULT 0 AFTER is_public;
+

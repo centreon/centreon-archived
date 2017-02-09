@@ -7,7 +7,9 @@ use Centreon\Test\Behat\ContactConfigurationPage;
 class CustomViewsContext extends CentreonContext
 {
     protected $customViewName;
+    protected $newCustomViewName;
     protected $user;
+    protected $owner;
 
     /**
      *  Build a new context.
@@ -17,6 +19,7 @@ class CustomViewsContext extends CentreonContext
         $this->customViewName = 'AcceptanceTestCustomView';
         $this->newCustomViewName = 'NewAcceptanceTestCustomView';
         $this->user = 'user1';
+        $this->owner = 'admin';
     }
 
     /**
@@ -72,6 +75,7 @@ class CustomViewsContext extends CentreonContext
     public function aUserIsUsingThePublicView()
     {
         $this->anotherUserWishesToAddANewCustomView();
+        $this->heCanAddTheSharedView();
     }
 
     /**
@@ -82,6 +86,7 @@ class CustomViewsContext extends CentreonContext
 
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddTheSharedView();
+
     }
 
     /**
@@ -124,8 +129,13 @@ class CustomViewsContext extends CentreonContext
     public function theOwnerModifiesTheCustomView()
     {
         $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
+        $this->parameters['centreon_user'] = $this->owner ;
         $this->iAmLoggedIn();
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->editView($this->newCustomViewName);
+
     }
 
     /**
@@ -190,7 +200,7 @@ class CustomViewsContext extends CentreonContext
                 return ($this->assertFind('css', 'button.editView'));
             }
         );
-        return $this->assertFind('css', 'button.editView')->getAttribute('aria-disabled');
+        return !$this->assertFind('css', 'button.editView')->getAttribute('aria-disabled');
     }
 
     /**
@@ -232,7 +242,11 @@ class CustomViewsContext extends CentreonContext
 
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-        $page->loadView(null, $this->customViewName);
+
+
+        throw new Exception('eeeee');
+
+
     }
 
     /**
