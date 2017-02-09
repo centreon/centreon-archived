@@ -6,8 +6,8 @@ use Centreon\Test\Behat\ContactConfigurationPage;
 
 class CustomViewsContext extends CentreonContext
 {
-    private $customViewName;
-    private $user;
+    protected $customViewName;
+    protected $user;
 
     /**
      *  Build a new context.
@@ -52,6 +52,19 @@ class CustomViewsContext extends CentreonContext
         $page->addWidget('Second widget', 'Service Monitoring');
         $page->shareView($this->user);
     }
+    
+    /**
+     *  @Given a shared custom view
+     */
+    public function aSharedCustomView()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2, false);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView($this->user);
+    }
 
     /**
      *  @Given a user is using the public view
@@ -91,12 +104,8 @@ class CustomViewsContext extends CentreonContext
     public function anotherUserWishesToAddANewCustomView()
     {
         $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
         $this->iAmLoggedIn();
-
-        $page = new CustomViewsPage($this);
-        $page->showEditBar(true);
-
-        $page->editView($this->newCustomViewName);
     }
 
     /**
@@ -157,13 +166,31 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
+        if ($this->isTheViewModifiyable()) {
+            throw new Exception("The view can be modified");
+        }
+    }
+    
+    /**
+     *  @Then he can modify the content of the shared view
+     */
+    public function heCanModifyTheContentOfTheSharedView()
+    {
+        if (!$this->isTheViewModifiyable()) {
+            throw new Exception("The view can't be modified");
+        }
+    }
+    
+    protected function isTheViewModifiyable()
+    {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $this->spin(
             function ($context) {
-                return ($this->assertFind('css', 'button.editView')->getAttribute('aria-disabled'));
+                return ($this->assertFind('css', 'button.editView'));
             }
         );
+        return $this->assertFind('css', 'button.editView')->getAttribute('aria-disabled');
     }
 
     /**
@@ -185,7 +212,15 @@ class CustomViewsContext extends CentreonContext
     {
         $this->heCanAddTheSharedView();
     }
-
+    
+    /**
+     *  @Then the user can use the shared view again
+     */
+    public function theUserCanUseTheSharedViewAgain()
+    {
+        $this->theUserIsUsingTheSharedView();
+    }
+    
     /**
      *  @Then the changes are reflected on all users displaying the custom view
      */
