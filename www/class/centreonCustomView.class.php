@@ -127,6 +127,23 @@ class CentreonCustomView
     }
 
     /**
+     * Check Permission
+     * Checks if user is allowed to delete view
+     * Returns true if user can, false otherwise
+     *
+     * @param int $viewId
+     * @return bool
+     */
+    public function checkPermissionDelete($viewId)
+    {
+        $views = $this->getCustomViews();
+        if (!isset($views[$viewId]) || ($views[$viewId]['deleted'] == 0)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Check if user is not owner but view shared with him
      *
      * @param int $viewId
@@ -222,7 +239,7 @@ class CentreonCustomView
     public function getCustomViews()
     {
         if (!isset($this->customViews)) {
-            $query = "SELECT cv.custom_view_id, name, layout, is_owner, locked, user_id, usergroup_id, public
+            $query = "SELECT cv.custom_view_id, name, layout, is_owner, locked, deleted, user_id, usergroup_id, public
             		  FROM custom_views cv, custom_view_user_relation cvur
             		  WHERE cv.custom_view_id = cvur.custom_view_id
             		  AND (cvur.user_id = " . $this->db->escape($this->userId);
@@ -243,6 +260,9 @@ class CentreonCustomView
                 }
                 if (!isset($tmp[$cvid]['locked']) || !$tmp[$cvid]['locked'] || $row['user_id']) {
                     $tmp[$cvid]['locked'] = $row['locked'];
+                }
+		if (!isset($tmp[$cvid]['deleted']) || !$tmp[$cvid]['deleted'] || $row['user_id']) {
+                    $tmp[$cvid]['deleted'] = $row['deleted'];
                 }
                 $tmp[$cvid]['layout'] = $row['layout'];
                 $tmp[$cvid]['custom_view_id'] = $row['custom_view_id'];
@@ -278,10 +298,11 @@ class CentreonCustomView
         $this->db->query($query);
         $lastId = $this->getLastViewId();
 
-        $query = "INSERT INTO custom_view_user_relation (custom_view_id, user_id, locked, is_owner)
+        $query = "INSERT INTO custom_view_user_relation (custom_view_id, user_id, locked, deleted, is_owner)
         		  VALUES (".$this->db->escape($lastId).",
         		  		  ".$this->db->escape($this->userId).",
         		  		  0,
+					  1,
         		  		  1)";
         $this->db->query($query);
         return $lastId;
@@ -295,10 +316,10 @@ class CentreonCustomView
      */
     public function deleteCustomView($viewId)
     {
-        if ($this->checkPermission($viewId) === true) {
+        if ($this->checkPermissionDelete($viewId) === true) {
             $query = "DELETE FROM custom_views WHERE custom_view_id = " . $this->db->escape($viewId);
             $this->db->query($query);
-        } elseif ($this->checkSharedPermission($viewId) === true) {
+        } elseif ($this->checkSharedPermission($viewId) === true || $this->checkPermission($viewId) === true) {
             $query = "UPDATE custom_view_user_relation SET is_consumed = 0
                 WHERE custom_view_id = " . $this->db->escape($viewId) . " AND user_id = " . $this->userId;
             $this->db->query($query);
@@ -450,14 +471,14 @@ class CentreonCustomView
                         $str .= ", ";
                     }
                     $str .= "(" . $params['custom_view_id'] . ", " . $userId . ", " .
-                        $params['locked']['locked'] . ", 0)";
+                        $params['locked']['locked'] . ", " . $params['deleted']['deleted'] . ", 0)";
                     $this->copyPreferences($params['custom_view_id'], $userId);
                 }
             }
             if ($str != "") {
                 $this->db->query(
                     "REPLACE INTO custom_view_user_relation
-                        (custom_view_id, user_id, locked, is_consumed) VALUES " . $str
+                        (custom_view_id, user_id, locked, deleted, is_consumed) VALUES " . $str
                 );
             }
 
@@ -470,13 +491,13 @@ class CentreonCustomView
                     }
                     $usergroupId = $this->copyPreferences($params['custom_view_id'], null, $usergroupId);
                     $str .= "(" . $params['custom_view_id'] . ", " . $usergroupId . ", " .
-                        $params['locked']['locked'] . ", 0)";
+                        $params['locked']['locked'] . ", " . $params['deleted']['deleted'] . ", 0)";
                 }
             }
             if ($str != "") {
                 $this->db->query(
                     "REPLACE INTO custom_view_user_relation
-                        (custom_view_id, usergroup_id, locked, is_consumed) VALUES " . $str
+                        (custom_view_id, usergroup_id, locked, deleted, is_consumed) VALUES " . $str
                 );
             }
         }
@@ -511,7 +532,7 @@ class CentreonCustomView
 
         if (!isset($userList)) {
             $userList = array();
-            $query = "SELECT contact_name, user_id, locked
+            $query = "SELECT contact_name, user_id, locked, deleted
             		  FROM contact c, custom_view_user_relation cvur
             		  WHERE c.contact_id = cvur.user_id
             		  AND cvur.custom_view_id  = " . $this->db->escape($viewId) . "
@@ -521,6 +542,7 @@ class CentreonCustomView
                 $userList[$row['user_id']]['contact_name'] = $row['contact_name'];
                 $userList[$row['user_id']]['user_id'] = $row['user_id'];
                 $userList[$row['user_id']]['locked'] = $row['locked'];
+		$userList[$row['user_id']]['deleted'] = $row['deleted'];
             }
         }
         return $userList;
@@ -538,7 +560,7 @@ class CentreonCustomView
 
         if (!isset($usergroupList)) {
             $usergroupList = array();
-            $query = "SELECT cg_name, usergroup_id, locked
+            $query = "SELECT cg_name, usergroup_id, locked, deleted
             		  FROM contactgroup cg, custom_view_user_relation cvur
             		  WHERE cg.cg_id = cvur.usergroup_id
             		  AND cvur.custom_view_id  = " . $this->db->escape($viewId) . "
@@ -548,6 +570,7 @@ class CentreonCustomView
                 $usergroupList[$row['usergroup_id']]['cg_name'] = $row['cg_name'];
                 $usergroupList[$row['usergroup_id']]['usergroup_id'] = $row['usergroup_id'];
                 $usergroupList[$row['usergroup_id']]['locked'] = $row['locked'];
+		$usergroupList[$row['usergroup_id']]['deleted'] = $row['deleted'];
             }
         }
         return $usergroupList;

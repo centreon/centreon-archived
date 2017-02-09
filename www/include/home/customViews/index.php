@@ -250,6 +250,14 @@ try {
     $formShareView->setDefaults(array('locked' => '1'));
 
     /**
+     * Deleted
+     */
+    $deleted[] = HTML_QuickForm::createElement('radio', 'deleted', null, _("Yes"), '1');
+    $deleted[] = HTML_QuickForm::createElement('radio', 'deleted', null, _("No"), '0');
+    $formShareView->addGroup($deleted, 'deleted', _("Delete view?"), '&nbsp;');
+    $formShareView->setDefaults(array('deleted' => '0'));
+
+    /**
      * Users
      */
     $attrContacts = array(
