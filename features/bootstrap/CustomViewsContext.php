@@ -123,6 +123,7 @@ class CustomViewsContext extends CentreonContext
         $page->deleteView();
     }
 
+
     /**
      *  @When the owner modifies the custom view
      */
@@ -144,6 +145,7 @@ class CustomViewsContext extends CentreonContext
     public function theOwnerRemovesTheView()
     {
         $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->owner ;
         $this->iAmLoggedIn();
 
         $page = new CustomViewsPage($this);
@@ -214,6 +216,25 @@ class CustomViewsContext extends CentreonContext
             }
         );
     }
+
+    /**
+     *  @Then the view is not visible anymore for the user
+     */
+    public function theViewIsNotVisibleAnymoreForTheUser()
+    {
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
+
+        $this->spin(
+            function ($context) {
+                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
+            }
+        );
+    }
+
+
+
 
     /**
      *  @Then the user can use the public view again

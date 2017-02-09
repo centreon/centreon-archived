@@ -20,6 +20,12 @@ Feature: Custom views
         Then the view is not visible anymore
         And the user can use the public view again
 
+    Scenario: Remove public share by owner
+        Given a publicly shared custom view
+        And a user is using the public view
+        When the owner removes the view
+        Then the view is not visible anymore for the user
+
     Scenario: Share read-only custom view with users
         Given a custom view shared in read only with a user
         When the user wishes to add a new custom view
