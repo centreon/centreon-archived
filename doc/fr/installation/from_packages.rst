@@ -65,10 +65,22 @@ Exécutez la commande :
 
   $ yum install centreon-poller-centreon-engine
 
+Ajouter clef GPG pour CentOS 6
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Vous devez également récupérer la clef GPG et la placer dans le dossier rpm-gpg.
+
+Exécutez la commande :
+
+  ::
+
+   $ cd /etc/pki/rpm-gpg/
+   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES
+
 Ajouter clef GPG pour CentOS 7
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Vous devez aussi récupérer la clef GPG et la placer dans le dossier rpm-gpg.
+Vous devez également récupérer la clef GPG et la placer dans le dossier rpm-gpg.
 
 Exécutez la commande :
 
@@ -88,6 +100,7 @@ Exécutez la commande :
 
    $ yum install mariadb-server
    $ service mysql restart
+
 Configuration basique d'un collecteur
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
