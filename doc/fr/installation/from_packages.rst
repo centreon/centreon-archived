@@ -41,27 +41,6 @@ Le dépôt est maintenant installé.
 Installation de Centreon
 ************************
 
-Installer de manière globale
-----------------------------
-
-Ce chapitre décrit l'installation golable de Centreon.
-
-Exécutez la commande :
-
-  ::
-
-   $ yum install centreon
-   $ yum update
-
-Vous devez aussi récupérer la clef GPG et la placer dans le dossier rpm-gpg.
-
-Exécutez la commande :
-
-  ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
-
 Installer un serveur central
 ----------------------------
 
@@ -85,6 +64,18 @@ Exécutez la commande :
   ::
 
   $ yum install centreon-poller-centreon-engine
+
+Ajouter clef GPG
+^^^^^^^^^^^^^^^^
+
+Vous devez aussi récupérer la clef GPG et la placer dans le dossier rpm-gpg.
+
+Exécutez la commande :
+
+  ::
+
+   $ cd /etc/pki/rpm-gpg/
+   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
 
 Configuration basique d'un collecteur
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

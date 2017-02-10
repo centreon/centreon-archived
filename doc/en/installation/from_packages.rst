@@ -39,30 +39,6 @@ The repository is now installed.
 Centreon installation
 *********************
 
-Install globaly Centreon
-------------------------
-
-Ce chapitre décrit l'installation golable de Centreon.
-The chapter describes the global installation of Centreon.
-
-Perform the command:
-
- ::
-
-   $ yum install centreon
-   $ yum update
-
-Vous devez aussi récupérer la clef GPG et la placer dans le dossier rpm-gpg.
-You also have to recover the GPG key and place it in the rpm-gpg file.
-
-Perform the command:
-
- ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
-
-
 Install a central server
 ------------------------
 
@@ -89,6 +65,17 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
+Add GPG key
+^^^^^^^^^^^
+
+You also have to recover the GPG key and place it in the rpm-gpg file.
+
+Perform the command:
+
+ ::
+
+   $ cd /etc/pki/rpm-gpg/
+   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
 
 Base configuration of a poller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
