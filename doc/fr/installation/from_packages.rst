@@ -53,8 +53,7 @@ Exécutez la commande :
    $ yum install centreon
    $ yum update
 
-Un échec de récupération de la GPG peut empêcher l'installation de Centreon.
-Pour éviter cela vous devez renseigner la clef concernée.
+Vous devez aussi récupérer la clef GPG et la placer dans le dossier rpm-gpg.
 
 Exécutez la commande :
 
