@@ -618,6 +618,35 @@ function select_in_array() {
 }
 
 #----
+## @Globals     SERVICE_BINARY
+#----
+function locate_service_binary() {
+    local res="not_define"
+    local tmp_service_binary=$(which service)
+    local first=0
+    if [ -n "$SERVICE_BINARY" -a -x "$SERVICE_BINARY" ]; then
+        log "INFO" "$(gettext "Use default variable") : $SERVICE_BINARY"
+        return 0
+    elif [ -n "$tmp_service_binary" -a -x "$tmp_service_binary" ]; then
+        SERVICE_BINARY=$tmp_service_binary
+        log "INFO" "$(gettext "Service command binary found") : $SERVICE_BINARY"
+        return 0
+    fi
+    while [ ! -x "$res" ]; do
+        [ $first -eq 1 ] && echo_passed "$(gettext "$res is not executable.")" "$critical"
+        echo -e "\n$message"
+        echo -en "> "
+        read res
+        if [ -z "$res" ]; then
+            res="not_define"
+        fi
+        first=1
+    done
+    SERVICE_BINARY=$res
+    return 0
+}
+
+#----
 ## Define where is  plugins directory
 ## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
 ## @Globals     PLUGIN_DIR, DEFAULT_PLUGIN_DIR
@@ -1349,10 +1378,10 @@ function prepare_sudo_config() {
 	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "$(gettext "What is the Monitoring engine binary ?")" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
-	[ -z "$BROKER_INIT_SCRIPT" ] && locate_broker_init_script
-	[ -z "$INIT_D" ] && locate_init_d
+	[ -z "cbd" ] && locate_broker_init_script
+	[ -z "$SERVICE_BINARY" ] && locate_service_binary
 	# Prepare sudo.conf
-	
+
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
 	## BEGIN: CENTREON SUDO
 	# Add by CENTREON installation script
@@ -1488,8 +1517,6 @@ function configureSUDO(){
 			echo_passed "$(gettext "Please configure your sudo with this example"):\n\t $dir_conf/centreon.sudo" "$passed"
 		fi
 	else
-		#echo_passed "$(gettext "Sudo is already configured")" "$passed"
-		## ticket #7 (upgrade script here)
 		echo_info "$(gettext "Your sudo has been configured previously")"
 		if [ "${FORCE_SUDO_CONF:-0}" -eq 1 ] ; then
 			no_force_sudo="0"
@@ -1506,11 +1533,6 @@ function configureSUDO(){
 		fi
 	fi
 	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
-	# Add a simple test for Defaults Requiretty problem on CentOS, Fedora...
-	#is_suspect_conf_sudo $SUDO_FILE
-	#if [ "$?" -eq 1 ] ; then
-	#	echo_warning "$(gettext "For security policy, your sudo's\nconfiguration would only run when the user is logged into a real tty. Please adjust your configuration by commenting 'Defaults requiretty' line in your configuration file.")" "$warning"
-	#fi
 	return 0
 }
 
@@ -2056,7 +2078,7 @@ function check_engine_user()
 function check_broker_user()
 {
 	if [ -z "${BROKER_USER}" ]; then
-		answer_with_testuser_optional "$(gettext "What is the Broker user ?")" "NO_DEFAULT" "BROKER_USER"
+		answer_with_testuser "$(gettext "What is the Broker user ?")" "NO_DEFAULT" "BROKER_USER"
 	fi
 	log "INFO" "$(gettext "Broker user") : $BROKER_USER"
 	return 0
