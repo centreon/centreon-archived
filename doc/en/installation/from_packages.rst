@@ -77,6 +77,19 @@ Perform the command:
    $ cd /etc/pki/rpm-gpg/
    $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
 
+Install mysql on the same server
+--------------------------------
+
+Ce chapitre décrit l'installation de mysql sur un serveur comprenant Centreon.
+This chapter describes the installation of mysql on a server including Centreon.
+
+Perform the command:
+
+  ::
+
+   $ yum install mariadb-server
+   $ service mysql restart
+
 Base configuration of a poller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
