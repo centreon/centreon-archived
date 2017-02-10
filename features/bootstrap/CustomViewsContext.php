@@ -63,10 +63,10 @@ class CustomViewsContext extends CentreonContext
     {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-        $page->createNewView($this->customViewName, 2, false);
+        $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView($this->user);
+        $page->shareView($this->user, null, 0);
     }
 
     /**
@@ -79,18 +79,17 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Given the user is using the shared view
+     * @Given the user is using the shared view
      */
     public function theUserIsUsingTheSharedView()
     {
 
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddTheSharedView();
-
     }
 
     /**
-     *  @Given a custom view shared in read only with a user
+     * @Given a custom view shared in read only with a user
      */
     public function aCustomViewSharedInReadOnlyWithAUser()
     {
@@ -109,8 +108,9 @@ class CustomViewsContext extends CentreonContext
     public function anotherUserWishesToAddANewCustomView()
     {
         $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
+        $this->parameters['centreon_user'] = $this->user;
         $this->iAmLoggedIn();
+        
     }
 
     /**
@@ -122,21 +122,32 @@ class CustomViewsContext extends CentreonContext
         $page->showEditBar(true);
         $page->deleteView();
     }
-
-
+    
+    /**
+     *  @When the user modifies the custom view
+     */
+    public function theUserModifiesTheCustomView()
+    {
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
+        
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->editView($this->newCustomViewName, 1);
+    }
+    
     /**
      *  @When the owner modifies the custom view
      */
     public function theOwnerModifiesTheCustomView()
     {
         $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->owner ;
         $this->iAmLoggedIn();
-
+        
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-        $page->editView($this->newCustomViewName);
-
+        $page->editView($this->newCustomViewName, 1);
     }
 
     /**
@@ -178,7 +189,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
-        if ($this->isTheViewModifiyable()) {
+        if (!$this->isTheViewModifiyable()) {
             throw new Exception("The view can be modified");
         }
     }
@@ -188,7 +199,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanModifyTheContentOfTheSharedView()
     {
-        if (!$this->isTheViewModifiyable()) {
+        if ($this->isTheViewModifiyable()) {
             throw new Exception("The view can't be modified");
         }
     }
@@ -203,6 +214,18 @@ class CustomViewsContext extends CentreonContext
             }
         );
         return !$this->assertFind('css', 'button.editView')->getAttribute('aria-disabled');
+    }
+    
+    /**
+     *  @Then the view is still visible
+     */
+    public function theViewIsStillVisible()
+    {
+        $this->spin(
+            function ($context) {
+                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 1;
+            }
+        );
     }
 
     /**
@@ -281,10 +304,35 @@ class CustomViewsContext extends CentreonContext
     public function theViewIsRemovedForAllUsersDisplayingTheCustomView()
     {
         $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
+        $this->parameters['centreon_user'] = $this->user;
         $this->iAmLoggedIn();
 
         new CustomViewsPage($this);
         $this->theViewIsNotVisibleAnymore();
+    }
+    
+    /**
+     *  @Then the view is removed for the owner
+     */
+    public function theViewIsRemovedForTheOwner()
+    {
+        $this->iAmLoggedOut();
+        $this->iAmLoggedIn();
+
+        new CustomViewsPage($this);
+        $this->theViewIsNotVisibleAnymore();
+    }
+    
+    /**
+     *  @Then the view remains visible for all users displaying the custom view
+     */
+    public function theViewRemainsVisibleForAllUsersDisplayingTheCustomView()
+    {
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->user ;
+        $this->iAmLoggedIn();
+
+        new CustomViewsPage($this);
+        $this->theViewIsStillVisible();
     }
 }
