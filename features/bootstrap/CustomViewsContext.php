@@ -53,7 +53,6 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2, true);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView($this->user);
     }
     
     /**
@@ -75,7 +74,7 @@ class CustomViewsContext extends CentreonContext
     public function aUserIsUsingThePublicView()
     {
         $this->anotherUserWishesToAddANewCustomView();
-        $this->heCanAddTheSharedView();
+        $this->heCanAddThePublicView();
     }
 
     /**
@@ -143,10 +142,13 @@ class CustomViewsContext extends CentreonContext
     public function theOwnerModifiesTheCustomView()
     {
         $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->owner;
         $this->iAmLoggedIn();
         
         $page = new CustomViewsPage($this);
+
         $page->showEditBar(true);
+
         $page->editView($this->newCustomViewName, 1);
     }
 
@@ -161,12 +163,6 @@ class CustomViewsContext extends CentreonContext
 
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-
-        $this->spin(
-            function ($context) {
-                return ($this->assertFind('css', 'button.deleteView'));
-            }
-        );
 
         $page->deleteView();
     }
@@ -220,7 +216,6 @@ class CustomViewsContext extends CentreonContext
                 return ($this->assertFind('css', 'button.editView'));
             }
         );
-
         return !$this->assertFind('css', 'button.editView')->getAttribute('aria-disabled');
     }
     
@@ -297,11 +292,11 @@ class CustomViewsContext extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return ($this->assertFind('css', 'a#ui-tabs-1'));
+                return ($this->assertFind('css', 'li.ui-state-default a'));
             }
         );
 
-        if($this->assertFind('css', 'a#ui-tabs-1')->getText() == $this->newCustomViewName){
+        if($this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() != $this->newCustomViewName){
             throw new Exception("View not updated");
         }
     }
