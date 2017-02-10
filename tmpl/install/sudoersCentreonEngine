@@ -1,0 +1,37 @@
+## BEGIN: CENTREON SUDO
+
+User_Alias      CENTREON=%centreon
+Defaults:CENTREON !requiretty
+
+# centreontrapd
+CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd start
+CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd stop
+CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd restart
+CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd reload
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centreontrapd start
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centreontrapd stop
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centreontrapd restart
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centreontrapd reload
+
+# Centreon Engine
+CENTREON   ALL = NOPASSWD: /sbin/service centengine start
+CENTREON   ALL = NOPASSWD: /sbin/service centengine stop
+CENTREON   ALL = NOPASSWD: /sbin/service centengine restart
+CENTREON   ALL = NOPASSWD: /sbin/service centengine reload
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine start
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine stop
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine restart
+CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine reload
+CENTREON   ALL = NOPASSWD: /usr/sbin/centengine -v *
+
+# Centreon Broker
+CENTREON   ALL = NOPASSWD: /sbin/service cbd start
+CENTREON   ALL = NOPASSWD: /sbin/service cbd stop
+CENTREON   ALL = NOPASSWD: /sbin/service cbd restart
+CENTREON   ALL = NOPASSWD: /sbin/service cbd reload
+CENTREON   ALL = NOPASSWD: /usr/sbin/service cbd start
+CENTREON   ALL = NOPASSWD: /usr/sbin/service cbd stop
+CENTREON   ALL = NOPASSWD: /usr/sbin/service cbd restart
+CENTREON   ALL = NOPASSWD: /usr/sbin/service cbd reload
+
+## END: CENTREON SUDO
