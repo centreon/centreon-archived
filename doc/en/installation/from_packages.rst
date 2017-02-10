@@ -65,8 +65,8 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
-Add GPG key
-^^^^^^^^^^^
+Add GPG key for CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 You also have to recover the GPG key and place it in the rpm-gpg file.
 
