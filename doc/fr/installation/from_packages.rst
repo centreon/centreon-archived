@@ -65,8 +65,8 @@ Exécutez la commande :
 
   $ yum install centreon-poller-centreon-engine
 
-Ajouter clef GPG
-^^^^^^^^^^^^^^^^
+Ajouter clef GPG pour CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Vous devez aussi récupérer la clef GPG et la placer dans le dossier rpm-gpg.
 
