@@ -161,6 +161,13 @@ class CustomViewsContext extends CentreonContext
 
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
+
+        $this->spin(
+            function ($context) {
+                return ($this->assertFind('css', 'button.deleteView'));
+            }
+        );
+
         $page->deleteView();
     }
 
@@ -189,7 +196,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
-        if (!$this->isTheViewModifiyable()) {
+        if ($this->isTheViewModifiyable()) {
             throw new Exception("The view can be modified");
         }
     }
@@ -199,7 +206,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanModifyTheContentOfTheSharedView()
     {
-        if ($this->isTheViewModifiyable()) {
+        if (!$this->isTheViewModifiyable()) {
             throw new Exception("The view can't be modified");
         }
     }
@@ -213,6 +220,7 @@ class CustomViewsContext extends CentreonContext
                 return ($this->assertFind('css', 'button.editView'));
             }
         );
+
         return !$this->assertFind('css', 'button.editView')->getAttribute('aria-disabled');
     }
     
