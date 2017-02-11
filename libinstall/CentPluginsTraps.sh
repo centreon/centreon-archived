@@ -19,7 +19,7 @@ check_tmp_disk_space
 
 ## Where is nagios_pluginsdir
 locate_plugindir
-locate_centeon_plugins
+locate_centreon_plugins
 
 ## Locate centreon etc_dir
 locate_centreon_etcdir
