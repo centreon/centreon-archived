@@ -125,6 +125,11 @@ default:
       contexts:
        - AutologinContext
 
+    broker:
+      paths: [ %paths.base%/features/Broker.feature ]
+      contexts:
+       - BrokerContext
+
     ldap:
       paths: [ %paths.base%/features/Ldap.feature ]
       contexts:

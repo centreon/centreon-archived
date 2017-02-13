@@ -94,6 +94,8 @@ event_queue_max_size     Event queue max size (when number is reached,
 
 retention_path           Path for retention and temporary files
 
+daemon                   Module or Daemon (0 or 1)
+
 stats_activate           Enable statistics (0 or 1)
 
 correlation_activate     Enable correlation (0 or 1)
