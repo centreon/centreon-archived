@@ -17,6 +17,15 @@ $help['centreonbroker_logs_path'] = dgettext("help", "Path of the log file for C
 $help['centreonconnector_path'] = dgettext("help", "Path with Centreon Connector binaries");
 $help['ns_activate'] = dgettext("help", "Enable or disable poller");
 $help['centreontrapd_init_script'] = dgettext("help", "Centreontrapd init script to restart process on poller.");
-$help['snmp_trapd_path_conf'] = dgettext("help", "Light databases will be stored in the specified directory. They are used for synchronizing trap definitions on pollers.");
-$help['pollercmd'] = dgettext("help", "Those commands can be executed at the end of the file generation generation/restart process. Do not specify macros in the commands, for they will not be replaced. Make sure to have sufficient rights for the Apache user to run these commands.");
+$help['snmp_trapd_path_conf'] = dgettext(
+    "help",
+    "Light databases will be stored in the specified directory. "
+        . "They are used for synchronizing trap definitions on pollers."
+);
+$help['pollercmd'] = dgettext(
+    "help",
+    "Those commands can be executed at the end of the file generation generation/restart process. "
+        . "Do not specify macros in the commands, for they will not be replaced. "
+        . "Make sure to have sufficient rights for the Apache user to run these commands."
+);
 $help['description'] = dgettext("help", "Short description of the poller");

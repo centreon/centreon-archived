@@ -594,7 +594,7 @@ class CentreonConfigCentreonBroker
                     foreach ($infos as $key => $info) {
                         $is_multiple = preg_match('/(.+?)_(\d+)$/', $key, $result);
                         if ($is_multiple) {
-                            $newArray[$result[1]] = $infos[$key];;
+                            $newArray[$result[1]] = $infos[$key];
                             
                             unset($infos[$key]);
                         }
@@ -619,29 +619,29 @@ class CentreonConfigCentreonBroker
                         $parent_id = 'NULL';
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
-                                foreach ($fieldvalue as $index => $value) {
-                                    if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
-                                        $value = $value[$fieldname];
-                                    }
-                                    if (false === is_array($value)) {
-                                        $value = array($value);
-                                    }
-                                    foreach ($value as $fieldname2 => $value2) {
-                                        if (is_array($value2)) {
-                                            $explodedFieldname2 = explode('__', $fieldname2);
-                                            if (isset($fieldtype[$explodedFieldname2[1]]) && $fieldtype[$explodedFieldname2[1]] == 'radio') {
-                                                $value2 = $value2[$explodedFieldname2[1]];
-                                            }
-                                        }
-                                        $query = "INSERT INTO cfg_centreonbroker_info
-                                            (config_id, config_key, config_value, config_group, config_group_id,
-                                            grp_level, subgrp_id, parent_grp_id, fieldIndex)
-                                            VALUES (" . $id . ", '" . $fieldname2 . "', '" . $value2 . "', '" .
-                                                $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " .
-                                                $parent_id . ", " . $index . ") ";
-                                        $this->db->query($query);
-                                    }
+                            foreach ($fieldvalue as $index => $value) {
+                                if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
+                                    $value = $value[$fieldname];
                                 }
+                                if (false === is_array($value)) {
+                                    $value = array($value);
+                                }
+                                foreach ($value as $fieldname2 => $value2) {
+                                    if (is_array($value2)) {
+                                        $explodedFieldname2 = explode('__', $fieldname2);
+                                        if (isset($fieldtype[$explodedFieldname2[1]]) && $fieldtype[$explodedFieldname2[1]] == 'radio') {
+                                            $value2 = $value2[$explodedFieldname2[1]];
+                                        }
+                                    }
+                                    $query = "INSERT INTO cfg_centreonbroker_info "
+                                        . "(config_id, config_key, config_value, config_group, config_group_id, "
+                                        . "grp_level, subgrp_id, parent_grp_id, fieldIndex) "
+                                        . "VALUES (" . $id . ", '" . $fieldname2 . "', '" . $value2 . "', '"
+                                        . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", "
+                                        . $parent_id . ", " . $index . ") ";
+                                    $this->db->query($query);
+                                }
+                            }
                             continue;
                         }
 
@@ -1023,7 +1023,6 @@ class CentreonConfigCentreonBroker
                 $val = $this->rpnCalc($s_rpn, $val);
             }
             $infos[] = $val;
-
         }
         if (count($infos) == 0) {
             return "";
@@ -1155,7 +1154,6 @@ class CentreonConfigCentreonBroker
             } else {
                 $elemStr .=   $row['groupname']. '__' ;
             }
-            
         }
         if (!empty($row['displayname'])) {
             $displayName = $row['displayname'];

@@ -1,6 +1,6 @@
 <?php
 
-if(isset($pearDB)) {
+if (isset($pearDB)) {
     $query = 'SELECT cb.config_id, COUNT(cbi.config_group) AS nb '
         . 'FROM cfg_centreonbroker cb '
         . 'LEFT JOIN cfg_centreonbroker_info cbi '

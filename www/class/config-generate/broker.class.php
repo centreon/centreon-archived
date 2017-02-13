@@ -234,7 +234,6 @@ class Broker extends AbstractObjectXML
         $this->generate_filename = 'watchdog.xml';
         $this->generateFile($watchdog, true, 'centreonbroker');
         $this->writeFile($this->backend_instance->getPath());
-
     }
 
     private function getEngineParameters($poller_id)
