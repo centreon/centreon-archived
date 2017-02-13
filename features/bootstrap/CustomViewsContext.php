@@ -82,7 +82,6 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserIsUsingTheSharedView()
     {
-
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddTheSharedView();
     }
@@ -192,9 +191,16 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
-        if ($this->isTheViewModifiyable()) {
-            throw new Exception("The view can be modified");
-        }
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return !$page->isTheViewModifiyable();
+            },
+            30,
+            'Current view is modifiyable'
+        );
     }
     
     /**
@@ -202,22 +208,21 @@ class CustomViewsContext extends CentreonContext
      */
     public function heCanModifyTheContentOfTheSharedView()
     {
-        if (!$this->isTheViewModifiyable()) {
-            throw new Exception("The view can't be modified");
-        }
-    }
-    
-    protected function isTheViewModifiyable()
-    {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
+
         $this->spin(
-            function ($context) {
-                return ($this->assertFind('css', 'button.editView'));
-            }
+            function ($context) use ($page) {
+                return $page->isTheViewModifiyable();
+            },
+            30,
+            'Current view is not modifiyable'
         );
-        return !$this->assertFind('css', 'button.editView')->getAttribute('aria-disabled');
+
+
     }
+    
+
     
     /**
      *  @Then the view is still visible
@@ -258,9 +263,6 @@ class CustomViewsContext extends CentreonContext
             }
         );
     }
-
-
-
 
     /**
      *  @Then the user can use the public view again
