@@ -7,6 +7,7 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\HostConfigurationPage;
 use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
 
 /**
  * Defines application features from the specific context.
@@ -33,7 +34,6 @@ class InfluxdbContext extends CentreonContext
     {
       $this->visit('main.php?p=60909&o=c&id=1');
       $this->assertFind('css', 'li#c4 > a:nth-child(1)')->click();
-      file_put_contents('/tmp/test.png', $this->getSession()->getDriver()->getScreenshot());
       $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
       $this->assertFind('css', 'a#add_output')->click();
       sleep(5);
@@ -108,9 +108,9 @@ class InfluxdbContext extends CentreonContext
     }
 
     /**
-     * @Given Broker and Engine are restarted
+     * @Given I restart all pollers
      */
-    public function andBrokerAndEngineAreRestarted()
+    public function iRestartAllPollers()
     {
         $this->restartAllPollers();
     }
@@ -118,11 +118,19 @@ class InfluxdbContext extends CentreonContext
     /**
      * @When new metric data is discovered by the engine for the service
      */
-    public function whenNewMetricDataIsDiscoveredByTheEngine()
+    public function newMetricDataIsDiscoveredByTheEngine()
     {
       sleep(5);
       $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', '', 'test=1s;5;10;0;10');
-      sleep(5);
+
+      $self = $this;
+      $this->spin(function($context) use ($self) {
+          $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
+          $properties = $page->getProperties();
+          if (!count($properties['perfdata'])) {
+              throw new \Exception('Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName);
+          }
+      },3);
     }
 
 
