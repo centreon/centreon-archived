@@ -7,7 +7,7 @@ use Centreon\Test\Behat\ServiceConfigurationPage;
 /**
  * Defines application features from the specific context.
  */
-class CentreonWithKnowledgeContext extends CentreonContext
+class KnowledgeBaseContext extends CentreonContext
 {
     public function __construct()
     {
