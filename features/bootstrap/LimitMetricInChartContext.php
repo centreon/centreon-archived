@@ -59,7 +59,19 @@ class LimitMetricInChartContext extends CentreonContext
 
         sleep(5);
         $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
-        sleep(10);
+        $self = $this;
+        $this->spin(
+            function($context) use ($self) {
+                $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
+                $properties = $page->getProperties();
+                if (count($properties['perfdata']) < 20) {
+                    return false;
+                }
+                return true;
+            },
+            60,
+            'Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName
+        );
     }
 
     /**
@@ -81,7 +93,7 @@ class LimitMetricInChartContext extends CentreonContext
      */
     public function iDisplayTheChartInServiceDetailsPage()
     {
-        $serviceMonitoringDetail = new ServiceMonitoringDetailsPage($this, $this->hostName, $this->serviceName);
+        new ServiceMonitoringDetailsPage($this, $this->hostName, $this->serviceName);
         $this->chartPage = new GraphServiceDetailsMonitoringPage($this);
     }
 

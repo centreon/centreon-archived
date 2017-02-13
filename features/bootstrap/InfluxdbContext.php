@@ -14,8 +14,8 @@ use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
  */
 class InfluxdbContext extends CentreonContext
 {
-  private $hostName = 'InfluxdbTestHost';
-  private $serviceName = 'InlufxdbTestService';
+    private $hostName = 'InfluxdbTestHost';
+    private $serviceName = 'InfluxdbTestService';
 
     /**
      *  @Given I am logged in a Centreon server with Influxdb
@@ -120,17 +120,22 @@ class InfluxdbContext extends CentreonContext
      */
     public function newMetricDataIsDiscoveredByTheEngine()
     {
-      sleep(5);
-      $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', '', 'test=1s;5;10;0;10');
+        sleep(5);
+        $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', 'test=1s;5;10;0;10');
 
-      $self = $this;
-      $this->spin(function($context) use ($self) {
-          $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
-          $properties = $page->getProperties();
-          if (!count($properties['perfdata'])) {
-              throw new \Exception('Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName);
-          }
-      },3);
+        $self = $this;
+        $this->spin(
+            function($context) use ($self) {
+                $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
+                $properties = $page->getProperties();
+                if (!count($properties['perfdata'])) {
+                    return false;
+                }
+                return true;
+            },
+            60,
+            'Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName . '.'
+        );
     }
 
 
@@ -139,10 +144,14 @@ class InfluxdbContext extends CentreonContext
      */
     public function thenItIsSavedInInfluxdb()
     {
-      $this->spin(function($context) {
-        $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
-        return preg_match('/status\.InfluxdbTestHost\.InlufxdbTestService/m', $return['output']);
-      });
-
+        $self = $this;
+        $this->spin(
+            function($context) use ($self) {
+                $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
+                return preg_match('/status\.' . $self->hostName . '\.' . $self->serviceName . '/m', $return['output']);
+            },
+            30,
+            "Cannot get metrics from influxdb."
+        );
     }
 }
