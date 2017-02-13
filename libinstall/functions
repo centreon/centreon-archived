@@ -1296,31 +1296,31 @@ function prepare_sudo_config() {
 	# Prepare sudo.conf
 
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
-	## BEGIN: CENTREON SUDO
+## BEGIN: CENTREON SUDO
 
-    User_Alias      CENTREON=%$CENTREON_GROUP
-    Defaults:CENTREON !requiretty
+User_Alias      CENTREON=%$CENTREON_GROUP
+Defaults:CENTREON !requiretty
 
-    # centreontrapd
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd start
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd stop
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd restart
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd reload
+# centreontrapd
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd start
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd stop
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd restart
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd reload
 
-    # Centreon Engine
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine start
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine stop
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine restart
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine reload
-    CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -v *
+# Centreon Engine
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine start
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine stop
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine restart
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine reload
+CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -v *
 
-    # Centreon Broker
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd start
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd stop
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd restart
-    CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd reload
+# Centreon Broker
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd start
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd stop
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd restart
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd reload
 
-    ## END: CENTREON SUDO
+## END: CENTREON SUDO
 __EOT__
 
 	if [ -e $directory/centreon.sudo ] ; then 
