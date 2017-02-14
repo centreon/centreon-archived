@@ -198,8 +198,8 @@ class CustomViewsContext extends CentreonContext
             function ($context) use ($page) {
                 return !$page->isTheViewModifiyable();
             },
-            30,
-            'Current view is modifiyable'
+            'Current view is modifiyable',
+            30
         );
     }
     
@@ -215,11 +215,9 @@ class CustomViewsContext extends CentreonContext
             function ($context) use ($page) {
                 return $page->isTheViewModifiyable();
             },
-            30,
-            'Current view is not modifiyable'
+            'Current view is not modifiyable',
+            30
         );
-
-
     }
     
 
