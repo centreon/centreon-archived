@@ -53,16 +53,19 @@ class AcknowledgementContext extends CentreonContext
         ));
         $page->save();
         $this->restartAllPollers();
-        $this->spin(function ($context) {
-            $page = new ServiceMonitoringDetailsPage(
-                $context,
-                '_Module_Meta',
-                'meta_1'
-            );
-            $props = $page->getProperties();
-            return $props['last_check'];
-        },
-        120);
+        $this->spin(
+            function ($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    '_Module_Meta',
+                    'meta_1'
+                );
+                $props = $page->getProperties();
+                return $props['last_check'];
+            },
+            'Could not open meta-service monitoring details page.',
+            120
+        );
     }
 
     /**
@@ -104,13 +107,15 @@ class AcknowledgementContext extends CentreonContext
      */
     public function theServiceIsMarkedAsAcknowledged()
     {
-        $this->spin(function ($context) {
-            $page = new MonitoringServicesPage($context);
-            return $page->isServiceAcknowledged(
-                'Centreon-Server',
-                'AcceptanceTestService'
-            );
-        });
+        $this->spin(
+            function ($context) {
+                $page = new MonitoringServicesPage($context);
+                return $page->isServiceAcknowledged(
+                    'Centreon-Server',
+                    'AcceptanceTestService'
+                );
+            }
+        );
     }
 
     /**
@@ -118,12 +123,14 @@ class AcknowledgementContext extends CentreonContext
      */
     public function theMetaServiceIsMarkedAsAcknowledged()
     {
-        $this->spin(function ($context) {
-            $page = new MonitoringServicesPage($context);
-            return $page->isServiceAcknowledged(
-                '_Module_Meta',
-                'meta_1'
-            );
-        });
+        $this->spin(
+            function ($context) {
+                $page = new MonitoringServicesPage($context);
+                return $page->isServiceAcknowledged(
+                    '_Module_Meta',
+                    'meta_1'
+                );
+            }
+        );
     }
 }

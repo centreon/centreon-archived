@@ -58,7 +58,7 @@ class InfluxdbContext extends CentreonContext
       sleep(1);
       $this->assertFind('css', '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$VALUE$');
       $this->assertFind('css', '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('value');
-      
+
       // Status columns
       $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)')->setValue('true');
       $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$INDEXID$');
@@ -133,7 +133,6 @@ class InfluxdbContext extends CentreonContext
                 }
                 return true;
             },
-            60,
             'Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName . '.'
         );
     }
@@ -150,7 +149,6 @@ class InfluxdbContext extends CentreonContext
                 $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
                 return preg_match('/status\.' . $self->hostName . '\.' . $self->serviceName . '/m', $return['output']);
             },
-            30,
             "Cannot get metrics from influxdb."
         );
     }
