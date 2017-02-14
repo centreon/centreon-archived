@@ -8,17 +8,9 @@ Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0
 It comes in two operating system flavors, either CentOS 6 or CentOS 7.
 
 .. warning::
-   This release is not yet compatible with other commercial products
-   from Centreon, like Centreon MBI, Centreon BAM or Centreon Map.
-   If your are using any of these products, you are strongly advised
-   **NOT** to update Centreon Web until new releases of the forementioned
-   products are available and specifically mention Centreon Web 2.8
-   compatibility. A notable exception to this notice is EMS/EPP.
-
-.. warning:: 
-   If your centreon contains the centreon knowlegdebase module (AKA Centreon KB), 
+   If your centreon contains the centreon knowlegdebase module (AKA Centreon KB),
    please first uninstall the module (from the web) in order to avoid upgrade problem.
-   Centreon KB is now embedded into Centreon since the version 2.8.0. 
+   Centreon KB is now embedded into Centreon since the version 2.8.0.
 
 
 Prerequisites
