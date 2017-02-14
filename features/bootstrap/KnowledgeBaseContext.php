@@ -117,7 +117,6 @@ class KnowledgeBaseContext extends CentreonContext
         $this->restartAllPollers();
     }
 
-
     /**
      * @When I add a procedure concerning this service in MediaWiki
      */
@@ -133,8 +132,12 @@ class KnowledgeBaseContext extends CentreonContext
 
         /* Add wiki page */
         $checkurl = 'Service:' . $this->serviceHostName . '_' . $this->serviceName;
-        if (!strstr(urldecode($this->getSession()->getCurrentUrl()), $checkurl)) {
-            throw new Exception('Bad url');
+        $currenturl = urldecode($this->getSession()->getCurrentUrl());
+        if (!strstr($currenturl, $checkurl)) {
+            throw new Exception(
+                'Redirected to wrong page: ' . $currenturl .
+                ', should have contain ' . $checkurl . '.'
+            );
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki service page');
@@ -143,6 +146,7 @@ class KnowledgeBaseContext extends CentreonContext
         /* cron */
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
         sleep(2);
+
         /* Apply config */
         $this->restartAllPollers();
     }
