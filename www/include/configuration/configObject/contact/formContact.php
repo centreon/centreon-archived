@@ -275,6 +275,7 @@ $form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
 $form->addElement('password', 'contact_passwd', _("Password"), array("size" => "30", "autocomplete" => "off", "id" => "passwd1", "onkeypress" => "resetPwdType(this);"));
 $form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size" => "30", "autocomplete" => "off", "id" => "passwd2", "onkeypress" => "resetPwdType(this);"));
 $form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick' => 'generatePassword("passwd");'));
+
 $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
 $form->addElement('select', 'contact_type_msg', _("Mail Type"), array(null => null, "txt" => "txt", "html" => "html", "pdf" => "pdf"));
 
@@ -332,7 +333,10 @@ if ($o != "mc") {
 $auth_type["local"] = "Centreon";
 if ($centreon->optGen['ldap_auth_enable'] == 1) {
     $auth_type["ldap"] = "LDAP";
-    $form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
+    $dnElement = $form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
+    if (!$centreon->user->admin) {
+        $dnElement->freeze();
+    }
 }
 if ($o != "mc") {
     $form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
@@ -592,6 +596,7 @@ if ($valid) {
     if ($centreon->optGen['ldap_auth_enable']) {
         $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
     }
+    $tpl->assign('auth_type', $cct['contact_auth_type']);
     $tpl->display("formContact.ihtml");
 }
 ?>

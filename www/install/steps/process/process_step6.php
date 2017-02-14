@@ -53,23 +53,21 @@ if ($_POST['DB_PASS'] != $_POST['db_pass_confirm']) {
     $strError .= 'jQuery("input[name=db_pass_confirm]").next().html("Passwords do not match");';
 }
 if (!$strError) {
-    $link = myConnect();
-    if (false === $link) {
-        $strError .= 'jQuery("input[name=ADDRESS]").next().html("'.mysql_error().'");';
-    } else {
+    try {
+        $link = myConnect();
         $dbHost = $_SESSION['ADDRESS'];
         if ($dbHost == "") {
             $dbHost = "localhost";
         }
         $_SESSION['DB_HOST'] = $dbHost;
-        
+
         if ($_SESSION['DB_PORT'] == "") {
             $_SESSION['DB_PORT'] = "3306";
         }
+    } catch (\PDOException $e) {
+        $strError .= 'jQuery("input[name=ADDRESS]").next().html("' . $e->getMessage() . '");';
     }
-    if ($link) {
-        mysql_close($link);
-    }
+    $link = null;
 }
 
 if ($strError) {

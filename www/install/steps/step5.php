@@ -42,11 +42,13 @@ $template = getTemplate('./templates');
 
 $title = _('Admin information');
 
-$defaults = array('ADMIN_PASSWORD' => '', 
-                'confirm_password' => '', 
-                'firstname' => '', 
-                'lastname' => '', 
-                'email' => '');
+$defaults = array(
+    'ADMIN_PASSWORD' => '',
+    'confirm_password' => '',
+    'firstname' => '',
+    'lastname' => '',
+    'email' => ''
+);
 foreach ($defaults as $k => $v) {
     if (isset($_SESSION[$k])) {
         $defaults[$k] = $_SESSION[$k];
@@ -125,13 +127,17 @@ $template->display('content.tpl');
     function validation() {
         var result = false;
         jQuery('label[class=field_msg]').html('');
-        doProcess(false, './steps/process/process_step'+step+'.php', jQuery('#form_step'+step).serialize(), function(data) {
-            if (data == 0) {
-                result = true;
-            } else {
-                eval(data);
+        doProcess(false,
+            './steps/process/process_step' + step + '.php',
+            jQuery('#form_step'+step).serialize(),
+            function(data) {
+                if (data == 0) {
+                    result = true;
+                } else {
+                    eval(data);
+                }
             }
-       });
-       return result;
+        );
+        return result;
     }
 </script>

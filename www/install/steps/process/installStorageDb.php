@@ -37,22 +37,30 @@ session_start();
 require_once '../functions.php';
 define('PROCESS_ID', 'dbstorage');
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+try {
+    $link = myConnect();
+} catch (\PDOException $e) {
+    exitProcess(PROCESS_ID, 1, $e->getMessage());
 }
+
 if (!isset($_SESSION['STORAGE_DB'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find storage database. Session probably expired.'));
 }
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['STORAGE_DB']) && !is_file('../../tmp/createTablesCentstorage')) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+
+try {
+    $link->exec("CREATE DATABASE " . $_SESSION['STORAGE_DB']);
+} catch (\PDOException $e) {
+    if (!is_file('../../tmp/createTablesCentstorage')) {
+        exitProcess(PROCESS_ID, 1, $e->getMessage());
+    }
 }
-mysql_select_db($_SESSION['STORAGE_DB']);
-$result = splitQueries('../../createTablesCentstorage.sql', ';', null, '../../tmp/createTablesCentstorage');
+
+$link->exec('use ' . $_SESSION['STORAGE_DB']);
+$result = splitQueries('../../createTablesCentstorage.sql', ';', $link, '../../tmp/createTablesCentstorage');
 if ("0" != $result) {
     exitProcess(PROCESS_ID, 1, $result);
 }
-$result = splitQueries('../../installBroker.sql', ';', null, '../../tmp/installBroker');
+$result = splitQueries('../../installBroker.sql', ';', $link, '../../tmp/installBroker');
 if ("0" != $result) {
     exitProcess(PROCESS_ID, 1, $result);
 }

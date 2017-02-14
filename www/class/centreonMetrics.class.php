@@ -59,8 +59,9 @@ class CentreonMetrics
             ."h.host_id = i.host_id "
             ."AND   s.service_id = i.service_id "
             ."ORDER BY fullname COLLATE utf8_general_ci";
-        $res = $this->dbo->query($queryService);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->dbo->query($queryService);
+        } catch (\PDOException $e) {
             return $metrics;
         }
         while ($row = $res->fetchRow()) {

@@ -18,8 +18,9 @@ function versionCentreon($pearDB)
     }
 
     $query = 'SELECT `value` FROM `informations` WHERE `key` = "version"';
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return null;
     }
     $row = $res->fetchRow();

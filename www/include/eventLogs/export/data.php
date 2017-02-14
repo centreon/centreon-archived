@@ -43,7 +43,6 @@ require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.p
 /**
  * Include Classes / Methods
  */
-require_once _CENTREON_PATH_ . "www/include/eventLogs/common-Func.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
@@ -87,7 +86,6 @@ ob_end_clean();
 /**
  * Send Headers
  */
-
 header("Content-Type: application/csv-tab-delimited-table");
 header("Content-disposition: filename=EventLogs.csv");
 header("Cache-Control: cache, must-revalidate");
@@ -99,7 +97,8 @@ header("Pragma: public");
 $xml = new SimpleXMLElement($flow);
 if ($engine == "false") {
     echo _("Begin date")."; "._("End date").";\n";
-    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)).";".date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
+    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start))
+        .";".date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
     echo "\n";
 
     echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
@@ -114,13 +113,34 @@ if ($engine == "false") {
     echo ";".$xml->infos->ok.";".$xml->infos->warning.";".$xml->infos->critical.";".$xml->infos->unknown."\n";
     echo "\n";
 
-    echo _("Day").";"._("Time").";"._("Host").";"._("Address").";"._("Service").";"._("Status").";"._("Type").";"._("Retry").";"._("Output").";"._("Contact").";"._("Cmd")."\n";
+    echo _("Day").";".
+            _("Time").";".
+            _("Host").";".
+            _("Address").";".
+            _("Service").";".
+            _("Status").";".
+            _("Type").";".
+            _("Retry").";".
+            _("Output").";".
+            _("Contact").";".
+            _("Cmd")."\n";
     foreach ($xml->line as $line) {
-        echo $line->date.";".$line->time.";".$line->host_name.";".$line->address.";".$line->service_description.";".$line->status.";".$line->type.";".$line->retry.";".$line->output.";".$line->contact.";".$line->contact_cmd."\n";
+        echo $line->date.";".
+            $line->time.";".
+            $line->host_name.";".
+            $line->address.";".
+            $line->service_description.";".
+            $line->status.";".
+            $line->type.";".
+            $line->retry.";".
+            $line->output.";".
+            $line->contact.";".
+            $line->contact_cmd."\n";
     }
 } else {
     echo _("Begin date")."; "._("End date").";\n";
-    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)).";".date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
+    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)).";".
+            date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
     echo "\n";
     echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
     echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";

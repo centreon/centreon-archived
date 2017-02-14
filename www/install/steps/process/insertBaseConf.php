@@ -37,39 +37,40 @@ session_start();
 require_once '../functions.php';
 define('PROCESS_ID', 'baseconf');
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+try {
+    $link = myConnect();
+} catch (\PDOException $e) {
+    exitProcess(PROCESS_ID, 1, $e->getMessage());
 }
 
 /**
  * Create tables
  */
-mysql_select_db($_SESSION['CONFIGURATION_DB']);
+$link->exec('use ' . $_SESSION['CONFIGURATION_DB']);
 
-splitQueries('../../insertMacros.sql', ';', null, '../../tmp/insertMacros');
-splitQueries('../../insertCommands.sql', ';', null, '../../tmp/insertCommands.sql');
-splitQueries('../../insertTimeperiods.sql', ';', null, '../../tmp/insertTimeperiods.sql');
-splitQueries('../../var/baseconf/centreon-engine.sql', ';', null, '../../tmp/centrepn-engine.sql');
-splitQueries('../../var/baseconf/centreon-broker.sql', ';', null, '../../tmp/centreon-broker.sql');
-splitQueries('../../insertTopology.sql', ';', null, '../../tmp/insertTopology');
-splitQueries('../../insertBaseConf.sql', ';', null, '../../tmp/insertBaseConf');
+splitQueries('../../insertMacros.sql', ';', $link, '../../tmp/insertMacros');
+splitQueries('../../insertCommands.sql', ';', $link, '../../tmp/insertCommands.sql');
+splitQueries('../../insertTimeperiods.sql', ';', $link, '../../tmp/insertTimeperiods.sql');
+splitQueries('../../var/baseconf/centreon-engine.sql', ';', $link, '../../tmp/centrepn-engine.sql');
+splitQueries('../../var/baseconf/centreon-broker.sql', ';', $link, '../../tmp/centreon-broker.sql');
+splitQueries('../../insertTopology.sql', ';', $link, '../../tmp/insertTopology');
+splitQueries('../../insertBaseConf.sql', ';', $link, '../../tmp/insertBaseConf');
 
 # Manage timezone
 $timezone = date_default_timezone_get();
-$resTimezone = mysql_query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'", $link);
-if ($row = mysql_fetch_assoc($resTimezone)) {
+$resTimezone = $link->query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'");
+if ($row = $resTimezone->fetch()) {
     $timezoneId = $row['timezone_id'];
 } else {
     $timezoneId = '334'; # Europe/London timezone
 }
-mysql_query("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')", $link);
+$link->exec("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')");
 
-splitQueries('../../insertACL.sql', ';', null, '../../tmp/insertACL');
+splitQueries('../../insertACL.sql', ';', $link, '../../tmp/insertACL');
 
 /* Get Centreon version */
-$res = mysql_query("SELECT `value` FROM informations WHERE `key` = 'version'", $link);
-$row = mysql_fetch_assoc($res);
+$res = $link->query("SELECT `value` FROM informations WHERE `key` = 'version'");
+$row = $res->fetch();
 $_SESSION['version'] = $row['value'];
 
 exitProcess(PROCESS_ID, 0, "OK");
