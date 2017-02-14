@@ -209,7 +209,6 @@ class KnowledgeBaseContext extends CentreonContext
                     return false;
                 }
             },
-            30,
             'Delete option id display'
         );
     }

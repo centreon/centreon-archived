@@ -37,8 +37,7 @@ class PaginationSelect2Context extends CentreonContext
                     'css',
                     'input[name="change"]'
                 );
-            },
-            30
+            }
         );
     }
 
@@ -65,8 +64,7 @@ class PaginationSelect2Context extends CentreonContext
                     'css',
                     'input[name="submitC"]'
                 );
-            },
-            30
+            }
         );
     }
 }
