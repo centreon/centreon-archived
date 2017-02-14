@@ -92,17 +92,17 @@ class DowntimeServiceContext extends CentreonContext
      */
     public function thisOneDoesNotAppearInTheInterface()
     {
-        $this->spin(function ($context) {
-            $page = new ServiceMonitoringDetailsPage(
-                $context,
-                '_Module_Meta',
-                'meta_1'
-            );
-            $props = $page->getProperties();
-            return !$props['in_downtime'];
-        },
-            3);
-
+        $this->spin(
+            function ($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    '_Module_Meta',
+                    'meta_1'
+                );
+                $props = $page->getProperties();
+                return !$props['in_downtime'];
+            }
+        );
     }
 
     /**
@@ -119,8 +119,7 @@ class DowntimeServiceContext extends CentreonContext
                 );
                 $props = $page->getProperties();
                 return $props['in_downtime'];
-            },
-            3
+            }
         );
     }
 }

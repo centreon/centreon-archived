@@ -26,9 +26,11 @@ class PartitioningContext extends CentreonContext
     {
         $this->visit('main.php?p=50503');
 
-        $this->spin(function ($context) {
-            return $context->getSession()->getPage()->has('named', array('id_or_name', 'database_informations'));
-        });
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('named', array('id_or_name', 'database_informations'));
+            }
+        );
     }
 
     /**
@@ -36,9 +38,11 @@ class PartitioningContext extends CentreonContext
      */
     public function partitioningInformationsAreDisplayed()
     {
-        $this->spin(function ($context) {
-            return ($context->getSession()->getPage()->has('named', array('id_or_name', 'tab1')) &&
-                $context->getSession()->getPage()->has('named', array('id_or_name', 'tab2')));
-        });
+        $this->spin(
+            function ($context) {
+                return ($context->getSession()->getPage()->has('named', array('id_or_name', 'tab1')) &&
+                    $context->getSession()->getPage()->has('named', array('id_or_name', 'tab2')));
+            }
+        );
     }
 }

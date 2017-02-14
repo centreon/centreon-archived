@@ -69,7 +69,6 @@ class LimitMetricInChartContext extends CentreonContext
                 }
                 return true;
             },
-            60,
             'Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName
         );
     }
