@@ -27,7 +27,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function iAmLoggedInCentreonWithWidgets()
     {
-        $this->launchCentreonWebContainer('web');
+        $this->launchCentreonWebContainer('web_widgets');
         $this->iAmLoggedIn();
 
         $page = new ContactConfigurationPage($this);
@@ -73,7 +73,6 @@ class CustomViewsContext extends CentreonContext
      */
     public function aUserIsUsingThePublicView()
     {
-
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddThePublicView();
 
@@ -91,7 +90,6 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserIsUsingTheSharedView()
     {
-
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddTheSharedView();
 
@@ -163,6 +161,7 @@ class CustomViewsContext extends CentreonContext
 
         $this->changeUser($this->owner);
         $page = new CustomViewsPage($this);
+
         $page->showEditBar(true);
 
         $page->editView($this->newCustomViewName, 1);
@@ -224,7 +223,8 @@ class CustomViewsContext extends CentreonContext
             function ($context) use ($page) {
                 return !$page->isTheViewModifiyable();
             },
-            'Current view is modifiyable'
+            'Current view is modifiyable',
+            30
         );
     }
     
@@ -240,7 +240,8 @@ class CustomViewsContext extends CentreonContext
             function ($context) use ($page) {
                 return $page->isTheViewModifiyable();
             },
-            'Current view is not modifiyable'
+            'Current view is not modifiyable',
+            30
         );
     }
     

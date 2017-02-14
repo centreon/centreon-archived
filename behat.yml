@@ -139,9 +139,4 @@ default:
       paths: [ %paths.base%/features/CustomViews.feature ]
       contexts:
       - CustomViewsContext
-    
-    customizable_shared_custom_views:
-      paths: [ %paths.base%/features/CustomizableSharedCustomViews.feature ]
-      contexts:
-      - CustomizableSharedCustomViewsContext
-      
+
