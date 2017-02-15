@@ -12,3 +12,5 @@ UPDATE `nagios_server` SET `init_script_centreontrapd` = 'centreontrapd' WHERE `
 -- Missing 'integer' type, mostly used for auto-refresh preference.
 INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES ('integer', 0);
 
+-- Remove useless proxy option
+DELETE FROM options WHERE options.key = 'proxy_protocol';
