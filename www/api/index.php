@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);
-    $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log);
+    $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log, 1, "", "API");
     if ($auth->passwdOk == 0) {
         CentreonWebService::sendJson("Bad credentials", 403);
         exit();
