@@ -187,7 +187,7 @@ if ($api->login == "" || $api->password == "") {
     } else if (isset($api->options["a"])) {
         try {
             $api->launchAction();
-        } catch (CentreonClapiException $e) {
+        } catch (\CentreonClapi\CentreonClapiException $e) {
             print $e->getMessage();
             $api->setReturnCode(1);
         } catch (Exception $e) {
