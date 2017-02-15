@@ -75,6 +75,14 @@ class CustomViewsContext extends CentreonContext
     {
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddThePublicView();
+
+        $this->spin(
+            function ($context) {
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->customViewName;
+            },
+            'Public view not load'
+        );
+
     }
 
     /**
@@ -84,6 +92,13 @@ class CustomViewsContext extends CentreonContext
     {
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddTheSharedView();
+
+        $this->spin(
+            function ($context) {
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->customViewName;
+            },
+            'Shared view not load'
+        );
     }
 
     /**
@@ -105,10 +120,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function anotherUserWishesToAddANewCustomView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user;
-        $this->iAmLoggedIn();
-        
+        $this->changeUser($this->user);
     }
 
     /**
@@ -126,13 +138,19 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserModifiesTheCustomView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
-        $this->iAmLoggedIn();
+        $this->changeUser($this->user);
         
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->editView($this->newCustomViewName, 1);
+
+
+        $this->spin(
+            function ($context) use ($page) {
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->newCustomViewName;
+            },
+            'View not updated by user'
+        );
     }
     
     /**
@@ -140,15 +158,20 @@ class CustomViewsContext extends CentreonContext
      */
     public function theOwnerModifiesTheCustomView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->owner;
-        $this->iAmLoggedIn();
-        
+
+        $this->changeUser($this->owner);
         $page = new CustomViewsPage($this);
 
         $page->showEditBar(true);
 
         $page->editView($this->newCustomViewName, 1);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->newCustomViewName;
+            },
+            'View not updated by owner'
+        );
     }
 
     /**
@@ -156,14 +179,16 @@ class CustomViewsContext extends CentreonContext
      */
     public function theOwnerRemovesTheView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->owner ;
-        $this->iAmLoggedIn();
+
+        $this->changeUser($this->owner);
 
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
 
         $page->deleteView();
+
+        $this->theViewIsNotVisibleAnymore();
+
     }
 
     /**
@@ -242,7 +267,8 @@ class CustomViewsContext extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
-            }
+            },
+            'the view is visible anymore'
         );
     }
 
@@ -251,14 +277,13 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewIsNotVisibleAnymoreForTheUser()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
-        $this->iAmLoggedIn();
+        $this->changeUser($this->user);
 
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
-            }
+            },
+            'the view is visible anymore for the user'
         );
     }
 
@@ -283,9 +308,8 @@ class CustomViewsContext extends CentreonContext
      */
     public function theChangesAreReflectedOnAllUsersDisplayingTheCustomView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
-        $this->iAmLoggedIn();
+
+        $this->changeUser($this->user);
 
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
@@ -306,9 +330,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewIsRemovedForAllUsersDisplayingTheCustomView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user;
-        $this->iAmLoggedIn();
+        $this->changeUser($this->user);
 
         new CustomViewsPage($this);
         $this->theViewIsNotVisibleAnymore();
@@ -319,8 +341,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewIsRemovedForTheOwner()
     {
-        $this->iAmLoggedOut();
-        $this->iAmLoggedIn();
+        $this->changeUser($this->owner);
 
         new CustomViewsPage($this);
         $this->theViewIsNotVisibleAnymore();
@@ -331,11 +352,18 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewRemainsVisibleForAllUsersDisplayingTheCustomView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
-        $this->iAmLoggedIn();
+        $this->changeUser($this->user);
 
         new CustomViewsPage($this);
         $this->theViewIsStillVisible();
     }
+
+
+    private function changeUser($user)
+    {
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $user;
+        $this->iAmLoggedIn();
+    }
+
 }
