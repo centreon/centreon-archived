@@ -92,7 +92,6 @@ class BrokerContext extends CentreonContext
                     'AcceptanceTestService'
                 );
                 $props = $page->getProperties();
-                var_dump($props['last_check']);
                 return $props['last_check'];
             },
             'Configured passive service is not monitored. Maybe engine or broker are not properly reloaded',
