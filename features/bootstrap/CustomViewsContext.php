@@ -54,7 +54,7 @@ class CustomViewsContext extends CentreonContext
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
     }
-    
+
     /**
      *  @Given a shared custom view
      */
@@ -132,14 +132,14 @@ class CustomViewsContext extends CentreonContext
         $page->showEditBar(true);
         $page->deleteView();
     }
-    
+
     /**
      *  @When the user modifies the custom view
      */
     public function theUserModifiesTheCustomView()
     {
         $this->changeUser($this->user);
-        
+
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->editView($this->newCustomViewName, 1);
@@ -152,7 +152,7 @@ class CustomViewsContext extends CentreonContext
             'View not updated by user'
         );
     }
-    
+
     /**
      *  @When the owner modifies the custom view
      */
@@ -221,13 +221,13 @@ class CustomViewsContext extends CentreonContext
 
         $this->spin(
             function ($context) use ($page) {
-                return !$page->isTheViewModifiyable();
+                return !$page->isCurrentViewEditable();
             },
             'Current view is modifiyable',
             30
         );
     }
-    
+
     /**
      *  @Then he can modify the content of the shared view
      */
@@ -238,15 +238,13 @@ class CustomViewsContext extends CentreonContext
 
         $this->spin(
             function ($context) use ($page) {
-                return $page->isTheViewModifiyable();
+                return $page->isCurrentViewEditable();
             },
             'Current view is not modifiyable',
             30
         );
     }
-    
 
-    
     /**
      *  @Then the view is still visible
      */
@@ -294,7 +292,7 @@ class CustomViewsContext extends CentreonContext
     {
         $this->heCanAddTheSharedView();
     }
-    
+
     /**
      *  @Then the user can use the shared view again
      */
@@ -302,13 +300,12 @@ class CustomViewsContext extends CentreonContext
     {
         $this->theUserIsUsingTheSharedView();
     }
-    
+
     /**
      *  @Then the changes are reflected on all users displaying the custom view
      */
     public function theChangesAreReflectedOnAllUsersDisplayingTheCustomView()
     {
-
         $this->changeUser($this->user);
 
         $page = new CustomViewsPage($this);
@@ -335,7 +332,7 @@ class CustomViewsContext extends CentreonContext
         new CustomViewsPage($this);
         $this->theViewIsNotVisibleAnymore();
     }
-    
+
     /**
      *  @Then the view is removed for the owner
      */
@@ -346,7 +343,7 @@ class CustomViewsContext extends CentreonContext
         new CustomViewsPage($this);
         $this->theViewIsNotVisibleAnymore();
     }
-    
+
     /**
      *  @Then the view remains visible for all users displaying the custom view
      */
@@ -358,12 +355,10 @@ class CustomViewsContext extends CentreonContext
         $this->theViewIsStillVisible();
     }
 
-
     private function changeUser($user)
     {
         $this->iAmLoggedOut();
         $this->parameters['centreon_user'] = $user;
         $this->iAmLoggedIn();
     }
-
 }
