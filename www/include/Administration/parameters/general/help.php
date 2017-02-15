@@ -124,10 +124,6 @@ $help['tip_centreon_support_email'] = dgettext(
 /*
  * Proxy options
  */
-$help['tip_proxy_protocol'] = dgettext(
-    'help',
-    'Used protocol to join proxy.'
-);
 $help['tip_proxy_url'] = dgettext(
     'help',
     'URL of the proxy.'
