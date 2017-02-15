@@ -49,7 +49,7 @@ class CustomViewsContext extends CentreonContext
     public function aPubliclySharedCustomView()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2, true);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
@@ -61,7 +61,7 @@ class CustomViewsContext extends CentreonContext
     public function aSharedCustomView()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
@@ -107,7 +107,7 @@ class CustomViewsContext extends CentreonContext
     public function aCustomViewSharedInReadOnlyWithAUser()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
@@ -129,7 +129,7 @@ class CustomViewsContext extends CentreonContext
     public function heRemovesTheSharedView()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
         $page->deleteView();
     }
 
@@ -141,7 +141,7 @@ class CustomViewsContext extends CentreonContext
         $this->changeUser($this->user);
 
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
         $page->editView($this->newCustomViewName, 1);
 
 
@@ -162,7 +162,7 @@ class CustomViewsContext extends CentreonContext
         $this->changeUser($this->owner);
         $page = new CustomViewsPage($this);
 
-        $page->toggleEditBar();
+        $page->showEditBar(true);
 
         $page->editView($this->newCustomViewName, 1);
 
@@ -183,7 +183,7 @@ class CustomViewsContext extends CentreonContext
         $this->changeUser($this->owner);
 
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
 
         $page->deleteView();
 
@@ -197,7 +197,7 @@ class CustomViewsContext extends CentreonContext
     public function heCanAddThePublicView()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
         $page->loadView($this->customViewName);
     }
 
@@ -207,7 +207,7 @@ class CustomViewsContext extends CentreonContext
     public function heCanAddTheSharedView()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
         $page->loadView(null, $this->customViewName);
     }
 
@@ -217,7 +217,7 @@ class CustomViewsContext extends CentreonContext
     public function heCannotModifyTheContentOfTheSharedView()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
 
         $this->spin(
             function ($context) use ($page) {
@@ -234,7 +234,7 @@ class CustomViewsContext extends CentreonContext
     public function heCanModifyTheContentOfTheSharedView()
     {
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
 
         $this->spin(
             function ($context) use ($page) {
@@ -309,7 +309,7 @@ class CustomViewsContext extends CentreonContext
         $this->changeUser($this->user);
 
         $page = new CustomViewsPage($this);
-        $page->toggleEditBar();
+        $page->showEditBar(true);
 
         $this->spin(
             function ($context) {
