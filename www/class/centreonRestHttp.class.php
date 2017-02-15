@@ -99,7 +99,6 @@ class CentreonRestHttp
 
         if (!is_null($this->proxy)) {
             curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
-            curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
             if (!is_null($this->proxyAuthentication)) {
                 curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
                 curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
@@ -181,7 +180,7 @@ class CentreonRestHttp
         $query = 'SELECT `key`, `value` '
             . 'FROM `options` '
             . 'WHERE `key` IN ( '
-            . '"proxy_protocol", "proxy_url", "proxy_port", "proxy_user", "proxy_password" '
+            . '"proxy_url", "proxy_port", "proxy_user", "proxy_password" '
             . ') ';
         $res = $db->query($query);
         while ($row = $res->fetchRow()) {
