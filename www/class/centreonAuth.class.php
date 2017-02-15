@@ -50,6 +50,10 @@ class CentreonAuth
     protected $cryptPossibilities;
     protected $pearDB;
     protected $debug;
+
+    // Web UI or API
+    protected $source;
+
     /*
      * Flags
      */
@@ -81,7 +85,7 @@ class CentreonAuth
      * @param string $token | for autologin
      * @return void
      */
-    public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "")
+    public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "", $source = "WEB")
     {
         global $centreon_crypt;
 
@@ -96,6 +100,7 @@ class CentreonAuth
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
         $this->default_page = 1;
+        $this->source = $source;
 
         $query = "SELECT ar.ar_id, ari.ari_value, ari.ari_name
                   FROM auth_ressource_info ari, auth_ressource ar
@@ -310,7 +315,7 @@ class CentreonAuth
             }
         } else {
             if ($this->debug) {
-                $this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
+                $this->CentreonLog->insertLog(1, "[".$this->source."] No contact found with this login : '$username'");
             }
             $this->error = _('Your credentials are incorrect.');
         }
