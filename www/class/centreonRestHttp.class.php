@@ -113,8 +113,10 @@ class CentreonRestHttp
                 }
                 break;
             case 'GET':
-            default:
                 curl_setopt($ch, CURLOPT_HTTPGET, true);
+                break;
+            default:
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
                 break;
         }
 
