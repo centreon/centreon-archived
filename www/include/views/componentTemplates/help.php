@@ -25,7 +25,7 @@ $help["tip_invert"] = dgettext("help", "Inverted curve (with negative values).")
 $help["tip_thickness"] = dgettext("help", "Curve thickness.");
 $help["tip_line_color"] = dgettext("help", "Curve line color.");
 $help["tip_area_color"] = dgettext("help", "Curve area color.");
-$help["tip_transparency"] = dgettext("help", "Curve transparency.");
+$help["tip_transparency"] = dgettext("help", "Curve transparency. Use for export the chart.");
 $help["tip_filling"] = dgettext("help", "Enables area filling.");
 
 /**

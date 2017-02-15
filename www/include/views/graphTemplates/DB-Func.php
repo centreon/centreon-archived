@@ -65,7 +65,7 @@ function testExistence($name = null)
 function deleteGraphTemplateInDB($graphs = array())
 {
     global $pearDB;
- 
+
     foreach ($graphs as $key => $value) {
         $pearDB->query("DELETE FROM giv_graphs_template WHERE graph_id = '".$key."'");
     }
@@ -149,7 +149,7 @@ function insertGraphTemplate()
     isset($ret["upper_limit"]) && $ret["upper_limit"] != null ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
     isset($ret["size_to_max"]) && $ret["size_to_max"] != null ? $rq .= "'".$ret["size_to_max"]."', ": $rq .= "0, ";
     isset($ret["default_tpl1"]) && $ret["default_tpl1"] != null ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-    isset($ret["split_component"]) && $ret["split_component"] != null ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
+    $rq .= "NULL, "; // Column split chart (removed options)
     isset($ret["scaled"]) && $ret["scaled"] != null ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
     isset($ret["stacked"]) && $ret["stacked"] != null ? $rq .= "'".htmlentities($ret["stacked"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
     isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
@@ -164,7 +164,7 @@ function insertGraphTemplate()
 function updateGraphTemplate($graph_id = null)
 {
     global $form, $pearDB;
-     
+
     if (!$graph_id) {
         return;
     }
