@@ -165,16 +165,13 @@ class CustomViewsContext extends CentreonContext
      */
     public function theOwnerRemovesTheView()
     {
-
         $this->changeUser($this->owner);
 
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
 
         $page->deleteView();
-
         $this->theViewIsNotVisibleAnymore();
-
     }
 
     /**
@@ -186,9 +183,6 @@ class CustomViewsContext extends CentreonContext
         $page->showEditBar(true);
 
         $page->loadView($this->customViewName);
-
-
-
     }
 
     /**
@@ -200,7 +194,6 @@ class CustomViewsContext extends CentreonContext
         $page->showEditBar(true);
 
         $page->loadView(null, $this->customViewName);
-
     }
 
     /**
@@ -282,7 +275,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserCanUseThePublicViewAgain()
     {
-        $this->heCanAddTheSharedView();
+        $this->heCanAddThePublicView();
     }
 
     /**
