@@ -123,6 +123,9 @@ class CentreonRestHttp
 
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
 
         curl_close($ch);
 
