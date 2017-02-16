@@ -127,63 +127,21 @@ try {
     $formAddView->addElement('header', 'information', _("General Information"));
 
 
-    $arrayViewUse = array();
-
-    $query = "SELECT cv.* FROM custom_views cv "
-        . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-        . " WHERE (cvur.user_id = " . $db->escape($centreon->user->user_id)
-        . "        OR cvur.usergroup_id IN ( "
-        . "           SELECT contactgroup_cg_id "
-        . "           FROM contactgroup_contact_relation "
-        . "           WHERE contact_contact_id = " . $db->escape($centreon->user->user_id)
-        . "           ) "
-        . " ) AND cvur.is_consumed = 1 "
-        . " AND (cvur.is_public = 1 OR  cvur.is_share = 1 OR  cv.public = 1)";
-
-    $DBRES = $db->query($query);
-
-    while ($row = $DBRES->fetchRow()) {
-        $arrayViewUse[$row['custom_view_id']] = $row['name'];
-    }
-
-    $query = "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
-        . " UNION "
-        . " SELECT cv.*, '0' as from_public FROM custom_views cv "
-        . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-        . " WHERE (cvur.user_id = " . $db->escape($centreon->user->user_id)
-        . "        OR cvur.usergroup_id IN ( "
-        . "           SELECT contactgroup_cg_id "
-        . "           FROM contactgroup_contact_relation "
-        . "           WHERE contact_contact_id = " . $db->escape($centreon->user->user_id)
-        . "           ) "
-        . " ) AND cvur.is_consumed = 0 ";
-
-
-    $DBRES = $db->query($query);
-    $arrayView = array();
-    $arrayViewShared = array();
-    $arrayViewShared[-1] = "";
-
-    while ($row = $DBRES->fetchRow()) {
-        if ($row['from_public'] == '1') {
-            $arrayView[$row['custom_view_id']] = $row['name'];
-        } else {
-            $arrayViewShared[$row['custom_view_id']] = $row['name'];
-        }
-    }
-
-    $arrayViewShared = array_diff($arrayViewShared, $arrayViewUse);
-    $arrayView = array_diff($arrayView, $arrayViewUse);
-
-    $arrayView = array_diff($arrayView, $arrayViewShared);
-    $arrayView[-1] = "";
-
-    asort($arrayView);
-    asort($arrayViewShared);
-
     $attrsText = array("size" => "30");
-    $formAddView->addElement('select', 'viewLoad', _("Public views list"), $arrayView);
-    $formAddView->addElement('select', 'viewLoadShare', _("Shared views list"), $arrayViewShared);
+    $arrayView = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_customview&action=listPublic',
+        'multiple' => false
+    );
+    $formAddView->addElement('select2', 'viewLoad', _("Public views list"), array(), $arrayView);
+
+    $arrayViewShared = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_customview&action=listShare',
+        'multiple' => false
+    );
+
+    $formAddView->addElement('select2', 'viewLoadShare', _("Shared views list"), array(), $arrayViewShared);
 
 
     /**

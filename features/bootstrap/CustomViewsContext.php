@@ -75,14 +75,6 @@ class CustomViewsContext extends CentreonContext
     {
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddThePublicView();
-
-        $this->spin(
-            function ($context) {
-                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->customViewName;
-            },
-            'Public view not load'
-        );
-
     }
 
     /**
@@ -93,12 +85,6 @@ class CustomViewsContext extends CentreonContext
         $this->anotherUserWishesToAddANewCustomView();
         $this->heCanAddTheSharedView();
 
-        $this->spin(
-            function ($context) {
-                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->customViewName;
-            },
-            'Shared view not load'
-        );
     }
 
     /**
@@ -198,7 +184,14 @@ class CustomViewsContext extends CentreonContext
     {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-        $page->loadView($this->customViewName);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return $page->loadView($this->customViewName);
+            },
+            'Public view not load'
+        );
+
     }
 
     /**
@@ -208,7 +201,14 @@ class CustomViewsContext extends CentreonContext
     {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-        $page->loadView(null, $this->customViewName);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return $page->loadView(null, $this->customViewName);
+            },
+            'Shared view not load'
+        );
+
     }
 
     /**
