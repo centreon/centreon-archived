@@ -250,6 +250,14 @@ try {
     $formShareView->setDefaults(array('locked' => '1'));
 
     /**
+     * Deploy
+     */
+    $deploy[] = HTML_QuickForm::createElement('radio', 'deploy', null, _("Yes"), '1');
+    $deploy[] = HTML_QuickForm::createElement('radio', 'deploy', null, _("No"), '0');
+    $formShareView->addGroup($deploy, 'deploy', _("Deploy view?"), '&nbsp;');
+    $formShareView->setDefaults(array('deploy' => '0'));
+
+    /**
      * Users
      */
     $attrContacts = array(

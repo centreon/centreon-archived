@@ -450,7 +450,7 @@ class CentreonCustomView
                         $str .= ", ";
                     }
                     $str .= "(" . $params['custom_view_id'] . ", " . $userId . ", " .
-                        $params['locked']['locked'] . ", 0)";
+                        $params['locked']['locked'] . ", " . $params['deploy']['deploy'] . ")";
                     $this->copyPreferences($params['custom_view_id'], $userId);
                 }
             }
@@ -470,7 +470,7 @@ class CentreonCustomView
                     }
                     $usergroupId = $this->copyPreferences($params['custom_view_id'], null, $usergroupId);
                     $str .= "(" . $params['custom_view_id'] . ", " . $usergroupId . ", " .
-                        $params['locked']['locked'] . ", 0)";
+                        $params['locked']['locked'] . ", " . $params['deploy']['deploy'] . ")";
                 }
             }
             if ($str != "") {
