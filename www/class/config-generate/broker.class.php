@@ -136,7 +136,7 @@ class Broker extends AbstractObjectXML
                         'name' => $row['config_name'],
                         'configuration_file' => $this->engine['broker_cfg_path'].'/'.$row['config_filename'],
                         'run' => 1,
-                        'reaload' => 1
+                        'reload' => 1
                     )
                 );
             }

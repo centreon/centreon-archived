@@ -7,7 +7,8 @@ Feature: Centreon broker
         Given I am logged in a Centreon server
 
     Scenario: Watchdog generation
-        Given a daemon broker configuration
+        Given a configured passive service
+        And a daemon broker configuration
         When I update broker configuration file name
         And I export configuration
         Then the new configuration is applied
