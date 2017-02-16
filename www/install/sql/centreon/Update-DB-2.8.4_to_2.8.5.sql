@@ -16,3 +16,5 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
 ALTER TABLE custom_view_user_relation ADD is_public tinyint(1) NOT NULL DEFAULT 0 AFTER is_consumed;
 ALTER TABLE custom_view_user_relation ADD is_share tinyint(1) NOT NULL DEFAULT 0 AFTER is_public;
 
+-- Remove useless proxy option
+DELETE FROM options WHERE options.key = 'proxy_protocol';

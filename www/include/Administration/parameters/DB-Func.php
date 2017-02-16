@@ -567,12 +567,6 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        'proxy_protocol',
-        isset($ret["proxy_protocol"]) && $ret["proxy_protocol"] != null
-            ? htmlentities($ret["proxy_protocol"], ENT_QUOTES, "UTF-8"): "NULL"
-    );
-    updateOption(
-        $pearDB,
         'proxy_url',
         isset($ret["proxy_url"]) && $ret["proxy_url"] != null
             ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8"): "NULL"
