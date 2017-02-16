@@ -185,12 +185,9 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
 
-        $this->spin(
-            function ($context) use ($page) {
-                return $page->loadView($this->customViewName);
-            },
-            'Public view not load'
-        );
+        $page->loadView($this->customViewName);
+
+
 
     }
 
@@ -202,12 +199,7 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
 
-        $this->spin(
-            function ($context) use ($page) {
-                return $page->loadView(null, $this->customViewName);
-            },
-            'Shared view not load'
-        );
+        $page->loadView(null, $this->customViewName);
 
     }
 
