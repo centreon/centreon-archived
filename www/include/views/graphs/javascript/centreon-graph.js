@@ -16,7 +16,7 @@
       number: parseInterval[1],
       unit: parseInterval[2]
     };
-    
+
     if ($elem.attr('id') === undefined) {
       $elem.attr('id', function () {
         function s4() {
@@ -27,7 +27,7 @@
         return 'c' + s4() + s4() + s4() + s4();
       });
     }
-    
+
     this.timeFormat = this.getTimeFormat();
 
     /* Color for status graph */
@@ -42,16 +42,16 @@
       'critical',
       'unknown'
     ]);
-    
+
     this.loadGraphId();
-    
+
     /* Get start time and end time */
     times = this.getTimes();
-    
+
     this.loadData(times.start, times.end, function (data) {
       self.initGraph(data);
     });
-    
+
     this.setRefresh(this.settings.refresh);
 
   }
@@ -84,7 +84,7 @@
       if (end !== null && end !== undefined ) {
         this.settings.period.startTime = end;
       }
-      
+
       if (this.type === null || this.id === null) {
         throw new Error('The graph configuration is missing.');
       }
@@ -111,7 +111,7 @@
      */
     initGraphStatus: function (data) {
       var self = this;
-      
+
       this.chart = centreonStatusChart.generate({
         tickFormat: {
           format: this.timeFormat
@@ -147,15 +147,23 @@
           }
         }
       };
+      /* Add Y axis range */
+      if (data.limits.min) {
+        axis.y.min = data.limits.min;
+      }
+      if (data.limits.max) {
+        axis.y.min = data.limits.max;
+      }
+
       var parsedData = this.buildMetricData(data);
-      
+
       axis = jQuery.extend({}, axis, parsedData.axis);
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
           format: this.roundTick
         };
       }
-      
+
       if (data.data.length > 15) {
           datasToAppend = {
             x: parsedData.data.x,
@@ -169,7 +177,7 @@
       } else {
           datasToAppend = parsedData.data;
       }
-      
+
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
         size: {
@@ -197,7 +205,7 @@
         },
         regions: self.buildRegions(data)
       });
-      
+
       if (data.data.length > 15) {
           jQuery("#display-graph-" + self.id).css('display', 'block');
           jQuery("#display-graph-" + self.id).on('click', function (e){
@@ -248,7 +256,7 @@
      * Build data for metrics graph
      *
      * @param {Object} dataRaw - The raw data
-     * @return {Object} - The converted data 
+     * @return {Object} - The converted data
      */
     buildMetricData: function (dataRaw) {
       var convertType = {
@@ -264,7 +272,7 @@
         regions: {},
         empty: { label: { text: "There's no data" } }
       };
-      
+
       var units = {};
       var axis = {};
       var column;
@@ -279,12 +287,12 @@
         return time * 1000;
       });
       times.unshift('times');
-      
+
         data.columns.push(times);
         for (i = 0; i < dataRaw.data.length; i++) {
           name = 'data' + (i + 1);
           column = dataRaw.data[i].data;
-          column.unshift(name); 
+          column.unshift(name);
           data.columns.push(column);
           legend = dataRaw.data[i].label;
           if (dataRaw.data[i].unit) {
@@ -348,7 +356,7 @@
 
       /* Add group */
       data.groups = this.buildGroups(dataRaw);
-      
+
       return {
         data: data,
         axis: axis
@@ -358,7 +366,7 @@
      * Build data for status graph
      *
      * @param {Object} dataRaw - The raw data
-     * @return {Object} - The converted data 
+     * @return {Object} - The converted data
      */
     buildStatusData: function (dataRaw) {
       var status;
@@ -370,7 +378,7 @@
         critical: '#e00b3d',
         unknown: '#bcbdc0'
       };
-      
+
       for (status in dataRaw.data.status) {
         if (dataRaw.data.status.hasOwnProperty(status)) {
           if (dataRaw.data.status[status].length > 0) {
@@ -387,7 +395,7 @@
           }
         }
       }
-      
+
       data = {
         status: dataStatus,
         comments: dataRaw.data.comments.map(function (values) {
@@ -395,7 +403,7 @@
           return values;
         })
       };
-      
+
       return data;
     },
     /**
@@ -434,14 +442,14 @@
       var group = [];
       var i;
       var name;
-      
+
       for (i = 0; i < data.data.length; i++) {
         name = 'data' + (i + 1);
         if (data.data[i].stack) {
           group.push(name);
         }
       }
-      
+
       return [group];
     },
     /**
@@ -475,7 +483,7 @@
         if (typeof(this.settings.period.startTime) === "number") {
           myStart = this.settings.period.startTime * 1000;
         }
-        
+
         if (typeof(this.settings.period.endTime) === "number") {
           myEnd = this.settings.period.endTime * 1000;
         }
@@ -483,7 +491,7 @@
         start = moment(myStart);
         end = moment(myEnd);
       }
-        
+
       return {
         start: start.unix(),
         end: end.unix()
@@ -524,7 +532,7 @@
      * Set an interval string for graph
      *
      * Format : see momentjs
-     * 
+     *
      * @param {String} interval - A interval string
      */
     setInterval: function (interval) {
@@ -561,12 +569,12 @@
     setRefresh: function (interval) {
       var self = this;
       this.refresh = interval;
-      
+
       if (this.refreshEvent !== null) {
         clearInterval(this.refreshEvent);
         this.refreshEvent = null;
       }
-      
+
       if (this.refresh > 0) {
         this.refreshEvent = setInterval(function () {
           self.refreshData();
@@ -606,7 +614,7 @@
       return this.chartData.data[pos].negative;
     }
   };
-  
+
   $.fn.centreonGraph = function (options) {
     var args = Array.prototype.slice.call(arguments, 1);
     var settings = jQuery.extend({}, $.fn.centreonGraph.defaults, options);
@@ -628,13 +636,13 @@
     });
     return (methodReturn === undefined) ? $set : methodReturn;
   };
-  
+
   $.fn.centreonGraph.defaults = {
     refresh: 0,
     height: 230,
     zoom: {
       enabled: false,
-      onzoom: null 
+      onzoom: null
     },
     graph: {
       id: null,

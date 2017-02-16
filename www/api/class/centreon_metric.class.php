@@ -42,7 +42,7 @@ require_once dirname(__FILE__) . "/webService.class.php";
 class CentreonMetric extends CentreonWebService
 {
     protected $pearDBMonitoring;
-    
+
     protected $statusColors = array(
         'ok' => '#88b917',
         'warning' => '#ff9a13',
@@ -113,7 +113,7 @@ class CentreonMetric extends CentreonWebService
                   WHERE m.index_id = i.id
                   AND   h.host_id = i.host_id
                   AND   s.service_id = i.service_id
-                  AND   h.enabled = 1 
+                  AND   h.enabled = 1
                   AND   s.enabled = 1
                   AND   CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) LIKE '%". $q ."%'
                   ORDER BY CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) COLLATE utf8_general_ci "
@@ -143,16 +143,16 @@ class CentreonMetric extends CentreonWebService
     public function getMetricsDataByService()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclGroups = $acl->getAccessGroupsString();
         }
-        
+
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
@@ -162,7 +162,7 @@ class CentreonMetric extends CentreonWebService
 
         $start = $this->arguments['start'];
         $end = $this->arguments['end'];
-        
+
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
@@ -174,15 +174,15 @@ class CentreonMetric extends CentreonWebService
         if ($rows < 10) {
             throw new RestBadRequestException("The rows must be greater as 10");
         }
-        
+
         if (false === isset($this->arguments['ids'])) {
             self::sendJson(array());
         }
-        
+
         /* Get the list of service ID */
         $ids = explode(',', $this->arguments['ids']);
         $result = array();
-        
+
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
             if (false === is_numeric($hostId) ||
@@ -215,12 +215,13 @@ class CentreonMetric extends CentreonWebService
             }
             $graph->setRRDOption("start", $start);
             $graph->setRRDOption("end", $end);
+            $graph->setTemplate();
             $graph->initCurveList();
             $graph->createLegend();
 
             $serviceData = $graph->getData($rows);
-            
-            
+
+
             /* Replace NaN */
             for ($i = 0; $i < count($serviceData); $i++) {
                 if (isset($serviceData[$i]['data'])) {
@@ -236,7 +237,7 @@ class CentreonMetric extends CentreonWebService
                 $serviceData[$i]['type'] = $serviceData[$i]['graph_type'];
                 unset($serviceData[$i]['graph_type']);
             }
-            
+
             /* Get extra information (downtime/acknowledgment) */
             $acks = array();
             $downtimes = array();
@@ -249,17 +250,21 @@ class CentreonMetric extends CentreonWebService
                     $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
                 }
             }
-            
+
+            /* Prepare limits */
+            $limits = $graph->getLimits();
+
             $result[] = array(
                 'service_id' => $id,
                 'data' => $serviceData,
                 'times' => $times,
                 'size' => $rows,
                 'acknowledge' => $acks,
-                'downtime' => $downtimes
+                'downtime' => $downtimes,
+                'limits' => $limits
             );
         }
-        
+
         return $result;
     }
 
@@ -293,15 +298,15 @@ class CentreonMetric extends CentreonWebService
             false === is_numeric($this->arguments['end'])) {
             throw new RestBadRequestException("Bad parameters");
         }
-        
+
         $explodedId = explode('-', $this->arguments['ids']);
         $id = $explodedId[0];
         $graphName = $explodedId[1];
-        
-        
+
+
         $start = $this->arguments['start'];
         $end = $this->arguments['end'];
-        
+
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
@@ -313,7 +318,7 @@ class CentreonMetric extends CentreonWebService
         if ($rows < 10) {
             throw new RestBadRequestException("The rows must be greater as 10");
         }
-        
+
         $result = array();
         // Init graph object
         try {
@@ -323,7 +328,7 @@ class CentreonMetric extends CentreonWebService
             throw new RestNotFoundException("Graph not found");
         }
         $pollerDatas = $graphPollerObject->getData($rows);
-        
+
         for ($i = 0; $i < count($pollerDatas); $i++) {
             if (isset($pollerDatas[$i]['data'])) {
                 $times = array_keys($pollerDatas[$i]['data']);
@@ -338,7 +343,7 @@ class CentreonMetric extends CentreonWebService
             $pollerDatas[$i]['type'] = $pollerDatas[$i]['graph_type'];
             unset($pollerDatas[$i]['graph_type']);
         }
-        
+
         $result[] = array(
             'data' => $pollerDatas,
             'times' => $times,
@@ -346,7 +351,7 @@ class CentreonMetric extends CentreonWebService
             'acknowledge' => array(),
             'downtime' => array()
         );
-        
+
         return $result;
     }
 
@@ -358,16 +363,16 @@ class CentreonMetric extends CentreonWebService
     public function getStatusByService()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclGroups = $acl->getAccessGroupsString();
         }
-        
+
         /* Validate options */
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
@@ -378,7 +383,7 @@ class CentreonMetric extends CentreonWebService
 
         $start = $this->arguments['start'];
         $end = $this->arguments['end'];
-        
+
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
@@ -390,19 +395,19 @@ class CentreonMetric extends CentreonWebService
         if ($rows < 10) {
             throw new RestBadRequestException("The rows must be greater as 10");
         }
-        
+
         if (false === isset($this->arguments['ids'])) {
             self::sendJson(array());
         }
-        
+
         /* Get the list of service ID */
         $ids = explode(',', $this->arguments['ids']);
         $result = array();
-        
+
         /* Get the list of service ID */
         $ids = explode(',', $this->arguments['ids']);
         $result = array();
-        
+
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
             if (false === is_numeric($hostId) ||
@@ -424,7 +429,7 @@ class CentreonMetric extends CentreonWebService
             }
 
             $data = array();
-            
+
             /* Prepare graph */
             try {
                 /* Get index data */
@@ -433,9 +438,9 @@ class CentreonMetric extends CentreonWebService
             } catch (Exception $e) {
                 throw new RestNotFoundException("Graph not found");
             }
-            
+
             $statusData = $graph->getData($rows);
-            
+
             /* Get comments for this services */
             $comments = array();
             $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
@@ -458,11 +463,11 @@ class CentreonMetric extends CentreonWebService
                                 'time' => $row['entry_time']
                             );
                         }
-                    }    
+                    }
                 }
             }
-            
-            
+
+
             $result[] = array(
                 'service_id' => $id,
                 'data' => array(
@@ -472,11 +477,11 @@ class CentreonMetric extends CentreonWebService
                 'size' => $rows
             );
         }
-        
+
         return $result;
     }
-    
-    
+
+
     /**
      * Function for test is a value is NaN
      *
@@ -490,7 +495,7 @@ class CentreonMetric extends CentreonWebService
         }
         return $element;
     }
-    
+
     /**
      * Get the list of a acknowlegment for a service during a period
      *
@@ -509,7 +514,7 @@ class CentreonMetric extends CentreonWebService
                 )';
         return $this->executeQueryPeriods($query, $start, $end);
     }
-    
+
     /**
      * Get the list of a downtime for a service during a period
      *

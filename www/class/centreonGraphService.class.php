@@ -62,7 +62,7 @@ class CentreonGraphService extends CentreonGraph
     {
         /* Flush RRDCached for have the last values */
         $this->flushRrdCached($this->listMetricsId);
-        
+
         $commandLine = '';
         $defType = array(
             0 => 'CDEF',
@@ -75,12 +75,12 @@ class CentreonGraphService extends CentreonGraph
         $commandLine .= " --end " . $this->RRDoptions['end'];
         $commandLine .= " --maxrows " . $rows;
 
-        
+
         $metrics = array();
         $vname = array();
         $virtuals = array();
         $i = 0;
-        
+
         /* Parse metrics */
         foreach ($this->metrics as $metric) {
             if (isset($metric['virtual']) && $metric['virtual'] == 1) {
@@ -105,7 +105,7 @@ class CentreonGraphService extends CentreonGraph
                     "crit" => null,
                     "warn" => null
                 );
-                
+
                 if (isset($metric['ds_color_area']) &&
                   isset($metric['ds_filled']) &&
                   $metric['ds_filled'] === '1') {
@@ -171,7 +171,7 @@ class CentreonGraphService extends CentreonGraph
             $status = proc_get_status($process);
             $str .= stream_get_contents($pipes[1]);
         } while ($status['running']);
-        
+
         $str .= stream_get_contents($pipes[1]);
 
         /* Remove text of the end of the stream */
@@ -209,6 +209,29 @@ class CentreonGraphService extends CentreonGraph
             }
         }
         return $metrics;
+    }
+
+    /**
+     * Get limits lower and upper for a chart
+     *
+     * This values are defined on chart template
+     *
+     * @return array
+     */
+    public function getLimits()
+    {
+        $limits = array(
+            'min' => null,
+            'max' => null
+        );
+        if ($this->templateInformations['lower_limit'] !== '') {
+            $limits['min'] = $this->templateInformations['lower_limit'];
+        }
+        if ($this->templateInformations['upper_limit'] !== '') {
+            $limits['max'] = $this->templateInformations['upper_limit'];
+        }
+
+        return $limits;
     }
 
     /**
