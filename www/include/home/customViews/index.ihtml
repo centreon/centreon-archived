@@ -371,9 +371,10 @@ function submitAddView() {
             if(jQuery('input[name="create_load[create_load]"]:checked').val() === "create"){
                 widgetName = jQuery("#formAddView input[name='name']").val();
             }else if(jQuery('input[name="create_load[create_load]"]:checked').val() === "load"){
-                if(jQuery("#formAddView select[name='viewLoad']").val() != ""){
+                if(jQuery("#formAddView select[name='viewLoad']").val() != null){
+                    console.log(jQuery("#formAddView select[name='viewLoad']").val())
                     widgetName = jQuery("#select2-viewLoad-container .select2-content").text()
-                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != ""){
+                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != null){
                     widgetName = jQuery("#select2-viewLoadShare-container .select2-content").text()
                 }
             }
@@ -703,6 +704,10 @@ jQuery(function () {
       //reset select2
       jQuery("#formAddView #viewLoad").empty().append($('<option>'));
       jQuery("#formAddView #viewLoadShare").empty().append($('<option>'));
+      //reset add view form
+      jQuery('input[name="create_load[create_load]"][value="create"]').prop('checked', true);
+      jQuery('.load_field').css('display','none');
+      jQuery('.create_field').css('display','table-row');
 
     jQuery('#formAddView input[name="name"]').val('');
     jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
