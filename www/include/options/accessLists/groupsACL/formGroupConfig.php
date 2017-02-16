@@ -81,8 +81,13 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set resources List
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
-    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
+    $query = 'SELECT DISTINCT argr.acl_res_id '
+        . 'FROM acl_res_group_relations argr, acl_resources ar '
+        . 'WHERE argr.acl_res_id = ar.acl_res_id '
+        . 'AND ar.locked = 0 '
+        . 'AND argr.acl_group_id = "' . $acl_group_id . '" ';
+    $DBRESULT = $pearDB->query($query);
+    while($data = $DBRESULT->fetchRow()) {
         $group["resourceAccess"][$i] = $data["acl_res_id"];
     }
     $DBRESULT->free();
@@ -133,7 +138,11 @@ $DBRESULT->free();
 
 # Resources comes from DB -> Store in $contacts Array
 $resources = array();
-$DBRESULT = $pearDB->query("SELECT acl_res_id, acl_res_name FROM acl_resources ORDER BY acl_res_name");
+$query = 'SELECT acl_res_id, acl_res_name '
+    . 'FROM acl_resources '
+    . 'WHERE locked = 0 '
+    . 'ORDER BY acl_res_name';
+$DBRESULT = $pearDB->query($query);
 while ($res = $DBRESULT->fetchRow()) {
     $resources[$res["acl_res_id"]] = $res["acl_res_name"];
 }

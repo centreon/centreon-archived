@@ -38,21 +38,25 @@ if (!isset($centreon)) {
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
-    require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-    /**
-     * Set the Acl group changed flag to 1
-     */
+/**
+ * Set the Acl group changed flag to 1
+ *
+ * @param $db
+ * @param $aclGroupId
+ */
 function setAclGroupChanged($db, $aclGroupId)
 {
     $db->query("UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id = " . $db->escape($aclGroupId));
 }
 
-    /**
-     *
-     * Test if group exists
-     * @param $name
-     */
+/**
+ * Test if group exists
+ *
+ * @param null $name
+ * @return bool
+ */
 function testGroupExistence($name = null)
 {
     global $pearDB, $form;
@@ -86,7 +90,7 @@ function enableGroupInDB($acl_group_id = null)
     if (!$acl_group_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$acl_group_id."'");
+    $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$acl_group_id."'");
 }
 
 /**
@@ -101,7 +105,7 @@ function disableGroupInDB($acl_group_id = null)
     if (!$acl_group_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$acl_group_id."'");
+    $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$acl_group_id."'");
 }
 
 /**
@@ -114,7 +118,7 @@ function deleteGroupInDB($Groups = array())
     global $pearDB;
 
     foreach ($Groups as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");
+        $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");
     }
 }
 
@@ -373,14 +377,19 @@ function updateGroupResources($acl_group_id, $ret = array())
         return;
     }
 
-    $DBRESULT = $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
+    $query = 'DELETE '
+        . 'FROM acl_res_group_relations argr '
+        . 'JOIN acl_resources ar ON argr.acl_res_id = ar.acl_res_id '
+        . 'AND argr.acl_group_id = ' . $acl_group_id . ' '
+        . 'AND ar.locked = 0 ';
+    $pearDB->query($query);
     if (isset($_POST["resourceAccess"])) {
         foreach ($_POST["resourceAccess"] as $id) {
             $rq = "INSERT INTO acl_res_group_relations ";
             $rq .= "(acl_res_id, acl_group_id) ";
             $rq .= "VALUES ";
             $rq .= "('".$id."', '".$acl_group_id."')";
-            $DBRESULT = $pearDB->query($rq);
+            $pearDB->query($rq);
         }
     }
 }

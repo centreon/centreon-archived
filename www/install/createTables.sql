@@ -117,6 +117,7 @@ CREATE TABLE `acl_resources` (
   `acl_res_comment` text,
   `acl_res_status` enum('0','1') DEFAULT NULL,
   `changed` int(11) DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`acl_res_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
