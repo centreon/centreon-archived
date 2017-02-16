@@ -108,9 +108,6 @@ class CentreonRestHttp
         switch ($method) {
             case 'POST':
                 curl_setopt($ch, CURLOPT_POST, true);
-                if (false === is_null($data)) {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                }
                 break;
             case 'GET':
                 curl_setopt($ch, CURLOPT_HTTPGET, true);
@@ -118,6 +115,10 @@ class CentreonRestHttp
             default:
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
                 break;
+        }
+
+        if (!is_null($data)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
         $result = curl_exec($ch);
