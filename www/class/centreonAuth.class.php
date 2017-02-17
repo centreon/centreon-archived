@@ -244,7 +244,7 @@ class CentreonAuth
      */
     protected function checkUser($username, $password, $token)
     {
-        
+
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
             $DBRESULT = $this->pearDB->query("SELECT * FROM `contact`
                 WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'
@@ -266,22 +266,16 @@ class CentreonAuth
 
                 if ($this->passwdOk == 1) {
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
-                    if ($this->debug) {
-                        $this->CentreonLog->insertLog(
-                            1,
-                            "Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]
-                        );
-                    }
+                    $this->CentreonLog->insertLog(
+                        1,
+                        "Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]
+                    );
                 } else {
-                    if ($this->debug) {
-                        $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
-                    }
+                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
                     $this->error = _('Your credentials are incorrect.');
                 }
             } else {
-                if ($this->debug) {
-                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' is not enable for reaching centreon");
-                }
+                $this->CentreonLog->insertLog(1, "Contact '" . $username . "' is not enable for reaching centreon");
                 $this->error = _('Your credentials are incorrect.');
             }
         } elseif (count($this->ldap_auto_import)) {
