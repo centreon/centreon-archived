@@ -3,6 +3,7 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\CustomViewsPage;
 use Centreon\Test\Behat\ContactConfigurationPage;
+use Centreon\Test\Behat\ContactGroupsConfigurationPage;
 
 class CustomViewsContext extends CentreonContext
 {
@@ -20,6 +21,7 @@ class CustomViewsContext extends CentreonContext
         $this->newCustomViewName = 'NewAcceptanceTestCustomView';
         $this->user = 'user1';
         $this->owner = 'admin';
+        $this->cgname = 'user';
     }
 
     /**
@@ -29,7 +31,7 @@ class CustomViewsContext extends CentreonContext
     {
         $this->launchCentreonWebContainer('web_widgets');
         $this->iAmLoggedIn();
-
+        //create user
         $page = new ContactConfigurationPage($this);
         $page->setProperties(array(
             'alias' => $this->user,
@@ -39,7 +41,16 @@ class CustomViewsContext extends CentreonContext
             'password2' => 'centreon',
             'admin' => '1'
         ));
+        $page->save();
 
+        //create contact group
+        $page = new ContactGroupsConfigurationPage($this);
+        $page->setProperties(array(
+            'name' => $this->cgname,
+            'alias' => $this->cgname,
+            'contacts' => $this->user,
+            'comments' => 'cg test'
+        ));
         $page->save();
     }
 
@@ -68,6 +79,18 @@ class CustomViewsContext extends CentreonContext
         $page->shareView($this->user, null, 0);
     }
 
+    /**
+     *  @Given a shared custom view with a group
+     */
+    public function aSharedCustomViewWithAGroup()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView( null, $this->cgname, 0);
+    }
     /**
      *  @Given a user is using the public view
      */
@@ -99,6 +122,21 @@ class CustomViewsContext extends CentreonContext
         $page->addWidget('Second widget', 'Service Monitoring');
         $page->shareView($this->user);
     }
+
+    /**
+     * @Given a custom view shared in read only with a group
+     */
+    public function aCustomViewSharedInReadOnlyWithAGroup()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView( null, $this->cgname);
+    }
+
+
 
     /**
      *  @When a user wishes to add a new custom view

@@ -570,19 +570,40 @@ class CentreonCustomView
             $str = "";
             if (isset($params['usergroup_id']) && is_array($params['usergroup_id'])) {
                 foreach ($params['usergroup_id'] as $usergroupId) {
+                    $sql = "SELECT * 
+                    FROM custom_view_user_relation
+	        	    WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . "
+	        	    AND usergroup_id = " . $usergroupId;
+                    $res = $this->db->query($sql);
+
+                    while ($row = $res->fetchRow()) {
+                        $View = $row;
+                    }
+
                     if ($str != "") {
                         $str .= ", ";
                     }
-                    $usergroupId = $this->copyPreferences($params['custom_view_id'], null, $usergroupId);
+
                     $str .= "(" . $params['custom_view_id'] . ", " . $usergroupId . ", " .
-                        $params['locked']['locked'] . ", 0, " . $public . " ,1 )";
-                }
-            }
-            if ($str != "") {
-                $this->db->query(
-                    "REPLACE INTO custom_view_user_relation
+                        $params['locked']['locked'] . ", 0, " . $public . " , 1)";
+                    $this->copyPreferences($params['custom_view_id'], $usergroupId);
+
+                    if (isset($View) && is_array($View)) {
+                        $query = "UPDATE custom_view_user_relation
+                      SET is_share = 1, locked = " . (int)$params['locked']['locked'] . "
+                      WHERE usergroup_id = " . $this->db->escape($usergroupId) . "
+        		      AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
+
+                        $this->db->query($query);
+                    } else {
+                        if ($str != "") {
+                            $this->db->query(
+                                "REPLACE INTO custom_view_user_relation
                         (custom_view_id, usergroup_id, locked, is_consumed, is_public, is_share ) VALUES " . $str
-                );
+                            );
+                        }
+                    }
+                }
             }
         }
     }
