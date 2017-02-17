@@ -208,7 +208,8 @@ class CentreonAuth
                 $this->passwdOk = 1;
             } elseif (!empty($password) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
+            } elseif (!empty($password) 
+                    && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -257,7 +258,8 @@ class CentreonAuth
         if ($DBRESULT->numRows()) {
             $this->userInfos = $DBRESULT->fetchRow();
 
-            if ($this->userInfos["contact_oreon"]) {
+            if ($this->userInfos["contact_oreon"]
+                || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')) {
                 /*
                  * Check password matching
                  */
@@ -269,7 +271,8 @@ class CentreonAuth
                     if ($this->debug) {
                         $this->CentreonLog->insertLog(
                             1,
-                            "Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]
+                            "[".$this->source."] Contact '" . $username . "' logged in - IP : " . 
+                            $_SERVER["REMOTE_ADDR"]
                         );
                     }
                 } else {
@@ -280,7 +283,8 @@ class CentreonAuth
                 }
             } else {
                 if ($this->debug) {
-                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' is not enable for reaching centreon");
+                    $this->CentreonLog->insertLog(1, 
+                        "[".$this->source."] Contact '" . $username . "' is not enable for reaching centreon");
                 }
                 $this->error = _('Your credentials are incorrect.');
             }
