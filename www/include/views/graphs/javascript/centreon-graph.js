@@ -16,6 +16,8 @@
       number: parseInterval[1],
       unit: parseInterval[2]
     };
+    this.ids = {};
+    this.toggleAction = 'hide';
 
     if ($elem.attr('id') === undefined) {
       $elem.attr('id', function () {
@@ -27,6 +29,10 @@
         return 'c' + s4() + s4() + s4() + s4();
       });
     }
+
+    /* Prepare extra legends */
+    this.legendDiv = jQuery('<div>').addClass('chart-legends');
+    this.$elem.after(this.legendDiv);
 
     this.timeFormat = this.getTimeFormat();
 
@@ -203,7 +209,10 @@
         point: {
           show: false
         },
-        regions: self.buildRegions(data)
+        regions: self.buildRegions(data),
+        legend: {
+          show: false
+        }
       });
 
       if (data.data.length > 15) {
@@ -214,6 +223,8 @@
               jQuery(this).css('display', 'none');
           });
       }
+
+      this.buildLegend(data.legends);
     },
     /**
      * Load data from rest api in ajax
@@ -248,6 +259,7 @@
           } else {
               self.chart.load(self.buildMetricData(data[0]).data);
               self.chart.regions(self.buildRegions(data[0]));
+              self.buildExtraLegend(data[0].legends);
           }
         }
       });
@@ -291,6 +303,7 @@
         data.columns.push(times);
         for (i = 0; i < dataRaw.data.length; i++) {
           name = 'data' + (i + 1);
+          this.ids[dataRaw.data[i].label] = name;
           column = dataRaw.data[i].data;
           column.unshift(name);
           data.columns.push(column);
@@ -612,6 +625,118 @@
         return false;
       }
       return this.chartData.data[pos].negative;
+    },
+    /**
+     * Build for display the legends
+     *
+     * @param {String[]} legends - The list of legends to display
+     */
+    buildLegend: function (legends) {
+      var self = this;
+      var legendDiv;
+      var legendInfo;
+      var legendLabel;
+      var legendExtra;
+      var curveId;
+      var i;
+      for (legend in legends) {
+        if (legends.hasOwnProperty(legend) && self.ids.hasOwnProperty(legend)) {
+          curveId = self.ids[legend];
+          legendDiv = jQuery('<div>').addClass('chart-legend')
+            .data('curveid', curveId)
+            .data('legend', legend);
+
+          /* Build legend for a curve */
+          legendLabel = jQuery('<div>')
+            .append(
+              /* Color */
+              jQuery('<div>')
+                .addClass('chart-legend-color')
+                .css({
+                  'background-color': self.chart.color(curveId)
+                })
+            )
+            .append(
+              jQuery('<span>').text(legend)
+            );
+          legendLabel.appendTo(legendDiv);
+
+          /* Build legend extra */
+          for (i = 0; i < legends[legend].extras.length; i++) {
+            legendExtra = jQuery('<div>').addClass('extra')
+              .append(
+                jQuery('<span>')
+                  .text(legends[legend].extras[i].name + ' :')
+              )
+              .append(
+                jQuery('<span>')
+                  .text(legends[legend].extras[i].value)
+              )
+            legendExtra.appendTo(legendDiv);
+          }
+
+          legendDiv
+            .on('mouseover', 'div', function (e) {
+              var curveId = jQuery(e.currentTarget).parent().data('curveid');
+              self.chart.focus(curveId);
+            })
+            .on('mouseout', 'div', function () { self.chart.revert(); })
+            .on('click', 'div', function (e) {
+              var curveId = jQuery(e.currentTarget).parent().data('curveid');
+              jQuery(e.currentTarget).parent().toggleClass('hidden');
+              self.chart.toggle(curveId);
+            });
+
+          legendDiv.appendTo(this.legendDiv);
+        }
+      }
+      /* Append actions button */
+      actionDiv = jQuery('<div>').addClass('chart-legend-action');
+      toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
+        .on('click', function () {
+          if (self.toggleAction === 'hide') {
+            self.toggleAction = 'show';
+            self.legendDiv.find('.chart-legend').addClass('hidden');
+            self.chart.hide();
+          } else {
+            self.toggleAction = 'hide';
+            self.legendDiv.find('.chart-legend').removeClass('hidden');
+            self.chart.show();
+          }
+        }).appendTo(actionDiv);
+      expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
+        .on('click', function () {
+          self.legendDiv.toggleClass('extend');
+        }).appendTo(actionDiv);
+
+      actionDiv.appendTo(self.legendDiv);
+    },
+    /**
+     * Build for display the extra legends
+     *
+     * @param {String[]} legends - The list of legends to display
+     */
+    buildExtraLegend: function (legends) {
+      var self = this;
+      var i;
+      jQuery('.chart-legend').each(function (idx, el) {
+        var legendName = jQuery(el).data('legend');
+        jQuery(el).find('.extra').remove();
+        if (legends.hasOwnProperty(legendName)) {
+          for (i = 0; i < legends[legendName].extras.length; i++) {
+            legendExtra = jQuery('<div>').addClass('extra')
+              .append(
+                jQuery('<span>')
+                  .text(legends[legendName].extras[i].name + ' :')
+              )
+              .append(
+                jQuery('<span>')
+                  .text(legends[legendName].extras[i].value)
+              )
+            legendExtra.appendTo(el);
+          }
+        }
+      });
     }
   };
 
@@ -655,6 +780,7 @@
     },
     timeFormat: null,
     threshold: true,
+    extraLegend: true,
     url: './api/internal.php?object=centreon_metric'
   };
 })(jQuery);

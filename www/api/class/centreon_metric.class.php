@@ -254,6 +254,9 @@ class CentreonMetric extends CentreonWebService
             /* Prepare limits */
             $limits = $graph->getLimits();
 
+            /* Prepare legends */
+            $legends = $graph->getLegends();
+
             $result[] = array(
                 'service_id' => $id,
                 'data' => $serviceData,
@@ -261,7 +264,8 @@ class CentreonMetric extends CentreonWebService
                 'size' => $rows,
                 'acknowledge' => $acks,
                 'downtime' => $downtimes,
-                'limits' => $limits
+                'limits' => $limits,
+                'legends' => $legends
             );
         }
 
