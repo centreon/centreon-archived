@@ -18,3 +18,6 @@ ALTER TABLE custom_view_user_relation ADD is_share tinyint(1) NOT NULL DEFAULT 0
 
 -- Remove useless proxy option
 DELETE FROM options WHERE options.key = 'proxy_protocol';
+
+-- Fix problem regarding the recurrent downtimes
+UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;

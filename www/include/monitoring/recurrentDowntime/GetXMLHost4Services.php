@@ -31,28 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-    require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
-    require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-    require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
-    /** ************************************
-     * start init db
-     */
-    $pearDB = new CentreonDB();
+/** ************************************
+ * start init db
+ */
+$pearDB = new CentreonDB();
 
-    /** ************************************
-     * start XML Flow
-     */
-    $buffer = new CentreonXML();
-    $buffer->startElement("services");
+/** ************************************
+ * start XML Flow
+ */
+$buffer = new CentreonXML();
+$buffer->startElement("services");
 
-    $empty = 0;
+$empty = 0;
 if (isset($_POST["host_id"])) {
     $traps = array();
     if ($_POST["host_id"] == -1) {
@@ -113,6 +110,8 @@ if (isset($_POST["host_id"])) {
 } else {
     $buffer->writeElement("error", "host_id not found");
 }
-    $buffer->endElement();
-    header('Content-Type: text/xml');
-    $buffer->output();
+
+$buffer->endElement();
+
+header('Content-Type: text/xml');
+$buffer->output();

@@ -115,7 +115,6 @@ $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfir
 /*
  * Toolbar select
  */
-
 ?>
 <script type="text/javascript">
 function setO(_i) {
@@ -153,4 +152,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listDowntime.ihtml");
-
