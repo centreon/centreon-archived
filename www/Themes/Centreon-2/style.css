@@ -118,6 +118,15 @@ label {
     vertical-align: middle;
 }
 
+
+pre.wrap {
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .margin_right {
     margin-right: 6px;
 }
