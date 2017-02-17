@@ -280,14 +280,14 @@ class CentreonConfigCentreonBroker
         foreach ($fields as $field) {
             $parentGroup = "";
             $isMultiple = false;
-            
+
             $elementName = $this->getElementName($tag, $formId, $field, $isMultiple);
             if ($isMultiple && $field['group'] !== '') {
                 $displayNameGroup = "";
                 $parentGroup = $this->getParentGroups($field['group'], $isMultiple, $displayNameGroup);
                 $parentGroup = $parentGroup."_".$formId;
             }
-            
+
             $elementType = null;
             $elementAttr = array();
             $default = null;
@@ -304,7 +304,7 @@ class CentreonConfigCentreonBroker
                     break;
                 case 'radio':
                     $tmpRadio = array();
-                    
+
                     if ($isMultiple && $parentGroup != "") {
                         $elementAttr = array_merge($elementAttr, array(
                                                    'parentGroup' => $parentGroup,
@@ -365,7 +365,7 @@ class CentreonConfigCentreonBroker
                                                                'class' => 'v_required'
                                                                ));
             }
-            
+
             $elementAttrSelect = array();
             if ($isMultiple && $parentGroup != "") {
                 if ($elementType != 'select') {
@@ -418,7 +418,7 @@ class CentreonConfigCentreonBroker
         }
         return $qf;
     }
-    
+
     public function generateCdata()
     {
         $cdata = CentreonData::getInstance();
@@ -501,14 +501,15 @@ class CentreonConfigCentreonBroker
          * Insert the Centreon Broker configuration
          */
         $query = "INSERT INTO cfg_centreonbroker "
-                . "(config_name, config_filename, ns_nagios_server, config_activate, config_write_timestamp, "
+                . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
                 . "config_write_thread_id, stats_activate, retention_path, "
                 . "event_queue_max_size, command_file) "
                 . "VALUES (
-                '" . $this->db->escape($values['name']) . "', 
-                '" . $this->db->escape($values['filename']) . "', 
-                " . $this->db->escape($values['ns_nagios_server']) . ", 
+                '" . $this->db->escape($values['name']) . "',
+                '" . $this->db->escape($values['filename']) . "',
+                " . $this->db->escape($values['ns_nagios_server']) . ",
                 '" . $this->db->escape($values['activate']['activate']) . "',
+                '" . $this->db->escape($values['activate_watchdog']['activate_watchdog']) . "',
                 '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
                 '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
@@ -521,7 +522,7 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             return false;
         }
-        
+
         $iIdServer = $values['ns_nagios_server'];
         $iId = $objMain->insertServerInCfgNagios(-1, $iIdServer, $values['name']);
         if (!empty($iId)) {
@@ -553,13 +554,14 @@ class CentreonConfigCentreonBroker
         /*
          * Insert the Centreon Broker configuration
          */
-        $query = "UPDATE cfg_centreonbroker SET 
-                config_name = '" . $this->db->escape($values['name']) . "', 
-                config_filename = '"  . $this->db->escape($values['filename']) . "', 
+        $query = "UPDATE cfg_centreonbroker SET
+                config_name = '" . $this->db->escape($values['name']) . "',
+                config_filename = '"  . $this->db->escape($values['filename']) . "',
                 ns_nagios_server = "  . $this->db->escape($values['ns_nagios_server']) . ",
-                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "', 
-                config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
-                config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
+                config_activate = '"  . $this->db->escape($values['activate']['activate']) . "',
+                daemon = '"  . $this->db->escape($values['activate_watchdog']['activate_watchdog']) . "',
+                config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
+                config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
                 retention_path = '" . $this->db->escape($values['retention_path']) . "',
                 event_queue_max_size = " . (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
@@ -603,8 +605,8 @@ class CentreonConfigCentreonBroker
                     foreach ($infos as $key => $info) {
                         $is_multiple = preg_match('/(.+?)_(\d+)$/', $key, $result);
                         if ($is_multiple) {
-                            $newArray[$result[1]] = $infos[$key];;
-                            
+                            $newArray[$result[1]] = $infos[$key];
+
                             unset($infos[$key]);
                         }
                     }
@@ -691,7 +693,7 @@ class CentreonConfigCentreonBroker
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -708,7 +710,7 @@ class CentreonConfigCentreonBroker
     {
         $query = "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id, fieldIndex
             FROM cfg_centreonbroker_info
-        WHERE config_id = %d 
+        WHERE config_id = %d
             AND config_group = '%s'
             AND subgrp_id IS NULL
             ORDER BY config_group_id";
@@ -877,7 +879,7 @@ class CentreonConfigCentreonBroker
     public function getHelps($config_id, $tag)
     {
         $this->nbSubGroup = 1;
-        $query = "SELECT config_value
+        $query = "SELECT config_value, config_group_id
             FROM cfg_centreonbroker_info
             WHERE config_id = %d AND config_group = '%s'
             AND config_key = 'blockId'
@@ -888,9 +890,9 @@ class CentreonConfigCentreonBroker
             return array();
         }
         $helps = array();
-        $pos = 1;
         while ($row = $res->fetchRow()) {
             list($tagId, $typeId) = explode('_', $row['config_value']);
+            $pos = $row['config_group_id'];
             $fields = $this->getBlockInfos($typeId);
             $help = array();
             $help[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
@@ -1047,7 +1049,6 @@ class CentreonConfigCentreonBroker
                 $val = $this->rpnCalc($s_rpn, $val);
             }
             $infos[] = $val;
-
         }
         if (count($infos) == 0) {
             return "";
@@ -1107,7 +1108,7 @@ class CentreonConfigCentreonBroker
         }
         return $result;
     }
-    
+
     /**
      * Check event max queue size value
      *
@@ -1180,7 +1181,7 @@ class CentreonConfigCentreonBroker
             } else {
                 $elemStr .=   $row['groupname']. '__' ;
             }
-            
+
         }
         if (!empty($row['displayname'])) {
             $displayName = $row['displayname'];
@@ -1205,7 +1206,7 @@ class CentreonConfigCentreonBroker
                 $res = $this->db->query(sprintf(
                     "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
                FROM cfg_centreonbroker_info
-               WHERE config_id = %d 
+               WHERE config_id = %d
                    AND config_group = '%s'
            AND subgrp_id = %d
            AND grp_level = %d
@@ -1231,7 +1232,7 @@ class CentreonConfigCentreonBroker
         }
         return $elemStr;
     }
-    
+
     /**
      *
      * @return array
@@ -1242,7 +1243,7 @@ class CentreonConfigCentreonBroker
         if (empty($sName)) {
             return $bExist;
         }
-        
+
         $query = "SELECT COUNT(config_id) as nb FROm cfg_centreonbroker
             WHERE config_name = '" . $this->db->escape($sName) . "'";
         $res = $this->db->query($query);
