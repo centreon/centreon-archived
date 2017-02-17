@@ -76,6 +76,7 @@ function hidePasswordInCommand($command_name, $service_id) {
     }
 
     /* Get command line with macro */
+    $command_name = preg_replace( '!.*' , '' , $command_name );
     $query_command_line = "SELECT command_line FROM command WHERE command_name = '".$command_name."'";
     $res = $pearDB->query($query_command_line);
     $row = $res->fetchRow();
