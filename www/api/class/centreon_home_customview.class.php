@@ -33,11 +33,10 @@
  *
  */
 
-
-require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 require_once dirname(__FILE__) . "/webService.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 
-class CentreonWscustomview extends CentreonWebService
+class CentreonHomeCustomview extends CentreonWebService
 {
     /**
      * Constructor
@@ -48,7 +47,76 @@ class CentreonWscustomview extends CentreonWebService
     {
         parent::__construct();
     }
-    
+
+    public function getListSharedViews()
+    {
+        global $centreon;
+
+        $views = array();
+
+        $query = "SELECT cv.custom_view_id, cv.name FROM custom_views cv "
+            . "INNER JOIN custom_view_user_relation cvur ON cv.custom_view_id = cvur.custom_view_id "
+            . "WHERE (cvur.user_id = " . $centreon->user->user_id . " OR cvur.usergroup_id IN ( "
+                . "SELECT contactgroup_cg_id "
+                . "FROM contactgroup_contact_relation "
+                . "WHERE contact_contact_id = " . $centreon->user->user_id . " "
+                . ") "
+            . ") "
+            . "AND cvur.is_consumed = 0";
+
+        $DBRES = $this->pearDB->query($query);
+
+        while ($row = $DBRES->fetchRow()) {
+            $views[] = array(
+                'id' => $row['custom_view_id'],
+                'text' => $row['name']
+            );
+        }
+
+        return array(
+            'items' => $views,
+            'total' => count($views)
+        );
+    }
+
+    /**
+     * @param $customViewId
+     * @return array
+     */
+    public function getLinkedUsers()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $customViewId = 0;
+        } else {
+            $customViewId = $this->arguments['q'];
+        }
+
+        global $centreon;
+        $viewObj = new CentreonCustomView($centreon, $this->pearDB);
+
+        return $viewObj->getUsersFromViewId($customViewId);
+    }
+
+    /**
+     * @param $customViewId
+     * @return array
+     */
+    public function getLinkedUsergroups()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $customViewId = 0;
+        } else {
+            $customViewId = $this->arguments['q'];
+        }
+
+        global $centreon;
+        $viewObj = new CentreonCustomView($centreon, $this->pearDB);
+
+        return $viewObj->getUsergroupsFromViewId($customViewId);
+    }
+
     /**
      * Get the list of views
      */
@@ -56,7 +124,7 @@ class CentreonWscustomview extends CentreonWebService
     {
         global $centreon;
         $viewObj = new CentreonCustomView($centreon, $this->pearDB);
-        
+
         $tabs = array();
         $tabsDb = $viewObj->getCustomViews();
         foreach ($tabsDb as $key => $tab) {
@@ -68,7 +136,7 @@ class CentreonWscustomview extends CentreonWebService
                 'nbCols' => $tab['layout']
             );
         }
-        
+
         return array(
             'current' => $viewObj->getCurrentView(),
             'tabs' => $tabs
