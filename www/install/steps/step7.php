@@ -96,31 +96,36 @@ $template->display('content.tpl');
      * @return void
      */
     function nextStep(key) {
-       jQuery('#step_contents').append('<tr><td>'+labels[key]+'</td><td style="font-weight: bold;" id="'+key+'"><img src="../img/misc/ajax-loader.gif"></td></tr>');
-       doProcess(true, map[key], new Array, function(response) {
-            var data = jQuery.parseJSON(response);
-            if (data['result'] == 0) {
-                jQuery('#'+data['id']).html('<span style="color:#88b917;">OK</span>');
-                if (key == 'dbconf') {
-                    nextStep('dbstorage');   
-                } else if (key == 'dbstorage') {
-                    nextStep('createuser');
-                } else if (key == 'createuser') {
-                    nextStep('baseconf');
-                } else if (key == 'baseconf') {
-                    nextStep('configfile');
-                } else if (key == 'configfile') {
-                    nextStep('dbpartitioning');
-                } else if (key == 'dbpartitioning') {
-                    processStatus = true;
-                    jQuery("#next").show();
+        jQuery('#step_contents').append('<tr><td>'+labels[key]+'</td><td style="font-weight: bold;" id="'+key+'"><img src="../img/misc/ajax-loader.gif"></td></tr>');
+        doProcess(
+            true,
+            map[key],
+            new Array,
+            function(response) {
+               var data = jQuery.parseJSON(response);
+                if (data['result'] == 0) {
+                    jQuery('#'+data['id']).html('<span style="color:#88b917;">OK</span>');
+                    if (key == 'dbconf') {
+                        nextStep('dbstorage');
+                    } else if (key == 'dbstorage') {
+                        nextStep('createuser');
+                    } else if (key == 'createuser') {
+                        nextStep('baseconf');
+                    } else if (key == 'baseconf') {
+                        nextStep('configfile');
+                    } else if (key == 'configfile') {
+                        nextStep('dbpartitioning');
+                    } else if (key == 'dbpartitioning') {
+                        processStatus = true;
+                        jQuery("#next").show();
+                    }
+                } else {
+                    jQuery("#previous").show();
+                    jQuery("#refresh").show();
+                    jQuery('#'+data['id']).html('<span style="color:#8B0000;">'+data['msg']+'</span>');
                 }
-            } else {
-                jQuery("#previous").show();
-                jQuery("#refresh").show();
-                jQuery('#'+data['id']).html('<span style="color:#8B0000;">'+data['msg']+'</span>');
             }
-       }); 
+        );
     }
     
     /**

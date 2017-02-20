@@ -49,13 +49,14 @@ require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 $pearDB = new CentreonDB();
 
 /* Check Session */
-CentreonSession::start();
+CentreonSession::start(1);
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
+$centreon = $_SESSION['centreon'];
 
-if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
+if (!isset($_POST['poller']) || !isset($_POST['debug'])) {
     exit();
 }
 
@@ -72,23 +73,20 @@ $DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
 
-session_start();
-if ($_POST['sid'] != session_id()) {
-    exit;
+$username = 'unknown';
+if (isset($centreon->user->name)) {
+    $username = $centreon->user->name;
 }
-$centreon = $_SESSION['centreon'];
 
 $xml = new CentreonXML();
 $config_generate = new Generate();
 
 $pollers = explode(',', $_POST['poller']);
-$comment = ($_POST['comment'] == "true") ? 1 : 0;
 $debug = ($_POST['debug'] == "true") ? 1 : 0;
 $generate = ($_POST['generate'] == "true") ? 1 : 0;
 
 $ret = array();
 $ret['host'] = $pollers;
-$ret['comment'] = $comment;
 $ret['debug'] = $debug;
 
 /*  Set new error handler */
@@ -116,11 +114,11 @@ try {
 
     # Generate configuration
     if ($pollers == '0') {
-        $config_generate->configPollers();
+        $config_generate->configPollers($username);
     } else {
         foreach ($pollers as $poller) {
             $config_generate->reset();
-            $config_generate->configPollerFromId($poller);
+            $config_generate->configPollerFromId($poller, $username);
         }
     }
 

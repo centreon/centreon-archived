@@ -44,6 +44,8 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 session_start();
+session_write_close();
+
 if (!isset($_SESSION['centreon'])) {
     exit();
 }

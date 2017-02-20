@@ -124,9 +124,9 @@ function getCentreonBrokerInformation($id)
                     retention_path, command_file
                   FROM cfg_centreonbroker 
                   WHERE config_id = " . $id;
-    $res = $pearDB->query($query);
-
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return array(
             "name" => '',
             "filename" => '',

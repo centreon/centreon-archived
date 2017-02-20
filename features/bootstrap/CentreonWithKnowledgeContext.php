@@ -170,7 +170,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $originalValue = $fieldValue->getValue();
 
         if (!strstr($originalValue,
-            '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')
+            './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')
         ) {
             throw new Exception('Bad url');
         }
@@ -189,7 +189,7 @@ class CentreonWithKnowledgeContext extends CentreonContext
         $originalValue = $fieldValue->getValue();
 
         if (!strstr($originalValue,
-            '/centreon/include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')
+            './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')
         ) {
             throw new Exception('Bad url');
         }

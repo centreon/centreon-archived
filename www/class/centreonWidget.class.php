@@ -223,8 +223,9 @@ class CentreonWidget
         $lastId = $this->getLastInsertedWidgetId($params['widget_title']);
         /* Get view layout */
         $query = "SELECT layout FROM custom_views WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new CentreonWidgetException('No view found');
         }
         $row = $res->fetchRow();
@@ -237,8 +238,9 @@ class CentreonWidget
         /* Prepare first position */
         $matrix = array();
         $query = "SELECT widget_order FROM widget_views WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new CentreonWidgetException('No view found');
         }
         while ($position = $res->fetchRow()) {
@@ -373,21 +375,25 @@ class CentreonWidget
      *
      * @return array
      */
-    public function getWidgetModels($search = '')
+    public function getWidgetModels($search = '', $range = '')
     {
-        $query = 'SELECT widget_model_id, title '
+        $query = 'SELECT SQL_CALC_FOUND_ROWS widget_model_id, title '
             . 'FROM widget_models ';
         $query .= ($search != '') ? 'WHERE title like "%' . $this->db->escape($search) . '%" ' : '';
-        $query .= 'ORDER BY title ';
+        $query .= 'ORDER BY title ' . $range;
 
         $res = $this->db->query($query);
+        $total = $this->db->numberRows();
 
         $widgets = array();
-        while ($row = $res->fetchRow()) {
-            $widgets[$row['widget_model_id']] = $row['title'];
+        while ($data = $res->fetchRow()) {
+            $widgets[] = array('id' => $data['widget_model_id'], 'text' => $data['title']);
         }
 
-        return $widgets;
+        return array(
+            'items' => $widgets,
+            'total' => $total
+        );
     }
 
     /**

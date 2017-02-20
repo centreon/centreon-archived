@@ -753,15 +753,12 @@ class Services_JSON
         }
     }
 
-    /**
-     * @todo Ultimately, this should just call PEAR::isError()
-     */
     function isError($data, $code = null)
     {
         if (class_exists('pear')) {
-            return PEAR::isError($data, $code);
+            throw new \Exception($data, $code);
         } elseif (is_object($data) && (get_class($data) == 'services_json_error' ||
-                                 is_subclass_of($data, 'services_json_error'))) {
+                is_subclass_of($data, 'services_json_error'))) {
             return true;
         }
 
@@ -780,8 +777,7 @@ if (class_exists('PEAR_Error')) {
             $options = null,
             $userinfo = null
         ) {
-        
-            parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
+            throw new \Exception($message, $code);
         }
     }
 

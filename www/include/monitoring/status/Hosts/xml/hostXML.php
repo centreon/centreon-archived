@@ -44,7 +44,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 /*
  * Create XML Request Objects
  */
-CentreonSession::start();
+CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 if (isset($_SESSION['centreon'])) {

@@ -39,7 +39,7 @@
         <h4>{$form.header.Nagios_Informations}</h4>
       </td>
     </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="init_script"> {$form.init_script.label}</td><td class="FormRowValue">{$form.init_script.html}{$form.init_system.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="init_script"> {$form.init_script.label}</td><td class="FormRowValue">{$form.init_script.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagiostats_bin"> {$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>

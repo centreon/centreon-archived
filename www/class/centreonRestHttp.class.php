@@ -20,13 +20,12 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
-
 /**
  * Utils class for call HTTP JSON REST
  *
  * @author Centreon
  * @version 1.0.0
- * @package centreon-license-manager
+ * @package centreon
  */
 class CentreonRestHttp
 {
@@ -39,6 +38,11 @@ class CentreonRestHttp
      * @var using a proxy
      */
     private $proxy = null;
+
+    /**
+     * @var proxy authentication information
+     */
+    private $proxyAuthentication = null;
 
     /**
      * @var logFileThe The log file for call errors
@@ -84,44 +88,59 @@ class CentreonRestHttp
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
         $headers[] = 'Connection: close';
-        /* Create stream context */
 
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $httpOpts = array(
-            'http' => array(
-                'proxy' => $this->proxy,
-                'request_fulluri' => true,
-                'ignore_errors' => true,
-                'protocol_version' => '1.1',
-                'method' => $method,
-                'header' => join("\r\n", $headers)
-            )
-        );
-
-        /* Add body json data */
-        if (false === is_null($data)) {
-            $httpOpts['http']['content'] = json_encode($data);
+        if (!is_null($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+            if (!is_null($this->proxyAuthentication)) {
+                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
+            }
         }
-        /* Create context */
-        $httpContext = stream_context_create($httpOpts);
 
-        /* Get contents */
-        $content = @file_get_contents($url, false, $httpContext);
+        switch ($method) {
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, true);
+                break;
+            case 'GET':
+                curl_setopt($ch, CURLOPT_HTTPGET, true);
+                break;
+            default:
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+                break;
+        }
 
-        if (!$content) {
-            $headers = array(
-                'code' => 404
-            );
-        } else {
-            $decodedContent = json_decode($content, true);
-            /* Get headers */
-            $headers = $this->parseHttpMeta($http_response_header);
+        if (!is_null($data)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        }
+
+        $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
+
+        curl_close($ch);
+
+        $decodedContent = '';
+        if ($result) {
+            $decodedContent = json_decode($result, true);
         }
 
         /* Manage HTTP status code */
         $exceptionClass = null;
         $logMessage = 'Unknown HTTP error';
-        switch ($headers['code']) {
+        switch ($http_code) {
+            case 200:
+            case 201:
+                break;
             case 400:
                 $exceptionClass = 'RestBadRequestException';
                 break;
@@ -141,14 +160,12 @@ class CentreonRestHttp
             case 409:
                 $exceptionClass = 'RestConflictException';
                 break;
-            case 200:
-            case 201:
-                break;
             case 500:
             default:
                 $exceptionClass = 'RestInternalServerErrorException';
                 break;
         }
+
         if (!is_null($exceptionClass)) {
             $message = isset($decodedContent['message']) ? $decodedContent['message'] : $logMessage;
             $this->insertLog($message, $url, $exceptionClass);
@@ -160,53 +177,17 @@ class CentreonRestHttp
     }
 
     /**
-     * Parse stream meta to convert to http headers
-     *
-     * @param array $metas The stream metas
-     * @return array The http headers
-     */
-    private function parseHttpMeta($metas)
-    {
-        $headers = array(
-            'code' => 404
-        );
-
-        foreach ($metas as $meta) {
-            /* Parse HTTP Code */
-            if (preg_match('!^HTTP/1.1 (\d+) (.+)!', $meta, $matches)) {
-                $headers['code'] = $matches[1];
-                $headers['status'] = $matches[2];
-                /* Parse content type return */
-            } elseif (preg_match('/Content-Type: (.*)/', $meta, $matches)) {
-                $infos = explode(';', $matches[1]);
-                $headers['content-type'] = $infos[0];
-                /* Get extra information of content-type */
-                if (count($infos) > 0) {
-                    foreach ($infos as $info) {
-                        $line = explode('=', trim($info));
-                        if ($line[0] == 'charset') {
-                            $headers['charset'] = $line[1];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $headers;
-    }
-
-
-    /**
      * get proxy data
      *
      */
     private function getProxy()
     {
         $db = new CentreonDB();
-        $query = "SELECT `key`, `value` FROM `options` 
-                  WHERE (`key` = 'proxy_protocol'
-                  OR `key` = 'proxy_url'
-                  OR `key` = 'proxy_port')";
+        $query = 'SELECT `key`, `value` '
+            . 'FROM `options` '
+            . 'WHERE `key` IN ( '
+            . '"proxy_url", "proxy_port", "proxy_user", "proxy_password" '
+            . ') ';
         $res = $db->query($query);
         while ($row = $res->fetchRow()) {
             $dataProxy[$row['key']] = $row['value'];
@@ -219,6 +200,12 @@ class CentreonRestHttp
             $this->proxy .= $dataProxy['proxy_url'];
             if ($dataProxy['proxy_port']) {
                 $this->proxy .= ':' . $dataProxy['proxy_port'];
+            }
+
+            /* Proxy basic authentication */
+            if (isset($dataProxy['proxy_user']) && !empty($dataProxy['proxy_user']) &&
+                isset($dataProxy['proxy_password']) && !empty($dataProxy['proxy_password'])) {
+                $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
             }
         }
     }

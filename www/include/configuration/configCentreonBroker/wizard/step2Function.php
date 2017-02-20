@@ -41,8 +41,9 @@ function getLocalRequester()
     	FROM nagios_server
     	WHERE localhost = "1"
     	AND ns_activate = "1"';
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return array();
     }
     $row = $res->fetchRow();
@@ -58,8 +59,9 @@ function getListRequester($withLocal = false)
     if ($withLocal === false) {
         $query .= ' AND localhost != "1"';
     }
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return array();
     }
     $list = array();

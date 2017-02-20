@@ -34,6 +34,7 @@
  */
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
 require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
 
 /*
@@ -49,23 +50,16 @@ class CentreonExternalCommand
     public $localhostTab = array();
     protected $actions = array();
     protected $GMT;
-    protected $obj; // Centreon Obj
     public $debug = 0;
 
     /*
      *  Constructor
      */
 
-    public function __construct($oreon)
+    public function __construct()
     {
-        global $oreon;
-
-        $this->obj = $oreon;
-        $this->DB = new CentreonDB();
-        $this->DBC = new CentreonDB('centstorage');
-
         $rq = "SELECT id FROM `nagios_server` WHERE localhost = '1'";
-        $DBRES = $this->DB->query($rq);
+        $DBRES = CentreonDBInstance::getConfInstance()->query($rq);
         while ($row = $DBRES->fetchRow()) {
             $this->localhostTab[$row['id']] = "1";
         }
@@ -76,8 +70,8 @@ class CentreonExternalCommand
         /*
          * Init GMT classes
          */
-        $this->GMT = new CentreonGMT($this->DB);
-        $this->GMT->getMyGMTFromSession(session_id(), $this->DB);
+        $this->GMT = new CentreonGMT();
+        $this->GMT->getMyGMTFromSession(session_id(), CentreonDBInstance::getConfInstance());
     }
 
     /**
@@ -271,10 +265,10 @@ class CentreonExternalCommand
          * Check if $host is an id or a name
          */
         if (preg_match("/^[0-9]*$/", $host)) {
-            $DBRESULT = $this->DBC->query("SELECT instance_id FROM hosts WHERE hosts.host_id = '" . 
+            $DBRESULT = CentreonDBInstance::getMonInstance()->query("SELECT instance_id FROM hosts WHERE hosts.host_id = '" .
                 CentreonDB::escape($host) . "' AND hosts.enabled = '1'");
         } else {
-            $DBRESULT = $this->DBC->query("SELECT instance_id FROM hosts WHERE hosts.name = '" . 
+            $DBRESULT = CentreonDBInstance::getMonInstance()->query("SELECT instance_id FROM hosts WHERE hosts.name = '" .
                 CentreonDB::escape($host) . "' AND hosts.enabled = '1' LIMIT 1");
         }
         $row = $DBRESULT->fetchRow();

@@ -62,9 +62,10 @@ if (($o == "c" || $o == "w") && $vmetric_id) {
 $indds = array(""=> sprintf("%s%s", _("Host list"), "&nbsp;&nbsp;&nbsp;"));
 $mx_l = strlen($indds[""]);
 
-$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
-if (PEAR::isError($dbindd)) {
-    print "DB Error : ".$dbindd->getDebugInfo()."<br />";
+try {
+    $dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
+} catch (\PDOException $e) {
+    print "DB Error : ".$e->getMessage()."<br />";
 }
 while ($indd = $dbindd->fetchRow()) {
     $indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";

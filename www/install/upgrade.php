@@ -43,13 +43,6 @@ include_once ("../class/centreonSession.class.php");
 
 CentreonSession::start();
 
-/*
- * Pear Modules Management
- */
-if (file_exists("pear_module.conf.php")) {
-    include_once ("pear_module.conf.php");
-}
-
 require_once './step_upgrade/index.php';
 exit;
 

@@ -930,24 +930,29 @@ class CentreonLdapAdmin
      */
     public function addTemplate($options = array())
     {
-        if (PEAR::isError($this->db->query(
-            "INSERT INTO auth_ressource (ar_type, ar_enable) VALUES ('ldap_tmpl', '0')"
-        ))) {
+
+        try {
+            $this->db->query(
+                "INSERT INTO auth_ressource (ar_type, ar_enable) VALUES ('ldap_tmpl', '0')"
+            );
+        } catch (\PDOException $e) {
             return false;
         }
-        $dbresult = $this->db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
-        $row = $dbresult->fetchRow();
-        if (PEAR::isError($row)) {
+        try {
+            $dbresult = $this->db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
+            $row = $dbresult->fetchRow();
+        } catch (\PDOException $e) {
             return false;
         }
         $id = $row['id'];
         foreach ($options as $key => $value) {
-            $sth = $this->db->query(
-                "INSERT INTO auth_ressource_info
+            try {
+                $this->db->query(
+                    "INSERT INTO auth_ressource_info
                     (ar_id, ari_name, ari_value) VALUES (" . CentreonDB::escape($id) . ", '" .
                     $this->db->escape($key) . "', '" . $this->db->escape($value) . "')"
-            );
-            if (PEAR::isError($sth)) {
+                );
+            } catch (\PDOException $e) {
                 return false;
             }
         }
@@ -969,20 +974,21 @@ class CentreonLdapAdmin
         $config = $this->getTemplate($id);
 
         foreach ($options as $key => $value) {
-            if (isset($config[$key])) {
-                $sth = $this->db->query(
-                    "UPDATE auth_ressource_info SET ari_value = '" . $this->db->escape($value) . "'
+            try {
+                if (isset($config[$key])) {
+                    $sth = $this->db->query(
+                        "UPDATE auth_ressource_info SET ari_value = '" . $this->db->escape($value) . "'
                     WHERE ar_id = " . CentreonDB::escape($id) . " AND ari_name = '" . $this->db->escape($key) . "'"
-                );
-            } else {
-                $sth = $this->db->query(
-                    "INSERT INTO auth_ressource_info
+                    );
+                } else {
+                    $sth = $this->db->query(
+                        "INSERT INTO auth_ressource_info
                         (ar_id, ari_name, ari_value)
                         VALUES (" . CentreonDB::escape($id) . ", '" . $this->db->escape($key) . "', '" .
                         $this->db->escape($value) . "')"
-                );
-            }
-            if (PEAR::isError($sth)) {
+                    );
+                }
+            } catch (\PDOException $e) {
                 return false;
             }
         }

@@ -37,7 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$centreon->user->admin && $server_id  && count($serverResult)) {
+require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
+
+$objMain = new CentreonMainCfg();
+
+if (!$centreon->user->admin && $server_id && count($serverResult)) {
     if (!isset($serverResult[$server_id])) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
@@ -78,15 +82,15 @@ while ($nagios_server = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->free();
 
-$attrsText      = array("size"=>"30");
-$attrsText2     = array("size"=>"50");
-$attrsText3     = array("size"=>"5");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "50");
+$attrsText3 = array("size" => "5");
+$attrsTextarea = array("rows" => "5", "cols" => "40");
 
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a poller"));
 } elseif ($o == "c") {
@@ -110,8 +114,7 @@ $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
-$form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText);
-$form->addElement('select', 'init_system', _("Init System"), array('systemv' => "systemv", "systemd" => "systemd"));
+$form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
 
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
@@ -145,9 +148,9 @@ $cloneSetCmd[] = $form->addElement(
     _('Command'),
     (array(null => null) + $cmdObj->getMiscCommands()),
     array(
-                    'id' => 'pollercmd_#index#',
-                    'type' => 'select-one'
-                )
+        'id' => 'pollercmd_#index#',
+        'type' => 'select-one'
+    )
 );
 
 /*
@@ -173,37 +176,32 @@ $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database
  * Set Default Values
  */
 if (isset($_GET["o"]) && $_GET["o"] == 'a') {
-    $monitoring_engines = array( "nagios_bin" => "/usr/sbin/centengine",
-                                 "nagiostats_bin" => "/usr/sbin/centenginestats",
-                                 "init_script" => "/etc/init.d/centengine",
-                                 "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata");
-    
-    $scriptD = str_replace("/etc/init.d/", '', $cfg_server['init_script']);
-    if (file_exists("/etc/systemd/system/") && file_exists("/etc/systemd/system/$scriptD.service")) {
-        $monitoring_engines['init_system'] = 'systemd';
-    } else {
-        $monitoring_engines['init_system'] = 'systemv';
-    }
+    $monitoring_engines = array(
+        "nagios_bin" => "/usr/sbin/centengine",
+        "nagiostats_bin" => "/usr/sbin/centenginestats",
+        "init_script" => "centengine",
+        "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"
+    );
 
     $form->setDefaults(array(
-    "name" => '',
-    "localhost" => '0',
-    "ns_ip_address" => "127.0.0.1",
-    "description" => "",
-    "nagios_bin" => $monitoring_engines["nagios_bin"],
-    "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
-    "monitoring_engine"  => $centreon->optGen["monitoring_engine"],
-    "init_script" => $monitoring_engines["init_script"],
-    "init_system" => $monitoring_engines["init_system"],
-    "ns_activate" => '1',
-    "is_default"  =>  '0',
-    "ssh_port"  =>  '22',
-    "ssh_private_key"  =>  '~/.ssh/rsa.id',
-    "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
-    "centreonbroker_cfg_path" => "/etc/centreon-broker",
-    "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
-    "init_script_centreontrapd" => "/etc/init.d/centreontrapd",
-    "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"));
+        "name" => '',
+        "localhost" => '0',
+        "ns_ip_address" => "127.0.0.1",
+        "description" => "",
+        "nagios_bin" => $monitoring_engines["nagios_bin"],
+        "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
+        "monitoring_engine" => $centreon->optGen["monitoring_engine"],
+        "init_script" => $monitoring_engines["init_script"],
+        "ns_activate" => '1',
+        "is_default" => '0',
+        "ssh_port" => '22',
+        "ssh_private_key" => '~/.ssh/rsa.id',
+        "nagios_perfdata" => $monitoring_engines["nagios_perfdata"],
+        "centreonbroker_cfg_path" => "/etc/centreon-broker",
+        "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
+        "init_script_centreontrapd" => "centreontrapd",
+        "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
+    ));
 } else {
     if (isset($cfg_server)) {
         $form->setDefaults($cfg_server);
@@ -233,7 +231,12 @@ if ($o == "w") {
      * Just watch a nagios information
      */
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$server_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&id=" . $server_id . "'")
+        );
     }
     $form->setDefaults($nagios);
     $form->freeze();
@@ -265,7 +268,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path."listServers.php");
+    require_once($path . "listServers.php");
 } else {
     /*
      * Apply a template definition
@@ -283,7 +286,7 @@ if ($valid) {
 
     $helptext = "";
     foreach ($help as $key => $text) {
-        $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+        $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
     }
     $tpl->assign("helptext", $helptext);
     $tpl->display("formServers.ihtml");

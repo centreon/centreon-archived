@@ -63,20 +63,15 @@ class CentreonAdministrationWidget extends CentreonWebService
             $q = $this->arguments['q'];
         }
 
-        $iitems = array();
-
-        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
-        $widgets = $widgetObj->getWidgetModels($q);
-        foreach ($widgets as $widgetId => $widgetTitle) {
-            $items[] = array(
-                'id' => $widgetId,
-                'text' => $widgetTitle
-            );
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+        } else {
+            $range = '';
         }
 
-        return array(
-            'items' => $items,
-            'total' => count($items)
-        );
+        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
+
+        return $widgetObj->getWidgetModels($q, $range);
     }
 }

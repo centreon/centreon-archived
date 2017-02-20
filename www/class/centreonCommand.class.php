@@ -434,8 +434,9 @@ class CentreonCommand
         
         $sQuery .= ")";
 
-        $res = $this->db->query($sQuery);
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while insert command '.$parameters['command_name']);
         }
     }
@@ -454,8 +455,9 @@ class CentreonCommand
             . "`command_type` = '" . $this->db->escape($command['command_type']);
         $sQuery .= "' WHERE `command_id` = " . $command_id;
 
-        $res = $this->db->query($sQuery);
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while update command ' . $command['command_name']);
         }
     }
@@ -471,9 +473,9 @@ class CentreonCommand
         $sQuery = 'DELETE FROM command '
             . 'WHERE command_name = "' . $this->db->escape($command_name) . '"';
 
-        $res = $this->db->query($sQuery);
-
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while delete command ' . $command_name);
         }
     }
@@ -498,9 +500,9 @@ class CentreonCommand
             . 'AND s.service_register = "' . $register . '" '
             . 'AND c.command_name = "' . $this->db->escape($commandName) . '" ';
 
-        $result = $this->db->query($query);
-
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked services of ' . $commandName);
         }
 
@@ -531,9 +533,9 @@ class CentreonCommand
             . 'AND h.host_register = "' . $register . '" '
             . 'AND c.command_name = "' . $this->db->escape($commandName) . '" ';
 
-        $result = $this->db->query($query);
-
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked hosts of ' . $commandName);
         }
 

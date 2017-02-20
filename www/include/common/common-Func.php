@@ -304,9 +304,9 @@ function getMyHostParents($host_id = null)
     global $pearDB;
     while (1) {
         $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "'");
-        $host = clone($DBRESULT->fetchRow());
+        $host = clone($DBRESULT->fetch());
         $DBRESULT = $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '" . CentreonDB::escape($host_id) . "'");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->fetchColumn()) {
             return $DBRESULT;
         } elseif (isset($host["tpl"]) && $host["tpl"]) {
             $host_id = $host["tpl"];
@@ -1778,9 +1778,10 @@ function getNDOPrefix()
 {
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
-    if (PEAR::isError($DBRESULT)) {
-        print "DB Error : " . $DBRESULT->getDebugInfo() . "<br />";
+    try {
+        $DBRESULT = $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
+    } catch (\PDOException $e) {
+        print "DB Error : " . $e->getMessage() . "<br />";
     }
     $conf_ndo = $DBRESULT->fetchRow();
     unset($DBRESULT);
@@ -1976,8 +1977,9 @@ if (!function_exists("array_column")) {
 function getCentreonVersion($pearDB)
 {
     $query = 'SELECT `value` FROM `informations` WHERE `key` = "version"';
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return null;
     }
     $row = $res->fetchRow();
@@ -2056,6 +2058,6 @@ function get_child($id_page, $lcaTStr)
     }
         
     $DBRESULT = $pearDB->query($rq);
-    $redirect = $DBRESULT->fetchRow();
+    $redirect = $DBRESULT->fetch();
     return $redirect;
 }

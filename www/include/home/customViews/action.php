@@ -44,6 +44,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 
 session_start();
+session_write_close();
 
 if (!isset($_POST['action']) || !isset($_SESSION['centreon'])) {
     exit();
@@ -78,21 +79,21 @@ try {
         }
     } elseif ($action == "edit" && $customViewId) {
         $viewObj->updateCustomView($_POST);
+
         if (isset($_POST['widget_id'])) {
             $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
         }
+
         //update share
-        $public = 0;
-        if (isset($_POST['public'])) {
-            $public = $_POST['public'];
+        if (!isset($_POST['public'])) {
+            $_POST['public'] = 0;
         }
-        
-        if ($public == 0) {
-            if (!isset($_POST['user_id'])) {
-                $_POST['user_id'] = $centreon->user->user_id;
-            }
-            $viewObj->removeViewForAllUser($_POST);
+
+        if (!isset($_POST['user_id'])) {
+            $_POST['user_id'] = $centreon->user->user_id;
         }
+
+        $viewObj->updateCustomViewUserRelation($_POST);
     } elseif ($action == "share") {
         $viewObj->shareCustomView($_POST);
     } elseif ($action == "remove") {

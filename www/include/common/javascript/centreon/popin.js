@@ -61,15 +61,27 @@
     if(self.settings.url !== null){
         $.ajax({
            url : self.settings.url,
-           type: (self.settings.ajaxType !== null) ? self.settings.ajaxType : "POST" ,
-           dataType : "html",
-           data: (self.settings.postDatas !== null) ? self.settings.postDatas : "",
+           type: self.settings.ajaxType,
+           dataType : self.settings.ajaxDataType,
+           data: self.settings.postDatas,
            success : function(html){
+
+               /* Execute callback if defined on settings */
+               if (typeof(self.settings.formatResponse) === 'function') {
+                   html = self.settings.formatResponse(html);
+               }
+
                $elem.append(html);
-                if (self.settings.open) {
-                    self.open();
-                    self.reset();
-                }
+
+               if (self.settings.open) {
+                   self.open();
+                   self.reset();
+               }
+
+               /* Execute callback if defined on settings */
+               if (typeof(self.settings.onComplete) === 'function') {
+                   self.settings.onComplete();
+               }
            }
         });
     }else{
@@ -114,9 +126,13 @@
       var windowW = $(window).width();
       var modalH = this.$elem.height();
       var modalW = this.$elem.width();
+      var top = (windowH - modalH) / 2;
+      top = (top < 0) ? 0 : top;
+      var left = (windowW - modalW) / 2;
+      left = (left < 0) ? 0 : left;
       this.$elem.css({
-        top: ((windowH - modalH) / 2) + "px",
-        left: ((windowW - modalW) / 2) + "px"
+        top: top + "px",
+        left: left + "px"
       });
     },
     open: function () {
@@ -163,8 +179,11 @@
     closeOnDocument: true,
     open: false,
     url : null,
-    ajaxType : null,
-    postDatas : null,
+    ajaxDataType: 'html',
+    ajaxType : 'POST',
+    postDatas : "",
+    formatResponse: null,
+    onComplete: null,
     onClose: null
   };
 })(jQuery, window);

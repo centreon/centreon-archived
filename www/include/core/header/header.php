@@ -78,7 +78,7 @@ CentreonSession::start();
  * Delete Session Expired
  */
 $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
-$session_expire = $DBRESULT->fetchRow();
+$session_expire = $DBRESULT->fetch();
 if (!isset($session_expire["value"]) || !$session_expire["value"]) {
     $session_expire["value"] = 2;
 }
@@ -102,7 +102,7 @@ $args .= "'";
  * Get session and Check if session is not expired
  */
 $DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
-if (!$DBRESULT->numRows()) {
+if (!$DBRESULT->fetchColumn()) {
     header("Location: index.php?disconnect=2".$args);
 }
 
@@ -223,7 +223,7 @@ $colorfile = "Color/". $tab_file_css[0];
  * Get CSS Order and color
  */
 $DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
-if ($DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow())) {
+if ($DBRESULT->fetchColumn() && ($elem = $DBRESULT->fetch())) {
     $colorfile = "Color/".$elem["css_name"];
 }
 

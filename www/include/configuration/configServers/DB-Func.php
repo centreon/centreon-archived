@@ -37,6 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
+
 /**
  *
  * Test poller existance
@@ -130,7 +132,9 @@ function deleteCentreonBrokerByPollerId($id)
 function multipleServerInDB($server = array(), $nbrDup = array())
 {
     global $pearDB;
-           
+    
+    $obj = new CentreonMainCfg();
+
     foreach ($server as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
         $rowServer = $DBRESULT->fetchRow();
@@ -139,14 +143,9 @@ function multipleServerInDB($server = array(), $nbrDup = array())
         $rowServer["is_default"] = '0';
         $rowServer["localhost"] = '0';
         $DBRESULT->free();
+        
+        $rowBks = $obj->getBrokerModules($key);
 
-        
-        $DBRESULT2 = $pearDB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$key."'");
-        while ($rowBk = $DBRESULT2->fetchRow()) {
-            $rowBks[] = $rowBk;
-        }
-        $DBRESULT2->free();
-        
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($rowServer as $key2 => $value2) {
@@ -158,27 +157,30 @@ function multipleServerInDB($server = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query($rq);
                 
                 $queryGetId = 'SELECT id FROM nagios_server WHERE name = "' . $server_name . '"';
-                $res = $pearDB->query($queryGetId);
-                if (false === PEAR::isError($res)) {
+                try {
+                    $res = $pearDB->query($queryGetId);
                     if ($res->numRows() > 0) {
                         $row = $res->fetchRow();
+
+                        $iId = $obj->insertServerInCfgNagios($key, $row['id'], $server_name);
+
+                        if (isset($rowBks)) {
+                            foreach ($rowBks as $keyBk => $valBk) {
+                                if ($valBk["broker_module"]) {
+                                    $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$iId."', '".$valBk["broker_module"]."')";
+                                }
+                                $DBRESULT = $pearDB->query($rqBk);
+                            }
+                        }
+
                         $queryRel = 'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) SELECT b.resource_id, ' . $row['id'] . ' FROM cfg_resource_instance_relations as b WHERE b.instance_id = ' . $key;
                         $pearDB->query($queryRel);
-                        
-                        $queryCmd = 'INSERT INTO poller_command_relations (poller_id, command_id, command_order)    SELECT ' . $row['id'] . ', b.command_id, b.command_order FROM poller_command_relations as b WHERE b.poller_id = ' . $key;
+
+                        $queryCmd = 'INSERT INTO poller_command_relations (poller_id, command_id, command_order) SELECT ' . $row['id'] . ', b.command_id, b.command_order FROM poller_command_relations as b WHERE b.poller_id = ' . $key;
                         $pearDB->query($queryCmd);
-
-                        $iId = insertServerInCfgNagios($row['id'], $server_name);
-
-                        $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) as nagios_id FROM cfg_nagios");
-                        $nagios_id = $DBRESULT->fetchRow();
-                        foreach ($rowBks as $keyBk => $valBk) {
-                            if ($valBk["broker_module"]) {
-                                $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id['nagios_id']."', '".$valBk["broker_module"]."')";
-                            }
-                            $DBRESULT = $pearDB->query($rqBk);
-                        }
                     }
+                } catch (\PDOException $e) {
+                    // Nothing to do
                 }
             }
         }
@@ -202,10 +204,10 @@ function insertServerInDB()
     if (isset($ret['name'])) {
         $sName = $ret['name'];
     }
-    $iIdNagios = insertServerInCfgNagios($id, $sName);
+    $iIdNagios = $obj->insertServerInCfgNagios(-1, $id, $sName);
 
     if (!empty($iIdNagios)) {
-        insertBrokerDefaultDirectives($iIdNagios, 'ui');
+        $obj->insertBrokerDefaultDirectives($iIdNagios, 'ui');
     }
     addUserRessource($id);
     return ($id);
@@ -263,9 +265,10 @@ function addUserRessource($serverId)
 
     $queryInsert = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES (%s, %s)";
     $queryGetResources = "SELECT resource_id, resource_name FROM cfg_resource ORDER BY resource_id";
-    
-    $res = $pearDB->query($queryGetResources);
-    if (PEAR::isError($res)) {
+
+    try {
+        $res = $pearDB->query($queryGetResources);
+    } catch (\PDOException $e) {
         return false;
     }
     $isInsert = array();

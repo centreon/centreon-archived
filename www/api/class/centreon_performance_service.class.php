@@ -149,7 +149,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $metaServices = $aclObj->getMetaServices();
             $virtualServices = array();
             foreach ($metaServices as $metaServiceId => $metaServiceName) {
-                $virtualServices[] = 'meta_' . $metaServiceId;
+                $virtualServices[] = '"meta_' . $metaServiceId . '"';
             }
             if (count($virtualServices)) {
                 $metaServiceCondition = 'AND s.description IN (' . implode(',', $virtualServices) . ') ';
