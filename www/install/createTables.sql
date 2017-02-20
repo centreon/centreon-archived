@@ -960,7 +960,6 @@ CREATE TABLE `custom_view_user_relation` (
   `usergroup_id` int(11) DEFAULT NULL,
   `locked` tinyint(6) DEFAULT '0',
   `is_owner` tinyint(6) DEFAULT '0',
-  `is_public` tinyint(6) DEFAULT '0',
   `is_share` tinyint(6) DEFAULT '0',
   `is_consumed` int(1) NOT NULL DEFAULT 1,
   UNIQUE KEY `view_user_unique_index` (`custom_view_id`,`user_id`,`usergroup_id`),
