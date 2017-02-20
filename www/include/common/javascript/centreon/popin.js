@@ -104,7 +104,7 @@
 
     reset: function() {
       var self = this;
-      $('.bt_default').on('click', function () {
+      $('.centreon-popin .bt_default').on('click', function () {
         self.close();
       });
     },
