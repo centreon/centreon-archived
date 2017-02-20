@@ -217,7 +217,6 @@ try {
     /**
      * Form share view
      */
-    $cgObj = new CentreonContactgroup($db);
     $formShareView = new HTML_QuickForm(
         'formShareView',
         'post',
@@ -232,7 +231,9 @@ try {
     $attrContacts = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_contact&action=list',
-        'multiple' => true
+        'multiple' => true,
+        'allowClear' => true,
+        'defaultDataset' => array()
     );
     $formShareView->addElement(
             'select2', 'unlocked_user_id', _("Unlocked users"), array(), $attrContacts
@@ -247,7 +248,9 @@ try {
     $attrContactgroups = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_contactgroup&action=list',
-        'multiple' => true
+        'multiple' => true,
+        'allowClear' => true,
+        'defaultDataset' => array()
     );
     $formShareView->addElement(
             'select2', 'unlocked_usergroup_id', _("Unlocked user groups"), array(), $attrContactgroups

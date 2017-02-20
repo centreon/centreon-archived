@@ -509,9 +509,14 @@ function submitShareView()
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
   var lockedUsers = jQuery("#formShareView").find('select[name="locked_user_id[]"]').val();
+  lockedUsers = (lockedUsers == null) ? [] : lockedUsers.filter(function (elem) {return elem !== '';});
   var unlockedUsers = jQuery("#formShareView").find('select[name="unlocked_user_id[]"]').val();
+  unlockedUsers = (unlockedUsers == null) ? [] : unlockedUsers.filter(function (elem) {return elem !== '';});
   var lockedUsergroups = jQuery("#formShareView").find('select[name="locked_usergroup_id[]"]').val();
+  lockedUsergroups = (lockedUsergroups == null) ? [] : lockedUsergroups.filter(function (elem) {return elem !== '';});
   var unlockedUsergroups = jQuery("#formShareView").find('select[name="unlocked_usergroup_id[]"]').val();
+  unlockedUsergroups = (unlockedUsergroups == null) ? [] :
+  unlockedUsergroups.filter(function (elem) {return elem !== '';});
 
   var postData = {
     custom_view_id: viewId,
@@ -698,17 +703,25 @@ jQuery(function () {
     var viewId = jQuery(
       jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
     ).data('cvId');
+    jQuery("#locked_user_id option").remove();
+    jQuery("#unlocked_user_id option").remove();
+    jQuery("#locked_usergroup_id option").remove();
+    jQuery("#unlocked_usergroup_id option").remove();
     jQuery.ajax({
       url: './api/internal.php?object=centreon_home_customview&action=linkedUsers&q=' + viewId,
       method: 'get',
       methodType: 'json',
       success: function (data) {
-        data.forEach(function(value) {
-            if (value.locked == "1") {
-                jQuery("#locked_user_id").append('<option selected value="' + value.user_id + '">' + value.contact_name + '</option>');
-            } else {
-                jQuery("#unlocked_user_id").append('<option selected value="' + value.user_id + '">' + value.contact_name + '</option>');
-            }
+        Object.keys(data).map(function(key) {
+          if (data[key].locked == "1") {
+            jQuery("#locked_user_id").append(
+              '<option selected value="' + data[key].user_id + '">' + data[key].contact_name + '</option>'
+            );
+          } else {
+            jQuery("#unlocked_user_id").append(
+              '<option selected value="' + data[key].user_id + '">' + data[key].contact_name + '</option>'
+            );
+          }
         });
       }
     });
@@ -717,11 +730,15 @@ jQuery(function () {
       method: 'get',
       methodType: 'json',
       success: function (data) {
-        data.forEach(function(value) {
-          if (value.locked == "1") {
-            jQuery("#locked_usergroup_id").append('<option selected value="' + value.usergroup_id + '">' + value.contact_name + '</option>');
+        Object.keys(data).map(function(key) {
+          if (data[key].locked == "1") {
+            jQuery("#locked_usergroup_id").append(
+              '<option selected value="' + data[key].usergroup_id + '">' + data[key].cg_name + '</option>'
+            );
           } else {
-            jQuery("#unlocked_usergroup_id").append('<option selected value="' + value.usergroup_id + '">' + value.contact_name + '</option>');
+            jQuery("#unlocked_usergroup_id").append(
+              '<option selected value="' + data[key].usergroup_id + '">' + data[key].cg_name + '</option>'
+            );
           }
         });
       }
@@ -731,20 +748,6 @@ jQuery(function () {
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
     jQuery("#setDefaultConfirm").centreonPopin("open");
-  });
-
-  /* Initialize action for share views */
-  jQuery('#shareView').on('click', '.removeViewer', function (event) {
-    var id = jQuery(this).data('id');
-    if (confirm('Remove user from viewer list?')) {
-      removeUserFromView(id);
-    }
-  });
-  jQuery('#shareView').on('click', '.removeViewergroup', function (event) {
-    var id = jQuery(this).data('id');
-    if (confirm('Remove user group from viewer list?')) {
-      removeUsergroupFromView(id);
-    }
   });
 
   jQuery('input[name="create_load[create_load]"]').change(function (){
@@ -882,7 +885,6 @@ jQuery(function () {
     var position = $td.offset();
     var $popin = jQuery('<div></div>')
       .addClass('widget-description')
-
       .appendTo('body');
     jQuery('<div></div>').text($td.data('description')).appendTo($popin);
 

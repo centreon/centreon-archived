@@ -402,6 +402,7 @@ class CentreonCustomView
      * @param int $viewId
      * @param int $userId
      * @param int $userGroupId
+     * @return int|null
      */
     protected function copyPreferences($viewId, $userId = null, $userGroupId = null)
     {
@@ -530,19 +531,20 @@ class CentreonCustomView
 
             // share with users
             $sharedUsers = array();
-            $params['locked_user_id'] = isset($params['locked_user_id']) ? $params['locked_user_id'] : array();
-            foreach ($params['locked_user_id'] as $lockedUser) {
+            $params['lockedUsers'] = isset($params['lockedUsers']) ? $params['lockedUsers'] : array();
+            foreach ($params['lockedUsers'] as $lockedUser) {
                 $sharedUsers[$lockedUser] = 1;
             }
-            $params['unlocked_user_id'] = isset($params['unlocked_user_id']) ? $params['unlocked_user_id'] : array();
-            foreach ($params['unlocked_user_id'] as $unlockedUser) {
+            $params['unlockedUsers'] = isset($params['unlockedUsers']) ? $params['unlockedUsers'] : array();
+            foreach ($params['unlockedUsers'] as $unlockedUser) {
                 $sharedUsers[$unlockedUser] = 0;
             }
 
             $sql = "SELECT user_id "
                 . "FROM custom_view_user_relation "
                 . "WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . " "
-                . "AND user_id != " . $userId;
+                . "AND user_id != " . $userId . " "
+                . "AND usergroup_id IS NULL ";
             $res = $this->db->query($sql);
             $oldSharedUsers = array();
             while ($row = $res->fetchRow()) {
@@ -574,18 +576,19 @@ class CentreonCustomView
 
             // share with user groups
             $sharedUsergroups = array();
-            $params['locked_usergroup_id'] = isset($params['locked_usergroup_id']) ? $params['locked_usergroup_id'] : array();
-            foreach ($params['locked_usergroup_id'] as $lockedUsergroup) {
+            $params['lockedUsergroups'] = isset($params['lockedUsergroups']) ? $params['lockedUsergroups'] : array();
+            foreach ($params['lockedUsergroups'] as $lockedUsergroup) {
                 $sharedUsergroups[$lockedUsergroup] = 1;
             }
-            $params['unlocked_usergroup_id'] = isset($params['unlocked_usergroup_id']) ? $params['unlocked_usergroup_id'] : array();
-            foreach ($params['unlocked_usergroup_id'] as $unlockedUsergroup) {
+            $params['unlockedUsergroups'] = isset($params['unlockedUsergroups']) ? $params['unlockedUsergroups'] : array();
+            foreach ($params['unlockedUsergroups'] as $unlockedUsergroup) {
                 $sharedUsergroups[$unlockedUsergroup] = 0;
             }
 
-            $sql = "SELECT user_id "
+            $sql = "SELECT usergroup_id "
                 . "FROM custom_view_user_relation "
-                . "WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . " ";
+                . "WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . " "
+                . "AND user_id IS NULL ";
             $res = $this->db->query($sql);
             $oldSharedUsergroups = array();
             while ($row = $res->fetchRow()) {
@@ -611,7 +614,7 @@ class CentreonCustomView
 
             $query = 'DELETE FROM custom_view_user_relation '
                 . 'WHERE custom_view_id = ' . $this->db->escape($params['custom_view_id'] . ' '
-                    . 'AND usergroup_id IN (' . implode(',', array_keys($oldSharedUsers))) . ') ';
+                . 'AND usergroup_id IN (' . implode(',', array_keys($oldSharedUsergroups))) . ') ';
             $this->db->query($query);
         }
     }
