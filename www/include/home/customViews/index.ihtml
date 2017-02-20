@@ -357,9 +357,9 @@ function submitAddView() {
         if(parseInt(viewId) && getTabPos(viewId) == -1){
             if (jQuery('input[name="create_load[create_load]"]:checked').val() === "create") {
                 widgetName = jQuery("#formAddView input[name='name']").val();
-            }else if (jQuery('input[name="create_load[create_load]"]:checked').val() === "load") {
+            } else if (jQuery('input[name="create_load[create_load]"]:checked').val() === "load") {
                 if (jQuery("#formAddView select[name='viewLoad']").val() != "") {
-                    widgetName = jQuery("#select2-viewLoad-container .select2-content").text()
+                    widgetName = jQuery("#select2-viewLoad-container .select2-content").text();
                 }
             }
 
@@ -569,18 +569,16 @@ function displayBtnToggleEdit() {
         toggleEdit(modeEdit);
     }
   } else {
-    toggleEdit(true);
+    toggleEdit(modeEdit);
   }
 }
 
 function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
-  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))
-    || (typeof modeEdit === "undefined"  && $el.hasClass('edit'))) {
-    if ($el.hasClass('edit')){
+  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit')) || (typeof modeEdit === "undefined")) {
+      modeEdit = false;
         $el.removeClass('edit');
-    }
     jQuery('#actionBar').hide();
     jQuery('.portlet-header').each(function(index) {
         var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
@@ -595,9 +593,9 @@ function toggleEdit(forceShow) {
       modeEdit = false;
     }
   } else {
-    $el.addClass('edit');
-    jQuery('#actionBar').show();
-    jQuery('.portlet-header').each(function(index) {
+      jQuery('#actionBar').show();
+      $el.addClass('edit');
+    jQuery('.portlet-header').each(function() {
         jQuery(this).show();
         jQuery(this).find('.ui-icon').show();
     });
@@ -687,6 +685,10 @@ jQuery(function () {
   jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}}).on('click', function () {
     //reset select2
     jQuery("#formAddView #viewLoad").empty().append($('<option>'));
+    //reset add view form
+    jQuery('input[name="create_load[create_load]"][value="create"]').prop('checked', true);
+    jQuery('.load_field').css('display','none');
+    jQuery('.create_field').css('display','table-row');
 
     jQuery('#formAddView input[name="name"]').val('');
     jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
@@ -864,7 +866,7 @@ jQuery(function () {
       if (data.tabs.length > 0) {
         jQuery("#tabs").tabs({
           ajaxOptions: { async: true },
-          select: function(event, ui) {
+          select: function() {
             jQuery('.viewBody').empty();
           },
           selected: -1,
@@ -923,9 +925,9 @@ jQuery(function () {
   });
 
   /* Toggle edit mode or view mode */
-  jQuery(".toggleEdit > a").on('click', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
+  jQuery(".toggleEdit > a").on('click', function () {
+    //e.preventDefault();
+    //e.stopPropagation();
     toggleEdit();
   });
 

@@ -519,6 +519,8 @@ class CentreonCustomView
      */
     public function shareCustomView($params, $userId)
     {
+        global $centreon;
+
         if ($this->checkPermission($params['custom_view_id'])) {
             $sql = "SELECT public "
                 . "FROM custom_views "
@@ -533,11 +535,15 @@ class CentreonCustomView
             $sharedUsers = array();
             $params['lockedUsers'] = isset($params['lockedUsers']) ? $params['lockedUsers'] : array();
             foreach ($params['lockedUsers'] as $lockedUser) {
-                $sharedUsers[$lockedUser] = 1;
+                if ($lockedUser != $centreon->user->user_id) {
+                    $sharedUsers[$lockedUser] = 1;
+                }
             }
             $params['unlockedUsers'] = isset($params['unlockedUsers']) ? $params['unlockedUsers'] : array();
             foreach ($params['unlockedUsers'] as $unlockedUser) {
-                $sharedUsers[$unlockedUser] = 0;
+                if ($unlockedUser != $centreon->user->user_id) {
+                    $sharedUsers[$unlockedUser] = 0;
+                }
             }
 
             $sql = "SELECT user_id "
@@ -566,6 +572,7 @@ class CentreonCustomView
                         . $this->db->escape($sharedUserId) . ", " . $locked . ", 0, " . $public . ", 1) ";
                     $this->db->query($query);
                 }
+                $this->copyPreferences($params['custom_view_id'], $sharedUserId);
             }
 
             $query = 'DELETE FROM custom_view_user_relation '
@@ -610,6 +617,7 @@ class CentreonCustomView
                         . $this->db->escape($sharedUsergroupId) . ", " . $locked . ", 0, " . $public . ", 1) ";
                     $this->db->query($query);
                 }
+                $this->copyPreferences($params['custom_view_id'], null, $sharedUsergroupId);
             }
 
             $query = 'DELETE FROM custom_view_user_relation '
