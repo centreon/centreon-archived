@@ -18,10 +18,13 @@ Softwares
 Operating System
 ================
 
-If you **use CES v3.x the operating system will be CentOS v6**. If you prefer to use
-**Red Hat OS** you must install it in **v6 version**. Else you can use another GNU/Linux
-operating system but installation will be more complex and realised using software
-sources.
+If you **use Centreon ISO v3.x the operating system will be CentOS v6**.
+
+If you prefer to use **Red Hat OS** you must install it in **v6 or v7 version**
+and use rpms from repository.
+
+Else you can use another GNU/Linux operating system but installation will be
+more complex and realised using software sources.
 
 DBMS
 ====
@@ -31,7 +34,7 @@ DBMS
 +----------+-----------+
 | Software | Version   |
 +==========+===========+
-| MariaDB  | >= 5.5.48 |
+| MariaDB  | >= 10.1.x |
 +----------+-----------+
 | MySQL    | >= 5.6.x  |
 +----------+-----------+
@@ -85,6 +88,8 @@ The table below gives the prerequisites for the installation of CES 3.x:
 .. note::
     vCPU must have a frequency arround 3 GHz
 
+.. _diskspace:
+
 *****************
 Define space disk
 *****************
@@ -129,31 +134,126 @@ Centreon server
 
 Files system description:
 
-* / (at least 20 GB)
-* swap (at least 1x RAM space)
-* /var/log (at least 10 GB)
-* /var/lib/centreon (define in previous chapter)
-* /var/lib/centreon-broker (at least 5 GB)
-* /var/cache/centreon/backup (use to backup you server)
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| File system                | Size                                                                                                       |
++============================+============================================================================================================+
+| swap                       | 1 to 1.5 total size of RAM space                                                                           |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /                          | at leas 20 GB                                                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/log                   | at leas 10 GB                                                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/lib/centreon          | :ref:`define in previous chapter <diskspace>`                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/lib/centreon-broker   | at leas 5 GB                                                                                               |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/cache/centreon/backup | at leas 10 GB (please daily export the backups and delete the exported data)                               |
++----------------------------+------------------------------------------------------------------------------------------------------------+
 
 MariaDB DBMS
 ============
 
 Files system description:
 
-* / (at least 10 GB)
-* swap (at least 1x RAM space)
-* /var/log (at least 10 GB)
-* /var/lib/mysql (define in previous chapter)
-* /var/cache/centreon/backup (use to backup you server)
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| File system                | Size                                                                                                       |
++============================+============================================================================================================+
+| swap                       | 1 to 1.5 total size of RAM space                                                                           |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /                          | at leas 20 GB                                                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/log                   | at leas 10 GB                                                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/lib/mysql             | :ref:`define in previous chapter <diskspace>`                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/cache/centreon/backup | at leas 10 Go (please daily export the backups and delete the exported data)                               |
++----------------------------+------------------------------------------------------------------------------------------------------------+
 
 Monitoring poller
 =================
 
 Files system description:
 
-* / (at least 20 GB)
-* swap (at least 1x RAM space)
-* /var/log (at least 10 GB)
-* /var/lib/centreon-broker (at least 5 GB)
-* /var/cache/centreon/backup (use to backup you server)
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| File system                | Size                                                                                                       |
++============================+============================================================================================================+
+| swap                       | 1 to 1.5 total size of RAM space                                                                           |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /                          | at leas 20 GB                                                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/log                   | at leas 10 GB                                                                                              |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/lib/centreon-broker   | at leas 5 GB                                                                                               |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+| /var/cache/centreon/backup | at leas 5 Go (please daily export the backups and delete the exported data)                                |
++----------------------------+------------------------------------------------------------------------------------------------------------+
+
+****************
+Users and groups
+****************
+
+.. note::
+    This information are available for Red Hat / CentOS system.
+    Name of users, groups and services can change regarding GNU/Linux distribution.
+
+Description of software and linked users:
+
++-----------------+----------------+-----------------+-----------------------+
+| Software        | Service        | User            | Comment               |
++=================+================+=================+=======================+
+| Apache          | httpd          | apache          | automatic start       |
++-----------------+----------------+-----------------+-----------------------+
+| MySQL (MariaDB) | mysqld (mysql) | mysql           | automatic start       |
++-----------------+----------------+-----------------+-----------------------+
+| Centreon        | centcore       | centreon        | automatic start       |
++-----------------+----------------+-----------------+-----------------------+
+| Centreon        | centreontrapd  | centreon        | automatic start       |
++-----------------+----------------+-----------------+-----------------------+
+| Centreon Broker | cbwd           | centreon-broker | automatic start       |
++-----------------+----------------+-----------------+-----------------------+
+| Centreon Broker | cbd            | centreon-broker | automatic start       |
++-----------------+----------------+-----------------+-----------------------+
+| Centreon Engine | centengine     | centreon-engine | automatic start       |
++-----------------+----------------+-----------------+-----------------------+
+
+Description of optional software and linked users:
+
++-----------------+-----------------+-----------------+------------------------------------------------------+
+| Software        | Service         | User            | Comment                                              |
++=================+=================+=================+======================================================+
+| Centreon VMware | centreon_vmware | centreon        | not installed by default                             |
++-----------------+-----------------+-----------------+------------------------------------------------------+
+| RRDtool         | rrdcached       | rrdcached       | not enabled and not defined in Centreon by default   |
++-----------------+-----------------+-----------------+------------------------------------------------------+
+
+Description of groups and linked users:
+
++-----------------+----------------------------------------+
+| Group           | Users                                  |
++=================+========================================+
+| apache          | nagios,centreon                        |
++-----------------+----------------------------------------+
+| centreon        | centreon-engine,centreon-broker,apache |
++-----------------+----------------------------------------+
+| centreon-broker | centreon,nagios,centreon-engine,apache |
++-----------------+----------------------------------------+
+| centreon-engine | centreon-broker,apache,nagios,centreon |
++-----------------+----------------------------------------+
+
+Description of users, umask and home directory:
+
++-----------------+-------+--------------------------+
+| User            | umask | home                     |
++=================+=======+==========================+
+| root            | 0022  | /root                    |
++-----------------+-------+--------------------------+
+| apache          | 0022  | /var/www                 |
++-----------------+-------+--------------------------+
+| centreon        | 0002  | /var/spool/centreon      |
++-----------------+-------+--------------------------+
+| centreon-broker | 0002  | /var/lib/centreon-broker |
++-----------------+-------+--------------------------+
+| centreon-engine | 0002  | /var/lib/centreon-engine |
++-----------------+-------+--------------------------+
+| mysql           | 0002  | /var/lib/mysql           |
++-----------------+-------+--------------------------+
