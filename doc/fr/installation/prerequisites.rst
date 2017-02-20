@@ -157,6 +157,11 @@ Description des partitions :
 SGBD MariaDB
 ============
 
+.. note::
+    1 Go d'espace libre non alloué doit être disponible sur le **volum group**
+    hébergeant la partition **/var/lib/mysql** lorsque vous souhaitez utiliser
+    le mode de sauvegarde **snapshot LVM**.
+
 Description des partitions :
 
 +----------------------------+-------------------------------------------------------------------------------------------------------------+
