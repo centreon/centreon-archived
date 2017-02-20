@@ -371,9 +371,10 @@ function submitAddView() {
             if(jQuery('input[name="create_load[create_load]"]:checked').val() === "create"){
                 widgetName = jQuery("#formAddView input[name='name']").val();
             }else if(jQuery('input[name="create_load[create_load]"]:checked').val() === "load"){
-                if(jQuery("#formAddView select[name='viewLoad']").val() != ""){
+                if(jQuery("#formAddView select[name='viewLoad']").val() != null){
+                    console.log(jQuery("#formAddView select[name='viewLoad']").val())
                     widgetName = jQuery("#select2-viewLoad-container .select2-content").text()
-                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != ""){
+                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != null){
                     widgetName = jQuery("#select2-viewLoadShare-container .select2-content").text()
                 }
             }
@@ -584,18 +585,16 @@ function displayBtnToggleEdit() {
         toggleEdit(modeEdit);
     }
   } else {
-    toggleEdit(true);
+    toggleEdit(modeEdit);
   }
 }
 
 function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
-  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))
-    || (typeof modeEdit === "undefined"  && $el.hasClass('edit'))) {
-    if ($el.hasClass('edit')){
+  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit')) || (typeof modeEdit === "undefined")) {
+      modeEdit = false;
         $el.removeClass('edit');
-    }
     jQuery('#actionBar').hide();
     jQuery('.portlet-header').each(function(index) {
         var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
@@ -610,9 +609,9 @@ function toggleEdit(forceShow) {
       modeEdit = false;
     }
   } else {
-    $el.addClass('edit');
-    jQuery('#actionBar').show();
-    jQuery('.portlet-header').each(function(index) {
+      jQuery('#actionBar').show();
+      $el.addClass('edit');
+    jQuery('.portlet-header').each(function() {
         jQuery(this).show();
         jQuery(this).find('.ui-icon').show();
     });
@@ -703,6 +702,10 @@ jQuery(function () {
       //reset select2
       jQuery("#formAddView #viewLoad").empty().append($('<option>'));
       jQuery("#formAddView #viewLoadShare").empty().append($('<option>'));
+      //reset add view form
+      jQuery('input[name="create_load[create_load]"][value="create"]').prop('checked', true);
+      jQuery('.load_field').css('display','none');
+      jQuery('.create_field').css('display','table-row');
 
     jQuery('#formAddView input[name="name"]').val('');
     jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
@@ -714,6 +717,7 @@ jQuery(function () {
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#deleteViewConfirm").centreonPopin("open");
   });
+
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
     var viewId = jQuery(
@@ -796,7 +800,7 @@ jQuery(function () {
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
-    jQuery("#setDefaultConfirm").centreonPopin("open");
+    jQuery("#setDefaultConfirm").centreonPopin('open');
   });
 
   /* Initialize action for share views */
@@ -839,9 +843,6 @@ jQuery(function () {
     step: 5,
     slide: function(event, ui) {
       jQuery("#timer_value").html(ui.value + " seconds");
-    },
-    stop: function(event, ui) {
-      //setTimerLabel();
     }
   });
   jQuery("#timer_value").html(rotationTimer + " seconds");
@@ -872,29 +873,20 @@ jQuery(function () {
   });
 
   /* Initialize popin */
-  jQuery('#deleteViewConfirm').centreonPopin();
-  jQuery('#deleteViewConfirm button.btc').on('click', function () {
-    jQuery('#deleteViewConfirm').centreonPopin("close");
-  });
   jQuery('#deleteViewConfirm button.bt_danger').on('click', function () {
     submitDeleteView();
+    jQuery('#deleteViewConfirm').centreonPopin("close");
   });
 
-  jQuery('#dissociateViewConfirm').centreonPopin();
-  jQuery('#dissociateViewConfirm button.btc').on('click', function () {
-    jQuery('#dissociateViewConfirm').centreonPopin("close");
-  });
   jQuery('#dissociateViewConfirm button.bt_danger').on('click', function () {
-    removeUserFromView(idUser);
-    window.top.location = './main.php?p=103';
+        removeUserFromView(idUser);
+        window.top.location = './main.php?p=103';
+      jQuery('#dissociateViewConfirm').centreonPopin("close");
   });
 
-  jQuery('#setDefaultConfirm').centreonPopin();
-  jQuery('#setDefaultConfirm button.btc').on('click', function () {
-    jQuery('#setDefaultConfirm').centreonPopin("close");
-  });
   jQuery('#setDefaultConfirm button.bt_success').on('click', function () {
-    submitSetDefaultView();
+      submitSetDefaultView();
+      jQuery('#setDefaultConfirm').centreonPopin("close");
   });
 
   /* Add event action for display form */
@@ -910,28 +902,7 @@ jQuery(function () {
     }).hide();
 
     jQuery(this).parents('.cntn').find('.error-msg').hide();
-    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle(0, function () {
-      var $table = jQuery(this).find('.widget-list');
-      var $bodyCells;
-      var bodyWidth = 618;
-      var totalWidth = 0;
-      var colWidth;
-      /* Resize table widget if exists */
-      /*if ($table.length > 0) {
-        $bodyCells = $table.find('tbody tr:first').children();
-        colWidth = $bodyCells.map(function () {
-          totalWidth += jQuery(this).width();
-          return jQuery(this).width();
-        }).get();
-        if (totalWidth < bodyWidth) {
-          colWidth[3] += bodyWidth - totalWidth;
-          $table.find('tbody tr td:nth-child(4)').width(colWidth[3]);
-        }
-        $table.find('thead tr').children().each(function (i, elem) {
-          jQuery(elem).width(colWidth[i]);
-        });
-      }*/
-    });
+    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle();
   });
 
   infoEmptyTab();
@@ -948,7 +919,7 @@ jQuery(function () {
       if (data.tabs.length > 0) {
         jQuery("#tabs").tabs({
           ajaxOptions: { async: true },
-          select: function(event, ui) {
+          select: function() {
             jQuery('.viewBody').empty();
           },
           selected: -1,
@@ -963,54 +934,8 @@ jQuery(function () {
     }
   });
 
-  /* Widget information */
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseenter', function () {
-    var $td = jQuery(this);
-    var position = $td.offset();
-    var $popin = jQuery('<div></div>')
-      .addClass('widget-description')
-
-      .appendTo('body');
-    jQuery('<div></div>').text($td.data('description')).appendTo($popin);
-
-    /* Bottom footer */
-    var $bottom = jQuery('<div></div>');
-    jQuery('<div></div>').css('float', 'left')
-      .text('Version ' + $td.data('version')).appendTo($bottom);
-    jQuery('<div></div>').css('float', 'right')
-      .text($td.data('author')).appendTo($bottom);
-    $popin.append($bottom);
-
-    $popin.show()
-      .css({
-        left: position.left - $popin.width() - 10,
-        top: position.top
-      });
-  });
-
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseout', function () {
-    jQuery('.widget-description').hide().remove();
-  });
-
-  /* Add filters on widget */
-  jQuery('#widgetSearch').on('keydown', function () {
-    var searchValue = jQuery(this).val();
-    jQuery('.widget-list tbody tr').show();
-    jQuery('.widget-list tbody tr').filter(function () {
-      var regexp = new RegExp(searchValue, 'i');
-      var $tr = jQuery(this);
-      var $td = jQuery($tr.children()[1]);
-      if ($td.text().search(regexp) === -1) {
-        return true;
-      }
-      return false;
-    }).hide();
-  });
-
   /* Toggle edit mode or view mode */
-  jQuery(".toggleEdit > a").on('click', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
+  jQuery(".toggleEdit > a").on('click', function () {
     toggleEdit();
   });
 

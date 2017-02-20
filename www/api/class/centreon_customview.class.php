@@ -82,9 +82,9 @@ class CentreonCustomview extends CentreonWebService
             . "           FROM contactgroup_contact_relation "
             . "           WHERE contact_contact_id = " . $centreon->user->user_id
             . "           ) "
-            . " ) AND cvur.is_consumed = 0 ";
+            . " ) AND cvur.is_consumed = 0  AND cvur.is_share = 1 ";
 
-        $DBRES =  $this->pearDB->query($query);
+        $DBRES = $this->pearDB->query($query);
         $arrayView = array();
         $arrayViewShared = array();
 
@@ -113,9 +113,8 @@ class CentreonCustomview extends CentreonWebService
 
         return array(
             'items' => $list,
-            'total' => count($arrayViewShared)
+            'total' => count($arrayView)
         );
-
     }
 
     public function getListShare()
@@ -141,35 +140,25 @@ class CentreonCustomview extends CentreonWebService
             $arrayViewUse[$row['custom_view_id']] = $row['name'];
         }
 
-        $query = "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
-            . " UNION "
-            . " SELECT cv.*, '0' as from_public FROM custom_views cv "
+        $query = "SELECT cv.*, '0' as from_public FROM custom_views cv "
             . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE (cvur.user_id = " .  $centreon->user->user_id
+            . " WHERE (cvur.user_id = " . $centreon->user->user_id
             . "        OR cvur.usergroup_id IN ( "
             . "           SELECT contactgroup_cg_id "
             . "           FROM contactgroup_contact_relation "
-            . "           WHERE contact_contact_id = " .  $centreon->user->user_id
+            . "           WHERE contact_contact_id = " . $centreon->user->user_id
             . "           ) "
-            . " ) AND cvur.is_consumed = 0 ";
+            . " ) AND cvur.is_consumed = 0  AND cvur.is_share = 1  ";
 
 
-        $DBRES =  $this->pearDB->query($query);
-        $arrayView = array();
+        $DBRES = $this->pearDB->query($query);
         $arrayViewShared = array();
 
         while ($row = $DBRES->fetchRow()) {
-            if ($row['from_public'] == '1') {
-                $arrayView[$row['custom_view_id']] = $row['name'];
-            } else {
-                $arrayViewShared[$row['custom_view_id']] = $row['name'];
-            }
+            $arrayViewShared[$row['custom_view_id']] = $row['name'];
         }
 
         $arrayViewShared = array_diff($arrayViewShared, $arrayViewUse);
-        $arrayView = array_diff($arrayView, $arrayViewUse);
-
-        $arrayView = array_diff($arrayView, $arrayViewShared);
 
         asort($arrayViewShared);
 
@@ -185,6 +174,5 @@ class CentreonCustomview extends CentreonWebService
             'items' => $list,
             'total' => count($arrayViewShared)
         );
-
     }
 }
