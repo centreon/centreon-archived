@@ -44,7 +44,6 @@ require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 
 session_start();
-session_write_close();
 
 if (!isset($_POST['action']) || !isset($_SESSION['centreon'])) {
     exit();
