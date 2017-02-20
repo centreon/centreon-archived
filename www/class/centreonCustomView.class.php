@@ -402,6 +402,7 @@ class CentreonCustomView
      * @param int $viewId
      * @param int $userId
      * @param int $userGroupId
+     * @return int|null
      */
     protected function copyPreferences($viewId, $userId = null, $userGroupId = null)
     {
@@ -513,13 +514,17 @@ class CentreonCustomView
      * Share Custom View
      *
      * @param array $params
+     * @param int $userId
      * @return void
      */
-    public function shareCustomView($params)
+    public function shareCustomView($params, $userId)
     {
+        global $centreon;
+
         if ($this->checkPermission($params['custom_view_id'])) {
-            $sql = "SELECT `public` FROM custom_views
-	        	WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
+            $sql = "SELECT public "
+                . "FROM custom_views "
+	        	. "WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']);
             $res = $this->db->query($sql);
 
             while ($row = $res->fetchRow()) {
@@ -527,84 +532,98 @@ class CentreonCustomView
             }
 
             // share with users
-            $str = "";
-            if (isset($params['user_id']) && is_array($params['user_id'])) {
-                foreach ($params['user_id'] as $userId) {
-                    $sql = "SELECT * 
-                    FROM custom_view_user_relation
-	        	    WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . "
-	        	    AND user_id = " . $userId;
-                    $res = $this->db->query($sql);
-
-                    while ($row = $res->fetchRow()) {
-                        $View = $row;
-                    }
-
-                    if ($str != "") {
-                        $str .= ", ";
-                    }
-
-                    $str .= "(" . $params['custom_view_id'] . ", " . $userId . ", " .
-                        $params['locked']['locked'] . ", 0, " . $public . " , 1)";
-                    $this->copyPreferences($params['custom_view_id'], $userId);
-
-                    if (isset($View) && is_array($View)) {
-                        $query = "UPDATE custom_view_user_relation
-                      SET is_share = 1, locked = " . (int)$params['locked']['locked'] . "
-                      WHERE user_id = " . $this->db->escape($userId) . "
-        		      AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
-
-                        $this->db->query($query);
-                    } else {
-                        if ($str != "") {
-                            $this->db->query(
-                                "REPLACE INTO custom_view_user_relation
-                        (custom_view_id, user_id, locked, is_consumed, is_public, is_share ) VALUES " . $str
-                            );
-                        }
-                    }
+            $sharedUsers = array();
+            $params['lockedUsers'] = isset($params['lockedUsers']) ? $params['lockedUsers'] : array();
+            foreach ($params['lockedUsers'] as $lockedUser) {
+                if ($lockedUser != $centreon->user->user_id) {
+                    $sharedUsers[$lockedUser] = 1;
                 }
             }
+            $params['unlockedUsers'] = isset($params['unlockedUsers']) ? $params['unlockedUsers'] : array();
+            foreach ($params['unlockedUsers'] as $unlockedUser) {
+                if ($unlockedUser != $centreon->user->user_id) {
+                    $sharedUsers[$unlockedUser] = 0;
+                }
+            }
+
+            $sql = "SELECT user_id "
+                . "FROM custom_view_user_relation "
+                . "WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . " "
+                . "AND user_id != " . $userId . " "
+                . "AND usergroup_id IS NULL ";
+            $res = $this->db->query($sql);
+            $oldSharedUsers = array();
+            while ($row = $res->fetchRow()) {
+                $oldSharedUsers[$row['user_id']] = 1;
+            }
+
+            foreach ($sharedUsers as $sharedUserId => $locked) {
+                if (isset($oldSharedUsers[$sharedUserId])) {
+                    $query = "UPDATE custom_view_user_relation "
+                        . "SET is_share = 1, locked = " . $locked . " "
+                        . "WHERE user_id = " . $this->db->escape($sharedUserId) . " "
+                        . "AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
+                    $this->db->query($query);
+                    unset($oldSharedUsers[$sharedUserId]);
+                } else {
+                    $query = "INSERT INTO custom_view_user_relation "
+                        . "(custom_view_id, user_id, locked, is_consumed, is_public, is_share ) "
+                        . "VALUES (" . $this->db->escape($params['custom_view_id']) . ", "
+                        . $this->db->escape($sharedUserId) . ", " . $locked . ", 0, " . $public . ", 1) ";
+                    $this->db->query($query);
+                }
+                $this->copyPreferences($params['custom_view_id'], $sharedUserId);
+            }
+
+            $query = 'DELETE FROM custom_view_user_relation '
+                . 'WHERE custom_view_id = ' . $this->db->escape($params['custom_view_id'] . ' '
+                . 'AND user_id IN (' . implode(',', array_keys($oldSharedUsers))) . ') ';
+            $this->db->query($query);
+
 
             // share with user groups
-            $str = "";
-            if (isset($params['usergroup_id']) && is_array($params['usergroup_id'])) {
-                foreach ($params['usergroup_id'] as $usergroupId) {
-                    $sql = "SELECT * 
-                    FROM custom_view_user_relation
-	        	    WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . "
-	        	    AND usergroup_id = " . $usergroupId;
-                    $res = $this->db->query($sql);
-
-                    while ($row = $res->fetchRow()) {
-                        $View = $row;
-                    }
-
-                    if ($str != "") {
-                        $str .= ", ";
-                    }
-
-                    $str .= "(" . $params['custom_view_id'] . ", " . $usergroupId . ", " .
-                        $params['locked']['locked'] . ", 0, " . $public . " , 1)";
-                    $this->copyPreferences($params['custom_view_id'], $usergroupId);
-
-                    if (isset($View) && is_array($View)) {
-                        $query = "UPDATE custom_view_user_relation
-                      SET is_share = 1, locked = " . (int)$params['locked']['locked'] . "
-                      WHERE usergroup_id = " . $this->db->escape($usergroupId) . "
-        		      AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
-
-                        $this->db->query($query);
-                    } else {
-                        if ($str != "") {
-                            $this->db->query(
-                                "REPLACE INTO custom_view_user_relation
-                        (custom_view_id, usergroup_id, locked, is_consumed, is_public, is_share ) VALUES " . $str
-                            );
-                        }
-                    }
-                }
+            $sharedUsergroups = array();
+            $params['lockedUsergroups'] = isset($params['lockedUsergroups']) ? $params['lockedUsergroups'] : array();
+            foreach ($params['lockedUsergroups'] as $lockedUsergroup) {
+                $sharedUsergroups[$lockedUsergroup] = 1;
             }
+            $params['unlockedUsergroups'] = isset($params['unlockedUsergroups']) ? $params['unlockedUsergroups'] : array();
+            foreach ($params['unlockedUsergroups'] as $unlockedUsergroup) {
+                $sharedUsergroups[$unlockedUsergroup] = 0;
+            }
+
+            $sql = "SELECT usergroup_id "
+                . "FROM custom_view_user_relation "
+                . "WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . " "
+                . "AND user_id IS NULL ";
+            $res = $this->db->query($sql);
+            $oldSharedUsergroups = array();
+            while ($row = $res->fetchRow()) {
+                $oldSharedUsergroups[$row['usergroup_id']] = 1;
+            }
+
+            foreach ($sharedUsergroups as $sharedUsergroupId => $locked) {
+                if (isset($oldSharedUsergroups[$sharedUsergroupId])) {
+                    $query = "UPDATE custom_view_user_relation "
+                        . "SET is_share = 1, locked = " . $locked . " "
+                        . "WHERE usergroup_id = " . $this->db->escape($sharedUsergroupId) . " "
+                        . "AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
+                    $this->db->query($query);
+                    unset($oldSharedUsergroups[$sharedUsergroupId]);
+                } else {
+                    $query = "INSERT INTO custom_view_user_relation "
+                        . "(custom_view_id, usergroup_id, locked, is_consumed, is_public, is_share ) "
+                        . "VALUES (" . $this->db->escape($params['custom_view_id']) . ", "
+                        . $this->db->escape($sharedUsergroupId) . ", " . $locked . ", 0, " . $public . ", 1) ";
+                    $this->db->query($query);
+                }
+                $this->copyPreferences($params['custom_view_id'], null, $sharedUsergroupId);
+            }
+
+            $query = 'DELETE FROM custom_view_user_relation '
+                . 'WHERE custom_view_id = ' . $this->db->escape($params['custom_view_id'] . ' '
+                . 'AND usergroup_id IN (' . implode(',', array_keys($oldSharedUsergroups))) . ') ';
+            $this->db->query($query);
         }
     }
 

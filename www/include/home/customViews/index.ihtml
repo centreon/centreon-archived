@@ -21,7 +21,7 @@
                         <table class="table">
                             <tr>
                                 <td class="FormHeader" colspan="2">
-                                    <h3 style="color:#88b917;">{$formAddView.header.title}</h3>
+                                    <h3 style="color:#88b917;">{t}Create a view{/t}</h3>
                                 </td>
                             </tr>
                             <tr class="list_two">
@@ -35,12 +35,7 @@
                                 </td>
                             </tr>
                             <tr class="load_field" style="display:none;">
-                                <td class="FormRowField">{$formAddView.viewLoad.label}</td>
                                 <td class="FormRowValue">{$formAddView.viewLoad.html}</td>
-                            </tr>
-                            <tr class="load_field" style="display:none;">
-                                <td class="FormRowField">{$formAddView.viewLoadShare.label}</td>
-                                <td class="FormRowValue">{$formAddView.viewLoadShare.html}</td>
                             </tr>
                             <tr class="create_field">
                                 <td class="FormRowField">{$formAddView.layout.label}</td>
@@ -76,7 +71,7 @@
                         <table class="table">
                             <tr>
                                 <td class="FormHeader" colspan="2">
-                                    <h3 style="color:#00bfb3;">{$formEditView.header.title}</h3>
+                                    <h3 style="color:#00bfb3;">{t}Edit a view{/t}</h3>
                                 </td>
                             </tr>
                             <tr>
@@ -129,43 +124,32 @@
                     <table class="table">
                         <tr>
                             <td class="FormHeader" colspan="2">
-                                <h3 style="color: #00bfb3;">{$formShareView.header.title}</h3>
+                                <h3 style="color: #00bfb3;">{t}Share view{/t}</h3>
                             </td>
                         </tr>
-                        <tr class="list_lvl_1 viewerInfo">
-                            <td class="ListColLvl1_name" colspan="2">
-                                <h4>{t}Viewers{/t}</h4>
-                            </td>
-                        </tr>
-                        <tr class="viewerInfo">
-                            <td colspan="2" id="share_viewer"></td>
-                        </tr>
-                        <tr class="list_lvl_1 viewergroupInfo">
-                            <td class="ListColLvl1_name" colspan="2">
-                                <h4>{t}Viewers group{/t}</h4>
-                            </td>
-                        </tr>
-                        <tr class="viewergroupInfo">
-                            <td colspan="2" id="share_viewergroup"></td>
-                        </tr>
-                        <tr class="list_lvl_1">
-                            <td class="ListColLvl1_name" colspan="2"><h4>{t}Add viewer / viewer group{/t}</h4></td>
+                        <tr>
+                            <td  class="FormRowField FormHeader" colspan="2">{$formShareView.locked_user_id.label}</td>
                         </tr>
                         <tr>
-                            <td class="FormRowField">{$formShareView.locked.label}</td>
-                            <td class="FormRowValue">{$formShareView.locked.html}</td>
+                            <td class="FormRowValue" colspan="2">{$formShareView.locked_user_id.html}</td>
                         </tr>
                         <tr>
-                            <td  class="FormRowField FormHeader" colspan="2">{$formShareView.user_id.label}</td>
+                            <td  class="FormRowField FormHeader" colspan="2">{$formShareView.unlocked_user_id.label}</td>
                         </tr>
                         <tr>
-                            <td class="FormRowValue" colspan="2">{$formShareView.user_id.html}</td>
+                            <td class="FormRowValue" colspan="2">{$formShareView.unlocked_user_id.html}</td>
                         </tr>
                         <tr>
-                            <td class="FormRowField FormHeader" colspan="2">{$formShareView.usergroup_id.label}</td>
+                            <td class="FormRowField FormHeader" colspan="2">{$formShareView.locked_usergroup_id.label}</td>
                         </tr>
                         <tr>
-                            <td class="FormRowValue" colspan="2">{$formShareView.usergroup_id.html}</td>
+                            <td class="FormRowValue" colspan="2">{$formShareView.locked_usergroup_id.html}</td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowField FormHeader" colspan="2">{$formShareView.unlocked_usergroup_id.label}</td>
+                        </tr>
+                        <tr>
+                            <td class="FormRowValue" colspan="2">{$formShareView.unlocked_usergroup_id.html}</td>
                         </tr>
                     </table>
                     {$formShareView.hidden}
@@ -189,7 +173,7 @@
                     <table class="table">
                         <tr>
                             <td class="FormHeader" colspan="2">
-                                <h3 style="color:#88b917;">{$formAddWidget.header.title}</h3>
+                                <h3 style="color:#88b917;">{t}Add a widget{/t}</h3>
                             </td>
                         </tr>
                         <tr>
@@ -235,7 +219,10 @@
     <!-- Tab for list of views -->
     <div id="tabs">
         <div class="info_box">
-            <h4><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'> {$msg}</h4>
+            <h4>
+                <img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'>
+                {t}No view available. To create a new view, please click "Add view" button.{/t}
+            </h4>
         </div>
         <ul class="tabs_header">
         </ul>
@@ -368,14 +355,11 @@ function submitAddView() {
         var viewId = view.item(0).firstChild.data;
         var widgetName = "";
         if(parseInt(viewId) && getTabPos(viewId) == -1){
-            if(jQuery('input[name="create_load[create_load]"]:checked').val() === "create"){
+            if (jQuery('input[name="create_load[create_load]"]:checked').val() === "create") {
                 widgetName = jQuery("#formAddView input[name='name']").val();
-            }else if(jQuery('input[name="create_load[create_load]"]:checked').val() === "load"){
-                if(jQuery("#formAddView select[name='viewLoad']").val() != null){
-                    console.log(jQuery("#formAddView select[name='viewLoad']").val())
-                    widgetName = jQuery("#select2-viewLoad-container .select2-content").text()
-                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != null){
-                    widgetName = jQuery("#select2-viewLoadShare-container .select2-content").text()
+            } else if (jQuery('input[name="create_load[create_load]"]:checked').val() === "load") {
+                if (jQuery("#formAddView select[name='viewLoad']").val() != "") {
+                    widgetName = jQuery("#select2-viewLoad-container .select2-content").text();
                 }
             }
 
@@ -524,25 +508,25 @@ function submitShareView()
   var viewId = jQuery(
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
-  var users = jQuery("#formShareView").find('select[name="user_id[]"]').val();
-  var usergroups = jQuery("#formShareView").find('select[name="usergroup_id[]"]').val();
+  var lockedUsers = jQuery("#formShareView").find('select[name="locked_user_id[]"]').val();
+  lockedUsers = (lockedUsers == null) ? [] : lockedUsers.filter(function (elem) {return elem !== '';});
+  var unlockedUsers = jQuery("#formShareView").find('select[name="unlocked_user_id[]"]').val();
+  unlockedUsers = (unlockedUsers == null) ? [] : unlockedUsers.filter(function (elem) {return elem !== '';});
+  var lockedUsergroups = jQuery("#formShareView").find('select[name="locked_usergroup_id[]"]').val();
+  lockedUsergroups = (lockedUsergroups == null) ? [] : lockedUsergroups.filter(function (elem) {return elem !== '';});
+  var unlockedUsergroups = jQuery("#formShareView").find('select[name="unlocked_usergroup_id[]"]').val();
+  unlockedUsergroups = (unlockedUsergroups == null) ? [] :
+  unlockedUsergroups.filter(function (elem) {return elem !== '';});
+
   var postData = {
     custom_view_id: viewId,
-    'locked[locked]': jQuery("#formShareView").find('input[name="locked[locked]"]:checked').val(),
+    lockedUsers: lockedUsers.filter(function (elem) {return elem !== '';}),
+    unlockedUsers: unlockedUsers.filter(function (elem) {return elem !== '';}),
+    lockedUsergroups: lockedUsergroups.filter(function (elem) {return elem !== '';}),
+    unlockedUsergroups: unlockedUsergroups.filter(function (elem) {return elem !== '';}),
     action: 'share',
     centeon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
   };
-
-  if (users) {
-    postData['user_id[]'] = users.filter(function (elem) {
-      return elem !== '';
-    });
-  }
-  if (usergroups) {
-    postData['usergroup_id[]'] = usergroups.filter(function (elem) {
-      return elem !== '';
-    });
-  }
 
   jQuery.ajax({
     type: "POST",
@@ -585,18 +569,16 @@ function displayBtnToggleEdit() {
         toggleEdit(modeEdit);
     }
   } else {
-    toggleEdit(true);
+    toggleEdit(modeEdit);
   }
 }
 
 function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
-  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))
-    || (typeof modeEdit === "undefined"  && $el.hasClass('edit'))) {
-    if ($el.hasClass('edit')){
+  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit')) || (typeof modeEdit === "undefined")) {
+      modeEdit = false;
         $el.removeClass('edit');
-    }
     jQuery('#actionBar').hide();
     jQuery('.portlet-header').each(function(index) {
         var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
@@ -611,9 +593,9 @@ function toggleEdit(forceShow) {
       modeEdit = false;
     }
   } else {
-    $el.addClass('edit');
-    jQuery('#actionBar').show();
-    jQuery('.portlet-header').each(function(index) {
+      jQuery('#actionBar').show();
+      $el.addClass('edit');
+    jQuery('.portlet-header').each(function() {
         jQuery(this).show();
         jQuery(this).find('.ui-icon').show();
     });
@@ -701,13 +683,12 @@ function removeUsergroupFromView(usergroup_id) {
 jQuery(function () {
   /* Initialize buttons */
   jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}}).on('click', function () {
-      //reset select2
-      jQuery("#formAddView #viewLoad").empty().append($('<option>'));
-      jQuery("#formAddView #viewLoadShare").empty().append($('<option>'));
-      //reset add view form
-      jQuery('input[name="create_load[create_load]"][value="create"]').prop('checked', true);
-      jQuery('.load_field').css('display','none');
-      jQuery('.create_field').css('display','table-row');
+    //reset select2
+    jQuery("#formAddView #viewLoad").empty().append($('<option>'));
+    //reset add view form
+    jQuery('input[name="create_load[create_load]"][value="create"]').prop('checked', true);
+    jQuery('.load_field').css('display','none');
+    jQuery('.create_field').css('display','table-row');
 
     jQuery('#formAddView input[name="name"]').val('');
     jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
@@ -724,76 +705,43 @@ jQuery(function () {
     var viewId = jQuery(
       jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
     ).data('cvId');
-    if (jQuery('#user_id').val() !== null) {
-      jQuery('#user_id').val('').empty().append(jQuery("<option>")).trigger('change');
-    }
-    if (jQuery('#usergroup_id').val() !== null) {
-      jQuery('#usergroup_id').val('').empty().append(jQuery("<option>")).trigger('change');
-    }
+    jQuery("#locked_user_id option").remove();
+    jQuery("#unlocked_user_id option").remove();
+    jQuery("#locked_usergroup_id option").remove();
+    jQuery("#unlocked_usergroup_id option").remove();
     jQuery.ajax({
-      url: './include/home/customViews/action.php',
-      type: 'post',
-      dataType: 'xml',
-      data: {
-        action: 'get_share_info',
-        viewId: viewId
-      },
+      url: './api/internal.php?object=centreon_home_customview&action=linkedUsers&q=' + viewId,
+      method: 'get',
+      methodType: 'json',
       success: function (data) {
-        var viewerList = jQuery('#share_viewer');
-        var viewergroupList = jQuery('#share_viewergroup');
-        viewerList.html('');
-        viewergroupList.html('');
-        jQuery(".viewerInfo").hide();
-        jQuery(".viewergroupInfo").hide();
-        /* Add viewer who have the view partaged */
-        jQuery.map(data.getElementsByTagName('contact'), function (node) {
-          var viewerBadge = jQuery('<span></span>')
-            .addClass('badge default_badge')
-            .text(node.firstChild.data);
-          var closeButton = jQuery('<a></a>')
-            .attr('href', '#')
-            .addClass('removeViewer')
-            .data('id', node.getAttribute('id'))
-            .append(
-              jQuery('<img/>')
-                .attr('src', './img/icons/delete.png')
-                .addClass('ico-10')
+        Object.keys(data).map(function(key) {
+          if (data[key].locked == "1") {
+            jQuery("#locked_user_id").append(
+              '<option selected value="' + data[key].user_id + '">' + data[key].contact_name + '</option>'
             );
-          viewerBadge.append(closeButton);
-          if (node.getAttribute('locked') == 1) {
-            viewerBadge.prepend(
-              jQuery('<img/>')
-                .attr('src', './img/icons/lock_closed.png')
-                .addClass('ico-10')
+          } else {
+            jQuery("#unlocked_user_id").append(
+              '<option selected value="' + data[key].user_id + '">' + data[key].contact_name + '</option>'
             );
           }
-          jQuery(".viewerInfo").show();
-          viewerList.append(viewerBadge);
         });
-        /* Add viewergroup who have the view partaged */
-        jQuery.map(data.getElementsByTagName('contactgroup'), function (node) {
-          var viewerBadge = jQuery('<span></span>')
-            .addClass('badge default_badge')
-            .text(node.firstChild.data);
-          var closeButton = jQuery('<a></a>')
-            .attr('href', '#')
-            .addClass('removeViewergroup')
-            .data('id', node.getAttribute('id'))
-            .append(
-              jQuery('<img/>')
-                .attr('src', './img/icons/delete.png')
-                .addClass('ico-10')
+      }
+    });
+    jQuery.ajax({
+      url: './api/internal.php?object=centreon_home_customview&action=linkedUsergroups&q=' + viewId,
+      method: 'get',
+      methodType: 'json',
+      success: function (data) {
+        Object.keys(data).map(function(key) {
+          if (data[key].locked == "1") {
+            jQuery("#locked_usergroup_id").append(
+              '<option selected value="' + data[key].usergroup_id + '">' + data[key].cg_name + '</option>'
             );
-          viewerBadge.append(closeButton);
-          if (node.getAttribute('locked') == 1) {
-            viewerBadge.prepend(
-              jQuery('<img/>')
-                .attr('src', './img/icons/lock_closed.png')
-                .addClass('ico-10')
+          } else {
+            jQuery("#unlocked_usergroup_id").append(
+              '<option selected value="' + data[key].usergroup_id + '">' + data[key].cg_name + '</option>'
             );
           }
-          jQuery(".viewergroupInfo").show();
-          viewergroupList.append(viewerBadge);
         });
       }
     });
@@ -802,20 +750,6 @@ jQuery(function () {
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
     jQuery("#setDefaultConfirm").centreonPopin("open");
-  });
-
-  /* Initialize action for share views */
-  jQuery('#shareView').on('click', '.removeViewer', function (event) {
-    var id = jQuery(this).data('id');
-    if (confirm('Remove user from viewer list?')) {
-      removeUserFromView(id);
-    }
-  });
-  jQuery('#shareView').on('click', '.removeViewergroup', function (event) {
-    var id = jQuery(this).data('id');
-    if (confirm('Remove user group from viewer list?')) {
-      removeUsergroupFromView(id);
-    }
   });
 
   jQuery('input[name="create_load[create_load]"]').change(function (){
@@ -915,35 +849,14 @@ jQuery(function () {
     }).hide();
 
     jQuery(this).parents('.cntn').find('.error-msg').hide();
-    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle(0, function () {
-      var $table = jQuery(this).find('.widget-list');
-      var $bodyCells;
-      var bodyWidth = 618;
-      var totalWidth = 0;
-      var colWidth;
-      /* Resize table widget if exists */
-      /*if ($table.length > 0) {
-        $bodyCells = $table.find('tbody tr:first').children();
-        colWidth = $bodyCells.map(function () {
-          totalWidth += jQuery(this).width();
-          return jQuery(this).width();
-        }).get();
-        if (totalWidth < bodyWidth) {
-          colWidth[3] += bodyWidth - totalWidth;
-          $table.find('tbody tr td:nth-child(4)').width(colWidth[3]);
-        }
-        $table.find('thead tr').children().each(function (i, elem) {
-          jQuery(elem).width(colWidth[i]);
-        });
-      }*/
-    });
+    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle(0);
   });
 
   infoEmptyTab();
 
   /* Load custom views */
   jQuery.ajax({
-    url: './include/common/webServices/rest/internal.php?object=centreon_wscustomview&action=listViews',
+    url: './api/internal.php?object=centreon_home_customview&action=listViews',
     method: 'get',
     methodType: 'json',
     success: function (data) {
@@ -953,7 +866,7 @@ jQuery(function () {
       if (data.tabs.length > 0) {
         jQuery("#tabs").tabs({
           ajaxOptions: { async: true },
-          select: function(event, ui) {
+          select: function() {
             jQuery('.viewBody').empty();
           },
           selected: -1,
@@ -974,7 +887,6 @@ jQuery(function () {
     var position = $td.offset();
     var $popin = jQuery('<div></div>')
       .addClass('widget-description')
-
       .appendTo('body');
     jQuery('<div></div>').text($td.data('description')).appendTo($popin);
 
@@ -1013,9 +925,9 @@ jQuery(function () {
   });
 
   /* Toggle edit mode or view mode */
-  jQuery(".toggleEdit > a").on('click', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
+  jQuery(".toggleEdit > a").on('click', function () {
+    //e.preventDefault();
+    //e.stopPropagation();
     toggleEdit();
   });
 
