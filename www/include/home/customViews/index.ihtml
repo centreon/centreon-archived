@@ -8,7 +8,7 @@
 
     <!-- Action bar -->
     <div id='actionBar' style="display: none;">
-    
+
         {if $aclAddView == 1}
         <!-- Button for add a view -->
         <div class="cntn">
@@ -64,9 +64,9 @@
             </div>
         </div>
         {/if}
-        
+
         <!-- Button for edit a view -->
-        {if $aclEdit == 1} 
+        {if $aclEdit == 1}
         <div class="cntn">
             <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
             <div class="position_toggle_wrapper">
@@ -79,18 +79,18 @@
                                     <h3 style="color:#00bfb3;">{$formEditView.header.title}</h3>
                                 </td>
                             </tr>
-                            <tr class="create_field">
+                            <tr>
                                 <td class="FormRowField">{$formEditView.name.label}</td>
                                 <td class="FormRowValue">
                                     <div>{$formEditView.name.html}</div>
                                     <span class="error-msg" style="display: none;">{t}This view name is required{/t}</span>
                                 </td>
                             </tr>
-                            <tr class="create_field">
+                            <tr>
                                 <td class="FormRowField">{$formEditView.layout.label}</td>
                                 <td class="FormRowValue">{$formEditView.layout.html}</td>
                             </tr>
-                            <tr class="create_field">
+                            <tr>
                                 <td class="FormRowField">{$formEditView.public.label}</td>
                                 <td class="FormRowValue">{$formEditView.public.html}</td>
                             </tr>
@@ -372,13 +372,12 @@ function submitAddView() {
                 widgetName = jQuery("#formAddView input[name='name']").val();
             }else if(jQuery('input[name="create_load[create_load]"]:checked').val() === "load"){
                 if(jQuery("#formAddView select[name='viewLoad']").val() != null){
+                    console.log(jQuery("#formAddView select[name='viewLoad']").val())
                     widgetName = jQuery("#select2-viewLoad-container .select2-content").text()
                 }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != null){
                     widgetName = jQuery("#select2-viewLoadShare-container .select2-content").text()
                 }
             }
-
-
 
             addTab({
               default: false,
@@ -816,7 +815,7 @@ jQuery(function () {
       removeUsergroupFromView(id);
     }
   });
-  
+
   jQuery('input[name="create_load[create_load]"]').change(function (){
     if (jQuery(this).val() == 'load'){
         jQuery('.load_field').css('display','table-row');
@@ -826,7 +825,7 @@ jQuery(function () {
         jQuery('.create_field').css('display','table-row');
     }
   });
-  
+
   jQuery('.addWidget').on('click', function (event) {
       jQuery("#formAddWidget input[name='widget_title']").val('');
   });
@@ -843,15 +842,12 @@ jQuery(function () {
     step: 5,
     slide: function(event, ui) {
       jQuery("#timer_value").html(ui.value + " seconds");
-    },
-    stop: function(event, ui) {
-      //setTimerLabel();
     }
   });
   jQuery("#timer_value").html(rotationTimer + " seconds");
   jQuery("input[type=button]").button();
-  
-  
+
+
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
     if (jQuery(e.target).parents('.cntn').length === 0
@@ -859,7 +855,7 @@ jQuery(function () {
       jQuery('.toggle_wrapper').hide();
     }
   });
-  
+
   jQuery('.editView').on('click', function () {
     var tabActive = jQuery(
       jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
@@ -874,33 +870,24 @@ jQuery(function () {
         jQuery('#formEditView input[name="public"]').prop('checked', false);
     }
   });
-  
+
   /* Initialize popin */
-  jQuery('#deleteViewConfirm').centreonPopin();
-  jQuery('#deleteViewConfirm button.btc').on('click', function () {
-    jQuery('#deleteViewConfirm').centreonPopin("close");
-  });
   jQuery('#deleteViewConfirm button.bt_danger').on('click', function () {
     submitDeleteView();
+    jQuery('#deleteViewConfirm').centreonPopin("close");
   });
-  
-  jQuery('#dissociateViewConfirm').centreonPopin();
-  jQuery('#dissociateViewConfirm button.btc').on('click', function () {
-    jQuery('#dissociateViewConfirm').centreonPopin("close");
-  });
+
   jQuery('#dissociateViewConfirm button.bt_danger').on('click', function () {
-    removeUserFromView(idUser);
-    window.top.location = './main.php?p=103';
+        removeUserFromView(idUser);
+        window.top.location = './main.php?p=103';
+      jQuery('#dissociateViewConfirm').centreonPopin("close");
   });
-  
-  jQuery('#setDefaultConfirm').centreonPopin();
-  jQuery('#setDefaultConfirm button.btc').on('click', function () {
-    jQuery('#setDefaultConfirm').centreonPopin("close");
-  });
+
   jQuery('#setDefaultConfirm button.bt_success').on('click', function () {
-    submitSetDefaultView();
+      submitSetDefaultView();
+      jQuery('#setDefaultConfirm').centreonPopin("close");
   });
-  
+
   /* Add event action for display form */
   jQuery('.btnAction').on('click', function (e) {
     var self = this;
@@ -912,13 +899,13 @@ jQuery(function () {
       }
       return false;
     }).hide();
-    
+
     jQuery(this).parents('.cntn').find('.error-msg').hide();
     jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle();
   });
-  
+
   infoEmptyTab();
-  
+
   /* Load custom views */
   jQuery.ajax({
     url: './include/common/webServices/rest/internal.php?object=centreon_wscustomview&action=listViews',
@@ -945,53 +932,9 @@ jQuery(function () {
       jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
     }
   });
-  
-  /* Widget information */
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseenter', function () {
-    var $td = jQuery(this);
-    var position = $td.offset();
-    var $popin = jQuery('<div></div>')
-      .addClass('widget-description')
-      
-      .appendTo('body');
-    jQuery('<div></div>').text($td.data('description')).appendTo($popin);
-    
-    /* Bottom footer */
-    var $bottom = jQuery('<div></div>');
-    jQuery('<div></div>').css('float', 'left')
-      .text('Version ' + $td.data('version')).appendTo($bottom);
-    jQuery('<div></div>').css('float', 'right')
-      .text($td.data('author')).appendTo($bottom);
-    $popin.append($bottom);
-    
-    $popin.show()
-      .css({
-        left: position.left - $popin.width() - 10,
-        top: position.top
-      });
-  });
-  
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseout', function () {
-    jQuery('.widget-description').hide().remove();
-  });
-  
-  /* Add filters on widget */
-  jQuery('#widgetSearch').on('keydown', function () {
-    var searchValue = jQuery(this).val();
-    jQuery('.widget-list tbody tr').show();
-    jQuery('.widget-list tbody tr').filter(function () {
-      var regexp = new RegExp(searchValue, 'i');
-      var $tr = jQuery(this);
-      var $td = jQuery($tr.children()[1]);
-      if ($td.text().search(regexp) === -1) {
-        return true;
-      }
-      return false;
-    }).hide();
-  });
-    
+
   /* Toggle edit mode or view mode */
-  jQuery(".toggleEdit > a").on('click', function (e) {
+  jQuery(".toggleEdit > a").on('click', function () {
     toggleEdit();
   });
 
