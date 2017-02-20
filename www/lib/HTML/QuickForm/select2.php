@@ -408,7 +408,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $this->_defaultSelectedOptions .= $currentOption;
                 }
             }
-        } else {
+        } else if (!is_null($this->_defaultDataset)) {
             foreach ($this->_defaultDataset as $elementName => $elementValue) {
 
                 $currentOption = '<option selected="selected" value="'
