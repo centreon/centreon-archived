@@ -717,6 +717,7 @@ jQuery(function () {
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#deleteViewConfirm").centreonPopin("open");
   });
+
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
     var viewId = jQuery(
@@ -799,7 +800,7 @@ jQuery(function () {
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
-    jQuery("#setDefaultConfirm").centreonPopin("open");
+    jQuery("#setDefaultConfirm").centreonPopin('open');
   });
 
   /* Initialize action for share views */
@@ -842,9 +843,6 @@ jQuery(function () {
     step: 5,
     slide: function(event, ui) {
       jQuery("#timer_value").html(ui.value + " seconds");
-    },
-    stop: function(event, ui) {
-      //setTimerLabel();
     }
   });
   jQuery("#timer_value").html(rotationTimer + " seconds");
@@ -875,29 +873,20 @@ jQuery(function () {
   });
 
   /* Initialize popin */
-  jQuery('#deleteViewConfirm').centreonPopin();
-  jQuery('#deleteViewConfirm button.btc').on('click', function () {
-    jQuery('#deleteViewConfirm').centreonPopin("close");
-  });
   jQuery('#deleteViewConfirm button.bt_danger').on('click', function () {
     submitDeleteView();
+    jQuery('#deleteViewConfirm').centreonPopin("close");
   });
 
-  jQuery('#dissociateViewConfirm').centreonPopin();
-  jQuery('#dissociateViewConfirm button.btc').on('click', function () {
-    jQuery('#dissociateViewConfirm').centreonPopin("close");
-  });
   jQuery('#dissociateViewConfirm button.bt_danger').on('click', function () {
-    removeUserFromView(idUser);
-    window.top.location = './main.php?p=103';
+        removeUserFromView(idUser);
+        window.top.location = './main.php?p=103';
+      jQuery('#dissociateViewConfirm').centreonPopin("close");
   });
 
-  jQuery('#setDefaultConfirm').centreonPopin();
-  jQuery('#setDefaultConfirm button.btc').on('click', function () {
-    jQuery('#setDefaultConfirm').centreonPopin("close");
-  });
   jQuery('#setDefaultConfirm button.bt_success').on('click', function () {
-    submitSetDefaultView();
+      submitSetDefaultView();
+      jQuery('#setDefaultConfirm').centreonPopin("close");
   });
 
   /* Add event action for display form */
@@ -945,54 +934,8 @@ jQuery(function () {
     }
   });
 
-  /* Widget information */
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseenter', function () {
-    var $td = jQuery(this);
-    var position = $td.offset();
-    var $popin = jQuery('<div></div>')
-      .addClass('widget-description')
-
-      .appendTo('body');
-    jQuery('<div></div>').text($td.data('description')).appendTo($popin);
-
-    /* Bottom footer */
-    var $bottom = jQuery('<div></div>');
-    jQuery('<div></div>').css('float', 'left')
-      .text('Version ' + $td.data('version')).appendTo($bottom);
-    jQuery('<div></div>').css('float', 'right')
-      .text($td.data('author')).appendTo($bottom);
-    $popin.append($bottom);
-
-    $popin.show()
-      .css({
-        left: position.left - $popin.width() - 10,
-        top: position.top
-      });
-  });
-
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseout', function () {
-    jQuery('.widget-description').hide().remove();
-  });
-
-  /* Add filters on widget */
-  jQuery('#widgetSearch').on('keydown', function () {
-    var searchValue = jQuery(this).val();
-    jQuery('.widget-list tbody tr').show();
-    jQuery('.widget-list tbody tr').filter(function () {
-      var regexp = new RegExp(searchValue, 'i');
-      var $tr = jQuery(this);
-      var $td = jQuery($tr.children()[1]);
-      if ($td.text().search(regexp) === -1) {
-        return true;
-      }
-      return false;
-    }).hide();
-  });
-
   /* Toggle edit mode or view mode */
   jQuery(".toggleEdit > a").on('click', function () {
-    //e.preventDefault();
-    //e.stopPropagation();
     toggleEdit();
   });
 
