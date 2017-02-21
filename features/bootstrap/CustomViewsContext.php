@@ -77,7 +77,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView($this->user);
+        $page->shareView(null, $this->user);
     }
 
     /**
@@ -90,7 +90,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView( null, $this->cgname);
+        $page->shareView( null, null, null, $this->cgname);
     }
     /**
      *  @Given a user is using the public view
@@ -137,7 +137,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView( null, $this->cgname);
+        $page->shareView( null, null, $this->cgname);
     }
 
 
