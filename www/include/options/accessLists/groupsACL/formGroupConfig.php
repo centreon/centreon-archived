@@ -54,7 +54,12 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set Contact Childs
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."' AND contact_contact_id NOT IN (SELECT contact_id FROM contact WHERE contact_admin = '1')");
+    $query = "SELECT DISTINCT contact_contact_id "
+        . "FROM acl_group_contacts_relations "
+        . "WHERE acl_group_id = '" . $acl_group_id . "' "
+        . "AND contact_contact_id NOT IN "
+        . "(SELECT contact_id FROM contact WHERE contact_admin = '1')";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contacts"][$i] = $contacts["contact_contact_id"];
     }
@@ -63,7 +68,10 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set ContactGroup Childs
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'");
+    $query = "SELECT DISTINCT cg_cg_id "
+        . "FROM acl_group_contactgroups_relations "
+        . "WHERE acl_group_id = '" . $acl_group_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $contactgroups = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
     }
@@ -72,7 +80,10 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set Menu link List
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'");
+    $query = "SELECT DISTINCT acl_topology_id "
+        . "FROM acl_group_topology_relations "
+        . "WHERE acl_group_id = '" . $acl_group_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["menuAccess"][$i] = $data["acl_topology_id"];
     }
@@ -95,7 +106,10 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set Action List
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT acl_action_id FROM acl_group_actions_relations WHERE acl_group_id = '".$acl_group_id."'");
+    $query = "SELECT DISTINCT acl_action_id "
+        . "FROM acl_group_actions_relations "
+        . "WHERE acl_group_id = '" . $acl_group_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["actionAccess"][$i] = $data["acl_action_id"];
     }
@@ -107,7 +121,10 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
  */
 # Contacts comes from DB -> Store in $contacts Array
 $contacts = array();
-$query = "SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' AND contact_register = 1 ORDER BY contact_name";
+$query = "SELECT contact_id, contact_name "
+    . "FROM contact WHERE contact_admin = '0' "
+    . "AND contact_register = 1 "
+    . "ORDER BY contact_name";
 $DBRESULT = $pearDB->query($query);
 while ($contact = $DBRESULT->fetchRow()) {
     $contacts[$contact["contact_id"]] = $contact["contact_name"];
@@ -155,7 +172,11 @@ $DBRESULT->free();
 $attrsText      = array("size"=>"30");
 $attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
 $attrsTextarea  = array("rows"=>"6", "cols"=>"150");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$eTemplate  = '<table><tr>'
+    . '<td><div class="ams">{label_2}</div>{unselected}</td>'
+    . '<td align="center">{add}<br /><br /><br />{remove}</td>'
+    . '<td><div class="ams">{label_3}</div>{selected}</td>'
+    . '</tr></table>';
 
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 if ($o == "a") {
@@ -181,31 +202,86 @@ $form->addElement('header', 'menu', _("Menu access list link"));
 $form->addElement('header', 'resource', _("Resources access list link"));
 $form->addElement('header', 'actions', _("Action access list link"));
 
-$ams1 = $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
+$ams1 = $form->addElement(
+    'advmultiselect',
+    'cg_contacts',
+    array(
+        _("Linked Contacts"),
+        _("Available"),
+        _("Selected")
+    ),
+    $contacts,
+    $attrsAdvSelect,
+    SORT_ASC
+);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
-$ams1 = $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect, SORT_ASC);
+$ams1 = $form->addElement(
+    'advmultiselect',
+    'cg_contactGroups',
+    array(
+        _("Linked Contact Groups"),
+        _("Available"),
+        _("Selected")
+    ),
+    $contactGroups,
+    $attrsAdvSelect,
+    SORT_ASC
+);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
-$ams1 = $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect, SORT_ASC);
+$ams1 = $form->addElement(
+    'advmultiselect',
+    'menuAccess',
+    array(
+        _("Menu access"),
+        _("Available"),
+        _("Selected")
+    ),
+    $menus,
+    $attrsAdvSelect,
+    SORT_ASC
+);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
-$ams1 = $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect, SORT_ASC);
+$ams1 = $form->addElement(
+    'advmultiselect',
+    'actionAccess',
+    array(
+        _("Actions access"),
+        _("Available"),
+        _("Selected")
+    ),
+    $action,
+    $attrsAdvSelect,
+    SORT_ASC
+);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
-$ams1 = $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect, SORT_ASC);
+$ams1 = $form->addElement(
+    'advmultiselect',
+    'resourceAccess',
+    array(
+        _("Resources access"),
+        _("Available"),
+        _("Selected")
+    ),
+    $resources,
+    $attrsAdvSelect,
+    SORT_ASC
+);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
@@ -249,7 +325,14 @@ $form->registerRule('exist', 'callback', 'testGroupExistence');
 $form->addRule('acl_group_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 $form->registerRule('cg_group_exists', 'callback', 'testCg');
-$form->addRule('cg_contactGroups', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
+$form->addRule(
+    'cg_contactGroups',
+    _(
+        'Contactgroups exists. If you try to use a LDAP contactgroup, '
+        . 'please verified if a Centreon contactgroup has the same name.'
+    ),
+    'cg_group_exists'
+);
 
 /*
  * Smarty template Init
@@ -275,7 +358,14 @@ $tpl->assign("helptext", $helptext);
  * Just watch a Contact Group information
  */
 if ($o == "w") {
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$group_id."'"));
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array(
+            "onClick" => "javascript:window.location.href='?p=".$p."&o=c&cg_id=".$group_id."'"
+        )
+    );
     $form->setDefaults($group);
     $form->freeze();
 } elseif ($o == "c") {

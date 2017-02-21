@@ -571,7 +571,8 @@ class CentreonCustomView
             foreach ($params['lockedUsergroups'] as $lockedUsergroup) {
                 $sharedUsergroups[$lockedUsergroup] = 1;
             }
-            $params['unlockedUsergroups'] = isset($params['unlockedUsergroups']) ? $params['unlockedUsergroups'] : array();
+            $params['unlockedUsergroups'] = isset($params['unlockedUsergroups']) ?
+                $params['unlockedUsergroups'] : array();
             foreach ($params['unlockedUsergroups'] as $unlockedUsergroup) {
                 $sharedUsergroups[$unlockedUsergroup] = 0;
             }
