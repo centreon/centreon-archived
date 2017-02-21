@@ -710,8 +710,11 @@ ID                             Label                                            
 ============================== ============================================================ ============================================================ ===========================================================
 buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
+<<<<<<< HEAD
 failover                       Failover name                                                Name of the output which will act as failover                -
 
+=======
+>>>>>>> 272b9ecca... remove broker failover and temporary configuration
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
 metrics_path                   RRD file directory for metrics                               RRD file directory, for example /var/lib/centreon/metrics    -                                                          

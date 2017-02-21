@@ -14,6 +14,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
 
 -- custom views share options
 ALTER TABLE custom_view_user_relation ADD is_share tinyint(1) NOT NULL DEFAULT 0 AFTER is_consumed;
+UPDATE custom_view_user_relation SET is_share = 1 WHERE is_owner = 0;
 
 -- Remove useless proxy option
 DELETE FROM options WHERE options.key = 'proxy_protocol';
@@ -21,15 +22,15 @@ DELETE FROM options WHERE options.key = 'proxy_protocol';
 -- Add column to hide acl resources
 ALTER TABLE acl_resources ADD locked tinyint(1) NOT NULL DEFAULT 0 AFTER changed;
 
+-- Update broker cache directory column name
+ALTER TABLE cfg_centreonbroker CHANGE COLUMN `retention_path` `cache_directory` VARCHAR(255) DEFAULT NULL;
+
 -- change column type
 ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
 
 -- Fix problem regarding the recurrent downtimes
 UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;
 
--- Update broker cache directory column name
-ALTER TABLE cfg_centreonbroker CHANGE COLUMN `retention_path` `cache_directory` VARCHAR(255) DEFAULT NULL;
-
 -- Update event queue max size
-ALTER TABLE cfg_centreonbroker CHANGE COLUMN `event_queue_max_size` `event_queue_max_size` int(11) DEFAULT 1000000;
-UPDATE cfg_centreonbroker SET event_queue_max_size = 1000000 WHERE event_queue_max_size < 1000000;
+ALTER TABLE cfg_centreonbroker CHANGE COLUMN `event_queue_max_size` `event_queue_max_size` int(11) DEFAULT 100000;
+UPDATE cfg_centreonbroker SET event_queue_max_size = 100000 WHERE event_queue_max_size < 100000;

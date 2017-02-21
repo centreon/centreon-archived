@@ -121,11 +121,7 @@ function getCentreonBrokerInformation($id)
 
     $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate,
                     config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
-<<<<<<< HEAD
-                    retention_path, command_file
-=======
                     cache_directory, command_file, daemon
->>>>>>> 272b9ecca... remove broker failover and temporary configuration
                   FROM cfg_centreonbroker 
                   WHERE config_id = " . $id;
     try {
