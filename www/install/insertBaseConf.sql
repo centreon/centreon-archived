@@ -629,16 +629,11 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_config`) VALUES
 (1, 6, 0),
 (1, 8, 0),
-(1, 12, 1),
 (2, 11, 1),
-(2, 12, 1),
 (3, 11, 1),
-(3, 12, 1),
 (5, 6, 0),
 (7, 8, 0),
-(7, 12, 1),
-(8, 6, 0),
-(8, 12, 1);
+(8, 6, 0);
 
 --
 -- Contenu de la table `cb_tag_type_relation`
@@ -726,9 +721,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (20, 25, 0, 101),
 (20, 26, 0, 102),
 (20, 27, 0, 103),
-(21, 28, 0, 2),
-(21, 31, 0, 2),
-(21, 32, 0, 2),
 (16, 34, 0, 7),
 (16, 35, 0, 8),
 (14, 34, 0, 9),
