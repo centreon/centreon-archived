@@ -687,6 +687,7 @@ jQuery(function () {
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#deleteViewConfirm").centreonPopin("open");
   });
+
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
     var viewId = jQuery(
@@ -736,7 +737,7 @@ jQuery(function () {
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
-    jQuery("#setDefaultConfirm").centreonPopin("open");
+    jQuery("#setDefaultConfirm").centreonPopin('open');
   });
 
   jQuery('input[name="create_load[create_load]"]').change(function (){
@@ -765,9 +766,6 @@ jQuery(function () {
     step: 5,
     slide: function(event, ui) {
       jQuery("#timer_value").html(ui.value + " seconds");
-    },
-    stop: function(event, ui) {
-      //setTimerLabel();
     }
   });
   jQuery("#timer_value").html(rotationTimer + " seconds");
@@ -798,29 +796,20 @@ jQuery(function () {
   });
 
   /* Initialize popin */
-  jQuery('#deleteViewConfirm').centreonPopin();
-  jQuery('#deleteViewConfirm button.btc').on('click', function () {
-    jQuery('#deleteViewConfirm').centreonPopin("close");
-  });
   jQuery('#deleteViewConfirm button.bt_danger').on('click', function () {
     submitDeleteView();
+    jQuery('#deleteViewConfirm').centreonPopin("close");
   });
 
-  jQuery('#dissociateViewConfirm').centreonPopin();
-  jQuery('#dissociateViewConfirm button.btc').on('click', function () {
-    jQuery('#dissociateViewConfirm').centreonPopin("close");
-  });
   jQuery('#dissociateViewConfirm button.bt_danger').on('click', function () {
-    removeUserFromView(idUser);
-    window.top.location = './main.php?p=103';
+        removeUserFromView(idUser);
+        window.top.location = './main.php?p=103';
+      jQuery('#dissociateViewConfirm').centreonPopin("close");
   });
 
-  jQuery('#setDefaultConfirm').centreonPopin();
-  jQuery('#setDefaultConfirm button.btc').on('click', function () {
-    jQuery('#setDefaultConfirm').centreonPopin("close");
-  });
   jQuery('#setDefaultConfirm button.bt_success').on('click', function () {
-    submitSetDefaultView();
+      submitSetDefaultView();
+      jQuery('#setDefaultConfirm').centreonPopin("close");
   });
 
   /* Add event action for display form */
