@@ -46,7 +46,7 @@ $central_module_configuration = array(
     'write_timestamp' => array('write_timestamp' => 1),
     'write_thread_id' => array('write_thread_id' => 1),
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
-    'retention_path' => '/var/lib/centreon-broker',
+    'cache_directory' => '/var/lib/centreon-broker',
     'logger' => array(
         array(
             'name' => '/var/log/centreon-broker/central-module.log',
@@ -63,7 +63,6 @@ $central_module_configuration = array(
         array(
             'name' => 'Central',
             'port' => '5669',
-            'failover' => '',
             'retry_interval' => '',
             'buffering_timeout' => '',
             'host' => '127.0.0.1',
@@ -89,7 +88,7 @@ $poller_module_configuration = array(
     'write_timestamp' => array('write_timestamp' => 1),
     'write_thread_id' => array('write_thread_id' => 1),
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
-    'retention_path' => '/var/lib/centreon-broker',
+    'cache_directory' => '/var/lib/centreon-broker',
     'logger' => array(
         array(
             'name' => '/var/log/centreon-broker/poller-module.log',
@@ -106,7 +105,6 @@ $poller_module_configuration = array(
         array(
             'name' => 'Central',
             'port' => '5669',
-            'failover' => '',
             'retry_interval' => '',
             'buffering_timeout' => '',
             'host' => $wizard->getValue(2, 'central_address'),
@@ -132,7 +130,7 @@ $central_broker_configuration = array(
     'write_timestamp' => array('write_timestamp' => 1),
     'write_thread_id' => array('write_thread_id' => 1),
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
-    'retention_path' => '/var/lib/centreon-broker',
+    'cache_directory' => '/var/lib/centreon-broker',
     'event_queue_max_size' => '50000',
     'logger' => array(
         array(
@@ -170,7 +168,6 @@ $central_broker_configuration = array(
         array(
             'name' => $wizard->getValue(2, 'prefix_configname') . '-broker-master-sql',
             'db_type' => 'mysql',
-            'failover' => '',
             'db_host' => $conf_centreon['hostCentstorage'],
             'retry_interval' => '60',
             'buffering_timeout' => '0',
@@ -187,7 +184,6 @@ $central_broker_configuration = array(
             'name' =>  $wizard->getValue(2, 'prefix_configname') . '-broker-master-perfdata',
             'interval' => '300',
             'length' => '15552000',
-            'failover' => '',
             'retry_interval' => '60',
             'buffering_timeout' => '0',
             'db_type' => 'mysql',
@@ -204,7 +200,6 @@ $central_broker_configuration = array(
         array(
             'name' => $wizard->getValue(2, 'prefix_configname') . '-broker-master-rrd',
             'port' => '5670',
-            'failover' => '',
             'retry_interval' => '60',
             'buffering_timeout' => '0',
             'host' => '127.0.0.1',
@@ -230,7 +225,7 @@ $central_rrd_configuration = array(
     'write_timestamp' => array('write_timestamp' => 1),
     'write_thread_id' => array('write_thread_id' => 1),
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
-    'retention_path' => '/var/lib/centreon-broker',
+    'cache_directory' => '/var/lib/centreon-broker',
     'event_queue_max_size' => '50000',
     'logger' => array(
         array(
@@ -271,7 +266,6 @@ $central_rrd_configuration = array(
             'status_path' => '/var/lib/centreon/status',
             'retry_interval' => '60',
             'buffering_timeout' => '0',
-            'failover' => '',
             'path' => '',
             'port' => '',
             'type' => 'rrd',

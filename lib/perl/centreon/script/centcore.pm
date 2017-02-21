@@ -235,7 +235,7 @@ sub getBrokerStats($) {
         mkpath($destFile);
     }
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name, retention_path "
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name, cache_directory "
         . "FROM cfg_centreonbroker "
         . "WHERE stats_activate='1' "
         . "AND ns_nagios_server = '" . $poller_id . "'");
@@ -250,7 +250,7 @@ sub getBrokerStats($) {
         $port = checkSSHPort($server_info->{ssh_port});
 
         # Copy the stat file into a buffer
-        my $statistics_file = $data->{retention_path} . "/" . $data->{config_name} . "-stats.json";
+        my $statistics_file = $data->{cache_directory} . "/" . $data->{config_name} . "-stats.json";
         $cmd = "$self->{ssh} -q $server_info->{ns_ip_address} -p $port 'cat \"" . $statistics_file . "\" > $statPipe'";
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},

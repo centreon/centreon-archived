@@ -26,3 +26,10 @@ ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
 
 -- Fix problem regarding the recurrent downtimes
 UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;
+
+-- Update broker cache directory column name
+ALTER TABLE cfg_centreonbroker CHANGE COLUMN `retention_path` `cache_directory` VARCHAR(255) DEFAULT NULL;
+DELETE FROM cfg_centreonbroker_info WHERE `config_key` = 'failover';
+DELETE FROM cb_module WHERE `name` = 'Failover';
+DELETE FROM cb_type WHERE `type_name` = 'Failover';
+DELETE FROM cb_field WHERE `fieldname` = 'failover';

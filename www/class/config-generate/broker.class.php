@@ -47,6 +47,9 @@ class Broker extends AbstractObjectXML
         config_write_timestamp,
         config_write_thread_id,
         ns_nagios_server,
+        event_queue_max_size,
+        command_file,
+        cache_directory,
         stats_activate,
         correlation_activate,
         event_queue_max_size,
@@ -110,7 +113,7 @@ class Broker extends AbstractObjectXML
             $flow_count = 0;
 
             $config_name = $row['config_name'];
-            $retention_path = $row['retention_path'];
+            $cache_directory = $row['cache_directory'];
             $stats_activate = $row['stats_activate'];
             $correlation_activate = $row['correlation_activate'];
 
@@ -124,7 +127,18 @@ class Broker extends AbstractObjectXML
             $object['log_thread_id'] = $row['config_write_thread_id'];
             $object['event_queue_max_size'] = $row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
+            $object['cache_directory'] = $cache_directory;
 
+            if ($row['daemon'] == '1') {
+                $watchdog[] = array(
+                    'cbd' => array(
+                        'name' => $row['config_name'],
+                        'configuration_file' => $this->engine['broker_cfg_path'] . '/' . $row['config_filename'],
+                        'run' => 1,
+                        'reload' => 1
+                    )
+                );
+            }
 
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
@@ -165,48 +179,14 @@ class Broker extends AbstractObjectXML
                     $flow_count++;
                 }
             }
-            # Failover parameters
-            foreach ($object as &$subvalue) {
-                if (is_array($subvalue)) {
-                    foreach ($subvalue as $config_type => &$flow) {
-                        if ($config_type == 'output' && isset($flow['name']) &&
-                            !isset($flow['failover']) && isset($flow['type']) &&
-                            $flow['type'] != 'file'
-                        ) {
-                            $flow['failover'] = $flow['name'] . '-' . $config_type . '-failover';
-                            $object[$flow_count][$config_type] = array(
-                                'type' => 'file',
-                                'name' => $flow['name'] . '-' . $config_type . '-failover',
-                                'path' => $retention_path . '/' . $config_name . '_' . $flow['name'] . '.retention',
-                                'protocol' => 'bbdo',
-                                'compression' => 'auto',
-                                'max_size' => '524288000'
-                            );
-                            $flow_count++;
-                        }
-                    }
-                }
-            }
-
-            # Temporary parameters
-            $object[$flow_count]['temporary'] = array(
-                'type' => 'file',
-                'name' => $config_name . '-temporary',
-                'path' => $retention_path . '/' . $config_name . '.temporary',
-                'protocol' => 'bbdo',
-                'compression' => 'auto',
-                'max_size' => '524288000'
-            );
-            $flow_count++;
 
             # Stats parameters
             if ($stats_activate == '1') {
                 $object[$flow_count]['stats'] = array(
                     'type' => 'stats',
                     'name' => $config_name . '-stats',
-                    'json_fifo' => $retention_path . '/' . $config_name . '-stats.json',
+                    'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
                 );
-                $flow_count++;
             }
 
             # Generate file
