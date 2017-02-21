@@ -340,12 +340,13 @@ class CentreonCustomView
         //owner
         if ($this->checkOwnership($viewId)) {
             //if not shared view consumed
-            if ($this->checkOtherShareViewUnlocked($viewId, $this->userId) == 0) {
+            if (!$this->checkOtherShareViewUnlocked($viewId, $this->userId)) {
                 $query = "DELETE FROM custom_views WHERE custom_view_id = " . $this->db->escape($viewId);
                 $this->db->query($query);
             } else {
-                $query = "UPDATE custom_view_user_relation SET is_consumed = 0
-                WHERE custom_view_id = " . $this->db->escape($viewId) . " AND user_id = " . $this->userId;
+                $query = "DELETE FROM custom_view_user_relation "
+                    . "WHERE custom_view_id = " . $this->db->escape($viewId) . " "
+                    . "AND (is_consumed = 0 OR is_owner = 1) ";
                 $this->db->query($query);
             }
             //other
@@ -353,7 +354,7 @@ class CentreonCustomView
             // if owner consumed = 0 -> delete
             if ($this->checkOwnerViewStatus($viewId) == 0) {
                 //if not other shared view consumed, delete all
-                if ($this->checkOtherShareViewUnlocked($viewId, $this->userId) == 0) {
+                if (!$this->checkOtherShareViewUnlocked($viewId, $this->userId)) {
                     $query = "DELETE FROM custom_views WHERE custom_view_id = " . $this->db->escape($viewId);
                     $this->db->query($query);
                     //if shared view consumed, delete for me
