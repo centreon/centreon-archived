@@ -236,10 +236,18 @@ try {
         'defaultDataset' => array()
     );
     $formShareView->addElement(
-            'select2', 'unlocked_user_id', _("Unlocked users"), array(), $attrContacts
+        'select2',
+        'unlocked_user_id',
+        _("Unlocked users"),
+        array(),
+        $attrContacts
     );
     $formShareView->addElement(
-            'select2', 'locked_user_id', _("Locked users"), array(), $attrContacts
+        'select2',
+        'locked_user_id',
+        _("Locked users"),
+        array(),
+        $attrContacts
     );
 
     /**
@@ -253,10 +261,18 @@ try {
         'defaultDataset' => array()
     );
     $formShareView->addElement(
-            'select2', 'unlocked_usergroup_id', _("Unlocked user groups"), array(), $attrContactgroups
+        'select2',
+        'unlocked_usergroup_id',
+        _("Unlocked user groups"),
+        array(),
+        $attrContactgroups
     );
     $formShareView->addElement(
-            'select2', 'locked_usergroup_id', _("Locked user groups"), array(), $attrContactgroups
+        'select2',
+        'locked_usergroup_id',
+        _("Locked user groups"),
+        array(),
+        $attrContactgroups
     );
 
     /*
