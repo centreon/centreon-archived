@@ -11,6 +11,7 @@ class CustomViewsContext extends CentreonContext
     protected $newCustomViewName;
     protected $user;
     protected $owner;
+    protected $cgname;
 
     /**
      *  Build a new context.
@@ -76,7 +77,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView($this->user, null, 0);
+        $page->shareView($this->user);
     }
 
     /**
@@ -89,7 +90,7 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView( null, $this->cgname, 0);
+        $page->shareView( null, $this->cgname);
     }
     /**
      *  @Given a user is using the public view
@@ -105,9 +106,12 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserIsUsingTheSharedView()
     {
-        $this->anotherUserWishesToAddANewCustomView();
-        $this->heCanAddTheSharedView();
+        $this->changeUser($this->user);
 
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $page->loadView($this->customViewName);
     }
 
     /**
@@ -167,7 +171,6 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->editView($this->newCustomViewName, 1);
-
 
         $this->spin(
             function ($context) use ($page) {
@@ -231,7 +234,7 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
 
-        $page->loadView(null, $this->customViewName);
+        $page->loadView($this->customViewName);
     }
 
     /**
@@ -263,7 +266,7 @@ class CustomViewsContext extends CentreonContext
             function ($context) use ($page) {
                 return $page->isCurrentViewEditable();
             },
-            'Current view is not modifiyable',
+            'Current view is not modifiable',
             30
         );
     }
@@ -276,7 +279,8 @@ class CustomViewsContext extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 1;
-            }
+            },
+            'The view is not visible.'
         );
     }
 
@@ -289,7 +293,7 @@ class CustomViewsContext extends CentreonContext
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
             },
-            'the view is visible anymore'
+            'The view is visible.'
         );
     }
 
@@ -304,7 +308,7 @@ class CustomViewsContext extends CentreonContext
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
             },
-            'the view is visible anymore for the user'
+            'The view is visible for the user.'
         );
     }
 
