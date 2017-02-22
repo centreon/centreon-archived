@@ -19,10 +19,11 @@ class LimitMetricInChartContext extends CentreonContext
     private $chartPage = null;
 
     /**
-     * @Given a service with several metrics
+     *  @Given a service with several metrics
      */
     public function aServiceWithSeveralMetrics()
     {
+        // Create host.
         $hostConfig = new HostConfigurationPage($this);
         $hostProperties = array(
             'name' => $this->hostName,
@@ -37,6 +38,7 @@ class LimitMetricInChartContext extends CentreonContext
         $hostConfig->setProperties($hostProperties);
         $hostConfig->save();
 
+        // Create service.
         $serviceConfig = new ServiceConfigurationPage($this);
         $serviceProperties = array(
             'description' => $this->serviceName,
@@ -50,54 +52,52 @@ class LimitMetricInChartContext extends CentreonContext
         $serviceConfig->setProperties($serviceProperties);
         $serviceConfig->save();
 
+        // Ensure service is monitored.
         $this->restartAllPollers();
+        sleep(7);
 
+        // Send multiple perfdata.
         $perfdata = '';
         for ($i = 0; $i < 20 ; $i++) {
             $perfdata .= 'test' . $i . '=1s ';
         }
-
-        sleep(5);
         $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
-        $self = $this;
+
+        // Ensure perfdata were processed.
         $this->spin(
-            function($context) use ($self) {
-                $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
+            function($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    $context->hostName,
+                    $context->serviceName
+                );
                 $properties = $page->getProperties();
                 if (count($properties['perfdata']) < 20) {
                     return false;
                 }
                 return true;
             },
-            'Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName
+            'Cannot get performance data of ' . $this->hostName . ' / ' . $this->serviceName
         );
     }
 
     /**
-     * @When i display the chart in performance page
+     *  @When I display the chart in performance page
      */
     public function iDisplayTheChartInPerformancePage()
     {
         $this->chartPage = new GraphMonitoringPage($this);
         $this->chartPage->setFilterbyChart($this->hostName, $this->serviceName);
-        sleep(3);
-
-        if (!$this->chartPage->hasChart($this->hostName, $this->serviceName)) {
-            throw new \Exception('Chart ' . $this->hostName . ' - ' . $this->serviceName . ' does not exist.');
-        }
+        $this->spin(
+            function ($context) {
+                return $this->chartPage->hasChart($this->hostName, $this->serviceName);
+            },
+            'Chart ' . $this->hostName . ' - ' . $this->serviceName . ' does not exist.'
+        );
     }
 
     /**
-     * @When i display the chart in service details page
-     */
-    public function iDisplayTheChartInServiceDetailsPage()
-    {
-        new ServiceMonitoringDetailsPage($this, $this->hostName, $this->serviceName);
-        $this->chartPage = new GraphServiceDetailsMonitoringPage($this);
-    }
-
-    /**
-     * @Then a message says that the chart will not be displayed
+     *  @Then a message says that the chart will not be displayed
      */
     public function aMessageSaysThatTheChartWillNotBeDisplayed()
     {
