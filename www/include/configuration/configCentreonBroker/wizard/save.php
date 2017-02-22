@@ -63,6 +63,7 @@ $central_module_configuration = array(
         array(
             'name' => 'Central',
             'port' => '5669',
+            'failover' => '',
             'retry_interval' => '',
             'buffering_timeout' => '',
             'host' => '127.0.0.1',
@@ -105,6 +106,7 @@ $poller_module_configuration = array(
         array(
             'name' => 'Central',
             'port' => '5669',
+            'failver' => '',
             'retry_interval' => '',
             'buffering_timeout' => '',
             'host' => $wizard->getValue(2, 'central_address'),
@@ -168,6 +170,7 @@ $central_broker_configuration = array(
         array(
             'name' => $wizard->getValue(2, 'prefix_configname') . '-broker-master-sql',
             'db_type' => 'mysql',
+            'failover' => '',
             'db_host' => $conf_centreon['hostCentstorage'],
             'retry_interval' => '60',
             'buffering_timeout' => '0',
@@ -184,6 +187,7 @@ $central_broker_configuration = array(
             'name' =>  $wizard->getValue(2, 'prefix_configname') . '-broker-master-perfdata',
             'interval' => '300',
             'length' => '15552000',
+            'failover' => '',
             'retry_interval' => '60',
             'buffering_timeout' => '0',
             'db_type' => 'mysql',
@@ -200,6 +204,7 @@ $central_broker_configuration = array(
         array(
             'name' => $wizard->getValue(2, 'prefix_configname') . '-broker-master-rrd',
             'port' => '5670',
+            'failover' => '',
             'retry_interval' => '60',
             'buffering_timeout' => '0',
             'host' => '127.0.0.1',

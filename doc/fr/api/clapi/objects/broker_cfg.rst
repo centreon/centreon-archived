@@ -576,6 +576,8 @@ compression_buffer             Compression buffer size                          
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
                                                                                             Default is -1 (zlib compression)                             -
 
+failover                       Failover name                                                Name of the output which will act as failover                -
+
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
 category                       Filter category                                              Category filter for flux in output                           -
@@ -617,6 +619,8 @@ compression_buffer             Compression buffer size                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
                                                                                             Default is -1 (zlib compression)                             -
+
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -660,6 +664,8 @@ compression_buffer             Compression buffer size                          
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
                                                                                             Default is -1 (zlib compression)                             -
 
+failover                       Failover name                                                Name of the output which will act as failover                -
+
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
 max_size                       Maximum size of file                                         Maximum size in bytes.                                       -                                                          
@@ -687,6 +693,8 @@ compression_buffer             Compression buffer size                          
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
                                                                                             Default is -1 (zlib compression)                             -
 
+failover                       Failover name                                                Name of the output which will act as failover                -
+
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
 path                           File path                                                    Path to the file.                                            -                                                          
@@ -702,6 +710,8 @@ rrd:
 ID                             Label                                                        Description                                                  Possible values                                            
 ============================== ============================================================ ============================================================ ===========================================================
 buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
+
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -726,6 +736,8 @@ storage:
 ID                             Label                                                        Description                                                  Possible values                                            
 ============================== ============================================================ ============================================================ ===========================================================
 buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
+
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -764,7 +776,7 @@ local_client:
 ============================== ============================================================ ============================================================ ===========================================================
 ID                             Label                                                        Description                                                  Possible values                                            
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
 compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
 
@@ -774,6 +786,8 @@ compression_buffer             Compression buffer size                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
                                                                                             Default is -1 (zlib compression)                             -
+
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -790,6 +804,8 @@ sql:
 ID                             Label                                                        Description                                                  Possible values                                            
 ============================== ============================================================ ============================================================ ===========================================================
 buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
+
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
