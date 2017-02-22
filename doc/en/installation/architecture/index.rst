@@ -15,3 +15,6 @@ You will find here all architectures supported by this version 2.7 of the interf
    03c
    03d
    03e
+   network
+
+If you have feedbacks regarding our architecture, please inform us on `github <https://github.com/centreon/centreon>`_.
