@@ -3,29 +3,42 @@
 # Preconfigured variables, most of them compatible with Unix-like systems.
 
 # Configuration variables.
-INSTALL_DIR_CENTREON="/usr/local/share/centreon"
+INSTALL_DIR_CENTREON="/usr/share/centreon"
 CENTREON_LOG="/var/log/centreon"
-CENTREON_ETC="/usr/local/etc/centreon"
+CENTREON_ETC="/etc/centreon"
 CENTREON_RUNDIR="/var/run/centreon"
-CENTREON_GENDIR="/var/cache/centreon"
+CENTREON_GENDIR="/usr/share/centreon/filesGeneration"
 CENTREON_VARLIB="/var/lib/centreon"
 CENTSTORAGE_RRD="/var/lib/centreon"
 CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
 CENTREON_USER="centreon"
 CENTREON_GROUP="centreon"
 PLUGIN_DIR="/usr/lib/nagios/plugins"
-CENTREON_BINDIR="/usr/local/bin"
+CENTREON_PLUGINS="/usr/lib/centreon/plugins"
+CENTREON_BINDIR="/usr/share/centreon/bin"
+CENTSTORAGE_BINDIR="/usr/share/centreon/bin"
+CENTCORE_BINDIR="/usr/share/centreon/bin"
+CENTREONTRAPD_BINDIR="/usr/share/centreon/bin"
+CENTREON_DATADIR="/usr/share/centreon/data"
 MONITORINGENGINE_BINARY="/usr/sbin/centengine"
-MONITORINGENGINE_INIT_SCRIPT="/usr/sbin/service centengine"
+MONITORINGENGINE_INIT_SCRIPT="centengine"
 MONITORINGENGINE_ETC="/etc/centreon-engine"
 MONITORINGENGINE_LOG="/var/log/centreon-engine"
 MONITORINGENGINE_USER="centreon-engine"
 BROKER_ETC="/etc/centreon-broker"
 BROKER_INIT_SCRIPT="/usr/sbin/service cbd"
 BROKER_USER="centreon-broker"
+SUDO_FILE="/etc/sudoers.d/centreon"
+SNMP_ETC="/etc/snmp"
+PEAR_PATH="/usr/share/pear"
+SERVICE_BINARY="/usr/sbin/service"
 
 # Install script behavior.
+PROCESS_CENTREON_WWW=1
+PROCESS_CENTSTORAGE=1
+PROCESS_CENTCORE=1
 PROCESS_CENTREON_PLUGINS=1
+PROCESS_CENTREON_SNMP_TRAPS=1
 FORCE_SUDO_CONF=1
 APACHE_RELOAD=1
 PEAR_AUTOINST=1
