@@ -224,7 +224,29 @@ function yes_no_default() {
 }
 
 #----
-## print a message, test directory if answer is correct 
+## print a message, simple answer to the question
+#----
+function answer() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res=""
+	local first=0
+	while [ ! -z "$res" ] ; do
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
+		echo -en "> "
+		read res
+		if [ -z "$res" ] ; then 
+			[ "$default" != "NO_DEFAULT" ] && res=$default
+		fi
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+#----
+## print a message, test directory if answer is correct
 ## Loop if not a valid directory
 ## @param	message
 ## @param	default value (use "NO_DEFAULT" if not default value)
@@ -238,49 +260,15 @@ function answer_with_testdir() {
 	local res="not_define"
 	local first=0
 	while [ ! -d "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a directory or does not exist.")" "$critical" 
-		echo -e "\n$message"
-		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
-		echo -en "> "
-		read res
-		if [ -z "$res" ] ; then 
-			[ "$default" != "NO_DEFAULT" ] && res=$default
-		fi
-		if [ -z ${res#/} ] ; then
-			echo_passed  "$(gettext "You select slash...")"
-			res="not_define"
-		else
-			first=1
-		fi
-	done
-	eval $var_ref=$res
-	return 0
-}
-
-#----
-## print a message, test directory if answer is correct, this directory is optional
-## Loop if not a valid directory
-## @param	message
-## @param	default value (use "NO_DEFAULT" if not default value)
-## @param	global variable to set a result
-## @return 0	end
-#----
-function answer_with_testoptionaldir() {
-	local message=$1
-	local default=$2
-	local var_ref=$3
-	local res="not_define"
-	local first=0
-	while [ -n "$res" -a ! -d "$res" ]; do
 		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a directory or does not exist.")" "$critical"
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
 		echo -en "> "
 		read res
-		if [ -z "$res" ] ; then 
+		if [ -z "$res" ] ; then
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
-		if [ -n "${res}" -a -z "${res#/}" ] ; then
+		if [ -z ${res#/} ] ; then
 			echo_passed  "$(gettext "You select slash...")"
 			res="not_define"
 		else
@@ -521,14 +509,6 @@ function testdir_clean() {
 	fi
 }
 
-function test_answer() {
-	if [ ! -z $2 ] ; then
-		if [ $2 != "" ] ; then
-			eval $1=$2
-		fi
-	fi
-}
-
 function dir_test_create() {
 	local dirname="$1"
 	if [ ! -d "$1" ] ; then
@@ -581,43 +561,6 @@ function group_create() {
 }
 
 #----
-## use to select a data on array 
-## set to a variable a result of chose
-## @param	variable to set a resutl
-## @param	List of possiblity to chose
-## @return 0	end
-#----
-function select_in_array() {
-	local variable=$1
-	shift
-	local array=($@)
-	local res=1
-	local count=0
-	local first=0
-	while [ $res -gt $count ] ; do
-		[ $first -eq 1 ] && echo_failure "$(gettext "\$res is not a valid response.")" "$critical" 
-		count=0
-		local limit=${#array[@]}
-		for (( datas=0; datas < limit; datas++ )) ; do
-			echo -e "\t$datas:\t${array[$datas]}"
-			let "count += 1" 
-		done
-		echo -en "> "
-		read res
-		first=1
-		if [ $res -eq $res 2>/dev/null ] ; then
-			echo " " 
-		else 
-			echo_failure "$(gettext "$res is not an integer")" "$fail"
-			res=255
-			first=0
-		fi
-	done
-	eval $variable=${array[$res]}
-	return 0
-}
-
-#----
 ## Define where is  plugins directory
 ## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
 ## @Globals     PLUGIN_DIR, DEFAULT_PLUGIN_DIR
@@ -625,7 +568,7 @@ function select_in_array() {
 function locate_plugindir() {
         testdir_clean "$PLUGIN_DIR" "PLUGIN_DIR"
         if [ -z "$PLUGIN_DIR" ] ; then
-                answer_with_testdir "$(gettext "Where is your monitoring plugins (libexec) directory ?")" "$DEFAULT_PLUGIN_DIR" "PLUGIN_DIR"
+                answer "$(gettext "Where is your monitoring plugins (libexec) directory ?")" "$DEFAULT_PLUGIN_DIR" "PLUGIN_DIR"
                 echo_success "$(gettext "Path" ) $PLUGIN_DIR" "$ok"
         fi
         PLUGIN_DIR=`trim ${PLUGIN_DIR%/}`
@@ -640,7 +583,7 @@ function locate_plugindir() {
 function locate_centreon_plugins() {
         testdir_clean "$CENTREON_PLUGINS" "CENTREON_PLUGINS"
         if [ -z "$CENTREON_PLUGINS" ] ; then
-                answer_with_testdir "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
+                answer "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
                 echo_success "$(gettext "Path" ) $CENTREON_PLUGINS" "$ok"
         fi
         CENTREON_PLUGINS=`trim ${CENTREON_PLUGINS%/}`
@@ -1206,15 +1149,20 @@ function reload_service_apache() {
 	local service=""
 	log "INFO" "$(gettext "Reloading Apache...")"
 	if [ -x /etc/init.d/apache ] ; then
-		service="/etc/init.d/apache"
+		service="apache"
 	elif [ -x /etc/init.d/httpd ] ; then
-		service="/etc/init.d/httpd"
+		service="httpd"
+	elif [ -x /bin/systemctl ] ; then
+	    local count_service=$(/bin/systemctl list-units | grep httpd | wc -l)
+	    if [ "$count_service" -gt "0" ] ; then
+	        service="httpd"
+	    fi
 	elif [ -x /etc/init.d/apache2 ] ; then
-		service="/etc/init.d/apache2"
+		service="apache2"
 	elif [ -x /usr/local/etc/rc.d/apache ] ; then
-		service="/usr/local/etc/rc.d/apache"
+		service="apache"
 	elif [ -x /usr/local/etc/rc.d/apache2 ]; then
-		service="/etc/init.d/apache2"
+		service="apache2"
 	else
 		echo_warning "$(gettext "Unable to restart Apache server")" "$warning"
 		log "WARN" "$(gettext "Unable to restart Apache server")"
@@ -1222,7 +1170,7 @@ function reload_service_apache() {
 
 	log "DEBUG" "$(gettext "use") : $service"
 	# reload apache service
-	$service reload >> $LOG_FILE 2>&1
+	$SERVICE_BINARY $service reload >> $LOG_FILE 2>&1
 	if [ "$?" -eq 0 ] ; then
 		echo_success "$(gettext "Reloading Apache service")" "$ok"
 		return 0
@@ -1246,13 +1194,38 @@ function prepare_apache_config() {
 	# if INSTALL_DIR_CENTREON not found, ask:
 	[ -z "$INSTALL_DIR_CENTREON" ] && locate_centreon_installdir
 	
-	# Prepare apache config
+
+
+    # Check apache version
+    apache_2_4=$(apachectl -v 2>/dev/null | grep '2\.[4-9]' | wc -l)
+
+    # Prepare apache config
+    if [ "$apache_2_4" -gt "0" ] ; then
+    ${CAT} << __EOT__ > $directory/centreon.apache.conf
+#
+# Section add by Centreon Install Setup
+#
+
+Alias /centreon $INSTALL_DIR_CENTREON/www/
+
+<Directory "$INSTALL_DIR_CENTREON/www">
+    Options Indexes
+    AllowOverride AuthConfig Options
+    Order allow,deny
+    Allow from all
+    Require all granted
+</Directory>
+
+RedirectMatch ^/$ /centreon/index.php
+__EOT__
+    else
 	${CAT} << __EOT__ > $directory/centreon.apache.conf
-##
-## Section add by Centreon Install Setup
-##
+#
+# Section add by Centreon Install Setup
+#
 	
 Alias /centreon $INSTALL_DIR_CENTREON/www/
+
 <Directory "$INSTALL_DIR_CENTREON/www">
     Options Indexes
     AllowOverride AuthConfig Options
@@ -1260,7 +1233,9 @@ Alias /centreon $INSTALL_DIR_CENTREON/www/
     Allow from all
 </Directory>
 
+RedirectMatch ^/$ /centreon/index.php
 __EOT__
+    fi
 
 	if [ -e $directory/centreon.apache.conf ] ; then 
 		return 0
@@ -1286,13 +1261,13 @@ function prepare_sudo_config() {
 
     	locate_sudo
 	# Find Monitoring Engine Init Script
-	answer_with_testfile "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
+	answer "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
 	# find nagios binary if not define
 	[ -z "$MONITORINGENGINE_BINARY" ] && answer_with_testfile "$(gettext "What is the Monitoring engine binary ?") [$DEFAULT_MONITORINGENGINE_BINARY]" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
 	[ -z "cbd" ] && locate_broker_init_script
-	[ -z "$SERVICE_BINARY" ] && answer_with_testfile "$(gettext "Where is your service command binary ?")" "$(which service)" "PLUGIN_DIR"
+	[ -z "$SERVICE_BINARY" ] && answer_with_testfile "$(gettext "Where is your service command binary ?")" "$(which service)" "SERVICE_BINARY"
 	# Prepare sudo.conf
 
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
