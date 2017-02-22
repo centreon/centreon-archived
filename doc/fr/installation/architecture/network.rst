@@ -51,7 +51,7 @@ Tableau des flux de la supervision
 +====================+====================================+============+===========+=================================================+
 | Central serveur    | Collecteur                         | SSH        | TCP 22    | Export des configurations Centreon              |
 +--------------------+------------------------------------+------------+-----------+-------------------------------------------------+
-| Collecteur         | Central serveur                    | BBDO       | TCP 5679  | Transfert des données de supervision collectées |
+| Collecteur         | Central serveur                    | BBDO       | TCP 5669  | Transfert des données de supervision collectées |
 +--------------------+------------------------------------+------------+-----------+-------------------------------------------------+
 | Collecteur         | Equipements réseau, serveurs, etc. | SNMP       | UDP 161   | Supervision                                     |
 +--------------------+------------------------------------+------------+-----------+-------------------------------------------------+

@@ -51,7 +51,7 @@ Tables of monitoring flows
 +===================+==================================+============+===========+==================================+
 | Central server    | Poller                           | SSH        | TCP 22    | Export of Centreon configuration |
 +-------------------+----------------------------------+------------+-----------+----------------------------------+
-| Poller            | Central server                   | BBDO       | TCP 5679  | Transfer of collected data       |
+| Poller            | Central server                   | BBDO       | TCP 5669  | Transfer of collected data       |
 +-------------------+----------------------------------+------------+-----------+----------------------------------+
 | Poller            | Network equipment, servers, etc. | SNMP       | UDP 161   | Monitoring                       |
 +-------------------+----------------------------------+------------+-----------+----------------------------------+
