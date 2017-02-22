@@ -301,8 +301,8 @@ if ($engine == 'false') {
 <script>
 
 function apply_period() {
-    var openid = getArgsForHost();;
-    logs(openid,'','');
+    var openid = getArgsForHost();
+    logs(openid[0],'','');
 }
 
 function apply_period_engine() {
@@ -679,7 +679,6 @@ function getArgsForHost() {
              }
          });
      }
-
     return new Array(args,urlargs);
 }
 
