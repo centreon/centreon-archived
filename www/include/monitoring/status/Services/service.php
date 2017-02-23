@@ -130,11 +130,6 @@ if (isset($centreon->historySearchOutput[$url])) {
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
-include_once("./include/monitoring/status/Common/default_poller.php");
-include_once("./include/monitoring/status/Common/default_hostgroups.php");
-include_once("./include/monitoring/status/Common/default_servicegroups.php");
-include_once($svc_path . "/serviceJS.php");
-
 /*
  * ACL Actions
  */
@@ -188,6 +183,11 @@ $global_sort_order = 'asc';
 if (!empty($_SESSION['centreon']->optGen["global_sort_order"])) {
     $global_sort_order = $_SESSION['centreon']->optGen["global_sort_order"];
 }
+
+include_once("./include/monitoring/status/Common/default_poller.php");
+include_once("./include/monitoring/status/Common/default_hostgroups.php");
+include_once("./include/monitoring/status/Common/default_servicegroups.php");
+include_once($svc_path . "/serviceJS.php");
 
 if ($o == "svcpb" || $o == "svc_unhandled" || empty($o)) {
     if (!isset($_GET["sort_type"])) {
