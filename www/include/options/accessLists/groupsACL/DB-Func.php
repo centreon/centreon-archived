@@ -384,9 +384,9 @@ function updateGroupResources($acl_group_id, $ret = array())
     }
 
     $query = 'DELETE '
-        . 'FROM acl_res_group_relations argr '
-        . 'JOIN acl_resources ar ON argr.acl_res_id = ar.acl_res_id '
-        . 'AND argr.acl_group_id = ' . $acl_group_id . ' '
+        . 'FROM acl_res_group_relations '
+        . 'JOIN acl_resources ar ON acl_res_group_relations.acl_res_id = ar.acl_res_id '
+        . 'AND acl_res_group_relations.acl_group_id = ' . $acl_group_id . ' '
         . 'AND ar.locked = 0 ';
     $pearDB->query($query);
     if (isset($_POST["resourceAccess"])) {
