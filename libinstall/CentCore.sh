@@ -27,6 +27,7 @@ locate_centreon_logdir
 locate_centreon_varlib
 locate_centreon_generationdir
 locate_centcore_bindir
+locate_init_d
 
 ## Config Nagios
 check_centreon_group
@@ -129,7 +130,7 @@ if [ "$RC" -eq "0" ] ; then
 	log "INFO" "$(gettext "CentCore init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMP_DIR/final/centcore.init.d \
-        sudo service centcore >> $LOG_FILE 2>&1
+        $INIT_D/centcore >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentCore init script installed")"
 	log "INFO" "$(gettext "CentCore init script installed")"
 	RC="1"
