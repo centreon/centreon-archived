@@ -212,10 +212,13 @@ sub getbinaries() {
 }
 
 sub exportBackup() {
-    if ($scp_enabled == '1' && $scp_host ne '' && $scp_directory ne '' && $scp_user ne '') {
-	if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
-	    chdir($TEMP_DB_DIR);
-	    `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+    if ($scp_enabled == '1' &&
+		(!defined($scp_host) || $scp_host ne '') &&
+		(!defined($scp_directory) || $scp_directory ne '') &&
+		(!defined($scp_user) || $scp_user ne '')) {
+		if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
+	    	chdir($TEMP_DB_DIR);
+	    	`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
             } else {
@@ -230,7 +233,9 @@ sub exportBackup() {
                 print "All files were copied with success using SCP on ".$scp_user."@".$scp_host.":".$scp_directory."\n";
             }
         }
-    }
+    } elsif ($scp_enabled == '1') {
+		print STDERR "The export by SCP is enabled but a configuration is missing\n";
+	}
 }
 
 sub cleanOldBackup() {
