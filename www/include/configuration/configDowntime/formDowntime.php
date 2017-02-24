@@ -109,7 +109,7 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
     /*
 	 * Init QuickFrom
 	 */
-    $form = new HTML_QuickForm('form_dt', 'post', "?p=$p&type=$type");
+    $form = new HTML_QuickForm('form_dt', 'post', "?p=$p");
     if ($o == "a") {
         $form->addElement('header', 'title', _("Add a downtime"));
     } elseif ($o == "c") {
@@ -180,7 +180,7 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
         $form->registerRule('exist', 'callback', 'testDowntimeNameExistence');
     $form->addRule('downtime_name', _("Name is already in use"), 'exist');
         
-    $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+    $form->setRequiredNote("<i class='red'>*</i>&nbsp;". _("Required fields"));
 
     if ($o == "c" || $o == 'w') {
         $infos = $downtime->getInfos($id);
@@ -245,6 +245,7 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
 
 
     $valid = false;
+
     if ($form->validate()) {
         $values = $form->getSubmitValues();
         $valid = true;
@@ -328,8 +329,8 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
     }
     if (!$valid) {
         $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-        $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-        $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+        $renderer->setRequiredTemplate('{$label}&nbsp;<i class="red">*</i>');
+        $renderer->setErrorTemplate('<i class="red">{$error}</i><br />{$html}');
         if ($o == 'w') {
             $tpl->assign("time_period", _("Time period"));
             $tpl->assign("days", _("Days"));
@@ -359,5 +360,6 @@ if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
         $tpl->assign('p', $p);
         $tpl->assign('form', $renderer->toArray());
 
-        $tpl->display("formDowntime.ihtml");
+        $tpl->display("formDowntime.html");
+
     }

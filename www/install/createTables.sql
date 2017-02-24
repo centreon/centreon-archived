@@ -1168,7 +1168,7 @@ CREATE TABLE `downtime_period` (
   `dtp_start_time` time NOT NULL,
   `dtp_end_time` time NOT NULL,
   `dtp_day_of_week` varchar(15) DEFAULT NULL,
-  `dtp_month_cycle` enum('first','last','all','none') DEFAULT 'all',
+  `dtp_month_cycle` varchar(100) DEFAULT 'all',
   `dtp_day_of_month` varchar(100) DEFAULT NULL,
   `dtp_fixed` enum('0','1') DEFAULT '1',
   `dtp_duration` int(11) DEFAULT NULL,
