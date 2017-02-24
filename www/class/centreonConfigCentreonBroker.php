@@ -496,7 +496,7 @@ class CentreonConfigCentreonBroker
          */
         $query = "INSERT INTO cfg_centreonbroker "
                 . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
-                . "config_write_thread_id, stats_activate, retention_path, "
+                . "config_write_thread_id, stats_activate, cache_directory, "
                 . "event_queue_max_size, command_file) "
                 . "VALUES (
                 '" . $this->db->escape($values['name']) . "', 
@@ -507,7 +507,7 @@ class CentreonConfigCentreonBroker
                 '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
                 '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                '" . $this->db->escape($values['retention_path']) . "',
+                '" . $this->db->escape($values['cache_directory']) . "',
                 ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 '" . $this->db->escape($values['command_file']) . "' "
                 . ")";
@@ -554,7 +554,7 @@ class CentreonConfigCentreonBroker
                 config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                retention_path = '" . $this->db->escape($values['retention_path']) . "',
+                cache_directory = '" . $this->db->escape($values['cache_directory']) . "',
                 event_queue_max_size = " . (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 command_file = '" . $this->db->escape($values['command_file']) . "'
             WHERE config_id = " . $id;
