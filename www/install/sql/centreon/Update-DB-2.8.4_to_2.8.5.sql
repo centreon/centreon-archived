@@ -20,3 +20,6 @@ DELETE FROM options WHERE options.key = 'proxy_protocol';
 
 -- Add column to hide acl resources
 ALTER TABLE acl_resources ADD locked tinyint(1) NOT NULL DEFAULT 0 AFTER changed;
+
+-- change column type
+ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
