@@ -85,7 +85,7 @@ class CentreonConfigPoller {
         $DBRESULT->free();
     }
     /**
-     * 
+     *
      * @param type $poller
      * @return type
      */
@@ -96,7 +96,7 @@ class CentreonConfigPoller {
         } else {
             $sQuery = "SELECT id FROM nagios_server WHERE `name` = '".$this->_DB->escape($poller)."'";
         }
-        
+
         $DBRESULT = $this->_DB->query($sQuery);
         if ($DBRESULT->numRows() != 0)
             return;
@@ -107,7 +107,7 @@ class CentreonConfigPoller {
         }
     }
     /**
-     * 
+     *
      * @param type $poller
      * @return type
      */
@@ -118,7 +118,7 @@ class CentreonConfigPoller {
         } else {
             $sQuery = "SELECT localhost FROM nagios_server WHERE `name` = '".$this->_DB->escape($poller)."'";
         }
-        
+
         $DBRESULT = $this->_DB->query($sQuery);
         if ($data = $DBRESULT->fetchRow())
             return $data["localhost"];
@@ -143,9 +143,9 @@ class CentreonConfigPoller {
         } else {
             $sQuery = "SELECT monitoring_engine FROM nagios_server WHERE `name` = '".$this->_DB->escape($poller)."'";
         }
-        
+
         $res = $this->_DB->query($sQuery);
-        
+
         $row = $res->fetchRow();
         if (isset($row['monitoring_engine'])) {
             return $row['monitoring_engine'];
@@ -153,7 +153,7 @@ class CentreonConfigPoller {
         return "";
     }
     /**
-     * 
+     *
      * @param type $format
      * @return int
      */
@@ -223,6 +223,8 @@ class CentreonConfigPoller {
             $msg_restart = exec("sudo " . $nagios_init_script . " reload", $stdout, $return_code);
         } else {
             exec("echo 'RELOAD:".$host["id"]."' >> ". $this->centcore_pipe, $stdout, $return_code);
+            $this->changeRight($this->centcore_pipe);
+            $this->changeRight($this->centcore_pipe . '_read');
             $msg_restart .= _("OK: A reload signal has been sent to '".$host["name"]."'");
         }
         print $msg_restart."\n";
@@ -239,13 +241,13 @@ class CentreonConfigPoller {
     public function execCmd($pollerId)
     {
         $this->testPollerId($pollerId);
-        
+
         $instanceClassFile = $this->centreon_path . 'www/class/centreonInstance.class.php';
         if (!is_file($instanceClassFile)) {
             throw new CentreonClapiException('This action is not available in the version of Centreon you are using');
         }
         require_once $instanceClassFile;
-        
+
         $pollerId = $this->getPollerId($pollerId);
 
         $instanceObj = new CentreonInstance($this->_DB);
@@ -262,7 +264,7 @@ class CentreonConfigPoller {
             }
             echo "{$resultStr}\n";
         }
-        // if result > 0, return 1, return 0 otherwise 
+        // if result > 0, return 1, return 0 otherwise
         return ($result ? 1 : 0);
     }
 
@@ -279,7 +281,7 @@ class CentreonConfigPoller {
         }
 
         $this->testPollerId($variables);
-        
+
         $poller_id = $this->getPollerId($variables);
 
         /*
@@ -305,6 +307,8 @@ class CentreonConfigPoller {
             $msg_restart = exec(escapeshellcmd("sudo " . $nagios_init_script . " restart"), $lines, $return_code);
         } else {
             exec("echo 'RESTART:".$poller_id."' >> ". $this->centcore_pipe, $stdout, $return_code);
+            $this->changeRight($this->centcore_pipe);
+            $this->changeRight($this->centcore_pipe . '_read');
             $msg_restart = _("OK: A restart signal has been sent to '".$host["name"]."'");
         }
         print $msg_restart."\n";
@@ -326,7 +330,7 @@ class CentreonConfigPoller {
         }
 
         $this->testPollerId($variables);
-        
+
         $idPoller = $this->getPollerId($variables);
 
         /**
@@ -398,49 +402,35 @@ class CentreonConfigPoller {
      * @param $password
      */
     public function pollerGenerate($variables, $login, $password) {
-        
+
         $config_generate = new Generate();
-        
+
         $this->testPollerId($variables);
-        
+
         $poller_id = $this->getPollerId($variables);
 
         $config_generate->configPollerFromId($poller_id);
 
         /* Change files owner */
-        $apacheUser = $this->getApacheUser();
-        $centreonGroup = $this->getCentreonGroup();
-
-        $setFilesOwner = 1;
-        if ($apacheUser != "" && $centreonGroup != "") {
-    	    
+        if (\CentreonUtils::isRoot() || \CentreonUtils::inCentreonGroup()) {
             /* Change engine Path mod */
-    	    chown($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $apacheUser);
-            chgrp($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id", $centreonGroup);
-    
+    	    $this->changeRight($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id");
+
 	        foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/*.cfg") as $file) {
-	           chown($file, $apacheUser);
-	           chgrp($file, $centreonGroup);
+	           $this->changeRight($file);
             }
 
 	        foreach (glob($this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/*.DEBUG") as $file) {
-	           chown($file, $apacheUser);
-	           chgrp($file, $centreonGroup);
+	           $this->changeRight($file);
             }
 
 	        /* Change broker Path mod */
-	        chown($this->centreon_path."/filesGeneration/broker/$poller_id", $apacheUser);
-	        chgrp($this->centreon_path."/filesGeneration/broker/$poller_id", $centreonGroup);
-	    
+	        $this->changeRight($this->centreon_path."/filesGeneration/broker/$poller_id");
+
             foreach (glob($this->centreon_path."/filesGeneration/broker/$poller_id/*.xml") as $file) {
-	           chown($file, $apacheUser);
-	           chgrp($file, $centreonGroup);
+	           $this->changeRight($file);
             }
         } else {
-            $setFilesOwner = 0;
-        }
-
-        if ($setFilesOwner == 0) {
             print "We can set configuration file owner after the generation. \n";
             print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/nagiosCFG/$poller_id/\n";
             print "Please check that files in the followings directory are writable by apache user : ".$this->centreon_path."/filesGeneration/broker/$poller_id/\n";
@@ -448,6 +438,25 @@ class CentreonConfigPoller {
 
         print "Configuration files generated for poller '".$variables."'\n";
         return 0;
+    }
+
+    /**
+     * Change correct right to file
+     *
+     * @param string $file - The file of change rights
+     */
+    public function changeRight($file) {
+        $apacheUser = $this->getApacheUser();
+        $grp = \CentreonUtils::getCentreonGroup();
+        if (\CentreonUtils::isRoot() && file_exists($file)) {
+            chown($file, $apacheUser);
+            chgrp($file, $grp['name']);
+            if (is_dir($file)) {
+                chmod($file, 02775);
+            } else {
+                chmod($file, 664);
+            }
+        }
     }
 
     /**
@@ -473,12 +482,12 @@ class CentreonConfigPoller {
          * Check poller existance
          */
         $this->testPollerId($variables);
-        
+
         $poller_id = $this->getPollerId($variables);
 
         /* Get Apache user name */
         $apacheUser = $this->getApacheUser();
-        
+
         /*Get Centreon group name */
         $centreonGroup = $this->getCentreonGroup();
 
@@ -504,14 +513,12 @@ class CentreonConfigPoller {
             }
 
             /* Change files owner */
-            if ($apacheUser != "" && $centreonGroup != "") {
+            if (\CentreonUtils::isRoot() || \CentreonUtils::inCentreonGroup()) {
                 foreach (glob($Nagioscfg["cfg_dir"]."/*.cfg") as $file) {
-                    chown($file, $apacheUser);
-		            chgrp($file, $centreonGroup);
+                    $this->changeRight($file);
                 }
                 foreach (glob($Nagioscfg["cfg_dir"]."/*.DEBUG") as $file) {
-                    chown($file, $apacheUser);
-		            chgrp($file, $centreonGroup);
+                    $this->changeRight($file);
                 }
             } else {
                 print "Please check that files in the followings directory are writable by apache user : ".$Nagioscfg["cfg_dir"]."\n";
@@ -539,10 +546,9 @@ class CentreonConfigPoller {
                 }
 
                 /* Change files owner */
-                if ($apacheUser != "" && $centreonGroup != "") {
+                if (\CentreonUtils::isRoot() || \CentreonUtils::inCentreonGroup()) {
                     foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*.xml") as $file) {
-                        chown($file, $apacheUser);
-		    	chgrp($file, $centreonGroup);
+                        $this->changeRight($file);
                     }
                 } else {
                     print "Please check that files in the followings directory are writable by apache user : ".rtrim($centreonBrokerDirCfg, "/")."/\n";
@@ -554,6 +560,8 @@ class CentreonConfigPoller {
             }
         } else {
             exec("echo 'SENDCFGFILE:".$host['id']."' >> ".$this->centcore_pipe, $stdout, $return);
+            $this->changeRight($this->centcore_pipe);
+            $this->changeRight($this->centcore_pipe . '_read');
             if (!isset($msg_copy)) {
                 $msg_copy = "";
             }
@@ -611,7 +619,7 @@ class CentreonConfigPoller {
             	       return "";
             	   }
 	           }
-	        }    
+	        }
         } else {
 	       return "";
         }
@@ -633,6 +641,8 @@ class CentreonConfigPoller {
         $centreonDir = CentreonUtils::getCentreonDir();
         passthru("$centreonDir/bin/centGenSnmpttConfFile 2>&1");
         exec("echo 'SYNCTRAP:" . $pollerId . "' >> " . $this->centcore_pipe, $stdout, $return);
+        $this->changeRight($this->centcore_pipe);
+        $this->changeRight($this->centcore_pipe . '_read');
         return $return;
     }
 
@@ -649,9 +659,9 @@ class CentreonConfigPoller {
         $str = "- ".$filename." -> ".$status."\n";
         return $str;
     }
-    
+
     /**
-     * 
+     *
      * @param type $poller
      * @return type
      */

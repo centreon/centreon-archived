@@ -92,10 +92,10 @@ class CentreonUtils
         }
 	return $img_id;
     }
-    
+
     /**
      * Convert Line Breaks \n or \r\n to <br/>
-     * 
+     *
      * @param string $str | string to convert
      * @return string
      */
@@ -105,13 +105,65 @@ class CentreonUtils
         return $str;
     }
 
+    /**
+     * Set Centreon username
+     *
+     * @param string $username The centreon username
+     */
     public static function setUserName($userName)
     {
         self::$clapiUserName = $userName;
     }
 
+    /**
+     * Get the current Centreon username
+     *
+     * @return string
+     */
     public static function getUserName()
     {
         return self::$clapiUserName;
+    }
+
+    /**
+     * Return if the user running Centreon CLAPI is root
+     *
+     * @return boolean
+     */
+    public static function isRoot()
+    {
+        return posix_geteuid() === 0;
+    }
+
+    /**
+     * If the user running Centreon CLAPI has group Centreon
+     */
+    public static function inCentreonGroup()
+    {
+        $runGroups = posix_getgroups();
+        $grp = self::getCentreonGroup();
+        return in_array($grp['id'], $runGroups);
+    }
+
+    /**
+     * Return the primary system group for inCentreonGroup
+     *
+     * array(
+     *   'id' => '0',
+     *   'name' => 'centreon'
+     * )
+     *
+     * @return array
+     **/
+    public static function getCentreonGroup()
+    {
+        $fileStat = stat(self::getCentreonPath() . '/www');
+        $uid = $fileStat['uid'];
+        $userStat = posix_getpwuid($uid);
+        $grpStat = posix_getgrgid($userStat['gid']);
+        return array(
+            'id' => $grpStat['gid'],
+            'name' => $grpStat['name']
+        );
     }
 }
