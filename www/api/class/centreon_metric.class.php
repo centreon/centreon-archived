@@ -142,6 +142,51 @@ class CentreonMetric extends CentreonWebService
      */
     public function getMetricsDataByService()
     {
+        if (false === isset($this->arguments['ids'])) {
+            self::sendJson(array());
+        }
+
+        /* Get the list of service ID */
+        $ids = explode(',', $this->arguments['ids']);
+        $result = array();
+
+        foreach ($ids as $id) {
+            $result[] = $this->serviceDatas($id);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get metrics datas for a metric
+     *
+     * @return array
+     */
+    public function getMetricsDataByMetric()
+    {
+        if (false === isset($this->arguments['ids'])) {
+            self::sendJson(array());
+        }
+
+        /* Get the list of service ID */
+        $ids = explode(',', $this->arguments['ids']);
+        $result = array();
+
+        foreach ($ids as $id) {
+            list($hostId, $serviceId, $metricId) = explode('_', $id);
+            $result[] = $this->serviceDatas($hostId . '_' . $serviceId, $metricId);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get the status for a service
+     *
+     * @return array
+     */
+    public function getStatusByService()
+    {
         global $centreon;
 
         $userId = $centreon->user->user_id;
@@ -153,6 +198,7 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
+        /* Validate options */
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
@@ -208,66 +254,182 @@ class CentreonMetric extends CentreonWebService
             /* Prepare graph */
             try {
                 /* Get index data */
-                $indexData = CentreonGraphService::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
-                $graph = new CentreonGraphService($indexData, $userId);
+                $indexData = CentreonGraphStatus::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
+                $graph = new CentreonGraphStatus($indexData, $start, $end);
             } catch (Exception $e) {
                 throw new RestNotFoundException("Graph not found");
             }
-            $graph->setRRDOption("start", $start);
-            $graph->setRRDOption("end", $end);
-            $graph->setTemplate();
-            $graph->initCurveList();
-            $graph->createLegend();
 
-            $serviceData = $graph->getData($rows);
+            $statusData = $graph->getData($rows);
 
-
-            /* Replace NaN */
-            for ($i = 0; $i < count($serviceData); $i++) {
-                if (isset($serviceData[$i]['data'])) {
-                    $times = array_keys($serviceData[$i]['data']);
-                    $values = array_map(
-                        array($this, "convertNaN"),
-                        array_values($serviceData[$i]['data'])
-                    );
-                }
-                $serviceData[$i]['data'] = $values;
-                $serviceData[$i]['label'] = $serviceData[$i]['legend'];
-                unset($serviceData[$i]['legend']);
-                $serviceData[$i]['type'] = $serviceData[$i]['graph_type'];
-                unset($serviceData[$i]['graph_type']);
-            }
-
-            /* Get extra information (downtime/acknowledgment) */
-            $acks = array();
-            $downtimes = array();
-            $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
+            /* Get comments for this services */
+            $comments = array();
+            $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
             $res = $this->pearDB->query($query);
             if (false === PEAR::isError($res)) {
                 $row = $res->fetchRow();
                 if (false === is_null($row) && $row['value'] === '1') {
-                    $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
-                    $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
+                    $queryComment = 'SELECT entry_time, author, data
+                        FROM comments
+                        WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . '
+                            AND entry_type = 1 AND deletion_time IS NULL AND ' . $start . ' < entry_time
+                            AND ' . $end . ' > entry_time';
+                    $res = $this->pearDBMonitoring->query($queryComment);
+
+                    if (false === PEAR::isError($res)) {
+                        while ($row = $res->fetchRow()) {
+                            $comments[] = array(
+                                'author' => $row['author'],
+                                'comment' => $row['data'],
+                                'time' => $row['entry_time']
+                            );
+                        }
+                    }
                 }
             }
 
-            /* Prepare limits */
-            $limits = $graph->getLimits();
-
-            /* Prepare legends */
-            $legends = $graph->getLegends();
 
             $result[] = array(
                 'service_id' => $id,
-                'data' => $serviceData,
-                'times' => $times,
-                'size' => $rows,
-                'acknowledge' => $acks,
-                'downtime' => $downtimes,
-                'limits' => $limits,
-                'legends' => $legends
+                'data' => array(
+                    'status' => $statusData,
+                    'comments' => $comments
+                ),
+                'size' => $rows
             );
         }
+
+        return $result;
+    }
+
+    /**
+     * Get data for a service can be filtered by metric
+     *
+     * @param string $id The service id like hostId_serviceId
+     * @param int $metric The metric id
+     * @return array
+     */
+    protected function serviceDatas($id, $metric = null)
+    {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+        }
+
+        if (false === isset($this->arguments['start']) ||
+            false === is_numeric($this->arguments['start']) ||
+            false === isset($this->arguments['end']) ||
+            false === is_numeric($this->arguments['end'])) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        $start = $this->arguments['start'];
+        $end = $this->arguments['end'];
+
+        /* Get the numbers of points */
+        $rows = 200;
+        if (isset($this->arguments['rows'])) {
+            if (false === is_numeric($this->arguments['rows'])) {
+                throw new RestBadRequestException("Bad parameters");
+            }
+            $rows = $this->arguments['rows'];
+        }
+        if ($rows < 10) {
+            throw new RestBadRequestException("The rows must be greater as 10");
+        }
+
+        list($hostId, $serviceId) = explode('_', $id);
+        if (false === is_numeric($hostId) ||
+            false === is_numeric($serviceId)) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        /* Check ACL is not admin */
+        if (!$isAdmin) {
+            $query = "SELECT service_id
+                FROM centreon_acl
+                WHERE host_id = " . $hostId . "
+                    AND service_id = " . $serviceId . "
+                    AND group_id IN (" . $aclGroups . ")";
+            $res = $this->pearDBMonitoring->query($query);
+            if (0 == $res->numRows()) {
+                throw new RestForbiddenException("Access denied");
+            }
+        }
+
+        $data = array();
+
+        /* Prepare graph */
+        try {
+            /* Get index data */
+            $indexData = CentreonGraphService::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
+            $graph = new CentreonGraphService($indexData, $userId);
+        } catch (Exception $e) {
+            throw new RestNotFoundException("Graph not found");
+        }
+        if (false === is_null($metric)) {
+            $graph->setMetricList($metric);
+        }
+        $graph->setRRDOption("start", $start);
+        $graph->setRRDOption("end", $end);
+        $graph->setTemplate();
+        $graph->initCurveList();
+        $graph->createLegend();
+
+        $serviceData = $graph->getData($rows);
+
+
+        /* Replace NaN */
+        for ($i = 0; $i < count($serviceData); $i++) {
+            if (isset($serviceData[$i]['data'])) {
+                $times = array_keys($serviceData[$i]['data']);
+                $values = array_map(
+                    array($this, "convertNaN"),
+                    array_values($serviceData[$i]['data'])
+                );
+            }
+            $serviceData[$i]['data'] = $values;
+            $serviceData[$i]['label'] = $serviceData[$i]['legend'];
+            unset($serviceData[$i]['legend']);
+            $serviceData[$i]['type'] = $serviceData[$i]['graph_type'];
+            unset($serviceData[$i]['graph_type']);
+        }
+
+        /* Get extra information (downtime/acknowledgment) */
+        $acks = array();
+        $downtimes = array();
+        $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
+        $res = $this->pearDB->query($query);
+        if (false === PEAR::isError($res)) {
+            $row = $res->fetchRow();
+            if (false === is_null($row) && $row['value'] === '1') {
+                $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
+                $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
+            }
+        }
+
+        /* Prepare limits */
+        $limits = $graph->getLimits();
+
+        /* Prepare legends */
+        $legends = $graph->getLegends();
+
+        $result = array(
+            'service_id' => $id,
+            'data' => $serviceData,
+            'times' => $times,
+            'size' => $rows,
+            'acknowledge' => $acks,
+            'downtime' => $downtimes,
+            'limits' => $limits,
+            'legends' => $legends
+        );
 
         return $result;
     }
@@ -348,141 +510,13 @@ class CentreonMetric extends CentreonWebService
             unset($pollerDatas[$i]['graph_type']);
         }
 
-        $result[] = array(
+        return array(
             'data' => $pollerDatas,
             'times' => $times,
             'size' => $rows,
             'acknowledge' => array(),
             'downtime' => array()
         );
-
-        return $result;
-    }
-
-    /**
-     * Get the status for a service
-     *
-     * @return array
-     */
-    public function getStatusByService()
-    {
-        global $centreon;
-
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-
-        /* Get ACL if user is not admin */
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-            $aclGroups = $acl->getAccessGroupsString();
-        }
-
-        /* Validate options */
-        if (false === isset($this->arguments['start']) ||
-            false === is_numeric($this->arguments['start']) ||
-            false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])) {
-            throw new RestBadRequestException("Bad parameters");
-        }
-
-        $start = $this->arguments['start'];
-        $end = $this->arguments['end'];
-
-        /* Get the numbers of points */
-        $rows = 200;
-        if (isset($this->arguments['rows'])) {
-            if (false === is_numeric($this->arguments['rows'])) {
-                throw new RestBadRequestException("Bad parameters");
-            }
-            $rows = $this->arguments['rows'];
-        }
-        if ($rows < 10) {
-            throw new RestBadRequestException("The rows must be greater as 10");
-        }
-
-        if (false === isset($this->arguments['ids'])) {
-            self::sendJson(array());
-        }
-
-        /* Get the list of service ID */
-        $ids = explode(',', $this->arguments['ids']);
-        $result = array();
-
-        /* Get the list of service ID */
-        $ids = explode(',', $this->arguments['ids']);
-        $result = array();
-
-        foreach ($ids as $id) {
-            list($hostId, $serviceId) = explode('_', $id);
-            if (false === is_numeric($hostId) ||
-                false === is_numeric($serviceId)) {
-                throw new RestBadRequestException("Bad parameters");
-            }
-
-            /* Check ACL is not admin */
-            if (!$isAdmin) {
-                $query = "SELECT service_id
-                    FROM centreon_acl
-                    WHERE host_id = " . $hostId . "
-                        AND service_id = " . $serviceId . "
-                        AND group_id IN (" . $aclGroups . ")";
-                $res = $this->pearDBMonitoring->query($query);
-                if (0 == $res->numRows()) {
-                    throw new RestForbiddenException("Access denied");
-                }
-            }
-
-            $data = array();
-
-            /* Prepare graph */
-            try {
-                /* Get index data */
-                $indexData = CentreonGraphStatus::getIndexId($hostId, $serviceId, $this->pearDBMonitoring);
-                $graph = new CentreonGraphStatus($indexData, $start, $end);
-            } catch (Exception $e) {
-                throw new RestNotFoundException("Graph not found");
-            }
-
-            $statusData = $graph->getData($rows);
-
-            /* Get comments for this services */
-            $comments = array();
-            $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
-            $res = $this->pearDB->query($query);
-            if (false === PEAR::isError($res)) {
-                $row = $res->fetchRow();
-                if (false === is_null($row) && $row['value'] === '1') {
-                    $queryComment = 'SELECT entry_time, author, data
-                        FROM comments
-                        WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . '
-                            AND entry_type = 1 AND deletion_time IS NULL AND ' . $start . ' < entry_time
-                            AND ' . $end . ' > entry_time';
-                    $res = $this->pearDBMonitoring->query($queryComment);
-
-                    if (false === PEAR::isError($res)) {
-                        while ($row = $res->fetchRow()) {
-                            $comments[] = array(
-                                'author' => $row['author'],
-                                'comment' => $row['data'],
-                                'time' => $row['entry_time']
-                            );
-                        }
-                    }
-                }
-            }
-
-
-            $result[] = array(
-                'service_id' => $id,
-                'data' => array(
-                    'status' => $statusData,
-                    'comments' => $comments
-                ),
-                'size' => $rows
-            );
-        }
-
-        return $result;
     }
 
 

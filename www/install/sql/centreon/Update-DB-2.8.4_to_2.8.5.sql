@@ -27,3 +27,7 @@ ALTER TABLE cfg_centreonbroker CHANGE COLUMN `retention_path` `cache_directory` 
 
 -- change column type
 ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
+
+-- Add topology for split
+INSERT INTO `topology` (`topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_show`, `readonly`)
+VALUES ('Chart split', 20401, 2040101, 1, 1, './include/views/graphs/graph-split.php', 0, 1);

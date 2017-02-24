@@ -238,6 +238,7 @@
       var action = {
         status: 'statusByService',
         service: 'metricsDataByService',
+        metric: 'metricsDataByMetric',
         poller : 'metricsDataByPoller'
       };
       var url = self.settings.url;
