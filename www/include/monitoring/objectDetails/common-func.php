@@ -35,7 +35,8 @@
 
 require_once $centreon_path . "www/class/centreonHost.class.php";
 
-function hidePasswordInCommand($command_name, $service_id) {
+function hidePasswordInCommand($command_name, $host_id, $service_id) 
+{
     global $pearDB;
 
     if(!isset($command_name) && !isset($service_id)) {
@@ -45,7 +46,7 @@ function hidePasswordInCommand($command_name, $service_id) {
     $pearDBStorage = new CentreonDB('centstorage');
 
     /* Get executed command lines */
-    $query_command_name = "SELECT host_id, check_command, command_line FROM services WHERE service_id = '".$service_id."'";
+    $query_command_name = "SELECT host_id, check_command, command_line FROM services WHERE host_id = '".$host_id."' AND service_id = '".$service_id."'";
     $res = $pearDBStorage->query($query_command_name);
     $row = $res->fetchRow();
     
@@ -89,9 +90,9 @@ function hidePasswordInCommand($command_name, $service_id) {
 
     foreach ($arrMacroPassword as $macro) {
         $pattern = str_replace('$', '\$', $macro);
-		// If '$_MACRO$'
+        // If '$_MACRO$'
         $command_line_with_macro = preg_replace('/\''.$pattern.'\'/', '(\'.*\')', $command_line_with_macro);
-		// Else $_MACRO$
+        // Else $_MACRO$
         $command_line_with_macro = preg_replace('/'.$pattern.'/', '(.*)', $command_line_with_macro);
     }
 
@@ -107,8 +108,7 @@ function hidePasswordInCommand($command_name, $service_id) {
         for ($i = 1; $i <= count($matches); $i++) {
             $executed_check_command = str_replace ($matches[$i], '***', $executed_check_command);
         }
-    }  
-
+    } 
     return $executed_check_command;
 }
 
@@ -130,4 +130,3 @@ function getHostsTemplates($host_id) {
     }
     return $arrHostTpl;     
 }
-?>
