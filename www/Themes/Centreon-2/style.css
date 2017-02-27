@@ -2242,6 +2242,7 @@ textarea.default-textarea {
   align-content: flex-start;
   flex-wrap: wrap;
   position: relative;
+  padding: 0 32px;
 }
 
 .chart-legends .chart-legend-action {
