@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 2005-2015 Centreon
+# Copyright 2005-2017 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 
@@ -565,21 +565,14 @@ sub initEngine($$){
 
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
-        if ($conf->{init_system} eq 'systemd') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemctl $options ".$conf->{init_script};
-        } elsif ($conf->{init_system} eq 'systemv') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
-        } else {
-           $self->{logger}->writeLogError("Unknown init system for poller $id");
-           return;
-        }
+        $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} $self->{service} ".$conf->{init_script}." ".$options;
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd, logger => $self->{logger}, timeout => 120);
     } else {
         $self->{logger}->writeLogError("Cannot $options Engine for poller $id");
     }
 
     # Logs Actions
-    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} ".$conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
+    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} $self->{service} ".$conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
     my $line;
     if (defined($stdout)) {
         foreach $line (split(/\n/, $stdout)){
