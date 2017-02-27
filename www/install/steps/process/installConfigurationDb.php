@@ -62,7 +62,10 @@ if (is_null($open_files_limit)) {
     $open_files_limit = 0;
 }
 if ($open_files_limit < 32000) {
-    exitProcess(PROCESS_ID, 1, _('Add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.'));
+    exitProcess(PROCESS_ID, 1, _(
+        'If your operating system is based on SystemV (CentOS 6), add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.
+        If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the service file /usr/lib/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).'
+    ));
 }
 
 if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !is_file('../../tmp/createTables')) {
