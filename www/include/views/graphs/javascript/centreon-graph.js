@@ -76,6 +76,7 @@
     loadGraphId: function () {
       var start = this.$elem.data('graphPeriodStart');
       var end = this.$elem.data('graphPeriodEnd');
+      var interval = this.$elem.data('graphInterval');
       this.type = this.$elem.data('graphType');
       this.id = this.$elem.data('graphId');
       if (this.type === null || this.type === undefined) {
@@ -89,6 +90,9 @@
       }
       if (end !== null && end !== undefined ) {
         this.settings.period.startTime = end;
+      }
+      if (interval !== null && interval !== undefined) {
+        this.setInterval(interval, false);
       }
 
       if (this.type === null || this.id === null) {
@@ -549,7 +553,8 @@
      *
      * @param {String} interval - A interval string
      */
-    setInterval: function (interval) {
+    setInterval: function (interval, refresh) {
+      refresh = (refresh !== undefined) ? refresh : true
       var parseInterval = interval.match(/(\d+)([a-z]+)/i);
       this.settings.period = {
         startTime: null,
@@ -559,7 +564,9 @@
         number: parseInterval[1],
         unit: parseInterval[2]
       };
-      this.refreshData();
+      if (refresh) {
+        this.refreshData();
+      }
     },
     /**
      * Set a period with start and end time

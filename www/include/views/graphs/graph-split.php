@@ -67,7 +67,7 @@ function getGetPostValue($str)
     return urldecode($value);
 }
 
-$svc_id = getGetPostValue('svc_id');
+$svc_id = getGetPostValue('chartId');
 
 $metrics = array();
 if (isset($svc_id) && $svc_id) {
