@@ -61,6 +61,7 @@ if ($resetFilter) {
     $_SESSION['monitoring_default_hostgroups'] = '';
     $_SESSION['monitoring_default_poller'] = '';
     $_SESSION['monitoring_host_status'] = '';
+    $_SESSION['monitoring_host_status_filter'] = '';
     $_SESSION['criticality_id'] = '';
 }
 
@@ -104,11 +105,11 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 
 include("./include/common/autoNumLimit.php");
 
-$sort_types = empty($_GET["sort_types"]) ? 0 : $filters["sort_types"];
-$order = empty($_GET["order"]) ? 'ASC' : $filters["order"];
-$num = empty($_GET["num"]) ? 0 : $filters["num"];
-$search_host = empty($_GET["host_search"]) ? "" : $filters["host_search"];
-$sort_type = empty($_GET["sort_type"]) ? "" : $filters["sort_type"];
+$sort_types = empty($filters["sort_types"]) ? 0 : $filters["sort_types"];
+$order = empty($filters["order"]) ? 'ASC' : $filters["order"];
+$num = empty($filters["num"]) ? 0 : $filters["num"];
+$search_host = empty($filters["host_search"]) ? "" : $filters["host_search"];
+$sort_type = empty($filters["sort_type"]) ? "" : $filters["sort_type"];
 
 if (!empty($filters['hostgroups'])) {
     $_SESSION['monitoring_default_hostgroups'] = $filters['hostgroups'];
@@ -401,7 +402,6 @@ $tpl->display("host.ihtml");
 
     jQuery(function () {
         preInit();
-        updateSelect();
     });
 
     function preInit()

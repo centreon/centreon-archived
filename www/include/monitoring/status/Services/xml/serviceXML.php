@@ -162,7 +162,7 @@ $graphs = array();
  * Get Service status
  */
 $instance_filter = "";
-if ($instance != -1) {
+if ($instance != -1 && !empty($instance)) {
     $instance_filter = " AND h.instance_id = " . $instance . " ";
 }
 
@@ -302,7 +302,6 @@ $request .= " LIMIT " . ($num * $limit) . "," . $limit;
 /** * **************************************************
  * Get Pagination Rows
  */
-//var_dump($request);
 $DBRESULT = $obj->DBC->query($request);
 $numRows = $obj->DBC->numberRows();
 
