@@ -28,8 +28,7 @@ class SelectAllSelect2Context extends CentreonContext
                     'css',
                     'input[name="submitC"]'
                 );
-            },
-            30
+            }
         );
 
         /* Add search to select2 */
@@ -44,8 +43,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
-            },
-            30
+            }
         );
     }
 
@@ -77,8 +75,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
 
 
@@ -96,8 +93,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
-            },
-            10
+            }
         );
     }
 
@@ -112,8 +108,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
     }
 
@@ -129,8 +124,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
     }
 

@@ -2,15 +2,21 @@
 Centreon 2.8.4
 ##############
 
-Released February Xth, 2017.
+Released February 8th, 2017.
 
 The 2.8.4 release for Centreon Web is now available for download. Here are its release notes.
 
 Features
 --------
 
+No feature.
+
 Bug Fixes
 ---------
+
+* Fix problem with the upgrade process - all Centreon systems coming from 2.7.x have a database problem - column timezone was missing in the table $STORAGE$.hosts ;
+  --> this problem prevents centreon-broker from starting
+
 
 Known bugs or issues
 --------------------

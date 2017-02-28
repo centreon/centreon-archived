@@ -151,8 +151,8 @@ class DowntimeStartAndStopContext extends CentreonContext
                     return true;
                 }
             },
-            80,
-            'The downtime period did not start (' . $this->downtimeStartTime . ').'
+            'The downtime period did not start (' . $this->downtimeStartTime . ').',
+            80
         );
     }
 
@@ -183,8 +183,8 @@ class DowntimeStartAndStopContext extends CentreonContext
                     return true;
                 }
             },
-            80,
-            'The end of the downtime is too late (' . $this->downtimeEndTime . ').'
+            'The end of the downtime is too late (' . $this->downtimeEndTime . ').',
+            80
         );
     }
 
@@ -204,7 +204,6 @@ class DowntimeStartAndStopContext extends CentreonContext
                 }
                 return !$found;
             },
-            40,
             'Downtime is still running.'
         );
     }

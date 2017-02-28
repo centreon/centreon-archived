@@ -224,7 +224,29 @@ function yes_no_default() {
 }
 
 #----
-## print a message, test directory if answer is correct 
+## print a message, simple answer to the question
+#----
+function answer() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res=""
+	local first=0
+	while [ ! -z "$res" ] ; do
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
+		echo -en "> "
+		read res
+		if [ -z "$res" ] ; then 
+			[ "$default" != "NO_DEFAULT" ] && res=$default
+		fi
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+#----
+## print a message, test directory if answer is correct
 ## Loop if not a valid directory
 ## @param	message
 ## @param	default value (use "NO_DEFAULT" if not default value)
@@ -238,49 +260,15 @@ function answer_with_testdir() {
 	local res="not_define"
 	local first=0
 	while [ ! -d "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a directory or does not exist.")" "$critical" 
-		echo -e "\n$message"
-		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
-		echo -en "> "
-		read res
-		if [ -z "$res" ] ; then 
-			[ "$default" != "NO_DEFAULT" ] && res=$default
-		fi
-		if [ -z ${res#/} ] ; then
-			echo_passed  "$(gettext "You select slash...")"
-			res="not_define"
-		else
-			first=1
-		fi
-	done
-	eval $var_ref=$res
-	return 0
-}
-
-#----
-## print a message, test directory if answer is correct, this directory is optional
-## Loop if not a valid directory
-## @param	message
-## @param	default value (use "NO_DEFAULT" if not default value)
-## @param	global variable to set a result
-## @return 0	end
-#----
-function answer_with_testoptionaldir() {
-	local message=$1
-	local default=$2
-	local var_ref=$3
-	local res="not_define"
-	local first=0
-	while [ -n "$res" -a ! -d "$res" ]; do
 		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a directory or does not exist.")" "$critical"
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
 		echo -en "> "
 		read res
-		if [ -z "$res" ] ; then 
+		if [ -z "$res" ] ; then
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
-		if [ -n "${res}" -a -z "${res#/}" ] ; then
+		if [ -z ${res#/} ] ; then
 			echo_passed  "$(gettext "You select slash...")"
 			res="not_define"
 		else
@@ -473,7 +461,7 @@ function answer_with_testuser()
 		echo -en "> "
 		read res
 		if [ -z "$res" ]; then
-			res="not_def"
+			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
 		first=1
 		user_test "$res"
@@ -518,14 +506,6 @@ function testdir_clean() {
 		return 1
 	else
 		return 0
-	fi
-}
-
-function test_answer() {
-	if [ ! -z $2 ] ; then
-		if [ $2 != "" ] ; then
-			eval $1=$2
-		fi
 	fi
 }
 
@@ -581,43 +561,6 @@ function group_create() {
 }
 
 #----
-## use to select a data on array 
-## set to a variable a result of chose
-## @param	variable to set a resutl
-## @param	List of possiblity to chose
-## @return 0	end
-#----
-function select_in_array() {
-	local variable=$1
-	shift
-	local array=($@)
-	local res=1
-	local count=0
-	local first=0
-	while [ $res -gt $count ] ; do
-		[ $first -eq 1 ] && echo_failure "$(gettext "\$res is not a valid response.")" "$critical" 
-		count=0
-		local limit=${#array[@]}
-		for (( datas=0; datas < limit; datas++ )) ; do
-			echo -e "\t$datas:\t${array[$datas]}"
-			let "count += 1" 
-		done
-		echo -en "> "
-		read res
-		first=1
-		if [ $res -eq $res 2>/dev/null ] ; then
-			echo " " 
-		else 
-			echo_failure "$(gettext "$res is not an integer")" "$fail"
-			res=255
-			first=0
-		fi
-	done
-	eval $variable=${array[$res]}
-	return 0
-}
-
-#----
 ## Define where is  plugins directory
 ## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
 ## @Globals     PLUGIN_DIR, DEFAULT_PLUGIN_DIR
@@ -625,7 +568,7 @@ function select_in_array() {
 function locate_plugindir() {
         testdir_clean "$PLUGIN_DIR" "PLUGIN_DIR"
         if [ -z "$PLUGIN_DIR" ] ; then
-                answer_with_testdir "$(gettext "Where is your monitoring plugins (libexec) directory ?")" "$DEFAULT_PLUGIN_DIR" "PLUGIN_DIR"
+                answer "$(gettext "Where is your monitoring plugins (libexec) directory ?")" "$DEFAULT_PLUGIN_DIR" "PLUGIN_DIR"
                 echo_success "$(gettext "Path" ) $PLUGIN_DIR" "$ok"
         fi
         PLUGIN_DIR=`trim ${PLUGIN_DIR%/}`
@@ -634,37 +577,22 @@ function locate_plugindir() {
 }
 
 #----
-## Define where is centreon plugins directory
-## @Globals     CENTREON_PLUGINS, DEFAULT_CENTREON_PLUGINS
-#----
-function locate_centreon_plugins() {
-        testdir_clean "$CENTREON_PLUGINS" "CENTREON_PLUGINS"
-        if [ -z "$CENTREON_PLUGINS" ] ; then
-                answer_with_testdir "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
-                echo_success "$(gettext "Path" ) $CENTREON_PLUGINS" "$ok"
-        fi
-        CENTREON_PLUGINS=`trim ${CENTREON_PLUGINS%/}`
-        export CENTREON_PLUGINS
-        log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
-}
-
-#----
 ## Define where is your init.d (rc.d) directory
 ## check on system where is a init.d or rc.d directory to install centreon services
 ## On GNU/Linux, most of distrib use /etc/init.d
 ## On FreeBSD, use /usr/local/etc/rc.d
 ## It's possible to add most of directory.
-## @Globals	INIT.D, DEFAULT_INIT_D 
+## @Globals	INIT.D, DEFAULT_INIT_D
 #----
 function locate_init_d() {
-	testdir_clean "$INIT_D" "INIT_D" 
+	testdir_clean "$INIT_D" "INIT_D"
 	if [ -z "$INIT_D" ] ; then
 		if [ -d "/etc/init.d" ] ; then
 			INIT_D="/etc/init.d"
 		elif [ -d "/usr/local/etc/rc.d" ] ; then
 			INIT_D="/usr/local/etc/rc.d"
-		# Add most of init.d 
-		else 
+		# Add most of init.d
+		else
 			answer_with_testdir "$(gettext "Where is your init.d directory ?")" "$DEFAULT_INIT_D" "INIT_D"
 			echo_success "$(gettext "Path" ) $INIT_D" "$ok"
 		fi
@@ -675,41 +603,25 @@ function locate_init_d() {
 }
 
 #----
-## Ask where is the monitoring engine binary
-## @param	message
-## @param	default value (use "NO_DEFAULT" if not default value)
-## @param	global variable to set a result
-## @return 0	end
+## Define where is centreon plugins directory
+## @Globals     CENTREON_PLUGINS, DEFAULT_CENTREON_PLUGINS
 #----
-function locate_monitoringengine_binary()
-{
-	local message=$1
-	local default=$2
-	local val_ref=$3
-	local res="not_define"
-	local first=0
-	if [ -n "$MONITORINGENGINE_BINARY" -a -x "$MONITORINGENGINE_BINARY" ]; then
-		log "INFO" "$(gettext "Use default variable") : $MONITORINGENGINE_BINARY"
-		return 0
-	fi
-	while [ ! -x "$res" ]; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not executable.")" "$critical"
-		echo -e "\n$message"
-		echo -en "> "
-		read res
-		if [ -z "$res" ]; then
-			res="not_define"
-		fi
-		first=1
-	done
-	eval $val_ref=$res
-	return 0
+function locate_centreon_plugins() {
+        testdir_clean "$CENTREON_PLUGINS" "CENTREON_PLUGINS"
+        if [ -z "$CENTREON_PLUGINS" ] ; then
+                answer "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
+                echo_success "$(gettext "Path" ) $CENTREON_PLUGINS" "$ok"
+        fi
+        CENTREON_PLUGINS=`trim ${CENTREON_PLUGINS%/}`
+        export CENTREON_PLUGINS
+        log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
 }
+
 
 function locate_monitoringengine_etc()
 {
 	if [ -z "$MONITORINGENGINE_ETC" ]; then
-		answer_with_testdir "$(gettext "What is the Monitoring engine configuration directory ?")" "NO_DEFAULT" "MONITORINGENGINE_ETC"
+		answer_with_testdir "$(gettext "What is the Monitoring engine configuration directory ?") [$DEFAULT_MONITORINGENGINE_ETC]" "$DEFAULT_MONITORINGENGINE_ETC" "MONITORINGENGINE_ETC"
 	fi
 	MONITORINGENGINE_ETC=`trim ${MONITORINGENGINE_ETC%/}`
 	export MONITORINGENGINE_ETC
@@ -719,7 +631,7 @@ function locate_monitoringengine_etc()
 function locate_monitoringengine_log()
 {
 	if [ -z "$MONITORINGENGINE_LOG" ]; then
-		answer_with_testdir "$(gettext "What is the Monitoring engine log directory ?")" "NO_DEFAULT" "MONITORINGENGINE_LOG"
+		answer_with_testdir "$(gettext "What is the Monitoring engine log directory ?") [$DEFAULT_MONITORINGENGINE_LOG]" "$DEFAULT_MONITORINGENGINE_LOG" "MONITORINGENGINE_LOG"
 	fi
 	MONITORINGENGINE_LOG=`trim ${MONITORINGENGINE_LOG%/}`
 	export MONITORINGENGINE_LOG
@@ -729,7 +641,7 @@ function locate_monitoringengine_log()
 function locate_broker_etc()
 {
 	if [ -z "$BROKER_ETC" ]; then
-		answer_with_testdir "$(gettext "Where is the configuration directory for broker module ?")" "NO_DEFAULT" "BROKER_ETC"
+		answer_with_testdir "$(gettext "Where is the configuration directory for broker module ?") [$DEFAULT_BROKER_ETC]" "$DEFAULT_BROKER_ETC" "BROKER_ETC"
 	fi
 	BROKER_ETC=`trim ${BROKER_ETC%/}`
 	export BROKER_ETC
@@ -738,12 +650,12 @@ function locate_broker_etc()
 
 function locate_broker_init_script()
 {
-	if [ -z "$BROKER_INIT_SCRIPT" ]; then
-		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?")" "NO_DEFAULT" "BROKER_INIT_SCRIPT"
+	if [ -z "cbd" ]; then
+		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?") [$DEFAULT_BROKER_INIT_SCRIPT]" "$DEFAULT_BROKER_INIT_SCRIPT" "BROKER_INIT_SCRIPT"
 	fi
 	BROKER_INIT_SCRIPT=`trim ${BROKER_INIT_SCRIPT}`
 	export BROKER_INIT_SCRIPT
-	log "INFO" "BROKER_INIT_SCRIPT: $BROKER_INIT_SCRIPT"
+	log "INFO" "BROKER_INIT_SCRIPT: cbd"
 }
 
 #----
@@ -1263,15 +1175,20 @@ function reload_service_apache() {
 	local service=""
 	log "INFO" "$(gettext "Reloading Apache...")"
 	if [ -x /etc/init.d/apache ] ; then
-		service="/etc/init.d/apache"
+		service="apache"
 	elif [ -x /etc/init.d/httpd ] ; then
-		service="/etc/init.d/httpd"
+		service="httpd"
+	elif [ -x /bin/systemctl ] ; then
+	    local count_service=$(/bin/systemctl list-units | grep httpd | wc -l)
+	    if [ "$count_service" -gt "0" ] ; then
+	        service="httpd"
+	    fi
 	elif [ -x /etc/init.d/apache2 ] ; then
-		service="/etc/init.d/apache2"
+		service="apache2"
 	elif [ -x /usr/local/etc/rc.d/apache ] ; then
-		service="/usr/local/etc/rc.d/apache"
+		service="apache"
 	elif [ -x /usr/local/etc/rc.d/apache2 ]; then
-		service="/etc/init.d/apache2"
+		service="apache2"
 	else
 		echo_warning "$(gettext "Unable to restart Apache server")" "$warning"
 		log "WARN" "$(gettext "Unable to restart Apache server")"
@@ -1279,7 +1196,7 @@ function reload_service_apache() {
 
 	log "DEBUG" "$(gettext "use") : $service"
 	# reload apache service
-	$service reload >> $LOG_FILE 2>&1
+	$SERVICE_BINARY $service reload >> $LOG_FILE 2>&1
 	if [ "$?" -eq 0 ] ; then
 		echo_success "$(gettext "Reloading Apache service")" "$ok"
 		return 0
@@ -1303,13 +1220,38 @@ function prepare_apache_config() {
 	# if INSTALL_DIR_CENTREON not found, ask:
 	[ -z "$INSTALL_DIR_CENTREON" ] && locate_centreon_installdir
 	
-	# Prepare apache config
+
+
+    # Check apache version
+    apache_2_4=$(apachectl -v 2>/dev/null | grep '2\.[4-9]' | wc -l)
+
+    # Prepare apache config
+    if [ "$apache_2_4" -gt "0" ] ; then
+    ${CAT} << __EOT__ > $directory/centreon.apache.conf
+#
+# Section add by Centreon Install Setup
+#
+
+Alias /centreon $INSTALL_DIR_CENTREON/www/
+
+<Directory "$INSTALL_DIR_CENTREON/www">
+    Options Indexes
+    AllowOverride AuthConfig Options
+    Order allow,deny
+    Allow from all
+    Require all granted
+</Directory>
+
+RedirectMatch ^/$ /centreon/index.php
+__EOT__
+    else
 	${CAT} << __EOT__ > $directory/centreon.apache.conf
-##
-## Section add by Centreon Install Setup
-##
+#
+# Section add by Centreon Install Setup
+#
 	
 Alias /centreon $INSTALL_DIR_CENTREON/www/
+
 <Directory "$INSTALL_DIR_CENTREON/www">
     Options Indexes
     AllowOverride AuthConfig Options
@@ -1317,7 +1259,9 @@ Alias /centreon $INSTALL_DIR_CENTREON/www/
     Allow from all
 </Directory>
 
+RedirectMatch ^/$ /centreon/index.php
 __EOT__
+    fi
 
 	if [ -e $directory/centreon.apache.conf ] ; then 
 		return 0
@@ -1333,7 +1277,6 @@ __EOT__
 ## <p>
 ## Call:<p>
 ##	- <@function locate_sudo><p>
-##	- <@function check_nagios_init_script>
 ## @param	directory to generate a centreon.sudo file
 ## @return 0	create file ok
 ## @return 1	create file fail
@@ -1344,87 +1287,42 @@ function prepare_sudo_config() {
 
     	locate_sudo
 	# Find Monitoring Engine Init Script
-	locate_monitoringengine_init_script "$(gettext "What is the Monitoring engine init.d script ?")" "NO_DEFAULT" "MONITORINGENGINE_INIT_SCRIPT"
+	answer "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
 	# find nagios binary if not define
-	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "$(gettext "What is the Monitoring engine binary ?")" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
+	[ -z "$MONITORINGENGINE_BINARY" ] && answer_with_testfile "$(gettext "What is the Monitoring engine binary ?") [$DEFAULT_MONITORINGENGINE_BINARY]" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
-	[ -z "$BROKER_INIT_SCRIPT" ] && locate_broker_init_script
-	[ -z "$INIT_D" ] && locate_init_d
+	[ -z "cbd" ] && locate_broker_init_script
+	[ -z "$SERVICE_BINARY" ] && answer_with_testfile "$(gettext "Where is your service command binary ?")" "$(which service)" "SERVICE_BINARY"
 	# Prepare sudo.conf
-	
+
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
-	## BEGIN: CENTREON SUDO
-	# Add by CENTREON installation script
-	User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
-	Defaults:CENTREON !requiretty
-	# Monitoring engine Restart
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
-	# Monitoring engine reload
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
-	# Snmptrapd Restart
-	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
-	# Centreontrapd restart
-	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
-	# Centreontrapd reload
-	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
-	__EOT__
+## BEGIN: CENTREON SUDO
 
-	# Systemd compatibility
-	if [ -e "/etc/systemd/system/cbd.service" ] ; then 
-		${CAT} <<- __EOT__ > $directory/centreon.sudo
-		## BEGIN: CENTREON SUDO
-		# Add by CENTREON installation script
-		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
-		Defaults:CENTREON !requiretty
-		# Monitoring engine Restart
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
-		# Monitoring engine reload
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
-		# Broker engine Start
-		CENTREON   ALL = NOPASSWD: systemctl start cbd
-		# Broker engine Stop
-		CENTREON   ALL = NOPASSWD: systemctl stop cbd
-		# Broker engine Restart
-		CENTREON   ALL = NOPASSWD: systemctl restart cbd
-		# Broker engine reload
-		CENTREON   ALL = NOPASSWD: systemctl reload
-		# Snmptrapd Restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
-		# Centreontrapd restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
-		# Centreontrapd reload
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
-		__EOT__
-	else 
-		${CAT} <<- __EOT__ > $directory/centreon.sudo
-		## BEGIN: CENTREON SUDO
-		# Add by CENTREON installation script
-		User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
-		Defaults:CENTREON !requiretty
-		# Monitoring engine Restart
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
-		# Monitoring engine reload
-		CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
-		# Broker engine Start
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT start
-		# Broker engine Stop
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT stop
-		# Broker engine Restart
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT restart
-		# Broker engine reload
-		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT reload
-		# Snmptrapd Restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
-		# Centreontrapd restart
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
-		# Centreontrapd reload
-		CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
-		__EOT__
-	fi
+User_Alias      CENTREON=%$CENTREON_GROUP
+Defaults:CENTREON !requiretty
 
-	echo "## END: CENTREON SUDO" >> $directory/centreon.sudo
-	echo "" >> $directory/centreon.sudo	
+# centreontrapd
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd start
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd stop
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd restart
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centreontrapd reload
+
+# Centreon Engine
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine start
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine stop
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine restart
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY centengine reload
+CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -v *
+
+# Centreon Broker
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd start
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd stop
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd restart
+CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd reload
+
+## END: CENTREON SUDO
+__EOT__
 
 	if [ -e $directory/centreon.sudo ] ; then 
 		return 0
@@ -1488,8 +1386,6 @@ function configureSUDO(){
 			echo_passed "$(gettext "Please configure your sudo with this example"):\n\t $dir_conf/centreon.sudo" "$passed"
 		fi
 	else
-		#echo_passed "$(gettext "Sudo is already configured")" "$passed"
-		## ticket #7 (upgrade script here)
 		echo_info "$(gettext "Your sudo has been configured previously")"
 		if [ "${FORCE_SUDO_CONF:-0}" -eq 1 ] ; then
 			no_force_sudo="0"
@@ -1506,11 +1402,6 @@ function configureSUDO(){
 		fi
 	fi
 	log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
-	# Add a simple test for Defaults Requiretty problem on CentOS, Fedora...
-	#is_suspect_conf_sudo $SUDO_FILE
-	#if [ "$?" -eq 1 ] ; then
-	#	echo_warning "$(gettext "For security policy, your sudo's\nconfiguration would only run when the user is logged into a real tty. Please adjust your configuration by commenting 'Defaults requiretty' line in your configuration file.")" "$warning"
-	#fi
 	return 0
 }
 
@@ -1563,11 +1454,11 @@ function createConfFile()
 \$conf_centreon['broker_user'] = "$BROKER_USER";
 \$conf_centreon['broker_group'] = "$BROKER_GROUP";
 \$conf_centreon['broker_etc'] = "$BROKER_ETC";
-\$conf_centreon['broker_init_script'] = "$BROKER_INIT_SCRIPT";
+\$conf_centreon['broker_init_script'] = "cbd";
 \$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
 \$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
-\$conf_centreon['monitoring_init_script'] = "$MONITORINGENGINE_INIT_SCRIPT";
+\$conf_centreon['monitoring_init_script'] = "centengine";
 \$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
 \$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
@@ -1620,9 +1511,9 @@ function createCentreonInstallConf() {
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	BROKER_ETC=$BROKER_ETC
 	BROKER_USER=$BROKER_USER
-	BROKER_INIT_SCRIPT=$BROKER_INIT_SCRIPT
+	BROKER_INIT_SCRIPT=cbd
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
-	MONITORINGENGINE_INIT_SCRIPT=$MONITORINGENGINE_INIT_SCRIPT
+	MONITORINGENGINE_INIT_SCRIPT=centengine
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
 	MONITORINGENGINE_LOG=$MONITORINGENGINE_LOG
 	MONITORINGENGINE_USER=$MONITORINGENGINE_USER
@@ -1745,68 +1636,6 @@ function createCentPluginsForTrapdInstallConf() {
 
 	echo_success "Create $CENTREON_ETC/instCentPlugins.conf " "OK"
 	return 0
-}
-
-#----
-## Locate the init.d script for monitoring engine
-## @param	message
-## @param	default value (use "NO_DEFAULT" if not default value)
-## @param	global variable to set a result
-## @return 0	end
-#----
-function locate_monitoringengine_init_script()
-{
-	local message=$1
-	local default=$2
-	local val_ref=$3
-	local res="not_define"
-	local first=0
-	if [ -n "$MONITORINGENGINE_INIT_SCRIPT" -a -x "$MONITORINGENGINE_INIT_SCRIPT" ]; then
-		log "INFO" "$(gettext "Use default variable") : $MONITORINGENGINE_INIT_SCRIPT"
-		return 0
-	fi
-	while [ ! -x "$res" ]; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not executable.")" "$critical"
-		echo -e "\n$message"
-		echo -en "> "	
-		read res
-		if [ -z "$res" ]; then
-			$res="not_define"
-		fi
-		first=1
-	done
-	eval $val_ref=$res
-	return 0
-}
-
-#----
-## Define where is a nagios init script
-## Find in list of chose and request if not found
-## @Globals	NAGIOS_INIT_SCRIPT, DEFAULT_NAGIOS_INIT_SCRIPT, INIT_D
-## @TODO Change pour monitoring
-#----
-function check_nagios_init_script()
-{
-	# Try to find nagios init script.
-	# It's possible to force that variable.
-	if [ -n "$NAGIOS_INIT_SCRIPT" -a -x "$NAGIOS_INIT_SCRIPT" ] ; then
-		log "INFO" "$(gettext "Use default variable") : $NAGIOS_INIT_SCRIPT"
-	elif [ -x "$INIT_D/nagios" ]; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
-	elif [ -x "$INIT_D/nagios2" ] ; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-	elif [ -x "$INIT_D/nagios3" ] ; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
-	elif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
-		NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
-	elif [ -x "$DEFAULT_NAGIOS_INIT_SCRIPT" ] ; then
-		NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
-	else
-    		echo_passed "$(gettext "Not possible to find Nagios init script")" "$critical"
-		answer_with_testfile "$(gettext "Where is Nagios init script")" "NO_DEFAULT" "NAGIOS_INIT_SCRIPT"
-	fi
-	NAGIOS_INIT_SCRIPT=${NAGIOS_INIT_SCRIPT%/}
-	echo_success "Nagios init script " "$ok"
 }
 
 #----
@@ -2043,7 +1872,7 @@ function check_centreon_group()
 function check_engine_user()
 {
 	if [ -z "${MONITORINGENGINE_USER}" ]; then
-		answer_with_testuser "$(gettext "What is the Monitoring engine user ?")" "NO_DEFAULT" "MONITORINGENGINE_USER"
+		answer_with_testuser "$(gettext "What is the Monitoring engine user ?") [$DEFAULT_MONITORINGENGINE_USER]" "$DEFAULT_MONITORINGENGINE_USER" "MONITORINGENGINE_USER"
 	fi
 	log "INFO" "$(gettext "Monitoring engine user") : $MONITORINGENGINE_USER"
 	return 0
@@ -2056,7 +1885,7 @@ function check_engine_user()
 function check_broker_user()
 {
 	if [ -z "${BROKER_USER}" ]; then
-		answer_with_testuser_optional "$(gettext "What is the Broker user ?")" "NO_DEFAULT" "BROKER_USER"
+		answer_with_testuser "$(gettext "What is the Broker user ?") [$DEFAULT_BROKER_USER]" "$DEFAULT_BROKER_USER" "BROKER_USER"
 	fi
 	log "INFO" "$(gettext "Broker user") : $BROKER_USER"
 	return 0
@@ -2147,12 +1976,12 @@ function install_init_service() {
 	elif [ "$OS" = "SUSE" ] ; then
 		chkconfig --add $service
 	elif [ "$OS" = "REDHAT" ] ; then
-    # Just for CentOS :p bug #1148
-    if [ -x /sbin/chkconfig ] ; then
-      /sbin/chkconfig --add $service
-    else
-		 chkconfig --add $service
-   fi
+        # Just for CentOS :p bug #1148
+        if [ -x /sbin/chkconfig ] ; then
+          /sbin/chkconfig --add $service
+        else
+             chkconfig --add $service
+       fi
 	elif [ "$OS" = "FREEBSD" ] ; then
 		echo_info "$(gettext "You must configure your /etc/rc.conf with"): ${service}_enable=YES"
 	else

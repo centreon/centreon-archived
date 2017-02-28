@@ -115,9 +115,10 @@ class CentreonCentbrokerCfg extends CentreonObject
             } elseif (!preg_match('/^config_/', $params[1])) {
                 $parametersWithoutPrefix = array(
                     "event_queue_max_size",
-                    "retention_path",
+                    "cache_directory",
                     "stats_activate",
-                    "correlation_activate"
+                    "correlation_activate",
+                    "daemon"
                 );
                 if (!in_array($params[1], $parametersWithoutPrefix)) {
                     $params[1] = 'config_'.$params[1];
@@ -193,7 +194,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         /* Get the method name */
         $name = strtolower($name);
         /* Get the action and the object */
-        if (preg_match("/^(list|get|set|add|del)(correlation|input|output|logger|temporary|stats)/", $name, $matches)) {
+        if (preg_match("/^(list|get|set|add|del)(correlation|input|output|logger|stats)/", $name, $matches)) {
             $tagName = $matches[2];
 
             /* Parse arguments */
@@ -580,8 +581,8 @@ class CentreonCentbrokerCfg extends CentreonObject
             echo $this->action . $this->delim
                 . "SETPARAM" . $this->delim
                 . $element['config_name'] . $this->delim
-                . "retention_path" . $this->delim
-                . $element['retention_path']."\n";
+                . "cache_directory" . $this->delim
+                . $element['cache_directory']."\n";
             echo $this->action . $this->delim
                 . "SETPARAM" . $this->delim
                 . $element['config_name'] . $this->delim
@@ -592,6 +593,11 @@ class CentreonCentbrokerCfg extends CentreonObject
                 . $element['config_name'] . $this->delim
                 . "correlation_activate" . $this->delim
                 . $element['correlation_activate'] . "\n";
+            echo $this->action . $this->delim
+                . "SETPARAM" . $this->delim
+                . $element['config_name'] . $this->delim
+                . "daemon" . $this->delim
+                . $element['daemon'] . "\n";
             $sql = "SELECT config_key, config_value, config_group, config_group_id
             		FROM cfg_centreonbroker_info
             		WHERE config_id = ?

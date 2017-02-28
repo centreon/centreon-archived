@@ -1,7 +1,7 @@
 <script type="text/javascript">
 var period_id = {$period_tab};
 </script>
-<table class="ListTable" style='padding-top:0px;margin-top:0px;'>
+<table class="ListTable">
 <tr class="list_one">
 	<td class="FormRowField">{$days}</td>
 	<td class="FormRowValue"><select name="periods[{$period_tab}][days]">
@@ -14,6 +14,9 @@ var period_id = {$period_tab};
 	<option value="6">{$saturday}</option>
 	</select>&nbsp;<select name="periods[{$period_tab}][month_cycle]">
 	<option value="first">{$first_of_month}</option>
+	<option value="second">{$second_of_month}</option>
+	<option value="third">{$third_of_month}</option>
+	<option value="fourth">{$fourth_of_month}</option>
 	<option value="last">{$last_of_month}</option>
 	</select></td>
 </tr>
@@ -58,7 +61,7 @@ jQuery(function() {
 			}
 		});
 
-		$$('select[name="periods[{/literal}{$period_tab}{literal}][month_cycle]"]  > option').each(function(item, index){
+		$$('select[name="periods[{/literal}{$period_tab}{literal}][month_cycle]"]  > option').each(function(item){
 	        if (item.value == infos_{/literal}{$period_info}{literal}.month_cycle) {
 		        item.selected = true;
 		    }

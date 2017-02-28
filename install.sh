@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="2.8.2"
+version="2.8.4"
 
 # Debug
 #set -x
@@ -258,19 +258,6 @@ else
 		. $user_install_vars
 	fi
 fi
-
-# Check if is an upgrade or new install
-# Use this on silent install ???
-# Check for old configfile
-# use for centreon1.x upgrade
-#### Move on upgrade specific script.
-#if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a "$silent_install" -ne 1 ] ; then 
-#	is_single "$CENTREON_CONF_1_4"
-#	if [ "$?" -eq 1 ] ; then
-#		echo -e "$(gettext "Please select a good centreon config file")"
-#		select_in_array "CENTREON_CONF" "${CENTREON_CONF_1_4[@]}"
-#	fi
-#fi
 
 if [ "$upgrade" -eq 1 ] ; then
 	# Test if instCent* file exist
