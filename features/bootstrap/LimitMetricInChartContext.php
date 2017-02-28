@@ -86,11 +86,21 @@ class LimitMetricInChartContext extends CentreonContext
      */
     public function iDisplayTheChartInPerformancePage()
     {
-        $this->chartPage = new GraphMonitoringPage($this);
-        $this->chartPage->setFilterbyChart($this->hostName, $this->serviceName);
         $this->spin(
             function ($context) {
-                return $this->chartPage->hasChart($this->hostName, $this->serviceName);
+                $context->chartPage = new GraphMonitoringPage($context);
+                $context->chartPage->setFilterbyChart($context->hostName, $context->serviceName);
+                $context->spin(
+                    function ($context) {
+                        return $context->chartPage->hasChart(
+                            $context->hostName,
+                            $context->serviceName
+                        );
+                    },
+                    'Chart does not exist.',
+                    20
+                );
+                return true;
             },
             'Chart ' . $this->hostName . ' - ' . $this->serviceName . ' does not exist.'
         );
