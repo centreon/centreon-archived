@@ -33,8 +33,8 @@
  * 
  */
  
-if (isset($myinputsGet['sg'])) {
-    $default_sg = $_SESSION['sg'];
+if (isset($_SESSION['monitoring_default_servicegroups'])) {
+    $default_sg = $_SESSION['monitoring_default_servicegroups'];
 } else {
     $default_sg = "0";
 }
