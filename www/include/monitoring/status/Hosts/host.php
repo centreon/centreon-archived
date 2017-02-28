@@ -37,6 +37,51 @@ if (!isset($centreon)) {
     exit();
 }
 
+$filterParameters = array(
+    'sort_types' => FILTER_SANITIZE_STRING,
+    'order' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_STRING,
+    'host_search' => FILTER_SANITIZE_STRING,
+    'sort_type' => FILTER_SANITIZE_STRING,
+    'hostgroups' => FILTER_SANITIZE_STRING,
+    'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
+    'reset_filter' => FILTER_SANITIZE_NUMBER_INT
+);
+
+$myinputsGet = filter_input_array(INPUT_GET, $filterParameters);
+$myinputsPost = filter_input_array(INPUT_POST, $filterParameters);
+
+$resetFilter = (isset($myinputsGet['reset_filter']) && $myinputsGet['reset_filter'] == 1) ? true : false;
+
+if ($resetFilter) {
+    $centreon->historySearch[$url] = '';
+    $centreon->historySearchService[$url] = '';
+    $centreon->historySearchOutput[$url] = '';
+    $_SESSION['filters'][$url] = array();
+    $_SESSION['monitoring_default_hostgroups'] = '';
+    $_SESSION['monitoring_default_poller'] = '';
+    $_SESSION['monitoring_host_status'] = '';
+    $_SESSION['criticality_id'] = '';
+}
+
+foreach ($myinputsGet as $key => $value) {
+    if (!empty($value)) {
+        $filters[$key] = $value;
+    } else if (!empty($myinputsPost[$key])) {
+        $filters[$key] = $myinputsPost[$key];
+    } else if ($resetFilter && isset($_SESSION['filters'][$url][$key]) && !empty($_SESSION['filters'][$url][$key])) {
+        $filters[$key] = $_SESSION['filters'][$url][$key];
+    } else {
+        $filters[$key] = '';
+    }
+}
+
+if (empty($filters['host_search']) && isset($centreon->historySearch[$url])) {
+    $filters['host_search'] = $centreon->historySearch[$url];
+} else {
+    $centreon->historySearch[$url] = $filters['host_search'];
+}
+
 /*
  * ACL Actions
  */
@@ -59,14 +104,18 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 
 include("./include/common/autoNumLimit.php");
 
-!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
-!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-!isset($_GET["host_search"]) ? $search_host = "" : $search_host = $_GET["host_search"];
-!isset($_GET["sort_type"]) ? $sort_type = "" : $sort_type = $_GET["sort_type"];
+$sort_types = empty($_GET["sort_types"]) ? 0 : $filters["sort_types"];
+$order = empty($_GET["order"]) ? 'ASC' : $filters["order"];
+$num = empty($_GET["num"]) ? 0 : $filters["num"];
+$search_host = empty($_GET["host_search"]) ? "" : $filters["host_search"];
+$sort_type = empty($_GET["sort_type"]) ? "" : $filters["sort_type"];
 
-if (isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])) {
-    $_SESSION['monitoring_default_hostgroups'] = $_GET["hostgroups"];
+if (!empty($filters['hostgroups'])) {
+    $_SESSION['monitoring_default_hostgroups'] = $filters['hostgroups'];
+}
+
+if (!empty($filters['criticality_id'])) {
+    $_SESSION['criticality_id'] = $filters['criticality_id'];
 }
 
 $problem_sort_type = 'host_name';
@@ -78,52 +127,45 @@ if (!empty($centreon->optGen["problem_sort_type"])) {
     $problem_sort_order = $centreon->optGen["problem_sort_order"];
 }
 $global_sort_type = 'host_name';
-if (!empty($_SESSION['centreon']->optGen["global_sort_type"])) {
-    $global_sort_type = $_SESSION['centreon']->optGen["global_sort_type"];
+if (!empty($centreon->optGen["global_sort_type"])) {
+    $global_sort_type = $centreon->optGen["global_sort_type"];
 }
 $global_sort_order = 'asc';
-if (!empty($_SESSION['centreon']->optGen["global_sort_order"])) {
-    $global_sort_order = $_SESSION['centreon']->optGen["global_sort_order"];
+if (!empty($centreon->optGen["global_sort_order"])) {
+    $global_sort_order = $centreon->optGen["global_sort_order"];
 }
 
 
 if ($o == "hpb" || $o == "h_unhandled" || empty($o)) {
-    if (!isset($_GET["sort_type"])) {
+    if (!isset($filters["sort_type"])) {
         $sort_type = $centreon->optGen["problem_sort_type"];
     } else {
-        $sort_type = $_GET["sort_type"];
+        $sort_type = $filters["sort_type"];
     }
-    if (!isset($_GET["order"])) {
+    if (!isset($filters["order"])) {
         $order = $centreon->optGen["problem_sort_order"];
     } else {
-        $order = $_GET["order"];
+        $order = $filters["order"];
     }
 } else {
-    if (!isset($_GET["sort_type"])) {
-        if (isset($_SESSION['centreon']->optGen["global_sort_type"]) && $_SESSION['centreon']->optGen["global_sort_type"] != "host_name") {
-            $sort_type = CentreonDB::escape($_SESSION['centreon']->optGen["global_sort_type"]);
+    if (!isset($filters["sort_type"])) {
+        if (isset($centreon->optGen["global_sort_type"]) && $centreon->optGen["global_sort_type"] != "host_name") {
+            $sort_type = CentreonDB::escape($centreon->optGen["global_sort_type"]);
         } else {
             $sort_type = "host_name";
         }
     } else {
-        $sort_type = $_GET["sort_type"];
+        $sort_type = $filters["sort_type"];
     }
-    if (!isset($_GET["order"])) {
-        if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] == "") {
+    if (!isset($filters["order"])) {
+        if (isset($centreon->optGen["global_sort_order"]) && $centreon->optGen["global_sort_order"] == "") {
             $order = "ASC";
         } else {
-            $order = $_SESSION['centreon']->optGen["global_sort_order"];
+            $order = $centreon->optGen["global_sort_order"];
         }
     } else {
-        $order = $_GET["order"];
+        $order = $filters["order"];
     }
-}
-
-/*
- * Check search value in Host search field
- */
-if (isset($_GET["host_search"])) {
-    $centreon->historySearch[$url] = $_GET["host_search"];
 }
 
 $tab_class = array("0" => "list_one", "1" => "list_two");
