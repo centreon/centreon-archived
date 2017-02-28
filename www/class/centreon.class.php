@@ -60,6 +60,7 @@ class Centreon
     public $historySearch;
     public $historySearchService;
     public $historySearchOutput;
+    public $historySearchServicegroup;
     public $historyLimit;
     public $search_type_service;
     public $search_type_host;
@@ -229,6 +230,7 @@ class Centreon
         $this->historySearch = array();
         $this->historySearchService = array();
         $this->historySearchOutput = array();
+        $this->historySearchServicegroup = array();
         $this->historyLimit = array();
         $this->search_type_service = 1;
         $this->search_type_host = 1;

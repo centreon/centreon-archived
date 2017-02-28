@@ -39,14 +39,16 @@ if (!isset($centreon)) {
 
 /*
  * Tableau stockant les valeurs
- * */
+ */
+
 $filterParameters = array(
+    'search' => FILTER_SANITIZE_STRING,
     'host_search' => FILTER_SANITIZE_STRING,
     'output_search' => FILTER_SANITIZE_STRING,
     'hg' => FILTER_SANITIZE_STRING,
     'monitoring_default_hostgroups' => FILTER_SANITIZE_STRING,
     'hostgroup' => FILTER_SANITIZE_STRING,
-    'sg' => FILTER_SANITIZE_STRING,
+    'sg' => FILTER_VALIDATE_INT,
     'monitoring_default_servicegroups' => FILTER_SANITIZE_STRING,
     'servicegroups' => FILTER_SANITIZE_STRING,
     'sort_type' => FILTER_VALIDATE_INT,
@@ -69,63 +71,57 @@ $filterParameters = array(
     'hostSearchValue' => FILTER_SANITIZE_STRING,
     'serviceSearchValue' => FILTER_SANITIZE_STRING,
     'outputSearchValue' => FILTER_SANITIZE_STRING,
-    'reset_filter' => FILTER_VALIDATE_INT,
+    'statusService' =>FILTER_SANITIZE_STRING
 );
 
 $myinputsGet = filter_input_array(INPUT_GET, $filterParameters);
 $myinputsPost = filter_input_array(INPUT_POST, $filterParameters);
 
 $resetFilter = (isset($myinputsGet['reset_filter']) && $myinputsGet['reset_filter'] == 1) ? true : false;
-array_walk(
-    $myinputsGet,
-    function (&$item, $key){
-        if ($key != 'reset_filter') {
-            $item = NULL;
-        }
-    }
-);
 
-//echo '<pre>';
-//var_dump($myinputsGet);
-//echo '<pre>';
-
-$filters = array();
+if ($resetFilter == 1) {
+    $centreon->historySearch[$url] = '';
+    $centreon->historySearchService[$url] = '';
+    $centreon->historySearchOutput[$url] = '';
+}
 
 foreach ($myinputsGet as $key => $value) {
     if (!empty($value)) {
         $filters[$key] = $value;
     } else if (!empty($myinputsPost[$key])) {
         $filters[$key] = $myinputsPost[$key];
-    } else if (isset($_SESSION['filters'][$url][$key]) && !empty($_SESSION['filters'][$url][$key])) {
+    } else if ($resetFilter && isset($_SESSION['filters'][$url][$key]) && !empty($_SESSION['filters'][$url][$key])) {
         $filters[$key] = $_SESSION['filters'][$url][$key];
     } else {
         $filters[$key] = '';
     }
 }
 
-$_SESSION['filters'][$url] = $filters;
+//$_SESSION['filters'][$url] = $filters;
 
-//echo '<pre>';
+if (isset($myinputsGet['host_search'])) {
+    $centreon->historySearch[$url] = $myinputsGet['host_search'];
+}
+if (isset($myinputsGet['search'])) {
+    $centreon->historySearchService[$url] = $myinputsGet['search'];
+}
+if (isset($myinputsGet['output_search'])) {
+    $centreon->historySearchOutput[$url] = $myinputsGet['output_search'];
+}
+if (isset($myinputsGet['sg'])) {
+    $centreon->historySearchServicegroup[$url] = $myinputsGet['sg'];
+}
+
+var_dump($myinputsGet['sg']);
+
+//echo'<pre>';
 //var_dump($filters);
-//echo '<pre>';
+//echo'<pre>';
+
 
 /*
  * Values
  */
-
-//Modifier les $centreon->historySearch[$url] et utiliser des variables pour les appeler
-if (isset($centreon->historySearch[$url])) {
-    $tpl->assign("hostSearchValue", $centreon->historySearch[$url]);
-}
-//var_dump($centreon->historySearch[$url]);
-if (isset($centreon->historySearchService[$url])) {
-    $tpl->assign("serviceSearchValue", $centreon->historySearchService[$url]);
-}
-if (isset($centreon->historySearchOutput[$url])) {
-    $tpl->assign("outputSearchValue", $centreon->historySearchOutput[$url]);
-}
-
-////////////////////////////////////////////////
 
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
@@ -151,9 +147,6 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 }
 
 include("./include/common/autoNumLimit.php");
-var_dump($num);
-var_dump($limit);
-
 
 /*
  * set limit & num
@@ -182,6 +175,16 @@ if (!empty($_SESSION['centreon']->optGen["global_sort_type"])) {
 $global_sort_order = 'asc';
 if (!empty($_SESSION['centreon']->optGen["global_sort_order"])) {
     $global_sort_order = $_SESSION['centreon']->optGen["global_sort_order"];
+}
+
+if (isset($centreon->historySearch[$url])) {
+    $tpl->assign("hostSearchValue", $centreon->historySearch[$url]);
+}
+if (isset($centreon->historySearchService[$url])) {
+    $tpl->assign("serviceSearchValue", $centreon->historySearchService[$url]);
+}
+if (isset($centreon->historySearchOutput[$url])) {
+    $tpl->assign("outputSearchValue", $centreon->historySearchOutput[$url]);
 }
 
 include_once("./include/monitoring/status/Common/default_poller.php");
