@@ -48,7 +48,6 @@ $filterParameters = array(
     'hostgroup' => FILTER_SANITIZE_STRING,
     'sort_type' => FILTER_SANITIZE_NUMBER_INT,
     'host_name' => FILTER_SANITIZE_STRING,
-    'strict' => FILTER_SANITIZE_NUMBER_INT,
     'global_sort_type' => FILTER_SANITIZE_STRING,
     'global_sort_order' => FILTER_SANITIZE_STRING,
     'order' => FILTER_SANITIZE_STRING,
@@ -70,7 +69,9 @@ if ($resetFilter) {
     $_SESSION['filters'][$url] = array();
     $_SESSION['monitoring_default_hostgroups'] = '';
     $_SESSION['monitoring_default_servicegroups'] = '';
+    $_SESSION['monitoring_default_poller'] = '';
     $_SESSION['monitoring_service_status_filter'] = '';
+    $_SESSION['criticality_id'] = '';
 }
 
 foreach ($myinputsGet as $key => $value) {
@@ -148,7 +149,6 @@ $gopt[$data['key']] = myDecode($data['key']);
 
 $sort_type = empty($filters["sort_type"]) ? 0 : $filters["sort_type"];
 $host_name = empty($filters["host_name"]) ? "" : $filters["host_name"];
-$hostSearchStrict = empty($filters["strict"]) ?  0 : 1;
 
 $problem_sort_type = 'host_name';
 if (!empty($centreon->optGen["problem_sort_type"])) {

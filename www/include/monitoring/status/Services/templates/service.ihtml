@@ -35,8 +35,8 @@
         <td><h4>{$outputStr}</h4></td>
     </tr>
     <tr>
-        <td><input type='text' name='filter_host' id='filter_host' value="{$filterHost}"></td>
-        <td><input type='text' name='filter_service' id='filter_service'></td>
+        <td><input type='text' name='host_search' id='host_search'></td>
+        <td><input type='text' name='search' id='input_search'></td>
         <td id="hostgroups_selected"></td>
         <td id="servicegroups_selected"></td>
         <td><input type='text' name='output_search' id='output_search'></td>
