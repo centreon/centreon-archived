@@ -923,7 +923,7 @@ class CentreonConfigCentreonBroker
      * @param int $fieldId The field ID
      * @return string|null
      */
-    private function getDefaults($fieldId)
+    public function getDefaults($fieldId)
     {
         if (isset($this->defaults[$fieldId])) {
             return $this->defaults[$fieldId];
