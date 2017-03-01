@@ -45,7 +45,7 @@ class Correlation extends AbstractObjectXML {
     private $has_correlation = null;
     private $correlation_file_path = null;
     private $poller_ids = array();
-    
+
     public function generateFromPollerId($poller_id, $localhost) {
         if ($localhost) {
             $this->generateMainCorrelation();
@@ -60,7 +60,7 @@ class Correlation extends AbstractObjectXML {
 
         # Generate correlation files
         $this->generateFile($this->correlation_object, false, 'conf');
-        $this->writeFile($this->backend_instance->getPath());        
+        $this->writeFile($this->backend_instance->getPath());
     }
 
     private function generateMainCorrelation() {
@@ -109,14 +109,11 @@ class Correlation extends AbstractObjectXML {
 
     private function doHost($poller_id) {
         $host_instance = Host::getInstance();
-        $hosts_exported = $host_instance->getExported();
-        foreach ($hosts_exported as $key => $value) {
-            if ($value != 1) {
-                continue;
-            }
+        $hosts = $host_instance->getGeneratedHosts();
+        foreach ($hosts as $hostId) {
             $this->correlation_object[]['host'] = array(
                 '@attributes' => array(
-                    'id' => $key,
+                    'id' => $hostId,
                     'instance_id' => $poller_id
                 )
             );
@@ -257,7 +254,7 @@ class Correlation extends AbstractObjectXML {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->correlation_file_path = $row['config_value'];
             $this->has_correlation = 1;
-            
+
         }
     }
 
