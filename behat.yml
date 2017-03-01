@@ -143,3 +143,8 @@ default:
       paths: [ %paths.base%/features/CustomViews.feature ]
       contexts:
       - CustomViewsContext
+
+    host_template_configuration:
+      paths: [ %paths.base%/features/HostTemplateConfiguration.feature ]
+      contexts:
+      - HostTemplateConfigurationContext
