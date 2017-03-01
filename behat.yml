@@ -9,6 +9,10 @@ default:
   gherkin:
     cache: ~
   suites:
+    configuration_warnings:
+      paths: [ %paths.base%/features/ConfigurationWarnings.feature ]
+      contexts:
+        - ConfigurationWarningsContext
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
       contexts:
@@ -139,4 +143,3 @@ default:
       paths: [ %paths.base%/features/CustomViews.feature ]
       contexts:
       - CustomViewsContext
-
