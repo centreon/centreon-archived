@@ -53,7 +53,11 @@ if (!isset($_SESSION['CONFIGURATION_DB'])) {
 /* Check if MySQL innodb_file_perf_table is enabled */
 $innodb_file_per_table = getDatabaseVariable('innodb_file_per_table');
 if (is_null($innodb_file_per_table) || strtolower($innodb_file_per_table) == 'off') {
-    exitProcess(PROCESS_ID, 1, _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.'));
+    exitProcess(
+        PROCESS_ID,
+        1,
+        _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.')
+    );
 }
 
 /* Check if MySQL open_files_limit parameter is higher than 32000 */
@@ -63,8 +67,10 @@ if (is_null($open_files_limit)) {
 }
 if ($open_files_limit < 32000) {
     exitProcess(PROCESS_ID, 1, _(
-        'If your operating system is based on SystemV (CentOS 6), add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.
-        If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the service file /usr/lib/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).'
+        'If your operating system is based on SystemV (CentOS 6), add open_files_limit=32000 in my.cnf file under the
+        [mysqld] section and restart MySQL Server.
+        If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the
+        service file /usr/lib/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).'
     ));
 }
 
