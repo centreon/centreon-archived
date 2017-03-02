@@ -83,12 +83,15 @@ if ($debug_path == '') {
 $queryGetLdap = 'SELECT contact_alias
 		 FROM contact
                  WHERE contact_register = 1';
-$res = $pearDB->query($queryGetLdap);
+
 $listLdapUsers = array();
-if (!PEAR::isError($res)) {
+try {
+    $res = $pearDB->query($queryGetLdap);
     while ($row = $res->fetchRow()) {
         $listLdapUsers[] = $row['contact_alias'];
     }
+} catch (\PDOException $e) {
+    // Nothing to do
 }
 
 $buffer = new CentreonXML();

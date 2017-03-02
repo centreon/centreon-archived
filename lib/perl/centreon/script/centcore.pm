@@ -60,6 +60,7 @@ sub new {
     $self->{rsync} = "rsync";
     $self->{rsyncWT} = $self->{rsync};
     $self->{sudo} = "sudo";
+    $self->{service} = "service";
     $self->{timeout} = 5;
     $self->{cmd_timeout} = 5; 
     
@@ -732,14 +733,14 @@ sub initCentreonTrapd {
         && defined($ns_server->{init_script_centreontrapd}) && $ns_server->{init_script_centreontrapd} ne "") {
         # Launch command
         if (defined($ns_server->{localhost}) && $ns_server->{localhost}) {
-            $cmd = "$self->{sudo} ".$ns_server->{init_script_centreontrapd} . " " . $start_type;
+            $cmd = "$self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd} . " " . $start_type;
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
                                                                   timeout => 120
                                                                   );
         } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},

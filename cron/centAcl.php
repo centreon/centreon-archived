@@ -80,8 +80,9 @@ try {
     /*
      * Detect Which DB layer is used
      */
-    $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'broker'");
-    if (PEAR::isError($DBRESULT)) {
+    try {
+        $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'broker'");
+    } catch (\PDOException $e) {
         print "Cannot Get Monitoring Engine";
         exit(1);
     }
@@ -91,8 +92,9 @@ try {
     /*
      * Lock in MySQL
      */
-    $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
-    if (PEAR::isError($DBRESULT)) {
+    try {
+        $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
+    } catch (\PDOException $e) {
         print "Error to check is process running.";
         exit(1);
     }
@@ -103,9 +105,10 @@ try {
     $beginTime = time();
 
     if (count($data) == 0) {
-        $DBRESULT = $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
-        $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
+            $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
+        } catch (\PDOException $e) {
             print "Error to check is process running.";
             exit(1);
         }

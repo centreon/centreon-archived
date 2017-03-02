@@ -93,8 +93,9 @@ class CentreonHost
             $queryList .= " AND host_activate = '1'";
         }
         $queryList .= " ORDER BY host_name";
-        $res = $this->db->query($queryList);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($queryList);
+        } catch (\PDOException $e) {
             return array();
         }
         $listHost = array();
@@ -122,8 +123,9 @@ class CentreonHost
  	    		AND h.host_register = "1"
  	    		AND h.host_activate = "1"
  	    		AND hp.host_parent_hp_id = ' . $hostId;
-        $res = $this->db->query($queryGetChildren);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($queryGetChildren);
+        } catch (\PDOException $e) {
             return array();
         }
         $listHostChildren = array();
@@ -146,8 +148,9 @@ class CentreonHost
  	    	WHERE hp.host_host_id = h.host_id
  	    		AND h.host_register = "1"
  	    		AND h.host_activate = "1"';
-        $res = $this->db->query($queryGetRelationTree);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($queryGetRelationTree);
+        } catch (\PDOException $e) {
             return array();
         }
         $listHostRelactionTree = array();
@@ -181,8 +184,9 @@ class CentreonHost
             . 'AND h.host_register = "1" '
             . 'AND h.host_activate = "1" '
             . 'AND hsr.host_host_id = ' . CentreonDB::escape($hostId);
-        $res = $this->db->query($queryGetServices);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($queryGetServices);
+        } catch (\PDOException $e) {
             return array();
         }
         $listServices = array();
@@ -205,8 +209,9 @@ class CentreonHost
                 . 'AND hg.hg_id = hgr.hostgroup_hg_id '
                 . 'AND hg.hg_activate = "1" '
                 . 'AND hgr.host_host_id = ' . CentreonDB::escape($hostId);
-            $res = $this->db->query($queryGetServices);
-            if (PEAR::isError($res)) {
+            try {
+                $res = $this->db->query($queryGetServices);
+            } catch (\PDOException $e) {
                 return array();
             }
             while ($row = $res->fetchRow()) {
@@ -247,8 +252,9 @@ class CentreonHost
 							 	   AND h.host_register =  "1"
 							 	   AND h.host_activate =  "1"';
         }
-        $res = $this->db->query($queryGetServices);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($queryGetServices);
+        } catch (\PDOException $e) {
             return array();
         }
         $listServices = array();
@@ -1650,9 +1656,9 @@ class CentreonHost
  	    		AND h.host_activate = "1"
  	    		AND hsr.host_host_id = ' . CentreonDB::escape($hostTplId);
 
-
-        $res = $this->db->query($queryGetServices);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($queryGetServices);
+        } catch (\PDOException $e) {
             return array();
         }
         $listServices = array();
@@ -1851,9 +1857,10 @@ class CentreonHost
         $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] != null ?
             $rq .= "'" . $ret["host_acknowledgement_timeout"]["host_acknowledgement_timeout"] . "'" : $rq .= "NULL";
         $rq .= ")";
-        $DBRESULT = $this->db->query($rq);
 
-        if (\PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $this->db->query($rq);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while insert host ' . $ret['host_name']);
         }
 
@@ -1902,8 +1909,9 @@ class CentreonHost
         isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != null ?
             $rq .= "'" . CentreonDB::escape($ret["ehi_3d_coords"]) . "' " : $rq .= "NULL ";
         $rq .= ")";
-        $DBRESULT = $this->db->query($rq);
-        if (\PEAR::isError($DBRESULT)) {
+        try {
+            $this->db->query($rq);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while insert host extended info ' . $ret['host_name']);
         }
     }
@@ -2102,8 +2110,9 @@ class CentreonHost
         if (count($updateFields)) {
             $query .= implode(',', $updateFields)
                 . 'WHERE host_host_id = "' . $host_id . '" ';
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result)) {
+            try {
+                $result = $this->db->query($query);
+            } catch (\PDOException $e) {
                 throw new \Exception('Error while updating extendeded infos of host ' . $host_id);
             }
         }
@@ -2196,9 +2205,9 @@ class CentreonHost
         $sQuery = 'DELETE FROM host '
             . 'WHERE host_name = "' . $this->db->escape($host_name) . '"';
 
-        $res = $this->db->query($sQuery);
-
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while delete host ' . $host_name);
         }
     }

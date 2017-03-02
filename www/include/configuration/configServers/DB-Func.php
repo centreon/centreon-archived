@@ -157,11 +157,11 @@ function multipleServerInDB($server = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query($rq);
                 
                 $queryGetId = 'SELECT id FROM nagios_server WHERE name = "' . $server_name . '"';
-                $res = $pearDB->query($queryGetId);
-                if (false === PEAR::isError($res)) {
+                try {
+                    $res = $pearDB->query($queryGetId);
                     if ($res->numRows() > 0) {
                         $row = $res->fetchRow();
-                        
+
                         $iId = $obj->insertServerInCfgNagios($key, $row['id'], $server_name);
 
                         if (isset($rowBks)) {
@@ -175,10 +175,12 @@ function multipleServerInDB($server = array(), $nbrDup = array())
 
                         $queryRel = 'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) SELECT b.resource_id, ' . $row['id'] . ' FROM cfg_resource_instance_relations as b WHERE b.instance_id = ' . $key;
                         $pearDB->query($queryRel);
-                        
+
                         $queryCmd = 'INSERT INTO poller_command_relations (poller_id, command_id, command_order) SELECT ' . $row['id'] . ', b.command_id, b.command_order FROM poller_command_relations as b WHERE b.poller_id = ' . $key;
                         $pearDB->query($queryCmd);
                     }
+                } catch (\PDOException $e) {
+                    // Nothing to do
                 }
             }
         }
@@ -263,9 +265,10 @@ function addUserRessource($serverId)
 
     $queryInsert = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES (%s, %s)";
     $queryGetResources = "SELECT resource_id, resource_name FROM cfg_resource ORDER BY resource_id";
-    
-    $res = $pearDB->query($queryGetResources);
-    if (PEAR::isError($res)) {
+
+    try {
+        $res = $pearDB->query($queryGetResources);
+    } catch (\PDOException $e) {
         return false;
     }
     $isInsert = array();

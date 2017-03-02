@@ -302,9 +302,14 @@ $request .= " LIMIT " . ($num * $limit) . "," . $limit;
 /** * **************************************************
  * Get Pagination Rows
  */
-//var_dump($request);
-$DBRESULT = $obj->DBC->query($request);
-$numRows = $obj->DBC->numberRows();
+$sqlError = false;
+try {
+    $DBRESULT = $obj->DBC->query($request);
+    $numRows = $obj->DBC->numberRows();
+} catch (\PDOException $e) {
+    $sqlError = true;
+    $numRows = 0;
+}
 
 /**
  * Get criticality ids
@@ -349,7 +354,7 @@ $host_prev = "";
 $ct = 0;
 $flag = 0;
 
-if (!PEAR::isError($DBRESULT)) {
+if ($sqlError) {
     while ($data = $DBRESULT->fetchRow()) {
         $passive = 0;
         $active = 1;

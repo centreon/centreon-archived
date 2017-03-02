@@ -4,7 +4,7 @@
 Using packages
 ==============
 
-Centreon supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
+Centreon supplies RPM for its products via the Centreon Open Sources version available free of charge on our repository (ex CES).
 
 These packages have been successfully tested on CentOS and Red Hat environments in 6.x and 7.x versions.
 
@@ -12,7 +12,7 @@ These packages have been successfully tested on CentOS and Red Hat environments 
 Prerequisites
 *************
 
-To install Centreon software from the CES repository, you should first install the file linked to the repository.
+To install Centreon software from the repository, you should first install the file linked to the repository.
 
 Perform the following command from a user with sufficient rights.
 
@@ -34,25 +34,6 @@ For CentOS 7.
 
 
 The repository is now installed.
-
-Any operating system
---------------------
-
-SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
-
- ::
-
-  SELINUX=disabled
-
-PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
-
- ::
-
-  date.timezone = Europe/Paris
-
-After saving the file, please don't forget to restart apache server.
-
-The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
 *********************
 Centreon installation
@@ -84,6 +65,42 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
+Add GPG key for CentOS 6
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+You also have to recover the GPG key and place it in the rpm-gpg file.
+
+Perform the command:
+
+ ::
+
+   $ cd /etc/pki/rpm-gpg/
+   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES
+
+Add GPG key for CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+You also have to recover the GPG key and place it in the rpm-gpg file.
+
+Perform the command:
+
+ ::
+
+   $ cd /etc/pki/rpm-gpg/
+   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
+
+Install mysql on the same server
+--------------------------------
+
+Ce chapitre décrit l'installation de mysql sur un serveur comprenant Centreon.
+This chapter describes the installation of mysql on a server including Centreon.
+
+Perform the command:
+
+  ::
+
+   $ yum install mariadb-server
+   $ service mysql restart
 
 Base configuration of a poller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -107,6 +124,61 @@ Copy this key on the collector:
 
 
 .. _installation_web:
+
+Any operating system
+--------------------
+
+Disable SELinux
+^^^^^^^^^^^^^^^
+
+SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
+
+::
+
+    SELINUX=disabled
+
+PHP timezone
+^^^^^^^^^^^^
+
+PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
+
+::
+
+    date.timezone = Europe/Paris
+
+After saving the file, please don't forget to restart apache server.
+
+Firewall
+^^^^^^^^
+
+Add firewall rules or disable it. To disable it execute folowwing commands:
+
+* **iptables** (CentOS v6) ::
+
+    # /etc/init.d/iptables save
+    # /etc/init.d/iptables stop
+    # chkconfig iptables off
+
+* **firewalld** (CentOS v7) ::
+
+    # systemctl stop firewalld
+    # systemctl disable firewalld
+    # systemctl status firewalld
+
+DataBase Management System
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
+
+For CentOS / RHEL in version 7, it is necessary to modify **LimitNOFILE** limitation.
+Edit **/etc/systemd/system/mysqld.service** file and change ::
+
+    LimitNOFILE=32000
+
+Save the file and execute the folowwing commands::
+
+    # systemctl daemon-reload
+    # service mysqld restart
 
 Web Installation
 ================

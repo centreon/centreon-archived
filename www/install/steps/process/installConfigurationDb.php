@@ -42,38 +42,47 @@ if (isset($_SESSION['MONITORING_VAR_LOG']) && !isset($_SESSION['MONITORING_VAR_L
     $_SESSION['MONITORING_VAR_LIB'] = $_SESSION['MONITORING_VAR_LOG'];
 }
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+try {
+    $link = myConnect();
+} catch (\PDOException $e) {
+    exitProcess(PROCESS_ID, 1, $e->getMessage());
 }
+
 if (!isset($_SESSION['CONFIGURATION_DB'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find configuration database. Session probably expired.'));
 }
 
 /* Check if MySQL innodb_file_perf_table is enabled */
-$innodb_file_per_table = getDatabaseVariable('innodb_file_per_table');
+$innodb_file_per_table = getDatabaseVariable($link, 'innodb_file_per_table');
 if (is_null($innodb_file_per_table) || strtolower($innodb_file_per_table) == 'off') {
     exitProcess(PROCESS_ID, 1, _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.'));
 }
 
 /* Check if MySQL open_files_limit parameter is higher than 32000 */
-$open_files_limit = getDatabaseVariable('open_files_limit');
+$open_files_limit = getDatabaseVariable($link, 'open_files_limit');
 if (is_null($open_files_limit)) {
     $open_files_limit = 0;
 }
 if ($open_files_limit < 32000) {
-    exitProcess(PROCESS_ID, 1, _('Add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.'));
+    exitProcess(PROCESS_ID, 1, _(
+        'If your operating system is based on SystemV (CentOS 6), add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.
+        If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the service file /usr/lib/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).'
+    ));
 }
 
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !is_file('../../tmp/createTables')) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+try {
+    $link->exec("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']);
+} catch (\PDOException $e) {
+    if (!is_file('../../tmp/createTables')) {
+        exitProcess(PROCESS_ID, 1, $e->getMessage());
+    }
 }
 
 /**
  * Create tables
  */
-mysql_select_db($_SESSION['CONFIGURATION_DB']);
-$result = splitQueries('../../createTables.sql', ';', null, '../../tmp/createTables');
+$link->exec('use ' . $_SESSION['CONFIGURATION_DB']);
+$result = splitQueries('../../createTables.sql', ';', $link, '../../tmp/createTables');
 if ("0" != $result) {
     exitProcess(PROCESS_ID, 1, $result);
 }

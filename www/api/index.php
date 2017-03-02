@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);
-    $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log);
+    $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log, 1, "", "API");
     if ($auth->passwdOk == 0) {
         CentreonWebService::sendJson("Bad credentials", 403);
         exit();
@@ -98,9 +98,10 @@ if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
 }
 
 /* Create the default object */
-$res = $pearDB->prepare("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?");
-$res = $pearDB->execute($res, array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
-if (PEAR::isError($res)) {
+try {
+    $res = $pearDB->prepare("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?");
+    $res = $pearDB->execute($res, array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
+} catch (\PDOException $e) {
     CentreonWebService::sendJson("Database error", 500);
 }
 $userInfos = $res->fetchRow();

@@ -20,7 +20,7 @@ function isSqlComment($str) {
  */
 function getTemplate($dir) {
     require_once '../../../GPL_LIB/Smarty/libs/Smarty.class.php';
-    $template = new Smarty();
+    $template = new \Smarty();
     $template->compile_dir = "../../../GPL_LIB/SmartyCache/compile";
     $template->config_dir = "../../../GPL_LIB/SmartyCache/config";
     $template->cache_dir = "../../../GPL_LIB/SmartyCache/cache";
@@ -49,7 +49,7 @@ function myConnect() {
     if (isset($_SESSION['DB_PORT']) && $_SESSION['DB_PORT']) {
         $port = $_SESSION['DB_PORT'];
     }
-    return mysql_connect($host.':'.$port, 'root', $pass);
+    return new \PDO('mysql:host=' . $host . ';port=' . $port, 'root', $pass);
 }
 
 /**
@@ -84,6 +84,10 @@ function replaceInstallationMacros($query) {
  * @return string | returns "0" if everything is ok, or returns error message
  */
 function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "") {
+    if (is_null($connector)) {
+        $connector = myConnect();
+    }
+
     set_time_limit(0);
     $count = 0;
     $start = 0;
@@ -108,17 +112,10 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                     $query = replaceInstallationMacros($query);
                     $count++;
                     if ($count > $start) {
-                        if (is_null($connector)) {
-                            if (mysql_query($query) === false) {
-                                fclose($file);
-                                return "$fileName Line $line:".mysql_error();
-                            }
-                        } else {
-                            try {
-                                $connector->query($query);                        
-                            } catch (Exception $e) {
-                                return "$fileName Line $line:".$e->getMessage();
-                            }
+                        try {
+                            $connector->query($query);
+                        } catch (Exception $e) {
+                            return "$fileName Line $line:".$e->getMessage();
                         }
                         while (ob_get_level() > 0) {
                             ob_end_flush();
@@ -146,14 +143,15 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
  * @param string $file
  * @return void
  */
-function importFile($file) {
-    mysql_query('BEGIN');
-    if (false == splitQueries($file)) {
-        $error = mysql_error();
-        mysql_query('ROLLBACK');
-        exitProcess(PROCESS_ID, 1, $error);
+function importFile($db, $file) {
+    $db->beginTransaction();
+    try {
+        splitQueries($db, $file);
+        $db->commit();
+    } catch (\PDOException $e) {
+        $db->rollBack();
+        exitProcess(PROCESS_ID, 1, $e->getMessage());
     }
-    mysql_query('COMMIT');
 }
 
 /**
@@ -166,12 +164,13 @@ function importFile($file) {
 function exitProcess($id, $result, $msg) {
     $msg = str_replace('"', '\"', $msg);
     $msg = str_replace('\\', '\\\\', $msg);
+
     echo '{
         "id" : "'.$id.'",
         "result" : "'.$result.'",
         "msg" : "'.$msg.'"
         }';
-    @mysql_close();
+
     exit;
 }
 
@@ -245,18 +244,15 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['CENTREONPLUGINS'] = $conf_centreon['centreon_plugins'];
 }
 
-function getDatabaseVariable($variable) {
+function getDatabaseVariable($db, $variable) {
     $query = "SHOW VARIABLES LIKE '" . $variable . "'";
-    $res = mysql_query($query);
-
-    $row = mysql_fetch_assoc($res);
+    $result = $db->query($query);
 
     $value = null;
-    if ($row && isset($row['Value'])) {
+    while ($row = $result->fetch()) {
         $value = $row['Value'];
     }
-
-    mysql_free_result($res);
+    $result->closeCursor();
 
     return $value;
 }

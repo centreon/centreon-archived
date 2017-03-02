@@ -215,9 +215,10 @@ for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
 
 /* Get the list of running poller */
 $queryPollers = "SELECT instance_id, name FROM instances ORDER BY name";
-$res = $pearDBO->query($queryPollers);
 $instances = array();
-if (false === PEAR::isError($res)) {
+try {
+    $res = $pearDBO->query($queryPollers);
+} catch (\PDOException $e) {
     while ($row = $res->fetchRow()) {
         $instances[$row['instance_id']] = $row['name'];
     }

@@ -47,42 +47,42 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 try {
     $db = new CentreonDB();
     $viewObj = new CentreonCustomView($centreon, $db);
-    
+
     /*
 	 * Smarty
 	 */
     $path = "./include/home/customViews/";
-    
+
     /*
      * Smarty INIT
      */
     $template = new Smarty();
     $template = initSmartyTpl($path, $template, "./");
-    
+
     $aclEdit = $centreon->user->access->page('10301', true);
     $template->assign('aclEdit', $aclEdit);
-    
+
     $aclShare = $centreon->user->access->page('10302', true);
     $template->assign('aclShare', $aclShare);
-    
+
     $aclParameters = $centreon->user->access->page('10303', true);
     $template->assign('aclParameters', $aclParameters);
-    
+
     $aclAddWidget = $centreon->user->access->page('10304', true);
     $template->assign('aclAddWidget', $aclAddWidget);
-    
+
     $aclRotation = $centreon->user->access->page('10305', true);
     $template->assign('aclRotation', $aclRotation);
-    
+
     $aclDeleteView = $centreon->user->access->page('10306', true);
     $template->assign('aclDeleteView', $aclDeleteView);
-    
+
     $aclAddView = $centreon->user->access->page('10307', true);
     $template->assign('aclAddView', $aclAddView);
-    
+
     $aclSetDefault = $centreon->user->access->page('10308', true);
     $template->assign('aclSetDefault', $aclSetDefault);
-   
+
     $template->assign('editMode', _("Show/Hide edit mode"));
 
     $viewId = $viewObj->getCurrentView();
@@ -116,47 +116,38 @@ try {
     $template->assign('empty', $i);
     $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
 
-    $formAddView = new HTML_QuickForm('formAddView', 'post', "?p=103", '_selft', array('onSubmit' => 'submitAddView(); return false;'));
+    $formAddView = new HTML_QuickForm(
+        'formAddView',
+        'post',
+        "?p=103",
+        '_selft',
+        array('onSubmit' => 'submitAddView(); return false;')
+    );
     $formAddView->addElement('header', 'title', _("Create a view"));
     $formAddView->addElement('header', 'information', _("General Information"));
 
 
-    $query =  "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
-            . " UNION "
-            . " SELECT cv.*, '0' as from_public FROM custom_views cv "
-            . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE (cvur.user_id = " . $db->escape($centreon->user->user_id)
-            . "        OR cvur.usergroup_id IN ( "
-            . "           SELECT contactgroup_cg_id "
-            . "           FROM contactgroup_contact_relation "
-            . "           WHERE contact_contact_id = " . $db->escape($centreon->user->user_id)
-            . "           ) "
-            . " ) AND cvur.is_consumed = 0 ";
-    
+    $attrsText = array("size" => "30");
+    $arrayView = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_customview&action=listPublic',
+        'multiple' => false
+    );
+    $formAddView->addElement('select2', 'viewLoad', _("Public views list"), array(), $arrayView);
 
-    $DBRES = $db->query($query);
-    $arrayView = array();
-    $arrayView[-1] = "";
-    $arrayViewShared = array();
-    $arrayViewShared[-1] = "";
-    
-    while ($row = $DBRES->fetchRow()) {
-        if ($row['from_public'] == '1') {
-            $arrayView[$row['custom_view_id']] = $row['name'];
-        } else {
-            $arrayViewShared[$row['custom_view_id']] = $row['name'];
-        }
-    }
+    $arrayViewShared = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_customview&action=listShare',
+        'multiple' => false
+    );
 
-    asort($arrayView);
-    asort($arrayViewShared);
+    $formAddView->addElement('select2', 'viewLoadShare', _("Shared views list"), array(), $arrayViewShared);
 
-    $attrsText      = array("size"=>"30");
-    $formAddView->addElement('select', 'viewLoad', _("Public views list"), $arrayView);
-    $formAddView->addElement('select', 'viewLoadShare', _("Shared views list"), $arrayViewShared);
+
     /**
      * Name
      */
+
     $formAddView->addElement('text', 'name', _("Name"), $attrsText);
 
     $createLoad = array();
@@ -192,19 +183,25 @@ try {
     $rendererAddView->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $formAddView->accept($rendererAddView);
     $template->assign('formAddView', $rendererAddView->toArray());
-    
+
     /**
      * Form for edit view
      */
-    $formEditView = new HTML_QuickForm('formEditView', 'post', "?p=103", '', array('onSubmit' => 'submitEditView(); return false;'));
+    $formEditView = new HTML_QuickForm(
+        'formEditView',
+        'post',
+        "?p=103",
+        '',
+        array('onSubmit' => 'submitEditView(); return false;')
+    );
     $formEditView->addElement('header', 'title', _('Edit a view'));
     $formEditView->addElement('header', 'information', _("General Information"));
-    
+
     /**
      * Name
      */
     $formEditView->addElement('text', 'name', _("Name"), $attrsText);
-    
+
     /**
      * Layout
      */
@@ -238,7 +235,13 @@ try {
      * Form share view
      */
     $cgObj = new CentreonContactgroup($db);
-    $formShareView = new HTML_QuickForm('formShareView', 'post', "?p=103", '', array('onSubmit' => 'submitShareView(); return false;'));
+    $formShareView = new HTML_QuickForm(
+        'formShareView',
+        'post',
+        "?p=103",
+        '',
+        array('onSubmit' => 'submitShareView(); return false;')
+    );
     $formShareView->addElement('header', 'title', _("Share view"));
 
     /**
@@ -254,7 +257,8 @@ try {
      */
     $attrContacts = array(
         'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+        'availableDatasetRoute' => './include/common/webServices/rest/'
+            . 'internal.php?object=centreon_configuration_contact&action=list',
         'multiple' => true
     );
     $formShareView->addElement('select2', 'user_id', _("User List"), array(), $attrContacts);
@@ -274,11 +278,12 @@ try {
      */
     $attrContactgroups = array(
         'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+        'availableDatasetRoute' => './include/common/webServices/rest/'
+            . 'internal.php?object=centreon_configuration_contactgroup&action=list',
         'multiple' => true
     );
     $formShareView->addElement('select2', 'usergroup_id', _("User Group List"), array(), $attrContactgroups);
-    
+
     /**
      * Submit button
      */
@@ -297,7 +302,13 @@ try {
      * Form add widget
      */
     $widgetObj = new CentreonWidget($centreon, $db);
-    $formAddWidget = new HTML_QuickForm('formAddWidget', 'post', "?p=103", '', array('onSubmit' => 'submitAddWidget(); return false;'));
+    $formAddWidget = new HTML_QuickForm(
+        'formAddWidget',
+        'post',
+        "?p=103",
+        '',
+        array('onSubmit' => 'submitAddWidget(); return false;')
+    );
     $formAddWidget->addElement('header', 'w_title', _('Add a widget'));
     $formAddWidget->addElement('header', 'title', _('Add a widget'));
     $formAddWidget->addElement('header', 'information', _("Widget Information"));
@@ -307,15 +318,6 @@ try {
      */
     $formAddWidget->addElement('text', 'widget_title', _("Title"), $attrsText);
     $formAddWidget->addElement('select2', 'widget_model_id', _("Widget"), array(), $attrWidgets);
-
-    /**
-     * Widgets
-     */
-    $widgetList = $widgetObj->getWidgetModels();
-    $widgetModels = array();
-    foreach ($widgetList as $widgetModelId => $widgetModelName) {
-        $widgetModels[$widgetModelId] = $widgetObj->getWidgetInfoById($widgetModelId);
-    }
 
     /**
      * Submit button
@@ -333,10 +335,9 @@ try {
     $rendererAddWidget->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $rendererAddWidget->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $formAddWidget->accept($rendererAddWidget);
-    $template->assign('widgetModels', $widgetModels);
     $template->assign('formAddWidget', $rendererAddWidget->toArray());
     $template->assign('rotationTimer', $rotationTimer);
-    
+
     $template->display("index.ihtml");
 } catch (CentreonCustomViewException $e) {
     echo $e->getMessage() . "<br/>";
@@ -347,15 +348,14 @@ if (isset($_SESSION['customview_edit_mode'])) {
 }
 ?>
 <script type="text/javascript">
-var modeEdit = <?php echo $modeEdit; ?>;
-/**
- * Resize widget iframe
- */
-function iResize(ifrm, height)
-{
-    if (height < 150) {
-        height = 150;
+    var modeEdit = <?php echo $modeEdit; ?>;
+    /**
+     * Resize widget iframe
+     */
+    function iResize(ifrm, height) {
+        if (height < 150) {
+            height = 150;
+        }
+        jQuery("[name=" + ifrm + "]").height(height);
     }
-    jQuery("[name="+ifrm+"]").height(height);
-}
 </script>

@@ -8,7 +8,7 @@
 
     <!-- Action bar -->
     <div id='actionBar' style="display: none;">
-    
+
         {if $aclAddView == 1}
         <!-- Button for add a view -->
         <div class="cntn">
@@ -64,9 +64,9 @@
             </div>
         </div>
         {/if}
-        
+
         <!-- Button for edit a view -->
-        {if $aclEdit == 1} 
+        {if $aclEdit == 1}
         <div class="cntn">
             <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
             <div class="position_toggle_wrapper">
@@ -113,14 +113,14 @@
         {if $aclDeleteView == 1}
         <button class='deleteView btnExtraAction btc bt_danger'>{t}Delete view{/t}</button>
         {/if}
-        
+
         <!-- Button for set default a view -->
         {if $aclSetDefault == 1}
         <button class='setDefault btnExtraAction btc bt_default'>{t}Set default{/t}</button>
         {/if}
-        
+
         <!-- Button for share a view -->
-        {if $aclShare == 1} 
+        {if $aclShare == 1}
         <div class="cntn">
             <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
             <div class="position_toggle_wrapper">
@@ -216,7 +216,7 @@
         {/if}
 
         <!-- Button for activate rotation -->
-        {if $aclRotation == 1} 
+        {if $aclRotation == 1}
         <div class="cntn">
             <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
             <div class="position_toggle_wrapper">
@@ -231,7 +231,7 @@
         </div>
         {/if}
     </div>
-    
+
     <!-- Tab for list of views -->
     <div id="tabs">
         <div class="info_box">
@@ -264,7 +264,7 @@
         </div>
     </div>
 </div>
-<script>  
+<script>
 {literal}
 /* Display or hide the information for add a new view */
 function infoEmptyTab() {
@@ -276,7 +276,7 @@ function infoEmptyTab() {
     jQuery('.btnExtraAction').hide();
   }
 }
-  
+
 function addTab(info, init) {
   var init = init || false;
   var $tabEl = jQuery('<li></li>');
@@ -306,7 +306,7 @@ function addTab(info, init) {
     infoEmptyTab();
   }
 }
-  
+
 function deleteTab(viewId) {
   jQuery('#tabs .tabs_header > li').each(function (idx, elem) {
     if (jQuery(elem).data('cvId') == viewId) {
@@ -324,14 +324,14 @@ function deleteTab(viewId) {
       displayBtnToggleEdit();
     }
   });
-  
+
   if (jQuery('#tabs .tabs_header > li').length > 0) {
     jQuery('#tabs').tabs('select', 1);
   }
-  
+
   infoEmptyTab();
 }
-  
+
 function getTabPos(id) {
   var index = -1;
   jQuery('#tabs .tabs_header > li').each(function (idx, elem) {
@@ -341,8 +341,8 @@ function getTabPos(id) {
   });
   return index;
 }
-  
-/* Set value of timer in the label */ 
+
+/* Set value of timer in the label */
 function setTimerLabel() {
   var val = jQuery("#rotation_timer").slider("value");
   jQuery("#timer_value").html(val + " seconds");
@@ -371,14 +371,13 @@ function submitAddView() {
             if(jQuery('input[name="create_load[create_load]"]:checked').val() === "create"){
                 widgetName = jQuery("#formAddView input[name='name']").val();
             }else if(jQuery('input[name="create_load[create_load]"]:checked').val() === "load"){
-                if(jQuery("#formAddView select[name='viewLoad']").val() != -1){
-                    widgetName = jQuery("#formAddView select[name='viewLoad']").find(":selected").text();
-                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != -1){
-                    widgetName = jQuery("#formAddView select[name='viewLoadShare']").find(":selected").text();
+                if(jQuery("#formAddView select[name='viewLoad']").val() != null){
+                    console.log(jQuery("#formAddView select[name='viewLoad']").val())
+                    widgetName = jQuery("#select2-viewLoad-container .select2-content").text()
+                }else if(jQuery("#formAddView select[name='viewLoadShare']").val() != null){
+                    widgetName = jQuery("#select2-viewLoadShare-container .select2-content").text()
                 }
             }
-
-
 
             addTab({
               default: false,
@@ -398,7 +397,7 @@ function submitAddView() {
     }
   });
 }
-             
+
 /* Submit action for edit a view */
 function submitEditView() {
   if (jQuery("#formEditView input[name='name']").val().trim() === '') {
@@ -432,7 +431,7 @@ function submitEditView() {
     }
   });
 }
- 
+
 /* Submit action for add a widget */
 function submitAddWidget() {
   jQuery("#formAddWidget input[name='custom_view_id']").val(viewId);
@@ -478,7 +477,7 @@ function submitDeleteView() {
     }
   });
 }
- 
+
 /* Set default action */
 function submitSetDefaultView() {
   var viewId = jQuery(
@@ -494,7 +493,7 @@ function submitSetDefaultView() {
     }
   });
 }
- 
+
 /* Submit action for set rotation */
 function submitRotation() {
   var rotationTimer = jQuery("#rotation_timer").slider("value");
@@ -518,7 +517,7 @@ function submitRotation() {
     }
   });
 }
-  
+
 /* Submit action for share views */
 function submitShareView()
 {
@@ -533,7 +532,7 @@ function submitShareView()
     action: 'share',
     centeon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
   };
-  
+
   if (users) {
     postData['user_id[]'] = users.filter(function (elem) {
       return elem !== '';
@@ -544,7 +543,7 @@ function submitShareView()
       return elem !== '';
     });
   }
-  
+
   jQuery.ajax({
     type: "POST",
     dataType: "xml",
@@ -561,7 +560,7 @@ function submitShareView()
     }
   });
 }
-             
+
 /**
  * Initializes Colorbox
  */
@@ -576,21 +575,26 @@ function initColorbox(selector, url, w, h)
     opacity: 0.7
   });
 }
-  
+
 function displayBtnToggleEdit() {
   if (jQuery('.tabs_header').children().length > 0
       && jQuery('.portlet').length > 0) {
-    toggleEdit(modeEdit);
+    if (typeof modeEdit === "undefined"){
+        toggleEdit(false);
+    } else {
+        toggleEdit(modeEdit);
+    }
   } else {
-    toggleEdit(true);
+    toggleEdit(modeEdit);
   }
 }
-  
+
 function toggleEdit(forceShow) {
   var $el = jQuery('.toggleEdit');
 
-  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit'))) {
-    $el.removeClass('edit');
+  if (false === forceShow || (forceShow === undefined && $el.hasClass('edit')) || (typeof modeEdit === "undefined")) {
+      modeEdit = false;
+        $el.removeClass('edit');
     jQuery('#actionBar').hide();
     jQuery('.portlet-header').each(function(index) {
         var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
@@ -605,9 +609,9 @@ function toggleEdit(forceShow) {
       modeEdit = false;
     }
   } else {
-    $el.addClass('edit');
-    jQuery('#actionBar').show();
-    jQuery('.portlet-header').each(function(index) {
+      jQuery('#actionBar').show();
+      $el.addClass('edit');
+    jQuery('.portlet-header').each(function() {
         jQuery(this).show();
         jQuery(this).find('.ui-icon').show();
     });
@@ -630,9 +634,9 @@ function toggleEdit(forceShow) {
 }
 
 /* Share view functions */
-  
+
 function removeUserFromView(user_id) {
-    
+
   var viewId = jQuery(
     jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
   ).data('cvId');
@@ -691,14 +695,24 @@ function removeUsergroupFromView(usergroup_id) {
     }
   });
 }
-  
+
 jQuery(function () {
   /* Initialize buttons */
   jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}}).on('click', function () {
+      //reset select2
+      jQuery("#formAddView #viewLoad").empty().append($('<option>'));
+      jQuery("#formAddView #viewLoadShare").empty().append($('<option>'));
+      //reset add view form
+      jQuery('input[name="create_load[create_load]"][value="create"]').prop('checked', true);
+      jQuery('.load_field').css('display','none');
+      jQuery('.create_field').css('display','table-row');
+
     jQuery('#formAddView input[name="name"]').val('');
     jQuery('#formAddView input[name="layout[layout]"][value="column_1"]').prop('checked', true);
     jQuery('#formAddView input[name="public"]').prop('checked', false);
   });
+
+
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
   jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
     jQuery("#deleteViewConfirm").centreonPopin("open");
@@ -787,7 +801,7 @@ jQuery(function () {
   jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
     jQuery("#setDefaultConfirm").centreonPopin("open");
   });
-  
+
   /* Initialize action for share views */
   jQuery('#shareView').on('click', '.removeViewer', function (event) {
     var id = jQuery(this).data('id');
@@ -801,7 +815,7 @@ jQuery(function () {
       removeUsergroupFromView(id);
     }
   });
-  
+
   jQuery('input[name="create_load[create_load]"]').change(function (){
     if (jQuery(this).val() == 'load'){
         jQuery('.load_field').css('display','table-row');
@@ -811,18 +825,12 @@ jQuery(function () {
         jQuery('.create_field').css('display','table-row');
     }
   });
-  
+
   jQuery('.addWidget').on('click', function (event) {
       jQuery("#formAddWidget input[name='widget_title']").val('');
   });
-  
-  jQuery("#formAddView select[name='viewLoad']").change(function (){
-      jQuery("#formAddView select[name='viewLoadShare']").val(-1);
-  });
-  jQuery("#formAddView select[name='viewLoadShare']").change(function (){
-      jQuery("#formAddView select[name='viewLoad']").val(-1);
-  });
-  
+
+
   /* Initialize tabs */
   jQuery(".ui-tabs-panel").css('overflow', 'auto');
 
@@ -834,15 +842,12 @@ jQuery(function () {
     step: 5,
     slide: function(event, ui) {
       jQuery("#timer_value").html(ui.value + " seconds");
-    },
-    stop: function(event, ui) {
-      //setTimerLabel();
     }
   });
   jQuery("#timer_value").html(rotationTimer + " seconds");
   jQuery("input[type=button]").button();
-  
-  
+
+
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
     if (jQuery(e.target).parents('.cntn').length === 0
@@ -850,7 +855,7 @@ jQuery(function () {
       jQuery('.toggle_wrapper').hide();
     }
   });
-  
+
   jQuery('.editView').on('click', function () {
     var tabActive = jQuery(
       jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
@@ -865,33 +870,24 @@ jQuery(function () {
         jQuery('#formEditView input[name="public"]').prop('checked', false);
     }
   });
-  
+
   /* Initialize popin */
-  jQuery('#deleteViewConfirm').centreonPopin();
-  jQuery('#deleteViewConfirm button.btc').on('click', function () {
-    jQuery('#deleteViewConfirm').centreonPopin("close");
-  });
   jQuery('#deleteViewConfirm button.bt_danger').on('click', function () {
     submitDeleteView();
+    jQuery('#deleteViewConfirm').centreonPopin("close");
   });
-  
-  jQuery('#dissociateViewConfirm').centreonPopin();
-  jQuery('#dissociateViewConfirm button.btc').on('click', function () {
-    jQuery('#dissociateViewConfirm').centreonPopin("close");
-  });
+
   jQuery('#dissociateViewConfirm button.bt_danger').on('click', function () {
-    removeUserFromView(idUser);
-    window.top.location = './main.php?p=103';
+        removeUserFromView(idUser);
+        window.top.location = './main.php?p=103';
+      jQuery('#dissociateViewConfirm').centreonPopin("close");
   });
-  
-  jQuery('#setDefaultConfirm').centreonPopin();
-  jQuery('#setDefaultConfirm button.btc').on('click', function () {
-    jQuery('#setDefaultConfirm').centreonPopin("close");
-  });
+
   jQuery('#setDefaultConfirm button.bt_success').on('click', function () {
-    submitSetDefaultView();
+      submitSetDefaultView();
+      jQuery('#setDefaultConfirm').centreonPopin("close");
   });
-  
+
   /* Add event action for display form */
   jQuery('.btnAction').on('click', function (e) {
     var self = this;
@@ -903,34 +899,13 @@ jQuery(function () {
       }
       return false;
     }).hide();
-    
+
     jQuery(this).parents('.cntn').find('.error-msg').hide();
-    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle(0, function () {
-      var $table = jQuery(this).find('.widget-list');
-      var $bodyCells;
-      var bodyWidth = 618;
-      var totalWidth = 0;
-      var colWidth;
-      /* Resize table widget if exists */
-      /*if ($table.length > 0) {
-        $bodyCells = $table.find('tbody tr:first').children();
-        colWidth = $bodyCells.map(function () {
-          totalWidth += jQuery(this).width();
-          return jQuery(this).width();
-        }).get();
-        if (totalWidth < bodyWidth) {
-          colWidth[3] += bodyWidth - totalWidth;
-          $table.find('tbody tr td:nth-child(4)').width(colWidth[3]);
-        }
-        $table.find('thead tr').children().each(function (i, elem) {
-          jQuery(elem).width(colWidth[i]);
-        });
-      }*/
-    });
+    jQuery(this).parents('.cntn').find('.toggle_wrapper').toggle();
   });
-  
+
   infoEmptyTab();
-  
+
   /* Load custom views */
   jQuery.ajax({
     url: './include/common/webServices/rest/internal.php?object=centreon_wscustomview&action=listViews',
@@ -943,7 +918,7 @@ jQuery(function () {
       if (data.tabs.length > 0) {
         jQuery("#tabs").tabs({
           ajaxOptions: { async: true },
-          select: function(event, ui) {
+          select: function() {
             jQuery('.viewBody').empty();
           },
           selected: -1,
@@ -957,55 +932,9 @@ jQuery(function () {
       jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
     }
   });
-  
-  /* Widget information */
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseenter', function () {
-    var $td = jQuery(this);
-    var position = $td.offset();
-    var $popin = jQuery('<div></div>')
-      .addClass('widget-description')
-      
-      .appendTo('body');
-    jQuery('<div></div>').text($td.data('description')).appendTo($popin);
-    
-    /* Bottom footer */
-    var $bottom = jQuery('<div></div>');
-    jQuery('<div></div>').css('float', 'left')
-      .text('Version ' + $td.data('version')).appendTo($bottom);
-    jQuery('<div></div>').css('float', 'right')
-      .text($td.data('author')).appendTo($bottom);
-    $popin.append($bottom);
-    
-    $popin.show()
-      .css({
-        left: position.left - $popin.width() - 10,
-        top: position.top
-      });
-  });
-  
-  jQuery('.widget-list tr td:nth-child(2)').on('mouseout', function () {
-    jQuery('.widget-description').hide().remove();
-  });
-  
-  /* Add filters on widget */
-  jQuery('#widgetSearch').on('keydown', function () {
-    var searchValue = jQuery(this).val();
-    jQuery('.widget-list tbody tr').show();
-    jQuery('.widget-list tbody tr').filter(function () {
-      var regexp = new RegExp(searchValue, 'i');
-      var $tr = jQuery(this);
-      var $td = jQuery($tr.children()[1]);
-      if ($td.text().search(regexp) === -1) {
-        return true;
-      }
-      return false;
-    }).hide();
-  });
-    
+
   /* Toggle edit mode or view mode */
-  jQuery(".toggleEdit > a").on('click', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
+  jQuery(".toggleEdit > a").on('click', function () {
     toggleEdit();
   });
 

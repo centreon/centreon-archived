@@ -252,8 +252,9 @@ function hasPollerFilter($res_id)
     }
 
     $query = 'SELECT COUNT(*) as c FROM acl_resources_poller_relations WHERE acl_res_id = ' . $res_id;
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return false;
     }
     $row = $res->fetchRow();
@@ -278,8 +279,9 @@ function hasHostCategoryFilter($res_id)
     }
 
     $query = 'SELECT COUNT(*) as c FROM acl_resources_hc_relations WHERE acl_res_id = ' . $res_id;
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return false;
     }
     $row = $res->fetchRow();
@@ -304,8 +306,9 @@ function hasServiceCategoryFilter($res_id)
     }
 
     $query = 'SELECT COUNT(*) as c FROM acl_resources_sc_relations WHERE acl_res_id = ' . $res_id;
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return false;
     }
     $row = $res->fetchRow();
@@ -375,8 +378,9 @@ function hostIsAuthorized($host_id, $group_id)
             "AND res.acl_res_activate = '1' " .
             "AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = rhgr.acl_res_id)";
 
-    $DBRES2 = $pearDB->query($query2);
-    if (PEAR::isError($DBRES2)) {
+    try {
+        $DBRES2 = $pearDB->query($query2);
+    } catch (\PDOException $e) {
         print "DB Error : " . $DBRES2->getDebugInfo() . "<br />";
     }
     if ($DBRES2->numRows()) {

@@ -1382,9 +1382,10 @@ class CentreonService
         isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != null ?
             $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
         $rq .= ")";
-        
-        $DBRESULT = $this->db->query($rq);
-        if (\PEAR::isError($DBRESULT)) {
+
+        try {
+            $DBRESULT = $this->db->query($rq);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while insert service '.$ret['service_description']);
         }
         
@@ -1597,8 +1598,9 @@ class CentreonService
         if (count($updateFields)) {
             $query .= implode(',', $updateFields)
                 . 'WHERE service_service_id = "' . $service_id . '" ';
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result)) {
+            try {
+                $this->db->query($query);
+            } catch (\PDOException $e) {
                 throw new \Exception('Error while updating extendeded infos of service ' . $service_id);
             }
         }
@@ -1717,9 +1719,9 @@ class CentreonService
         $sQuery = 'DELETE FROM service '
             . 'WHERE service_description = "' . $this->db->escape($service_description) . '"';
 
-        $res = $this->db->query($sQuery);
-
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while delete service ' . $service_description);
         }
     }
@@ -1737,9 +1739,9 @@ class CentreonService
             . 'SET service_description = "' .  $this->db->escape($serviceDescription) . '" '
             . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
 
-        $result = $this->db->query($query);
-
-        if (\PEAR::isError($result)) {
+        try {
+            $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while updating service ' . $serviceId);
         }
     }
@@ -1757,9 +1759,9 @@ class CentreonService
             . 'SET service_alias = "' .  $this->db->escape($serviceAlias) . '" '
             . 'WHERE service_id = ' . $this->db->escape($serviceId) . ' ';
 
-        $result = $this->db->query($query);
-
-        if (\PEAR::isError($result)) {
+        try {
+            $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while updating service ' . $serviceId);
         }
     }

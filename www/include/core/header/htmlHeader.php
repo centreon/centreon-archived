@@ -138,16 +138,16 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
      * include javascript
      */
     $res = null;
-    $DBRESULT = $pearDB->prepare("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = ? AND (o = ? OR o IS NULL)");
-    $DBRESULT = $pearDB->execute($DBRESULT, array($p, $o));
-    while ($topology_js = $DBRESULT->fetchRow()) {
+    $sth= $pearDB->prepare("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = ? AND (o = ? OR o IS NULL)");
+    $sth->execute(array($p, $o));
+    while ($topology_js = $sth->fetch()) {
         if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js") {
             if ($topology_js['PathName_js'] != "") {
                 echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
             }
         }
     }
-    $DBRESULT->free();
+    $DBRESULT = null;
 
     /*
      * init javascript
@@ -180,7 +180,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
             $res = null;
             $DBRESULT = $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-            while ($topology_js = $DBRESULT->fetchRow()) {
+            while ($topology_js = $DBRESULT->fetch()) {
                 if ($topology_js['init'] == "initM") {
                     if ($o != "hd" && $o != "svcd") {
                         $obis = $o;

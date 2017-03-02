@@ -144,8 +144,9 @@ class CentreonTimeperiod
             . "'" . $parameters['friday'] . "',"
             . "'" . $parameters['saturday'] . "')";
 
-        $res = $this->db->query($sQuery);
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while insert timeperiod ' . $parameters['name']);
         }
     }
@@ -170,9 +171,9 @@ class CentreonTimeperiod
             . "`tp_saturday` = '" . $parameters['saturday'] . "'"
             . " WHERE `tp_id` = " . $tp_id;
 
-        $res = $this->db->query($sQuery);
-
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while update timeperiod ' . $parameters['name']);
         }
     }
@@ -193,9 +194,9 @@ class CentreonTimeperiod
                 . "'" . $exception['days'] . "',"
                 . "'" . $exception['timerange'] . "')";
 
-            $res = $this->db->query($sQuery);
-
-            if (\PEAR::isError($res)) {
+            try {
+                $this->db->query($sQuery);
+            } catch (\PDOException $e) {
                 throw new \Exception('Error while insert timeperiod exception' . $tpId);
             }
         }
@@ -214,9 +215,9 @@ class CentreonTimeperiod
             . "(`timeperiod_id`,`timeperiod_include_id`) "
             . "VALUES (" . (int)$timeperiodId . "," . (int)$depId . ")";
 
-        $res = $this->db->query($sQuery);
-
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while insert timeperiod dependency' . $timeperiodId);
         }
     }
@@ -230,9 +231,10 @@ class CentreonTimeperiod
     public function deleteTimeperiodException($tpId)
     {
         $sQuery = "DELETE FROM `timeperiod_exceptions` WHERE `timeperiod_id` = " . (int)$tpId;
-        $res = $this->db->query($sQuery);
 
-        if (\PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while delete timeperiod exception' . $tpId);
         }
     }
@@ -246,9 +248,10 @@ class CentreonTimeperiod
     public function deleteTimeperiodInclude($tpId)
     {
         $sQuery = "DELETE FROM `timeperiod_include_relations` WHERE `timeperiod_id` = " . (int)$tpId;
-        $res = $this->db->query($sQuery);
 
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while delete timeperiod include' . $tpId);
         }
     }
@@ -264,9 +267,9 @@ class CentreonTimeperiod
         $sQuery = 'DELETE FROM timeperiod '
             . 'WHERE tp_name = "' . $this->db->escape($tp_name) . '"';
 
-        $res = $this->db->query($sQuery);
-
-        if (\PEAR::isError($res)) {
+        try {
+            $this->db->query($sQuery);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while delete timperiod ' . $tp_name);
         }
     }
@@ -290,9 +293,9 @@ class CentreonTimeperiod
             . $registerClause
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
-        $result = $this->db->query($query);
-
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked hosts of ' . $timeperiodName);
         }
 
@@ -322,9 +325,9 @@ class CentreonTimeperiod
             . $registerClause
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
-        $result = $this->db->query($query);
-
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked services of ' . $timeperiodName);
         }
 
@@ -350,9 +353,9 @@ class CentreonTimeperiod
             . 'WHERE (c.timeperiod_tp_id = t.tp_id OR c.timeperiod_tp_id2 = t.tp_id) '
             . 'AND t.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
-        $result = $this->db->query($query);
-
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked contacts of ' . $timeperiodName);
         }
 
@@ -386,9 +389,9 @@ class CentreonTimeperiod
             . 'AND t4.tp_id = tir2.timeperiod_id '
             . 'AND t4.tp_name = "' . $this->db->escape($timeperiodName) . '" ';
 
-        $result = $this->db->query($query);
-
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked timeperiods of ' . $timeperiodName);
         }
 

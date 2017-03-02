@@ -79,8 +79,9 @@ class CentreonMedia
         $mediaDirectory = '';
         if (empty($this->mediadirectoryname)) {
             $query = "SELECT options.value FROM options WHERE options.key = 'nagios_path_img'";
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result)) {
+            try {
+                $result = $this->db->query($query);
+            } catch (\PDOException $e) {
                 throw new \Exception('Error while getting media directory ');
             }
 
@@ -164,8 +165,9 @@ class CentreonMedia
                 $dirAlias = $dirname;
             }
             $query = "INSERT INTO view_img_dir (dir_name, dir_alias) VALUES ('" . $dirname . "', '" . $dirAlias . "')";
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result)) {
+            try {
+                $result = $this->db->query($query);
+            } catch (\PDOException $e) {
                 throw new \Exception('Error while creating directory ' . $dirname);
             }
         }
@@ -374,8 +376,9 @@ class CentreonMedia
                 . '"' . $imageComment . '" '
                 . ') ';
 
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result)) {
+            try {
+                $result = $this->db->query($query);
+            } catch (\PDOException $e) {
                 throw new \Exception('Error while creating image ' . $imageName);
             }
 
@@ -384,8 +387,13 @@ class CentreonMedia
                 . 'FROM view_img '
                 . 'WHERE img_name = "' . $imageName . '" '
                 . 'AND img_path = "' . $imagePath . '" ';
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result) || !$result->numRows()) {
+            $error = false;
+            try {
+                $result = $this->db->query($query);
+            } catch (\PDOException $e) {
+                $error = true;
+            }
+            if ($error || !$result->numRows()) {
                 throw new \Exception('Error while creating image ' . $imageName);
             }
             $row = $result->fetchRow();
@@ -398,8 +406,9 @@ class CentreonMedia
                 . $directoryId . ', '
                 . $imageId . ' '
                 . ') ';
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result)) {
+            try {
+                $this->db->query($query);
+            } catch (\PDOException $e) {
                 throw new \Exception('Error while inserting relation between' . $imageName . ' and ' . $directoryName);
             }
         } else {

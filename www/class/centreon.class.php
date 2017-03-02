@@ -37,10 +37,10 @@ require_once dirname(__FILE__) . '/centreonUser.class.php';
 require_once dirname(__FILE__) . '/centreonGMT.class.php';
 require_once dirname(__FILE__) . '/centreonLogAction.class.php';
 require_once dirname(__FILE__) . '/centreonExternalCommand.class.php';
-require_once dirname(__FILE__) . '/centreonObjects.class.php';
 require_once dirname(__FILE__) . '/centreonCache.class.php';
 require_once dirname(__FILE__) . '/centreonBroker.class.php';
 require_once dirname(__FILE__) . '/centreonHostgroups.class.php';
+require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
 
 /**
  * Class for load application Centreon
@@ -80,7 +80,6 @@ class Centreon
     public $lang;
     public $duration;
     public $media;
-    public $objects;
     public $cache;
     public $broker;
 
@@ -101,17 +100,17 @@ class Centreon
         /*
          * Get Local nagios.cfg file
          */
-        $this->initNagiosCFG($pearDB);
+        $this->initNagiosCFG();
 
         /*
          * Get general options
          */
-        $this->initOptGen($pearDB);
+        $this->initOptGen();
 
         /*
          * Grab Modules
          */
-        $this->creatModuleList($pearDB);
+        $this->creatModuleList();
 
         /*
          * Grab Hooks
@@ -136,24 +135,7 @@ class Centreon
         /*
          * Init External CMD object
          */
-        $this->extCmd = new CentreonExternalCommand($pearDB);
-
-        /*
-         * Objects
-         */
-        $this->objects = new CentreonObjects($pearDB);
-
-        /*
-         * Cache
-         * Not Used
-         */
-        //$this->cache = new CentreonCache($pearDB);
-
-        /*
-         * Engine
-         * Not Used 
-         */
-        //$this->broker = new CentreonBroker($pearDB);
+        $this->extCmd = new CentreonExternalCommand();
     }
 
     /**
@@ -161,11 +143,11 @@ class Centreon
      *
      * @param $pearDB The database connection to centreon database
      */
-    public function creatModuleList($pearDB)
+    public function creatModuleList()
     {
         $this->modules = array();
-        $DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
-        while ($result = $DBRESULT->fetchRow()) {
+        $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
+        while ($result = $DBRESULT->fetch()) {
             $this->modules[$result["name"]] = array("name" => $result["name"],
                                                     "gen" => false, "restart" => false,
                                                     "sql" => $result["sql_files"],
@@ -185,7 +167,7 @@ class Centreon
                 $this->modules[$result["name"]]["license"] = true;
             }
         }
-        $DBRESULT->free();
+        $DBRESULT = null;
     }
 
     public function initHooks()
@@ -239,25 +221,20 @@ class Centreon
      *
      * @param $pearDB The database connection to centreon database
      */
-    public function initNagiosCFG($pearDB = null)
+    public function initNagiosCFG()
     {
-
-        if (!$pearDB) {
-            return;
-        }
-
         $this->Nagioscfg = array();
         /*
          * We don't check activate because we can a server without a engine on localhost running 
          * (but we order to get if we have one)
          */
-        $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios, nagios_server
+        $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT * FROM cfg_nagios, nagios_server
                                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
                                     AND nagios_server.localhost = '1' 
                                     ORDER BY cfg_nagios.nagios_activate 
                                     DESC LIMIT 1");
-        $this->Nagioscfg = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $this->Nagioscfg = $DBRESULT->fetch();
+        $DBRESULT = null;
     }
 
     /**
@@ -265,18 +242,14 @@ class Centreon
      *
      * @param $pearDB The database connection to centreon database
      */
-    public function initOptGen($pearDB = null)
+    public function initOptGen()
     {
-        if (!$pearDB) {
-            return;
-        }
-
         $this->optGen = array();
-        $DBRESULT = $pearDB->query("SELECT * FROM `options`");
-        while ($opt = $DBRESULT->fetchRow()) {
+        $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT * FROM `options`");
+        while ($opt = $DBRESULT->fetch()) {
             $this->optGen[$opt["key"]] = $opt["value"];
         }
-        $DBRESULT->free();
+        $DBRESULT = null;
         unset($opt);
     }
 
@@ -288,16 +261,14 @@ class Centreon
      */
     public function checkIllegalChar($name)
     {
-        global $pearDB;
-
-        $DBRESULT = $pearDB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
-        while ($data = $DBRESULT->fetchRow()) {
+        $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+        while ($data = $DBRESULT->fetchColumn()) {
             $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
             foreach ($tab as $char) {
                 $name = str_replace($char, "", $name);
             }
         }
-        $DBRESULT->free();
+        $DBRESULT = null;
         return $name;
     }
 }

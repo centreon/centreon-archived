@@ -232,8 +232,9 @@ class CentreonMeta
  	    	FROM `meta_service`
  	    	ORDER BY `meta_name`";
 
-        $res = $this->db->query($queryList);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($queryList);
+        } catch (\PDOException $e) {
             return array();
         }
         $listMeta = array();
