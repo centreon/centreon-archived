@@ -430,7 +430,7 @@ class CentreonWidget
 
         if (!isset($params)) {
             $params = array();
-            $query = "SELECT ft.is_connector, ft.ft_typename, p.parameter_id, p.parameter_name, p.default_value, p.header_title, p.require_permission
+            $query = "SELECT ft.is_connector, ft.ft_typename, p.parameter_id, p.parameter_name, p.default_value, p.multiple, p.header_title, p.require_permission
             		  FROM widget_parameters_field_type ft, widget_parameters p, widgets w
             		  WHERE ft.field_type_id = p.field_type_id
             		  AND p.widget_model_id = w.widget_model_id
@@ -446,6 +446,7 @@ class CentreonWidget
                 $params[$row['parameter_id']]['parameter_name'] = $row['parameter_name'];
                 $params[$row['parameter_id']]['default_value'] = $row['default_value'];
                 $params[$row['parameter_id']]['is_connector'] = $row['is_connector'];
+                $params[$row['parameter_id']]['multiple'] = $row['multiple'];
                 $params[$row['parameter_id']]['header_title'] = $row['header_title'];
             }
         }
@@ -489,7 +490,7 @@ class CentreonWidget
                     } elseif (isset($val['from_'.$matches[1]]) && isset($val['to_'.$matches[1]])) {
                         $val = $val['from_'.$matches[1]].','.$val['to_'.$matches[1]];
                     } else {
-                        $val = implode(',', $val);
+                        $val = serialize(array_filter($val));
                     }
                 }
                 if ($str != "") {
@@ -659,7 +660,10 @@ class CentreonWidget
                         if (!isset($attr['defaultValue'])) {
                             $attr['defaultValue'] = '';
                         }
-                        $str = "(".$lastId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', ";
+                        if (!isset($attr['multiple'])) {
+                            $attr['multiple'] = '0';
+                        }
+                        $str = "(".$lastId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', '".$this->db->escape($attr['multiple'])."', ";
                         if (isset($attr['header']) && $attr['header'] != "") {
                             $str .= "'".$this->db->escape($attr['header'])."'";
                         } else {
@@ -667,7 +671,7 @@ class CentreonWidget
                         }
                         $str .= ")";
                         $query = "INSERT INTO widget_parameters
-                                  (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, header_title)
+                                  (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, multiple, header_title)
                                   VALUES $str";
                         $this->db->query($query);
                         $lastParamId  = $this->getLastInsertedParameterId($attr['label']);
@@ -685,7 +689,10 @@ class CentreonWidget
                         if (!isset($attr['defaultValue'])) {
                             $attr['defaultValue'] = '';
                         }
-                        $str = "(".$lastId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', ";
+                        if (!isset($attr['multiple'])) {
+                            $attr['multiple'] = '0';
+                        }
+                        $str = "(".$lastId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', '".$this->db->escape($attr['multiple'])."', ";
                         if (isset($attr['header']) && $attr['header'] != "") {
                             $str .= "'".$this->db->escape($attr['header'])."'";
                         } else {
@@ -693,7 +700,7 @@ class CentreonWidget
                         }
                         $str .= ")";
                         $query = "INSERT INTO widget_parameters
-                                  (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, header_title)
+                                  (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, multiple, header_title)
                                   VALUES $str";
                         $this->db->query($query);
                         $lastParamId  = $this->getLastInsertedParameterId($attr['label']);
@@ -799,13 +806,16 @@ class CentreonWidget
                         if (!isset($attr['requirePermission'])) {
                             $attr['requirePermission'] = 0;
                         }
+                        if (!isset($attr['multiple'])) {
+                            $attr['multiple'] = '0';
+                        }
                         if (!isset($attr['header'])) {
                             $attr['header'] = "NULL ";
                         } else {
                             $attr['header'] = "'".$attr['header']."'";
                         }
-                        $str = "(".$widgetModelId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', ".$attr['header'].")";
-                        $query = "INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, header_title) VALUES $str";
+                        $str = "(".$widgetModelId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', '".$this->db->escape($attr['multiple'])."', ".$attr['header'].")";
+                        $query = "INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, multiple, header_title) VALUES $str";
                     } else {
                         $str  = " field_type_id = " . $types[$attr['type']] . ", ";
                         $str .= " parameter_name = '" . $this->db->escape($attr['label']) . "', ";
@@ -815,6 +825,10 @@ class CentreonWidget
                             $attr['requirePermission'] = 0;
                         }
                         $str .= " require_permission = '" . $this->db->escape($attr['requirePermission']) . "', ";
+                        if (!isset($attr['multiple'])) {
+                            $attr['multiple'] = '0';
+                        }
+                        $str .= " multiple = '" . $this->db->escape($attr['multiple']) . "', ";
                         $str .= " header_title = ";
                         if (isset($attr['header']) && $attr['header'] != "") {
                             $str .= "'".$this->db->escape($attr['header'])."' ";
@@ -842,13 +856,16 @@ class CentreonWidget
                             if (!isset($attr['requirePermission'])) {
                                 $attr['requirePermission'] = 0;
                             }
+                            if (!isset($attr['multiple'])) {
+                                $attr['multiple'] = '0';
+                            }
                             if (!isset($attr['header'])) {
                                 $attr['header'] = "NULL ";
                             } else {
                                 $attr['header'] = "'".$attr['header']."'";
                             }
-                            $str = "(".$widgetModelId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', ".$attr['header'].")";
-                            $query = "INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, header_title) VALUES $str";
+                            $str = "(".$widgetModelId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', '".$this->db->escape($attr['multiple'])."', ".$attr['header'].")";
+                            $query = "INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, multiple, header_title) VALUES $str";
                         } else {
                             $str  = " field_type_id = " . $types[$attr['type']] . ", ";
                             $str .= " parameter_name = '" . $this->db->escape($attr['label']) . "', ";
@@ -860,6 +877,10 @@ class CentreonWidget
                                 $attr['requirePermission'] = 0;
                             }
                             $str .= " require_permission = '" . $this->db->escape($attr['requirePermission']) . "', ";
+                            if (!isset($attr['multiple'])) {
+                                $attr['multiple'] = '0';
+                            }
+                            $str .= " multiple = '" . $this->db->escape($attr['multiple']) . "', ";
                             $str .= " header_title = ";
                             if (isset($attr['header']) && $attr['header'] != "") {
                                 $str .= "'".$this->db->escape($attr['header'])."' ";
@@ -962,6 +983,8 @@ class CentreonWidget
            	      AND wv.widget_id = ".$this->db->escape($widgetId);
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
+            if (preg_match('/^\w\:.*\}$/', $row['preference_value']) && FALSE !== @unserialize($row['preference_value']))
+                $row['preference_value'] = unserialize($row['preference_value']);
             $tab[$row['parameter_code_name']] = $row['preference_value'];
         }
         return $tab;

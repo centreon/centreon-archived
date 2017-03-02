@@ -23,3 +23,6 @@ ALTER TABLE acl_resources ADD locked tinyint(1) NOT NULL DEFAULT 0 AFTER changed
 
 -- change column type
 ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
+
+-- add column for widget, select multiple
+ALTER TABLE widget_parameters ADD COLUMN `multiple` TINYINT(1) NOT NULL DEFAULT 0 AFTER `field_type_id`;
