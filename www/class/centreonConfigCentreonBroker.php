@@ -944,7 +944,7 @@ class CentreonConfigCentreonBroker
         if (!is_null($row)) {
             if (!is_null($row['default_value']) && $row['default_value'] != '') {
                 $this->defaults[$fieldId] = $row['default_value'];
-            } else if (!is_null($row['value_value']) && $row['value_value'] != '') {
+            } elseif (!is_null($row['value_value']) && $row['value_value'] != '') {
                 $this->defaults[$fieldId] = $row['value_value'];
             }
         }
