@@ -923,14 +923,17 @@ class CentreonConfigCentreonBroker
      * @param int $fieldId The field ID
      * @return string|null
      */
-    private function getDefaults($fieldId)
+    public function getDefaults($fieldId)
     {
         if (isset($this->defaults[$fieldId])) {
             return $this->defaults[$fieldId];
         }
-        $query = "SELECT default_value
-            FROM cb_list
-            WHERE cb_field_id = %d";
+        $query = "SELECT cbl.default_value, cblv.value_value "
+            . "FROM cb_list_values cblv "
+            . "LEFT JOIN cb_list cbl ON cblv.cb_list_id = cbl.cb_list_id "
+            . "INNER JOIN cb_field cbf ON cbf.cb_field_id = cbl.cb_field_id "
+            . "WHERE cbl.cb_field_id = %d "
+            . "AND cbf.fieldtype != 'multiselect' ";
         $res = $this->db->query(sprintf($query, $fieldId));
         if (PEAR::isError($res)) {
             return null;
@@ -941,6 +944,8 @@ class CentreonConfigCentreonBroker
         if (!is_null($row)) {
             if (!is_null($row['default_value']) && $row['default_value'] != '') {
                 $this->defaults[$fieldId] = $row['default_value'];
+            } else if (!is_null($row['value_value']) && $row['value_value'] != '') {
+                $this->defaults[$fieldId] = $row['value_value'];
             }
         }
         return $this->defaults[$fieldId];
