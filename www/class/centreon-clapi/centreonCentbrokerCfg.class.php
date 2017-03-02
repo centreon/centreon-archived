@@ -421,6 +421,10 @@ class CentreonCentbrokerCfg extends CentreonObject
 
         $values = explode(',', $args[1]);
         foreach ($values as $value) {
+            $sqlParams[':config_key'] = 'type';
+            $sqlParams[':config_value'] = $args[2];
+            $this->db->query($sql, $sqlParams);
+
             $sqlParams[':config_key'] = 'name';
             $sqlParams[':config_value'] = $value;
             $this->db->query($sql, $sqlParams);
