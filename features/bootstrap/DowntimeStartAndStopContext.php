@@ -1,13 +1,12 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\DowntimeConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
-use Centreon\Test\Behat\CurrentUserConfigurationPage;
-use Centreon\Test\Behat\DowntimeConfigurationListingPage;
-use Centreon\Test\Behat\HostConfigurationListingPage;
-use Centreon\Test\Behat\ServiceDowntimeConfigurationPage;
-
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\ServiceDowntimeConfigurationPage;
 
 /**
  * Defines application features from the specific context.
