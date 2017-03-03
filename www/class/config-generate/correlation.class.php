@@ -139,9 +139,10 @@ class Correlation extends AbstractObjectXML {
     private function doHostHostDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
               dhp.host_host_id as parent_host_id, dhc.host_host_id as child_host_id
-            FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc
+            FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc, host h, host h2
             WHERE dhp.dependency_dep_id = dhc.dependency_dep_id
-            ");
+                AND h.host_id = dhp.host_host_id AND h.host_activate = '1'
+                AND h2.host_id = dhc.host_host_id AND h2.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -156,10 +157,12 @@ class Correlation extends AbstractObjectXML {
 
     private function doServiceServiceDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
-              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
-            FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc
+              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
+              dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
+            FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc, service s, service s2
             WHERE dsp.dependency_dep_id = dsc.dependency_dep_id
-            ");
+                AND dsp.service_service_id = s.service_id AND s.service_activate = '1'
+                AND dsc.service_service_id = s2.service_id AND s2.service_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -176,10 +179,12 @@ class Correlation extends AbstractObjectXML {
 
     private function doServiceHostDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
-              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dhc.host_host_id as child_host_id
-            FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc
+              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
+              dhc.host_host_id as child_host_id
+            FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc, host h, service s
             WHERE dsp.dependency_dep_id = dhc.dependency_dep_id
-            ");
+                AND dsp.service_service_id = s.service_id AND s.service_activate = '1'
+                AND dhc.host_host_id = h.host_id AND h.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -195,10 +200,12 @@ class Correlation extends AbstractObjectXML {
 
     private function doHostServiceDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
-              dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
-            FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc
+              dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id,
+              dsc.service_service_id as child_service_id
+            FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc, host h, service s
             WHERE dhp.dependency_dep_id = dsc.dependency_dep_id
-            ");
+                AND dsc.service_service_id = s.service_id AND s.service_activate = '1'
+                AND dhp.host_host_id = h.host_id AND h.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -213,10 +220,10 @@ class Correlation extends AbstractObjectXML {
     }
 
     private function doParentship() {
-        $stmt = $this->backend_instance->db->prepare("SELECT
-              host_host_id, host_parent_hp_id
-            FROM host_hostparent_relation
-            ");
+        $stmt = $this->backend_instance->db->prepare("SELECT hp.host_host_id, hp.host_parent_hp_id
+            FROM host_hostparent_relation hp, host h, host h2
+            WHERE hp.host_host_id = h.host_id AND h.host_activate = '1'
+                AND hp.host_parent_hp_id = h2.host_id AND h2.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
