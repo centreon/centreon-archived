@@ -130,13 +130,13 @@ if (isset($svc_id) && $svc_id) {
             $hostId = $matches[1];
             $serviceId = $matches[2];
             $graphId = $hostId . '-' . $serviceId;
-            $graphTitle = $serviceObj->getMonitoringFullName($serviceId);
+            $graphTitle = $serviceObj->getMonitoringFullName($serviceId, $hostId);
         } else if (preg_match('/^(.+);(.+)/', $svc, $matches)) {
             list($hostname, $serviceDescription) = explode(";", $svc);
             $hostId = getMyHostID($hostname);
             $serviceId = getMyServiceID($serviceDescription, $hostId);
             $graphId = $hostId . '-' . $serviceId;
-            $graphTitle = $serviceObj->getMonitoringFullName($serviceId);
+            $graphTitle = $serviceObj->getMonitoringFullName($serviceId, $hostId);
         } else {
             $hostId = getMyHostID($svc);
             $serviceList = $centreonPerformanceServiceGraphObj->getList(array('host' => array($hostId)));
