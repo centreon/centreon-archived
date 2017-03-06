@@ -7,24 +7,24 @@ API Rest
 Introduction
 ------------
 
-Welcome to the Centreon API rest documentation. This documentation is for devlopers familiar with HTTP requests and JSON. It  explains various API operations, related request and response structure, and error code.
-If you are not familiar with the JSON API, we recommand you to use the Centreon command line API documentation which suits better on your needs.
+Welcome to the Centreon API rest documentation. This documentation is for devlopers familiar with HTTP requests and JSON. It explains various API operations, related request and response structure, and error codes.
+If you are not familiar with the JSON API, we recommend you to use the Centreon command line API documentation.
 
-This documentation is available only in english. 
+This documentation is available in english only.
 
 
 Permissions
 -----------
 
-To do API calls from a specific Centreon user, you need to have permission on the API.
+To perform API calls using a specific Centreon user, you need permissions to do so.
 You have to edit user settings on the menu **Configuration > Users > Contacts/Users**,
 edit user and on second tab check box **Reach API**.
 
 
-Authentification
+Authentication
 ----------------
 
-Using POST methode and the URL below: ::
+Using POST method and the URL below: ::
 
  api.domain.tld/api/index.php?action=authenticate
 
@@ -42,7 +42,7 @@ Body form-data:
 |                 |                  |                     |
 +-----------------+------------------+---------------------+
 
-The response is a json flow getting back the authentification token  ::
+The response is a json flow getting back the authentication token  ::
 
   {
   "authToken": "NTc1MDU3MGE3M2JiODIuMjA4OTA2OTc="
@@ -54,11 +54,11 @@ This token will be used later on the other API actions.
 Getting started
 ----------------
 
-95% of actions you can do using Centreon command line API are available with the API rest.
+Most of the actions available (about 95%) in the command line API is available in the rest API.
 
-Here is an axample about listing hosts using rest API.
+Here is an example for listing hosts using rest API.
 
-Using POST methode and the URL below:  ::
+Using POST method and the URL below:  ::
 
  api.domain.tld/api/index.php?action=action&object=centreon_clapi
 
@@ -71,7 +71,7 @@ Using POST methode and the URL below:  ::
 | Content-Type        | application/json                |
 +---------------------+---------------------------------+
 | centreon-auth-token | the value of authToken you got  |
-|                     | on the authentification response|
+|                     | on the authentication response|
 +---------------------+---------------------------------+
 
 **Body:** ::
@@ -123,9 +123,9 @@ The response is a json flow listing all hosts and formated as below: ::
 API Calls
 ----------
 
-All API calls you can do on objects are desribed below. Note that you need to be authentify before each call. 
+All API calls you can do on objects are described below. Note that you need to be authenticate before each call.
 
-API calls on the Host object are fully-detailed below. For the next objets, only the actions available are listed, so just follow the same approach as for the host object for an API call.
+API calls on the Host object are fully-detailed below. For the next objects, only the actions available are listed, so just follow the same approach as for the host object for an API call.
 
 Host
 ~~~~
@@ -148,7 +148,7 @@ List hosts
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -209,7 +209,7 @@ Add host
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -247,7 +247,7 @@ Delete host
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -286,7 +286,7 @@ Set parameters
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -419,7 +419,7 @@ Set instance poller
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -457,7 +457,7 @@ Get macro
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -518,7 +518,7 @@ Set macro
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -556,7 +556,7 @@ Delete macro
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -594,7 +594,7 @@ Get template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -647,7 +647,7 @@ Set template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -685,7 +685,7 @@ Add template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -722,7 +722,7 @@ Delete template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -759,7 +759,7 @@ Apply template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -795,7 +795,7 @@ Get parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -837,7 +837,7 @@ Add parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -879,7 +879,7 @@ Set parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -922,7 +922,7 @@ Delete parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -964,7 +964,7 @@ Get contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1008,7 +1008,7 @@ Add contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1051,7 +1051,7 @@ Set contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1094,7 +1094,7 @@ Delete contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1135,7 +1135,7 @@ Get contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1177,7 +1177,7 @@ Add contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1220,7 +1220,7 @@ Set contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1264,7 +1264,7 @@ Delete contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1305,7 +1305,7 @@ Get hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1350,7 +1350,7 @@ Add hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1394,7 +1394,7 @@ Set hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1438,7 +1438,7 @@ Delete hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1489,7 +1489,7 @@ Enable
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
@@ -1527,7 +1527,7 @@ Disable
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part   |
 +---------------------+------------------------------------------------+
 
 
