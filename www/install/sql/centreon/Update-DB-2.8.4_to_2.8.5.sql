@@ -33,3 +33,6 @@ INSERT INTO `topology` (`topology_name`, `topology_parent`, `topology_page`, `to
 VALUES ('Chart split', 20401, 2040101, 1, 1, './include/views/graphs/graph-split.php', 0, 1);
 INSERT INTO `topology` (`topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_show`, `readonly`)
 VALUES ('Chart periods', 20401, 2040102, 1, 1, './include/views/graphs/graph-periods.php', 0, 1);
+
+-- Fix problem regarding the recurrent downtimes
+UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;

@@ -1,9 +1,8 @@
 <?php
 
-use Centreon\Test\Behat\ParametersCentreonUiPage;
-use Centreon\Test\Behat\CurrentUserConfigurationPage;
+use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
+use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\UtilsContext;
 
 
 class AutologinContext extends CentreonContext

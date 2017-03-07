@@ -84,6 +84,18 @@
       if (this.settings.multiple) {
         this.initMultiple();
       }
+
+      this.resizeSelect2();
+    },
+
+    resizeSelect2: function() {
+      var formSpan = jQuery(".formTable span.select2-container");
+      formSpan.css({
+        'min-width': '360px',
+      });
+      formSpan.find('.select2-selection--multiple .select2-selection__rendered').css({
+        'resize': 'vertical'
+      });
     },
     /**
      * Load the locale, if not defined in settings use the browser locale

@@ -218,7 +218,7 @@ class CentreonInstance
          $selectedInstances = '';
          $items= array();
 
-         $explodedValues = implode('', $values);
+         $explodedValues = implode(',', $values);
          if (empty($explodedValues)) {
              $explodedValues = "''";
          }else {
