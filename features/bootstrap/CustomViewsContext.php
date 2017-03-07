@@ -1,8 +1,9 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\CustomViewsPage;
-use Centreon\Test\Behat\ContactConfigurationPage;
+use Centreon\Test\Behat\Home\CustomViewsPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
 
 class CustomViewsContext extends CentreonContext
 {
@@ -10,6 +11,7 @@ class CustomViewsContext extends CentreonContext
     protected $newCustomViewName;
     protected $user;
     protected $owner;
+    protected $cgname;
 
     /**
      *  Build a new context.
@@ -20,6 +22,7 @@ class CustomViewsContext extends CentreonContext
         $this->newCustomViewName = 'NewAcceptanceTestCustomView';
         $this->user = 'user1';
         $this->owner = 'admin';
+        $this->cgname = 'user';
     }
 
     /**
@@ -29,7 +32,7 @@ class CustomViewsContext extends CentreonContext
     {
         $this->launchCentreonWebContainer('web_widgets');
         $this->iAmLoggedIn();
-
+        //create user
         $page = new ContactConfigurationPage($this);
         $page->setProperties(array(
             'alias' => $this->user,
@@ -39,7 +42,16 @@ class CustomViewsContext extends CentreonContext
             'password2' => 'centreon',
             'admin' => '1'
         ));
+        $page->save();
 
+        //create contact group
+        $page = new ContactGroupsConfigurationPage($this);
+        $page->setProperties(array(
+            'name' => $this->cgname,
+            'alias' => $this->cgname,
+            'contacts' => $this->user,
+            'comments' => 'cg test'
+        ));
         $page->save();
     }
 
@@ -65,9 +77,21 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView($this->user, null, 0);
+        $page->shareView(null, $this->user);
     }
 
+    /**
+     *  @Given a shared custom view with a group
+     */
+    public function aSharedCustomViewWithAGroup()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView( null, null, null, $this->cgname);
+    }
     /**
      *  @Given a user is using the public view
      */
@@ -82,9 +106,12 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserIsUsingTheSharedView()
     {
-        $this->anotherUserWishesToAddANewCustomView();
-        $this->heCanAddTheSharedView();
+        $this->changeUser($this->user);
 
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $page->loadView($this->customViewName);
     }
 
     /**
@@ -98,6 +125,19 @@ class CustomViewsContext extends CentreonContext
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
         $page->shareView($this->user);
+    }
+
+    /**
+     * @Given a custom view shared in read only with a group
+     */
+    public function aCustomViewSharedInReadOnlyWithAGroup()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView( null, null, $this->cgname);
     }
 
     /**
@@ -129,7 +169,6 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->editView($this->newCustomViewName, 1);
-
 
         $this->spin(
             function ($context) use ($page) {
@@ -193,7 +232,7 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
 
-        $page->loadView(null, $this->customViewName);
+        $page->loadView($this->customViewName);
     }
 
     /**
@@ -225,7 +264,7 @@ class CustomViewsContext extends CentreonContext
             function ($context) use ($page) {
                 return $page->isCurrentViewEditable();
             },
-            'Current view is not modifiyable',
+            'Current view is not modifiable',
             30
         );
     }
@@ -238,7 +277,8 @@ class CustomViewsContext extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 1;
-            }
+            },
+            'The view is not visible.'
         );
     }
 
@@ -251,7 +291,7 @@ class CustomViewsContext extends CentreonContext
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
             },
-            'the view is visible anymore'
+            'The view is visible.'
         );
     }
 
@@ -266,7 +306,7 @@ class CustomViewsContext extends CentreonContext
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
             },
-            'the view is visible anymore for the user'
+            'The view is visible for the user.'
         );
     }
 

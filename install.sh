@@ -259,19 +259,6 @@ else
 	fi
 fi
 
-# Check if is an upgrade or new install
-# Use this on silent install ???
-# Check for old configfile
-# use for centreon1.x upgrade
-#### Move on upgrade specific script.
-#if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a "$silent_install" -ne 1 ] ; then 
-#	is_single "$CENTREON_CONF_1_4"
-#	if [ "$?" -eq 1 ] ; then
-#		echo -e "$(gettext "Please select a good centreon config file")"
-#		select_in_array "CENTREON_CONF" "${CENTREON_CONF_1_4[@]}"
-#	fi
-#fi
-
 if [ "$upgrade" -eq 1 ] ; then
 	# Test if instCent* file exist
 	if [ "$(ls $inst_upgrade_dir/instCent* | wc -l )" -ge 1 ] ; then

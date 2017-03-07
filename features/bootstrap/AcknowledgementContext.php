@@ -1,10 +1,10 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\MetaServiceConfigurationPage;
-use Centreon\Test\Behat\MonitoringServicesPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
-use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Configuration\MetaServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
 
 class AcknowledgementContext extends CentreonContext
 {

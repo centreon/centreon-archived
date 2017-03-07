@@ -496,7 +496,7 @@ class CentreonConfigCentreonBroker
          */
         $query = "INSERT INTO cfg_centreonbroker "
                 . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
-                . "config_write_thread_id, stats_activate, retention_path, "
+                . "config_write_thread_id, stats_activate, cache_directory, "
                 . "event_queue_max_size, command_file) "
                 . "VALUES (
                 '" . $this->db->escape($values['name']) . "', 
@@ -507,7 +507,7 @@ class CentreonConfigCentreonBroker
                 '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
                 '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                '" . $this->db->escape($values['retention_path']) . "',
+                '" . $this->db->escape($values['cache_directory']) . "',
                 ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 '" . $this->db->escape($values['command_file']) . "' "
                 . ")";
@@ -554,7 +554,7 @@ class CentreonConfigCentreonBroker
                 config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "', 
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "', 
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                retention_path = '" . $this->db->escape($values['retention_path']) . "',
+                cache_directory = '" . $this->db->escape($values['cache_directory']) . "',
                 event_queue_max_size = " . (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 command_file = '" . $this->db->escape($values['command_file']) . "'
             WHERE config_id = " . $id;
@@ -923,14 +923,17 @@ class CentreonConfigCentreonBroker
      * @param int $fieldId The field ID
      * @return string|null
      */
-    private function getDefaults($fieldId)
+    public function getDefaults($fieldId)
     {
         if (isset($this->defaults[$fieldId])) {
             return $this->defaults[$fieldId];
         }
-        $query = "SELECT default_value
-            FROM cb_list
-            WHERE cb_field_id = %d";
+        $query = "SELECT cbl.default_value, cblv.value_value "
+            . "FROM cb_list_values cblv "
+            . "LEFT JOIN cb_list cbl ON cblv.cb_list_id = cbl.cb_list_id "
+            . "INNER JOIN cb_field cbf ON cbf.cb_field_id = cbl.cb_field_id "
+            . "WHERE cbl.cb_field_id = %d "
+            . "AND cbf.fieldtype != 'multiselect' ";
         $res = $this->db->query(sprintf($query, $fieldId));
         if (PEAR::isError($res)) {
             return null;
@@ -941,6 +944,8 @@ class CentreonConfigCentreonBroker
         if (!is_null($row)) {
             if (!is_null($row['default_value']) && $row['default_value'] != '') {
                 $this->defaults[$fieldId] = $row['default_value'];
+            } elseif (!is_null($row['value_value']) && $row['value_value'] != '') {
+                $this->defaults[$fieldId] = $row['value_value'];
             }
         }
         return $this->defaults[$fieldId];

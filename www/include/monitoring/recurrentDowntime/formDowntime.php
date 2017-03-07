@@ -31,6 +31,9 @@
  *
  * For more information : contact@centreon.com
  *
+ * SVN : $URL$
+ * SVN : $Id$
+ *
  */
 
 if (!isset($centreon)) {
@@ -174,11 +177,11 @@ $attrServicegroup1 = array_merge(
 );
 $form->addElement('select2', 'svcgroup_relation', _("Linked with Service Groups"), array(), $attrServicegroup1);
 
-$form->addRule('downtime_name', _("Name"), 'required');
-    $form->registerRule('exist', 'callback', 'testDowntimeNameExistence');
-$form->addRule('downtime_name', _("Name is already in use"), 'exist');
-    
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+    $form->addRule('downtime_name', _("Name"), 'required');
+        $form->registerRule('exist', 'callback', 'testDowntimeNameExistence');
+    $form->addRule('downtime_name', _("Name is already in use"), 'exist');
+        
+    $form->setRequiredNote("<i class='red'>*</i>&nbsp;". _("Required fields"));
 
 if ($o == "c" || $o == 'w') {
     $infos = $downtime->getInfos($id);
@@ -230,7 +233,7 @@ $tpl->assign("sort2", _("Relations"));
 $tpl->assign("periods", _("Periods"));
 $tpl->assign("period", _("Period"));
 $tpl->assign("add", _("Add new period"));
-    
+
 /*
  * prepare help texts
  */
@@ -320,35 +323,35 @@ if ($form->validate()) {
         require_once($path."listDowntime.php");
     }
 
+        if (!$valid) {
+            $form->setDefaults($values);
+        }
+    }
     if (!$valid) {
-        $form->setDefaults($values);
-    }
-}
-if (!$valid) {
-    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-    if ($o == 'w') {
-        $tpl->assign("time_period", _("Time period"));
-        $tpl->assign("days", _("Days"));
-        $tpl->assign("seconds", _("Seconds"));
-        $tpl->assign("downtime_type", _("Downtime type"));
-        $tpl->assign("fixed", _("Fixed"));
-        $tpl->assign("flexible", _("Flexible"));
-        $tpl->assign("weekly_basis", _("Weekly basis"));
-        $tpl->assign("monthly_basis", _("Monthly basis"));
-        $tpl->assign("specific_date", _("Specific date"));
-        $tpl->assign("week_days", array(
-            1 => _("Monday"),
-            2 => _("Tuesday"),
-            3 => _("Wednesday"),
-            4 => _("Thursday"),
-            5 => _("Friday"),
-            6 => _("Saturday"),
-            7 => _("Sunday")
-        ));
-        $tpl->assign('periods_tab', $downtime->getPeriods($id));
-    }
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+        $renderer->setRequiredTemplate('{$label}&nbsp;<i class="red">*</i>');
+        $renderer->setErrorTemplate('<i class="red">{$error}</i><br />{$html}');
+        if ($o == 'w') {
+            $tpl->assign("time_period", _("Time period"));
+            $tpl->assign("days", _("Days"));
+            $tpl->assign("seconds", _("Seconds"));
+            $tpl->assign("downtime_type", _("Downtime type"));
+            $tpl->assign("fixed", _("Fixed"));
+            $tpl->assign("flexible", _("Flexible"));
+            $tpl->assign("weekly_basis", _("Weekly basis"));
+            $tpl->assign("monthly_basis", _("Monthly basis"));
+            $tpl->assign("specific_date", _("Specific date"));
+            $tpl->assign("week_days", array(
+                1 => _("Monday"),
+                2 => _("Tuesday"),
+                3 => _("Wednesday"),
+                4 => _("Thursday"),
+                5 => _("Friday"),
+                6 => _("Saturday"),
+                7 => _("Sunday")
+            ));
+            $tpl->assign('periods_tab', $downtime->getPeriods($id));
+        }
 
     $tpl->assign('msg_err_norelation', addslashes(_('No relation set for this downtime')));
 
@@ -357,5 +360,6 @@ if (!$valid) {
     $tpl->assign('p', $p);
     $tpl->assign('form', $renderer->toArray());
 
-    $tpl->display("formDowntime.ihtml");
-}
+        $tpl->display("formDowntime.html");
+
+    }

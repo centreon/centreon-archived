@@ -63,7 +63,7 @@
 			{/if}
 			<tr class="list_one">
 				<td class="FormRowField"><img class="helpTooltip" name="use"> {$form.host_parallel_template.label}<p class="description">{$form.tplTextParallel.label}<p></td>
-				<td class="FormRowValue" id="parallelTemplate">{include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}</td>
+				<td class="FormRowValue" id="parallelTemplate">{include file="file:$centreon_path/www/include/common/templates/cloneHost.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}</td>
 			</tr>
             {if $form.dupSvTplAssocText.label}
 			<tr class="list_two">

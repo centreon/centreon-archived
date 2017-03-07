@@ -63,10 +63,6 @@ $ext_cmd_del['svc'] = array(
 $pearDB = new CentreonDB();
 $downtimeObj = new CentreonDowntimeBroker($pearDB, _CENTREON_VARLIB_);
 
-
-/* Delete empty Downtimes */
-$downtimeObj->purgeEmptyDowntimes();
-
 /* Get approaching downtimes */
 $downtimes = $downtimeObj->getApproachingDowntimes(_DELAY_);
 

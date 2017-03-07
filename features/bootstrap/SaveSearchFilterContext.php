@@ -1,10 +1,9 @@
 <?php
 
-
-use Centreon\Test\Behat\SnmpTrapsConfigurationListingPage;
-use Centreon\Test\Behat\HostTemplateConfigurationListingPage;
-use Centreon\Test\Behat\ServiceTemplateConfigurationListingPage;
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\Configuration\SnmpTrapsConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\HostTemplateConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\ServiceTemplateConfigurationListingPage;
 
 /**
  * Defines application features from the specific context.
