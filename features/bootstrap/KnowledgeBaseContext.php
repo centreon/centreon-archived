@@ -1,9 +1,9 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\KBServiceListingPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\KBServiceListingPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 /**
  * Defines application features from the specific context.

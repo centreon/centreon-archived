@@ -1802,7 +1802,7 @@ class CentreonService
         return $hosts;
     }
 
-    public function getMonitoringFullName($serviceId)
+    public function getMonitoringFullName($serviceId, $hostId = null)
     {
         $name = null;
 
@@ -1818,6 +1818,9 @@ class CentreonService
             . 'WHERE h.host_id = s.host_id '
             . 'AND s.enabled = "1" '
             . 'AND s.service_id = ' . $serviceId;
+        if (isset($hostId)) {
+            $query .= ' AND s.host_id = ' . $hostId;
+        }
         $result = $this->dbMon->query($query);
         while ($row = $result->fetchRow()) {
             $name = $row['fullname'];

@@ -43,7 +43,8 @@ $SearchStr = "";
 $search = "";
 if (isset($_POST['searchACLR']) && $_POST['searchACLR']) {
     $search = $_POST['searchACLR'];
-    $SearchStr = " WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_res_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
+    $SearchStr = " WHERE (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
+        . "%' OR acl_res_alias LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
 }
 $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_resources" . $SearchStr);
 
@@ -72,14 +73,20 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 $SearchStr = "";
 if ($search) {
-    $SearchStr = "WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_res_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+    $SearchStr = "AND (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
+        . "%' OR acl_res_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$rq = "SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate FROM acl_resources ". $SearchStr ." ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit;
+$rq = 'SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate '
+    . 'FROM acl_resources '
+    . 'WHERE locked = 0 '
+    . $SearchStr . ' '
+    . 'ORDER BY acl_res_name '
+    . 'LIMIT ' . $num * $limit . ', ' . $limit;
 $DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -91,32 +98,51 @@ $style = "one";
  */
 $elemArr = array();
 for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
-    $selectedElements = $form->addElement('checkbox', "select[".$resources['acl_res_id']."]");
+    $selectedElements = $form->addElement('checkbox', "select[" . $resources['acl_res_id'] . "]");
 
     if ($resources["acl_res_activate"]) {
-        $moptions = "<a href='main.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
+            . "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $search
+            . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
+            . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='main.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
+            . "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $search
+            . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
+            . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";
-    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$resources['acl_res_id']."]'></input>";
+    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57))"
+        . " event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) "
+        . "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr["
+        . $resources['acl_res_id'] . "]'></input>";
 
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_resources_host_relations WHERE acl_res_id = '".$resources['acl_res_id']."'";
+    $rq = "SELECT COUNT(*) AS nbr 
+          FROM acl_resources_host_relations 
+          WHERE acl_res_id = '" . $resources['acl_res_id'] . "'";
     $DBRESULT2 = $pearDB->query($rq);
     $ctNbr = $DBRESULT2->fetchRow();
-    $elemArr[$i] = array("MenuClass" => "list_".$style,
-                    "RowMenu_select" => $selectedElements->toHtml(),
-                    "RowMenu_name" => $resources["acl_res_name"],
-                    "RowMenu_alias" => myDecode($resources["acl_res_alias"]),
-                    "RowMenu_all_hosts" => (isset($resources["all_hosts"]) && $resources["all_hosts"] == 1 ? _("Yes") : _("No")),
-                    "RowMenu_all_hostgroups" => (isset($resources["all_hostgroups"]) && $resources["all_hostgroups"] == 1 ? _("Yes") : _("No")),
-                    "RowMenu_all_servicegroups" => (isset($resources["all_servicegroups"]) && $resources["all_servicegroups"] == 1 ? _("Yes") : _("No")),
-                    "RowMenu_link" => "?p=".$p."&o=c&acl_res_id=".$resources['acl_res_id'],
-                    "RowMenu_status"  =>  $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
-                    "RowMenu_badge" => $resources["acl_res_activate"] ? "service_ok" : "service_critical",
-                    "RowMenu_options"  =>  $moptions);
+
+    $allHostgroups = (isset($resources["all_hostgroups"]) && $resources["all_hostgroups"] == 1 ? _("Yes") : _("No"));
+    $allServicegroups =(isset($resources["all_servicegroups"]) && $resources["all_servicegroups"] == 1 ?
+        _("Yes") :
+        _("No"));
+
+    $elemArr[$i] = array(
+        "MenuClass" => "list_" . $style,
+        "RowMenu_select" => $selectedElements->toHtml(),
+        "RowMenu_name" => $resources["acl_res_name"],
+        "RowMenu_alias" => myDecode($resources["acl_res_alias"]),
+        "RowMenu_all_hosts" => (isset($resources["all_hosts"]) && $resources["all_hosts"] == 1 ? _("Yes") : _("No")),
+        "RowMenu_all_hostgroups" => $allHostgroups,
+        "RowMenu_all_servicegroups" => $allServicegroups,
+        "RowMenu_link" => "?p=" . $p . "&o=c&acl_res_id=" . $resources['acl_res_id'],
+        "RowMenu_status" => $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $resources["acl_res_activate"] ? "service_ok" : "service_critical",
+        "RowMenu_options" => $moptions
+    );
 
     $style != "two" ? $style = "two" : $style = "one";
 }
@@ -125,37 +151,69 @@ $tpl->assign("elemArr", $elemArr);
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT" => _("Add"), "testT" => _("Check User View"), "testL"=>"?p=".$p."&o=t&min=1", "delConfirm"=>_("Do you confirm the deletion ?")));
+$tpl->assign('msg', array(
+    "addL" => "?p=" . $p . "&o=a",
+    "addT" => _("Add"),
+    "testT" => _("Check User View"),
+    "testL" => "?p=" . $p . "&o=t&min=1",
+    "delConfirm" => _("Do you confirm the deletion ?")
+));
 
 ?>
-<script type="text/javascript">
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
-</SCRIPT>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </SCRIPT>
 <?php
 $attrs1 = array(
-    'onchange'=>"javascript: " .
-            "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "");
-$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+    'onchange' => "javascript: " .
+        "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"
+        . _("Do you confirm the duplication ?") . "')) {" .
+        " 	setO(this.form.elements['o1'].value); submit();} " .
+        "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"
+        . _("Do you confirm the deletion ?") . "')) {" .
+        " 	setO(this.form.elements['o1'].value); submit();} " .
+        "else if (this.form.elements['o1'].selectedIndex == 3) {" .
+        " 	setO(this.form.elements['o1'].value); submit();} " .
+        ""
+);
+$form->addElement(
+    'select',
+    'o1',
+    null,
+    array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete")
+    ),
+    $attrs1
+);
 $form->setDefaults(array('o1' => null));
 
 $attrs2 = array(
-    'onchange'=>"javascript: " .
-            "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "");
-$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
+    'onchange' => "javascript: " .
+        "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"
+        . _("Do you confirm the duplication ?") . "')) {" .
+        " 	setO(this.form.elements['o2'].value); submit();} " .
+        "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"
+        . _("Do you confirm the deletion ?") . "')) {" .
+        " 	setO(this.form.elements['o2'].value); submit();} " .
+        "else if (this.form.elements['o2'].selectedIndex == 3) {" .
+        " 	setO(this.form.elements['o2'].value); submit();} " .
+        ""
+);
+$form->addElement(
+    'select',
+    'o2',
+    null,
+    array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete")
+    ),
+    $attrs2
+);
 $form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');

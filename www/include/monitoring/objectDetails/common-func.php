@@ -48,7 +48,7 @@ function hidePasswordInCommand($command_name, $service_id) {
     $query_command_name = "SELECT host_id, check_command, command_line FROM services WHERE service_id = '".$service_id."'";
     $res = $pearDBStorage->query($query_command_name);
     $row = $res->fetchRow();
-    
+
     $executed_check_command = $row['command_line'];
     $host_id = $row['host_id'];
 
@@ -76,7 +76,8 @@ function hidePasswordInCommand($command_name, $service_id) {
     }
 
     /* Get command line with macro */
-    $query_command_line = "SELECT command_line FROM command WHERE command_name = '".$command_name."'";
+    $query_command_line = "SELECT command_line FROM command WHERE command_name = '" .
+        $pearDB->escape($command_name) . "'";
     $res = $pearDB->query($query_command_line);
     $row = $res->fetchRow();
     $command_line_with_macro = $row['command_line'];
@@ -107,7 +108,7 @@ function hidePasswordInCommand($command_name, $service_id) {
         for ($i = 1; $i <= count($matches); $i++) {
             $executed_check_command = str_replace ($matches[$i], '***', $executed_check_command);
         }
-    }  
+    }
 
     return $executed_check_command;
 }
@@ -121,13 +122,13 @@ function getHostsTemplates($host_id) {
     if($res->numRows() == 0) {
         return array($host_id);
     } else {
-        $arrHostTpl = array(); 
+        $arrHostTpl = array();
         while ($row = $res->fetchRow()) {
             $arrHostTpl = array_merge($arrHostTpl, getHostsTemplates($row['host_tpl_id']));
             $arrHostTpl = array_merge($arrHostTpl, array($host_id));
         }
         return $arrHostTpl;
     }
-    return $arrHostTpl;     
+    return $arrHostTpl;
 }
 ?>

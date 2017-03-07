@@ -153,8 +153,6 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             }
             if (count($virtualServices)) {
                 $metaServiceCondition = 'AND s.description IN (' . implode(',', $virtualServices) . ') ';
-            } else {
-                return '';
             }
         } else {
             $metaServiceCondition = 'AND s.description LIKE "meta_%" ';

@@ -1,18 +1,17 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\CommentConfigurationPage;
-use Centreon\Test\Behat\DowntimeConfigurationPage;
-use Centreon\Test\Behat\DowntimeConfigurationListingPage;
-use Centreon\Test\Behat\MetaServiceConfigurationPage;
-use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Configuration\CommentConfigurationPage;
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationPage;
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\MetaServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
 
 /**
  * Defines application features from the specific context.
  */
 class DowntimeServiceContext extends CentreonContext
 {
-
     public function __construct()
     {
         parent::__construct();

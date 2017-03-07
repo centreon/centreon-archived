@@ -117,6 +117,7 @@ CREATE TABLE `acl_resources` (
   `acl_res_comment` text,
   `acl_res_status` enum('0','1') DEFAULT NULL,
   `changed` int(11) DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`acl_res_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -445,7 +446,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '50000',
   `command_file` varchar(255),
-  `retention_path` varchar(255),
+  `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
   `correlation_activate` enum('0','1') DEFAULT '0',
   `daemon` TINYINT(1),
@@ -960,7 +961,6 @@ CREATE TABLE `custom_view_user_relation` (
   `usergroup_id` int(11) DEFAULT NULL,
   `locked` tinyint(6) DEFAULT '0',
   `is_owner` tinyint(6) DEFAULT '0',
-  `is_public` tinyint(6) DEFAULT '0',
   `is_share` tinyint(6) DEFAULT '0',
   `is_consumed` int(1) NOT NULL DEFAULT 1,
   UNIQUE KEY `view_user_unique_index` (`custom_view_id`,`user_id`,`usergroup_id`),
@@ -1171,7 +1171,7 @@ CREATE TABLE `downtime_period` (
   `dtp_start_time` time NOT NULL,
   `dtp_end_time` time NOT NULL,
   `dtp_day_of_week` varchar(15) DEFAULT NULL,
-  `dtp_month_cycle` enum('first','last','all','none') DEFAULT 'all',
+  `dtp_month_cycle` varchar(100) DEFAULT 'all',
   `dtp_day_of_month` varchar(100) DEFAULT NULL,
   `dtp_fixed` enum('0','1') DEFAULT '1',
   `dtp_duration` int(11) DEFAULT NULL,
