@@ -90,7 +90,9 @@ if (isset($_POST["host_id"])) {
 					FROM service s, host h, host_service_relation hsr 
 					WHERE 
 						hsr.host_host_id IS NULL AND 
-						hsr.hostgroup_hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '" . $pearDB->escape($_POST["host_id"]). "') AND 
+						hsr.hostgroup_hg_id IN (SELECT hostgroup_hg_id 
+						                        FROM hostgroup_relation 
+						                        WHERE host_host_id = '" . $pearDB->escape($_POST["host_id"]). "') AND 
 						h.host_id = '" . $pearDB->escape($_POST["host_id"]). "' AND
 						s.service_id = hsr.service_service_id AND
                                                 s.service_register = '1'
