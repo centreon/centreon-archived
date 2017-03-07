@@ -207,13 +207,16 @@ p.description a, p.description a:visited {
    width: 213px !important;
 }
 
+.select2-selection {
+    cursor: initial !important;
+}
+
 .select2-container .select2-selection--multiple {
     min-height: auto !important;
 }
 
 .select2-container .select2-search--inline .select2-search__field {
     margin-top: 0 !important;
-    width: 200px !important;
 }
 
 .select2-container--default .select2-selection--single {
@@ -267,10 +270,17 @@ p.description a, p.description a:visited {
     background-color: #bfecff !important;
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+.formTable .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    min-height: 28px;
+}
+
+.ajaxOption .select2-container--default .select2-selection--multiple .select2-selection__rendered {
     max-height: 80px;
 }
 
+.formTable .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    min-height: 28px;
+}
 
 /* Selected elements  */
 .select2-results-header {

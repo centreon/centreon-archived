@@ -99,7 +99,6 @@ class CentreonRestHttp
 
         if (!is_null($this->proxy)) {
             curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
-            curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
             if (!is_null($this->proxyAuthentication)) {
                 curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
                 curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
@@ -109,18 +108,24 @@ class CentreonRestHttp
         switch ($method) {
             case 'POST':
                 curl_setopt($ch, CURLOPT_POST, true);
-                if (false === is_null($data)) {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                }
                 break;
             case 'GET':
-            default:
                 curl_setopt($ch, CURLOPT_HTTPGET, true);
                 break;
+            default:
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+                break;
+        }
+
+        if (!is_null($data)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
 
         curl_close($ch);
 
@@ -181,7 +186,7 @@ class CentreonRestHttp
         $query = 'SELECT `key`, `value` '
             . 'FROM `options` '
             . 'WHERE `key` IN ( '
-            . '"proxy_protocol", "proxy_url", "proxy_port", "proxy_user", "proxy_password" '
+            . '"proxy_url", "proxy_port", "proxy_user", "proxy_password" '
             . ') ';
         $res = $db->query($query);
         while ($row = $res->fetchRow()) {

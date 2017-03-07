@@ -1,13 +1,12 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\DowntimeConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
-use Centreon\Test\Behat\CurrentUserConfigurationPage;
-use Centreon\Test\Behat\DowntimeConfigurationListingPage;
-use Centreon\Test\Behat\HostConfigurationListingPage;
-use Centreon\Test\Behat\ServiceDowntimeConfigurationPage;
-
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\ServiceDowntimeConfigurationPage;
 
 /**
  * Defines application features from the specific context.
@@ -221,7 +220,7 @@ class DowntimeStartAndStopContext extends CentreonContext
             'location' => $this->timezone
         ));
         $user->save();
-        $this->restartAllPollers();
+        $this->reloadAllPollers();
 
         //downtime
         $this->page = new DowntimeConfigurationPage($this);
@@ -231,9 +230,6 @@ class DowntimeStartAndStopContext extends CentreonContext
             'comment' => 'service comment'
         ));
         $props = $this->page->getProperties();
-
-
-
 
         //convert local start hour in timestamp utc
         $dataTimeStart = new DateTime(
@@ -267,7 +263,7 @@ class DowntimeStartAndStopContext extends CentreonContext
             'location' => $this->timezone
         ));
         $hostPage->save();
-        $this->restartAllPollers();
+        $this->reloadAllPollers();
 
 
         //get the time of the timezone + x seconds for the start
@@ -297,7 +293,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->page->setProperties(array(
             'name' => 'test',
             'alias' => $this->service,
-            'periods' => array(7, 1, 2, 3, 4, 5, 6),
+            'days' => array(7, 1, 2, 3, 4, 5, 6),
             'start' => $startHour,
             'end' => $endHour,
             'svc_relation' => $this->host . ' - ' . $this->service

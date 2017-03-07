@@ -1,0 +1,371 @@
+{$form.javascript}
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/ui.tabs.closable.min.js"></script>
+        {literal}
+<script type="text/javascript">
+var tabsPeriods;
+var periods = 0;
+var listPeriod = 'undefined';
+var msg_err_norelation = '{/literal}{$msg_err_norelation}{literal}';
+var msgErr = new Array();
+
+jQuery(function(){
+    {/literal}{if $o != 'w'}{literal}
+    var removetab = function(tabselector, index) {
+        jQuery(".removetab").click(function(){
+            jQuery(tabselector).tabs('remove',index);
+        });
+    };
+
+    jQuery("#tabs_periods").tabs({
+        closable: true,
+        add: function(event, ui) {
+            jQuery(this).tabs('select',ui.index);
+            removetab(jQuery(this), ui.index);
+        },
+        show: function(event, ui) {
+            //load function to close selected tabs
+            removetab(jQuery(this), ui.index);
+        }
+    });
+
+    if ($$('input[name="dt_id"]')[0].value) {
+        jQuery.ajax({
+            url: './include/monitoring/recurrentDowntime/ajaxPeriods.php?dt_id=' + $$('input[name="dt_id"]')[0].value,
+            success: function(data, status) {
+                listPeriod = data;
+                jQuery.each(listPeriod, function(infos, index){
+                    addPeriods();
+                });
+            },
+            dataType: 'json'
+        });
+    } else {
+        addPeriods();
+    }
+    {/literal}{/if}{literal}
+});
+
+function addPeriods() {
+    periods++;
+
+    jQuery("#ul_tabs").after("<div id=\"p_"+periods+"\"></div>");
+    jQuery("#p_"+periods).load('./main.php?p={/literal}{$p}{literal}&min=1&iframe=1&period=' + periods);
+
+    var href = "#p_"+periods;
+    var title = '{/literal}{$period}{literal} ' + periods;
+    jQuery("#tabs_periods").tabs( 'add' , href , title+' &nbsp;');
+
+    return false;
+}
+
+function getXhrHost4Svc(){
+    if (window.XMLHttpRequest) // Firefox et autres
+        var xhrT = new XMLHttpRequest();
+    else if(window.ActiveXObject){ // Internet Explorer
+        try {
+            var xhrT = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            var xhrT = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+    } else { // XMLHttpRequest non support2 par le navigateur
+        alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+        var xhrT = false;
+    }
+    return xhrT;
+}
+
+function getServices(host_id) {
+    var arg = 'host_id='+host_id;
+    var xhrT = getXhrHost4Svc();
+
+    xhrT.open("POST","./include/monitoring/recurrentDowntime/GetXMLHost4Services.php", true);
+    xhrT.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhrT.send(arg);
+
+    /* Responce */
+    xhrT.onreadystatechange = function()
+    {
+        // Responce Ok
+        if (xhrT && xhrT.readyState == 4 && xhrT.status == 200 && xhrT.responseXML){
+            reponseT = xhrT.responseXML.documentElement;
+            var _services = reponseT.getElementsByTagName("service");
+
+            var _selbox = document.getElementById("svc_relation-f");
+            while ( _selbox.options.length > 0 ){
+                _selbox.options[0] = null;
+            }
+
+
+            if (_services.length == 0) {
+                _selbox.setAttribute('disabled', 'disabled');
+            } else {
+                _selbox.removeAttribute('disabled');
+            }
+
+            for (var i = 0 ; i < _services.length ; i++) {
+                var _service = _services[i];
+                var _id = _service.getElementsByTagName("id")[0].firstChild.nodeValue;
+                var _name = _service.getElementsByTagName("name")[0].firstChild.nodeValue;
+
+                new_elem = new Option(_name,_id);
+                _selbox.options[_selbox.length] = new_elem;
+            }
+        }
+    };
+}
+
+/*
+ * Validate form
+ */
+function validForm() {
+    $('msg_err').hide();
+    $('msg_err').innerHTML = '';
+
+    /*
+     * Validate period
+     */
+    if (false == validPeriods()) {
+        msgErr.each(function (err) {
+            $('msg_err').innerHTML += '<br/>' + err;
+        });
+        $('msg_err').show();
+        return false;
+    }
+
+    /*
+     * Validate relation
+     */
+    nbRel = $$('select[name="host_relation[]"] > option:selected').length;
+    nbRel = nbRel + $$('select[name="hostgroup_relation[]"] > option:selected').length;
+    nbRel = nbRel + $$('select[name="svc_relation[]"] > option:selected').length;
+    nbRel = nbRel + $$('select[name="svcgroup_relation[]"] > option:selected').length;
+    if (nbRel == 0) {
+        $('msg_err').innerHTML = msg_err_norelation;
+        $('msg_err').show();
+        return false;
+    }
+
+    $('form_dt').submit();
+    return true;
+}
+
+/**
+ * Validate period
+ *
+ * @return bool
+ */
+function validPeriods()
+{
+    var valid = true;
+    var periodTypeArray;
+    var periodType;
+    var periodStart;
+    var periodEnd;
+
+    msgErr = new Array();
+
+    for (var i = 0; i <= periods; i++) {
+        periodTypeArray = $$('input[name="periods[' + i + '][period_type]"]');
+        periodType = 'undefined';
+        if (periodTypeArray.length > 0) {
+            for (var j = 0; j < periodTypeArray.length; j++) {
+                if (periodTypeArray[j].checked == true) {
+                    periodType = periodTypeArray[j].value;
+                }
+            }
+            switch (periodType) {
+                case 'weekly_basis':
+                case 'monthly_basis':
+                case 'specific_date':
+                    /*
+                     * Check days
+                     */
+                    var nbDays = 0;
+                    $$('input[name="periods[' + i +'][days][]"]').each(function(day){
+                        if (day.checked == true) {
+                            nbDays++;
+                        }
+                    });
+                    if (nbDays == 0 && periodType != 'specific_date') {
+                        valid = false;
+                        msgErr.push('Error add days ' + i);
+                    }
+                    /*
+                     * Get period times
+                     */
+                    periodStart = $$('input[name="periods[' + i + '][start_period]"]')[0].value.split(':'); console.log(periodStart);
+                    periodEnd = $$('input[name="periods[' + i + '][end_period]"]')[0].value.split(':');
+                    if (periodStart.length != 2 || periodEnd.length != 2) {
+                        msgErr.push('Error bad time format ' + i);
+                        valid = false;
+                    } else if (!periodStart[0].match(/^\d{2}$/) ||
+                            !periodStart[1].match(/^\d{2}$/) ||
+                            !periodEnd[0].match(/^\d{2}$/) ||
+                            !periodEnd[1].match(/^\d{2}$/)) {
+                        msgErr.push('Error bad time format ' + i);
+                        valid = false;
+                    } else if (periodStart[0] < 0 ||
+                            periodStart[0] > 24 ||
+                            periodStart[1] < 0 ||
+                            periodStart[1] > 59 ||
+                            periodEnd[0] < 0 ||
+                            periodEnd[0] > 24 ||
+                            periodEnd[1] < 0 ||
+                            periodEnd[1] > 59) {
+                        msgErr.push('Error valid date ' + i);
+                        valid = false;
+                    } else {
+                        if (periodStart[0] > periodEnd[0]) {
+                            msgErr.push('Error period ' + i);
+                            valid = false;
+                        } else if (periodStart[0] == periodEnd[0] && periodStart[1] > periodEnd[1]) {
+                            msgErr.push('Error period ' + i);
+                            valid = false;
+                        }
+                    }
+                    break;
+                default:
+                    valid = false;
+                    break;
+            }
+        }
+    }
+    return valid;
+}
+</script>
+        {/literal}
+<div id="msg_err" style="color: red; text-align: center; font-weight: bold; margin: 4px; {if !$msg_err }display: none;{/if}">{$msg_err}</div>
+<form {$form.attributes}>
+    <div class="headerTabContainer">
+    <ul id="mainnav">
+        <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
+        <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
+    </ul>
+    <div id="validFormTop">
+        {if $o == "a" || $o == "c" || $o == "mc"}
+        <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        {else if $o == "w"}
+        <p class="oreonbutton">{$form.change.html}</p>
+        {/if}
+    </div>
+    </div>
+    <div id="tab1" class="tab">
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.information}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_name"> {$form.downtime_name.label}</td><td class="FormRowValue">{$form.downtime_name.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="downtime_description"> {$form.downtime_description.label}</td><td class="FormRowValue">{$form.downtime_description.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_activate"> {$form.downtime_activate.label}</td><td class="FormRowValue">{$form.downtime_activate.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.periods}</h4>
+            </td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="downtime_period"> {$periods}</td>
+            <td class="FormRowValue">
+                <table>
+                    {if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
+                    <tr>
+                        <td class="FormRowValue">{if $o != "w"}<div style="cursor: pointer; color : #009fdf;"><img src="./img/icons/circle-plus.png" class="ico-14" style="vertical-align: middle;" onclick="addPeriods()" /> <a href="#" onclick="javascript:addPeriods()" style="color: #4ccaff; text-decoration: none;">{$add}</a></div>{/if}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="tabs_periods">
+                                <ul id="ul_tabs">
+                                    {if $o == "w"}
+                                    {foreach item=period from=$periods_tab}
+                                    {assign var='nbperiod' value='1'}
+                                    {if $period.month_cycle == 'none'}
+                                    {assign var='type_string' value=$monthly_basis}
+                                    {elseif $period.month_cycle == 'all'}
+                                    {assign var='type_string' value=$weekly_basis}
+                                    {else}
+                                    {assign var='type_string' value=$specific_date}
+                                    {/if}
+
+                                    <table width="100%">
+                                        <tr>
+                                            <td colspan="2"><b>{$periods} {$nbperiod}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>{$downtime_type} : </td><td>{$type_string}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top;">{$days}</td><td>
+                                            {if $period.month_cycle == 'none'}
+                                            {assign var="nbDay" value="0"}
+                                            {foreach item=day from=$period.day_of_month}{$day}&nbsp;{if $nbDay % 7 == 0}<br/>{/if}{assign var="nbDay" value=$nbDay+1}{/foreach}
+                                            {elseif $period.month_cycle == 'all'}
+                                            {foreach item=day from=$period.day_of_week}{$week_days.$day}<br/>{/foreach}
+                                            {else}
+                                            {$period.month_cycle} {$period.day_of_week} {$of_month}
+                                            {/if}
+                                            <br/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>{$time_period}</td>
+                                            <td>{$period.start_time} - {$period.end_time}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{$fixed}{if $period.fixed == '1'} (x) {/if}{$flexible}{if $period.fixed == '0'} (x){/if}</td>
+                                            <td>{if $period.fixed == '0'}{$period.duration} {$seconds}{/if}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><hr/></td>
+                                        </tr>
+                                    </table>
+                                    {assign var="i" value=$i+1}
+                                    {/foreach}
+                                </ul>
+                                {/if}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        {if $o == "a" || $o == "c"}
+        <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+        {/if}
+    </table>
+    </div>
+    <div id="tab2" class="tab">
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.linkManagement}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_relation"> {$form.host_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host_relation.html}</p></td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_relation"> {$form.hostgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hostgroup_relation.html}</p></td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="svc_relation"> {$form.svc_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host4svc.html}{$form.svc_relation.html}</p></td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="svcgroup_relation"> {$form.svcgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.svcgroup_relation.html}</p></td></tr>
+        {if $o == "a" || $o == "c"}
+        <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+        {/if}
+    </table>
+    </div>
+    <div id="validForm">
+    {if $o == "a" || $o == "c" || $o == "mc"}
+    <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {else if $o == "w"}
+    <p class="oreonbutton">{$form.change.html}</p>
+    {/if}
+    </div>
+    {$form.hidden}
+</form>
+{$helptext}
