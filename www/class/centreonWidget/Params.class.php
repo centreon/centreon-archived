@@ -103,6 +103,8 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
         $res = $this->db->query($query);
         if ($res->numRows()) {
             $row = $res->fetchRow();
+            if (preg_match('/^\w\:.*\}$/', $row['preference_value']) && FALSE !== @unserialize($row['preference_value']))
+                $row['preference_value'] = unserialize($row['preference_value']);
             return $row['preference_value'];
         }
         return null;
