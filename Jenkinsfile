@@ -125,8 +125,8 @@ try {
     build job: 'mon-lm-bundle-centos7', wait: false
     build job: 'mon-ppe-bundle-centos6', wait: false
     build job: 'mon-ppe-bundle-centos7', wait: false
-    build job: 'mon-ppm-bundle-centos6', wait: false
-    build job: 'mon-ppm-bundle-centos7', wait: false
+    build job: 'centreon-poller-display/master', wait: false
+    build job: 'centreon-pp-manager/master', wait: false
     build job: 'des-bam-bundle-centos6', wait: false
     build job: 'des-bam-bundle-centos7', wait: false
     build job: 'des-map-bundle-centos6', wait: false

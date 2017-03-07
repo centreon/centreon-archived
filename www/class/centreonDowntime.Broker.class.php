@@ -407,16 +407,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
         $this->db->query($query);
     }
 
-    public function purgeEmptyDowntimes()
-    {
-        $query = 'DELETE FROM `downtime` '
-            . 'WHERE `dt_id` NOT IN (SELECT dt_id FROM downtime_host_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_hostgroup_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_service_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_servicegroup_relation) ';
-        $this->db->query($query);
-    }
-
     public function isScheduled($downtime)
     {
         $isScheduled = false;

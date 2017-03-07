@@ -82,15 +82,18 @@ switch ($form) {
         $tpl->assign("friday", _("Friday"));
         $tpl->assign("saturday", _("Saturday"));
         $tpl->assign("sunday", _("Sunday"));
-        $tmpl = "weekly_basis.ihtml";
+        $tmpl = "weekly_basis.html";
         break;
     case "monthly_basis":
         $tpl->assign("time_period", _("Time period"));
         $tpl->assign("nbDays", range(1, 31));
-        $tmpl = "monthly_basis.ihtml";
+        $tmpl = "monthly_basis.html";
         break;
     case "specific_date":
         $tpl->assign("first_of_month", _("First of month"));
+        $tpl->assign("second_of_month", _("Second of month"));
+        $tpl->assign("third_of_month", _("Third of month"));
+        $tpl->assign("fourth_of_month", _("Fourth of month"));
         $tpl->assign("last_of_month", _("Last of month"));
         $tpl->assign("time_period", _("Time period"));
         $tpl->assign("monday", _("Monday"));
@@ -100,14 +103,14 @@ switch ($form) {
         $tpl->assign("friday", _("Friday"));
         $tpl->assign("saturday", _("Saturday"));
         $tpl->assign("sunday", _("Sunday"));
-        $tmpl = "specific_date.ihtml";
+        $tmpl = "specific_date.html";
         break;
     case "general":
     default:
         $tpl->assign("weekly_basis", _("Weekly basis"));
         $tpl->assign("monthly_basis", _("Monthly basis"));
         $tpl->assign("specific_date", _("Specific date"));
-        $tmpl = 'general.ihtml';
+        $tmpl = 'general.html';
         break;
 }
     $tpl->assign('o', '');

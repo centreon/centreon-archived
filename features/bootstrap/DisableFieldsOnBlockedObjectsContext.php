@@ -1,17 +1,11 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\HostTemplateConfigurationPage;
-use Centreon\Test\Behat\HostTemplateConfigurationListingPage;
-
+use Centreon\Test\Behat\Configuration\HostTemplateConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostTemplateConfigurationListingPage;
 
 class DisableFieldsOnBlockedObjectsContext extends CentreonContext
 {
-
     /**
      * @Given a blocked object template
      */

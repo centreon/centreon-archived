@@ -1,4 +1,5 @@
 <?php
+
 use Centreon\Test\Behat\CentreonContext;
 
 /**
