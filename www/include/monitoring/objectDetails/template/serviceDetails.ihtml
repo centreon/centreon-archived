@@ -50,7 +50,7 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" valign="top">{$m_mon_performance_data}</td>
                                 <td class="ListColNoWrap">
-                                    <pre>{$service_data.performance_data}</pre>
+                                    <pre class="wrap">{$service_data.performance_data}</pre>
                                 </td>
                             </tr>
                             <tr class='list_two'>
@@ -117,7 +117,7 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" valign="top">{$m_mon_service_command_line}</td>
                                 <td class="ListColLeft ColPopup">
-                                    <pre>{$service_data.command_line}</pre>
+                                    <pre style="max-width: 900px; overflow-x: auto">{$service_data.command_line}</pre>
                                 </td>
                             </tr>
                             {/if}

@@ -88,9 +88,9 @@ try {
     $viewId = $viewObj->getCurrentView();
     $views = $viewObj->getCustomViews();
 
-    $rotationTimer = 0;
     $contactParameters = $centreon->user->getContactParameters($db, array('widget_view_rotation'));
 
+    $rotationTimer = 0;
     if (isset($contactParameters['widget_view_rotation'])) {
         $rotationTimer = $contactParameters['widget_view_rotation'];
     }
@@ -114,7 +114,6 @@ try {
     }
     $template->assign('views', $views);
     $template->assign('empty', $i);
-    $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
 
     $formAddView = new HTML_QuickForm(
         'formAddView',
@@ -123,31 +122,17 @@ try {
         '_selft',
         array('onSubmit' => 'submitAddView(); return false;')
     );
-    $formAddView->addElement('header', 'title', _("Create a view"));
-    $formAddView->addElement('header', 'information', _("General Information"));
 
-
-    $attrsText = array("size" => "30");
+    // List of shared views
     $arrayView = array(
         'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_customview&action=listPublic',
+        'availableDatasetRoute' => './api/internal.php?object=centreon_home_customview&action=listSharedViews',
         'multiple' => false
     );
-    $formAddView->addElement('select2', 'viewLoad', _("Public views list"), array(), $arrayView);
+    $formAddView->addElement('select2', 'viewLoad', _("Views"), array(), $arrayView);
 
-    $arrayViewShared = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_customview&action=listShare',
-        'multiple' => false
-    );
-
-    $formAddView->addElement('select2', 'viewLoadShare', _("Shared views list"), array(), $arrayViewShared);
-
-
-    /**
-     * Name
-     */
-
+    // New view name
+    $attrsText = array("size" => "30");
     $formAddView->addElement('text', 'name', _("Name"), $attrsText);
 
     $createLoad = array();
@@ -194,8 +179,6 @@ try {
         '',
         array('onSubmit' => 'submitEditView(); return false;')
     );
-    $formEditView->addElement('header', 'title', _('Edit a view'));
-    $formEditView->addElement('header', 'information', _("General Information"));
 
     /**
      * Name
@@ -234,7 +217,6 @@ try {
     /**
      * Form share view
      */
-    $cgObj = new CentreonContactgroup($db);
     $formShareView = new HTML_QuickForm(
         'formShareView',
         'post',
@@ -242,26 +224,56 @@ try {
         '',
         array('onSubmit' => 'submitShareView(); return false;')
     );
-    $formShareView->addElement('header', 'title', _("Share view"));
-
-    /**
-     * Locked
-     */
-    $locked[] = HTML_QuickForm::createElement('radio', 'locked', null, _("Yes"), '1');
-    $locked[] = HTML_QuickForm::createElement('radio', 'locked', null, _("No"), '0');
-    $formShareView->addGroup($locked, 'locked', _("Locked?"), '&nbsp;');
-    $formShareView->setDefaults(array('locked' => '1'));
 
     /**
      * Users
      */
     $attrContacts = array(
         'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/'
-            . 'internal.php?object=centreon_configuration_contact&action=list',
-        'multiple' => true
+        'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_contact&action=list',
+        'multiple' => true,
+        'allowClear' => true,
+        'defaultDataset' => array()
     );
-    $formShareView->addElement('select2', 'user_id', _("User List"), array(), $attrContacts);
+    $formShareView->addElement(
+        'select2',
+        'unlocked_user_id',
+        _("Unlocked users"),
+        array(),
+        $attrContacts
+    );
+    $formShareView->addElement(
+        'select2',
+        'locked_user_id',
+        _("Locked users"),
+        array(),
+        $attrContacts
+    );
+
+    /**
+     * User groups
+     */
+    $attrContactgroups = array(
+        'datasourceOrigin' => 'ajax',
+        'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_contactgroup&action=list',
+        'multiple' => true,
+        'allowClear' => true,
+        'defaultDataset' => array()
+    );
+    $formShareView->addElement(
+        'select2',
+        'unlocked_usergroup_id',
+        _("Unlocked user groups"),
+        array(),
+        $attrContactgroups
+    );
+    $formShareView->addElement(
+        'select2',
+        'locked_usergroup_id',
+        _("Locked user groups"),
+        array(),
+        $attrContactgroups
+    );
 
     /*
      * Widgets
@@ -272,17 +284,6 @@ try {
         'availableDatasetRoute' => './api/internal.php?object=centreon_administration_widget&action=list',
         'allowClear' => false
     );
-
-    /**
-     * User groups
-     */
-    $attrContactgroups = array(
-        'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/'
-            . 'internal.php?object=centreon_configuration_contactgroup&action=list',
-        'multiple' => true
-    );
-    $formShareView->addElement('select2', 'usergroup_id', _("User Group List"), array(), $attrContactgroups);
 
     /**
      * Submit button
@@ -309,9 +310,6 @@ try {
         '',
         array('onSubmit' => 'submitAddWidget(); return false;')
     );
-    $formAddWidget->addElement('header', 'w_title', _('Add a widget'));
-    $formAddWidget->addElement('header', 'title', _('Add a widget'));
-    $formAddWidget->addElement('header', 'information', _("Widget Information"));
 
     /**
      * Name
@@ -342,13 +340,14 @@ try {
 } catch (CentreonCustomViewException $e) {
     echo $e->getMessage() . "<br/>";
 }
-$modeEdit = 'undefined';
+$modeEdit = 'false';
 if (isset($_SESSION['customview_edit_mode'])) {
-    $modeEdit = $_SESSION['customview_edit_mode'] == "true" ? 'true' : 'false';
+    $modeEdit = ($_SESSION['customview_edit_mode'] == "true") ? 'true' : 'false';
 }
+
 ?>
 <script type="text/javascript">
-    var modeEdit = <?php echo $modeEdit; ?>;
+    var defaultShow = <?php echo $modeEdit; ?>;
     /**
      * Resize widget iframe
      */
