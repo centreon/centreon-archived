@@ -11,7 +11,7 @@ Feature: Timezone in monitoring
 #    When I open the popin in the monitoring page
 #    Then the timezone of this host is displayed
 
-  Scenario: timezone in detail
+  Scenario: Timezone in details page
     Given a host
-    When I open the host detail in the monitoring page
+    When I open the host monitoring details page
     Then the timezone of this host is displayed

@@ -8,18 +8,9 @@ La version 3.4 de Centreon Entreprise Server (CES) est l'ensemble Centreon Web 2
 Deux versions de CES 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
 
 .. warning::
-   Cette release n'est pas encore intégralement compatible avec la
-   totalité des logiciels commerciaux de Centreon tels que Centreon MBI,
-   Centreon BAM ou Centreon Map. Si vous utilisez l'un de ces produits
-   nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
-   Web tant que de nouvelles versions des produits précédents, indiquant
-   clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
-   disponibles. La seule exception à cette exclusion concerne EMS/EPP.
-
-.. warning::
-   Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise 
-   pas le module centreon knowledgebase (aussi appelé Centreon KB). Si c'est le 
-   cas, veuillez le désinstaller. Le module Centreon KB est maintenant intégré 
+   Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise
+   pas le module centreon knowledgebase (aussi appelé Centreon KB). Si c'est le
+   cas, veuillez le désinstaller. Le module Centreon KB est maintenant intégré
    à la version 2.8.
 
 *********

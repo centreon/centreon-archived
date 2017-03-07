@@ -1,8 +1,9 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\KBServiceListingPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 /**
  * Defines application features from the specific context.
@@ -17,7 +18,6 @@ class KnowledgeBaseContext extends CentreonContext
         $this->serviceName = 'MediawikiService';
     }
 
-
     /**
      * @Given I am logged in a Centreon server with MediaWiki installed
      */
@@ -30,7 +30,6 @@ class KnowledgeBaseContext extends CentreonContext
         );
         $this->iAmLoggedIn();
     }
-
 
     /**
      * @Given a host configured
@@ -51,7 +50,6 @@ class KnowledgeBaseContext extends CentreonContext
         $hostPage->save();
         $this->restartAllPollers();
     }
-
 
     /**
      * @Given a service configured
@@ -85,7 +83,6 @@ class KnowledgeBaseContext extends CentreonContext
         $this->aLinkTowardThisHostProcedureIsAvailableInConfiguration();
     }
 
-
     /**
      * @When I add a procedure concerning this host in MediaWiki
      */
@@ -117,24 +114,28 @@ class KnowledgeBaseContext extends CentreonContext
         $this->restartAllPollers();
     }
 
-
     /**
      * @When I add a procedure concerning this service in MediaWiki
      */
     public function iAddAProcedureConcerningThisServiceInMediawiki()
     {
-        /* Go to the page to options page */
-        $this->visit('/main.php?p=61002');
-        $this->assertFind('css', '.list_one:nth-child(4) td:nth-child(6) a:nth-child(1)')->click();
+        // Create wiki page.
+        $page = new KBServiceListingPage($this);
+        $page->createWikiPage(array('host' => $this->serviceHostName, 'service' => $this->serviceName));
+
         $windowNames = $this->getSession()->getWindowNames();
         if (count($windowNames) > 1) {
             $this->getSession()->switchToWindow($windowNames[1]);
         }
 
-        /* Add wiki page */
+        // Check that wiki page is valid.
         $checkurl = 'Service:' . $this->serviceHostName . '_' . $this->serviceName;
-        if (!strstr(urldecode($this->getSession()->getCurrentUrl()), $checkurl)) {
-            throw new Exception('Bad url');
+        $currenturl = urldecode($this->getSession()->getCurrentUrl());
+        if (!strstr($currenturl, $checkurl)) {
+            throw new Exception(
+                'Redirected to wrong page: ' . $currenturl .
+                ', should have contain ' . $checkurl . '.'
+            );
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki service page');
@@ -143,6 +144,7 @@ class KnowledgeBaseContext extends CentreonContext
         /* cron */
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
         sleep(2);
+
         /* Apply config */
         $this->restartAllPollers();
     }
@@ -194,7 +196,6 @@ class KnowledgeBaseContext extends CentreonContext
             throw new Exception('Bad url');
         }
     }
-
 
     /**
      * @Then the page is deleted and the option disappear

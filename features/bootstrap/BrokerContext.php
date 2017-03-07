@@ -1,8 +1,9 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\BrokerConfigurationListingPage;
-use Centreon\Test\Behat\PollerConfigurationExportPage;
+use Centreon\Test\Behat\Configuration\BrokerConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
 
 class BrokerContext extends CentreonContext
 {
@@ -15,6 +16,27 @@ class BrokerContext extends CentreonContext
     {
         $this->page = new BrokerConfigurationListingPage($this);
         $this->page = $this->page->inspect('central-broker-master');
+    }
+
+    /**
+     *  @Given a configured passive service
+     */
+    public function aConfiguredPassiveService()
+    {
+        $this->page = new ServiceConfigurationPage($this);
+        $this->page->setProperties(array(
+            'hosts' => 'Centreon-Server',
+            'description' => 'AcceptanceTestService',
+            'templates' => 'generic-service',
+            'check_command' => 'check_centreon_dummy',
+            'check_period' => '24x7',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
+        ));
+        $this->page->save();
     }
 
     /**
@@ -35,18 +57,7 @@ class BrokerContext extends CentreonContext
      */
     public function IExportConfiguration()
     {
-        $this->page = new PollerConfigurationExportPage($this);
-        $this->page->setProperties(
-            array(
-                'pollers' => 'central',
-                'generate_files' => true,
-                'run_debug' => true,
-                'move_files' => true,
-                'restart_engine' => true,
-                'restart_method' => true
-            )
-        );
-        $this->page->export();
+        $this->restartAllPollers();
     }
 
     /**
@@ -65,8 +76,26 @@ class BrokerContext extends CentreonContext
      */
     public function theMonitoringIsStillWorking()
     {
-        if (!$this->getPollingState()) {
-            throw new \Exception('Poller is not running.');
-        }
+        $this->submitServiceResult(
+            'Centreon-Server',
+            'AcceptanceTestService',
+            0,
+            'Acceptance test output.',
+            'test=1s'
+        );
+
+        $this->spin(
+            function ($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    'Centreon-Server',
+                    'AcceptanceTestService'
+                );
+                $props = $page->getProperties();
+                return $props['last_check'];
+            },
+            'Configured passive service is not monitored. Maybe engine or broker are not properly reloaded',
+            70
+        );
     }
 }
