@@ -1,11 +1,11 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ContactConfigurationListingPage;
-use Centreon\Test\Behat\ACLGroupConfigurationPage;
-use Centreon\Test\Behat\ACLMenuConfigurationPage;
-use Centreon\Test\Behat\ACLActionConfigurationPage;
-use Centreon\Test\Behat\ACLResourceConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
+use Centreon\Test\Behat\Administration\ACLGroupConfigurationPage;
+use Centreon\Test\Behat\Administration\ACLMenuConfigurationPage;
+use Centreon\Test\Behat\Administration\ACLActionConfigurationPage;
+use Centreon\Test\Behat\Administration\ACLResourceConfigurationPage;
 
 /**
  * Features context.

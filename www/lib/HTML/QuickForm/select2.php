@@ -157,7 +157,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_allowClear = true;
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
-        $this->_defaultDataset = array();
+        $this->_defaultDataset = null;
         $this->_defaultDatasetOptions = array();
         $this->_jsCallback = '';
         $this->parseCustomAttributes($attributes);
@@ -199,7 +199,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $this->_allowClear = true;
         }
 
-        if (isset($attributes['defaultDataset'])) {
+        if (isset($attributes['defaultDataset']) && !is_null($attributes['defaultDataset'])) {
             $this->_defaultDataset = $attributes['defaultDataset'];
         }
 
@@ -315,7 +315,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 url: "' . $this->_availableDatasetRoute . '"
             },';
 
-            if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
+            if ($this->_defaultDatasetRoute && is_null($this->_defaultDataset)) {
                 $additionnalJs = $this->setDefaultAjaxDatas();
             } else {
                 $this->setDefaultFixedDatas();
@@ -408,7 +408,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $this->_defaultSelectedOptions .= $currentOption;
                 }
             }
-        } else {
+        } else if (!is_null($this->_defaultDataset)) {
             foreach ($this->_defaultDataset as $elementName => $elementValue) {
 
                 $currentOption = '<option selected="selected" value="'
@@ -495,7 +495,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $value = $this->_findValue($caller->_constantValues);
 
             if (null === $value) {
-                if (count($this->_defaultDataset) === 0) {
+                if (is_null($this->_defaultDataset)) {
                     $value = $this->_findValue($caller->_submitValues);
                 } else {
                     $value = $this->_defaultDataset;

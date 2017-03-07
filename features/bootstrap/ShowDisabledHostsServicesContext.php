@@ -1,13 +1,7 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationListingPage;
-
+use Centreon\Test\Behat\Configuration\ServiceConfigurationListingPage;
 
 class ShowDisabledHostsServicesContext extends CentreonContext
 {

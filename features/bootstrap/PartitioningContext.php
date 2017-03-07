@@ -1,11 +1,7 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ContactListPage;
-use Centreon\Test\Behat\ContactConfigurationPage;
-use Centreon\Test\Behat\CommandConfigurationPage;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactListPage;
 
 class PartitioningContext extends CentreonContext
 {
