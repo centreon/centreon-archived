@@ -150,8 +150,8 @@ $template->assign('params', $params);
 /**
  * Submit button
  */
-$form->addElement('button', 'submit', _("Apply"), array("onClick" => "submitData();"));
-$form->addElement('reset', 'reset', _("Reset"));
+$form->addElement('button', 'submit', _("Apply"), array("class" => "btc bt_success", "onClick" => "submitData();"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $form->addElement('hidden', 'custom_view_id');
 $form->addElement('hidden', 'widget_id');
 $form->addElement('hidden', 'action');
