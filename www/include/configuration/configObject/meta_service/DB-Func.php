@@ -344,11 +344,13 @@ function updateMetaServiceContact($meta_id)
     /* Add relation between metaservice and contact */
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'ms_cs');
-    $queryAddRelation = "INSERT INTO meta_contact (meta_id, contact_id) VALUES ";
-    for ($i = 0; $i < count($ret); $i++) {
-        $queryAddRelation .= "(" . $meta_id . ", " . $ret[$i] . ")";
+    if (count($ret)) {
+        $queryAddRelation = "INSERT INTO meta_contact (meta_id, contact_id) VALUES ";
+        for ($i = 0; $i < count($ret); $i++) {
+            $queryAddRelation .= "(" . $meta_id . ", " . $ret[$i] . ")";
+        }
+        $pearDB->query($queryAddRelation);
     }
-    $pearDB->query($queryAddRelation);
 }
 
 function updateMetaServiceContactGroup($meta_id = null)

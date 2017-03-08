@@ -195,7 +195,7 @@ if ($hostgroups) {
     $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id";
 }
 
-if ($instance != -1) {
+if ($instance != -1 && !empty($instance)) {
     $rq1 .= " AND h.instance_id = ".$instance;
 }
 $rq1 .= " AND h.enabled = 1 ";

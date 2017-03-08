@@ -108,9 +108,6 @@ class CentreonRestHttp
         switch ($method) {
             case 'POST':
                 curl_setopt($ch, CURLOPT_POST, true);
-                if (false === is_null($data)) {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                }
                 break;
             case 'GET':
                 curl_setopt($ch, CURLOPT_HTTPGET, true);
@@ -120,8 +117,15 @@ class CentreonRestHttp
                 break;
         }
 
+        if (!is_null($data)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        }
+
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
 
         curl_close($ch);
 

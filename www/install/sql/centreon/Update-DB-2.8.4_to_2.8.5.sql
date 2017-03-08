@@ -12,5 +12,21 @@ UPDATE `nagios_server` SET `init_script_centreontrapd` = 'centreontrapd' WHERE `
 -- Missing 'integer' type, mostly used for auto-refresh preference.
 INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES ('integer', 0);
 
+-- custom views share options
+ALTER TABLE custom_view_user_relation ADD is_share tinyint(1) NOT NULL DEFAULT 0 AFTER is_consumed;
+UPDATE custom_view_user_relation SET is_share = 1 WHERE is_owner = 0;
+
 -- Remove useless proxy option
 DELETE FROM options WHERE options.key = 'proxy_protocol';
+
+-- Add column to hide acl resources
+ALTER TABLE acl_resources ADD locked tinyint(1) NOT NULL DEFAULT 0 AFTER changed;
+
+-- Update broker cache directory column name
+ALTER TABLE cfg_centreonbroker CHANGE COLUMN `retention_path` `cache_directory` VARCHAR(255) DEFAULT NULL;
+
+-- change column type
+ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
+
+-- Fix problem regarding the recurrent downtimes
+UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;

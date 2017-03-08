@@ -1,13 +1,17 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\CustomViewsPage;
-use Centreon\Test\Behat\ContactConfigurationPage;
+use Centreon\Test\Behat\Home\CustomViewsPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
 
 class CustomViewsContext extends CentreonContext
 {
-    private $customViewName;
-    private $user;
+    protected $customViewName;
+    protected $newCustomViewName;
+    protected $user;
+    protected $owner;
+    protected $cgname;
 
     /**
      *  Build a new context.
@@ -15,7 +19,10 @@ class CustomViewsContext extends CentreonContext
     public function __construct()
     {
         $this->customViewName = 'AcceptanceTestCustomView';
+        $this->newCustomViewName = 'NewAcceptanceTestCustomView';
         $this->user = 'user1';
+        $this->owner = 'admin';
+        $this->cgname = 'user';
     }
 
     /**
@@ -25,7 +32,7 @@ class CustomViewsContext extends CentreonContext
     {
         $this->launchCentreonWebContainer('web_widgets');
         $this->iAmLoggedIn();
-
+        //create user
         $page = new ContactConfigurationPage($this);
         $page->setProperties(array(
             'alias' => $this->user,
@@ -35,7 +42,16 @@ class CustomViewsContext extends CentreonContext
             'password2' => 'centreon',
             'admin' => '1'
         ));
+        $page->save();
 
+        //create contact group
+        $page = new ContactGroupsConfigurationPage($this);
+        $page->setProperties(array(
+            'name' => $this->cgname,
+            'alias' => $this->cgname,
+            'contacts' => $this->user,
+            'comments' => 'cg test'
+        ));
         $page->save();
     }
 
@@ -49,9 +65,33 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2, true);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView($this->user);
     }
 
+    /**
+     *  @Given a shared custom view
+     */
+    public function aSharedCustomView()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView(null, $this->user);
+    }
+
+    /**
+     *  @Given a shared custom view with a group
+     */
+    public function aSharedCustomViewWithAGroup()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView( null, null, null, $this->cgname);
+    }
     /**
      *  @Given a user is using the public view
      */
@@ -62,16 +102,20 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Given the user is using the shared view
+     * @Given the user is using the shared view
      */
     public function theUserIsUsingTheSharedView()
     {
-        $this->anotherUserWishesToAddANewCustomView();
-        $this->heCanAddTheSharedView();
+        $this->changeUser($this->user);
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $page->loadView($this->customViewName);
     }
 
     /**
-     *  @Given a custom view shared in read only with a user
+     * @Given a custom view shared in read only with a user
      */
     public function aCustomViewSharedInReadOnlyWithAUser()
     {
@@ -84,14 +128,25 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
+     * @Given a custom view shared in read only with a group
+     */
+    public function aCustomViewSharedInReadOnlyWithAGroup()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->createNewView($this->customViewName, 2);
+        $page->addWidget('First widget', 'Host Monitoring');
+        $page->addWidget('Second widget', 'Service Monitoring');
+        $page->shareView( null, null, $this->cgname);
+    }
+
+    /**
      *  @When a user wishes to add a new custom view
      *  @When the user wishes to add a new custom view
      */
     public function anotherUserWishesToAddANewCustomView()
     {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->user ;
-        $this->iAmLoggedIn();
+        $this->changeUser($this->user);
     }
 
     /**
@@ -100,8 +155,27 @@ class CustomViewsContext extends CentreonContext
     public function heRemovesTheSharedView()
     {
         $page = new CustomViewsPage($this);
-        $page->showEditBar();
+        $page->showEditBar(true);
         $page->deleteView();
+    }
+
+    /**
+     *  @When the user modifies the custom view
+     */
+    public function theUserModifiesTheCustomView()
+    {
+        $this->changeUser($this->user);
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+        $page->editView($this->newCustomViewName, 1);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->newCustomViewName;
+            },
+            'View not updated by user'
+        );
     }
 
     /**
@@ -109,7 +183,20 @@ class CustomViewsContext extends CentreonContext
      */
     public function theOwnerModifiesTheCustomView()
     {
-        // XXX
+
+        $this->changeUser($this->owner);
+        $page = new CustomViewsPage($this);
+
+        $page->showEditBar(true);
+
+        $page->editView($this->newCustomViewName, 1);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->newCustomViewName;
+            },
+            'View not updated by owner'
+        );
     }
 
     /**
@@ -117,7 +204,13 @@ class CustomViewsContext extends CentreonContext
      */
     public function theOwnerRemovesTheView()
     {
-        // XXX
+        $this->changeUser($this->owner);
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $page->deleteView();
+        $this->theViewIsNotVisibleAnymore();
     }
 
     /**
@@ -127,6 +220,7 @@ class CustomViewsContext extends CentreonContext
     {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
+
         $page->loadView($this->customViewName);
     }
 
@@ -137,7 +231,8 @@ class CustomViewsContext extends CentreonContext
     {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
-        $page->loadView(null, $this->customViewName);
+
+        $page->loadView($this->customViewName);
     }
 
     /**
@@ -147,10 +242,43 @@ class CustomViewsContext extends CentreonContext
     {
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return !$page->isCurrentViewEditable();
+            },
+            'Current view is modifiyable',
+            30
+        );
+    }
+
+    /**
+     *  @Then he can modify the content of the shared view
+     */
+    public function heCanModifyTheContentOfTheSharedView()
+    {
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $this->spin(
+            function ($context) use ($page) {
+                return $page->isCurrentViewEditable();
+            },
+            'Current view is not modifiable',
+            30
+        );
+    }
+
+    /**
+     *  @Then the view is still visible
+     */
+    public function theViewIsStillVisible()
+    {
         $this->spin(
             function ($context) {
-                return ($this->assertFind('css', 'button.editView')->getAttribute('aria-disabled'));
-            }
+                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 1;
+            },
+            'The view is not visible.'
         );
     }
 
@@ -162,7 +290,23 @@ class CustomViewsContext extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
-            }
+            },
+            'The view is visible.'
+        );
+    }
+
+    /**
+     *  @Then the view is not visible anymore for the user
+     */
+    public function theViewIsNotVisibleAnymoreForTheUser()
+    {
+        $this->changeUser($this->user);
+
+        $this->spin(
+            function ($context) {
+                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
+            },
+            'The view is visible for the user.'
         );
     }
 
@@ -171,7 +315,7 @@ class CustomViewsContext extends CentreonContext
      */
     public function theUserCanUseThePublicViewAgain()
     {
-        $this->aUserIsUsingThePublicView();
+        $this->heCanAddThePublicView();
     }
 
     /**
@@ -187,7 +331,20 @@ class CustomViewsContext extends CentreonContext
      */
     public function theChangesAreReflectedOnAllUsersDisplayingTheCustomView()
     {
-        // XXX
+        $this->changeUser($this->user);
+
+        $page = new CustomViewsPage($this);
+        $page->showEditBar(true);
+
+        $this->spin(
+            function ($context) {
+                return ($this->assertFind('css', 'li.ui-state-default a'));
+            }
+        );
+
+        if($this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() != $this->newCustomViewName){
+            throw new Exception("View not updated");
+        }
     }
 
     /**
@@ -195,6 +352,38 @@ class CustomViewsContext extends CentreonContext
      */
     public function theViewIsRemovedForAllUsersDisplayingTheCustomView()
     {
-        // XXX
+        $this->changeUser($this->user);
+
+        new CustomViewsPage($this);
+        $this->theViewIsNotVisibleAnymore();
+    }
+
+    /**
+     *  @Then the view is removed for the owner
+     */
+    public function theViewIsRemovedForTheOwner()
+    {
+        $this->changeUser($this->owner);
+
+        new CustomViewsPage($this);
+        $this->theViewIsNotVisibleAnymore();
+    }
+
+    /**
+     *  @Then the view remains visible for all users displaying the custom view
+     */
+    public function theViewRemainsVisibleForAllUsersDisplayingTheCustomView()
+    {
+        $this->changeUser($this->user);
+
+        new CustomViewsPage($this);
+        $this->theViewIsStillVisible();
+    }
+
+    private function changeUser($user)
+    {
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $user;
+        $this->iAmLoggedIn();
     }
 }
