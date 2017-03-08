@@ -2,11 +2,11 @@
 {$styleB}
 <div class="cachediv">
 <FORM id="datareport">
-	<INPUT type="hidden" name="hostID" value="{$hostID}"><br />        
+	<INPUT type="hidden" name="hostID" value="{$hostID}"><br />
 	<INPUT type="hidden" name="color_OK" value="{$color.OK}">
 	<INPUT type="hidden" name="color_WARNING" value="{$color.WARNING}">
 	<INPUT type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" >
-	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	
+	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >
 	<INPUT type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
 </FORM>
 </div>
@@ -38,18 +38,9 @@
 		<td colspan=2>
 			<table style='width:100%'>
 			<tr>
-				<td rowspan=3 style='width:300px; padding:5px'>
-					<table class="ListTable" >
-						<tr class='ListHeader'></tr>
-						<tr>
-							<td class="ListColCenter">
-                                <div id="chart"></div>
-							</td>					
-						</tr>
-					</table>
+				<td style='width:300px; padding:5px'>
+					<div id="chart"></div>
 				</td>
-			</tr>
-			<tr>
 				<td style='vertical-align:top;padding:5px;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>

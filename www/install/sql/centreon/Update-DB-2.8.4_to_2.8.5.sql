@@ -27,3 +27,6 @@ ALTER TABLE cfg_centreonbroker CHANGE COLUMN `retention_path` `cache_directory` 
 
 -- change column type
 ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
+
+-- Fix problem regarding the recurrent downtimes
+UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;

@@ -255,12 +255,12 @@ function construct_selecteList_ndo_instance(id){
      */
     
 if ($centreon->user->admin || !count($pollerArray)) {
-    $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
+    $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = 1 AND deleted = 0 ORDER BY name";
 } else {
     $instanceQuery = "SELECT instance_id, name 
-                            FROM `instances` WHERE running = '1' 
-                            AND name IN (". $centreon->user->access->getPollerString('NAME') .") 
-                          ORDER BY name";
+                      FROM `instances` WHERE running = 1 AND deleted = 0
+                      AND name IN (". $centreon->user->access->getPollerString('NAME') .") 
+                      ORDER BY name";
 }
     $DBRESULT = $pearDBO->query($instanceQuery);
 while ($nagios_server = $DBRESULT->fetchRow()) {   ?>

@@ -1,9 +1,9 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\CustomViewsPage;
-use Centreon\Test\Behat\ContactConfigurationPage;
-use Centreon\Test\Behat\ContactGroupsConfigurationPage;
+use Centreon\Test\Behat\Home\CustomViewsPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
 
 class CustomViewsContext extends CentreonContext
 {
