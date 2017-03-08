@@ -2132,6 +2132,7 @@ class CentreonACL
                 . "AND s.service_activate = '1' "
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
                 . "AND $db_name_acl.centreon_acl.service_id IS NOT NULL "
+                . "AND $db_name_acl.centreon_acl.service_id = s.service_id "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") "
                 . "UNION "
                 . "SELECT " . $request['fields'] . " "
@@ -2145,6 +2146,7 @@ class CentreonACL
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
                 . "AND $db_name_acl.centreon_acl.service_id IS NOT NULL "
+                . "AND $db_name_acl.centreon_acl.service_id = s.service_id "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") ";
         }
 

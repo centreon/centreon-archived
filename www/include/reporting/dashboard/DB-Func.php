@@ -279,18 +279,24 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
         }
     }
     $days_of_week = getReportDaysStr($reportTimePeriod);
-    $rq = "SELECT service_id, sum(`OKTimeScheduled`) as OK_T, sum(`OKnbEvent`) as OK_A, ".
-                 "sum(`WARNINGTimeScheduled`)  as WARNING_T, sum(`WARNINGnbEvent`) as WARNING_A, ".
-                 "sum(`UNKNOWNTimeScheduled`) as UNKNOWN_T, sum(`UNKNOWNnbEvent`) as UNKNOWN_A, ".
-                 "sum(`CRITICALTimeScheduled`) as CRITICAL_T, sum(`CRITICALnbEvent`) as CRITICAL_A, ".
-                 "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, ".
-                "sum(`MaintenanceTime`) as MAINTENANCE_T ".
-          "FROM `log_archive_service` ".
-          "WHERE `host_id` = ".$host_id." ".
-          $centreon->user->access->queryBuilder("AND", "service_id", $svcStr) .
-          "AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
-                 "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
-          "GROUP BY `service_id` ";
+    $rq =   "SELECT DISTINCT las.service_id, ".
+                    "sum(OKTimeScheduled) as OK_T, ".
+                    "sum(OKnbEvent) as OK_A, ".
+                    "sum(WARNINGTimeScheduled)  as WARNING_T, ".
+                    "sum(WARNINGnbEvent) as WARNING_A, ".
+                    "sum(UNKNOWNTimeScheduled) as UNKNOWN_T, ".
+                    "sum(UNKNOWNnbEvent) as UNKNOWN_A, ".
+                    "sum(CRITICALTimeScheduled) as CRITICAL_T, ".
+                    "sum(CRITICALnbEvent) as CRITICAL_A, ".
+                    "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, ".
+                    "sum(MaintenanceTime) as MAINTENANCE_T ".
+            "FROM log_archive_service ".(!$centreon->user->admin ? "las, centreon_acl acl " : "las ").
+            "WHERE las.host_id = ".$host_id." ".
+                (!$centreon->user->admin ? " AND las.host_id = acl.host_id AND las.service_id = acl.service_id " : "").
+                (!$centreon->user->admin ? " AND acl.group_id IN (".$centreon->user->access->getAccessGroupsString().")" : "").
+                "AND date_start >= ".$start_date." AND date_end <= ".$end_date." ".
+                "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (".$days_of_week.") ".
+            "GROUP BY las.service_id ";
     $DBRESULT = $pearDBO->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
         if (isset($hostServiceStats[$row["service_id"]])) {
@@ -349,8 +355,8 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             }
         }
         /*
-          * Format time for each status (_TF => Time Formated), mean time and total time
-          */
+         * Format time for each status (_TF => Time Formated), mean time and total time
+         */
         $hostServiceStats[$id]["MEAN_TIME_F"] = getTimeString($hostServiceStats[$id]["MEAN_TIME"], $reportTimePeriod);
         $hostServiceStats[$id]["TOTAL_TIME_F"] = getTimeString($hostServiceStats[$id]["TOTAL_TIME"], $reportTimePeriod);
         foreach ($status as $key => $value) {
@@ -393,7 +399,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
  */
 function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportTimePeriod)
 {
-    global $pearDBO;
+    global $pearDBO, $centreon;
 
     $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 
@@ -401,17 +407,20 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
         $serviceStats[$name] = 0;
     }
     $days_of_week = getReportDaysStr($reportTimePeriod);
-    $rq = "SELECT service_id, sum(`OKTimeScheduled`) as OK_T, sum(`OKnbEvent`) as OK_A, "
-                . "sum(`WARNINGTimeScheduled`)  as WARNING_T, sum(`WARNINGnbEvent`) as WARNING_A, "
-                . "sum(`UNKNOWNTimeScheduled`) as UNKNOWN_T, sum(`UNKNOWNnbEvent`) as UNKNOWN_A, "
-                . "sum(`CRITICALTimeScheduled`) as CRITICAL_T, sum(`CRITICALnbEvent`) as CRITICAL_A, "
-                . "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, "
-                . "sum(`MaintenanceTime`) as MAINTENANCE_T "
-            . "FROM `log_archive_service` "
-            . "WHERE `host_id` = ".$host_id." AND service_id = ".$service_id." AND `date_start` >= "
-                . $start_date." AND `date_end` <= ".$end_date." "
-            . "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") "
-            . "GROUP BY `service_id`";
+    $rq = "SELECT DISTINCT las.service_id, sum(OKTimeScheduled) as OK_T, sum(OKnbEvent) as OK_A, "
+                . "sum(WARNINGTimeScheduled)  as WARNING_T, sum(WARNINGnbEvent) as WARNING_A, "
+                . "sum(UNKNOWNTimeScheduled) as UNKNOWN_T, sum(UNKNOWNnbEvent) as UNKNOWN_A, "
+                . "sum(CRITICALTimeScheduled) as CRITICAL_T, sum(CRITICALnbEvent) as CRITICAL_A, "
+                . "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, "
+                . "sum(MaintenanceTime) as MAINTENANCE_T "
+            . "FROM log_archive_service las ".(!$centreon->user->admin ? ", centreon_acl acl " : " ")
+            . "WHERE las.host_id = ".$host_id.
+                    (!$centreon->user->admin ? " AND las.host_id = acl.host_id AND las.service_id = acl.service_id " : "").
+                    (!$centreon->user->admin ? " AND acl.group_id IN (".$centreon->user->access->getAccessGroupsString().")" : "").
+                    " AND las.service_id = ".$service_id." AND `date_start` >= ". $start_date.
+                    " AND date_end <= ".$end_date." "
+            . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (".$days_of_week.") "
+            . "GROUP BY las.service_id";
     $DBRESULT = $pearDBO->query($rq);
 
     if ($row = $DBRESULT->fetchRow()) {
@@ -482,6 +491,7 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
     $serviceStatsLabels = array();
     $serviceStatsLabels = getServicesStatsValueName();
     $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
+    
     /* Initialising hostgroup stats to 0 */
     foreach ($serviceStatsLabels as $name) {
         $serviceGroupStats["average"][$name] = 0;
@@ -598,8 +608,6 @@ function getServiceGroupActivateServices($sg_id = null)
     $svs = $centreon->user->access->getServiceServiceGroupAclConf($sg_id, 'broker');
     return $svs;
 }
-
-
 
 /*
  * Get timeperiods to take in account to retrieve log from nagios
