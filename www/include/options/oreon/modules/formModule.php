@@ -131,7 +131,7 @@ if ($operationType === 'install') {
     $moduleinfo = getModuleInfoInDB(null, $id);
     $elemArr = array();
     $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-    $form->addElement('submit', 'list', _("Back"));
+    $form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
     if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE")) {
         $handle = opendir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE");
         $i = 0;
