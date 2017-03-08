@@ -399,7 +399,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
  */
 function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportTimePeriod)
 {
-    global $pearDBO;
+    global $pearDBO, $centreon;
 
     $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 
