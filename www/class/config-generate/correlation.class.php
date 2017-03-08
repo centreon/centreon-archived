@@ -88,6 +88,7 @@ class Correlation extends AbstractObjectXML {
         $dir = dirname($this->correlation_file_path);
 
         $this->doHostHostDependency();
+        $this->doServiceServiceDependency();
         $this->doServiceHostDependency();
         $this->doHostServiceDependency();
 
