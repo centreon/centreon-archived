@@ -52,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Centreon'
-copyright = u'2016, Centreon'
+copyright = u'2015-2017 Centreon'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
