@@ -229,7 +229,7 @@ class Correlation extends AbstractObjectXML {
         foreach ($result as $row) {
             $this->correlation_parentship_object[]['parent'] = array(
                 '@attributes' => array(
-                    'parent' => $row['host_parent_hp_id'],
+                    'parent_host' => $row['host_parent_hp_id'],
                     'host' => $row['host_host_id'],
                     'instance_id' => $this->backend_instance->getPollerId()
                 )
