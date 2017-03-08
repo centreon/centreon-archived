@@ -101,6 +101,20 @@ Exécutez la commande :
    $ yum install mariadb-server
    $ service mysql restart
 
+Configuration pour CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pour le bon fonctionnement de Centreon  il est nécessaire de parametrer l'option open-files-limit de mariadb.
+Pour ce faire il est nécéssaire de modifier la configuration du service. Changer cette option dans /etc/my.cnf
+ne sera pas prise en compte.
+
+ ::
+
+   $ mkdir -p  /etc/systemd/system/mariadb.service.d/
+   $ echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+   $ service mysql restart
+
+
 Configuration basique d'un collecteur
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
