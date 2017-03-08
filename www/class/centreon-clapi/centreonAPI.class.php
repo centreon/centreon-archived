@@ -301,7 +301,7 @@ class CentreonAPI
             if (preg_match('/([\w-]+)\/centreon-clapi\/class\/centreon(\w+).class.php/', $objectPath, $matches)) {
                 if (isset($matches[1]) && isset($matches[2])) {
                     $finalNamespace = substr($matches[1], 0, stripos($matches[1], '-server'));
-                    
+
                     $finalNamespace = implode(
                         '',
                         array_map(
@@ -609,7 +609,7 @@ class CentreonAPI
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-                
+
                 if ($this->relationObject[$this->object]['module'] === 'core') {
                     $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
                 } else {
@@ -618,8 +618,8 @@ class CentreonAPI
             } else {
                 $objName = "";
             }
-            
-            
+
+
             if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
                 print "Object $this->object not found in Centreon API.\n";
                 return 1;
@@ -817,7 +817,12 @@ class CentreonAPI
      */
     private function iniObject($objname)
     {
-        $className = '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
+        $className = '';
+        if (isset($this->relationObject[$objname]['namespace'])
+            && $this->relationObject[$objname]['namespace']) {
+            $className .= '\\' . $this->relationObject[$objname]['namespace'];
+        }
+        $className .= '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
         $this->requireLibs($objname);
         $this->objectTable[$objname] = new $className($this->DB, $objname);
     }
