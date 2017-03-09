@@ -519,7 +519,7 @@ sub sendConfigFile($){
 
             if ($server_info->{localhost} == 0) {
                 $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
-                $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.xml";
+                $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.*";
                 $dest = $server_info->{ns_ip_address}.":$cfg_dir";
                 $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
