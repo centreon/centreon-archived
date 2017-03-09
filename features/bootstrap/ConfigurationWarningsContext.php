@@ -1,8 +1,8 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\PollerConfigurationExportPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\PollerConfigurationExportPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 class ConfigurationWarningsContext extends CentreonContext
 {

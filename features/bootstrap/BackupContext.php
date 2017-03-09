@@ -1,6 +1,6 @@
 <?php
 
-use Centreon\Test\Behat\BackupConfigurationPage;
+use Centreon\Test\Behat\Administration\BackupConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
 
 class BackupContext extends CentreonContext

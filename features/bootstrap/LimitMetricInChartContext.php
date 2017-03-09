@@ -1,16 +1,10 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\MonitoringServicesPage;
-use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
-use Centreon\Test\Behat\GraphMonitoringPage;
-use Centreon\Test\Behat\GraphServiceDetailsMonitoringPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Monitoring\GraphMonitoringPage;
 
 class LimitMetricInChartContext extends CentreonContext
 {
