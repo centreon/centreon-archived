@@ -1,7 +1,7 @@
 <?php
 
-use Centreon\Test\Behat\HostMonitoringDetailsPage;
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\Monitoring\HostMonitoringDetailsPage;
 
 /**
  * Defines application features from the specific context.

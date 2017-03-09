@@ -53,11 +53,11 @@ function getReportDaysStr($reportTimePeriod)
     $tab = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
     $str = "";
     foreach ($tab as $key => $value) {
-        if (isset($reportTimePeriod["report_".$value]) && $reportTimePeriod["report_".$value]) {
+        if (isset($reportTimePeriod["report_" . $value]) && $reportTimePeriod["report_" . $value]) {
             if ($str != "") {
-                $str .= ", '".$value."'";
+                $str .= ", '" . $value . "'";
             } else {
-                $str .= "'".$value."'";
+                $str .= "'" . $value . "'";
             }
         }
     }
@@ -83,15 +83,15 @@ function getLogInDbForHost($host_id, $start_date, $end_date, $reportTimePeriod)
     }
 
     $days_of_week = getReportDaysStr($reportTimePeriod);
-    $rq = "SELECT sum(`UPnbEvent`) as UP_A, sum(`UPTimeScheduled`) as UP_T, ".
-                " sum(`DOWNnbEvent`) as DOWN_A, sum(`DOWNTimeScheduled`) as DOWN_T, " .
-                " sum(`UNREACHABLEnbEvent`) as UNREACHABLE_A, sum(`UNREACHABLETimeScheduled`) as UNREACHABLE_T, " .
-                " sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, " .
-                " sum(`MaintenanceTime`) as MAINTENANCE_T " .
-          "FROM `log_archive_host` ".
-          "WHERE `host_id` = ".$host_id." AND `date_start` >=  ".$start_date." AND `date_end` <= ".$end_date." ".
-                "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
-          "GROUP BY `host_id` ";
+    $rq = "SELECT sum(`UPnbEvent`) as UP_A, sum(`UPTimeScheduled`) as UP_T, " .
+        " sum(`DOWNnbEvent`) as DOWN_A, sum(`DOWNTimeScheduled`) as DOWN_T, " .
+        " sum(`UNREACHABLEnbEvent`) as UNREACHABLE_A, sum(`UNREACHABLETimeScheduled`) as UNREACHABLE_T, " .
+        " sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, " .
+        " sum(`MaintenanceTime`) as MAINTENANCE_T " .
+        "FROM `log_archive_host` " .
+        "WHERE `host_id` = " . $host_id . " AND `date_start` >=  " . $start_date . " AND `date_end` <= " . $end_date .
+        " " . "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (" . $days_of_week . ") " .
+        "GROUP BY `host_id` ";
     $DBRESULT = $pearDBO->query($rq);
     if ($row = $DBRESULT->fetchRow()) {
         $hostStats = $row;
@@ -105,8 +105,8 @@ function getLogInDbForHost($host_id, $start_date, $end_date, $reportTimePeriod)
     $timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
     if ($timeTab["reportTime"] > 0) {
         $hostStats["UNDETERMINED_T"] += $timeTab["reportTime"] - ($hostStats["UP_T"] + $hostStats["DOWN_T"]
-                                                        + $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"]
-                                                        + $hostStats["MAINTENANCE_T"]);
+                + $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"]
+                + $hostStats["MAINTENANCE_T"]);
     } else {
         $hostStats["UNDETERMINED_T"] = $timeTab["totalTime"];
     }
@@ -191,7 +191,8 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
     /* the hostgroup availability is the average availability of all host from the the hostgroup */
     foreach ($hostStatsLabels as $name) {
         if ($name == "UP_T" || $name == "DOWN_T" || $name == "UNREACHABLE_T"
-            || $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T") {
+            || $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T"
+        ) {
             $hostgroupStats["average"][$name] /= $count;
         }
     }
@@ -199,8 +200,8 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
      * Calculate percentage of time (_TP => Total time percentage) for each status
      */
     $hostgroupStats["average"]["TOTAL_TIME"] = $hostgroupStats["average"]["UP_T"] + $hostgroupStats["average"]["DOWN_T"]
-        +  $hostgroupStats["average"]["UNREACHABLE_T"] + $hostgroupStats["average"]["UNDETERMINED_T"]
-        +  $hostgroupStats["average"]["MAINTENANCE_T"];
+        + $hostgroupStats["average"]["UNREACHABLE_T"] + $hostgroupStats["average"]["UNDETERMINED_T"]
+        + $hostgroupStats["average"]["MAINTENANCE_T"];
 
     $time = $hostgroupStats["average"]["TOTAL_TIME"];
     $hostgroupStats["average"]["UP_TP"] = round($hostgroupStats["average"]["UP_T"] / $time * 100, 2);
@@ -272,25 +273,32 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
      * $hostServiceStats["average"] will contain services stats average
      */
     foreach ($status as $key => $value) {
-        $hostServiceStats["average"][$value."_TP"] = 0;
-        $hostServiceStats["average"][$value."_MP"] = 0;
+        $hostServiceStats["average"][$value . "_TP"] = 0;
+        $hostServiceStats["average"][$value . "_MP"] = 0;
         if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-            $hostServiceStats["average"][$value."_A"] = 0;
+            $hostServiceStats["average"][$value . "_A"] = 0;
         }
     }
     $days_of_week = getReportDaysStr($reportTimePeriod);
-    $rq = "SELECT service_id, sum(`OKTimeScheduled`) as OK_T, sum(`OKnbEvent`) as OK_A, ".
-                 "sum(`WARNINGTimeScheduled`)  as WARNING_T, sum(`WARNINGnbEvent`) as WARNING_A, ".
-                 "sum(`UNKNOWNTimeScheduled`) as UNKNOWN_T, sum(`UNKNOWNnbEvent`) as UNKNOWN_A, ".
-                 "sum(`CRITICALTimeScheduled`) as CRITICAL_T, sum(`CRITICALnbEvent`) as CRITICAL_A, ".
-                 "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, ".
-                "sum(`MaintenanceTime`) as MAINTENANCE_T ".
-          "FROM `log_archive_service` ".
-          "WHERE `host_id` = ".$host_id." ".
-          $centreon->user->access->queryBuilder("AND", "service_id", $svcStr) .
-          "AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
-                 "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
-          "GROUP BY `service_id` ";
+    $rq = "SELECT DISTINCT las.service_id, " .
+        "sum(OKTimeScheduled) as OK_T, " .
+        "sum(OKnbEvent) as OK_A, " .
+        "sum(WARNINGTimeScheduled)  as WARNING_T, " .
+        "sum(WARNINGnbEvent) as WARNING_A, " .
+        "sum(UNKNOWNTimeScheduled) as UNKNOWN_T, " .
+        "sum(UNKNOWNnbEvent) as UNKNOWN_A, " .
+        "sum(CRITICALTimeScheduled) as CRITICAL_T, " .
+        "sum(CRITICALnbEvent) as CRITICAL_A, " .
+        "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, " .
+        "sum(MaintenanceTime) as MAINTENANCE_T " .
+        "FROM log_archive_service " . (!$centreon->user->admin ? "las, centreon_acl acl " : "las ") .
+        "WHERE las.host_id = " . $host_id . " " .
+        (!$centreon->user->admin ? " AND las.host_id = acl.host_id AND las.service_id = acl.service_id " : "") .
+        (!$centreon->user->admin ?
+            " AND acl.group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")" : "") .
+        "AND date_start >= " . $start_date . " AND date_end <= " . $end_date . " " .
+        "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") " .
+        "GROUP BY las.service_id ";
     $DBRESULT = $pearDBO->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
         if (isset($hostServiceStats[$row["service_id"]])) {
@@ -305,14 +313,14 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
         if ($timeTab["reportTime"]) {
             $hostServiceStats[$id]["UNDETERMINED_T"] += $timeTab["reportTime"]
                 - ($hostServiceStats[$id]["OK_T"]
-                + $hostServiceStats[$id]["WARNING_T"]
-                + $hostServiceStats[$id]["CRITICAL_T"]
-                + $hostServiceStats[$id]["UNKNOWN_T"]
-                + $hostServiceStats[$id]["UNDETERMINED_T"]
-                + $hostServiceStats[$id]["MAINTENANCE_T"]);
+                    + $hostServiceStats[$id]["WARNING_T"]
+                    + $hostServiceStats[$id]["CRITICAL_T"]
+                    + $hostServiceStats[$id]["UNKNOWN_T"]
+                    + $hostServiceStats[$id]["UNDETERMINED_T"]
+                    + $hostServiceStats[$id]["MAINTENANCE_T"]);
         } else {
             foreach ($status as $key => $value) {
-                $hostServiceStats[$id][$value."_T"] = 0;
+                $hostServiceStats[$id][$value . "_T"] = 0;
             }
             $hostServiceStats[$id]["UNDETERMINED_T"] = $timeTab["totalTime"];
         }
@@ -327,7 +335,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             + $hostServiceStats[$id]["MAINTENANCE_T"];
         $time = $hostServiceStats[$id]["TOTAL_TIME"];
         foreach ($status as $key => $value) {
-            $hostServiceStats[$id][$value."_TP"] = round($hostServiceStats[$id][$value."_T"] / $time * 100, 2);
+            $hostServiceStats[$id][$value . "_TP"] = round($hostServiceStats[$id][$value . "_T"] / $time * 100, 2);
         }
         /*
          * The same percentage (_MP => Mean Time percentage) is calculated ignoring undetermined time
@@ -339,32 +347,35 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
         $time = $hostServiceStats[$id]["MEAN_TIME"];
         if ($hostServiceStats[$id]["MEAN_TIME"] <= 0) {
             foreach ($status as $key => $value) {
-                $hostServiceStats[$id][$value."_MP"] = 0;
+                $hostServiceStats[$id][$value . "_MP"] = 0;
             }
         } else {
             foreach ($status as $key => $value) {
                 if ($value != "UNDETERMINED") {
-                    $hostServiceStats[$id][$value."_MP"] = round($hostServiceStats[$id][$value."_T"] / $time * 100, 2);
+                    $hostServiceStats[$id][$value . "_MP"] = round(
+                        $hostServiceStats[$id][$value . "_T"] / $time * 100,
+                        2
+                    );
                 }
             }
         }
         /*
-          * Format time for each status (_TF => Time Formated), mean time and total time
-          */
+         * Format time for each status (_TF => Time Formated), mean time and total time
+         */
         $hostServiceStats[$id]["MEAN_TIME_F"] = getTimeString($hostServiceStats[$id]["MEAN_TIME"], $reportTimePeriod);
         $hostServiceStats[$id]["TOTAL_TIME_F"] = getTimeString($hostServiceStats[$id]["TOTAL_TIME"], $reportTimePeriod);
         foreach ($status as $key => $value) {
-            $hostServiceStats[$id][$value."_TF"] =
-                getTimeString($hostServiceStats[$id][$value."_T"], $reportTimePeriod);
+            $hostServiceStats[$id][$value . "_TF"] =
+                getTimeString($hostServiceStats[$id][$value . "_T"], $reportTimePeriod);
         }
         /*
          * Services status time sum and alerts sum
          */
         foreach ($status as $key => $value) {
-            $hostServiceStats["average"][$value."_TP"] += $hostServiceStats[$id][$value."_TP"];
+            $hostServiceStats["average"][$value . "_TP"] += $hostServiceStats[$id][$value . "_TP"];
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $hostServiceStats["average"][$value."_MP"] += $hostServiceStats[$id][$value."_MP"];
-                $hostServiceStats["average"][$value."_A"] += $hostServiceStats[$id][$value."_A"];
+                $hostServiceStats["average"][$value . "_MP"] += $hostServiceStats[$id][$value . "_MP"];
+                $hostServiceStats["average"][$value . "_A"] += $hostServiceStats[$id][$value . "_A"];
             }
         }
         $i++;
@@ -375,10 +386,12 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
      */
     if ($i) {
         foreach ($status as $key => $value) {
-            $hostServiceStats["average"][$value."_TP"] = round($hostServiceStats["average"][$value."_TP"] / $i, 2);
-            ;
+            $hostServiceStats["average"][$value . "_TP"] = round($hostServiceStats["average"][$value . "_TP"] / $i, 2);
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $hostServiceStats["average"][$value."_MP"] = round($hostServiceStats["average"][$value."_MP"] / $i, 2);
+                $hostServiceStats["average"][$value . "_MP"] = round(
+                    $hostServiceStats["average"][$value . "_MP"] / $i,
+                    2
+                );
             }
         }
     }
@@ -393,7 +406,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
  */
 function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportTimePeriod)
 {
-    global $pearDBO;
+    global $pearDBO, $centreon;
 
     $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 
@@ -401,17 +414,21 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
         $serviceStats[$name] = 0;
     }
     $days_of_week = getReportDaysStr($reportTimePeriod);
-    $rq = "SELECT service_id, sum(`OKTimeScheduled`) as OK_T, sum(`OKnbEvent`) as OK_A, "
-                . "sum(`WARNINGTimeScheduled`)  as WARNING_T, sum(`WARNINGnbEvent`) as WARNING_A, "
-                . "sum(`UNKNOWNTimeScheduled`) as UNKNOWN_T, sum(`UNKNOWNnbEvent`) as UNKNOWN_A, "
-                . "sum(`CRITICALTimeScheduled`) as CRITICAL_T, sum(`CRITICALnbEvent`) as CRITICAL_A, "
-                . "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, "
-                . "sum(`MaintenanceTime`) as MAINTENANCE_T "
-            . "FROM `log_archive_service` "
-            . "WHERE `host_id` = ".$host_id." AND service_id = ".$service_id." AND `date_start` >= "
-                . $start_date." AND `date_end` <= ".$end_date." "
-            . "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") "
-            . "GROUP BY `service_id`";
+    $rq = "SELECT DISTINCT las.service_id, sum(OKTimeScheduled) as OK_T, sum(OKnbEvent) as OK_A, "
+        . "sum(WARNINGTimeScheduled)  as WARNING_T, sum(WARNINGnbEvent) as WARNING_A, "
+        . "sum(UNKNOWNTimeScheduled) as UNKNOWN_T, sum(UNKNOWNnbEvent) as UNKNOWN_A, "
+        . "sum(CRITICALTimeScheduled) as CRITICAL_T, sum(CRITICALnbEvent) as CRITICAL_A, "
+        . "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, "
+        . "sum(MaintenanceTime) as MAINTENANCE_T "
+        . "FROM log_archive_service las " . (!$centreon->user->admin ? ", centreon_acl acl " : " ")
+        . "WHERE las.host_id = " . $host_id .
+        (!$centreon->user->admin ? " AND las.host_id = acl.host_id AND las.service_id = acl.service_id " : "") .
+        (!$centreon->user->admin ?
+            " AND acl.group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")" : "") .
+        " AND las.service_id = " . $service_id . " AND `date_start` >= " . $start_date .
+        " AND date_end <= " . $end_date . " "
+        . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") "
+        . "GROUP BY las.service_id";
     $DBRESULT = $pearDBO->query($rq);
 
     if ($row = $DBRESULT->fetchRow()) {
@@ -420,11 +437,11 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
     $timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
     if ($timeTab["reportTime"]) {
         $serviceStats["UNDETERMINED_T"] += $timeTab["reportTime"]
-        - ($serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
-        + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"]);
+            - ($serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
+                + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"]);
     } else {
         foreach ($status as $key => $value) {
-            $serviceStats[$value."_T"] = 0;
+            $serviceStats[$value . "_T"] = 0;
         }
         $serviceStats["UNDETERMINED_T"] = $timeTab["totalTime"];
     }
@@ -432,27 +449,27 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
      * Calculate percentage of time (_TP => Total time percentage) for each status
      */
     $serviceStats["TOTAL_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
-                + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"];
+        + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"];
     $time = $serviceStats["TOTAL_TIME"];
     foreach ($status as $key => $value) {
-        $serviceStats[$value."_TP"] = round($serviceStats[$value."_T"] / $time * 100, 2);
+        $serviceStats[$value . "_TP"] = round($serviceStats[$value . "_T"] / $time * 100, 2);
     }
     /*
      * The same percentage (_MP => Mean Time percentage) is calculated ignoring undetermined time
      */
     $serviceStats["MEAN_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"]
-                                + $serviceStats["CRITICAL_T"] + $serviceStats["UNKNOWN_T"];
+        + $serviceStats["CRITICAL_T"] + $serviceStats["UNKNOWN_T"];
     $time = $serviceStats["MEAN_TIME"];
     if ($serviceStats["MEAN_TIME"] <= 0) {
         foreach ($status as $key => $value) {
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $serviceStats[$value."_MP"] = 0;
+                $serviceStats[$value . "_MP"] = 0;
             }
         }
     } else {
         foreach ($status as $key => $value) {
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $serviceStats[$value."_MP"] = round($serviceStats[$value."_T"] / $time * 100, 2);
+                $serviceStats[$value . "_MP"] = round($serviceStats[$value . "_T"] / $time * 100, 2);
             }
         }
     }
@@ -462,11 +479,11 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
     $serviceStats["MEAN_TIME_F"] = getTimeString($serviceStats["MEAN_TIME"], $reportTimePeriod);
     $serviceStats["TOTAL_TIME_F"] = getTimeString($serviceStats["TOTAL_TIME"], $reportTimePeriod);
     foreach ($status as $key => $value) {
-        $serviceStats[$value."_TF"] = getTimeString($serviceStats[$value."_T"], $reportTimePeriod);
+        $serviceStats[$value . "_TF"] = getTimeString($serviceStats[$value . "_T"], $reportTimePeriod);
     }
 
     $serviceStats["TOTAL_ALERTS"] = $serviceStats["OK_A"] + $serviceStats["WARNING_A"] + $serviceStats["CRITICAL_A"]
-                + $serviceStats["UNKNOWN_A"];
+        + $serviceStats["UNKNOWN_A"];
     return $serviceStats;
 }
 
@@ -482,6 +499,7 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
     $serviceStatsLabels = array();
     $serviceStatsLabels = getServicesStatsValueName();
     $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
+
     /* Initialising hostgroup stats to 0 */
     foreach ($serviceStatsLabels as $name) {
         $serviceGroupStats["average"][$name] = 0;
@@ -521,7 +539,8 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
      */
     foreach ($serviceStatsLabels as $name) {
         if ($name == "OK_T" || $name == "WARNING_T" || $name == "CRITICAL_T"
-            || $name == "UNKNOWN_T" || $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T") {
+            || $name == "UNKNOWN_T" || $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T"
+        ) {
             if ($count) {
                 $serviceGroupStats["average"][$name] /= $count;
             } else {
@@ -543,10 +562,10 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
     $time = $serviceGroupStats["average"]["TOTAL_TIME"];
     foreach ($status as $key => $value) {
         if ($time) {
-            $serviceGroupStats["average"][$value."_TP"] =
-                round($serviceGroupStats["average"][$value."_T"] / $time * 100, 2);
+            $serviceGroupStats["average"][$value . "_TP"] =
+                round($serviceGroupStats["average"][$value . "_T"] / $time * 100, 2);
         } else {
-            $serviceGroupStats["average"][$value."_TP"] = 0;
+            $serviceGroupStats["average"][$value . "_TP"] = 0;
         }
     }
 
@@ -554,8 +573,8 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
      * Calculate percentage of time (_MP => Mean Time percentage) for each status ignoring undetermined time
      */
     $serviceGroupStats["average"]["MEAN_TIME"] =
-        + $serviceGroupStats["average"]["OK_T"]
-        +  $serviceGroupStats["average"]["WARNING_T"]
+        +$serviceGroupStats["average"]["OK_T"]
+        + $serviceGroupStats["average"]["WARNING_T"]
         + $serviceGroupStats["average"]["CRITICAL_T"]
         + $serviceGroupStats["average"]["UNKNOWN_T"];
 
@@ -564,26 +583,27 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
      */
     $serviceGroupStats["average"]["TOTAL_ALERTS"] =
         $serviceGroupStats["average"]["OK_A"]
-        +  $serviceGroupStats["average"]["WARNING_A"]
+        + $serviceGroupStats["average"]["WARNING_A"]
         + $serviceGroupStats["average"]["CRITICAL_A"]
         + $serviceGroupStats["average"]["UNKNOWN_A"];
     $time = $serviceGroupStats["average"]["MEAN_TIME"];
     if ($time <= 0) {
         foreach ($status as $key => $value) {
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $serviceGroupStats["average"][$value."_MP"] = 0;
+                $serviceGroupStats["average"][$value . "_MP"] = 0;
             }
         }
     } else {
         foreach ($status as $key => $value) {
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $serviceGroupStats["average"][$value."_MP"] =
-                    round($serviceGroupStats["average"][$value."_T"] / $time * 100, 2);
+                $serviceGroupStats["average"][$value . "_MP"] =
+                    round($serviceGroupStats["average"][$value . "_T"] / $time * 100, 2);
             }
         }
     }
     return $serviceGroupStats;
 }
+
 /*
  * Returns all activated services from a servicegroup including services by host and services by hostgroup
  */
@@ -598,8 +618,6 @@ function getServiceGroupActivateServices($sg_id = null)
     $svs = $centreon->user->access->getServiceServiceGroupAclConf($sg_id, 'broker');
     return $svs;
 }
-
-
 
 /*
  * Get timeperiods to take in account to retrieve log from nagios
@@ -682,7 +700,7 @@ function getAllServicesgroupsForReporting($search = null)
 function getHostNameFromId($host_id)
 {
     global $pearDB;
-    $req = "SELECT  `host_name` FROM `host` WHERE `host_id` = ".$host_id;
+    $req = "SELECT  `host_name` FROM `host` WHERE `host_id` = " . $host_id;
     $DBRESULT = $pearDB->query($req);
     if ($row = $DBRESULT->fetchRow()) {
         return ($row["host_name"]);
@@ -693,7 +711,7 @@ function getHostNameFromId($host_id)
 function getHostgroupNameFromId($hostgroup_id)
 {
     global $pearDB;
-    $req = "SELECT  `hg_name` FROM `hostgroup` WHERE `hg_id` = ".$hostgroup_id;
+    $req = "SELECT  `hg_name` FROM `hostgroup` WHERE `hg_id` = " . $hostgroup_id;
     $DBRESULT = $pearDB->query($req);
     if ($row = $DBRESULT->fetchRow()) {
         return ($row["hg_name"]);
@@ -704,7 +722,7 @@ function getHostgroupNameFromId($hostgroup_id)
 function getServiceDescriptionFromId($service_id)
 {
     global $pearDB;
-    $req = "SELECT  `service_description` FROM `service` WHERE `service_id` = ".$service_id;
+    $req = "SELECT  `service_description` FROM `service` WHERE `service_id` = " . $service_id;
     $DBRESULT = $pearDB->query($req);
     if ($row = $DBRESULT->fetchRow()) {
         return ($row["service_description"]);
@@ -715,7 +733,7 @@ function getServiceDescriptionFromId($service_id)
 function getServiceGroupNameFromId($sg_id)
 {
     global $pearDB;
-    $req = "SELECT  `sg_name` FROM `servicegroup` WHERE `sg_id` = ".$sg_id;
+    $req = "SELECT  `sg_name` FROM `servicegroup` WHERE `sg_id` = " . $sg_id;
     $DBRESULT = $pearDB->query($req);
     unset($req);
     if ($row = $DBRESULT->fetchRow()) {

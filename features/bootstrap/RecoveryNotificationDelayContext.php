@@ -1,10 +1,10 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ContactConfigurationListingPage;
-use Centreon\Test\Behat\CommandConfigurationPage;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\CommandConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 class RecoveryNotificationDelayContext extends CentreonContext
 {

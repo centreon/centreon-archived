@@ -31,36 +31,33 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 if (!isset($centreon)) {
     exit();
 }
 
-    isset($_GET["dt_id"]) ? $dtG = $_GET["dt_id"] : $dtG = null;
-    isset($_POST["dt_id"]) ? $dtP = $_POST["dt_id"] : $dtP = null;
-    $dtG ? $downtime_id = CentreonDB::escape($dtG) : $downtime_id = CentreonDB::escape($dtP);
+isset($_GET["dt_id"]) ? $dtG = $_GET["dt_id"] : $dtG = null;
+isset($_POST["dt_id"]) ? $dtP = $_POST["dt_id"] : $dtP = null;
+$dtG ? $downtime_id = CentreonDB::escape($dtG) : $downtime_id = CentreonDB::escape($dtP);
 
-    isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-    isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-    $cG ? $select = $cG : $select = $cP;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
+$cG ? $select = $cG : $select = $cP;
 
-    isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-    isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-    $cG ? $dupNbr = $cG : $dupNbr = $cP;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-    require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/advmultiselect.php';
-    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-    $path = "./include/monitoring/recurrentDowntime/";
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+$path = "./include/monitoring/recurrentDowntime/";
 
-    require_once "./class/centreonDowntime.class.php";
-    $downtime = new CentreonDowntime($pearDB);
+require_once "./class/centreonDowntime.class.php";
+$downtime = new CentreonDowntime($pearDB);
 
-    require_once "./include/common/common-Func.php";
+require_once "./include/common/common-Func.php";
 
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
     if ($_POST["o1"] != "") {
@@ -70,9 +67,10 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
         $o = $_POST["o2"];
     }
 }
-    	 /*
-	 * Set the real page
-	 */
+
+/*
+ * Set the real page
+ */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
