@@ -111,7 +111,7 @@ $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker(), array('field
     'order' => array('hg_name')));
 
 /* service groups */
-$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker(), array('fields' => array('sg_id', 'sg_name'),
+$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker(), array('fields' => array('servicegroup.sg_id', 'servicegroup.sg_name'),
     'keys' => array('sg_id'),
     'get_row' => 'sg_name',
     'order' => array('sg_name')));
