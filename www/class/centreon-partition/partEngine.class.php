@@ -147,7 +147,14 @@ class PartEngine
         # Gap when you have a cron not updated
         while ($lastTime < $current_time) {
             $ntime = localtime($lastTime);
-            $lastTime = $this->updateAddDailyPartitions($db, $tableName, $ntime[4]+1, $ntime[3]+1, $ntime[5]+1900);
+            $lastTime = $this->updateAddDailyPartitions(
+                $db,
+                $tableName,
+                $ntime[4]+1,
+                $ntime[3]+1,
+                $ntime[5]+1900,
+                $hasMaxValuePartition
+            );
         }
         while ($current_time < $lastTime) {
             $how_much_forward++;
