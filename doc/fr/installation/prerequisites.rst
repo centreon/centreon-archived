@@ -34,7 +34,7 @@ SGBD
 +----------+-----------+
 | Logiciel | Version   |
 +==========+===========+
-| MariaDB  | >= 5.5.48 |
+| MariaDB  | >= 10.1.x |
 +----------+-----------+
 | MySQL    | >= 5.6.x  |
 +----------+-----------+
@@ -89,7 +89,8 @@ Le tableau suivant présente les prérequis pour une installation de Centreon v3
 .. note::
     Les vCPU doivent avoir une fréquence avoisinant les 3 GHz
 
-Ces informations sont à mettre en corrélation avec vos besoins techniques liés au découpage géographique ou topologiques. Pour voir ce qu'il est possible de faire avec centreon à ce sujet, reportez vous au chapitre :ref:`Architectures possibles <architectures>`.
+Ces informations sont à mettre en corrélation avec vos besoins techniques liés au découpage géographique ou topologiques
+de votre système. Pour voir ce qu'il est possible de faire avec centreon à ce sujet, reportez vous au chapitre :ref:`Architectures possibles <architectures>`.
 
 .. _diskspace:
 
@@ -97,7 +98,7 @@ Ces informations sont à mettre en corrélation avec vos besoins techniques lié
 Définition de l'espace disque
 *****************************
 
-L'espace disque utilisé pour sauvegarder les données issues de la collecte dépend
+L'espace disque utilisé pour supporter les données issues de la collecte dépend
 de plusieurs critères :
 
 * Fréquence des contrôles
