@@ -9,8 +9,60 @@ The 2.8.5 release for Centreon Web is now available for download. Here are its r
 Features
 --------
 
+API
+* Possibility to create an account to reach API without web access - #4980, PR #4992
+
 Bug Fixes
 ---------
+
+ACL
+* Incorrect redirection to error page with ACL - #4932
+* Dashboard not works when using filter #4886, PR #5023
+* Blank page on "Monitoring > Status Details > Hosts" with acl - #4960
+
+Authentication
+* Only logout are logged - #4924
+* generateImage.php problem with akey (auto-login) - ##4920, PR #4865
+
+Event Logs
+* Select servicegroup does not work - #4907, #4885
+
+Monitoring
+* "Executed Check Command Line" is wrong for services associated to hostgroups - #4955, PR #5037
+* Poller delete stay on Poller list in Monitoring Tab - #5026, PR #5027
+* Acknowledge  - duplicate comments with external command on host monitoring page - #4862
+* Do not display services downtimes (remove filter "h") - #5000, PR #5001
+
+Graphs
+* Curves colour on New graph is not equal to old graph - #5033
+* Wrong host title in Graph - #4964 #4984
+
+Dashboard
+* Incorrect CSS for reporting of a service - #4934
+
+Configuration
+* Disable notification sounds not working - #4988, PR #4973
+* Add user name in the generated configuration files - #4822
+* Duplicate Poller and illegal characters - #4931, PR #4986, #4987
+
+Custom view
+* Rewrite system to share public views - PR #4823
+* Rewrite system to share locked views to contacts or contactgroups
+* Rewrite system to share non-locked views to contacts or contactgroups
+* When user access to custom views menu, edition mode is disabled - PR ##4811
+
+Documentation
+* Improve installation chapters - #4970
+* open_files_limit error during installation - #5017, #5038
+* Menu "Legend" doesn't exist in Centreon 2.8.x - PR #4968, PR #4969
+
+API
+* Rename TIMEPERIOD object to TP - PR #4913
+* CLAPI doesn't work when Centreon BAM is installed - #4921
+
+Backup
+* Backup export does not work - #4726
+* Backup won't work without old deprecated variables - #4965
 
 Known bugs or issues
 --------------------
