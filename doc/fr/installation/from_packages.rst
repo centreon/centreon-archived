@@ -201,7 +201,7 @@ Manager et Centreon Plugin Pack Manager pour fonctionner.
 Installation système
 --------------------
 
-En utilisant CES, l'installation des paquets est très simple. Vous
+En utilisant Centreon ISO, l'installation des paquets est très simple. Vous
 noterez que Centreon Plugin Pack Manager installe également Centreon
 License Manager en tant que dépendance.
 

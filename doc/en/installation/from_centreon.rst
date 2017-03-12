@@ -264,7 +264,7 @@ and Centreon Plugin Pack Manager to work.
 Install packages
 ----------------
 
-When using CES, installation of Centreon Plugin Pack Manager is very
+When using Centreon ISO, installation of Centreon Plugin Pack Manager is very
 easy. You'll see that Centreon License Manager will be installed too
 as a dependency.
 
