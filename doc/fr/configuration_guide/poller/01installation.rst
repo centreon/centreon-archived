@@ -13,10 +13,10 @@ Ils sont chargés de superviser les équipements et de renvoyer les résultats v
 Installation
 ************
 
-Le processus d'installation est identique à celui d'un serveur Centreon central réalisé à partir du fichier iso de CES.
+Le processus d'installation est identique à celui d'un serveur Centreon central réalisé à partir du fichier ISO de Centreon.
 
 .. note::
-    Référez-vous à la documentation :ref:`premier pas avec CES 3.0<firststepsces3>`
+    Référez-vous à la documentation :ref:`premier pas avec Centreon 3.4<firststepsces3>`
 
 A la question **Which server type would you like to install ?** il faut choisir l'option **Poller server**.
 
