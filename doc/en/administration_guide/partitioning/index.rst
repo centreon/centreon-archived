@@ -45,9 +45,8 @@ MySQL open_files_limit parameter must be set to 32000 in [server] section :
   open_files_limit = 32000
 
 .. note::
-
-  If you install Centreon via the dedicated ISO, this paraméters is already configured. If you do it on your RedHat or CentOS linux version, you will be able to do it manualy. 
-  Don't forget to restart mysql / mariadb processus if you change this value in my.cnf. 
+    If you install Centreon via the dedicated ISO, this parameter is already configured. If you do it on your RedHat or CentOS linux version, you will be able to do it manualy. 
+    Don't forget to restart mysql / mariadb processus if you change this value in my.cnf. 
 
 
 If you use systemd, you need to create file "/etc/systemd/system/mariadb.service.d/mariadb.conf" :
