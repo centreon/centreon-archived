@@ -49,7 +49,7 @@ La fenêtre suivante s'affiche :
 .. note::
     Dans le cas d'un proxy CNTLM, utiliser "TCP", "localhost" et le port de connexion paramétrés.
 
-.. Warning::
+.. warning::
     La fonctionnalité SSO doit être activée seulement dans un environnement dédié et sécurisé pour le SSO. Les accès direct des utilisateurs à Centreon Web doivent être désactivés.
 
 ***********
