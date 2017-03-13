@@ -21,7 +21,7 @@
         </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hc_name"> {$form.hc_name.label}</td><td class="FormRowValue">{$form.hc_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hc_alias"> {$form.hc_alias.label}</td><td class="FormRowValue">{$form.hc_alias.html}</td></tr>
-		
+
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.relation}</h4>
@@ -46,7 +46,7 @@
           </td>
         </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hc_activate"> {$form.hc_activate.label}</td><td class="FormRowValue">{$form.hc_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hc_comment"> {$form.hc_comment.label}</td><td class="FormRowValue">{$form.hc_comment.html}</td></tr>		
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hc_comment"> {$form.hc_comment.label}</td><td class="FormRowValue">{$form.hc_comment.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
@@ -63,6 +63,9 @@
 </form>
 {$helptext}
 {literal}
+<script>
+jQuery('body').trigger('notab:centreon');
+</script>
 <script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>
 <script type='text/javascript'>
 jQuery(function() {

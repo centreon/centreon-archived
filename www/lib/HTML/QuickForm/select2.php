@@ -36,7 +36,7 @@
 
 /**
  * Base class for form elements
- */ 
+ */
 require_once 'HTML/QuickForm/select.php';
 
 /**
@@ -48,31 +48,31 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 {
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_elementHtmlName;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_elementTemplate;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_elementCSS;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_availableDatasetRoute;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_defaultDatasetRoute;
 
@@ -81,62 +81,62 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @var string
      */
     var $_defaultDataset;
-    
+
     /**
      *
-     * @var boolean 
+     * @var boolean
      */
     var $_ajaxSource;
-    
+
     /**
      *
-     * @var boolean 
+     * @var boolean
      */
     var $_multiple;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_multipleHtml;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_defaultSelectedOptions;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_jsCallback;
-    
+
     /**
      *
-     * @var boolean 
+     * @var boolean
      */
     var $_allowClear;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     var $_linkedObject;
-    
+
     /**
      *
-     * @var type 
+     * @var type
      */
     var $_defaultDatasetOptions;
-    
+
     /**
      * @var int The number of element in the pagination
      */
     var $_pagination;
-    
+
     /**
-     * 
+     *
      * @param string $elementName
      * @param string $elementLabel
      * @param array $options
@@ -154,7 +154,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_ajaxSource = false;
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
-        $this->_allowClear = true; 
+        $this->_allowClear = true;
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->_defaultDataset = array();
@@ -162,30 +162,30 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_jsCallback = '';
         $this->_allowClear = false;
         $this->parseCustomAttributes($attributes);
-        
+
         $this->_pagination = $centreon->optGen['selectPaginationSize'];
     }
-    
+
     /**
-     * 
+     *
      * @param array $attributes
      */
     function parseCustomAttributes(&$attributes)
     {
-        // Check for 
+        // Check for
         if (isset($attributes['datasourceOrigin']) && ($attributes['datasourceOrigin'] == 'ajax')) {
             $this->_ajaxSource = true;
-            // Check for 
+            // Check for
             if (isset($attributes['availableDatasetRoute'])) {
                 $this->_availableDatasetRoute = $attributes['availableDatasetRoute'];
             }
-            
-            // Check for 
+
+            // Check for
             if (isset($attributes['defaultDatasetRoute'])) {
                 $this->_defaultDatasetRoute = $attributes['defaultDatasetRoute'];
             }
         }
-        
+
         if (isset($attributes['multiple']) && $attributes['multiple'] === true) {
             $this->_elementHtmlName .= '[]';
             $this->_multiple = true;
@@ -193,28 +193,28 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $this->_multiple = false;
         }
-        
+
         if (isset($attributes['allowClear']) && $attributes['allowClear'] === false) {
             $this->_allowClear = false;
         } elseif (isset($attributes['allowClear']) && $attributes['allowClear'] === true) {
             $this->_allowClear = true;
         }
-        
+
         if (isset($attributes['defaultDataset'])) {
             $this->_defaultDataset = $attributes['defaultDataset'];
         }
-        
+
         if (isset($attributes['defaultDatasetOptions'])) {
             $this->_defaultDatasetOptions = $attributes['defaultDatasetOptions'];
         }
-        
+
         if (isset($attributes['linkedObject'])) {
             $this->_linkedObject = $attributes['linkedObject'];
         }
     }
-    
+
     /**
-     * 
+     *
      * @param boolean $raw
      * @param boolean $min
      * @return string
@@ -222,31 +222,31 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     function getElementJs($raw = true, $min = false)
     {
         $jsFile = './include/common/javascript/jquery/plugins/select2/js/';
-        
+
         if ($min) {
             $jsFile .= 'select2.min.js';
         } else {
             $jsFile .= 'select2.js';
         }
-        
+
         $js = '<script type="text/javascript" '
             . 'src="' . $jsFile . '">'
             . '</script>';
-        
+
         return $js;
     }
-    
+
     /**
-     * 
+     *
      * @return type
      */
     function getElementHtmlName()
     {
         return $this->_elementHtmlName;
     }
-    
+
     /**
-     * 
+     *
      * @param boolean $raw
      * @param boolean $min
      * @return string
@@ -254,27 +254,27 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     function getElementCss($raw = true, $min = false)
     {
         $cssFile = './include/common/javascript/jquery/plugins/select2/css/';
-        
+
         if ($min) {
             $cssFile .= 'select2.min.js';
         } else {
             $cssFile .= 'select2.js';
         }
-        
+
         $css = '<link href="' . $cssFile . '" rel="stylesheet" type="text/css"/>';
-        
+
         return $css;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     function toHtml()
     {
         $strHtml = '';
         $readonly = '';
-        
+
         if(!$this->_allowClear && !$this->_flagFrozen){
             $strHtml .= '<span style="cursor:pointer;" class="clearAllSelect2" title="Clear field" ><img src="./img/icons/circle-cross.png" class="ico-14" /></span>';
         }
@@ -284,16 +284,16 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             . ' style="width: 300px;" ' . $readonly . '><option></option>'
             . '%%DEFAULT_SELECTED_VALUES%%'
             . '</select>';
-        
-        
+
+
         $strHtml .= $this->getJsInit();
         $strHtml = str_replace('%%DEFAULT_SELECTED_VALUES%%', $this->_defaultSelectedOptions, $strHtml);
-        
+
         return $strHtml;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     function addShift()
@@ -304,16 +304,16 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 e.preventDefault();
                 var data = jQuery(this).data();
                 data.select2.shiftFirstEl = null;
-                
+
             });
-            
+
             var endSelection = 0;
             jQuery("#' . $this->getName() . '").on("select2:selecting", function (event) {
                 var data = jQuery(event.currentTarget).data();
                 if (event.params.args.originalEvent.shiftKey) {
                     // To keep select2 opened
-                    event.preventDefault(); 
-                    
+                    event.preventDefault();
+
                     if (!data.select2.hasOwnProperty("shiftFirstEl") || data.select2.shiftFirstEl === null) {
                         data.select2.shiftFirstEl = event.params.args.data.id;
                         endSelection = 0;
@@ -342,7 +342,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 
                         jQuery(".select2-results li>span").each(function (index){
                             var $this = jQuery(this);
-                            
+
                             if (index >= startIndex && index <= endIndex) {
                                 selectedValues.push({id: $this.data("did").toString(), text: $this.text()});
                             }
@@ -366,13 +366,13 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                         $currentSelect2Object'.$this->getName().'.select2("close");
                             $currentSelect2Object'.$this->getName().'.trigger("change");
                             data.select2.shiftFirstEl = null;
-                    } 
-                } 
+                    }
+                }
             });
         ';
         return $myJs;
     }
-    
+
     function templatingSelect2()
     {
         $js = "
@@ -386,9 +386,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             }";
         return $js;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     function getJsInit()
@@ -397,19 +397,19 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $additionnalJs = '';
         $jsPost = '</script>';
         $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").select2({';
-        
+
         $mainJsInit = 'allowClear: true,'
             . 'templateResult: ' . $this->templatingSelect2() . ',';
-        
+
         $label = $this->getLabel();
         if (!empty($label)) {
             $mainJsInit .= 'placeholder: "' . $this->getLabel() . '",';
         }
-        
+
         if ($this->_flagFrozen) {
              $mainJsInit .= 'disabled: true,';
         }
-        
+
         if ($this->_ajaxSource) {
             $mainJsInit .= $this->setAjaxSource() . ',';
             if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
@@ -420,7 +420,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= $this->setFixedDatas() . ',';
         }
-        
+
         $mainJsInit .= 'multiple: ';
         $scroll = "";
         if ($this->_multiple) {
@@ -443,6 +443,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 if (jQuery(tabElement).attr("id") == id) {
                     initNiceScroll($currentSelect2Object' . $this->getName() .');
                 }
+            });';
+
+            $scroll .= 'jQuery("body").on("notab:centreon", function (event, id) {
+                initNiceScroll($currentSelect2Object' . $this->getName() .');
             });';
 
             # Update nice scroll when changing tab
@@ -473,7 +477,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     autohidemode: false
                 });
             });';
-            
+
             /* Add catch event for block close dropdown when selectall */
             $scroll .= '$currentSelect2Object'. $this->getName() . '.on("select2:closing", function (event) {
                 if (jQuery("#confirm'  . $this->getName() . '").length > 0) {
@@ -495,7 +499,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     );
                 }
             });
-            
+
 
             $currentSelect2Object' . $this->getName() . '.confirmSelectAll = function() {
                 /* Create div for popin */
@@ -508,9 +512,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     " </div>" +
                     "</div>"
                 ).appendTo("body");
-                
+
                 $confirmBox.centreonPopin({open: true});
-                
+
                 jQuery("#confirm'  . $this->getName() . ' .btc.bt_success").on("click", function () {
                     // Get search value
                     var search = $currentSelect2Object' . $this->getName() . '.data().select2.$container.find(".select2-search__field").val();
@@ -555,7 +559,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $confirmBox.centreonPopin("close");
                     $confirmBox.remove();
                 });
-                
+
                 jQuery(document).on("click", "#confirm'  . $this->getName() . ' .btc.bt_default", function (e) {
                     $confirmBox.centreonPopin("close");
                     $confirmBox.remove();
@@ -571,20 +575,20 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         } else {
             $mainJsInit .= 'false,';
         }
-        
+
         $mainJsInit .= 'allowClear: ';
         if ($this->_allowClear) {
             $mainJsInit .= 'true,';
         } else {
             $mainJsInit .= 'false,';
         }
-        
+
         $mainJsInit .= 'templateSelection: function (element) {
             return jQuery(\'<span class="select2-content" title="\' + element.text + \'">\' + element.text + \'</span>\');
         }';
 
         $strJsInitEnding = '});';
-        
+
         if (!$this->_allowClear) {
             $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").prevAll(".clearAllSelect2").on("click",function(){ '
                 . '$currentValues = jQuery("#' . $this->getName() . '").val(); '
@@ -593,33 +597,33 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
                 . ' }); ';
         }
-        
+
         $additionnalJs .= $this->saveSearchJs();
-        
+
         $additionnalJs .= $this->addShift();
-        
+
         $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
-        
+
         return $finalJs;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function setFixedDatas()
     {
         $datas = 'data: [';
-        
+
         // Set default values
         $strValues = is_array($this->_values)? array_map('strval', $this->_values): array();
-        
+
         foreach ($this->_options as $option) {
             if (empty($option["attr"]["value"])) {
                 $option["attr"]["value"] = -1;
             }
             $datas .= '{id: ' . $option["attr"]["value"] . ', text: "' . $option['text'] . '"},';
-            
+
             if (!empty($strValues) && in_array($option['attr']['value'], $strValues, true)) {
                 $option['attr']['selected'] = 'selected';
                 $this->_defaultSelectedOptions .= "<option" . $this->_getAttrString($option['attr']) . '>' .
@@ -627,18 +631,18 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             }
         }
         $datas .= ']';
-        
+
         return $datas;
     }
 
     var $_memOptions = array();
     /**
-      * 
+      *
      */
     function setDefaultFixedDatas()
     {
         global $pearDB;
-        
+
         if (!is_null($this->_linkedObject)) {
             require_once _CENTREON_PATH_ . '/www/class/' . $this->_linkedObject . '.class.php';
             $objectFinalName = ucfirst($this->_linkedObject);
@@ -665,7 +669,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 $currentOption .= '<option selected="selected" value="'
                     . $elementValue . '">'
                     . $elementName . "</option>";
-                
+
                 if (!in_array($elementValue, $this->_memOptions)) {
                     $this->_memOptions[] = $elementValue;
                     $this->_defaultSelectedOptions .= $currentOption;
@@ -675,7 +679,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function setAjaxSource()
@@ -705,9 +709,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 
         return $ajaxInit;
     }
-    
+
     /**
-     * 
+     *
      * @param string $event
      * @param string $callback
      */
@@ -717,9 +721,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             . $callback
             . ' }); ';
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function setDefaultAjaxDatas()
@@ -727,36 +731,36 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $ajaxDefaultDatas = '$request' . $this->getName() . ' = jQuery.ajax({
             url: "'. $this->_defaultDatasetRoute .'",
         });
-        
+
         $request' . $this->getName() . '.success(function (data) {
             for (var d = 0; d < data.length; d++) {
                 var item = data[d];
-                
+
                 // Create the DOM option that is pre-selected by default
                 var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
                 if (item.hide === true) {
                     option += "hidden";
                 }
                 option += ">" + item.text + "</option>";
-              
+
                 // Append it to the select
                 $currentSelect2Object'.$this->getName().'.append(option);
             }
- 
+
             // Update the selected options that are displayed
             $currentSelect2Object'.$this->getName().'.trigger("change",[{origin:\'select2defaultinit\'}]);
         });
 
         $request' . $this->getName() . '.error(function(data) {
-            
+
         });
         ';
-        
+
         return $ajaxDefaultDatas;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     function getFrozenHtml()
@@ -764,9 +768,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $strFrozenHtml = '';
         return $strFrozenHtml;
     }
-    
+
     /**
-     * 
+     *
      * @param type $event
      * @param type $arg
      * @param type $caller
@@ -796,7 +800,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             return parent::onQuickFormEvent($event, $arg, $caller);
         }
     }
-    
+
     /**
      * Prepare JS code for save the search
      *
@@ -810,7 +814,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 var $search = data.select2.$container.find(".select2-search__field");
                 data.select2.saveSearch = $search.val();
             });';
-            
+
         $string .= 'jQuery("#' . $this->getName() . '").on("select2:open", function (event) {
                 var $select = jQuery(event.currentTarget);
                 var data = $select.data();
@@ -823,7 +827,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                   }, 10);
                 }
             });';
-            
+
         return $string;
     }
 }
