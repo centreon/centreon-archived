@@ -947,8 +947,40 @@ class CentreonConfigCentreonBroker
             } elseif (!is_null($row['value_value']) && $row['value_value'] != '') {
                 $this->defaults[$fieldId] = $row['value_value'];
             }
+        } else {
+            $externalDefaultValue = $this->getExternalDefaultValue($fieldId);
+            if (!is_null($externalDefaultValue) && $externalDefaultValue != '') {
+                $this->defaults[$fieldId] = $externalDefaultValue;
+            }
         }
+        
         return $this->defaults[$fieldId];
+    }
+    
+    /**
+     * 
+     * @param type $fieldId
+     * @return type
+     */
+    private function getExternalDefaultValue($fieldId)
+    {
+        $externalValue = null;
+        $query = "SELECT external FROM cb_field WHERE cb_field_id = $fieldId";
+        $res = $this->db->query($query);
+        
+        if (PEAR::isError($res)) {
+            $externalValue = null;
+        }
+        
+        $row = $res->fetchRow();
+        if (!is_null($row)) {
+            $finalInfo = $this->getInfoDb($row['external']);
+            if (!is_array($finalInfo)) {
+                $externalValue = $finalInfo;
+            }
+        }
+        
+        return $externalValue;
     }
 
     /**
