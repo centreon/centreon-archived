@@ -54,11 +54,11 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
-CES repository upgrade
-======================
+Centreon repository upgrade
+===========================
 
-If you are already a CES user, you need to update your CES .repo file to
-get software that is part of CES 3.4 (namely Centreon Web 2.8 and
+If you are already a Centreon ISO user, you need to update your Centreon .repo file to
+get software that is part of Centreon 3.4 (namely Centreon Web 2.8 and
 associated components). Run the commands for your operating system.
 
 CentOS 6
@@ -196,7 +196,7 @@ particularly true for EMS/EPP users.
 Repository update
 *****************
 
-Just like for CES, the .repo file needs to be updated to use the 3.4
+Just like for Centreon ISO, the .repo file needs to be updated to use the 3.4
 release. Please ask Centreon support team if you do not know how to
 perform this operation.
 

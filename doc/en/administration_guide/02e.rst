@@ -46,7 +46,7 @@ The following window is displayed:
 .. note::
     If your proxy is CNTLM, use "TCP", "localhost" and your port in Centreon web configuration.
 
-.. Warning::
+.. warning::
     SSO feature has only to be enabled in a secured and dedicated environment for SSO. Direct access to Centreon UI from users have to be disabled.
 
 **********

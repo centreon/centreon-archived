@@ -22,7 +22,7 @@
 		{/section}
     </table>
 	<div id="validForm" class="oreonbutton">
-		<input type=submit value="{$submitTitle}">
+		<input type=submit class="btc bt_success" value="{$submitTitle}">
 	</div>
 <input type=hidden name=p value={$p}>
 <input type=hidden name=o value={$o}>

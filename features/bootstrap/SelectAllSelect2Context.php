@@ -113,9 +113,8 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function iExitSelectAllConfirmBox()
     {
-        $exitButton = $this->assertFind('css', '.centreon-popin a.close img');
+        $exitButton = $this->assertFind('css', '.centreon-popin a.close[href="#"] img');
         $exitButton->click();
-
 
         $this->spin(
             function ($context) {

@@ -89,7 +89,7 @@ Restauration d'un serveur central Centreon
 
 Le processus de restauration consiste en deux étapes :
 
-* Réinstaller la plate-forme suivant le documentation d'installation de CES. Ne pas oublier de faire la mise à jour du système.
+* Réinstaller la plate-forme suivant le documentation d'installation de Centreon. Ne pas oublier de faire la mise à jour du système.
 * Restaurer les différents fichiers de configuration, puis les bases de données Centreon.
 
 Restauration des fichiers de configuration de Centreon
@@ -105,7 +105,7 @@ Avant de restaurer les bases de données, il faudra restaurer certains fichiers 
 Restauration des bases de données
 =================================
 
-Une fois le serveur CES réinstallé (**même version de Centreon**), il suffit de décompresser les sauvegardes des bases de données centreon et centreon_storage::
+Une fois le serveur Centreon réinstallé (**même version de Centreon**), il suffit de décompresser les sauvegardes des bases de données centreon et centreon_storage::
 
     # mysql
     mysql> drop database centreon;
@@ -126,7 +126,7 @@ Le mot de passe (**password** ci-dessus), est stocké dans les fichiers de confi
 Ces opérations peuvent prendre un certain temps du fait de la taille de la base "centreon_storage".
 
 .. note::
-Par défaut, il n'y a pas de mot de passe pour le compte root de mysql lors de l'installation d'un serveur via CES.
+Par défaut, il n'y a pas de mot de passe pour le compte root de mysql lors de l'installation d'un serveur via Centreon ISO.
 
 La manipulation ci-dessus est valide pour des versions identiques de Centreon.
 
