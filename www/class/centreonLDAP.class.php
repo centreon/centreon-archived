@@ -151,39 +151,67 @@ class CentreonLDAP {
      *
      * @return bool
      */
-    public function connect() {
-        foreach ($this->_ldapHosts as $ldap) {
+    public function connect()
+    {
+        foreach ($this->ldapHosts as $ldap) {
             $port = "";
+            $testingPort = 389;
             if (isset($ldap['info']['port'])) {
                 $port = ":" . $ldap['info']['port'];
+                $testingPort = $ldap['info']['port'];
             }
             if (isset($ldap['info']['use_ssl']) && $ldap['info']['use_ssl'] == 1) {
                 $url = 'ldaps://' . $ldap['host'] . $port . '/';
             } else {
                 $url = 'ldap://' . $ldap['host'] . $port . '/';
             }
-            $this->_debug("LDAP Connect : trying url : " . $url);
-            $this->_setErrorHandler();
-            $this->_ds = ldap_connect($url);
-            ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
-            $protocol_version = 3;
-            if (isset($ldap['info']['protocol_version'])) {
-                $protocol_version = $ldap['info']['protocol_version'];
+            $this->debug("LDAP Connect : trying url : " . $url);
+            $this->setErrorHandler();
+
+            if ($this->isLdapServerAvailable($ldap['host'], $testingPort)) {
+                $this->ds = ldap_connect($url);
+                ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
+                $protocol_version = 3;
+                if (isset($ldap['info']['protocol_version'])) {
+                    $protocol_version = $ldap['info']['protocol_version'];
+                }
+                ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
+                if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
+                    $this->debug("LDAP Connect : use tls");
+                    @ldap_start_tls($this->ds);
+                }
+                restore_error_handler();
+                $this->ldap = $ldap;
+                $bindResult = $this->rebind();
+                if ($bindResult) {
+                    return true;
+                }
             }
-            ldap_set_option($this->_ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
-            if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
-                $this->_debug("LDAP Connect : use tls");
-                @ldap_start_tls($this->_ds);
-            }
-            restore_error_handler();
-            $this->_ldap = $ldap;
-            $bindResult = $this->rebind();
-            if ($bindResult) {
-                return true;
-            }
-            $this->_debug("LDAP Connect : connection error");
+            $this->debug("LDAP Connect : connection error");
         }
         return false;
+    }
+
+    /**
+     * 
+     * @param string $host
+     * @param int $port
+     * @param int $timeout
+     * @return boolean
+     */
+    private function isLdapServerAvailable($host, $port=389, $timeout=1)
+    {
+        $ldapServerAvailable = true;
+
+        $op = fsockopen($host, $port, $errno, $errstr, $timeout);
+
+        if (!$op) {
+            $ldapServerAvailable = false;
+        } else {
+            fclose($op); //explicitly close open socket connection
+        }
+
+        return $ldapServerAvailable;
     }
 
     /**
