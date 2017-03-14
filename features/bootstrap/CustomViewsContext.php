@@ -3,7 +3,9 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Home\CustomViewsPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactGroupConfigurationListingPage;
 
 class CustomViewsContext extends CentreonContext
 {
@@ -43,6 +45,7 @@ class CustomViewsContext extends CentreonContext
             'admin' => '1'
         ));
         $page->save();
+        $page = new ContactConfigurationListingPage($this, false);
 
         //create contact group
         $page = new ContactGroupsConfigurationPage($this);
@@ -53,6 +56,7 @@ class CustomViewsContext extends CentreonContext
             'comments' => 'cg test'
         ));
         $page->save();
+        $page = new ContactGroupConfigurationListingPage($this, false);
     }
 
     /**
