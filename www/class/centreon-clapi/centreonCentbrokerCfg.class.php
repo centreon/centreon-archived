@@ -139,7 +139,6 @@ class CentreonCentbrokerCfg extends CentreonObject
 
     /**
      * Show
-     * 
      * @param string $parameters
      */
     public function show($parameters = null)

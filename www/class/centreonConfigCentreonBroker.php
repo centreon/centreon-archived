@@ -45,91 +45,91 @@ class CentreonConfigCentreonBroker
 {
     /**
      *
-     * @var int 
+     * @var int
      */
     public $nbSubGroup = 1;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     private $db;
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $attrText = array("size" => "120");
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $attrInt = array("size" => "10", "class" => "v_number");
     
     /**
      *
-     * @var string 
+     * @var string
      */
     private $globalCommandFile = null;
 
     /**
      *
-     * @var type 
+     * @var type
      */
     private $tagsCache = null;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     private $typesCache = null;
     
     /**
      *
-     * @var type 
+     * @var type
      */
     private $typesNameCache = null;
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $blockCache = array();
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $fieldtypeCache = array();
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $blockInfoCache = array();
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $listValues = array();
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $defaults = array();
     
     /**
      *
-     * @var array 
+     * @var array
      */
     private $attrsAdvSelect = array("style" => "width: 270px; height: 70px;");
     
     /**
      *
-     * @var string 
+     * @var string
      */
     private $advMultiTemplate = '<table><tr>' .
         '<td><div class="ams">{label_2}</div>{unselected}</td>' .
@@ -148,7 +148,7 @@ class CentreonConfigCentreonBroker
     }
 
     /**
-     * 
+     * Serialize inner data
      * @return array
      */
     public function __sleep()
@@ -492,7 +492,7 @@ class CentreonConfigCentreonBroker
     }
 
     /**
-     * 
+     * Generate Cdata tag
      */
     public function generateCdata()
     {
@@ -562,7 +562,7 @@ class CentreonConfigCentreonBroker
     }
     
     /**
-     * 
+     * Return a cb type id for the shortname given
      * @param type $typeName
      * @return boolean
      */
