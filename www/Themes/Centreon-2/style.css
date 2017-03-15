@@ -484,6 +484,7 @@ a.btc {
     margin : 0px 4px;
     cursor: pointer;
 }
+
 .bt_default {
     background: #a7a9ac !important;
 }
@@ -2171,22 +2172,25 @@ textarea.default-textarea {
 
 .graph .title {
   background-color: #cfedf9;
-  height: 20px;
+  height: 30px;
   display: inline-block;
-  line-height: 20px;
+  line-height: 30px;
   font-weight: bold;
   width: calc(100% - 4px);
   padding: 0 2px;
   cursor: move;
 }
+.graph .title .btc {
+    vertical-align: top;
+}
 
 .graph .title .actions {
   float: right;
-  margin-top: 2px;
+  margin-top: 6px;
 }
 
 .graph .title .remove {
-  margin-top: 2px;
+  margin-top: 6px;
   cursor: pointer;
 }
 
