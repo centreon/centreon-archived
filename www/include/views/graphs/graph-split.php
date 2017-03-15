@@ -79,10 +79,10 @@ if (isset($svc_id) && $svc_id) {
         ' AND i.host_id = ' . CentreonDB::escape($hostId);
     $res = $pearDBO->query($query);
     while ($row = $res->fetchRow()) {
-      $metrics[] = array(
-        'id' => $svc_id . '_' .$row['metric_id'],
-        'title' => $row['host_name'] . ' - ' . $row['service_description'] . ' : ' . $row['metric_name']
-      );
+        $metrics[] = array(
+            'id' => $svc_id . '_' .$row['metric_id'],
+            'title' => $row['host_name'] . ' - ' . $row['service_description'] . ' : ' . $row['metric_name']
+        );
     }
 }
 
