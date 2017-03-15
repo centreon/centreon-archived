@@ -656,7 +656,8 @@ class CentreonConfigCentreonBroker
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
                 cache_directory = '" . $this->db->escape($values['cache_directory']) . "',
-                event_queue_max_size = " . (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
+                event_queue_max_size = " .
+                (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 command_file = '" . $this->db->escape($values['command_file']) . "'
             WHERE config_id = " . $id;
         if (PEAR::isError($this->db->query($query))) {
@@ -730,7 +731,8 @@ class CentreonConfigCentreonBroker
                                 foreach ($value as $fieldname2 => $value2) {
                                     if (is_array($value2)) {
                                         $explodedFieldname2 = explode('__', $fieldname2);
-                                        if (isset($fieldtype[$explodedFieldname2[1]]) && $fieldtype[$explodedFieldname2[1]] == 'radio') {
+                                        if (isset($fieldtype[$explodedFieldname2[1]]) &&
+                                            $fieldtype[$explodedFieldname2[1]] == 'radio') {
                                             $value2 = $value2[$explodedFieldname2[1]];
                                         }
                                     }
@@ -1060,12 +1062,12 @@ class CentreonConfigCentreonBroker
                 $this->defaults[$fieldId] = $externalDefaultValue;
             }
         }
-        
+
         return $this->defaults[$fieldId];
     }
-    
+
     /**
-     * 
+     *
      * @param type $fieldId
      * @return type
      */
@@ -1074,11 +1076,11 @@ class CentreonConfigCentreonBroker
         $externalValue = null;
         $query = "SELECT external FROM cb_field WHERE cb_field_id = $fieldId";
         $res = $this->db->query($query);
-        
+
         if (PEAR::isError($res)) {
             $externalValue = null;
         }
-        
+
         $row = $res->fetchRow();
         if (!is_null($row)) {
             $finalInfo = $this->getInfoDb($row['external']);
@@ -1086,7 +1088,7 @@ class CentreonConfigCentreonBroker
                 $externalValue = $finalInfo;
             }
         }
-        
+
         return $externalValue;
     }
 
@@ -1246,8 +1248,8 @@ class CentreonConfigCentreonBroker
      */
     private function checkEventMaxQueueSizeValue($value)
     {
-        if (!isset($value) || $value == "" || $value < 50000) {
-            $value = 50000;
+        if (!isset($value) || $value == "" || $value < 1000000) {
+            $value = 1000000;
         }
         return $value;
     }
