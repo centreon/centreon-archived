@@ -29,3 +29,7 @@ UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;
 
 -- Update broker cache directory column name
 ALTER TABLE cfg_centreonbroker CHANGE COLUMN `retention_path` `cache_directory` VARCHAR(255) DEFAULT NULL;
+
+-- Update event queue max size
+ALTER TABLE cfg_centreonbroker CHANGE COLUMN `event_queue_max_size` `event_queue_max_size` int(11) DEFAULT 1000000;
+UPDATE cfg_centreonbroker SET event_queue_max_size = 1000000 WHERE event_queue_max_size < 1000000;

@@ -443,7 +443,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_write_thread_id` enum('0','1') DEFAULT '1',
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
-  `event_queue_max_size` int(11) DEFAULT '50000',
+  `event_queue_max_size` int(11) DEFAULT '1000000',
   `command_file` varchar(255),
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',

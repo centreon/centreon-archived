@@ -133,7 +133,7 @@ $central_broker_configuration = array(
     'write_thread_id' => array('write_thread_id' => 1),
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
     'cache_directory' => '/var/lib/centreon-broker',
-    'event_queue_max_size' => '50000',
+    'event_queue_max_size' => '1000000',
     'logger' => array(
         array(
             'name' => '/var/log/centreon-broker/central-broker-master.log',
@@ -231,7 +231,7 @@ $central_rrd_configuration = array(
     'write_thread_id' => array('write_thread_id' => 1),
     'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
     'cache_directory' => '/var/lib/centreon-broker',
-    'event_queue_max_size' => '50000',
+    'event_queue_max_size' => '1000000',
     'logger' => array(
         array(
             'name' => '/var/log/centreon-broker/central-rrd-master.log',
