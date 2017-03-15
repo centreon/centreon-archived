@@ -1135,8 +1135,8 @@ class CentreonConfigCentreonBroker
      */
     private function checkEventMaxQueueSizeValue($value)
     {
-        if (!isset($value) || $value == "" || $value < 50000) {
-            $value = 50000;
+        if (!isset($value) || $value == "" || $value < 1000000) {
+            $value = 1000000;
         }
         return $value;
     }
