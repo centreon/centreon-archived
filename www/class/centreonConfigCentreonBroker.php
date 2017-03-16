@@ -188,7 +188,7 @@ class CentreonConfigCentreonBroker
             return $this->tagsCache;
         }
         $query = "SELECT cb_tag_id, tagname " .
-            "FROM cb_tag" .
+            "FROM cb_tag " .
             "ORDER BY tagname";
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
