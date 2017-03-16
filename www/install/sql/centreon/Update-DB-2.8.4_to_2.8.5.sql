@@ -32,5 +32,5 @@ ALTER TABLE downtime_period MODIFY COLUMN `dtp_month_cycle` varchar(100);
 UPDATE topology set topology_url_opt = NULL WHERE topology_page = 21003;
 
 -- Update event queue max size
-ALTER TABLE cfg_centreonbroker CHANGE COLUMN `event_queue_max_size` `event_queue_max_size` int(11) DEFAULT 1000000;
-UPDATE cfg_centreonbroker SET event_queue_max_size = 1000000 WHERE event_queue_max_size < 1000000;
+ALTER TABLE cfg_centreonbroker CHANGE COLUMN `event_queue_max_size` `event_queue_max_size` int(11) DEFAULT 100000;
+UPDATE cfg_centreonbroker SET event_queue_max_size = 100000 WHERE event_queue_max_size < 100000;
