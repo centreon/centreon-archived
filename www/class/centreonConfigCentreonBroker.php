@@ -48,25 +48,25 @@ class CentreonConfigCentreonBroker
      * @var int
      */
     public $nbSubGroup = 1;
-    
+
     /**
      *
      * @var type
      */
     private $db;
-    
+
     /**
      *
      * @var array
      */
     private $attrText = array("size" => "120");
-    
+
     /**
      *
      * @var array
      */
     private $attrInt = array("size" => "10", "class" => "v_number");
-    
+
     /**
      *
      * @var string
@@ -78,64 +78,64 @@ class CentreonConfigCentreonBroker
      * @var type
      */
     private $tagsCache = null;
-    
+
     /**
      *
      * @var type
      */
     private $typesCache = null;
-    
+
     /**
      *
      * @var type
      */
     private $typesNameCache = null;
-    
+
     /**
      *
      * @var array
      */
     private $blockCache = array();
-    
+
     /**
      *
      * @var array
      */
     private $fieldtypeCache = array();
-    
+
     /**
      *
      * @var array
      */
     private $blockInfoCache = array();
-    
+
     /**
      *
      * @var array
      */
     private $listValues = array();
-    
+
     /**
      *
      * @var array
      */
     private $defaults = array();
-    
+
     /**
      *
      * @var array
      */
     private $attrsAdvSelect = array("style" => "width: 270px; height: 70px;");
-    
+
     /**
      *
      * @var string
      */
-    private $advMultiTemplate = '<table><tr>' .
-        '<td><div class="ams">{label_2}</div>{unselected}</td>' .
-        '<td align="center">{add}<br><br><br>{remove}</td>' .
-        '<td><div class="ams">{label_3}</div>{selected}</td>' .
-        '</tr></table>{javascript}';
+    private $advMultiTemplate = '<table><tr>
+        <td><div class="ams">{label_2}</div>{unselected}</td>
+        <td align="center">{add}<br><br><br>{remove}</td>
+        <td><div class="ams">{label_3}</div>{selected}</td>
+        </tr></table>{javascript}';
 
     /**
      * Construtor
@@ -560,7 +560,7 @@ class CentreonConfigCentreonBroker
         $this->blockInfoCache[$typeId] = $fields;
         return $this->blockInfoCache[$typeId];
     }
-    
+
     /**
      * Return a cb type id for the shortname given
      * @param type $typeName
@@ -569,16 +569,16 @@ class CentreonConfigCentreonBroker
     public function getTypeId($typeName)
     {
         $typeId = null;
-        
+
         $queryGetType = "SELECT cb_type_id FROM cb_type WHERE type_shortname = '$typeName'";
         $res = $this->db->query($queryGetType);
-        
+
         if (!PEAR::isError($res)) {
             while ($row = $res->fetchRow()) {
                 $typeId = $row['cb_type_id'];
             }
         }
-        
+
         return $typeId;
     }
 
@@ -896,11 +896,11 @@ class CentreonConfigCentreonBroker
             "FROM cfg_centreonbroker_info " .
             "WHERE config_key = 'type' AND config_value = 'correlation'";
         $res = $this->db->query($query);
-        
+
         if (PEAR::isError($res) || $res->numRows() == 0) {
             return false;
         }
-        
+
         $row = $res->fetchRow();
         $configId = $row['config_id'];
         $correlationGroupId = $row['config_group_id'];
@@ -909,11 +909,11 @@ class CentreonConfigCentreonBroker
             'AND config_id = ' . $configId .
             ' AND config_group_id = ' . $correlationGroupId;
         $res = $this->db->query($query);
-        
+
         if (PEAR::isError($res) || $res->numRows() == 0) {
             return false;
         }
-        
+
         $row = $res->fetchRow();
         return $row['config_value'];
     }
@@ -1101,7 +1101,7 @@ class CentreonConfigCentreonBroker
     public function getInfoDb($string)
     {
         global $pearDBO;
-        
+
         if (isset($pearDBO)) {
             $monitoringDb = $pearDBO;
         } else {
