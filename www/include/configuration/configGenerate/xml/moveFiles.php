@@ -190,7 +190,7 @@ try {
                 /*
                  * Centreon Broker configuration
                  */
-                $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.xml");
+                $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.*");
                 if (count($listBrokerFile) > 0) {
                     $centreonBrokerDirCfg = getCentreonBrokerDirCfg($host['id']);
                     if (!is_null($centreonBrokerDirCfg)) {
@@ -217,7 +217,7 @@ try {
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
                 }
-                if (count(glob($centreonBrokerPath . $host['id'] . "/*.xml")) > 0) {
+                if (count(glob($centreonBrokerPath . $host['id'] . "/*.*")) > 0) {
                     passthru("echo 'SENDCBCFG:".$host['id']."' >> $centcore_pipe", $return);
                     if ($return) {
                         throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
