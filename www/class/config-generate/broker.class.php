@@ -53,7 +53,7 @@ class Broker extends AbstractObjectXML
         stats_activate,
         correlation_activate,
         event_queue_max_size,
-        retention_path,
+        cache_directory,
         command_file
     ';
     protected $attributes_select_parameters = '
