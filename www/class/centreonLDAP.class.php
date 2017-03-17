@@ -945,7 +945,7 @@ class CentreonLdapAdmin
             "VALUES ($arId, '" . $this->db->escape($params['hostname']) . "', '" .
             $this->db->escape($params['port']) . "', " .
             $use_ssl . ", " .
-            $use_tls . ", '" . 
+            $use_tls . ", '" .
             $this->db->escape($params['order']) . "')";
         $this->db->query($sql);
     }
