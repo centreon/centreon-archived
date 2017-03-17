@@ -14,16 +14,19 @@ API
 
 * Possibility to create an account to reach API without web access - #4980, PR #4992
 
+
 Monitoring
 ----------
 
 * Better display in service detail with long output or long command - #4974, #4975, PR #5002
+* Recurrent downtimes, extend specific period settings to select 2nd, 2td or 5th o month - #4207
 
 Ergonomics
 ----------
 
 * Add new Centreon style for some buttons - PR #5060, PR #5061, PR #5062, PR #5067, PR #5068
 * Add possibility to copy-paste executed command ligne from service details page - PR #5065
+
 
 Bug Fixes
 =========
@@ -35,12 +38,14 @@ ACL
 * Dashboard not works when using filter #4886, PR #5023
 * Blank page on "Monitoring > Status Details > Hosts" with acl - #4960
 
+
 Authentication
 --------------
 
 * Only logout are logged - #4924, PR #5004
 * Autologin with any token - #4668
 * generateImage.php problem with akey (auto-login) - ##4920, PR #4865
+
 
 Monitoring
 ----------
@@ -57,16 +62,20 @@ Monitoring
 * Cannot Export Event Log to CSV - #4943
 * View logs for service does not work - #4958
 * Centreontrapd and exec code - PR #5054
+
+
 Graphs
 ------
 
 * Curves colour on New graph is not equal to old graph - #5033
 * Wrong host title in Graph - #4964 #4984
 
+
 Dashboard
 ---------
 
 * Incorrect CSS for reporting of a service - #4934, PR #5009
+
 
 Configuration
 -------------
@@ -79,6 +88,7 @@ Configuration
 * Describe arguements does not work with % character in command line - #4930
 * Generate and export SNMP traps - #4972, #4978
 
+
 Custom view
 -----------
 
@@ -87,6 +97,7 @@ Custom view
 * Rewrite system to share non-locked views to contacts or contactgroups
 * When user access to custom views menu, edition mode is disabled - #5008, PR #4811
 * Listing of widget with infinite scroll displays at least 3 times each widget - #4892
+
 
 Documentation
 -------------
@@ -97,11 +108,14 @@ Documentation
 * Update product lifecycle - PR 5044
 * Correct contact creation example - PR #5035, - PR #5036
 
+
 API
 ---
 
 * Rename TIMEPERIOD object to TP - PR #4913, PR #4914
 * CLAPI doesn't work when Centreon BAM is installed - #4921, PR #5049, PR 5005
+* DowntimeManager - do not remove downtimes not linked to objects to allows configuration with API
+
 
 Backup
 ------
@@ -109,11 +123,13 @@ Backup
 * Backup export does not work - #4726, PR #5019
 * Backup won't work without old deprecated variables - #4965, #PR #5007
 
+
 Installation
 ------------
 
 * SQL script error for upgrade from 2.6.6 to 2.7.0RC1 - #5064, PR #5066
 * Using sources, error with CentPlugins Trap on install - PR #4963
+
 
 Known bugs or issues
 ====================
