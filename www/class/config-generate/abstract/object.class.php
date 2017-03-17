@@ -44,6 +44,9 @@ abstract class AbstractObject {
     protected $attributes_array = array();
     protected $attributes_hash = array();
     protected $attributes_default = array();
+    
+    protected $engine = true;
+    protected $broker = false;
 
     public static function getInstance() {
         static $instances = array();
@@ -224,12 +227,6 @@ abstract class AbstractObject {
      */
     public function isEngineObject()
     {
-        $returnValue = false;
-        
-        if (isset($this->engine)) {
-            $returnValue = $this->engine;
-        }
-        
         return $this->engine;
     }
 
@@ -239,12 +236,6 @@ abstract class AbstractObject {
      */
     public function isBrokerObject()
     {
-        $returnValue = false;
-        
-        if (isset($this->broker)) {
-            $returnValue = $this->broker;
-        }
-        
         return $this->broker;
     }
 }
