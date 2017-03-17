@@ -111,6 +111,7 @@ class Information extends Module
             $modules[$name]['available_version'] = $modules[$name]['mod_release'];
             unset($modules[$name]['release']);
             if (isset($installedModules[$name]['mod_release'])) {
+                $modules[$name]['id'] = $installedModules[$name]['id'];
                 $modules[$name]['installed'] = true;
                 $modules[$name]['installed_version'] = $installedModules[$name]['mod_release'];
             }

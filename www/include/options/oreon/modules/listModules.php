@@ -43,9 +43,12 @@ if (!isset($centreon)) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$tpl->assign("p", $p);
+
 $factory = new Centreon\Core\Module\Factory();
 $moduleObj = $factory->newInformation();
 $modules = $moduleObj->getList();
+
 /*
  * Init Template Var
  */
