@@ -81,7 +81,10 @@ if ($operationType === 'install') {
         /*
          * Insert Module in DB
          */
-        $insert_ok = insertModuleInDB($name, $module_conf[$name]);
+        $factory = new Centreon\Core\Module\Factory();
+        $installer = $factory->newInstaller($name);
+        //$insert_ok = insertModuleInDB($name, $module_conf[$name]);
+        $insert_ok = $installer->installModuleConfiguration();
         if ($insert_ok) {
             $tpl->assign("output1", _("Module installed and registered"));
             /*

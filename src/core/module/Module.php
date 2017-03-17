@@ -33,35 +33,12 @@
  *
  */
 
-namespace Centreon\Core\Extension;
+namespace Centreon\Core\Module;
 
-require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
-
-class Factory
+class Module
 {
-    protected $dbConf;
-    protected $dbMon;
-
-    public function __construct()
+    protected function getModulePath($moduleName = '')
     {
-        $this->dbConf = \CentreonDBInstance::getConfInstance();
-        $this->dbMon = \CentreonDBInstance::getMonInstance();
-    }
-
-    public function newModule()
-    {
-        $licenseObj = $this->newLicense();
-
-        return new Module($this->dbConf, $licenseObj);
-    }
-
-    public function newWidget()
-    {
-        return new Widget();
-    }
-
-    public function newLicense()
-    {
-        return new License();
+        return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
     }
 }

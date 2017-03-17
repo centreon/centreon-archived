@@ -93,36 +93,6 @@ function testUpgradeExistence($id = null, $release = null)
     }
 }
 
-function insertModuleInDB($name = null, $module_conf = array())
-{
-    if (!$name) {
-        return null;
-    }
-    if (testModuleExistence(null, $name)) {
-        return null;
-    }
-    global $pearDB;
-    $rq = "INSERT INTO `modules_informations` " .
-        "(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, `sql_files`, `php_files`, `svc_tools`, `host_tools` ) " .
-        "VALUES ( ";
-    isset($name) && $name != null ? $rq .= "'".htmlentities($name, ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["rname"]) && $module_conf["rname"] != null ? $rq .= "'".htmlentities($module_conf["rname"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["mod_release"]) && $module_conf["mod_release"] != null ? $rq .= "'".htmlentities($module_conf["mod_release"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["is_removeable"]) && $module_conf["is_removeable"] != null ? $rq .= "'".htmlentities($module_conf["is_removeable"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["infos"]) && $module_conf["infos"] != null ? $rq .= "'".htmlentities($module_conf["infos"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["author"]) && $module_conf["author"] != null ? $rq .= "'".htmlentities($module_conf["author"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["lang_files"]) && $module_conf["lang_files"] != null ? $rq .= "'".htmlentities($module_conf["lang_files"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["sql_files"]) && $module_conf["sql_files"] != null ? $rq .= "'".htmlentities($module_conf["sql_files"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($module_conf["php_files"]) && $module_conf["php_files"] != null ? $rq .= "'".htmlentities($module_conf["php_files"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL,";
-    isset($module_conf["svc_tools"]) && $module_conf["svc_tools"] != null ? $rq .= "'".htmlentities($module_conf["svc_tools"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL,";
-    isset($module_conf["host_tools"]) && $module_conf["host_tools"] != null ? $rq .= "'".htmlentities($module_conf["host_tools"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
-    $rq .= ")";
-    $DBRESULT = $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(id) FROM modules_informations");
-    $id = $DBRESULT->fetchRow();
-    return ($id["MAX(id)"]);
-}
-
 function upgradeModuleInDB($id = null, $upgrade_conf = array())
 {
     if (!$id) {

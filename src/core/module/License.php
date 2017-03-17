@@ -33,9 +33,9 @@
  *
  */
 
-namespace Centreon\Core\Extension;
+namespace Centreon\Core\Module;
 
-class License
+class License extends Module
 {
     /**
      * Parsing a Zend license file

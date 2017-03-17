@@ -33,9 +33,9 @@
  *
  */
 
-namespace Centreon\Core\Extension;
+namespace Centreon\Core\Module;
 
-class Module
+class Information extends Module
 {
     protected $dbConf;
     protected $licenseObj;
@@ -44,11 +44,6 @@ class Module
     {
         $this->dbConf = $dbConf;
         $this->licenseObj = $licenseObj;
-    }
-
-    private function getModulePath($moduleName = '')
-    {
-        return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
     }
 
     /**
@@ -122,6 +117,5 @@ class Module
         }
 
         return $modules;
-
     }
 }

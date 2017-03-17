@@ -33,9 +33,35 @@
  *
  */
 
-namespace Centreon\Core\Extension;
+namespace Centreon\Core\Module;
 
-class Widget
+require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
+
+class Factory
 {
+    protected $dbConf;
+    protected $dbMon;
 
+    public function __construct()
+    {
+        $this->dbConf = \CentreonDBInstance::getConfInstance();
+        $this->dbMon = \CentreonDBInstance::getMonInstance();
+    }
+
+    public function newInformation()
+    {
+        $licenseObj = $this->newLicense();
+
+        return new Information($this->dbConf, $licenseObj);
+    }
+
+    public function newInstaller($moduleName)
+    {
+        return new Installer($this->dbConf, $moduleName);
+    }
+
+    public function newLicense()
+    {
+        return new License();
+    }
 }
