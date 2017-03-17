@@ -80,10 +80,9 @@ class Module
             }
 
             require_once $modulePath . '/conf.php';
-        }
 
-        foreach ($module_conf as $moduleName => &$moduleInfo) {
-            $moduleInfo['licenseExpiration'] = $this->licenseObj->getLicenseExpiration();
+            $licenseFile = $modulePath . '/license/merethis_lic.zl';
+            $module_conf[$module]['licenseExpiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
         }
 
         return $module_conf;

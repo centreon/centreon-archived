@@ -37,13 +37,6 @@ namespace Centreon\Core\Extension;
 
 class License
 {
-    protected $licenseFile;
-
-    public function __construct($licenseFile)
-    {
-        $this->licenseFile = $licenseFile;
-    }
-
     /**
      * Parsing a Zend license file
      *
@@ -68,13 +61,13 @@ class License
      *
      * @return false|string
      */
-    public function getLicenseExpiration()
+    public function getLicenseExpiration($licenseFile)
     {
-        if (function_exists('zend_loader_enabled') && file_exists($this->licenseFile)) {
-            if (zend_loader_file_encoded($this->licenseFile)) {
-                $zend_info = zend_loader_file_licensed($this->licenseFile);
+        if (function_exists('zend_loader_enabled') && file_exists($licenseFile)) {
+            if (zend_loader_file_encoded($licenseFile)) {
+                $zend_info = zend_loader_file_licensed($licenseFile);
             } else {
-                $zend_info = $this->parseLicenseFile($this->licenseFile);
+                $zend_info = $this->parseLicenseFile($licenseFile);
             }
             $licenseExpiration = date("d/m/Y", strtotime($zend_info['Expires']));
         } else {
