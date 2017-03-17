@@ -217,4 +217,34 @@ abstract class AbstractObject {
         }
         return array();
     }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public function isEngineObject()
+    {
+        $returnValue = false;
+        
+        if (isset($this->engine)) {
+            $returnValue = $this->engine;
+        }
+        
+        return $this->engine;
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    public function isBrokerObject()
+    {
+        $returnValue = false;
+        
+        if (isset($this->broker)) {
+            $returnValue = $this->broker;
+        }
+        
+        return $this->broker;
+    }
 }
