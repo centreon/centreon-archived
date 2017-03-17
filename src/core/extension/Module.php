@@ -46,19 +46,31 @@ class Module
         $this->licenseObj = $licenseObj;
     }
 
+    private function getModulePath($moduleName = '')
+    {
+        return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
+    }
+
     /**
      * Get list of installed modules
      *
      * @return mixed
      */
-    public function getInstalledList()
+    private function getInstalledList()
     {
         $query = 'SELECT * ' .
             'FROM modules_informations ';
 
         $result = $this->dbConf->query($query);
 
-        return $result->fetchAll();
+        $modules = $result->fetchAll();
+
+        $installedModules = array();
+        foreach ($modules as $module) {
+            $installedModules[$module['name']] = $module;
+        }
+
+        return $installedModules;
     }
 
     /**
@@ -66,11 +78,11 @@ class Module
      *
      * @return mixed
      */
-    public function getAvailableList()
+    private function getAvailableList()
     {
         $module_conf = array();
 
-        $modulesPath = _CENTREON_PATH_ . '/www/modules/';
+        $modulesPath = $this->getModulePath();
         $modules = scandir($modulesPath);
 
         foreach ($modules as $module) {
@@ -79,12 +91,37 @@ class Module
                 continue;
             }
 
-            require_once $modulePath . '/conf.php';
+            require_once $this->getModulePath($module) . '/conf.php';
 
             $licenseFile = $modulePath . '/license/merethis_lic.zl';
             $module_conf[$module]['licenseExpiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
         }
 
         return $module_conf;
+    }
+
+    /**
+     * Get list of modules (installed or not)
+     *
+     * @return array
+     */
+    public function getList()
+    {
+        $installedModules = $this->getInstalledList();
+        $availableModules = $this->getAvailableList();
+
+        $modules = array();
+        foreach ($availableModules as $name => $properties) {
+            $modules[$name] = $properties;
+            $modules[$name]['available_version'] = $modules[$name]['mod_release'];
+            unset($modules[$name]['release']);
+            if (isset($installedModules[$name]['mod_release'])) {
+                $modules[$name]['installed'] = true;
+                $modules[$name]['installed_version'] = $installedModules[$name]['mod_release'];
+            }
+        }
+
+        return $modules;
+
     }
 }
