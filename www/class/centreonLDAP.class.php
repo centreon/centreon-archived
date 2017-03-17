@@ -106,6 +106,17 @@ class CentreonLDAP {
         if ($this->_debugPath == '') {
             $this->_debugImport = false;
         }
+        
+        $searchTimeout = 5;
+        $tempSearchTimeout = $this->getLdapHostParameters($arId, 'ldap_search_timeout');
+        if (count($tempSearchTimeout) > 0) {
+            if (
+                isset($tempSearchTimeout['ari_value']) && 
+                !empty($tempSearchTimeout['ari_value'])
+            ) {
+                $searchTimeout = $tempSearchTimeout['ari_value'];
+            }
+        }
 
         /* Get the list of server ldap */
         if ($use_dns_srv != "0") {
@@ -124,6 +135,7 @@ class CentreonLDAP {
                 $ldap = array();
                 $ldap['host'] = $entry['target'];
                 $ldap['id'] = $arId;
+                $ldap['search_timeout'] = $searchTimeout;
                 $ldap['info'] = $this->_getInfoUseDnsConnect();
                 $ldap['info']['port'] = $entry['port'];
                 $ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($arId));
@@ -138,12 +150,39 @@ class CentreonLDAP {
                 $ldap = array();
                 $ldap['host'] = $row['host_address'];
                 $ldap['id'] = $arId;
+                $ldap['search_timeout'] = $searchTimeout;
                 $ldap['info'] = $this->_getInfoConnect($row['ldap_host_id']);
                 $ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($arId));
                 $this->_ldapHosts[] = $ldap;
             }
             $dbresult->free();
         }
+    }
+    
+    /**
+     * 
+     * @param int $arId
+     * @param string $filter
+     * @return array
+     */
+    public function getLdapHostParameters($arId, $filter = '')
+    {
+        // ldap_search_timeout
+        $queryLdapHostParemeters = "SELECT * FROM auth_ressource_info WHERE ar_id = " . $this->db->escape($arId);
+        
+        if (!empty($filter)) {
+            $queryLdapHostParemeters .= " AND `ari_name` = '$filter'";
+        }
+        
+        $resLdapHostParameters = $this->db->query($queryLdapHostParemeters);
+        
+        $finalLdapHostParameters = array();
+        
+        while ($rowLdapHostParameters = $resLdapHostParameters->fetchRow()) {
+            $finalLdapHostParameters = $rowLdapHostParameters;
+        }
+        
+        return $finalLdapHostParameters;
     }
 
     /**
@@ -168,7 +207,7 @@ class CentreonLDAP {
             $this->debug("LDAP Connect : trying url : " . $url);
             $this->setErrorHandler();
 
-            if ($this->isLdapServerAvailable($ldap['host'], $testingPort)) {
+            if ($this->isLdapServerAvailable($ldap['host'], $testingPort, $ldap['search_timeout'])) {
                 $this->ds = ldap_connect($url);
                 ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
                 $protocol_version = 3;
