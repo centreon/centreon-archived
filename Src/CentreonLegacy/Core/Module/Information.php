@@ -89,7 +89,7 @@ class Information extends Module
             require_once $this->getModulePath($module) . '/conf.php';
 
             $licenseFile = $modulePath . '/license/merethis_lic.zl';
-            $module_conf[$module]['licenseExpiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
+            $module_conf[$module]['license_expiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
         }
 
         return $module_conf;
@@ -106,17 +106,42 @@ class Information extends Module
         $availableModules = $this->getAvailableList();
 
         $modules = array();
+
         foreach ($availableModules as $name => $properties) {
             $modules[$name] = $properties;
+            $modules[$name]['source_available'] = true;
+            $modules[$name]['is_installed'] = false;
+            $modules[$name]['upgradeable'] = false;
+            $modules[$name]['installed_version'] = _('N/A');
             $modules[$name]['available_version'] = $modules[$name]['mod_release'];
             unset($modules[$name]['release']);
             if (isset($installedModules[$name]['mod_release'])) {
                 $modules[$name]['id'] = $installedModules[$name]['id'];
-                $modules[$name]['installed'] = true;
+                $modules[$name]['is_installed'] = true;
                 $modules[$name]['installed_version'] = $installedModules[$name]['mod_release'];
+                $modules[$name]['upgradeable'] = $this->isUpgradeable(
+                    $modules[$name]['available_version'],
+                    $modules[$name]['installed_version']
+                );
+            }
+        }
+
+        foreach ($installedModules as $name => $properties) {
+            if (!isset($modules[$name])) {
+                $modules[$name] = $properties;
+                $modules[$name]['source_available'] = false;
             }
         }
 
         return $modules;
+    }
+
+    private function isUpgradeable($availableVersion, $installedVersion)
+    {
+        $compare = version_compare($availableVersion, $installedVersion);
+        if ($compare == 1) {
+            return true;
+        }
+        return false;
     }
 }

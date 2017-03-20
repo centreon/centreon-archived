@@ -43,15 +43,19 @@ if (!isset($centreon)) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$factory = new CentreonLegacy\Core\Module\Factory();
+$moduleInfoObj = $factory->newInformation();
+$modules = $moduleInfoObj->getList();
+
+foreach ($modules as &$module) {
+    if ($module['is_installed']) {
+        $module['installed'] = _('Yes');
+    } else {
+        $module['installed'] = _('No');
+    }
+}
+
 $tpl->assign("p", $p);
-
-$factory = new Centreon\Core\Module\Factory();
-$moduleObj = $factory->newInformation();
-$modules = $moduleObj->getList();
-
-/*
- * Init Template Var
- */
 $tpl->assign("modules", $modules);
 
 /*
