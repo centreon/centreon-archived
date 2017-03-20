@@ -87,6 +87,8 @@ Configuration
 * Can view first help icon in Centreon Broker configuration - #4944, PR #5003
 * Describe arguements does not work with % character in command line - #4930
 * Generate and export SNMP traps - #4972, #4978
+* Host marco did not save on host edit - #4951
+* Do not check modification on disabled pollers - #4945
 
 
 Custom view
@@ -114,7 +116,7 @@ API
 
 * Rename TIMEPERIOD object to TP - PR #4913, PR #4914
 * CLAPI doesn't work when Centreon BAM is installed - #4921, PR #5049, PR 5005
-* DowntimeManager - do not remove downtimes not linked to objects to allows configuration with API
+* DowntimeManager - do not remove downtimes not linked to objects to allows configuration with API - #5057
 
 
 Backup
