@@ -81,7 +81,7 @@ if ($operationType === 'install') {
         /*
          * Insert Module in DB
          */
-        $factory = new Centreon\Core\Module\Factory();
+        $factory = new CentreonLegacy\Core\Module\Factory();
         $installer = $factory->newInstaller($name);
         //$insert_ok = insertModuleInDB($name, $module_conf[$name]);
         $insert_ok = $installer->installModuleConfiguration();

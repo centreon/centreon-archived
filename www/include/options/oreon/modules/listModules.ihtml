@@ -14,10 +14,10 @@
 	{foreach from=$modules key=name item=properties}
 	<tr class='list_one'>
 		<td class="ListColLeft">
-			<a href="?p={$p}&o=i&id={$properties.id}">{$properties.rname}</a>
+			<a href="?p={$p}&o=w&name={$properties.name}">{$properties.name}</a>
 		</td>
 		<td class="ListColLeft">
-			<a href="?p={$p}&o=i&id={$properties.id}">{$properties.rname}</a>
+			<a href="?p={$p}&o=w&name={$properties.name}">{$properties.rname}</a>
 		</td>
 		<td class="ListColLeft">{$properties.infos}</td>
 		<td class="ListColCenter">{$properties.installed_version}</td>
@@ -27,7 +27,7 @@
         <td id="{$properties.name}" class="ListColCenter"></td>
 		<td id="action_{$properties.name}" class="ListColRight">
 			{if !$properties.is_installed}
-				<a id="action{$properties.name}" href="?p={$p}&o=i&id={$properties.id}"><img src='./img/icons/generate_conf.png' class='ico-16 margin_right' title='{t}Install Module{/t}' alt='{t}Install Module{/t}'></a>
+				<a id="action{$properties.name}" href="?p={$p}&o=i&name={$properties.name}"><img src='./img/icons/generate_conf.png' class='ico-16 margin_right' title='{t}Install Module{/t}' alt='{t}Install Module{/t}'></a>
 			{/if}
 			{if $properties.upgradeable}
                 <a id="action{$properties.name}" href="?p={$p}&o=u&id={$properties.id}"><img src='./img/icons/upgrade.png' class='ico-16 margin_right' title='{t}Upgrade{/t}' alt='{t}Upgrade{/t}'></a>
@@ -42,4 +42,6 @@
 
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-ui.js"></script>
 <script type="text/javascript" src="./include/options/oreon/modules/listModules.js"></script>

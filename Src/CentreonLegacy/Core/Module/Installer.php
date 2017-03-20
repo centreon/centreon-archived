@@ -54,7 +54,8 @@ class Installer extends Module
         }
 
         $module_conf = array();
-        require_once $configurationFile;
+        require $configurationFile;
+        $module = $module_conf[$this->moduleName];
 
         $query = 'INSERT INTO modules_informations ' .
             '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, ' .
@@ -63,16 +64,17 @@ class Installer extends Module
             ':sql_files , :php_files , :svc_tools , :host_tools )';
         $sth = $this->dbConf->prepare($query);
 
-        $sth->bindParam(':name', $module_conf['name'], \PDO::PARAM_STR);
-        $sth->bindParam(':mod_release', $module_conf['mod_release'], \PDO::PARAM_STR);
-        $sth->bindParam(':is_removeable', $module_conf['is_removeable'], \PDO::PARAM_STR);
-        $sth->bindParam(':infos', $module_conf['infos'], \PDO::PARAM_STR);
-        $sth->bindParam(':author', $module_conf['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':lang_files', $module_conf['lang_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':sql_files', $module_conf['sql_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':php_files', $module_conf['php_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':svc_tools', $module_conf['svc_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':host_tools', $module_conf['host_tools'], \PDO::PARAM_STR);
+        $sth->bindParam(':name', $module['name'], \PDO::PARAM_STR);
+        $sth->bindParam(':rname', $module['rname'], \PDO::PARAM_STR);
+        $sth->bindParam(':mod_release', $module['mod_release'], \PDO::PARAM_STR);
+        $sth->bindParam(':is_removeable', $module['is_removeable'], \PDO::PARAM_STR);
+        $sth->bindParam(':infos', $module['infos'], \PDO::PARAM_STR);
+        $sth->bindParam(':author', $module['author'], \PDO::PARAM_STR);
+        $sth->bindParam(':lang_files', $module['lang_files'], \PDO::PARAM_STR);
+        $sth->bindParam(':sql_files', $module['sql_files'], \PDO::PARAM_STR);
+        $sth->bindParam(':php_files', $module['php_files'], \PDO::PARAM_STR);
+        $sth->bindParam(':svc_tools', $module['svc_tools'], \PDO::PARAM_STR);
+        $sth->bindParam(':host_tools', $module['host_tools'], \PDO::PARAM_STR);
 
         $sth->execute();
 

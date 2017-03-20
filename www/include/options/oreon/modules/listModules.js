@@ -34,7 +34,7 @@ function displayResults(moduleList) {
             if (module["message"] instanceof Array) {
                 for (var j = 0; j < module["message"].length; j++) {
                     statusMessage += module["message"][j]['ErrorMessage'] + '<br />';
-                    solution += module["message"][j]['Solution']+ '<br />';
+                    solution += module["message"][j]['Solution'] + '<br />';
                 }
             } else {
                 statusMessage = module["message"]['ErrorMessage'];

@@ -86,7 +86,7 @@ class Information extends Module
                 continue;
             }
 
-            require_once $this->getModulePath($module) . '/conf.php';
+            require $this->getModulePath($module) . '/conf.php';
 
             $licenseFile = $modulePath . '/license/merethis_lic.zl';
             $module_conf[$module]['license_expiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);

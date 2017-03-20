@@ -59,6 +59,7 @@ $message = array();
 
 $modules = scandir($modulesPath);
 foreach ($modules as $module) {
+    $filename = $module;
     if (preg_match('/^(?!\.)/', $module) && is_dir($modulesPath . $module)) {
         $response[$module] = array();
         $checklistDir = $modulesPath . $module . '/checklist/';
