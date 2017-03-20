@@ -2,7 +2,7 @@
 Centreon 2.7.9
 ##############
 
-Released March, XX 2017.
+Released March, 21th 2017.
 
 The 2.7.9 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.9 follow.
 
