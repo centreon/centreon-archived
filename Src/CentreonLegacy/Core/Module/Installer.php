@@ -33,7 +33,7 @@
  *
  */
 
-namespace Centreon\Core\Module;
+namespace CentreonLegacy\Core\Module;
 
 class Installer extends Module
 {

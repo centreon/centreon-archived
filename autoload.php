@@ -33,7 +33,7 @@
  *
  */
 
-$classDirectory = dirname(__FILE__) . '/src/';
+$classDirectory = dirname(__FILE__) . '/Src/';
 spl_autoload_register(function ($className) use ($classDirectory) {
     $explodedClassName = explode('\\', $className);
     array_shift($explodedClassName);

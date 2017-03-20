@@ -33,7 +33,7 @@
  *
  */
 
-namespace Centreon\Core\Module;
+namespace CentreonLegacy\Core\Module;
 
 require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
 
