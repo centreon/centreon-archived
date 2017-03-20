@@ -99,7 +99,7 @@ Custom view
 * Rewrite system to share non-locked views to contacts or contactgroups
 * When user access to custom views menu, edition mode is disabled - #5008, PR #4811
 * Listing of widget with infinite scroll displays at least 3 times each widget - #4892
-
+* "Set Default" button not working - #5079
 
 Documentation
 -------------
