@@ -707,14 +707,17 @@ class CentreonConfigCentreonBroker
                     foreach ($infos as $key => $info) {
                         $is_multiple = preg_match('/(.+?)_(\d+)$/', $key, $result);
                         if ($is_multiple) {
-                            $newArray[$result[1]] = $infos[$key];
+                            if (!isset($newArray[$result[2]])) {
+                                $newArray[$result[2]] = array();
+                            }
+                            $newArray[$result[2]][$result[1]] = $infos[$key];
 
                             unset($infos[$key]);
                         }
                     }
                     if (!empty($newArray)) {
                         $groups_infos_multiple[] = $newArray;
-                        $infos['multiple_fields'][] = $newArray;
+                        $infos['multiple_fields'] = $newArray;
                     }
                     $groups_infos[$group][] = $infos;
                 }
