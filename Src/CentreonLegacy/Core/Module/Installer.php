@@ -39,11 +39,15 @@ class Installer extends Module
 {
     protected $dbConf;
     protected $moduleName;
+    protected $utils;
 
-    public function __construct($dbConf, $moduleName)
+    public function __construct($dbConf, $moduleName, $utils)
     {
         $this->dbConf = $dbConf;
         $this->moduleName = $moduleName;
+        $this->utils = $utils;
+
+        $this->getModuleConfiguration($this->moduleName);
     }
 
     public function installModuleConfiguration()
@@ -53,10 +57,6 @@ class Installer extends Module
             throw new \Exception('Module configuration file not found.');
         }
 
-        $module_conf = array();
-        require $configurationFile;
-        $module = $module_conf[$this->moduleName];
-
         $query = 'INSERT INTO modules_informations ' .
             '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, ' .
             '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
@@ -64,22 +64,53 @@ class Installer extends Module
             ':sql_files , :php_files , :svc_tools , :host_tools )';
         $sth = $this->dbConf->prepare($query);
 
-        $sth->bindParam(':name', $module['name'], \PDO::PARAM_STR);
-        $sth->bindParam(':rname', $module['rname'], \PDO::PARAM_STR);
-        $sth->bindParam(':mod_release', $module['mod_release'], \PDO::PARAM_STR);
-        $sth->bindParam(':is_removeable', $module['is_removeable'], \PDO::PARAM_STR);
-        $sth->bindParam(':infos', $module['infos'], \PDO::PARAM_STR);
-        $sth->bindParam(':author', $module['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':lang_files', $module['lang_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':sql_files', $module['sql_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':php_files', $module['php_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':svc_tools', $module['svc_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':host_tools', $module['host_tools'], \PDO::PARAM_STR);
+        $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
+        $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
+        $sth->bindParam(':mod_release', $this->moduleConfiguration['mod_release'], \PDO::PARAM_STR);
+        $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
+        $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
+        $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
+        $sth->bindParam(':lang_files', $this->moduleConfiguration['lang_files'], \PDO::PARAM_STR);
+        $sth->bindParam(':sql_files', $this->moduleConfiguration['sql_files'], \PDO::PARAM_STR);
+        $sth->bindParam(':php_files', $this->moduleConfiguration['php_files'], \PDO::PARAM_STR);
+        $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
+        $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
 
         $sth->execute();
 
-        return $this->dbConf->lastInsertId();
+        $queryMax = 'SELECT MAX(id) as id FROM modules_informations';
+        $result = $this->dbConf->query($queryMax);
+        $lastId = 0;
+        if ($row = $result->fetchRow()) {
+            $lastId = $row['id'];
+        }
+
+        return $lastId;
     }
 
+    public function installSqlFiles()
+    {
+        $installed = false;
 
+        $sqlFile = $this->getModulePath($this->moduleName) . '/sql/install.sql';
+        if ($this->moduleConfiguration["sql_files"] && file_exists($sqlFile)) {
+            $this->utils->executeSqlFile($sqlFile);
+            $installed = true;
+        }
+
+        return $installed;
+    }
+
+    public function installPhpFiles()
+    {
+        $installed = false;
+
+        $phpFile = $this->getModulePath($this->moduleName) . '/php/install.php';
+        if ($this->moduleConfiguration["php_files"] && file_exists($phpFile)) {
+            $this->utils->executeSqlFile($phpFile);
+            $installed = true;
+        }
+
+        return $installed;
+    }
 }

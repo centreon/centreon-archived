@@ -33,26 +33,61 @@
  *
  */
 
-namespace CentreonLegacy\Core\Module;
+namespace CentreonLegacy\Core\Utils;
 
-class Module
+class Utils
 {
-    protected $moduleConfiguration;
+    protected $dbConf;
+    protected $dbMon;
 
-    protected function getModulePath($moduleName = '')
+    public function __construct($dbConf, $dbMon)
     {
-        return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
+        $this->dbConf = $dbConf;
+        $this->dbMon = $dbMon;
     }
 
-    public function getModuleConfiguration($moduleName)
+    public function executeSqlFile($fileName)
     {
-        $configurationFile = $this->getModulePath($moduleName) . '/conf.php';
+        if (!file_exists($fileName)) {
+            throw new \Exception('Cannot execute sql file "' . $fileName . '" : File does not exist.');
+        }
 
-        $module_conf = array();
-        require $configurationFile;
+        $content = file_get_contents($fileName);
+        if (!$content) {
+            throw new \Exception('Cannot get file content of "' . $fileName . '".');
+        }
 
-        $this->moduleConfiguration = $module_conf[$moduleName];
+        $content = $this->replaceMacros($content);
+        $lines = explode($content, "\n");
 
-        return $this->moduleConfiguration;
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (!preg_match('/^(--|#)/', $line)) {
+                $this->dbConf->query($line);
+            }
+        }
+    }
+
+    public function executePhpFile($fileName)
+    {
+        if (!file_exists($fileName)) {
+            throw new \Exception('Cannot execute php file "' . $fileName . '" : File does not exist.');
+        }
+
+        require_once $fileName;
+    }
+
+    public function replaceMacros($content)
+    {
+        $macros = array(
+            '@DB_CENTREON@' => hostCentreon,
+            '@DB_CENTSTORAGE@' => hostCentsorage
+        );
+
+        foreach ($macros as $name => $value) {
+            $content = str_replace($name, $value, $content);
+        }
+
+        return $content;
     }
 }

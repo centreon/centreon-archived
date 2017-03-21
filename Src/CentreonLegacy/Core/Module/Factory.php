@@ -57,7 +57,9 @@ class Factory
 
     public function newInstaller($moduleName)
     {
-        return new Installer($this->dbConf, $moduleName);
+        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $utils = $factory->newUtils();
+        return new Installer($this->dbConf, $moduleName, $utils);
     }
 
     public function newLicense()

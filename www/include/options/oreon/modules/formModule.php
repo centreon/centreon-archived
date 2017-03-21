@@ -40,37 +40,40 @@ if (!isset($oreon)) {
     exit();
 }
 
-    /*
-	 * Smarty template Init
-	 */
-    $tpl = new Smarty();
-    $tpl = initSmartyTpl($path, $tpl);
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
-    $tpl->assign("headerMenu_title", _("Module Information"));
-    $tpl->assign("headerMenu_title2", _("Upgrade Information"));
-    $tpl->assign("headerMenu_rname", _("Real name"));
-    $tpl->assign("headerMenu_release", _("Release"));
-    $tpl->assign("headerMenu_release_from", _("Base release"));
-    $tpl->assign("headerMenu_release_to", _("Final release"));
-    $tpl->assign("headerMenu_author", _("Author"));
-    $tpl->assign("headerMenu_infos", _("Additional Information"));
-    $tpl->assign("headerMenu_isinstalled", _("Installed"));
-    $tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
-    
-    /*
-	 * "Name" case, it's not a module which is installed
-	 */
+$tpl->assign("headerMenu_title", _("Module Information"));
+$tpl->assign("headerMenu_title2", _("Upgrade Information"));
+$tpl->assign("headerMenu_rname", _("Real name"));
+$tpl->assign("headerMenu_release", _("Release"));
+$tpl->assign("headerMenu_release_from", _("Base release"));
+$tpl->assign("headerMenu_release_to", _("Final release"));
+$tpl->assign("headerMenu_author", _("Author"));
+$tpl->assign("headerMenu_infos", _("Additional Information"));
+$tpl->assign("headerMenu_isinstalled", _("Installed"));
+$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
+
+$moduleFactory = new CentreonLegacy\Core\Module\Factory();
+$moduleInfoObj = $moduleFactory->newInformation();
+$moduleInfo = $moduleInfoObj->getModuleConfiguration($name);
+
+/*
+ * "Name" case, it's not a module which is installed
+ */
 if ($operationType === 'install') {
     $flag = false;
-    include_once(_CENTREON_PATH_ . "www/modules/".$name."/conf.php");
-    $tpl->assign("module_rname", $module_conf[$name]["rname"]);
-    $tpl->assign("module_release", $module_conf[$name]["mod_release"]);
-    $tpl->assign("module_author", $module_conf[$name]["author"]);
-    $tpl->assign("module_infos", $module_conf[$name]["infos"]);
-    if (is_dir(_CENTREON_PATH_ . "www/modules/".$name."/infos") && is_file("./modules/".$name."/infos/infos.txt")) {
-        $infos_streams = file(_CENTREON_PATH_ . "www/modules/".$name."/infos/infos.txt");
-        $infos_streams = implode("<br />", $infos_streams);
-        $tpl->assign("module_infosTxt", $infos_streams);
+    $tpl->assign("module_rname", $moduleInfo["rname"]);
+    $tpl->assign("module_release", $moduleInfo["mod_release"]);
+    $tpl->assign("module_author", $moduleInfo["author"]);
+    $tpl->assign("module_infos", $moduleInfo["infos"]);
+    if (file_exists($moduleInfo->getModulePath() . "/infos/infos.txt")) {
+        $content = file_get_contents($moduleInfo->getModulePath() . "/infos/infos.txt");
+        $content = implode("<br />", $content);
+        $tpl->assign("module_infosTxt", $content);
     } else {
         $tpl->assign("module_infosTxt", false);
     }
@@ -81,29 +84,21 @@ if ($operationType === 'install') {
         /*
          * Insert Module in DB
          */
-        $factory = new CentreonLegacy\Core\Module\Factory();
-        $installer = $factory->newInstaller($name);
-        //$insert_ok = insertModuleInDB($name, $module_conf[$name]);
+        $moduleInstaller = $moduleFactory->newInstaller($name);
         $insert_ok = $installer->installModuleConfiguration();
+
         if ($insert_ok) {
+
             $tpl->assign("output1", _("Module installed and registered"));
-            /*
-             * SQL insert if need
-             */
-            $sql_file = "install.sql";
-            $sql_file_path = "./modules/".$name."/sql/";
-            if ($module_conf[$name]["sql_files"] && file_exists($sql_file_path.$sql_file)) {
+
+            /* SQL installation */
+            if ($installer->installSqlFiles()) {
                 $tpl->assign("output2", _("SQL file included"));
-                execute_sql_file($sql_file, $sql_file_path);
             }
-            /*
-             * PHP execution if need
-             */
-            $php_file = "install.php";
-            $php_file_path = _CENTREON_PATH_ . "www/modules/".$name."/php/".$php_file;
-            if ($module_conf[$name]["php_files"] && file_exists($php_file_path)) {
+
+            /* PHP installation */
+            if ($installer->installPhpFiles()) {
                 $tpl->assign("output3", _("PHP file included"));
-                include_once($php_file_path);
             }
 
             /*
@@ -128,9 +123,8 @@ if ($operationType === 'install') {
     $tpl->assign('form1', $renderer->toArray());
 } elseif ($operationType === 'upgrade') {
     /*
- * "ID" case, it's an installed module
- */
-
+     * "ID" case, it's an installed module
+     */
     $moduleinfo = getModuleInfoInDB(null, $id);
     $elemArr = array();
     $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
