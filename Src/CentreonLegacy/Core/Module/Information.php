@@ -47,6 +47,49 @@ class Information extends Module
     }
 
     /**
+     * Get module configuration from file
+     *
+     * @param $moduleName
+     * @return mixed
+     */
+    public function getConfiguration($moduleName)
+    {
+        $configurationFile = $this->getModulePath($moduleName) . '/conf.php';
+
+        $module_conf = array();
+        require $configurationFile;
+
+        return $module_conf[$moduleName];
+    }
+
+    /**
+     * Get module configuration from file
+     *
+     * @param $moduleName
+     * @return mixed
+     */
+    public function getNameById($moduleId)
+    {
+        $query = 'SELECT name ' .
+            'FROM modules_informations ' .
+            'WHERE id = :id';
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':id', $moduleId, \PDO::PARAM_INT);
+
+        $sth->execute();
+
+        $name = null;
+        if ($row = $sth->fetch()) {
+            $name = $row['name'];
+        }
+
+        return $name;
+    }
+
+
+
+    /**
      * Get list of installed modules
      *
      * @return mixed
@@ -66,6 +109,20 @@ class Information extends Module
         }
 
         return $installedModules;
+    }
+
+    public function getInstalledInformation($moduleName)
+    {
+        $query = 'SELECT * ' .
+            'FROM modules_informations ' .
+            'WHERE name = :name';
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':name', $moduleName, \PDO::PARAM_STR);
+
+        $sth->execute();
+
+        return $sth->fetch();
     }
 
     /**

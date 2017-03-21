@@ -57,9 +57,21 @@ class Factory
 
     public function newInstaller($moduleName)
     {
+        $informationObj = $this->newInformation();
+
         $factory = new \CentreonLegacy\Core\Utils\Factory();
         $utils = $factory->newUtils();
-        return new Installer($this->dbConf, $moduleName, $utils);
+        return new Installer($this->dbConf, $informationObj, $moduleName, $utils);
+    }
+
+    public function newUpgrader($moduleName, $moduleId)
+    {
+        $informationObj = $this->newInformation();
+
+        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $utils = $factory->newUtils();
+
+        return new Upgrader($this->dbConf, $informationObj, $moduleName, $moduleId, $utils);
     }
 
     public function newLicense()

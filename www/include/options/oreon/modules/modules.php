@@ -75,19 +75,15 @@ if ($list) {
 } else {
     switch ($o) {
         case "i":
-            require_once($path."formModule.php");
+        case "w":
+            require_once($path . "installForm.php");
             break;
         case "u":
-            require_once($path."formModule.php");
+            require_once($path . "upgradeForm.php");
             break;
         case "d":
-            require_once($path."listModules.php");
-            break;
-        case "w":
-            require_once($path."formModule.php");
-            break;
         default:
-            require_once($path."listModules.php");
+            require_once($path . "listModules.php");
             break;
     }
 }

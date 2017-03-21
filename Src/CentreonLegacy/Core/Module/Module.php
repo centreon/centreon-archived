@@ -37,22 +37,8 @@ namespace CentreonLegacy\Core\Module;
 
 class Module
 {
-    protected $moduleConfiguration;
-
-    protected function getModulePath($moduleName = '')
+    public function getModulePath($moduleName = '')
     {
         return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
-    }
-
-    public function getModuleConfiguration($moduleName)
-    {
-        $configurationFile = $this->getModulePath($moduleName) . '/conf.php';
-
-        $module_conf = array();
-        require $configurationFile;
-
-        $this->moduleConfiguration = $module_conf[$moduleName];
-
-        return $this->moduleConfiguration;
     }
 }

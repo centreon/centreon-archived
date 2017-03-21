@@ -35,41 +35,90 @@
 
 namespace CentreonLegacy\Core\Module;
 
-class Installer extends Module
+class Upgrader extends Module
 {
     protected $dbConf;
     protected $informationObj;
     protected $moduleName;
+    protected $moduleId;
     protected $utils;
     private $moduleConfiguration;
 
-    public function __construct($dbConf, $informationObj, $moduleName, $utils)
+    public function __construct($dbConf, $informationObj, $moduleName, $moduleId, $utils)
     {
         $this->dbConf = $dbConf;
         $this->informationObj = $informationObj;
         $this->moduleName = $moduleName;
+        $this->moduleId = $moduleId;
         $this->utils = $utils;
 
-        $this->moduleConfiguration = $this->informationObj->getConfiguration($this->moduleName);
+        $this->moduleConfiguration = $informationObj->getConfiguration($this->moduleName);
     }
 
-    public function installModuleConfiguration()
+    public function upgrade()
+    {
+        $this->upgradeModuleConfiguration();
+
+        $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
+
+        $upgradesPath = $this->getModulePath($this->moduleName) . '/UPGRADE/';
+        $upgrades = scandir($upgradesPath);
+
+        foreach ($upgrades as $upgrade) {
+            $upgradePath = $upgradesPath . $upgrade;
+            if (!preg_match('/^' . $this->moduleName . '-(\d+\.\d+\.\d+)/', $upgrade, $matches) ||
+                !is_dir($upgradePath) || !file_exists($upgradePath . '/conf.php')) {
+                continue;
+            }
+
+            $upgrade_conf = array();
+            require $upgradePath . '/conf.php';
+
+            if ($moduleInstalledInformation["mod_release"] != $upgrade_conf[$this->moduleName]["release_from"]) {
+                continue;
+            }
+
+            $this->upgradeVersion($upgrade_conf[$this->moduleName]["release_to"]);
+            $moduleInstalledInformation["mod_release"] = $upgrade_conf[$this->moduleName]["release_to"];
+
+            $this->upgradePhpFiles($upgrade_conf, $upgradePath, true);
+            $this->upgradeSqlFiles($upgrade_conf, $upgradePath);
+            $this->upgradePhpFiles($upgrade_conf, $upgradePath, false);
+        }
+
+        return true;
+    }
+
+    /**
+     * Upgrade module information except version
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    private function upgradeModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
         if (!file_exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
 
-        $query = 'INSERT INTO modules_informations ' .
-            '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, ' .
-            '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
-            'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
-            ':sql_files , :php_files , :svc_tools , :host_tools )';
+        $query = 'UPDATE modules_informations SET ' .
+            '`name` = :name , ' .
+            '`rname` = :rname , ' .
+            '`is_removeable` = :is_removeable , ' .
+            '`infos` = :infos , ' .
+            '`author` = :author , ' .
+            '`lang_files` = :lang_files , ' .
+            '`sql_files` = :sql_files , ' .
+            '`php_files` = :php_files , ' .
+            '`svc_tools` = :svc_tools , ' .
+            '`host_tools` = :host_tools ' .
+            'WHERE id = :id';
+
         $sth = $this->dbConf->prepare($query);
 
         $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
         $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
-        $sth->bindParam(':mod_release', $this->moduleConfiguration['mod_release'], \PDO::PARAM_STR);
         $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
         $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
         $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
@@ -78,25 +127,35 @@ class Installer extends Module
         $sth->bindParam(':php_files', $this->moduleConfiguration['php_files'], \PDO::PARAM_STR);
         $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
         $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
+        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 
-        $queryMax = 'SELECT MAX(id) as id FROM modules_informations';
-        $result = $this->dbConf->query($queryMax);
-        $lastId = 0;
-        if ($row = $result->fetchRow()) {
-            $lastId = $row['id'];
-        }
-
-        return $lastId;
+        return $this->moduleId;
     }
 
-    public function installSqlFiles()
+    private function upgradeVersion($version)
+    {
+        $query = 'UPDATE modules_informations SET ' .
+            '`mod_release` = :mod_release ' .
+            'WHERE id = :id';
+
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':mod_release', $version, \PDO::PARAM_STR);
+        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+
+        $sth->execute();
+
+        return $this->moduleId;
+    }
+
+    private function upgradeSqlFiles($conf, $path)
     {
         $installed = false;
 
-        $sqlFile = $this->getModulePath($this->moduleName) . '/sql/install.sql';
-        if ($this->moduleConfiguration["sql_files"] && file_exists($sqlFile)) {
+        $sqlFile = $path . '/sql/install.sql';
+        if ($conf[$this->moduleName]["sql_files"] && file_exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
         }
@@ -104,12 +163,14 @@ class Installer extends Module
         return $installed;
     }
 
-    public function installPhpFiles()
+    private function upgradePhpFiles($conf, $path, $pre = false)
     {
         $installed = false;
 
-        $phpFile = $this->getModulePath($this->moduleName) . '/php/install.php';
-        if ($this->moduleConfiguration["php_files"] && file_exists($phpFile)) {
+        $phpFile = $path . '/php/install';
+        $phpFile = $pre ? $phpFile . '.pre.php' : $phpFile . '.php';
+
+        if ($conf[$this->moduleName]['php_files'] && file_exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
         }
