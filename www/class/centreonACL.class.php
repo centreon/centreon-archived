@@ -2099,6 +2099,7 @@ class CentreonACL
                 . "AND h.host_id = hsr.host_host_id "
                 . "AND hsr.service_service_id = s.service_id "
                 . "AND s.service_activate = '1' "
+                . "AND $db_name_acl.centreon_acl.service_id = s.service_id "
                 . "AND $db_name_acl.centreon_acl.host_id = h.host_id "
                 . "AND $db_name_acl.centreon_acl.service_id IS NOT NULL "
                 . "AND $db_name_acl.centreon_acl.service_id = s.service_id "
