@@ -53,10 +53,26 @@ require_once "Centreon/Object/Relation/Downtime/Servicegroup.php";
  */
 class CentreonDowntime extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
+    
+    /**
+     *
+     * @var array
+     */
     protected $weekDays;
+    
+    /**
+     *
+     * @var type
+     */
     protected $serviceObj;
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $availableCycles;
 
     public static $aDepends = array(
         'SERVICE',
@@ -89,6 +105,14 @@ class CentreonDowntime extends CentreonObject
             'friday'    => 5,
             'saturday'  => 6,
             'sunday'    => 7
+        );
+        
+        $this->availableCycles = array(
+            'first',
+            'second',
+            'third',
+            'fourth',
+            'last'
         );
     }
 
@@ -280,9 +304,13 @@ class CentreonDowntime extends CentreonObject
         $p[':day_of_month'] = null;
 
         $cycle = strtolower($tmp[6]);
-        if ($cycle != 'first' && $cycle != 'last') {
-            throw new CentreonClapiException(sprintf('Invalid cycle format %s. Must be "first" or "last"', $cycle));
+        
+        if (!in_array($cycle, $this->availableCycles)) {
+            throw new CentreonClapiException(
+                sprintf('Invalid cycle format %s. Must be "first", "second, "third", "fourth" or "last"', $cycle)
+            );
         }
+        
         $p[':month_cycle'] = $cycle;
         $this->insertPeriod($p);
     }
@@ -395,7 +423,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addhost($parameters)
     {
-        $object = new Centreon_Object_Host();
+        $object = new \Centreon_Object_Host();
         $this->addGenericRelation($parameters, $object, 'downtime_host_relation', 'host_host_id');
     }
 
@@ -425,7 +453,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function delhost($parameters)
     {
-        $object = new Centreon_Object_Host();
+        $object = new \Centreon_Object_Host();
         $this->delGenericRelation($parameters, $object, 'downtime_host_relation', 'host_host_id');
     }
 
@@ -436,7 +464,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addhostgroup($parameters)
     {
-        $object = new Centreon_Object_Host_Group();
+        $object = new \Centreon_Object_Host_Group();
         $this->addGenericRelation($parameters, $object, 'downtime_hostgroup_relation', 'hg_hg_id');
     }
 
@@ -466,7 +494,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function delhostgroup($parameters)
     {
-        $object = new Centreon_Object_Host_Group();
+        $object = new \Centreon_Object_Host_Group();
         $this->delGenericRelation($parameters, $object, 'downtime_hostgroup_relation', 'hg_hg_id');
     }
 
@@ -613,7 +641,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addservicegroup($parameters)
     {
-        $object = new Centreon_Object_Service_Group();
+        $object = new \Centreon_Object_Service_Group();
         $this->addGenericRelation($parameters, $object, 'downtime_servicegroup_relation', 'sg_sg_id');
     }
 
@@ -643,7 +671,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function delservicegroup($parameters)
     {
-        $object = new Centreon_Object_Service_Group();
+        $object = new \Centreon_Object_Service_Group();
         $this->delGenericRelation($parameters, $object, 'downtime_servicegroup_relation', 'sg_sg_id');
     }
 
