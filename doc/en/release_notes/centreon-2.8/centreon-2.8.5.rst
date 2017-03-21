@@ -19,7 +19,7 @@ Monitoring
 ----------
 
 * Better display in service detail with long output or long command - #4974, #4975, PR #5002
-* Recurrent downtimes, extend specific period settings to select 2nd, 2td or 5th o month - #4207
+* Recurrent downtimes, extend specific period settings to select 2nd, 2td or 5th o month - #4207, #4908
 
 Ergonomics
 ----------
