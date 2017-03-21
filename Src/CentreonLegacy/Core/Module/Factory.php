@@ -74,6 +74,16 @@ class Factory
         return new Upgrader($this->dbConf, $informationObj, $moduleName, $moduleId, $utils);
     }
 
+    public function newRemover($moduleName, $moduleId)
+    {
+        $informationObj = $this->newInformation();
+
+        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $utils = $factory->newUtils();
+
+        return new Remover($this->dbConf, $informationObj, $moduleName, $moduleId, $utils);
+    }
+
     public function newLicense()
     {
         return new License();

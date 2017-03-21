@@ -52,20 +52,15 @@ class Utils
             throw new \Exception('Cannot execute sql file "' . $fileName . '" : File does not exist.');
         }
 
-        $content = file_get_contents($fileName);
-        if (!$content) {
-            throw new \Exception('Cannot get file content of "' . $fileName . '".');
-        }
-
-        $content = $this->replaceMacros($content);
-        $lines = explode($content, "\n");
-
-        foreach ($lines as $line) {
-            $line = trim($line);
+        $file = fopen($fileName, "r");
+        while (!feof($file)) {
+            $line = fgets($file);
+            $line = $this->replaceMacros($line);
             if (!preg_match('/^(--|#)/', $line)) {
                 $this->dbConf->query($line);
             }
         }
+        fclose($file);
     }
 
     public function executePhpFile($fileName)
