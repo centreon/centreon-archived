@@ -55,12 +55,14 @@ $tpl->assign("headerMenu_release_to", _("Final release"));
 $tpl->assign("headerMenu_author", _("Author"));
 $tpl->assign("headerMenu_infos", _("Additional Information"));
 $tpl->assign("headerMenu_isinstalled", _("Installed"));
-$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
 
 $moduleFactory = new CentreonLegacy\Core\Module\Factory();
 $moduleInfoObj = $moduleFactory->newInformation();
 
-$name = $moduleInfoObj->getNameById($id);
+if (is_null($name)) {
+    $name = $moduleInfoObj->getNameById($id);
+}
+$moduleUpgrader = $moduleFactory->newUpgrader($name, $id);
 
 $moduleInfo = $moduleInfoObj->getConfiguration($name);
 $moduleInstalledInfo = $moduleInfoObj->getInstalledInformation($name);
@@ -71,17 +73,22 @@ $form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"
 $form->addElement('submit', 'upgrade', _("Upgrade"), array("class" => "btc bt_success"));
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue("u");
+if (!is_null($id)) {
+    $hid_id = $form->addElement('hidden', 'id');
+    $hid_id->setValue($id);
+}
 
-$moduleUpgrader = $moduleFactory->newUpgrader($name, $id);
+$upgradeAvailable = false;
+if ($moduleInstalledInfo["mod_release"] != $moduleInfo["mod_release"]) {
+    $upgradeAvailable = true;
+}
 if ($form->validate()) {
     $upgrade_ok = $moduleUpgrader->upgrade();
     if ($upgrade_ok) {
-        $tpl->assign("output1", _("Module installed and registered"));
+        $upgradeAvailable = false;
         $centreon->creatModuleList($pearDB);
         $centreon->user->access->updateTopologyStr();
         $centreon->initHooks();
-    } else {
-        $tpl->assign("output4", _("Unable to install module"));
     }
 
     if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt")) {
@@ -91,31 +98,22 @@ if ($form->validate()) {
     } else {
         $upgrade_infosTxt = false;
     }
-
-
-
-    $hid_id = $form->addElement('hidden', 'id');
-    $hid_id->setValue($id);
-    $up_name = $form->addElement('hidden', 'filename');
-    $up_name->setValue($filename);
 }
 
 $module = array(
     "upgrade_rname" => $moduleInfo["rname"],
-    "upgrade_release_from" => $moduleInfo["mod_release"],
-    "upgrade_release_to" => $moduleUpgrader->getLastAvailableVersion(),
-    "upgrade_author" => $upgrade_conf[$moduleinfo["name"]]["author"],
-    "upgrade_infos" => $upgrade_conf[$moduleinfo["name"]]["infos"],
+    "upgrade_release_from" => $moduleInstalledInfo["mod_release"],
+    "upgrade_release_to" => $moduleInfo["mod_release"],
+    "upgrade_author" => $moduleInfo["author"],
+    "upgrade_infos" =>$moduleInfo["infos"],
     "upgrade_infosTxt" => $upgrade_infosTxt,
-    "upgrade_is_validUp" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? _("Yes") : _("No"),
-    "upgrade_choice" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false
+    "upgrade_available" => $upgradeAvailable
 );
 
-$tpl->assign("elemArr", $elemArr);
+$tpl->assign("module", $module);
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
-
 
 /**
  * Display form

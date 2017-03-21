@@ -65,7 +65,7 @@ class Information extends Module
     /**
      * Get module configuration from file
      *
-     * @param $moduleName
+     * @param $moduleId
      * @return mixed
      */
     public function getNameById($moduleId)

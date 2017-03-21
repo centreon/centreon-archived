@@ -55,139 +55,65 @@ $tpl->assign("headerMenu_release_to", _("Final release"));
 $tpl->assign("headerMenu_author", _("Author"));
 $tpl->assign("headerMenu_infos", _("Additional Information"));
 $tpl->assign("headerMenu_isinstalled", _("Installed"));
-$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
 
 $moduleFactory = new CentreonLegacy\Core\Module\Factory();
 $moduleInfoObj = $moduleFactory->newInformation();
-
-if (is_null($name)) {
-    $name = $moduleInfoObj->getNameById($id);
-}
-
 $moduleInfo = $moduleInfoObj->getConfiguration($name);
 
-
-$moduleUpgrader = $moduleFactory->newUpgrader($name, $id);
-echo '<pre>';
-$upgrade_ok = $moduleUpgrader->upgrade();
-echo '<pre>';
-
-/*
- * "Name" case, it's not a module which is installed
- */
-if ($operationType === 'install') {
-    $flag = false;
-    $tpl->assign("module_rname", $moduleInfo["rname"]);
-    $tpl->assign("module_release", $moduleInfo["mod_release"]);
-    $tpl->assign("module_author", $moduleInfo["author"]);
-    $tpl->assign("module_infos", $moduleInfo["infos"]);
-    if (file_exists($moduleInfoObj->getModulePath() . "/infos/infos.txt")) {
-        $content = file_get_contents($moduleInfo->getModulePath() . "/infos/infos.txt");
-        $content = implode("<br />", $content);
-        $tpl->assign("module_infosTxt", $content);
-    } else {
-        $tpl->assign("module_infosTxt", false);
-    }
-
-    $form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
-
-    if ($form1->validate()) {
-        $moduleInstaller = $moduleFactory->newInstaller($name);
-
-        $insert_ok = $moduleInstaller->installModuleConfiguration();
-
-        if ($insert_ok) {
-
-            $tpl->assign("output1", _("Module installed and registered"));
-
-            /* SQL installation */
-            if ($moduleInstaller->installSqlFiles()) {
-                $tpl->assign("output2", _("SQL file included"));
-            }
-
-            /* PHP installation */
-            if ($moduleInstaller->installPhpFiles()) {
-                $tpl->assign("output3", _("PHP file included"));
-            }
-
-            /* Rebuild modules in centreon object */
-            $centreon->creatModuleList($pearDB);
-            $centreon->user->access->updateTopologyStr();
-            $centreon->initHooks();
-        } else {
-            $tpl->assign("output4", _("Unable to install module"));
-        }
-    } else {
-        $form1->addElement('submit', 'install', _("Install Module"), array("class" => "btc bt_success"));
-        $redirect = $form1->addElement('hidden', 'o');
-        $redirect->setValue("i");
-    }
-    $form1->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
-    $hid_name = $form1->addElement('hidden', 'name');
-    $hid_name->setValue($name);
-    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-    $form1->accept($renderer);
-    $tpl->assign('form1', $renderer->toArray());
-} elseif ($operationType === 'upgrade') {
-    $elemArr = array();
-    $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-    $form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
-    $form->addElement('submit', 'upgrade', _("Upgrade"), array("class" => "btc bt_success"));
-    $redirect = $form2->addElement('hidden', 'o');
-    $redirect->setValue("u");
-
-    $moduleInstalledInfo = $moduleInfoObj->getInstalledInformation($name);
-    $moduleUpgrader = $moduleFactory->newUpgrader($name, $id);
-    if ($form->validate()) {
-        $upgrade_ok = $moduleUpgrader->upgrade();
-        if ($upgrade_ok) {
-            $tpl->assign("output1", _("Module installed and registered"));
-            $centreon->creatModuleList($pearDB);
-            $centreon->user->access->updateTopologyStr();
-            $centreon->initHooks();
-        } else {
-            $tpl->assign("output4", _("Unable to install module"));
-        }
-
-        if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt")) {
-            $infos_streams = file(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
-            $infos_streams = implode("<br />", $infos_streams);
-            $upgrade_infosTxt = $infos_streams;
-        } else {
-            $upgrade_infosTxt = false;
-        }
-
-        $elemArr[$i] = array(
-            "upgrade_rname" => $upgrade_conf[$moduleinfo["name"]]["rname"],
-            "upgrade_release_from" => $upgrade_conf[$moduleinfo["name"]]["release_from"],
-            "upgrade_release_to" => $upgrade_conf[$moduleinfo["name"]]["release_to"],
-            "upgrade_author" => $upgrade_conf[$moduleinfo["name"]]["author"],
-            "upgrade_infos" => $upgrade_conf[$moduleinfo["name"]]["infos"],
-            "upgrade_infosTxt" => $upgrade_infosTxt,
-            "upgrade_is_validUp" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? _("Yes") : _("No"),
-            "upgrade_choice" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false
-        );
-
-        $hid_id = $form->addElement('hidden', 'id');
-        $hid_id->setValue($id);
-        $up_name = $form->addElement('hidden', 'filename');
-        $up_name->setValue($filename);
-    }
-
-    $moduleinfo = array();
-    $moduleinfo = getModuleInfoInDB(null, $id);
-    $tpl->assign("module_rname", $moduleinfo["rname"]);
-    $tpl->assign("module_release", $moduleinfo["mod_release"]);
-    $tpl->assign("module_author", $moduleinfo["author"]);
-    $tpl->assign("module_infos", $moduleinfo["infos"]);
-    $tpl->assign("module_isinstalled", _("Yes"));
-    $tpl->assign("elemArr", $elemArr);
-    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-    $form->accept($renderer);
-    $tpl->assign('form', $renderer->toArray());
+$tpl->assign("module_rname", $moduleInfo["rname"]);
+$tpl->assign("module_release", $moduleInfo["mod_release"]);
+$tpl->assign("module_author", $moduleInfo["author"]);
+$tpl->assign("module_infos", $moduleInfo["infos"]);
+if (file_exists($moduleInfoObj->getModulePath() . "/infos/infos.txt")) {
+    $content = file_get_contents($moduleInfo->getModulePath() . "/infos/infos.txt");
+    $content = implode("<br />", $content);
+    $tpl->assign("module_infosTxt", $content);
+} else {
+    $tpl->assign("module_infosTxt", false);
 }
+
+$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
+
+if ($form1->validate()) {
+    $moduleInstaller = $moduleFactory->newInstaller($name);
+
+    $insert_ok = $moduleInstaller->installModuleConfiguration();
+
+    if ($insert_ok) {
+
+        $tpl->assign("output1", _("Module installed and registered"));
+
+        /* SQL installation */
+        if ($moduleInstaller->installSqlFiles()) {
+            $tpl->assign("output2", _("SQL file included"));
+        }
+
+        /* PHP installation */
+        if ($moduleInstaller->installPhpFiles()) {
+            $tpl->assign("output3", _("PHP file included"));
+        }
+
+        /* Rebuild modules in centreon object */
+        $centreon->creatModuleList($pearDB);
+        $centreon->user->access->updateTopologyStr();
+        $centreon->initHooks();
+    } else {
+        $tpl->assign("output4", _("Unable to install module"));
+    }
+} else {
+    $form1->addElement('submit', 'install', _("Install Module"), array("class" => "btc bt_success"));
+    $redirect = $form1->addElement('hidden', 'o');
+    $redirect->setValue("i");
+}
+
+$form1->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
+$hid_name = $form1->addElement('hidden', 'name');
+$hid_name->setValue($name);
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form1->accept($renderer);
+$tpl->assign('form1', $renderer->toArray());
 
 /**
  * Display form
  */
-$tpl->display("formModule.ihtml");
+$tpl->display("installForm.tpl");
