@@ -255,8 +255,13 @@ class CentreonHostGroup extends CentreonObject
             $filters = array('hg_id' => $filter_id);
         }
         parent::export($filters);
+<<<<<<< HEAD
         $relObj = new \Centreon_Object_Relation_Host_Group_Host();
         $hostObj = new \Centreon_Object_Host();
+=======
+        $relObj = new Centreon_Object_Relation_Host_Group_Host();
+        $hostObj = new Centreon_Object_Host();
+>>>>>>> 88639a7... Centreon CLAPI export add hostgroup
         $hgFieldName = $this->object->getUniqueLabelField();
         $hFieldName = $hostObj->getUniqueLabelField();
         $elements = $relObj->getMergedParameters(
@@ -269,10 +274,15 @@ class CentreonHostGroup extends CentreonObject
         );
         foreach ($elements as $element) {
             $this->api->export_filter('HOST', $element['host_id'], $element[$hFieldName]);
+<<<<<<< HEAD
             echo $this->action . $this->delim
                 . "addhost" . $this->delim
                 . $element[$hgFieldName] . $this->delim
                 . $element[$hFieldName] . "\n";
+=======
+            echo $this->action . $this->delim .
+                "addhost" . $this->delim . $element[$hgFieldName] . $this->delim.$element[$hFieldName] . "\n";
+>>>>>>> 88639a7... Centreon CLAPI export add hostgroup
         }
     }
 }
