@@ -22,6 +22,8 @@ function displayResults(moduleList) {
         if (module["status"] === "critical") {
             modalBoxId = 'criticalBox_' + moduleName;
             jQuery('#' + modalBoxId).remove();
+            jQuery('#action' + moduleName + '[href*="o=i"]').remove();
+            jQuery('#action' + moduleName + '[href*="o=u"]').remove();
             var criticalModalBox = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable" ';
             criticalModalBox += 'id="'+ modalBoxId +'"';
             criticalModalBox += 'style="margin-right: auto; margin-left: auto;" title="Module Error">';

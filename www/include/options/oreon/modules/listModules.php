@@ -42,8 +42,10 @@ $moduleInfoObj = $factory->newInformation();
 
 if ($id && $o == "d") {
     $moduleName = $moduleInfoObj->getNameById($id);
-    $removerObj = $factory->newRemover($moduleName, $id);
-    $removerObj->remove();
+    if (!is_null($moduleName)) {
+        $removerObj = $factory->newRemover($moduleName, $id);
+        $removerObj->remove();
+    }
 }
 
 /*

@@ -100,7 +100,7 @@ if ($form1->validate()) {
     } else {
         $tpl->assign("output4", _("Unable to install module"));
     }
-} else {
+} elseif ($o == 'i' && !$moduleInfoObj->getInstalledInformation($name)) {
     $form1->addElement('submit', 'install', _("Install Module"), array("class" => "btc bt_success"));
     $redirect = $form1->addElement('hidden', 'o');
     $redirect->setValue("i");
