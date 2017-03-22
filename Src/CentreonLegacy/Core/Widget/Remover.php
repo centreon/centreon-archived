@@ -39,79 +39,26 @@ class Remover extends Widget
 {
     protected $dbConf;
     protected $informationObj;
-    protected $moduleName;
-    protected $moduleId;
+    protected $widgetName;
     protected $utils;
-    private $moduleConfiguration;
 
-    public function __construct($dbConf, $informationObj, $moduleName, $moduleId, $utils)
+    public function __construct($dbConf, $informationObj, $widgetName, $utils)
     {
         $this->dbConf = $dbConf;
         $this->informationObj = $informationObj;
-        $this->moduleName = $moduleName;
-        $this->moduleId = $moduleId;
+        $this->widgetName = $widgetName;
         $this->utils = $utils;
-
-        $this->moduleConfiguration = $informationObj->getConfiguration($this->moduleName);
     }
 
     public function remove()
     {
-        $this->removeModuleConfiguration();
-
-        $this->removeSqlFiles();
-        $this->removePhpFiles();
-
-        return true;
-    }
-
-    /**
-     * Remove module information except version
-     *
-     * @return mixed
-     * @throws \Exception
-     */
-    private function removeModuleConfiguration()
-    {
-        $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!file_exists($configurationFile)) {
-            throw new \Exception('Module configuration file not found.');
-        }
-
-        $query = 'DELETE FROM modules_informations WHERE id = :id ';
+        $query = 'DELETE FROM widget_models ' .
+            'WHERE directory = :directory ';
 
         $sth = $this->dbConf->prepare($query);
 
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
         $sth->execute();
-
-        return true;
-    }
-
-    private function removeSqlFiles()
-    {
-        $removed = false;
-
-        $sqlFile = $this->getModulePath($this->moduleName) . '/sql/uninstall.sql';
-        if ($this->moduleConfiguration["sql_files"] && file_exists($sqlFile)) {
-            $this->utils->executeSqlFile($sqlFile);
-            $removed = true;
-        }
-
-        return $removed;
-    }
-
-    private function removePhpFiles()
-    {
-        $removed = false;
-
-        $phpFile = $this->getModulePath($this->moduleName) . '/php/uninstall.php';
-        if ($this->moduleConfiguration["php_files"] && file_exists($phpFile)) {
-            $this->utils->executePhpFile($phpFile);
-            $removed = true;
-        }
-
-        return $removed;
     }
 }

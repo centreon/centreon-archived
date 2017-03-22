@@ -39,81 +39,180 @@ class Installer extends Widget
 {
     protected $dbConf;
     protected $informationObj;
-    protected $moduleName;
+    protected $widgetName;
     protected $utils;
-    private $moduleConfiguration;
+    private $widgetConfiguration;
 
-    public function __construct($dbConf, $informationObj, $moduleName, $utils)
+    public function __construct($dbConf, $informationObj, $widgetName, $utils)
     {
         $this->dbConf = $dbConf;
         $this->informationObj = $informationObj;
-        $this->moduleName = $moduleName;
+        $this->widgetName = $widgetName;
         $this->utils = $utils;
 
-        $this->moduleConfiguration = $this->informationObj->getConfiguration($this->moduleName);
+        $this->widgetConfiguration = $this->informationObj->getConfiguration($this->widgetName);
     }
 
-    public function installModuleConfiguration()
+    public function install()
     {
-        $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!file_exists($configurationFile)) {
-            throw new \Exception('Module configuration file not found.');
-        }
+        $query = 'INSERT INTO widget_models ' .
+            '(title, description, url, version, directory, author, ' .
+            'email, website, keywords, thumbnail, autoRefresh) ' .
+            'VALUES (:title, :description, :url, :version, :directory, :author, ' .
+            ':email, :website, :keywords, :thumbnail, :autoRefresh) ';
 
-        $query = 'INSERT INTO modules_informations ' .
-            '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, ' .
-            '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
-            'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
-            ':sql_files , :php_files , :svc_tools , :host_tools )';
         $sth = $this->dbConf->prepare($query);
 
-        $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
-        $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
-        $sth->bindParam(':mod_release', $this->moduleConfiguration['mod_release'], \PDO::PARAM_STR);
-        $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
-        $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
-        $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':lang_files', $this->moduleConfiguration['lang_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':sql_files', $this->moduleConfiguration['sql_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':php_files', $this->moduleConfiguration['php_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
+        $sth->bindParam(':title', $this->widgetConfiguration['title'], \PDO::PARAM_STR);
+        $sth->bindParam(':description', $this->widgetConfiguration['description'], \PDO::PARAM_STR);
+        $sth->bindParam(':url', $this->widgetConfiguration['url'], \PDO::PARAM_STR);
+        $sth->bindParam(':version', $this->widgetConfiguration['version'], \PDO::PARAM_STR);
+        $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
+        $sth->bindParam(':author', $this->widgetConfiguration['author'], \PDO::PARAM_STR);
+        $sth->bindParam(':email', $this->widgetConfiguration['email'], \PDO::PARAM_STR);
+        $sth->bindParam(':website', $this->widgetConfiguration['website'], \PDO::PARAM_STR);
+        $sth->bindParam(':keywords', $this->widgetConfiguration['keywords'], \PDO::PARAM_STR);
+        $sth->bindParam(':thumbnail', $this->widgetConfiguration['thumbnail'], \PDO::PARAM_STR);
+        $sth->bindParam(':autoRefresh', $this->widgetConfiguration['autoRefresh'], \PDO::PARAM_STR);
 
         $sth->execute();
 
-        $queryMax = 'SELECT MAX(id) as id FROM modules_informations';
+        $queryMax = 'SELECT MAX(widget_model_id) as id FROM widget_models';
         $result = $this->dbConf->query($queryMax);
         $lastId = 0;
         if ($row = $result->fetchRow()) {
             $lastId = $row['id'];
         }
 
+        $this->installPreferences($lastId);
+
         return $lastId;
     }
 
-    public function installSqlFiles()
+    protected function installPreferences($id)
     {
-        $installed = false;
-
-        $sqlFile = $this->getModulePath($this->moduleName) . '/sql/install.sql';
-        if ($this->moduleConfiguration["sql_files"] && file_exists($sqlFile)) {
-            $this->utils->executeSqlFile($sqlFile);
-            $installed = true;
+        if (!isset($this->widgetConfiguration['preferences'])) {
+            return null;
         }
 
-        return $installed;
+        $types = $this->getTypes();
+
+        foreach ($this->widgetConfiguration['preferences'] as $preferences) {
+            $order = 1;
+            if (isset($preferences['@attributes'])) {
+                $preferences = array($preferences['@attributes']);
+            }
+
+            foreach ($preferences as $preference) {
+                $attr = $preference['@attributes'];
+                if (!isset($types[$attr['type']])) {
+                    throw new \Exception('Unknown type : ' . $attr['type'] . ' found in configuration file');
+                }
+                $attr['requirePermission'] = isset($attr['requirePermission']) ? $attr['requirePermission'] : 0;
+                $attr['defaultValue'] = isset($attr['defaultValue']) ? $attr['defaultValue'] : '';
+                $attr['header'] = (isset($attr['header']) && $attr['header'] != "") ? $attr['header'] : null;
+                $attr['order'] = $order;
+                $attr['type'] = $types[$attr['type']]['id'];
+
+                $this->installParameters($id, $attr, $preference);
+                $order++;
+            }
+        }
     }
 
-    public function installPhpFiles()
+    private function installParameters($id, $parameters, $preference)
     {
-        $installed = false;
+        $query = 'INSERT INTO widget_parameters ' .
+            '(widget_model_id, field_type_id, parameter_name, parameter_code_name, ' .
+            'default_value, parameter_order, require_permission, header_title) ' .
+            'VALUES ' .
+            '(:widget_model_id, :field_type_id, :parameter_name, :parameter_code_name, ' .
+            ':default_value, :parameter_order, :require_permission, :header_title) ';
 
-        $phpFile = $this->getModulePath($this->moduleName) . '/php/install.php';
-        if ($this->moduleConfiguration["php_files"] && file_exists($phpFile)) {
-            $this->utils->executePhpFile($phpFile);
-            $installed = true;
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':widget_model_id', $id, \PDO::PARAM_INT);
+        $sth->bindParam(':field_type_id', $parameters['type'], \PDO::PARAM_INT);
+        $sth->bindParam(':parameter_name', $parameters['label'], \PDO::PARAM_STR);
+        $sth->bindParam(':parameter_code_name', $parameters['name'], \PDO::PARAM_STR);
+        $sth->bindParam(':default_value', $parameters['defaultValue'], \PDO::PARAM_STR);
+        $sth->bindParam(':parameter_order', $parameters['order'], \PDO::PARAM_STR);
+        $sth->bindParam(':require_permission', $parameters['requirePermission'], \PDO::PARAM_STR);
+        $sth->bindParam(':header_title', $parameters['header'], \PDO::PARAM_STR);
+
+        $sth->execute();
+
+        $lastId = $this->informationObj->getParameterIdByName($parameters['label']);
+
+        switch ($parameters['type']) {
+            case "list":
+            case "sort":
+                $this->installMultipleOption($lastId, $parameters);
+                break;
+            case "range":
+                $this->installRangeOption($lastId, $preference);
+                break;
+        }
+    }
+
+    private function installMultipleOption($paramId, $preference)
+    {
+        if (!isset($preference['option'])) {
+            return null;
         }
 
-        return $installed;
+        $query = 'INSERT INTO widget_parameters_multiple_options ' .
+            '(parameter_id, option_name, option_value) VALUES ' .
+            '(:parameter_id, :option_name, :option_value) ';
+
+        $sth = $this->dbConf->prepare($query);
+
+        foreach ($preference['option'] as $option) {
+            if (isset($option['@attributes'])) {
+                $opt = $option['@attributes'];
+            } else {
+                $opt = $option;
+            }
+
+            $sth->bindParam(':parameter_id', $paramId, \PDO::PARAM_INT);
+            $sth->bindParam(':option_name', $opt['label'], \PDO::PARAM_STR);
+            $sth->bindParam(':option_value', $opt['value'], \PDO::PARAM_STR);
+
+            $sth->execute();
+        }
+    }
+
+    private function installRangeOption($paramId, $attr)
+    {
+        $query = 'INSERT INTO widget_parameters_range (parameter_id, min_range, max_range, step) ' .
+            'VALUES (:parameter_id, :min_range, :max_range, :step) ';
+
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':parameter_id', $paramId, \PDO::PARAM_INT);
+        $sth->bindParam(':min_range', $attr['min'], \PDO::PARAM_INT);
+        $sth->bindParam(':max_range', $attr['max'], \PDO::PARAM_INT);
+        $sth->bindParam(':step', $attr['step'], \PDO::PARAM_INT);
+
+        $sth->execute();
+    }
+
+    private function getTypes()
+    {
+        $types = array();
+
+        $query = 'SELECT ft_typename, field_type_id ' .
+            'FROM widget_parameters_field_type ';
+
+        $result = $this->dbConf->query($query);
+
+        while ($row = $result->fetchRow()) {
+            $types[$row['ft_typename']] = array(
+                'id' => $row['field_type_id'],
+                'name' => $row['ft_typename']
+            );
+        }
+
+        return $types;
     }
 }

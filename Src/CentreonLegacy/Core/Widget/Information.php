@@ -49,17 +49,36 @@ class Information extends Widget
     /**
      * Get module configuration from file
      *
-     * @param $moduleName
+     * @param $widgetName
      * @return mixed
      */
-    public function getConfiguration($moduleName)
+    public function getConfiguration($widgetName)
     {
-        $configurationFile = $this->getWidgetPath($moduleName) . '/conf.php';
+        $xml = simplexml_load_file($this->getWidgetPath($widgetName) . '/configs.xml');
+        $conf = $this->utils->objectIntoArray($xml);
 
-        $module_conf = array();
-        require $configurationFile;
+        $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
 
-        return $module_conf[$moduleName];
+        return $conf;
+    }
+
+    public function getParameterIdByName($name)
+    {
+        $query = 'SELECT parameter_id ' .
+            'FROM widget_parameters ' .
+            'WHERE parameter_name = :name';
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':name', $name, \PDO::PARAM_STR);
+
+        $sth->execute();
+
+        $id = null;
+        if ($row = $sth->fetch()) {
+            $id = $row['parameter_id'];
+        }
+
+        return $id;
     }
 
     /**
@@ -141,15 +160,7 @@ class Information extends Widget
                 continue;
             }
 
-            $xmlElement = simplexml_load_file(
-                $this->getWidgetPath($widget) . '/configs.xml',
-                'SimpleXMLElement',
-                LIBXML_NOCDATA
-            );
-            $json = json_encode($xmlElement);
-            $widgetConf = json_decode($json, true);
-
-            $widgetsConf[$widget] = $widgetConf;
+            $widgetsConf[$widget] = $this->getConfiguration($widget);
         }
 
         return $widgetsConf;
@@ -168,14 +179,13 @@ class Information extends Widget
         $widgets = array();
 
         foreach ($availableWidgets as $name => $properties) {
-
             $widgets[$name] = $properties;
             $widgets[$name]['source_available'] = true;
             $widgets[$name]['is_installed'] = false;
             $widgets[$name]['upgradeable'] = false;
             $widgets[$name]['installed_version'] = _('N/A');
             $widgets[$name]['available_version'] = $widgets[$name]['version'];
-            unset($widgets[$name]['release']);
+            unset($widgets[$name]['version']);
             if (isset($installedWidgets[$name])) {
                 $widgets[$name]['id'] = $installedWidgets[$name]['widget_model_id'];
                 $widgets[$name]['is_installed'] = true;

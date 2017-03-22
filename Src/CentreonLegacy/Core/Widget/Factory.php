@@ -75,13 +75,13 @@ class Factory
         return new Upgrader($this->dbConf, $informationObj, $widgetName, $widgetId, $utils);
     }
 
-    public function newRemover($widgetName, $widgetId)
+    public function newRemover($widgetName)
     {
         $informationObj = $this->newInformation();
 
         $factory = new \CentreonLegacy\Core\Utils\Factory();
         $utils = $factory->newUtils();
 
-        return new Remover($this->dbConf, $informationObj, $widgetName, $widgetId, $utils);
+        return new Remover($this->dbConf, $informationObj, $widgetName, $utils);
     }
 }

@@ -39,20 +39,18 @@ class Upgrader extends Widget
 {
     protected $dbConf;
     protected $informationObj;
-    protected $moduleName;
-    protected $moduleId;
+    protected $widgetName;
     protected $utils;
     private $moduleConfiguration;
 
-    public function __construct($dbConf, $informationObj, $moduleName, $moduleId, $utils)
+    public function __construct($dbConf, $informationObj, $widgetName, $utils)
     {
         $this->dbConf = $dbConf;
         $this->informationObj = $informationObj;
-        $this->moduleName = $moduleName;
-        $this->moduleId = $moduleId;
+        $this->widgetName = $widgetName;
         $this->utils = $utils;
 
-        $this->moduleConfiguration = $informationObj->getConfiguration($this->moduleName);
+        $this->moduleConfiguration = $informationObj->getConfiguration($this->widgetName);
     }
 
     public function upgrade()
@@ -148,33 +146,5 @@ class Upgrader extends Widget
         $sth->execute();
 
         return $this->moduleId;
-    }
-
-    private function upgradeSqlFiles($conf, $path)
-    {
-        $installed = false;
-
-        $sqlFile = $path . '/sql/install.sql';
-        if ($conf[$this->moduleName]["sql_files"] && file_exists($sqlFile)) {
-            $this->utils->executeSqlFile($sqlFile);
-            $installed = true;
-        }
-
-        return $installed;
-    }
-
-    private function upgradePhpFiles($conf, $path, $pre = false)
-    {
-        $installed = false;
-
-        $phpFile = $path . '/php/install';
-        $phpFile = $pre ? $phpFile . '.pre.php' : $phpFile . '.php';
-
-        if ($conf[$this->moduleName]['php_files'] && file_exists($phpFile)) {
-            $this->utils->executePhpFile($phpFile);
-            $installed = true;
-        }
-
-        return $installed;
     }
 }

@@ -87,8 +87,6 @@ class Information extends Module
         return $name;
     }
 
-
-
     /**
      * Get list of installed modules
      *

@@ -42,6 +42,10 @@ require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
 
 session_start();
 
+require_once realpath(dirname(__FILE__) . "/../../../../../autoload.php");
+$factory = new \CentreonLegacy\Core\Widget\Factory();
+$widgetInfoObj = $factory->newInformation();
+
 $xml = new CentreonXML();
 $xml->startElement('response');
 try {
@@ -57,13 +61,16 @@ try {
     $widgetObj = new CentreonWidget($centreon, $db);
     switch ($action) {
         case 'install':
-            $widgetObj->install(_CENTREON_PATH_."www/widgets/", $directory);
+            $widgetInstaller = $factory->newInstaller($directory);
+            $widgetInstaller->install();
             break;
         case 'uninstall':
-            $widgetObj->uninstall($directory);
+            $widgetRemover = $factory->newRemover($directory);
+            $widgetRemover->remove($directory);
             break;
         case 'upgrade':
-            $widgetObj->upgrade(_CENTREON_PATH_."www/widgets/", $directory);
+            $widgetUpgrader = $factory->newUpgrader($directory);
+            $widgetUpgrader->upgrade($directory);
             break;
         default:
             throw new Exception('Unknown action');
