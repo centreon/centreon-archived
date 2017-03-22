@@ -32,7 +32,7 @@
 			{if $properties.upgradeable}
                 <a id="action{$properties.name}" href="?p={$p}&o=u&id={$properties.id}"><img src='./img/icons/upgrade.png' class='ico-16 margin_right' title='{t}Upgrade{/t}' alt='{t}Upgrade{/t}'></a>
             {/if}
-            {if $properties.is_installed}
+            {if $properties.is_installed && $properties.source_available}
 				<a id="action{$properties.name}" href="?p={$p}&o=d&id={$properties.id}"><img src='./img/icons/delete.png' class='ico-16 margin_right' title='{t}Uninstall Module{/t}' alt='{t}Uninstall Module{/t}' onclick="return confirm('{t}Do you confirm the deletion?{/t}')"></a>
 			{/if}
 		</td>
