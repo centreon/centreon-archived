@@ -20,6 +20,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         ));
 
         $newHostTemplate->save();
+        $hostTemplate = new HostTemplateConfigurationListingPage($this, false);
 
         $centreonDb = $this->getCentreonDatabase();
         $centreonDb->query("UPDATE host SET host_locked = 1 WHERE host_name = 'myHostTemplate'");
@@ -29,7 +30,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         $hostTemplate = $hostTemplate['myHostTemplate'];
 
         if (!$hostTemplate['locked']) {
-            throw new \Exception('the host template' . $hostTemplate . 'is not locked');
+            throw new \Exception('the host template myHostTemplate is not locked');
         };
     }
 

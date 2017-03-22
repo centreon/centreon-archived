@@ -66,13 +66,20 @@ class HostTemplateConfigurationContext extends CentreonContext
      */
     public function iCanConfigureDirectlyItsParentTemplate()
     {
+        // Click on template edition link (will open new window).
         $this->assertFind('css', 'ul#template img[src*="edit_mode.png"]')->click();
+        $this->spin(
+            function ($context) {
+                $windows = $context->getSession()->getWindowNames();
+                return count($windows) > 1;
+            },
+            'Host template configuration window is not opened.',
+            10
+        );
         $windows = $this->getSession()->getWindowNames();
-        if (!isset($windows[1])) {
-            throw new \Exception('Host template configuration page is not opened.');
-        }
         $this->getSession()->switchToWindow($windows[1]);
 
+        // Check properties of the host template.
         $this->page = new HostTemplateConfigurationPage($this, false);
         $properties = $this->page->getProperties();
         if ($properties['name'] != 'generic-host') {

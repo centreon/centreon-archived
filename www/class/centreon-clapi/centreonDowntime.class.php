@@ -53,10 +53,26 @@ require_once "Centreon/Object/Relation/Downtime/Servicegroup.php";
  */
 class CentreonDowntime extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
+    
+    /**
+     *
+     * @var array
+     */
     protected $weekDays;
+    
+    /**
+     *
+     * @var type
+     */
     protected $serviceObj;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $availableCycles;
 
     public static $aDepends = array(
         'SERVICE',
@@ -90,12 +106,20 @@ class CentreonDowntime extends CentreonObject
             'saturday'  => 6,
             'sunday'    => 7
         );
+        
+        $this->availableCycles = array(
+            'first',
+            'second',
+            'third',
+            'fourth',
+            'last'
+        );
     }
 
     /**
      * Display all Host Groups
      *
-     * @param string $parameters
+     * @param  string $parameters
      * @return void
      */
     public function show($parameters = null)
@@ -121,7 +145,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add action
      *
-     * @param string $parameters
+     * @param  string $parameters
      * @return void
      * @throws CentreonClapiException
      */
@@ -142,7 +166,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Set params
      *
-     * @param string $parameters
+     * @param  string $parameters
      * @return void
      * @throws CentreonClapiException
      */
@@ -166,7 +190,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * List periods
      *
-     * @param string $parameters | downtime name
+     * @param  string $parameters | downtime name
      * @throws CentreonClapiException
      */
     public function listperiods($parameters)
@@ -194,7 +218,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add weekly period
      *
-     * @param string $parameters | downtime_name;start;end;fixed;duration;monday...sunday
+     * @param  string $parameters | downtime_name;start;end;fixed;duration;monday...sunday
      * @throws CentreonClapiException
      */
     public function addweeklyperiod($parameters)
@@ -253,7 +277,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add specific period
      *
-     * @param string $parameters | downtime_name;start;end;fixed;duration;monday...sunday;first,last
+     * @param  string $parameters | downtime_name;start;end;fixed;duration;monday...sunday;first,last
      * @throws CentreonClapiException
      */
     public function addspecificperiod($parameters)
@@ -280,9 +304,13 @@ class CentreonDowntime extends CentreonObject
         $p[':day_of_month'] = null;
 
         $cycle = strtolower($tmp[6]);
-        if ($cycle != 'first' && $cycle != 'last') {
-            throw new CentreonClapiException(sprintf('Invalid cycle format %s. Must be "first" or "last"', $cycle));
+        
+        if (!in_array($cycle, $this->availableCycles)) {
+            throw new CentreonClapiException(
+                sprintf('Invalid cycle format %s. Must be "first", "second, "third", "fourth" or "last"', $cycle)
+            );
         }
+        
         $p[':month_cycle'] = $cycle;
         $this->insertPeriod($p);
     }
@@ -291,7 +319,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Delete period from downtime
      *
-     * @param string $parameters | downtime_name;position to delete
+     * @param  string $parameters | downtime_name;position to delete
      * @throws CentreonClapiException
      */
     public function delperiod($parameters)
@@ -395,7 +423,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addhost($parameters)
     {
-        $object = new Centreon_Object_Host();
+        $object = new \Centreon_Object_Host();
         $this->addGenericRelation($parameters, $object, 'downtime_host_relation', 'host_host_id');
     }
 
@@ -425,7 +453,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function delhost($parameters)
     {
-        $object = new Centreon_Object_Host();
+        $object = new \Centreon_Object_Host();
         $this->delGenericRelation($parameters, $object, 'downtime_host_relation', 'host_host_id');
     }
 
@@ -436,7 +464,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addhostgroup($parameters)
     {
-        $object = new Centreon_Object_Host_Group();
+        $object = new \Centreon_Object_Host_Group();
         $this->addGenericRelation($parameters, $object, 'downtime_hostgroup_relation', 'hg_hg_id');
     }
 
@@ -466,7 +494,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function delhostgroup($parameters)
     {
-        $object = new Centreon_Object_Host_Group();
+        $object = new \Centreon_Object_Host_Group();
         $this->delGenericRelation($parameters, $object, 'downtime_hostgroup_relation', 'hg_hg_id');
     }
 
@@ -613,7 +641,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addservicegroup($parameters)
     {
-        $object = new Centreon_Object_Service_Group();
+        $object = new \Centreon_Object_Service_Group();
         $this->addGenericRelation($parameters, $object, 'downtime_servicegroup_relation', 'sg_sg_id');
     }
 
@@ -643,13 +671,12 @@ class CentreonDowntime extends CentreonObject
      */
     public function delservicegroup($parameters)
     {
-        $object = new Centreon_Object_Service_Group();
+        $object = new \Centreon_Object_Service_Group();
         $this->delGenericRelation($parameters, $object, 'downtime_servicegroup_relation', 'sg_sg_id');
     }
 
     /**
      * Export
-     *
      */
     public function export()
     {
@@ -772,7 +799,7 @@ class CentreonDowntime extends CentreonObject
     /**
      *
      * @param string $actionType | addhost, addhostgroup, addservice or addservicegroup
-     * @param string $sql | query
+     * @param string $sql        | query
      */
     protected function exportGenericRel($actionType, $sql)
     {
@@ -844,8 +871,8 @@ class CentreonDowntime extends CentreonObject
     /**
      * Get preiods from downtime id
      *
-     * @param int $downtimeId
-     * @param int $position
+     * @param  int $downtimeId
+     * @param  int $position
      * @return array
      */
     protected function getPeriods($downtimeId, $position = null)
@@ -874,10 +901,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add resource to downtime
      *
-     * @param string $parameters | downtime name; resource names separated by "|" character
+     * @param string          $parameters | downtime name; resource names separated by "|" character
      * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param string          $relTable
+     * @param string          $relField
      */
     protected function addGenericRelation($parameters, $object, $relTable, $relField)
     {
@@ -920,10 +947,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Delete resource from downtime
      *
-     * @param string $parameters | downtime name; resource name separated by "|" character
+     * @param string          $parameters | downtime name; resource name separated by "|" character
      * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param string          $relTable
+     * @param string          $relField
      */
     protected function delGenericRelation($parameters, $object, $relTable, $relField)
     {
@@ -950,10 +977,12 @@ class CentreonDowntime extends CentreonObject
             $sql = "SELECT * FROM {$relTable} WHERE dt_id = ? AND {$relField} = ?";
             $stmt = $this->db->query($sql, array($downtimeId, $ids[0]));
             if (!$stmt->rowCount()) {
-                throw new CentreonClapiException(sprintf(
-                    'Cannot remove relationship with %s as the relationship does not exist',
-                    $resource
-                ));
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Cannot remove relationship with %s as the relationship does not exist',
+                        $resource
+                    )
+                );
             }
 
             $objectIds[] = $ids[0];

@@ -43,21 +43,94 @@ require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.
 
 class CentreonConfigCentreonBroker
 {
+    /**
+     *
+     * @var int
+     */
     public $nbSubGroup = 1;
+
+    /**
+     *
+     * @var type
+     */
     private $db;
-    private $attrText = array("size"=>"120");
-    private $attrInt = array("size"=>"10", "class" => "v_number");
+
+    /**
+     *
+     * @var array
+     */
+    private $attrText = array("size" => "120");
+
+    /**
+     *
+     * @var array
+     */
+    private $attrInt = array("size" => "10", "class" => "v_number");
+
+    /**
+     *
+     * @var string
+     */
     private $globalCommandFile = null;
 
+    /**
+     *
+     * @var type
+     */
     private $tagsCache = null;
+
+    /**
+     *
+     * @var type
+     */
     private $typesCache = null;
+
+    /**
+     *
+     * @var type
+     */
     private $typesNameCache = null;
+
+    /**
+     *
+     * @var array
+     */
     private $blockCache = array();
+
+    /**
+     *
+     * @var array
+     */
     private $fieldtypeCache = array();
+
+    /**
+     *
+     * @var array
+     */
     private $blockInfoCache = array();
+
+    /**
+     *
+     * @var array
+     */
     private $listValues = array();
+
+    /**
+     *
+     * @var array
+     */
     private $defaults = array();
+
+    /**
+     *
+     * @var array
+     */
     private $attrsAdvSelect = array("style" => "width: 270px; height: 70px;");
+
+    /**
+     *
+     * @var string
+     */
     private $advMultiTemplate = '<table><tr>
         <td><div class="ams">{label_2}</div>{unselected}</td>
         <td align="center">{add}<br><br><br>{remove}</td>
@@ -74,6 +147,10 @@ class CentreonConfigCentreonBroker
         $this->db = $db;
     }
 
+    /**
+     * Serialize inner data
+     * @return array
+     */
     public function __sleep()
     {
         $this->db = null;
@@ -110,9 +187,9 @@ class CentreonConfigCentreonBroker
         if (!is_null($this->tagsCache)) {
             return $this->tagsCache;
         }
-        $query = "SELECT cb_tag_id, tagname
-            FROM cb_tag
-            ORDER BY tagname";
+        $query = "SELECT cb_tag_id, tagname " .
+            "FROM cb_tag " .
+            "ORDER BY tagname";
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
             return array();
@@ -414,6 +491,9 @@ class CentreonConfigCentreonBroker
         return $qf;
     }
 
+    /**
+     * Generate Cdata tag
+     */
     public function generateCdata()
     {
         $cdata = CentreonData::getInstance();
@@ -479,6 +559,27 @@ class CentreonConfigCentreonBroker
         usort($fields, array($this, 'sortField'));
         $this->blockInfoCache[$typeId] = $fields;
         return $this->blockInfoCache[$typeId];
+    }
+
+    /**
+     * Return a cb type id for the shortname given
+     * @param type $typeName
+     * @return boolean
+     */
+    public function getTypeId($typeName)
+    {
+        $typeId = null;
+
+        $queryGetType = "SELECT cb_type_id FROM cb_type WHERE type_shortname = '$typeName'";
+        $res = $this->db->query($queryGetType);
+
+        if (!PEAR::isError($res)) {
+            while ($row = $res->fetchRow()) {
+                $typeId = $row['cb_type_id'];
+            }
+        }
+
+        return $typeId;
     }
 
     /**
@@ -555,7 +656,8 @@ class CentreonConfigCentreonBroker
                 config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
                 stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
                 cache_directory = '" . $this->db->escape($values['cache_directory']) . "',
-                event_queue_max_size = " . (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
+                event_queue_max_size = " .
+                (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
                 command_file = '" . $this->db->escape($values['command_file']) . "'
             WHERE config_id = " . $id;
         if (PEAR::isError($this->db->query($query))) {
@@ -629,7 +731,8 @@ class CentreonConfigCentreonBroker
                                 foreach ($value as $fieldname2 => $value2) {
                                     if (is_array($value2)) {
                                         $explodedFieldname2 = explode('__', $fieldname2);
-                                        if (isset($fieldtype[$explodedFieldname2[1]]) && $fieldtype[$explodedFieldname2[1]] == 'radio') {
+                                        if (isset($fieldtype[$explodedFieldname2[1]]) &&
+                                            $fieldtype[$explodedFieldname2[1]] == 'radio') {
                                             $value2 = $value2[$explodedFieldname2[1]];
                                         }
                                     }
@@ -788,23 +891,29 @@ class CentreonConfigCentreonBroker
      */
     public function getCorrelationFile()
     {
-        $query = "SELECT
-              config_id, config_group_id
-            FROM cfg_centreonbroker_info
-            WHERE config_key = 'type' AND config_value = 'correlation'";
+        $query = "SELECT " .
+            "config_id, config_group_id " .
+            "FROM cfg_centreonbroker_info " .
+            "WHERE config_key = 'type' AND config_value = 'correlation'";
         $res = $this->db->query($query);
+
         if (PEAR::isError($res) || $res->numRows() == 0) {
             return false;
         }
+
         $row = $res->fetchRow();
         $configId = $row['config_id'];
         $correlationGroupId = $row['config_group_id'];
-        $query = 'SELECT config_value FROM cfg_centreonbroker_info
-            WHERE config_key = "file" AND config_id = ' . $configId . ' AND config_group_id = ' . $correlationGroupId;
+        $query = 'SELECT config_value FROM cfg_centreonbroker_info ' .
+            'WHERE config_key = "file" ' .
+            'AND config_id = ' . $configId .
+            ' AND config_group_id = ' . $correlationGroupId;
         $res = $this->db->query($query);
+
         if (PEAR::isError($res) || $res->numRows() == 0) {
             return false;
         }
+
         $row = $res->fetchRow();
         return $row['config_value'];
     }
@@ -953,12 +1062,12 @@ class CentreonConfigCentreonBroker
                 $this->defaults[$fieldId] = $externalDefaultValue;
             }
         }
-        
+
         return $this->defaults[$fieldId];
     }
-    
+
     /**
-     * 
+     *
      * @param type $fieldId
      * @return type
      */
@@ -967,11 +1076,11 @@ class CentreonConfigCentreonBroker
         $externalValue = null;
         $query = "SELECT external FROM cb_field WHERE cb_field_id = $fieldId";
         $res = $this->db->query($query);
-        
+
         if (PEAR::isError($res)) {
             $externalValue = null;
         }
-        
+
         $row = $res->fetchRow();
         if (!is_null($row)) {
             $finalInfo = $this->getInfoDb($row['external']);
@@ -979,7 +1088,7 @@ class CentreonConfigCentreonBroker
                 $externalValue = $finalInfo;
             }
         }
-        
+
         return $externalValue;
     }
 
@@ -992,6 +1101,12 @@ class CentreonConfigCentreonBroker
     public function getInfoDb($string)
     {
         global $pearDBO;
+
+        if (isset($pearDBO)) {
+            $monitoringDb = $pearDBO;
+        } else {
+            $monitoringDb = new \CentreonDB('centstorage');
+        }
 
         /*
          * Default values
@@ -1047,7 +1162,7 @@ class CentreonConfigCentreonBroker
                 $res = $this->db->query($query);
                 break;
             case 'centreon_storage':
-                $res = $pearDBO->query($query);
+                $res = $monitoringDb->query($query);
                 break;
         }
         if (PEAR::isError($res)) {
@@ -1133,8 +1248,8 @@ class CentreonConfigCentreonBroker
      */
     private function checkEventMaxQueueSizeValue($value)
     {
-        if (!isset($value) || $value == "" || $value < 50000) {
-            $value = 50000;
+        if (!isset($value) || $value == "" || $value < 100000) {
+            $value = 100000;
         }
         return $value;
     }

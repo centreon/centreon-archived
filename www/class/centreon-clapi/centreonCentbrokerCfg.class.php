@@ -139,8 +139,7 @@ class CentreonCentbrokerCfg extends CentreonObject
 
     /**
      * Show
-     *
-     * @return void
+     * @param string $parameters
      */
     public function show($parameters = null)
     {
@@ -379,8 +378,13 @@ class CentreonCentbrokerCfg extends CentreonObject
         if (!isset($args[2])) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        
+        $cbTypeId = $this->brokerObj->getTypeId($args[2]);
+        if (is_null($cbTypeId)) {
+            throw new CentreonClapiException(self::UNKNOWNPARAMETER);
+        }
 
-        $fields = $this->brokerObj->getBlockInfos(3);
+        $fields = $this->brokerObj->getBlockInfos($cbTypeId);
 
         $defaultValues = array();
         foreach ($fields as $field) {
@@ -487,7 +491,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             echo $row['cb_type_id'].$this->delim.$row['type_shortname'].$this->delim.$row['type_name']."\n";
         }
     }
-
+    
     /**
      * User help method
      * Get Field list from Type

@@ -93,10 +93,16 @@ class KnowledgeBaseContext extends CentreonContext
 
         $this->assertFind('css', '.list_two td:nth-child(5) a:nth-child(1)')->click();
 
+        $this->spin(
+            function ($context) {
+                $windowNames = $context->getSession()->getWindowNames();
+                return count($windowNames) > 1;
+            },
+            'Wiki procedure window is not opened.',
+            10
+        );
         $windowNames = $this->getSession()->getWindowNames();
-        if (count($windowNames) > 1) {
-            $this->getSession()->switchToWindow($windowNames[1]);
-        }
+        $this->getSession()->switchToWindow($windowNames[1]);
 
         /* Add wiki page */
         $checkurl = 'Host:' . $this->hostName;
@@ -123,10 +129,16 @@ class KnowledgeBaseContext extends CentreonContext
         $page = new KBServiceListingPage($this);
         $page->createWikiPage(array('host' => $this->serviceHostName, 'service' => $this->serviceName));
 
+        $this->spin(
+            function ($context) {
+                $windowNames = $context->getSession()->getWindowNames();
+                return count($windowNames) > 1;
+            },
+            'Wiki procedure window is not opened.',
+            10
+        );
         $windowNames = $this->getSession()->getWindowNames();
-        if (count($windowNames) > 1) {
-            $this->getSession()->switchToWindow($windowNames[1]);
-        }
+        $this->getSession()->switchToWindow($windowNames[1]);
 
         // Check that wiki page is valid.
         $checkurl = 'Service:' . $this->serviceHostName . '_' . $this->serviceName;
