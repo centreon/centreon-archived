@@ -1,9 +1,5 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 
 /**
@@ -28,7 +24,7 @@ class PaginationSelect2Context extends CentreonContext
         if ($this->expectedValue > 200)
             $this->expectedValue = 50;
         $fieldValue->setValue($this->expectedValue);
-        $submitButton = $this->assertFind('css', 'input[name="submitC"]')->click();
+        $this->assertFind('css', 'input[name="submitC"]')->click();
 
         /* Wait page loaded */
         $this->spin(
@@ -37,8 +33,7 @@ class PaginationSelect2Context extends CentreonContext
                     'css',
                     'input[name="change"]'
                 );
-            },
-            30
+            }
         );
     }
 
@@ -65,8 +60,7 @@ class PaginationSelect2Context extends CentreonContext
                     'css',
                     'input[name="submitC"]'
                 );
-            },
-            30
+            }
         );
     }
 }

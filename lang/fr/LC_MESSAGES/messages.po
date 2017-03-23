@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Centreon web 2.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-23 10:23+0000\n"
-"PO-Revision-Date: 2016-03-21 14:15+0100\n"
+"PO-Revision-Date: 2017-03-19 19:45+0100\n"
 "Last-Translator: Laurent Pinsivy <lpinsivy@centreon.com>\n"
 "Language-Team: Centreon team\n"
 "Language: fr\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: centreon-web/broker_field_translation.php:2
 #: centreon-web/www/install/centreon_broker_translation.php:44
@@ -20,7 +20,7 @@ msgstr "Temps avant activation du processus de basculement (failover)"
 
 #: centreon-web/broker_field_translation.php:3
 msgid "Cache"
-msgstr ""
+msgstr "Cache"
 
 #: centreon-web/broker_field_translation.php:4
 msgid "Cleanup check interval"
@@ -57,9 +57,8 @@ msgid "Correlation file"
 msgstr "Fichier de corrélation"
 
 #: centreon-web/broker_field_translation.php:11
-#, fuzzy
 msgid "Correlation passive"
-msgstr "Fichier de corrélation"
+msgstr "Correlation passive"
 
 #: centreon-web/broker_field_translation.php:12
 #: centreon-web/www/install/centreon_broker_translation.php:79
@@ -142,9 +141,8 @@ msgid "Insert in index data"
 msgstr "Insertion dans la table index_data"
 
 #: centreon-web/broker_field_translation.php:28
-#, fuzzy
 msgid "Instance timeout"
-msgstr "Collecteur"
+msgstr "Durée maximale (timeout)"
 
 #: centreon-web/broker_field_translation.php:29
 #: centreon-web/www/install/centreon_broker_translation.php:76
@@ -172,7 +170,6 @@ msgid "Maximum size of file"
 msgstr "Taille maximale du fichier"
 
 #: centreon-web/broker_field_translation.php:34
-#, fuzzy
 msgid "Metric naming"
 msgstr "Nom de la métrique"
 
@@ -241,39 +238,32 @@ msgid "Serialization protocol"
 msgstr "Protocole de sérialisation"
 
 #: centreon-web/broker_field_translation.php:47
-#, fuzzy
 msgid "Status naming"
-msgstr "Statut détaillé"
+msgstr "Nom du statut"
 
 #: centreon-web/broker_field_translation.php:48
-#, fuzzy
 msgid "Storage DB host"
-msgstr "Dossiers de Sauvegarde"
+msgstr "Adresse de la base de données"
 
 #: centreon-web/broker_field_translation.php:49
-#, fuzzy
 msgid "Storage DB name"
-msgstr "Nom de la base de données de stockage"
+msgstr "Nom de la base de données"
 
 #: centreon-web/broker_field_translation.php:50
-#, fuzzy
 msgid "Storage DB password"
-msgstr "Sauvegarde du mot de passe LDAP"
+msgstr "Mot de passe du compte"
 
 #: centreon-web/broker_field_translation.php:51
-#, fuzzy
 msgid "Storage DB port"
-msgstr "Dossiers de Sauvegarde"
+msgstr "Port d'accès à la base de données"
 
 #: centreon-web/broker_field_translation.php:52
-#, fuzzy
 msgid "Storage DB type"
-msgstr "Type de sauvegarde"
+msgstr "Type de base de données"
 
 #: centreon-web/broker_field_translation.php:53
-#, fuzzy
 msgid "Storage DB user"
-msgstr "Dossiers de Sauvegarde"
+msgstr "Utilisateur ayant accès à la base de données"
 
 #: centreon-web/broker_field_translation.php:54
 #: centreon-web/www/install/centreon_broker_translation.php:91
@@ -933,6 +923,9 @@ msgid ""
 "Connection to Wiki database failed, please contact your administrator or "
 "read the Centreon online documentation to configure wiki access"
 msgstr ""
+"Echec de connexion à la base de connaissance, veuillez contacter votre "
+"administrateur ou consulter la documentation en ligne Centreon pour "
+"configurer les accès."
 
 #: centreon-web/www/class/centreonDB.class.php:192
 msgid "Connection failed, please contact your administrator"
@@ -1162,7 +1155,6 @@ msgid "Max"
 msgstr "Maximum"
 
 #: centreon-web/www/install/smarty_translate.php:24
-#, fuzzy
 msgid "File Path"
 msgstr "Localisation du fichier"
 
@@ -1224,44 +1216,36 @@ msgid "General Information"
 msgstr "Informations générales"
 
 #: centreon-web/www/install/smarty_translate.php:39
-#, fuzzy
 msgid "UI Notifications"
 msgstr "Notifications visible dans l'interface"
 
 #: centreon-web/www/install/smarty_translate.php:45
-#, fuzzy
 msgid "Password Management"
-msgstr "Administration"
+msgstr "Gestion du mot de passe"
 
 #: centreon-web/www/install/smarty_translate.php:48
-#, fuzzy
 msgid "Preferences"
-msgstr "Informations de performance"
+msgstr "Préférences"
 
 #: centreon-web/www/install/smarty_translate.php:51
-#, fuzzy
 msgid "Authentication"
-msgstr "Enregistrer les authentifications"
+msgstr "Authentification"
 
 #: centreon-web/www/install/smarty_translate.php:54
-#, fuzzy
 msgid "Popup notifications"
-msgstr "Notifications d'hôte"
+msgstr "Notifications visuelles"
 
 #: centreon-web/www/install/smarty_translate.php:57
-#, fuzzy
 msgid "Sound notifications"
-msgstr "Notifications d'hôte"
+msgstr "Notifications sonorres"
 
 #: centreon-web/www/install/smarty_translate.php:60
-#, fuzzy
 msgid "API Access Configuration"
-msgstr "Configuration de l'hôte"
+msgstr "Configuration d'accès à l'API"
 
 #: centreon-web/www/install/smarty_translate.php:63
-#, fuzzy
 msgid "Autorized contacts"
-msgstr "Contacts liés"
+msgstr "Contacts autorisés"
 
 #: centreon-web/www/install/smarty_translate.php:66
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:119
@@ -1343,14 +1327,12 @@ msgid "CSS configuration"
 msgstr "Configuration CSS"
 
 #: centreon-web/www/install/smarty_translate.php:93
-#, fuzzy
 msgid "Proxy options"
-msgstr "Options de purge"
+msgstr "Paramètres du proxy internet"
 
 #: centreon-web/www/install/smarty_translate.php:96
-#, fuzzy
 msgid "Chart options"
-msgstr "Options générales"
+msgstr "Paramètres des graphiques"
 
 #: centreon-web/www/install/smarty_translate.php:99
 #: centreon-web/www/include/options/oreon/modules/formModule.php:120
@@ -1364,19 +1346,16 @@ msgid "Date"
 msgstr "Date"
 
 #: centreon-web/www/install/smarty_translate.php:108
-#, fuzzy
 msgid "Modificaton type"
 msgstr "Type de modification"
 
 #: centreon-web/www/install/smarty_translate.php:111
-#, fuzzy
 msgid "Objets"
-msgstr "Objet"
+msgstr "Objets"
 
 #: centreon-web/www/install/smarty_translate.php:114
-#, fuzzy
 msgid "Object Name"
-msgstr "Nom de l'objet :"
+msgstr "Nom de l'objet"
 
 #: centreon-web/www/install/smarty_translate.php:117
 #: centreon-web/www/install/smarty_translate.php:882
@@ -1673,19 +1652,16 @@ msgid "Nothing here, use the \"Add\" button"
 msgstr "Rien à afficher, utiliser le bouton \"Add\""
 
 #: centreon-web/www/install/smarty_translate.php:198
-#, fuzzy
 msgid "Partitioning Properties"
-msgstr "Propriétés de l'unité"
+msgstr "Propriétés sur le partitionnement"
 
 #: centreon-web/www/install/smarty_translate.php:201
-#, fuzzy
 msgid "Partition name"
-msgstr "Nom de la macro"
+msgstr "Nom de la partition"
 
 #: centreon-web/www/install/smarty_translate.php:204
-#, fuzzy
 msgid "Creation time"
-msgstr "Fichier de corrélation"
+msgstr "Date de création"
 
 #: centreon-web/www/install/smarty_translate.php:207
 #: centreon-web/www/install/smarty_translate.php:261
@@ -1694,20 +1670,17 @@ msgstr "Nombre d'entrées"
 
 #: centreon-web/www/install/smarty_translate.php:210
 #: centreon-web/www/install/smarty_translate.php:243
-#, fuzzy
 msgid "Data size"
-msgstr "Taille de police"
+msgstr "Taille des données"
 
 #: centreon-web/www/install/smarty_translate.php:213
 #: centreon-web/www/install/smarty_translate.php:252
-#, fuzzy
 msgid "Index size"
-msgstr "Taille de police"
+msgstr "Taille de index"
 
 #: centreon-web/www/install/smarty_translate.php:216
-#, fuzzy
 msgid "Total size"
-msgstr "Temps total"
+msgstr "Taille totale"
 
 #: centreon-web/www/install/smarty_translate.php:219
 #: centreon-web/www/install/smarty_translate.php:222
@@ -1718,24 +1691,20 @@ msgstr "Temps total"
 #: centreon-web/www/install/smarty_translate.php:258
 #: centreon-web/www/install/smarty_translate.php:267
 #: centreon-web/www/install/smarty_translate.php:270
-#, fuzzy
 msgid "MB"
-msgstr "MIBs"
+msgstr "MB"
 
 #: centreon-web/www/install/smarty_translate.php:228
-#, fuzzy
 msgid "Database Informations"
-msgstr "Information de la base de données"
+msgstr "Informations de la base de données"
 
 #: centreon-web/www/install/smarty_translate.php:231
-#, fuzzy
 msgid "Database Engine"
-msgstr "Génération de la base de données"
+msgstr "Moteur de la base de données"
 
 #: centreon-web/www/install/smarty_translate.php:234
-#, fuzzy
 msgid "Engine Name"
-msgstr "Type d'ordonnanceur"
+msgstr "Nom du moteur de supervision"
 
 #: centreon-web/www/install/smarty_translate.php:237
 #: centreon-web/www/install/smarty_translate.php:321
@@ -1751,18 +1720,16 @@ msgid "Centreon DataBase Statistics"
 msgstr "Statistiques sur les bases de données de Centreon"
 
 #: centreon-web/www/install/smarty_translate.php:264
-#, fuzzy
 msgid "Data free"
-msgstr "Sources de données"
+msgstr "Espace libre"
 
 #: centreon-web/www/install/smarty_translate.php:276
 msgid "ACL Resource"
 msgstr "Groupe d'accès aux ressources"
 
 #: centreon-web/www/install/smarty_translate.php:282
-#, fuzzy
 msgid "Configuration Actions"
-msgstr "Nom de la configuration"
+msgstr "Configuration des actions"
 
 #: centreon-web/www/install/smarty_translate.php:288
 msgid "ACL Actions"
@@ -1777,7 +1744,6 @@ msgid "ACL Group"
 msgstr "Groupe de contrôle d'accès"
 
 #: centreon-web/www/install/smarty_translate.php:315
-#, fuzzy
 msgid "Real Name"
 msgstr "Nom réel"
 
@@ -1961,9 +1927,8 @@ msgid "Upgrade"
 msgstr "Mise à jour"
 
 #: centreon-web/www/install/smarty_translate.php:351
-#, fuzzy
 msgid "Do you confirm the deletion?"
-msgstr "Confirmez-vous cette suppression ?"
+msgstr "Confirmez-vous la suppression ?"
 
 #: centreon-web/www/install/smarty_translate.php:354
 #: centreon-web/www/install/smarty_translate.php:357
@@ -2012,21 +1977,18 @@ msgid "Hostgroup dependency"
 msgstr "Dépendance de groupe d'hôtes"
 
 #: centreon-web/www/install/smarty_translate.php:456
-#, fuzzy
 msgid "Time Range Exceptions"
 msgstr "Période d'exception"
 
 #: centreon-web/www/install/smarty_translate.php:459
-#, fuzzy
 msgid "Timeperiods"
-msgstr "Période de temps"
+msgstr "Périodes de temps"
 
 #: centreon-web/www/install/smarty_translate.php:462
 msgid "Basic Settings"
 msgstr "Options basiques"
 
 #: centreon-web/www/install/smarty_translate.php:465
-#, fuzzy
 msgid "Advanced settings"
 msgstr "Paramètres avancés"
 
@@ -2035,9 +1997,8 @@ msgid "Time Range exceptions"
 msgstr "Période d'exception"
 
 #: centreon-web/www/install/smarty_translate.php:471
-#, fuzzy
 msgid "Add new entry"
-msgstr "+ Ajouter une nouvelle entrée"
+msgstr "Ajouter une nouvelle entrée"
 
 #: centreon-web/www/install/smarty_translate.php:477
 msgid "Timeperiod"
@@ -2072,9 +2033,8 @@ msgstr "Personnes recevant les notifications"
 
 #: centreon-web/www/install/smarty_translate.php:513
 #: centreon-web/www/install/smarty_translate.php:546
-#, fuzzy
 msgid "Notification options"
-msgstr "Options de notifications"
+msgstr "Options de notification"
 
 #: centreon-web/www/install/smarty_translate.php:522
 #: centreon-web/www/install/menu_translation.php:115
@@ -2116,9 +2076,8 @@ msgid "Data Processing"
 msgstr "Traitement des données"
 
 #: centreon-web/www/install/smarty_translate.php:531
-#, fuzzy
 msgid "Extended Info"
-msgstr "Informations détaillées de l'hôte"
+msgstr "Informations complémentaires"
 
 #: centreon-web/www/install/smarty_translate.php:534
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:874
@@ -2130,9 +2089,8 @@ msgid "Service Scheduling Options"
 msgstr "Options d'ordonnancement des services"
 
 #: centreon-web/www/install/smarty_translate.php:540
-#, fuzzy
 msgid "Notification status"
-msgstr "Notifications"
+msgstr "Etat de la notification"
 
 #: centreon-web/www/install/smarty_translate.php:555
 #: centreon-web/www/include/configuration/configServers/formServers.php:145
@@ -2260,9 +2218,8 @@ msgid "Configuration Files Export"
 msgstr "Export des fichiers de configuration du moteur de supervision"
 
 #: centreon-web/www/install/smarty_translate.php:765
-#, fuzzy
 msgid "Polling instances"
-msgstr "Lié au collecteur"
+msgstr "Instances de collecte"
 
 #: centreon-web/www/install/smarty_translate.php:792
 msgid "Poller States"
@@ -2462,9 +2419,8 @@ msgid "Acknowledged"
 msgstr "Acquittés"
 
 #: centreon-web/www/install/smarty_translate.php:840
-#, fuzzy
 msgid "In Downtime"
-msgstr "Temps d'arrêt"
+msgstr "Temps d'arrêt démarré"
 
 #: centreon-web/www/install/smarty_translate.php:843
 #: centreon-web/www/install/menu_translation.php:88
@@ -2490,9 +2446,8 @@ msgid "Host commands and shortcuts"
 msgstr "Commandes et racourcis d'hôte"
 
 #: centreon-web/www/install/smarty_translate.php:858
-#, fuzzy
 msgid "Display Chart"
-msgstr "Afficher"
+msgstr "Afficher le graphique"
 
 #: centreon-web/www/install/smarty_translate.php:864
 #: centreon-web/www/include/reporting/dashboard/initReport.php:165
@@ -2623,17 +2578,14 @@ msgid "Actual End"
 msgstr "Fin Actuelle"
 
 #: centreon-web/www/install/smarty_translate.php:942
-#, fuzzy
 msgid "No downtime scheduled"
-msgstr "Temps d'arrêt programmés"
+msgstr "Pas de temps d'arrêt programmé"
 
 #: centreon-web/www/install/smarty_translate.php:945
-#, fuzzy
 msgid "Add downtime"
 msgstr "Ajouter un temps d'arrêt"
 
 #: centreon-web/www/install/smarty_translate.php:948
-#, fuzzy
 msgid "General informations"
 msgstr "Informations générales"
 
@@ -2669,12 +2621,11 @@ msgstr ""
 "l'encart [mysql] et redémarrez le serveur MySQL."
 
 #: centreon-web/www/install/steps/process/installConfigurationDb.php:65
-#, fuzzy
 msgid ""
 "Add open_files_limit=32000 in my.cnf file under the [mysqld] section and "
 "restart MySQL Server."
 msgstr ""
-"Ajouter la propriété innodb_file_per_table=1 dans le fichier my.cnf dans "
+"Ajouter la propriété open_files_limit=32000 dans le fichier my.cnf dans "
 "l'encart [mysql] et redémarrez le serveur MySQL."
 
 #: centreon-web/www/install/steps/process/createDbUser.php:45
@@ -2848,11 +2799,9 @@ msgid "Installation finished"
 msgstr "Installation terminée"
 
 #: centreon-web/www/install/steps/step8.php:45
-#, fuzzy
 msgid "Congratulations, you have successfully installed Centreon!"
 msgstr ""
-"Félicitations, vous avez mis à jour avec succès Centreon en version <b>%s</"
-"b>."
+"Félicitations, vous avez installé avec succès Centreon en version <b>%s</b>."
 
 #: centreon-web/www/install/steps/step7.php:43
 #: centreon-web/www/install/step_upgrade/step4.php:56
@@ -2897,9 +2846,8 @@ msgid "Setting up configuration file"
 msgstr "Installation des fichiers de configurations"
 
 #: centreon-web/www/install/steps/step7.php:74
-#, fuzzy
 msgid "Partitioning database tables"
-msgstr "Surveillance de la couche base de données"
+msgstr "Tables partitionnées"
 
 #: centreon-web/www/install/menu_translation.php:37
 msgid "About"
@@ -3509,7 +3457,6 @@ msgid "The SQL files are located in %s"
 msgstr "Les fichiers SQL sont situés dans %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
-#, fuzzy
 msgid ""
 "But do not edit the SQL files unless you know what you are doing.Refresh "
 "this page when the problem is fixed."
@@ -3911,7 +3858,6 @@ msgid "Last connection success"
 msgstr "Dernière connexion réalisée"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:78
-#, fuzzy
 msgid "One peer retention mode"
 msgstr "Rétention des données pour connexion depuis serveur Central"
 
@@ -3920,35 +3866,30 @@ msgid "Event processing speed"
 msgstr "Vitesse de traitement des évènements"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:86
-#, fuzzy
 msgid "Queue file"
 msgstr "File d'évènements"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:90
-#, fuzzy
 msgid "Queued file enabled"
-msgstr "File d'évènements"
+msgstr "File d'évènements activée"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:94
 msgid "Queued events"
 msgstr "File d'évènements"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:98
-#, fuzzy
 msgid "Memory file"
-msgstr "Le filtre de recherche pour les utilisateurs"
+msgstr "Fichier de cache"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:103
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:105
-#, fuzzy
 msgid "Input accepted events type"
-msgstr "Type d'évènements accepté"
+msgstr "Types d'évènements acceptés en entrée"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:111
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:113
-#, fuzzy
 msgid "Output accepted events type"
-msgstr "Type d'évènements accepté"
+msgstr "Types d'évènements acceptés en sortie"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:241
 msgid "Last update"
@@ -4013,9 +3954,8 @@ msgid "Animation effects"
 msgstr "Effets d'animation"
 
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:136
-#, fuzzy
 msgid "Default page"
-msgstr "Langue par défaut"
+msgstr "Page par défaut"
 
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:138
 msgid "Show Up status"
@@ -4817,9 +4757,8 @@ msgid "Disable"
 msgstr "Désactiver"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:56
-#, fuzzy
 msgid "Knowledge base database name"
-msgstr "Nom de la base de données de stockage"
+msgstr "Nom de la base de données de connaissance"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:57
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:61
@@ -4829,46 +4768,42 @@ msgstr "Nom de la base de données de stockage"
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:77
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:79
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:109
-#, fuzzy
 msgid "Mandatory field"
-msgstr "Nom du fichier obligatoire"
+msgstr "Champ obligatoire"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:58
-#, fuzzy
 msgid "Knowledge base database user"
-msgstr "Création de l'utilisation accédant aux bases de données"
+msgstr "Compte d'accès à la base de données"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:59
-#, fuzzy
 msgid "Knowledge base Database password"
-msgstr "Mot de passe de l'utilisateur de la base de données"
+msgstr "Mot de passe de l'utilisateur ayant accès à la base de données"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:60
-#, fuzzy
 msgid "Knowledge base Database host"
-msgstr "Acquitter un hôte"
+msgstr "Adresse de la base de données"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:65
-#, fuzzy
 msgid "Test DB connection"
-msgstr "Utiliser une connexion SSL"
+msgstr "Tester la connexion à la base de données"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:68
 msgid "Knowledge base Database prefix"
-msgstr ""
+msgstr "Préfix des tables de la base de données"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:69
-#, fuzzy
 msgid "Knowledge base url"
-msgstr "Base de connaissance"
+msgstr "URL d'accès à la base de connaissance"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:71
 msgid "Knowledge wiki account (with delete right)"
 msgstr ""
+"Compte d'administration de la base de connaissance possédant les droits de "
+"suppression."
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:73
 msgid "Knowledge wiki account password"
-msgstr ""
+msgstr "Mot de passe du compte d'administration"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:55
 msgid "Logs Directory"
@@ -4994,41 +4929,36 @@ msgid "days"
 msgstr "jours"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:74
-#, fuzzy
 msgid "Backup enabled"
-msgstr "Vérifications activées"
+msgstr "Activer la sauvegarde"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:76
-#, fuzzy
 msgid "Backup directory"
-msgstr "Répertoire temporaire"
+msgstr "Répertoire des sauvegardes"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:78
-#, fuzzy
 msgid "Temporary directory"
 msgstr "Répertoire temporaire"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:85
-#, fuzzy
 msgid "Backup database centreon"
-msgstr "Génération de la base de données"
+msgstr "Sauvegarder la base de données Centreon"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:86
 msgid "Backup database centreon_storage"
-msgstr ""
+msgstr "Sauvegarder la base de données 'centreon_storage'"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:88
 msgid "Dump"
-msgstr ""
+msgstr "Dump"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:89
 msgid "LVM Snapshot"
-msgstr ""
+msgstr "LVM Snapshot"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:90
-#, fuzzy
 msgid "Backup type"
-msgstr "Type de base de données"
+msgstr "Méthode de sauvegarde"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:92
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:100
@@ -5101,52 +5031,44 @@ msgid "Sunday"
 msgstr "Dimanche"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:99
-#, fuzzy
 msgid "Full backup"
-msgstr "Nom complet"
+msgstr "Sauvegarde complète"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:107
 msgid "Partial backup"
-msgstr ""
+msgstr "Sauvegarde de type partielle"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:108
-#, fuzzy
 msgid "Backup retention"
-msgstr "Rétention des fichiers RRD"
+msgstr "Durée de rétention des sauvegardes"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:115
-#, fuzzy
 msgid "Backup configuration files"
-msgstr "Exporter les fichiers de configuration"
+msgstr "Sauvegarder les fichiers de configuration"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:116
-#, fuzzy
 msgid "MySQL configuration file path"
-msgstr "Exporter les fichiers de configuration"
+msgstr "Chemin d'accès au fichier de configuration MySQL"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:117
-#, fuzzy
 msgid "Zend configuration file path"
-msgstr "Installation des fichiers de configurations"
+msgstr "Chemin d'accès au fichier de configuration Zend"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:125
 msgid "SCP export enabled"
-msgstr ""
+msgstr "Activer l'export SCP"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:127
-#, fuzzy
 msgid "Remote user"
-msgstr "Utilisateurs connectés"
+msgstr "Utilisateurs"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:128
-#, fuzzy
 msgid "Remote host"
-msgstr "sur l'hôte"
+msgstr "Hôte distant"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:129
-#, fuzzy
 msgid "Remote directory"
-msgstr "Répertoire temporaire"
+msgstr "Répertoire distant"
 
 #: centreon-web/www/include/Administration/parameters/css/form.php:135
 #: centreon-web/www/include/Administration/parameters/css/form.php:139
@@ -5254,39 +5176,35 @@ msgstr "Afficher le raccourci de connexion automatique"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:151
 msgid "TCP"
-msgstr ""
+msgstr "TCP"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:151
-#, fuzzy
 msgid "HTTP"
-msgstr "Lien HTTP"
+msgstr "HTTP"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:151
 msgid "HTTPS"
-msgstr ""
+msgstr "HTTPS"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:152
-#, fuzzy
 msgid "Proxy protocol"
-msgstr "Protocole de sérialisation"
+msgstr "Protocole du proxy Internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:154
 msgid "Proxy URL"
-msgstr ""
+msgstr "URL du proxy web"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:156
-#, fuzzy
 msgid "Proxy port"
-msgstr "Port TCP"
+msgstr "Port d'accès au proxy internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:166
 msgid "Display downtime and acknowledgment on chart"
-msgstr ""
+msgstr "Afficher les temps d'arrêts et acquittements sur les ghraphiques"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
-#, fuzzy
 msgid "Display comment on chart"
-msgstr "Visualiser les commentaires des hôtes"
+msgstr "Afficher les commentaires sur le graphique"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
@@ -5309,17 +5227,16 @@ msgid "SSO trusted client addresses"
 msgstr "Adresses des clients de confiance SSO"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:198
-#, fuzzy
 msgid "SSO blacklist client addresses"
-msgstr "Adresses des clients de confiance SSO"
+msgstr "Adresses des clients de bloqués"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:199
 msgid "SSO pattern matching login"
-msgstr ""
+msgstr "Chaine de recherche (pattern) pour l'authentification (login)"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:200
 msgid "SSO pattern replace login"
-msgstr ""
+msgstr "Chaine de remplacement (pattern) pour l'authentification (login)"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:201
 msgid "SSO login header"
@@ -5713,9 +5630,8 @@ msgid "Widget Preferences for %s"
 msgstr "Préférences du Widget pour %s"
 
 #: centreon-web/www/include/home/customViews/widgetParam.php:66
-#, fuzzy
 msgid "Widget Preferences"
-msgstr "Préférences du Widget pour %s"
+msgstr "Préférences du widget"
 
 #: centreon-web/www/include/home/customViews/views.php:101
 msgid ""
@@ -5840,9 +5756,8 @@ msgid "Title"
 msgstr "Titre"
 
 #: centreon-web/www/include/home/customViews/index.php:309
-#, fuzzy
 msgid "Widget"
-msgstr "Widgets"
+msgstr "Widget"
 
 #: centreon-web/www/include/home/customViews/formLoad.php:50
 msgid "Load a public view"
@@ -6424,7 +6339,7 @@ msgstr "Soumettre un résultat pour un service"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:113
 msgid "Display executed command by monitoring engine"
-msgstr ""
+msgstr "Afficher la commande exécutée par le moteur de supervision"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:116
 msgid "Enable/Disable Checks for a host"
@@ -6546,9 +6461,8 @@ msgid "Generate Configuration Files"
 msgstr "Générer les fichiers de configuration"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:151
-#, fuzzy
 msgid "Generate SNMP Trap configuration"
-msgstr "Configuration du serveur central"
+msgstr "Générer la configuration des traps SNMP"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:162
 msgid "Services Actions Access"
@@ -9210,9 +9124,8 @@ msgid "Extended Settings"
 msgstr "Options avancées"
 
 #: centreon-web/www/include/configuration/configObject/timeperiod/formTimeperiod.php:147
-#, fuzzy
 msgid "Timeperiod templates"
-msgstr "Alias de la période temporelle"
+msgstr "Modèle de période temporelle"
 
 #: centreon-web/www/include/configuration/configObject/timeperiod/formTimeperiod.php:219
 #: centreon-web/www/include/configuration/configObject/timeperiod/formTimeperiod.php:220
@@ -9822,9 +9735,8 @@ msgstr "Période de contrôle"
 #: centreon-web/www/include/configuration/configObject/service/formService.php:578
 #: centreon-web/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:528
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:507
-#, fuzzy
 msgid "Acknowledgement timeout"
-msgstr "Acquitter un hôte"
+msgstr "Durée maximale d'un acquittement"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:676
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1131
@@ -9863,9 +9775,8 @@ msgstr "Délai de première notification"
 #: centreon-web/www/include/configuration/configObject/service/formService.php:660
 #: centreon-web/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:598
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:548
-#, fuzzy
 msgid "Recovery notification delay"
-msgstr "Délai de première notification"
+msgstr "Délai de première notification de recouvrement"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:712
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:719
@@ -10157,7 +10068,7 @@ msgstr "Coordonnées 3D"
 #: centreon-web/www/include/configuration/configObject/hostgroup/formHostGroup.php:226
 #: centreon-web/www/include/configuration/configObject/servicegroup/formServiceGroup.php:160
 msgid "Geo coordinates"
-msgstr ""
+msgstr "Coordonnées géographiques"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:971
 msgid "ACL Resource Groups"
@@ -10332,7 +10243,6 @@ msgid "All Pollers"
 msgstr "Tous les collecteurs"
 
 #: centreon-web/www/include/configuration/configObject/host/listHost.php:419
-#, fuzzy
 msgid "Display all Services for this host"
 msgstr "Afficher tous les services de cet hôte"
 
@@ -10366,15 +10276,15 @@ msgid "Is Volatile"
 msgstr "Est volatile"
 
 #: centreon-web/www/include/configuration/configObject/service/formService.php:573
-#, fuzzy
 msgid "Service Basic Information"
-msgstr "Informations sur les services"
+msgstr "Informations sur le service"
 
 #: centreon-web/www/include/configuration/configObject/service/formService.php:604
 #: centreon-web/www/include/configuration/configObject/service/formService.php:607
-#, fuzzy
 msgid "Inherit only contacts/contacts group from host"
-msgstr "Contacts hérités depuis la définition de l'hôte"
+msgstr ""
+"Hériter seulement les contacts/groupes de contacts depuis la définition de "
+"l'hôte"
 
 #: centreon-web/www/include/configuration/configObject/service/formService.php:638
 #: centreon-web/www/include/configuration/configObject/meta_service/formMetaService.php:266
@@ -10520,7 +10430,6 @@ msgid "Detach"
 msgstr "Détacher"
 
 #: centreon-web/www/include/configuration/configObject/service/listServiceByHost.php:419
-#, fuzzy
 msgid "Disabled hosts"
 msgstr "Hôtes désactivés"
 
@@ -10829,9 +10738,8 @@ msgid "View a Service Category"
 msgstr "Visualiser une catégorie de service"
 
 #: centreon-web/www/include/configuration/configObject/service_categories/formServiceCategories.php:139
-#, fuzzy
 msgid "Linked Templates"
-msgstr "Lié au modèle d'hôte"
+msgstr "Modèles liés"
 
 #: centreon-web/www/include/configuration/configObject/service_categories/listServiceCategories.php:86
 msgid "Number of linked services"
@@ -11075,7 +10983,7 @@ msgstr "Type de courrier"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:363
 msgid "Reach API"
-msgstr ""
+msgstr "Accès à l'API"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:381
 msgid "Access list groups"
@@ -11711,7 +11619,7 @@ msgstr "Script d'initialisation du moteur de supervision"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:114
 msgid "Init System"
-msgstr ""
+msgstr "Système d'initialisation"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:116
 msgid "Monitoring Engine Binary"
@@ -11815,9 +11723,8 @@ msgid "Update informations"
 msgstr "Mettre à jour les informations"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:252
-#, fuzzy
 msgid "Export configuration"
-msgstr "Exporter les fichiers de configuration"
+msgstr "Exporter la configuration"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:114
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:237
@@ -11927,26 +11834,23 @@ msgstr "Dernier du mois"
 #: centreon-web/www/include/configuration/configKnowledge/display-serviceTemplates.php:103
 #: centreon-web/www/include/configuration/configKnowledge/display-hostTemplates.php:104
 #: centreon-web/www/include/configuration/configKnowledge/display-services.php:108
-#, fuzzy
 msgid "No wiki page defined"
-msgstr "Aucune version définie."
+msgstr "Aucune page définie"
 
 #: centreon-web/www/include/configuration/configKnowledge/display-hosts.php:106
 #: centreon-web/www/include/configuration/configKnowledge/display-serviceTemplates.php:104
 #: centreon-web/www/include/configuration/configKnowledge/display-hostTemplates.php:105
 #: centreon-web/www/include/configuration/configKnowledge/display-services.php:109
 msgid "Wiki page defined"
-msgstr ""
+msgstr "Page définie"
 
 #: centreon-web/www/include/configuration/configKnowledge/display-serviceTemplates.php:146
-#, fuzzy
 msgid "Services Templates"
-msgstr "Modèle de service"
+msgstr "Modèles de services"
 
 #: centreon-web/www/include/configuration/configKnowledge/display-hostTemplates.php:148
-#, fuzzy
 msgid "Hosts Templates"
-msgstr "Modèles d'hôte"
+msgstr "Modèles d'hôtes"
 
 #: centreon-web/www/include/configuration/configKnowledge/search.php:53
 msgid "Host Template"
@@ -11966,19 +11870,19 @@ msgstr "Groupes de services"
 
 #: centreon-web/www/include/configuration/configKnowledge/search.php:58
 msgid "Show wiki pageless only"
-msgstr ""
+msgstr "Voir les objets sans base de connaissance"
 
 #: centreon-web/www/include/configuration/configKnowledge/search.php:59
 msgid "Show wiki pageless only - inherited templates included"
 msgstr ""
+"Voir les objets sans base de connaissance en incluant l'héritage des modèles"
 
 #: centreon-web/www/include/configuration/configKnowledge/popup_form.php:87
 #: centreon-web/www/include/configuration/configKnowledge/popup_form.php:108
 #: centreon-web/www/include/configuration/configKnowledge/popup_form.php:129
 #: centreon-web/www/include/configuration/configKnowledge/popup_form.php:151
-#, fuzzy
 msgid "Create wiki page"
-msgstr "Créer une nouvelle vue"
+msgstr "Créer une page"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:65
 msgid "Run monitoring engine debug (-v)"
@@ -11997,18 +11901,16 @@ msgid "Method"
 msgstr "Méthode"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:81
-#, fuzzy
 msgid "You need to select a least one polling instance."
-msgstr "Vous n'êtes pas autorisé à accéder à cette instance de supervision"
+msgstr "Vous devez sélectionner au moins une instance de collecte."
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:92
 msgid "Export"
 msgstr "Exporter"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:96
-#, fuzzy
 msgid "Compulsory Poller"
-msgstr "Période obligatoire"
+msgstr "Sélection du collecteur obligatoire"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:97
 msgid "Console"
@@ -12077,16 +11979,18 @@ msgid "Post execution command results"
 msgstr "Résultat de la commande post-génération"
 
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:187
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Could not find configuration directory '%s' for monitoring engine '%s'.\n"
 "                                 Please check it's path or create it"
 msgstr ""
 "Impossible de trouver le répertoire de configuration '%s' du moteur de "
-"supervision '%s'. Merci de le chemin du répertoire ou de le créer"
+"supervision '%s'.\n"
+"                                 Merci de vérifier le chemin du répertoire "
+"ou de le créer"
 
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:207
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Could not write to file '%s' for monitoring engine '%s'. Please add writing\n"
 "                                     permissions for the webserver's user"
@@ -12096,26 +12000,28 @@ msgstr ""
 "Wev"
 
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:232
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Centreon Broker's configuration directory '%s' does not exist and could not\n"
 "                                             be created for monitoring "
 "engine '%s'. Please check it's path or create it"
 msgstr ""
 "Le répertoire '%s' de configuration de Centreon Broker n'existe pas et ne "
-"peut être créé pour le moteur de supervision '%s'. Merci de le chemin du "
-"répertoire ou de le créer"
+"peut être créé\n"
+"                                             pour le moteur de supervision "
+"'%s'. Merci de vérifier le chemin du répertoire ou de le créer"
 
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:247
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Could not write to Centreon Broker's configuration file '%s' for monitoring\n"
 "                                             engine '%s'. Please add writing "
 "permissions for the webserver's user"
 msgstr ""
 "Le fichier '%s' de configuration de Centreon Broker n'est pas accessible en "
-"écriture pour le moteur de supervision '%s'. Merci de le chemin du "
-"répertoire ou de le créer"
+"écriture pour le moteur\n"
+"                                             de supervision '%s'. Merci de "
+"vérifier le chemin du répertoire ou de le créer"
 
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:274
 msgid "<br><b>Centreon : </b>All configuration will be send to "
@@ -12168,7 +12074,6 @@ msgstr "Relancer"
 
 #: centreon-web/www/include/eventLogs/export/data.php:102
 #: centreon-web/www/include/eventLogs/export/data.php:123
-#, fuzzy
 msgid "m/d/Y (H:i:s)"
 msgstr "d/m/Y - H:i:s"
 
@@ -12343,17 +12248,15 @@ msgstr "IP"
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:231
 #: centreon-web/www/include/monitoring/status/Services/service.php:254
 #: centreon-web/www/include/monitoring/status/Services/service.php:290
-#, fuzzy
 msgid "Hosts : Schedule immediate check"
-msgstr "Planifier un contrôle immédiat"
+msgstr "Hôtes : Planifier un contrôle immédiat"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:207
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:232
 #: centreon-web/www/include/monitoring/status/Services/service.php:257
 #: centreon-web/www/include/monitoring/status/Services/service.php:291
-#, fuzzy
 msgid "Hosts : Schedule immediate check (Forced)"
-msgstr "Planifier un contrôle immédiat (Forcé)"
+msgstr "Hôtes : Planifier un contrôle immédiat (Forcé)"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:210
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:233
@@ -12449,9 +12352,8 @@ msgid "Services Status"
 msgstr "État des services"
 
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:158
-#, fuzzy
 msgid "Polling instance"
-msgstr "Lié au collecteur"
+msgstr "Instance de collecte"
 
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:167
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:236
@@ -12504,9 +12406,8 @@ msgstr "Planification d'arrêt en cours?"
 
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:216
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneService.php:266
-#, fuzzy
 msgid "Last time in "
-msgstr "Dernière fois dans un état indisponible"
+msgstr "Dernière fois "
 
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:232
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneService.php:282
@@ -12815,15 +12716,13 @@ msgstr "Trier par statut"
 
 #: centreon-web/www/include/monitoring/status/Services/service.php:227
 #: centreon-web/www/include/monitoring/status/Services/service.php:281
-#, fuzzy
 msgid "Services : Schedule immediate check"
-msgstr "Planifier un contrôle immédiat"
+msgstr "Services : Planifier un contrôle immédiat"
 
 #: centreon-web/www/include/monitoring/status/Services/service.php:230
 #: centreon-web/www/include/monitoring/status/Services/service.php:282
-#, fuzzy
 msgid "Services : Schedule immediate check (Forced)"
-msgstr "Planifier un contrôle immédiat (Forcé)"
+msgstr "Services : Planifier un contrôle immédiat (Forcé)"
 
 #: centreon-web/www/include/monitoring/status/Services/service.php:251
 #: centreon-web/www/include/monitoring/status/Services/service.php:289
@@ -12835,7 +12734,6 @@ msgid "Service Problems"
 msgstr "Problèmes en cours"
 
 #: centreon-web/www/include/monitoring/status/Common/commonJS.php:67
-#, fuzzy
 msgid "Y/m/d H:i:s"
 msgstr "d/m/Y - H:i:s"
 
@@ -12956,6 +12854,8 @@ msgstr "Temps d'arrêt fixé par %s"
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:88
 msgid "*The timezone used is configured on your user settings"
 msgstr ""
+"*Le fuseau horaire utilisé est celui configuré dans vos paramètres "
+"utilisateur"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:134
 msgid "Set downtime"
@@ -13088,9 +12988,8 @@ msgid "Links"
 msgstr "Liens"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:491
-#, fuzzy
 msgid "Executed Check Command Line"
-msgstr "Executer une commande spéciale"
+msgstr "Commande exécutée par le moteur"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:492
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:501
@@ -13425,14 +13324,12 @@ msgid "Add a comment for Service"
 msgstr "Ajouter un commentaire au service"
 
 #: centreon-web/www/include/monitoring/comments/AddComment.php:101
-#, fuzzy
 msgid "Comment type"
-msgstr "Type de commande"
+msgstr "Type de commantaire"
 
 #: centreon-web/www/include/monitoring/comments/listComment.php:180
-#, fuzzy
 msgid "Add a comment"
-msgstr "Ajouter pour un hôte"
+msgstr "Ajouter un commentaire"
 
 #: centreon-web/www/include/monitoring/comments/listComment.php:189
 msgid "No Comment for services."
@@ -13469,9 +13366,8 @@ msgstr "Données de performance"
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:185
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:189
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:220
-#, fuzzy
 msgid "Y/m/d H:i"
-msgstr "d/m/Y G:i"
+msgstr "d/m/Y H:i"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:216
 msgid "Never Started"
@@ -13502,18 +13398,17 @@ msgid "Display Downtime Cycle"
 msgstr "Afficher les temps d'arrêt cycliques"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172
-#, fuzzy
 msgid "Hostgroups"
 msgstr "Groupe d'hôtes"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:181
-#, fuzzy
 msgid "Servicegroups"
 msgstr "Groupes de services"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:217
 msgid " The timezone used is configured on your user settings"
 msgstr ""
+"Le fuseau horaire utilisé est celui configuré dans vos paramètres utilisateur"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:240
 msgid "Set downtime for hosts services"

@@ -52,9 +52,7 @@ class Broker extends AbstractObjectXML
         cache_directory,
         stats_activate,
         correlation_activate,
-        event_queue_max_size,
-        cache_directory,
-        command_file
+        daemon
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -70,7 +68,8 @@ class Broker extends AbstractObjectXML
     protected $attributes_engine_parameters = '
         id,
         name,
-        centreonbroker_module_path
+        centreonbroker_module_path,
+        centreonbroker_cfg_path
     ';
     protected $exclude_parameters = array(
         'blockId'
@@ -89,7 +88,8 @@ class Broker extends AbstractObjectXML
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM cfg_centreonbroker
-            WHERE ns_nagios_server = :poller_id AND config_activate = '1'
+            WHERE ns_nagios_server = :poller_id
+            AND config_activate = '1'
             ");
         }
         $this->stmt_broker->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
@@ -105,6 +105,8 @@ class Broker extends AbstractObjectXML
             ORDER BY config_group, config_group_id
             ");
         }
+
+        $watchdog = array();
 
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -193,6 +195,12 @@ class Broker extends AbstractObjectXML
             $this->generateFile($object, true, 'centreonBroker');
             $this->writeFile($this->backend_instance->getPath());
         }
+        $watchdog[] = array(
+            'log' => '/var/log/centreon-broker/watchdog.log'
+        );
+        $this->generate_filename = 'watchdog.xml';
+        $this->generateFile($watchdog, true, 'centreonbroker');
+        $this->writeFile($this->backend_instance->getPath());
     }
 
     private function getEngineParameters($poller_id)
@@ -211,6 +219,7 @@ class Broker extends AbstractObjectXML
             $this->engine['id'] = $row['id'];
             $this->engine['name'] = $row['name'];
             $this->engine['broker_modules_path'] = $row['centreonbroker_module_path'];
+            $this->engine['broker_cfg_path'] = $row['centreonbroker_cfg_path'];
         } catch (Exception $e) {
             throw new Exception('Exception received : ' . $e->getMessage() . "\n");
         }

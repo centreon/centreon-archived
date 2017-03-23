@@ -119,8 +119,8 @@ $proc->setHostInformations();
 $proc->setServiceInformations();
 
 $query = "SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image
-			  FROM host, extended_host_information ehi
-			  WHERE host.host_id = ehi.host_host_id
+              FROM host, extended_host_information ehi
+              WHERE host.host_id = ehi.host_host_id
 			  AND host.host_register = '0' ";
 if (isset($_REQUEST['searchHostTemplate']) && $_REQUEST['searchHostTemplate']) {
     $query .= " AND host.host_name LIKE '%" . $_REQUEST['searchHostTemplate'] . "%' ";

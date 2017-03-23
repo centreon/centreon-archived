@@ -35,7 +35,8 @@
 
 require_once $centreon_path . "www/class/centreonHost.class.php";
 
-function hidePasswordInCommand($command_name, $service_id) {
+function hidePasswordInCommand($command_name, $host_id, $service_id) 
+{
     global $pearDB;
 
     if(!isset($command_name) && !isset($service_id)) {
@@ -45,7 +46,10 @@ function hidePasswordInCommand($command_name, $service_id) {
     $pearDBStorage = new CentreonDB('centstorage');
 
     /* Get executed command lines */
-    $query_command_name = "SELECT host_id, check_command, command_line FROM services WHERE service_id = '".$service_id."'";
+    $query_command_name = "SELECT host_id, check_command, command_line "
+        . "FROM services "
+        . "WHERE host_id = '" . $host_id . "' "
+        . "AND service_id = '" . $service_id . "'";
     $res = $pearDBStorage->query($query_command_name);
     $row = $res->fetchRow();
 
@@ -61,7 +65,10 @@ function hidePasswordInCommand($command_name, $service_id) {
         $arrSvcTplID = array_merge ($arrSvcTplID, $svc['service_id']);
     }
 
-    $query_custom_macro_svc = "SELECT svc_macro_name FROM on_demand_macro_service WHERE is_password = 1 AND svc_svc_id IN ('".implode('\',\'', $arrSvcTplID)."')";
+    $query_custom_macro_svc = "SELECT svc_macro_name "
+        . "FROM on_demand_macro_service "
+        . "WHERE is_password = 1 "
+        . "AND svc_svc_id IN ('" . implode('\', \'', $arrSvcTplID) . "')";
     $res = $pearDB->query($query_custom_macro_svc);
     $arrMacroPassword = array();
     while ($row = $res->fetchRow()) {
@@ -69,7 +76,10 @@ function hidePasswordInCommand($command_name, $service_id) {
     }
 
     /* Get custom macros from hosts and templates */
-    $query_custom_macro_host = "SELECT host_macro_name FROM on_demand_macro_host WHERE is_password = 1 AND host_host_id IN('".implode('\',\'', getHostsTemplates($host_id))."')";
+    $query_custom_macro_host = "SELECT host_macro_name "
+        . "FROM on_demand_macro_host "
+        . "WHERE is_password = 1 "
+        . "AND host_host_id IN('" . implode('\', \'', getHostsTemplates($host_id)) . "')";
     $res = $pearDB->query($query_custom_macro_host);
     while($row = $res->fetchRow()) {
         $arrMacroPassword = array_merge ($arrMacroPassword, array($row['host_macro_name']));
@@ -90,9 +100,9 @@ function hidePasswordInCommand($command_name, $service_id) {
 
     foreach ($arrMacroPassword as $macro) {
         $pattern = str_replace('$', '\$', $macro);
-		// If '$_MACRO$'
+        // If '$_MACRO$'
         $command_line_with_macro = preg_replace('/\''.$pattern.'\'/', '(\'.*\')', $command_line_with_macro);
-		// Else $_MACRO$
+        // Else $_MACRO$
         $command_line_with_macro = preg_replace('/'.$pattern.'/', '(.*)', $command_line_with_macro);
     }
 
@@ -117,7 +127,8 @@ function hidePasswordInCommand($command_name, $service_id) {
 function getHostsTemplates($host_id) {
     $pearDBCentreon = new CentreonDB();
 
-    $query = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."'";
+    $query = "SELECT host_tpl_id FROM host_template_relation "
+        . "WHERE host_host_id = '" . $host_id . "'";
     $res = $pearDBCentreon->query($query);
     if($res->numRows() == 0) {
         return array($host_id);
@@ -131,4 +142,3 @@ function getHostsTemplates($host_id) {
     }
     return $arrHostTpl;
 }
-?>

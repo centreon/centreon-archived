@@ -162,7 +162,7 @@ $graphs = array();
  * Get Service status
  */
 $instance_filter = "";
-if ($instance != -1) {
+if ($instance != -1 && !empty($instance)) {
     $instance_filter = " AND h.instance_id = " . $instance . " ";
 }
 
@@ -194,14 +194,18 @@ $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name
 $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
-$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
-                s.icon_image, s.display_name, s.state, s.output as plugin_output,
-                s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
-                s.last_hard_state_change, s.last_check, s.next_check,
-                s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
-                s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged, h.scheduled_downtime_depth AS h_scheduled_downtime_depth,
-                h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
-                h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull ";
+$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description, "
+    . "s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts, "
+    . "s.icon_image, s.display_name, s.state, s.output as plugin_output, "
+    . "s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change, "
+    . "s.last_hard_state_change, s.last_check, s.next_check, "
+    . "s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping, "
+    . "s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged, "
+    . "h.scheduled_downtime_depth AS h_scheduled_downtime_depth, "
+    . "h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, "
+    . "h.notes_url AS h_notes_url, h.notes AS h_notes, h.address, "
+    . "h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, "
+    . "i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull ";
 $request .= " FROM hosts h, instances i ";
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
@@ -215,7 +219,8 @@ if ($criticality_id) {
 if (!$obj->is_admin) {
     $request .= ", centreon_acl ";
 }
-$request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
+$request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id "
+    . "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
 $request .= " WHERE h.host_id = s.host_id
                 AND s.enabled = 1
                 AND h.enabled = 1
@@ -280,20 +285,23 @@ if ($statusFilter == "ok") {
  * HostGroup Filter
  */
 if (isset($hostgroups) && $hostgroups != 0) {
-    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
+    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id "
+        . "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
 }
 /**
  * ServiceGroup Filter
  */
 if (isset($servicegroups) && $servicegroups != 0) {
-    $request .= " AND ssg.servicegroup_id = sg.servicegroup_id AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $servicegroups . ") ";
+    $request .= " AND ssg.servicegroup_id = sg.servicegroup_id "
+        . "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $servicegroups . ") ";
 }
 
 /**
  * ACL activation
  */
 if (!$obj->is_admin) {
-    $request .= " AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $obj->grouplistStr . ") ";
+    $request .= " AND h.host_id = centreon_acl.host_id "
+        . "AND s.service_id = centreon_acl.service_id AND group_id IN (" . $obj->grouplistStr . ") ";
 }
 
 (isset($tabOrder[$sort_type])) ? $request .= $tabOrder[$sort_type] : $request .= $tabOrder["default"];
@@ -314,7 +322,9 @@ try {
 /**
  * Get criticality ids
  */
-$critRes = $obj->DBC->query("SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL");
+$critRes = $obj->DBC->query(
+    "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
+);
 $criticalityUsed = 0;
 $critCache = array();
 if ($critRes->numRows()) {
@@ -436,9 +446,16 @@ if ($sqlError) {
                 $hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
                 $hostNotesUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostNotesUrl);
                 $hostNotesUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostNotesUrl);
-                $hostNotesUrl = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data["instance_name"], "ns_ip_address"), $hostNotesUrl);
+                $hostNotesUrl = str_replace(
+                    "\$INSTANCEADDRESS\$",
+                    $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
+                    $hostNotesUrl
+                );
             }
-            $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($data["name"], $hostNotesUrl)));
+            $obj->XML->writeElement(
+                "hnu",
+                CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($data["name"], $hostNotesUrl))
+            );
 
             $hostActionUrl = "none";
             if ($data["h_action_url"]) {
@@ -448,17 +465,30 @@ if ($sqlError) {
                 $hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
                 $hostActionUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostActionUrl);
                 $hostActionUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostActionUrl);
-                $hostActionUrl = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data["instance_name"], "ns_ip_address"), $hostActionUrl);
+                $hostActionUrl = str_replace(
+                    "\$INSTANCEADDRESS\$",
+                    $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
+                    $hostActionUrl
+                );
             }
-            $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($data["name"], $hostActionUrl)));
+            $obj->XML->writeElement(
+                "hau",
+                CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($data["name"], $hostActionUrl))
+            );
 
             $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($data["h_notes"]));
             $obj->XML->writeElement("hico", $data["h_icon_images"]);
             $obj->XML->writeElement("hip", CentreonUtils::escapeSecure($data["address"]));
             $obj->XML->writeElement("hdtm", $data["h_scheduled_downtime_depth"]);
-            $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']);
+            $obj->XML->writeElement(
+                "hdtmXml",
+                "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']
+            );
             $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-            $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id']);
+            $obj->XML->writeElement(
+                "hackXml",
+                "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id']
+            );
             $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
             $obj->XML->writeElement("hid", $data["host_id"]);
         }
@@ -481,7 +511,11 @@ if ($sqlError) {
         $obj->XML->writeElement("cs", _($obj->statusService[$data["state"]]), false);
         $obj->XML->writeElement("ssc", $data["state"]);
         $obj->XML->writeElement("po", CentreonUtils::escapeSecure($pluginShortOuput));
-        $obj->XML->writeElement("ca", $data["current_attempt"] . "/" . $data["max_check_attempts"] . " (" . $obj->stateType[$data["state_type"]] . ")");
+        $obj->XML->writeElement(
+            "ca",
+            $data["current_attempt"] . "/" . $data["max_check_attempts"]
+                . " (" . $obj->stateType[$data["state_type"]] . ")"
+        );
         if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
             $obj->XML->writeElement("hci", 1); // has criticality
             $critData = $criticality->getData($critCache[$data['service_id']], true);
@@ -497,9 +531,17 @@ if ($sqlError) {
         $obj->XML->writeElement("eh", $data["event_handler_enabled"]);
         $obj->XML->writeElement("is", $data["flapping"]);
         $obj->XML->writeElement("dtm", $data["scheduled_downtime_depth"]);
-        $obj->XML->writeElement("dtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
+        $obj->XML->writeElement(
+            "dtmXml",
+            "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid="
+                . $data['host_id'] . "&svc_id=" . $data['service_id']
+        );
         $obj->XML->writeElement("dtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
-        $obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id'] . "&svc_id=" . $data['service_id']);
+        $obj->XML->writeElement(
+            "ackXml",
+            "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid="
+                . $data['host_id'] . "&svc_id=" . $data['service_id']
+        );
         $obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
         if ($data["notes"] != "") {
@@ -513,7 +555,11 @@ if ($sqlError) {
             }
             if (isset($data['instance_name']) && $data['instance_name']) {
                 $data["notes"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes']);
-                $data["notes"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["notes"]);
+                $data["notes"] = str_replace(
+                    "\$INSTANCEADDRESS\$",
+                    $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
+                    $data["notes"]
+                );
             }
             $obj->XML->writeElement("snn", CentreonUtils::escapeSecure($data["notes"]));
         } else {
@@ -523,7 +569,11 @@ if ($sqlError) {
         if ($data["notes_url"] != "") {
             $data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);
             $data["notes_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["notes_url"]);
-            $data["notes_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["notes_url"]);
+            $data["notes_url"] = str_replace(
+                "\$SERVICESTATE\$",
+                $obj->statusService[$data["state"]],
+                $data["notes_url"]
+            );
             $data["notes_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes_url"]);
             if (isset($data["alias"]) && $data["alias"]) {
                 $data["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
@@ -533,7 +583,11 @@ if ($sqlError) {
             }
             if (isset($data['instance_name']) && $data['instance_name']) {
                 $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
-                $data["notes_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["notes_url"]);
+                $data["notes_url"] = str_replace(
+                    "\$INSTANCEADDRESS\$",
+                    $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
+                    $data["notes_url"]
+                );
             }
             $obj->XML->writeElement("snu", CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["notes_url"])));
         } else {
@@ -553,9 +607,18 @@ if ($sqlError) {
             }
             if (isset($data['instance_name']) && $data['instance_name']) {
                 $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
-                $data["action_url"] = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $data["action_url"]);
+                $data["action_url"] = str_replace(
+                    "\$INSTANCEADDRESS\$",
+                    $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
+                    $data["action_url"]
+                );
             }
-            $obj->XML->writeElement("sau", CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"])));
+            $obj->XML->writeElement(
+                "sau",
+                CentreonUtils::escapeSecure(
+                    $obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"])
+                )
+            );
         } else {
             $obj->XML->writeElement("sau", 'none');
         }
@@ -592,7 +655,12 @@ if ($sqlError) {
          * Get Service Graph index
          */
         if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
-            $request2 = "SELECT DISTINCT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = ".$data["host_id"]." AND service_id = ".$data["service_id"]." AND index_data.hidden = '0'";
+            $request2 = "SELECT DISTINCT service_id, id "
+                . "FROM index_data, metrics "
+                . "WHERE metrics.index_id = index_data.id "
+                . "AND host_id = " . $data["host_id"] . " "
+                . "AND service_id = " . $data["service_id"] . " "
+                . "AND index_data.hidden = '0' ";
             $DBRESULT2 = $obj->DBC->query($request2);
             while ($dataG = $DBRESULT2->fetchRow()) {
                 if (!isset($graphs[$data["host_id"]])) {
@@ -604,7 +672,10 @@ if ($sqlError) {
                 $graphs[$data["host_id"]] = array();
             }
         }
-        $obj->XML->writeElement("svc_index", (isset($graphs[$data["host_id"]][$data["service_id"]]) ? $graphs[$data["host_id"]][$data["service_id"]] : 0));
+        $obj->XML->writeElement(
+            "svc_index",
+            (isset($graphs[$data["host_id"]][$data["service_id"]]) ? $graphs[$data["host_id"]][$data["service_id"]] : 0)
+        );
         $obj->XML->endElement();
     }
     $DBRESULT->free();
