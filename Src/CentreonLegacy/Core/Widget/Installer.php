@@ -139,7 +139,7 @@ class Installer extends Widget
 
         $sth->execute();
 
-        $lastId = $this->informationObj->getParameterIdByName($parameters['label']);
+        $lastId = $this->informationObj->getParameterIdByName($parameters['name']);
 
         switch ($parameters['type']['name']) {
             case "list":

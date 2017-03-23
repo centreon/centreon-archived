@@ -140,36 +140,36 @@ class Upgrader extends Installer
         $query = 'UPDATE widget_parameters SET ' .
             'field_type_id = :field_type_id, ' .
             'parameter_name = :parameter_name, ' .
-            'parameter_code_name = :parameter_code_name, ' .
             'default_value = :default_value, ' .
             'parameter_order = :parameter_order, ' .
             'require_permission = :require_permission, ' .
             'header_title = :header_title ' .
-            'WHERE widget_model_id = :widget_model_id ';
+            'WHERE widget_model_id = :widget_model_id ' .
+            'AND parameter_code_name = :parameter_code_name ';
 
         $sth = $this->dbConf->prepare($query);
 
         $sth->bindParam(':field_type_id', $parameters['type']['id'], \PDO::PARAM_INT);
         $sth->bindParam(':parameter_name', $parameters['label'], \PDO::PARAM_STR);
-        $sth->bindParam(':parameter_code_name', $parameters['name'], \PDO::PARAM_STR);
         $sth->bindParam(':default_value', $parameters['defaultValue'], \PDO::PARAM_STR);
         $sth->bindParam(':parameter_order', $parameters['order'], \PDO::PARAM_STR);
         $sth->bindParam(':require_permission', $parameters['requirePermission'], \PDO::PARAM_STR);
         $sth->bindParam(':header_title', $parameters['header'], \PDO::PARAM_STR);
         $sth->bindParam(':widget_model_id', $id, \PDO::PARAM_INT);
+        $sth->bindParam(':parameter_code_name', $parameters['name'], \PDO::PARAM_STR);
 
         $sth->execute();
 
-        $lastId = $this->informationObj->getParameterIdByName($parameters['label']);
+        $lastId = $this->informationObj->getParameterIdByName($parameters['name']);
         $this->deleteParameterOptions($lastId);
 
         switch ($parameters['type']['name']) {
             case "list":
             case "sort":
-                $this->installMultipleOption($lastId, $parameters);
+                $this->installMultipleOption($lastId, $preference);
                 break;
             case "range":
-                $this->installRangeOption($lastId, $preference);
+                $this->installRangeOption($lastId, $parameters);
                 break;
         }
     }

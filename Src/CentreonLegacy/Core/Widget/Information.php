@@ -85,7 +85,7 @@ class Information extends Widget
     {
         $query = 'SELECT parameter_id ' .
             'FROM widget_parameters ' .
-            'WHERE parameter_name = :name';
+            'WHERE parameter_code_name = :name';
         $sth = $this->dbConf->prepare($query);
 
         $sth->bindParam(':name', $name, \PDO::PARAM_STR);
