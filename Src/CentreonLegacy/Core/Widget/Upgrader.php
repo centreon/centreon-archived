@@ -65,7 +65,7 @@ class Upgrader extends Installer
             'website = :website, ' .
             'keywords = :keywords, ' .
             'thumbnail = :thumbnail, ' .
-            'autoRefresh = :autoRefresh, ' .
+            'autoRefresh = :autoRefresh ' .
             'WHERE directory = :directory ';
 
         $sth = $this->dbConf->prepare($query);

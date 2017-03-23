@@ -65,14 +65,14 @@ class Factory
         return new Installer($this->dbConf, $informationObj, $widgetName, $utils);
     }
 
-    public function newUpgrader($widgetName, $widgetId)
+    public function newUpgrader($widgetName)
     {
         $informationObj = $this->newInformation();
 
         $factory = new \CentreonLegacy\Core\Utils\Factory();
         $utils = $factory->newUtils();
 
-        return new Upgrader($this->dbConf, $informationObj, $widgetName, $widgetId, $utils);
+        return new Upgrader($this->dbConf, $informationObj, $widgetName, $utils);
     }
 
     public function newRemover($widgetName)

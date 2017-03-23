@@ -108,6 +108,7 @@ class Information extends Widget
 
         $sth = $this->dbConf->prepare($query);
         $sth->bindParam(':id', $widgetId, \PDO::PARAM_INT);
+        $sth->execute();
 
         $parameters = array();
         while ($row = $sth->fetch()) {

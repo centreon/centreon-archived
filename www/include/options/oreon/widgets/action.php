@@ -66,11 +66,11 @@ try {
             break;
         case 'uninstall':
             $widgetRemover = $factory->newRemover($directory);
-            $widgetRemover->remove($directory);
+            $widgetRemover->remove();
             break;
         case 'upgrade':
             $widgetUpgrader = $factory->newUpgrader($directory);
-            $widgetUpgrader->upgrade($directory);
+            $widgetUpgrader->upgrade();
             break;
         default:
             throw new Exception('Unknown action');
