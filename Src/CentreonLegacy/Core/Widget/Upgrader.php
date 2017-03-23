@@ -35,13 +35,13 @@
 
 namespace CentreonLegacy\Core\Widget;
 
-class Upgrader extends Widget
+class Upgrader extends Installer
 {
     protected $dbConf;
     protected $informationObj;
     protected $widgetName;
     protected $utils;
-    private $moduleConfiguration;
+    private $widgetConfiguration;
 
     public function __construct($dbConf, $informationObj, $widgetName, $utils)
     {
@@ -50,101 +50,160 @@ class Upgrader extends Widget
         $this->widgetName = $widgetName;
         $this->utils = $utils;
 
-        $this->moduleConfiguration = $informationObj->getConfiguration($this->widgetName);
+        $this->widgetConfiguration = $informationObj->getConfiguration($this->widgetName);
     }
 
     public function upgrade()
     {
-        $this->upgradeModuleConfiguration();
-
-        $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
-
-        $upgradesPath = $this->getModulePath($this->moduleName) . '/UPGRADE/';
-        $upgrades = scandir($upgradesPath);
-
-        foreach ($upgrades as $upgrade) {
-            $upgradePath = $upgradesPath . $upgrade;
-            if (!preg_match('/^' . $this->moduleName . '-(\d+\.\d+\.\d+)/', $upgrade, $matches) ||
-                !is_dir($upgradePath) || !file_exists($upgradePath . '/conf.php')) {
-                continue;
-            }
-
-            $upgrade_conf = array();
-            require $upgradePath . '/conf.php';
-
-            if ($moduleInstalledInformation["mod_release"] != $upgrade_conf[$this->moduleName]["release_from"]) {
-                continue;
-            }
-
-            $this->upgradeVersion($upgrade_conf[$this->moduleName]["release_to"]);
-            $moduleInstalledInformation["mod_release"] = $upgrade_conf[$this->moduleName]["release_to"];
-
-            $this->upgradePhpFiles($upgrade_conf, $upgradePath, true);
-            $this->upgradeSqlFiles($upgrade_conf, $upgradePath);
-            $this->upgradePhpFiles($upgrade_conf, $upgradePath, false);
-        }
-
-        return true;
-    }
-
-    /**
-     * Upgrade module information except version
-     *
-     * @return mixed
-     * @throws \Exception
-     */
-    private function upgradeModuleConfiguration()
-    {
-        $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!file_exists($configurationFile)) {
-            throw new \Exception('Module configuration file not found.');
-        }
-
-        $query = 'UPDATE modules_informations SET ' .
-            '`name` = :name , ' .
-            '`rname` = :rname , ' .
-            '`is_removeable` = :is_removeable , ' .
-            '`infos` = :infos , ' .
-            '`author` = :author , ' .
-            '`lang_files` = :lang_files , ' .
-            '`sql_files` = :sql_files , ' .
-            '`php_files` = :php_files , ' .
-            '`svc_tools` = :svc_tools , ' .
-            '`host_tools` = :host_tools ' .
-            'WHERE id = :id';
+        $query = 'UPDATE widget_models SET ' .
+            'title = :title, ' .
+            'description = :description, ' .
+            'url = :url, ' .
+            'version = :version, ' .
+            'author = :author, ' .
+            'email = :email, ' .
+            'website = :website, ' .
+            'keywords = :keywords, ' .
+            'thumbnail = :thumbnail, ' .
+            'autoRefresh = :autoRefresh, ' .
+            'WHERE directory = :directory ';
 
         $sth = $this->dbConf->prepare($query);
 
-        $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
-        $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
-        $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
-        $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
-        $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':lang_files', $this->moduleConfiguration['lang_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':sql_files', $this->moduleConfiguration['sql_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':php_files', $this->moduleConfiguration['php_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindParam(':title', $this->widgetConfiguration['title'], \PDO::PARAM_STR);
+        $sth->bindParam(':description', $this->widgetConfiguration['description'], \PDO::PARAM_STR);
+        $sth->bindParam(':url', $this->widgetConfiguration['url'], \PDO::PARAM_STR);
+        $sth->bindParam(':version', $this->widgetConfiguration['version'], \PDO::PARAM_STR);
+        $sth->bindParam(':author', $this->widgetConfiguration['author'], \PDO::PARAM_STR);
+        $sth->bindParam(':email', $this->widgetConfiguration['email'], \PDO::PARAM_STR);
+        $sth->bindParam(':website', $this->widgetConfiguration['website'], \PDO::PARAM_STR);
+        $sth->bindParam(':keywords', $this->widgetConfiguration['keywords'], \PDO::PARAM_STR);
+        $sth->bindParam(':thumbnail', $this->widgetConfiguration['thumbnail'], \PDO::PARAM_STR);
+        $sth->bindParam(':autoRefresh', $this->widgetConfiguration['autoRefresh'], \PDO::PARAM_INT);
+        $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
         $sth->execute();
 
-        return $this->moduleId;
+        $widgetId = $this->informationObj->getIdByName($this->widgetName);
+        $this->upgradePreferences($widgetId);
     }
 
-    private function upgradeVersion($version)
+    private function upgradePreferences($widgetId)
     {
-        $query = 'UPDATE modules_informations SET ' .
-            '`mod_release` = :mod_release ' .
-            'WHERE id = :id';
+        if (!isset($this->widgetConfiguration['preferences'])) {
+            return null;
+        }
+
+        $types = $this->informationObj->getTypes();
+
+        $existingParams = $this->informationObj->getParameters($widgetId);
+
+        $insertedParameters = array();
+        foreach ($this->widgetConfiguration['preferences'] as $preferences) {
+            if (!is_array($preferences)) {
+                continue;
+            }
+            $order = 1;
+            if (isset($preferences['@attributes'])) {
+                $preferences = array($preferences['@attributes']);
+            }
+
+            foreach ($preferences as $preference) {
+                $attr = $preference['@attributes'];
+                if (!isset($types[$attr['type']])) {
+                    throw new \Exception('Unknown type : ' . $attr['type'] . ' found in configuration file');
+                }
+                $attr['requirePermission'] = isset($attr['requirePermission']) ? $attr['requirePermission'] : 0;
+                $attr['defaultValue'] = isset($attr['defaultValue']) ? $attr['defaultValue'] : '';
+                $attr['header'] = (isset($attr['header']) && $attr['header'] != "") ? $attr['header'] : null;
+                $attr['order'] = $order;
+                $attr['type'] = $types[$attr['type']];
+                if (!isset($existingParams[$attr['name']])) {
+                    $this->installParameters($widgetId, $attr, $preference);
+                } else {
+                    $this->updateParameters($widgetId, $attr, $preference);
+                }
+                $insertedParameters[] = $attr['name'];
+                $order++;
+            }
+        }
+
+        foreach ($existingParams as $name => $attributes) {
+            if (!in_array($name, $insertedParameters)) {
+                $this->deleteParameter($attributes['parameter_id']);
+            }
+        }
+    }
+
+    protected function updateParameters($id, $parameters, $preference)
+    {
+        $query = 'UPDATE widget_parameters SET ' .
+            'field_type_id = :field_type_id, ' .
+            'parameter_name = :parameter_name, ' .
+            'parameter_code_name = :parameter_code_name, ' .
+            'default_value = :default_value, ' .
+            'parameter_order = :parameter_order, ' .
+            'require_permission = :require_permission, ' .
+            'header_title = :header_title ' .
+            'WHERE widget_model_id = :widget_model_id ';
 
         $sth = $this->dbConf->prepare($query);
 
-        $sth->bindParam(':mod_release', $version, \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindParam(':field_type_id', $parameters['type']['id'], \PDO::PARAM_INT);
+        $sth->bindParam(':parameter_name', $parameters['label'], \PDO::PARAM_STR);
+        $sth->bindParam(':parameter_code_name', $parameters['name'], \PDO::PARAM_STR);
+        $sth->bindParam(':default_value', $parameters['defaultValue'], \PDO::PARAM_STR);
+        $sth->bindParam(':parameter_order', $parameters['order'], \PDO::PARAM_STR);
+        $sth->bindParam(':require_permission', $parameters['requirePermission'], \PDO::PARAM_STR);
+        $sth->bindParam(':header_title', $parameters['header'], \PDO::PARAM_STR);
+        $sth->bindParam(':widget_model_id', $id, \PDO::PARAM_INT);
 
         $sth->execute();
 
-        return $this->moduleId;
+        $lastId = $this->informationObj->getParameterIdByName($parameters['label']);
+        $this->deleteParameterOptions($lastId);
+
+        switch ($parameters['type']['name']) {
+            case "list":
+            case "sort":
+                $this->installMultipleOption($lastId, $parameters);
+                break;
+            case "range":
+                $this->installRangeOption($lastId, $preference);
+                break;
+        }
+    }
+
+    protected function deleteParameter($id)
+    {
+        $query = 'DELETE FROM widget_parameters ' .
+            'WHERE parameter_id = :id ';
+
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':id', $id, \PDO::PARAM_INT);
+
+        $sth->execute();
+    }
+
+    protected function deleteParameterOptions($id)
+    {
+        $query = 'DELETE FROM widget_parameters_multiple_options ' .
+            'WHERE parameter_id = :id ';
+
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':id', $id, \PDO::PARAM_INT);
+
+        $sth->execute();
+
+        $query = 'DELETE FROM widget_parameters_range ' .
+            'WHERE parameter_id = :id ';
+
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':id', $id, \PDO::PARAM_INT);
+
+        $sth->execute();
     }
 }

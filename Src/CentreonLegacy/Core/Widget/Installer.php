@@ -73,17 +73,11 @@ class Installer extends Widget
         $sth->bindParam(':website', $this->widgetConfiguration['website'], \PDO::PARAM_STR);
         $sth->bindParam(':keywords', $this->widgetConfiguration['keywords'], \PDO::PARAM_STR);
         $sth->bindParam(':thumbnail', $this->widgetConfiguration['thumbnail'], \PDO::PARAM_STR);
-        $sth->bindParam(':autoRefresh', $this->widgetConfiguration['autoRefresh'], \PDO::PARAM_STR);
+        $sth->bindParam(':autoRefresh', $this->widgetConfiguration['autoRefresh'], \PDO::PARAM_INT);
 
         $sth->execute();
 
-        $queryMax = 'SELECT MAX(widget_model_id) as id FROM widget_models';
-        $result = $this->dbConf->query($queryMax);
-        $lastId = 0;
-        if ($row = $result->fetchRow()) {
-            $lastId = $row['id'];
-        }
-
+        $lastId = $this->informationObj->getIdByName($this->widgetName);
         $this->installPreferences($lastId);
 
         return $lastId;
@@ -95,9 +89,12 @@ class Installer extends Widget
             return null;
         }
 
-        $types = $this->getTypes();
+        $types = $this->informationObj->getTypes();
 
         foreach ($this->widgetConfiguration['preferences'] as $preferences) {
+            if (!is_array($preferences)) {
+                continue;
+            }
             $order = 1;
             if (isset($preferences['@attributes'])) {
                 $preferences = array($preferences['@attributes']);
@@ -112,7 +109,7 @@ class Installer extends Widget
                 $attr['defaultValue'] = isset($attr['defaultValue']) ? $attr['defaultValue'] : '';
                 $attr['header'] = (isset($attr['header']) && $attr['header'] != "") ? $attr['header'] : null;
                 $attr['order'] = $order;
-                $attr['type'] = $types[$attr['type']]['id'];
+                $attr['type'] = $types[$attr['type']];
 
                 $this->installParameters($id, $attr, $preference);
                 $order++;
@@ -120,7 +117,7 @@ class Installer extends Widget
         }
     }
 
-    private function installParameters($id, $parameters, $preference)
+    protected function installParameters($id, $parameters, $preference)
     {
         $query = 'INSERT INTO widget_parameters ' .
             '(widget_model_id, field_type_id, parameter_name, parameter_code_name, ' .
@@ -132,7 +129,7 @@ class Installer extends Widget
         $sth = $this->dbConf->prepare($query);
 
         $sth->bindParam(':widget_model_id', $id, \PDO::PARAM_INT);
-        $sth->bindParam(':field_type_id', $parameters['type'], \PDO::PARAM_INT);
+        $sth->bindParam(':field_type_id', $parameters['type']['id'], \PDO::PARAM_INT);
         $sth->bindParam(':parameter_name', $parameters['label'], \PDO::PARAM_STR);
         $sth->bindParam(':parameter_code_name', $parameters['name'], \PDO::PARAM_STR);
         $sth->bindParam(':default_value', $parameters['defaultValue'], \PDO::PARAM_STR);
@@ -144,18 +141,18 @@ class Installer extends Widget
 
         $lastId = $this->informationObj->getParameterIdByName($parameters['label']);
 
-        switch ($parameters['type']) {
+        switch ($parameters['type']['name']) {
             case "list":
             case "sort":
-                $this->installMultipleOption($lastId, $parameters);
+                $this->installMultipleOption($lastId, $preference);
                 break;
             case "range":
-                $this->installRangeOption($lastId, $preference);
+                $this->installRangeOption($lastId, $parameters);
                 break;
         }
     }
 
-    private function installMultipleOption($paramId, $preference)
+    protected function installMultipleOption($paramId, $preference)
     {
         if (!isset($preference['option'])) {
             return null;
@@ -182,7 +179,7 @@ class Installer extends Widget
         }
     }
 
-    private function installRangeOption($paramId, $attr)
+    protected function installRangeOption($paramId, $parameters)
     {
         $query = 'INSERT INTO widget_parameters_range (parameter_id, min_range, max_range, step) ' .
             'VALUES (:parameter_id, :min_range, :max_range, :step) ';
@@ -190,29 +187,10 @@ class Installer extends Widget
         $sth = $this->dbConf->prepare($query);
 
         $sth->bindParam(':parameter_id', $paramId, \PDO::PARAM_INT);
-        $sth->bindParam(':min_range', $attr['min'], \PDO::PARAM_INT);
-        $sth->bindParam(':max_range', $attr['max'], \PDO::PARAM_INT);
-        $sth->bindParam(':step', $attr['step'], \PDO::PARAM_INT);
+        $sth->bindParam(':min_range', $parameters['min'], \PDO::PARAM_INT);
+        $sth->bindParam(':max_range', $parameters['max'], \PDO::PARAM_INT);
+        $sth->bindParam(':step', $parameters['step'], \PDO::PARAM_INT);
 
         $sth->execute();
-    }
-
-    private function getTypes()
-    {
-        $types = array();
-
-        $query = 'SELECT ft_typename, field_type_id ' .
-            'FROM widget_parameters_field_type ';
-
-        $result = $this->dbConf->query($query);
-
-        while ($row = $result->fetchRow()) {
-            $types[$row['ft_typename']] = array(
-                'id' => $row['field_type_id'],
-                'name' => $row['ft_typename']
-            );
-        }
-
-        return $types;
     }
 }

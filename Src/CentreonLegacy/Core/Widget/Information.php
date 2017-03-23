@@ -62,6 +62,25 @@ class Information extends Widget
         return $conf;
     }
 
+    public function getTypes()
+    {
+        $types = array();
+
+        $query = 'SELECT ft_typename, field_type_id ' .
+            'FROM widget_parameters_field_type ';
+
+        $result = $this->dbConf->query($query);
+
+        while ($row = $result->fetchRow()) {
+            $types[$row['ft_typename']] = array(
+                'id' => $row['field_type_id'],
+                'name' => $row['ft_typename']
+            );
+        }
+
+        return $types;
+    }
+
     public function getParameterIdByName($name)
     {
         $query = 'SELECT parameter_id ' .
@@ -81,29 +100,41 @@ class Information extends Widget
         return $id;
     }
 
-    /**
-     * Get module configuration from file
-     *
-     * @param $moduleId
-     * @return mixed
-     */
-    public function getNameById($moduleId)
+    public function getParameters($widgetId)
     {
-        $query = 'SELECT name ' .
-            'FROM modules_informations ' .
-            'WHERE id = :id';
+        $query = 'SELECT * ' .
+            'FROM widget_parameters ' .
+            'WHERE widget_model_id = :id ';
+
+        $sth = $this->dbConf->prepare($query);
+        $sth->bindParam(':id', $widgetId, \PDO::PARAM_INT);
+
+        $parameters = array();
+        while ($row = $sth->fetch()) {
+            $parameters[$row['parameter_code_name']] = $row;
+        }
+
+        return $parameters;
+    }
+
+    public function getIdByName($name)
+    {
+        $query = 'SELECT widget_model_id ' .
+            'FROM widget_models ' .
+            'WHERE directory = :directory';
+
         $sth = $this->dbConf->prepare($query);
 
-        $sth->bindParam(':id', $moduleId, \PDO::PARAM_INT);
+        $sth->bindParam(':directory', $name, \PDO::PARAM_STR);
 
         $sth->execute();
 
-        $name = null;
+        $id = null;
         if ($row = $sth->fetch()) {
-            $name = $row['name'];
+            $id = $row['widget_model_id'];
         }
 
-        return $name;
+        return $id;
     }
 
     /**

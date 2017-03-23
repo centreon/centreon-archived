@@ -11,17 +11,17 @@
 		<tr class={$rowStyle}>
 			<td class="ListColLeft">{$elem.title}</td>
 			<td class="ListColLeft">{$elem.description}</td>
-			<td class="ListColLeft">{$elem.version}</td>
+			<td class="ListColLeft">{$elem.installed_version}</td>
 			<td class="ListColLeft">{$elem.author}</td>
 			<td class="ListColRight" id="widget_{$name}">
-				{if $elem.is_installed}
-				<img class='uninstallBtn ico-16 margin_right' src='./img/icons/delete.png' style="cursor: pointer;">
-				{/if}
 				{if !$elem.is_installed}
 				<img class='installBtn ico-16 margin_right' src="./img/icons/generate_conf.png" style="cursor: pointer;">
 				{/if}
-				{if $elem.upgrade_available}
+				{if $elem.upgradeable}
 				<img class='upgradeBtn ico-16 margin_right' src='./img/icons/upgrade.png' style="cursor: pointer;">
+				{/if}
+				{if $elem.is_installed && $elem.source_available}
+				<img class='uninstallBtn ico-16 margin_right' src='./img/icons/delete.png' style="cursor: pointer;">
 				{/if}
 			</td>
 		</tr>
