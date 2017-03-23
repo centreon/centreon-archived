@@ -364,7 +364,7 @@ $host_prev = "";
 $ct = 0;
 $flag = 0;
 
-if ($sqlError) {
+if (!$sqlError) {
     while ($data = $DBRESULT->fetchRow()) {
         $passive = 0;
         $active = 1;
