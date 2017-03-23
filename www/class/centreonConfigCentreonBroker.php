@@ -852,14 +852,17 @@ class CentreonConfigCentreonBroker
         }
         $forms = array();
         $isMultiple = false;
+
         foreach (array_keys($formsInfos) as $key) {
             $qf = $this->quickFormById($formsInfos[$key]['blockId'], $page, $key, $config_id);
             /*
              * Replace loaded configuration with defaults external values
              */
+
             list($tagId , $typeId) = explode('_', $formsInfos[$key]['blockId']);
             $tag = $this->getTagName($tagId);
             $fields = $this->getBlockInfos($typeId);
+
             foreach ($fields as $field) {
                 $elementName = $this->getElementName($tag, $key, $field, $isMultiple);
                 if (!is_null($field['value']) && $field['value'] != false) {
@@ -1287,7 +1290,7 @@ class CentreonConfigCentreonBroker
     private function getElementName($tag, $formId, $field, &$isMultiple = false)
     {
         $elementName = $tag . '[' . $formId . '][';
-        if ($field['group'] !== '') {
+        if (!is_null($field['group']) && $field['group'] !== '') {
             $elementName .= $this->getParentGroups($field['group'], $isMultiple);
         }
         $elementName .= $field['fieldname']. (($isMultiple) ? "_#index#" : "") . ']';
@@ -1314,24 +1317,25 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             return '';
         }
-        $row = $res->fetchRow();
-        if ($row['group_parent_id'] !== '') {
-            $elemStr .= $this->getParentGroups($row['group_parent_id'], $isMultiple, $displayName);
-        }
-        if ($row['multiple'] !== '' && $row['multiple'] == 1) {
-            $isMultiple = true;
-        }
-        if (!$isMultiple) {
-            $elemStr .=  $row['groupname'] . '__' . $this->nbSubGroup++ . '__';
-        } else {
-            if ($elemStr != "") {
-                $elemStr .=   '__'.$row['groupname']. '__' ;
-            } else {
-                $elemStr .=   $row['groupname']. '__' ;
+        if ($row = $res->fetchRow()) {
+            if ($row['group_parent_id'] !== '') {
+                $elemStr .= $this->getParentGroups($row['group_parent_id'], $isMultiple, $displayName);
             }
-        }
-        if (!empty($row['displayname'])) {
-            $displayName = $row['displayname'];
+            if ($row['multiple'] !== '' && $row['multiple'] == 1) {
+                $isMultiple = true;
+            }
+            if (!$isMultiple) {
+                $elemStr .= $row['groupname'] . '__' . $this->nbSubGroup++ . '__';
+            } else {
+                if ($elemStr != "") {
+                    $elemStr .= '__' . $row['groupname'] . '__';
+                } else {
+                    $elemStr .= $row['groupname'] . '__';
+                }
+            }
+            if (!empty($row['displayname'])) {
+                $displayName = $row['displayname'];
+            }
         }
         return $elemStr;
     }
