@@ -406,13 +406,15 @@ class CentreonMetric extends CentreonWebService
         $acks = array();
         $downtimes = array();
         $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
-        $res = $this->pearDB->query($query);
-        if (false === PEAR::isError($res)) {
+        try {
+            $res = $this->pearDB->query($query);
             $row = $res->fetchRow();
             if (false === is_null($row) && $row['value'] === '1') {
                 $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
                 $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
             }
+        } catch (\Exception $e) {
+            // Nothing to do
         }
 
         /* Prepare limits */
