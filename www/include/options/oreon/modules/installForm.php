@@ -77,28 +77,17 @@ $form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
 if ($form1->validate()) {
     $moduleInstaller = $moduleFactory->newInstaller($name);
 
-    $insert_ok = $moduleInstaller->installModuleConfiguration();
+    $insert_ok = $moduleInstaller->install();
 
     if ($insert_ok) {
-
-        $tpl->assign("output1", _("Module installed and registered"));
-
-        /* SQL installation */
-        if ($moduleInstaller->installSqlFiles()) {
-            $tpl->assign("output2", _("SQL file included"));
-        }
-
-        /* PHP installation */
-        if ($moduleInstaller->installPhpFiles()) {
-            $tpl->assign("output3", _("PHP file included"));
-        }
+        $tpl->assign("output", _("Module installed and registered"));
 
         /* Rebuild modules in centreon object */
         $centreon->creatModuleList($pearDB);
         $centreon->user->access->updateTopologyStr();
         $centreon->initHooks();
     } else {
-        $tpl->assign("output4", _("Unable to install module"));
+        $tpl->assign("output", _("Unable to install module"));
     }
 } elseif ($o == 'i' && !$moduleInfoObj->getInstalledInformation($name)) {
     $form1->addElement('submit', 'install', _("Install Module"), array("class" => "btc bt_success"));

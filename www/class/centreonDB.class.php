@@ -152,7 +152,12 @@ class CentreonDB extends \PDO
     {
         return $this->db->autoPrepare($query);
     }
-    
+
+    public function beginTransaction()
+    {
+        $this->db->beginTransaction();
+    }
+
     public function commit()
     {
         $this->db->commit();

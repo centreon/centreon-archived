@@ -52,6 +52,8 @@ class Remover extends Widget
 
     public function remove()
     {
+        $this->dbConf->beginTransaction();
+
         $query = 'DELETE FROM widget_models ' .
             'WHERE directory = :directory ';
 
@@ -60,5 +62,7 @@ class Remover extends Widget
         $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
         $sth->execute();
+
+        $this->dbConf->commit();
     }
 }

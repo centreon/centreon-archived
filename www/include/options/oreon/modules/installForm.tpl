@@ -30,17 +30,8 @@
  	{if $form1.install.html || $form1.list.html}
  	<tr class="list_one">
  		<td colspan="2" align="center">
- 			{if $output1}
- 				{$output1}<br />
- 			{/if}
- 			{if $output2}
- 				{$output2}<br />
- 			{/if}
- 			{if $output3}
- 				{$output3}<br />
- 			{/if}
- 			{if $output4}
- 				{$output4}<br />
+ 			{if $output}
+ 				{$output}<br />
  			{/if}
  			<form {$form1.attributes}>
 	 		    <br />&nbsp;{$form1.install.html}&nbsp{$form1.list.html}<br />

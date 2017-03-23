@@ -57,7 +57,7 @@ function displayResults(moduleList) {
             statusMessage = 'The module is fully functional';
             statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
             tooltipReferer = '#img_ok_'+ moduleName;
-        } else {
+        } else if (!jQuery('#action' + moduleName + '[href*="o=i"]').length) {
             myModuleStatusSpan.append('<img id="img_ok_'+ moduleName + '" src="img/icons/checked.png" class="ico-16" />');
             statusStyle = 'ui-tooltip-green ui-tooltip-shadow';
             statusMessage = 'The module is fully functional';

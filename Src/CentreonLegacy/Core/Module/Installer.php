@@ -53,7 +53,20 @@ class Installer extends Module
         $this->moduleConfiguration = $this->informationObj->getConfiguration($this->moduleName);
     }
 
-    public function installModuleConfiguration()
+    public function install()
+    {
+        $this->dbConf->beginTransaction();
+
+        $id = $this->installModuleConfiguration();
+        $this->installSqlFiles();
+        $this->installPhpFiles();
+
+        $this->dbConf->commit();
+
+        return $id;
+    }
+
+    protected function installModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
         if (!file_exists($configurationFile)) {

@@ -55,6 +55,8 @@ class Upgrader extends Installer
 
     public function upgrade()
     {
+        $this->dbConf->beginTransaction();
+
         $query = 'UPDATE widget_models SET ' .
             'title = :title, ' .
             'description = :description, ' .
@@ -86,6 +88,8 @@ class Upgrader extends Installer
 
         $widgetId = $this->informationObj->getIdByName($this->widgetName);
         $this->upgradePreferences($widgetId);
+
+        $this->dbConf->commit();
     }
 
     private function upgradePreferences($widgetId)

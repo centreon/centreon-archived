@@ -57,6 +57,8 @@ class Upgrader extends Module
 
     public function upgrade()
     {
+        $this->dbConf->beginTransaction();
+
         $this->upgradeModuleConfiguration();
 
         $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
@@ -86,7 +88,9 @@ class Upgrader extends Module
             $this->upgradePhpFiles($upgrade_conf, $upgradePath, false);
         }
 
-        return true;
+        $this->dbConf->commit();
+
+        return $this->moduleId;
     }
 
     /**

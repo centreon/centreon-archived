@@ -57,10 +57,14 @@ class Remover extends Module
 
     public function remove()
     {
+        $this->dbConf->beginTransaction();
+
         $this->removeModuleConfiguration();
 
         $this->removeSqlFiles();
         $this->removePhpFiles();
+
+        $this->dbConf->commit();
 
         return true;
     }
