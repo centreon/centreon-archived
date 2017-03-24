@@ -135,7 +135,7 @@ class CentreonDB extends \PDO
     
     public function autoCommit($val)
     {
-        $this->db->autoCommit($val);
+        /* Deprecated */
     }
     
     public function prepare($query)

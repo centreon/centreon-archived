@@ -1,13 +1,10 @@
 <?php
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
+
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\MonitoringServicesPage;
-use Centreon\Test\Behat\MonitoringHostsPage;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
+use Centreon\Test\Behat\Monitoring\MonitoringHostsPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 /**
  * Defines application features from the specific context.
@@ -74,10 +71,12 @@ class AcknowledgementTimeoutContext extends CentreonContext
     {
         $this->submitHostResult($this->hostName, 'DOWN');
         $hostName = $this->hostName;
-        $this->spin(function($ctx) use ($hostName) {
-            return ((new MonitoringHostsPage($ctx))->getStatus($hostName)
+        $this->spin(
+            function($ctx) use ($hostName) {
+                return ((new MonitoringHostsPage($ctx))->getStatus($hostName)
                     == "DOWN");
-        });
+            }
+        );
     }
 
     /**
@@ -88,21 +87,25 @@ class AcknowledgementTimeoutContext extends CentreonContext
         $hostName = $this->serviceHostName;
         $serviceName = $this->serviceName;
         (new MonitoringServicesPage($this))->listServices();
-        $this->spin(function($ctx) use ($hostName, $serviceName) {
-            try {
-                (new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName);
-                $found = TRUE;
+        $this->spin(
+            function($ctx) use ($hostName, $serviceName) {
+                try {
+                    (new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName);
+                    $found = TRUE;
+                }
+                catch (\Exception $e) {
+                    $found = FALSE;
+                }
+                return $found;
             }
-            catch (\Exception $e) {
-                $found = FALSE;
-            }
-            return $found;
-        });
+        );
         $this->submitServiceResult($hostName, $serviceName, 'CRITICAL');
-        $this->spin(function($ctx) use ($hostName, $serviceName) {
-            $status = (new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName);
-            return ($status == 'CRITICAL');
-        });
+        $this->spin(
+            function($ctx) use ($hostName, $serviceName) {
+                $status = (new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName);
+                return ($status == 'CRITICAL');
+            }
+        );
     }
 
     /**
@@ -120,9 +123,11 @@ class AcknowledgementTimeoutContext extends CentreonContext
           false,
           false);
         $hostName = $this->hostName;
-        $this->spin(function($ctx) use ($hostName) {
-            return ((new MonitoringHostsPage($ctx))->isHostAcknowledged($hostName));
-        });
+        $this->spin(
+            function($ctx) use ($hostName) {
+                return ((new MonitoringHostsPage($ctx))->isHostAcknowledged($hostName));
+            }
+        );
     }
 
     /**
@@ -141,9 +146,11 @@ class AcknowledgementTimeoutContext extends CentreonContext
             true,
             true,
             false);
-        $this->spin(function($ctx) use ($hostName, $serviceName) {
-            return ((new MonitoringServicesPage($ctx))->isServiceAcknowledged($hostName, $serviceName));
-        });
+        $this->spin(
+            function($ctx) use ($hostName, $serviceName) {
+                return ((new MonitoringServicesPage($ctx))->isServiceAcknowledged($hostName, $serviceName));
+            }
+        );
     }
 
     /**
@@ -160,13 +167,14 @@ class AcknowledgementTimeoutContext extends CentreonContext
     public function theHostAcknowledgementDisappears()
     {
        $hostName = $this->hostName;
-       $this->spin(function($ctx) use ($hostName) {
-         return !(new MonitoringHostsPage($ctx))->isHostAcknowledged(
-           $hostName);
-       },
-       20);
+       $this->spin(
+           function($ctx) use ($hostName) {
+               return !(new MonitoringHostsPage($ctx))->isHostAcknowledged(
+                   $hostName
+               );
+           }
+       );
     }
-
 
     /**
      * @Then The service acknowledgement disappears
@@ -175,11 +183,13 @@ class AcknowledgementTimeoutContext extends CentreonContext
     {
        $hostName = $this->serviceHostName;
        $serviceName = $this->serviceName;
-       $this->spin(function($ctx) use ($hostName, $serviceName) {
-         return !(new MonitoringServicesPage($ctx))->isServiceAcknowledged(
-           $hostName,
-           $serviceName);
-       },
-       20);
+       $this->spin(
+           function($ctx) use ($hostName, $serviceName) {
+               return !(new MonitoringServicesPage($ctx))->isServiceAcknowledged(
+                   $hostName,
+                   $serviceName
+               );
+           }
+       );
     }
 }

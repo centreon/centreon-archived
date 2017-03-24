@@ -4,22 +4,13 @@
 Mise à jour RPM
 ===============
 
-La version 3.4 de Centreon Entreprise Server (CES) est l'ensemble Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
-Deux versions de CES 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
+La version 3.4 de Centreon ISO est l'ensemble Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+Deux versions de Centreon 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
 
 .. warning::
-   Cette release n'est pas encore intégralement compatible avec la
-   totalité des logiciels commerciaux de Centreon tels que Centreon MBI,
-   Centreon BAM ou Centreon Map. Si vous utilisez l'un de ces produits
-   nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
-   Web tant que de nouvelles versions des produits précédents, indiquant
-   clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
-   disponibles. La seule exception à cette exclusion concerne EMS/EPP.
-
-.. warning::
-   Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise 
-   pas le module centreon knowledgebase (aussi appelé Centreon KB). Si c'est le 
-   cas, veuillez le désinstaller. Le module Centreon KB est maintenant intégré 
+   Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise
+   pas le module centreon knowledgebase (aussi appelé Centreon KB). Si c'est le
+   cas, veuillez le désinstaller. Le module Centreon KB est maintenant intégré
    à la version 2.8.
 
 *********
@@ -66,12 +57,12 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
-*********
-Dépôt CES
-*********
+**************
+Dépôt Centreon
+**************
 
-Si vous êtes déjà un utilisateur de CES, vous devez mettre à jour votre
-fichier .repo pour utiliser les logiciels faisant partie de CES 3.4
+Si vous êtes déjà un utilisateur de Centreon ISO, vous devez mettre à jour votre
+fichier .repo pour utiliser les logiciels faisant partie de Centreon 3.4
 (essentiellement Centreon Web 2.8 et les composants associés). Entrez
 les commandes suivantes en fonction de votre système d'exploitation.
 
@@ -114,7 +105,7 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 2. Mise à jour l’ensemble des paquets
 =====================================
 
-Pour installer la nouvelle version de Centreon depuis une CES 3.4, lancez la commande suivante :
+Pour installer la nouvelle version de Centreon depuis une Centreon 3.4, lancez la commande suivante :
 
    ::
 
@@ -214,7 +205,7 @@ de EMS/EPP.
 Mise à jour du dépôt
 ====================
 
-Comme pour CES, le fichier .repo doit être mis à jour pour utiliser la
+Comme pour Centreon ISO, le fichier .repo doit être mis à jour pour utiliser la
 version 3.4. N'hésitez pas à contacter le support Centreon si vous ne
 savez pas comment réaliser cette opération.
 

@@ -47,10 +47,19 @@ $centreon = $_SESSION['centreon'];
 
 global $centreon, $pearDB;
 
+
 /*
  * Connect to DB
  */
 $pearDB = new CentreonDB();
+
+session_start();
+session_write_close();
+
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    exit();
+}
+$centreon = $_SESSION['centreon'];
 
 /*
  * GMT management
@@ -61,11 +70,6 @@ $centreonGMT->getMyGMTFromSession($sid, $pearDB);
 
 require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
-
-if (!isset($centreon)) {
-    exit();
-}
-
 include_once _CENTREON_PATH_ . "www/include/monitoring/external_cmd/functionsPopup.php";
 
 if (isset($_GET["select"]) && isset($sid)) {

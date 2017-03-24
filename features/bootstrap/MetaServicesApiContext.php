@@ -1,17 +1,13 @@
 <?php
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
+
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\MetaServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\MetaServiceConfigurationPage;
 
 /**
  * Defines application features from the specific context.
  */
 class MetaServicesApiContext extends CentreonContext
 {
-
     public function __construct()
     {
         parent::__construct();

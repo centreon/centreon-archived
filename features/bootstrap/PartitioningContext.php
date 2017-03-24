@@ -1,11 +1,7 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ContactListPage;
-use Centreon\Test\Behat\ContactConfigurationPage;
-use Centreon\Test\Behat\CommandConfigurationPage;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactListPage;
 
 class PartitioningContext extends CentreonContext
 {
@@ -26,9 +22,11 @@ class PartitioningContext extends CentreonContext
     {
         $this->visit('main.php?p=50503');
 
-        $this->spin(function ($context) {
-            return $context->getSession()->getPage()->has('named', array('id_or_name', 'database_informations'));
-        });
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('named', array('id_or_name', 'database_informations'));
+            }
+        );
     }
 
     /**
@@ -36,9 +34,11 @@ class PartitioningContext extends CentreonContext
      */
     public function partitioningInformationsAreDisplayed()
     {
-        $this->spin(function ($context) {
-            return ($context->getSession()->getPage()->has('named', array('id_or_name', 'tab1')) &&
-                $context->getSession()->getPage()->has('named', array('id_or_name', 'tab2')));
-        });
+        $this->spin(
+            function ($context) {
+                return ($context->getSession()->getPage()->has('named', array('id_or_name', 'tab1')) &&
+                    $context->getSession()->getPage()->has('named', array('id_or_name', 'tab2')));
+            }
+        );
     }
 }

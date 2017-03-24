@@ -72,12 +72,10 @@ $centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/engine/";
 
 chdir(_CENTREON_PATH_ . "www");
-
 $username = 'unknown';
 if (isset($centreon->user->name)) {
     $username = $centreon->user->name;
 }
-
 $xml = new CentreonXML();
 $config_generate = new Generate();
 

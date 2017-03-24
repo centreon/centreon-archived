@@ -121,7 +121,7 @@ $proc->setServiceInformations();
  * Get Services Template Informations
  */
 $query = "SELECT SQL_CALC_FOUND_ROWS service_description, service_id
-	          FROM service
+              FROM service
 	          WHERE service_register = '0' ";
 if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplate']) {
     $query .= " AND service_description LIKE '%" . $_REQUEST['searchServiceTemplate'] . "%' ";

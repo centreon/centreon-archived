@@ -1,0 +1,94 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+<script language='javascript' src='./include/common/javascript/tool.js'></script>
+<div id="div1" style="position:relative;">
+    <div class="graph-options">
+      <a href="javascript:switchCols(1)" class="ico-16 margin_right ico-col ico-col-1 active" alt="{t}One column{/t}" title="{t}One column{/t}">
+      </a>
+      <a href="javascript:switchCols(2)" class="ico-16 margin_right ico-col ico-col-2" alt="{t}Two columns{/t}" title="{t}Two columns{/t}">
+      </a>
+      <a href="javascript:switchCols(3)" class="ico-16 margin_right ico-col ico-col-3" alt="{t}Three columns{/t}" title="{t}Three columns{/t}">
+      </a>
+    </div>
+    <div id="graphs" class="graph_content">
+        <div class="graphZone">
+          {foreach from=$periods item=period}
+          <div id="graph_wrapper_{$period.short}" data-graph-id="{$srv_id}" class="graph">
+            <div class="title">
+              <img class="remove ico-14 margin_right" src="./img/icons/circle-cross.png">
+              <span>{$srv_name} during {$period.long}</span>
+              <a class="actions" href="#" data-href="./include/views/graphs/generateGraphs/generateImage.php">
+                <img alt="Export graph" src="./img/icons/picture.png" class="ico-14 margin_right">
+              </a>
+              <a class="actions" href="#" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
+                <img alt="Export CSV" src="./img/icons/csv.png" class="ico-14 margin_right">
+              </a>
+            </div>
+            <div class="content">
+              <div class="chart" id="graph-{$period.short}" data-graph-interval="{$period.short}" data-graph-id="{$svc_id}" data-graph-type="service">
+              </div>
+            </div>
+          </div>
+          {/foreach}
+        </div>
+    </div>
+</div>
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+<script src="./include/common/javascript/centreon/centreon-select2.js"></script>
+{literal}
+<script>
+function switchCols(number) {
+
+  jQuery('.graphZone').removeClass(function (index, css) {
+    return (css.match(/\bcol\S+/g) || []).join(' ');
+  });
+  if (number === 2 || number === 3) {
+    jQuery('.graphZone').addClass('col' + number);
+  }
+  jQuery('.graphZone .chart').centreonGraph('resize');
+  jQuery('.ico-col').removeClass('active');
+  jQuery('.ico-col-' + number).addClass('active');
+}
+
+jQuery(function () {
+  jQuery('.chart').centreonGraph();
+
+  /* Add events on click on action download image/CSV */
+  jQuery('.graphZone').delegate('a.actions', 'click', function (e) {
+    var $a = jQuery(this);
+    var baseUrl = $a.data('href');
+    var chartId = $a.parents('.graph').data('graphId');
+    var start;
+    var end;
+    /* Get the period */
+    if (jQuery('select[name="period"]').val() === '') {
+      start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
+      end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+      duration = moment.duration(end.diff(start));
+    } else {
+      parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
+      duration = moment.duration(
+        parseInt(parseInterval[1], 10),
+        parseInterval[2]
+      );
+      start = moment();
+      end = moment();
+      start.subtract(parseInterval[1], parseInterval[2]);
+    }
+
+    e.preventDefault();
+    baseUrl += '?chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
+    window.location = baseUrl;
+  });
+
+  /* Active drag and drop */
+  jQuery('.graphZone').sortable({
+    handle: '.title',
+  });
+});
+</script>
+{/literal}
