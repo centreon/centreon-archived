@@ -57,6 +57,16 @@ class Installer extends Widget
     {
         $this->dbConf->beginTransaction();
 
+        $id = $this->installConfiguration();
+        $this->installPreferences($id);
+
+        $this->dbConf->commit();
+
+        return $id;
+    }
+
+    protected function installConfiguration()
+    {
         $query = 'INSERT INTO widget_models ' .
             '(title, description, url, version, directory, author, ' .
             'email, website, keywords, thumbnail, autoRefresh) ' .
@@ -79,12 +89,7 @@ class Installer extends Widget
 
         $sth->execute();
 
-        $lastId = $this->informationObj->getIdByName($this->widgetName);
-        $this->installPreferences($lastId);
-
-        $this->dbConf->commit();
-
-        return $lastId;
+        return $this->informationObj->getIdByName($this->widgetName);
     }
 
     protected function installPreferences($id)

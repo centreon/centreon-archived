@@ -179,7 +179,7 @@ class Information extends Widget
      *
      * @return mixed
      */
-    public function getAvailableList()
+    public function getAvailableList($search = '')
     {
         $widgetsConf = array();
 
@@ -187,6 +187,10 @@ class Information extends Widget
         $widgets = scandir($widgetsPath);
 
         foreach ($widgets as $widget) {
+            if (!empty($search) && !stristr($widget, $search)) {
+                continue;
+            }
+
             $widgetPath = $widgetsPath . $widget;
             if (!preg_match('/\W+/', $widget) || !is_dir($widgetPath) || !is_file($widgetPath . '/configs.xml')) {
                 continue;
