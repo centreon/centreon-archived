@@ -111,4 +111,18 @@ class CentreonAdministrationWidget extends CentreonWebService
 
         return $widgetInstaller->install();
     }
+
+    public function postRemove()
+    {
+        if (!isset($this->arguments['name'])) {
+            throw new \Exception('Missing argument : name');
+        } else {
+            $name = $this->arguments['name'];
+        }
+
+        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $widgetInstaller = $factory->newRemover($name);
+
+        return $widgetInstaller->remove();
+    }
 }

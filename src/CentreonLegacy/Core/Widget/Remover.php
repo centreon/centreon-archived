@@ -61,8 +61,14 @@ class Remover extends Widget
 
         $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
-        $sth->execute();
+        if ($sth->execute() && $sth->rowCount()) {
+            $this->dbConf->commit();
+            $removed = true;
+        } else {
+            $this->dbConf->rollback();
+            $removed = false;
+        }
 
-        $this->dbConf->commit();
+        return $removed;
     }
 }
