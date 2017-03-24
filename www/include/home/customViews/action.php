@@ -95,7 +95,7 @@ try {
 
         $viewObj->updateCustomViewUserRelation($_POST);
     } elseif ($action == "share") {
-        $viewObj->shareCustomView($_POST);
+        $viewObj->shareCustomView($_POST, $centreon->user->user_id);
     } elseif ($action == "remove") {
         $viewObj->removeUserFromView($_POST);
         $xml->writeElement('contact_name', $centreon->user->getContactName($db, $_POST['user_id']));

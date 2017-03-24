@@ -151,7 +151,7 @@ After saving the file, please don't forget to restart apache server.
 Firewall
 ^^^^^^^^
 
-Add firewall rules or disable it. To disable it execute folowwing commands:
+Add firewall rules or disable it. To disable it execute following commands:
 
 * **iptables** (CentOS v6) ::
 

@@ -1,41 +1,43 @@
 <?php
 
-
-use Centreon\Test\Behat\HostMonitoringDetailPage;
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\Monitoring\HostMonitoringDetailsPage;
 
 /**
  * Defines application features from the specific context.
  */
 class TimezoneInMonitoringContext extends CentreonContext
 {
+    private $page;
 
     /**
-     * @Given a host
+     *  @Given a host
      */
     public function aHost()
     {
-        $this->restartAllPollers();
+        // Centreon-Server will do for this test.
     }
 
     /**
-     * @When I open the host detail in the monitoring page
+     *  @When I open the host monitoring details page
      */
-    public function iOpenTheHostDetailInTheMonitoringPage()
+    public function iOpenTheHostMonitoringDetailsPage()
     {
-        $page = new HostMonitoringDetailPage($this, 'Centreon-Server');
-        $page->switchTab('informations');
+        $this->page = new HostMonitoringDetailsPage($this, 'Centreon-Server');
+        $this->page->switchTab(HostMonitoringDetailsPage::HOST_INFORMATIONS_TAB);
     }
 
     /**
-     * @Then the timezone of this host is displayed
+     *  @Then the timezone of this host is displayed
      */
     public function ThenTheTimezoneOfThisHostIsDisplayed()
     {
-        $timezone = $this->assertFind('css', '#tab3 tr:nth-child(16) td.ListColLeft span')->getText();
-        if ($timezone == '') {
-            throw new \Exception('Timezone does not display');
+        $properties = $this->page->getProperties();
+        if ($properties['timezone'] != 'Europe/Paris') {
+            throw new \Exception(
+                'Timezone is not displayed: got ' .
+                $properties['timezone'] . ', expected Europe/Paris.'
+            );
         }
     }
-
 }

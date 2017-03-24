@@ -438,3 +438,14 @@ function getMetaServices($resId, $db, $metaObj)
     }
     return $arr;
 }
+
+function getModulesExtensionsPaths($db)
+{
+    $extensionsPaths = array();
+    $res = $db->query("SELECT name FROM modules_informations");
+    while ($row = $res->fetchRow()) {
+        $extensionsPaths = array_merge($extensionsPaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/extensions/acl/'));
+    }
+    
+    return $extensionsPaths;
+}

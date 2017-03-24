@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 2005-2015 Centreon
+# Copyright 2005-2017 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 
@@ -519,7 +519,7 @@ sub sendConfigFile($){
 
             if ($server_info->{localhost} == 0) {
                 $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
-                $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.xml";
+                $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.*";
                 $dest = $server_info->{ns_ip_address}.":$cfg_dir";
                 $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
@@ -565,21 +565,14 @@ sub initEngine($$){
 
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
-        if ($conf->{init_system} eq 'systemd') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemctl $options ".$conf->{init_script};
-        } elsif ($conf->{init_system} eq 'systemv') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
-        } else {
-           $self->{logger}->writeLogError("Unknown init system for poller $id");
-           return;
-        }
+        $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} $self->{service} ".$conf->{init_script}." ".$options;
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd, logger => $self->{logger}, timeout => 120);
     } else {
         $self->{logger}->writeLogError("Cannot $options Engine for poller $id");
     }
 
     # Logs Actions
-    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} ".$conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
+    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} $self->{service} ".$conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
     my $line;
     if (defined($stdout)) {
         foreach $line (split(/\n/, $stdout)){
