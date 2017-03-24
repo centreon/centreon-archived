@@ -33,13 +33,21 @@
  *
  */
 
-$classDirectory = dirname(__FILE__) . '/Src/';
-spl_autoload_register(function ($className) use ($classDirectory) {
-    $explodedClassName = explode('\\', $className);
-    $classFileName = array_pop($explodedClassName);
-    $explodedClassName = array_map('ucfirst', $explodedClassName);
-    $classPath = $classDirectory . implode('/', $explodedClassName) . '/' . $classFileName . '.php';
-    if (file_exists($classPath)) {
-        require_once $classPath;
-    }
-});
+// Calling PHP-DI
+use Pimple\Container;
+
+// require composer file
+require __DIR__ . '/vendor/autoload.php';
+
+// Creating container
+$dependencyInjector = new Container();
+
+// Defing Centreon Configuration Database Connection
+$dependencyInjector['configuration_db'] = function ($c) {
+    return new \CentreonDB('centreon');
+};
+
+// Defing Centreon Realtime Database Connection
+$dependencyInjector['realtime_db'] = function ($c) {
+    return new \CentreonDB('centstorage');
+};

@@ -1,4 +1,5 @@
-function CheckModule() {
+function CheckModule()
+{
     jQuery.ajax({
         type: 'POST',
         url: 'include/options/oreon/modules/moduleDependenciesValidator.php',
@@ -6,15 +7,16 @@ function CheckModule() {
             {
                 mydata: 1,
                 mydata2: 2
-            },
-        success: function(data) {
+        },
+        success: function (data) {
             displayResults(data);
         }
     });
 }
 
-function displayResults(moduleList) {
-    Object.keys(moduleList).forEach(function(moduleName) {
+function displayResults(moduleList)
+{
+    Object.keys(moduleList).forEach(function (moduleName) {
         module = moduleList[moduleName];
         myModuleStatusSpan = jQuery('#' + moduleName);
         myModuleStatusSpan.empty();
@@ -49,9 +51,9 @@ function displayResults(moduleList) {
             tooltipReferer = '#img_critical_'+ moduleName;
             jQuery('body').append(criticalModalBox);
             jQuery('#' + modalBoxId).dialog({ autoOpen: false });
-            jQuery('#' + modalBoxId).dialog( "option", "show", { effect: 'drop', direction: "up" } );
-            jQuery('#' + modalBoxId).dialog( "option", "hide", { effect: 'drop', direction: "down" } );
-            jQuery('#' + modalBoxId).dialog( "option", "modal", true );
+            jQuery('#' + modalBoxId).dialog("option", "show", { effect: 'drop', direction: "up" });
+            jQuery('#' + modalBoxId).dialog("option", "hide", { effect: 'drop', direction: "down" });
+            jQuery('#' + modalBoxId).dialog("option", "modal", true);
         } else if (module["status"] === "warning") {
             myModuleStatusSpan.append('<img id="img_ok_'+ moduleName + '" src="img/icons/warning.png" class="ico-16" />');
             statusMessage = 'The module is fully functional';
@@ -76,9 +78,9 @@ function displayResults(moduleList) {
             customActionIcon = '<span id="customActionIcon_'+moduleName+'"><a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="custom_action_'+ moduleName + '" src="img/icons/wrench.gif" class="ico-16" /></a></span>';
             jQuery('body').append(customActionModalBox);
             jQuery('#' + modalBoxId).dialog({ autoOpen: false });
-            jQuery('#' + modalBoxId).dialog( "option", "show", { effect: 'drop', direction: "up" } );
-            jQuery('#' + modalBoxId).dialog( "option", "hide", { effect: 'drop', direction: "down" } );
-            jQuery('#' + modalBoxId).dialog( "option", "modal", true );
+            jQuery('#' + modalBoxId).dialog("option", "show", { effect: 'drop', direction: "up" });
+            jQuery('#' + modalBoxId).dialog("option", "hide", { effect: 'drop', direction: "down" });
+            jQuery('#' + modalBoxId).dialog("option", "modal", true);
             jQuery('#action_'+ moduleName).prepend(customActionIcon);
         }
 
@@ -102,6 +104,6 @@ function displayResults(moduleList) {
     });
 }
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     CheckModule();
 });

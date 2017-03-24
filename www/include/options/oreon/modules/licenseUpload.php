@@ -55,11 +55,20 @@ $filename = str_replace('/', '', $_GET['module']);
 
 if ($LicenseFileInfos['name'] == 'merethis_lic.zl') {
     if (is_writable(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/")) {
-        if (move_uploaded_file($_FILES["licensefile"]["tmp_name"], _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl")) {
-            if (zend_loader_file_encoded(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl")) {
-                $zend_info = zend_loader_file_licensed(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
+        if (move_uploaded_file(
+            $_FILES["licensefile"]["tmp_name"],
+            _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"
+        )) {
+            if (zend_loader_file_encoded(
+                _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"
+            )) {
+                $zend_info = zend_loader_file_licensed(
+                    _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"
+                );
             } else {
-                $zend_info = parse_zend_license_file(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
+                $zend_info = parse_zend_license_file(
+                    _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"
+                );
             }
             
             /* Init Flag Value */
@@ -114,7 +123,10 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl') {
                 rename($from, $to);
 
                 clearstatcache(true, _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl");
-                if (zend_loader_install_license(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl", true)) {
+                if (zend_loader_install_license(
+                    _CENTREON_PATH_ . "www/modules/" . $filename . "/license/merethis_lic.zl",
+                    true
+                )) {
                     echo _("The license has been successfully installed");
                 } else {
                     echo _("An error occurred");
@@ -139,7 +151,10 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl') {
             }
         }
     } else {
-        echo _("License upload has failed.\nDestination directory doesn't exist or your webserver's user don't have the right to access it");
+        echo _(
+            "License upload has failed.\n"
+            . "Destination directory doesn't exist or your webserver's user don't have the right to access it"
+        );
     }
 } else {
     echo _("The given license file is not valid");

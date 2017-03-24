@@ -35,35 +35,54 @@
 
 namespace CentreonLegacy\Core\Module;
 
-require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
-
 class Factory
 {
-    protected $dbConf;
-    protected $dbMon;
+    /**
+     *
+     * @var Pimple\Container
+     */
+    protected $dependencyInjector;
 
-    public function __construct()
+    /**
+     * 
+     * @param \Pimple\Container $dependencyInjector
+     */
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->dbConf = \CentreonDBInstance::getConfInstance();
-        $this->dbMon = \CentreonDBInstance::getMonInstance();
+        $this->dependencyInjector = $dependencyInjector;
     }
 
+    /**
+     *
+     * @return \CentreonLegacy\Core\Module\Information
+     */
     public function newInformation()
     {
         $licenseObj = $this->newLicense();
 
-        return new Information($this->dbConf, $licenseObj);
+        return new Information($this->dependencyInjector['configuration_db'], $licenseObj);
     }
 
+    /**
+     *
+     * @param type $moduleName
+     * @return \CentreonLegacy\Core\Module\Installer
+     */
     public function newInstaller($moduleName)
     {
         $informationObj = $this->newInformation();
 
         $factory = new \CentreonLegacy\Core\Utils\Factory();
         $utils = $factory->newUtils();
-        return new Installer($this->dbConf, $informationObj, $moduleName, $utils);
+        return new Installer($this->dependencyInjector['configuration_db'], $informationObj, $moduleName, $utils);
     }
 
+    /**
+     *
+     * @param string $moduleName
+     * @param integer $moduleId
+     * @return \CentreonLegacy\Core\Module\Upgrader
+     */
     public function newUpgrader($moduleName, $moduleId)
     {
         $informationObj = $this->newInformation();
@@ -71,7 +90,7 @@ class Factory
         $factory = new \CentreonLegacy\Core\Utils\Factory();
         $utils = $factory->newUtils();
 
-        return new Upgrader($this->dbConf, $informationObj, $moduleName, $moduleId, $utils);
+        return new Upgrader($this->dependencyInjector['configuration_db'], $informationObj, $moduleName, $moduleId, $utils);
     }
 
     public function newRemover($moduleName, $moduleId)

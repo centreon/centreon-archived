@@ -56,8 +56,6 @@ $tpl->assign("headerMenu_author", _("Author"));
 $tpl->assign("headerMenu_infos", _("Additional Information"));
 $tpl->assign("headerMenu_isinstalled", _("Installed"));
 
-$moduleFactory = new CentreonLegacy\Core\Module\Factory();
-$moduleInfoObj = $moduleFactory->newInformation();
 $moduleInfo = $moduleInfoObj->getConfiguration($name);
 
 $tpl->assign("module_rname", $moduleInfo["rname"]);

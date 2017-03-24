@@ -37,6 +37,11 @@ namespace CentreonLegacy\Core\Module;
 
 class Module
 {
+    /**
+     *
+     * @param type $moduleName
+     * @return type
+     */
     public function getModulePath($moduleName = '')
     {
         return _CENTREON_PATH_ . '/www/modules/' . $moduleName;

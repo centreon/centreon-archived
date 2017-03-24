@@ -37,9 +37,23 @@ namespace CentreonLegacy\Core\Module;
 
 class Information extends Module
 {
+    /**
+     *
+     * @var type
+     */
     protected $dbConf;
+    
+    /**
+     *
+     * @var type
+     */
     protected $licenseObj;
 
+    /**
+     *
+     * @param type $dbConf
+     * @param type $licenseObj
+     */
     public function __construct($dbConf, $licenseObj)
     {
         $this->dbConf = $dbConf;
@@ -192,12 +206,22 @@ class Information extends Module
         return $modules;
     }
 
+    /**
+     *
+     * @param type $availableVersion
+     * @param type $installedVersion
+     * @return boolean
+     */
     private function isUpgradeable($availableVersion, $installedVersion)
     {
+        $comparisonResult = false;
+        
         $compare = version_compare($availableVersion, $installedVersion);
+        
         if ($compare == 1) {
-            return true;
+            $comparisonResult = true;
         }
-        return false;
+        
+        return $comparisonResult;
     }
 }

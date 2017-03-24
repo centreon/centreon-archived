@@ -43,6 +43,13 @@ class Installer extends Module
     protected $utils;
     private $moduleConfiguration;
 
+    /**
+     *
+     * @param type $dbConf
+     * @param type $informationObj
+     * @param type $moduleName
+     * @param type $utils
+     */
     public function __construct($dbConf, $informationObj, $moduleName, $utils)
     {
         $this->dbConf = $dbConf;
@@ -104,6 +111,10 @@ class Installer extends Module
         return $lastId;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function installSqlFiles()
     {
         $installed = false;
@@ -117,6 +128,10 @@ class Installer extends Module
         return $installed;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function installPhpFiles()
     {
         $installed = false;

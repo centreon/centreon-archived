@@ -44,6 +44,14 @@ class Upgrader extends Module
     protected $utils;
     private $moduleConfiguration;
 
+    /**
+     *
+     * @param type $dbConf
+     * @param type $informationObj
+     * @param type $moduleName
+     * @param type $moduleId
+     * @param type $utils
+     */
     public function __construct($dbConf, $informationObj, $moduleName, $moduleId, $utils)
     {
         $this->dbConf = $dbConf;
@@ -55,6 +63,10 @@ class Upgrader extends Module
         $this->moduleConfiguration = $informationObj->getConfiguration($this->moduleName);
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function upgrade()
     {
         $this->dbConf->beginTransaction();
@@ -138,6 +150,11 @@ class Upgrader extends Module
         return $this->moduleId;
     }
 
+    /**
+     *
+     * @param type $version
+     * @return type
+     */
     private function upgradeVersion($version)
     {
         $query = 'UPDATE modules_informations SET ' .
@@ -154,6 +171,12 @@ class Upgrader extends Module
         return $this->moduleId;
     }
 
+    /**
+     *
+     * @param type $conf
+     * @param type $path
+     * @return boolean
+     */
     private function upgradeSqlFiles($conf, $path)
     {
         $installed = false;
@@ -167,6 +190,13 @@ class Upgrader extends Module
         return $installed;
     }
 
+    /**
+     *
+     * @param type $conf
+     * @param type $path
+     * @param type $pre
+     * @return boolean
+     */
     private function upgradePhpFiles($conf, $path, $pre = false)
     {
         $installed = false;

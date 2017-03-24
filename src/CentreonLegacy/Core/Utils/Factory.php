@@ -39,15 +39,31 @@ require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
 
 class Factory
 {
+    /**
+     *
+     * @var type
+     */
     protected $dbConf;
+    
+    /**
+     *
+     * @var type
+     */
     protected $dbMon;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->dbConf = \CentreonDBInstance::getConfInstance();
         $this->dbMon = \CentreonDBInstance::getMonInstance();
     }
 
+    /**
+     *
+     * @return \CentreonLegacy\Core\Utils\Utils
+     */
     public function newUtils()
     {
         return new Utils($this->dbConf, $this->dbMon);

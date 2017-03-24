@@ -70,6 +70,9 @@ $path = "./include/options/oreon/modules/";
 require_once "./include/common/common-Func.php";
 require_once $path ."DB-Func.php";
 
+$moduleFactory = new CentreonLegacy\Core\Module\Factory($dependencyInjector);
+$moduleInfoObj = $moduleFactory->newInformation();
+
 if ($list) {
     require_once($path."listModules.php");
 } else {
