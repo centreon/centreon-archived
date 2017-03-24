@@ -281,7 +281,7 @@ try {
     $attrWidgets = array(
         'datasourceOrigin' => 'ajax',
         'multiple' => false,
-        'availableDatasetRoute' => './api/internal.php?object=centreon_administration_widget&action=list',
+        'availableDatasetRoute' => './api/internal.php?object=centreon_administration_widget&action=listInstalled',
         'allowClear' => false
     );
 

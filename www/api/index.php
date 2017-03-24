@@ -34,6 +34,7 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . '/autoload.php';
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . '/class/webService.class.php';

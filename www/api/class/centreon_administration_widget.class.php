@@ -33,8 +33,8 @@
  *
  */
 
-
-require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
+require_once _CENTREON_PATH_ . "/www/class/centreonDBInstance.class.php";
+require_once _CENTREON_PATH_ . '/www/class/centreonWidget.class.php';
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonAdministrationWidget extends CentreonWebService
@@ -48,11 +48,23 @@ class CentreonAdministrationWidget extends CentreonWebService
     {
         parent::__construct();
     }
-    
+
     /**
-     * Get the list of views
+     * Get the list of installed widgets
      */
-    public function getList()
+    public function getListAvailable()
+    {
+        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $widgetInfo = $factory->newInformation();
+        $list = $widgetInfo->getAvailableList();
+
+        return $list;
+    }
+
+    /**
+     * Get the list of installed widgets
+     */
+    public function getListInstalled()
     {
         global $centreon;
 

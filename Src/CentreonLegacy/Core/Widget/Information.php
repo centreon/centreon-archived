@@ -179,7 +179,7 @@ class Information extends Widget
      *
      * @return mixed
      */
-    private function getAvailableList()
+    public function getAvailableList()
     {
         $widgetsConf = array();
 
