@@ -112,6 +112,20 @@ class CentreonAdministrationWidget extends CentreonWebService
         return $widgetInstaller->install();
     }
 
+    public function postUpgrade()
+    {
+        if (!isset($this->arguments['name'])) {
+            throw new \Exception('Missing argument : name');
+        } else {
+            $name = $this->arguments['name'];
+        }
+
+        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $widgetUpgrader = $factory->newUpgrader($name);
+
+        return $widgetUpgrader->upgrade();
+    }
+
     public function postRemove()
     {
         if (!isset($this->arguments['name'])) {

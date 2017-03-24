@@ -55,8 +55,27 @@ class Upgrader extends Installer
 
     public function upgrade()
     {
+        if (!$this->informationObj->isInstalled($this->widgetName)) {
+            throw new \Exception('Widget "' . $this->widgetName . '" is not installed.');
+        }
+
         $this->dbConf->beginTransaction();
 
+        try {
+            $id = $this->upgradeConfiguration();
+            $this->upgradePreferences($id);
+            $this->dbConf->commit();
+            $upgraded = true;
+        } catch (\Exception $e) {
+            $this->dbConf->rollback();
+            $upgraded = false;
+        }
+
+        return $upgraded;
+    }
+
+    protected function upgradeConfiguration()
+    {
         $query = 'UPDATE widget_models SET ' .
             'title = :title, ' .
             'description = :description, ' .
@@ -86,10 +105,7 @@ class Upgrader extends Installer
 
         $sth->execute();
 
-        $widgetId = $this->informationObj->getIdByName($this->widgetName);
-        $this->upgradePreferences($widgetId);
-
-        $this->dbConf->commit();
+        return $this->informationObj->getIdByName($this->widgetName);
     }
 
     private function upgradePreferences($widgetId)
