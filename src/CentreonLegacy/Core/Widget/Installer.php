@@ -55,12 +55,17 @@ class Installer extends Widget
 
     public function install()
     {
+        if ($this->informationObj->isInstalled($this->widgetName)) {
+            throw new \Exception('Widget is already installed.');
+        }
+
         $this->dbConf->beginTransaction();
 
         $id = $this->installConfiguration();
         $this->installPreferences($id);
 
         $this->dbConf->commit();
+
 
         return $id;
     }

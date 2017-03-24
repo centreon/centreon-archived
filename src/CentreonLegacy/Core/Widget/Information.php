@@ -54,6 +54,10 @@ class Information extends Widget
      */
     public function getConfiguration($widgetName)
     {
+        if (!file_exists($this->getWidgetPath($widgetName) . '/configs.xml')) {
+            throw new \Exception('Cannot get configuration file of widget "' . $widgetName . '"');
+        }
+
         $xml = simplexml_load_file($this->getWidgetPath($widgetName) . '/configs.xml');
         $conf = $this->utils->objectIntoArray($xml);
 
@@ -160,23 +164,10 @@ class Information extends Widget
         return $installedWidgets;
     }
 
-    public function getInstalledInformation($moduleName)
-    {
-        $query = 'SELECT * ' .
-            'FROM modules_informations ' .
-            'WHERE name = :name';
-        $sth = $this->dbConf->prepare($query);
-
-        $sth->bindParam(':name', $moduleName, \PDO::PARAM_STR);
-
-        $sth->execute();
-
-        return $sth->fetch();
-    }
-
     /**
      * Get list of available modules
      *
+     * @param string $search
      * @return mixed
      */
     public function getAvailableList($search = '')
@@ -241,6 +232,20 @@ class Information extends Widget
         }
 
         return $widgets;
+    }
+
+    public function isInstalled($widgetName)
+    {
+        $query = 'SELECT widget_model_id ' .
+            'FROM widget_models ' .
+            'WHERE directory = :name';
+        $sth = $this->dbConf->prepare($query);
+
+        $sth->bindParam(':name', $widgetName, \PDO::PARAM_STR);
+
+        $sth->execute();
+
+        return $sth->fetch();
     }
 
     private function isUpgradeable($availableVersion, $installedVersion)

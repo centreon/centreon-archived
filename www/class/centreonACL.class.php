@@ -239,13 +239,14 @@ class CentreonACL
      */
     private function setPollers()
     {
+        $pearDB = \CentreonDBInstance::getConfInstance();
         $query = "SELECT ns.id, ns.name, arpr.acl_res_id "
             . "FROM nagios_server ns, acl_resources_poller_relations arpr "
             . "WHERE ns.id = arpr.poller_id "
             . "AND ns.ns_activate = '1' "
             . "AND arpr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY ns.name ASC ";
-        $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
+        $DBRESULT = $pearDB->query($query);
         if ($DBRESULT->numRows()) {
             while ($row = $DBRESULT->fetchRow()) {
                 $this->pollers[$row['id']] = $row['name'];

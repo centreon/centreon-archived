@@ -54,11 +54,22 @@ class CentreonAdministrationWidget extends CentreonWebService
      */
     public function getListAvailable()
     {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $q = '';
+        } else {
+            $q = $this->arguments['q'];
+        }
+
         $factory = new \CentreonLegacy\Core\Widget\Factory();
         $widgetInfo = $factory->newInformation();
-        $list = $widgetInfo->getAvailableList();
+        $widgets = $widgetInfo->getAvailableList($q);
 
-        return $list;
+        foreach ($widgets as &$widget) {
+            unset($widget['preferences']);
+        }
+
+        return $widgets;
     }
 
     /**
@@ -85,5 +96,19 @@ class CentreonAdministrationWidget extends CentreonWebService
         $widgetObj = new CentreonWidget($centreon, $this->pearDB);
 
         return $widgetObj->getWidgetModels($q, $range);
+    }
+
+    public function postInstall()
+    {
+        if (!isset($this->arguments['name'])) {
+            throw new \Exception('Missing argument : name');
+        } else {
+            $name = $this->arguments['name'];
+        }
+
+        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $widgetInstaller = $factory->newInstaller($name);
+
+        return $widgetInstaller->install();
     }
 }
