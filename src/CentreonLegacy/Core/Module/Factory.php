@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -33,13 +33,72 @@
  *
  */
 
-$classDirectory = dirname(__FILE__) . '/Src/';
-spl_autoload_register(function ($className) use ($classDirectory) {
-    $explodedClassName = explode('\\', $className);
-    $classFileName = array_pop($explodedClassName);
-    $explodedClassName = array_map('ucfirst', $explodedClassName);
-    $classPath = $classDirectory . implode('/', $explodedClassName) . '/' . $classFileName . '.php';
-    if (file_exists($classPath)) {
-        require_once $classPath;
+namespace CentreonLegacy\Core\Module;
+
+class Factory
+{
+    /**
+     *
+     * @var Pimple\Container
+     */
+    protected $dependencyInjector;
+
+    /**
+     * 
+     * @param \Pimple\Container $dependencyInjector
+     */
+    public function __construct(\Pimple\Container $dependencyInjector)
+    {
+        $this->dependencyInjector = $dependencyInjector;
     }
-});
+
+    /**
+     *
+     * @return \CentreonLegacy\Core\Module\Information
+     */
+    public function newInformation()
+    {
+        $licenseObj = $this->newLicense();
+
+        return new Information($this->dependencyInjector['configuration_db'], $licenseObj);
+    }
+
+    /**
+     *
+     * @param type $moduleName
+     * @return \CentreonLegacy\Core\Module\Installer
+     */
+    public function newInstaller($moduleName)
+    {
+        $informationObj = $this->newInformation();
+
+        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $utils = $factory->newUtils();
+        return new Installer($this->dependencyInjector['configuration_db'], $informationObj, $moduleName, $utils);
+    }
+
+    /**
+     *
+     * @param string $moduleName
+     * @param integer $moduleId
+     * @return \CentreonLegacy\Core\Module\Upgrader
+     */
+    public function newUpgrader($moduleName, $moduleId)
+    {
+        $informationObj = $this->newInformation();
+
+        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $utils = $factory->newUtils();
+
+        return new Upgrader($this->dependencyInjector['configuration_db'], $informationObj, $moduleName, $moduleId, $utils);
+    }
+
+    /**
+     *
+     * @return \CentreonLegacy\Core\Module\License
+     */
+    public function newLicense()
+    {
+        return new License();
+    }
+}

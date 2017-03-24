@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -33,12 +33,21 @@
  *
  */
 
-namespace CentreonLegacy\Core\Module;
+// Calling PHP-DI
+use Pimple\Container;
 
-class Module
-{
-    public function getModulePath($moduleName = '')
-    {
-        return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
-    }
-}
+// require composer file
+require __DIR__ . '/vendor/autoload.php';
+
+// Creating container
+$dependencyInjector = new Container();
+
+// Defing Centreon Configuration Database Connection
+$dependencyInjector['configuration_db'] = function ($c) {
+    return new \CentreonDB('centreon');
+};
+
+// Defing Centreon Realtime Database Connection
+$dependencyInjector['realtime_db'] = function ($c) {
+    return new \CentreonDB('centstorage');
+};

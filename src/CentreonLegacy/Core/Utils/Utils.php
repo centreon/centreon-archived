@@ -37,15 +37,34 @@ namespace CentreonLegacy\Core\Utils;
 
 class Utils
 {
+    /**
+     *
+     * @var type
+     */
     protected $dbConf;
+    
+    /**
+     *
+     * @var type
+     */
     protected $dbMon;
 
+    /**
+     *
+     * @param type $dbConf
+     * @param type $dbMon
+     */
     public function __construct($dbConf, $dbMon)
     {
         $this->dbConf = $dbConf;
         $this->dbMon = $dbMon;
     }
 
+    /**
+     *
+     * @param type $fileName
+     * @throws \Exception
+     */
     public function executeSqlFile($fileName)
     {
         if (!file_exists($fileName)) {
@@ -68,6 +87,11 @@ class Utils
         }
     }
 
+    /**
+     *
+     * @param type $fileName
+     * @throws \Exception
+     */
     public function executePhpFile($fileName)
     {
         if (!file_exists($fileName)) {
@@ -77,6 +101,11 @@ class Utils
         require_once $fileName;
     }
 
+    /**
+     *
+     * @param string $content
+     * @return string
+     */
     public function replaceMacros($content)
     {
         $macros = array(

@@ -33,49 +33,39 @@
  *
  */
 
-namespace CentreonLegacy\Core\Module;
+namespace CentreonLegacy\Core\Utils;
 
 require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
 
 class Factory
 {
+    /**
+     *
+     * @var type
+     */
     protected $dbConf;
+    
+    /**
+     *
+     * @var type
+     */
     protected $dbMon;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->dbConf = \CentreonDBInstance::getConfInstance();
         $this->dbMon = \CentreonDBInstance::getMonInstance();
     }
 
-    public function newInformation()
+    /**
+     *
+     * @return \CentreonLegacy\Core\Utils\Utils
+     */
+    public function newUtils()
     {
-        $licenseObj = $this->newLicense();
-
-        return new Information($this->dbConf, $licenseObj);
-    }
-
-    public function newInstaller($moduleName)
-    {
-        $informationObj = $this->newInformation();
-
-        $factory = new \CentreonLegacy\Core\Utils\Factory();
-        $utils = $factory->newUtils();
-        return new Installer($this->dbConf, $informationObj, $moduleName, $utils);
-    }
-
-    public function newUpgrader($moduleName, $moduleId)
-    {
-        $informationObj = $this->newInformation();
-
-        $factory = new \CentreonLegacy\Core\Utils\Factory();
-        $utils = $factory->newUtils();
-
-        return new Upgrader($this->dbConf, $informationObj, $moduleName, $moduleId, $utils);
-    }
-
-    public function newLicense()
-    {
-        return new License();
+        return new Utils($this->dbConf, $this->dbMon);
     }
 }

@@ -43,8 +43,6 @@ if (!isset($centreon)) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$factory = new CentreonLegacy\Core\Module\Factory();
-$moduleInfoObj = $factory->newInformation();
 $modules = $moduleInfoObj->getList();
 
 foreach ($modules as &$module) {

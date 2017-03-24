@@ -2,7 +2,7 @@
     "name": "centreon/centreon",
     "version": "2.7.3",
     "type": "project",
-    "license": "Apache-2.0",
+    "license": "GPL Licence 2.0",
     "authors": [
         {
             "name": "Kevin Duret",
@@ -24,5 +24,13 @@
         "behat/mink-extension": "^2.1",
         "behat/mink-selenium2-driver": "^1.3",
         "centreon/centreon-test-lib": "dev-master"
+    },
+    "require": {
+        "pimple/pimple": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CentreonLegacy\\": "src/CentreonLegacy/"
+        }
     }
 }

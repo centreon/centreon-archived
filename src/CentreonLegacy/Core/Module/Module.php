@@ -33,23 +33,17 @@
  *
  */
 
-namespace CentreonLegacy\Core\Utils;
+namespace CentreonLegacy\Core\Module;
 
-require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
-
-class Factory
+class Module
 {
-    protected $dbConf;
-    protected $dbMon;
-
-    public function __construct()
+    /**
+     *
+     * @param type $moduleName
+     * @return type
+     */
+    public function getModulePath($moduleName = '')
     {
-        $this->dbConf = \CentreonDBInstance::getConfInstance();
-        $this->dbMon = \CentreonDBInstance::getMonInstance();
-    }
-
-    public function newUtils()
-    {
-        return new Utils($this->dbConf, $this->dbMon);
+        return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
     }
 }

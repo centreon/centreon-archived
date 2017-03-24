@@ -56,9 +56,6 @@ $tpl->assign("headerMenu_author", _("Author"));
 $tpl->assign("headerMenu_infos", _("Additional Information"));
 $tpl->assign("headerMenu_isinstalled", _("Installed"));
 
-$moduleFactory = new CentreonLegacy\Core\Module\Factory();
-$moduleInfoObj = $moduleFactory->newInformation();
-
 if (is_null($name)) {
     $name = $moduleInfoObj->getNameById($id);
 }
@@ -90,9 +87,11 @@ if ($form->validate()) {
         $centreon->user->access->updateTopologyStr();
         $centreon->initHooks();
     }
+    
+    $upgradePath = _CENTREON_PATH_ . "www/modules/". $moduleinfo["name"] . "/UPGRADE/" . $filename;
 
-    if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt")) {
-        $infos_streams = file(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
+    if (is_dir($upgradePath . "/infos") && is_file($upgradePath . "/infos/infos.txt")) {
+        $infos_streams = file($upgradePath . "/infos/infos.txt");
         $infos_streams = implode("<br />", $infos_streams);
         $upgrade_infosTxt = $infos_streams;
     } else {
