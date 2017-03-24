@@ -103,7 +103,9 @@ class Upgrader extends Installer
         $sth->bindParam(':autoRefresh', $this->widgetConfiguration['autoRefresh'], \PDO::PARAM_INT);
         $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
-        $sth->execute();
+        if (!$sth->execute()) {
+            throw new \Exception('Cannot upgrade widget "' . $this->widgetName . '".');
+        }
 
         return $this->informationObj->getIdByName($this->widgetName);
     }
