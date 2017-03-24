@@ -54,7 +54,7 @@ if (isset($_GET['period_form'])) {
     
     require_once "HTML/QuickForm.php";
 
-    $path = "./include/configuration/configDowntime/";
+    $path = "./include/monitoring/recurrentDowntime/";
 
     /*
 	 * Smarty template Init

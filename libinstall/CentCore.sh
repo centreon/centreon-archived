@@ -27,13 +27,11 @@ locate_centreon_logdir
 locate_centreon_varlib
 locate_centreon_generationdir
 locate_centcore_bindir
+locate_init_d
 
 ## Config Nagios
 check_centreon_group
 check_centreon_user
-
-## Other requirement
-locate_init_d
 
 ## Populate temporaty source directory
 copyInTempFile 2>>$LOG_FILE

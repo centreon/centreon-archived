@@ -24,6 +24,8 @@ function displayResults(moduleList)
         if (module["status"] === "critical") {
             modalBoxId = 'criticalBox_' + moduleName;
             jQuery('#' + modalBoxId).remove();
+            jQuery('#action' + moduleName + '[href*="o=i"]').remove();
+            jQuery('#action' + moduleName + '[href*="o=u"]').remove();
             var criticalModalBox = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable" ';
             criticalModalBox += 'id="'+ modalBoxId +'"';
             criticalModalBox += 'style="margin-right: auto; margin-left: auto;" title="Module Error">';
@@ -57,7 +59,7 @@ function displayResults(moduleList)
             statusMessage = 'The module is fully functional';
             statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
             tooltipReferer = '#img_ok_'+ moduleName;
-        } else {
+        } else if (!jQuery('#action' + moduleName + '[href*="o=i"]').length) {
             myModuleStatusSpan.append('<img id="img_ok_'+ moduleName + '" src="img/icons/checked.png" class="ico-16" />');
             statusStyle = 'ui-tooltip-green ui-tooltip-shadow';
             statusMessage = 'The module is fully functional';

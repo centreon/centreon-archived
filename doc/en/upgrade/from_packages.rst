@@ -12,6 +12,7 @@ It comes in two operating system flavors, either CentOS 6 or CentOS 7.
    please first uninstall the module (from the web) in order to avoid upgrade problem.
    Centreon KB is now embedded into Centreon since the version 2.8.0.
 
+
 Prerequisites
 =============
 

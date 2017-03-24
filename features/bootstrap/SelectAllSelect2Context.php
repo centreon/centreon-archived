@@ -1,9 +1,5 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 
 /**
@@ -28,8 +24,7 @@ class SelectAllSelect2Context extends CentreonContext
                     'css',
                     'input[name="submitC"]'
                 );
-            },
-            30
+            }
         );
 
         /* Add search to select2 */
@@ -44,8 +39,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
-            },
-            30
+            }
         );
     }
 
@@ -77,8 +71,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
 
 
@@ -96,8 +89,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
-            },
-            10
+            }
         );
     }
 
@@ -112,8 +104,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
     }
 
@@ -122,15 +113,13 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function iExitSelectAllConfirmBox()
     {
-        $exitButton = $this->assertFind('css', '.centreon-popin a.close img');
+        $exitButton = $this->assertFind('css', '.centreon-popin a.close[href="#"] img');
         $exitButton->click();
-
 
         $this->spin(
             function ($context) {
                 return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
     }
 

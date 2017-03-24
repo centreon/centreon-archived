@@ -126,9 +126,9 @@ elif [ "${CENTREONTRAPD_INSTALL_INIT}" -eq 1 ] ; then
 fi
 if [ "$RC" -eq "0" ] ; then 
 	log "INFO" "$(gettext "CentreonTrapd init script installed")"
-	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-				 $TMP_DIR/final/centreontrapd.init.d \
-                 $INIT_D/centreontrapd >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+	    $TMP_DIR/final/centreontrapd.init.d \
+        $INIT_D/centreontrapd
 	check_result $? "$(gettext "CentreonTrapd init script installed")"
 	log "INFO" "$(gettext "CentreonTrapd init script installed")"
 	RC="1"

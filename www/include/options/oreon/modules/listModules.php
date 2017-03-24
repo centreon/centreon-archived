@@ -37,6 +37,17 @@ if (!isset($centreon)) {
     exit();
 }
 
+$factory = new CentreonLegacy\Core\Module\Factory();
+$moduleInfoObj = $factory->newInformation();
+
+if ($id && $o == "d") {
+    $moduleName = $moduleInfoObj->getNameById($id);
+    if (!is_null($moduleName)) {
+        $removerObj = $factory->newRemover($moduleName, $id);
+        $removerObj->remove();
+    }
+}
+
 /*
  * Smarty template Init
  */
@@ -44,7 +55,6 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $modules = $moduleInfoObj->getList();
-
 foreach ($modules as &$module) {
     if ($module['is_installed']) {
         $module['installed'] = _('Yes');

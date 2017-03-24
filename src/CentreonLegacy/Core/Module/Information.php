@@ -101,8 +101,6 @@ class Information extends Module
         return $name;
     }
 
-
-
     /**
      * Get list of installed modules
      *
@@ -200,6 +198,7 @@ class Information extends Module
         foreach ($installedModules as $name => $properties) {
             if (!isset($modules[$name])) {
                 $modules[$name] = $properties;
+                $modules[$name]['is_installed'] = true;
                 $modules[$name]['source_available'] = false;
             }
         }

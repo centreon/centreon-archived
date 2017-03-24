@@ -189,9 +189,9 @@ class CentreonMainCfg
             return false;
         }
 
-        $DBRESULT = $this->DB->query("SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '".$iId."'");
+        $DBRESULT = $this->DB->query("SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '" . $iId . "'");
         if ($DBRESULT->numRows() == 0) {
-            $sQuery = "INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) VALUES ('". $this->aDefaultBrokerDirective[$source] ."', ". $iId .")";
+            $sQuery = "INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) VALUES ('" . $this->aDefaultBrokerDirective[$source] . "', " . $iId . ")";
             try {
                 $res = $this->DB->query($sQuery);
             } catch (\PDOException $e) {
@@ -215,7 +215,7 @@ class CentreonMainCfg
             return false;
         }
 
-        $res = $this->DB->query("SELECT * FROM cfg_nagios WHERE  nagios_server_id = ".$source."");
+        $res = $this->DB->query("SELECT * FROM cfg_nagios WHERE  nagios_server_id = " . $source . "");
         if ($res->numRows() == 0) {
             $baseValues = $this->aInstanceDefaultValues;
         } else {
@@ -266,7 +266,7 @@ class CentreonMainCfg
             $baseValues['command_file'],
             $baseValues['lock_file'],
             $baseValues['retain_state_information'],
-            $baseValues['state_retention_file' ],
+            $baseValues['state_retention_file'],
             $baseValues['retention_update_interval'],
             $baseValues['use_retained_program_state'],
             $baseValues['use_retained_scheduling_info'],
@@ -359,7 +359,7 @@ class CentreonMainCfg
     /* Get Broker Module Entries */
     public function getBrokerModules($id)
     {
-        $DBRESULT = $this->DB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id = ".$id."");
+        $DBRESULT = $this->DB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id = " . $id . "");
         while ($row = $DBRESULT->fetchRow()) {
             $entries[] = $row;
         }

@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2005-2015 Centreon
+/*
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,35 +31,20 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
-    header('Content-Type: application/json');
-    header('Cache-Control: no-cache');
-
-    require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
-    require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-    require_once _CENTREON_PATH_ . "/www/class/centreonDowntime.class.php";
-
-    $pearDB = new CentreonDB();
-
-if (isset($_GET['dt_id'])) {
-    $id = $_GET['dt_id'];
-} else {
-    $id = 0;
+/* Update comments unique key */
+if (isset($pearDBO)) {
+    $query = "SELECT count(*) AS number
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE table_name = 'hosts' 
+                AND table_schema = '".$conf_centreon['dbcstg']."' 
+                AND column_name = 'timezone'";
+    $res = $pearDBO->query($query);
+    $data = $res->fetchRow();
+    if ($data['number'] == 0) {
+        $pearDBO->query('ALTER TABLE services ADD INDEX last_hard_state_change (last_hard_state_change)');
+        $pearDBO->query('ALTER TABLE `hosts` ADD COLUMN `timezone` varchar(64) DEFAULT NULL AFTER `statusmap_image`');
+    }
 }
-
-    $path = _CENTREON_PATH_ . "/www/include/configuration/configDowntime/";
-
-    $downtime = new CentreonDowntime($pearDB);
-
-    require_once $path . 'json.php';
-if ($id == 0) {
-    $periods = array();
-} else {
-    $periods = $downtime->getPeriods($id);
-}
-    $json = new Services_JSON();
-    print $json->encode($periods);

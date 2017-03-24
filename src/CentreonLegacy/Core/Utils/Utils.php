@@ -71,20 +71,15 @@ class Utils
             throw new \Exception('Cannot execute sql file "' . $fileName . '" : File does not exist.');
         }
 
-        $content = file_get_contents($fileName);
-        if (!$content) {
-            throw new \Exception('Cannot get file content of "' . $fileName . '".');
-        }
-
-        $content = $this->replaceMacros($content);
-        $lines = explode($content, "\n");
-
-        foreach ($lines as $line) {
-            $line = trim($line);
+        $file = fopen($fileName, "r");
+        while (!feof($file)) {
+            $line = fgets($file);
+            $line = $this->replaceMacros($line);
             if (!preg_match('/^(--|#)/', $line)) {
                 $this->dbConf->query($line);
             }
         }
+        fclose($file);
     }
 
     /**
@@ -118,5 +113,30 @@ class Utils
         }
 
         return $content;
+    }
+
+    public function objectIntoArray($arrObjData, $skippedKeys = array())
+    {
+        $arrData = array();
+
+        if (is_object($arrObjData)) {
+            $arrObjData = get_object_vars($arrObjData);
+        }
+
+        if (is_array($arrObjData)) {
+            foreach ($arrObjData as $index => $value) {
+                if (is_object($value) || is_array($value)) {
+                    $value = self::objectIntoArray($value, $skippedKeys);
+                }
+                if (in_array($index, $skippedKeys)) {
+                    continue;
+                }
+                $arrData[$index] = $value;
+            }
+        }
+        if (!count($arrData)) {
+            $arrData = "";
+        }
+        return $arrData;
     }
 }

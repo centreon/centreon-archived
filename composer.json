@@ -10,6 +10,7 @@
         }
     ],
     "repositories": [
+      { "packagist.org": false },
       { "type": "composer", "url": "http://ci.int.centreon.com" }
     ],
     "config": {

@@ -408,7 +408,7 @@ if ($centreon->optGen['ldap_auth_enable'] == 1) {
     }
 }
 if ($o != "mc") {
-    $form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
+    $form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0', "reach_api" => '0'));
 }
 $form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
 

@@ -1,10 +1,7 @@
 <?php
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
+
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\PollerConfigurationExportPage;
+use Centreon\Test\Behat\Configuration\PollerConfigurationExportPage;
 
 /**
  * Defines application features from the specific context.
@@ -62,10 +59,12 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function centreonEngineIsRestarted()
     {
-        $this->spin(function($context) {
-            return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                   && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
-        });
+        $this->spin(
+            function($context) {
+                return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
+                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
+            }
+        );
     }
 
     /**
@@ -73,9 +72,11 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function centreonEngineIsReloaded()
     {
-        $this->spin(function($context) {
-            return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                   && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
-        });
+        $this->spin(
+            function($context) {
+                return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
+                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
+            }
+        );
     }
 }
