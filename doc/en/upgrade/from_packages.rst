@@ -13,7 +13,6 @@ It comes in two operating system flavors, either CentOS 6 or CentOS 7.
    Centreon KB is now embedded into Centreon since the version 2.8.0.
 
 
-
 Prerequisites
 =============
 

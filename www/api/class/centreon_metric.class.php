@@ -260,7 +260,6 @@ class CentreonMetric extends CentreonWebService
                 throw new RestNotFoundException("Graph not found");
             }
 
-
             $statusData = $graph->getData($rows);
 
             /* Get comments for this services */
