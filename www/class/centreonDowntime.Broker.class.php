@@ -231,33 +231,35 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $currentDate;
     }
 
-    private function isTomorrow($downtimeStartTime, $now, $delayInterval)
+    private function isTomorrow($downtimeStartTime, $now, $delay)
     {
         $tomorrow = false ;
 
-        $timezone = $now->getTimezone();
-
+        # startDelay must be between midnight - delay and midnight - 1 second
         $nowTimestamp = strtotime($now->format('H:i'));
+        $midnightMoins1SecondDate = new DateTime('midnight -1seconds');
+        $midnightMoins1SecondTimestamp = strtotime($midnightMoins1SecondDate->format('H:i:s'));
+        $midnightMoinsDelayDate = new DateTime('midnight -' . $delay . 'seconds');
+        $midnightMoinsDelayTimestamp = strtotime($midnightMoinsDelayDate->format('H:i'));
+
         $downtimeStartTimeTimestamp = strtotime($downtimeStartTime);
 
         # YYYY-MM-DD 00:00:00
-        $midnightDate = new DateTime('now', $timezone);
-        $midnightDate->setTime('00', '00', '00');
+        $midnightDate = new DateTime('midnight');
         # 00:00
         $midnight = $midnightDate->format('H:i');
         $midnightTimestamp = strtotime($midnight);
 
         # YYYY-MM-DD 00:00:10 (for 600 seconds delay)
-        $midnightPlusDelayDate = new DateTime('now', $timezone);
-        $midnightPlusDelayDate->setTime('00', '00', '00');
-        $midnightPlusDelayDate = $midnightPlusDelayDate->add($delayInterval);
+        $midnightPlusDelayDate = new DateTime('midnight +' . $delay . 'seconds');
         # 00:10 (for 600 seconds delay)
         $midnightPlusDelay = $midnightPlusDelayDate->format('H:i');
         $midnightPlusDelayTimestamp = strtotime($midnightPlusDelay);
 
         if ($downtimeStartTimeTimestamp >= $midnightTimestamp &&
             $downtimeStartTimeTimestamp <= $midnightPlusDelayTimestamp &&
-            $nowTimestamp < $midnightTimestamp) {
+            $nowTimestamp <= $midnightMoins1SecondTimestamp &&
+            $nowTimestamp >= $midnightMoinsDelayTimestamp) {
             $tomorrow = true;
         }
 
@@ -299,11 +301,8 @@ class CentreonDowntimeBroker extends CentreonDowntime
         $hostObj = new CentreonHost($this->db);
         $gmtObj = new CentreonGMT($this->db);
 
-        $delayInterval = new DateInterval('PT' . $delay . 'S');
-
-        $startDelay = new DateTime();
-        $endDelay = new DateTime();
-        $endDelay->add($delayInterval);
+        $startDelay = new DateTime('now');
+        $endDelay = new DateTime('now +' . $delay . 'seconds');
 
         foreach ($downtimes as $downtime) {
 
@@ -316,7 +315,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $startDelay->setTimezone($timezone);
             $endDelay->setTimezone($timezone);
 
-            $tomorrow = $this->isTomorrow($downtime['dtp_start_time'], $startDelay, $delayInterval);
+            $tomorrow = $this->isTomorrow($downtime['dtp_start_time'], $startDelay, $delay);
 
             $startTime = $this->setTime($downtime['dtp_start_time'], $timezone, $tomorrow);
             $startTimestamp = $startTime->getTimestamp();

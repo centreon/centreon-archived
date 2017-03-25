@@ -70,11 +70,9 @@ $downtimeObj->purgeEmptyDowntimes();
 /* Get approaching downtimes */
 $downtimes = $downtimeObj->getApproachingDowntimes(_DELAY_);
 
-#var_dump($downtimes);
 foreach ($downtimes as $downtime) {
 
     $isScheduled = $downtimeObj->isScheduled($downtime);
-var_dump($isScheduled);
 
     if (!$isScheduled && $downtime['dt_activate'] == '1') {
         $downtimeObj->insertCache($downtime);
