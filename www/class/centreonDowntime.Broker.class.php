@@ -280,6 +280,11 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $approachingTime;
     }
 
+    private function manageWinterToSummerTimestamp($timestamp)
+    {
+
+    }
+
     public function getApproachingDowntimes($delay)
     {
         $approachingDowntimes = array();
@@ -319,6 +324,11 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
             $startTimestamp = $startTime->getTimestamp();
             $endTimestamp = $endTime->getTimestamp();
+#$test = new DateTime('now', $timezone);
+#$test->setTimestamp($startTimestamp);
+#var_dump($test->format('H:i'));
+//var_dump($startTime);
+#var_dump($startTime->format('H:i'));
 
             # Check if HH:mm time is approaching
 //var_dump($this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp()));
@@ -326,13 +336,16 @@ class CentreonDowntimeBroker extends CentreonDowntime
                 continue;
             }
 
+            # manage winter to summer date
+#            $startTimestamp = $this->manageWinterToSummerTime($startTimestamp);
+
 #            var_dump($startDelay->getOffset());
 #            var_dump($startTime->getOffset());
 
 //            var_dump($endTimestamp - $startTimestamp);
 
             $approaching = false;
-            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && $downtime['dtp_month_cycle'] == 'none') {
+            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])) {
                 $approaching = $this->isWeeklyApproachingDowntime(
                     $startDelay,
                     $endDelay,
