@@ -33,6 +33,7 @@
  *
  */
 
+require_once _CENTREON_PATH_ . 'www/class/centreonDowntime.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
 
@@ -44,6 +45,8 @@ require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
 class CentreonDowntimeBroker extends CentreonDowntime
 {
     private $dbb;
+
+    private $scheduledDowntimes = null;
 
     /**
      * Constructor
@@ -126,107 +129,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
         }
         $row = $res->fetchRow();
         return $row['internal_downtime_id'];
-    }
-
-    public function doSchedule($id, $currentHostDate, $start, $end)
-    {
-        $periods = $this->getPeriods($id);
-        $listSchedule = array();
-
-        /* Convert HH::mm::ss to HH:mm */
-        $start = substr($start, 0, strrpos($start, ':'));
-        $end = substr($end, 0, strrpos($end, ':'));
-
-        foreach ($periods as $period) {
-            if ($period['start_time'] != $start || $period['end_time'] != $end) {
-                continue;
-            }
-
-            $add = false;
-
-            $start_tomorrow = false;
-            if ($period['start_time'] == '00:00') {
-                $start_tomorrow = true;
-            }
-
-            $dateOfMonth = $currentHostDate->format('w');
-            if ($dateOfMonth == 0) {
-                $dateOfMonth = 7;
-            }
-            if ($start_tomorrow) {
-                if ($dateOfMonth == 7) {
-                    $dateOfMonth = 1;
-                } else {
-                    $dateOfMonth++;
-                }
-            }
-
-            if ($period['month_cycle'] == 'none') {
-                $dateOfMonth = $currentHostDate->format('j');
-
-                if (in_array($dateOfMonth, $period['day_of_month'])) {
-                    $add = true;
-                }
-            } elseif ($period['month_cycle'] == 'all') {
-                if (in_array($dateOfMonth, $period['day_of_week'])) {
-                    $add = true;
-                }
-            } else {
-                if ($dateOfMonth == $period['day_of_week']) {
-                    $monthName = $currentHostDate->format('F');
-                    $year = $currentHostDate->format('Y');
-                    $dayShortName = $currentHostDate->format('D');
-                    $dayInMonth = date(
-                        'd',
-                        strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year)
-                    );
-
-                    if ($dayInMonth == $currentHostDate->format('d')) {
-                        $add = true;
-                    }
-                }
-            }
-
-            if ($add) {
-                $timestamp_start = new DateTime();
-                $timestamp_start->setTimezone($currentHostDate->getTimezone());
-                $sStartTime = explode(":", $period['start_time']);
-                if (count($sStartTime) != 2) {
-                    throw new Exception("Invalid format ".$period['start_time']);
-                }
-
-                $timestamp_start->setTime($sStartTime[0], $sStartTime[1], '00');
-                if ($start_tomorrow) {
-                    $timestamp_start->add(new DateInterval('P1D'));
-                }
-
-
-                $oInterval = $currentHostDate->diff($timestamp_start);
-                $interval =  $oInterval->days * 86400 + $oInterval->h * 3600 + $oInterval->i * 60 + $oInterval->s;
-                if ($oInterval->invert) {
-                    $interval = - $interval;
-                }
-
-                # schedule downtime if approaching
-                if ($interval > 0 && $interval < _DELAY_) {
-                    $timestamp_stop = new DateTime();
-                    $timestamp_stop->setTimezone($currentHostDate->getTimezone());
-                    if ($start_tomorrow) {
-                        $timestamp_stop->add(new DateInterval('P1D'));
-                    }
-                    $sEndTime = explode(":", $period['end_time']);
-                    if (count($sEndTime) != 2) {
-                        throw new Exception("Invalid format ".$period['end_time']);
-                    }
-
-                    $timestamp_stop->setTime($sEndTime[0], $sEndTime[1], '00');
-
-                    $listSchedule[] = array($timestamp_start->format('c'), $timestamp_stop->format('c'));
-                }
-            }
-        }
-
-        return $listSchedule;
     }
 
     public function isWeeklyApproachingDowntime($startDelay, $endDelay, $daysOfWeek, $startTimestamp, $endTimestamp, $tomorrow)
@@ -322,7 +224,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $isApproaching;
     }
 
-    private function getTimestampFromHourMinute($hourMinute, $timezone, $tomorrow)
+    private function setTime($hourMinute, $timezone, $tomorrow)
     {
         list($hour, $minute) = explode(':', $hourMinute);
         $currentDate = new DateTime();
@@ -332,7 +234,50 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $currentDate->add(new DateInterval('P1D'));
         }
 
-        return $currentDate->getTimestamp();
+        return $currentDate;
+    }
+
+    private function isTomorrow($downtimeStartTime, $now, $delayInterval)
+    {
+        $tomorrow = false ;
+
+        $timezone = $now->getTimezone();
+
+        $nowTimestamp = strtotime($now->format('H:i'));
+        $downtimeStartTimeTimestamp = strtotime($downtimeStartTime);
+
+        # YYYY-MM-DD 00:00:00
+        $midnightDate = new DateTime('now', $timezone);
+        $midnightDate->setTime('00', '00', '00');
+        # 00:00
+        $midnight = $midnightDate->format('H:i');
+        $midnightTimestamp = strtotime($midnight);
+
+        # YYYY-MM-DD 00:00:10 (for 600 seconds delay)
+        $midnightPlusDelayDate = new DateTime('now', $timezone);
+        $midnightPlusDelayDate->setTime('00', '00', '00');
+        $midnightPlusDelayDate = $midnightPlusDelayDate->add($delayInterval);
+        # 00:10 (for 600 seconds delay)
+        $midnightPlusDelay = $midnightPlusDelayDate->format('H:i');
+        $midnightPlusDelayTimestamp = strtotime($midnightPlusDelay);
+
+        if ($downtimeStartTimeTimestamp >= $midnightTimestamp &&
+            $downtimeStartTimeTimestamp <= $midnightPlusDelayTimestamp &&
+            $nowTimestamp < $midnightTimestamp) {
+            $tomorrow = true;
+        }
+
+        return $tomorrow;
+    }
+
+    private function isApproachingTime($downtimeStart, $delayStart, $delayEnd)
+    {
+        $approachingTime = false;
+        if ($downtimeStart >= $delayStart && $downtimeStart <= $delayEnd) {
+            $approachingTime = true;
+        }
+
+        return $approachingTime;
     }
 
     public function getApproachingDowntimes($delay)
@@ -346,40 +291,45 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
         $delayInterval = new DateInterval('PT' . $delay . 'S');
 
-        $startDelay =  new DateTime();
+        $startDelay = new DateTime();
         $endDelay = new DateTime();
         $endDelay->add($delayInterval);
 
         foreach ($downtimes as $downtime) {
 
-            $currentHostDate = $gmtObj->getHostCurrentDatetime($downtime['host_id']);
-            $timezone = $currentHostDate->getTimezone();
-            $startDelay->setTimezone($timezone);
-            $endDelay->setTimezone($timezone);
-
-            $midnightDate = new DateTime();
-            $midnightDate->setTimezone($timezone);
-            $midnightDate->setTime('00', '00', '00');
-            $midnightPlusDelayDate = new DateTime();
-            $midnightPlusDelayDate->setTimezone($timezone);
-            $midnightPlusDelayDate->setTime('00', '00', '00');
-            $midnightPlusDelayDate = $midnightPlusDelayDate->add($delayInterval);
-            $midnight = $midnightDate->format('H:i');
-            $midnightPlusDelay = $midnightPlusDelayDate->format('H:i');
-
             /* Convert HH::mm::ss to HH:mm */
             $downtime['dtp_start_time'] = substr($downtime['dtp_start_time'], 0, strrpos($downtime['dtp_start_time'], ':'));
             $downtime['dtp_end_time'] = substr($downtime['dtp_end_time'], 0, strrpos($downtime['dtp_end_time'], ':'));
 
-            $tomorrow = false;
-            if (strtotime($downtime['dtp_start_time']) >= strtotime($midnight) &&
-                strtotime($downtime['dtp_start_time']) <= strtotime($midnightPlusDelay) && 
-                strtotime($startDelay->format('H:i')) < strtotime($midnight)) {
-                $tomorrow = true;
+            $currentHostDate = $gmtObj->getHostCurrentDatetime($downtime['host_id']);
+            $timezone = $currentHostDate->getTimezone();
+            $startDelay->setTimezone($timezone);
+            $startDelayOffset = $startDelay->getOffset();
+            $endDelay->setTimezone($timezone);
+            $endDelayOffset = $endDelay->getOffset();
+
+            $tomorrow = $this->isTomorrow($downtime['dtp_start_time'], $startDelay, $delayInterval);
+
+            $startTime = $this->setTime($downtime['dtp_start_time'], $timezone, $tomorrow);
+            $endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
+#var_dump($startDelay);
+#var_dump($startDelay->getTimestamp());
+#var_dump($startTime);
+#var_dump($startTime->getTimestamp());
+
+            $startTimestamp = $startTime->getTimestamp();
+            $endTimestamp = $endTime->getTimestamp();
+
+            # Check if HH:mm time is approaching
+//var_dump($this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp()));
+            if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
+                continue;
             }
 
-            $startTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_start_time'], $timezone, $tomorrow);
-            $endTimestamp = $this->getTimestampFromHourMinute($downtime['dtp_end_time'], $timezone, $tomorrow);
+#            var_dump($startDelay->getOffset());
+#            var_dump($startTime->getOffset());
+
+//            var_dump($endTimestamp - $startTimestamp);
 
             $approaching = false;
             if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && $downtime['dtp_month_cycle'] == 'none') {
@@ -416,8 +366,10 @@ class CentreonDowntimeBroker extends CentreonDowntime
                 $approachingDowntimes[] = array(
                     'dt_id' => $downtime['dt_id'],
                     'dt_activate' => $downtime['dt_activate'],
-                    'start' => $startTimestamp,
-                    'end' => $endTimestamp,
+                    'start_hour' => $downtime['dtp_start_time'],
+                    'end_hour' => $downtime['dtp_end_time'],
+                    'start_timestamp' => $startTimestamp,
+                    'end_timestamp' => $endTimestamp,
                     'host_id' => $downtime['host_id'],
                     'host_name' => $downtime['host_name'],
                     'service_id' => $downtime['service_id'],
@@ -432,22 +384,120 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $approachingDowntimes;
     }
 
+    public function insertCache($downtime)
+    {
+        $query = 'INSERT INTO downtime_cache '
+            . '(downtime_id, start_timestamp, end_timestamp, '
+            . 'start_hour, end_hour, host_id, service_id) '
+            . 'VALUES ( '
+            . $downtime['dt_id'] . ', '
+            . $downtime['start_timestamp'] . ', '
+            . $downtime['end_timestamp'] . ', '
+            . '"' . $downtime['start_hour'] . '", '
+            . '"' . $downtime['end_hour'] . '", '
+            . $downtime['host_id'] . ', ';
+        $query .= ($downtime['service_id'] != '') ? $downtime['service_id'] . ' ' : 'NULL ';
+        $query .= ') ';
+
+        $res = $this->db->query($query);
+    }
+
+    public function purgeCache()
+    {
+        $query = 'DELETE FROM downtime_cache '
+            . 'WHERE start_timestamp < ' . time();
+        $this->db->query($query);
+    }
+
+    public function purgeEmptyDowntimes()
+    {
+        $query = 'DELETE FROM `downtime` '
+            . 'WHERE `dt_id` NOT IN (SELECT dt_id FROM downtime_host_relation) '
+            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_hostgroup_relation) '
+            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_service_relation) '
+            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_servicegroup_relation) ';
+        $this->db->query($query);
+    }
+
     public function isScheduled($downtime)
     {
         $isScheduled = false;
 
-        $query = 'SELECT internal_id as internal_downtime_id, type as downtime_type, host_id, service_id '
-            . 'FROM downtimes '
-            . 'WHERE start_time = ' . $downtime['start'] . ' '
-            . 'AND end_time = ' . $downtime['end'] . ' '
-            . 'AND host_id = ' . $downtime['host_id'] . ' '
-            . 'AND comment_data = "[Downtime cycle #' . $downtime['dt_id'] . ']" ';
-        $query .= ($downtime['service_id'] != '') ? 'AND service_id = ' . $downtime['service_id'] . ' ' : '';
-        $res = $this->dbb->query($query);
+        $query = 'SELECT downtime_cache_id '
+            . 'FROM downtime_cache '
+            . 'WHERE downtime_id = ' . $downtime['dt_id'] . ' '
+            . 'AND start_timestamp = ' . $downtime['start_timestamp'] . ' '
+            . 'AND end_timestamp = ' . $downtime['end_timestamp'] . ' '
+            . 'AND host_id = ' . $downtime['host_id'] . ' ';
+        $query .= ($downtime['service_id'] != '') ? 'AND service_id = ' . $downtime['service_id'] . ' ' : 'AND service_id IS NULL';
+
+        $res = $this->db->query($query);
         if ($res->numRows()) {
             $isScheduled = true;
         }
 
         return $isScheduled;
+    }
+
+    /**
+     * Send external command to nagios or centcore
+     *
+     * @param int $host_id The host id for command
+     * @param string $cmd The command to send
+     * @return The command return code
+     */
+    public function setCommand($host_id, $cmd)
+    {
+        static $cmdData = null;
+        static $remoteCommands = array();
+        static $localCommands = array();
+
+        if (is_null($cmdData)) {
+            $cmdData = array();
+            $query = "SELECT ns.localhost, ns.id, cn.command_file, host_host_id
+                                FROM cfg_nagios cn, nagios_server ns, ns_host_relation nsh
+                            WHERE cn.nagios_server_id = ns.id
+                            AND nsh.nagios_server_id = ns.id
+                            AND cn.nagios_activate = '1'
+                            AND ns.ns_activate = '1'";
+            $res = $this->db->query($query);
+            while ($row = $res->fetchRow()) {
+                $hid = $row['host_host_id'];
+                $cmdData[$hid] = array(
+                    'localhost' => $row['localhost'],
+                    'command_file' => $row['command_file'],
+                    'id' => $row['id']
+                );
+            }
+        }
+
+        if (!isset($cmdData[$host_id])) {
+            return;
+        }
+
+        if ($cmdData[$host_id]['localhost'] == 1) {
+            $this->localCommands[] = $cmd;
+            $this->localCmdFile = $cmdData[$host_id]['command_file'];
+        } else {
+            $this->remoteCommands[] = 'EXTERNALCMD:' . $cmdData[$host_id]['id']  . ':' . $cmd;
+        }
+    }
+
+    /**
+     * Send all commands
+     */
+    public function sendCommands()
+    {
+        /* send local commands */
+        $localCommands = implode(PHP_EOL, $this->localCommands);
+        if ($localCommands && $this->localCmdFile) {
+            file_put_contents($this->localCmdFile, $localCommands, FILE_APPEND);
+        }
+
+        /* send remote commands */
+        $remoteCommands = implode(PHP_EOL, $this->remoteCommands);
+        if ($remoteCommands) {
+            file_put_contents($this->remoteCmdFile, $remoteCommands, FILE_APPEND);
+        }
     }
 }
