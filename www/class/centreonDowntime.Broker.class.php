@@ -131,7 +131,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $row['internal_downtime_id'];
     }
 
-    public function isWeeklyApproachingDowntime($startDelay, $endDelay, $daysOfWeek, $startTimestamp, $endTimestamp, $tomorrow)
+    public function isWeeklyApproachingDowntime($startDelay, $endDelay, $daysOfWeek, $tomorrow)
     {
         $isApproaching = false;
 
@@ -146,9 +146,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
             if ($dayOfWeek == 7) {
                 $dayOfWeek = 0;
             }
-            if ($currentDayOfWeek == $dayOfWeek &&
-                $startTimestamp >= $startDelay->getTimestamp() &&
-                $startTimestamp <= $endDelay->getTimestamp()) {
+            if ($currentDayOfWeek == $dayOfWeek) {
                 $isApproaching = true;
             }
         }
@@ -156,7 +154,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $isApproaching;
     }
 
-    public function isMonthlyApproachingDowntime($startDelay, $endDelay, $daysOfMonth, $startTimestamp, $endTimestamp, $tomorrow)
+    public function isMonthlyApproachingDowntime($startDelay, $endDelay, $daysOfMonth, $tomorrow)
     {
         $isApproaching = false;
 
@@ -172,9 +170,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
         $daysOfMonth = explode(',', $daysOfMonth);
         foreach ($daysOfMonth as $dayOfMonth) {
-            if ($currentDayOfMonth == $dayOfMonth &&
-                $startTimestamp >= $startDelay->getTimestamp() &&
-                $startTimestamp <= $endDelay->getTimestamp()) {
+            if ($currentDayOfMonth == $dayOfMonth) {
                 $isApproaching = true;
             }
         }
@@ -182,7 +178,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $isApproaching;
     }
 
-    public function isSpecificDateDowntime($startDelay, $endDelay, $dayOfWeek, $cycle, $startTimestamp, $endTimestamp, $tomorrow)
+    public function isSpecificDateDowntime($startDelay, $endDelay, $dayOfWeek, $cycle, $tomorrow)
     {
         $isApproaching = false;
 
@@ -215,9 +211,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         $cycleDay = new DateTime($cycle . ' ' . $dayOfWeek . ' of ' . $currentMonth . ' ' . $currentYear);
         $cycleDay = $cycleDay->format('Y-m-d');
 
-        if ($currentDay == $cycleDay &&
-            $startTimestamp >= $startDelay->getTimestamp() &&
-            $startTimestamp <= $endDelay->getTimestamp()) {
+        if ($currentDay == $cycleDay) {
             $isApproaching = true;
         }
 
@@ -280,9 +274,20 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $approachingTime;
     }
 
-    private function manageWinterToSummerTimestamp($timestamp)
+    private function manageWinterToSummerTimestamp($time, $timestamp, $timezone)
     {
+        $dstDate = new DateTime('now', $timezone);
+        $dstDate->setTimestamp($timestamp);
+        $dstHour = $dstDate->format('H');
+        $hour = $time->format('H');
 
+        $offset = $dstHour - $hour;
+        if ($offset > 0) {
+            $time->setTime($hour, '00');
+            $timestamp = $time->getTimestamp();
+        }
+
+        return $timestamp;
     }
 
     public function getApproachingDowntimes($delay)
@@ -309,40 +314,27 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $currentHostDate = $gmtObj->getHostCurrentDatetime($downtime['host_id']);
             $timezone = $currentHostDate->getTimezone();
             $startDelay->setTimezone($timezone);
-            $startDelayOffset = $startDelay->getOffset();
             $endDelay->setTimezone($timezone);
-            $endDelayOffset = $endDelay->getOffset();
 
             $tomorrow = $this->isTomorrow($downtime['dtp_start_time'], $startDelay, $delayInterval);
 
             $startTime = $this->setTime($downtime['dtp_start_time'], $timezone, $tomorrow);
-            $endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
-#var_dump($startDelay);
-#var_dump($startDelay->getTimestamp());
-#var_dump($startTime);
-#var_dump($startTime->getTimestamp());
-
             $startTimestamp = $startTime->getTimestamp();
+
+            $endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
             $endTimestamp = $endTime->getTimestamp();
-#$test = new DateTime('now', $timezone);
-#$test->setTimestamp($startTimestamp);
-#var_dump($test->format('H:i'));
-//var_dump($startTime);
-#var_dump($startTime->format('H:i'));
 
             # Check if HH:mm time is approaching
-//var_dump($this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp()));
             if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
                 continue;
             }
 
-            # manage winter to summer date
-#            $startTimestamp = $this->manageWinterToSummerTime($startTimestamp);
-
-#            var_dump($startDelay->getOffset());
-#            var_dump($startTime->getOffset());
-
-//            var_dump($endTimestamp - $startTimestamp);
+            # Check if we jump an hour
+            $startTimestamp = $this->manageWinterToSummerTimestamp($startTime, $startTimestamp, $timezone);
+            $endTimestamp = $this->manageWinterToSummerTimestamp($endTime, $endTimestamp, $timezone);
+            if ($startTimestamp == $endTimestamp) {
+                continue;
+            }
 
             $approaching = false;
             if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])) {
@@ -350,8 +342,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
                     $startDelay,
                     $endDelay,
                     $downtime['dtp_day_of_week'],
-                    $startTimestamp,
-                    $endTimestamp,
                     $tomorrow
                 );
             } else if (preg_match('/^\d+(,\d+)*$/', $downtime['dtp_day_of_month'])) {
@@ -359,8 +349,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
                     $startDelay,
                     $endDelay,
                     $downtime['dtp_day_of_month'],
-                    $startTimestamp,
-                    $endTimestamp,
                     $tomorrow
                 );
             } else if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && $downtime['dtp_month_cycle'] != 'none') {
@@ -369,8 +357,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
                     $endDelay,
                     $downtime['dtp_day_of_week'],
                     $downtime['dtp_month_cycle'],
-                    $startTimestamp,
-                    $endTimestamp,
                     $tomorrow
                 );
             }
