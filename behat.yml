@@ -148,3 +148,8 @@ default:
       paths: [ %paths.base%/features/HostTemplateConfiguration.feature ]
       contexts:
       - HostTemplateConfigurationContext
+
+    module:
+      paths: [ %paths.base%/features/Module.feature ]
+      contexts:
+      - ModuleContext
