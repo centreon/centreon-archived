@@ -48,7 +48,7 @@ function microtime_float2()
  */
 function getFilteredPollers($host, $acl_group_id, $res_id)
 {
-    global $pearDB, $hostCache;
+    global $pearDB;
 
     $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '".$res_id."'";
     $DBRESULT = $pearDB->query($request);
@@ -57,20 +57,20 @@ function getFilteredPollers($host, $acl_group_id, $res_id)
 
     $hostTmp = $host;
     $request = "SELECT host_host_id " .
-            "FROM acl_resources_poller_relations, acl_res_group_relations, acl_resources, ns_host_relation " .
-            "WHERE acl_resources_poller_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-            "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
-            "AND acl_resources_poller_relations.acl_res_id = acl_resources.acl_res_id " .
-            "AND acl_resources.acl_res_id = '" . $res_id . "' " .
-            "AND ns_host_relation.nagios_server_id = acl_resources_poller_relations.poller_id " .
-            "AND acl_res_activate = '1'";
+                "FROM acl_resources_poller_relations, acl_res_group_relations, acl_resources, ns_host_relation " .
+                "WHERE acl_resources_poller_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+                "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
+                "AND acl_resources_poller_relations.acl_res_id = acl_resources.acl_res_id " .
+                "AND acl_resources.acl_res_id = '" . $res_id . "' " .
+                "AND ns_host_relation.nagios_server_id = acl_resources_poller_relations.poller_id " .
+                "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
 
     if ($DBRESULT->numRows()) {
         $host = array();
         while ($row = $DBRESULT->fetchRow()) {
             if (isset($hostTmp[$row['host_host_id']])) {
-                $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
+                $host[$row['host_host_id']] = $row['host_host_id'];
             }
         }
     } else {
@@ -87,7 +87,9 @@ function getFilteredPollers($host, $acl_group_id, $res_id)
  */
 function getFilteredHostCategories($host, $acl_group_id, $res_id)
 {
-    global $pearDB, $hostCache, $hostTemplateCache;
+    global $pearDB, $hostTemplateCache;
+
+    $host = array();
 
     $hostTmp = $host;
     $request = "SELECT host_host_id " .
@@ -99,20 +101,17 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
             "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
             "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
-    if ($DBRESULT->numRows()) {
-        $host = array();
-    }
     while ($row = $DBRESULT->fetchRow()) {
         if (isset($hostTemplateCache[$row['host_host_id']])) {
             // is a template
             foreach ($hostTemplateCache[$row['host_host_id']] as $hId) {
                 if (isset($hostTmp[$hId])) {
-                    $host[$hId] = $hostCache[$hId];
+                    $host[$hId] = $hId;
                 }
             }
         } elseif (isset($hostTmp[$row['host_host_id']])) {
             // is not a template
-            $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
+            $host[$row['host_host_id']] = $row['host_host_id'];
         }
     }
     return $host;
@@ -185,7 +184,7 @@ function getServiceTemplateCategoryList($service_id = null)
 
 function getACLSGForHost($pearDB, $host_id, $groupstr)
 {
-    global $svcCache, $sgCache;
+    global $sgCache;
 
     if (!$pearDB || !isset($host_id)) {
         return;
@@ -227,9 +226,7 @@ function getACLSGForHost($pearDB, $host_id, $groupstr)
                 "AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
                 "AND `servicegroup_relation`.`host_host_id` = '" . $host_id . "'");
         while ($service = $DBRESULT2->fetchRow()) {
-            if (isset($svcCache[$service["service_service_id"]])) {
-                $svc[$svcCache[$service["service_service_id"]]] = $service["service_service_id"];
-            }
+            $svc[$service["service_service_id"]] = $service["service_service_id"];
         }
         $DBRESULT2->free();
     }
@@ -317,7 +314,7 @@ function hasServiceCategoryFilter($res_id)
 
 function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCategories)
 {
-    global $pearDB, $svcCache, $hostCache;
+    global $pearDB;
 
     $tab_svc = getMyHostServicesByName($host_id);
 
@@ -382,7 +379,6 @@ function hostIsAuthorized($host_id, $group_id)
     if ($DBRES2->numRows()) {
         return true;
     }
-
     return false;
 }
 
@@ -391,7 +387,7 @@ function hostIsAuthorized($host_id, $group_id)
  */
 function getMyHostServicesByName($host_id = null)
 {
-    global $pearDB, $hsRelation, $svcCache;
+    global $pearDB, $hsRelation;
 
     if (!$host_id) {
         return;
@@ -400,11 +396,7 @@ function getMyHostServicesByName($host_id = null)
     $hSvs = array();
     if (isset($hsRelation[$host_id])) {
         foreach ($hsRelation[$host_id] as $service_id => $flag) {
-            if (isset($svcCache[$service_id])) {
-                $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
-                $service_description = str_replace('#BS#', '\\', $service_description);
-                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);                
-            }
+            $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
         }
     }
     return $hSvs;
