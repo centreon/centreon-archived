@@ -306,7 +306,7 @@ try {
          * Host Host relation
          */
         $hostHGRelation = array();
-        $DBRESULT = $pearDB->query("SELECT * FROM hostgroup_relation");
+        $DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, host_host_id FROM hostgroup_relation");
         while ($hg = $DBRESULT->fetchRow()) {
             if (!isset($hostHGRelation[$hg["hostgroup_hg_id"]])) {
                 $hostHGRelation[$hg["hostgroup_hg_id"]] = array();
@@ -377,9 +377,9 @@ try {
         unset($row);
         
         $query = "SELECT service_service_id, sgr.host_host_id, acl_res_id " .
-            "FROM servicegroup sg, acl_resources_sg_relations acl, servicegroup_relation sgr " .
-            "WHERE acl.sg_id = sg.sg_id " .
-            "AND sgr.servicegroup_sg_id = sg.sg_id ";
+                    "FROM servicegroup sg, acl_resources_sg_relations acl, servicegroup_relation sgr " .
+                    "WHERE acl.sg_id = sg.sg_id " .
+                    "AND sgr.servicegroup_sg_id = sg.sg_id ";
         $res = $pearDB->query($query);
         while ($row = $res->fetchRow()) {
             foreach ($sgCache as $acl_g_id => $acl_g) {
@@ -398,8 +398,8 @@ try {
         $res->free();
         unset($row);
         
-        $query = "SELECT acl_res_id, hg_id FROM hostgroup, acl_resources_hg_relations
-    			  WHERE acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id";
+        $query = "SELECT acl_res_id, hg_id FROM hostgroup, acl_resources_hg_relations ".
+    			 "WHERE acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id";
         $res = $pearDB->query($query);
         $hgResCache = array();
         while ($row = $res->fetchRow()) {
@@ -424,7 +424,7 @@ try {
              * Delete old data for this group
              */
             if ($partition == 0) {
-                $DBRESULT = $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '" . $acl_group_id . "'");
+                $DBRESULT = $pearDBO->query("DELETE FROM centreon_acl WHERE group_id = '" . $acl_group_id . "'");
             } else {
 
             }
