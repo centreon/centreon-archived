@@ -16,7 +16,7 @@ class ModuleContext extends CentreonContext
      */
     public function aModuleIsReadyToInstall()
     {
-        $this->page = new ModuleListingPage();
+        $this->page = new ModuleListingPage($this);
         $module = $this->page->getEntry($this->moduleName);
         if (!$module['actions']['install']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not ready to install.');
@@ -32,9 +32,9 @@ class ModuleContext extends CentreonContext
         $this->iInstallTheModule();
         $this->theModuleIsInstalled();
 
-        $this->page = new ModuleListingPage();
+        $this->page = new ModuleListingPage($this);
         $module = $this->page->getEntry($this->moduleName);
-        if ($module['actions']['remove']) {
+        if (!$module['actions']['remove']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not ready to remove.');
         }
     }
@@ -60,7 +60,7 @@ class ModuleContext extends CentreonContext
      */
     public function theModuleIsInstalled()
     {
-        $this->page = new ModuleListingPage();
+        $this->page = new ModuleListingPage($this);
         $module = $this->page->getEntry($this->moduleName);
         if ($module['actions']['install']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not installed.');
@@ -72,7 +72,7 @@ class ModuleContext extends CentreonContext
      */
     public function theModuleIsRemoved()
     {
-        $this->page = new ModuleListingPage();
+        $this->page = new ModuleListingPage($this);
         $module = $this->page->getEntry($this->moduleName);
         if ($module['actions']['remove']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not removed.');

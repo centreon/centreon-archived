@@ -90,7 +90,13 @@ class Factory
         $factory = new \CentreonLegacy\Core\Utils\Factory();
         $utils = $factory->newUtils();
 
-        return new Upgrader($this->dependencyInjector['configuration_db'], $informationObj, $moduleName, $moduleId, $utils);
+        return new Upgrader(
+            $this->dependencyInjector['configuration_db'],
+                $informationObj,
+                $moduleName,
+                $moduleId,
+                $utils
+        );
     }
 
     public function newRemover($moduleName, $moduleId)
@@ -100,7 +106,13 @@ class Factory
         $factory = new \CentreonLegacy\Core\Utils\Factory();
         $utils = $factory->newUtils();
 
-        return new Remover($this->dbConf, $informationObj, $moduleName, $moduleId, $utils);
+        return new Remover(
+            $this->dependencyInjector['configuration_db'],
+                $informationObj,
+                $moduleName,
+                $moduleId,
+                $utils
+        );
     }
 
     public function newLicense()

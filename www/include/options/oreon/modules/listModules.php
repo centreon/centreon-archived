@@ -37,13 +37,10 @@ if (!isset($centreon)) {
     exit();
 }
 
-$factory = new CentreonLegacy\Core\Module\Factory();
-$moduleInfoObj = $factory->newInformation();
-
 if ($id && $o == "d") {
     $moduleName = $moduleInfoObj->getNameById($id);
     if (!is_null($moduleName)) {
-        $removerObj = $factory->newRemover($moduleName, $id);
+        $removerObj = $moduleFactory->newRemover($moduleName, $id);
         $removerObj->remove();
     }
 }
