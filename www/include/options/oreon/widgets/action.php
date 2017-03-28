@@ -43,7 +43,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
 
 session_start();
 
-require_once realpath(dirname(__FILE__) . "/../../../../../autoload.php");
+require_once realpath(dirname(__FILE__) . "/../../../../../bootstrap.php");
 $factory = new \CentreonLegacy\Core\Widget\Factory();
 $widgetInfoObj = $factory->newInformation();
 

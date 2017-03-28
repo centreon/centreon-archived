@@ -153,3 +153,8 @@ default:
       paths: [ %paths.base%/features/Module.feature ]
       contexts:
       - ModuleContext
+
+    widget:
+      paths: [ %paths.base%/features/Widget.feature ]
+      contexts:
+      - WidgetContext
