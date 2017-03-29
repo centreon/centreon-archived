@@ -121,7 +121,7 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
                 }
                 if (isset($hostTemplateCache[$hostId])) {
                     foreach ($hostTemplateCache[$hostId] as $hostId2) {
-                        if (!in_array($hostId2, $linkedHosts)) {
+                        if (!in_array($hostId2, $linkedHosts) && !in_array($hostId2, $treatedHosts)) {
                             $linkedHosts[] = $hostId2;
                         }
                     }
