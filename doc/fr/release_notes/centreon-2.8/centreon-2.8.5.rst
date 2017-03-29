@@ -2,7 +2,7 @@
 Centreon 2.8.5
 ##############
 
-Released March Xth, 2017.
+Released March 29th, 2017.
 
 The 2.8.5 release for Centreon Web is now available for download. Here are its release notes.
 
@@ -20,6 +20,17 @@ Monitoring
 
 * Better display in service detail with long output or long command - #4974, #4975, PR #5002
 * Recurrent downtimes, extend specific period settings to select 2nd, 2td or 5th o month - #4207, #4908
+
+
+Charts
+------
+
+* Add split function in chart - #4803, #4990
+* Add button to display curve legend (min/max/average) - #4595
+* Add button to display multiple periods view - #4884
+* Extend chart legend and add more information on helps - PR #5006
+* Extend help for stacking and transparency - #4884
+
 
 Ergonomics
 ----------
