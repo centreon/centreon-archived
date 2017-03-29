@@ -99,6 +99,12 @@ class Factory
         );
     }
 
+    /**
+     * 
+     * @param type $moduleName
+     * @param type $moduleId
+     * @return \CentreonLegacy\Core\Module\Remover
+     */
     public function newRemover($moduleName, $moduleId)
     {
         $informationObj = $this->newInformation();
@@ -115,6 +121,10 @@ class Factory
         );
     }
 
+    /**
+     * 
+     * @return \CentreonLegacy\Core\Module\License
+     */
     public function newLicense()
     {
         return new License();

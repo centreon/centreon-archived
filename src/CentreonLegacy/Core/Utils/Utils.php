@@ -39,25 +39,17 @@ class Utils
 {
     /**
      *
-     * @var type
+     * @var Pimple\Container
      */
-    protected $dbConf;
-    
-    /**
-     *
-     * @var type
-     */
-    protected $dbMon;
+    protected $dependencyInjector;
 
     /**
-     *
-     * @param type $dbConf
-     * @param type $dbMon
+     * 
+     * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct($dbConf, $dbMon)
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->dbConf = $dbConf;
-        $this->dbMon = $dbMon;
+        $this->dependencyInjector = $dependencyInjector;
     }
 
     /**
@@ -115,6 +107,12 @@ class Utils
         return $content;
     }
 
+    /**
+     * 
+     * @param type $arrObjData
+     * @param type $skippedKeys
+     * @return string
+     */
     public function objectIntoArray($arrObjData, $skippedKeys = array())
     {
         $arrData = array();

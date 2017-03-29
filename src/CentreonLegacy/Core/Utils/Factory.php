@@ -41,23 +41,16 @@ class Factory
 {
     /**
      *
-     * @var type
+     * @var Pimple\Container
      */
-    protected $dbConf;
+    protected $dependencyInjector;
     
     /**
      *
-     * @var type
      */
-    protected $dbMon;
-
-    /**
-     *
-     */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->dbConf = \CentreonDBInstance::getConfInstance();
-        $this->dbMon = \CentreonDBInstance::getMonInstance();
+        $this->dependencyInjector = $dependencyInjector;
     }
 
     /**
@@ -66,6 +59,6 @@ class Factory
      */
     public function newUtils()
     {
-        return new Utils($this->dbConf, $this->dbMon);
+        return new Utils($this->dependencyInjector);
     }
 }

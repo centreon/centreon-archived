@@ -39,13 +39,13 @@ class Information extends Module
 {
     /**
      *
-     * @var type
+     * @var Pimple\Container
      */
-    protected $dbConf;
+    protected $dependencyInjector;
     
     /**
      *
-     * @var type
+     * @var \CentreonLegacy\Core\Module\License
      */
     protected $licenseObj;
 
@@ -54,9 +54,9 @@ class Information extends Module
      * @param type $dbConf
      * @param type $licenseObj
      */
-    public function __construct($dbConf, $licenseObj)
+    public function __construct(\Pimple\Container $dependencyInjector, \CentreonLegacy\Core\Module\License $licenseObj)
     {
-        $this->dbConf = $dbConf;
+        $this->dependencyInjector = $dependencyInjector;
         $this->licenseObj = $licenseObj;
     }
 
@@ -87,14 +87,16 @@ class Information extends Module
         $query = 'SELECT name ' .
             'FROM modules_informations ' .
             'WHERE id = :id';
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':id', $moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 
         $name = null;
-        if ($row = $sth->fetch()) {
+        
+        $row = $sth->fetch();
+        if ($row) {
             $name = $row['name'];
         }
 
@@ -103,15 +105,14 @@ class Information extends Module
 
     /**
      * Get list of installed modules
-     *
-     * @return mixed
+     * @return array
      */
     private function getInstalledList()
     {
         $query = 'SELECT * ' .
             'FROM modules_informations ';
 
-        $result = $this->dbConf->query($query);
+        $result = $this->dependencyInjector['configuration_db']->query($query);
 
         $modules = $result->fetchAll();
 
@@ -123,12 +124,17 @@ class Information extends Module
         return $installedModules;
     }
 
+    /**
+     * 
+     * @param string $moduleName
+     * @return array
+     */
     public function getInstalledInformation($moduleName)
     {
         $query = 'SELECT * ' .
             'FROM modules_informations ' .
             'WHERE name = :name';
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':name', $moduleName, \PDO::PARAM_STR);
 
@@ -139,8 +145,7 @@ class Information extends Module
 
     /**
      * Get list of available modules
-     *
-     * @return mixed
+     * @return array
      */
     private function getAvailableList()
     {
@@ -166,7 +171,6 @@ class Information extends Module
 
     /**
      * Get list of modules (installed or not)
-     *
      * @return array
      */
     public function getList()
@@ -208,8 +212,8 @@ class Information extends Module
 
     /**
      *
-     * @param type $availableVersion
-     * @param type $installedVersion
+     * @param string $availableVersion
+     * @param string $installedVersion
      * @return boolean
      */
     private function isUpgradeable($availableVersion, $installedVersion)
