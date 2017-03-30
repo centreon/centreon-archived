@@ -147,11 +147,17 @@ if (!$is_admin && !$haveAccess) {
         $DBRESULT->free();
 
         /* Get service categories */
+        $hostIds = array($host_id);
+        $hostTemplates = $hostObj->getTemplateChain($host_id);
+        foreach ($hostTemplates as $hostTemplate) {
+            $hostIds[] = $hostTemplate['host_id'];
+        }
+
         $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* 
                                     FROM hostcategories hc 
                                     INNER JOIN hostcategories_relation hcr 
                                     ON hc.hc_id = hcr.hostcategories_hc_id 
-                                    AND hcr.host_host_id = '" . $host_id . "' ");
+                                    AND hcr.host_host_id IN ('" . implode("','", $hostIds) . "') ");
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
         }

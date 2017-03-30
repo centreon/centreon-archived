@@ -162,7 +162,7 @@
         axis.y.min = data.limits.min;
       }
       if (data.limits.max) {
-        axis.y.min = data.limits.max;
+        axis.y.max = data.limits.max;
       }
 
       var parsedData = this.buildMetricData(data);
