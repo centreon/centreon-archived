@@ -65,7 +65,6 @@ require_once dirname(__FILE__) . '/correlation.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate {
-    private $generate_index_data = 1;
     private $poller_cache = array();
     private $backend_instance = null;
     private $current_poller = null;
@@ -76,11 +75,7 @@ class Generate {
         $this->backend_instance = Backend::getInstance();
     }
     
-    private function generateIndexData($localhost=0) {
-        if ($this->generate_index_data == 0) {
-            return 0;
-        }
-        
+    private function generateIndexData($localhost = 0) {
         $service_instance = Service::getInstance();
         $host_instance = Host::getInstance();
         $services = &$service_instance->getGeneratedServices();
@@ -164,7 +159,7 @@ class Generate {
         $this->resetModuleObjects();
     }
 
-    private function configPoller($username='unknown') {
+    private function configPoller($username = 'unknown') {
         $this->backend_instance->setUserName($username);
         $this->backend_instance->initPath($this->current_poller['id']);
         $this->backend_instance->setPollerId($this->current_poller['id']);
@@ -181,7 +176,7 @@ class Generate {
             Correlation::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
         }
         $this->generateModuleObjects(2);
-        Broker::getInstance()->generateFromPoller($this->current_poller);
+        Broker::getInstance()->generateFromPoller($this->current_poller, $this->current_poller['localhost']);
         $this->backend_instance->movePath($this->current_poller['id']);
         
         $this->generateIndexData($this->current_poller['localhost']);
@@ -233,8 +228,6 @@ class Generate {
     public function getModuleObjects() {
         $this->getInstalledModules();
 
-        
-
         foreach ($this->installed_modules as $module) {
             if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files/*.class.php')) {
                 foreach ($files as $full_file) {
@@ -279,7 +272,6 @@ class Generate {
      */
     public function reset()
     {
-        $this->generate_index_data = 1;
         $this->poller_cache = array();
         $this->current_poller = null;
         $this->installed_modules = null;
