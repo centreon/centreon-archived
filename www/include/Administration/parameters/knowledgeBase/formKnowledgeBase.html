@@ -64,7 +64,7 @@
     function checkWikiConnection() {
             jQuery.ajax({
                 type    :   "POST",
-                url     :   "./include/common/webServices/rest/internal.php?object=centreon_wiki_connection&action=checkConnection",
+                url     :   "./include/common/webServices/rest/internal.php?object=centreon_wiki&action=checkConnection",
                 data    :  {
                     name: jQuery( "input[name='kb_db_name']" ).val(),
                     user: jQuery( "input[name='kb_db_user']" ).val(),
