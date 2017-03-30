@@ -29,6 +29,7 @@ function versionCentreon($pearDB)
 
 function Mediawikiconfigexist($url)
 {
+    return true;
     $file_headers = @get_headers($url);
     if ($file_headers[0] == 'HTTP/1.1 404 Not Found') {
         return false;

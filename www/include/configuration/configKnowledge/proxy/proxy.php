@@ -78,7 +78,7 @@ if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
 }
 
 if ($proxy->url != "") {
-    header("Location: ".$proxy->url);
+    header("Location: " . $proxy->url);
 } else {
     if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
         header("Location: $WikiURL/?title=Service:".$_GET["host_name"]."_".$_GET["service_description"]);
