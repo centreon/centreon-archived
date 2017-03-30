@@ -176,7 +176,7 @@ class Generate {
             Correlation::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
         }
         $this->generateModuleObjects(2);
-        Broker::getInstance()->generateFromPoller($this->current_poller, $this->current_poller['localhost']);
+        Broker::getInstance()->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
         
         $this->generateIndexData($this->current_poller['localhost']);
