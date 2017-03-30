@@ -226,13 +226,13 @@
 
 	function deleteWiki(title) {
 		jQuery.ajax({
-			type    :   "POST",
-			url     :   "./include/common/webServices/rest/internal.php?object=centreon_wiki&action=deletePage",
-			data    :  {
+			type : "POST",
+			url : "./include/common/webServices/rest/internal.php?object=centreon_wiki&action=deletePage",
+			data : JSON.stringify({
 				title: title
-			},
-			success :   function(data) {
-				location.reload()
+			}),
+			success : function(data) {
+				//location.reload()
 			}
 		});
 	}

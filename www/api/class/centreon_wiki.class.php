@@ -49,37 +49,44 @@ class CentreonWiki extends CentreonWebService
 
     public function postCheckConnection()
     {
-        $sql_host = $_POST['host'];
-        $sql_user = $_POST['user'];
-        $sql_pwd = $_POST['pwd'];
-        $sql_name = $_POST['name'];
+        $sql_host = explode(':', $this->arguments['host']);
+        $host = $sql_host[0];
+        $port = isset($sql_host[1]) ? $sql_host[1] : '3306';
+        $user = $this->arguments['user'];
+        $password = $this->arguments['pwd'];
+        $db = $this->arguments['name'];
 
         try {
-            $dbh = new PDO('mysql:host=' . $sql_host . ';dbname=' . $sql_name, $sql_user, $sql_pwd);
-            die(json_encode(array('outcome' => true)));
-        } catch (PDOException $ex) {
-            die(json_encode(array('outcome' => false, 'message' => $ex->getMessage())));
+            new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db, $user, $password);
+            $outcome = true;
+            $message = _('Connection Successful');
+        } catch (PDOException $e) {
+            $outcome = false;
+            $message = $e->getMessage();
         }
+
+        return array(
+            'outcome' => $outcome,
+            'message' => $message
+        );
     }
 
     public function postDeletePage()
     {
-// get wiki info
+        // get wiki info
         $conf = getWikiConfig($this->pearDB);
         $apiWikiURL = $conf['kb_wiki_url'] . '/api.php';
         $wikiVersion = getWikiVersion($apiWikiURL);
         $login = $conf['kb_wiki_account'];
         $pass = $conf['kb_wiki_password'];
-        $title = $_POST['title'];
+        $title = $this->arguments['title'];
 
         $path_cookie = '/tmp/temporary_wiki_connection.txt';
         if (!file_exists($path_cookie)) {
             touch($path_cookie);
         }
 
-//////////////////////////////////////////////////////////////////////////
-//                           Get Connexion Cookie/Token
-//////////////////////////////////////////////////////////////////////////
+        // Get Connection Cookie/Token
         $postfields = array(
             'action' => 'login',
             'format' => 'json',
@@ -100,39 +107,28 @@ class CentreonWiki extends CentreonWebService
         $tokenConnexion = $json_connexion['login']['token'];
         // you take the token and keep it in a var for your second login
 
-// /!\ don't close the curl connection or initialize a new one or your session id will change !
+        // /!\ don't close the curl connection or initialize a new one or your session id will change !
 
-//////////////////////////////////////////////////////////////////////////
-//                           Launch Connexion
-//////////////////////////////////////////////////////////////////////////
-
+        // Launch Connection
         $postfields = array(
             'action' => 'login',
             'format' => 'json',
             'lgtoken' => $tokenConnexion,
             'lgname' => $login,
             'lgpassword' => $pass
-
         );
-
-        curl_setopt($curl, CURLOPT_URL, $apiWikiURL);
-        curl_setopt($curl, CURLOPT_COOKIESESSION, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $postfields);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $path_cookie); //get the previous cookie
         $connexionToken = curl_exec($curl);
         $json_connexion = json_decode($connexionToken, true);
         $resultLogin = $json_connexion['login']['result'];
 
         if ($resultLogin != 'Success') {
-            die(json_encode(array('result' => $resultLogin)));
+            return array(
+                'result' => $resultLogin
+            );
         }
 
-//////////////////////////////////////////////////////////////////////////
-//                           Get Delete Token
-//////////////////////////////////////////////////////////////////////////
-
+        // Get Delete Token
         if ($wikiVersion >= 1.20) {
             $postfields = array(
                 'action' => 'tokens',
@@ -148,47 +144,31 @@ class CentreonWiki extends CentreonWebService
                 'titles' => $title
             );
         }
-
-
-        curl_setopt($curl, CURLOPT_URL, $apiWikiURL);
-        curl_setopt($curl, CURLOPT_COOKIESESSION, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $postfields);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $path_cookie); //get the previous cookie
         $deleteToken = curl_exec($curl);
         $json_delete = json_decode($deleteToken, true);
 
         if ($wikiVersion >= 1.20) {
             $tokenDelete = $json_delete['tokens']['deletetoken'];
         } else {
-            $tokenDelete = $json_delete['query']['pages'][2]['deletetoken'];
+            $page = array_pop($json_delete['query']['pages']);
+            $tokenDelete = $page['deletetoken'];
         }
 
-
-//////////////////////////////////////////////////////////////////////////
-//                           Delete Page
-//////////////////////////////////////////////////////////////////////////
-
+        // Delete Page
         $postfields = array(
             'action' => 'delete',
             'title' => $title,
             'token' => $tokenDelete
         );
-
-        curl_setopt($curl, CURLOPT_URL, $apiWikiURL);
-        curl_setopt($curl, CURLOPT_COOKIESESSION, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $postfields);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $path_cookie); //get the previous cookie
-        $delete = curl_exec($curl);
+        curl_exec($curl);
 
-        $json_delete = json_decode($delete, true);
-        $tokenDelete = $json_delete['tokens']['deletetoken'];
-
-// close the curl connection
+        // close the curl connection
         curl_close($curl);
-        die(json_encode(array('result' => 'delete')));
+
+        return array(
+            'result' => 'delete'
+        );
     }
 }

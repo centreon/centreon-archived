@@ -128,6 +128,7 @@ if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplat
 }
 $query .= "ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($query);
+$selection = array();
 while ($data = $DBRESULT->fetchRow()) {
     $data["service_description"] = str_replace("#S#", "/", $data["service_description"]);
     $data["service_description"] = str_replace("#BS#", "\\", $data["service_description"]);

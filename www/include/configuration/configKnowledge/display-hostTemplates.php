@@ -132,6 +132,7 @@ $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
 $row = $res->fetchRow();
 $rows = $row['numrows'];
 
+$selection = array();
 while ($data = $DBRESULT->fetchRow()) {
     if ($data["host_register"] == 0) {
         $selection[$data["host_name"]] = $data["host_id"];
