@@ -82,7 +82,7 @@ class Broker extends AbstractObjectXML
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
 
-    private function generate($poller_id, $localhost = 1)
+    private function generate($poller_id, $localhost)
     {
         if (is_null($this->stmt_broker)) {
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
@@ -226,8 +226,8 @@ class Broker extends AbstractObjectXML
         }
     }
 
-    public function generateFromPoller($poller, $localhost = 1)
+    public function generateFromPoller($poller)
     {
-        $this->generate($poller['id'], $localhost);
+        $this->generate($poller['id'], $poller['localhost']);
     }
 }
