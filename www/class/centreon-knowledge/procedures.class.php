@@ -378,27 +378,21 @@ class procedures
             $text = $DBRESULT->fetchRow();
             $DBRESULT->free();
 
-            if ($type == 0) {
-                $object = "Host:".$object;
-            }
-            if ($type == 2) {
-                $object = "Service:".$object;
-            }
-            if ($type == 2) {
-                $object = "Host-Template:".$object;
-            }
-            if ($type == 3) {
-                $object = "Service-Template:".$object;
+            switch ($type) {
+                case 0:
+                    $object = "Host:" . $object;
+                    break;
+                case 1:
+                    $object = "Service:" . $object;
+                    break;
+                case 2:
+                    $object = "Host-Template:" . $object;
+                    break;
+                case 3:
+                    $object = "Service-Template:" . $object;
+                    break;
             }
 
-            if ($debug) {
-                print(
-                    "INSERT INTO " . $this->db_prefix . "page (`page_namespace` ,`page_title`,`page_counter`, " .
-                    "  `page_is_redirect`,`page_is_new`,`page_random` ,`page_touched`,`page_latest`,`page_len`) " .
-                    " VALUES ('0', '" . $object . "', '', '0', '1', '', '" . $data["page_touched"] . "', '" .
-                    $data["page_latest"] . "', '" . $data["page_len"] . "')"
-                );
-            }
             $dateTouch = date("YmdHis");
             $this->DB->query(
                 "INSERT INTO " . $this->db_prefix . "page (`page_namespace` ,`page_title`,`page_counter`, " .
@@ -408,19 +402,6 @@ class procedures
             );
             $DBRESULT = $this->DB->query("SELECT MAX(page_id) FROM ".$this->db_prefix."page");
             $id = $DBRESULT->fetchRow();
-
-            if ($debug) {
-                print(
-                    "INSERT INTO `" . $this->db_prefix . "text` (old_id, old_text, old_flags) " .
-                    "  VALUE (NULL, '" . $text["old_text"] . "', '" . $text["old_flags"] . "')"
-                );
-                print(
-                    "INSERT INTO `" . $this->db_prefix . "revision` (rev_page, rev_text_id, rev_comment, " .
-                    "  rev_user_text, rev_timestamp) VALUE ('" . $id["MAX(page_id)"] .
-                    "', (SELECT MAX(old_id) FROM text), '" . $revision["rev_comment"] . "', 'Centreon','" .
-                    $dateTouch . "')"
-                );
-            }
 
             $this->DB->query(
                 "INSERT INTO `text` (old_id, old_text, old_flags) VALUE (NULL, '" .
