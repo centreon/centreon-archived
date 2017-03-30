@@ -35,8 +35,6 @@
 
 namespace CentreonLegacy\Core\Utils;
 
-require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
-
 class Factory
 {
     /**

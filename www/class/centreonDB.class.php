@@ -138,36 +138,67 @@ class CentreonDB extends \PDO
         /* Deprecated */
     }
     
+    /**
+     * 
+     * @param type $query
+     * @return type
+     */
     public function prepare($query)
     {
         return $this->db->prepare($query);
     }
     
+    /**
+     * 
+     * @param type $stmt
+     * @param type $arrayValues
+     * @return type
+     */
     public function executeMultiple($stmt, $arrayValues)
     {
         return $this->db->executeMultiple($stmt, $arrayValues);
     }
     
+    /**
+     * 
+     * @param type $query
+     * @return type
+     */
     public function autoPrepare($query)
     {
         return $this->db->autoPrepare($query);
     }
 
+    /**
+     * 
+     */
     public function beginTransaction()
     {
         $this->db->beginTransaction();
     }
 
+    /**
+     * 
+     */
     public function commit()
     {
         $this->db->commit();
     }
     
+    /**
+     * 
+     * @param type $stmt
+     * @param type $arrayValues
+     * @return type
+     */
     public function execute($stmt, $arrayValues)
     {
         return $stmt->execute($arrayValues);
     }
     
+    /**
+     * 
+     */
     public function rollback()
     {
         $this->db->rollback();

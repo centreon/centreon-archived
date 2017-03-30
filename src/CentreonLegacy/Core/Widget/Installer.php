@@ -37,39 +37,43 @@ namespace CentreonLegacy\Core\Widget;
 
 class Installer extends Widget
 {
-    protected $dbConf;
-    protected $informationObj;
-    protected $widgetName;
-    protected $utils;
-    private $widgetConfiguration;
-
-    public function __construct($dbConf, $informationObj, $widgetName, $utils)
-    {
-        $this->dbConf = $dbConf;
-        $this->informationObj = $informationObj;
-        $this->widgetName = $widgetName;
-        $this->utils = $utils;
-
-        $this->widgetConfiguration = $this->informationObj->getConfiguration($this->widgetName);
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Widget\Information $informationObj
+     * @param string $widgetName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     */
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        \CentreonLegacy\Core\Widget\Information $informationObj,
+        $widgetName,
+        \CentreonLegacy\Core\Utils\Utils $utils
+    ) {
+        parent::__construct($dependencyInjector, $informationObj, $widgetName, $utils);
     }
-
+    
+    /**
+     *
+     * @return int
+     * @throws \Exception
+     */
     public function install()
     {
         if ($this->informationObj->isInstalled($this->widgetName)) {
             throw new \Exception('Widget is already installed.');
         }
 
-        $this->dbConf->beginTransaction();
-
         $id = $this->installConfiguration();
         $this->installPreferences($id);
-
-        $this->dbConf->commit();
-
 
         return $id;
     }
 
+    /**
+     *
+     * @return int
+     */
     protected function installConfiguration()
     {
         $query = 'INSERT INTO widget_models ' .
@@ -78,7 +82,7 @@ class Installer extends Widget
             'VALUES (:title, :description, :url, :version, :directory, :author, ' .
             ':email, :website, :keywords, :thumbnail, :autoRefresh) ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':title', $this->widgetConfiguration['title'], \PDO::PARAM_STR);
         $sth->bindParam(':description', $this->widgetConfiguration['description'], \PDO::PARAM_STR);
@@ -97,6 +101,12 @@ class Installer extends Widget
         return $this->informationObj->getIdByName($this->widgetName);
     }
 
+    /**
+     *
+     * @param int $id
+     * @return type
+     * @throws \Exception
+     */
     protected function installPreferences($id)
     {
         if (!isset($this->widgetConfiguration['preferences'])) {
@@ -131,6 +141,12 @@ class Installer extends Widget
         }
     }
 
+    /**
+     *
+     * @param int $id
+     * @param array $parameters
+     * @param array $preference
+     */
     protected function installParameters($id, $parameters, $preference)
     {
         $query = 'INSERT INTO widget_parameters ' .
@@ -140,7 +156,7 @@ class Installer extends Widget
             '(:widget_model_id, :field_type_id, :parameter_name, :parameter_code_name, ' .
             ':default_value, :parameter_order, :require_permission, :header_title) ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':widget_model_id', $id, \PDO::PARAM_INT);
         $sth->bindParam(':field_type_id', $parameters['type']['id'], \PDO::PARAM_INT);
@@ -166,6 +182,12 @@ class Installer extends Widget
         }
     }
 
+    /**
+     *
+     * @param int $paramId
+     * @param array $preference
+     * @return type
+     */
     protected function installMultipleOption($paramId, $preference)
     {
         if (!isset($preference['option'])) {
@@ -176,7 +198,7 @@ class Installer extends Widget
             '(parameter_id, option_name, option_value) VALUES ' .
             '(:parameter_id, :option_name, :option_value) ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         foreach ($preference['option'] as $option) {
             if (isset($option['@attributes'])) {
@@ -193,12 +215,17 @@ class Installer extends Widget
         }
     }
 
+    /**
+     *
+     * @param int $paramId
+     * @param array $parameters
+     */
     protected function installRangeOption($paramId, $parameters)
     {
         $query = 'INSERT INTO widget_parameters_range (parameter_id, min_range, max_range, step) ' .
             'VALUES (:parameter_id, :min_range, :max_range, :step) ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':parameter_id', $paramId, \PDO::PARAM_INT);
         $sth->bindParam(':min_range', $parameters['min'], \PDO::PARAM_INT);

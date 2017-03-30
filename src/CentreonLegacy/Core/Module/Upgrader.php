@@ -37,30 +37,22 @@ namespace CentreonLegacy\Core\Module;
 
 class Upgrader extends Module
 {
-    protected $dbConf;
-    protected $informationObj;
-    protected $moduleName;
-    protected $moduleId;
-    protected $utils;
-    private $moduleConfiguration;
-
     /**
      *
-     * @param type $dbConf
-     * @param type $informationObj
-     * @param type $moduleName
-     * @param type $moduleId
-     * @param type $utils
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Module\Information $informationObj
+     * @param string $moduleName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     * @param int $moduleId
      */
-    public function __construct($dbConf, $informationObj, $moduleName, $moduleId, $utils)
-    {
-        $this->dbConf = $dbConf;
-        $this->informationObj = $informationObj;
-        $this->moduleName = $moduleName;
-        $this->moduleId = $moduleId;
-        $this->utils = $utils;
-
-        $this->moduleConfiguration = $informationObj->getConfiguration($this->moduleName);
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        Information $informationObj,
+        $moduleName,
+        \CentreonLegacy\Core\Utils\Utils $utils,
+        $moduleId = null
+    ) {
+        parent::__construct($dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
     }
 
     /**
@@ -69,7 +61,7 @@ class Upgrader extends Module
      */
     public function upgrade()
     {
-        $this->dbConf->beginTransaction();
+        $this->dependencyInjector['configuration_db']->beginTransaction();
 
         $this->upgradeModuleConfiguration();
 
@@ -100,7 +92,7 @@ class Upgrader extends Module
             $this->upgradePhpFiles($upgrade_conf, $upgradePath, false);
         }
 
-        $this->dbConf->commit();
+        $this->dependencyInjector['configuration_db']->commit();
 
         return $this->moduleId;
     }
@@ -131,7 +123,7 @@ class Upgrader extends Module
             '`host_tools` = :host_tools ' .
             'WHERE id = :id';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
         $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
@@ -152,8 +144,8 @@ class Upgrader extends Module
 
     /**
      *
-     * @param type $version
-     * @return type
+     * @param string $version
+     * @return int
      */
     private function upgradeVersion($version)
     {
@@ -161,7 +153,7 @@ class Upgrader extends Module
             '`mod_release` = :mod_release ' .
             'WHERE id = :id';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':mod_release', $version, \PDO::PARAM_STR);
         $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
@@ -173,8 +165,8 @@ class Upgrader extends Module
 
     /**
      *
-     * @param type $conf
-     * @param type $path
+     * @param array $conf
+     * @param string $path
      * @return boolean
      */
     private function upgradeSqlFiles($conf, $path)
@@ -192,9 +184,9 @@ class Upgrader extends Module
 
     /**
      *
-     * @param type $conf
-     * @param type $path
-     * @param type $pre
+     * @param array $conf
+     * @param string $path
+     * @param boolean $pre
      * @return boolean
      */
     private function upgradePhpFiles($conf, $path, $pre = false)

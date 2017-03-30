@@ -37,45 +37,46 @@ namespace CentreonLegacy\Core\Module;
 
 class Installer extends Module
 {
-    protected $dbConf;
-    protected $informationObj;
-    protected $moduleName;
-    protected $utils;
-    private $moduleConfiguration;
-
     /**
      *
-     * @param type $dbConf
-     * @param type $informationObj
-     * @param type $moduleName
-     * @param type $utils
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Module\Information $informationObj
+     * @param string $moduleName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     * @param int $moduleId
      */
-    public function __construct($dbConf, $informationObj, $moduleName, $utils)
-    {
-        $this->dbConf = $dbConf;
-        $this->informationObj = $informationObj;
-        $this->moduleName = $moduleName;
-        $this->utils = $utils;
-
-        $this->moduleConfiguration = $this->informationObj->getConfiguration($this->moduleName);
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        Information $informationObj,
+        $moduleName,
+        \CentreonLegacy\Core\Utils\Utils $utils,
+        $moduleId = null
+    ) {
+        parent::__construct($dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
     }
-
+    
+    /**
+     *
+     * @return int
+     */
     public function install()
     {
-        $this->dbConf->beginTransaction();
-
         $id = $this->installModuleConfiguration();
         $this->installSqlFiles();
         $this->installPhpFiles();
 
-        $this->dbConf->commit();
-
         return $id;
     }
 
+    /**
+     *
+     * @return int
+     * @throws \Exception
+     */
     protected function installModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
+        
         if (!file_exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
@@ -85,8 +86,8 @@ class Installer extends Module
             '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
             'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
             ':sql_files , :php_files , :svc_tools , :host_tools )';
-        $sth = $this->dbConf->prepare($query);
-
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        
         $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
         $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
         $sth->bindParam(':mod_release', $this->moduleConfiguration['mod_release'], \PDO::PARAM_STR);
@@ -102,7 +103,7 @@ class Installer extends Module
         $sth->execute();
 
         $queryMax = 'SELECT MAX(id) as id FROM modules_informations';
-        $result = $this->dbConf->query($queryMax);
+        $result = $this->dependencyInjector['configuration_db']->query($queryMax);
         $lastId = 0;
         if ($row = $result->fetchRow()) {
             $lastId = $row['id'];

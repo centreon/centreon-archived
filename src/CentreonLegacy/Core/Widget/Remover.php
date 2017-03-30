@@ -37,35 +37,42 @@ namespace CentreonLegacy\Core\Widget;
 
 class Remover extends Widget
 {
-    protected $dbConf;
-    protected $informationObj;
-    protected $widgetName;
-    protected $utils;
-
-    public function __construct($dbConf, $informationObj, $widgetName, $utils)
-    {
-        $this->dbConf = $dbConf;
-        $this->informationObj = $informationObj;
-        $this->widgetName = $widgetName;
-        $this->utils = $utils;
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Widget\Information $informationObj
+     * @param string $widgetName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     */
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        \CentreonLegacy\Core\Widget\Information $informationObj,
+        $widgetName,
+        \CentreonLegacy\Core\Utils\Utils $utils
+    ) {
+        parent::__construct($dependencyInjector, $informationObj, $widgetName, $utils);
     }
-
+    
+    /**
+     *
+     * @return boolean
+     */
     public function remove()
     {
-        $this->dbConf->beginTransaction();
+        $this->dependencyInjector['configuration_db']->beginTransaction();
 
         $query = 'DELETE FROM widget_models ' .
             'WHERE directory = :directory ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
         if ($sth->execute() && $sth->rowCount()) {
-            $this->dbConf->commit();
+            $this->dependencyInjector['configuration_db']->commit();
             $removed = true;
         } else {
-            $this->dbConf->rollback();
+            $this->dependencyInjector['configuration_db']->rollback();
             $removed = false;
         }
 

@@ -38,6 +38,21 @@ namespace CentreonLegacy\Core\Module;
 class License extends Module
 {
     /**
+     *
+     * @var \Pimple\Container
+     */
+    protected $dependencyInjector;
+    
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
+    public function __construct(\Pimple\Container $dependencyInjector)
+    {
+        $this->dependencyInjector = $dependencyInjector;
+    }
+
+    /**
      * Parsing a Zend license file
      *
      * @return array

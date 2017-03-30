@@ -35,41 +35,51 @@
 
 namespace CentreonLegacy\Core\Module;
 
-class Information extends Module
+class Information
 {
-    /**
-     *
-     * @var Pimple\Container
-     */
-    protected $dependencyInjector;
-    
     /**
      *
      * @var \CentreonLegacy\Core\Module\License
      */
     protected $licenseObj;
+    
+    /**
+     *
+     * @var \Pimple\Container
+     */
+    protected $dependencyInjector;
+    
+    /**
+     *
+     * @var \CentreonLegacy\Core\Utils\Utils
+     */
+    protected $utils;
 
     /**
      *
-     * @param type $dbConf
-     * @param type $licenseObj
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Module\License $licenseObj
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
-    public function __construct(\Pimple\Container $dependencyInjector, \CentreonLegacy\Core\Module\License $licenseObj)
-    {
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        \CentreonLegacy\Core\Module\License $licenseObj,
+        \CentreonLegacy\Core\Utils\Utils $utils
+    ) {
         $this->dependencyInjector = $dependencyInjector;
         $this->licenseObj = $licenseObj;
+        $this->utils = $utils;
     }
 
     /**
      * Get module configuration from file
-     *
-     * @param $moduleName
-     * @return mixed
+     * @param string $moduleName
+     * @return array
      */
     public function getConfiguration($moduleName)
     {
         $configurationFile = $this->getModulePath($moduleName) . '/conf.php';
-
+        
         $module_conf = array();
         require $configurationFile;
 
@@ -78,8 +88,7 @@ class Information extends Module
 
     /**
      * Get module configuration from file
-     *
-     * @param $moduleId
+     * @param int $moduleId
      * @return mixed
      */
     public function getNameById($moduleId)
@@ -125,7 +134,7 @@ class Information extends Module
     }
 
     /**
-     * 
+     *
      * @param string $moduleName
      * @return array
      */
@@ -160,7 +169,7 @@ class Information extends Module
                 continue;
             }
 
-            require $this->getModulePath($module) . '/conf.php';
+            require $modulePath . '/conf.php';
 
             $licenseFile = $modulePath . '/license/merethis_lic.zl';
             $module_conf[$module]['license_expiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
@@ -206,6 +215,8 @@ class Information extends Module
                 $modules[$name]['source_available'] = false;
             }
         }
+        
+        //echo '<pre>'; var_dump($modules); echo '</pre>';
 
         return $modules;
     }
@@ -227,5 +238,15 @@ class Information extends Module
         }
         
         return $comparisonResult;
+    }
+    
+    /**
+     *
+     * @param string $moduleName
+     * @return string
+     */
+    public function getModulePath($moduleName = '')
+    {
+        return $this->utils->buildPath('/modules/' . $moduleName) . '/';
     }
 }

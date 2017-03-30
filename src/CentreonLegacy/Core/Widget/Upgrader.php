@@ -35,45 +35,55 @@
 
 namespace CentreonLegacy\Core\Widget;
 
-class Upgrader extends Installer
+class Upgrader extends Widget
 {
-    protected $dbConf;
-    protected $informationObj;
-    protected $widgetName;
-    protected $utils;
-    private $widgetConfiguration;
-
-    public function __construct($dbConf, $informationObj, $widgetName, $utils)
-    {
-        $this->dbConf = $dbConf;
-        $this->informationObj = $informationObj;
-        $this->widgetName = $widgetName;
-        $this->utils = $utils;
-
-        $this->widgetConfiguration = $informationObj->getConfiguration($this->widgetName);
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Widget\Information $informationObj
+     * @param string $widgetName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     */
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        \CentreonLegacy\Core\Widget\Information $informationObj,
+        $widgetName,
+        \CentreonLegacy\Core\Utils\Utils $utils
+    ) {
+        parent::__construct($dependencyInjector, $informationObj, $widgetName, $utils);
     }
 
+    /**
+     *
+     * @return boolean
+     * @throws \Exception
+     */
     public function upgrade()
     {
         if (!$this->informationObj->isInstalled($this->widgetName)) {
             throw new \Exception('Widget "' . $this->widgetName . '" is not installed.');
         }
 
-        $this->dbConf->beginTransaction();
+        $this->dependencyInjector['configuration_db']->beginTransaction();
 
         try {
             $id = $this->upgradeConfiguration();
             $this->upgradePreferences($id);
-            $this->dbConf->commit();
+            $this->dependencyInjector['configuration_db']->commit();
             $upgraded = true;
         } catch (\Exception $e) {
-            $this->dbConf->rollback();
+            $this->dependencyInjector['configuration_db']->rollback();
             $upgraded = false;
         }
 
         return $upgraded;
     }
 
+    /**
+     *
+     * @return int
+     * @throws \Exception
+     */
     protected function upgradeConfiguration()
     {
         $query = 'UPDATE widget_models SET ' .
@@ -89,7 +99,7 @@ class Upgrader extends Installer
             'autoRefresh = :autoRefresh ' .
             'WHERE directory = :directory ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':title', $this->widgetConfiguration['title'], \PDO::PARAM_STR);
         $sth->bindParam(':description', $this->widgetConfiguration['description'], \PDO::PARAM_STR);
@@ -110,6 +120,12 @@ class Upgrader extends Installer
         return $this->informationObj->getIdByName($this->widgetName);
     }
 
+    /**
+     *
+     * @param int $widgetId
+     * @return type
+     * @throws \Exception
+     */
     private function upgradePreferences($widgetId)
     {
         if (!isset($this->widgetConfiguration['preferences'])) {
@@ -157,6 +173,12 @@ class Upgrader extends Installer
         }
     }
 
+    /**
+     *
+     * @param int $id
+     * @param array $parameters
+     * @param array $preference
+     */
     protected function updateParameters($id, $parameters, $preference)
     {
         $query = 'UPDATE widget_parameters SET ' .
@@ -169,7 +191,7 @@ class Upgrader extends Installer
             'WHERE widget_model_id = :widget_model_id ' .
             'AND parameter_code_name = :parameter_code_name ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':field_type_id', $parameters['type']['id'], \PDO::PARAM_INT);
         $sth->bindParam(':parameter_name', $parameters['label'], \PDO::PARAM_STR);
@@ -196,24 +218,32 @@ class Upgrader extends Installer
         }
     }
 
+    /**
+     *
+     * @param int $id
+     */
     protected function deleteParameter($id)
     {
         $query = 'DELETE FROM widget_parameters ' .
             'WHERE parameter_id = :id ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':id', $id, \PDO::PARAM_INT);
 
         $sth->execute();
     }
 
+    /**
+     *
+     * @param int $id
+     */
     protected function deleteParameterOptions($id)
     {
         $query = 'DELETE FROM widget_parameters_multiple_options ' .
             'WHERE parameter_id = :id ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':id', $id, \PDO::PARAM_INT);
 
@@ -222,7 +252,7 @@ class Upgrader extends Installer
         $query = 'DELETE FROM widget_parameters_range ' .
             'WHERE parameter_id = :id ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':id', $id, \PDO::PARAM_INT);
 

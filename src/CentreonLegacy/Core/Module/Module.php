@@ -39,11 +39,71 @@ class Module
 {
     /**
      *
-     * @param type $moduleName
-     * @return type
+     * @var \CentreonLegacy\Core\Module\Information
+     */
+    protected $informationObj;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $moduleName;
+    
+    /**
+     *
+     * @var int
+     */
+    protected $moduleId;
+    
+    /**
+     *
+     * @var \CentreonLegacy\Core\Utils\Utils
+     */
+    protected $utils;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $moduleConfiguration;
+    
+    /**
+     *
+     * @var \Pimple\Container
+     */
+    protected $dependencyInjector;
+    
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Module\Information $informationObj
+     * @param string $moduleName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     * @param int $moduleId
+     */
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        \CentreonLegacy\Core\Module\Information $informationObj,
+        $moduleName,
+        \CentreonLegacy\Core\Utils\Utils $utils,
+        $moduleId = null
+    ) {
+        $this->moduleId = $moduleId;
+        $this->dependencyInjector = $dependencyInjector;
+        $this->informationObj = $informationObj;
+        $this->moduleName = $moduleName;
+        $this->utils = $utils;
+
+        $this->moduleConfiguration = $this->informationObj->getConfiguration($this->moduleName);
+    }
+    
+    /**
+     *
+     * @param string $moduleName
+     * @return string
      */
     public function getModulePath($moduleName = '')
     {
-        return _CENTREON_PATH_ . '/www/modules/' . $moduleName;
+        return $this->utils->buildPath('/modules/' . $moduleName);
     }
 }

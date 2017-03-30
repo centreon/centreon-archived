@@ -37,8 +37,63 @@ namespace CentreonLegacy\Core\Widget;
 
 class Widget
 {
+        /**
+     *
+     * @var \CentreonLegacy\Core\Module\Information
+     */
+    protected $informationObj;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $widgetName;
+    
+    /**
+     *
+     * @var \CentreonLegacy\Core\Utils\Utils
+     */
+    protected $utils;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $widgetConfiguration;
+    
+    /**
+     *
+     * @var Pimple\Container
+     */
+    protected $dependencyInjector;
+    
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Widget\Information $informationObj
+     * @param string $widgetName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     */
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        \CentreonLegacy\Core\Widget\Information $informationObj,
+        $widgetName,
+        \CentreonLegacy\Core\Utils\Utils $utils
+    ) {
+        $this->dependencyInjector = $dependencyInjector;
+        $this->informationObj = $informationObj;
+        $this->widgetName = $widgetName;
+        $this->utils = $utils;
+        $this->widgetConfiguration = $this->informationObj->getConfiguration($this->widgetName);
+    }
+    
+    /**
+     *
+     * @param string $widgetName
+     * @return string
+     */
     public function getWidgetPath($widgetName = '')
     {
-        return _CENTREON_PATH_ . '/www/widgets/' . $widgetName;
+        return $this->utils->buildPath('/widgets/' . $widgetName);
     }
 }

@@ -35,53 +35,76 @@
 
 namespace CentreonLegacy\Core\Widget;
 
-require_once _CENTREON_PATH_ . '/www/class/centreonDBInstance.class.php';
-
 class Factory
 {
-    protected $dbConf;
-    protected $dbMon;
+    /**
+     *
+     * @var Pimple\Container
+     */
+    protected $dependencyInjector;
 
-    public function __construct()
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->dbConf = \CentreonDBInstance::getConfInstance();
-        $this->dbMon = \CentreonDBInstance::getMonInstance();
+        $this->dependencyInjector = $dependencyInjector;
     }
 
+    /**
+     *
+     * @return \CentreonLegacy\Core\Widget\Information
+     */
     public function newInformation()
     {
-        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
         $utils = $factory->newUtils();
 
-        return new Information($this->dbConf, $utils);
+        return new Information($this->dependencyInjector, $utils);
     }
 
+    /**
+     *
+     * @param string $widgetName
+     * @return \CentreonLegacy\Core\Widget\Installer
+     */
     public function newInstaller($widgetName)
     {
         $informationObj = $this->newInformation();
 
-        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
         $utils = $factory->newUtils();
-        return new Installer($this->dbConf, $informationObj, $widgetName, $utils);
+        return new Installer($this->dependencyInjector, $informationObj, $widgetName, $utils);
     }
 
+    /**
+     *
+     * @param string $widgetName
+     * @return \CentreonLegacy\Core\Widget\Upgrader
+     */
     public function newUpgrader($widgetName)
     {
         $informationObj = $this->newInformation();
 
-        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
         $utils = $factory->newUtils();
 
-        return new Upgrader($this->dbConf, $informationObj, $widgetName, $utils);
+        return new Upgrader($this->dependencyInjector, $informationObj, $widgetName, $utils);
     }
 
+    /**
+     *
+     * @param string $widgetName
+     * @return \CentreonLegacy\Core\Widget\Remover
+     */
     public function newRemover($widgetName)
     {
         $informationObj = $this->newInformation();
 
-        $factory = new \CentreonLegacy\Core\Utils\Factory();
+        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
         $utils = $factory->newUtils();
 
-        return new Remover($this->dbConf, $informationObj, $widgetName, $utils);
+        return new Remover($this->dependencyInjector, $informationObj, $widgetName, $utils);
     }
 }

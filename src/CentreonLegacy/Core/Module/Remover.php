@@ -37,34 +37,34 @@ namespace CentreonLegacy\Core\Module;
 
 class Remover extends Module
 {
-    protected $dbConf;
-    protected $informationObj;
-    protected $moduleName;
-    protected $moduleId;
-    protected $utils;
-    private $moduleConfiguration;
-
-    public function __construct($dbConf, $informationObj, $moduleName, $moduleId, $utils)
-    {
-        $this->dbConf = $dbConf;
-        $this->informationObj = $informationObj;
-        $this->moduleName = $moduleName;
-        $this->moduleId = $moduleId;
-        $this->utils = $utils;
-
-        $this->moduleConfiguration = $informationObj->getConfiguration($this->moduleName);
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @param \CentreonLegacy\Core\Module\Information $informationObj
+     * @param string $moduleName
+     * @param \CentreonLegacy\Core\Utils\Utils $utils
+     * @param int $moduleId
+     */
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        Information $informationObj,
+        $moduleName,
+        \CentreonLegacy\Core\Utils\Utils $utils,
+        $moduleId = null
+    ) {
+        parent::__construct($dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function remove()
     {
-        $this->dbConf->beginTransaction();
-
         $this->removeModuleConfiguration();
 
         $this->removeSqlFiles();
         $this->removePhpFiles();
-
-        $this->dbConf->commit();
 
         return true;
     }
@@ -84,7 +84,7 @@ class Remover extends Module
 
         $query = 'DELETE FROM modules_informations WHERE id = :id ';
 
-        $sth = $this->dbConf->prepare($query);
+        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
         $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
 
@@ -93,6 +93,10 @@ class Remover extends Module
         return true;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     private function removeSqlFiles()
     {
         $removed = false;
@@ -106,6 +110,10 @@ class Remover extends Module
         return $removed;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     private function removePhpFiles()
     {
         $removed = false;

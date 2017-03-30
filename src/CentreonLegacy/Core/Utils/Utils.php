@@ -44,7 +44,7 @@ class Utils
     protected $dependencyInjector;
 
     /**
-     * 
+     *
      * @param \Pimple\Container $dependencyInjector
      */
     public function __construct(\Pimple\Container $dependencyInjector)
@@ -54,7 +54,7 @@ class Utils
 
     /**
      *
-     * @param type $fileName
+     * @param string $fileName
      * @throws \Exception
      */
     public function executeSqlFile($fileName)
@@ -68,7 +68,7 @@ class Utils
             $line = fgets($file);
             $line = $this->replaceMacros($line);
             if (!preg_match('/^(--|#)/', $line)) {
-                $this->dbConf->query($line);
+                $this->dependencyInjector['configuration_db']->query($line);
             }
         }
         fclose($file);
@@ -108,9 +108,9 @@ class Utils
     }
 
     /**
-     * 
-     * @param type $arrObjData
-     * @param type $skippedKeys
+     *
+     * @param array $arrObjData
+     * @param array $skippedKeys
      * @return string
      */
     public function objectIntoArray($arrObjData, $skippedKeys = array())
@@ -136,5 +136,15 @@ class Utils
             $arrData = "";
         }
         return $arrData;
+    }
+    
+    /**
+     *
+     * @param string $endPath
+     * @return string
+     */
+    public function buildPath($endPath)
+    {
+        return realpath(_CENTREON_PATH_ . '/www/' . $endPath);
     }
 }
