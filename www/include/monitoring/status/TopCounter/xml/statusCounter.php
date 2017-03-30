@@ -180,7 +180,10 @@ $timeUnit = 300;
 $pollerListInError = "";
 $inactivInstance = "";
 
-$request =  "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0";
+$request =  "SELECT instances.last_alive AS last_update, instances.running, instances.name, instances.instance_id 
+		FROM instances 
+		LEFT JOIN centreon.nagios_server ON instances.instance_id=centreon.nagios_server.id
+		WHERE deleted = 0 AND centreon.nagios_server.ns_activate=1";
 $DBRESULT = $obj->DBC->query($request);
 $inactivInstance = "";
 $pollerInError = "";
