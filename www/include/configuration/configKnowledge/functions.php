@@ -24,12 +24,12 @@ function versionCentreon($pearDB)
         return null;
     }
     $row = $res->fetchRow();
+
     return $row['value'];
 }
 
 function Mediawikiconfigexist($url)
 {
-
     $file_headers = @get_headers($url);
     if ($file_headers[0] == 'HTTP/1.1 404 Not Found') {
         return false;
@@ -64,18 +64,15 @@ function getWikiConfig($pearDB)
 
 function getWikiVersion($apiWikiURL)
 {
-
     if (is_null($apiWikiURL)) {
         return;
     }
 
-// Création du flux
     $post = array(
         'action' => 'query',
         'meta' => 'siteinfo',
         'format' => 'json',
     );
-
 
     $data = http_build_query($post);
 
