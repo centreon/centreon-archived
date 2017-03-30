@@ -217,7 +217,8 @@ class Broker extends AbstractObjectXML {
         }
     }
 
-    public function generateFromPoller($poller) {
-        $this->generate($poller['id']);
+    public function generateFromPoller($poller, $localhost = 1)
+    {
+        $this->generate($poller['id'], $localhost);
     }
 }
