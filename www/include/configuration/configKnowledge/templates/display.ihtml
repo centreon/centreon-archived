@@ -227,7 +227,7 @@
 	function deleteWiki(title) {
 		jQuery.ajax({
 			type    :   "POST",
-			url     :   "./include/configuration/configKnowledge/delete_wiki_page.php",
+			url     :   "./include/common/webServices/rest/internal.php?object=centreon_wiki&action=deletePage",
 			data    :  {
 				title: title
 			},
