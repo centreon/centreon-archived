@@ -325,6 +325,13 @@ class CentreonACL {
             . "ORDER BY hc.hc_name ASC ";
 
         $res = $pearDB->query($query);
+        if (!$res->numRows()) {
+            $query = "SELECT hc.hc_id, hc.hc_name "
+                . "FROM hostcategories hc "
+                . "WHERE hc.hc_activate = '1' "
+                . "ORDER BY hc.hc_name ASC ";
+            $res = $pearDB->query($query);
+        }
         while ($row = $res->fetchRow()) {
             $this->hostCategories[$row['hc_id']] = $row['hc_name'];
         }
