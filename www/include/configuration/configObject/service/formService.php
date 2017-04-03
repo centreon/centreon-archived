@@ -86,20 +86,12 @@ $notifCs = $acl->getContactAclConf(array(
 ));
 
 /* notification contact groups */
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-if ($centreon->user->admin) {
-    $notifCgs = $cg->getListContactgroup(true);
-} else {
-    $cgAcl = $acl->getContactGroupAclConf(array(
-        'fields' => array('cg_id', 'cg_name'),
-        'get_row' => 'cg_name',
-        'keys' => array('cg_id'),
-        'order' => array('cg_name')
-    ));
-    $cgLdap = $cg->getListContactgroup(true, true);
-    $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-}
+$notifCgs = $acl->getContactGroupAclConf(array(
+    'fields' => array('cg_id', 'cg_name'),
+    'get_row' => 'cg_name',
+    'keys' => array('cg_id'),
+    'order' => array('cg_name')
+), false);
 
 /* hosts */
 $hosts = $acl->getHostAclConf(null, 'broker', array(
@@ -283,7 +275,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set criticality
      */
-    $res = $pearDB->query("SELECT sc.sc_id 
+    $res = $pearDB->query("SELECT sc.sc_id
                             FROM service_categories sc, service_categories_relation scr
                             WHERE scr.service_service_id = " . $pearDB->escape($service_id) . "
                             AND scr.sc_id = sc.sc_id
@@ -302,6 +294,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     if (!isset($cmdId)) {
         $cmdId = "";
     }
+
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
 }
 
