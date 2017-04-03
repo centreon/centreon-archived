@@ -1,0 +1,286 @@
+<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+<link href="./include/common/javascript/jquery/tourbus/jquery-tourbus.min.css" type="text/css" rel="stylesheet">
+<script language='javascript' src='./include/common/javascript/tool.js'></script>
+<div id="div1" style="position:relative;">
+    <form {$form.attributes}>
+        <table class="ajaxOption table">
+            <tr>
+                <th><h5>{t}Chart Filters{/t}</h5></th>
+            </tr>
+            <tr>
+              <td><h4>{t}Period{/t}</h4></td>
+              <td><h4>{t}From{/t}</h4></td>
+              <td><h4>{t}To{/t}</h4></td>
+            </tr>
+          <tr>
+            <td>{$form.period.html}</td>
+            <td>{$form.StartDate.html} {$form.StartTime.html}</td>
+            <td>{$form.EndDate.html} {$form.EndTime.html}</td>
+          </tr>
+        </table>
+    </form>
+    <div class="graph-options">
+      <div class="refresh" id="chart-refresh">
+        <div class="icon refresh-icon">
+          <img class="ico-14" src="./img/icons/refresh.png">
+        </div>
+        <span class="time" style="display: none"></span>
+        <div class="icon">
+          <img class="ico-14 timer-icon" src="./img/icons/timer-gray.png">
+        </div>
+        <ul class="refresh-list">
+          <li data-interval="0">{t}None{/t}</li>
+          <li data-interval="1m">{t}1 minute{/t}</li>
+          <li data-interval="5m">{t}5 minutes{/t}</li>
+          <li data-interval="15m">{t}15 minutes{/t}</li>
+          <li data-interval="30m">{t}30 minutes{/t}</li>
+        </ul>
+      </div>
+      <a href="javascript:switchCols(1)" class="ico-16 margin_right ico-col ico-col-1 active" alt="{t}One column{/t}" title="{t}One column{/t}">
+      </a>
+      <a href="javascript:switchCols(2)" class="ico-16 margin_right ico-col ico-col-2" alt="{t}Two columns{/t}" title="{t}Two columns{/t}">
+      </a>
+      <a href="javascript:switchCols(3)" class="ico-16 margin_right ico-col ico-col-3" alt="{t}Three columns{/t}" title="{t}Three columns{/t}">
+      </a>
+    </div>
+    <div id="graphs" class="graph_content">
+        <div class="graphZone">
+          {foreach from=$metrics item=metric}
+          <div id="graph_wrapper_{$metric.id}" data-graph-id="{$metric.id}" class="graph">
+            <div class="title">
+              <img class="remove ico-14 margin_right" src="./img/icons/circle-cross.png">
+              <span>{$metric.title}</span>
+              <a class="actions" href="#" data-href="./include/views/graphs/generateGraphs/generateMetricImage.php?cpt=1">
+                <img alt="Export graph" src="./img/icons/picture.png" class="ico-14 margin_right">
+              </a>
+            </div>
+            <div class="content">
+              <div class="action left">
+                <button class="bt_action">&lt;&lt;</button>
+              </div>
+              <div class="chart" id="graph-{$metric.id}" data-graph-id="{$metric.id}" data-graph-type="metric">
+              </div>
+              <div class="action right">
+                <button class="bt_action">&gt;&gt;</button>
+              </div>
+            </div>
+          </div>
+          {/foreach}
+        </div>
+    </div>
+</div>
+<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+<script src="./include/common/javascript/charts/d3.min.js"></script>
+<script src="./include/common/javascript/charts/c3.min.js"></script>
+<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+<script src="./include/common/javascript/centreon/centreon-select2.js"></script>
+{literal}
+<script>
+var autoRefresh = false;
+
+function initRefresh() {
+  var $refresh = jQuery('#chart-refresh');
+  $refresh.data('interval', 0);
+  $refresh.on('click', function () {
+    $refresh.find('.refresh-list')
+      .toggleClass('show');
+  });
+
+  jQuery(document).on('click', function (e) {
+    var $elem = jQuery(e.target);
+    if ($refresh.has($elem).length === 0) {
+      $refresh.find('.refresh-list')
+        .removeClass('show');
+    }
+  });
+
+  $refresh.delegate('.refresh-icon', 'click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    jQuery('.chart').centreonGraph('refreshData');
+  });
+
+  $refresh.delegate('.refresh-list > li', 'click', function () {
+    var $interval = jQuery(this);
+    var interval = $interval.data('interval');
+    var text = $interval.text();
+    var parseInterval;
+    if (interval == 0) {
+      $refresh
+        .find('.time')
+        .hide()
+        .text('');
+      $refresh
+        .find('.timer-icon')
+        .attr('src', './img/icons/timer-gray.png');
+      jQuery('.chart').centreonGraph('setRefresh', 0);
+    } else {
+      parseInterval = interval.match(/(\d+)([a-z]+)/i);
+      $refresh
+        .find('.time')
+        .show()
+        .text(text);
+      $refresh
+        .find('.timer-icon')
+        .attr('src', './img/icons/timer-blue.png');
+      jQuery('.chart').centreonGraph(
+        'setRefresh',
+        moment.duration(
+          parseInt(parseInterval[1], 10),
+          parseInterval[2]
+        ).asSeconds()
+      );
+    }
+    $refresh.data('interval', interval);
+  });
+}
+
+function switchCols(number) {
+
+  jQuery('.graphZone').removeClass(function (index, css) {
+    return (css.match(/\bcol\S+/g) || []).join(' ');
+  });
+  if (number === 2 || number === 3) {
+    jQuery('.graphZone').addClass('col' + number);
+  }
+  jQuery('.graphZone .chart').centreonGraph('resize');
+  jQuery('.ico-col').removeClass('active');
+  jQuery('.ico-col-' + number).addClass('active');
+}
+
+function changePeriod() {
+  var start;
+  var end;
+  jQuery('select[name="period"]').val('');
+  start = jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val();
+  end = jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val();
+  /* Test If all period field are not empty */
+  if (start.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) && end.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)) {
+    /* Test if date start is lower of date end */
+    if (moment(start).isBefore(end)) {
+      jQuery('.graphZone .chart').centreonGraph(
+        'setPeriod',
+        start,
+        end
+      );
+      displayNav(end);
+    } else {
+      // @todo change
+      alert('The start date must be before the date end.');
+    }
+  }
+}
+
+function changeInterval() {
+  if (jQuery('select[name="period"]').val() === '') {
+    return;
+  }
+  jQuery('.datepicker-iso').datepicker('setDate', null);
+  jQuery('.timepicker').val('');
+  jQuery('.graphZone .chart').centreonGraph(
+    'setInterval',
+    jQuery('select[name="period"]').val()
+  );
+  displayNav(moment());
+}
+
+function displayNav(end) {
+  var now = moment().subtract(10, 's');
+  if (now.isBefore(end)) {
+    jQuery('.action.right > .bt_action').prop('disabled', true);
+  } else {
+    jQuery('.action.right > .bt_action').prop('disabled', false);
+  }
+}
+
+jQuery(function () {
+  initRefresh();
+  jQuery('.chart').centreonGraph();
+
+  /* Add events on click on action download image/CSV */
+  jQuery('.graphZone').delegate('a.actions', 'click', function (e) {
+    var $a = jQuery(this);
+    var baseUrl = $a.data('href');
+    var chartId = $a.parents('.graph').data('graphId');
+    var info = chartId.split('_');
+    var svcId = info[0] + '_' + info[1];
+    var metricId = info[2];
+    var start;
+    var end;
+    /* Get the period */
+    if (jQuery('select[name="period"]').val() === '') {
+      start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
+      end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+      duration = moment.duration(end.diff(start));
+    } else {
+      parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
+      duration = moment.duration(
+        parseInt(parseInterval[1], 10),
+        parseInterval[2]
+      );
+      start = moment();
+      end = moment();
+      start.subtract(parseInterval[1], parseInterval[2]);
+    }
+
+    e.preventDefault();
+    baseUrl += '?&index=' + svcId + '&start=' + start.unix() + '&end=' + end.unix() + '&metric=' + metricId;
+    window.location = baseUrl;
+  });
+
+  jQuery('.graphZone').delegate('.action > .bt_action', 'click', function () {
+    var $elem = jQuery(this);
+    var text = $elem.text();
+    var duration;
+    var parseInterval;
+    var start;
+    var end;
+
+    if (jQuery('select[name="period"]').val() === '') {
+      start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
+      end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+      duration = moment.duration(end.diff(start));
+    } else {
+      parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
+      duration = moment.duration(
+        parseInt(parseInterval[1], 10),
+        parseInterval[2]
+      );
+      start = moment();
+      end = moment();
+      start.subtract(parseInterval[1], parseInterval[2]);
+    }
+
+    jQuery('select[name="period"]').val('');
+    if (text === '<<') {
+      end = start;
+      jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+      jQuery('#EndTime').val(end.format('HH:mm'));
+      start.subtract(duration);
+      jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+      jQuery('#StartTime').val(start.format('HH:mm'));
+    } else {
+      start = end;
+      jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+      jQuery('#StartTime').val(start.format('HH:mm'));
+      end.add(duration);
+      jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+      jQuery('#EndTime').val(end.format('HH:mm'));
+    }
+    changePeriod();
+  });
+
+  jQuery('.datepicker-iso').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+
+  /* Active drag and drop */
+  jQuery('.graphZone').sortable({
+    handle: '.title',
+  });
+});
+</script>
+{/literal}

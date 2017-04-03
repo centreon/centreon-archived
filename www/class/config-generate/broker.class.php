@@ -82,7 +82,7 @@ class Broker extends AbstractObjectXML
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
 
-    private function generate($poller_id)
+    private function generate($poller_id, $localhost)
     {
         if (is_null($this->stmt_broker)) {
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
@@ -155,22 +155,23 @@ class Broker extends AbstractObjectXML
                     ) {
                         if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
                             continue;
+                        } elseif (trim($subvalue['config_value']) == '' &&
+                            !in_array(
+                                $subvalue['config_key'],
+                                $this->authorized_empty_field
+                            )
+                        ) {
+                            continue;
+                        } else if ($subvalue['config_key'] == 'category') {
+                            $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
+                                $subvalue['config_value'];
                         } else {
-                            if (trim($subvalue['config_value']) == '' &&
-                                !in_array(
-                                    $subvalue['config_key'],
-                                    $this->authorized_empty_field
-                                )
-                            ) {
-                                continue;
-                            } else {
-                                if ($subvalue['config_key'] == 'category') {
-                                    $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
-                                        $subvalue['config_value'];
-                                } else {
-                                    $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
-                                        $subvalue['config_value'];
-                                }
+                            $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                                $subvalue['config_value'];
+                            // Let broker insert in index data in pollers
+                            if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
+                                && !$localhost) {
+                                $object[$subvalue['config_group_id']][$key]['insert_in_index_data'] = 'yes';
                             }
                         }
                     } else {
@@ -227,6 +228,6 @@ class Broker extends AbstractObjectXML
 
     public function generateFromPoller($poller)
     {
-        $this->generate($poller['id']);
+        $this->generate($poller['id'], $poller['localhost']);
     }
 }

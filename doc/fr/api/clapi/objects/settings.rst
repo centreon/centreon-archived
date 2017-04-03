@@ -60,7 +60,7 @@ Column                      Description                                         
 =========================== ===================================================== ================================================
 broker                      Broker engine                                         'broker' for Centreon Broker, 'ndo' for NDOUtils
 
-broker_correlator_script    This parameter is misleading (subject to changes)     i.e: /etc/init.d/cbd
+broker_correlator_script    This parameter is misleading (subject to changes)     i.e: cbd
                             Refers to the Centreon Broker init script
 
 centstorage                 Enable/disable CentStorage                            Enable: '1', Disable: '0'

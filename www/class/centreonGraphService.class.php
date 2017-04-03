@@ -41,6 +41,8 @@ require_once 'centreonGraph.class.php';
  */
 class CentreonGraphService extends CentreonGraph
 {
+    protected $legends = array();
+
     /**
      * Constructor
      *
@@ -60,9 +62,17 @@ class CentreonGraphService extends CentreonGraph
      */
     public function getData($rows = 200)
     {
+        $legendDataInfo = array(
+            "last" => "LAST",
+            "min" => "MINIMUM",
+            "max" => "MAXIMUM",
+            "average" => "AVERAGE",
+            "total" => "TOTAL"
+        );
+
         /* Flush RRDCached for have the last values */
         $this->flushRrdCached($this->listMetricsId);
-        
+
         $commandLine = '';
         $defType = array(
             0 => 'CDEF',
@@ -75,12 +85,17 @@ class CentreonGraphService extends CentreonGraph
         $commandLine .= " --end " . $this->RRDoptions['end'];
         $commandLine .= " --maxrows " . $rows;
 
-        
+        /* Build legend command line */
+        $extraLegend = false;
+        $commandLegendLine = ' graph x';
+        $commandLegendLine .= " --start " . $this->RRDoptions['start'];
+        $commandLegendLine .= " --end " . $this->RRDoptions['end'];
+
         $metrics = array();
         $vname = array();
         $virtuals = array();
         $i = 0;
-        
+
         /* Parse metrics */
         foreach ($this->metrics as $metric) {
             if (isset($metric['virtual']) && $metric['virtual'] == 1) {
@@ -92,6 +107,7 @@ class CentreonGraphService extends CentreonGraph
                     throw new RuntimeException();
                 }
                 $commandLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
+                $commandLegendLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
                 $commandLine .= " XPORT:v" . $i . ":v" . $i;
                 $vname[$metric['metric']] = 'v' . $i;
                 $info = array(
@@ -105,7 +121,24 @@ class CentreonGraphService extends CentreonGraph
                     "crit" => null,
                     "warn" => null
                 );
-                
+
+                /* Add legend getting data */
+                foreach ($legendDataInfo as $name => $key) {
+                    if ($metric['ds_' . $name] !== '') {
+                        $extraLegend = true;
+                        if (($name == "min" || $name == "max") &&
+                            (isset($metric['ds_minmax_int']) &&
+                            $metric['ds_minmax_int'])) {
+                            $displayformat = "%7.0lf";
+                        } else {
+                            $displayformat = "%7.2lf";
+                        }
+                        $commandLegendLine .= ' VDEF:l' . $i . $key . '=v' . $i . ',' . $key;
+                        $commandLegendLine .= ' PRINT:l' . $i . $key . ':"' . $metric["metric_legend"] .
+                            '|' . ucfirst($name) . '|' . $displayformat . '"';
+                    }
+                }
+
                 if (isset($metric['ds_color_area']) &&
                   isset($metric['ds_filled']) &&
                   $metric['ds_filled'] === '1') {
@@ -125,6 +158,7 @@ class CentreonGraphService extends CentreonGraph
                 }
                 $metrics[] = $info;
             }
+
             $i++;
         }
         /* Append virtual metrics */
@@ -171,7 +205,7 @@ class CentreonGraphService extends CentreonGraph
             $status = proc_get_status($process);
             $str .= stream_get_contents($pipes[1]);
         } while ($status['running']);
-        
+
         $str .= stream_get_contents($pipes[1]);
 
         /* Remove text of the end of the stream */
@@ -208,7 +242,83 @@ class CentreonGraphService extends CentreonGraph
                 }
             }
         }
+
+        /* Get legends */
+        $descriptorspec = array(
+            0 => array('pipe', 'r'),
+            1 => array('pipe', 'w'),
+            2 => array('pipe', 'a'),
+        );
+
+        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, null, null);
+        if (false === is_resource($process)) {
+            throw new RuntimeException();
+        }
+        fwrite($pipes[0], $commandLegendLine);
+        fclose($pipes[0]);
+
+        $str = '';
+        stream_set_blocking($pipes[1], 0);
+        do {
+            $status = proc_get_status($process);
+            $str .= stream_get_contents($pipes[1]);
+        } while ($status['running']);
+
+        $str .= stream_get_contents($pipes[1]);
+
+        $exitCode = $status['exitcode'];
+
+        proc_close($process);
+
+        if ($exitCode != 0) {
+            throw new RuntimeException();
+        }
+        /* Parsing */
+        $retLines = explode("\n", $str);
+        foreach ($retLines as $retLine) {
+            if (strpos($retLine, '|') !== false) {
+                $infos = explode('|', preg_replace('/\s+/', '', $retLine));
+                if (!isset($this->legends[$infos[0]])) {
+                    $this->legends[$infos[0]] = array(
+                        'extras' => array()
+                    );
+                }
+                $this->legends[$infos[0]]['extras'][] = array(
+                    'name' => $infos[1],
+                    'value' => $infos[2]
+                );
+            }
+        }
+
         return $metrics;
+    }
+
+    /**
+     * Get limits lower and upper for a chart
+     *
+     * This values are defined on chart template
+     *
+     * @return array
+     */
+    public function getLimits()
+    {
+        $limits = array(
+            'min' => null,
+            'max' => null
+        );
+        if ($this->templateInformations['lower_limit'] !== '') {
+            $limits['min'] = $this->templateInformations['lower_limit'];
+        }
+        if ($this->templateInformations['upper_limit'] !== '') {
+            $limits['max'] = $this->templateInformations['upper_limit'];
+        }
+
+        return $limits;
+    }
+
+    public function getLegends()
+    {
+        return $this->legends;
     }
 
     /**
