@@ -26,34 +26,16 @@ define('_WIKIURL_', $WikiURL);
 $startTimestamp = time() - (3600*24);
 define('_STARTDATE_', date('Y-m-d', $startTimestamp).'T00:00:00Z');
 
-
-/**
- *
- * @return array
- */
-function getCreatedPages()
-{
-    return getChangedPages('new');
-}
-
-/**
- *
- * @return array
- */
-function getEditedPages()
-{
-    return getChangedPages('edit');
-}
-
 /**
  *
  * @param string $type
  * @return array
  */
-function getChangedPages($type)
+function getChangedPages()
 {
     // Connecting to Mediawiki API
-    $apiUrl = _WIKIURL_.'/api.php?format=json&action=query&list=recentchanges&rclimit=50&rcprop=title&rctype='.$type;
+    $apiUrl = _WIKIURL_ . '/api.php?format=json&action=query&list=recentchanges' .
+        '&rclimit=50&rcprop=title&rctype=new|edit';
 
     // Sending request
     $result = json_decode(file_get_contents($apiUrl));
@@ -65,8 +47,10 @@ function getChangedPages($type)
  * @param array $pages
  * @return array
  */
-function detectCentreonObjects($pages)
+function detectCentreonObjects()
 {
+    $pages = getChangedPages();
+
     $hosts = array();
     $hostsTemplates = array();
     $services = array();
@@ -125,39 +109,38 @@ function detectCentreonObjects($pages)
  * @param CentreonDB $dbConnector
  * @param array $listOfObjects
  */
-function synchronizeWithCentreon($dbConnector, $listOfObjects)
+function synchronizeWithCentreon($dbConnector)
 {
+    // Get all pages title that where changed
+    $listOfObjects = detectCentreonObjects();
+
     foreach($listOfObjects as $categorie=>$object)
     {
         switch($categorie)
         {
             case 'hosts':
-                foreach($object as $entity)
-                {
+                foreach($object as $entity) {
                     $objName = substr($entity, 5);
                     editLinkForHost($dbConnector, str_replace(' ', '_', $objName));
                 }
                 break;
 
             case 'hostsTemplates':
-                foreach($object as $entity)
-                {
+                foreach($object as $entity) {
                     $objName = substr($entity, 14);
                     editLinkForHost($dbConnector, str_replace(' ', '_', $objName));
                 }
                 break;
 
             case 'services':
-                foreach($object as $entity)
-                {
+                foreach($object as $entity) {
                     $objName = explode(' ', $entity);
                     editLinkForService($dbConnector, $objName);
                 }
                 break;
 
             case 'servicesTemplates':
-                foreach($object as $entity)
-                {
+                foreach($object as $entity) {
                     $objName = substr($entity, 17);
                     editLinkForService($dbConnector, str_replace(' ', '_', $objName));
                 }
@@ -224,11 +207,8 @@ function editLinkForService($dbConnector, $objName)
  ******     MAIN     *****
  *************************
  */
-// Get all pages title that where changed
-$allPagesModificationInMediaWiki = array_merge(getCreatedPages(), getEditedPages());
-$centreonObjects = detectCentreonObjects($allPagesModificationInMediaWiki);
 
 // Synchro with Centreon
-synchronizeWithCentreon($dbConnector, $centreonObjects);
+synchronizeWithCentreon($dbConnector);
 
 ?>
