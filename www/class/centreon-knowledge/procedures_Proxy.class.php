@@ -87,9 +87,10 @@ class procedures_Proxy  {
 		/*
 		 * Check Service
 		 */
-		if (isset($procList["Service:" . trim($host_name."_".$service_description)])) {
-			$this->url = $this->wikiUrl . "/index.php?title=Service:".$host_name."_".$service_description;
-			return;
+        $service_description = str_replace(' ', '_', $service_description);
+        if (isset($procList["Service:" . trim($host_name."_".$service_description)])) {
+            $this->url = $this->wikiUrl . "/index.php?title=Service:".$host_name."_".$service_description;
+            return;
 		}
 
 		/*
