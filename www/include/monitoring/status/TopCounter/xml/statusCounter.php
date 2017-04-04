@@ -192,12 +192,11 @@ $pollersWithLatency = array();
 $timeUnit = 300;
 
 $inactivInstance = "";
+$pollerInError = "";
 
 if ($pollerList != "") {
     $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
     $DBRESULT = $obj->DBC->query($request);
-    $inactivInstance = "";
-    $pollerInError = "";
     while ($data = $DBRESULT->fetchRow()) {
         /* Get Instance ID */
         if ($pollerList != "") {
