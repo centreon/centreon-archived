@@ -67,6 +67,21 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
 }
 
 /* *********************************************
+* Get active poller only
+*/
+$pollerList = "";
+$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
+$DBRESULT = $obj->DB->query($request);
+while ($d = $DBRESULT->fetchRow()) {
+    if ($pollerList != "") {
+        $pollerList .= ", ";
+    }
+    $pollerList .= "'".$d["name"]."'";
+}
+
+$DBRESULT->free();
+
+/* *********************************************
  * Get Host stats
  */
 $rq1 =  " SELECT count(DISTINCT name), state " .
@@ -173,14 +188,12 @@ $activity = 0;
 $error = "";
 $pollerListInError = "";
 $pollersWithLatency = array();
-$pollerList = "";
 
 $timeUnit = 300;
 
-$pollerListInError = "";
 $inactivInstance = "";
 
-$request =  "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0";
+$request =  "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
 $DBRESULT = $obj->DBC->query($request);
 $inactivInstance = "";
 $pollerInError = "";
