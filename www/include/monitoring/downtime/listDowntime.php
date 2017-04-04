@@ -129,8 +129,10 @@ $DBRESULT = $pearDB->query($request);
 
 $tab_service_bam = array();
 while ($elem = $DBRESULT->fetchRow()) {
-    $tab_service_bam[$elem['id']] = array('name' => $elem['name'], 
-                                          'id' => $elem['ba_id']);
+    $tab_service_bam[$elem['id']] = array(
+        'name' => $elem['name'],
+        'id' => $elem['ba_id']
+    );
 }
 
 /* --------------- Services ---------------*/
@@ -198,8 +200,10 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
 
     if (preg_match('/_Module_BAM_\d+/', $data['host_name'])) {
         $tab_downtime_svc[$i]['host_name'] = 'Module BAM';
-        $tab_downtime_svc[$i]['host_name_link'] = "p=207&o=d&ba_id=".$tab_service_bam[$data['service_description']]['id'];
-        $tab_downtime_svc[$i]['service_name_link'] = "p=207&o=d&ba_id=".$tab_service_bam[$data['service_description']]['id'];
+        $tab_downtime_svc[$i]['host_name_link'] = "p=207&o=d&ba_id="
+            . $tab_service_bam[$data['service_description']]['id'];
+        $tab_downtime_svc[$i]['service_name_link'] = "p=207&o=d&ba_id="
+            . $tab_service_bam[$data['service_description']]['id'];
         $tab_downtime_svc[$i]['service_description'] = $tab_service_bam[$data['service_description']]['name'];
         if ($tab_downtime_svc[$i]['author_name'] == 'Centreon Broker BAM Module') {
             $tab_downtime_svc[$i]['scheduled_end_time'] = "Automatic";
@@ -208,14 +212,15 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     } else {
         $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
         $tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
-        $tab_downtime_svc[$i]['service_description'] = ($data['service_description'] != '' ? $data['service_description'] : '-');
+        $tab_downtime_svc[$i]['service_description'] =
+            ($data['service_description'] != '' ? $data['service_description'] : '-');
 
         if ($data['service_description'] != '') {
-            $tab_downtime_svc[$i]['service_description'] =  $data['service_description'];
+            $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
             $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
         } else {
             $tab_downtime_svc[$i]['service_description'] = '-';
-             $tab_downtime_svc[$i]['downtime_type'] = 'HOST';
+            $tab_downtime_svc[$i]['downtime_type'] = 'HOST';
         }
     }
 }
