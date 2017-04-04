@@ -41,7 +41,7 @@ ini_set("display_errors", "On");
 $centreon_path = realpath(dirname(__FILE__) . '/../../../../../');
 global $etc_centreon, $db_prefix;
 
-require_once $centreon_path."/config/centreon.config.php";
+require_once $centreon_path . "/config/centreon.config.php";
 
 set_include_path(
     get_include_path() .
@@ -74,16 +74,16 @@ $WikiURL = $conf['kb_wiki_url'];
 if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
     $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"], $_GET["service_description"]);
 } elseif (isset($_GET["host_name"])) {
-    $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"]);
+    $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"], null);
 }
 
 if ($proxy->url != "") {
     header("Location: " . $proxy->url);
 } else {
     if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-        header("Location: $WikiURL/?title=Service:".$_GET["host_name"]."_".$_GET["service_description"]);
+        header("Location: $WikiURL/?title=Service_:_" . $_GET["host_name"] . "_/_" . $_GET["service_description"]);
     } else {
-        header("Location: $WikiURL/?title=Host:".$_GET["host_name"]);
+        header("Location: $WikiURL/?title=Host_:_" . $_GET["host_name"]);
     }
 }
 exit();

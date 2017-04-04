@@ -79,7 +79,7 @@ class procedures
      */
     private function setProcedures()
     {
-        $DBRESULT = $this->DB->query("SELECT page_title, page_id FROM ".$this->db_prefix."page");
+        $DBRESULT = $this->DB->query("SELECT page_title, page_id FROM " . $this->db_prefix . "page");
         while ($page = $DBRESULT->fetchRow()) {
             $this->procList[$page["page_title"]] = $page["page_id"];
         }
@@ -114,25 +114,29 @@ class procedures
         $wikiContent = $this->getProcedures();
         $diff = array();
         $prefix = "";
-        if ($type == 0) {
-            $prefix = "Host:";
+        switch ($type) {
+            case 0:
+                $prefix = "Host_:_";
+                break;
+            case 1:
+                $prefix = "Service_:_";
+                break;
+            case 2:
+                $prefix = "Host-Template_:_";
+                break;
+            case 3:
+                $prefix = "Service-Template_:_";
+                break;
         }
-        if ($type == 1) {
-            $prefix = "Service:";
-        }
-        if ($type == 2) {
-            $prefix = "Host-Template:";
-        }
-        if ($type == 3) {
-            $prefix = "Service-Template:";
-        }
+
         foreach ($selection as $key => $value) {
-            if (!isset($wikiContent[$prefix.trim($key)])) {
+            if (!isset($wikiContent[$prefix . trim($key)])) {
                 $diff[$key] = 0;
             } else {
                 $diff[$key] = 1;
             }
         }
+
         return $diff;
     }
 
@@ -145,48 +149,14 @@ class procedures
      */
     public function getMyHostID($host_name = null)
     {
-        $DBRESULT = $this->centreon_DB->query("SELECT host_id FROM host WHERE host_name = '".$host_name."' LIMIT 1");
+        $query = "SELECT host_id FROM host " .
+            "WHERE host_name = '" . $host_name . "' " .
+            "LIMIT 1 ";
+        $DBRESULT = $this->centreon_DB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["host_id"]) {
             return $row["host_id"];
         }
-    }
-
-    /**
-     * Get Service Id
-     *
-     * @param int $host_id
-     * @param string $service_description
-     * @return int
-     */
-    public function getMyServicesID($host_id, $service_description)
-    {
-        /*
-         * Get Services attached to hosts
-         */
-        $DBRESULT = $this->centreon_DB->query("SELECT service_id, service_description
-                                                FROM service, host_service_relation hsr
-                                                WHERE hsr.host_host_id = '".$host_id."'
-                                                AND hsr.service_service_id = service_id
-                                                AND service_description = '$service_description'");
-        while ($elem = $DBRESULT->fetchRow()) {
-            return $elem["service_id"];
-        }
-        $DBRESULT->free();
-
-        /*
-         * Get Services attached to hostgroups
-         */
-        $DBRESULT = $this->centreon_DB->query("SELECT service_id, service_description
-                  FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-        " WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-        " AND service_id = hsr.service_service_id " .
-        " AND service_description = '$service_description'");
-        while ($elem = $DBRESULT->fetchRow()) {
-            return $elem["service_id"];
-        }
-        $DBRESULT->free();
-        return 0;
     }
 
     /**
@@ -201,7 +171,7 @@ class procedures
 
         $DBRESULT = $this->centreon_DB->query("SELECT service_description, service_template_model_stm_id
                                                 FROM service
-                                                WHERE service_id = '".$service_id."' LIMIT 1");
+                                                WHERE service_id = '" . $service_id . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         if (isset($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] != "") {
             $DBRESULT->free();
@@ -212,7 +182,7 @@ class procedures
             while (1) {
                 $DBRESULT = $this->centreon_DB->query("SELECT service_description, service_template_model_stm_id
                                                         FROM service
-                                                        WHERE service_id = '".$service_id."' LIMIT 1");
+                                                        WHERE service_id = '" . $service_id . "' LIMIT 1");
                 $row = $DBRESULT->fetchRow();
                 $DBRESULT->free();
                 if ($row["service_description"]) {
@@ -245,12 +215,12 @@ class procedures
         $tplArr = array();
         $DBRESULT = $this->centreon_DB->query("SELECT host_tpl_id
                                               FROM `host_template_relation`
-                                              WHERE host_host_id = '".$host_id."'
+                                              WHERE host_host_id = '" . $host_id . "'
                                               ORDER BY `order`");
         while ($row = $DBRESULT->fetchRow()) {
             $DBRESULT2 = $this->centreon_DB->query("SELECT host_name
                                                     FROM host
-                                                    WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1");
+                                                    WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1");
             $hTpl = $DBRESULT2->fetchRow();
             $tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES);
         }
@@ -279,7 +249,7 @@ class procedures
             } else {
                 $this->hostTplList[$data["host_name"]] = $data["host_id"];
             }
-            $this->hostIconeList["Host:" . $data["host_name"]] =
+            $this->hostIconeList["Host_:_" . $data["host_name"]] =
                 "./img/media/" . $this->getImageFilePath($data["ehi_icon_image"]);
         }
         $DBRESULT->free();
@@ -297,12 +267,12 @@ class procedures
         if (isset($image_id) && $image_id) {
             $DBRESULT2 = $this->centreon_DB->query("SELECT img_path, dir_alias
                                                    FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr
-                                                   WHERE vi.img_id = ".$image_id."
+                                                   WHERE vi.img_id = " . $image_id . "
                                                    AND vidr.img_img_id = vi.img_id
                                                    AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
             $row2 = $DBRESULT2->fetchRow();
             if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"]) {
-                return $row2["dir_alias"]."/".$row2["img_path"];
+                return $row2["dir_alias"] . "/" . $row2["img_path"];
             }
             $DBRESULT2->free();
             unset($row2);
@@ -322,7 +292,7 @@ class procedures
                                                 FROM service WHERE service_register = '0'
                                                 ORDER BY service_description");
         while ($data = $DBRESULT->fetchRow()) {
-            $this->serviceTplList["Service:".$data["service_description"]] = $data["service_id"];
+            $this->serviceTplList["Service_:_" . $data["service_description"]] = $data["service_id"];
         }
         $DBRESULT->free();
         unset($data);
@@ -345,13 +315,13 @@ class procedures
              * Get Template
              */
             if ($type == 2) {
-                $template = "H-TPL-".$template;
+                $template = "H-TPL-" . $template;
             }
             if ($type == 3) {
-                $template = "S-TPL-".$template;
+                $template = "S-TPL-" . $template;
             }
             $DBRESULT = $this->DB->query(
-                "SELECT * FROM ".$this->db_prefix."page WHERE page_title LIKE '$template'"
+                "SELECT * FROM " . $this->db_prefix . "page WHERE page_title LIKE '$template'"
             );
             $data = $DBRESULT->fetchRow();
             $DBRESULT->free();
@@ -380,16 +350,16 @@ class procedures
 
             switch ($type) {
                 case 0:
-                    $object = "Host:" . $object;
+                    $object = "Host_:_" . $object;
                     break;
                 case 1:
-                    $object = "Service:" . $object;
+                    $object = "Service_:_" . $object;
                     break;
                 case 2:
-                    $object = "Host-Template:" . $object;
+                    $object = "Host-Template_:_" . $object;
                     break;
                 case 3:
-                    $object = "Service-Template:" . $object;
+                    $object = "Service-Template_:_" . $object;
                     break;
             }
 
@@ -398,9 +368,9 @@ class procedures
                 "INSERT INTO " . $this->db_prefix . "page (`page_namespace` ,`page_title`,`page_counter`, " .
                 "  `page_is_redirect`,`page_is_new`,`page_random` ,`page_touched`,`page_latest`,`page_len`) " .
                 " VALUES ('0', '" . $object . "', '0', '0', '1', '" . $data["page_random"] . "', '" .
-                $dateTouch . "', '" . $data["page_latest"] . "', '" . $data["page_len"]."')"
+                $dateTouch . "', '" . $data["page_latest"] . "', '" . $data["page_len"] . "')"
             );
-            $DBRESULT = $this->DB->query("SELECT MAX(page_id) FROM ".$this->db_prefix."page");
+            $DBRESULT = $this->DB->query("SELECT MAX(page_id) FROM " . $this->db_prefix . "page");
             $id = $DBRESULT->fetchRow();
 
             $this->DB->query(
@@ -428,7 +398,7 @@ class procedures
      */
     public function serviceHasProcedure($key, $templates = array(), $mode = PROCEDURE_SIMPLE_MODE)
     {
-        if (isset($this->procList["Service:".$key])) {
+        if (isset($this->procList["Service_:_" . $key])) {
             return true;
         }
         if ($mode == PROCEDURE_SIMPLE_MODE) {
@@ -454,7 +424,7 @@ class procedures
      */
     public function hostHasProcedure($key, $templates = array(), $mode = PROCEDURE_SIMPLE_MODE)
     {
-        if (isset($this->procList["Host:".$key])) {
+        if (isset($this->procList["Host_:_" . $key])) {
             return true;
         }
         if ($mode == PROCEDURE_SIMPLE_MODE) {
@@ -480,14 +450,14 @@ class procedures
      */
     public function serviceTemplateHasProcedure($key = "", $templates = array(), $mode = PROCEDURE_SIMPLE_MODE)
     {
-        if (isset($this->procList["Service-Template:".$key])) {
+        if (isset($this->procList["Service-Template_:_" . $key])) {
             return true;
         }
         if ($mode == PROCEDURE_SIMPLE_MODE) {
             return false;
         } elseif ($mode == PROCEDURE_INHERITANCE_MODE) {
             foreach ($templates as $templateId => $templateName) {
-                if (isset($this->procList['Service-Template:'.$templateName])) {
+                if (isset($this->procList['Service-Template_:_' . $templateName])) {
                     return true;
                 }
             }
@@ -504,14 +474,14 @@ class procedures
      */
     public function hostTemplateHasProcedure($key = "", $templates = array(), $mode = PROCEDURE_SIMPLE_MODE)
     {
-        if (isset($this->procList["Host-Template:".$key])) {
+        if (isset($this->procList["Host-Template_:_" . $key])) {
             return true;
         }
         if ($mode == PROCEDURE_SIMPLE_MODE) {
             return false;
         } elseif ($mode == PROCEDURE_INHERITANCE_MODE) {
             foreach ($templates as $templateId => $templateName) {
-                if (isset($this->procList['Host-Template:'.$templateName])) {
+                if (isset($this->procList['Host-Template_:_' . $templateName])) {
                     return true;
                 }
             }
