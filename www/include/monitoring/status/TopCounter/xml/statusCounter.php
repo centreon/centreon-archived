@@ -193,49 +193,51 @@ $timeUnit = 300;
 
 $inactivInstance = "";
 
-$request =  "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
-$DBRESULT = $obj->DBC->query($request);
-$inactivInstance = "";
-$pollerInError = "";
-while ($data = $DBRESULT->fetchRow()) {
-    /* Get Instance ID */
-    if ($pollerList != "") {
-        $pollerList .= ", ";
-    }
-    $pollerList .= "'".$data["instance_id"]."'";
+if ($pollerList != "") {
+    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
+    $DBRESULT = $obj->DBC->query($request);
+    $inactivInstance = "";
+    $pollerInError = "";
+    while ($data = $DBRESULT->fetchRow()) {
+        /* Get Instance ID */
+        if ($pollerList != "") {
+            $pollerList .= ", ";
+        }
+        $pollerList .= "'".$data["instance_id"]."'";
 
-    /*
-	 * Running
-	 */
-    if ($status != 2 && ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 5))) {
-        $status = 1;
-        $pollerInError = $data["name"];
-    }
-    if ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 10)) {
-        $status = 2;
-        $pollerInError = $data["name"];
-    }
-    if ($pollerListInError != "" && $pollerInError != "") {
-        $pollerListInError .= ", ";
-    }
-    $pollerListInError .= $pollerInError;
-    $pollerInError = '';
-    
-    /*
-	 * Activity
-	 */
-    if ($activity != 2 && (time() - $data["last_update"] >= $timeUnit * 5)) {
-        $activity = 2;
-        if ($inactivInstance != "") {
-            $inactivInstance .= ",";
+        /*
+         * Running
+         */
+        if ($status != 2 && ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 5))) {
+            $status = 1;
+            $pollerInError = $data["name"];
         }
-        $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 5)."s]";
-    } elseif ((time() - $data["last_update"] >= $timeUnit * 10)) {
-        $activity = 1;
-        if ($inactivInstance != "") {
-            $inactivInstance .= ",";
+        if ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 10)) {
+            $status = 2;
+            $pollerInError = $data["name"];
         }
-        $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 10)."s]";
+        if ($pollerListInError != "" && $pollerInError != "") {
+            $pollerListInError .= ", ";
+        }
+        $pollerListInError .= $pollerInError;
+        $pollerInError = '';
+
+        /*
+         * Activity
+         */
+        if ($activity != 2 && (time() - $data["last_update"] >= $timeUnit * 5)) {
+            $activity = 2;
+            if ($inactivInstance != "") {
+                $inactivInstance .= ",";
+            }
+            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 5)."s]";
+        } elseif ((time() - $data["last_update"] >= $timeUnit * 10)) {
+            $activity = 1;
+            if ($inactivInstance != "") {
+                $inactivInstance .= ",";
+            }
+            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 10)."s]";
+        }
     }
 }
 $DBRESULT->free();
