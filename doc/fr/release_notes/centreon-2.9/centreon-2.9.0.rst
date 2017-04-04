@@ -9,6 +9,8 @@ The 2.9.0 release for Centreon Web is now available for download. Here are its r
 Changes
 -------
 
+* New centreon-database package, helpful for standalone Centreon databases;
+
 Features
 --------
 
