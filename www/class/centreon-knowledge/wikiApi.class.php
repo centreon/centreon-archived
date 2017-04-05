@@ -47,6 +47,8 @@ class WikiApi
     private $password;
     private $version;
     private $curl;
+    private $loggedIn;
+    private $tokens;
 
     /**
      * WikiApi constructor.
@@ -93,6 +95,10 @@ class WikiApi
 
     public function login()
     {
+        if ($this->loggedIn) {
+            return $this->loggedIn;
+        }
+
         // Get Connection Cookie/Token
         $postfields = array(
             'action' => 'login',
@@ -120,18 +126,18 @@ class WikiApi
 
         // Get cookies
         preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
-        $cookies = implode(';', $matches[1]);
+        $cookies = implode('; ', $matches[1]);
         curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
 
         $result = json_decode($body, true);
         $resultLogin = $result['login']['result'];
 
-        $login = false;
+        $this->loggedIn = false;
         if ($resultLogin == 'Success') {
-            $login = true;
+            $this->loggedIn = true;
         }
 
-        return $login;
+        return $this->loggedIn;
     }
 
     public function logout()
@@ -146,6 +152,10 @@ class WikiApi
 
     public function getMethodToken($method = 'delete', $title = '')
     {
+        if (isset($this->tokens[$method])) {
+            return $this->tokens[$method];
+        }
+
         if ($this->version >= 1.24) {
             $postfields = array(
                 'action' => 'query',
@@ -174,15 +184,15 @@ class WikiApi
         $result = json_decode($result, true);
 
         if ($this->version >= 1.24) {
-            $methodToken = $result['query']['tokens']['csrftoken'];
+            $this->tokens[$method] = $result['query']['tokens']['csrftoken'];
         } elseif ($this->version >= 1.20) {
-            $methodToken = $result['tokens'][$method . 'token'];
+            $this->tokens[$method] = $result['tokens'][$method . 'token'];
         } else {
             $page = array_pop($result['query']['pages']);
-            $methodToken = $page[$method . 'token'];
+            $this->tokens[$method] = $page[$method . 'token'];
         }
 
-        return $methodToken;
+        return $this->tokens[$method];
     }
 
     public function movePage($oldTitle = '', $newTitle = '')
@@ -201,8 +211,6 @@ class WikiApi
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         curl_exec($this->curl);
 
-        $this->logout();
-
         return true;
     }
 
@@ -220,8 +228,6 @@ class WikiApi
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         curl_exec($this->curl);
-
-        $this->logout();
 
         return true;
     }
@@ -256,8 +262,18 @@ class WikiApi
         $apiUrl = $this->url . '/api.php?format=json&action=query&list=recentchanges' .
             '&rclimit=' . $count . '&rcprop=title&rctype=new|edit';
 
-        // Sending request
-        $result = json_decode(file_get_contents($apiUrl));
+        $postfields = array(
+            'format' => 'json',
+            'action' => 'query',
+            'list' => 'recentchanges',
+            'rclimit' => $count,
+            'rcprop' => 'title',
+            'rctype' => 'new|edit'
+        );
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        $result = curl_exec($this->curl);
+        $result = json_decode($result);
 
         return $result->query->recentchanges;
     }
