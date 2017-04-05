@@ -39,7 +39,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 class Wiki
 {
     private $db;
-    private $config;
+    private $config = null;
 
     /**
      * WikiApi constructor.
@@ -52,59 +52,26 @@ class Wiki
 
     public function getWikiConfig()
     {
+        if (!is_null($this->config)) {
+            return $this->config;
+        }
+
+        $options = array();
+
         $res = $this->db->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_%'");
         while ($opt = $res->fetchRow()) {
-            $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
+            $options[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
         }
-
-        $pattern = '#^http://|https://#';
-        $WikiURL = $gopt['kb_wiki_url'];
-        $checkWikiUrl = preg_match($pattern, $WikiURL);
-
-        if (!$checkWikiUrl) {
-            $gopt['kb_wiki_url'] = 'http://' . $WikiURL;
-        }
-
         $res->free();
 
-        return $gopt;
-    }
+        if (!count($options)) {
+            throw new \Exception('Wiki is not configured.');
+        }
 
-    public function getWikiUrl()
-    {
-        return $this->config['kb_wiki_url'];
-    }
+        if (!preg_match('#^http://|https://#',  $options['kb_wiki_url'])) {
+            $options['kb_wiki_url'] = 'http://' .  $options['kb_wiki_url'];
+        }
 
-
-    function getWikiVersion()
-    {
-        $post = array(
-            'action' => 'query',
-            'meta' => 'siteinfo',
-            'format' => 'json',
-        );
-
-        $data = http_build_query($post);
-
-        $httpOpts = array(
-            'http' => array(
-                'method' => 'POST',
-                'header' => "Content-type: application/x-www-form-urlencoded",
-                'content' => $data,
-            )
-        );
-
-        /* Create context */
-        $httpContext = stream_context_create($httpOpts);
-
-        /* Get contents */
-        $content = @file_get_contents($this->config['kb_wiki_url'], false, $httpContext);
-        $content = json_decode($content);
-
-        $wikiStringVersion = $content->query->general->generator;
-        $wikiDataVersion = explode(' ', $wikiStringVersion);
-        $wikiVersion = (float)$wikiDataVersion[1];
-
-        return $wikiVersion;
+        return $options;
     }
 }
