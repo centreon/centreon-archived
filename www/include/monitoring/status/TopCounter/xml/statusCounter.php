@@ -195,7 +195,8 @@ $inactivInstance = "";
 $pollerInError = "";
 
 if ($pollerList != "") {
-    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 AND name IN ($pollerList)";
+    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 
+                AND name IN ($pollerList)";
     $DBRESULT = $obj->DBC->query($request);
     while ($data = $DBRESULT->fetchRow()) {
         /* Get Instance ID */
