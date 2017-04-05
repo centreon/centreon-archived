@@ -701,6 +701,8 @@ SELinux doit être désactivé. Pour cela, vous devez modifier le fichier "/etc/
 
  SELINUX=disabled
 
+Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
+
 La timezone par défaut de PHP doit être configurée. Pour cela, allez dans le répertoire /etc/php.d et créez un fichier nommé php-timezone.ini contenant la ligne suivante :
 
  ::

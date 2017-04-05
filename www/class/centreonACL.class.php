@@ -256,7 +256,7 @@ class CentreonACL
                 . "FROM nagios_server ns "
                 . "WHERE ns.ns_activate = '1' "
                 . "ORDER BY ns.name ASC ";
-            $DBRESULT = $pearDB->query($query);
+            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 $this->pollers[$row['id']] = $row['name'];
             }
