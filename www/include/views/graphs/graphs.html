@@ -33,21 +33,21 @@
             <tr>
 
                 <td class="log-select">
-                    <select 
+                    <select
                         id="host_filter"
                         multiple
                         size="1">
                     </select>
                 </td>
                 <td class="log-select">
-                    <select 
+                    <select
                         id="host_group_filter"
                         multiple
                         size="1">
                     </select>
                 </td>
                 <td class="log-select">
-                    <select 
+                    <select
                         id="service_group_filter"
                         multiple
                         size="1">
@@ -213,13 +213,19 @@ var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}
 <script id="graph-line" type="text/x-handlebars-template">
 <div id="graph_wrapper_{{graphId}}" data-graph-id="{{graphId}}" class="graph">
   <div class="title">
-    <img class="remove ico-14 margin_right" src="./img/icons/circle-cross.png">
+    <img class="remove ico-18 margin_right" src="./img/icons/circle-cross.png">
     <span>{{graphTitle}}</span>
+    <a href="#" class="btc bt_info actions-simple" data-href="./main.php?p=2040101">
+      Split chart
+    </a>
+    <a href="#" class="btc bt_info actions-simple" data-href="./main.php?p=2040102">
+      Display multiple periods
+    </a>
     <a class="actions" href="#" data-href="./include/views/graphs/generateGraphs/generateImage.php">
-      <img alt="Export graph" src="./img/icons/picture.png" class="ico-14 margin_right">
+      <img alt="Export graph" src="./img/icons/picture.png" class="ico-18 margin_right">
     </a>
     <a class="actions" href="#" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
-      <img alt="Export CSV" src="./img/icons/csv.png" class="ico-14 margin_right">
+      <img alt="Export CSV" src="./img/icons/csv.png" class="ico-18 margin_right">
     </a>
   </div>
   <div class="content">
@@ -242,7 +248,7 @@ var charts = [];
 var source = jQuery('#graph-line').html();
 var templateGraph = Handlebars.compile(source);
 var autoRefresh = false;
-  
+
 function initRefresh() {
   var $refresh = jQuery('#chart-refresh');
   $refresh.data('interval', 0);
@@ -250,7 +256,7 @@ function initRefresh() {
     $refresh.find('.refresh-list')
       .toggleClass('show');
   });
-  
+
   jQuery(document).on('click', function (e) {
     var $elem = jQuery(e.target);
     if ($refresh.has($elem).length === 0) {
@@ -258,14 +264,14 @@ function initRefresh() {
         .removeClass('show');
     }
   });
-  
+
   $refresh.delegate('.refresh-icon', 'click', function (e) {
     e.preventDefault();
     e.stopPropagation();
-    
+
     jQuery('.chart').centreonGraph('refreshData');
   });
-  
+
   $refresh.delegate('.refresh-list > li', 'click', function () {
     var $interval = jQuery(this);
     var interval = $interval.data('interval');
@@ -300,7 +306,7 @@ function initRefresh() {
     $refresh.data('interval', interval);
   });
 }
-  
+
 function addChart(id, name, times) {
   var refreshInterval;
   var parseInterval;
@@ -351,11 +357,11 @@ function loadChart(chart, callback) {
   var times = {};
   var end;
   chart = chart ? chart : [];
-  
+
   if (chart.length === 0) {
     return;
   }
-  
+
   if (jQuery('select[name="period"]').val() === '') {
     times = {
       period: {
@@ -372,7 +378,7 @@ function loadChart(chart, callback) {
     };
     end = moment();
   }
-  
+
   jQuery.ajax({
     url: './include/views/graphs/getGraphAjax.php',
     type: 'post',
@@ -395,7 +401,7 @@ function loadChart(chart, callback) {
     }
   });
 }
-  
+
 function switchCols(number) {
 
   jQuery('.graphZone').removeClass(function (index, css) {
@@ -408,7 +414,7 @@ function switchCols(number) {
   jQuery('.ico-col').removeClass('active');
   jQuery('.ico-col-' + number).addClass('active');
 }
-  
+
 function changePeriod() {
   var start;
   var end;
@@ -431,7 +437,7 @@ function changePeriod() {
     }
   }
 }
-  
+
 function changeInterval() {
   if (jQuery('select[name="period"]').val() === '') {
     return;
@@ -444,7 +450,7 @@ function changeInterval() {
   );
   displayNav(moment());
 }
-  
+
 function displayNav(end) {
   var now = moment().subtract(10, 's');
   if (now.isBefore(end)) {
@@ -453,34 +459,34 @@ function displayNav(end) {
     jQuery('.action.right > .bt_action').prop('disabled', false);
   }
 }
-  
+
 jQuery(function () {
   initRefresh();
   loadChart(defaultCharts);
-  
+
   /* Add events */
   jQuery('#select-chart').on('change', function () {
     var charts = [];
-    
+
     jQuery('#select-chart > option').each(function() {
       charts.push({
           id: jQuery(this).val(),
           text: jQuery(this).text()
       });
     });
-    
+
     if (charts !== null && charts.length > 0) {
       loadChart(charts, function () {
         jQuery('#select-chart > option').remove();
         jQuery('#select-chart')
           .trigger('change')
-          .select2('close');  
+          .select2('close');
       });
     }
   });
-  
+
   /* Add events on click on action download image/CSV */
-  jQuery('.graphZone').delegate('a.actions', 'click', function (e) {
+  jQuery('.graphZone').delegate('a.actions,a.actions-simple', 'click', function (e) {
     var $a = jQuery(this);
     var baseUrl = $a.data('href');
     var chartId = $a.parents('.graph').data('graphId');
@@ -501,12 +507,17 @@ jQuery(function () {
       end = moment();
       start.subtract(parseInterval[1], parseInterval[2]);
     }
-    
+
     e.preventDefault();
-    baseUrl += '?chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
+    if (baseUrl.indexOf('?') !== -1) {
+      baseUrl += '&';
+    } else {
+      baseUrl += '?';
+    }
+    baseUrl += 'chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
     window.location = baseUrl;
   });
-  
+
   /* Remove a chart */
   jQuery('.graphZone').delegate('.graph > .title > .remove', 'click', function () {
     var $elem = jQuery(this);
@@ -518,7 +529,7 @@ jQuery(function () {
       parent.remove();
     }
   });
-  
+
   jQuery('.graphZone').delegate('.action > .bt_action', 'click', function () {
     var $elem = jQuery(this);
     var text = $elem.text();
@@ -526,7 +537,7 @@ jQuery(function () {
     var parseInterval;
     var start;
     var end;
-    
+
     if (jQuery('select[name="period"]').val() === '') {
       start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
       end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
@@ -541,7 +552,7 @@ jQuery(function () {
       end = moment();
       start.subtract(parseInterval[1], parseInterval[2]);
     }
-    
+
     jQuery('select[name="period"]').val('');
     if (text === '<<') {
       end = start;
@@ -560,13 +571,13 @@ jQuery(function () {
     }
     changePeriod();
   });
-  
+
   jQuery('.datepicker-iso').datepicker({
     dateFormat: 'yy-mm-dd'
   });
-  
+
   /* Initialize the select chart */
-  
+
   /* Define general options for select-chart */
   var minimumInputLength = 3;
   var selectChartOptions = {
@@ -582,7 +593,7 @@ jQuery(function () {
       servicegroup: '#service_group_filter'
     }
   };
-  
+
   jQuery('#service_group_filter').centreonSelect2({
     select2: {
       ajax: {
@@ -592,7 +603,7 @@ jQuery(function () {
     },
     allowClear: true
   });
-  
+
   jQuery('#host_group_filter').centreonSelect2({
     select2: {
       ajax: {
@@ -602,7 +613,7 @@ jQuery(function () {
     },
     allowClear: true
   });
-  
+
   jQuery('#host_filter').centreonSelect2({
     select2: {
       ajax: {
@@ -615,20 +626,20 @@ jQuery(function () {
       hostgroup: '#host_group_filter'
     }
   });
-  
+
   jQuery('#select-chart').centreonSelect2(selectChartOptions);
-  
+
   /* Add event for change minimumInputLength */
   function changeSelectChart() {
     var newOptions = selectChartOptions;
     var newInputLength = 3;
-    
+
     if (jQuery('#host_group_filter').val() !== null
       || jQuery('#service_group_filter').val() !== null
       || jQuery('#host_filter').val() !== null) {
       newInputLength = 0;
     }
-    
+
     if (newInputLength !== minimumInputLength) {
       minimumInputLength = newInputLength;
       jQuery('#select-chart').centreonSelect2('updateSettings', {
@@ -636,16 +647,16 @@ jQuery(function () {
       });
     }
   }
-  
+
   jQuery('#host_group_filter').on('change', changeSelectChart);
   jQuery('#service_group_filter').on('change', changeSelectChart);
   jQuery('#host_filter').on('change', changeSelectChart);
-  
+
   /* Active drag and drop */
   jQuery('.graphZone').sortable({
     handle: '.title',
   });
-  
+
   jQuery('#first-tour').centreonTour({
     name: 'v20401',
     version: '2.8.0',

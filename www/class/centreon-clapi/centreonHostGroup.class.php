@@ -255,8 +255,11 @@ class CentreonHostGroup extends CentreonObject
             $filters = array('hg_id' => $filter_id);
         }
         parent::export($filters);
+
         $relObj = new \Centreon_Object_Relation_Host_Group_Host();
         $hostObj = new \Centreon_Object_Host();
+
+
         $hgFieldName = $this->object->getUniqueLabelField();
         $hFieldName = $hostObj->getUniqueLabelField();
         $elements = $relObj->getMergedParameters(
