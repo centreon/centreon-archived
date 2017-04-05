@@ -42,7 +42,11 @@ class WikiApi
 {
     private $db;
     private $wikiObj;
-    private $wikiUrl;
+    private $url;
+    private $username;
+    private $password;
+    private $version;
+    private $curl;
 
     /**
      * WikiApi constructor.
@@ -51,7 +55,195 @@ class WikiApi
     {
         $this->db = new CentreonDB();
         $this->wikiObj = new Wiki();
-        $this->wikiUrl = $this->wikiObj->getWikiUrl();
+        $config = $this->wikiObj->getWikiConfig();
+        $this->url = $config['kb_wiki_url'] . '/api.php';
+        $this->username = $config['kb_wiki_account'];
+        $this->password = $config['kb_wiki_password'];
+        $this->curl = $this->getCurl();
+        $this->version = $this->getWikiVersion();
+    }
+
+    private function getCurl()
+    {
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_URL, $this->url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+
+        return $curl;
+    }
+
+    function getWikiVersion()
+    {
+        $postfields = array(
+            'action' => 'query',
+            'meta' => 'siteinfo',
+            'format' => 'json',
+        );
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        $result = curl_exec($this->curl);
+        $result = json_decode($result, true);
+
+        $version = $result['query']['general']['generator'];
+        $version = explode(' ', $version);
+        return (float)$version[1];
+    }
+
+    public function login()
+    {
+        // Get Connection Cookie/Token
+        $postfields = array(
+            'action' => 'login',
+            'format' => 'json',
+            'lgname' => $this->username,
+            'lgpassword' => $this->password
+        );
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        $result = curl_exec($this->curl);
+        $result = json_decode($result, true);
+        $token = $result['login']['lgtoken'];
+
+        // Launch Connection
+        $postfields['lgtoken'] = $token;
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        curl_setopt($this->curl, CURLOPT_HEADER, true);
+        $result = curl_exec($this->curl);
+        curl_setopt($this->curl, CURLOPT_HEADER, false);
+
+        $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
+        $header = substr($result, 0, $header_size);
+        $body = substr($result, $header_size);
+
+        // Get cookies
+        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
+        $cookies = implode(';', $matches[1]);
+        curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
+
+        $result = json_decode($body, true);
+        $resultLogin = $result['login']['result'];
+
+        $login = false;
+        if ($resultLogin == 'Success') {
+            $login = true;
+        }
+
+        return $login;
+    }
+
+    public function logout()
+    {
+        $postfields = array(
+            'action' => 'logout'
+        );
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        curl_exec($this->curl);
+    }
+
+    public function getMethodToken($method = 'delete', $title = '')
+    {
+        if ($this->version >= 1.24) {
+            $postfields = array(
+                'action' => 'query',
+                'meta' => 'tokens',
+                'type' => 'csrf',
+                'format' => 'json'
+            );
+        } elseif ($this->version >= 1.20) {
+            $postfields = array(
+                'action' => 'tokens',
+                'type' => $method,
+                'format' => 'json'
+            );
+        } else {
+            $postfields = array(
+                'action' => 'query',
+                'prop' => 'info',
+                'intoken' => $method,
+                'format' => 'json',
+                'titles' => $title
+            );
+        }
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        $result = curl_exec($this->curl);
+        $result = json_decode($result, true);
+
+        if ($this->version >= 1.24) {
+            $methodToken = $result['query']['tokens']['csrftoken'];
+        } elseif ($this->version >= 1.20) {
+            $methodToken = $result['tokens'][$method . 'token'];
+        } else {
+            $page = array_pop($result['query']['pages']);
+            $methodToken = $page[$method . 'token'];
+        }
+
+        return $methodToken;
+    }
+
+    public function movePage($oldTitle = '', $newTitle = '')
+    {
+        $this->login();
+
+        $token = $this->getMethodToken('move', $oldTitle);
+
+        $postfields = array(
+            'action' => 'move',
+            'from' => $oldTitle,
+            'to' => $newTitle,
+            'token' => $token
+        );
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        curl_exec($this->curl);
+
+        $this->logout();
+
+        return true;
+    }
+
+    public function deletePage($title = '')
+    {
+        $this->login();
+
+        $token = $this->getMethodToken('delete', $title);
+
+        $postfields = array(
+            'action' => 'delete',
+            'title' => $title,
+            'token' => $token
+        );
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        curl_exec($this->curl);
+
+        $this->logout();
+
+        return true;
+    }
+
+    public function getAllPages()
+    {
+        $postfields = array(
+            'format' => 'json',
+            'action' => 'query',
+            'list' => 'allpages'
+        );
+
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        $result = curl_exec($this->curl);
+        $result = json_decode($result);
+
+        $pages = array();
+        foreach ($result->query->allpages as $page) {
+            $pages[] = $page->title;
+        }
+
+        return $pages;
     }
 
     /**
@@ -61,7 +253,7 @@ class WikiApi
     public function getChangedPages($count = 50)
     {
         // Connecting to Mediawiki API
-        $apiUrl = $this->wikiUrl . '/api.php?format=json&action=query&list=recentchanges' .
+        $apiUrl = $this->url . '/api.php?format=json&action=query&list=recentchanges' .
             '&rclimit=' . $count . '&rcprop=title&rctype=new|edit';
 
         // Sending request

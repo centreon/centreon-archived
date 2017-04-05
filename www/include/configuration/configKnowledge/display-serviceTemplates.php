@@ -120,11 +120,12 @@ $proc->setServiceInformations();
 /*
  * Get Services Template Informations
  */
-$query = "SELECT SQL_CALC_FOUND_ROWS service_description, service_id
-              FROM service
-	          WHERE service_register = '0' ";
+$query = "SELECT SQL_CALC_FOUND_ROWS service_description, service_id " .
+    "FROM service " .
+    "WHERE service_register = '0' " .
+    "AND service_locked = '0' ";
 if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplate']) {
-    $query .= " AND service_description LIKE '%" . $_REQUEST['searchServiceTemplate'] . "%' ";
+    $query .= " AND service_description LIKE ' % " . $_REQUEST['searchServiceTemplate'] . " % ' ";
 }
 $query .= "ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($query);
@@ -176,11 +177,11 @@ foreach ($selection as $key => $value) {
         foreach ($tplArr as $key1 => $value1) {
             if ($firstTpl) {
                 $tplStr .= "<a href='" . $WikiURL .
-                    "/index.php?title=Service-Template:$value1' target='_blank'>" . $value1 . "</a>";
+                    " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
                 $firstTpl = 0;
             } else {
                 $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
-                    "/index.php?title=Service-Template:$value1' target='_blank'>" . $value1 . "</a>";
+                    " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
             }
         }
     }
@@ -194,7 +195,7 @@ if (isset($templateHostArray)) {
     $tpl->assign("templateHostArray", $templateHostArray);
 }
 
-$WikiVersion = getWikiVersion($WikiURL . '/api.php');
+$WikiVersion = getWikiVersion($WikiURL . ' / api . php');
 $tpl->assign("WikiVersion", $WikiVersion);
 $tpl->assign("WikiURL", $WikiURL);
 $tpl->assign("content", $diff);
