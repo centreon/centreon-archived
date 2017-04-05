@@ -136,6 +136,8 @@ SELinux doit être désactivé. Pour cela vous devez modifier le fichier "/etc/s
 
     SELINUX=disabled
 
+Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
+
 Fuseau horaire PHP
 ^^^^^^^^^^^^^^^^^^
 
