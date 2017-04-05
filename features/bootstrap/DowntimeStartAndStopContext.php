@@ -217,7 +217,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         //user
         $user = new CurrentUserConfigurationPage($this);
         $user->setProperties(array(
-            'location' => $this->timezone
+            'location' => $this->timezoneUser
         ));
         $user->save();
         $this->reloadAllPollers();
