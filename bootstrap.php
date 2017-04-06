@@ -42,12 +42,22 @@ require __DIR__ . '/vendor/autoload.php';
 // Creating container
 $dependencyInjector = new Container();
 
-// Defing Centreon Configuration Database Connection
+// Define Centreon Configuration Database Connection
 $dependencyInjector['configuration_db'] = function ($c) {
     return new \CentreonDB('centreon');
 };
 
-// Defing Centreon Realtime Database Connection
+// Define Centreon Realtime Database Connection
 $dependencyInjector['realtime_db'] = function ($c) {
     return new \CentreonDB('centstorage');
+};
+
+// Define filesystem
+$dependencyInjector['filesystem'] = function ($c) {
+    return new \Symfony\Component\Filesystem\Filesystem();
+};
+
+// Define finder
+$dependencyInjector['finder'] = function ($c) {
+    return new \Symfony\Component\Finder\Finder();
 };

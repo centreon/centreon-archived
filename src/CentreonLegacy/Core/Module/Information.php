@@ -101,9 +101,7 @@ class Information
         $sth->execute();
 
         $name = null;
-
-        $row = $sth->fetch();
-        if ($row) {
+        if ($row = $sth->fetch()) {
             $name = $row['name'];
         }
 
@@ -156,24 +154,27 @@ class Information
      */
     private function getAvailableList()
     {
-        $module_conf = array();
+        $list = array();
 
         $modulesPath = $this->getModulePath();
-        $modules = scandir($modulesPath);
+        $modules = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($modulesPath);
 
         foreach ($modules as $module) {
-            $modulePath = $modulesPath . $module;
-            if (!preg_match('/\W+/', $module) || !is_dir($modulePath) || !is_file($modulePath . '/conf.php')) {
+            $moduleName = $module->getBasename();
+            $modulePath = $modulesPath . $moduleName;
+
+            if (!$this->dependencyInjector['filesystem']->exists($modulePath . '/conf.php')) {
                 continue;
             }
 
-            require $modulePath . '/conf.php';
+            $configuration = $this->utils->requireConfiguration($modulePath . '/conf.php');
 
             $licenseFile = $modulePath . '/license/merethis_lic.zl';
-            $module_conf[$module]['license_expiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
+            $list[$moduleName] = $configuration[$moduleName];
+            $list[$moduleName]['license_expiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
         }
 
-        return $module_conf;
+        return $list;
     }
 
     /**
@@ -213,8 +214,6 @@ class Information
                 $modules[$name]['source_available'] = false;
             }
         }
-        
-        //echo '<pre>'; var_dump($modules); echo '</pre>';
 
         return $modules;
     }

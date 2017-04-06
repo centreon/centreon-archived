@@ -10,8 +10,8 @@
         }
     ],
     "repositories": [
-      { "packagist.org": false },
-      { "type": "composer", "url": "http://ci.int.centreon.com" }
+        { "packagist.org": false },
+        { "type": "composer", "url": "http://ci.int.centreon.com" }
     ],
     "config": {
         "secure-http": false
@@ -27,7 +27,9 @@
         "centreon/centreon-test-lib": "dev-master"
     },
     "require": {
-        "pimple/pimple": "~3.0"
+        "pimple/pimple": "~3.0",
+        "symfony/filesystem": "~2.8",
+        "symfony/finder": "~2.8"
     },
     "autoload": {
         "psr-4": {
