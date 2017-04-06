@@ -1647,45 +1647,44 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
 function updateServiceServiceGroup_MC($service_id = null)
 {
     global $form, $pearDB;
-    
     if (!$service_id) {
         return;
     }
-    $rq = "SELECT * FROM servicegroup_relation WHERE service_service_id = '".$service_id."'";
-
+    $rq = "SELECT * FROM servicegroup_relation WHERE service_service_id = '" . $service_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $hsgs = array();
     $hgsgs = array();
     while ($arr = $DBRESULT->fetchRow()) {
         if ($arr["host_host_id"]) {
-            $hsgs[$arr["host_host_id"]] = $arr["host_host_id"];
+            $hsgs[$arr["host_host_id"]][] = $arr["servicegroup_sg_id"];
         }
         if ($arr["hostgroup_hg_id"]) {
-            $hgsgs[$arr["hostgroup_hg_id"]] = $arr["hostgroup_hg_id"];
+            $hgsgs[$arr["hostgroup_hg_id"]][] = $arr["servicegroup_sg_id"];
         }
     }
     $ret = $form->getSubmitValue("service_sgs");
+
     for ($i = 0; $i < count($ret); $i++) {
         /* We need to record each relation for host / hostgroup selected */
         $ret1 = getMyServiceHosts($service_id);
         $ret2 = getMyServiceHostGroups($service_id);
         if (count($ret2)) {
             foreach ($ret2 as $hg) {
-                if (!isset($hgsgs[$hg])) {
+                if (!in_array($ret[$i], $hgsgs[$hg])) {
                     $rq = "INSERT INTO servicegroup_relation ";
                     $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
                     $rq .= "VALUES ";
-                    $rq .= "(NULL, '".$hg."', '".$service_id."', '".$ret[$i]."')";
+                    $rq .= "(NULL, '" . $hg . "', '" . $service_id . "', '" . $ret[$i] . "')";
                     $DBRESULT = $pearDB->query($rq);
                 }
             }
         } elseif (count($ret1)) {
             foreach ($ret1 as $h) {
-                if (!isset($hsgs[$h])) {
+                if (!in_array($ret[$i], $hsgs[$h])) {
                     $rq = "INSERT INTO servicegroup_relation ";
                     $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
                     $rq .= "VALUES ";
-                    $rq .= "('".$h."', NULL, '".$service_id."', '".$ret[$i]."')";
+                    $rq .= "('" . $h . "', NULL, '" . $service_id . "', '" . $ret[$i] . "')";
                     $DBRESULT = $pearDB->query($rq);
                 }
             }
