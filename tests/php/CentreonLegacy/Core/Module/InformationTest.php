@@ -18,9 +18,10 @@
 namespace CentreonLegacy\Core\Module;
 
 use \Centreon\Test\Mock\CentreonDB;
-use CentreonLegacy\Core\Module\Information;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
+use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
+use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
 class InformationTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,6 +51,31 @@ class InformationTest extends \PHPUnit_Framework_TestCase
         $this->container = null;
     }
 
+    public function testGetConfiguration()
+    {
+        $expectedResult = array(
+            'name' => 'MyModule',
+            'rname' => 'MyModule',
+            'mod_release' => '1.0.0'
+        );
+
+        $moduleConfiguration = array(
+            'MyModule' => array(
+                'name' => 'MyModule',
+                'rname' => 'MyModule',
+                'mod_release' => '1.0.0'
+            )
+        );
+        $this->utils->expects($this->any())
+            ->method('requireConfiguration')
+            ->willReturn($moduleConfiguration);
+
+        $information = new Information($this->container, $this->license, $this->utils);
+        $configuration = $information->getConfiguration('MyModule');
+
+        $this->assertEquals($configuration, $expectedResult);
+    }
+
     public function testGetNameById()
     {
         $this->db->addResultSet(
@@ -73,14 +99,26 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             'MyModule1' => array(
                 'id' => 1,
                 'name' => 'MyModule1',
+                'rname' => 'MyModule1',
+                'mod_release' => '1.0.0',
+                'license_expiration' => '2020-10-10 12:00:00',
+                'source_available' => true,
                 'is_installed' => true,
-                'source_available' => false
+                'upgradeable' => false,
+                'installed_version' => '1.0.0',
+                'available_version' => '1.0.0'
             ),
             'MyModule2' => array(
                 'id' => 2,
                 'name' => 'MyModule2',
+                'rname' => 'MyModule2',
+                'mod_release' => '2.0.0',
+                'license_expiration' => '2020-10-10 12:00:00',
+                'source_available' => true,
                 'is_installed' => true,
-                'source_available' => false
+                'upgradeable' => true,
+                'installed_version' => '1.0.0',
+                'available_version' => '2.0.0'
             )
         );
 
@@ -89,20 +127,78 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             array(
                 array(
                     'id' => 1,
-                    'name' => 'MyModule1'
+                    'name' => 'MyModule1',
+                    'mod_release' => '1.0.0'
                 ),
                 array(
                     'id' => 2,
-                    'name' => 'MyModule2'
+                    'name' => 'MyModule2',
+                    'mod_release' => '1.0.0'
                 )
             )
         );
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
+        $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
+            ->disableOriginalConstructor()
+            ->setMethods(array('exists'))
+            ->getMock();
+        $filesystem->expects($this->any())
+            ->method('exists')
+            ->willReturn(true);
+        $this->container->registerProvider(new FilesystemProvider($filesystem));
+
+        $finder = $this->getMockBuilder('\Symfony\Component\Finder\Finder')
+            ->disableOriginalConstructor()
+            ->setMethods(array('directories', 'depth', 'in'))
+            ->getMock();
+        $finder->expects($this->any())
+            ->method('directories')
+            ->willReturn($finder);
+        $finder->expects($this->any())
+            ->method('depth')
+            ->willReturn($finder);
+        $finder->expects($this->any())
+            ->method('in')
+            ->willReturn(
+                array(
+                    new \SplFileInfo('MyModule1'),
+                    new \SplFileInfo('MyModule2')
+                )
+            );
+        $this->container->registerProvider(new FinderProvider($finder));
+
+        $moduleConfiguration1 = array(
+            'MyModule1' => array(
+                'name' => 'MyModule1',
+                'rname' => 'MyModule1',
+                'mod_release' => '1.0.0'
+            )
+        );
+        $moduleConfiguration2 = array(
+            'MyModule2' => array(
+                'name' => 'MyModule2',
+                'rname' => 'MyModule2',
+                'mod_release' => '2.0.0'
+            )
+        );
+        $this->utils->expects($this->exactly(2))
+            ->method('requireConfiguration')
+            ->will(
+                $this->onConsecutiveCalls(
+                    $moduleConfiguration1,
+                    $moduleConfiguration2
+                )
+            );
+
+        $this->license->expects($this->any())
+            ->method('getLicenseExpiration')
+            ->willReturn('2020-10-10 12:00:00');
+
         $information = new Information($this->container, $this->license, $this->utils);
         $list = $information->getList();
 
-        //$this->assertEquals($list, $expectedResult);
+        $this->assertEquals($list, $expectedResult);
     }
 }
