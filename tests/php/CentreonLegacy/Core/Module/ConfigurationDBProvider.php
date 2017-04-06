@@ -15,9 +15,24 @@
  * limitations under the License.
  */
 
-define('_CENTREON_PATH_', realpath('/tmp/'));
-define('_CENTREON_ETC_', realpath('/tmp/'));
-// Disable warnings for PEAR.
-error_reporting(E_ALL & ~E_STRICT);
+namespace CentreonLegacy\Core\Module;
 
-require_once realpath(dirname(__FILE__) . '/../../vendor/autoload.php');
+class ConfigurationDBProvider implements ServiceProviderInterface
+{
+    private $db;
+
+    public function __construct(\CentreonDB $db)
+    {
+        $this->db = $db;
+    }
+
+    public function register(\Pimple $container)
+    {
+        $container['configuration_db'] = $this->db;
+    }
+
+    public function terminate(\Pimple $container)
+    {
+        $container['configuration_db']->close();
+    }
+}

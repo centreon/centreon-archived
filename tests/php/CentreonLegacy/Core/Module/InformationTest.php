@@ -21,10 +21,12 @@ use CentreonLegacy\Core\Module\Information;
 
 class InformationTest extends \PHPUnit_Framework_TestCase
 {
+    private $container;
 
     public function setUp()
     {
-
+        $this->container = new ServiceContainer();
+        $this->container->registerProvider(new ConnectionProvider($schema));
     }
 
     public function tearDown()
@@ -34,6 +36,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfiguration()
     {
+        $informationObj = new Information();
 
     }
 }

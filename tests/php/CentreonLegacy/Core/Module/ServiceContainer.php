@@ -15,9 +15,22 @@
  * limitations under the License.
  */
 
-define('_CENTREON_PATH_', realpath('/tmp/'));
-define('_CENTREON_ETC_', realpath('/tmp/'));
-// Disable warnings for PEAR.
-error_reporting(E_ALL & ~E_STRICT);
+namespace CentreonLegacy\Core\Module;
 
-require_once realpath(dirname(__FILE__) . '/../../vendor/autoload.php');
+class ServiceContainer extends \Pimple
+{
+    private $providers = array();
+
+    public function registerProvider(ServiceProviderInterface $provider)
+    {
+        $this->providers[] = $provider;
+        $provider->register($this);
+    }
+
+    public function terminate()
+    {
+        foreach ($this->providers as $provider) {
+            $provider->terminate($this);
+        }
+    }
+}
