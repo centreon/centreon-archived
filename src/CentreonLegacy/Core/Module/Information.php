@@ -79,11 +79,9 @@ class Information
     public function getConfiguration($moduleName)
     {
         $configurationFile = $this->getModulePath($moduleName) . '/conf.php';
-        
-        $module_conf = array();
-        require $configurationFile;
+        $configuration = $this->utils->requireConfiguration($configurationFile);
 
-        return $module_conf[$moduleName];
+        return $configuration[$moduleName];
     }
 
     /**
@@ -103,7 +101,7 @@ class Information
         $sth->execute();
 
         $name = null;
-        
+
         $row = $sth->fetch();
         if ($row) {
             $name = $row['name'];

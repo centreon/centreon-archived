@@ -17,26 +17,92 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use \Centreon\Test\Mock\CentreonDB;
 use CentreonLegacy\Core\Module\Information;
+use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
+use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 
 class InformationTest extends \PHPUnit_Framework_TestCase
 {
     private $container;
+    private $db;
+    private $license;
+    private $utils;
 
     public function setUp()
     {
         $this->container = new ServiceContainer();
-        $this->container->registerProvider(new ConnectionProvider($schema));
+
+        $this->db = new CentreonDB();
+
+        $this->license = $this->getMockBuilder('CentreonLegacy\Core\Module\License')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->utils = $this->getMockBuilder('CentreonLegacy\Core\Utils\Utils')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     public function tearDown()
     {
-
+        $this->container->terminate();
+        $this->container = null;
     }
 
-    public function testGetConfiguration()
+    public function testGetNameById()
     {
-        $informationObj = new Information();
+        $this->db->addResultSet(
+            "SELECT name FROM modules_informations WHERE id = :id",
+            array(
+                array('name' => 'MyModule')
+            )
+        );
 
+        $this->container->registerProvider(new ConfigurationDBProvider($this->db));
+
+        $information = new Information($this->container, $this->license, $this->utils);
+        $name = $information->getNameById(1);
+
+        $this->assertEquals($name, 'MyModule');
+    }
+
+    public function testGetList()
+    {
+        $expectedResult = array(
+            'MyModule1' => array(
+                'id' => 1,
+                'name' => 'MyModule1',
+                'is_installed' => true,
+                'source_available' => false
+            ),
+            'MyModule2' => array(
+                'id' => 2,
+                'name' => 'MyModule2',
+                'is_installed' => true,
+                'source_available' => false
+            )
+        );
+
+        $this->db->addResultSet(
+            "SELECT * FROM modules_informations ",
+            array(
+                array(
+                    'id' => 1,
+                    'name' => 'MyModule1'
+                ),
+                array(
+                    'id' => 2,
+                    'name' => 'MyModule2'
+                )
+            )
+        );
+
+        $this->container->registerProvider(new ConfigurationDBProvider($this->db));
+
+        $information = new Information($this->container, $this->license, $this->utils);
+        $list = $information->getList();
+
+        //$this->assertEquals($list, $expectedResult);
     }
 }

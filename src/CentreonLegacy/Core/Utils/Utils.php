@@ -52,6 +52,17 @@ class Utils
         $this->dependencyInjector = $dependencyInjector;
     }
 
+    /*
+     * Require configuration file
+     */
+    public function requireConfiguration($configurationFile)
+    {
+        $module_conf = array();
+        require $configurationFile;
+
+        return $module_conf;
+    }
+
     /**
      *
      * @param string $fileName
