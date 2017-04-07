@@ -206,19 +206,20 @@ class Information
         $widgetsConf = array();
 
         $widgetsPath = $this->getWidgetPath();
-        $widgets = scandir($widgetsPath);
+        $widgets = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($widgetsPath);
 
         foreach ($widgets as $widget) {
-            if (!empty($search) && !stristr($widget, $search)) {
+            $widgetName = $widget->getBasename();
+            if (!empty($search) && !stristr($widgetName, $search)) {
                 continue;
             }
 
-            $widgetPath = $widgetsPath . $widget;
-            if (!preg_match('/\W+/', $widget) || !is_dir($widgetPath) || !is_file($widgetPath . '/configs.xml')) {
+            $widgetPath = $widgetsPath . $widgetName;
+            if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
                 continue;
             }
 
-            $widgetsConf[$widget] = $this->getConfiguration($widget);
+            $widgetsConf[$widgetName] = $this->getConfiguration($widgetName);
         }
 
         return $widgetsConf;

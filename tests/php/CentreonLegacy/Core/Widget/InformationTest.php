@@ -150,62 +150,77 @@ class InformationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($id, 1);
     }
 
-    /*
-    public function testGetList()
+    public function testGetParameters()
     {
         $expectedResult = array(
-            'MyModule1' => array(
-                'id' => 1,
-                'name' => 'MyModule1',
-                'rname' => 'MyModule1',
-                'mod_release' => '1.0.0',
-                'license_expiration' => '2020-10-10 12:00:00',
-                'source_available' => true,
-                'is_installed' => true,
-                'upgradeable' => false,
-                'installed_version' => '1.0.0',
-                'available_version' => '1.0.0'
-            ),
-            'MyModule2' => array(
-                'id' => 2,
-                'name' => 'MyModule2',
-                'rname' => 'MyModule2',
-                'mod_release' => '2.0.0',
-                'license_expiration' => '2020-10-10 12:00:00',
-                'source_available' => true,
-                'is_installed' => true,
-                'upgradeable' => true,
-                'installed_version' => '1.0.0',
-                'available_version' => '2.0.0'
+            'parameter1' => array(
+                'parameter_id' => 1,
+                'parameter_name' => 'parameter 1',
+                'parameter_code_name' => 'parameter1',
+                'default_value' => '',
+                'parameter_order' => 1,
+                'header_title' => 'title',
+                'require_permission' => null,
+                'widget_model_id' => 1,
+                'field_type_id' => 1
             )
         );
 
+        $query = 'SELECT * ' .
+            'FROM widget_parameters ' .
+            'WHERE widget_model_id = :id ';
         $this->db->addResultSet(
-            "SELECT * FROM modules_informations ",
+            $query,
             array(
                 array(
-                    'id' => 1,
-                    'name' => 'MyModule1',
-                    'mod_release' => '1.0.0'
-                ),
-                array(
-                    'id' => 2,
-                    'name' => 'MyModule2',
-                    'mod_release' => '1.0.0'
+                    'parameter_id' => 1,
+                    'parameter_name' => 'parameter 1',
+                    'parameter_code_name' => 'parameter1',
+                    'default_value' => '',
+                    'parameter_order' => 1,
+                    'header_title' => 'title',
+                    'require_permission' => null,
+                    'widget_model_id' => 1,
+                    'field_type_id' => 1
                 )
             )
         );
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
-            ->disableOriginalConstructor()
-            ->setMethods(array('exists'))
-            ->getMock();
-        $filesystem->expects($this->any())
-            ->method('exists')
-            ->willReturn(true);
-        $this->container->registerProvider(new FilesystemProvider($filesystem));
+        $information = new Information($this->container, $this->utils);
+        $parameters = $information->getParameters(1);
+
+        $this->assertEquals($parameters, $expectedResult);
+    }
+
+    public function testGetIdByName()
+    {
+        $query = 'SELECT widget_model_id ' .
+            'FROM widget_models ' .
+            'WHERE directory = :directory';
+        $this->db->addResultSet(
+            $query,
+            array(
+                array('widget_model_id' => 1)
+            )
+        );
+
+        $this->container->registerProvider(new ConfigurationDBProvider($this->db));
+
+        $information = new Information($this->container, $this->utils);
+        $id = $information->getIdByName('MyWidget');
+
+        $this->assertEquals($id, 1);
+    }
+
+    public function testGetAvailableList()
+    {
+        $configuration = $this->configuration;
+        $configuration['autoRefresh'] = 0;
+        $expectedResult = array(
+            'my-widget' => $configuration
+        );
 
         $finder = $this->getMockBuilder('\Symfony\Component\Finder\Finder')
             ->disableOriginalConstructor()
@@ -221,43 +236,110 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             ->method('in')
             ->willReturn(
                 array(
-                    new \SplFileInfo('MyModule1'),
-                    new \SplFileInfo('MyModule2')
+                    new \SplFileInfo('my-widget')
                 )
             );
         $this->container->registerProvider(new FinderProvider($finder));
 
-        $moduleConfiguration1 = array(
-            'MyModule1' => array(
-                'name' => 'MyModule1',
-                'rname' => 'MyModule1',
-                'mod_release' => '1.0.0'
+        $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
+            ->disableOriginalConstructor()
+            ->setMethods(array('exists'))
+            ->getMock();
+        $filesystem->expects($this->any())
+            ->method('exists')
+            ->willReturn(true);
+        $this->container->registerProvider(new FilesystemProvider($filesystem));
+
+        $this->utils->expects($this->any())
+            ->method('buildPath')
+            ->willReturn('MyWidget');
+        $this->utils->expects($this->any())
+            ->method('xmlIntoArray')
+            ->willReturn($this->configuration);
+
+        $information = new Information($this->container, $this->utils);
+        $list = $information->getAvailableList();
+
+        $this->assertEquals($list, $expectedResult);
+    }
+
+    public function testGetList()
+    {
+        $configuration = $this->configuration;
+        $configuration['autoRefresh'] = 0;
+        $configuration['source_available'] = true;
+        $configuration['is_installed'] = true;
+        $configuration['upgradeable'] = false;
+        $configuration['installed_version'] = '1.0.0';
+        $configuration['available_version'] = '1.0.0';
+        $configuration['id'] = 1;
+        unset($configuration['version']);
+
+        $expectedResult = array(
+            'my-widget' => $configuration
+        );
+
+        $this->db->addResultSet(
+            'SELECT * FROM widget_models ',
+            array(
+                array(
+                    'widget_model_id' => 1,
+                    'title' => 'my title',
+                    'description' => 'my description',
+                    'url' => '',
+                    'version' => '1.0.0',
+                    'directory' => 'my-widget',
+                    'author' => 'phpunit',
+                    'email' => 'root@localhost',
+                    'website' => 'centreon.com',
+                    'keywords' => 'centreon',
+                    'screenshot' => null,
+                    'thumbnail' => '',
+                    'autoRefresh' => 0
+                )
             )
         );
-        $moduleConfiguration2 = array(
-            'MyModule2' => array(
-                'name' => 'MyModule2',
-                'rname' => 'MyModule2',
-                'mod_release' => '2.0.0'
-            )
-        );
-        $this->utils->expects($this->exactly(2))
-            ->method('requireConfiguration')
-            ->will(
-                $this->onConsecutiveCalls(
-                    $moduleConfiguration1,
-                    $moduleConfiguration2
+        $this->container->registerProvider(new ConfigurationDBProvider($this->db));
+
+        $this->utils->expects($this->any())
+            ->method('buildPath')
+            ->willReturn('MyWidget');
+
+        $finder = $this->getMockBuilder('\Symfony\Component\Finder\Finder')
+            ->disableOriginalConstructor()
+            ->setMethods(array('directories', 'depth', 'in'))
+            ->getMock();
+        $finder->expects($this->any())
+            ->method('directories')
+            ->willReturn($finder);
+        $finder->expects($this->any())
+            ->method('depth')
+            ->willReturn($finder);
+        $finder->expects($this->any())
+            ->method('in')
+            ->willReturn(
+                array(
+                    new \SplFileInfo('my-widget')
                 )
             );
+        $this->container->registerProvider(new FinderProvider($finder));
 
-        $this->license->expects($this->any())
-            ->method('getLicenseExpiration')
-            ->willReturn('2020-10-10 12:00:00');
+        $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
+            ->disableOriginalConstructor()
+            ->setMethods(array('exists'))
+            ->getMock();
+        $filesystem->expects($this->any())
+            ->method('exists')
+            ->willReturn(true);
+        $this->container->registerProvider(new FilesystemProvider($filesystem));
+
+        $this->utils->expects($this->any())
+            ->method('xmlIntoArray')
+            ->willReturn($this->configuration);
 
         $information = new Information($this->container, $this->utils);
         $list = $information->getList();
 
         $this->assertEquals($list, $expectedResult);
     }
-    */
 }
