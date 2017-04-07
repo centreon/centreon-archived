@@ -127,6 +127,12 @@ class Utils
         return $content;
     }
 
+    public function xmlIntoArray($path)
+    {
+        $xml = simplexml_load_file($path);
+        return $this->objectIntoArray($xml);
+    }
+
     /**
      *
      * @param array $arrObjData

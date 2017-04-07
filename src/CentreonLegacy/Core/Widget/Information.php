@@ -69,12 +69,11 @@ class Information
     public function getConfiguration($widgetName)
     {
         $widgetPath = $this->utils->buildPath('/widgets/' . $widgetName);
-        if (!file_exists($widgetPath . '/configs.xml')) {
+        if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
             throw new \Exception('Cannot get configuration file of widget "' . $widgetName . '"');
         }
 
-        $xml = simplexml_load_file($widgetPath . '/configs.xml');
-        $conf = $this->utils->objectIntoArray($xml);
+        $conf = $this->utils->xmlIntoArray($widgetPath . '/configs.xml');
 
         $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
 
