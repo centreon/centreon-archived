@@ -177,7 +177,7 @@ class CentreonHost
          */
         $queryGetServices = 'SELECT s.service_id, s.service_description '
             . 'FROM service s, host_service_relation hsr, host h '
- 	    	. 'WHERE s.service_id = hsr.service_service_id '
+            . 'WHERE s.service_id = hsr.service_service_id '
             . 'AND s.service_register = "1" '
             . ($withDisabledServices ? '' : 'AND s.service_activate = "1" ')
             . 'AND h.host_id = hsr.host_host_id '
@@ -198,7 +198,7 @@ class CentreonHost
          */
         if ($withHg) {
             $queryGetServicesWithHg = 'SELECT s.service_id, s.service_description '
-     	    	. 'FROM service s, host_service_relation hsr, hostgroup_relation hgr, host h, hostgroup hg '
+                . 'FROM service s, host_service_relation hsr, hostgroup_relation hgr, host h, hostgroup hg '
                 . 'WHERE s.service_id = hsr.service_service_id '
                 . 'AND s.service_register = "1" '
                 . ($withDisabledServices ? '' : 'AND s.service_activate = "1" ')
@@ -413,12 +413,12 @@ class CentreonHost
             $paramslist .= '*';
         }
 
-        $rq = "SELECT $paramslist FROM host WHERE host_address = '" . $this->db->escape($address) ."'";
+        $rq = "SELECT $paramslist FROM host WHERE host_address = '" . $this->db->escape($address) . "'";
 
         $res = $this->db->query($rq);
 
-        while ($row = $res->fetchRow()){
-            $hostlist[]=$row;
+        while ($row = $res->fetchRow()) {
+            $hostlist[] = $row;
         }
 
         return $hostlist;
@@ -845,43 +845,6 @@ class CentreonHost
         return true;
     }
 
-    /**
-     * Get Host contactgroup list
-     *
-     * @param int $host_id
-     * @param array $cg
-     * @return void
-     */
-    public function getContactGroupList($host_id, $cg)
-    {
-        $request = "SELECT * FROM host";
-        $res = $this->db->query($sql);
-        while ($data = $res->fetchRow()) {
-
-        }
-        return $cg;
-
-        $rq = "SELECT host_tpl_id " .
-            "FROM host_template_relation " .
-            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
-            "ORDER BY `order`";
-        $DBRESULT = $pearDB->query($rq);
-        while ($row = $DBRESULT->fetchRow()) {
-            $rq2 = "SELECT $field " .
-                "FROM host " .
-                "WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
-            $DBRESULT2 = $pearDB->query($rq2);
-            $row2 = $DBRESULT2->fetchRow();
-            if (isset($row2[$field]) && $row2[$field]) {
-                return $row2[$field];
-            } else {
-                if ($result_field = getMyHostFieldFromMultiTemplates($row['host_tpl_id'], $field)) {
-                    return $result_field;
-                }
-            }
-        }
-    }
-
     public function hasMacroFromHostChanged($host_id, &$macroInput, &$macroValue, &$macroPassword, $cmdId = false)
     {
         $aTemplates = $this->getTemplateChain($host_id, array(), -1, true, "host_name,host_id,command_command_id");
@@ -977,7 +940,6 @@ class CentreonHost
                     $aMacroInCommande[] = $macroscmd;
                 }
             }
-
         }
 
         foreach ($serviceTemplates as $svctpl) {
@@ -1140,7 +1102,6 @@ class CentreonHost
 
         $aFinalMacro = $this->macroUnique($aTempMacro);
         return $aFinalMacro;
-
     }
 
 
@@ -1281,9 +1242,7 @@ class CentreonHost
                     if (!count($alreadyProcessed)) {
                         $fields = array_keys($row);
                     }
-
                     foreach ($row as $field => $value) {
-
                         if (!isset($values[$field]) && !is_null($value) && $value != '') {
                             unset($fields[$field]);
                             $values[$field] = $value;
@@ -1383,7 +1342,6 @@ class CentreonHost
                 }
             }
         }
-
     }
 
     private function comparaPriority($macroA, $macroB, $getFirst = true)
@@ -1453,7 +1411,6 @@ class CentreonHost
                 default:
                     break;
             }
-
         }
     }
 
