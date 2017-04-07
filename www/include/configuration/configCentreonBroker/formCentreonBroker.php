@@ -99,7 +99,7 @@ $form->addElement('header', 'information', _("Centreon Broker configuration"));
 $form->addElement('text', 'name', _("Name"), $attrsText);
 $form->addElement('text', 'filename', _("Config file name"), $attrsText);
 $form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
-$form->addElement('text', 'retention_path', _("Retention path"), $attrsText);
+$form->addElement('text', 'cache_directory', _("Cache directory"), $attrsText);
 
 $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
 $command = $form->addElement('text', 'command_file', _('Command file'), $attrsText);
@@ -118,6 +118,11 @@ $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
 $form->addGroup($status, 'activate', _("Status"), '&nbsp;');
+
+$centreonbroker = array();
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Daemon"), 1);
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Module"), 0);
+$form->addGroup($centreonbroker, 'activate_watchdog', _("Broker Options"), '&nbsp;');
 
 $stats_activate = array();
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("Yes"), 1);
@@ -142,11 +147,12 @@ foreach ($tags as $tagId => $tag) {
 if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     $form->setDefaults(array(
         "name" => '',
-        "retention_path" => '/var/lib/centreon-broker/',
+        "cache_directory" => '/var/lib/centreon-broker/',
         "write_timestamp" => '1',
         "write_thread_id" => '1',
         "stats_activate" => '1',
-        "activate" => '1'
+        "activate" => '1',
+        "activate_watchdog" => '1'
     ));
     $tpl->assign('config_id', 0);
 } else {
@@ -178,7 +184,7 @@ $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('name', _("Mandatory name"), 'required');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('filename', _("Mandatory filename"), 'required');
-$form->addRule('retention_path', _("Mandatory retention path"), 'required');
+$form->addRule('cache_directory', _("Mandatory cache directory"), 'required');
 $form->addRule('event_queue_max_size', _('Value must be numeric'), 'numeric');
 
 if ($o == "w") {

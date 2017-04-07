@@ -148,13 +148,8 @@ $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin sh
 /*
  * Proxy options
  */
-$proxy_protocol = array("tcp" => _("TCP"), "http" => _("HTTP"), "https" => _("HTTPS"));
-$form->addElement('select', 'proxy_protocol', _("Proxy protocol"), $proxy_protocol);
-
 $form->addElement('text', 'proxy_url', _("Proxy URL"), $attrsText);
-
 $form->addElement('text', 'proxy_port', _("Proxy port"), $attrsText2);
-
 $form->addElement('text', 'proxy_user', _("Proxy user"), $attrsText);
 $form->addElement('password', 'proxy_password', _("Proxy password"), $attrsText);
 

@@ -80,21 +80,19 @@ class procedures_DB_Connector {
      */
     public function connect()
 	{
-		$i = 0;
-		while ($i < $this->retry) {
-	        try {
-                $this->privatePearDB =& DB::connect($this->dsn, $this->options);
-                $i = $this->retry;
-            } catch (\PDOException $e) {
-	        	$i++;
-            }
-		}
-		if ($i == $this->retry) {
-			$this->log->insertLog(2, $e->getMessage() . " (retry : $i)");
-			$this->displayConnectionErrorPage();
-		} else {
-			$this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-		}
+        require_once('DB.php');
+        $this->privatePearDB =& DB::connect($this->dsn, $this->options);
+        $i = 0;
+        while (PEAR::isError($this->privatePearDB) && ($i < $this->retry)) {
+            $this->privatePearDB =& DB::connect($this->dsn, $this->options);
+            $i++;
+        }
+        if ($i == $this->retry) {
+            $this->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
+            $this->displayConnectionErrorPage();
+        } else {
+            $this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+        }
     }
 
     /*

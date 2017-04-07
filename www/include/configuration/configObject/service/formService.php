@@ -77,52 +77,54 @@ if (!$centreon->user->admin) {
 }
 
 /* notification contacts */
-$notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contact_name'),
+$notifCs = $acl->getContactAclConf(array(
+    'fields' => array('contact_id', 'contact_name'),
     'get_row' => 'contact_name',
     'keys' => array('contact_id'),
     'conditions' => array('contact_register' => '1'),
-    'order' => array('contact_name')));
+    'order' => array('contact_name')
+));
 
 /* notification contact groups */
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-if ($centreon->user->admin) {
-    $notifCgs = $cg->getListContactgroup(true);
-} else {
-    $cgAcl = $acl->getContactGroupAclConf(array('fields' => array('cg_id', 'cg_name'),
-        'get_row' => 'cg_name',
-        'keys' => array('cg_id'),
-        'order' => array('cg_name')));
-    $cgLdap = $cg->getListContactgroup(true, true);
-    $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-}
+$notifCgs = $acl->getContactGroupAclConf(array(
+    'fields' => array('cg_id', 'cg_name'),
+    'get_row' => 'cg_name',
+    'keys' => array('cg_id'),
+    'order' => array('cg_name')
+), false);
 
 /* hosts */
-$hosts = $acl->getHostAclConf(null, 'broker', array('fields' => array('host.host_id', 'host.host_name'),
+$hosts = $acl->getHostAclConf(null, 'broker', array(
+    'fields' => array('host.host_id', 'host.host_name'),
     'keys' => array('host_id'),
     'get_row' => 'host_name',
-    'order' => array('host_name')));
+    'order' => array('host_name')
+));
 
 /* hostgroups */
-$hgs = $acl->getHostGroupAclConf(null, 'broker', array('fields' => array('hg_id', 'hg_name'),
+$hgs = $acl->getHostGroupAclConf(null, 'broker', array(
+    'fields' => array('hg_id', 'hg_name'),
     'keys' => array('hg_id'),
     'get_row' => 'hg_name',
-    'order' => array('hg_name')));
+    'order' => array('hg_name')
+));
 
 /* service groups */
-$sgs = $acl->getServiceGroupAclConf(null, 'broker', array('fields' => array('sg_id', 'sg_name'),
+$sgs = $acl->getServiceGroupAclConf(null, 'broker', array(
+    'fields' => array('servicegroup.sg_id', 'servicegroup.sg_name'),
     'keys' => array('sg_id'),
     'get_row' => 'sg_name',
-    'order' => array('sg_name')));
+    'order' => array('sg_name')
+));
 
 /* service categories */
 $service_categories = array();
 $scstring = $acl->getServiceCategoriesString();
 $rescat = $pearDB->query("SELECT sc_name, sc_id
                               FROM service_categories " .
-        "WHERE level IS NULL " .
-        ($scstring != "''" ? $acl->queryBuilder('AND', 'sc_id', $acl->getServiceCategoriesString()) : "") .
-        " ORDER BY sc_name");
+    "WHERE level IS NULL " .
+    ($scstring != "''" ? $acl->queryBuilder('AND', 'sc_id', $acl->getServiceCategoriesString()) : "") .
+    " ORDER BY sc_name");
 while ($scat = $rescat->fetchRow()) {
     $service_categories[$scat['sc_id']] = $scat['sc_name'];
 }
@@ -132,7 +134,11 @@ $service = array();
 $serviceTplId = null;
 $initialValues = array();
 if (($o == "c" || $o == "w") && $service_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = '" . $service_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT *
+                                FROM service
+                                LEFT JOIN extended_service_information esi
+                                ON esi.service_service_id = service_id
+                                WHERE service_id = '" . $service_id . "' LIMIT 1");
     /*
      * Set base value
      */
@@ -143,7 +149,11 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Grab hostgroup || host
      */
-    $DBRESULT = $pearDB->query("SELECT host_host_id FROM host_service_relation hsr, host WHERE hsr.service_service_id = '" . $service_id . "' AND host_host_id IS NOT NULL AND host_id = host_host_id ORDER BY host_name, host_alias");
+    $DBRESULT = $pearDB->query("SELECT host_host_id
+                                FROM host_service_relation hsr, host
+                                WHERE hsr.service_service_id = '" . $service_id . "'
+                                AND host_host_id IS NOT NULL
+                                AND host_id = host_host_id ORDER BY host_name, host_alias");
     while ($parent = $DBRESULT->fetchRow()) {
         if ($parent["host_host_id"]) {
             if (!isset($hosts[$parent['host_host_id']])) {
@@ -155,7 +165,11 @@ if (($o == "c" || $o == "w") && $service_id) {
     }
     $DBRESULT->free();
 
-    $DBRESULT = $pearDB->query("SELECT hostgroup_hg_id FROM host_service_relation hsr, hostgroup WHERE hsr.service_service_id = '" . $service_id . "' AND hostgroup_hg_id IS NOT NULL AND hostgroup_hg_id = hg_id ORDER BY hg_name, hg_alias");
+    $DBRESULT = $pearDB->query("SELECT hostgroup_hg_id
+                                FROM host_service_relation hsr, hostgroup
+                                WHERE hsr.service_service_id = '" . $service_id . "'
+                                AND hostgroup_hg_id IS NOT NULL
+                                AND hostgroup_hg_id = hg_id ORDER BY hg_name, hg_alias");
     while ($parent = $DBRESULT->fetchRow()) {
         if ($parent["hostgroup_hg_id"]) {
             if (!isset($hgs[$parent['hostgroup_hg_id']])) {
@@ -186,7 +200,9 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set Contact Group
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '" . $service_id . "'");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id
+                                FROM contactgroup_service_relation
+                                WHERE service_service_id = '" . $service_id . "'");
     for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
         if (!isset($notifCgs[$notifCg['contactgroup_cg_id']])) {
             $initialValues['service_cgs'][] = $notifCg["contactgroup_cg_id"];
@@ -199,7 +215,9 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set Contacts
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '" . $service_id . "'");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id
+                                FROM contact_service_relation
+                                WHERE service_service_id = '" . $service_id . "'");
     for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
         if (!isset($notifCs[$notifC['contact_id']])) {
             $initialValues['service_cs'][] = $notifC['contact_id'];
@@ -212,7 +230,9 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set Service Group Parents
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '" . $service_id . "'");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id
+                                FROM servicegroup_relation
+                                WHERE service_service_id = '" . $service_id . "'");
     for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
         if (!isset($sgs[$sg['servicegroup_sg_id']])) {
             $initialValues['service_sgs'][] = $sg['servicegroup_sg_id'];
@@ -225,7 +245,9 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set Traps
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '" . $service_id . "'");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT traps_id
+                                FROM traps_service_relation
+                                WHERE service_id = '" . $service_id . "'");
     for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
         $service["service_traps"][$i] = $trap["traps_id"];
     }
@@ -234,10 +256,13 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set Categories
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '" . $service_id . "' AND NOT EXISTS(SELECT sc_id
-		                        FROM service_categories sc
-		                        WHERE sc.sc_id = service_categories_relation.sc_id
-		                        AND sc.level IS NOT NULL)");
+    $DBRESULT = $pearDB->query("SELECT DISTINCT sc_id
+                                FROM service_categories_relation
+                                WHERE service_service_id = '" . $service_id . "'
+                                AND NOT EXISTS(SELECT sc_id
+                                                FROM service_categories sc
+                                                WHERE sc.sc_id = service_categories_relation.sc_id
+                                                AND sc.level IS NOT NULL)");
     for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++) {
         if (!isset($service_categories[$service_category['sc_id']])) {
             $initialValues['service_categories'][] = $service_category['sc_id'];
@@ -250,7 +275,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set criticality
      */
-    $res = $pearDB->query("SELECT sc.sc_id 
+    $res = $pearDB->query("SELECT sc.sc_id
                             FROM service_categories sc, service_categories_relation scr
                             WHERE scr.service_service_id = " . $pearDB->escape($service_id) . "
                             AND scr.sc_id = sc.sc_id
@@ -269,6 +294,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     if (!isset($cmdId)) {
         $cmdId = "";
     }
+
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
 }
 
@@ -282,7 +308,10 @@ $cdata->addJsData('clone-count-macro', count($aMacros));
 
 # Service Templates comes from DB -> Store in $svTpls Array
 $svTpls = array(null => null);
-$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '" . $service_id . "' ORDER BY service_description");
+$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id
+                            FROM service
+                            WHERE service_register = '0'
+                            AND service_id != '" . $service_id . "' ORDER BY service_description");
 while ($svTpl = $DBRESULT->fetchRow()) {
     if (!$svTpl["service_description"]) {
         $svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"]) . "'";
@@ -304,7 +333,10 @@ $DBRESULT->free();
 
 # Check commands comes from DB -> Store in $checkCmds Array
 $checkCmds = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+$DBRESULT = $pearDB->query("SELECT command_id, command_name
+                            FROM command
+                            WHERE command_type = '2'
+                            ORDER BY command_name");
 while ($checkCmd = $DBRESULT->fetchRow()) {
     $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
@@ -312,7 +344,11 @@ $DBRESULT->free();
 
 # Check commands comes from DB -> Store in $checkCmdEvent Array
 $checkCmdEvent = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
+$DBRESULT = $pearDB->query("SELECT command_id, command_name
+                            FROM command
+                            WHERE command_type = '2'
+                            OR command_type = '3'
+                            ORDER BY command_name");
 while ($checkCmd = $DBRESULT->fetchRow()) {
     $checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
@@ -329,7 +365,10 @@ $DBRESULT->free();
 # Traps definition comes from DB -> Store in $traps Array
 $traps = array();
 if (isset($service_id)) {
-    $DBRESULT = $pearDB->query("SELECT t.traps_id, t.traps_name FROM traps t, traps_service_relation sr WHERE t.traps_id = sr.traps_id AND sr.service_id = '" . $service_id . "' ORDER BY t.traps_name");
+    $DBRESULT = $pearDB->query("SELECT t.traps_id, t.traps_name
+                                FROM traps t, traps_service_relation sr
+                                WHERE t.traps_id = sr.traps_id
+                                AND sr.service_id = '" . $service_id . "' ORDER BY t.traps_name");
     while ($trap = $DBRESULT->fetchRow()) {
         $traps[$trap["traps_id"]] = $trap["traps_name"];
     }
@@ -353,70 +392,97 @@ $attrsAdvSelect_small = array("style" => "width: 270px; height: 70px;");
 $attrsAdvSelect = array("style" => "width: 270px; height: 100px;");
 $attrsAdvSelect_big = array("style" => "width: 270px; height: 200px;");
 $attrsTextarea = array("rows" => "5", "cols" => "40");
-$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br />'
+    . '<br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
+$timeperiodsRoute = './include/common/webServices/rest/internal.php'
+    . '?object=centreon_configuration_timeperiod&action=list';
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'availableDatasetRoute' => $timeperiodsRoute,
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
+
+$contactRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list';
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'availableDatasetRoute' => $contactRoute,
     'multiple' => true,
     'linkedObject' => 'centreonContact'
 );
+
+$contactgRoute = './include/common/webServices/rest/internal.php'
+    . '?object=centreon_configuration_contactgroup&action=list';
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'availableDatasetRoute' => $contactgRoute,
     'multiple' => true,
     'linkedObject' => 'centreonContactgroup'
 );
+
 $attrCommands = array(
     'datasourceOrigin' => 'ajax',
     'multiple' => false,
     'linkedObject' => 'centreonCommand'
 );
+$hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'availableDatasetRoute' => $hostRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
+
+
+$hostgroupsRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'availableDatasetRoute' => $hostgroupsRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHostgroups'
 );
+
+$servicetemplatesRoute = './include/common/webServices/rest/internal.php'
+    . '?object=centreon_configuration_servicetemplate&action=list';
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+    'availableDatasetRoute' => $servicetemplatesRoute,
     'multiple' => false,
     'linkedObject' => 'centreonServicetemplates'
 );
+
+$servicegRoute = './include/common/webServices/rest/internal.php'
+    . '?object=centreon_configuration_servicegroup&action=list';
 $attrServicegroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
+    'availableDatasetRoute' => $servicegRoute,
     'multiple' => true,
     'linkedObject' => 'centreonServicegroups'
 );
+
+$servicecateRoute = './include/common/webServices/rest/internal.php'
+    . '?object=centreon_configuration_servicecategory&action=list&t=c';
 $attrServicecategories = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list&t=c',
+    'availableDatasetRoute' => $servicecateRoute,
     'multiple' => true,
     'linkedObject' => 'centreonServicecategories'
 );
+
+$trapsRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=list';
 $attrTraps = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=list',
+    'availableDatasetRoute' => $trapsRoute,
     'multiple' => true,
     'linkedObject' => 'centreonTraps'
 );
-$attrGraphtemplates= array(
+
+$graphtemplatesRoute = './include/common/webServices/rest/internal.php'
+    . '?object=centreon_configuration_graphtemplate&action=list';
+$attrGraphtemplates = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=list',
+    'availableDatasetRoute' => $graphtemplatesRoute,
     'multiple' => false,
     'linkedObject' => 'centreonGraphTemplate'
 );
@@ -448,11 +514,19 @@ if ($o != "mc") {
 }
 $form->addElement('text', 'service_alias', _("Alias"), $attrsText);
 
+$servicetemplateRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate'
+    . '&action=defaultValues&target=service&field=service_template_model_stm_id&id=' . $service_id;
 $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=service&field=service_template_model_stm_id&id=' . $service_id)
+    array('defaultDatasetRoute' => $servicetemplateRoute)
 );
-$serviceTplSelect = $form->addElement('select2', 'service_template_model_stm_id', _("Template"), array(), $attrServicetemplate1);
+$serviceTplSelect = $form->addElement(
+    'select2',
+    'service_template_model_stm_id',
+    _("Template"),
+    array(),
+    $attrServicetemplate1
+);
 $serviceTplSelect->addJsCallback('change', 'changeServiceTemplate(this.value)');
 
 $form->addElement('static', 'tplText', _("Using a Template exempts you to fill required fields"));
@@ -469,17 +543,23 @@ $form->addGroup($serviceIV, 'service_is_volatile', _("Is Volatile"), '&nbsp;');
 if ($o != "mc") {
     $form->setDefaults(array('service_is_volatile' => '2'));
 }
-
+$availableCommandRoute1 = './include/common/webServices/rest/internal.php?object=centreon_configuration_command' .
+    '&action=list&t=2';
+$defaultCommandRoute1 = './include/common/webServices/rest/internal.php?object=centreon_configuration_command' .
+    '&action=defaultValues&target=service&field=command_command_id&id=' . $service_id;
 $attrCommand1 = array_merge(
     $attrCommands,
     array(
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id&id=' . $service_id,
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=2'
+        'defaultDatasetRoute' => $defaultCommandRoute1,
+        'availableDatasetRoute' => $availableCommandRoute1
     )
 );
 $checkCommandSelect = $form->addElement('select2', 'command_command_id', _("Check Command"), array(), $attrCommand1);
 if ($o == "mc") {
-    $checkCommandSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");');
+    $checkCommandSelect->addJsCallback(
+        'change',
+        'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");'
+    );
 } else {
     $checkCommandSelect->addJsCallback('change', 'changeCommand(this.value);');
 }
@@ -497,15 +577,22 @@ if ($o != "mc") {
     $form->setDefaults(array('service_event_handler_enabled' => '2'));
 }
 
+$availableCommandRoute2 = './include/common/webServices/rest/internal.php' .
+    '?object=centreon_configuration_command&action=list';
+$defaultCommandRoute2 = './include/common/webServices/rest/internal.php?object=centreon_configuration_command'
+    . '&action=defaultValues&target=service&field=command_command_id2&id=' . $service_id;
 $attrCommand2 = array_merge(
     $attrCommands,
     array(
-            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
-            'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=service&field=command_command_id2&id=' . $service_id
-        )
+        'availableDatasetRoute' => $availableCommandRoute2,
+        'defaultDatasetRoute' => $defaultCommandRoute2
+    )
 );
 $eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
-$eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
+$eventHandlerSelect->addJsCallback(
+    'change',
+    'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");'
+);
 
 $form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
@@ -524,10 +611,11 @@ $form->addGroup($servicePCE, 'service_passive_checks_enabled', _("Passive Checks
 if ($o != "mc") {
     $form->setDefaults(array('service_passive_checks_enabled' => '2'));
 }
-
+$attrTimeperiodRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
+    . '&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id;
 $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id&id=' . $service_id)
+    array('defaultDatasetRoute' => $attrTimeperiodRoute)
 );
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
@@ -537,9 +625,9 @@ $cloneSetMacro[] = $form->addElement(
     'macroInput[#index#]',
     _('Name'),
     array(
-    'id' => 'macroInput_#index#',
-    'size' => 25
-        )
+        'id' => 'macroInput_#index#',
+        'size' => 25
+    )
 );
 
 $cloneSetMacro[] = $form->addElement(
@@ -604,7 +692,12 @@ if ($o == "mc") {
 $form->addElement('header', 'use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"));
 $serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("Yes"), '1');
 $serviceIOHC[] = HTML_QuickForm::createElement('radio', 'service_use_only_contacts_from_host', null, _("No"), '0');
-$form->addGroup($serviceIOHC, 'service_use_only_contacts_from_host', _("Inherit only contacts/contacts group from host"), '&nbsp;');
+$form->addGroup(
+    $serviceIOHC,
+    'service_use_only_contacts_from_host',
+    _("Inherit only contacts/contacts group from host"),
+    '&nbsp;'
+);
 if ($o != "mc") {
     $form->setDefaults(array('service_use_only_contacts_from_host' => '0'));
 }
@@ -616,13 +709,30 @@ if ($o != "mc") {
 if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
-    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
+    $contactAdditive[] = HTML_QuickForm::createElement(
+        'radio',
+        'mc_contact_additive_inheritance',
+        null,
+        _("Default"),
+        '2'
+    );
     $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
-    
+
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
-    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
-    $form->addGroup($contactGroupAdditive, 'mc_cg_additive_inheritance', _("Contact group additive inheritance"), '&nbsp;');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement(
+        'radio',
+        'mc_cg_additive_inheritance',
+        null,
+        _("Default"),
+        '2'
+    );
+    $form->addGroup(
+        $contactGroupAdditive,
+        'mc_cg_additive_inheritance',
+        _("Contact group additive inheritance"),
+        '&nbsp;'
+    );
 } else {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
@@ -631,27 +741,48 @@ if ($o == "mc") {
 /*
  *  Contacts
  */
+$attrContactRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact'
+    . '&action=defaultValues&target=service&field=service_cs&id=' . $service_id;
 $attrContact1 = array_merge(
     $attrContacts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=service&field=service_cs&id=' . $service_id)
+    array('defaultDatasetRoute' => $attrContactRoute)
 );
 $form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
 
 /*
  *  Contact groups
  */
+$attrContactgroupRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+    . '&action=defaultValues&target=service&field=service_cgs&id=' . $service_id;
 $attrContactgroup1 = array_merge(
     $attrContactgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=service&field=service_cgs&id=' . $service_id)
+    array('defaultDatasetRoute' => $attrContactgroupRoute)
 );
 $form->addElement('select2', 'service_cgs', _("Implied Contact Groups"), array(), $attrContactgroup1);
 
 
 if ($o == "mc") {
     $mc_mod_notifopt_first_notification_delay = array();
-    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
-    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_notifopt_first_notification_delay, 'mc_mod_notifopt_first_notification_delay', _("Update mode"), '&nbsp;');
+    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_first_notification_delay',
+        null,
+        _("Incremental"),
+        '0'
+    );
+    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_first_notification_delay',
+        null,
+        _("Replacement"),
+        '1'
+    );
+    $form->addGroup(
+        $mc_mod_notifopt_first_notification_delay,
+        'mc_mod_notifopt_first_notification_delay',
+        _("Update mode"),
+        '&nbsp;'
+    );
     $form->setDefaults(array('mc_mod_notifopt_first_notification_delay' => '0'));
 }
 
@@ -661,9 +792,26 @@ $form->addElement('text', 'service_recovery_notification_delay', _("Recovery not
 
 if ($o == "mc") {
     $mc_mod_notifopt_notification_interval = array();
-    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
-    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
+    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_notification_interval',
+        null,
+        _("Incremental"),
+        '0'
+    );
+    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_notification_interval',
+        null,
+        _("Replacement"),
+        '1'
+    );
+    $form->addGroup(
+        $mc_mod_notifopt_notification_interval,
+        'mc_mod_notifopt_notification_interval',
+        _("Update mode"),
+        '&nbsp;'
+    );
     $form->setDefaults(array('mc_mod_notifopt_notification_interval' => '0'));
 }
 
@@ -671,16 +819,29 @@ $form->addElement('text', 'service_notification_interval', _("Notification Inter
 
 if ($o == "mc") {
     $mc_mod_notifopt_timeperiod = array();
-    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Incremental"), '0');
-    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
+    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_timeperiod',
+        null,
+        _("Incremental"),
+        '0'
+    );
+    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_timeperiod',
+        null,
+        _("Replacement"),
+        '1'
+    );
     $form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_notifopt_timeperiod' => '0'));
 }
 
-
+$attrTimeperiodRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
+    . '&action=defaultValues&target=service&field=timeperiod_tp_id2&id=' . $service_id;
 $attrTimeperiod2 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=service&field=timeperiod_tp_id2&id=' . $service_id)
+    array('defaultDatasetRoute' => $attrTimeperiodRoute)
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
@@ -692,13 +853,55 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_notifopts' => '0'));
 }
 
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"), array('id' => 'notifW', 'onClick' => 'uncheckNotifOption(this);'));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"), array('id' => 'notifU', 'onClick' => 'uncheckNotifOption(this);'));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"), array('id' => 'notifC', 'onClick' => 'uncheckNotifOption(this);'));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'notifR', 'onClick' => 'uncheckNotifOption(this);'));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'notifF', 'onClick' => 'uncheckNotifOption(this);'));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'notifDS', 'onClick' => 'uncheckNotifOption(this);'));
-$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'notifN', 'onClick' => 'uncheckNotifOption(this);'));
+$serviceNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'w',
+    '&nbsp;',
+    _("Warning"),
+    array('id' => 'notifW', 'onClick' => 'uncheckNotifOption(this);')
+);
+$serviceNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'u',
+    '&nbsp;',
+    _("Unknown"),
+    array('id' => 'notifU', 'onClick' => 'uncheckNotifOption(this);')
+);
+$serviceNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'c',
+    '&nbsp;',
+    _("Critical"),
+    array('id' => 'notifC', 'onClick' => 'uncheckNotifOption(this);')
+);
+$serviceNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'r',
+    '&nbsp;',
+    _("Recovery"),
+    array('id' => 'notifR', 'onClick' => 'uncheckNotifOption(this);')
+);
+$serviceNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'f',
+    '&nbsp;',
+    _("Flapping"),
+    array('id' => 'notifF', 'onClick' => 'uncheckNotifOption(this);')
+);
+$serviceNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    's',
+    '&nbsp;',
+    _("Downtime Scheduled"),
+    array('id' => 'notifDS', 'onClick' => 'uncheckNotifOption(this);')
+);
+$serviceNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'n',
+    '&nbsp;',
+    _("None"),
+    array('id' => 'notifN', 'onClick' => 'uncheckNotifOption(this);')
+);
 $form->addGroup($serviceNotifOpt, 'service_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
 $serviceStalOpt[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok"));
@@ -745,21 +948,24 @@ if ($form_service_type == "BYHOST") {
     if (isset($service['service_hPars']) && count($service['service_hPars']) > 1) {
         $sgReadOnly = true;
     }
-    
+    $attrHostsRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host'
+        . '&action=defaultValues&target=service&field=service_hPars&id=' . $service_id;
     $attrHost1 = array_merge(
         $attrHosts,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=service_hPars&id=' . $service_id)
+        array('defaultDatasetRoute' => $attrHostsRoute)
     );
     $form->addElement('select2', 'service_hPars', _("Linked with Hosts"), array(), $attrHost1);
 }
 
 if ($form_service_type == "BYHOSTGROUP") {
+    $attrHostgroupRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup'
+        . '&action=defaultValues&target=service&field=service_hgPars&id=' . $service_id;
     $attrHostgroup1 = array_merge(
         $attrHostgroups,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=service&field=service_hgPars&id=' . $service_id)
+        array('defaultDatasetRoute' => $attrHostgroupRoute)
     );
     $form->addElement('select2', 'service_hgPars', _("Linked with Host Groups"), array(), $attrHostgroup1);
-    
+
     if (isset($service['service_hgPars']) && count($service['service_hgPars']) > 1) {
         $sgReadOnly = true;
     }
@@ -774,10 +980,11 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_sgs, 'mc_mod_sgs', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_sgs' => '0'));
 }
-
+$attrServicegroupsRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup'
+    . '&action=defaultValues&target=service&field=service_sgs&id=' . $service_id;
 $attrServicegroup1 = array_merge(
     $attrServicegroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=service&field=service_sgs&id=' . $service_id)
+    array('defaultDatasetRoute' => $attrServicegroupsRoute)
 );
 $ams3 = $form->addElement('select2', 'service_sgs', _("Linked with Servicegroups"), array(), $attrServicegroup1);
 if ($sgReadOnly === true) {
@@ -792,10 +999,11 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_traps' => '0'));
 }
-
+$attrTrapRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_trap'
+    . '&action=defaultValues&target=service&field=service_traps&id=' . $service_id;
 $attrTrap1 = array_merge(
     $attrTraps,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_trap&action=defaultValues&target=service&field=service_traps&id=' . $service_id)
+    array('defaultDatasetRoute' => $attrTrapRoute)
 );
 $form->addElement('select2', 'service_traps', _("Service Trap Relation"), array(), $attrTrap1);
 
@@ -875,7 +1083,11 @@ $form->addElement('header', 'nagios', _("Monitoring Engine"));
 $form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
 $form->addElement('text', 'esi_notes_url', _("URL"), $attrsTextURL);
 $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
-$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id" => "esi_icon_image", "onChange" => "showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
+$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
+    "id" => "esi_icon_image",
+    "onChange" => "showLogo('esi_icon_image_img',this.value)",
+    "onkeyup" => "this.blur();this.focus();"
+));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
@@ -892,9 +1104,11 @@ $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityI
 
 $form->addElement('header', 'oreon', _("Centreon"));
 
+$graphTemplateRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate'
+    . '&action=defaultValues&target=service&field=graph_id&id=' . $service_id;
 $attrGraphtemplate1 = array_merge(
     $attrGraphtemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphtemplate&action=defaultValues&target=service&field=graph_id&id=' . $service_id)
+    array('defaultDatasetRoute' => $graphTemplateRoute)
 );
 $form->addElement('select2', 'graph_id', _("Graph Template"), array(), $attrGraphtemplate1);
 
@@ -906,14 +1120,17 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_sc' => '0'));
 }
 
+$serviceCategorieRoute = './include/common/webServices/rest/internal.php?object='
+    . 'centreon_configuration_servicecategory&action=defaultValues&target=service'
+    . '&field=service_categories&id=' . $service_id;
 $attrServicecategory1 = array_merge(
     $attrServicecategories,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=defaultValues&target=service&field=service_categories&id=' . $service_id)
+    array('defaultDatasetRoute' => $serviceCategorieRoute)
 );
 $form->addElement('select2', 'service_categories', _("Categories"), array(), $attrServicecategory1);
 
 /*
- * Sort 5 
+ * Sort 5
  */
 if ($o == "a") {
     $form->addElement('header', 'title5', _("Add macros"));
@@ -953,7 +1170,7 @@ if (is_array($select)) {
     $select_pear->setValue($select_str);
 }
 
-/* 
+/*
  * Form Rules
  */
 $form->applyFilter('__ALL__', 'myTrim');
@@ -977,7 +1194,11 @@ if ($o != "mc") {
         $form->addRule('service_hPars', _("HostGroup or Host Required"), 'required');
     }
     $form->registerRule('exist', 'callback', 'testServiceExistence');
-    $form->addRule('service_description', _("This description is in conflict with another one that is already defined in the selected relation(s)"), 'exist');
+    $form->addRule(
+        'service_description',
+        _("This description is in conflict with another one that is already defined in the selected relation(s)"),
+        'exist'
+    );
 
     $argChecker = $form->addElement("hidden", "argChecker");
     $argChecker->setValue(1);
@@ -988,9 +1209,14 @@ if ($o != "mc") {
     $macChecker->setValue(1);
     $form->registerRule("macHandler", "callback", "serviceMacHandler");
     $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
-    
+
     $form->registerRule('cg_group_exists', 'callback', 'testCg2');
-    $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
+    $form->addRule(
+        'service_cgs',
+        _('Contactgroups exists. If you try to use a LDAP contactgroup, '
+            . 'please verified if a Centreon contactgroup has the same name.'),
+        'cg_group_exists'
+    );
 
     $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 } elseif ($o == "mc") {
@@ -1012,19 +1238,33 @@ if (isset($service['service_template_model_stm_id']) && ($service['service_templ
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign('alert_check_interval', _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, if needed, pair this configuration with the use of timeperiods"));
+$tpl->assign(
+    'alert_check_interval',
+    _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, "
+        . "if needed, pair this configuration with the use of timeperiods")
+);
 
 // Just watch a host information
 if ($o == "w") {
     if (!$min && $centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&service_id=" . $service_id . "'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&service_id=" . $service_id . "'")
+        );
     }
     $form->setDefaults($service);
     $form->freeze();
 } elseif ($o == "c") {
     // Modify a service information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);", "class" => "btc bt_default"));
+    $res = $form->addElement(
+        'button',
+        'reset',
+        _("Reset"),
+        array("onClick" => "history.go(0);", "class" => "btc bt_default")
+    );
     $form->setDefaults($service);
 } elseif ($o == "a") {
     // Add a service information
@@ -1047,7 +1287,9 @@ $tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _
 $tpl->assign("p", $p);
 $tpl->assign(
     "helpattr",
-    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, '
+    . '"orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], '
+    . 'WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
 );
 
 // prepare help texts
@@ -1120,8 +1362,7 @@ if ($valid) {
         setTimeout('transformForm()', 200);
         showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
 
-        function uncheckNotifOption(object)
-        {
+        function uncheckNotifOption(object) {
             if (object.id == "notifN" && object.checked) {
                 document.getElementById('notifW').checked = false;
                 document.getElementById('notifU').checked = false;

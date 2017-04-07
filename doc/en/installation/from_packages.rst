@@ -16,7 +16,7 @@ To install Centreon software from the repository, you should first install the f
 
 Perform the following command from a user with sufficient rights.
 
-CES Repository
+Centreon Repository
 --------------
 
 For CentOS 6.
@@ -137,6 +137,8 @@ SELinux should be disabled; for this, you have to modify the file "/etc/sysconfi
 
     SELINUX=disabled
 
+After saving the file, please reboot your operating system to apply the changes.
+
 PHP timezone
 ^^^^^^^^^^^^
 
@@ -151,7 +153,7 @@ After saving the file, please don't forget to restart apache server.
 Firewall
 ^^^^^^^^
 
-Add firewall rules or disable it. To disable it execute folowwing commands:
+Add firewall rules or disable it. To disable it execute following commands:
 
 * **iptables** (CentOS v6) ::
 
@@ -333,7 +335,7 @@ and Centreon Plugin Pack Manager to work.
 Install packages
 ----------------
 
-When using CES, installation of Centreon Plugin Pack Manager is very
+When using Centreon ISO, installation of Centreon Plugin Pack Manager is very
 easy. You'll see that Centreon License Manager will be installed too
 as a dependency.
 

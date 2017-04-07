@@ -121,9 +121,11 @@ try {
      * Copying image in logos directory
      */
     if (isset($centreon->optGen["nagios_path_img"]) && $centreon->optGen["nagios_path_img"]) {
-        $DBRESULT_imgs = $pearDB->query("SELECT `dir_alias`, `img_path` 
-                                        FROM `view_img`, `view_img_dir`, `view_img_dir_relation` 
-                                        WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
+        $DBRESULT_imgs = $pearDB->query(
+            "SELECT `dir_alias`, `img_path` " .
+            "FROM `view_img`, `view_img_dir`, `view_img_dir_relation` " .
+            "WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id"
+        );
         while ($images = $DBRESULT_imgs->fetchrow()) {
             if (!is_dir($centreon->optGen["nagios_path_img"] . "/" . $images["dir_alias"])) {
                 $mkdirResult = @mkdir($centreon->optGen["nagios_path_img"] . "/" . $images["dir_alias"]);
@@ -176,6 +178,7 @@ try {
             }
         }
         if (isset($pollers) && ($pollers == 0 || in_array($host['id'], $pollers))) {
+            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg,sql}", GLOB_BRACE);
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 /*
                  * Check if monitoring engine's configuration directory existss
@@ -218,9 +221,6 @@ try {
                 /*
                  * Centreon Broker configuration
                  */
-
-                $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg}", GLOB_BRACE);
-
                 if (count($listBrokerFile) > 0) {
                     $centreonBrokerDirCfg = getCentreonBrokerDirCfg($host['id']);
                     if (!is_null($centreonBrokerDirCfg)) {
@@ -265,7 +265,7 @@ try {
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
                 }
-                if (count(glob($centreonBrokerPath . $host['id'] . "/*.xml")) > 0) {
+                if (count($listBrokerFile) > 0) {
                     passthru("echo 'SENDCBCFG:" . $host['id'] . "' >> $centcore_pipe", $return);
                     if ($return) {
                         throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));

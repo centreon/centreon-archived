@@ -189,7 +189,7 @@ while ($row = $res->fetchRow()) {
     $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
     $row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
     if (isset($row['host_id']) && $row['host_id']) {
-        $serviceList[$row['host_name'] . '_' . $row['service_description']] = array(
+        $serviceList[$row['host_name'] . '_/_' . $row['service_description']] = array(
             "id" => $row['service_id'],
             "svc" => $row['service_description'],
             "h" => $row['host_name']
@@ -246,7 +246,7 @@ foreach ($serviceList as $key => $value) {
             } else {
                 $tplStr .= "&nbsp;|&nbsp;";
             }
-            $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Service:$value1' target='_blank'>" . $value1 . "</a>";
+            $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Service_:_$value1' target='_blank'>" . $value1 . "</a>";
         }
     }
     $templateHostArray[$key] = $tplStr;

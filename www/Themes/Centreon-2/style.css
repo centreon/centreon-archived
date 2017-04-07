@@ -2,32 +2,32 @@
  * Copyright 2005-2011 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
  *
  */
@@ -116,6 +116,15 @@ iframe {
 
 label {
     vertical-align: middle;
+}
+
+
+pre.wrap {
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .margin_right {
@@ -368,7 +377,7 @@ p.description a, p.description a:visited {
 
 /* ------------ Badge -----------*/
 
-.badge  {   
+.badge  {
     display: inline-block;
     border-radius: 18px;
     color: #fff;
@@ -475,6 +484,7 @@ a.btc {
     margin : 0px 4px;
     cursor: pointer;
 }
+
 .bt_default {
     background: #a7a9ac !important;
 }
@@ -1136,7 +1146,7 @@ a.infobulle:hover   {z-index:25;}
     right: 30px;
 }
 
-/* Widget css */ 
+/* Widget css */
 .manageMoreViews {
    display: block;
    height: 16px;
@@ -1743,7 +1753,7 @@ span.state_badge {
     background: none !important;
 }
 
-/* Fullscreen icon */ 
+/* Fullscreen icon */
 .fullscreen-icon {
   position: fixed;
   right: 10px;
@@ -2132,7 +2142,7 @@ textarea.default-textarea {
 
 /* -- Views Performance page -- */
 .graph-options {
-  display: flex; 
+  display: flex;
   justify-content: flex-end;
   margin-bottom: 2px;
 }
@@ -2162,22 +2172,25 @@ textarea.default-textarea {
 
 .graph .title {
   background-color: #cfedf9;
-  height: 20px;
+  height: 30px;
   display: inline-block;
-  line-height: 20px;
+  line-height: 30px;
   font-weight: bold;
   width: calc(100% - 4px);
   padding: 0 2px;
   cursor: move;
 }
+.graph .title .btc {
+    vertical-align: top;
+}
 
 .graph .title .actions {
   float: right;
-  margin-top: 2px;
+  margin-top: 6px;
 }
 
 .graph .title .remove {
-  margin-top: 2px;
+  margin-top: 6px;
   cursor: pointer;
 }
 
@@ -2243,6 +2256,78 @@ textarea.default-textarea {
 
 .graph .c3-region.region-ack {
   fill: #ae9500;
+}
+
+.chart-legends {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  position: relative;
+  padding: 0 32px;
+}
+
+.chart-legends .chart-legend-action {
+  display: block;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+}
+
+.chart-legends .chart-legend-action > img {
+  height: 14px;
+  cursor: pointer;
+}
+
+.chart-legends .chart-legend {
+  padding: 0 4px;
+  font-size: 12px;
+  color: #555;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.chart-legends .chart-legend > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  cursor: pointer;
+}
+
+.chart-legends .chart-legend .chart-legend-color {
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+}
+
+.chart-legends .chart-legend.hidden .chart-legend-color {
+  opacity: 0.3;
+}
+
+.chart-legends .chart-legend span {
+  line-height: 16px;
+}
+
+.chart-legends .chart-legend .extra {
+  display: none;
+  margin-left: 6px;
+}
+
+.chart-legends .chart-legend .extra span {
+  margin-left: 4px;
+}
+
+.chart-legends.extend {
+  flex-direction: column;
+}
+
+.chart-legends.extend .chart-legend .extra {
+  display: block;
 }
 
 .ico-col.active {

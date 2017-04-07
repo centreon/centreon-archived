@@ -117,6 +117,7 @@ CREATE TABLE `acl_resources` (
   `acl_res_comment` text,
   `acl_res_status` enum('0','1') DEFAULT NULL,
   `changed` int(11) DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`acl_res_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -443,11 +444,12 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_write_thread_id` enum('0','1') DEFAULT '1',
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
-  `event_queue_max_size` int(11) DEFAULT '50000',
+  `event_queue_max_size` int(11) DEFAULT '100000',
   `command_file` varchar(255),
-  `retention_path` varchar(255),
+  `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
   `correlation_activate` enum('0','1') DEFAULT '0',
+  `daemon` TINYINT(1),
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -959,6 +961,7 @@ CREATE TABLE `custom_view_user_relation` (
   `usergroup_id` int(11) DEFAULT NULL,
   `locked` tinyint(6) DEFAULT '0',
   `is_owner` tinyint(6) DEFAULT '0',
+  `is_share` tinyint(6) DEFAULT '0',
   `is_consumed` int(1) NOT NULL DEFAULT 1,
   UNIQUE KEY `view_user_unique_index` (`custom_view_id`,`user_id`,`usergroup_id`),
   KEY `fk_custom_views_user_id` (`user_id`),
@@ -1712,6 +1715,7 @@ CREATE TABLE `nagios_server` (
   `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
   `engine_name` varchar(255) DEFAULT NULL,
   `engine_version` varchar(255) DEFAULT NULL,
+  `centreonbroker_logs_path` VARCHAR(255),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

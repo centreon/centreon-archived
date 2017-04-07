@@ -154,7 +154,7 @@ if (!is_null($host_id)) {
         $tab_status = array();
 
         /*
-         * start ndo service info
+         * Get all service information 
          */
         $rq = "SELECT s.service_id, " .
             " s.state AS current_state," .
@@ -195,7 +195,10 @@ if (!is_null($host_id)) {
             " s.action_url, " .
             " i.name as instance_name " .
             " FROM services s, hosts h, instances i " .
-            " WHERE h.host_id = s.host_id AND h.name LIKE '" . $pearDB->escape($host_name) . "' AND s.description LIKE '" . $pearDB->escape($svc_description) . "' AND h.instance_id = i.instance_id " .
+            " WHERE h.host_id = s.host_id " . 
+            " AND h.host_id LIKE '" . $pearDB->escape($host_id) . "'" .
+            " AND s.service_id LIKE '" . $pearDB->escape($service_id) . "'".
+            " AND h.instance_id = i.instance_id " .
             " AND h.enabled = 1 " .
             " AND s.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq);
@@ -217,7 +220,7 @@ if (!is_null($host_id)) {
         $DBRESULT->free();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status["command_line"] = hidePasswordInCommand($service_status["check_command"], $service_status["service_id"]);
+            $service_status["command_line"] = hidePasswordInCommand($service_status["check_command"], $host_id, $service_status["service_id"]);
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
@@ -562,6 +565,7 @@ if (!is_null($host_id)) {
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
         $tpl->assign("svc_display_name", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
         $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
+        $tpl->assign("url_svc_id", urlencode(CentreonUtils::escapeSecure($host_name)).';'.urlencode(CentreonUtils::escapeSecure($svc_description)));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 

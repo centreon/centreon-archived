@@ -193,11 +193,9 @@ class CentreonRestHttp
             $dataProxy[$row['key']] = $row['value'];
         }
 
-        if (isset($dataProxy['proxy_url']) && $dataProxy['proxy_url'] != '') {
-            if ($dataProxy['proxy_protocol']) {
-                $this->proxy .= $dataProxy['proxy_protocol'] . '://';
-            }
-            $this->proxy .= $dataProxy['proxy_url'];
+        if (isset($dataProxy['proxy_url']) && !empty($dataProxy['proxy_url'])) {
+            $this->proxy = 'tcp://' . $dataProxy['proxy_url'];
+
             if ($dataProxy['proxy_port']) {
                 $this->proxy .= ':' . $dataProxy['proxy_port'];
             }

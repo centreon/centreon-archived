@@ -136,6 +136,8 @@ SELinux doit être désactivé. Pour cela vous devez modifier le fichier "/etc/s
 
     SELINUX=disabled
 
+Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
+
 Fuseau horaire PHP
 ^^^^^^^^^^^^^^^^^^
 
@@ -201,7 +203,7 @@ Manager et Centreon Plugin Pack Manager pour fonctionner.
 Installation système
 --------------------
 
-En utilisant CES, l'installation des paquets est très simple. Vous
+En utilisant Centreon ISO, l'installation des paquets est très simple. Vous
 noterez que Centreon Plugin Pack Manager installe également Centreon
 License Manager en tant que dépendance.
 

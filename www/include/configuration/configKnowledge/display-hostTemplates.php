@@ -118,10 +118,11 @@ $proc = new procedures(
 $proc->setHostInformations();
 $proc->setServiceInformations();
 
-$query = "SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image
-			  FROM host, extended_host_information ehi
-			  WHERE host.host_id = ehi.host_host_id
-			  AND host.host_register = '0' ";
+$query = "SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image " .
+    "FROM host, extended_host_information ehi " .
+    "WHERE host.host_id = ehi.host_host_id " .
+    "AND host.host_register = '0' " .
+    "AND host.host_locked = '0' ";
 if (isset($_REQUEST['searchHostTemplate']) && $_REQUEST['searchHostTemplate']) {
     $query .= " AND host.host_name LIKE '%" . $_REQUEST['searchHostTemplate'] . "%' ";
 }
@@ -132,6 +133,7 @@ $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
 $row = $res->fetchRow();
 $rows = $row['numrows'];
 
+$selection = array();
 while ($data = $DBRESULT->fetchRow()) {
     if ($data["host_register"] == 0) {
         $selection[$data["host_name"]] = $data["host_id"];
@@ -175,12 +177,12 @@ foreach ($selection as $key => $value) {
         $firstTpl = 1;
         foreach ($tplArr as $key1 => $value1) {
             if ($firstTpl) {
-                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Host-Template:$value1' target='_blank'>" .
-                    $value1 . "</a>";
+                $tplStr .= " <a href='" . $WikiURL . "/index.php?title=Host-Template:$value1' target = '_blank' > " .
+                    $value1 . "</a > ";
                 $firstTpl = 0;
             } else {
-                $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
-                    "/index.php?title=Host-Template:$value1' target='_blank'>" . $value1 . "</a>";
+                $tplStr .= "&nbsp;|&nbsp;<a href = '" . $WikiURL .
+                    "/index.php?title=Host-Template:$value1' target = '_blank' > " . $value1 . "</a > ";
             }
         }
     }

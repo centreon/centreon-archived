@@ -1,6 +1,7 @@
 <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
 <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
 <table class="table"> <!-- Global Table -->
     <tr>
         <td style="width: 70%;vertical-align:top; padding-right:8px;">
@@ -50,7 +51,7 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" valign="top">{$m_mon_performance_data}</td>
                                 <td class="ListColNoWrap">
-                                    <pre>{$service_data.performance_data}</pre>
+                                    <pre class="wrap">{$service_data.performance_data}</pre>
                                 </td>
                             </tr>
                             <tr class='list_two'>
@@ -115,9 +116,14 @@
                             </tr>
                             {if $service_data.command_line}
                             <tr class='list_one'>
-                                <td class="ListColLeft ColPopup" valign="top">{$m_mon_service_command_line}</td>
+                                <td class="ListColLeft ColPopup" valign="top">
+                                    {$m_mon_service_command_line}
+                                    <button class="btn-copy" data-clipboard-target="#command_line">
+                                        <img src="./img/icons/clipboard.png" style="vertical-align: middle;" class="ico-14" alt="Copy to clipboard"/>
+                                    </button>
+                                </td>
                                 <td class="ListColLeft ColPopup">
-                                    <pre>{$service_data.command_line}</pre>
+                                    <pre id='command_line' style="max-width: 900px; overflow-x: auto">{$service_data.command_line}</pre>
                                 </td>
                             </tr>
                             {/if}
@@ -156,7 +162,7 @@
                             <tr class='list_lvl_1'>
                               <td class="FormHeader" colspan="2">
                                 <h4>
-                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
+                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$url_svc_id}">
                                     <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
                                   </a>
                                 </h4>
@@ -642,6 +648,13 @@ jQuery(function () {
     interval: '24h'
   };
   jQuery('.chart').centreonGraph(times);
+});
+var clipboard = new Clipboard('.btn-copy', {
+  text: function() {
+    var command = document.querySelector('#command_line').textContent;
+    re = /\n\t/g;
+    return command.replace(re,' ');
+  }
 });
 </script>
 {/literal}

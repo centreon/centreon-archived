@@ -18,7 +18,7 @@ Do forget to think about setting up a global strategy of the configuration in or
    groups
    category
    models
-   imp
+   imp/index
    advanced_configuration/index
    poller/index
    deploy
