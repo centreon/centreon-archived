@@ -159,6 +159,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $nagiosInfo[$config["id"]]["is_currently_running"] = 0;
     }
 
+
     /*
     * Manage flag for changes
     */

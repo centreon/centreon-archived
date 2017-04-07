@@ -81,10 +81,10 @@ $service = array();
 $serviceTplId = null;
 $initialValues = array();
 if (($o == "c" || $o == "w") && $service_id) {
-    $DBRESULT = $pearDB->query("SELECT * 
-                                FROM service 
-                                LEFT JOIN extended_service_information esi 
-                                ON esi.service_service_id = service_id 
+    $DBRESULT = $pearDB->query("SELECT *
+                                FROM service
+                                LEFT JOIN extended_service_information esi
+                                ON esi.service_service_id = service_id
                                 WHERE service_id = '" . $service_id . "' LIMIT 1");
     /*
      * Set base value
@@ -267,6 +267,10 @@ if ($o == "a") {
 } elseif ($o == "mc") {
     $form->addElement('header', 'title', _("Massive Change"));
 }
+
+#
+## Service basic information
+#
 
 /*
  * - No possibility to change name and alias, because there's no interest

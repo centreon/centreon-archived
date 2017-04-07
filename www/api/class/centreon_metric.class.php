@@ -260,7 +260,6 @@ class CentreonMetric extends CentreonWebService
                 throw new RestNotFoundException("Graph not found");
             }
 
-
             $statusData = $graph->getData($rows);
 
             /* Get comments for this services */
@@ -514,11 +513,18 @@ class CentreonMetric extends CentreonWebService
         }
 
         return array(
-            'data' => $pollerDatas,
-            'times' => $times,
-            'size' => $rows,
-            'acknowledge' => array(),
-            'downtime' => array()
+            array(
+                'data' => $pollerDatas,
+                'times' => $times,
+                'size' => $rows,
+                'acknowledge' => array(),
+                'downtime' => array(),
+                'limits' => array(
+                    'min' => null,
+                    'max' => null
+                ),
+                'legends' => $graphPollerObject->getLegends()
+            )
         );
     }
 

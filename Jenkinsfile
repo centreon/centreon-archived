@@ -4,7 +4,7 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    sh '/opt/centreon-build/jobs/web/pipeline/mon-web-source.sh'
+    sh '/opt/centreon-build/jobs/web/dev/mon-web-source.sh'
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
@@ -16,13 +16,13 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-unittest.sh centos6'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-unittest.sh centos6'
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-unittest.sh centos7'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-unittest.sh centos7'
         step([
           $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
           pattern: '**/codestyle.xml',
@@ -41,13 +41,13 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-package.sh centos6'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-package.sh centos6'
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-package.sh centos7'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-package.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -59,13 +59,13 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh centos6'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-bundle.sh centos6'
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-bundle.sh centos7'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-bundle.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -77,7 +77,7 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos6'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-acceptance.sh centos6'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -92,7 +92,7 @@ try {
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-acceptance.sh centos7'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-acceptance.sh centos7'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -109,11 +109,11 @@ try {
     }
   }
 
-  if (env.BRANCH_NAME == '2.8.x') {
+  if (env.BRANCH_NAME == 'master') {
     stage('Delivery') {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/pipeline/mon-web-delivery.sh'
+        sh '/opt/centreon-build/jobs/web/dev/mon-web-delivery.sh'
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure.');
@@ -121,8 +121,7 @@ try {
     }
     build job: 'mon-automation-bundle-centos6', wait: false
     build job: 'mon-automation-bundle-centos7', wait: false
-    build job: 'mon-lm-bundle-centos6', wait: false
-    build job: 'mon-lm-bundle-centos7', wait: false
+    build job: 'centreon-license-manager/master', wait: false
     build job: 'mon-ppe-bundle-centos6', wait: false
     build job: 'mon-ppe-bundle-centos7', wait: false
     build job: 'centreon-poller-display/master', wait: false

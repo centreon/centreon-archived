@@ -33,6 +33,45 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../www/class/centreon-knowledge/wikiApi.class.php");
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
-(New WikiApi)->synchronize();
+class Wiki
+{
+    private $db;
+    private $config = null;
+
+    /**
+     * WikiApi constructor.
+     */
+    public function __construct()
+    {
+        $this->db = new CentreonDB();
+        $this->config = $this->getWikiConfig();
+    }
+
+    public function getWikiConfig()
+    {
+        if (!is_null($this->config)) {
+            return $this->config;
+        }
+
+        $options = array();
+
+        $res = $this->db->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_%'");
+        while ($opt = $res->fetchRow()) {
+            $options[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
+        }
+        $res->free();
+
+        if (!count($options)) {
+            throw new \Exception('Wiki is not configured.');
+        }
+
+        if (!preg_match('#^http://|https://#',  $options['kb_wiki_url'])) {
+            $options['kb_wiki_url'] = 'http://' .  $options['kb_wiki_url'];
+        }
+
+        return $options;
+    }
+}

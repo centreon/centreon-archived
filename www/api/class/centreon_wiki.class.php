@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,6 +33,51 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../www/class/centreon-knowledge/wikiApi.class.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/wikiApi.class.php";
+require_once dirname(__FILE__) . "/webService.class.php";
 
-(New WikiApi)->synchronize();
+class CentreonWiki extends CentreonWebService
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function postCheckConnection()
+    {
+        $sql_host = explode(':', $this->arguments['host']);
+        $host = $sql_host[0];
+        $port = isset($sql_host[1]) ? $sql_host[1] : '3306';
+        $user = $this->arguments['user'];
+        $password = $this->arguments['pwd'];
+        $db = $this->arguments['name'];
+
+        try {
+            new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db, $user, $password);
+            $outcome = true;
+            $message = _('Connection Successful');
+        } catch (PDOException $e) {
+            $outcome = false;
+            $message = $e->getMessage();
+        }
+
+        return array(
+            'outcome' => $outcome,
+            'message' => $message
+        );
+    }
+
+    public function postDeletePage()
+    {
+        $wikiApi = new WikiApi();
+        $result =  $wikiApi->deletePage($this->arguments['title']);
+
+        return array(
+            'result' => $result
+        );
+    }
+}

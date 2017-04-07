@@ -486,7 +486,7 @@ jQuery(function () {
   });
 
   /* Add events on click on action download image/CSV */
-  jQuery('.graphZone').delegate('a.actions', 'click', function (e) {
+  jQuery('.graphZone').delegate('a.actions,a.actions-simple', 'click', function (e) {
     var $a = jQuery(this);
     var baseUrl = $a.data('href');
     var chartId = $a.parents('.graph').data('graphId');

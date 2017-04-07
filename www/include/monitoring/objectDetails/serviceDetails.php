@@ -565,6 +565,7 @@ if (!is_null($host_id)) {
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
         $tpl->assign("svc_display_name", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
         $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
+        $tpl->assign("url_svc_id", urlencode(CentreonUtils::escapeSecure($host_name)).';'.urlencode(CentreonUtils::escapeSecure($svc_description)));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 
