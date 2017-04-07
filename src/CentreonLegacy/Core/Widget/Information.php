@@ -76,6 +76,9 @@ class Information
         $conf = $this->utils->xmlIntoArray($widgetPath . '/configs.xml');
 
         $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
+        echo '<pre>';
+        var_dump($conf);
+        echo '<pre>';
 
         return $conf;
     }
