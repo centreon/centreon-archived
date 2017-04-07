@@ -78,7 +78,7 @@ class Remover extends Module
     private function removeModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!file_exists($configurationFile)) {
+        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
 
@@ -102,7 +102,7 @@ class Remover extends Module
         $removed = false;
 
         $sqlFile = $this->getModulePath($this->moduleName) . '/sql/uninstall.sql';
-        if ($this->moduleConfiguration["sql_files"] && file_exists($sqlFile)) {
+        if ($this->moduleConfiguration["sql_files"] && $this->dependencyInjector['filesystem']->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $removed = true;
         }
@@ -119,7 +119,7 @@ class Remover extends Module
         $removed = false;
 
         $phpFile = $this->getModulePath($this->moduleName) . '/php/uninstall.php';
-        if ($this->moduleConfiguration["php_files"] && file_exists($phpFile)) {
+        if ($this->moduleConfiguration["php_files"] && $this->dependencyInjector['filesystem']->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $removed = true;
         }

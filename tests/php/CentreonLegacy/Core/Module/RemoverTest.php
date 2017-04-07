@@ -23,7 +23,7 @@ use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
 use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class InstallerTest extends \PHPUnit_Framework_TestCase
+class RemoverTest extends \PHPUnit_Framework_TestCase
 {
     private $container;
     private $db;
@@ -69,7 +69,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $this->container = null;
     }
 
-    public function testInstall()
+    public function testRemove()
     {
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
@@ -80,25 +80,15 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true);
         $this->container->registerProvider(new FilesystemProvider($filesystem));
 
-        $query = 'INSERT INTO modules_informations ' .
-            '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, ' .
-            '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
-            'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
-            ':sql_files , :php_files , :svc_tools , :host_tools )';
         $this->db->addResultSet(
-            $query,
+            'DELETE FROM modules_informations WHERE id = :id ',
             array()
         );
-        $this->db->addResultSet(
-            'SELECT MAX(id) as id FROM modules_informations',
-            array(array('id' => 1))
-        );
-
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $installer = new Installer($this->container, $this->information, 'MyModule', $this->utils);
-        $id = $installer->install();
+        $remover = new Remover($this->container, $this->information, 'MyModule', $this->utils);
+        $removed = $remover->remove();
 
-        $this->assertEquals($id, 1);
+        $this->assertEquals($removed, true);
     }
 }
