@@ -55,12 +55,21 @@ class Utils
     /*
      * Require configuration file
      */
-    public function requireConfiguration($configurationFile)
+    public function requireConfiguration($configurationFile, $type = 'install')
     {
-        $module_conf = array();
-        require $configurationFile;
+        $configuration = array();
 
-        return $module_conf;
+        if ($type == 'install') {
+            $module_conf = array();
+            require $configurationFile;
+            $configuration = $module_conf;
+        } elseif ($type == 'upgrade') {
+            $upgrade_conf = array();
+            require $configurationFile;
+            $configuration = $upgrade_conf;
+        }
+
+        return $configuration;
     }
 
     /**

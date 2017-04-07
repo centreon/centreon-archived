@@ -61,38 +61,36 @@ class Upgrader extends Module
      */
     public function upgrade()
     {
-        $this->dependencyInjector['configuration_db']->beginTransaction();
-
         $this->upgradeModuleConfiguration();
 
         $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
 
         $upgradesPath = $this->getModulePath($this->moduleName) . '/UPGRADE/';
-        $upgrades = scandir($upgradesPath);
-
+        $upgrades = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($upgradesPath);
         foreach ($upgrades as $upgrade) {
-            $upgradePath = $upgradesPath . $upgrade;
-            if (!preg_match('/^' . $this->moduleName . '-(\d+\.\d+\.\d+)/', $upgrade, $matches) ||
-                !is_dir($upgradePath) || !file_exists($upgradePath . '/conf.php')) {
+            $upgradeName = $upgrade->getBasename();
+            $upgradePath = $upgradesPath . $upgradeName;
+            if (!preg_match('/^' . $this->moduleName . '-(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
+                !$this->dependencyInjector['filesystem']->exists($upgradePath . '/conf.php')) {
                 continue;
             }
 
-            $upgrade_conf = array();
-            require $upgradePath . '/conf.php';
+            $configuration = $this->utils->requireConfiguration(
+                $upgradePath . '/conf.php',
+                    'upgrade'
+            );
 
-            if ($moduleInstalledInformation["mod_release"] != $upgrade_conf[$this->moduleName]["release_from"]) {
+            if ($moduleInstalledInformation["mod_release"] != $configuration[$this->moduleName]["release_from"]) {
                 continue;
             }
 
-            $this->upgradeVersion($upgrade_conf[$this->moduleName]["release_to"]);
-            $moduleInstalledInformation["mod_release"] = $upgrade_conf[$this->moduleName]["release_to"];
+            $this->upgradeVersion($configuration[$this->moduleName]["release_to"]);
+            $moduleInstalledInformation["mod_release"] = $configuration[$this->moduleName]["release_to"];
 
-            $this->upgradePhpFiles($upgrade_conf, $upgradePath, true);
-            $this->upgradeSqlFiles($upgrade_conf, $upgradePath);
-            $this->upgradePhpFiles($upgrade_conf, $upgradePath, false);
+            $this->upgradePhpFiles($configuration, $upgradePath, true);
+            $this->upgradeSqlFiles($configuration, $upgradePath);
+            $this->upgradePhpFiles($configuration, $upgradePath, false);
         }
-
-        $this->dependencyInjector['configuration_db']->commit();
 
         return $this->moduleId;
     }
@@ -106,7 +104,7 @@ class Upgrader extends Module
     private function upgradeModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!file_exists($configurationFile)) {
+        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
 
@@ -174,7 +172,7 @@ class Upgrader extends Module
         $installed = false;
 
         $sqlFile = $path . '/sql/install.sql';
-        if ($conf[$this->moduleName]["sql_files"] && file_exists($sqlFile)) {
+        if ($conf[$this->moduleName]["sql_files"] && $this->dependencyInjector['filesystem']->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
         }
@@ -196,7 +194,7 @@ class Upgrader extends Module
         $phpFile = $path . '/php/install';
         $phpFile = $pre ? $phpFile . '.pre.php' : $phpFile . '.php';
 
-        if ($conf[$this->moduleName]['php_files'] && file_exists($phpFile)) {
+        if ($conf[$this->moduleName]['php_files'] && $this->dependencyInjector['filesystem']->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
         }
