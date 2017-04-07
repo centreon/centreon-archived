@@ -38,10 +38,12 @@ if (!isset($centreon)) {
 }
 
 if (!$centreon->user->admin && $cg_id) {
-    $aclOptions = array('fields'     => array('cg_id','cg_name'),
-                        'keys'       => array('cg_id'),
-                        'get_row'    => 'cg_name',
-                        'conditions' => array('cg_id' => $cg_id));
+    $aclOptions = array(
+        'fields' => array('cg_id', 'cg_name'),
+        'keys' => array('cg_id'),
+        'get_row' => 'cg_name',
+        'conditions' => array('cg_id' => $cg_id)
+    );
     $cgs = $acl->getContactGroupAclConf($aclOptions);
     if (!count($cgs)) {
         $msg = new CentreonMsg();
@@ -51,9 +53,9 @@ if (!$centreon->user->admin && $cg_id) {
         return null;
     }
 }
-        
+
 $initialValues = array();
-        
+
 /*
  * Database retrieve information for Contact
  */
@@ -62,7 +64,7 @@ if (($o == "c" || $o == "w") && $cg_id) {
     /*
      * Get host Group information
      */
-    $DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '" . $cg_id . "' LIMIT 1");
 
     /*
      * Set base value
@@ -70,19 +72,22 @@ if (($o == "c" || $o == "w") && $cg_id) {
     $cg = array_map("myDecode", $DBRESULT->fetchRow());
 }
 
-$attrsText      = array("size"=>"30");
+$attrsText = array("size" => "30");
 $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"60");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "5", "cols" => "60");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
+    . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$contactRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list';
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'availableDatasetRoute' => $contactRoute,
     'multiple' => true,
     'linkedObject' => 'centreonContact'
 );
+$aclgRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list';
 $attrAclgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
+    'availableDatasetRoute' => $aclgRoute,
     'multiple' => true,
     'linkedObject' => 'centreonAclGroup'
 );
@@ -90,7 +95,7 @@ $attrAclgroups = array(
 /*
  * form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Contact Group"));
 } elseif ($o == "c") {
@@ -110,10 +115,11 @@ $form->addElement('text', 'cg_alias', _("Alias"), $attrsText);
  * Contacts Selection
  */
 $form->addElement('header', 'notification', _("Relations"));
-
+$contactRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact'
+    . '&action=defaultValues&target=contactgroup&field=cg_contacts&id=' . $cg_id;
 $attrContact1 = array_merge(
     $attrContacts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=contactgroup&field=cg_contacts&id=' . $cg_id)
+    array('defaultDatasetRoute' => $contactRoute)
 );
 $form->addElement('select2', 'cg_contacts', _("Linked Contacts"), array(), $attrContact1);
 
@@ -121,9 +127,11 @@ $form->addElement('select2', 'cg_contacts', _("Linked Contacts"), array(), $attr
 /*
  * Acl group selection
  */
+$aclRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup'
+    . '&action=defaultValues&target=contactgroup&field=cg_acl_groups&id=' . $cg_id;
 $attrAclgroup1 = array_merge(
     $attrAclgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=defaultValues&target=contactgroup&field=cg_acl_groups&id=' . $cg_id)
+    array('defaultDatasetRoute' => $aclRoute)
 );
 $form->addElement('select2', 'cg_acl_groups', _("Linked ACL groups"), array(), $attrAclgroup1);
 
@@ -143,7 +151,7 @@ $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
-    
+
 /*
  * Set rules
  */
@@ -157,7 +165,7 @@ if (!$centreon->user->admin) {
 
 $form->registerRule('exist', 'callback', 'testContactGroupExistence');
 $form->addRule('cg_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -165,12 +173,17 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, '
+    . '"orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"],'
+    . ' WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -179,7 +192,12 @@ if ($o == "w") {
      * Just watch a Contact Group information
      */
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&cg_id=" . $cg_id . "'")
+        );
     }
     $form->setDefaults($cg);
     $form->freeze();
@@ -212,7 +230,7 @@ if ($form->validate()) {
     $valid = true;
 }
 if ($valid) {
-    require_once($path."listContactGroup.php");
+    require_once($path . "listContactGroup.php");
 } else {
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

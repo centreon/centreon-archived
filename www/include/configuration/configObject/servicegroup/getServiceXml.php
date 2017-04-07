@@ -70,13 +70,13 @@ if ($hostId != "") {
     if (!$centreon->user->admin) {
         $query .= " AND h.host_id = acl.host_id
                     AND acl.service_id = s.service_id
-                    AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+                    AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     }
     $query .= " ORDER BY h.host_name, s.service_description ";
     $res = $db->query($query);
     while ($row = $res->fetchRow()) {
         $xml->startElement("services");
-        $xml->writeElement("id", $row['host_id']."-".$row['service_id']);
+        $xml->writeElement("id", $row['host_id'] . "-" . $row['service_id']);
         $xml->writeElement("description", sprintf("%s - %s", $row['host_name'], $row['service_description']));
         $xml->endElement();
     }
