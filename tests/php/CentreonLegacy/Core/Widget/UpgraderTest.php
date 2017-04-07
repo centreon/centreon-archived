@@ -23,7 +23,7 @@ use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
 use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class InstallerTest extends \PHPUnit_Framework_TestCase
+class UpgraderTest extends \PHPUnit_Framework_TestCase
 {
     private $container;
     private $db;
@@ -98,7 +98,9 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Widget\Information')
             ->disableOriginalConstructor()
-            ->setMethods(array('getConfiguration', 'getTypes', 'isInstalled', 'getIdByName', 'getParameterIdByName'))
+            ->setMethods(
+                array('getConfiguration', 'getTypes', 'getParameters', 'isInstalled', 'getIdByName', 'getParameterIdByName')
+            )
             ->getMock();
 
         $this->information->expects($this->any())
@@ -125,8 +127,37 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
             );
 
         $this->information->expects($this->any())
+            ->method('getParameters')
+            ->willReturn(
+                array(
+                    'entries' => array(
+                        'parameter_id' => 2,
+                        'parameter_name' => 'entries',
+                        'parameter_code_name' => 'entries',
+                        'default_value' => '',
+                        'parameter_order' => 1,
+                        'header_title' => 'title',
+                        'require_permission' => null,
+                        'widget_model_id' => 1,
+                        'field_type_id' => 2
+                    ),
+                    'order_by' => array(
+                        'parameter_id' => 3,
+                        'parameter_name' => 'Order By',
+                        'parameter_code_name' => 'order_by',
+                        'default_value' => '',
+                        'parameter_order' => 1,
+                        'header_title' => 'title',
+                        'require_permission' => null,
+                        'widget_model_id' => 1,
+                        'field_type_id' => 3
+                    )
+                )
+            );
+
+        $this->information->expects($this->any())
             ->method('isInstalled')
-            ->willReturn(false);
+            ->willReturn(true);
 
         $this->information->expects($this->any())
             ->method('getIdByName')
@@ -149,11 +180,24 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
     public function testInstall()
     {
-        $query = 'INSERT INTO widget_models ' .
-            '(title, description, url, version, directory, author, ' .
-            'email, website, keywords, thumbnail, autoRefresh) ' .
-            'VALUES (:title, :description, :url, :version, :directory, :author, ' .
-            ':email, :website, :keywords, :thumbnail, :autoRefresh) ';
+        $query = 'UPDATE widget_models SET ' .
+            'title = :title, ' .
+            'description = :description, ' .
+            'url = :url, ' .
+            'version = :version, ' .
+            'author = :author, ' .
+            'email = :email, ' .
+            'website = :website, ' .
+            'keywords = :keywords, ' .
+            'thumbnail = :thumbnail, ' .
+            'autoRefresh = :autoRefresh ' .
+            'WHERE directory = :directory ';
+        $this->db->addResultSet(
+            $query,
+            array()
+        );
+        $query = 'DELETE FROM widget_parameters ' .
+            'WHERE parameter_id = :id ';
         $this->db->addResultSet(
             $query,
             array()
@@ -181,6 +225,31 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
             $query,
             array()
         );
+        $query = 'UPDATE widget_parameters SET ' .
+            'field_type_id = :field_type_id, ' .
+            'parameter_name = :parameter_name, ' .
+            'default_value = :default_value, ' .
+            'parameter_order = :parameter_order, ' .
+            'require_permission = :require_permission, ' .
+            'header_title = :header_title ' .
+            'WHERE widget_model_id = :widget_model_id ' .
+            'AND parameter_code_name = :parameter_code_name ';
+        $this->db->addResultSet(
+            $query,
+            array()
+        );
+        $query = 'DELETE FROM widget_parameters_multiple_options ' .
+            'WHERE parameter_id = :id ';
+        $this->db->addResultSet(
+            $query,
+            array()
+        );
+        $query = 'DELETE FROM widget_parameters_range ' .
+            'WHERE parameter_id = :id ';
+        $this->db->addResultSet(
+            $query,
+            array()
+        );
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
         $this->utils->expects($this->any())
@@ -189,9 +258,9 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $installer = new Installer($this->container, $this->information, 'MyWidget', $this->utils);
-        $id = $installer->install();
+        $installer = new Upgrader($this->container, $this->information, 'MyWidget', $this->utils);
+        $upgraded = $installer->upgrade();
 
-        $this->assertEquals($id, 1);
+        $this->assertEquals($upgraded, true);
     }
 }

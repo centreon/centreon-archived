@@ -35,7 +35,7 @@
 
 namespace CentreonLegacy\Core\Widget;
 
-class Upgrader extends Widget
+class Upgrader extends Installer
 {
     /**
      *
@@ -64,17 +64,15 @@ class Upgrader extends Widget
             throw new \Exception('Widget "' . $this->widgetName . '" is not installed.');
         }
 
-        $this->dependencyInjector['configuration_db']->beginTransaction();
-
-        try {
+        //try {
             $id = $this->upgradeConfiguration();
             $this->upgradePreferences($id);
-            $this->dependencyInjector['configuration_db']->commit();
             $upgraded = true;
+            /*
         } catch (\Exception $e) {
-            $this->dependencyInjector['configuration_db']->rollback();
             $upgraded = false;
         }
+            */
 
         return $upgraded;
     }
