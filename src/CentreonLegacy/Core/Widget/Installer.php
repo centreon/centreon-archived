@@ -64,6 +64,7 @@ class Installer extends Widget
             throw new \Exception('Widget is already installed.');
         }
 
+
         $id = $this->installConfiguration();
         $this->installPreferences($id);
 

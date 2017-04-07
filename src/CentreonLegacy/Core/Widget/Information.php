@@ -69,14 +69,16 @@ class Information
     public function getConfiguration($widgetName)
     {
         $widgetPath = $this->utils->buildPath('/widgets/' . $widgetName);
-        if (!file_exists($widgetPath . '/configs.xml')) {
+        if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
             throw new \Exception('Cannot get configuration file of widget "' . $widgetName . '"');
         }
 
-        $xml = simplexml_load_file($widgetPath . '/configs.xml');
-        $conf = $this->utils->objectIntoArray($xml);
+        $conf = $this->utils->xmlIntoArray($widgetPath . '/configs.xml');
 
         $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
+        echo '<pre>';
+        var_dump($conf);
+        echo '<pre>';
 
         return $conf;
     }
@@ -207,19 +209,20 @@ class Information
         $widgetsConf = array();
 
         $widgetsPath = $this->getWidgetPath();
-        $widgets = scandir($widgetsPath);
+        $widgets = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($widgetsPath);
 
         foreach ($widgets as $widget) {
-            if (!empty($search) && !stristr($widget, $search)) {
+            $widgetName = $widget->getBasename();
+            if (!empty($search) && !stristr($widgetName, $search)) {
                 continue;
             }
 
-            $widgetPath = $widgetsPath . $widget;
-            if (!preg_match('/\W+/', $widget) || !is_dir($widgetPath) || !is_file($widgetPath . '/configs.xml')) {
+            $widgetPath = $widgetsPath . $widgetName;
+            if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
                 continue;
             }
 
-            $widgetsConf[$widget] = $this->getConfiguration($widget);
+            $widgetsConf[$widgetName] = $this->getConfiguration($widgetName);
         }
 
         return $widgetsConf;
