@@ -45,11 +45,18 @@ class Factory
 
     /**
      *
+     * @var CentreonLegacy\Core\Utils\Factory
+     */
+    protected $utils;
+
+    /**
+     *
      * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
+    public function __construct(\Pimple\Container $dependencyInjector, $utils)
     {
         $this->dependencyInjector = $dependencyInjector;
+        $this->utils = $utils;
     }
 
     /**
@@ -58,10 +65,7 @@ class Factory
      */
     public function newInformation()
     {
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-
-        return new Information($this->dependencyInjector, $utils);
+        return new Information($this->dependencyInjector, $this->utils);
     }
 
     /**
@@ -73,9 +77,7 @@ class Factory
     {
         $informationObj = $this->newInformation();
 
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-        return new Installer($this->dependencyInjector, $informationObj, $widgetName, $utils);
+        return new Installer($this->dependencyInjector, $informationObj, $widgetName, $this->utils);
     }
 
     /**
@@ -87,10 +89,7 @@ class Factory
     {
         $informationObj = $this->newInformation();
 
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-
-        return new Upgrader($this->dependencyInjector, $informationObj, $widgetName, $utils);
+        return new Upgrader($this->dependencyInjector, $informationObj, $widgetName, $this->utils);
     }
 
     /**
@@ -102,9 +101,6 @@ class Factory
     {
         $informationObj = $this->newInformation();
 
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-
-        return new Remover($this->dependencyInjector, $informationObj, $widgetName, $utils);
+        return new Remover($this->dependencyInjector, $informationObj, $widgetName, $this->utils);
     }
 }

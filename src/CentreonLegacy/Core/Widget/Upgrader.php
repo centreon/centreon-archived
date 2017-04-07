@@ -64,15 +64,13 @@ class Upgrader extends Installer
             throw new \Exception('Widget "' . $this->widgetName . '" is not installed.');
         }
 
-        //try {
+        try {
             $id = $this->upgradeConfiguration();
             $this->upgradePreferences($id);
             $upgraded = true;
-            /*
         } catch (\Exception $e) {
             $upgraded = false;
         }
-            */
 
         return $upgraded;
     }
