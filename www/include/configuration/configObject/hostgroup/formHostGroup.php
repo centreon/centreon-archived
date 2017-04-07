@@ -150,7 +150,7 @@ $form->addElement(
     'hg_map_icon_image',
     _("Map Icon"),
     $extImg,
-    array("onChange" => "showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)")
+    array("onChange" => "showLogo('hg_map_icon_image',this.form.elements['hg_map_icon_image'].value)")
 );
 
 /*
@@ -186,7 +186,6 @@ function myReplace()
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('hg_name', 'myReplace');
 $form->addRule('hg_name', _("Compulsory Name"), 'required');
-$form->addRule('hg_alias', _("Compulsory Alias"), 'required');
 
 $form->registerRule('exist', 'callback', 'testHostGroupExistence');
 $form->addRule('hg_name', _("Name is already in use"), 'exist');
@@ -228,10 +227,6 @@ if ($o == "w") {
 }
 
 $tpl->assign('p', $p);
-$tpl->assign("initJS", "<script type='text/javascript'>
-							jQuery(function () {
-							initAutoComplete('Form','city_name','sub');
-							});</script>");
 $tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>");
 $tpl->assign(
     "helpattr",
