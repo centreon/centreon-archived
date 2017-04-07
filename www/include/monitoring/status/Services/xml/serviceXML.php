@@ -419,7 +419,7 @@ if (!$sqlError) {
             $obj->XML->writeElement("hdn", $data["host_display_name"]);
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "1");
-            $obj->XML->text(CentreonUtils::escapeSecure($data["name"]));
+            $obj->XML->text(CentreonUtils::escapeSecure(urlencode($data["name"])));
             $obj->XML->endElement();
             $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($data["name"])));
             $obj->XML->writeElement("hid", $data["host_id"]);
@@ -435,7 +435,7 @@ if (!$sqlError) {
             $obj->XML->writeElement("hdn", $data["host_display_name"]);
             $obj->XML->startElement("hn");
             $obj->XML->writeAttribute("none", "0");
-            $obj->XML->text(CentreonUtils::escapeSecure($data["name"]), true, false);
+            $obj->XML->text(CentreonUtils::escapeSecure(urlencode($data["name"])), true, false);
             $obj->XML->endElement();
 
             $hostNotesUrl = "none";
