@@ -42,14 +42,21 @@ class Factory
      * @var Pimple\Container
      */
     protected $dependencyInjector;
+    
+    /**
+     *
+     * @var CentreonLegacy\Core\Utils\Factory
+     */
+    protected $utils;
 
     /**
      *
      * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
+    public function __construct(\Pimple\Container $dependencyInjector, $utils)
     {
         $this->dependencyInjector = $dependencyInjector;
+        $this->utils = $utils;
     }
 
     /**
@@ -59,25 +66,18 @@ class Factory
     public function newInformation()
     {
         $licenseObj = $this->newLicense();
-        
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-        
-        return new Information($this->dependencyInjector, $licenseObj, $utils);
+        return new Information($this->dependencyInjector, $licenseObj, $this->utils);
     }
 
     /**
      *
-     * @param type $moduleName
+     * @param string $moduleName
      * @return \CentreonLegacy\Core\Module\Installer
      */
     public function newInstaller($moduleName)
     {
         $informationObj = $this->newInformation();
-
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-        return new Installer($this->dependencyInjector, $informationObj, $moduleName, $utils);
+        return new Installer($this->dependencyInjector, $informationObj, $moduleName, $this->utils);
     }
 
     /**
@@ -89,11 +89,7 @@ class Factory
     public function newUpgrader($moduleName, $moduleId)
     {
         $informationObj = $this->newInformation();
-
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-
-        return new Upgrader($this->dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
+        return new Upgrader($this->dependencyInjector, $informationObj, $moduleName, $this->utils, $moduleId);
     }
 
     /**
@@ -105,11 +101,7 @@ class Factory
     public function newRemover($moduleName, $moduleId)
     {
         $informationObj = $this->newInformation();
-
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $factory->newUtils();
-
-        return new Remover($this->dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
+        return new Remover($this->dependencyInjector, $informationObj, $moduleName, $this->utils, $moduleId);
     }
 
     /**
