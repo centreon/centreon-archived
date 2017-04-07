@@ -59,8 +59,6 @@ class Remover extends Widget
      */
     public function remove()
     {
-        $this->dependencyInjector['configuration_db']->beginTransaction();
-
         $query = 'DELETE FROM widget_models ' .
             'WHERE directory = :directory ';
 
@@ -69,10 +67,8 @@ class Remover extends Widget
         $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
         if ($sth->execute() && $sth->rowCount()) {
-            $this->dependencyInjector['configuration_db']->commit();
             $removed = true;
         } else {
-            $this->dependencyInjector['configuration_db']->rollback();
             $removed = false;
         }
 

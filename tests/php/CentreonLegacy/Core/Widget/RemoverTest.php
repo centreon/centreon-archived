@@ -23,7 +23,7 @@ use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
 use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class InstallerTest extends \PHPUnit_Framework_TestCase
+class RemoverTest extends \PHPUnit_Framework_TestCase
 {
     private $container;
     private $db;
@@ -147,49 +147,19 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $this->container = null;
     }
 
-    public function testInstall()
+    public function testRemove()
     {
-        $query = 'INSERT INTO widget_models ' .
-            '(title, description, url, version, directory, author, ' .
-            'email, website, keywords, thumbnail, autoRefresh) ' .
-            'VALUES (:title, :description, :url, :version, :directory, :author, ' .
-            ':email, :website, :keywords, :thumbnail, :autoRefresh) ';
-        $this->db->addResultSet(
-            $query,
-            array()
-        );
-        $query = 'INSERT INTO widget_parameters ' .
-            '(widget_model_id, field_type_id, parameter_name, parameter_code_name, ' .
-            'default_value, parameter_order, require_permission, header_title) ' .
-            'VALUES ' .
-            '(:widget_model_id, :field_type_id, :parameter_name, :parameter_code_name, ' .
-            ':default_value, :parameter_order, :require_permission, :header_title) ';
-        $this->db->addResultSet(
-            $query,
-            array()
-        );
-        $query = 'INSERT INTO widget_parameters_multiple_options ' .
-            '(parameter_id, option_name, option_value) VALUES ' .
-            '(:parameter_id, :option_name, :option_value) ';
-        $this->db->addResultSet(
-            $query,
-            array()
-        );
-        $query = 'INSERT INTO widget_parameters_range (parameter_id, min_range, max_range, step) ' .
-            'VALUES (:parameter_id, :min_range, :max_range, :step) ';
+        $query = 'DELETE FROM widget_models ' .
+            'WHERE directory = :directory ';
         $this->db->addResultSet(
             $query,
             array()
         );
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $this->utils->expects($this->any())
-            ->method('buildPath')
-            ->willReturn('MyWidget');
+        $remover = new Remover($this->container, $this->information, 'MyWidget', $this->utils);
+        $removed = $remover->remove();
 
-        $installer = new Installer($this->container, $this->information, 'MyWidget', $this->utils);
-        $id = $installer->install();
-
-        $this->assertEquals($id, 1);
+        $this->assertEquals($removed, true);
     }
 }
