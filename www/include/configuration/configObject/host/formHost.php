@@ -128,14 +128,17 @@ function allInSameInstance($hosts, $instanceId)
  */
 $host = array();
 if (($o == "c" || $o == "w") && $host_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '" . $host_id . "' AND ehi.host_host_id = host.host_id LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * 
+                                FROM host, extended_host_information ehi 
+                                WHERE host_id = '" . $host_id . "' 
+                                AND ehi.host_host_id = host.host_id LIMIT 1");
 
     /*
      * Set base value
      */
     $host_list = $DBRESULT->fetchRow();
     $host = array_map("myDecode", $host_list);
-    
+
     $cmdId = $host['command_command_id'];
 
     /*
@@ -152,69 +155,6 @@ if (($o == "c" || $o == "w") && $host_id) {
     $tmp = explode(',', $host["host_stalking_options"]);
     foreach ($tmp as $key => $value) {
         $host["host_stalOpts"][trim($value)] = 1;
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Contact Group
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '" . $host_id . "'");
-    for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCgs[$notifCg['contactgroup_cg_id']])) {
-            $initialValues['host_cgs'][] = $notifCg['contactgroup_cg_id'];
-        } else {
-            $host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Contacts
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '" . $host_id . "'");
-    for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCs[$notifC['contact_id']])) {
-            $initialValues['host_cs'][] = $notifC['contact_id'];
-        } else {
-            $host["host_cs"][$i] = $notifC["contact_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Host Parents
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation, host WHERE host_id = host_parent_hp_id AND host_host_id = '" . $host_id . "' ORDER BY host_name");
-    for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++) {
-        if (!$centreon->user->admin && false === strpos($aclHostString, "'" . $parent['host_parent_hp_id'] . "'")) {
-            $initialValues['host_parents'][] = $parent['host_parent_hp_id'];
-        } else {
-            $host["host_parents"][$i] = $parent["host_parent_hp_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Host Childs
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation, host WHERE host_id = host_host_id AND host_parent_hp_id = '" . $host_id . "' ORDER BY host_name");
-    for ($i = 0; $child = $DBRESULT->fetchRow(); $i++) {
-        if (!$centreon->user->admin && false === strpos($aclHostString, "'" . $child['host_host_id'] . "'")) {
-            $initialValues['host_childs'][] = $child['host_host_id'];
-        } else {
-            $host["host_childs"][$i] = $child["host_host_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Host Group Parents
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '" . $host_id . "'");
-    for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
-        if (in_array($hg["hostgroup_hg_id"], array_keys($hgs))) {
-            $host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
-        }
     }
     $DBRESULT->free();
 
@@ -239,7 +179,9 @@ if (($o == "c" || $o == "w") && $host_id) {
     /*
      * Set Host and Nagios Server Relation
      */
-    $DBRESULT = $pearDB->query("SELECT `nagios_server_id` FROM `ns_host_relation` WHERE `host_host_id` = '" . $host_id . "'");
+    $DBRESULT = $pearDB->query("SELECT `nagios_server_id` 
+                                FROM `ns_host_relation` 
+                                WHERE `host_host_id` = '" . $host_id . "'");
     for (($o != "mc") ? $i = 0 : $i = 1; $ns = $DBRESULT->fetchRow(); $i++) {
         $host["nagios_server_id"][$i] = $ns["nagios_server_id"];
     }
@@ -260,7 +202,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cr = $res->fetchRow();
         $host['criticality_id'] = $cr['hc_id'];
     }
-    
+
     $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, true, "host_name,host_id,command_command_id");
     if (!isset($cmdId)) {
         $cmdId = "";
@@ -289,105 +231,20 @@ $cdata->addJsData('clone-values-template', htmlspecialchars(
 $cdata->addJsData('clone-count-template', count($tplArray));
 
 /*
- * Database retrieve information for differents elements list we need on the page
- * Host Templates comes from DB -> Store in $hTpls Array
- */
-
-$hTpls = array();
-$DBRESULT = $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '" . $host_id . "' ORDER BY host_name");
-$nbMaxTemplates = 0;
-while ($hTpl = $DBRESULT->fetchRow()) {
-    if (!$hTpl["host_name"]) {
-        $hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"]) . "'";
-    }
-    $hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
-    $nbMaxTemplates++;
-}
-$DBRESULT->free();
-
-/*
- * Timeperiods comes from DB -> Store in $tps Array
- */
-$tps = array(null => null);
-$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($tp = $DBRESULT->fetchRow()) {
-    $tps[$tp["tp_id"]] = $tp["tp_name"];
-}
-$DBRESULT->free();
-
-/*
- * Check commands comes from DB -> Store in $checkCmds Array
- */
-$checkCmds = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-/*
- * Check commands comes from DB -> Store in $checkCmds Array
- */
-$checkCmdEvent = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-/*
  * Nagios Server comes from DB -> Store in $nsServer Array
  */
-
 $nsServers = array();
 if ($o == "mc") {
     $nsServers[null] = null;
 }
 $DBRESULT = $pearDB->query("SELECT id, name
                                 FROM nagios_server " .
-        ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'id', $aclPollerString) : "") .
-        " ORDER BY name");
+    ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'id', $aclPollerString) : "") .
+    " ORDER BY name");
 while ($nsServer = $DBRESULT->fetchRow()) {
     $nsServers[$nsServer["id"]] = $nsServer["name"];
 }
 $DBRESULT->free();
-
-/*
- * Host Categories comes from DB -> Store in $hcs Array
- */
-$hcs = array();
-$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories WHERE level IS NULL " .
-        ($hcString != "''" ? $acl->queryBuilder('AND', 'hc_id', $hcString) : "") .
-        " ORDER BY hc_name");
-while ($hc = $DBRESULT->fetchRow()) {
-    $hcs[$hc["hc_id"]] = $hc["hc_name"];
-}
-$DBRESULT->free();
-
-/*
- * Host Parents comes from DB -> Store in $hostPs Array
- */
-$aclFrom = "";
-$aclCond = "";
-if (!$centreon->user->admin) {
-    $aclFrom = ", $aclDbName.centreon_acl acl ";
-    $aclCond = " AND h.host_id = acl.host_id
-                 AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
-}
-$hostPs = array();
-$DBRESULT = $pearDB->query("SELECT h.host_id, h.host_name, host_template_model_htm_id
-                                FROM host h $aclFrom
-                                WHERE h.host_id != '" . $host_id . "'
-                                AND host_register = '1' $aclCond
-                                ORDER BY h.host_name");
-while ($hostP = $DBRESULT->fetchRow()) {
-    if (!$hostP["host_name"]) {
-        $hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"]) . "'";
-    }
-    $hostPs[$hostP["host_id"]] = $hostP["host_name"];
-}
-$DBRESULT->free();
-
 
 /*
  * IMG comes from DB -> Store in $extImg Array
@@ -402,7 +259,10 @@ $extImgStatusmap = return_image_list(2);
  */
 $mTp = array();
 $k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" . $host_id . "' ORDER BY `order`");
+$DBRESULT = $pearDB->query("SELECT host_tpl_id 
+                            FROM host_template_relation 
+                            WHERE host_host_id = '" . $host_id . "' 
+                            ORDER BY `order`");
 while ($multiTp = $DBRESULT->fetchRow()) {
     $mTp[$k] = $multiTp["host_tpl_id"];
     $k++;
@@ -421,22 +281,27 @@ $attrsAdvSelect = array("style" => "width: 270px; height: 100px;");
 $attrsAdvSelectsmall = array("style" => "width: 270px; height: 50px;");
 $attrsAdvSelectbig = array("style" => "width: 270px; height: 130px;");
 $attrsTextarea = array("rows" => "4", "cols" => "80");
-$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
+    . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$timeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list';
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'availableDatasetRoute' => $timeRoute,
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
+$contactRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list';
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'availableDatasetRoute' => $contactRoute,
     'multiple' => true,
     'linkedObject' => 'centreonContact'
 );
+$contactGrRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+    . '&action=list';
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'availableDatasetRoute' => $contactGrRoute,
     'multiple' => true,
     'linkedObject' => 'centreonContactgroup'
 );
@@ -445,27 +310,33 @@ $attrCommands = array(
     'multiple' => false,
     'linkedObject' => 'centreonCommand'
 );
+$hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'availableDatasetRoute' => $hostRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
+$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates'
+    . '&action=list';
 $attrHostTpls = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates&action=list',
+    'availableDatasetRoute' => $hostTplRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHosttemplates'
 );
+$hostGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'availableDatasetRoute' => $hostGrAvRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHostgroups'
 );
+$hostCatAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory'
+    . '&action=list&t=c';
 $attrHostcategories = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=list&t=c',
+    'availableDatasetRoute' => $hostCatAvRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHostcategories'
 );
@@ -500,8 +371,22 @@ $form->addElement('header', 'information', _("General Information"));
 if ($o != "mc") {
     $form->addElement('text', 'host_name', _("Name"), $attrsText);
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
-    $form->addElement('text', 'host_address', _("IP Address / DNS"), array_merge(array('id' => 'host_address'), $attrsText));
-    $form->addElement('button', 'host_resolve', _("Resolve"), array('onClick' => 'resolveHostNameToAddress(document.getElementById(\'host_address\').value, function(err, ip){if (!err) document.getElementById(\'host_address\').value = ip});', 'class' => 'btc bt_info'));
+    $form->addElement(
+        'text',
+        'host_address',
+        _("IP Address / DNS"),
+        array_merge(array('id' => 'host_address'), $attrsText)
+    );
+    $form->addElement(
+        'button',
+        'host_resolve',
+        _("Resolve"),
+        array(
+            'onClick' => 'resolveHostNameToAddress(document.getElementById(\'host_address\').value,'
+                . ' function(err, ip){if (!err) document.getElementById(\'host_address\').value = ip});',
+            'class' => 'btc bt_info'
+        )
+    );
 }
 $form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 $form->addElement('select', 'host_snmp_version', _("Version"), array(null => null, 1 => "1", "2c" => "2c", 3 => "3"));
@@ -509,10 +394,13 @@ $form->addElement('select', 'host_snmp_version', _("Version"), array(null => nul
 /*
  * Include GMT Class
  */
+$timezDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone'
+    . '&action=defaultValues&target=host&field=host_location&id=' . $host_id;
+$timezAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list';
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
-    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=defaultValues&target=host&field=host_location&id=' . $host_id,
+    'availableDatasetRoute' => $timezAvRoute,
+    'defaultDatasetRoute' => $timezDeRoute,
     'multiple' => false,
     'linkedObject' => 'centreonGMT'
 );
@@ -538,7 +426,13 @@ if ($o == "mc") {
 }
 
 $form->addElement('text', 'host_parallel_template', _('Templates'));
-$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance") . "<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70, FIX, [this, 0, 10])\" onmouseout=\"UnTip()\">" . _("Here is a self-explanatory image.") . "</a>");
+$form->addElement(
+    'static',
+    'tplTextParallel',
+    _("A host can have multiple templates, their orders have a significant importance")
+    . "<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70,"
+    . " FIX, [this, 0, 10])\" onmouseout=\"UnTip()\">" . _("Here is a self-explanatory image.") . "</a>"
+);
 $form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 
 $cloneSetMacro = array();
@@ -547,8 +441,8 @@ $cloneSetMacro[] = $form->addElement(
     'macroInput[#index#]',
     _('Name'),
     array(
-    'id' => 'macroInput_#index#',
-    'size' => 25
+        'id' => 'macroInput_#index#',
+        'size' => 25
     )
 );
 $cloneSetMacro[] = $form->addElement(
@@ -556,8 +450,8 @@ $cloneSetMacro[] = $form->addElement(
     'macroValue[#index#]',
     _('Value'),
     array(
-    'id' => 'macroValue_#index#',
-    'size' => 25
+        'id' => 'macroValue_#index#',
+        'size' => 25
     )
 );
 $cloneSetMacro[] = $form->addElement(
@@ -566,8 +460,8 @@ $cloneSetMacro[] = $form->addElement(
     _('Password'),
     null,
     array(
-    'id' => 'macroPassword_#index#',
-    'onClick' => 'javascript:change_macro_input_type(this, false)'
+        'id' => 'macroPassword_#index#',
+        'onClick' => 'javascript:change_macro_input_type(this, false)'
     )
 );
 
@@ -586,9 +480,9 @@ $cloneSetTemplate[] = $form->addElement(
     _("Template"),
     (array(null => null) + $hostObj->getList(false, true)),
     array(
-    "id" => "tpSelect_#index#",
-    "type" => "select-one"
-        )
+        "id" => "tpSelect_#index#",
+        "type" => "select-one"
+    )
 );
 
 $dupSvTpl[] = HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
@@ -608,15 +502,21 @@ $form->addElement('static', 'dupSvTplAssocText', _("Create Services linked to th
 #
 $form->addElement('header', 'check', _("Host Check Properties"));
 
+$comDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_command'
+    . '&action=defaultValues&target=host&field=command_command_id&id=' . $host_id;
+$comAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=2';
 $attrCommand1 = array_merge(
     $attrCommands,
     array(
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=host&field=command_command_id&id=' . $host_id,
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=2'
+        'defaultDatasetRoute' => $comDeRoute,
+        'availableDatasetRoute' => $comAvRoute
     )
 );
 $checkCommandSelect = $form->addElement('select2', 'command_command_id', _("Check Command"), array(), $attrCommand1);
-$checkCommandSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");');
+$checkCommandSelect->addJsCallback(
+    'change',
+    'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");'
+);
 
 $form->addElement('text', 'command_command_id_arg1', _("Args"), $attrsText);
 
@@ -632,15 +532,21 @@ if ($o != "mc") {
     $form->setDefaults(array('host_event_handler_enabled' => '2'));
 }
 
+$comDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_command'
+    . '&action=defaultValues&target=host&field=command_command_id2&id=' . $host_id;
+$comAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list';
 $attrCommand2 = array_merge(
     $attrCommands,
     array(
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list',
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=host&field=command_command_id2&id=' . $host_id
+        'availableDatasetRoute' => $comAvRoute,
+        'defaultDatasetRoute' => $comDeRoute
     )
 );
 $eventHandlerSelect = $form->addElement('select2', 'command_command_id2', _("Event Handler"), array(), $attrCommand2);
-$eventHandlerSelect->addJsCallback('change', 'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");');
+$eventHandlerSelect->addJsCallback(
+    'change',
+    'setArgument(jQuery(this).closest("form").get(0),"command_command_id2","example2");'
+);
 $form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
 $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
@@ -659,9 +565,11 @@ if ($o != "mc") {
     $form->setDefaults(array('host_passive_checks_enabled' => '2'));
 }
 
+$timeDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
+    . '&action=defaultValues&target=host&field=timeperiod_tp_id&id=' . $host_id;
 $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id&id=' . $host_id)
+    array('defaultDatasetRoute' => $timeDeRoute)
 );
 $form->addElement('select2', 'timeperiod_tp_id', _("Check Period"), array(), $attrTimeperiod1);
 
@@ -684,9 +592,26 @@ if ($o != "mc") {
 
 if ($o == "mc") {
     $mc_mod_notifopt_first_notification_delay = array();
-    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
-    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_notifopt_first_notification_delay, 'mc_mod_notifopt_first_notification_delay', _("Update mode"), '&nbsp;');
+    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_first_notification_delay',
+        null,
+        _("Incremental"),
+        '0'
+    );
+    $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_first_notification_delay',
+        null,
+        _("Replacement"),
+        '1'
+    );
+    $form->addGroup(
+        $mc_mod_notifopt_first_notification_delay,
+        'mc_mod_notifopt_first_notification_delay',
+        _("Update mode"),
+        '&nbsp;'
+    );
     $form->setDefaults(array('mc_mod_notifopt_first_notification_delay' => '0'));
 }
 
@@ -708,13 +633,30 @@ if ($o == "mc") {
 if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
-    $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
+    $contactAdditive[] = HTML_QuickForm::createElement(
+        'radio',
+        'mc_contact_additive_inheritance',
+        null,
+        _("Default"),
+        '2'
+    );
     $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
-    
+
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
-    $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
-    $form->addGroup($contactGroupAdditive, 'mc_cg_additive_inheritance', _("Contact group additive inheritance"), '&nbsp;');
+    $contactGroupAdditive[] = HTML_QuickForm::createElement(
+        'radio',
+        'mc_cg_additive_inheritance',
+        null,
+        _("Default"),
+        '2'
+    );
+    $form->addGroup(
+        $contactGroupAdditive,
+        'mc_cg_additive_inheritance',
+        _("Contact group additive inheritance"),
+        '&nbsp;'
+    );
 } else {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
@@ -722,27 +664,48 @@ if ($o == "mc") {
 /*
  *  Contacts
  */
+$contactDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact'
+    . '&action=defaultValues&target=host&field=host_cs&id=' . $host_id;
 $attrContact1 = array_merge(
     $attrContacts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=host&field=host_cs&id=' . $host_id)
+    array('defaultDatasetRoute' => $contactDeRoute)
 );
 $form->addElement('select2', 'host_cs', _("Linked Contacts"), array(), $attrContact1);
 
 /*
  *  Contact groups
  */
+$contactGrDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+    . '&action=defaultValues&target=host&field=host_cgs&id=' . $host_id;
 $attrContactgroup1 = array_merge(
     $attrContactgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=host&field=host_cgs&id=' . $host_id)
+    array('defaultDatasetRoute' => $contactGrDeRoute)
 );
 $form->addElement('select2', 'host_cgs', _("Linked Contact Groups"), array(), $attrContactgroup1);
 
 
 if ($o == "mc") {
     $mc_mod_notifopt_notification_interval = array();
-    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
-    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
+    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_notification_interval',
+        null,
+        _("Incremental"),
+        '0'
+    );
+    $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_notification_interval',
+        null,
+        _("Replacement"),
+        '1'
+    );
+    $form->addGroup(
+        $mc_mod_notifopt_notification_interval,
+        'mc_mod_notifopt_notification_interval',
+        _("Update mode"),
+        '&nbsp;'
+    );
     $form->setDefaults(array('mc_mod_notifopt_notification_interval' => '0'));
 }
 
@@ -750,15 +713,28 @@ $form->addElement('text', 'host_notification_interval', _("Notification Interval
 
 if ($o == "mc") {
     $mc_mod_notifopt_timeperiod = array();
-    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Incremental"), '0');
-    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
+    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_timeperiod',
+        null,
+        _("Incremental"),
+        '0'
+    );
+    $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement(
+        'radio',
+        'mc_mod_notifopt_timeperiod',
+        null,
+        _("Replacement"),
+        '1'
+    );
     $form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_notifopt_timeperiod' => '0'));
 }
-
+$timeDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
+    . '&action=defaultValues&target=host&field=timeperiod_tp_id2&id=' . $host_id;
 $attrTimeperiod2 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=host&field=timeperiod_tp_id2&id=' . $host_id)
+    array('defaultDatasetRoute' => $timeDeRoute)
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
@@ -770,12 +746,48 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_notifopts' => '0'));
 }
 
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'notifD', 'onClick' => 'uncheckNotifOption(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'notifU', 'onClick' => 'uncheckNotifOption(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'notifR', 'onClick' => 'uncheckNotifOption(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'notifF', 'onClick' => 'uncheckNotifOption(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'notifDS', 'onClick' => 'uncheckNotifOption(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'notifN', 'onClick' => 'uncheckNotifOption(this);'));
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'd',
+    '&nbsp;',
+    _("Down"),
+    array('id' => 'notifD', 'onClick' => 'uncheckNotifOption(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'u',
+    '&nbsp;',
+    _("Unreachable"),
+    array('id' => 'notifU', 'onClick' => 'uncheckNotifOption(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'r',
+    '&nbsp;',
+    _("Recovery"),
+    array('id' => 'notifR', 'onClick' => 'uncheckNotifOption(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'f',
+    '&nbsp;',
+    _("Flapping"),
+    array('id' => 'notifF', 'onClick' => 'uncheckNotifOption(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    's',
+    '&nbsp;',
+    _("Downtime Scheduled"),
+    array('id' => 'notifDS', 'onClick' => 'uncheckNotifOption(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'n',
+    '&nbsp;',
+    _("None"),
+    array('id' => 'notifN', 'onClick' => 'uncheckNotifOption(this);')
+);
 $form->addGroup($hostNotifOpt, 'host_notifOpts', _("Notification Options"), '&nbsp;&nbsp;');
 
 $hostStalOpt[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Up"));
@@ -820,10 +832,12 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hpar' => '0'));
 }
 
+$hostDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host'
+    . '&action=defaultValues&target=host&field=host_parents&id=' . $host_id;
 /* Host Parents */
 $attrHost1 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_parents&id=' . $host_id)
+    array('defaultDatasetRoute' => $hostDeRoute)
 );
 $form->addElement('select2', 'host_parents', _("Parent Hosts"), array(), $attrHost1);
 
@@ -835,9 +849,11 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hch' => '0'));
 }
 
+$hostDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host'
+    . '&action=defaultValues&target=host&field=host_childs&id=' . $host_id;
 $attrHost2 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_childs&id=' . $host_id)
+    array('defaultDatasetRoute' => $hostDeRoute)
 );
 $form->addElement('select2', 'host_childs', _("Child Hosts"), array(), $attrHost2);
 
@@ -849,9 +865,11 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hhg' => '0'));
 }
 
+$hostgDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup'
+    . '&action=defaultValues&target=host&field=host_hgs&id=' . $host_id;
 $attrHostgroup1 = array_merge(
     $attrHostgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=host&field=host_hgs&id=' . $host_id)
+    array('defaultDatasetRoute' => $hostgDeRoute)
 );
 $form->addElement('select2', 'host_hgs', _("Parent Host Groups"), array(), $attrHostgroup1);
 
@@ -863,9 +881,11 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hhc' => '0'));
 }
 
+$hostCatDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory'
+    . '&action=defaultValues&target=host&field=host_hcs&id=' . $host_id;
 $attrHostcategory1 = array_merge(
     $attrHostcategories,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostcategory&action=defaultValues&target=host&field=host_hcs&id=' . $host_id)
+    array('defaultDatasetRoute' => $hostCatDeRoute)
 );
 $form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
 
@@ -953,19 +973,34 @@ $form->addElement('header', 'nagios', _("Monitoring engine"));
 $form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 $form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 $form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
-$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id" => "ehi_icon_image", "onChange" => "showLogo('ehi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
+$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array(
+    "id" => "ehi_icon_image",
+    "onChange" => "showLogo('ehi_icon_image_img',this.value)",
+    "onkeyup" => "this.blur();this.focus();"
+));
 $form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
-$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id" => "ehi_vrml_image", "onChange" => "showLogo('ehi_vrml_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
-$form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array("id" => "ehi_statusmap_image", "onChange" => "showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
+$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array(
+    "id" => "ehi_vrml_image",
+    "onChange" => "showLogo('ehi_vrml_image_img',this.value)",
+    "onkeyup" => "this.blur();this.focus();"
+));
+$form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array(
+    "id" => "ehi_statusmap_image",
+    "onChange" => "showLogo('ehi_statusmap_image_img',this.value)",
+    "onkeyup" => "this.blur();this.focus();"
+));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText2);
 
 if (!$centreon->user->admin && $o == "a") {
+    $aclDeRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup'
+        . '&action=defaultValues&target=host&field=acl_groups&id=' . $host_id;
+    $aclAvRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list';
     $attrAclgroups = array(
         'datasourceOrigin' => 'ajax',
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=defaultValues&target=host&field=acl_groups&id=' . $host_id,
+        'availableDatasetRoute' => $aclAvRoute,
+        'defaultDatasetRoute' => $aclDeRoute,
         'multiple' => true
     );
     $form->addElement('select2', 'acl_groups', _("ACL Resource Groups"), array(), $attrAclgroups);
@@ -1037,9 +1072,15 @@ if ($o != "mc") {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
-    if (isset($centreon->optGen["strict_hostParent_poller_management"]) && $centreon->optGen["strict_hostParent_poller_management"] == 1) {
+    if (isset($centreon->optGen["strict_hostParent_poller_management"])
+        && $centreon->optGen["strict_hostParent_poller_management"] == 1
+    ) {
         $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
-        $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+        $form->addRule(
+            'nagios_server_id',
+            _("Impossible to change server due to parentship with other hosts"),
+            'testPollerDep'
+        );
         $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
         $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
     }
@@ -1054,8 +1095,12 @@ if ($o != "mc") {
     $form->addRule('host_name', _("Host name is already in use"), 'exist');
     $form->addRule('host_address', _("Compulsory Address"), 'required');
     $form->registerRule('cg_group_exists', 'callback', 'testCg');
-    $form->addRule('host_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
-    
+    $form->addRule(
+        'host_cgs',
+        _('Contactgroups exists. If you try to use a LDAP contactgroup,'
+            . ' please verified if a Centreon contactgroup has the same name.'),
+        'cg_group_exists'
+    );
 } elseif ($o == "mc") {
     if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
@@ -1077,14 +1122,21 @@ $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandl
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign('alert_check_interval', _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, if needed, pair this configuration with the use of timeperiods"));
+$tpl->assign(
+    'alert_check_interval',
+    _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h,"
+        . " if needed, pair this configuration with the use of timeperiods")
+);
 
 if ($o == "w") {
     /*
      * Just watch a host information
      */
     if (!$min && $centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&host_id=" . $host_id . "'", "class" => "btc bt_default"));
+        $form->addElement("button", "change", _("Modify"), array(
+            "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&host_id=" . $host_id . "'",
+            "class" => "btc bt_default"
+        ));
     }
     $form->setDefaults($host);
     $form->freeze();
@@ -1093,7 +1145,12 @@ if ($o == "w") {
      * Modify a host information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);", "class" => "btc bt_default"));
+    $res = $form->addElement(
+        'button',
+        'reset',
+        _("Reset"),
+        array("onClick" => "history.go(0);", "class" => "btc bt_default")
+    );
     $form->setDefaults($host);
 } elseif ($o == "a") {
     /*
@@ -1200,8 +1257,7 @@ if ($valid) {
         showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
         showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
 
-        function uncheckNotifOption(object)
-        {
+        function uncheckNotifOption(object) {
             if (object.id == "notifN" && object.checked) {
                 document.getElementById('notifD').checked = false;
                 document.getElementById('notifU').checked = false;

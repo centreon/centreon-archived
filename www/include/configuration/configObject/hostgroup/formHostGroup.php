@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 if (!$oreon->user->admin) {
-    if ($hg_id && false === strpos($hgString, "'".$hg_id."'")) {
+    if ($hg_id && false === strpos($hgString, "'" . $hg_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
@@ -54,97 +54,12 @@ $initialValues = array();
 	 */
 $hg = array();
 if (($o == "c" || $o == "w") && $hg_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '" . $hg_id . "' LIMIT 1");
     /*
      * Set base value
      */
     $hg = array_map("myDecode", $DBRESULT->fetchRow());
-
-
-    /*
-     * Get Parent Groups
-     */
-    $hostGroupParents = array();
-    //$hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
-
-    /*
-     *  Set HostGroup Childs
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
-    for ($i = 0; $hosts = $DBRESULT->fetchRow();) {
-        if (!$oreon->user->admin && false === strpos($hoststring, "'".$hosts['host_id']."'")) {
-            $initialValues['hg_hosts'][] = $hosts['host_id'];
-        } else {
-            $hg["hg_hosts"][$i] = $hosts["host_id"];
-            $i++;
-        }
-    }
-    $DBRESULT->free();
-    unset($hosts);
-
-    /*
-     *  Set HostGroup Childs
-     */
-    /*
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
-    for ($i = 0; $hgs = $DBRESULT->fetchRow(); $i++) {
-        $hg["hg_hg"][$i] = $hgs["hg_child_id"];
-    }
-    $DBRESULT->free();
-    unset($hgs);
-    */
 }
-
-/*
- * Hosts comes from DB -> Store in $hosts Array
- */
-$aclFrom = "";
-$aclCond = "";
-if (!$centreon->user->admin) {
-    $aclFrom = ", $aclDbName.centreon_acl acl ";
-    $aclCond = " AND h.host_id = acl.host_id
-                 AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
-}
-$hosts = array();
-$DBRESULT = $pearDB->query("SELECT DISTINCT h.host_id, h.host_name
-                                FROM host h $aclFrom
-                                WHERE host_register = '1' $aclCond
-                                ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $hosts[$host["host_id"]] = $host["host_name"];
-}
-$DBRESULT->free();
-unset($host);
-
-/*
- * Hostgroups comes from DB -> Store in $hosts Array
- */
-
-$EDITCOND = "";
-if ($o == "w" || $o == "c") {
-    $EDITCOND = " WHERE `hg_id` != '".$hg_id."' ";
-}
-
-$hostGroups = array();
-$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
-while ($hgs = $DBRESULT->fetchRow()) {
-    if (!isset($hostGroupParents[$hgs["hg_id"]])) {
-        $hostGroups[$hgs["hg_id"]] = $hgs["hg_name"];
-    }
-}
-$DBRESULT->free();
-unset($hgs);
-
-/*
- * Contact Groups comes from DB -> Store in $cgs Array
- */
-$cgs = array();
-$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-while ($cg = $DBRESULT->fetchRow()) {
-    $cgs[$cg["cg_id"]] = $cg["cg_name"];
-}
-$DBRESULT->free();
-unset($cg);
 
 /*
  * IMG comes from DB -> Store in $extImg Array
@@ -157,20 +72,23 @@ $extImgStatusmap = return_image_list(2);
 /*
  * Define Templatse
  */
-$attrsText      = array("size"=>"30");
-$attrsTextLong  = array("size"=>"50");
+$attrsText = array("size" => "30");
+$attrsTextLong = array("size" => "50");
 $attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
-$attrsTextarea  = array("rows"=>"4", "cols"=>"60");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "4", "cols" => "60");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
+    . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'availableDatasetRoute' => $hostRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
+$hostGrRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'availableDatasetRoute' => $hostGrRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHostgroups'
 );
@@ -178,7 +96,7 @@ $attrHostgroups = array(
 /*
  * Create formulary
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Host Group"));
 } elseif ($o == "c") {
@@ -197,15 +115,19 @@ $form->addElement('text', 'hg_alias', _("Alias"), $attrsText);
 /*
  * Hosts Selection
  */
+$hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host'
+    . '&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . $hg_id;
 $attrHost1 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . $hg_id)
+    array('defaultDatasetRoute' => $hostRoute)
 );
 $form->addElement('select2', 'hg_hosts', _("Linked Hosts"), array(), $attrHost1);
 
+$hostGrRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup'
+    . '&action=defaultValues&target=hostgroups&field=hg_hg&id=' . $hg_id;
 $attrHostgroup1 = array_merge(
     $attrHostgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=hostgroups&field=hg_hg&id=' . $hg_id)
+    array('defaultDatasetRoute' => $hostGrRoute)
 );
 $form->addElement('select2', 'hg_hg', _("Linked Host Groups"), array(), $attrHostgroup1);
 
@@ -216,8 +138,20 @@ $form->addElement('header', 'extended', _("Extended Information"));
 $form->addElement('text', 'hg_notes', _("Notes"), $attrsText);
 $form->addElement('text', 'hg_notes_url', _("Notes URL"), $attrsTextLong);
 $form->addElement('text', 'hg_action_url', _("Action URL"), $attrsTextLong);
-$form->addElement('select', 'hg_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('hg_icon_image_img',this.form.elements['hg_icon_image'].value)"));
-$form->addElement('select', 'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)"));
+$form->addElement(
+    'select',
+    'hg_icon_image',
+    _("Icon"),
+    $extImg,
+    array("onChange" => "showLogo('hg_icon_image_img',this.form.elements['hg_icon_image'].value)")
+);
+$form->addElement(
+    'select',
+    'hg_map_icon_image',
+    _("Map Icon"),
+    $extImg,
+    array("onChange" => "showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)")
+);
 
 /*
  * Further informations
@@ -248,18 +182,15 @@ function myReplace()
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["hg_name"]));
 }
+
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('hg_name', 'myReplace');
 $form->addRule('hg_name', _("Compulsory Name"), 'required');
 $form->addRule('hg_alias', _("Compulsory Alias"), 'required');
 
-if (!$oreon->user->admin) {
-    //$form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
-}
-
 $form->registerRule('exist', 'callback', 'testHostGroupExistence');
 $form->addRule('hg_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -272,7 +203,12 @@ if ($o == "w") {
      * Just watch a HostGroup information
      */
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hg_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&hg_id=" . $hg_id . "'")
+        );
     }
     $form->setDefaults($hg);
     $form->freeze();
@@ -297,13 +233,18 @@ $tpl->assign("initJS", "<script type='text/javascript'>
 							initAutoComplete('Form','city_name','sub');
 							});</script>");
 $tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>");
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR,'
+    . ' "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"],'
+    . ' WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -321,7 +262,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path."listHostGroup.php");
+    require_once($path . "listHostGroup.php");
 } else {
     /*
      * Apply a template definition

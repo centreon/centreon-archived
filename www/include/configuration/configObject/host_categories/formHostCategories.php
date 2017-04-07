@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 if (!$oreon->user->admin) {
-    if ($hc_id && $hcString != "''" && false === strpos($hcString, "'".$hc_id."'")) {
+    if ($hc_id && $hcString != "''" && false === strpos($hcString, "'" . $hc_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
@@ -47,35 +47,6 @@ if (!$oreon->user->admin) {
     }
 }
 
-/*
- * Hosts comes from DB -> Store in $hosts Array
- */
-$hosts = array();
-$ishost = array();
-$DBRESULT = $pearDB->query("SELECT host_id, host_name
-                                FROM host
-                                WHERE host_register = '1'
-                                ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $ishost[$host['host_id']] = $host['host_name'];
-    if ($oreon->user->admin || false !== strpos($hoststring, "'".$host['host_id']."'")) {
-        $hosts[$host["host_id"]] = $host["host_name"];
-    }
-}
-$DBRESULT->free();
-unset($host);
-
-/*
- * Hosts comes from DB -> Store in $hosts Array
- */
-$hostTpl = array();
-$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $hostTpl[$host["host_id"]] = $host["host_name"];
-}
-$DBRESULT->free();
-unset($host);
-
 $initialValues = array();
 
 /*
@@ -83,61 +54,14 @@ $initialValues = array();
  */
 $hc = array();
 if (($o == "c" || $o == "w") && $hc_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '".$hc_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '" . $hc_id . "' LIMIT 1");
     /*
      * Set base value
      */
     $hc = array_map("myDecode", $DBRESULT->fetchRow());
     $hc['hc_severity_level'] = $hc['level'];
     $hc['hc_severity_icon'] = $hc['icon_id'];
-    /*
-     *  Set hostcategories Childs => Hosts
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
-    for ($i = 0, $i2 = 0; $host = $DBRESULT->fetchRow();) {
-        if (isset($ishost[$host["host_host_id"]])) {
-            if (!$oreon->user->admin && false === strpos($hoststring, "'".$host['host_host_id']."'")) {
-                $initialValues['hc_hosts'][] = $host['host_host_id'];
-            } else {
-                $hc["hc_hosts"][$i] = $host["host_host_id"];
-                $i++;
-            }
-        }
-        if (isset($hostTpl[$host["host_host_id"]])) {
-            $hc["hc_hostsTemplate"][$i2] = $host["host_host_id"];
-            $i2++;
-        }
-    }
-    $DBRESULT->free();
-    unset($host);
 }
-
-/*
- * hostcategories comes from DB -> Store in $hosts Array
- */
-$EDITCOND = "";
-if ($o == "w" || $o == "c") {
-    $EDITCOND = " WHERE `hc_id` != '".$hc_id."' ";
-}
-
-$hostCategories = array();
-$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories $EDITCOND ORDER BY hc_name");
-while ($hcs = $DBRESULT->fetchRow()) {
-    $hostGroups[$hcs["hc_id"]] = $hcs["hc_name"];
-}
-$DBRESULT->free();
-unset($hcs);
-
-/*
- * Contact Groups comes from DB -> Store in $cgs Array
- */
-$cgs = array();
-$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-while ($cg = $DBRESULT->fetchRow()) {
-    $cgs[$cg["cg_id"]] = $cg["cg_name"];
-}
-$DBRESULT->free();
-unset($cg);
 
 /*
  * IMG comes from DB -> Store in $extImg Array
@@ -150,20 +74,23 @@ $extImgStatusmap = return_image_list(2);
 /*
  * Define Templatse
  */
-$attrsText      = array("size"=>"30");
-$attrsTextLong  = array("size"=>"50");
+$attrsText = array("size" => "30");
+$attrsTextLong = array("size" => "50");
 $attrsAdvSelect = array("style" => "width: 220px; height: 220px;");
-$attrsTextarea  = array("rows"=>"4", "cols"=>"60");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "4", "cols" => "60");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
+    . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'availableDatasetRoute' => $hostRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
+$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list';
 $attrHosttemplates = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list',
+    'availableDatasetRoute' => $hostTplRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHosttemplates'
 );
@@ -171,7 +98,7 @@ $attrHosttemplates = array(
 /*
  * Create formulary
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a host category"));
 } elseif ($o == "c") {
@@ -207,16 +134,18 @@ $form->addElement(
         "onkeyup" => "this.blur(); this.focus();"
     )
 );
-
+$host1DeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host'
+    . '&action=defaultValues&target=hostcategories&field=hc_hosts&id=' . $hc_id;
 $attrHost1 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=hostcategories&field=hc_hosts&id=' . $hc_id)
+    array('defaultDatasetRoute' => $host1DeRoute)
 );
 $form->addElement('select2', 'hc_hosts', _("Linked Hosts"), array(), $attrHost1);
-
+$host2DeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate'
+    . '&action=defaultValues&target=hostcategories&field=hc_hostsTemplate&id=' . $hc_id;
 $attrHost2 = array_merge(
     $attrHosttemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=defaultValues&target=hostcategories&field=hc_hostsTemplate&id=' . $hc_id)
+    array('defaultDatasetRoute' => $host2DeRoute)
 );
 $ams1 = $form->addElement('select2', 'hc_hostsTemplate', _("Linked Host Template"), array(), $attrHost2);
 if (!$oreon->user->admin) {
@@ -250,6 +179,7 @@ function myReplace()
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["hc_name"]));
 }
+
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('hc_name', 'myReplace');
 $form->addRule('hc_name', _("Compulsory Name"), 'required');
@@ -257,7 +187,7 @@ $form->addRule('hc_alias', _("Compulsory Alias"), 'required');
 
 $form->registerRule('exist', 'callback', 'testHostCategorieExistence');
 $form->addRule('hc_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
 
 $form->addRule('hc_severity_level', _("Must be a number"), 'numeric');
 
@@ -272,13 +202,18 @@ $form->addFormRule('checkSeverity');
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR,'
+    . ' "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"],'
+    . ' WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -287,7 +222,12 @@ if ($o == "w") {
      * Just watch a HostCategorie information
      */
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hc_id=".$hc_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&hc_id=" . $hc_id . "'")
+        );
     }
     $form->setDefaults($hc);
     $form->freeze();
@@ -322,7 +262,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path."listHostCategories.php");
+    require_once($path . "listHostCategories.php");
 } else {
     /*
      * Apply a template definition
