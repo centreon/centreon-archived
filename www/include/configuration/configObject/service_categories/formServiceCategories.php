@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 if (!$oreon->user->admin) {
-    if ($sc_id && $scString != "''" && false === strpos($scString, "'".$sc_id."'")) {
+    if ($sc_id && $scString != "''" && false === strpos($scString, "'" . $sc_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
@@ -52,7 +52,7 @@ if (!$oreon->user->admin) {
  */
 $cct = array();
 if (($o == "c" || $o == "w") && $sc_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$sc_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '" . $sc_id . "' LIMIT 1");
     /*
      * Set base value
      */
@@ -65,30 +65,20 @@ if (($o == "c" || $o == "w") && $sc_id) {
 }
 
 /*
- * Get Service Template Available
- */
-$hServices = array();
-$DBRESULT = $pearDB->query("SELECT service_alias, service_description, service_id FROM service WHERE service_register = '0' ORDER BY service_alias, service_description");
-while ($elem = $DBRESULT->fetchRow()) {
-    $elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
-    $elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
-    $elem["service_alias"] = str_replace('#S#', "/", $elem["service_alias"]);
-    $elem["service_alias"] = str_replace('#BS#', "\\", $elem["service_alias"]);
-    $hServicesTpl[$elem["service_id"]] = $elem["service_alias"] . " (".$elem["service_description"].")";
-}
-$DBRESULT->free();
-
-/*
  * Define Template
  */
-$attrsText      = array("size"=>"30");
-$attrsText2     = array("size"=>"60");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "60");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "5", "cols" => "40");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
+    . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+
+$servTplAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate'
+    . '&action=list';
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list',
+    'availableDatasetRoute' => $servTplAvRoute,
     'multiple' => true,
     'linkedObject' => 'centreonServicetemplates'
 );
@@ -96,7 +86,7 @@ $attrServicetemplates = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Service Category"));
 } elseif ($o == "c") {
@@ -127,13 +117,16 @@ if (isset($sc_id) && isset($sc['level']) && $sc['level'] != "") {
 $form->addElement('text', 'sc_severity_level', _("Level"), array("size" => "10"));
 $iconImgs = return_image_list(1);
 $form->addElement('select', 'sc_severity_icon', _("Icon"), $iconImgs, array(
-                                                                            "id" => "icon_id",
-                                                                            "onChange" => "showLogo('icon_id_ctn', this.value)",
-                                                                            "onkeyup" => "this.blur(); this.focus();"));
+    "id" => "icon_id",
+    "onChange" => "showLogo('icon_id_ctn', this.value)",
+    "onkeyup" => "this.blur(); this.focus();"
+));
 
+$servTplDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate'
+    . '&action=defaultValues&target=servicecategories&field=sc_svcTpl&id=' . $sc_id;
 $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicecategories&field=sc_svcTpl&id=' . $sc_id)
+    array('defaultDatasetRoute' => $servTplDeRoute)
 );
 
 $form->addElement('select2', 'sc_svcTpl', _("Linked Templates"), array(), $attrServicetemplate1);
@@ -150,7 +143,7 @@ $redirect->setValue($o);
 if (is_array($select)) {
     $select_str = null;
     foreach ($select as $key => $value) {
-        $select_str .= $key.",";
+        $select_str .= $key . ",";
     }
     $select_pear = $form->addElement('hidden', 'select');
     $select_pear->setValue($select_str);
@@ -183,7 +176,7 @@ $form->addRule('sc_severity_level', _("Can't be equal to 0"), 'shouldNotBeEqTo0'
 
 $form->addFormRule('checkSeverity');
 
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -191,7 +184,12 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange",'
+    . ' TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"],'
+    . ' WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 
 # prepare help texts
 $helptext = "";
@@ -199,7 +197,7 @@ $helptext = "";
 include_once("help.php");
 
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -208,7 +206,12 @@ if ($o == "w") {
      * Just watch a service_categories information
      */
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&sc_id=" . $sc_id . "'")
+        );
     }
     $form->setDefaults($sc);
     $form->freeze();
@@ -240,7 +243,7 @@ if ($form->validate() && $from_list_menu == false) {
 }
 
 if ($valid) {
-    require_once($path."listServiceCategories.php");
+    require_once($path . "listServiceCategories.php");
 } else {
     /*
      * Apply a template definition
@@ -248,7 +251,7 @@ if ($valid) {
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-    
+
     $form->accept($renderer);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);

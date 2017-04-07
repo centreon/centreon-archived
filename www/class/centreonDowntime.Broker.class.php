@@ -85,8 +85,9 @@ class CentreonDowntimeBroker extends CentreonDowntime
 			FROM downtimes d, hosts h
 			LEFT JOIN services s ON s.host_id = h.host_id
 			WHERE d.host_id = h.host_id AND d.start_time > NOW() AND d.comment_data LIKE '[Downtime cycle%'";
-        $res = $this->dbb->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->dbb->query($query);
+        } catch (\PDOException $e) {
             return false;
         }
         while ($row = $res->fetchRow()) {
@@ -123,8 +124,9 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $query .= " AND h.host_id = s.host_id ";
             $query .= " AND s.description = '".$this->dbb->escape($oname2)."' ";
         }
-        $res = $this->dbb->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->dbb->query($query);
+        } catch (\PDOException $e) {
             return false;
         }
         $row = $res->fetchRow();
@@ -404,16 +406,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
     {
         $query = 'DELETE FROM downtime_cache '
             . 'WHERE start_timestamp < ' . time();
-        $this->db->query($query);
-    }
-
-    public function purgeEmptyDowntimes()
-    {
-        $query = 'DELETE FROM `downtime` '
-            . 'WHERE `dt_id` NOT IN (SELECT dt_id FROM downtime_host_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_hostgroup_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_service_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_servicegroup_relation) ';
         $this->db->query($query);
     }
 

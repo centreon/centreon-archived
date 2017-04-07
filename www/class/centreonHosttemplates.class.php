@@ -74,10 +74,10 @@ class CentreonHosttemplates extends CentreonHost
             . 'AND ht.host_register = "0" '
             . 'AND h.host_register = "' . $register . '" '
             . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" ';
- 
-        $result = $this->db->query($query);
 
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked hosts of ' . $hostTemplateName);
         }
 

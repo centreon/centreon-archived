@@ -37,8 +37,9 @@
 if (isset($pearDB)) {
     $errors = true;
     $query = "SELECT `key`, `value` FROM `options` WHERE `key` LIKE 'ldap_%'";
-    $res = $pearDB->query($query);
-    if (PEAR::isError($res)) {
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
         return false;
     }
     $queries = array();
@@ -99,7 +100,9 @@ if (isset($pearDB)) {
 
 
         foreach ($queries as $query) {
-            if (PEAR::isError($pearDB->query($query))) {
+            try {
+                $pearDB->query($query);
+            } catch (\PDOException $e) {
                 $errors = true;
             }
         }
@@ -107,7 +110,9 @@ if (isset($pearDB)) {
     }
     /* Delete old values */
     $query = "DELETE FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_search_user', 'ldap_search_user_pwd', 'ldap_search_filter', 'ldap_protocol_version')";
-    if (PEAR::isError($pearDB->query($query))) {
+    try {
+        $pearDB->query($query);
+    } catch (\PDOException $e) {
         return false;
     }
     if ($errors) {

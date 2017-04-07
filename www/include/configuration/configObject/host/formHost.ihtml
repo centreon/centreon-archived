@@ -45,21 +45,15 @@
 		        <td class="FormRowField"><img class="helpTooltip" name="snmp_options"> {$form.host_snmp_community.label} & {$form.host_snmp_version.label}</td>
 		        <td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td>
 		    </tr>
-			{if $o == "mc" && $form.nagios_server_id.label}
-			<tr class="list_one">
-				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_nsid.label}</td>
-				<td class="FormRowValue">{$form.mc_mod_nsid.html}</td>
-			</tr>
-			{/if}
             {if $form.nagios_server_id.label}
 			<tr class="list_one">
 			    <td class="FormRowField"><img class="helpTooltip" name="poller"> {$form.nagios_server_id.label}</td>
-			    <td class="FormRowValue">{$form.nagios_server_id.html}</td>
+			    <td class="FormRowValue">{$form.nagios_server_id.html} {if $o == "mc"} | {$form.mc_mod_nsid.html}{/if}</td>
 			</tr>
             {/if}
 			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="host_location"> {$form.host_location.label}</td>
-				<td class="FormRowValue">{$form.host_location.html} </td>
+				<td class="FormRowValue">{$form.host_location.html}</td>
 			</tr>
 			{if $o == "mc"}
 			<tr class="list_two">	
@@ -69,7 +63,7 @@
 			{/if}
 			<tr class="list_one">
 				<td class="FormRowField"><img class="helpTooltip" name="use"> {$form.host_parallel_template.label}<p class="description">{$form.tplTextParallel.label}<p></td>
-				<td class="FormRowValue" id="parallelTemplate">{include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}</td>
+				<td class="FormRowValue" id="parallelTemplate">{include file="file:$centreon_path/www/include/common/templates/cloneHost.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}</td>
 			</tr>
             {if $form.dupSvTplAssocText.label}
 			<tr class="list_two">

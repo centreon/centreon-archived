@@ -91,8 +91,13 @@ $template->display('content.tpl');
     
     function loadParameters(broker) {
         jQuery("select[name=BROKER_MODULE]").next().html("");
-        doProcess(true, './steps/process/loadBrokerParameters.php', { 'broker' : broker }, function(data) {
-                            jQuery('#brokerParams').html(data);
-                        });
+        doProcess(
+            true,
+            './steps/process/loadBrokerParameters.php',
+            { 'broker' : broker },
+            function(data) {
+                jQuery('#brokerParams').html(data);
+            }
+        );
     }
 </script>

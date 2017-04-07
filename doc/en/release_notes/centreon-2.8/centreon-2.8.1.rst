@@ -77,3 +77,5 @@ Known bugs or issues
 * Zoom out on chart change period on filters ;
 * User with ACL can't see it own previously created meta service ;
 * Problem with recurrent downtimes and DST ;
+* Issues on SSO Authentication
+

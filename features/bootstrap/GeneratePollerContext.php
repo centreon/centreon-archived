@@ -1,11 +1,7 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\PollerConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\PollerConfigurationListingPage;
 
 /**
  * Defines application features from the specific context.
@@ -110,8 +106,7 @@ class GeneratePollerContext extends CentreonContext
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
-            },
-            30
+            }
         );
     }
 
@@ -127,8 +122,7 @@ class GeneratePollerContext extends CentreonContext
                     'css',
                     '#noSelectedPoller[style*="display: inline"]'
                 );
-            },
-            5
+            }
         );
     }
 }

@@ -101,8 +101,13 @@ $template->display('content.tpl');
     
     function loadParameters(engine) {
         jQuery("select[name=MONITORING_ENGINE]").next().html("");
-        doProcess(true, './steps/process/loadEngineParameters.php', { 'engine' : engine }, function(data) {
-                            jQuery('#engineParams').html(data);
-                        });
+        doProcess(
+            true,
+            './steps/process/loadEngineParameters.php',
+            { 'engine' : engine },
+            function(data) {
+                jQuery('#engineParams').html(data);
+            }
+        );
     }
 </script>

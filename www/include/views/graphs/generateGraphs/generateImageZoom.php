@@ -40,10 +40,13 @@ require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.confi
 
 require_once "$centreon_path/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_."/www/class/centreonGraph.class.php";
+
 /*
  * Create XML Request Objects
  */
 session_start();
+session_write_close();
+
 $sid = session_id();
 $pearDB = new CentreonDB();
 

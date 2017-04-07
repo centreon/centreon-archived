@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -45,7 +41,7 @@ require_once(_CENTREON_PATH_ . "www/class/centreonXML.class.php");
 require_once(_CENTREON_PATH_ . "www/class/centreonDB.class.php");
 require_once(_CENTREON_PATH_ . "www/class/centreonLDAP.class.php");
 
-CentreonSession::start();
+CentreonSession::start(1);
 
 if (!isset($_SESSION["centreon"])) {
     exit();
@@ -87,12 +83,15 @@ if ($debug_path == '') {
 $queryGetLdap = 'SELECT contact_alias
 		 FROM contact
                  WHERE contact_register = 1';
-$res = $pearDB->query($queryGetLdap);
+
 $listLdapUsers = array();
-if (!PEAR::isError($res)) {
+try {
+    $res = $pearDB->query($queryGetLdap);
     while ($row = $res->fetchRow()) {
         $listLdapUsers[] = $row['contact_alias'];
     }
+} catch (\PDOException $e) {
+    // Nothing to do
 }
 
 $buffer = new CentreonXML();

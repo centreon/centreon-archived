@@ -105,7 +105,7 @@ Before databases restore, you have first to restore configuration files::
 Databases restore
 =================
 
-Once CES server reinstalled (**same Centreon version**), unzip centreon and centreon_storage databases backup::
+Once Centreon server reinstalled (**same Centreon version**), unzip centreon and centreon_storage databases backup::
 
     # mysql
     mysql> drop database centreon;

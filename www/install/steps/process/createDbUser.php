@@ -37,13 +37,16 @@ session_start();
 require_once '../functions.php';
 define('PROCESS_ID', 'createuser');
 
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+try {
+    $link = myConnect();
+} catch (\PDOException $e) {
+    exitProcess(PROCESS_ID, 1, $e->getMessage());
 }
+
 if (!isset($_SESSION['DB_USER'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find database user. Session probably expired.'));
 }
+
 $dbUser = $_SESSION['DB_USER'];
 $dbPass = $_SESSION['DB_PASS'];
 $host = "localhost";
@@ -53,10 +56,11 @@ if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] &&
         $host = $_SERVER['SERVER_ADDR'];
 }
 $query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
-if (false === mysql_query(sprintf($query, $_SESSION['CONFIGURATION_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
+try {
+    $link->exec(sprintf($query, $_SESSION['CONFIGURATION_DB']));
+    $link->exec(sprintf($query, $_SESSION['STORAGE_DB']));
+} catch (\PDOException $e) {
+    exitProcess(PROCESS_ID, 1, $e->getMessage());
 }
-if (false === mysql_query(sprintf($query, $_SESSION['STORAGE_DB']))) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
+
 exitProcess(PROCESS_ID, 0, "OK");

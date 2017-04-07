@@ -256,8 +256,9 @@ class CentreonGraphStatus
         $result = array();
         $query = 'SELECT `key`, `value` FROM options
             WHERE `key` IN ("rrdtool_path_bin", "rrdcached_enabled")';
-        $res = $this->pearDB->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->pearDB->query($query);
+        } catch (\PDOException $e) {
             throw new RuntimeException();
         }
         while ($row = $res->fetchRow()) {

@@ -1,28 +1,23 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\MonitoringServicesPage;
-use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
-use Centreon\Test\Behat\GraphMonitoringPage;
-use Centreon\Test\Behat\GraphServiceDetailsMonitoringPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Monitoring\GraphMonitoringPage;
 
 class LimitMetricInChartContext extends CentreonContext
 {
     private $hostName = 'LimitMetricInChartTestHost';
     private $serviceName = 'LimitMetricInChartTestService';
     private $chartPage = null;
-  
+
     /**
-     * @Given a service with several metrics
+     *  @Given a service with several metrics
      */
     public function aServiceWithSeveralMetrics()
     {
+        // Create host.
         $hostConfig = new HostConfigurationPage($this);
         $hostProperties = array(
             'name' => $this->hostName,
@@ -37,6 +32,7 @@ class LimitMetricInChartContext extends CentreonContext
         $hostConfig->setProperties($hostProperties);
         $hostConfig->save();
 
+        // Create service.
         $serviceConfig = new ServiceConfigurationPage($this);
         $serviceProperties = array(
             'description' => $this->serviceName,
@@ -49,48 +45,72 @@ class LimitMetricInChartContext extends CentreonContext
         );
         $serviceConfig->setProperties($serviceProperties);
         $serviceConfig->save();
-        
-        $this->restartAllPollers();
 
+        // Ensure service is monitored.
+        $this->restartAllPollers();
+        sleep(7);
+
+        // Send multiple perfdata.
         $perfdata = '';
         for ($i = 0; $i < 20 ; $i++) {
             $perfdata .= 'test' . $i . '=1s ';
         }
-        
-        sleep(5);
         $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
-        sleep(10);
+
+        // Ensure perfdata were processed.
+        $this->spin(
+            function($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    $context->hostName,
+                    $context->serviceName
+                );
+                $properties = $page->getProperties();
+                if (count($properties['perfdata']) < 20) {
+                    return false;
+                }
+                return true;
+            },
+            'Cannot get performance data of ' . $this->hostName . ' / ' . $this->serviceName
+        );
     }
-    
+
     /**
-     * @When i display the chart in performance page
+     *  @When I display the chart in performance page
      */
     public function iDisplayTheChartInPerformancePage()
     {
-        $this->chartPage = new GraphMonitoringPage($this);
-        $this->chartPage->setFilterbyChart($this->hostName, $this->serviceName);
-        sleep(3);
+        $this->spin(
+            function ($context) {
+                $context->chartPage = new GraphMonitoringPage($context);
+                $context->chartPage->setFilterbyChart($context->hostName, $context->serviceName);
+                $context->spin(
+                    function ($context) {
+                        return $context->chartPage->hasChart(
+                            $context->hostName,
+                            $context->serviceName
+                        );
+                    },
+                    'Chart does not exist.',
+                    20
+                );
+                return true;
+            },
+            'Chart ' . $this->hostName . ' - ' . $this->serviceName . ' does not exist.'
+        );
+    }
 
-        if (!$this->chartPage->hasChart($this->hostName, $this->serviceName)) {
-            throw new \Exception('Chart ' . $this->hostName . ' - ' . $this->serviceName . ' does not exist.');
-        }
-    }
-    
     /**
-     * @When i display the chart in service details page
-     */
-    public function iDisplayTheChartInServiceDetailsPage()
-    {
-        $serviceMonitoringDetail = new ServiceMonitoringDetailsPage($this, $this->hostName, $this->serviceName);
-        $this->chartPage = new GraphServiceDetailsMonitoringPage($this);
-    }
-    
-    /**
-     * @Then a message says that the chart will not be displayed
+     *  @Then a message says that the chart will not be displayed
      */
     public function aMessageSaysThatTheChartWillNotBeDisplayed()
     {
         $chart = $this->chartPage->getChart($this->hostName, $this->serviceName);
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', '.c3-empty');
+            }
+        );
         $message = $this->assertFindIn($chart, 'css', '.c3-empty')->getText();
         if ($message != "Too much metrics, the chart can't be displayed") {
             throw new \Exception('Message which says "too much metrics" does not exist');

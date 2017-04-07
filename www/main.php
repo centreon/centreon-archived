@@ -97,7 +97,7 @@ $is_admin = $centreon->user->admin;
 $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page " .
             " FROM topology WHERE topology_page = '".$p."'";
 $DBRESULT = $pearDB->query($query);
-$redirect = $DBRESULT->fetchRow();
+$redirect = $DBRESULT->fetch();
 
 /*
  * Init URL

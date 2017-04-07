@@ -102,8 +102,9 @@ class CentreonPurgeEngine
         $query = 'SELECT len_storage_mysql,archive_retention,reporting_retention, len_storage_downtimes, len_storage_comments '
             . 'FROM config';
 
-        $DBRESULT = $this->dbCentstorage->query($query);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $this->dbCentstorage->query($query);
+        } catch (\PDOException $e) {
             throw new Exception('Cannot get retention information');
         }
 
@@ -122,8 +123,9 @@ class CentreonPurgeEngine
             . 'FROM INFORMATION_SCHEMA.PARTITIONS '
             . 'WHERE PARTITION_NAME IS NOT NULL ';
 
-        $DBRESULT = $this->dbCentstorage->query($query);
-        if (PEAR::isError($DBRESULT)) {
+        try {
+            $DBRESULT = $this->dbCentstorage->query($query);
+        } catch (\PDOException $e) {
             throw new Exception('Cannot get partition information');
         }
 
@@ -166,19 +168,21 @@ class CentreonPurgeEngine
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $this->tablesToPurge[$table]['retention'] . " ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) NOT LIKE 'pmax' ";
-        
-        $DBRESULT = $this->dbCentstorage->query($request);
-        if (PEAR::isError($DBRESULT)) {
+
+        try {
+            $DBRESULT = $this->dbCentstorage->query($request);
+        } catch (\PDOException $e) {
             throw new Exception("Error : Cannot get partitions to purge for table "
-                . $table . ", " . $DBRESULT->getDebugInfo() . "\n");
+                . $table . ", " . $e->getMessage() . "\n");
         }
         
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE " . $table . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
-            $DBRESULT2 =& $this->dbCentstorage->query($request);
-            if (PEAR::isError($DBRESULT2)) {
+            try {
+                $DBRESULT2 =& $this->dbCentstorage->query($request);
+            } catch (\PDOException $e) {
                 throw new Exception("Error : Cannot drop partition " . $row["PARTITION_NAME"] . " of table "
-                    . $table . ", " . $DBRESULT2->getDebugInfo() . "\n");
+                    . $table . ", " . $e->getMessage() . "\n");
             }
             echo "[" . date(DATE_RFC822) . "] Partition " . $row["PARTITION_NAME"] . " deleted\n";
         }
@@ -193,9 +197,10 @@ class CentreonPurgeEngine
             $request .= "WHERE " . $this->tablesToPurge[$table]['ctime_field'] . " < " . $this->tablesToPurge[$table]['retention'];
         }
 
-        $DBRESULT = $this->dbCentstorage->query($request);
-        if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error : Cannot purge " . $table . ", " . $DBRESULT->getDebugInfo() . "\n");
+        try {
+            $DBRESULT = $this->dbCentstorage->query($request);
+        } catch (\PDOException $e) {
+            throw new Exception("Error : Cannot purge " . $table . ", " . $e->getMessage() . "\n");
         }
     }
 
@@ -212,9 +217,10 @@ class CentreonPurgeEngine
         $request .= "AND ISNULL((SELECT 1 FROM " . db . ".host_service_relation hsr ";
         $request .= "WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
 
-        $DBRESULT = $this->dbCentstorage->query($request);
-        if (PEAR::isError($DBRESULT)) {
-            throw new Exception("Error : Cannot purge index_data, " . $DBRESULT->getDebugInfo() . "\n");
+        try {
+            $DBRESULT = $this->dbCentstorage->query($request);
+        } catch (\PDOException $e) {
+            throw new Exception("Error : Cannot purge index_data, " . $e->getMessage() . "\n");
         }
     }
 }

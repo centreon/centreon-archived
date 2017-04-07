@@ -98,9 +98,7 @@ class CentreonServicetemplates extends CentreonService
         } else {
             $selectedServices = '';
             $explodedValues = implode(',', $values);
-            if (empty($explodedValues)) {
-                $explodedValues = "''";
-            } else {
+            if (!empty($explodedValues)) {
                 $selectedServices .= "AND s.service_id IN ($explodedValues) ";
             }
 
@@ -142,9 +140,9 @@ class CentreonServicetemplates extends CentreonService
             . 'AND s.service_register = "' . $register . '" '
             . 'AND st.service_description = "' . $this->db->escape($serviceTemplateName) . '" ';
 
-        $result = $this->db->query($query);
-
-        if (PEAR::isError($result)) {
+        try {
+            $result = $this->db->query($query);
+        } catch (\PDOException $e) {
             throw new \Exception('Error while getting linked services of ' . $serviceTemplateName);
         }
 
@@ -205,8 +203,9 @@ class CentreonServicetemplates extends CentreonService
 
         $query .= "ORDER BY service_description ";
 
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
             return array();
         }
 

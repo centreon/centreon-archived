@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);
-    $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log);
+    $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log, 1, "", "API");
     if ($auth->passwdOk == 0) {
         CentreonWebService::sendJson("Bad credentials", 403);
         exit();
@@ -66,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     /* Check if user exists in contact table */
     $reachAPI = 0;
     $res = $pearDB->prepare("SELECT contact_id, reach_api, contact_admin FROM contact WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?");
-    $res = $pearDB->execute($res, array($_POST['username']));
-    while ($data = $res->fetchRow()) {
+    $res->execute(array($_POST['username']));
+    while ($data = $res->fetch()) {
       if (isset($data['contact_admin']) && $data['contact_admin'] == 1) {
             $reachAPI = 1;
         } else {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     /* Insert Token in API webservice session table */
     $token = base64_encode(uniqid('', true));
     $res = $pearDB->prepare("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (?, ?, NOW())");
-    $pearDB->execute($res, array($auth->userInfos['contact_id'], $token));
+    $res->execute(array($auth->userInfos['contact_id'], $token));
 
     /* Send Data in Json */
     CentreonWebService::sendJson(array('authToken' => $token));
@@ -98,12 +98,13 @@ if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
 }
 
 /* Create the default object */
-$res = $pearDB->prepare("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?");
-$res = $pearDB->execute($res, array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
-if (PEAR::isError($res)) {
+try {
+    $res = $pearDB->prepare("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?");
+    $res->execute(array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
+} catch (\PDOException $e) {
     CentreonWebService::sendJson("Database error", 500);
 }
-$userInfos = $res->fetchRow();
+$userInfos = $res->fetch();
 if (is_null($userInfos)) {
     CentreonWebService::sendJson("Unauthorized", 401);
 }

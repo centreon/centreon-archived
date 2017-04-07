@@ -48,7 +48,7 @@ Add
 
 In order to add a contact, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_EN;local" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_US;local"
 
 
 The required parameters are the following:

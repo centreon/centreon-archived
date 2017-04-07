@@ -48,8 +48,9 @@ require_once $centreon_etc . '/centreon.conf.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 
 $dbconn = new CentreonDB();
-$queryCleanSession = 'DELETE FROM session';
-if (PEAR::isError($dbconn->query($queryCleanSession))) {
+try {
+    $queryCleanSession = 'DELETE FROM session';
+} catch (\PDOException $e) {
     fwrite(STDERR, "Error in purge sessions\n");
     exit(1);
 }

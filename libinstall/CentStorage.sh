@@ -30,7 +30,6 @@ locate_centreon_generationdir
 locate_centreon_varlib
 
 ## Config pre-require
-locate_init_d
 locate_cron_d
 
 locate_centstorage_bindir

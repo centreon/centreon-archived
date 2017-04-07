@@ -42,7 +42,6 @@
         jQuery.ajax({
             url: "./include/monitoring/status/Notifications/notifications.php",
             data: {
-                sid: settings.sid,
                 refresh_rate: settings.refresh_rate
             }
         }).done(function(xml_content) {

@@ -47,13 +47,14 @@ $buffer = new CentreonXML();
 $buffer->startElement("entry");
 
 session_start();
+session_write_close();
+
 $sid = session_id();
 
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
     $currentTime = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $centreon->user->getMyGMT());
-    $DBRESULT = $pearDB->prepare("SELECT user_id FROM session WHERE session_id = ?");
-    $DBRESULT = $pearDB->execute($DBRESULT, array($sid));
+    $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = ?", array($sid));
     if ($DBRESULT->numRows()) {
         $buffer->writeElement("state", "ok");
     } else {

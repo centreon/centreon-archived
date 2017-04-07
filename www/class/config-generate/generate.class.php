@@ -65,7 +65,6 @@ require_once dirname(__FILE__) . '/correlation.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate {
-    private $generate_index_data = 1;
     private $poller_cache = array();
     private $backend_instance = null;
     private $current_poller = null;
@@ -76,11 +75,7 @@ class Generate {
         $this->backend_instance = Backend::getInstance();
     }
     
-    private function generateIndexData($localhost=0) {
-        if ($this->generate_index_data == 0) {
-            return 0;
-        }
-        
+    private function generateIndexData($localhost = 0) {
         $service_instance = Service::getInstance();
         $host_instance = Host::getInstance();
         $services = &$service_instance->getGeneratedServices();
@@ -163,8 +158,9 @@ class Generate {
         Correlation::getInstance()->reset();
         $this->resetModuleObjects();
     }
-    
-    private function configPoller() {
+
+    private function configPoller($username = 'unknown') {
+        $this->backend_instance->setUserName($username);
         $this->backend_instance->initPath($this->current_poller['id']);
         $this->backend_instance->setPollerId($this->current_poller['id']);
         $this->resetObjectsEngine();
@@ -195,25 +191,25 @@ class Generate {
             $this->backend_instance->cleanPath();
         }
     }
-    
-    public function configPollerFromId($poller_id) {
+
+    public function configPollerFromId($poller_id, $username='unknown') {
         try {
             if (is_null($this->current_poller)) {
                 $this->getPollerFromId($poller_id);
             }
-            $this->configPoller();
+            $this->configPoller($username);
         } catch (Exception $e) {
             throw new Exception('Exception received : ' .  $e->getMessage() . " [file: " . $e->getFile()  . "] [line: " . $e->getLine() . "]\n");
             $this->backend_instance->cleanPath();
         }
     }
-    
-    public function configPollers() {
+
+    public function configPollers($username='unknown') {
         $stmt = $this->backend_instance->db->prepare("SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server WHERE ns_activate = '1'");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $this->current_poller = $value;
-            $this->configPollerFromId($this->current_poller['id']);
+            $this->configPollerFromId($this->current_poller['id'], $username);
         }
     }
 
@@ -231,8 +227,6 @@ class Generate {
 
     public function getModuleObjects() {
         $this->getInstalledModules();
-
-        
 
         foreach ($this->installed_modules as $module) {
             if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files/*.class.php')) {
@@ -278,7 +272,6 @@ class Generate {
      */
     public function reset()
     {
-        $this->generate_index_data = 1;
         $this->poller_cache = array();
         $this->current_poller = null;
         $this->installed_modules = null;

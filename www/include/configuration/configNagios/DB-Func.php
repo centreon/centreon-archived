@@ -395,8 +395,8 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != null ?
         $rq .= "'".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
-        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2 ?
-        $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'2', ";
+        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 0 ?
+        $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'0', ";
     isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"])
         && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ?
         $rq .= "'".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  "

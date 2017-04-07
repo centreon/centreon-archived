@@ -35,15 +35,10 @@
  */
 
 include_once ("../class/centreonSession.class.php");
-include_once ("DB-Func.php");
 CentreonSession::start();
 ini_set("track_errors", true);
 if (file_exists("install.conf.php")) {
     include_once ("install.conf.php");
-}
-// Pear Modules Management
-if (file_exists("pear_module.conf.php")) {
-    include_once ("pear_module.conf.php");
 }
 
 require_once './steps/index.php';
