@@ -78,7 +78,7 @@ if ($host_id) {
     $services = array(null => null) + $acl->getHostServiceAclConf(
         $host_id,
         'broker',
-        array('fields'  => array('service_id', 'service_description'),
+        array('fields'  => array('s.service_id', 's.service_description'),
                                                                         'keys'    => array('service_id'),
                                                                         'get_row' => 'service_description',
         'order'   => array('service_description'))
