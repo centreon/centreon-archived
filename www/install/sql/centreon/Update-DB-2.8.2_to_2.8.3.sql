@@ -19,3 +19,14 @@ DELETE FROM contactgroup_contact_relation
 WHERE contact_contact_id IN (
     SELECT contact_id FROM contact WHERE contact_register = '0'
 );
+
+-- Creation of a new table with the categories for the ppm
+CREATE TABLE mod_ppm_categories
+(
+`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(100) NOT NULL,
+`parent_id` int(11) DEFAULT NULL,
+`icon` VARCHAR(100) NULL,
+KEY `mpc_index` (`parent_id`),
+CONSTRAINT `mpc_fk` FOREIGN KEY (`parent_id`) REFERENCES `mod_ppm_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
