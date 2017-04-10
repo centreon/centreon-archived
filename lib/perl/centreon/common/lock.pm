@@ -172,7 +172,7 @@ sub DESTROY {
         my $exectime = time() - $self->{launch_time};
         $self->{dbc}->do(<<"EOQ");
 UPDATE cron_operation
-SET last_execution_time = '$exectime'
+SET running = '0', last_execution_time = '$exectime', pid = '-1'
 WHERE id = '$self->{id}'
 EOQ
     }
