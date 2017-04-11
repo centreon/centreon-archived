@@ -316,6 +316,19 @@ class CentreonGraphService extends CentreonGraph
         return $limits;
     }
 
+    /**
+     * Get the base for this chart
+     *
+     * @return int
+     */
+    public function getBase()
+    {
+        if (isset($this->templateInformations['base'])) {
+            return $this->templateInformations['base'];
+        }
+        return 1000;
+    }
+
     public function getLegends()
     {
         return $this->legends;
