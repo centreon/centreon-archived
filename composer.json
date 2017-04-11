@@ -28,8 +28,8 @@
     },
     "require": {
         "pimple/pimple": "~3.0",
-        "symfony/filesystem": "~2.8",
-        "symfony/finder": "~2.8"
+        "symfony/filesystem": "~2.6",
+        "symfony/finder": "~2.6"
     },
     "autoload": {
         "psr-4": {
