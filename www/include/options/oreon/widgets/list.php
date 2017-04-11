@@ -37,7 +37,10 @@ if (!isset($centreon)) {
     exit;
 }
 
-$factory = new \CentreonLegacy\Core\Widget\Factory($dependencyInjector);
+$factoryUtils = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+$utils = $factoryUtils->newUtils();
+
+$factory = new \CentreonLegacy\Core\Widget\Factory($dependencyInjector, $utils);
 $widgetInfoObj = $factory->newInformation();
 $widgets = $widgetInfoObj->getList();
 

@@ -44,7 +44,11 @@ require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
 session_start();
 
 require_once realpath(dirname(__FILE__) . "/../../../../../bootstrap.php");
-$factory = new \CentreonLegacy\Core\Widget\Factory($dependencyInjector);
+
+$factoryUtils = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+$utils = $factoryUtils->newUtils();
+
+$factory = new \CentreonLegacy\Core\Widget\Factory($dependencyInjector, $utils);
 $widgetInfoObj = $factory->newInformation();
 
 $xml = new CentreonXML();
