@@ -316,8 +316,9 @@
           if (dataRaw.data[i].unit) {
             legend += '(' + dataRaw.data[i].unit + ')';
             if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-              units[dataRaw.data[i].unit] = name;
+              units[dataRaw.data[i].unit] = [];
             }
+            units[dataRaw.data[i].unit].push(name);
           }
           data.names[name] = legend;
           data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
@@ -327,9 +328,10 @@
 
       if (Object.keys(units).length === 2) {
         axesName = 'y';
+        data.axes = {};
         for (unit in units) {
           if (units.hasOwnProperty(unit)) {
-            for (i = 0; i < units[unit][i]; i++) {
+            for (i = 0; i < units[unit].length; i++) {
               data.axes[units[unit][i]] = axesName;
             }
           }
