@@ -428,7 +428,8 @@ class CentreonMetric extends CentreonWebService
             'acknowledge' => $acks,
             'downtime' => $downtimes,
             'limits' => $limits,
-            'legends' => $legends
+            'legends' => $legends,
+            'base' => $graph->getBase()
         );
 
         return $result;
