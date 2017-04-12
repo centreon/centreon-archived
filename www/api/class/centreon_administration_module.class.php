@@ -33,51 +33,57 @@
  *
  */
 
-// Calling PHP-DI
-use Pimple\Container;
+require_once dirname(__FILE__) . "/webService.class.php";
 
-set_include_path(implode(PATH_SEPARATOR, array(
-    realpath(__DIR__ . '/www/class'),
-    realpath(__DIR__ . '/www/lib'),
-    get_include_path(),
-)));
-
-// Centreon Autoload
-spl_autoload_register(function ($sClass) {
-    $fileName = $sClass;
-    $fileName{0} = strtolower($fileName{0});
-    $fileNameType1 = __DIR__  . "/www/class/" . $fileName . ".class.php";
-    $fileNameType2 = __DIR__  . "/www/class/" . $fileName . ".php";
-
-    if (file_exists($fileNameType1)) {
-        require_once $fileNameType1;
-    } elseif (file_exists($fileNameType2)) {
-        require_once $fileNameType2;
+class CentreonAdministrationModule extends CentreonWebService
+{
+    /**
+     * CentreonAdministrationModule constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
     }
-});
 
-// require composer file
-require __DIR__ . '/vendor/autoload.php';
+    public function postInstall()
+    {
+        if (!isset($this->arguments['name'])) {
+            throw new \Exception('Missing argument : name');
+        } else {
+            $name = $this->arguments['name'];
+        }
 
-// Creating container
-$dependencyInjector = new Container();
+        $factory = new \CentreonLegacy\Core\Module\Factory();
+        $moduleInstaller = $factory->newInstaller($name);
 
-// Define Centreon Configuration Database Connection
-$dependencyInjector['configuration_db'] = function ($c) {
-    return new \CentreonDB('centreon');
-};
+        return $moduleInstaller->install();
+    }
 
-// Define Centreon Realtime Database Connection
-$dependencyInjector['realtime_db'] = function ($c) {
-    return new \CentreonDB('centstorage');
-};
+    public function postUpgrade()
+    {
+        if (!isset($this->arguments['name'])) {
+            throw new \Exception('Missing argument : name');
+        } else {
+            $name = $this->arguments['name'];
+        }
 
-// Define filesystem
-$dependencyInjector['filesystem'] = function ($c) {
-    return new \Symfony\Component\Filesystem\Filesystem();
-};
+        $factory = new \CentreonLegacy\Core\Module\Factory();
+        $moduleUpgrader = $factory->newUpgrader($name);
 
-// Define finder
-$dependencyInjector['finder'] = function ($c) {
-    return new \Symfony\Component\Finder\Finder();
-};
+        return $moduleUpgrader->upgrade();
+    }
+
+    public function postRemove()
+    {
+        if (!isset($this->arguments['name'])) {
+            throw new \Exception('Missing argument : name');
+        } else {
+            $name = $this->arguments['name'];
+        }
+
+        $factory = new \CentreonLegacy\Core\Module\Factory();
+        $moduleRemover = $factory->newRemover($name);
+
+        return $moduleRemover->remove();
+    }
+}

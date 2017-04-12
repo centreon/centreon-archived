@@ -171,6 +171,6 @@ class Utils
      */
     public function buildPath($endPath)
     {
-        return realpath(_CENTREON_PATH_ . '/www/' . $endPath);
+        return realpath(__DIR__ . '/../../../../www/' . $endPath);
     }
 }

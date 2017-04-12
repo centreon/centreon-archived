@@ -35,7 +35,7 @@
 
 namespace CentreonLegacy\Core\Install\Step;
 
-class Step8 extends AbstractStep
+class Step9 extends AbstractStep
 {
     public function getContent()
     {
@@ -43,20 +43,38 @@ class Step8 extends AbstractStep
         require_once $installDir . '/steps/functions.php';
         $template = getTemplate($installDir . '/steps/templates');
 
-        $modules = $this->getModules();
+        $backupDir = __DIR__ . '/../../../../../installDir';
+        $contents = '';
+        if (!is_dir($backupDir)) {
+            $contents .= '<br>Warning : The installation directory cannot be move. ' .
+                'Please create the directory ' . $backupDir . ' ' .
+                'and give it the rigths to apache user to write.';
+        } else {
+            $contents = $this->getAdvertisement();
 
-        $template->assign('title', _('Modules installation'));
-        $template->assign('step', 8);
-        $template->assign('modules', $modules);
+        }
+
+        $adContent = $this->getAdvertisement();
+
+        $template->assign('title', _('Installation finished'));
+        $template->assign('step', 9);
+        $template->assign('finish', 1);
+        $template->assign('blockPreview', 1);
+        $template->assign('contents', $contents);
+        $template->assign('pub_content', $adContent);
         return $template->fetch('content.tpl');
     }
 
-    public function getModules()
+    private function getAdvertisement()
     {
-        $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $utilsFactory->newUtils();
-        $moduleFactory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $utils);
-        $module = $moduleFactory->newInformation();
-        return $module->getList();
+        $adContent = '';
+        if ($sock = fsockopen("www.centreon.com", 80, $num, $error, 5)) {
+            $adContent = "http://blog-centreon-wordpress.s3.amazonaws.com/wp-content/uploads/2015/12/custom_view.jpg";
+        } elseif (file_exists("../../img/centreon.png")) {
+            fclose($sock);
+            $adContent = "../../img/centreon.png";
+        }
+
+        return $adContent;
     }
 }

@@ -35,22 +35,26 @@
 
 session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
-$step = new \CentreonLegacy\Core\Install\Step\Step8($dependencyInjector);
-$version = $step->getVersion();
 
-try {
-    $name = 'install-' . $version . '-' . date('Ymd_His');
-    $backupDir = __DIR__ . '/../../../../installDir';
-    $renamed = rename(realpath( __DIR__ . '/../..'), $backupDir . '/' . $name);
-    if (!$renamed) {
-        $result = false;
-    } else {
-        $result = true;
+$result = array();
+
+$parameters = filter_input_array(INPUT_POST);
+if (isset($parameters['modules'])) {
+    $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+    $utils = $utilsFactory->newUtils();
+    $moduleFactory = new \CentreonLegacy\Core\Module\Factory($dependencyInjector, $utils);
+    foreach ($parameters['modules'] as $module) {
+        $installer = $moduleFactory->newInstaller($module);
+        $id = $installer->install();
+        $install = false;
+        if ($id) {
+            $install = true;
+        }
+        $result[] = array(
+            'module' => $module,
+            'install' => $install
+        );
     }
-} catch (\Exception $e) {
-    $result = false;
 }
 
-echo json_encode(array(
-    'result' => $result
-));
+echo json_encode($result);

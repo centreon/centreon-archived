@@ -33,30 +33,24 @@
  *
  */
 
-namespace CentreonLegacy\Core\Install\Step;
+session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
+$step = new \CentreonLegacy\Core\Install\Step\Step9($dependencyInjector);
+$version = $step->getVersion();
 
-class Step8 extends AbstractStep
-{
-    public function getContent()
-    {
-        $installDir = __DIR__ . '/../../../../../www/install';
-        require_once $installDir . '/steps/functions.php';
-        $template = getTemplate($installDir . '/steps/templates');
-
-        $modules = $this->getModules();
-
-        $template->assign('title', _('Modules installation'));
-        $template->assign('step', 8);
-        $template->assign('modules', $modules);
-        return $template->fetch('content.tpl');
+try {
+    $name = 'install-' . $version . '-' . date('Ymd_His');
+    $backupDir = __DIR__ . '/../../../../installDir';
+    $renamed = rename(realpath( __DIR__ . '/../..'), $backupDir . '/' . $name);
+    if (!$renamed) {
+        $result = false;
+    } else {
+        $result = true;
     }
-
-    public function getModules()
-    {
-        $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
-        $utils = $utilsFactory->newUtils();
-        $moduleFactory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $utils);
-        $module = $moduleFactory->newInformation();
-        return $module->getList();
-    }
+} catch (\Exception $e) {
+    $result = false;
 }
+
+echo json_encode(array(
+    'result' => $result
+));
