@@ -20,29 +20,6 @@
             </table>
         </td>
     </tr>
-    <tr>
-        <td colspan="2" id="installPub">
-            {if isset($finish) && $finish == 1}
-                <script type="text/javascript">
-                    {literal}
-                    function pubcallback(html) {
-                        jQuery("#installPub").html(html);
-                    }
-
-                    jQuery(document).ready(function() {
-                        jQuery.ajax({
-                            url: 'https://advertising.centreon.com/centreon-2.8.1/pub.json',
-                            type: 'GET',
-                            dataType: 'jsonp',
-                            crossDomain: true
-                        });
-                    });
-
-                    {/literal}
-                </script>
-            {/if}
-        </td>
-    </tr>
 
     <tr style='height:40px;'>
         <td>
@@ -65,7 +42,7 @@
         {if !$finish}
         <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) nextStep();'/>
         {else}
-        <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='javascript:self.location="../main.php"'/>
+        <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='validation();'/>
         {/if}
         </td>
     </tr>

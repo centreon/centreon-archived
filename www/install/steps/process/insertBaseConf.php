@@ -62,7 +62,10 @@ try {
  * Create tables
  */
 try {
-    $link->exec('use ' . $parameters['db_configuration']);
+    $result = $link->query('use ' . $parameters['db_configuration']);
+    if (!$result) {
+        throw new \Exception('Cannot access to "' . $parameters['db_configuration'] . '" database');
+    }
 
     splitQueries('../../insertMacros.sql', ';', $link, '../../tmp/insertMacros');
     splitQueries('../../insertCommands.sql', ';', $link, '../../tmp/insertCommands.sql');

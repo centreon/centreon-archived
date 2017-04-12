@@ -79,7 +79,7 @@ try {
 }
 $link = null;
 
-if (!count($err['required']) && $err['password'] && trim($err['connection']) != '') {
+if (!count($err['required']) && $err['password'] && trim($err['connection']) == '') {
     $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
     $step->setDatabaseConfiguration($parameters);
 }

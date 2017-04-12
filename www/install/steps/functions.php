@@ -113,8 +113,11 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                     $count++;
                     if ($count > $start) {
                         try {
-                            $connector->query($query);
-                        } catch (Exception $e) {
+                            $result = $connector->query($query);
+                            if (!$result) {
+                                throw new \Exception('Cannot execute query : ' . $query);
+                            }
+                        } catch (\Exception $e) {
                             return "$fileName Line $line:".$e->getMessage();
                         }
                         while (ob_get_level() > 0) {

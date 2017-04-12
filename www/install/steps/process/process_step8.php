@@ -33,48 +33,24 @@
  *
  */
 
-namespace CentreonLegacy\Core\Install\Step;
+session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
+$step = new \CentreonLegacy\Core\Install\Step\Step8($dependencyInjector);
+$version = $step->getVersion();
 
-class Step8 extends AbstractStep
-{
-    public function getContent()
-    {
-        $installDir = __DIR__ . '/../../../../../www/install';
-        require_once $installDir . '/steps/functions.php';
-        $template = getTemplate($installDir . '/steps/templates');
-
-        $backupDir = __DIR__ . '/../../../../../installDir';
-        $contents = '';
-        if (!is_dir($backupDir)) {
-            $contents .= '<br>Warning : The installation directory cannot be move. ' .
-                'Please create the directory ' . $backupDir . ' ' .
-                'and give it the rigths to apache user to write.';
-        } else {
-            $contents = $this->getAdvertisement();
-
-        }
-
-        $adContent = $this->getAdvertisement();
-
-        $template->assign('title', _('Installation finished'));
-        $template->assign('step', 8);
-        $template->assign('finish', 1);
-        $template->assign('blockPreview', 1);
-        $template->assign('contents', $contents);
-        $template->assign('pub_content', $adContent);
-        return $template->fetch('content.tpl');
+try {
+    $name = 'install-' . $version . '-' . date('Ymd_His');
+    $backupDir = __DIR__ . '/../../../../installDir';
+    $renamed = rename(realpath( __DIR__ . '/../..'), $backupDir . '/' . $name);
+    if (!$renamed) {
+        $result = false;
+    } else {
+        $result = true;
     }
-
-    private function getAdvertisement()
-    {
-        $adContent = '';
-        if ($sock = fsockopen("www.centreon.com", 80, $num, $error, 5)) {
-            $adContent = "http://blog-centreon-wordpress.s3.amazonaws.com/wp-content/uploads/2015/12/custom_view.jpg";
-        } elseif (file_exists("../../img/centreon.png")) {
-            fclose($sock);
-            $adContent = "../../img/centreon.png";
-        }
-
-        return $adContent;
-    }
+} catch (\Exception $e) {
+    $result = false;
 }
+
+echo json_encode(array(
+    'result' => $result
+));

@@ -79,7 +79,7 @@
             data: jQuery('#form_step6').serialize()
         }).success(function (data) {
             var result = JSON.parse(data);
-            if (!result.required.length && result.password && !result.connection) {
+            if (!result.required.length && result.password && result.connection == '') {
                 nextStep();
             } else {
                 result.required.forEach(function (element) {
@@ -87,8 +87,8 @@
                 });
                 if (!result.password) {
                     jQuery('input[name="db_password_confirm"]').next().html("Password does not match");
-                };
-                if (result.connection) {
+                }
+                if (result.connection != '') {
                     jQuery('input[name="address"]').next().html(result.connection);
                 }
             }
