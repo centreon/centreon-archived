@@ -124,15 +124,19 @@ if ($view_all == 1) {
     $extrafields = "";
 }
 /*------------------ BAM ------------------*/
-$request = "SELECT CONCAT('ba_',ba_id) AS id, ba_id, name FROM mod_bam";
-$DBRESULT = $pearDB->query($request);
-
 $tab_service_bam = array();
-while ($elem = $DBRESULT->fetchRow()) {
-    $tab_service_bam[$elem['id']] = array(
-        'name' => $elem['name'],
-        'id' => $elem['ba_id']
-    );
+$request = "SELECT id FROM modules_informations WHERE name = 'centreon-bam-server';";
+$DBRESULT = $pearDB->query($request);
+if ($DBRESULT->numRows()) {
+    $request = "SELECT CONCAT('ba_',ba_id) AS id, ba_id, name FROM mod_bam";
+    $DBRESULT = $pearDB->query($request);
+
+    while ($elem = $DBRESULT->fetchRow()) {
+        $tab_service_bam[$elem['id']] = array(
+            'name' => $elem['name'],
+            'id' => $elem['ba_id']
+        );
+    }
 }
 
 /* --------------- Services ---------------*/
