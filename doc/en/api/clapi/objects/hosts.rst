@@ -185,8 +185,6 @@ stalking_options	             Comma separated options: 'o' for OK, 'd' for Down,
 
 statusmap_image	                     Status map image (used by statusmap
 
-vrml_image	                     VRML image
-
 host_notification_options            Notification options (d,u,r,f,s)
 
 timezone                   Timezone
