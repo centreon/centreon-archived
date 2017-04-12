@@ -48,7 +48,7 @@ function parse_zend_license_file($file)
     
 /* Load conf */
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/www/autoloader.php';
+require_once _CENTREON_PATH_ . '/bootstrap.php';
 
 $LicenseFileInfos = $_FILES['licensefile'];
 $filename = str_replace('/', '', $_GET['module']);

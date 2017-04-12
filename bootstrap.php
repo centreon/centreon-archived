@@ -36,6 +36,30 @@
 // Calling PHP-DI
 use Pimple\Container;
 
+if (!isset($centreon_path)) {
+    die('Centreon path not set.');
+}
+
+set_include_path(implode(PATH_SEPARATOR, array(
+    realpath(_CENTREON_PATH_ . '/www/class'),
+    realpath(_CENTREON_PATH_ . '/www/lib'),
+    get_include_path(),
+)));
+
+// Centreon Autoload
+spl_autoload_register(function ($sClass) {
+    $fileName = $sClass;
+    $fileName{0} = strtolower($fileName{0});
+    $fileNameType1 = _CENTREON_PATH_  . "/www/class/" . $fileName . ".class.php";
+    $fileNameType2 = _CENTREON_PATH_  . "/www/class/" . $fileName . ".php";
+
+    if (file_exists($fileNameType1)) {
+        require_once $fileNameType1;
+    } elseif (file_exists($fileNameType2)) {
+        require_once $fileNameType2;
+    }
+});
+
 // require composer file
 require __DIR__ . '/vendor/autoload.php';
 
