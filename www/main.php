@@ -86,7 +86,6 @@ $num = getParameters("num");
 include_once("./include/common/common-Func.php");
 include_once("./include/core/header/header.php");
 
-require_once _CENTREON_PATH_ . "www/autoloader.php";
 require_once _CENTREON_PATH_ . "/bootstrap.php";
 
 /*
