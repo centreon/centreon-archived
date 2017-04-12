@@ -279,8 +279,15 @@
      */
     buildMetricData: function (dataRaw) {
       var convertType = {
-        line: 'spline',
-        area: 'area-spline'
+        /* 
+         * line: 'spline',
+         * area: 'area-spline'
+         */
+        /*
+         * No more artifacts on curves
+         */
+        line: 'line',
+        area: 'area'
       };
       var i = 0;
       var data = {
