@@ -17,6 +17,7 @@ function CheckModule()
 function displayResults(moduleList)
 {
     Object.keys(moduleList).forEach(function (moduleName) {
+        tooltipReferer = '';
         module = moduleList[moduleName];
         myModuleStatusSpan = jQuery('#' + moduleName);
         myModuleStatusSpan.empty();
@@ -84,22 +85,24 @@ function displayResults(moduleList)
             jQuery('#action_'+ moduleName).prepend(customActionIcon);
         }
 
-        jQuery(tooltipReferer).qtip({
-            content: statusMessage,
-            style: {
-                classes: statusStyle
-            },
-            show: {
-                event: "mouseover"
-            },
-            hide: {
-                event: "mouseout"
-            },
-            position: {
-                at: "bottom left",
-                my: "top right"
-            }
-        });
+        if (tooltipReferer) {
+            jQuery(tooltipReferer).qtip({
+                content: statusMessage,
+                style: {
+                    classes: statusStyle
+                },
+                show: {
+                    event: "mouseover"
+                },
+                hide: {
+                    event: "mouseout"
+                },
+                position: {
+                    at: "bottom left",
+                    my: "top right"
+                }
+            });
+        }
         myModuleStatusSpan = null;
     });
 }
