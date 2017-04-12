@@ -33,7 +33,7 @@
  *
  */
 
-require_once $centreon_path . "www/autoloader.php";
+require_once $centreon_path . "/bootstrap.php";
 
 /*
  * Adding requirements

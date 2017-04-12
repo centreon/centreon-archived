@@ -38,7 +38,7 @@
  * Need Centreon Configuration file
  */
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/www/autoloader.php';
+require_once _CENTREON_PATH_ . '/bootstrap.php';
 
 /** * ****************************
  * Class for XML/Ajax request
