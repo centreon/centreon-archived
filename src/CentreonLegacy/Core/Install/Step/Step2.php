@@ -33,37 +33,59 @@
  *
  */
 
-session_start();
-require_once __DIR__ . '/../../../../bootstrap.php';
+namespace CentreonLegacy\Core\Install\Step;
 
-$err = array(
-    'required' => array(),
-    'email' => true,
-    'password' => true
-);
+class Step2 extends AbstractStep
+{
+    public function getContent()
+    {
+        $installDir = __DIR__ . '/../../../../../www/install';
+        require_once $installDir . '/steps/functions.php';
+        $template = getTemplate($installDir . '/steps/templates');
 
-$emailRegexp = "/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?" .
-    "(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/";
+        $libs = $this->getPhpLib();
+        $validate = true;
+        if (count($libs['unloaded'])) {
+            $validate = false;
+        }
 
-$parameters = filter_input_array(INPUT_POST);
-foreach ($parameters as $name => $value) {
-    if (trim($value) == '') {
-        $err['required'][] = $name;
+        $template->assign('title', _('Dependency check up'));
+        $template->assign('step', 2);
+        $template->assign('libs', $libs);
+        $template->assign('validate', $validate);
+        return $template->fetch('content.tpl');
     }
-}
 
-if (!in_array('email', $err['required']) && !preg_match($emailRegexp, $parameters['email'])) {
-    $err['email'] = false;
-}
+    private function getPhpLib()
+    {
+        $libs = array(
+            'loaded' => array(),
+            'unloaded' => array()
+        );
 
-if (!in_array('admin_password', $err['required']) && !in_array('confirm_password', $err['required']) &&
-    $parameters['admin_password'] != $parameters['confirm_password']) {
-    $err['password'] = false;
-}
+        $requiredLib = explode(
+            "\n",
+            file_get_contents(__DIR__ . '/../../../../../www/install/var/phplib')
+        );
+        foreach ($requiredLib as $line) {
+            if (!$line) {
+                continue;
+            }
 
-if (!count($err['required']) && $err['password'] && $err['email']) {
-    $step = new \CentreonLegacy\Core\Install\Step\Step5($dependencyInjector);
-    $step->setAdminConfiguration($parameters);
-}
+            list($name, $lib) = explode(":", $line);
 
-echo json_encode($err);
+            if (extension_loaded($lib)) {
+                $libs['loaded'][$name] = $lib . '.so';
+            } else {
+                $libs['unloaded'][$name] = $lib . '.so';
+            }
+        }
+
+        if (!ini_get('date.timezone')) {
+            $libs['unloaded']['Timezone'] = _("Set the default timezone in php.ini file");
+        }
+
+        return $libs;
+    }
+
+}

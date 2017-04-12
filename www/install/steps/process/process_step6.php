@@ -32,46 +32,56 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 
-require_once '../functions.php';
+$requiredParameters = array(
+    'db_configuration',
+    'db_storage',
+    'db_user',
+    'db_password',
+    'db_password_confirm'
+);
 
-foreach ($_POST as $key => $value) {
-    $_SESSION[$key] = $value;
-}
+$err = array(
+    'required' => array(),
+    'password' => true,
+    'connection' => ''
+);
 
-$mandatoryFields = array('CONFIGURATION_DB', 'STORAGE_DB', 'DB_USER', 'DB_PASS', 'db_pass_confirm');
-$strError = '';
-foreach ($mandatoryFields as $field) {
-    if ($_POST[$field] == '') {
-        $strError .= 'jQuery("input[name='.$field.']").next().html("Mandatory field");';
+$parameters = filter_input_array(INPUT_POST);
+foreach ($parameters as $name => $value) {
+    if (in_array($name, $requiredParameters) && trim($value) == '') {
+        $err['required'][] = $name;
     }
 }
 
-if ($_POST['DB_PASS'] != $_POST['db_pass_confirm']) {
-    $strError .= 'jQuery("input[name=db_pass_confirm]").next().html("Passwords do not match");';
+if (!in_array('db_password', $err['required']) && !in_array('db_password_confirm', $err['required']) &&
+    $parameters['db_password'] != $parameters['db_password_confirm']) {
+    $err['password'] = false;
 }
-if (!$strError) {
-    try {
-        $link = myConnect();
-        $dbHost = $_SESSION['ADDRESS'];
-        if ($dbHost == "") {
-            $dbHost = "localhost";
-        }
-        $_SESSION['DB_HOST'] = $dbHost;
 
-        if ($_SESSION['DB_PORT'] == "") {
-            $_SESSION['DB_PORT'] = "3306";
-        }
-    } catch (\PDOException $e) {
-        $strError .= 'jQuery("input[name=ADDRESS]").next().html("' . $e->getMessage() . '");';
+try {
+    if ($parameters['address'] == "") {
+        $parameters['address'] = "localhost";
     }
-    $link = null;
+    if ($parameters['port'] == "") {
+        $parameters['port'] = "3306";
+    }
+    $link = new \PDO(
+        'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
+            'root',
+            $parameters['root_password']
+    );
+} catch (\PDOException $e) {
+    $err['connection'] = $e->getMessage();
+}
+$link = null;
+
+if (!count($err['required']) && $err['password'] && trim($err['connection']) != '') {
+    $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
+    $step->setDatabaseConfiguration($parameters);
 }
 
-if ($strError) {
-    echo $strError;
-} else {
-    echo 0;
-}
+echo json_encode($err);

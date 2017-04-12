@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,12 +33,9 @@
  *
  */
 
-include_once ("../class/centreonSession.class.php");
-CentreonSession::start();
-ini_set("track_errors", true);
-if (file_exists("install.conf.php")) {
-    include_once ("install.conf.php");
-}
+namespace CentreonLegacy\Core\Install\Step;
 
-require_once './steps/index.php';
-exit;
+interface stepInterface
+{
+    public function getContent();
+}

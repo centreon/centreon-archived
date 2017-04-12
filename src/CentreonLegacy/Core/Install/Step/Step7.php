@@ -30,35 +30,26 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
+ *
  */
 
-session_start();
-DEFINE('STEP_NUMBER', 8);
-$_SESSION['step'] = STEP_NUMBER;
+namespace CentreonLegacy\Core\Install\Step;
 
-require_once 'functions.php';
-$template = getTemplate('./templates');
+class Step7 extends AbstractStep
+{
+    public function getContent()
+    {
+        $installDir = __DIR__ . '/../../../../../www/install';
+        require_once $installDir . '/steps/functions.php';
+        $template = getTemplate($installDir . '/steps/templates');
 
-$title = _('Installation finished');
+        $parameters = $this->getDatabaseConfiguration();
 
-$contents = '<div>'._('Congratulations, you have successfully installed Centreon!').'</div>';
+        $template->assign('title', _('Installation'));
+        $template->assign('step', 7);
+        $template->assign('parameters', $parameters);
+        return $template->fetch('content.tpl');
+    }
 
-$centreon_path = realpath(dirname(__FILE__) . '/../../../');
 
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory ' . $centreon_path . '/installDir and give it the rigths to apache user to write.';
-} else {
-    $name = 'install-' . $_SESSION['version'] . '-' . date('Ymd_His');
-    @rename(str_replace('steps', '', getcwd()), $centreon_path . '/installDir/' . $name);
 }
-
-session_destroy();
-require_once ("process/advertising.php");
-$template->assign('step', STEP_NUMBER);
-$template->assign('title', $title);
-$template->assign('content', $contents);
-$template->assign('finish', 1);
-$template->assign('blockPreview', 1);
-$template->display('content.tpl');
-

@@ -32,3 +32,22 @@
  * For more information : contact@centreon.com
  *
  */
+
+namespace CentreonLegacy\Core\Install\Step;
+
+class Step6 extends AbstractStep
+{
+    public function getContent()
+    {
+        $installDir = __DIR__ . '/../../../../../www/install';
+        require_once $installDir . '/steps/functions.php';
+        $template = getTemplate($installDir . '/steps/templates');
+
+        $parameters = $this->getDatabaseConfiguration();
+
+        $template->assign('title', _('Database information'));
+        $template->assign('step', 6);
+        $template->assign('parameters', $parameters);
+        return $template->fetch('content.tpl');
+    }
+}

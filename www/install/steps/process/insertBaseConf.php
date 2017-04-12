@@ -34,31 +34,57 @@
  */
 
 session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../functions.php';
-define('PROCESS_ID', 'baseconf');
+
+$return = array(
+    'id' => 'baseconf',
+    'result' => 1,
+    'msg' => ''
+);
+
+$step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
+$parameters = $step->getDatabaseConfiguration();
 
 try {
-    $link = myConnect();
+    $link = new \PDO(
+        'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
+        'root',
+        $parameters['root_password']
+    );
 } catch (\PDOException $e) {
-    exitProcess(PROCESS_ID, 1, $e->getMessage());
+    $return['msg'] = $e->getMessage();
+    echo json_encode($return);
+    exit;
 }
 
 /**
  * Create tables
  */
-$link->exec('use ' . $_SESSION['CONFIGURATION_DB']);
+try {
+    $link->exec('use ' . $parameters['db_configuration']);
 
-splitQueries('../../insertMacros.sql', ';', $link, '../../tmp/insertMacros');
-splitQueries('../../insertCommands.sql', ';', $link, '../../tmp/insertCommands.sql');
-splitQueries('../../insertTimeperiods.sql', ';', $link, '../../tmp/insertTimeperiods.sql');
-splitQueries('../../var/baseconf/centreon-engine.sql', ';', $link, '../../tmp/centrepn-engine.sql');
-splitQueries('../../var/baseconf/centreon-broker.sql', ';', $link, '../../tmp/centreon-broker.sql');
-splitQueries('../../insertTopology.sql', ';', $link, '../../tmp/insertTopology');
-splitQueries('../../insertBaseConf.sql', ';', $link, '../../tmp/insertBaseConf');
+    splitQueries('../../insertMacros.sql', ';', $link, '../../tmp/insertMacros');
+    splitQueries('../../insertCommands.sql', ';', $link, '../../tmp/insertCommands.sql');
+    splitQueries('../../insertTimeperiods.sql', ';', $link, '../../tmp/insertTimeperiods.sql');
+    splitQueries('../../var/baseconf/centreon-engine.sql', ';', $link, '../../tmp/centreon-engine.sql');
+    splitQueries('../../var/baseconf/centreon-broker.sql', ';', $link, '../../tmp/centreon-broker.sql');
+    splitQueries('../../insertTopology.sql', ';', $link, '../../tmp/insertTopology');
+    splitQueries('../../insertBaseConf.sql', ';', $link, '../../tmp/insertBaseConf');
+} catch (\Exception $e) {
+    $return['msg'] = $e->getMessage();
+    echo json_encode($return);
+    exit;
+}
 
 # Manage timezone
 $timezone = date_default_timezone_get();
 $resTimezone = $link->query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'");
+if (!$resTimezone) {
+    $return['msg'] = _('Cannot get timezone information');
+    echo json_encode($return);
+    exit;
+}
 if ($row = $resTimezone->fetch()) {
     $timezoneId = $row['timezone_id'];
 } else {
@@ -70,7 +96,14 @@ splitQueries('../../insertACL.sql', ';', $link, '../../tmp/insertACL');
 
 /* Get Centreon version */
 $res = $link->query("SELECT `value` FROM informations WHERE `key` = 'version'");
+if (!$res) {
+    $return['msg'] = _('Cannot get Centreon version');
+    echo json_encode($return);
+    exit;
+}
 $row = $res->fetch();
-$_SESSION['version'] = $row['value'];
+$step->setVersion($row['value']);
 
-exitProcess(PROCESS_ID, 0, "OK");
+$return['result'] = 0;
+echo json_encode($return);
+exit;

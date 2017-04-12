@@ -34,13 +34,21 @@
  */
 
 session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../functions.php';
-define('PROCESS_ID', 'configfile');
-if (!isset($_SESSION['CENTREON_ETC'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find CENTREON_ETC. Session probably expired.'));
-}
-if ($_SESSION['ADDRESS']) {
-    $host = $_SESSION['ADDRESS'];
+
+$return = array(
+    'id' => 'configfile',
+    'result' => 1,
+    'msg' => ''
+);
+
+$step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
+$parameters = $step->getDatabaseConfiguration();
+$configuration = $step->getConfiguration();
+
+if ($parameters['address']) {
+    $host = $parameters['address'];
 } else {
     $host = 'localhost';
 }
@@ -55,20 +63,22 @@ $patterns = array('/--ADDRESS--/',
                   '/--INSTANCEMODE--/', 
                   '/--CENTREON_VARLIB--/');
 
-$replacements = array($host,
-                      $_SESSION['DB_USER'],
-                      $_SESSION['DB_PASS'],
-                      $_SESSION['CONFIGURATION_DB'],
-                      $_SESSION['STORAGE_DB'],
-                      $_SESSION['INSTALL_DIR_CENTREON'],
-                      $_SESSION['DB_PORT'], 
-                      "central", 
-                      $_SESSION['CENTREON_VARLIB']);
+$replacements = array(
+    $host,
+    $parameters['db_user'],
+    $parameters['db_password'],
+    $parameters['db_configuration'],
+    $parameters['db_storage'],
+    $configuration['centreon_dir'],
+    $parameters['port'],
+    "central",
+    $configuration['centreon_varlib']
+);
 
 /**
  * centreon.conf.php
  */
-$centreonConfFile = rtrim($_SESSION['CENTREON_ETC'], '/').'/centreon.conf.php';
+$centreonConfFile = rtrim($configuration['centreon_etc'], '/').'/centreon.conf.php';
 $contents = file_get_contents('../../var/configFileTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
@@ -76,9 +86,11 @@ file_put_contents($centreonConfFile, $contents);
 /**
  * conf.pm
  */
-$centreonConfPmFile = rtrim($_SESSION['CENTREON_ETC'], '/').'/conf.pm';
+$centreonConfPmFile = rtrim($configuration['centreon_etc'], '/').'/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
 
-exitProcess(PROCESS_ID, 0, "OK");
+$return['result'] = 0;
+echo json_encode($return);
+exit;

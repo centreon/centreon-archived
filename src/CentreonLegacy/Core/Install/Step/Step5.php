@@ -30,19 +30,48 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
+ *
  */
 
-if (isset($template)) {
-    if (fsockopen("www.centreon.com", 80, $num, $error, 5)) {
-        $pub_content = "http://blog-centreon-wordpress.s3.amazonaws.com/wp-content/uploads/2015/12/custom_view.jpg";
-    } elseif (file_exists("../../img/centreon.png")) {
-        fclose($sock);
-        $pub_content = "../img/centreon.png";
+namespace CentreonLegacy\Core\Install\Step;
+
+class Step5 extends AbstractStep
+{
+    public function getContent()
+    {
+        $installDir = __DIR__ . '/../../../../../www/install';
+        require_once $installDir . '/steps/functions.php';
+        $template = getTemplate($installDir . '/steps/templates');
+
+        $parameters = $this->getAdminConfiguration();
+
+        $template->assign('title', _('Admin information'));
+        $template->assign('step', 5);
+        $template->assign('parameters', $parameters);
+        return $template->fetch('content.tpl');
     }
-    
-    if (isset($pub_content)) {
-        $template->assign('pub_content', $pub_content);
+
+    public function getAdminConfiguration()
+    {
+        $configuration = array(
+            'admin_password' => '',
+            'confirm_password' => '',
+            'firstname' => '',
+            'lastname' => '',
+            'email' => ''
+        );
+
+        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/admin.json";
+        if ($this->dependencyInjector['filesystem']->exists($configurationFile)) {
+            $configuration =  json_decode(file_get_contents($configurationFile), true);
+        }
+
+        return $configuration;
+    }
+
+    public function setAdminConfiguration($parameters)
+    {
+        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/admin.json";
+        file_put_contents($configurationFile, json_encode($parameters));
     }
 }
-

@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright 2005-2015 Centreon
+/**
+ * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,37 +33,31 @@
  *
  */
 
-session_start();
-require_once '../functions.php';
+namespace CentreonLegacy\Core\Install;
 
-if (!isset($_POST['broker'])) {
-    echo 'Could not determine specified broker module';
-    exit;
-}
+class Factory
+{
+    /**
+     *
+     * @var Pimple\Container
+     */
+    protected $dependencyInjector;
 
-$lines = getParamLines('../../var/brokers', $_POST['broker']);
-$html = "";
-foreach ($lines as $line) {
-    if ($line) {
-        if ($line[0] == '#') {
-            continue;
-        }
-        list($key, $label, $required, $paramType, $default) = explode(';', $line);
-        $val = $default;
-        if (isset($_SESSION[$key])) {
-            $val = $_SESSION[$key];
-        }
-        if ($required) {
-            $star = "<span style='color:#e00b3d'> *</span>";
-        }
-        $html .= "
-                    <tr>
-                    <td class='formlabel'>".$label.$star."</td>
-                    <td class='formvalue'>
-                        <input type='text' name='".$key."' value='".$val."' size='40' />
-                        <label class='field_msg'></label>
-                    </td>
-                    </tr>";
+    /**
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
+    public function __construct(\Pimple\Container $dependencyInjector)
+    {
+        $this->dependencyInjector = $dependencyInjector;
+    }
+
+    /**
+     *
+     * @return \CentreonLegacy\Core\Install\Information
+     */
+    public function newInformation()
+    {
+        return new Information($this->dependencyInjector);
     }
 }
-echo $html;

@@ -4,7 +4,9 @@
             <a href="http://www.centreon.com" target="_blank"><img src="../img/centreon.png" alt="Centreon" border="0" /></a>
         </th>
         <th class="step-wrapper">
-            <h3><span>{$step}</span> {$title}</h3>
+            <h3>
+                <span>{$step}</span>{$title}
+            </h3>
         </th>
 
     </tr>
@@ -12,7 +14,8 @@
         <td align="left" colspan="2">
             <table width='100%' cellspacing="0" cellpadding="0" border="0" class="stdTable">
                 <tr>
-                    <td>{$content}</td>
+                    {assign var="tpl" value="step"|cat:$step|cat:".tpl"}
+                    <td>{include file=$tpl}</td>
                 </tr>
             </table>
         </td>
@@ -56,11 +59,11 @@
 
         <td align='right'>
         {if ($step-1 && !$blockPreview)}
-        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='jumpTo({$step-1});'/>
+        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='previousStep();'/>
         {/if}
-        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='jumpTo({$step});'/>
+        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep();'/>
         {if !$finish}
-        <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) jumpTo({$step+1});'/>
+        <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) nextStep();'/>
         {else}
         <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='javascript:self.location="../main.php"'/>
         {/if}
