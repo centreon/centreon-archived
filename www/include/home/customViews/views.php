@@ -41,6 +41,7 @@ require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 
 session_start();
+session_write_close();
 
 try {
     require_once _CENTREON_PATH_ ."GPL_LIB/Smarty/libs/Smarty.class.php";

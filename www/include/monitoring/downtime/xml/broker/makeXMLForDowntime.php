@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/xml/ndo/makeXMLForOneHost.php $
- * SVN : $Id: makeXMLForOneHost.php 12188 2011-05-04 15:45:01Z shotamchay $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
@@ -47,6 +44,8 @@ include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 session_start();
+session_write_close();
+
 $oreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();

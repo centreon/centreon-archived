@@ -48,8 +48,11 @@ class CentreonSession
 
 	}
 
-	function start() {
+	function start($flag = 0) {
 		session_start();
+                if ($flag) {
+                    session_write_close();
+                }
 	}
 
 	function stop() {

@@ -43,15 +43,15 @@ require_once _CENTREON_PATH_."www/class/centreonCommand.class.php";
  * Validate the session
  */
 session_start();
+session_write_close();
+
 $db = new CentreonDB();
 
 $serviceObj = new CentreonService($db);
 
-
 $aMacros = $serviceObj->ajaxMacroControl($_POST);
 
 $countMacro = count($aMacros);
-
 
 $arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
 
