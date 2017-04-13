@@ -712,10 +712,12 @@
             self.chart.show();
           }
         }).appendTo(actionDiv);
-      expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
-        .on('click', function () {
-          self.legendDiv.toggleClass('extend');
-        }).appendTo(actionDiv);
+      if (self.settings.extraLegend) {
+        expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
+          .on('click', function () {
+            self.legendDiv.toggleClass('extend');
+          }).appendTo(actionDiv);
+      }
 
       actionDiv.appendTo(self.legendDiv);
     },
@@ -727,6 +729,9 @@
     buildExtraLegend: function (legends) {
       var self = this;
       var i;
+      if (!this.settings.extraLegend) {
+        return;
+      }
       jQuery('.chart-legend').each(function (idx, el) {
         var legendName = jQuery(el).data('legend');
         jQuery(el).find('.extra').remove();
