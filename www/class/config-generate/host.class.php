@@ -225,7 +225,7 @@ class Host extends AbstractHost {
         $this->getMacros($host);
         $host['macros']['_HOST_ID'] = $host['host_id'];
 
-        $pearDB = new CentreonDB();
+        $pearDB = $dependencyInjector['configuration_db'];
         $hostObj = new CentreonHost($pearDB);
         $template = $hostObj->getInheritedValues($host['host_id'], array(), -1, array('host_location'));
 
