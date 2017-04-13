@@ -1,23 +1,26 @@
 {$form.javascript}{$javascript}
 <form {$form.attributes}>
 
-<table class="ListTable">
-	<tr class="ListHeader">
-		<td colspan="2" class="FormHeader">{$form.header.title}</td>
+<table class="table">
+	<tr>
+		<td colspan="2" class="FormHeader">
+			<h3 style="color: #00bfb3;">{$form.header.title}</h3>
+		</td>
 	</tr>
-	<tbody>
 		{foreach item=elem from=$params}
 		{cycle values='list_one,list_two' assign=rowStyle}
 		{assign var=paramName value=param_`$elem.parameter_id`}
 		{assign var=paramNameTrigger value=param_trigger_`$elem.parameter_id`}
 		{if $elem.header_title}
-		<tr class="list_lvl_1">
-			<td colspan="2">{$elem.header_title}</td>
-		</tr>
+	<tr class="list_lvl_1" class="FormHeader">
+		<td colspan="2">
+			<h4>{$elem.header_title}</h4>
+		</td>
+	</tr>
 		{/if}		
 		<tr class="{$rowStyle}">
-			<td>
-				<div>{$form[$paramName].label}</div>					
+			<td class="FormRowField">
+				{$form[$paramName].label}
 			</td>
 			<td class="FormRowValue">
 				{if $elem.ft_typename == 'boolean'}
@@ -30,7 +33,6 @@
 			</td>			
 		</tr>		
 		{/foreach}
-	</tbody>	
 </table>
 <div id="validForm">
 	{$form.hidden}

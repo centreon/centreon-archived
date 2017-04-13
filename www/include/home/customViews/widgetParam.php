@@ -161,11 +161,11 @@ $form->setDefaults($defaultTab);
  * Renderer
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($template, true);
-$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+$renderer->setRequiredTemplate('{$label}&nbsp;<i class="red">*</i>');
+$renderer->setErrorTemplate('<i class="red">{$error}</i><br />{$html}');
 $form->accept($renderer);
 $template->assign('form', $renderer->toArray());
-$template->display("widgetParam.ihtml");
+$template->display("widgetParam.html");
 ?>
 <script type="text/javascript">
 var viewId = <?php echo $viewId;?>;
@@ -195,9 +195,9 @@ function submitData()
                             if (typeof(view) != 'undefined') {
                                 var viewId = view.item(0).firstChild.data;
                                 parent.jQuery("[name=widget_" + viewId +  "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId='+ widgetId);
-                                parent.jQuery.colorbox.close();
+                                jQuery('#config-popin').centreonPopin('close');
                             } else if (typeof(error) != 'undefined') {
-                                var errorMsg = error.item(0).firstChild.data;
+                                error.item(0).firstChild.data;
                             }
                         }
     });
