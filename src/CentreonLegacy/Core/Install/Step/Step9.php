@@ -54,14 +54,11 @@ class Step9 extends AbstractStep
 
         }
 
-        $adContent = $this->getAdvertisement();
-
         $template->assign('title', _('Installation finished'));
         $template->assign('step', 9);
         $template->assign('finish', 1);
         $template->assign('blockPreview', 1);
         $template->assign('contents', $contents);
-        $template->assign('pub_content', $adContent);
         return $template->fetch('content.tpl');
     }
 

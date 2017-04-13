@@ -116,8 +116,8 @@ class Utils
     public function replaceMacros($content)
     {
         $macros = array(
-            '@DB_CENTREON@' => hostCentreon,
-            '@DB_CENTSTORAGE@' => hostCentsorage
+            '@DB_CENTREON@' => $this->dependencyInjector['configuration']->get('hostCentreon'),
+            '@DB_CENTSTORAGE@' => $this->dependencyInjector['configuration']->get('hostCentsorage')
         );
 
         foreach ($macros as $name => $value) {

@@ -15,6 +15,10 @@
     {literal}
 
     var dbSteps = {
+        'configfile': {
+            'file': './steps/process/configFileSetup.php',
+            'label': '{/literal}{t}Setting up configuration file{/t}{literal}'
+        },
         'dbconf': {
             'file': './steps/process/installConfigurationDb.php',
             'label': '{/literal}{t}Configuration database{/t}{literal}'
@@ -31,10 +35,6 @@
             'file': './steps/process/insertBaseConf.php',
             'label': '{/literal}{t}Setting up basic configuration{/t}{literal}'
         },
-        'configfile': {
-            'file': './steps/process/configFileSetup.php',
-            'label': '{/literal}{t}Setting up configuration file{/t}{literal}'
-        },
         'dbpartitioning': {
             'file': './steps/process/partitionTables.php',
             'label': '{/literal}{t}Partitioning database tables{/t}{literal}'
@@ -43,7 +43,7 @@
 
     jQuery(function() {
         jQuery("input[type=button]").hide();
-        nextInstallStep('dbconf');
+        nextInstallStep('configfile');
     });
 
     function nextInstallStep(key) {
@@ -58,15 +58,15 @@
             var data = jQuery.parseJSON(response);
             if (data['result'] == 0) {
                 jQuery('#' + data['id']).html('<span style="color:#88b917;">OK</span>');
-                if (key == 'dbconf') {
+                if (key == 'configfile') {
+                    nextInstallStep('dbconf');
+                } else if (key == 'dbconf') {
                     nextInstallStep('dbstorage');
                 } else if (key == 'dbstorage') {
                     nextInstallStep('createuser');
                 } else if (key == 'createuser') {
                     nextInstallStep('baseconf');
                 } else if (key == 'baseconf') {
-                    nextInstallStep('configfile');
-                } else if (key == 'configfile') {
                     nextInstallStep('dbpartitioning');
                 } else if (key == 'dbpartitioning') {
                     jQuery("#next").show();

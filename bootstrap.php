@@ -36,10 +36,17 @@
 // Calling PHP-DI
 use Pimple\Container;
 
+/*
+// Define Centreon Path
+if (!defined('_CENTREON_PATH_')) {
+    define('_CENTREON_PATH_', realpath(__DIR__));
+}
+*/
+
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath(__DIR__ . '/www/class'),
     realpath(__DIR__ . '/www/lib'),
-    get_include_path(),
+    get_include_path()
 )));
 
 // Centreon Autoload
@@ -78,6 +85,17 @@ $dependencyInjector['filesystem'] = function ($c) {
 };
 
 // Define finder
-$dependencyInjector['finder'] = function ($c) {
+$dependencyInjector['finder'] = $dependencyInjector->factory(function ($c) {
     return new \Symfony\Component\Finder\Finder();
-};
+});
+
+// Centreon configuration files
+$configFiles = $dependencyInjector['finder']
+    ->files()
+    ->name('*.config.php')
+    ->depth('== 0')
+    ->in(__DIR__ . '/config');
+foreach ($configFiles as $configFile) {
+    $configFileName = $configFile->getBasename();
+    require_once __DIR__ . '/config/' . $configFileName;
+}
