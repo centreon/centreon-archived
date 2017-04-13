@@ -2,10 +2,6 @@
 Centreon 2.8.6
 ##############
 
-Released April XXth, 2017.
-
-The 2.8.6 release for Centreon Web is now available for download. Here are its release notes.
-
 Bug Fixes
 =========
 

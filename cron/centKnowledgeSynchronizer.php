@@ -35,4 +35,5 @@
 
 require_once realpath(dirname(__FILE__) . "/../www/class/centreon-knowledge/wikiApi.class.php");
 
-(New WikiApi)->synchronize();
+$wikiapi = new WikiApi();
+$wikiapi->synchronize();

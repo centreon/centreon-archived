@@ -374,10 +374,9 @@ class CentreonHost extends CentreonObject
                     $tpObj = new CentreonTimePeriod();
                     $params[2] = $tpObj->getTimeperiodId($params[2]);
                     break;
+                case "geo_coords":
                 case "contact_additive_inheritance":
-                    break;
                 case "cg_additive_inheritance":
-                    break;
                 case "flap_detection_options":
                     break;
                 case "notes":
@@ -393,9 +392,6 @@ class CentreonHost extends CentreonObject
                     $extended = true;
                     break;
                 case "icon_image_alt":
-                    $extended = true;
-                    break;
-                case "vrml_image":
                     $extended = true;
                     break;
                 case "statusmap_image":
@@ -440,8 +436,7 @@ class CentreonHost extends CentreonObject
             } else {
                 $params[1] = "ehi_" . $params[1];
                 if ($params[1] == "ehi_icon_image"
-                    || $params[1] == "ehi_statusmap_image"
-                    || $params[1] == "ehi_vrml_image") {
+                    || $params[1] == "ehi_statusmap_image") {
                     if ($params[2]) {
                         $id = CentreonUtils::getImageId($params[2]);
                         if (is_null($id)) {
@@ -966,7 +961,6 @@ class CentreonHost extends CentreonObject
                     "ehi_action_url",
                     "ehi_icon_image",
                     "ehi_icon_image_alt",
-                    "ehi_vrml_image",
                     "ehi_statusmap_image",
                     "ehi_2d_coords",
                     "ehi_3d_coords"

@@ -86,9 +86,17 @@ class Utils
         $file = fopen($fileName, "r");
         while (!feof($file)) {
             $line = fgets($file);
-            $line = $this->replaceMacros($line);
             if (!preg_match('/^(--|#)/', $line)) {
-                $this->dependencyInjector['configuration_db']->query($line);
+                
+                $pos = strrpos($line, ";");
+                if ($pos != false) {
+                    $str .= $line;
+                    $str = rtrim($this->replaceMacros($str));
+                    $this->dependencyInjector['configuration_db']->query($str);
+                    $str = '';
+                } else {
+                    $str .= $line;
+                }
             }
         }
         fclose($file);

@@ -41,15 +41,14 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 
-session_start();
-session_write_close();
+CentreonSession::start();
 
 if (!isset($_SESSION['centreon']) || !isset($_POST['host_id'])) {
-    exit;
+    exit();
 }
 $centreon = $_SESSION['centreon'];
 $db = new CentreonDB();
-$pearDB = $db; // global var
+
 $hostId = $_POST['host_id'];
 $acl = $centreon->user->access;
 $xml = new CentreonXML();
@@ -71,13 +70,13 @@ if ($hostId != "") {
     if (!$centreon->user->admin) {
         $query .= " AND h.host_id = acl.host_id
                     AND acl.service_id = s.service_id
-                    AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+                    AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     }
     $query .= " ORDER BY h.host_name, s.service_description ";
     $res = $db->query($query);
     while ($row = $res->fetchRow()) {
         $xml->startElement("services");
-        $xml->writeElement("id", $row['host_id']."-".$row['service_id']);
+        $xml->writeElement("id", $row['host_id'] . "-" . $row['service_id']);
         $xml->writeElement("description", sprintf("%s - %s", $row['host_name'], $row['service_description']));
         $xml->endElement();
     }

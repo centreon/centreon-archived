@@ -27,7 +27,7 @@
             <h4>{$form.header.relation}</h4>
           </td>
         </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="members"> {$form.hg_hosts.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hosts.html}</p></td></tr>		
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="members"> {$form.hg_hosts.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.hg_hosts.html} </p></td></tr>		
 
 		<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
@@ -38,7 +38,7 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notes_url"> {$form.hg_notes_url.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_notes_url.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="action_url"> {$form.hg_action_url.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_action_url.html}</p></td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.hg_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_icon_image.html}&nbsp;&nbsp;<img id='hg_icon_image_img' src='./img/blank.gif'></p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.hg_map_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_map_icon_image.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.hg_map_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_map_icon_image.html}&nbsp;&nbsp;<img id='hg_map_icon_image' src='./img/blank.gif'></p></td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
 		
 	 	<tr class="list_lvl_1">

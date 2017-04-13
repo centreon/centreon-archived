@@ -1317,7 +1317,6 @@ CREATE TABLE `extended_host_information` (
   `ehi_action_url` TEXT DEFAULT NULL,
   `ehi_icon_image` int(11) DEFAULT NULL,
   `ehi_icon_image_alt` varchar(200) DEFAULT NULL,
-  `ehi_vrml_image` int(11) DEFAULT NULL,
   `ehi_statusmap_image` int(11) DEFAULT NULL,
   `ehi_2d_coords` varchar(200) DEFAULT NULL,
   `ehi_3d_coords` varchar(200) DEFAULT NULL,
@@ -1325,11 +1324,9 @@ CREATE TABLE `extended_host_information` (
   UNIQUE KEY `host_host_id` (`host_host_id`),
   KEY `host_index` (`host_host_id`),
   KEY `extended_host_information_ibfk_2` (`ehi_icon_image`),
-  KEY `extended_host_information_ibfk_3` (`ehi_vrml_image`),
   KEY `extended_host_information_ibfk_4` (`ehi_statusmap_image`),
   CONSTRAINT `extended_host_information_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `extended_host_information_ibfk_2` FOREIGN KEY (`ehi_icon_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL,
-  CONSTRAINT `extended_host_information_ibfk_3` FOREIGN KEY (`ehi_vrml_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL,
   CONSTRAINT `extended_host_information_ibfk_4` FOREIGN KEY (`ehi_statusmap_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

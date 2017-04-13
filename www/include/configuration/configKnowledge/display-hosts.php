@@ -189,11 +189,11 @@ foreach ($selection as $key => $value) {
         $firstTpl = 1;
         foreach ($tplArr as $key1 => $value1) {
             if ($firstTpl) {
-                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Host:$value1' target='_blank'>" .
+                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Host_:_$value1' target='_blank'>" .
                     $value1 . "</a>";
                 $firstTpl = 0;
             } else {
-                $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL . "/index.php?title=Host:$value1' target='_blank'>" .
+                $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL . "/index.php?title=Host_:_$value1' target='_blank'>" .
                     $value1 . "</a>";
             }
         }
