@@ -81,10 +81,10 @@ class Dependency extends AbstractObject {
     
     public function __construct() {
         parent::__construct();
-        $this->host_instance = Host::getInstance();
-        $this->service_instance = Service::getInstance();
-        $this->hg_instance = Hostgroup::getInstance();
-        $this->sg_instance = Servicegroup::getInstance();
+        $this->host_instance = Host::getInstance($this->dependencyInjector);
+        $this->service_instance = Service::getInstance($this->dependencyInjector);
+        $this->hg_instance = Hostgroup::getInstance($this->dependencyInjector);
+        $this->sg_instance = Servicegroup::getInstance($this->dependencyInjector);
         $this->buildCache();
     }
     
@@ -244,7 +244,7 @@ class Dependency extends AbstractObject {
     }
     
     public function doMetaService() {
-        $meta_instance = MetaService::getInstance();
+        $meta_instance = MetaService::getInstance($this->dependencyInjector);
         if (!$meta_instance->hasMetaServices()) {
             return 0;
         }

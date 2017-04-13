@@ -38,7 +38,7 @@
  * Need Centreon Configuration file
  */
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/bootstrap.php';
+require_once realpath(__DIR__ . "/../../bootstrap.php");
 
 /** * ****************************
  * Class for XML/Ajax request
@@ -107,7 +107,15 @@ class CentreonXMLBGRequest {
      * $compress	bool 	compress enable.
      */
 
-    public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null, $fullVersion = 1) {
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        $session_id,
+        $dbNeeds,
+        $headerType,
+        $debug,
+        $compress = null,
+        $fullVersion = 1
+    ) {
         if (!isset($debug)) {
             $this->debug = 0;
         }

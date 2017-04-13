@@ -146,7 +146,7 @@ class Contactgroup extends AbstractObject {
             $this->cg[$cg_id]['members_cache'] = $this->stmt_contact->fetchAll(PDO::FETCH_COLUMN);
         }
         
-        $contact = Contact::getInstance();
+        $contact = Contact::getInstance($this->dependencyInjector);
         $this->cg[$cg_id]['members'] = array();
         foreach ($this->cg[$cg_id]['members_cache'] as $contact_id) {
             $member = $contact->generateFromContactId($contact_id);

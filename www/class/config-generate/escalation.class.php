@@ -89,10 +89,10 @@ class Escalation extends AbstractObject {
     
     public function __construct() {
         parent::__construct();
-        $this->host_instance = Host::getInstance();
-        $this->service_instance = Service::getInstance();
-        $this->hg_instance = Hostgroup::getInstance();
-        $this->sg_instance = Servicegroup::getInstance();
+        $this->host_instance = Host::getInstance($this->dependencyInjector);
+        $this->service_instance = Service::getInstance($this->dependencyInjector);
+        $this->hg_instance = Hostgroup::getInstance($this->dependencyInjector);
+        $this->sg_instance = Servicegroup::getInstance($this->dependencyInjector);
         $this->buildCache();
     }
     
@@ -168,8 +168,8 @@ class Escalation extends AbstractObject {
     }
     
     private function generateSubObjects(&$escalation, $esc_id) {
-        $period = Timeperiod::getInstance();
-        $cg = Contactgroup::getInstance();
+        $period = Timeperiod::getInstance($this->dependencyInjector);
+        $cg = Contactgroup::getInstance($this->dependencyInjector);
 
         $escalation['escalation_period'] = $period->generateFromTimeperiodId($escalation['escalation_period_id']);
         $escalation['contact_groups'] = array();
@@ -474,11 +474,11 @@ class Escalation extends AbstractObject {
     }
     
     public function doMetaService() {
-        if (!MetaService::getInstance()->hasMetaServices()) {
+        if (!MetaService::getInstance($this->dependencyInjector)->hasMetaServices()) {
             return 0;
         }
         $this->object_name = 'serviceescalation';
-        foreach (MetaService::getInstance()->getGeneratedServices() as $meta_id) {
+        foreach (MetaService::getInstance($this->dependencyInjector)->getGeneratedServices() as $meta_id) {
             $escalation = $this->getEscalationFromMetaId($meta_id);
             foreach ($escalation as $escalation_id) {
                 $object = $this->getEscalationFromId($escalation_id);

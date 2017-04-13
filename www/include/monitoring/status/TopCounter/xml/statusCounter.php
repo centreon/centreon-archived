@@ -38,6 +38,7 @@ ini_set("display_errors", "Off");
 $debug = 0;
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 require_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
@@ -57,7 +58,7 @@ $centreonLang->bindLang();
 /*
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, $debug, 1, 0);
+$obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, $debug, 1, 0);
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     $obj->reloadSession();

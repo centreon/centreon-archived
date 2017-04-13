@@ -109,7 +109,7 @@ class Correlation extends AbstractObjectXML {
     }
 
     private function doHost($poller_id) {
-        $host_instance = Host::getInstance();
+        $host_instance = Host::getInstance($this->dependencyInjector);
         $hosts = $host_instance->getGeneratedHosts();
         foreach ($hosts as $hostId) {
             $this->correlation_object[]['host'] = array(
@@ -122,7 +122,7 @@ class Correlation extends AbstractObjectXML {
     }
 
     private function doService($poller_id) {
-        $service_instance = Service::getInstance();
+        $service_instance = Service::getInstance($this->dependencyInjector);
         $services_exported = $service_instance->getGeneratedServices();
         foreach ($services_exported as $hostId => $services) {
             foreach ($services as $serviceId) {

@@ -810,7 +810,9 @@ class CentreonACL
 
     public function checkHost($hostId)
     {
+        echo 'toto1';
         $pearDBO = \CentreonDBInstance::getMonInstance();
+        var_dump($pearDBO);
         $hostArray = $this->getHostsArray("ID", $pearDBO);
         if (in_array($hostId, $hostArray)) {
             return true;
@@ -820,7 +822,9 @@ class CentreonACL
 
     public function checkService($serviceId)
     {
+        echo 'toto2';
         $pearDBO = \CentreonDBInstance::getMonInstance();
+        var_dump($pearDBO);
         $serviceArray = $this->getServicesArray("ID", $pearDBO);
         if (in_array($serviceId, $serviceArray)) {
             return true;
@@ -2264,7 +2268,6 @@ class CentreonACL
         if (!$this->admin && $pollerstring != "''") {
             $pollerfilter = $this->queryBuilder($request['conditions'] ? 'AND' : 'WHERE', 'id', $pollerstring);
         }
-
         $sql = $request['select'] . $request['fields'] . " "
             . "FROM nagios_server "
             . $request['conditions']

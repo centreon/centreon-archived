@@ -376,7 +376,7 @@ class Engine extends AbstractObject {
         if (!is_null($object['illegal_object_name_chars'])) {
             $object['illegal_object_name_chars'] = html_entity_decode($object['illegal_object_name_chars'], ENT_QUOTES);
         }
-        $command_instance = Command::getInstance();
+        $command_instance = Command::getInstance($this->dependencyInjector);
         $object['global_host_event_handler'] = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
         $object['global_service_event_handler'] = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
         $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
@@ -402,8 +402,8 @@ class Engine extends AbstractObject {
     
     public function generateFromPoller($poller)
     {
-        Connector::getInstance()->generateObjects($poller['centreonconnector_path']);
-        Resource::getInstance()->generateFromPollerId($poller['id']);
+        Connector::getInstance($this->dependencyInjector)->generateObjects($poller['centreonconnector_path']);
+        Resource::getInstance($this->dependencyInjector)->generateFromPollerId($poller['id']);
         
         $this->generate($poller['id']);
     }

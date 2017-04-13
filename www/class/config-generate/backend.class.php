@@ -54,9 +54,9 @@ class Backend {
     private $poller_id = null;
     private $central_poller_id = null;
 
-    public static function getInstance() {
+    public static function getInstance(\Pimple\Container $dependencyInjector) {
         if(is_null(self::$_instance)) {
-            self::$_instance = new Backend();  
+            self::$_instance = new Backend($dependencyInjector);
         }
  
         return self::$_instance;
@@ -163,8 +163,7 @@ class Backend {
        if (!is_null($this->central_poller_id)) {
            return $this->central_poller_id;
        }
-       $this->stmt_central_poller = $this->db->prepare("SELECT
-           id
+       $this->stmt_central_poller = $this->db->prepare("SELECT id
           FROM nagios_server
           WHERE localhost = '1' AND ns_activate = '1'
         ");
@@ -178,24 +177,36 @@ class Backend {
         }
     }
 
-    private function __construct() {
-        global $conf_centreon, $centreon_path;
+    private function __construct(\Pimple\Container $dependencyInjector) {
+      //  global $conf_centreon, $centreon_path;
 
         $this->generate_path = _CENTREON_PATH_ . '/filesGeneration';
-                
+
+       /*
         $mysql_host = $conf_centreon["hostCentreon"];
         $mysql_database = $conf_centreon["db"];
         $mysql_user = $conf_centreon["user"];
         $mysql_password = $conf_centreon["password"];
         $mysql_port = $conf_centreon["port"] ? $conf_centreon["port"] : '3306';
-        $this->db = new PDO("mysql:dbname=pdo;host=" . $mysql_host . ";port=" . $mysql_port . ";dbname=" . $mysql_database,
+*/
+        $this->db = $dependencyInjector['configuration_db'];
+
+
+        /*
+            new PDO("mysql:dbname=pdo;host=" . $mysql_host . ";port=" . $mysql_port . ";dbname=" . $mysql_database,
         $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
+
+
         $mysql_host_cs = $conf_centreon["hostCentstorage"];
         $mysql_database_cs = $conf_centreon["dbcstg"];
-        $this->db_cs = new PDO("mysql:dbname=pdo;host=" . $mysql_host_cs . ";port=" . $mysql_port . ";dbname=" . $mysql_database_cs,
+        */
+        $this->db_cs = $dependencyInjector['realtime_db'];
+
+            /*
+            new PDO("mysql:dbname=pdo;host=" . $mysql_host_cs . ";port=" . $mysql_port . ";dbname=" . $mysql_database_cs,
         $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         $this->db_cs->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        */
     }
 }

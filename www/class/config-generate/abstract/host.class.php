@@ -207,7 +207,7 @@ abstract class AbstractHost extends AbstractObject
             $host['htpl'] = $this->stmt_htpl->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $host_template = HostTemplate::getInstance();
+        $host_template = HostTemplate::getInstance($this->dependencyInjector);
         $host['use'] = array();
         foreach ($host['htpl'] as $template_id) {
             $host['use'][] = $host_template->generateFromHostId($template_id);
@@ -229,7 +229,7 @@ abstract class AbstractHost extends AbstractObject
             $host['contacts_cache'] = $this->stmt_contact->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $contact = Contact::getInstance();
+        $contact = Contact::getInstance($this->dependencyInjector);
         $contact_result = '';
         $contact_result_append = '';
         foreach ($host['contacts_cache'] as $contact_id) {
@@ -263,7 +263,7 @@ abstract class AbstractHost extends AbstractObject
             $host['contact_groups_cache'] = $this->stmt_cg->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $cg = Contactgroup::getInstance();
+        $cg = Contactgroup::getInstance($this->dependencyInjector);
         $cg_result = '';
         $cg_result_append = '';
         foreach ($host['contact_groups_cache'] as $cg_id) {
@@ -287,7 +287,7 @@ abstract class AbstractHost extends AbstractObject
         $loop = array();
         $stack = array();
 
-        $hosts_tpl = HostTemplate::getInstance()->hosts;
+        $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $stack = $this->hosts[$host_id]['htpl'];
         while (($host_id = array_shift($stack))) {
             if (isset($loop[$host_id])) {
@@ -308,7 +308,7 @@ abstract class AbstractHost extends AbstractObject
         $loop = array();
         $stack = array();
 
-        $hosts_tpl = HostTemplate::getInstance()->hosts;
+        $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $stack = $this->hosts[$host_id]['htpl'];
         while (($host_id = array_shift($stack))) {
             if (isset($loop[$host_id])) {
@@ -326,7 +326,7 @@ abstract class AbstractHost extends AbstractObject
 
     protected function getHostCommand(&$host, $result_name, $command_id_label, $command_arg_label)
     {
-        $command_name = Command::getInstance()->generateFromCommandId($host[$command_id_label]);
+        $command_name = Command::getInstance($this->dependencyInjector)->generateFromCommandId($host[$command_id_label]);
         $command_arg = '';
 
         if (isset($host[$result_name])) {
@@ -360,7 +360,7 @@ abstract class AbstractHost extends AbstractObject
 
     protected function getHostPeriods(&$host)
     {
-        $period = Timeperiod::getInstance();
+        $period = Timeperiod::getInstance($this->dependencyInjector);
         $host['check_period'] = $period->generateFromTimeperiodId($host['check_period_id']);
         $host['notification_period'] = $period->generateFromTimeperiodId($host['notification_period_id']);
     }

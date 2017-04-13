@@ -70,14 +70,16 @@ class Generate {
     private $current_poller = null;
     private $installed_modules = null;
     private $module_objects = null;
+    protected $dependencyInjector = null;
     
-    public function __construct() {
-        $this->backend_instance = Backend::getInstance();
+    public function __construct(\Pimple\Container $dependencyInjector) {
+        $this->dependencyInjector = $dependencyInjector;
+        $this->backend_instance = Backend::getInstance($this->dependencyInjector);
     }
     
     private function generateIndexData($localhost = 0) {
-        $service_instance = Service::getInstance();
-        $host_instance = Host::getInstance();
+        $service_instance = Service::getInstance($this->dependencyInjector);
+        $host_instance = Host::getInstance($this->dependencyInjector);
         $services = &$service_instance->getGeneratedServices();
         
         try {
@@ -95,8 +97,8 @@ class Generate {
             
             # Meta services
             if ($localhost == 1) {
-                $meta_services = &MetaService::getInstance()->getMetaServices();
-                $host_id = MetaHost::getInstance()->getHostIdByHostName('_Module_Meta');
+                $meta_services = &MetaService::getInstance($this->dependencyInjector)->getMetaServices();
+                $host_id = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
                 foreach ($meta_services as $meta_id => $meta_service) {
                     $stmt->bindValue(':host_name', '_Module_Meta', PDO::PARAM_STR);
                     $stmt->bindValue(':service_description', 'meta_' . $meta_id, PDO::PARAM_STR);
@@ -135,27 +137,27 @@ class Generate {
     }
     
     public function resetObjectsEngine() {
-        Host::getInstance()->reset();
-        HostTemplate::getInstance()->reset();
-        Service::getInstance()->reset();
-        ServiceTemplate::getInstance()->reset();
-        Command::getInstance()->reset();
-        Contact::getInstance()->reset();
-        Contactgroup::getInstance()->reset();
-        Hostgroup::getInstance()->reset();
-        Servicegroup::getInstance()->reset();
-        Timeperiod::getInstance()->reset();
-        Escalation::getInstance()->reset();
-        Dependency::getInstance()->reset();
-        MetaCommand::getInstance()->reset();
-        MetaTimeperiod::getInstance()->reset();
-        MetaService::getInstance()->reset();
-        MetaHost::getInstance()->reset();
-        Connector::getInstance()->reset();
-        Resource::getInstance()->reset();
-        Engine::getInstance()->reset();
-        Broker::getInstance()->reset();
-        Correlation::getInstance()->reset();
+        Host::getInstance($this->dependencyInjector)->reset();
+        HostTemplate::getInstance($this->dependencyInjector)->reset();
+        Service::getInstance($this->dependencyInjector)->reset();
+        ServiceTemplate::getInstance($this->dependencyInjector)->reset();
+        Command::getInstance($this->dependencyInjector)->reset();
+        Contact::getInstance($this->dependencyInjector)->reset();
+        Contactgroup::getInstance($this->dependencyInjector)->reset();
+        Hostgroup::getInstance($this->dependencyInjector)->reset();
+        Servicegroup::getInstance($this->dependencyInjector)->reset();
+        Timeperiod::getInstance($this->dependencyInjector)->reset();
+        Escalation::getInstance($this->dependencyInjector)->reset();
+        Dependency::getInstance($this->dependencyInjector)->reset();
+        MetaCommand::getInstance($this->dependencyInjector)->reset();
+        MetaTimeperiod::getInstance($this->dependencyInjector)->reset();
+        MetaService::getInstance($this->dependencyInjector)->reset();
+        MetaHost::getInstance($this->dependencyInjector)->reset();
+        Connector::getInstance($this->dependencyInjector)->reset();
+        Resource::getInstance($this->dependencyInjector)->reset();
+        Engine::getInstance($this->dependencyInjector)->reset();
+        Broker::getInstance($this->dependencyInjector)->reset();
+        Correlation::getInstance($this->dependencyInjector)->reset();
         $this->resetModuleObjects();
     }
 
@@ -165,18 +167,18 @@ class Generate {
         $this->backend_instance->setPollerId($this->current_poller['id']);
         $this->resetObjectsEngine();
 
-        Host::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+        Host::getInstance($this->dependencyInjector)->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
         $this->generateModuleObjects(1);
-        Engine::getInstance()->generateFromPoller($this->current_poller);
+        Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);
         # Correlation files are always generated on central poller
-        if (Correlation::getInstance()->hasCorrelation()) {
-            Correlation::getInstance()->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+        if (Correlation::getInstance($this->dependencyInjector)->hasCorrelation()) {
+            Correlation::getInstance($this->dependencyInjector)->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
         }
         $this->generateModuleObjects(2);
-        Broker::getInstance()->generateFromPoller($this->current_poller);
+        Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
         
         $this->generateIndexData($this->current_poller['localhost']);
@@ -247,9 +249,9 @@ class Generate {
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                if (($type == 1 && $module_object::getInstance()->isEngineObject() == true) ||
-                    ($type == 2 && $module_object::getInstance()->isBrokerObject() == true)) {
-                    $module_object::getInstance()->generateFromPollerId($this->current_poller['id'],
+                if (($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true) ||
+                    ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)) {
+                    $module_object::getInstance($this->dependencyInjector)->generateFromPollerId($this->current_poller['id'],
                         $this->current_poller['localhost']);
                 }
             }
@@ -262,7 +264,7 @@ class Generate {
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                $module_object::getInstance()->reset();
+                $module_object::getInstance($this->dependencyInjector)->reset();
             }
         }
     }

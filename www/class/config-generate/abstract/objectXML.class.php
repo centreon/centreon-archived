@@ -45,21 +45,23 @@ abstract class AbstractObjectXML {
     protected $attributes_array = array();
     protected $attributes_hash = array();
     protected $attributes_default = array();
+    protected $dependencyInjector;
 
-    public static function getInstance() {
+    public static function getInstance(\Pimple\Container $dependencyInjector) {
         static $instances = array();
 
         $calledClass = get_called_class();
 
         if (!isset($instances[$calledClass])) {
-            $instances[$calledClass] = new $calledClass();
+            $instances[$calledClass] = new $calledClass($dependencyInjector);
         }
 
         return $instances[$calledClass];
     }
     
-    protected function __construct() {
-        $this->backend_instance = Backend::getInstance();
+    protected function __construct(\Pimple\Container $dependencyInjector) {
+        $this->dependencyInjector = $dependencyInjector;
+        $this->backend_instance = Backend::getInstance($this->dependencyInjector);
 
         $this->writer = new XMLWriter();
         $this->writer->openMemory();
