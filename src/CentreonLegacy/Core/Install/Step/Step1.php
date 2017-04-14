@@ -51,4 +51,23 @@ class Step1 extends AbstractStep
         $template->assign('step', 1);
         return $template->fetch('content.tpl');
     }
+
+    public function setConfiguration()
+    {
+        $configurationFile = __DIR__ . "/../../../../../www/install/install.conf.php";
+
+        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
+            throw new \Exception('Configuration file "install.conf.php" does not exist.');
+        }
+
+        $conf_centreon =  array();
+        require $configurationFile;
+
+        $tmpDir = __DIR__ . '/../../../../../www/install/tmp';
+        if (!$this->dependencyInjector['filesystem']->exists($tmpDir)) {
+            $this->dependencyInjector['filesystem']->mkdir($tmpDir);
+        }
+
+        file_put_contents($tmpDir . '/configuration.json', json_encode($conf_centreon));
+    }
 }

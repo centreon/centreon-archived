@@ -8,7 +8,7 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.9.0');
 -- Contenu de la table `contact`
 --
 
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', MD5('@ADMIN_PASSWORD@'), 'en_US', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', MD5('@admin_password@'), 'en_US', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', NULL, 'en_US', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', NULL, 'en_US', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 
@@ -78,7 +78,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
 ('broker','broker'),
-('oreon_path','@INSTALL_DIR_CENTREON@/'),
+('oreon_path','@centreon_dir@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
 ('maxViewMonitoring','30'),
@@ -104,20 +104,17 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('global_sort_order','ASC'),
 ('problem_sort_type','last_state_change'),
 ('problem_sort_order','ASC'),
-('nagios_path','@INSTALL_DIR_NAGIOS@'),
-('nagios_path_bin','@NAGIOS_BINARY@'),
-('nagios_init_script','@NAGIOS_INIT_SCRIPT@'),
-('nagios_path_plugins','@MONITORINGENGINE_PLUGIN@/'),
+('nagios_path_plugins','@plugin_dir@/'),
 ('nagios_version','3'),
-('mailer_path_bin','@BIN_MAIL@'),
+('mailer_path_bin','@mail@'),
 ('snmp_community','public'),
 ('snmp_version','1'),
 ('snmptt_unknowntrap_log_file','snmpttunknown.log'),
-('snmpttconvertmib_path_bin','@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib'),
+('snmpttconvertmib_path_bin','@centreon_dir@/bin/snmpttconvertmib'),
 ('perl_library_path','/usr/local/lib'),
-('rrdtool_path_bin','@BIN_RRDTOOL@'),
+('rrdtool_path_bin','@rrdtool_dir@'),
 ('rrdtool_version','1.2'),
-('debug_path','@CENTREON_LOG@/'),
+('debug_path','@centreon_log@/'),
 ('debug_auth','0'),
 ('debug_nagios_import','0'),
 ('debug_rrdtool','0'),
@@ -139,7 +136,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('tactical_refresh_interval', '20'), 
 ('index_data', '1'), 
 ('interval_length', '60'),
-('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/'),
+('nagios_path_img','@centreon_dir@/www/img/media/'),
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0');

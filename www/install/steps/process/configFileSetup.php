@@ -45,7 +45,7 @@ $return = array(
 
 $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
-$configuration = $step->getConfiguration();
+$configuration = $step->getBaseConfiguration();
 
 if ($parameters['address']) {
     $host = $parameters['address'];

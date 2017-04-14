@@ -50,4 +50,16 @@ class Step6 extends AbstractStep
         $template->assign('parameters', $parameters);
         return $template->fetch('content.tpl');
     }
+
+    public function setDatabaseConfiguration($parameters)
+    {
+        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/database.json";
+        file_put_contents($configurationFile, json_encode($parameters));
+    }
+
+    public function setVersion($version)
+    {
+        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/version.json";
+        file_put_contents($configurationFile, json_encode($version));
+    }
 }

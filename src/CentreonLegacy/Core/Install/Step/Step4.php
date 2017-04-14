@@ -53,7 +53,7 @@ class Step4 extends AbstractStep
 
     public function getBrokerParameters()
     {
-        $configuration = $this->getConfiguration();
+        $configuration = $this->getBaseConfiguration();
         $file = __DIR__ . '/../../../../../www/install/var/brokers/centreon-broker';
         $lines = explode("\n", file_get_contents($file));
 
@@ -78,18 +78,6 @@ class Step4 extends AbstractStep
         }
 
         return $parameters;
-    }
-
-    public function getBrokerConfiguration()
-    {
-        $configuration = array();
-
-        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/broker.json";
-        if ($this->dependencyInjector['filesystem']->exists($configurationFile)) {
-            $configuration =  json_decode(file_get_contents($configurationFile), true);
-        }
-
-        return $configuration;
     }
 
     public function setBrokerConfiguration($parameters)

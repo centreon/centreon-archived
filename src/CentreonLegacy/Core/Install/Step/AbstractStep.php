@@ -44,33 +44,23 @@ abstract class AbstractStep implements StepInterface
         $this->dependencyInjector = $dependencyInjector;
     }
 
-    public function getConfiguration()
+    /**
+     * @param $file
+     * @param array $configuration
+     * @return array|string
+     */
+    private function getConfiguration($file, $configuration = array())
     {
-        $file = __DIR__ . '/../../../../../www/install/tmp/configuration.json';
-        if (!$this->dependencyInjector['filesystem']->exists($file)) {
-            throw new \Exception('Cannot find configuration file configuration.json');
+        if ($this->dependencyInjector['filesystem']->exists($file)) {
+            $configuration =  json_decode(file_get_contents($file), true);
         }
 
-        return json_decode(file_get_contents($file), true);
+        return $configuration;
     }
 
-    public function setConfiguration()
+    public function getBaseConfiguration()
     {
-        $configurationFile = __DIR__ . "/../../../../../www/install/install.conf.php";
-
-        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
-            throw new \Exception('Configuration file "install.conf.php" does not exist.');
-        }
-
-        $conf_centreon =  array();
-        require $configurationFile;
-
-        $tmpDir = __DIR__ . '/../../../../../www/install/tmp';
-        if (!$this->dependencyInjector['filesystem']->exists($tmpDir)) {
-            $this->dependencyInjector['filesystem']->mkdir($tmpDir);
-        }
-
-        file_put_contents($tmpDir . '/configuration.json', json_encode($conf_centreon));
+        return $this->getConfiguration(__DIR__ . '/../../../../../www/install/tmp/configuration.json');
     }
 
     public function getDatabaseConfiguration()
@@ -86,34 +76,34 @@ abstract class AbstractStep implements StepInterface
             'db_password_confirm' => ''
         );
 
-        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/database.json";
-        if ($this->dependencyInjector['filesystem']->exists($configurationFile)) {
-            $configuration =  json_decode(file_get_contents($configurationFile), true);
-        }
-
-        return $configuration;
+        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/database.json", $configuration);
     }
 
-    public function setDatabaseConfiguration($parameters)
+    public function getAdminConfiguration()
     {
-        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/database.json";
-        file_put_contents($configurationFile, json_encode($parameters));
+        $configuration = array(
+            'admin_password' => '',
+            'confirm_password' => '',
+            'firstname' => '',
+            'lastname' => '',
+            'email' => ''
+        );
+
+        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/admin.json", $configuration);
+    }
+
+    public function getEngineConfiguration()
+    {
+        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/engine.json");
+    }
+
+    public function getBrokerConfiguration()
+    {
+        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/broker.json");
     }
 
     public function getVersion()
     {
-        $version = '1.0.0';
-        $versionFile = __DIR__ . "/../../../../../www/install/tmp/version.json";
-        if ($this->dependencyInjector['filesystem']->exists($versionFile)) {
-            $version =  json_decode(file_get_contents($versionFile), true);
-        }
-
-        return $version;
-    }
-
-    public function setVersion($version)
-    {
-        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/version.json";
-        file_put_contents($configurationFile, json_encode($version));
+        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/version.json", '1.0.0');
     }
 }

@@ -36,13 +36,6 @@
 // Calling PHP-DI
 use Pimple\Container;
 
-/*
-// Define Centreon Path
-if (!defined('_CENTREON_PATH_')) {
-    define('_CENTREON_PATH_', realpath(__DIR__));
-}
-*/
-
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath(__DIR__ . '/www/class'),
     realpath(__DIR__ . '/www/lib'),

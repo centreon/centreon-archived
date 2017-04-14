@@ -51,24 +51,6 @@ class Step5 extends AbstractStep
         return $template->fetch('content.tpl');
     }
 
-    public function getAdminConfiguration()
-    {
-        $configuration = array(
-            'admin_password' => '',
-            'confirm_password' => '',
-            'firstname' => '',
-            'lastname' => '',
-            'email' => ''
-        );
-
-        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/admin.json";
-        if ($this->dependencyInjector['filesystem']->exists($configurationFile)) {
-            $configuration =  json_decode(file_get_contents($configurationFile), true);
-        }
-
-        return $configuration;
-    }
-
     public function setAdminConfiguration($parameters)
     {
         $configurationFile = __DIR__ . "/../../../../../www/install/tmp/admin.json";

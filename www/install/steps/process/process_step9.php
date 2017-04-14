@@ -49,7 +49,8 @@ try {
     if ($dependencyInjector['filesystem']->exists($installDir)) {
         throw new \Exception('Cannot move directory from ' . $installDir . ' to ' . $backupDir);
     }
-    $dependencyInjector['filesystem']->remove($backupDir . '/tmp');
+    $dependencyInjector['filesystem']->remove($backupDir . '/tmp/admin.json');
+    $dependencyInjector['filesystem']->remove($backupDir . '/tmp/database.json');
     $result = true;
 } catch (\Exception $e) {
     $result = false;

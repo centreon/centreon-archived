@@ -75,27 +75,27 @@ class Utils
     /**
      *
      * @param string $fileName
+     * @param array $customMacros
      * @throws \Exception
      */
-    public function executeSqlFile($fileName)
+    public function executeSqlFile($fileName, $customMacros = array())
     {
         if (!file_exists($fileName)) {
             throw new \Exception('Cannot execute sql file "' . $fileName . '" : File does not exist.');
         }
 
         $file = fopen($fileName, "r");
+        $str = '';
         while (!feof($file)) {
             $line = fgets($file);
             if (!preg_match('/^(--|#)/', $line)) {
                 
                 $pos = strrpos($line, ";");
-                if ($pos != false) {
-                    $str .= $line;
-                    $str = rtrim($this->replaceMacros($str));
+                $str .= $line;
+                if ($pos !== false) {
+                    $str = rtrim($this->replaceMacros($str, $customMacros));
                     $this->dependencyInjector['configuration_db']->query($str);
                     $str = '';
-                } else {
-                    $str .= $line;
                 }
             }
         }
@@ -119,17 +119,22 @@ class Utils
     /**
      *
      * @param string $content
+     * @param array $customMacros
      * @return string
      */
-    public function replaceMacros($content)
+    public function replaceMacros($content, $customMacros = array())
     {
         $macros = array(
             '@DB_CENTREON@' => $this->dependencyInjector['configuration']->get('hostCentreon'),
-            '@DB_CENTSTORAGE@' => $this->dependencyInjector['configuration']->get('hostCentsorage')
+            '@DB_CENTSTORAGE@' => $this->dependencyInjector['configuration']->get('hostCentstorage')
         );
 
+        if (count($customMacros)) {
+            $macros = array_merge($macros, $customMacros);
+        }
+
         foreach ($macros as $name => $value) {
-            $content = str_replace($name, $value, $content);
+            $content = str_replace('@' . $name . '@', $value, $content);
         }
 
         return $content;

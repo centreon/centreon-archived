@@ -5,7 +5,7 @@
 
 // Define constants
 $constants = array(
-    '_CENTREON_PATH_' => realpath(__DIR__ . '/..'),
+    '_CENTREON_PATH_' => realpath(__DIR__ . '/..') . '/',
     '_CENTREON_ETC_' => '@CENTREON_ETC@',
     '_CENTREON_LOG_' => '@CENTREON_LOG@',
     '_CENTREON_VARLIB_' => '@CENTREON_VARLIB@'

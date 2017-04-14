@@ -53,7 +53,7 @@ class Step3 extends AbstractStep
 
     public function getEngineParameters()
     {
-        $configuration = $this->getConfiguration();
+        $configuration = $this->getBaseConfiguration();
         $engineConfiguration = $this->getEngineConfiguration();
         $file = __DIR__ . '/../../../../../www/install/var/engines/centreon-engine';
         $lines = explode("\n", file_get_contents($file));
@@ -81,18 +81,6 @@ class Step3 extends AbstractStep
         }
 
         return $parameters;
-    }
-
-    public function getEngineConfiguration()
-    {
-        $configuration = array();
-
-        $configurationFile = __DIR__ . "/../../../../../www/install/tmp/engine.json";
-        if ($this->dependencyInjector['filesystem']->exists($configurationFile)) {
-            $configuration =  json_decode(file_get_contents($configurationFile), true);
-        }
-
-        return $configuration;
     }
 
     public function setEngineConfiguration($parameters)
