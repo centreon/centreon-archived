@@ -1679,8 +1679,6 @@ class CentreonHost
                     );
 
                     $this->insertRelHostService($hostId, $svcId);
-
-                    $this->serviceObj->insertExtendInfo(array('service_service_id' => $svcId));
                 }
                 unset($res);
             }
