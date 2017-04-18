@@ -16,6 +16,10 @@ class ModuleContext extends CentreonContext
      */
     public function aModuleIsReadyToInstall()
     {
+        $this->aModuleIsReadyToRemove();
+        $this->iRemoveTheModule();
+        $this->theModuleIsRemoved();
+
         $this->page = new ModuleListingPage($this);
         $module = $this->page->getEntry($this->moduleName);
         if (!$module['actions']['install']) {
@@ -28,10 +32,6 @@ class ModuleContext extends CentreonContext
      */
     public function aModuleIsReadyToRemove()
     {
-        $this->aModuleIsReadyToInstall();
-        $this->iInstallTheModule();
-        $this->theModuleIsInstalled();
-
         $this->page = new ModuleListingPage($this);
         $module = $this->page->getEntry($this->moduleName);
         if (!$module['actions']['remove']) {
