@@ -36,7 +36,8 @@
 /*
  * XML tag
  */
-stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
+stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") ?
+    header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
 header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"');
 
 /** ****************************
@@ -96,6 +97,56 @@ include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
+/**
+ * Get input vars
+ */
+$inputArguments = array(
+    'lang' => FILTER_SANITIZE_STRING,
+    'id' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_STRING,
+    'limit' => FILTER_SANITIZE_STRING,
+    'StartDate' => FILTER_SANITIZE_STRING,
+    'EndDate' => FILTER_SANITIZE_STRING,
+    'StartTime' => FILTER_SANITIZE_STRING,
+    'EndTime' => FILTER_SANITIZE_STRING,
+    'period' => FILTER_SANITIZE_STRING,
+    'engine' => FILTER_SANITIZE_STRING,
+    'up' => FILTER_SANITIZE_STRING,
+    'down' => FILTER_SANITIZE_STRING,
+    'unreachable' => FILTER_SANITIZE_STRING,
+    'ok' => FILTER_SANITIZE_STRING,
+    'warning' => FILTER_SANITIZE_STRING,
+    'critical' => FILTER_SANITIZE_STRING,
+    'unknown' => FILTER_SANITIZE_STRING,
+    'notification' => FILTER_SANITIZE_STRING,
+    'alert' => FILTER_SANITIZE_STRING,
+    'oh' => FILTER_SANITIZE_STRING,
+    'error' => FILTER_SANITIZE_STRING,
+    'output' => FILTER_SANITIZE_STRING,
+    'search_H' => FILTER_SANITIZE_STRING,
+    'search_S' => FILTER_SANITIZE_STRING,
+    'search_host' => FILTER_SANITIZE_STRING,
+    'search_service' => FILTER_SANITIZE_STRING,
+    'export' => FILTER_SANITIZE_STRING,
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
+$inputs = array();
+foreach ($inputArguments as $argumentName => $argumentValue) {
+    if (!is_null($inputGet[$argumentName])) {
+        $inputs[$argumentName] = $inputGet[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputPost[$argumentName];
+    }
+}
+
 /*
  * Start XML document root
  */
@@ -105,8 +156,10 @@ $buffer->startElement("root");
 /*
  * Security check
  */
-(isset($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
-(isset($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
+(isset($inputs["lang"])) ?
+    $lang_ = htmlentities($inputs["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
+(isset($inputs["id"])) ?
+    $openid = htmlentities($inputs["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
 $sid = session_id();
 (isset($sid)) ? $sid = $sid : $sid = "-1";
 
@@ -127,32 +180,32 @@ if (isset($sid) && $sid) {
     $lca = array("LcaHost" => $access->getHostsServices($pearDBO, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 }
 
-$num = isset($_GET["num"]) ? htmlentities($_GET["num"]) : "0";
-$limit = isset($_GET["limit"]) ? htmlentities($_GET["limit"]) : "30";
-$StartDate = isset($_GET["StartDate"]) ? htmlentities($_GET["StartDate"]) : "";
-$EndDate = isset($_GET["EndDate"]) ? $EndDate = htmlentities($_GET["EndDate"]) : "";
-$StartTime = isset($_GET["StartTime"]) ? $StartTime = htmlentities($_GET["StartTime"]) : "";
-$EndTime = isset($_GET["EndTime"]) ? $EndTime = htmlentities($_GET["EndTime"]) : "";
-$auto_period = isset($_GET["period"]) ? $auto_period = htmlentities($_GET["period"]) : "-1";
-$engine = isset($_GET["engine"]) ? $engine = htmlentities($_GET["engine"]) : "false";
-$up = isset($_GET["up"]) ? htmlentities($_GET["up"]) : "true";
-$down = isset($_GET["down"]) ? htmlentities($_GET["down"]) : "true";
-$unreachable = isset($_GET["unreachable"]) ? htmlentities($_GET["unreachable"]) : "true";
-$ok = isset($_GET["ok"]) ? htmlentities($_GET["ok"]) : "true";
-$warning = isset($_GET["warning"]) ? htmlentities($_GET["warning"]) : "true";
-$critical = isset($_GET["critical"]) ? htmlentities($_GET["critical"]) : "true";
-$unknown = isset($_GET["unknown"]) ? htmlentities($_GET["unknown"]) : "true";
-$notification = isset($_GET["notification"]) ? htmlentities($_GET["notification"]) : "false";
-$alert = isset($_GET["alert"]) ? htmlentities($_GET["alert"]) : "true";
-$oh = isset($_GET["oh"]) ? htmlentities($_GET["oh"]) : "false";
-$error = isset($_GET["error"]) ? htmlentities($_GET["error"]) : "false";
+$num = isset($inputs["num"]) ? htmlentities($inputs["num"]) : "0";
+$limit = isset($inputs["limit"]) ? htmlentities($inputs["limit"]) : "30";
+$StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
+$EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
+$StartTime = isset($inputs["StartTime"]) ? $StartTime = htmlentities($inputs["StartTime"]) : "";
+$EndTime = isset($inputs["EndTime"]) ? $EndTime = htmlentities($inputs["EndTime"]) : "";
+$auto_period = isset($inputs["period"]) ? $auto_period = htmlentities($inputs["period"]) : "-1";
+$engine = isset($inputs["engine"]) ? $engine = htmlentities($inputs["engine"]) : "false";
+$up = isset($inputs["up"]) ? htmlentities($inputs["up"]) : "true";
+$down = isset($inputs["down"]) ? htmlentities($inputs["down"]) : "true";
+$unreachable = isset($inputs["unreachable"]) ? htmlentities($inputs["unreachable"]) : "true";
+$ok = isset($inputs["ok"]) ? htmlentities($inputs["ok"]) : "true";
+$warning = isset($inputs["warning"]) ? htmlentities($inputs["warning"]) : "true";
+$critical = isset($inputs["critical"]) ? htmlentities($inputs["critical"]) : "true";
+$unknown = isset($inputs["unknown"]) ? htmlentities($inputs["unknown"]) : "true";
+$notification = isset($inputs["notification"]) ? htmlentities($inputs["notification"]) : "false";
+$alert = isset($inputs["alert"]) ? htmlentities($inputs["alert"]) : "true";
+$oh = isset($inputs["oh"]) ? htmlentities($inputs["oh"]) : "false";
+$error = isset($inputs["error"]) ? htmlentities($inputs["error"]) : "false";
 
-$output = isset($_GET["output"]) ? urldecode($_GET["output"]) : $output = "";
-$search_H = isset($_GET["search_H"]) ? htmlentities($_GET["search_H"]) : "VIDE";
-$search_S = isset($_GET["search_S"]) ? htmlentities($_GET["search_S"]) : "VIDE";
-$search_host = isset($_GET["search_host"]) ? htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : "";
-$search_service = isset($_GET["search_service"]) ? htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : "";
-$export = isset($_GET["export"]) ? htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : 0;
+$output = isset($inputs["output"]) ? urldecode($inputs["output"]) : $output = "";
+$search_H = isset($inputs["search_H"]) ? htmlentities($inputs["search_H"]) : "VIDE";
+$search_S = isset($inputs["search_S"]) ? htmlentities($inputs["search_S"]) : "VIDE";
+$search_host = isset($inputs["search_host"]) ? htmlentities($inputs["search_host"], ENT_QUOTES, "UTF-8") : "";
+$search_service = isset($inputs["search_service"]) ? htmlentities($inputs["search_service"], ENT_QUOTES, "UTF-8") : "";
+$export = isset($inputs["export"]) ? htmlentities($inputs["export"], ENT_QUOTES, "UTF-8") : 0;
 
 $start = 0;
 $end = 0;
