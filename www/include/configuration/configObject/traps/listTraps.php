@@ -45,10 +45,16 @@
 	$mnftr_id = NULL;
 	
 	$tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
-	
+
+    $searchT = filter_input(
+        INPUT_POST,
+        'searchT',
+        FILTER_SANITIZE_STRING
+    );
+
 	$SearchTool = NULL;
-	if (isset($_POST['searchT']) && $_POST['searchT']) {
-        $search = $_POST['searchT'];
+	if (isset($searchT) && $searchT) {
+        $search = $searchT;
 		$SearchTool = "WHERE traps_oid LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR traps_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
     }
 	
