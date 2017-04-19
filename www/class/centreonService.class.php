@@ -68,11 +68,14 @@ class CentreonService
     {
         $this->db = $db;
         if (is_null($dbMon)) {
-            $this->dbMon = new CentreonDB('centstorage');
+            $this->dbMon = \CentreonDBInstance::getMonInstance();
         } else {
             $this->dbMon = $dbMon;
         }
+
         $this->instanceObj = new CentreonInstance($db);
+
+
     }
 
     /**
