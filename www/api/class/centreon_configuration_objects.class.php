@@ -145,7 +145,7 @@ class CentreonConfigurationObjects extends CentreonWebService
 
             if (!empty($values)) {
                 for ($i = 0; $i <= count($values); $i++) {
-                    $explodedValues = '?,';
+                    $explodedValues .= '?,';
                 }
                 rtrim($explodedValues, ',');
             }
