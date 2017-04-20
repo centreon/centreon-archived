@@ -36,15 +36,15 @@
 namespace CentreonClapi;
 
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
-require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
-require_once realpath(dirname(__FILE__)."/../centreonXML.class.php");
+require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
+require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 
-if (file_exists(realpath(dirname(__FILE__)."/../centreonSession.class.php"))) {
-    require_once realpath(dirname(__FILE__)."/../centreonSession.class.php");
+if (file_exists(realpath(dirname(__FILE__) . "/../centreonSession.class.php"))) {
+    require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
 } else {
-    require_once realpath(dirname(__FILE__)."/../Session.class.php");
+    require_once realpath(dirname(__FILE__) . "/../Session.class.php");
 }
 
 /**
@@ -77,12 +77,19 @@ class CentreonAPI
     public $centreon_path;
     public $optGen;
     private $return_code;
+    private $dependencyInjector;
     private $relationObject;
     private $objectTable;
     private $aExport = array();
 
-    public function __construct($user, $password, $action, $centreon_path, $options)
-    {
+    public function __construct(
+        $user,
+        $password,
+        $action,
+        $centreon_path,
+        $options,
+        \Pimple\Container $dependencyInjector
+    ) {
         global $version;
 
         /**
@@ -90,7 +97,7 @@ class CentreonAPI
          */
         $this->debug = 0;
         $this->return_code = 0;
-
+        $this->dependencyInjector = $dependencyInjector;
         if (isset($user)) {
             $this->login = htmlentities($user, ENT_QUOTES);
         }
@@ -121,8 +128,8 @@ class CentreonAPI
         /**
          * Centreon DB Connexion
          */
-        $this->DB = new \CentreonDB();
-        $this->DBC = new \CentreonDB('centstorage');
+        $this->DB = $this->dependencyInjector["configuration_db"];
+        $this->DBC = $this->dependencyInjector["realtime_db"];
         $this->dateStart = time();
 
         $this->relationObject = array();
@@ -290,10 +297,11 @@ class CentreonAPI
         /* Get objects from modules */
         $objectsPath = array();
         $DBRESULT = $this->DB->query("SELECT name FROM modules_informations");
+
         while ($row = $DBRESULT->fetchRow()) {
             $objectsPath = array_merge(
                 $objectsPath,
-                glob(_CENTREON_PATH_.'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php')
+                glob(_CENTREON_PATH_ . 'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php')
             );
         }
 
@@ -305,8 +313,8 @@ class CentreonAPI
                     $finalNamespace = implode(
                         '',
                         array_map(
-                            function($n) {
-                            return ucfirst($n);
+                            function ($n) {
+                                return ucfirst($n);
                             },
                             explode('-', $finalNamespace)
                         )
@@ -334,9 +342,23 @@ class CentreonAPI
      * @param void
      * @return CentreonApi
      */
-    public static function getInstance($user=null, $password=null, $action=null, $centreon_path=null, $options=null) {
-        if(is_null(self::$_instance)) {
-            self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
+    public static function getInstance(
+        $user = null,
+        $password = null,
+        $action = null,
+        $centreon_path = null,
+        $options = null,
+        $dependencyInjector = null
+    ) {
+        if (is_null(self::$_instance)) {
+            self::$_instance = new CentreonAPI(
+                $user,
+                $password,
+                $action,
+                $centreon_path,
+                $options,
+                $dependencyInjector
+            );
         }
 
         return self::$_instance;
@@ -361,11 +383,12 @@ class CentreonAPI
         if ($object != "") {
             if (isset($this->relationObject[$object]['class'])
                 && isset($this->relationObject[$object]['module'])
-                && !class_exists("Centreon" . $this->relationObject[$object])) {
+                && !class_exists("Centreon" . $this->relationObject[$object])
+            ) {
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
                 } else {
-                    require_once _CENTREON_PATH_."/www/modules/"
+                    require_once _CENTREON_PATH_ . "/www/modules/"
                         . $this->relationObject[$object]['module']
                         . "/centreon-clapi/class/centreon"
                         . $this->relationObject[$object]['class']
@@ -374,14 +397,16 @@ class CentreonAPI
             }
 
             if (isset($this->relationObject[$object]['libs'])
-                && !array_walk($this->relationObject[$object]['libs'], 'class_exists')) {
+                && !array_walk($this->relationObject[$object]['libs'], 'class_exists')
+            ) {
                 array_walk($this->relationObject[$object]['libs'], 'require_once');
             }
         } else {
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
                 if (isset($oObjet['class'])
                     && isset($oObjet['module'])
-                    && !class_exists("Centreon" . $oObjet['class'])) {
+                    && !class_exists("Centreon" . $oObjet['class'])
+                ) {
                     if ($oObjet['module'] == 'core') {
                         require_once _CENTREON_PATH_
                             . "www/class/centreon-clapi/centreon"
@@ -402,8 +427,8 @@ class CentreonAPI
         /**
          * Default class needed
          */
-        require_once _CLAPI_CLASS_."/centreonTimePeriod.class.php";
-        require_once _CLAPI_CLASS_."/centreonACLResources.class.php";
+        require_once _CLAPI_CLASS_ . "/centreonTimePeriod.class.php";
+        require_once _CLAPI_CLASS_ . "/centreonACLResources.class.php";
     }
 
     /**
@@ -609,11 +634,11 @@ class CentreonAPI
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-
                 if ($this->relationObject[$this->object]['module'] === 'core') {
                     $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
                 } else {
-                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" . $this->relationObject[$this->object]['class'];
+                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" .
+                        $this->relationObject[$this->object]['class'];
                 }
             } else {
                 $objName = "";
@@ -791,9 +816,9 @@ class CentreonAPI
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                 }
+                }
                 $this->export_filter($splits[0], $this->objectTable[$splits[0]]->getObjectId($splits[1]), $splits[1]);
-              }
+            }
             # Don't want return \n
             exit($this->return_code);
         } else {
@@ -819,7 +844,8 @@ class CentreonAPI
     {
         $className = '';
         if (isset($this->relationObject[$objname]['namespace'])
-            && $this->relationObject[$objname]['namespace']) {
+            && $this->relationObject[$objname]['namespace']
+        ) {
             $className .= '\\' . $this->relationObject[$objname]['namespace'];
         }
         $className .= '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
@@ -856,8 +882,8 @@ class CentreonAPI
      */
     public function printLegals()
     {
-        $DBRESULT = & $this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
-        $data = & $DBRESULT->fetchRow();
+        $DBRESULT = &$this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
+        $data = &$DBRESULT->fetchRow();
         print "Centreon version " . $data["value"] . " - ";
         print "Copyright Centreon - www.centreon.com\n";
         unset($data);
@@ -892,7 +918,7 @@ class CentreonAPI
      */
     public function POLLERLIST()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->getPollerList($this->format);
     }
 
@@ -902,7 +928,7 @@ class CentreonAPI
      */
     public function POLLERRESTART()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->pollerRestart($this->variables);
     }
 
@@ -912,7 +938,7 @@ class CentreonAPI
      */
     public function POLLERRELOAD()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->pollerReload($this->variables);
     }
 
@@ -922,7 +948,7 @@ class CentreonAPI
      */
     public function POLLERGENERATE()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->pollerGenerate($this->variables, $this->login, $this->password);
     }
 
@@ -932,7 +958,7 @@ class CentreonAPI
      */
     public function POLLERTEST()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->pollerTest($this->format, $this->variables);
     }
 
@@ -941,7 +967,7 @@ class CentreonAPI
      */
     public function POLLEREXECCMD()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->execCmd($this->variables);
     }
 
@@ -951,7 +977,7 @@ class CentreonAPI
      */
     public function CFGMOVE()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->cfgMove($this->variables);
     }
 
@@ -960,7 +986,7 @@ class CentreonAPI
      */
     public function SENDTRAPCFG()
     {
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         return $poller->sendTrapCfg($this->variables);
     }
 
@@ -978,7 +1004,7 @@ class CentreonAPI
         /**
          * Launch Actions
          */
-        $poller = new CentreonConfigPoller($this->DB, $this->centreon_path, $this->DBC);
+        $poller = new CentreonConfigPoller($this->centreon_path, $this->dependencyInjector);
         $this->return_code = $poller->pollerGenerate($this->variables, $this->login, $this->password);
         $this->endOfLine();
         if ($this->return_code == 0) {
@@ -1009,7 +1035,8 @@ class CentreonAPI
                 $key = key($oObjet);
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
-                    && !in_array($key, $this->aExport)) {
+                    && !in_array($key, $this->aExport)
+                ) {
                     $objName = "CentreonClapi\Centreon" . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
 

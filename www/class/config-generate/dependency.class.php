@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Dependency extends AbstractObject {
+class Dependency extends AbstractObject
+{
     # Not done system without cache. TODO
     private $use_cache = 1;
     private $done_cache = 0;
@@ -78,47 +80,50 @@ class Dependency extends AbstractObject {
     protected $service_instance = null;
     protected $hg_instance = null;
     protected $sg_instance = null;
-    
-    public function __construct() {
-        parent::__construct();
+
+    public function __construct(\Pimple\Container $dependencyInjector)
+    {
+        parent::__construct($dependencyInjector);
         $this->host_instance = Host::getInstance($this->dependencyInjector);
         $this->service_instance = Service::getInstance($this->dependencyInjector);
         $this->hg_instance = Hostgroup::getInstance($this->dependencyInjector);
         $this->sg_instance = Servicegroup::getInstance($this->dependencyInjector);
         $this->buildCache();
     }
-    
-    private function getDependencyCache() {
+
+    private function getDependencyCache()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     $this->attributes_select
                 FROM dependency
         ");
         $stmt->execute();
-        $this->dependency_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
-        
+        $this->dependency_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
+
         if (count($this->dependency_cache) == 0) {
             $this->has_dependency = 0;
         }
     }
-    
-    private function getDependencyLinkedCache() {
+
+    private function getDependencyLinkedCache()
+    {
         if ($this->has_dependency == 0) {
             return 0;
         }
-        
+
         # Host dependency
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, host_host_id
                 FROM dependency_hostParent_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_host_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
+        $this->dependency_linked_host_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, host_host_id
                 FROM dependency_hostChild_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_host_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
+        $this->dependency_linked_host_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
 
         # Hostgroup dependency
         $stmt = $this->backend_instance->db->prepare("SELECT 
@@ -126,68 +131,70 @@ class Dependency extends AbstractObject {
                 FROM dependency_hostgroupParent_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_hg_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
+        $this->dependency_linked_hg_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, hostgroup_hg_id
                 FROM dependency_hostgroupChild_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_hg_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-        
+        $this->dependency_linked_hg_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
+
         # Servicegroup dependency
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, servicegroup_sg_id
                 FROM dependency_servicegroupParent_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_sg_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
+        $this->dependency_linked_sg_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, servicegroup_sg_id
                 FROM dependency_servicegroupChild_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_sg_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-        
+        $this->dependency_linked_sg_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
+
         # Metaservice dependency
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, meta_service_meta_id
                 FROM dependency_metaserviceParent_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_meta_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
+        $this->dependency_linked_meta_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, meta_service_meta_id
                 FROM dependency_metaserviceChild_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_meta_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-        
+        $this->dependency_linked_meta_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
+
         # Service dependency
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, host_host_id, service_service_id
                 FROM dependency_serviceParent_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_service_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+        $this->dependency_linked_service_parent_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
         $stmt = $this->backend_instance->db->prepare("SELECT 
                     dependency_dep_id, host_host_id, service_service_id 
                 FROM dependency_serviceChild_relation
         ");
         $stmt->execute();
-        $this->dependency_linked_service_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+        $this->dependency_linked_service_child_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
     }
-    
-    private function buildCache() {
+
+    private function buildCache()
+    {
         if ($this->done_cache == 1) {
             return 0;
         }
-        
+
         $this->getDependencyCache();
         $this->getDependencyLinkedCache();
         $this->done_cache = 1;
     }
-    
-    public function doHost() {
+
+    public function doHost()
+    {
         $this->object_name = 'hostdependency';
         foreach ($this->dependency_cache as $dp_id => $dependency) {
             $dependency['host_name'] = array();
@@ -198,7 +205,7 @@ class Dependency extends AbstractObject {
                     }
                 }
             }
-            
+
             $dependency['dependent_host_name'] = array();
             if (isset($this->dependency_linked_host_child_cache[$dp_id])) {
                 foreach ($this->dependency_linked_host_child_cache[$dp_id] as $value) {
@@ -207,7 +214,7 @@ class Dependency extends AbstractObject {
                     }
                 }
             }
-            
+
             if (count($dependency['host_name']) == 0 || count($dependency['dependent_host_name']) == 0) {
                 continue;
             }
@@ -215,8 +222,9 @@ class Dependency extends AbstractObject {
             $this->generateObjectInFile($dependency, 0);
         }
     }
-    
-    public function doService() {
+
+    public function doService()
+    {
         $this->object_name = 'servicedependency';
         foreach ($this->dependency_cache as $dp_id => $dependency) {
             if (!isset($this->dependency_linked_service_parent_cache[$dp_id])) {
@@ -226,14 +234,26 @@ class Dependency extends AbstractObject {
                 if (!isset($this->dependency_linked_service_child_cache[$dp_id])) {
                     continue;
                 }
-                if ($this->service_instance->checkGenerate($value['host_host_id'] . '.' . $value['service_service_id'])) {
-                    $dependency['host_name'] = array($this->host_instance->getString($value['host_host_id'], 'host_name'));
-                    $dependency['service_description'] = array($this->service_instance->getString($value['service_service_id'], 'service_description'));
-                    
+                if ($this->service_instance->checkGenerate(
+                    $value['host_host_id'] . '.' . $value['service_service_id']
+                )) {
+                    $dependency['host_name'] = array(
+                        $this->host_instance->getString($value['host_host_id'], 'host_name')
+                    );
+                    $dependency['service_description'] = array(
+                        $this->service_instance->getString($value['service_service_id'], 'service_description')
+                    );
+
                     foreach ($this->dependency_linked_service_child_cache[$dp_id] as $value2) {
-                        if ($this->service_instance->checkGenerate($value2['host_host_id'] . '.' . $value2['service_service_id'])) {
-                            $dependency['dependent_host_name'] = array($this->host_instance->getString($value2['host_host_id'], 'host_name'));
-                            $dependency['dependent_service_description'] = array($this->service_instance->getString($value2['service_service_id'], 'service_description'));
+                        if ($this->service_instance->checkGenerate(
+                            $value2['host_host_id'] . '.' . $value2['service_service_id']
+                        )) {
+                            $dependency['dependent_host_name'] = array(
+                                $this->host_instance->getString($value2['host_host_id'], 'host_name')
+                            );
+                            $dependency['dependent_service_description'] = array(
+                                $this->service_instance->getString($value2['service_service_id'], 'service_description')
+                            );
 
                             $this->generateObjectInFile($dependency, 0);
                         }
@@ -242,13 +262,14 @@ class Dependency extends AbstractObject {
             }
         }
     }
-    
-    public function doMetaService() {
+
+    public function doMetaService()
+    {
         $meta_instance = MetaService::getInstance($this->dependencyInjector);
         if (!$meta_instance->hasMetaServices()) {
             return 0;
         }
-        
+
         $this->object_name = 'servicedependency';
         foreach ($this->dependency_cache as $dp_id => $dependency) {
             if (!isset($this->dependency_linked_meta_parent_cache[$dp_id])) {
@@ -261,12 +282,12 @@ class Dependency extends AbstractObject {
                 if ($meta_instance->checkGenerate($meta_id)) {
                     $dependency['host_name'] = array('_Module_Meta');
                     $dependency['service_description'] = array('meta_' . $meta_id);
-                    
+
                     foreach ($this->dependency_linked_meta_child_cache[$dp_id] as $meta_id2) {
                         if ($meta_instance->checkGenerate($meta_id2)) {
                             $dependency['dependent_host_name'] = array('_Module_Meta');
                             $dependency['dependent_service_description'] = array('meta_' . $meta_id2);
-                            
+
                             $this->generateObjectInFile($dependency, 0);
                         }
                     }
@@ -274,8 +295,9 @@ class Dependency extends AbstractObject {
             }
         }
     }
-    
-    public function doHostgroup() {
+
+    public function doHostgroup()
+    {
         $this->object_name = 'hostdependency';
         foreach ($this->dependency_cache as $dp_id => $dependency) {
             $dependency['hostgroup_name'] = array();
@@ -286,16 +308,19 @@ class Dependency extends AbstractObject {
                     }
                 }
             }
-            
+
             $dependency['dependent_hostgroup_name'] = array();
             if (isset($this->dependency_linked_hg_child_cache[$dp_id])) {
                 foreach ($this->dependency_linked_hg_child_cache[$dp_id] as $value) {
                     if ($this->hg_instance->checkGenerate($value)) {
-                        $dependency['dependent_hostgroup_name'][] = $this->hg_instance->getString($value, 'hostgroup_name');
+                        $dependency['dependent_hostgroup_name'][] = $this->hg_instance->getString(
+                            $value,
+                            'hostgroup_name'
+                        );
                     }
                 }
             }
-            
+
             if (count($dependency['dependent_hostgroup_name']) == 0 || count($dependency['hostgroup_name']) == 0) {
                 continue;
             }
@@ -303,8 +328,9 @@ class Dependency extends AbstractObject {
             $this->generateObjectInFile($dependency, 0);
         }
     }
-    
-    public function doServicegroup() {
+
+    public function doServicegroup()
+    {
         $this->object_name = 'servicedependency';
         foreach ($this->dependency_cache as $dp_id => $dependency) {
             $dependency['servicegroup_name'] = array();
@@ -315,47 +341,52 @@ class Dependency extends AbstractObject {
                     }
                 }
             }
-            
+
             $dependency['dependent_servicegroup_name'] = array();
             if (isset($this->dependency_linked_sg_child_cache[$dp_id])) {
                 foreach ($this->dependency_linked_sg_child_cache[$dp_id] as $value) {
                     if ($this->sg_instance->checkGenerate($value)) {
-                        $dependency['dependent_servicegroup_name'][] = $this->sg_instance->getString($value, 'servicegroup_name');
+                        $dependency['dependent_servicegroup_name'][] = $this->sg_instance->getString(
+                            $value,
+                            'servicegroup_name'
+                        );
                     }
                 }
             }
-            
-            if (count($dependency['dependent_servicegroup_name']) == 0 || count($dependency['servicegroup_name']) == 0) {
+            if (count($dependency['dependent_servicegroup_name']) == 0
+                || count($dependency['servicegroup_name']) == 0) {
                 continue;
             }
-
             $this->generateObjectInFile($dependency, 0);
         }
     }
-    
-    public function generateObjects() {
+
+    public function generateObjects()
+    {
         if ($this->has_dependency == 0) {
             return 0;
         }
-        
+
         $this->doHost();
         $this->doService();
         $this->doHostgroup();
         $this->doServicegroup();
         $this->doMetaService();
-
     }
-    
-    public function reset() {
+
+    public function reset()
+    {
         $this->generated_dependencies = array();
         parent::reset();
     }
 
-    public function hasDependency() {
+    public function hasDependency()
+    {
         return $this->has_dependency;
     }
 
-    public function getGeneratedDependencies() {
+    public function getGeneratedDependencies()
+    {
         return $this->generated_dependencies;
     }
 }

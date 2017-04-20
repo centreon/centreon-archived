@@ -35,6 +35,7 @@
 
 namespace CentreonClapi;
 
+
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
@@ -48,6 +49,7 @@ class CentreonConfigPoller
 {
     private $_DB;
     private $_DBC;
+    private $dependencyInjector;
     private $resultTest;
     private $optGen;
     private $nagiosCFGPath;
@@ -63,10 +65,11 @@ class CentreonConfigPoller
      * @param CentreonDB $DBC
      * @return void
      */
-    public function __construct($DB, $centreon_path, $DBC)
+    public function __construct($centreon_path, \Pimple\Container $dependencyInjector)
     {
-        $this->_DB = $DB;
-        $this->_DBC = $DBC;
+        $this->dependencyInjector = $dependencyInjector;
+        $this->_DB = $this->dependencyInjector["configuration_db"];
+        $this->_DBC = $this->dependencyInjector["realtime_db"];
         $this->resultTest = 0;
         $this->nagiosCFGPath = "$centreon_path/filesGeneration/engine/";
         $this->centreon_path = $centreon_path;
@@ -441,8 +444,10 @@ class CentreonConfigPoller
      */
     public function pollerGenerate($variables, $login, $password)
     {
-        $config_generate = new \Generate();
 
+        $config_generate = new \Generate($this->dependencyInjector);
+
+        debug_print_backtrace();
         $this->testPollerId($variables);
 
         $poller_id = $this->getPollerId($variables);
@@ -725,10 +730,10 @@ class CentreonConfigPoller
     {
         $pollerState = array();
 
-        $this->_DBC = new \CentreonDB('centstorage');
+        //   $this->_DBC = new \CentreonDB('centstorage');
 
-        $DBRESULT = $this->_DBC->query("SELECT instance_id, running, name FROM instances");
-        while ($row = $DBRESULT->fetchRow()) {
+        $dbResult = $this->_DBC->query("SELECT instance_id, running, name FROM instances");
+        while ($row = $dbResult->fetchRow()) {
             $pollerState[$row['instance_id']] = $row['running'];
         }
         return $pollerState;

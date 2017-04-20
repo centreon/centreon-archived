@@ -147,7 +147,7 @@ abstract class AbstractHost extends AbstractObject
 
     protected function getImages(&$host)
     {
-        $media = Media::getInstance();
+        $media = Media::getInstance($this->dependencyInjector);
         if (!isset($host['icon_image'])) {
             $host['icon_image'] = $media->getMediaPathFromId($host['icon_image_id']);
         }
@@ -326,7 +326,8 @@ abstract class AbstractHost extends AbstractObject
 
     protected function getHostCommand(&$host, $result_name, $command_id_label, $command_arg_label)
     {
-        $command_name = Command::getInstance($this->dependencyInjector)->generateFromCommandId($host[$command_id_label]);
+        $command_name = Command::getInstance($this->dependencyInjector)
+            ->generateFromCommandId($host[$command_id_label]);
         $command_arg = '';
 
         if (isset($host[$result_name])) {
@@ -334,7 +335,8 @@ abstract class AbstractHost extends AbstractObject
         }
         $host[$result_name] = $command_name;
         if (isset($host[$command_arg_label])
-            && !is_null($host[$command_arg_label]) && $host[$command_arg_label] != '') {
+            && !is_null($host[$command_arg_label]) && $host[$command_arg_label] != ''
+        ) {
             $command_arg = $host[$command_arg_label];
             if (is_null($command_name)) {
                 # Find Command Name in templates
