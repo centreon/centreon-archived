@@ -36,18 +36,33 @@
 if (!isset($centreon)) {
     exit();
 }
-    
-isset($_GET["traps_id"]) ? $trapG = $_GET["traps_id"] : $trapG = null;
-isset($_POST["traps_id"]) ? $trapP = $_POST["traps_id"] : $trapP = null;
-$trapG ? $traps_id = $trapG : $traps_id = $trapP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+$inputArguments = array(
+    'traps_id' => FILTER_SANITIZE_STRING,
+    'select' => FILTER_SANITIZE_STRING,
+    'dupNbr' => FILTER_SANITIZE_STRING
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$inputs = array();
+foreach ($inputArguments as $argumentName => $argumentValue) {
+    if (!is_null($inputGet[$argumentName])) {
+        $inputs[$argumentName] = $inputGet[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputPost[$argumentName];
+    }
+}
+
+$traps_id = $inputs["traps_id"];
+$select = $inputs["select"];
+$dupNbr = $inputs["dupNbr"];
 
 /* Pear library */
 require_once "HTML/QuickForm.php";
