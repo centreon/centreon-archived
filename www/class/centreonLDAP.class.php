@@ -79,12 +79,19 @@ class CentreonLDAP
 
         /* Check if use service form DNS */
         $use_dns_srv = 0;
-        $dbresult = $this->db->query(
+        
+        $stmt = $pearDB->prepare(
             "SELECT `ari_value`  " .
             "FROM `auth_ressource_info` " .
             "WHERE `ari_name` = 'ldap_srv_dns' " .
-            "AND ar_id = " . $this->db->escape($arId)
+            "AND ar_id = ?"
         );
+        
+        $dbresult = $this->db->execute($stmt, array($arId));
+        if (PEAR::isError($dbresult)) {
+            die("An error occured");
+        }
+        
         $row = $dbresult->fetchRow();
         $dbresult->free();
         if (isset($row['ari_value'])) {
@@ -123,9 +130,9 @@ class CentreonLDAP
             $dns_query = '_ldap._tcp';
             $dbresult = $this->db->query(
                 "SELECT `ari_value` 
-                                           FROM auth_ressource_info 
-                                           WHERE `ari_name` = 'ldap_dns_use_domain' 
-                                           AND ar_id = " . $this->db->escape($arId)
+                FROM auth_ressource_info 
+                WHERE `ari_name` = 'ldap_dns_use_domain' 
+                AND ar_id = " . $this->db->escape($arId)
             );
             $row = $dbresult->fetchRow();
             $dbresult->free();
@@ -146,9 +153,9 @@ class CentreonLDAP
         } else {
             $dbresult = $this->db->query(
                 "SELECT ldap_host_id, host_address
-                                           FROM auth_ressource_host
-                                           WHERE auth_ressource_id = " . $this->db->escape($arId) . "
-                                           ORDER BY host_order"
+                FROM auth_ressource_host
+                WHERE auth_ressource_id = " . $this->db->escape($arId) . "
+                ORDER BY host_order"
             );
             while ($row = $dbresult->fetchRow()) {
                 $ldap = array();
@@ -919,10 +926,10 @@ class CentreonLdapAdmin
     public function getGeneralOptions($arId)
     {
         $gopt = array();
-        $query = "SELECT `ari_name`, `ari_value` 
-                      FROM `auth_ressource_info`
-                      WHERE ar_id = " . $this->db->escape($arId);
-        $res = $this->db->query($query);
+        
+        $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info` WHERE ar_id = ?";
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, array($arId));
         while ($row = $res->fetchRow()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
         }
@@ -1192,12 +1199,13 @@ class CentreonLdapAdmin
      */
     public function getServersFromResId($arId)
     {
-        $res = $this->db->query(
-            "SELECT host_address, host_port, use_ssl, use_tls
-                                FROM auth_ressource_host
-                                WHERE auth_ressource_id = " . $this->db->escape($arId) .
-            " ORDER BY host_order"
+        $serverStmt = $this->db->prepare(
+            "SELECT host_address, host_port, use_ssl, use_tls " .
+            "FROM auth_ressource_host " .
+            "WHERE auth_ressource_id = ? ".
+            "ORDER BY host_order"
         );
+        $res = $this->db->execute($serverStmt, array($arId));
         $arr = array();
         $i = 0;
         while ($row = $res->fetchRow()) {
