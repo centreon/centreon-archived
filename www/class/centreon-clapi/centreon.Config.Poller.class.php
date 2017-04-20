@@ -447,7 +447,6 @@ class CentreonConfigPoller
 
         $config_generate = new \Generate($this->dependencyInjector);
 
-        debug_print_backtrace();
         $this->testPollerId($variables);
 
         $poller_id = $this->getPollerId($variables);
