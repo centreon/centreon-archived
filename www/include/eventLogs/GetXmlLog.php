@@ -36,7 +36,8 @@
 /*
  * XML tag
  */
-stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
+stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") ?
+    header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
 header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"');
 
 /** ****************************
@@ -90,6 +91,57 @@ include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
+/**
+ * Get input vars
+ */
+$inputArguments = array(
+    'lang' => FILTER_SANITIZE_STRING,
+    'id' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_STRING,
+    'limit' => FILTER_SANITIZE_STRING,
+    'StartDate' => FILTER_SANITIZE_STRING,
+    'EndDate' => FILTER_SANITIZE_STRING,
+    'StartTime' => FILTER_SANITIZE_STRING,
+    'EndTime' => FILTER_SANITIZE_STRING,
+    'period' => FILTER_SANITIZE_STRING,
+    'multi' => FILTER_SANITIZE_STRING,
+    'engine' => FILTER_SANITIZE_STRING,
+    'up' => FILTER_SANITIZE_STRING,
+    'down' => FILTER_SANITIZE_STRING,
+    'unreachable' => FILTER_SANITIZE_STRING,
+    'ok' => FILTER_SANITIZE_STRING,
+    'warning' => FILTER_SANITIZE_STRING,
+    'critical' => FILTER_SANITIZE_STRING,
+    'unknown' => FILTER_SANITIZE_STRING,
+    'notification' => FILTER_SANITIZE_STRING,
+    'alert' => FILTER_SANITIZE_STRING,
+    'oh' => FILTER_SANITIZE_STRING,
+    'error' => FILTER_SANITIZE_STRING,
+    'output' => FILTER_SANITIZE_STRING,
+    'search_H' => FILTER_SANITIZE_STRING,
+    'search_S' => FILTER_SANITIZE_STRING,
+    'search_host' => FILTER_SANITIZE_STRING,
+    'search_service' => FILTER_SANITIZE_STRING,
+    'export' => FILTER_SANITIZE_STRING,
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
+$inputs = array();
+foreach ($inputArguments as $argumentName => $argumentValue) {
+    if (!is_null($inputGet[$argumentName])) {
+        $inputs[$argumentName] = $inputGet[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputPost[$argumentName];
+    }
+}
+
 /*
  * Start XML document root
  */
@@ -99,8 +151,10 @@ $buffer->startElement("root");
 /*
  * Security check
  */
-(isset($_GET["lang"])) ? $lang_ = htmlentities($_GET["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
-(isset($_GET["id"])) ? $openid = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
+(isset($inputs["lang"])) ?
+    $lang_ = htmlentities($inputs["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
+(isset($inputs["id"])) ?
+    $openid = htmlentities($inputs["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
 $sid = session_id();
 (isset($sid)) ? $sid = $sid : $sid = "-1";
 
@@ -121,40 +175,38 @@ if (isset($sid) && $sid){
     $lca = array("LcaHost" => $access->getHostsServices($pearDBO, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 }
 
-(isset($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
-(isset($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : $limit = "30";
-(isset($_GET["StartDate"])) ? $StartDate = htmlentities($_GET["StartDate"]) : $StartDate = "";
-(isset($_GET["EndDate"])) ? $EndDate = htmlentities($_GET["EndDate"]) : $EndDate = "";
-(isset($_GET["StartTime"])) ? $StartTime = htmlentities($_GET["StartTime"]) : $StartTime = "";
-(isset($_GET["EndTime"])) ? $EndTime = htmlentities($_GET["EndTime"]) : $EndTime = "";
-(isset($_GET["period"])) ? $auto_period = htmlentities($_GET["period"]) : $auto_period = "-1";
-(isset($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
-(isset($_GET["engine"])) ? $engine = htmlentities($_GET["engine"]) : $engine = "false";
+(isset($inputs["num"])) ? $num = htmlentities($inputs["num"]) : $num = "0";
+(isset($inputs["limit"])) ? $limit = htmlentities($inputs["limit"]) : $limit = "30";
+(isset($inputs["StartDate"])) ? $StartDate = htmlentities($inputs["StartDate"]) : $StartDate = "";
+(isset($inputs["EndDate"])) ? $EndDate = htmlentities($inputs["EndDate"]) : $EndDate = "";
+(isset($inputs["StartTime"])) ? $StartTime = htmlentities($inputs["StartTime"]) : $StartTime = "";
+(isset($inputs["EndTime"])) ? $EndTime = htmlentities($inputs["EndTime"]) : $EndTime = "";
+(isset($inputs["period"])) ? $auto_period = htmlentities($inputs["period"]) : $auto_period = "-1";
+(isset($inputs["multi"])) ? $multi = htmlentities($inputs["multi"]) : $multi = "-1";
+(isset($inputs["engine"])) ? $engine = htmlentities($inputs["engine"]) : $engine = "false";
 
 if ($engine == "false"){
-    (isset($_GET["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($_GET["up"])) : $up = "true";
-    (isset($_GET["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($_GET["down"])) : $down = "true";
-    (isset($_GET["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($_GET["unreachable"])) : $unreachable = "true";
-    (isset($_GET["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($_GET["ok"])) : $ok = "true";
-    (isset($_GET["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($_GET["warning"])) : $warning = "true";
-    (isset($_GET["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($_GET["critical"])) : $critical = "true";
-    (isset($_GET["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($_GET["unknown"])) : $unknown = "true";
-    (isset($_GET["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($_GET["notification"])) : $notification = "false";
-    (isset($_GET["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($_GET["alert"])) : $alert = "true";
-    (isset($_GET["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($_GET["oh"])) : $oh = "false";
+    (isset($inputs["up"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_up", htmlentities($inputs["up"])) : $up = "true";
+    (isset($inputs["down"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_down", htmlentities($inputs["down"])) : $down = "true";
+    (isset($inputs["unreachable"])) ? set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", htmlentities($inputs["unreachable"])) : $unreachable = "true";
+    (isset($inputs["ok"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_ok", htmlentities($inputs["ok"])) : $ok = "true";
+    (isset($inputs["warning"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_warning", htmlentities($inputs["warning"])) : $warning = "true";
+    (isset($inputs["critical"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_critical", htmlentities($inputs["critical"])) : $critical = "true";
+    (isset($inputs["unknown"])) ? set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", htmlentities($inputs["unknown"])) : $unknown = "true";
+    (isset($inputs["notification"])) ? set_user_param($contact_id, $pearDB, "log_filter_notif", htmlentities($inputs["notification"])) : $notification = "false";
+    (isset($inputs["alert"])) ? set_user_param($contact_id, $pearDB, "log_filter_alert", htmlentities($inputs["alert"])) : $alert = "true";
+    (isset($inputs["oh"])) ? set_user_param($contact_id, $pearDB, "log_filter_oh", htmlentities($inputs["oh"])) : $oh = "false";
 } else {
-    (isset($_GET["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($_GET["error"])) : $error = "false";
+    (isset($inputs["error"])) ? set_user_param($contact_id, $pearDB, "log_filter_error", htmlentities($inputs["error"])) : $error = "false";
 }
 
-(isset($_GET["output"])) ? $output = urldecode($_GET["output"]) : $output = "";
+(isset($inputs["output"])) ? $output = urldecode($inputs["output"]) : $output = "";
 
-(isset($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
-(isset($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
-(isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
-(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
-(isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
-
-
+(isset($inputs["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($inputs["search_H"])) : $search_H = "VIDE";
+(isset($inputs["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($inputs["search_S"])) : $search_S = "VIDE";
+(isset($inputs["search_host"])) ? $search_host = htmlentities($inputs["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
+(isset($inputs["search_service"])) ? $search_service = htmlentities($inputs["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
+(isset($inputs["export"])) ? $export = htmlentities($inputs["export"], ENT_QUOTES, "UTF-8") : $export = 0;
 
 $start = 0;
 $end = 0;
