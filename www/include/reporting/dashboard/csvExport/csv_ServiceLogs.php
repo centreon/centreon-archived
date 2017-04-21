@@ -64,6 +64,8 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
     get_error('need session id!');
 }
 
+$centreon = $oreon;
+
 /*
  * getting host and service id
  */
