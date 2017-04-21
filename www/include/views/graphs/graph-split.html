@@ -228,7 +228,7 @@ jQuery(function () {
     }
 
     e.preventDefault();
-    baseUrl += '?&index=' + svcId + '&start=' + start.unix() + '&end=' + end.unix() + '&metric=' + metricId;
+    baseUrl += '?&svcId=' + svcId + '&start=' + start.unix() + '&end=' + end.unix() + '&metric=' + metricId;
     window.location = baseUrl;
   });
 
