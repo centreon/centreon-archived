@@ -320,6 +320,7 @@ class CentreonDB extends \PDO
             );
             $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->db->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('CentreonDBStatement', array($this->db)));
+            $this->db->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES utf8');
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -401,7 +402,6 @@ class CentreonDB extends \PDO
     	 */
         $sth = null;
         try {
-            $this->db->query("SET NAMES 'utf8'");
             $sth = $this->db->prepare($queryString);
             $sth->execute($parameters);
             $this->queryNumber++;
