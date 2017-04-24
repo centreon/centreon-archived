@@ -247,16 +247,18 @@ if ($valid) {
 }
 ?>
 <script type='text/javascript'>
-document.onReady = sizeToMaxx();
+jQuery(function() {
+    sizeToMaxx();
+});
 
 function sizeToMaxx() {
-    var upperLimitTxt = document.getElementById('upperLimitTxt');
-    var sizeToMax = document.getElementById('sizeToMax');
+    var upperLimitTxt = $('#upperLimitTxt');
+    var sizeToMax = $('#sizeToMax');
 
-    if (sizeToMax.checked == true) {
-        upperLimitTxt.disabled = true;
+    if (sizeToMax.is(':checked')) {
+        upperLimitTxt.prop('disabled', true);
     } else {
-        upperLimitTxt.disabled = false;
+        upperLimitTxt.prop('disabled', false);
     }
 }
 </script>
