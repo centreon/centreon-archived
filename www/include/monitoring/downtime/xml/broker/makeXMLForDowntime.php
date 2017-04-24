@@ -99,8 +99,7 @@ if (!$service_id) {
     		  AND cancelled = 0
     		  AND end_time > UNIX_TIMESTAMP(NOW())
     		  ORDER BY actual_start_time";
-    $stmt = $pearDB->prepare($query);
-    $res = $pearDB->execute($stmt, array($dbb->escape($host_id)));
+    $res = $pearDB->query($query, array($dbb->escape($host_id)));
 } else {
     $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed
     		  FROM downtimes
@@ -109,12 +108,10 @@ if (!$service_id) {
     		  AND cancelled = 0
     		  AND end_time > UNIX_TIMESTAMP(NOW())
     		  ORDER BY actual_start_time";
-    $stmt = $pearDB->prepare($query);
-    $res = $pearDB->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
+    $res = $pearDB->query($query, array($dbb->escape($host_id), $dbb->escape($service_id)));
 }
-$res = $dbb->query($query);
 $rowClass = "list_one";
-while ($row = $res->fetchRow()) {
+while ($row = $res->fetch()) {
     $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
