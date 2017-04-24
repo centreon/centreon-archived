@@ -157,8 +157,8 @@ class CentreonConfigurationObjects extends CentreonWebService
             $stmt = $this->pearDB->prepare($query);
             $resRetrieval = $this->pearDB->execute($stmt, array($values));
 
-            if (PEAR::isError($resRetrieval)) {
-                die("An error occured");
+            if (!$resRetrieval) {
+                throw new \Exception("An error occured");
             }
             while ($row = $resRetrieval->fetchRow()) {
                 $tmpValues[] = array(
@@ -194,8 +194,8 @@ class CentreonConfigurationObjects extends CentreonWebService
 
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
         $resRetrieval = $this->pearDB->execute($stmt, array($id));
-        if (PEAR::isError($resRetrieval)) {
-            die("An error occured");
+        if (!$resRetrieval) {
+            throw new \Exception("An error occured");
         }
         while ($row = $resRetrieval->fetchRow()) {
             $tmpValue = $row[$field];
@@ -229,8 +229,8 @@ class CentreonConfigurationObjects extends CentreonWebService
             "WHERE " . $relationObject['comparator'] . " = ?";
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
         $resRetrieval = $this->pearDB->execute($stmt, array($id));
-        if (PEAR::isError($resRetrieval)) {
-            die("An error occured");
+        if (!$resRetrieval) {
+            throw new \Exception("An error occured");
         }
         while ($row = $resRetrieval->fetchRow()) {
             if (!empty($row[$relationObject['field']])) {
