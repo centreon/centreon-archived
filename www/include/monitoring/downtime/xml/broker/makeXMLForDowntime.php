@@ -113,7 +113,6 @@ if (!$service_id) {
     $stmt = $pearDB->prepare($query);
     $res = $pearDB->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
 }
-$res = $dbb->query($query);
 $rowClass = "list_one";
 while ($row = $res->fetchRow()) {
     $row['comment_data'] = strip_tags($row['comment_data']);
