@@ -53,20 +53,25 @@ $mySessionId = session_id();
 /**
  * Checks for token
  */
-if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {    
+if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {
     $token = isset($_GET['token']) ? $_GET['token'] : $_GET['akey'];
 
-    $DBRESULT = $pearDB->query("SELECT * FROM `contact`
-                    WHERE `contact_alias` = '".$pearDB->escape($_GET["username"])."'
-                    AND `contact_activate` = '1'
-                    AND `contact_autologin_key` = '".$pearDB->escape($token)."' LIMIT 1");
+    $stmt = $pearDB->prepare(
+        "SELECT * " .
+        "FROM `contact` " .
+        "WHERE `contact_alias` = ? " .
+        "AND `contact_activate` = '1' " .
+        "AND `contact_autologin_key` = ? " .
+        "LIMIT 1 "
+    );
+    $DBRESULT = $pearDB->execute($stmt, array($pearDB->escape($_GET["username"]), $pearDB->escape($token)));
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
 
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
             $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".$mySessionId."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
-        }        
+        }
     } else {
         die('Invalid token');
     }
