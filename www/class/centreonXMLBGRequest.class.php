@@ -319,7 +319,8 @@ class CentreonXMLBGRequest {
                 if ($name == 'num' && $tab[$name] < 0) {
                     $tab[$name] = 0;
                 }
-                return CentreonDB::escape($tab[$name]);
+                $value = htmlspecialchars($tab[$name], ENT_QUOTES, 'utf-8');
+                return CentreonDB::escape($value);
             } else {
                 return CentreonDB::escape($defaultValue);
             }
