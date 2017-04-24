@@ -113,8 +113,10 @@ foreach ($ids as $arId) {
 
         $query = "SELECT ari_name, ari_value
                   FROM auth_ressource_info
-    	    	  WHERE ar_id = " . $pearDB->escape($arId);
-        $res = $pearDB->query($query);
+    	    	  WHERE ar_id = ?";
+        $stmt = $pearDB->prepare($query);
+        $res = $pearDB->execute($stmt, array($arId));
+
         while ($row = $res->fetchRow()) {
             switch ($row['ari_name']) {
                 case "user_filter":
