@@ -40,7 +40,7 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationDowntime extends CentreonConfigurationObjects
 {
-    
+
     /**
      *
      * @var type
@@ -53,43 +53,46 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
     public function __construct()
     {
         global $pearDBO;
-        
+
         parent::__construct();
         $brk = new CentreonBroker($this->pearDB);
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         $pearDBO = $this->pearDBMonitoring;
     }
-    
+
     /**
      *
      * @return array
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-        
+
         $queryDowntime = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dt.dt_name, dt.dt_id "
             . "FROM downtime dt "
-            . "WHERE dt.dt_name LIKE '%$q%' "
+            . "WHERE dt.dt_name LIKE '%?%' "
             . "ORDER BY dt.dt_name";
-        
-        $DBRESULT = $this->pearDB->query($queryDowntime);
+        $queryValues[] = $q;
+
+        $stmt = $this->pearDB->prepare($queryDowntime);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
-        
+
         $downtimeList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $downtimeList[] = array(
                 'id' => htmlentities($data['dt_id']),
                 'text' => $data['dt_name']
             );
         }
-        
+
         return array(
             'items' => $downtimeList,
             'total' => $total
