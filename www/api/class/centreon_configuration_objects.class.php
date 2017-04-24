@@ -160,7 +160,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             if (!$resRetrieval) {
                 throw new \Exception("An error occured");
             }
-            while ($row = $resRetrieval->fetchRow()) {
+            while ($row = $stmt->fetch()) {
                 $tmpValues[] = array(
                     'id' => $row[$externalObject['id']],
                     'text' => $row[$externalObject['name']]
@@ -197,7 +197,7 @@ class CentreonConfigurationObjects extends CentreonWebService
         if (!$resRetrieval) {
             throw new \Exception("An error occured");
         }
-        while ($row = $resRetrieval->fetchRow()) {
+        while ($row = $stmt->fetch()) {
             $tmpValue = $row[$field];
             if (isset($currentObject['additionalField'])) {
                 $tmpValue .= '-' . $row[$currentObject['additionalField']];
@@ -232,7 +232,7 @@ class CentreonConfigurationObjects extends CentreonWebService
         if (!$resRetrieval) {
             throw new \Exception("An error occured");
         }
-        while ($row = $resRetrieval->fetchRow()) {
+        while ($row = $stmt->fetch()) {
             if (!empty($row[$relationObject['field']])) {
                 $tmpValue = $row[$relationObject['field']];
                 if (isset($relationObject['additionalField'])) {
