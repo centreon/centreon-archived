@@ -94,19 +94,23 @@ $xml->endElement();
 if (!$service_id) {
     $query = "SELECT author, actual_start_time , end_time, comment_data, duration, fixed
     		  FROM downtimes
-    		  WHERE host_id = " . $dbb->escape($host_id) . "
+    		  WHERE host_id = ?
     		  AND service_id IS NULL
     		  AND cancelled = 0
     		  AND end_time > UNIX_TIMESTAMP(NOW())
     		  ORDER BY actual_start_time";
+    $stmt = $pearDB->prepare($query);
+    $res = $pearDB->execute($stmt, array($dbb->escape($host_id)));
 } else {
     $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed
     		  FROM downtimes
-    		  WHERE host_id = " . $dbb->escape($host_id) . "
-    		  AND service_id = " . $dbb->escape($service_id) . "
+    		  WHERE host_id = ?
+    		  AND service_id = ?
     		  AND cancelled = 0
     		  AND end_time > UNIX_TIMESTAMP(NOW())
     		  ORDER BY actual_start_time";
+    $stmt = $pearDB->prepare($query);
+    $res = $pearDB->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
 }
 $res = $dbb->query($query);
 $rowClass = "list_one";
