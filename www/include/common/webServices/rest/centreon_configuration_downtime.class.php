@@ -75,6 +75,7 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -84,10 +85,12 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
         
         $queryDowntime = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dt.dt_name, dt.dt_id "
             . "FROM downtime dt "
-            . "WHERE dt.dt_name LIKE '%$q%' "
+            . "WHERE dt.dt_name LIKE '%?%' "
             . "ORDER BY dt.dt_name";
-        
-        $DBRESULT = $this->pearDB->query($queryDowntime);
+        $queryValues[] = $q;
+
+        $stmt = $this->pearDB->prepare($queryDowntime);
+        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
         
