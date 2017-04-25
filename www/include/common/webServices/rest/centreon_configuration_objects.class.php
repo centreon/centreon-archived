@@ -142,13 +142,11 @@ class CentreonConfigurationObjects extends CentreonWebService
         } else {
             $explodedValues = '';
             if (!empty($values)) {
-                for ($i = 0; $i <= count($values); $i++) {
+                for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';
                 }
-                rtrim($explodedValues, ',');
+                $explodedValues = substr($explodedValues, 0, -1);
             }
-
-
             $query = "SELECT $externalObject[id], $externalObject[name] "
                 . "FROM $externalObject[table] "
                 . "WHERE $externalObject[comparator] "
