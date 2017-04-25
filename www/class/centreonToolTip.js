@@ -20,10 +20,10 @@ function CentreonToolTip()
 	
 	this.render = function() {
 		jQuery('img.' + _self._className).each(function(index){
-			el = jQuery(this);
-            el.src = _self._source;
+			var el = jQuery(this);
+            el.attr('src', _self._source);
             el.css('cursor', 'pointer');
-			el.click(function() {
+            el.click(function() {
 				TagToTip(
 					"help:" + el.attr('name'),
 					TITLE, _self._title, CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, '#ffff99',
