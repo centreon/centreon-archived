@@ -35,6 +35,8 @@
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonHook.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonDBInstance.class.php';
+
 
 /**
  *  Class that contains various methods for managing services

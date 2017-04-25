@@ -208,8 +208,8 @@ function setQuickSearchPosition() {
  * Close all DB handler
  */
 if (isset($pearDB) && is_object($pearDB)) {
-    $pearDB->disconnect();
+    $pearDB = null;
 }
 if (isset($pearDBO) && is_object($pearDBO)) {
-    $pearDBO->disconnect();
+    $pearDBO = null;
 }

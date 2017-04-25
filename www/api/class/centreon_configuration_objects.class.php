@@ -53,6 +53,7 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     public function getDefaultValues()
     {
+
         // Get Object targeted
         if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
             $id = $this->arguments['id'];
@@ -127,7 +128,6 @@ class CentreonConfigurationObjects extends CentreonWebService
     protected function retrieveExternalObjectDatas($externalObject, $values)
     {
         $tmpValues = array();
-
         if (isset($externalObject['object'])) {
             $classFile = $externalObject['object'] . '.class.php';
             include_once _CENTREON_PATH_ . "/www/class/$classFile";
@@ -141,19 +141,20 @@ class CentreonConfigurationObjects extends CentreonWebService
 
             $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
         } else {
+
             $explodedValues = '';
 
             if (!empty($values)) {
-                for ($i = 0; $i <= count($values); $i++) {
+                for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';
                 }
-                rtrim($explodedValues, ',');
+                $explodedValues = substr($explodedValues, 0, -1);
             }
-
             $query = "SELECT $externalObject[id], $externalObject[name] " .
                 "FROM $externalObject[table] " .
                 "WHERE $externalObject[comparator] " .
                 "IN ($explodedValues)";
+
             $stmt = $this->pearDB->prepare($query);
             $resRetrieval = $this->pearDB->execute($stmt, $values);
 

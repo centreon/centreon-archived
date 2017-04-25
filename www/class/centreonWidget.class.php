@@ -948,8 +948,12 @@ class CentreonWidget
         $query = "SELECT default_value, parameter_code_name
         		  FROM widget_parameters param, widgets w
         		  WHERE w.widget_model_id = param.widget_model_id
-        		  AND w.widget_id = " . $this->db->escape($widgetId);
-        $res = $this->db->query($query);
+        		  AND w.widget_id = ?";
+
+        // Prevent SQL injection with widget id
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, array($widgetId));
+
         $tab = array();
         while ($row = $res->fetchRow()) {
             $tab[$row['parameter_code_name']] = $row['default_value'];
@@ -959,8 +963,12 @@ class CentreonWidget
            	      FROM widget_preferences pref, widget_parameters param, widget_views wv
            	      WHERE param.parameter_id = pref.parameter_id
            	      AND pref.widget_view_id = wv.widget_view_id
-           	      AND wv.widget_id = ".$this->db->escape($widgetId);
-        $res = $this->db->query($query);
+           	      AND wv.widget_id = ?";
+
+        // Prevent SQL injection with widget id
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, array($widgetId));
+
         while ($row = $res->fetchRow()) {
             $tab[$row['parameter_code_name']] = $row['preference_value'];
         }

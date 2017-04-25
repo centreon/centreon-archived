@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,8 +33,9 @@
  *
  */
 
-include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
-require_once realpath(dirname(__FILE__) . "/centreonDBStatement.class.php");
+require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDBStatement.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 class CentreonDB extends \PDO
 {
@@ -43,7 +44,6 @@ class CentreonDB extends \PDO
     protected $db_type = "mysql";
     protected $db_port = "3306";
     protected $retry;
-    protected $db;
     protected $dsn;
     protected $options;
     protected $centreon_path;
@@ -63,7 +63,7 @@ class CentreonDB extends \PDO
      * @param int $retry
      * @param bool $silent | when silent is set to false, it will display an HTML error msg,
      *                       otherwise it will throw an Exception
-     * @return void
+     * @throws Exception
      */
     public function __construct($db = "centreon", $retry = 3, $silent = true)
     {
@@ -76,14 +76,15 @@ class CentreonDB extends \PDO
             $conf_centreon['dbcstg'] = dbcstg;
             $conf_centreon['port'] = port;
 
-            require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
             $this->log = new CentreonLog();
 
             $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
 
             $this->options = array(
-                //PDO::ATTR_CASE => PDO::CASE_LOWER
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_STATEMENT_CLASS => array('CentreonDBStatement', array($this)),
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
             );
 
             /*
@@ -91,19 +92,29 @@ class CentreonDB extends \PDO
              */
             if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "") {
                 $this->db_port = $conf_centreon["port"];
+            } else {
+                $this->db_port = '3306';
             }
+
+            $this->dsn = array(
+                'phptype' => $this->db_type,
+                'username' => $conf_centreon["user"],
+                'password' => $conf_centreon["password"],
+                'port'     => $this->db_port
+            );
 
             switch (strtolower($db)) {
                 case "centstorage":
-                    $this->connectToCentstorage($conf_centreon);
-                    $this->connect();
+                    $this->dsn['hostspec'] = $conf_centreon["hostCentstorage"];
+                    $this->dsn['database'] = $conf_centreon["dbcstg"];
                     break;
                 case "centreon":
                 case "default":
-                    $this->connectToCentreon($conf_centreon);
-                    $this->connect();
+                    $this->dsn['hostspec'] = $conf_centreon["hostCentreon"];
+                    $this->dsn['database'] = $conf_centreon["db"];
                     break;
             }
+
             /*
              * Init request statistics
              */
@@ -116,14 +127,14 @@ class CentreonDB extends \PDO
                 $this->debug = 1;
             }
 
-            parent::__construct($this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
+            parent::__construct(
+                $this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
                 ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
                 $this->dsn['username'],
                 $this->dsn['password'],
                 $this->options
             );
-            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $this->db->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('CentreonDBStatement', array($this->db)));
+
         } catch (Exception $e) {
             if (false === $silent && php_sapi_name() != "cli") {
                 $this->displayConnectionErrorPage($e->getMessage());
@@ -137,54 +148,7 @@ class CentreonDB extends \PDO
     {
         /* Deprecated */
     }
-    
-    /**
-     * 
-     * @param type $query
-     * @return type
-     */
-    public function prepare($query)
-    {
-        return $this->db->prepare($query);
-    }
-    
-    /**
-     * 
-     * @param type $stmt
-     * @param type $arrayValues
-     * @return type
-     */
-    public function executeMultiple($stmt, $arrayValues)
-    {
-        return $this->db->executeMultiple($stmt, $arrayValues);
-    }
-    
-    /**
-     * 
-     * @param type $query
-     * @return type
-     */
-    public function autoPrepare($query)
-    {
-        return $this->db->autoPrepare($query);
-    }
 
-    /**
-     * 
-     */
-    public function beginTransaction()
-    {
-        $this->db->beginTransaction();
-    }
-
-    /**
-     * 
-     */
-    public function commit()
-    {
-        $this->db->commit();
-    }
-    
     /**
      * 
      * @param type $stmt
@@ -194,32 +158,6 @@ class CentreonDB extends \PDO
     public function execute($stmt, $arrayValues)
     {
         return $stmt->execute($arrayValues);
-    }
-    
-    /**
-     * 
-     */
-    public function rollback()
-    {
-        $this->db->rollback();
-    }
-    
-    /**
-     *
-     * @return type
-     */
-    public function getMessage()
-    {
-        return $this->db->getMessage();
-    }
-    
-    /**
-     *
-     * @return type
-     */
-    public function getCode()
-    {
-        return $this->db->getCode();
     }
 
     /**
@@ -257,105 +195,6 @@ class CentreonDB extends \PDO
                 </body>
               </html>';
         exit;
-    }
-
-    /**
-     * establish centreon DB connector
-     *
-     * @access protected
-     * @return  void
-     */
-    protected function connectToCentreon($conf_centreon)
-    {
-        if (!isset($conf_centreon["port"])) {
-            $conf_centreon["port"] = "3306";
-        }
-
-        $this->dsn = array(
-            'phptype' => $this->db_type,
-            'username' => $conf_centreon["user"],
-            'password' => $conf_centreon["password"],
-            'hostspec' => $conf_centreon["hostCentreon"],
-            'port'     => $conf_centreon["port"],
-            'database' => $conf_centreon["db"],
-        );
-    }
-
-    /**
-     * establish Centstorage DB connector
-     *
-     * @access protected
-     * @return  void
-     */
-    protected function connectToCentstorage($conf_centreon)
-    {
-        if (!isset($conf_centreon["port"])) {
-            $conf_centreon["port"] = "3306";
-        }
-
-        $this->dsn = array(
-            'phptype' => $this->db_type,
-            'username' => $conf_centreon["user"],
-            'password' => $conf_centreon["password"],
-            'hostspec' => $conf_centreon["hostCentstorage"],
-            'port'     => $conf_centreon["port"],
-            'database' => $conf_centreon["dbcstg"],
-        );
-    }
-
-    /**
-     *  The connection is established here
-     *
-     *  @return void
-     */
-    public function connect()
-    {
-        try {
-            $this->db = new \Pdo(
-                $this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
-                ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
-                $this->dsn['username'],
-                $this->dsn['password'],
-                $this->options
-            );
-            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $this->db->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('CentreonDBStatement', array($this->db)));
-            $this->db->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES utf8');
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    /**
-     * Disconnect DB connector
-     *
-     * @access public
-     * @return  void
-     */
-    public function disconnect()
-    {
-        $this->db = null;
-    }
-    
-    /**
-     *  Removes quotes from values
-     *
-     *  @return string
-     */
-    public function quote($str)
-    {
-        return $this->db->quote($str);
-    }
-
-    /**
-     * To string method
-     *
-     * @access public
-     * @return string
-     */
-    public function toString()
-    {
-        return $this->db->toString();
     }
 
     /**
@@ -402,8 +241,12 @@ class CentreonDB extends \PDO
     	 */
         $sth = null;
         try {
-            $sth = $this->db->prepare($queryString);
-            $sth->execute($parameters);
+            if (is_null($parameters)) {
+                $sth = parent::query($queryString);
+            } else {
+                $sth = $this->prepare($queryString);
+                $sth->execute($parameters);
+            }
             $this->queryNumber++;
             $this->successQueryNumber++;
         } catch (PDOException $e) {
@@ -426,7 +269,7 @@ class CentreonDB extends \PDO
         $this->requestExecuted++;
 
         try {
-            $result = $this->db->query($query_string);
+            $result = $this->query($query_string);
             $rows = $result->fetchAll();
             $this->requestSuccessful++;
         } catch (\Exception $e) {
@@ -503,11 +346,11 @@ class CentreonDB extends \PDO
         /*
          * Get Version
          */
-        if ($res = $this->db->query("SELECT VERSION() AS mysql_version")) {
+        if ($res = $this->query("SELECT VERSION() AS mysql_version")) {
             $row = $res->fetchRow();
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
-            if ($DBRESULT = $this->db->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")) {
+            if ($DBRESULT = $this->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")) {
                 while ($data = $DBRESULT->fetch()) {
                     $info['dbsize'] += $data['Data_length'] + $data['Index_length'];
                     $info['indexsize'] += $data['Index_length'];
