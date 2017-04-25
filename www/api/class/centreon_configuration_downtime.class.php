@@ -81,12 +81,12 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
         $queryValues[':name'] = $q;
 
         $stmt = $this->pearDB->prepare($queryDowntime);
-        $dbResult = $this->pearDB->execute($stmt, $queryValues);
+        $this->pearDB->execute($stmt, $queryValues);
 
-        $total = $this->pearDB->rowCount();
+        $total = $stmt->rowCount();
 
         $downtimeList = array();
-        while ($data = $dbResult->fetch()) {
+        while ($data = $stmt->fetch()) {
             $downtimeList[] = array(
                 'id' => htmlentities($data['dt_id']),
                 'text' => $data['dt_name']
