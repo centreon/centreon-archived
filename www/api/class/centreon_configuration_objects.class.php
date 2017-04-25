@@ -141,9 +141,7 @@ class CentreonConfigurationObjects extends CentreonWebService
 
             $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
         } else {
-
             $explodedValues = '';
-
             if (!empty($values)) {
                 for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';

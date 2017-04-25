@@ -76,9 +76,9 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
 
         $queryDowntime = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dt.dt_name, dt.dt_id "
             . "FROM downtime dt "
-            . "WHERE dt.dt_name LIKE '%:name%' "
+            . "WHERE dt.dt_name LIKE :name "
             . "ORDER BY dt.dt_name";
-        $queryValues[':name'] = $q;
+        $queryValues[':name'] = '%' . $q . '%';
 
         $stmt = $this->pearDB->prepare($queryDowntime);
         $this->pearDB->execute($stmt, $queryValues);
