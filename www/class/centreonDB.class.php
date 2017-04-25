@@ -81,7 +81,11 @@ class CentreonDB extends \PDO
             $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
 
-            $this->options = array();
+            $this->options = array(
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_STATEMENT_CLASS => array('CentreonDBStatement', array($this)),
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+            );
 
             /*
              * Add possibility to change SGDB port
@@ -130,10 +134,6 @@ class CentreonDB extends \PDO
                 $this->dsn['password'],
                 $this->options
             );
-
-            $this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('CentreonDBStatement', array($this)));
-            $this->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES utf8');
 
         } catch (Exception $e) {
             if (false === $silent && php_sapi_name() != "cli") {
