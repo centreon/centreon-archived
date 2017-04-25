@@ -154,6 +154,7 @@ class CentreonConfigurationObjects extends CentreonWebService
                 "FROM $externalObject[table] " .
                 "WHERE $externalObject[comparator] " .
                 "IN ($explodedValues)";
+
             $stmt = $this->pearDB->prepare($query);
             $resRetrieval = $this->pearDB->execute($stmt, $values);
 
