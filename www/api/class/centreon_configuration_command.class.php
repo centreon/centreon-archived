@@ -77,16 +77,15 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .
             "FROM command " .
-            "WHERE command_name LIKE '%:commandName%' AND command_activate = '1' ";
-        $queryValues[':commandName'] = $q;
+            "WHERE command_name LIKE :commandName AND command_activate = '1' ";
+        $queryValues[':commandName'] = '%' . $q . '%';
 
         if (!empty($t)) {
-            $queryCommand .= "AND command_type = ':type' ";
+            $queryCommand .= "AND command_type = :type ";
             $queryValues[':type'] = $t;
         }
 
-        $queryCommand .= "ORDER BY command_name "
-            . $range;
+        $queryCommand .= "ORDER BY command_name " . $range;
 
         $stmt = $this->pearDB->prepare($queryCommand);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
@@ -96,8 +95,8 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
         }
 
         $total = $stmt->rowCount();
-
         $commandList = array();
+
         while ($data = $stmt->fetch()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
         }
