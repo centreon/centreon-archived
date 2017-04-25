@@ -75,8 +75,8 @@ class CentreonMetric extends CentreonWebService
             $q = $this->arguments['q'];
         }
         $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\"
-            FROM `metrics`
-            WHERE metric_name LIKE ? ORDER BY `metric_name` COLLATE utf8_general_ci ";
+                  FROM `metrics`
+                  WHERE metric_name LIKE ? ORDER BY `metric_name` COLLATE utf8_general_ci ";
 
         $stmt = $this->pearDBMonitoring->prepare($query);
         $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . $q . '%'));
