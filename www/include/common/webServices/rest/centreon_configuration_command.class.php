@@ -78,10 +78,10 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name "
             . "FROM command "
-            . "WHERE command_name LIKE '%?%' ";
-        $queryValues[] = $q;
+            . "WHERE command_name LIKE ? ";
+        $queryValues[] = '%' . $q .'%';
         if (!empty($t)) {
-            $queryCommand .= "AND command_type = '?' ";
+            $queryCommand .= "AND command_type = ? ";
             $queryValues[] = $t;
         }
 
