@@ -43,9 +43,15 @@
 	require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
 	require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
 	require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
-		
+
+    if (isset($_SESSION['centreon'])) {
+        $centreon = $_SESSION['centreon'];
+    } else {
+        exit;
+    }
+
 	$buffer = new CentreonXML();
-	$buffer->startElement("data");	
+	$buffer->startElement("data");
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
@@ -55,7 +61,7 @@
 	$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
 	if (!$DBRESULT->numRows())
 		exit();
-	
+
 
 	/*
 	 * Initiate Table
@@ -69,12 +75,27 @@
 		foreach ($_GET["color"] as $key => $value) {
 			$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
 		}
-	
-		$DBRESULT = $pearDBO->query("SELECT  * FROM `log_archive_service` WHERE host_id = '".$pearDBO->escape($_GET["host_id"])."' AND service_id = ".$pearDBO->escape($_GET["id"])." ORDER BY `date_start` DESC");
-		while ($row = $DBRESULT->fetchRow()) {
-			fillBuffer($statesTab, $row, $color);
-		}
-		$DBRESULT->free();
+
+        /* Get ACL if user is not admin */
+        $isAdmin = $centreon->user->admin;
+        $accessService = true;
+        if (!$isAdmin) {
+            $userId = $centreon->user->user_id;
+            $acl = new CentreonACL($userId, $isAdmin);
+            if (!$acl->checkService($_GET["id"])) {
+                $accessService = false;
+            }
+        }
+
+        if ($accessService) {
+            $DBRESULT = $pearDBO->query("SELECT  * FROM `log_archive_service` WHERE host_id = '" . $pearDBO->escape($_GET["host_id"]) . "' AND service_id = " . $pearDBO->escape($_GET["id"]) . " ORDER BY `date_start` DESC");
+            while ($row = $DBRESULT->fetchRow()) {
+                fillBuffer($statesTab, $row, $color);
+            }
+            $DBRESULT->free();
+        } else {
+            $buffer->writeElement("error", "Cannot access to host information");
+        }
 		
 	} else {
 		$buffer->writeElement("error", "error");		

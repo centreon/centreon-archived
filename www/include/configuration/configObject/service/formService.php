@@ -85,18 +85,12 @@ $notifCs = $acl->getContactAclConf(array('fields' => array('contact_id', 'contac
     'order' => array('contact_name')));
 
 /* notification contact groups */
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-if ($oreon->user->admin) {
-    $notifCgs = $cg->getListContactgroup(true);
-} else {
-    $cgAcl = $acl->getContactGroupAclConf(array('fields' => array('cg_id', 'cg_name'),
-        'get_row' => 'cg_name',
-        'keys' => array('cg_id'),
-        'order' => array('cg_name')));
-    $cgLdap = $cg->getListContactgroup(true, true);
-    $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-}
+$notifCgs = $acl->getContactGroupAclConf(array(
+    'fields' => array('cg_id', 'cg_name'),
+    'get_row' => 'cg_name',
+    'keys' => array('cg_id'),
+    'order' => array('cg_name')
+), false);
 
 /* hosts */
 $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields' => array('host.host_id', 'host.host_name'),
@@ -252,7 +246,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set criticality
      */
-    $res = $pearDB->query("SELECT sc.sc_id 
+    $res = $pearDB->query("SELECT sc.sc_id
                             FROM service_categories sc, service_categories_relation scr
                             WHERE scr.service_service_id = " . $pearDB->escape($service_id) . "
                             AND scr.sc_id = sc.sc_id
@@ -273,7 +267,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     if (!isset($cmdId)) {
         $cmdId = "";
     }
-    
+
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
 
 
@@ -614,7 +608,7 @@ if ($o == "mc")	{
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
     $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
-    
+
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
@@ -739,13 +733,13 @@ if ($form_service_type == "BYHOST") {
     if (isset($service['service_hPars']) && count($service['service_hPars']) > 1) {
         $sgReadOnly = true;
     }
-    
+
     $attrHost1 = array_merge(
         $attrHosts,
         array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=service&field=service_hPars&id=' . $service_id)
     );
     $form->addElement('select2', 'service_hPars', _("Linked with Hosts"), array(), $attrHost1);
-    
+
 }
 
 if ($form_service_type == "BYHOSTGROUP") {
@@ -754,7 +748,7 @@ if ($form_service_type == "BYHOSTGROUP") {
         array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=service&field=service_hgPars&id=' . $service_id)
     );
     $form->addElement('select2', 'service_hgPars', _("Linked with Host Groups"), array(), $attrHostgroup1);
-    
+
     if (isset($service['service_hgPars']) && count($service['service_hgPars']) > 1) {
         $sgReadOnly = true;
     }
@@ -919,7 +913,7 @@ $attrServicecategory1 = array_merge(
 $form->addElement('select2', 'service_categories', _("Categories"), array(), $attrServicecategory1);
 
 /*
- * Sort 5 
+ * Sort 5
  */
 if ($o == "a") {
     $form->addElement('header', 'title5', _("Add macros"));
@@ -1004,7 +998,7 @@ if ($o != "mc") {
     $macChecker->setValue(1);
     $form->registerRule("macHandler", "callback", "serviceMacHandler");
     $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
-    
+
     $form->registerRule('cg_group_exists', 'callback', 'testCg2');
     $form->addRule('service_cgs', _('Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same name.'), 'cg_group_exists');
 

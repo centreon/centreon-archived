@@ -46,20 +46,22 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
     {
         parent::__construct();
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     public function getList()
     {
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-        
+
         if (false === isset($this->arguments['t'])) {
             $t = '';
         } else {
@@ -68,31 +70,34 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
+                $this->pearDB->escape($this->arguments['page_limit']);
         } else {
             $range = '';
         }
-        
+
         $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name "
             . "FROM command "
-            . "WHERE command_name LIKE '%$q%' ";
-        
+            . "WHERE command_name LIKE '%?%' ";
+        $queryValues[] = $q;
         if (!empty($t)) {
-            $queryCommand .= "AND command_type = '$t' ";
+            $queryCommand .= "AND command_type = '?' ";
+            $queryValues[] = $t;
         }
-            
+
         $queryCommand .= "ORDER BY command_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryCommand);
+
+        $stmt = $this->pearDB->prepare($queryCommand);
+        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
-        
+
         $commandList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
         }
-        
+
         return array(
             'items' => $commandList,
             'total' => $total

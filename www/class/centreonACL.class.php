@@ -57,7 +57,6 @@ class CentreonACL {
     private $actions = array(); /* Actions the user can do */
     private $hostGroupsFilter = array();
     private $serviceGroupsFilter = array();
-    private $serviceCategoriesFilter = array();
     public $topology = array();
     public $topologyStr = "";
     private $metaServices = array();
@@ -303,9 +302,17 @@ class CentreonACL {
             . "ORDER BY sc.sc_name ASC ";
 
         $DBRESULT = $pearDB->query($query);
+
+        if (!$DBRESULT->numRows()) {
+            $query = "SELECT sc.sc_id, sc.sc_name "
+                . "FROM service_categories sc "
+                . "WHERE sc.sc_activate = '1' "
+                . "ORDER BY sc.sc_name ASC ";
+            $DBRESULT = $pearDB->query($query);
+        }
+
         while ($row = $DBRESULT->fetchRow()) {
             $this->serviceCategories[$row['sc_id']] = $row['sc_name'];
-            $this->serviceCategoriesFilter[$row['acl_res_id']][$row['sc_id']] = $row['sc_id'];
         }
         $DBRESULT->free();
     }
@@ -325,6 +332,13 @@ class CentreonACL {
             . "ORDER BY hc.hc_name ASC ";
 
         $res = $pearDB->query($query);
+        if (!$res->numRows()) {
+            $query = "SELECT hc.hc_id, hc.hc_name "
+                . "FROM hostcategories hc "
+                . "WHERE hc.hc_activate = '1' "
+                . "ORDER BY hc.hc_name ASC ";
+            $res = $pearDB->query($query);
+        }
         while ($row = $res->fetchRow()) {
             $this->hostCategories[$row['hc_id']] = $row['hc_name'];
         }
