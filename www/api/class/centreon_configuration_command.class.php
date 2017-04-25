@@ -81,7 +81,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
         $queryValues[':commandName'] = $q;
 
         if (!empty($t)) {
-            $queryCommand .= "AND command_type = :type ";
+            $queryCommand .= "AND command_type = ':type' ";
             $queryValues[':type'] = $t;
         }
 
@@ -95,10 +95,10 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
             throw new \Exception("An error occured");
         }
 
-        $total = $this->pearDB->rowCount();
+        $total = $stmt->rowCount();
 
         $commandList = array();
-        while ($data = $dbResult->fetch()) {
+        while ($data = $stmt->fetch()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
         }
 
