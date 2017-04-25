@@ -48,7 +48,7 @@ class CentreonAdministrationWidget extends CentreonWebService
     {
         parent::__construct();
     }
-    
+
     /**
      * Get the list of views
      */
@@ -65,7 +65,8 @@ class CentreonAdministrationWidget extends CentreonWebService
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
+                $this->pearDB->escape($this->arguments['page_limit']);
         } else {
             $range = '';
         }
