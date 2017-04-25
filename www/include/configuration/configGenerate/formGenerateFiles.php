@@ -135,7 +135,6 @@ $tpl->display("formGenerateFiles.ihtml");
     var tooltip = new CentreonToolTip();
     var session_id = "<?php echo session_id(); ?>";
     tooltip.render();
-    var progressBar;
     var msgTab = new Array();
     
     msgTab['start'] = "<?php echo addslashes(_("Preparing environment")); ?>";
@@ -148,7 +147,11 @@ $tpl->display("formGenerateFiles.ihtml");
     msgTab['postcmd'] = "<?php echo addslashes(_("Executing command")); ?>";
 
     jQuery(function() {
-        initProgressBar();
+
+        $('#progress_bar').progressbar({
+            value: 0
+        });
+
         var pollers = JSON.parse(initPollers);
         for (var i = 0; i < pollers.length; i++) {
             jQuery('#nhost').append(
@@ -157,30 +160,6 @@ $tpl->display("formGenerateFiles.ihtml");
         }
         jQuery('#nhost').trigger('change');
     });
-
-    /**
-     * Init Progress bar
-     *
-     * @return void
-     */
-    function initProgressBar()
-    {
-        progressBar = new JS_BRAMUS.jsProgressBar(
-        'progress_bar',
-        0,
-        {
-            animate         : false,
-            showText        : false,
-            barImage        : Array(
-            'include/common/javascript/scriptaculous/images/bramus/percentImage_back4.png',
-            'include/common/javascript/scriptaculous/images/bramus/percentImage_back3.png',
-            'include/common/javascript/scriptaculous/images/bramus/percentImage_back2.png',
-            'include/common/javascript/scriptaculous/images/bramus/percentImage_back1.png'
-        ),
-            boxImage        : 'include/common/javascript/scriptaculous/images/bramus/percentImage.png'
-        }
-    );
-    }
 
     /**
      * Next step
@@ -232,8 +211,8 @@ $tpl->display("formGenerateFiles.ihtml");
         updateProgress();
         cleanErrorPhp();
         document.getElementById('console').style.visibility = 'visible';
-        $('consoleContent').update(msgTab['start'] + "... ");
-        $('consoleDetails').update("");
+        $('#consoleContent').html(msgTab['start'] + "... ");
+        $('#consoleDetails').html("");
         initEnvironment();
         if (selectedPoller !== "-1") {
             nextStep();
@@ -272,11 +251,11 @@ $tpl->display("formGenerateFiles.ihtml");
         exportBtn = document.getElementById('exportBtn');
         exportBtn.disabled = true;
         if (selectedPoller == "-1") {
-            $('consoleContent').insert("<b><font color='red'>NOK</font></b> ("+ msgTab['noPoller'] +")<br/>");
+            $('#consoleContent').append("<b><font color='red'>NOK</font></b> ("+ msgTab['noPoller'] +")<br/>");
             abortProgress();
             return null;
         }
-       $('consoleContent').insert("<b><font color='green'>OK</font></b><br/>");
+       $('#consoleContent').append("<b><font color='green'>OK</font></b><br/>");
     }
 
     /**
@@ -285,22 +264,25 @@ $tpl->display("formGenerateFiles.ihtml");
     function generateFiles()
     {
         if (debugOption && !generateOption) {
-            $('consoleContent').insert(msgTab['debug'] + '... ');
+            $('#consoleContent').append(msgTab['debug'] + '... ');
         } else {
-            $('consoleContent').insert(msgTab['gen'] + "... ");
+            $('#consoleContent').append(msgTab['gen'] + "... ");
         }
-        new Ajax.Request('./include/configuration/configGenerate/xml/generateFiles.php', {
-            method: 'post',
-            parameters: {
+        jQuery.ajax({
+            url: './include/configuration/configGenerate/xml/generateFiles.php',
+            type: 'POST',
+            dataType: "xml",
+            data: {
                 poller: selectedPoller,
                 debug: debugOption,
                 generate: generateOption
             },
-            onSuccess: function (response) {
-                displayStatusMessage(response.responseXML);
-                displayDetails(response.responseXML);
-                displayPhpErrorMsg('generate', response.responseXML);
-                if (isError(response.responseXML) == "1") {
+            success: function(data) {
+                data = $(data);
+                displayStatusMessage(data);
+                displayDetails(data);
+                displayPhpErrorMsg('generate', data);
+                if (isError(data) == "1") {
                     abortProgress();
                     return null;
                 }
@@ -315,17 +297,20 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function moveFiles()
     {
-        $('consoleContent').insert(msgTab['move'] + "... ");
-        new Ajax.Request('./include/configuration/configGenerate/xml/moveFiles.php', {
-            method: 'post',
-            parameters: {
+        $('#consoleContent').append(msgTab['move'] + "... ");
+        jQuery.ajax({
+            url: './include/configuration/configGenerate/xml/moveFiles.php',
+            type: 'POST',
+            dataType: "xml",
+            data: {
                 poller: selectedPoller
             },
-            onSuccess: function (response) {
-                displayStatusMessage(response.responseXML);
-                displayDetails(response.responseXML);
-                displayPhpErrorMsg('move', response.responseXML);
-                if (isError(response.responseXML) == "1") {
+            success: function(data) {
+                data = $(data);
+                displayStatusMessage(data);
+                displayDetails(data);
+                displayPhpErrorMsg('move', data);
+                if (isError(data) == "1") {
                     abortProgress();
                     return null;
                 }
@@ -340,18 +325,21 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function restartPollers()
     {
-        $('consoleContent').insert(msgTab['restart'] + "... ");
-        new Ajax.Request('./include/configuration/configGenerate/xml/restartPollers.php', {
-            method: 'post',
-            parameters: {
+        $('#consoleContent').append(msgTab['restart'] + "... ");
+        jQuery.ajax({
+            url: './include/configuration/configGenerate/xml/restartPollers.php',
+            type: 'POST',
+            dataType: "xml",
+            data: {
                 poller: selectedPoller,
                 mode: restartMode
             },
-            onSuccess: function (response) {
-                displayStatusMessage(response.responseXML);
-                displayDetails(response.responseXML);
-                displayPhpErrorMsg('restart', response.responseXML);
-                if (isError(response.responseXML) == "1") {
+            success: function(data) {
+                data = $(data);
+                displayStatusMessage(data);
+                displayDetails(data);
+                displayPhpErrorMsg('restart', data);
+                if (isError(data) == "1") {
                     abortProgress();
                     return null;
                 }
@@ -365,15 +353,18 @@ $tpl->display("formGenerateFiles.ihtml");
      * Execute commands
      */
     function executeCommand() {
-        $('consoleContent').insert(msgTab['postcmd'] + "... ");
-        new Ajax.Request('./include/configuration/configGenerate/xml/postcommand.php', {
-            method: 'post',
-            parameters: {
+        $('#consoleContent').append(msgTab['postcmd'] + "... ");
+        jQuery.ajax({
+            url: './include/configuration/configGenerate/xml/postcommand.php',
+            type: 'POST',
+            dataType: "xml",
+            data: {
                 poller: selectedPoller
             },
-            onSuccess: function (response) {
-                displayPostExecutionCommand(response.responseXML);
-                if (isError(response.responseXML) == "1") {
+            success: function(data) {
+                data = $(data);
+                displayPostExecutionCommand(data);
+                if (isError(data) == "1") {
                     abortProgress();
                     return null;
                 }
@@ -388,15 +379,16 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function displayStatusMessage(responseXML)
     {
-        var status = responseXML.getElementsByTagName("status");
-        var error = responseXML.getElementsByTagName("error");
+        var status = responseXML.find("status");
+        var error = responseXML.find("error");
         var str;
-        str = status.item(0).firstChild.data;
-        if (error.length && error.item(0).firstChild.data) {
-            str += " (" + error.item(0).firstChild.data + ")";
+
+        str = status.text();
+        if (error.length) {
+            str += " (" + error.text() + ")";
         }
         str += "<br/>";
-        $('consoleContent').insert(str);
+        $('#consoleContent').append(str);
     }
 
     /**
@@ -404,31 +396,31 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function displayDetails(responseXML)
     {
-        var debug = responseXML.getElementsByTagName("debug");
+        var debug = responseXML.find("debug");
         var str;
 
         str = "";
-        if (debug.length && debug.item(0).firstChild.data) {
-            str = debug.item(0).firstChild.data;
+        if (debug.length) {
+            str = debug.text();
         }
         str += "<br/>";
-        $('consoleDetails').insert(str);
+        $('#consoleDetails').append(str);
     }
 
     /**
      * Display post command result and output
      */
     function displayPostExecutionCommand(responseXML) {
-        var xml = responseXML.getElementsByTagName("result");
-        var xmlStatus = responseXML.getElementsByTagName("status");
+        var xml = responseXML.find("result");
+        var xmlStatus = responseXML.find("status");
         var str;
         str = "";
-        if (xml.length && xml.item(0).firstChild.data) {
-            str += xml.item(0).firstChild.data;
+        if (xml.length) {
+            str += xml.text();
         }
         str += "<br/>";
-        $('consoleDetails').insert(str);
-        $('consoleContent').insert(xmlStatus.item(0).firstChild.data);
+        $('#consoleDetails').append(str);
+        $('#consoleContent').append(xmlStatus.text());
     }
 
     /**
@@ -437,9 +429,9 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function isError(responseXML)
     {
-        var statuscode = responseXML.getElementsByTagName("statuscode");
+        var statuscode = responseXML.find("statuscode");
         if (statuscode.length) {
-            return statuscode.item(0).firstChild.data;
+            return statuscode.text();
         }
         return 0;
     }
@@ -450,7 +442,7 @@ $tpl->display("formGenerateFiles.ihtml");
     var errorClass = 'list_two';
     function displayPhpErrorMsg(action, responseXML)
     {
-        var errors = responseXML.getElementsByTagName('errorPhp');
+        var errors = responseXML.find('errorPhp');
         var titleError;
         if (errorClass == 'list_one') {
             errorClass = 'list_two';
@@ -528,8 +520,8 @@ $tpl->display("formGenerateFiles.ihtml");
         if (pct > 100) {
             pct = 100;
         }
-        progressBar.setPercentage(pct);
-        $('progressPct').update(Math.round(pct) + "%");
+        $('#progress_bar').progressbar('value', pct);
+        $('#progressPct').html(Math.round(pct) + "%");
     }
 
     /**
@@ -538,14 +530,21 @@ $tpl->display("formGenerateFiles.ihtml");
     function toggleDebug(pollerId)
     {
         if (pollerId) {
-            Effect.toggle('debug_' + pollerId, 'blind', { duration: 0.1 });
+            if ($('#debug_' + pollerId).is(':visible')) {
+                $('#togglerp_' + pollerId).show();
+                $('#togglerm_' + pollerId).hide();
+                $('#debug_' + pollerId).hide();
+            } else {
+                $('#togglerp_' + pollerId).hide();
+                $('#togglerm_' + pollerId).show();
+                $('#debug_' + pollerId).show();
+            }
         }
-        $('togglerp_' + pollerId, 'togglerm_' + pollerId).invoke('toggle');
     }
 
     function abortProgress()
     {
-        $('consoleContent').insert(msgTab['abort']);
+        $('#consoleContent').append(msgTab['abort']);
         exportBtn.disabled = false;
         steps = new Array();
     }

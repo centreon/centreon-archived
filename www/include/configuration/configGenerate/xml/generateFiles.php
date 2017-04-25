@@ -291,7 +291,7 @@ function printDebug($xml, $tabs)
                 "' style='display: none'>[ + ]</label><label id='togglerm_" . $pollerId . "'>[ - ]</label>";
             $returnCode = 1;
         }
-        $str .= "<a href='#' onClick=\"toggleDebug('" . $pollerId . "'); return false;\"/>";
+        $str .= "<a href='#' onClick=\"toggleDebug('" . $pollerId . "'); return false;\">";
         $str .= $toggler . "</a> ";
         $str .= "<b><font color='$pollerNameColor'>" . $tab_server[$pollerId]['name'] . "</font></b><br/>";
         $str .= "<div style='display: $show;' id='debug_" . $pollerId . "'>" . htmlentities($message) . "</div><br/>";
