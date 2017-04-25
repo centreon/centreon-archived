@@ -33,7 +33,7 @@
  *
  */
 
-require_once $centreon_path . "www/autoloader.php";
+require_once $centreon_path . "/bootstrap.php";
 
 /*
  * Adding requirements
@@ -122,7 +122,13 @@ $tpl->assign('centreonVersion', 'v. '.$release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
 
 // Redirect User
-$tpl->assign('redirect', (isset($_GET['redirect']) ? $_GET['redirect'] : ''));
+$redirect = filter_input(
+    INPUT_GET,
+    'redirect',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default'=> ''))
+);
+$tpl->assign('redirect', $redirect);
 
 // Applying and Displaying template
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);

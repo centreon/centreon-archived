@@ -123,6 +123,22 @@ if ($view_all == 1) {
     $downtimeTable = "scheduleddowntime";
     $extrafields = "";
 }
+/*------------------ BAM ------------------*/
+$tab_service_bam = array();
+$request = "SELECT id FROM modules_informations WHERE name = 'centreon-bam-server';";
+$DBRESULT = $pearDB->query($request);
+if ($DBRESULT->numRows()) {
+    $request = "SELECT CONCAT('ba_',ba_id) AS id, ba_id, name FROM mod_bam";
+    $DBRESULT = $pearDB->query($request);
+
+    while ($elem = $DBRESULT->fetchRow()) {
+        $tab_service_bam[$elem['id']] = array(
+            'name' => $elem['name'],
+            'id' => $elem['ba_id']
+        );
+    }
+}
+
 /* --------------- Services ---------------*/
 $request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
  d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
@@ -171,16 +187,12 @@ $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : ""
     (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
     ") ORDER BY scheduled_start_time DESC " .
     "LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT_NDO = $pearDBO->query($request);
+$DBRESULT = $pearDBO->query($request);
 
 $rows = $pearDBO->numberRows();
-for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
+for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
     $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
-    $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
-    $tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
-    $tab_downtime_svc[$i]['service_description'] =
-        ($data['service_description'] != '' ? $data['service_description'] : '-');
     $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(
         _("Y/m/d H:i"),
         $tab_downtime_svc[$i]["scheduled_start_time"]
@@ -189,12 +201,31 @@ for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
         _("Y/m/d H:i"),
         $tab_downtime_svc[$i]["scheduled_end_time"]
     ) . " ";
-    if ($data['service_description'] != '') {
-        $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
-        $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
+
+    if (preg_match('/_Module_BAM_\d+/', $data['host_name'])) {
+        $tab_downtime_svc[$i]['host_name'] = 'Module BAM';
+        $tab_downtime_svc[$i]['host_name_link'] = "p=207&o=d&ba_id="
+            . $tab_service_bam[$data['service_description']]['id'];
+        $tab_downtime_svc[$i]['service_name_link'] = "p=207&o=d&ba_id="
+            . $tab_service_bam[$data['service_description']]['id'];
+        $tab_downtime_svc[$i]['service_description'] = $tab_service_bam[$data['service_description']]['name'];
+        if ($tab_downtime_svc[$i]['author_name'] == 'Centreon Broker BAM Module') {
+            $tab_downtime_svc[$i]['scheduled_end_time'] = "Automatic";
+            $tab_downtime_svc[$i]['duration'] = 'Automatic';
+        }
     } else {
-        $tab_downtime_svc[$i]['service_description'] = '-';
-        $tab_downtime_svc[$i]['downtime_type'] = 'HOST';
+        $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
+        $tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
+        $tab_downtime_svc[$i]['service_description'] =
+            ($data['service_description'] != '' ? $data['service_description'] : '-');
+
+        if ($data['service_description'] != '') {
+            $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
+            $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
+        } else {
+            $tab_downtime_svc[$i]['service_description'] = '-';
+            $tab_downtime_svc[$i]['downtime_type'] = 'HOST';
+        }
     }
 }
 unset($data);

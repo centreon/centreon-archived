@@ -34,35 +34,54 @@
  */
 
 session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../functions.php';
-define('PROCESS_ID', 'dbstorage');
+
+$return = array(
+    'id' => 'dbstorage',
+    'result' => 1,
+    'msg' => ''
+);
+
+$step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
+$parameters = $step->getDatabaseConfiguration();
 
 try {
-    $link = myConnect();
+    $link = new \PDO(
+        'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
+        'root',
+        $parameters['root_password']
+    );
 } catch (\PDOException $e) {
-    exitProcess(PROCESS_ID, 1, $e->getMessage());
-}
-
-if (!isset($_SESSION['STORAGE_DB'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find storage database. Session probably expired.'));
+    $return['msg'] = $e->getMessage();
+    echo json_encode($return);
+    exit;
 }
 
 try {
-    $link->exec("CREATE DATABASE " . $_SESSION['STORAGE_DB']);
+    $link->exec("CREATE DATABASE " . $parameters['db_storage']);
 } catch (\PDOException $e) {
     if (!is_file('../../tmp/createTablesCentstorage')) {
-        exitProcess(PROCESS_ID, 1, $e->getMessage());
+        $return['msg'] = $e->getMessage();
+        echo json_encode($return);
+        exit;
     }
 }
 
-$link->exec('use ' . $_SESSION['STORAGE_DB']);
+$link->exec('use ' . $parameters['db_storage']);
 $result = splitQueries('../../createTablesCentstorage.sql', ';', $link, '../../tmp/createTablesCentstorage');
 if ("0" != $result) {
-    exitProcess(PROCESS_ID, 1, $result);
+    $return['msg'] = $result;
+    echo json_encode($return);
+    exit;
 }
 $result = splitQueries('../../installBroker.sql', ';', $link, '../../tmp/installBroker');
 if ("0" != $result) {
-    exitProcess(PROCESS_ID, 1, $result);
+    $return['msg'] = $result;
+    echo json_encode($return);
+    exit;
 }
 
-exitProcess(PROCESS_ID, 0, "OK");
+$return['result'] = 0;
+echo json_encode($return);
+exit;

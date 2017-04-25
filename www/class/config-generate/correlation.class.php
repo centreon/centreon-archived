@@ -45,7 +45,7 @@ class Correlation extends AbstractObjectXML {
     private $has_correlation = null;
     private $correlation_file_path = null;
     private $poller_ids = array();
-    
+
     public function generateFromPollerId($poller_id, $localhost) {
         if ($localhost) {
             $this->generateMainCorrelation();
@@ -60,7 +60,7 @@ class Correlation extends AbstractObjectXML {
 
         # Generate correlation files
         $this->generateFile($this->correlation_object, false, 'conf');
-        $this->writeFile($this->backend_instance->getPath());        
+        $this->writeFile($this->backend_instance->getPath());
     }
 
     private function generateMainCorrelation() {
@@ -88,6 +88,7 @@ class Correlation extends AbstractObjectXML {
         $dir = dirname($this->correlation_file_path);
 
         $this->doHostHostDependency();
+        $this->doServiceServiceDependency();
         $this->doServiceHostDependency();
         $this->doHostServiceDependency();
 
@@ -108,15 +109,12 @@ class Correlation extends AbstractObjectXML {
     }
 
     private function doHost($poller_id) {
-        $host_instance = Host::getInstance();
-        $hosts_exported = $host_instance->getExported();
-        foreach ($hosts_exported as $key => $value) {
-            if ($value != 1) {
-                continue;
-            }
+        $host_instance = Host::getInstance($this->dependencyInjector);
+        $hosts = $host_instance->getGeneratedHosts();
+        foreach ($hosts as $hostId) {
             $this->correlation_object[]['host'] = array(
                 '@attributes' => array(
-                    'id' => $key,
+                    'id' => $hostId,
                     'instance_id' => $poller_id
                 )
             );
@@ -124,7 +122,7 @@ class Correlation extends AbstractObjectXML {
     }
 
     private function doService($poller_id) {
-        $service_instance = Service::getInstance();
+        $service_instance = Service::getInstance($this->dependencyInjector);
         $services_exported = $service_instance->getGeneratedServices();
         foreach ($services_exported as $hostId => $services) {
             foreach ($services as $serviceId) {
@@ -142,9 +140,10 @@ class Correlation extends AbstractObjectXML {
     private function doHostHostDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
               dhp.host_host_id as parent_host_id, dhc.host_host_id as child_host_id
-            FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc
+            FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc, host h, host h2
             WHERE dhp.dependency_dep_id = dhc.dependency_dep_id
-            ");
+                AND h.host_id = dhp.host_host_id AND h.host_activate = '1'
+                AND h2.host_id = dhc.host_host_id AND h2.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -159,10 +158,12 @@ class Correlation extends AbstractObjectXML {
 
     private function doServiceServiceDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
-              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
-            FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc
+              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
+              dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
+            FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc, service s, service s2
             WHERE dsp.dependency_dep_id = dsc.dependency_dep_id
-            ");
+                AND dsp.service_service_id = s.service_id AND s.service_activate = '1'
+                AND dsc.service_service_id = s2.service_id AND s2.service_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -179,10 +180,12 @@ class Correlation extends AbstractObjectXML {
 
     private function doServiceHostDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
-              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dhc.host_host_id as child_host_id
-            FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc
+              dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
+              dhc.host_host_id as child_host_id
+            FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc, host h, service s
             WHERE dsp.dependency_dep_id = dhc.dependency_dep_id
-            ");
+                AND dsp.service_service_id = s.service_id AND s.service_activate = '1'
+                AND dhc.host_host_id = h.host_id AND h.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -198,10 +201,12 @@ class Correlation extends AbstractObjectXML {
 
     private function doHostServiceDependency() {
         $stmt = $this->backend_instance->db->prepare("SELECT
-              dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
-            FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc
+              dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id,
+              dsc.service_service_id as child_service_id
+            FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc, host h, service s
             WHERE dhp.dependency_dep_id = dsc.dependency_dep_id
-            ");
+                AND dsc.service_service_id = s.service_id AND s.service_activate = '1'
+                AND dhp.host_host_id = h.host_id AND h.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -216,16 +221,16 @@ class Correlation extends AbstractObjectXML {
     }
 
     private function doParentship() {
-        $stmt = $this->backend_instance->db->prepare("SELECT
-              host_host_id, host_parent_hp_id
-            FROM host_hostparent_relation
-            ");
+        $stmt = $this->backend_instance->db->prepare("SELECT hp.host_host_id, hp.host_parent_hp_id
+            FROM host_hostparent_relation hp, host h, host h2
+            WHERE hp.host_host_id = h.host_id AND h.host_activate = '1'
+                AND hp.host_parent_hp_id = h2.host_id AND h2.host_activate = '1'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $this->correlation_parentship_object[]['parent'] = array(
                 '@attributes' => array(
-                    'parent' => $row['host_parent_hp_id'],
+                    'parent_host' => $row['host_parent_hp_id'],
                     'host' => $row['host_host_id'],
                     'instance_id' => $this->backend_instance->getPollerId()
                 )
@@ -257,7 +262,7 @@ class Correlation extends AbstractObjectXML {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->correlation_file_path = $row['config_value'];
             $this->has_correlation = 1;
-            
+
         }
     }
 

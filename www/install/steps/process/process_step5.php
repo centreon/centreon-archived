@@ -32,31 +32,38 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 session_start();
-foreach ($_POST as $key => $value) {
-    $_SESSION[$key] = $value;
-}
-$mandatoryFields = array('ADMIN_PASSWORD', 'confirm_password', 'firstname', 'lastname', 'email');
-$strError = '';
+require_once __DIR__ . '/../../../../bootstrap.php';
 
-$emailRegexp = "/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/";
-if (!preg_match($emailRegexp, $_POST['email'])) {
-    $strError .= 'jQuery("input[name=email]").next().html("Invalid E-mail");';
-}
+$err = array(
+    'required' => array(),
+    'email' => true,
+    'password' => true
+);
 
-foreach ($mandatoryFields as $field) {
-    if ($_POST[$field] == '') {
-        $strError .= 'jQuery("input[name='.$field.']").next().html("Mandatory field");';
+$emailRegexp = "/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?" .
+    "(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/";
+
+$parameters = filter_input_array(INPUT_POST);
+foreach ($parameters as $name => $value) {
+    if (trim($value) == '') {
+        $err['required'][] = $name;
     }
 }
 
-if ($_POST['ADMIN_PASSWORD'] != $_POST['confirm_password']) {
-    $strError .= 'jQuery("input[name=confirm_password]").next().html("Passwords do not match");';
+if (!in_array('email', $err['required']) && !preg_match($emailRegexp, $parameters['email'])) {
+    $err['email'] = false;
 }
 
-if ($strError) {
-    echo $strError;
-} else {
-    echo 0;
+if (!in_array('admin_password', $err['required']) && !in_array('confirm_password', $err['required']) &&
+    $parameters['admin_password'] != $parameters['confirm_password']) {
+    $err['password'] = false;
 }
+
+if (!count($err['required']) && $err['password'] && $err['email']) {
+    $step = new \CentreonLegacy\Core\Install\Step\Step5($dependencyInjector);
+    $step->setAdminConfiguration($parameters);
+}
+
+echo json_encode($err);

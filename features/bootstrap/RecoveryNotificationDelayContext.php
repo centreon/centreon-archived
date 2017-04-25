@@ -1,10 +1,10 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ContactConfigurationListingPage;
-use Centreon\Test\Behat\CommandConfigurationPage;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\CommandConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 class RecoveryNotificationDelayContext extends CentreonContext
 {
@@ -182,7 +182,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
             'notify_on_recovery' => 1,
             'notify_on_down' => 1,
             'recovery_notification_delay' => 1,
-            'cs' => 'admin_admin'
+            'cs' => 'centreon_centreon'
         ));
         $page->save();
     }
@@ -205,7 +205,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
             'notify_on_recovery' => 1,
             'notify_on_critical' => 1,
             'recovery_notification_delay' => 1,
-            'cs' => 'admin_admin'
+            'cs' => 'centreon_centreon'
         ));
         $page->save();
     }

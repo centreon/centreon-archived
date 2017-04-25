@@ -144,6 +144,7 @@ $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
 $row = $res->fetchRow();
 $rows = $row['numrows'];
 
+$selection = array();
 while ($data = $DBRESULT->fetchRow()) {
     if ($data["host_register"] == 1) {
         $selection[$data["host_name"]] = $data["host_id"];
@@ -188,11 +189,11 @@ foreach ($selection as $key => $value) {
         $firstTpl = 1;
         foreach ($tplArr as $key1 => $value1) {
             if ($firstTpl) {
-                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Host:$value1' target='_blank'>" .
+                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Host_:_$value1' target='_blank'>" .
                     $value1 . "</a>";
                 $firstTpl = 0;
             } else {
-                $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL . "/index.php?title=Host:$value1' target='_blank'>" .
+                $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL . "/index.php?title=Host_:_$value1' target='_blank'>" .
                     $value1 . "</a>";
             }
         }

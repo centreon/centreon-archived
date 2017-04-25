@@ -35,6 +35,11 @@
 $stateType = 'service';
 require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
+if (isset($_SESSION['centreon'])) {
+    $centreon = $_SESSION['centreon'];
+} else {
+    exit;
+}
 
 if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
     $color = array();
@@ -42,15 +47,30 @@ if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
         $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
     }
 
-    $DBRESULT = $pearDBO->query(
-        "SELECT  * FROM `log_archive_service` WHERE host_id = '".
-        $pearDBO->escape($_GET["host_id"])."' AND service_id = ".
-        $pearDBO->escape($_GET["id"])." ORDER BY `date_start` DESC"
-    );
-    while ($row = $DBRESULT->fetchRow()) {
-        fillBuffer($statesTab, $row, $color);
+    /* Get ACL if user is not admin */
+    $isAdmin = $centreon->user->admin;
+    $accessService = true;
+    if (!$isAdmin) {
+        $userId = $centreon->user->user_id;
+        $acl = new CentreonACL($userId, $isAdmin);
+        if (!$acl->checkService($_GET["id"])) {
+            $accessService = false;
+        }
     }
-    $DBRESULT->free();
+
+    if ($accessService) {
+        $DBRESULT = $pearDBO->query(
+            "SELECT  * FROM `log_archive_service` WHERE host_id = '".
+            $pearDBO->escape($_GET["host_id"])."' AND service_id = ".
+            $pearDBO->escape($_GET["id"])." ORDER BY `date_start` DESC"
+        );
+        while ($row = $DBRESULT->fetchRow()) {
+            fillBuffer($statesTab, $row, $color);
+        }
+        $DBRESULT->free();
+    } else {
+        $buffer->writeElement("error", "Cannot access to host information");
+    }
 } else {
     $buffer->writeElement("error", "error");
 }

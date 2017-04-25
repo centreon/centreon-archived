@@ -35,7 +35,8 @@
 
 require_once dirname(__FILE__) . '/abstract/host.class.php';
 
-class HostTemplate extends AbstractHost {
+class HostTemplate extends AbstractHost
+{
     public $hosts = null;
     protected $generate_filename = 'hostTemplates.cfg';
     protected $object_name = 'host';
@@ -83,7 +84,6 @@ class HostTemplate extends AbstractHost {
         ehi_action_url as action_url,
         ehi_icon_image as icon_image_id,
         ehi_icon_image_alt as icon_image_alt,
-        ehi_vrml_image as vrml_image_id,
         ehi_statusmap_image as statusmap_image_id,
         ehi_2d_coords as 2d_coords,
         ehi_3d_coords as 3d_coords,
@@ -118,7 +118,6 @@ class HostTemplate extends AbstractHost {
         'action_url',
         'icon_image',
         'icon_image_alt',
-        'vrml_image',
         'statusmap_image',
         '2d_coords',
         '3d_coords',
@@ -127,8 +126,9 @@ class HostTemplate extends AbstractHost {
     protected $attributes_array = array(
         'use'
     );
-    
-    private function getHosts() {
+
+    private function getHosts()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM host 
@@ -136,38 +136,40 @@ class HostTemplate extends AbstractHost {
             WHERE  
                 host.host_register = '0' AND host.host_activate = '1'");
         $stmt->execute();
-        $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
+        $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
-    
-    private function getSeverity($host_id) {
+
+    private function getSeverity($host_id)
+    {
         if (isset($this->hosts[$host_id]['severity_id'])) {
             return 0;
         }
-        
-        $this->hosts[$host_id]['severity_id'] = Severity::getInstance()->getHostSeverityByHostId($host_id);
-        $severity = Severity::getInstance()->getHostSeverityById($this->hosts[$host_id]['severity_id']);
+
+        $this->hosts[$host_id]['severity_id'] = Severity::getInstance($this->dependencyInjector)->getHostSeverityByHostId($host_id);
+        $severity = Severity::getInstance($this->dependencyInjector)->getHostSeverityById($this->hosts[$host_id]['severity_id']);
         if (!is_null($severity)) {
             $this->hosts[$host_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->hosts[$host_id]['macros']['_CRITICALITY_ID'] = $severity['hc_id'];
         }
     }
-    
-    public function generateFromHostId($host_id) {
+
+    public function generateFromHostId($host_id)
+    {
         if (is_null($this->hosts)) {
             $this->getHosts();
         }
-        
+
         if (!isset($this->hosts[$host_id])) {
             return null;
         }
         if ($this->checkGenerate($host_id)) {
             return $this->hosts[$host_id]['name'];
         }
-        
-        $oTimezone = Timezone::getInstance();
+
+        $oTimezone = Timezone::getInstance($this->dependencyInjector);
         $sTimezone = $oTimezone->getTimezoneFromId($this->hosts[$host_id]['host_location']);
         if (!is_null($sTimezone)) {
-            $this->hosts[$host_id]['timezone'] = ":". $sTimezone;
+            $this->hosts[$host_id]['timezone'] = ":" . $sTimezone;
         }
 
         # Avoid infinite loop!
@@ -175,7 +177,7 @@ class HostTemplate extends AbstractHost {
             return $this->hosts[$host_id]['name'];
         }
         $this->loop_htpl[$host_id] = 1;
-        
+
         $this->hosts[$host_id]['host_id'] = $host_id;
         $this->getImages($this->hosts[$host_id]);
         $this->getMacros($this->hosts[$host_id]);
@@ -185,12 +187,13 @@ class HostTemplate extends AbstractHost {
         $this->getContactGroups($this->hosts[$host_id]);
         $this->getContacts($this->hosts[$host_id]);
         $this->getSeverity($host_id);
-        
+
         $this->generateObjectInFile($this->hosts[$host_id], $host_id);
         return $this->hosts[$host_id]['name'];
     }
-    
-    public function reset() {
+
+    public function reset()
+    {
         $this->loop_htpl = array();
         parent::reset();
     }

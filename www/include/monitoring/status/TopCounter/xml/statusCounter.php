@@ -38,6 +38,7 @@ ini_set("display_errors", "Off");
 $debug = 0;
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 require_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
@@ -57,7 +58,7 @@ $centreonLang->bindLang();
 /*
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, $debug, 1, 0);
+$obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, $debug, 1, 0);
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     $obj->reloadSession();
@@ -65,6 +66,21 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
     print "Bad Session ID";
     exit();
 }
+
+/* *********************************************
+* Get active poller only
+*/
+$pollerList = "";
+$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
+$DBRESULT = $obj->DB->query($request);
+while ($d = $DBRESULT->fetchRow()) {
+    if ($pollerList != "") {
+        $pollerList .= ", ";
+    }
+    $pollerList .= "'".$d["name"]."'";
+}
+
+$DBRESULT->free();
 
 /* *********************************************
  * Get Host stats
@@ -105,7 +121,7 @@ if (!$obj->is_admin) {
             " AND hosts.host_id = services.host_id".
             " AND hosts.enabled = 1 " .
             " AND services.enabled = 1 " .
-            " AND hosts.name NOT LIKE '_Module_%' ".
+            " AND (hosts.name NOT LIKE '_Module_%' OR hosts.name LIKE '_Module_meta%')".
             " GROUP BY services.state";
 } else {
     $rq2 =  " SELECT count(services.state) AS number, services.state" .
@@ -115,7 +131,7 @@ if (!$obj->is_admin) {
             " AND services.enabled = 1 " .
             " AND instances.instance_id = hosts.instance_id ". 
             " AND hosts.host_id = services.host_id".
-            " AND hosts.name NOT LIKE '_Module_%' ".
+            " AND (hosts.name NOT LIKE '_Module_%' OR hosts.name LIKE '_Module_meta%') ".
             " GROUP BY services.state";
 }
 $serviceCounter = 0;
@@ -143,6 +159,7 @@ if (!$obj->is_admin) {
             "   AND h.state = '0' " .
             "   AND s.enabled = 1 " .
             "   AND h.enabled = 1 " .
+            "   AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_meta%') ".
             "   AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
             " GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
 } else {
@@ -155,6 +172,7 @@ if (!$obj->is_admin) {
             "	AND h.state = '0' " .
             "   AND s.enabled = 1 " .
             "   AND h.enabled = 1 " .
+            "   AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_meta%') ".
             " GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
 }
 $DBRESULT = $obj->DBC->query($rq3);
@@ -173,56 +191,56 @@ $activity = 0;
 $error = "";
 $pollerListInError = "";
 $pollersWithLatency = array();
-$pollerList = "";
 
 $timeUnit = 300;
 
-$pollerListInError = "";
-$inactivInstance = "";
-
-$request =  "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0";
-$DBRESULT = $obj->DBC->query($request);
 $inactivInstance = "";
 $pollerInError = "";
-while ($data = $DBRESULT->fetchRow()) {
-    /* Get Instance ID */
-    if ($pollerList != "") {
-        $pollerList .= ", ";
-    }
-    $pollerList .= "'".$data["instance_id"]."'";
 
-    /*
-	 * Running
-	 */
-    if ($status != 2 && ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 5))) {
-        $status = 1;
-        $pollerInError = $data["name"];
-    }
-    if ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 10)) {
-        $status = 2;
-        $pollerInError = $data["name"];
-    }
-    if ($pollerListInError != "" && $pollerInError != "") {
-        $pollerListInError .= ", ";
-    }
-    $pollerListInError .= $pollerInError;
-    $pollerInError = '';
-    
-    /*
-	 * Activity
-	 */
-    if ($activity != 2 && (time() - $data["last_update"] >= $timeUnit * 5)) {
-        $activity = 2;
-        if ($inactivInstance != "") {
-            $inactivInstance .= ",";
+if ($pollerList != "") {
+    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 
+                AND name IN ($pollerList)";
+    $DBRESULT = $obj->DBC->query($request);
+    while ($data = $DBRESULT->fetchRow()) {
+        /* Get Instance ID */
+        if ($pollerList != "") {
+            $pollerList .= ", ";
         }
-        $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 5)."s]";
-    } elseif ((time() - $data["last_update"] >= $timeUnit * 10)) {
-        $activity = 1;
-        if ($inactivInstance != "") {
-            $inactivInstance .= ",";
+        $pollerList .= "'".$data["instance_id"]."'";
+
+        /*
+         * Running
+         */
+        if ($status != 2 && ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 5))) {
+            $status = 1;
+            $pollerInError = $data["name"];
         }
-        $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 10)."s]";
+        if ($data["running"] == 0 || (time() - $data["last_update"] >= $timeUnit * 10)) {
+            $status = 2;
+            $pollerInError = $data["name"];
+        }
+        if ($pollerListInError != "" && $pollerInError != "") {
+            $pollerListInError .= ", ";
+        }
+        $pollerListInError .= $pollerInError;
+        $pollerInError = '';
+
+        /*
+         * Activity
+         */
+        if ($activity != 2 && (time() - $data["last_update"] >= $timeUnit * 5)) {
+            $activity = 2;
+            if ($inactivInstance != "") {
+                $inactivInstance .= ",";
+            }
+            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 5)."s]";
+        } elseif ((time() - $data["last_update"] >= $timeUnit * 10)) {
+            $activity = 1;
+            if ($inactivInstance != "") {
+                $inactivInstance .= ",";
+            }
+            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 10)."s]";
+        }
     }
 }
 $DBRESULT->free();

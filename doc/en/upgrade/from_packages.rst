@@ -12,6 +12,7 @@ It comes in two operating system flavors, either CentOS 6 or CentOS 7.
    please first uninstall the module (from the web) in order to avoid upgrade problem.
    Centreon KB is now embedded into Centreon since the version 2.8.0.
 
+
 Prerequisites
 =============
 
@@ -65,8 +66,9 @@ CentOS 6
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
 
 
 CentOS 7
@@ -74,8 +76,9 @@ CentOS 7
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
 
 
 Core components upgrade

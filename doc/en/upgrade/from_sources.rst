@@ -222,13 +222,12 @@ The path to broker daemon init script.
 
 For example :
 
-* Centreon Broker : */etc/init.d/cbd*
-* ndo2db : */etc/init.d/ndo2db*
+* Centreon Broker : *cbd*
 
 ::
 
   Where is the init script for broker module daemon ?
-  > /etc/init.d/ndo2db
+  > cbd
   Your sudo has been configured previously
 
 Replace or not your sudoers file.

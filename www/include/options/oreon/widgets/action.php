@@ -34,6 +34,7 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/bootstrap.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
@@ -41,6 +42,14 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
 
 session_start();
+
+require_once realpath(dirname(__FILE__) . "/../../../../../bootstrap.php");
+
+$factoryUtils = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+$utils = $factoryUtils->newUtils();
+
+$factory = new \CentreonLegacy\Core\Widget\Factory($dependencyInjector, $utils);
+$widgetInfoObj = $factory->newInformation();
 
 $xml = new CentreonXML();
 $xml->startElement('response');
@@ -57,13 +66,16 @@ try {
     $widgetObj = new CentreonWidget($centreon, $db);
     switch ($action) {
         case 'install':
-            $widgetObj->install(_CENTREON_PATH_."www/widgets/", $directory);
+            $widgetInstaller = $factory->newInstaller($directory);
+            $widgetInstaller->install();
             break;
         case 'uninstall':
-            $widgetObj->uninstall($directory);
+            $widgetRemover = $factory->newRemover($directory);
+            $widgetRemover->remove();
             break;
         case 'upgrade':
-            $widgetObj->upgrade(_CENTREON_PATH_."www/widgets/", $directory);
+            $widgetUpgrader = $factory->newUpgrader($directory);
+            $widgetUpgrader->upgrade();
             break;
         default:
             throw new Exception('Unknown action');

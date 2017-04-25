@@ -34,6 +34,7 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
@@ -43,7 +44,7 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
  * Create XML Request Objects
  */
 CentreonSession::start();
-$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+$obj = new CentreonXMLBGRequest($dependencyInjector,session_id(), 1, 1, 0, 1);
 
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {

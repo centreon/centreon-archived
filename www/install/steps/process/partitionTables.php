@@ -34,6 +34,7 @@
  */
 
 session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../functions.php';
 require_once '../../../../config/centreon.config.php';
 require_once '../../../class/centreonDB.class.php';
@@ -41,14 +42,22 @@ require_once '../../../class/centreon-partition/partEngine.class.php';
 require_once '../../../class/centreon-partition/config.class.php';
 require_once '../../../class/centreon-partition/mysqlTable.class.php';
 require_once '../../../class/centreon-partition/options.class.php';
-define('PROCESS_ID', 'dbpartitioning');
+
+$return = array(
+    'id' => 'dbpartitioning',
+    'result' => 1,
+    'msg' => ''
+);
 
 /* Create partitioned tables */
 $database = new CentreonDB('centstorage', 3, false);
 $partEngine = new PartEngine();
 
 if (!$partEngine->isCompatible($database)) {
-    exitProcess(PROCESS_ID, 1, "[".date(DATE_RFC822)."] CRITICAL: MySQL server is not compatible with partitionning. MySQL version must be greater or equal to 5.1\n");
+    $return['msg'] = "[" . date(DATE_RFC822) . "] " .
+        "CRITICAL: MySQL server is not compatible with partitionning. MySQL version must be greater or equal to 5.1\n";
+    echo json_encode($return);
+    exit;
 }
 
 $tables = array(
@@ -60,12 +69,19 @@ $tables = array(
 
 try {
     foreach ($tables as $table) {
-        $config = new Config($database, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml');
+        $config = new Config(
+            $database, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml'
+        );
         $mysqlTable = $config->getTable($table);
         $partEngine->createParts($mysqlTable, $database);
     }
 } catch (\Exception $e) {
-    exitProcess(PROCESS_ID, 1, $e->getMessage());
+    $return['msg'] = $e->getMessage();
+    echo json_encode($return);
+    exit;
 }
 
-exitProcess(PROCESS_ID, 0, "OK");
+
+$return['result'] = 0;
+echo json_encode($return);
+exit;

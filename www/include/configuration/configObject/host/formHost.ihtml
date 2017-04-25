@@ -45,21 +45,15 @@
 		        <td class="FormRowField"><img class="helpTooltip" name="snmp_options"> {$form.host_snmp_community.label} & {$form.host_snmp_version.label}</td>
 		        <td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td>
 		    </tr>
-			{if $o == "mc" && $form.nagios_server_id.label}
-			<tr class="list_one">
-				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_nsid.label}</td>
-				<td class="FormRowValue">{$form.mc_mod_nsid.html}</td>
-			</tr>
-			{/if}
             {if $form.nagios_server_id.label}
 			<tr class="list_one">
 			    <td class="FormRowField"><img class="helpTooltip" name="poller"> {$form.nagios_server_id.label}</td>
-			    <td class="FormRowValue">{$form.nagios_server_id.html}</td>
+			    <td class="FormRowValue">{$form.nagios_server_id.html} {if $o == "mc"} | {$form.mc_mod_nsid.html}{/if}</td>
 			</tr>
             {/if}
 			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="host_location"> {$form.host_location.label}</td>
-				<td class="FormRowValue">{$form.host_location.html} </td>
+				<td class="FormRowValue">{$form.host_location.html}</td>
 			</tr>
 			{if $o == "mc"}
 			<tr class="list_two">	
@@ -69,7 +63,7 @@
 			{/if}
 			<tr class="list_one">
 				<td class="FormRowField"><img class="helpTooltip" name="use"> {$form.host_parallel_template.label}<p class="description">{$form.tplTextParallel.label}<p></td>
-				<td class="FormRowValue" id="parallelTemplate">{include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}</td>
+				<td class="FormRowValue" id="parallelTemplate">{include file="file:$centreon_path/www/include/common/templates/cloneHost.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}</td>
 			</tr>
             {if $form.dupSvTplAssocText.label}
 			<tr class="list_two">
@@ -398,17 +392,16 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="action_url"> {$form.ehi_action_url.label}</td><td class="FormRowValue">{$form.ehi_action_url.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}&nbsp;&nbsp;<img id='ehi_icon_image_img' src='./img/blank.gif'></td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="icon_image_alt"> {$form.ehi_icon_image_alt.label}</td><td class="FormRowValue">{$form.ehi_icon_image_alt.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="vrml_image"> {$form.ehi_vrml_image.label}</td><td class="FormRowValue">{$form.ehi_vrml_image.html}&nbsp;&nbsp;<img id='ehi_vrml_image_img' src='./img/blank.gif'></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
 		{if $form.geo_coords.label}
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
-		{else}
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
+		{else}
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
 		{/if}
 		<tr class="list_lvl_1">
 		  <td class="ListColLvl1_name" colspan="2">

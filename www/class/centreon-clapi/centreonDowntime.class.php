@@ -70,7 +70,7 @@ class CentreonDowntime extends CentreonObject
     
     /**
      *
-     * @var array 
+     * @var array
      */
     protected $availableCycles;
 
@@ -119,7 +119,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Display all Host Groups
      *
-     * @param string $parameters
+     * @param  string $parameters
      * @return void
      */
     public function show($parameters = null)
@@ -145,7 +145,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add action
      *
-     * @param string $parameters
+     * @param  string $parameters
      * @return void
      * @throws CentreonClapiException
      */
@@ -166,7 +166,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Set params
      *
-     * @param string $parameters
+     * @param  string $parameters
      * @return void
      * @throws CentreonClapiException
      */
@@ -190,7 +190,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * List periods
      *
-     * @param string $parameters | downtime name
+     * @param  string $parameters | downtime name
      * @throws CentreonClapiException
      */
     public function listperiods($parameters)
@@ -218,7 +218,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add weekly period
      *
-     * @param string $parameters | downtime_name;start;end;fixed;duration;monday...sunday
+     * @param  string $parameters | downtime_name;start;end;fixed;duration;monday...sunday
      * @throws CentreonClapiException
      */
     public function addweeklyperiod($parameters)
@@ -277,7 +277,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add specific period
      *
-     * @param string $parameters | downtime_name;start;end;fixed;duration;monday...sunday;first,last
+     * @param  string $parameters | downtime_name;start;end;fixed;duration;monday...sunday;first,last
      * @throws CentreonClapiException
      */
     public function addspecificperiod($parameters)
@@ -319,7 +319,7 @@ class CentreonDowntime extends CentreonObject
     /**
      * Delete period from downtime
      *
-     * @param string $parameters | downtime_name;position to delete
+     * @param  string $parameters | downtime_name;position to delete
      * @throws CentreonClapiException
      */
     public function delperiod($parameters)
@@ -677,7 +677,6 @@ class CentreonDowntime extends CentreonObject
 
     /**
      * Export
-     *
      */
     public function export()
     {
@@ -800,7 +799,7 @@ class CentreonDowntime extends CentreonObject
     /**
      *
      * @param string $actionType | addhost, addhostgroup, addservice or addservicegroup
-     * @param string $sql | query
+     * @param string $sql        | query
      */
     protected function exportGenericRel($actionType, $sql)
     {
@@ -872,8 +871,8 @@ class CentreonDowntime extends CentreonObject
     /**
      * Get preiods from downtime id
      *
-     * @param int $downtimeId
-     * @param int $position
+     * @param  int $downtimeId
+     * @param  int $position
      * @return array
      */
     protected function getPeriods($downtimeId, $position = null)
@@ -902,10 +901,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add resource to downtime
      *
-     * @param string $parameters | downtime name; resource names separated by "|" character
+     * @param string          $parameters | downtime name; resource names separated by "|" character
      * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param string          $relTable
+     * @param string          $relField
      */
     protected function addGenericRelation($parameters, $object, $relTable, $relField)
     {
@@ -948,10 +947,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Delete resource from downtime
      *
-     * @param string $parameters | downtime name; resource name separated by "|" character
+     * @param string          $parameters | downtime name; resource name separated by "|" character
      * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param string          $relTable
+     * @param string          $relField
      */
     protected function delGenericRelation($parameters, $object, $relTable, $relField)
     {
@@ -978,10 +977,12 @@ class CentreonDowntime extends CentreonObject
             $sql = "SELECT * FROM {$relTable} WHERE dt_id = ? AND {$relField} = ?";
             $stmt = $this->db->query($sql, array($downtimeId, $ids[0]));
             if (!$stmt->rowCount()) {
-                throw new CentreonClapiException(sprintf(
-                    'Cannot remove relationship with %s as the relationship does not exist',
-                    $resource
-                ));
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Cannot remove relationship with %s as the relationship does not exist',
+                        $resource
+                    )
+                );
             }
 
             $objectIds[] = $ids[0];

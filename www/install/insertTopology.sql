@@ -183,6 +183,9 @@ INSERT INTO `topology` (`topology_id` ,`topology_name` ,`topology_parent` ,`topo
 
 -- Add backup configuration page
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Backup',501,50165,90,1,'./include/Administration/parameters/parameters.php','&o=backup','0','0','1',NULL,NULL,NULL,'1');
+-- Chart split page
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart split',20401,2040101,1,1,'./include/views/graphs/graph-split.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart periods',20401,2040102,1,1,'./include/views/graphs/graph-periods.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
 
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;

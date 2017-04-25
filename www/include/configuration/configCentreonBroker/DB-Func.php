@@ -131,7 +131,8 @@ function getCentreonBrokerInformation($id)
             "name" => '',
             "filename" => '',
             "write_timestamp" => '1',
-            "write_thread_id" => "1",
+            "write_thread_id" => '1',
+            "activate_watchdog" => '1',
             "activate" => '1',
             "event_queue_max_size" => ''
         );
@@ -143,6 +144,7 @@ function getCentreonBrokerInformation($id)
         "filename" => $row['config_filename'],
         "ns_nagios_server" => $row['ns_nagios_server'],
         "activate" => $row['config_activate'],
+        "activate_watchdog" => $row['daemon'],
         "stats_activate" => $row['stats_activate'],
         "write_timestamp" => $row['config_write_timestamp'],
         "write_thread_id" => $row['config_write_thread_id'],
@@ -177,6 +179,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
 
         # Prepare values
         $values = array();
+        $values['activate_watchdog']['activate_watchdog'] = '0';
         $values['activate']['activate'] = '0';
         $values['ns_nagios_server'] = $row['ns_nagios_server'];
         $values['event_queue_max_size'] = $row['event_queue_max_size'];

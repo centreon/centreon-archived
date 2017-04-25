@@ -51,7 +51,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'@CENTREON_VARLIB@/metrics/','@CENTREON_VARLIB@/status/','@CENTREON_VARLIB@/nagios-perf/',180,365,'1',10,360,2,NULL,'1',31,365,'@MONITORING_VAR_LOG@/centengine.log.log',0,'1', 0, 0);
+INSERT INTO `config` VALUES (1,'@CENTREON_VARLIB@/metrics/','@CENTREON_VARLIB@/status/','@CENTREON_VARLIB@/nagios-perf/',180,365,'1',10,360,2,NULL,'1',31,365,'@monitoring_varlog@/centengine.log.log',0,'1', 0, 0);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

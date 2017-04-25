@@ -23,14 +23,16 @@ For CentOS 6.
 
 ::
 
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
 
 
 For CentOS 7.
 
 ::
 
-   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
 
 
 The repository is now installed.
@@ -137,6 +139,8 @@ SELinux should be disabled; for this, you have to modify the file "/etc/sysconfi
 
     SELINUX=disabled
 
+After saving the file, please reboot your operating system to apply the changes.
+
 PHP timezone
 ^^^^^^^^^^^^
 
@@ -151,7 +155,7 @@ After saving the file, please don't forget to restart apache server.
 Firewall
 ^^^^^^^^
 
-Add firewall rules or disable it. To disable it execute folowwing commands:
+Add firewall rules or disable it. To disable it execute following commands:
 
 * **iptables** (CentOS v6) ::
 

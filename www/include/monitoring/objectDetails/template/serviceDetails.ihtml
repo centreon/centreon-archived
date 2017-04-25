@@ -123,7 +123,7 @@
                                     </button>
                                 </td>
                                 <td class="ListColLeft ColPopup">
-                                    <pre id='command_line' style="max-width: 900px; overflow-x: auto">{$service_data.command_line}</pre>
+                                    <pre id='command_line' style="overflow-x: auto">{$service_data.command_line}</pre>
                                 </td>
                             </tr>
                             {/if}
@@ -162,7 +162,7 @@
                             <tr class='list_lvl_1'>
                               <td class="FormHeader" colspan="2">
                                 <h4>
-                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
+                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$url_svc_id}">
                                     <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
                                   </a>
                                 </h4>

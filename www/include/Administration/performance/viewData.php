@@ -64,13 +64,46 @@ require_once("./include/common/common-Func.php");
 require_once("./class/centreonDB.class.php");
 
 include("./include/common/autoNumLimit.php");
+
 /*
  * Prepare search engine
  */
-if (isset($_POST["search"])) {
-    $searchH = $_POST["searchH"];
-    $num = $_GET['num'] = 0;
-    $_POST["search"] = $_POST["searchH"];
+$inputArguments = array(
+    'search' => FILTER_SANITIZE_STRING,
+    'searchH' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_STRING,
+    'searchS' => FILTER_SANITIZE_STRING,
+    'search' => FILTER_SANITIZE_STRING,
+    'searchP' => FILTER_SANITIZE_STRING,
+    'o' => FILTER_SANITIZE_STRING,
+    'o1' => FILTER_SANITIZE_STRING,
+    'o2' => FILTER_SANITIZE_STRING,
+    'select' => FILTER_SANITIZE_STRING,
+    'id' => FILTER_SANITIZE_STRING
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
+$inputs = array();
+foreach ($inputArguments as $argumentName => $argumentValue) {
+    if (!is_null($inputGet[$argumentName])) {
+        $inputs[$argumentName] = $inputGet[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputPost[$argumentName];
+    }
+}
+
+
+if (isset($inputs["search"])) {
+    $searchH = $inputs["searchH"];
+    $num = $inputs['num'] = 0;
+    $inputs["search"] = $inputs["searchH"];
     $oreon->historySearch[$url] = $search;
 } elseif (isset($oreon->historySearch[$url])) {
     $searchH = $oreon->historySearch[$url];
@@ -78,9 +111,9 @@ if (isset($_POST["search"])) {
     $searchH = null;
 }
 
-if (isset($_POST["searchS"])) {
-    $searchS = $_POST["searchS"];
-    $num = $_GET['num'] = 0;
+if (isset($inputs["searchS"])) {
+    $searchS = $inputs["searchS"];
+    $num = $inputs['num'] = 0;
     $oreon->historySearchService[$url] = $searchS;
 } elseif (isset($oreon->historySearchService[$url])) {
     $searchS = $oreon->historySearchService[$url];
@@ -89,9 +122,9 @@ if (isset($_POST["searchS"])) {
 }
 
 /* Search for poller */
-if (isset($_POST['searchP']) && is_numeric($_POST['searchP'])) {
-    $searchP = $_POST['searchP'];
-    $num = $_GET['num'] = 0;
+if (isset($inputs['searchP']) && is_numeric($inputs['searchP'])) {
+    $searchP = $inputs['searchP'];
+    $num = $inputs['num'] = 0;
 } else {
     $searchP = null;
 }
@@ -99,20 +132,20 @@ if (isset($_POST['searchP']) && is_numeric($_POST['searchP'])) {
 /* Get broker type */
 $brk = new CentreonBroker($pearDB);
 
-if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])) {
-    if ($_POST["o"] == "rg" && isset($_POST["select"])) {
-        $selected = $_POST["select"];
+if ((isset($inputs["o1"]) && $inputs["o1"]) || (isset($inputs["o2"]) && $inputs["o2"])) {
+    if ($inputs["o"] == "rg" && isset($inputs["select"])) {
+        $selected = $inputs["select"];
         foreach ($selected as $key => $value) {
             $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
         }
         $brk->reload();
-    } elseif ($_POST["o"] == "nrg" && isset($_POST["select"])) {
-        $selected = $_POST["select"];
+    } elseif ($inputs["o"] == "nrg" && isset($inputs["select"])) {
+        $selected = $inputs["select"];
         foreach ($selected as $key => $value) {
             $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
         }
-    } elseif ($_POST["o"] == "ed" && isset($_POST["select"])) {
-        $selected = $_POST["select"];
+    } elseif ($inputs["o"] == "ed" && isset($inputs["select"])) {
+        $selected = $inputs["select"];
         $listMetricsToDelete = array();
         foreach ($selected as $key => $value) {
             $DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = '".$key."'");
@@ -127,35 +160,35 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
             $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
             $brk->reload();
         }
-    } elseif ($_POST["o"] == "hg" && isset($_POST["select"])) {
-        $selected = $_POST["select"];
+    } elseif ($inputs["o"] == "hg" && isset($inputs["select"])) {
+        $selected = $inputs["select"];
         foreach ($selected as $key => $value) {
             $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
         }
-    } elseif ($_POST["o"] == "nhg" && isset($_POST["select"])) {
-        $selected = $_POST["select"];
+    } elseif ($inputs["o"] == "nhg" && isset($inputs["select"])) {
+        $selected = $inputs["select"];
         foreach ($selected as $key => $value) {
             $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
         }
-    } elseif ($_POST["o"] == "lk" && isset($_POST["select"])) {
-        $selected = $_POST["select"];
+    } elseif ($inputs["o"] == "lk" && isset($inputs["select"])) {
+        $selected = $inputs["select"];
         foreach ($selected as $key => $value) {
             $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
         }
-    } elseif ($_POST["o"] == "nlk" && isset($_POST["select"])) {
-        $selected = $_POST["select"];
+    } elseif ($inputs["o"] == "nlk" && isset($inputs["select"])) {
+        $selected = $inputs["select"];
         foreach ($selected as $key => $value) {
             $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
         }
     }
 }
 
-if (isset($_POST["o"]) && $_POST["o"] == "d" && isset($_POST["id"])) {
-    $DBRESULT = $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
+if (isset($inputs["o"]) && $inputs["o"] == "d" && isset($inputs["id"])) {
+    $DBRESULT = $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".htmlentities($inputs["id"], ENT_QUOTES, 'UTF-8')."'");
 }
 
-if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])) {
-    $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
+if (isset($inputs["o"]) && $inputs["o"] == "rb" && isset($inputs["id"])) {
+    $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($inputs["id"], ENT_QUOTES, 'UTF-8')."'");
 }
 
 $search_string = "";

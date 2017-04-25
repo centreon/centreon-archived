@@ -9,6 +9,10 @@ default:
   gherkin:
     cache: ~
   suites:
+    configuration_warnings:
+      paths: [ %paths.base%/features/ConfigurationWarnings.feature ]
+      contexts:
+        - ConfigurationWarningsContext
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
       contexts:
@@ -140,3 +144,17 @@ default:
       contexts:
       - CustomViewsContext
 
+    host_template_configuration:
+      paths: [ %paths.base%/features/HostTemplateConfiguration.feature ]
+      contexts:
+      - HostTemplateConfigurationContext
+
+    module:
+      paths: [ %paths.base%/features/Module.feature ]
+      contexts:
+      - ModuleContext
+
+    widget:
+      paths: [ %paths.base%/features/Widget.feature ]
+      contexts:
+      - WidgetContext

@@ -7,13 +7,9 @@
     <mkdir dir="${builddir}/coverage"/>
   </target>
 
-  <!--
   <target name="unittest" depends="prepare">
     <coverage-setup database="${builddir}/coverage.db">
-      <fileset dir="www/modules/centreon-pp-manager/core">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="www/modules/centreon-pp-manager/webServices">
+      <fileset dir="src">
         <include name="**/*.php"/>
       </fileset>
     </coverage-setup>
@@ -22,13 +18,12 @@
       <formatter type="xml" outfile="${builddir}/phpunit.xml"/>
       <formatter type="clover" outfile="${builddir}/coverage.xml"/>
       <batchtest>
-        <fileset dir="tests/php/class/">
-          <include name="**/*Test.php" />
+        <fileset dir="tests/php/">
+          <include name="**/**/**/*Test.php" />
         </fileset>
       </batchtest>
     </phpunit>
   </target>
-  -->
 
   <target name="codestyle" depends="prepare">
     <phpcodesniffer standard="PSR2">

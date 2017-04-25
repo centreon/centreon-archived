@@ -76,76 +76,15 @@ if (!$centreon->user->admin) {
     }
 }
 
-/* notification contacts */
-$notifCs = $acl->getContactAclConf(array(
-    'fields' => array('contact_id', 'contact_name'),
-    'get_row' => 'contact_name',
-    'keys' => array('contact_id'),
-    'conditions' => array('contact_register' => '1'),
-    'order' => array('contact_name')
-));
-
-/* notification contact groups */
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-if ($centreon->user->admin) {
-    $notifCgs = $cg->getListContactgroup(true);
-} else {
-    $cgAcl = $acl->getContactGroupAclConf(array(
-        'fields' => array('cg_id', 'cg_name'),
-        'get_row' => 'cg_name',
-        'keys' => array('cg_id'),
-        'order' => array('cg_name')
-    ));
-    $cgLdap = $cg->getListContactgroup(true, true);
-    $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-}
-
-/* hosts */
-$hosts = $acl->getHostAclConf(null, 'broker', array(
-    'fields' => array('host.host_id', 'host.host_name'),
-    'keys' => array('host_id'),
-    'get_row' => 'host_name',
-    'order' => array('host_name')
-));
-
-/* hostgroups */
-$hgs = $acl->getHostGroupAclConf(null, 'broker', array(
-    'fields' => array('hg_id', 'hg_name'),
-    'keys' => array('hg_id'),
-    'get_row' => 'hg_name',
-    'order' => array('hg_name')
-));
-
-/* service groups */
-$sgs = $acl->getServiceGroupAclConf(null, 'broker', array(
-    'fields' => array('servicegroup.sg_id', 'servicegroup.sg_name'),
-    'keys' => array('sg_id'),
-    'get_row' => 'sg_name',
-    'order' => array('sg_name')
-));
-
-/* service categories */
-$service_categories = array();
-$scstring = $acl->getServiceCategoriesString();
-$rescat = $pearDB->query("SELECT sc_name, sc_id
-                              FROM service_categories " .
-    "WHERE level IS NULL " .
-    ($scstring != "''" ? $acl->queryBuilder('AND', 'sc_id', $acl->getServiceCategoriesString()) : "") .
-    " ORDER BY sc_name");
-while ($scat = $rescat->fetchRow()) {
-    $service_categories[$scat['sc_id']] = $scat['sc_name'];
-}
-
 $cmdId = 0;
 $service = array();
 $serviceTplId = null;
 $initialValues = array();
 if (($o == "c" || $o == "w") && $service_id) {
-    $DBRESULT = $pearDB->query("SELECT * 
-                                FROM service 
-                                LEFT JOIN extended_service_information esi 
-                                ON esi.service_service_id = service_id 
+    $DBRESULT = $pearDB->query("SELECT *
+                                FROM service
+                                LEFT JOIN extended_service_information esi
+                                ON esi.service_service_id = service_id
                                 WHERE service_id = '" . $service_id . "' LIMIT 1");
     /*
      * Set base value
@@ -153,41 +92,6 @@ if (($o == "c" || $o == "w") && $service_id) {
     $service = array_map("myDecodeService", $DBRESULT->fetchRow());
     $serviceTplId = $service['service_template_model_stm_id'];
     $cmdId = $service['command_command_id'];
-
-    /*
-     * Grab hostgroup || host
-     */
-    $DBRESULT = $pearDB->query("SELECT host_host_id 
-                                FROM host_service_relation hsr, host 
-                                WHERE hsr.service_service_id = '" . $service_id . "' 
-                                AND host_host_id IS NOT NULL 
-                                AND host_id = host_host_id ORDER BY host_name, host_alias");
-    while ($parent = $DBRESULT->fetchRow()) {
-        if ($parent["host_host_id"]) {
-            if (!isset($hosts[$parent['host_host_id']])) {
-                $initialValues['service_hPars'][] = $parent['host_host_id'];
-            } else {
-                $service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
-            }
-        }
-    }
-    $DBRESULT->free();
-
-    $DBRESULT = $pearDB->query("SELECT hostgroup_hg_id 
-                                FROM host_service_relation hsr, hostgroup 
-                                WHERE hsr.service_service_id = '" . $service_id . "' 
-                                AND hostgroup_hg_id IS NOT NULL 
-                                AND hostgroup_hg_id = hg_id ORDER BY hg_name, hg_alias");
-    while ($parent = $DBRESULT->fetchRow()) {
-        if ($parent["hostgroup_hg_id"]) {
-            if (!isset($hgs[$parent['hostgroup_hg_id']])) {
-                $initialValues['service_hgPars'][] = $parent['hostgroup_hg_id'];
-            } else {
-                $service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
-            }
-        }
-    }
-    $DBRESULT->free();
 
     /*
      * Set Service Notification Options
@@ -204,81 +108,6 @@ if (($o == "c" || $o == "w") && $service_id) {
     foreach ($tmp as $key => $value) {
         $service["service_stalOpts"][trim($value)] = 1;
     }
-
-    /*
-     * Set Contact Group
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id 
-                                FROM contactgroup_service_relation 
-                                WHERE service_service_id = '" . $service_id . "'");
-    for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCgs[$notifCg['contactgroup_cg_id']])) {
-            $initialValues['service_cgs'][] = $notifCg["contactgroup_cg_id"];
-        } else {
-            $service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Contacts
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id 
-                                FROM contact_service_relation 
-                                WHERE service_service_id = '" . $service_id . "'");
-    for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCs[$notifC['contact_id']])) {
-            $initialValues['service_cs'][] = $notifC['contact_id'];
-        } else {
-            $service["service_cs"][$i] = $notifC["contact_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Service Group Parents
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id 
-                                FROM servicegroup_relation 
-                                WHERE service_service_id = '" . $service_id . "'");
-    for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($sgs[$sg['servicegroup_sg_id']])) {
-            $initialValues['service_sgs'][] = $sg['servicegroup_sg_id'];
-        } else {
-            $service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Traps
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT traps_id 
-                                FROM traps_service_relation 
-                                WHERE service_id = '" . $service_id . "'");
-    for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
-        $service["service_traps"][$i] = $trap["traps_id"];
-    }
-    $DBRESULT->free();
-
-    /*
-     * Set Categories
-     */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT sc_id 
-                                FROM service_categories_relation 
-                                WHERE service_service_id = '" . $service_id . "' 
-                                AND NOT EXISTS(SELECT sc_id
-                                                FROM service_categories sc
-                                                WHERE sc.sc_id = service_categories_relation.sc_id
-                                                AND sc.level IS NOT NULL)");
-    for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($service_categories[$service_category['sc_id']])) {
-            $initialValues['service_categories'][] = $service_category['sc_id'];
-        } else {
-            $service["service_categories"][$i] = $service_category["sc_id"];
-        }
-    }
-    $DBRESULT->free();
 
     /*
      * Set criticality
@@ -312,75 +141,6 @@ $cdata->addJsData('clone-values-macro', htmlspecialchars(
 ));
 
 $cdata->addJsData('clone-count-macro', count($aMacros));
-
-# Service Templates comes from DB -> Store in $svTpls Array
-$svTpls = array(null => null);
-$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id 
-                            FROM service 
-                            WHERE service_register = '0' 
-                            AND service_id != '" . $service_id . "' ORDER BY service_description");
-while ($svTpl = $DBRESULT->fetchRow()) {
-    if (!$svTpl["service_description"]) {
-        $svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"]) . "'";
-    } else {
-        $svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
-        $svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
-    }
-    $svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
-}
-$DBRESULT->free();
-
-# Timeperiods comes from DB -> Store in $tps Array
-$tps = array(null => null);
-$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($tp = $DBRESULT->fetchRow()) {
-    $tps[$tp["tp_id"]] = $tp["tp_name"];
-}
-$DBRESULT->free();
-
-# Check commands comes from DB -> Store in $checkCmds Array
-$checkCmds = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name 
-                            FROM command 
-                            WHERE command_type = '2' 
-                            ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-# Check commands comes from DB -> Store in $checkCmdEvent Array
-$checkCmdEvent = array(null => null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name 
-                            FROM command 
-                            WHERE command_type = '2' 
-                            OR command_type = '3' 
-                            ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-# Graphs Template comes from DB -> Store in $graphTpls Array
-$graphTpls = array(null => null);
-$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-while ($graphTpl = $DBRESULT->fetchRow()) {
-    $graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
-}
-$DBRESULT->free();
-
-# Traps definition comes from DB -> Store in $traps Array
-$traps = array();
-if (isset($service_id)) {
-    $DBRESULT = $pearDB->query("SELECT t.traps_id, t.traps_name 
-                                FROM traps t, traps_service_relation sr 
-                                WHERE t.traps_id = sr.traps_id 
-                                AND sr.service_id = '" . $service_id . "' ORDER BY t.traps_name");
-    while ($trap = $DBRESULT->fetchRow()) {
-        $traps[$trap["traps_id"]] = $trap["traps_name"];
-    }
-    $DBRESULT->free();
-}
 
 # IMG comes from DB -> Store in $extImg Array
 $extImg = array();

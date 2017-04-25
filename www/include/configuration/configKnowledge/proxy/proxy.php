@@ -36,51 +36,54 @@
  *
  */
 
-	ini_set("display_errors", "On");
-    $centreon_path = realpath(dirname(__FILE__) . '/../../../../../');
-	global $etc_centreon, $db_prefix;
 
-	require_once $centreon_path."/config/centreon.config.php";
+ini_set("display_errors", "On");
+$centreon_path = realpath(dirname(__FILE__) . '/../../../../../');
+global $etc_centreon, $db_prefix;
 
-	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "www/class/centreon-knowledge/".PATH_SEPARATOR . $centreon_path."www/");
+require_once $centreon_path . "/config/centreon.config.php";
 
-	require_once "DB.php";
-	require_once "include/common/common-Func.php";
-	require_once "class/centreonLog.class.php";
-	require_once "class/centreonDB.class.php";
-	require_once "class/centreon-knowledge/procedures.class.php";
-	require_once "class/centreon-knowledge/procedures_DB_Connector.class.php";
-	require_once "class/centreon-knowledge/procedures_Proxy.class.php";
+set_include_path(
+    get_include_path() .
+    PATH_SEPARATOR . $centreon_path . "www/class/centreon-knowledge/" .
+    PATH_SEPARATOR . $centreon_path . "www/"
+);
 
-	$modules_path = $centreon_path . "www/include/configuration/configKnowledge/";
-	require_once $modules_path . 'functions.php';
+require_once "DB.php";
+require_once "include/common/common-Func.php";
+require_once "class/centreonLog.class.php";
+require_once "class/centreonDB.class.php";
+require_once "class/centreon-knowledge/procedures.class.php";
+require_once "class/centreon-knowledge/procedures_DB_Connector.class.php";
+require_once "class/centreon-knowledge/procedures_Proxy.class.php";
 
-	/*
-	 * DB connexion
-	 */
-	$pearDB = new CentreonDB();
+$modules_path = $centreon_path . "www/include/configuration/configKnowledge/";
+require_once $modules_path . 'functions.php';
 
-	$conf = getWikiConfig($pearDB);
-	$WikiURL = $conf['kb_wiki_url'];
+/*
+ * DB connexion
+ */
+$pearDB = new CentreonDB();
 
-	/*
-	 * Check if user want host or service procedures
-	 */
- 	if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-            $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"], $_GET["service_description"]);
- 	} else if (isset($_GET["host_name"])) {
-            $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"]);
- 	}
+$conf = getWikiConfig($pearDB);
+$WikiURL = $conf['kb_wiki_url'];
 
- 	if ($proxy->url != "")
-            header ("Location: ".$proxy->url);
-	else
-        {
-            if (isset($_GET["host_name"]) && isset($_GET["service_description"]))
-                header ("Location: $WikiURL/?title=Service:".$_GET["host_name"]."_".$_GET["service_description"]);
-            else
-                header ("Location: $WikiURL/?title=Host:".$_GET["host_name"]);
-        }
-	exit();
+/*
+ * Check if user want host or service procedures
+ */
+if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
+    $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"], $_GET["service_description"]);
+} elseif (isset($_GET["host_name"])) {
+    $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"], null);
+}
 
-?>
+if ($proxy->url != "") {
+    header("Location: " . $proxy->url);
+} else {
+    if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
+        header("Location: $WikiURL/?title=Service_:_" . $_GET["host_name"] . "_/_" . $_GET["service_description"]);
+    } else {
+        header("Location: $WikiURL/?title=Host_:_" . $_GET["host_name"]);
+    }
+}
+exit();

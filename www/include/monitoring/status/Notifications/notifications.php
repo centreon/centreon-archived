@@ -34,6 +34,7 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
 require_once _CENTREON_PATH_."www/class/centreonXMLBGRequest.class.php";
 
 CentreonSession::start();
@@ -45,12 +46,8 @@ if (!isset($sid) || !isset($_GET['refresh_rate'])) {
 $refresh_rate = (int)$_GET['refresh_rate'] / 1000;
 $refresh_rate += ($refresh_rate / 2);
 
-$obj = new CentreonXMLBGRequest($sid, 1, 1, 0, 1);
+$obj = new CentreonXMLBGRequest($dependencyInjector, $sid, 1, 1, 0, 1);
 
-
-if (!isset($_SESSION['centreon'])) {
-    exit;
-}
 $centreon = $_SESSION['centreon'];
 if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     exit;
@@ -165,5 +162,6 @@ while ($row = $res->fetchRow()) {
     $obj->XML->endElement();
 }
 $obj->XML->endElement();
+
 $obj->header();
 $obj->XML->output();

@@ -35,6 +35,8 @@
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonHook.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonDBInstance.class.php';
+
 
 /**
  *  Class that contains various methods for managing services
@@ -68,11 +70,14 @@ class CentreonService
     {
         $this->db = $db;
         if (is_null($dbMon)) {
-            $this->dbMon = new CentreonDB('centstorage');
+            $this->dbMon = \CentreonDBInstance::getMonInstance();
         } else {
             $this->dbMon = $dbMon;
         }
+
         $this->instanceObj = new CentreonInstance($db);
+
+
     }
 
     /**

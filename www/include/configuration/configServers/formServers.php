@@ -159,6 +159,7 @@ $cloneSetCmd[] = $form->addElement(
 $form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
 $form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
+$form->addElement('text', 'centreonbroker_logs_path', _("Centreon Broker logs"), $attrsText2);
 
 /*
  * Centreon Connector
@@ -183,25 +184,28 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
         "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"
     );
 
-    $form->setDefaults(array(
-        "name" => '',
-        "localhost" => '0',
-        "ns_ip_address" => "127.0.0.1",
-        "description" => "",
-        "nagios_bin" => $monitoring_engines["nagios_bin"],
-        "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
-        "monitoring_engine" => $centreon->optGen["monitoring_engine"],
-        "init_script" => $monitoring_engines["init_script"],
-        "ns_activate" => '1',
-        "is_default" => '0',
-        "ssh_port" => '22',
-        "ssh_private_key" => '~/.ssh/rsa.id',
-        "nagios_perfdata" => $monitoring_engines["nagios_perfdata"],
-        "centreonbroker_cfg_path" => "/etc/centreon-broker",
-        "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
-        "init_script_centreontrapd" => "centreontrapd",
-        "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
-    ));
+    $form->setDefaults(
+        array(
+            "name" => '',
+            "localhost" => '0',
+            "ns_ip_address" => "127.0.0.1",
+            "description" => "",
+            "nagios_bin" => $monitoring_engines["nagios_bin"],
+            "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
+            "monitoring_engine"  => $centreon->optGen["monitoring_engine"],
+            "init_script" => $monitoring_engines["init_script"],
+            "ns_activate" => '1',
+            "is_default"  =>  '0',
+            "ssh_port"  =>  '22',
+            "ssh_private_key"  =>  '~/.ssh/rsa.id',
+            "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
+            "centreonbroker_cfg_path" => "/etc/centreon-broker",
+            "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
+            "centreonbroker_logs_path" => "/var/log/centreon-broker/watchdog.log",
+            "init_script_centreontrapd" => "centreontrapd",
+            "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
+        )
+    );
 } else {
     if (isset($cfg_server)) {
         $form->setDefaults($cfg_server);

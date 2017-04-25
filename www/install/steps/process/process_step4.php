@@ -34,36 +34,34 @@
  */
 
 session_start();
-require_once '../functions.php';
+require_once __DIR__ . '/../../../../bootstrap.php';
 
-$lines = getParamLines('../../var/brokers', $_POST['BROKER_MODULE']);
-$isRequired = array();
-$type = array();
-foreach ($lines as $line) {
-    if ($line) {
-        if ($line[0] == '#') {
-            continue;
+$step = new \CentreonLegacy\Core\Install\Step\Step4($dependencyInjector);
+$parametersConfiguration = $step->getBrokerParameters();
+
+$err = array(
+    'required' => array(),
+    'directory_not_found' => array(),
+    'file_not_found' => array()
+);
+
+$parameters = filter_input_array(INPUT_POST);
+foreach ($parameters as $name => $value) {
+    if (trim($value) == '' && $parametersConfiguration[$name]['required'] == 1) {
+        $err['required'][] = $name;
+    } elseif (trim($value) != '' && $parametersConfiguration[$name]['type'] == 0) { // is directory
+        if (!is_dir($value)) {
+            $err['directory_not_found'][] = $name;
         }
-        list($key, $label, $required, $paramType, $default) = explode(';', $line);
-        $isRequired[$key] = $required;
-        $type[$key] = $paramType;
-    }
-}
-$err = "";
-foreach ($_POST as $k => $v) {
-    if ($_POST[$k] == '' && isset($isRequired[$k]) && $isRequired[$k]) {
-        $err .= 'jQuery("input[name='.$k.']").next().html("Parameter is required");';
-    } elseif ($_POST[$k] && isset($type[$k]) && $type[$k] == 0) { // is directory
-        if (!is_dir($_POST[$k])) {
-            $err .= 'jQuery("input[name='.$k.']").next().html("Directory not found");';
-        }
-    } elseif ($_POST[$k] && isset($type[$k]) && $type[$k] == 1) { // is file
-        if (!is_file($_POST[$k])) {
-            $err .= 'jQuery("input[name='.$k.']").next().html("File not found");';
+    } elseif (trim($value) != '' && $parametersConfiguration[$name]['type'] == 1) { // is file
+        if (!is_file($value)) {
+            $err['file_not_found'][] = $name;
         }
     }
-    $_SESSION[$k] = rtrim($v, "/");
 }
-if ($err) {
-    echo $err;
+
+if (!count($err['file_not_found']) && !count($err['file_not_found']) && !count($err['file_not_found'])) {
+    $step->setBrokerConfiguration($parameters);
 }
+
+echo json_encode($err);

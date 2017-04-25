@@ -34,28 +34,37 @@
  */
 
 session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../functions.php';
-define('PROCESS_ID', 'dbconf');
 
-// because some monitoring engines don't seem to have /var/lib dir
-if (isset($_SESSION['MONITORING_VAR_LOG']) && !isset($_SESSION['MONITORING_VAR_LIB'])) {
-    $_SESSION['MONITORING_VAR_LIB'] = $_SESSION['MONITORING_VAR_LOG'];
-}
+$return = array(
+    'id' => 'dbconf',
+    'result' => 1,
+    'msg' => ''
+);
+
+$step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
+$parameters = $step->getDatabaseConfiguration();
 
 try {
-    $link = myConnect();
+    $link = new \PDO(
+        'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
+        'root',
+        $parameters['root_password']
+    );
 } catch (\PDOException $e) {
-    exitProcess(PROCESS_ID, 1, $e->getMessage());
-}
-
-if (!isset($_SESSION['CONFIGURATION_DB'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find configuration database. Session probably expired.'));
+    $return['msg'] = $e->getMessage();
+    echo json_encode($return);
+    exit;
 }
 
 /* Check if MySQL innodb_file_perf_table is enabled */
 $innodb_file_per_table = getDatabaseVariable($link, 'innodb_file_per_table');
 if (is_null($innodb_file_per_table) || strtolower($innodb_file_per_table) == 'off') {
-    exitProcess(PROCESS_ID, 1, _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.'));
+    $return['msg'] =
+        _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.');
+    echo json_encode($return);
+    exit;
 }
 
 /* Check if MySQL open_files_limit parameter is higher than 32000 */
@@ -64,26 +73,35 @@ if (is_null($open_files_limit)) {
     $open_files_limit = 0;
 }
 if ($open_files_limit < 32000) {
-    exitProcess(PROCESS_ID, 1, _(
-        'If your operating system is based on SystemV (CentOS 6), add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.
-        If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the service file /usr/lib/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).'
-    ));
+    $return['msg'] = 'If your operating system is based on SystemV (CentOS 6), ' .
+        'add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.<br/>' .
+        'If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the ' .
+        'service file /etc/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).';
+    echo json_encode($return);
+    exit;
 }
 
 try {
-    $link->exec("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']);
+    $link->exec("CREATE DATABASE " . $parameters['db_configuration']);
 } catch (\PDOException $e) {
     if (!is_file('../../tmp/createTables')) {
-        exitProcess(PROCESS_ID, 1, $e->getMessage());
+        $return['msg'] = $e->getMessage();
+        echo json_encode($return);
+        exit;
     }
 }
 
 /**
  * Create tables
  */
-$link->exec('use ' . $_SESSION['CONFIGURATION_DB']);
+$link->exec('use ' . $parameters['db_configuration']);
 $result = splitQueries('../../createTables.sql', ';', $link, '../../tmp/createTables');
 if ("0" != $result) {
-    exitProcess(PROCESS_ID, 1, $result);
+    $return['msg'] = $result;
+    echo json_encode($return);
+    exit;
 }
-exitProcess(PROCESS_ID, 0, "OK");
+
+$return['result'] = 0;
+echo json_encode($return);
+exit;

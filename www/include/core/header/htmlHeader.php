@@ -47,11 +47,12 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <title>Centreon - IT & Network Monitoring</title>
     <link rel="shortcut icon" href="./img/favicon.ico"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2016 Open Source Matters. All rights reserved."/>
+    <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
 
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/responsive-style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" />
     <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="./Themes/Centreon-2/Modalbox/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" media="screen"/>

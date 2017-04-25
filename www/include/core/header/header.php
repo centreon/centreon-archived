@@ -54,7 +54,7 @@ $advanced_search = 0;
 /*
  * Include
  */
-include_once(realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php"));
+include_once(realpath(dirname(__FILE__) . "/../../../../bootstrap.php"));
 
 require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
