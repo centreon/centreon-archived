@@ -43,6 +43,8 @@ $return = array(
     'msg' => ''
 );
 
+$factory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+$utils = $factory->newUtils();
 $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
 
@@ -68,16 +70,24 @@ try {
     }
 }
 
-$link->exec('use ' . $parameters['db_storage']);
-$result = splitQueries('../../createTablesCentstorage.sql', ';', $link, '../../tmp/createTablesCentstorage');
-if ("0" != $result) {
-    $return['msg'] = $result;
-    echo json_encode($return);
-    exit;
-}
-$result = splitQueries('../../installBroker.sql', ';', $link, '../../tmp/installBroker');
-if ("0" != $result) {
-    $return['msg'] = $result;
+$macros = array_merge(
+    $step->getBaseConfiguration(),
+    $step->getDatabaseConfiguration(),
+    $step->getAdminConfiguration(),
+    $step->getEngineConfiguration(),
+    $step->getBrokerConfiguration()
+);
+
+try {
+    $result = $link->query('use ' . $parameters['db_storage']);
+    if (!$result) {
+        throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
+    }
+
+    $utils->executeSqlFile(__DIR__ . '/../../createTablesCentstorage.sql', $macros, true);
+    $utils->executeSqlFile(__DIR__ . '/../../installBroker.sql', $macros, true);
+} catch (\Exception $e) {
+    $return['msg'] = $e->getMessage();
     echo json_encode($return);
     exit;
 }
