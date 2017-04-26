@@ -75,9 +75,12 @@ class CentreonMetric extends CentreonWebService
             $q = $this->arguments['q'];
         }
         $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\"
-            FROM `metrics`
-            WHERE metric_name LIKE '%$q%' ORDER BY `metric_name` COLLATE utf8_general_ci ";
-        $DBRESULT = $this->pearDBMonitoring->query($query);
+                  FROM `metrics`
+                  WHERE metric_name LIKE ? ORDER BY `metric_name` COLLATE utf8_general_ci ";
+
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . $q . '%'));
+
         $metrics = array();
         while ($row = $DBRESULT->fetchRow()) {
             $metrics[] = array(
@@ -115,14 +118,16 @@ class CentreonMetric extends CentreonWebService
                   AND   s.service_id = i.service_id
                   AND   h.enabled = 1
                   AND   s.enabled = 1
-                  AND   CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) LIKE '%". $q ."%'
+                  AND   CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) LIKE ?
                   ORDER BY CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) COLLATE utf8_general_ci "
             .$range;
-        $DBRESULT = $this->pearDBMonitoring->query($query);
+
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . $q . '%'));
+
         $total = $this->pearDB->numberRows();
         $metrics = array();
         while ($row = $DBRESULT->fetchRow()) {
-            $fullName = $row['name']." - ". $row['description']. " - ". $row['metric_name'];
             $metrics[] = array(
                 'id' => $row['metric_id'],
                 'text' => $row['fullname']
@@ -239,17 +244,18 @@ class CentreonMetric extends CentreonWebService
             /* Check ACL is not admin */
             if (!$isAdmin) {
                 $query = "SELECT service_id
-                    FROM centreon_acl
-                    WHERE host_id = " . $hostId . "
-                        AND service_id = " . $serviceId . "
-                        AND group_id IN (" . $aclGroups . ")";
-                $res = $this->pearDBMonitoring->query($query);
+                          FROM centreon_acl
+                          WHERE host_id = ?
+                          AND service_id = ?
+                          AND group_id IN (" . $aclGroups . ")";
+
+                $stmt = $this->pearDBMonitoring->prepare($query);
+                $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId));
+
                 if (0 == $res->numRows()) {
                     throw new RestForbiddenException("Access denied");
                 }
             }
-
-            $data = array();
 
             /* Prepare graph */
             try {
@@ -265,16 +271,20 @@ class CentreonMetric extends CentreonWebService
             /* Get comments for this services */
             $comments = array();
             $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
+
             $res = $this->pearDB->query($query);
+
             if (false === PEAR::isError($res)) {
                 $row = $res->fetchRow();
                 if (false === is_null($row) && $row['value'] === '1') {
                     $queryComment = 'SELECT entry_time, author, data
                         FROM comments
-                        WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . '
-                            AND entry_type = 1 AND deletion_time IS NULL AND ' . $start . ' < entry_time
-                            AND ' . $end . ' > entry_time';
-                    $res = $this->pearDBMonitoring->query($queryComment);
+                        WHERE host_id = ? AND service_id = ?
+                            AND entry_type = 1 AND deletion_time IS NULL AND ? < entry_time
+                            AND ? > entry_time';
+
+                    $stmt = $this->pearDBMonitoring->prepare($queryComment);
+                    $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId, $start, $end));
 
                     if (false === PEAR::isError($res)) {
                         while ($row = $res->fetchRow()) {
@@ -287,7 +297,6 @@ class CentreonMetric extends CentreonWebService
                     }
                 }
             }
-
 
             $result[] = array(
                 'service_id' => $id,
@@ -354,16 +363,17 @@ class CentreonMetric extends CentreonWebService
         if (!$isAdmin) {
             $query = "SELECT service_id
                 FROM centreon_acl
-                WHERE host_id = " . $hostId . "
-                    AND service_id = " . $serviceId . "
+                WHERE host_id = ?
+                    AND service_id = ?
                     AND group_id IN (" . $aclGroups . ")";
-            $res = $this->pearDBMonitoring->query($query);
+
+            $stmt = $this->pearDBMonitoring->prepare($query);
+            $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId));
+
             if (0 == $res->numRows()) {
                 throw new RestForbiddenException("Access denied");
             }
         }
-
-        $data = array();
 
         /* Prepare graph */
         try {
@@ -405,7 +415,9 @@ class CentreonMetric extends CentreonWebService
         $acks = array();
         $downtimes = array();
         $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
+
         $res = $this->pearDB->query($query);
+
         if (false === PEAR::isError($res)) {
             $row = $res->fetchRow();
             if (false === is_null($row) && $row['value'] === '1') {
@@ -453,7 +465,6 @@ class CentreonMetric extends CentreonWebService
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclGroups = $acl->getAccessGroupsString();
         }
 
         /* Validate options */
@@ -485,7 +496,6 @@ class CentreonMetric extends CentreonWebService
             throw new RestBadRequestException("The rows must be greater as 10");
         }
 
-        $result = array();
         // Init graph object
         try {
             $graphPollerObject = new CentreonGraphPoller($this->pearDB, $this->pearDBMonitoring, $id, $userId, $start, $end);
