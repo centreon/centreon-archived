@@ -1035,12 +1035,10 @@ function updateNagios($nagios_id = null)
         . htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "date_format = NULL, ";
     isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null ?
-        $rq .= "illegal_object_name_chars  = '"
-        . htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  "
+        $rq .= "illegal_object_name_chars  = '" . $ret["illegal_object_name_chars"] . "',  "
         : $rq .= "illegal_object_name_chars  = NULL, ";
     isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null ?
-        $rq .= "illegal_macro_output_chars  = '"
-        . htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  "
+        $rq .= "illegal_macro_output_chars  = '" . $ret["illegal_macro_output_chars"] . "',  "
         : $rq .= "illegal_macro_output_chars  = NULL, ";
     isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ?
