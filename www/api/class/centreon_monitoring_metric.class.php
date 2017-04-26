@@ -146,10 +146,10 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
             /* Check ACL is not admin */
             if (!$isAdmin) {
                 $query = "SELECT service_id
-                    FROM centreon_acl
-                    WHERE host_id = ?
-                        AND service_id = ?
-                        AND group_id IN (" . $aclGroups . ")";
+                          FROM centreon_acl
+                          WHERE host_id = ?
+                          AND service_id = ?
+                          AND group_id IN (" . $aclGroups . ")";
 
                 $stmt = $this->pearDBMonitoring->prepare($query);
                 $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId));

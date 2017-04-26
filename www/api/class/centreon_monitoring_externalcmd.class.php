@@ -61,7 +61,10 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
     {
         if (isset($this->arguments['commands']) && is_array($this->arguments['commands'])) {
             /* Get poller Listing */
-            $query = "SELECT id FROM nagios_server WHERE ns_activate = '1'";
+            $query = "SELECT id 
+                      FROM nagios_server 
+                      WHERE ns_activate = '1'";
+
             $DBRESULT = $this->pearDB->query($query);
             $pollers = array();
             while ($row = $DBRESULT->fetchRow()) {
