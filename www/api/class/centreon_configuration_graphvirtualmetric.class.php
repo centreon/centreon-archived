@@ -45,7 +45,7 @@ class CentreonConfigurationGraphvirtualmetric extends CentreonConfigurationObjec
     {
         parent::__construct();
     }
-    
+
     /**
      *
      * @param integer $id

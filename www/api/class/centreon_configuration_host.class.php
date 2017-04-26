@@ -40,7 +40,7 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHost extends CentreonConfigurationObjects
 {
-    
+
     /**
      *
      * @var type
@@ -57,7 +57,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         $pearDBO = $this->pearDBMonitoring;
     }
-    
+
     /**
      *
      * @param array $args
@@ -66,19 +66,23 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     public function getList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHosts = '';
-        $additionnalTables = '';
-        $additionnalCondition = '';
-        
-        /* Get ACL if user is not admin */
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-            $aclHosts .= 'AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
+        $additionalTables = '';
+        $additionalCondition = '';
+        $explodedValues = '';
+        $queryValues = array();
+        $queryHost = '';
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
+                $this->pearDB->escape($this->arguments['page_limit']);
+        } else {
+            $range = '';
         }
-        
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -86,18 +90,30 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
 
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-        
+        $queryHost .= 'SELECT SQL_CALC_FOUND_ROWS DISTINCT host_name, host_id ' .
+            'FROM ( ' .
+            '( SELECT DISTINCT h.host_name, h.host_id ' .
+            'FROM host h ';
         if (isset($this->arguments['hostgroup'])) {
-            $additionnalTables .= ',hostgroup_relation hg ';
-            $additionnalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (' .
-                join(',', $this->arguments['hostgroup']) . ') ';
+            $additionalTables .= ',hostgroup_relation hg ';
+            $additionalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (';
+            for ($i = 1; $i <= count($this->arguments['hostgroup']); $i++) {
+                $explodedValues .= '?,';
+            }
+            $explodedValues = substr($explodedValues, 0, -1);
+            $queryValues = array_merge($queryValues, $this->arguments['hostgroup']);
+            $additionalCondition .= $explodedValues . ') ';
         }
+
+        $queryHost .= $additionalTables . 'WHERE h.host_register = "1" ';
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclHosts .= 'AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
+        }
+        $queryHost .= $aclHosts;
+        $queryHost .= $additionalCondition . ') ';
 
         // Check for virtual hosts
         $virtualHostCondition = '';
@@ -105,46 +121,38 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             $allVirtualHosts = CentreonHook::execute('Host', 'getVirtualHosts');
             foreach ($allVirtualHosts as $virtualHosts) {
                 foreach ($virtualHosts as $virtualHostId => $virtualHostName) {
-                    $virtualHostCondition .= 'UNION ALL ('
-                        . 'SELECT "' . $virtualHostName . '" as host_name, ' . $virtualHostId . ' as host_id '
-                        . ') ';
+                    $virtualHostCondition .= 'UNION ALL (SELECT ? as host_name, ? as host_id ) ';
+                    $queryValues[] = $virtualHostName;
+                    $queryValues[] = $virtualHostId;
                 }
             }
         }
-        
-        $queryHost = "SELECT SQL_CALC_FOUND_ROWS DISTINCT host_name, host_id "
-            . "FROM ( "
-            . "( SELECT DISTINCT h.host_name, h.host_id "
-            . "FROM host h "
-            . $additionnalTables
-            . "WHERE h.host_register = '1' "
-            . $aclHosts
-            . $additionnalCondition
-            . ") "
-            . $virtualHostCondition
-            . ") t_union "
-            . "WHERE host_name LIKE '%" . $q . "%' "
-            . "ORDER BY host_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHost);
+
+        $queryHost .= $virtualHostCondition .
+            ') t_union ' .
+            'WHERE host_name LIKE ? ' .
+            'ORDER BY host_name ' . $range;
+        $queryValues[] = '%' . $q . '%';
+
+        $stmt = $this->pearDB->prepare($queryHost);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
-        
+
         $hostList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $hostList[] = array(
                 'id' => htmlentities($data['host_id']),
                 'text' => $data['host_name']
             );
         }
-        
+
         return array(
             'items' => $hostList,
             'total' => $total
         );
     }
-    
+
     /**
      *
      * @return type
@@ -162,17 +170,17 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         if (isset($this->arguments['all'])) {
             $allServices = true;
         }
-        
+
         $hostObj = new CentreonHost($this->pearDB);
         $serviceList = array();
         $serviceListRaw = $hostObj->getServices($id, false, $allServices);
-        
+
         foreach ($serviceListRaw as $service_id => $service_description) {
             if ($allServices || service_has_graph($id, $service_id)) {
                 $serviceList[$service_id] = $service_description;
             }
         }
-        
+
         return $serviceList;
     }
 }
