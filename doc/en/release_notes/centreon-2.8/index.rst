@@ -13,3 +13,4 @@ Please find here the release notes dedicated to the last 2.8.x version of Centre
     centreon-2.8.4
     centreon-2.8.5
     centreon-2.8.6
+    centreon-2.8.7

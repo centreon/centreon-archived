@@ -144,10 +144,10 @@ class CentreonConfigurationObjects extends CentreonWebService
             $explodedValues = '';
 
             if (!empty($values)) {
-                for ($i = 0; $i <= count($values); $i++) {
+                for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';
                 }
-                rtrim($explodedValues, ',');
+                $explodedValues = substr($explodedValues, 0, -1);
             }
 
             $query = "SELECT $externalObject[id], $externalObject[name] " .
@@ -155,7 +155,7 @@ class CentreonConfigurationObjects extends CentreonWebService
                 "WHERE $externalObject[comparator] " .
                 "IN ($explodedValues)";
             $stmt = $this->pearDB->prepare($query);
-            $resRetrieval = $this->pearDB->execute($stmt, array($values));
+            $resRetrieval = $this->pearDB->execute($stmt, $values);
 
             if (PEAR::isError($resRetrieval)) {
                 die("An error occured");

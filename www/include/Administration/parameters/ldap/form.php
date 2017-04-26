@@ -180,7 +180,7 @@ if ($arId) {
         "FROM `auth_ressource` ".
         "WHERE ar_id = ?"
     );
-    $res = $pearDB->execute($arStmt, array($arId));
+    $res = $pearDB->execute($arStmt1, array($arId));
     
     if (PEAR::isError($res)) {
         die("An error occured");
