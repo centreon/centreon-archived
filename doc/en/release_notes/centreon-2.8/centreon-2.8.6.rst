@@ -41,3 +41,10 @@ If you already used a knowledge base, please execute following script :
 ::
 
 	php /usr/share/centreon/bin/migrateWikiPages.php
+
+
+Known bugs or issues
+====================
+
+* There's an issue in the ldap configuration form. A fix is available and will be package with the next bugfix version. Until then you can apply the patch available `here
+<https://github.com/centreon/centreon/commit/8aef6dfa4e3af27f16277b4211655889cf91fb71>`_
