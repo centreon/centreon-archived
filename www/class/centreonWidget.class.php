@@ -955,7 +955,7 @@ class CentreonWidget
         $res = $this->db->execute($stmt, array($widgetId));
 
         $tab = array();
-        while ($row = $res->fetchRow()) {
+        while ($row = $stmt->fetchRow()) {
             $tab[$row['parameter_code_name']] = $row['default_value'];
         }
 
@@ -969,7 +969,7 @@ class CentreonWidget
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array($widgetId));
 
-        while ($row = $res->fetchRow()) {
+        while ($row = $stmt->fetchRow()) {
             $tab[$row['parameter_code_name']] = $row['preference_value'];
         }
         return $tab;
