@@ -92,12 +92,13 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         
         $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
             . "FROM service "
-            . "WHERE service_description LIKE '%$q%' "
+            . "WHERE service_description LIKE ? "
             . "AND service_register = '0' "
             . "ORDER BY service_description "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $stmt = $this->pearDB->prepare($queryContact);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
 
@@ -123,11 +124,12 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '0' AND s.service_register = '0' "
-            . "AND s.service_description LIKE '%$q%' "
+            . "AND s.service_description LIKE ? "
             . "ORDER BY h.host_name "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryService);
+        $stmt = $this->pearDB->prepare($queryService);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         

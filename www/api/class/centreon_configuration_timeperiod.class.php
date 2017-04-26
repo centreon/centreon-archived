@@ -69,11 +69,12 @@ class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
         
         $queryTimeperiod = "SELECT SQL_CALC_FOUND_ROWS DISTINCT tp_id, tp_name "
             . "FROM timeperiod "
-            . "WHERE tp_name LIKE '%$q%' "
+            . "WHERE tp_name LIKE ? "
             . "ORDER BY tp_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryTimeperiod);
+
+        $stmt = $this->pearDB->prepare($queryTimeperiod);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         

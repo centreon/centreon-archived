@@ -83,11 +83,12 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         $queryTraps = "SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name "
             . "FROM traps t, traps_vendor m "
             . 'WHERE t.manufacturer_id = m.id '
-            . "AND (t.traps_name LIKE '%$q%' OR m.name LIKE '%$q%') "
+            . "AND (t.traps_name LIKE ? OR m.name LIKE ?) "
             . "ORDER BY m.name, t.traps_name "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryTraps);
+        $stmt = $this->pearDB->prepare($queryTraps);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%', '%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         
