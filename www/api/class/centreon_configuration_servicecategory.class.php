@@ -78,9 +78,9 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
             $range = '';
         }
         
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name "
-            . "FROM service_categories "
-            . "WHERE sc_name LIKE '%$q%' ";
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name '
+            . 'FROM service_categories '
+            . 'WHERE sc_name LIKE ? ';
         if (!empty($t) && $t == 'c') {
             $queryContact .= "AND level IS NULL ";
         }
@@ -90,12 +90,13 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         $queryContact .= "ORDER BY sc_name "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $stmt = $this->pearDB->prepare($queryContact);
+        $dbResult = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);
         }
         

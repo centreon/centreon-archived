@@ -162,13 +162,14 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             case 'all':
         $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id
                 FROM ( "
-                    . "( SELECT DISTINCT CONCAT(h.host_name, ' - ', s.service_description) as fullname, s.service_id, h.host_id "
+                    . "( SELECT DISTINCT CONCAT(h.host_name, ' - ', s.service_description) 
+                    as fullname, s.service_id, h.host_id "
                     . "FROM host h, service s, host_service_relation hsr "
                     . "WHERE hsr.host_host_id = h.host_id "
                     . "AND hsr.service_service_id = s.service_id "
                     . "AND h.host_register = '1' "
                     . "AND s.service_register = '1' "
-                    . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE '%$q%' "
+                    . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE ? "
                     . $enableQuery
                     . $aclServices
                     . ") 
@@ -178,42 +179,55 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     . "WHERE mh.host_name = '_Module_Meta' "
                     . "AND mh.host_register = '2' "
                     . "AND ms.service_register = '2' "
-                    . "AND CONCAT('Meta - ', ms.display_name) LIKE '%$q%' "
+                    . "AND CONCAT('Meta - ', ms.display_name) LIKE ? "
                     . $enableQueryMeta
                     . $aclMetaServices
                     .") 
                  )  as t_union "
                 . "ORDER BY fullname "
                 . $range;
+
+                $stmt = $this->pearDB->prepare($queryService);
+                $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%', '%' . $q . '%'));
+
                 break;
             case 's':
-                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(h.host_name, ' - ', s.service_description) as fullname, s.service_id, h.host_id "
-                    . "FROM host h, service s, host_service_relation hsr "
-                    . 'WHERE hsr.host_host_id = h.host_id '
-                    . "AND hsr.service_service_id = s.service_id "
-                    . "AND h.host_register = '1' "
-                    . "AND s.service_register = '1' "
-                    . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE '%$q%' "
-                    . $enableQuery
-                    . $aclServices
-                    . "ORDER BY fullname "
-                    . $range;
+                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(h.host_name, ' - ', 
+                                s.service_description) as fullname, s.service_id, h.host_id "
+                                . "FROM host h, service s, host_service_relation hsr "
+                                . 'WHERE hsr.host_host_id = h.host_id '
+                                . "AND hsr.service_service_id = s.service_id "
+                                . "AND h.host_register = '1' "
+                                . "AND s.service_register = '1' "
+                                . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE ? "
+                                . $enableQuery
+                                . $aclServices
+                                . "ORDER BY fullname "
+                                . $range;
+
+                $stmt = $this->pearDB->prepare($queryService);
+                $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
+
                 break;
             case 'm':
-                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT('Meta - ', ms.display_name) as fullname, ms.service_id, mh.host_id "
-                    . "FROM host mh, service ms "
-                    . "WHERE mh.host_name = '_Module_Meta' "
-                    . "AND mh.host_register = '2' "
-                    . "AND ms.service_register = '2' "
-                    . "AND CONCAT('Meta - ', ms.display_name) LIKE '%$q%' "
-                    . $enableQueryMeta
-                    . $aclMetaServices
-                    . "ORDER BY fullname "
-                    . $range;
+                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT('Meta - ', ms.display_name) 
+                                as fullname, ms.service_id, mh.host_id "
+                                . "FROM host mh, service ms "
+                                . "WHERE mh.host_name = '_Module_Meta' "
+                                . "AND mh.host_register = '2' "
+                                . "AND ms.service_register = '2' "
+                                . "AND CONCAT('Meta - ', ms.display_name) LIKE ? "
+                                . $enableQueryMeta
+                                . $aclMetaServices
+                                . "ORDER BY fullname "
+                                . $range;
+
+                $stmt = $this->pearDB->prepare($queryService);
+                $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
+
                 break;
         }
 
-        $DBRESULT = $this->pearDB->query($queryService);
         $total = $this->pearDB->numberRows();
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
@@ -243,17 +257,19 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      */
     private function getServicesByHostgroup($q, $aclServices, $range = '')
     {
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(hg.hg_name, ' - ', s.service_description) as fullname, s.service_id, hg.hg_id "
+        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(hg.hg_name, ' - ', s.service_description) 
+            as fullname, s.service_id, hg.hg_id "
             . "FROM hostgroup hg, service s, host_service_relation hsr "
             . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND s.service_register = '1' "
-            . "AND CONCAT(hg.hg_name, ' - ', s.service_description) LIKE '%$q%' "
+            . "AND CONCAT(hg.hg_name, ' - ', s.service_description) LIKE ? "
             . $aclServices
             . "ORDER BY fullname "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
+
+        $stmt = $this->pearDB->prepare($queryService);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         

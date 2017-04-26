@@ -84,11 +84,12 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         
         $queryContact = " SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name "
             . " FROM servicegroup "
-            . " WHERE sg_name LIKE '%$q%' ".$aclServicegroups
+            . " WHERE sg_name LIKE ? ".$aclServicegroups
             . " ORDER BY sg_name "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $stmt = $this->pearDB->prepare($queryContact);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         
@@ -136,16 +137,17 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
             $acl = new CentreonACL($userId, $isAdmin);
         }
         
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_id, s.service_description, h.host_name, h.host_id "
-            . "FROM servicegroup sg "
-            . "INNER JOIN servicegroup_relation sgr ON sgr.servicegroup_sg_id = sg.sg_id "
-            . "INNER JOIN service s ON s.service_id = sgr.service_service_id "
-            . "INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id "
-            . "INNER JOIN host h ON h.host_id = hsr.host_host_id "
-            . "WHERE sg.sg_id IN (".$sgid.") "
-            . $aclServicegroups
-            . $aclServices
-            . $range;
+        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_id, s.service_description, h.host_name, 
+                        h.host_id "
+                        . "FROM servicegroup sg "
+                        . "INNER JOIN servicegroup_relation sgr ON sgr.servicegroup_sg_id = sg.sg_id "
+                        . "INNER JOIN service s ON s.service_id = sgr.service_service_id "
+                        . "INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id "
+                        . "INNER JOIN host h ON h.host_id = hsr.host_host_id "
+                        . "WHERE sg.sg_id IN (".$sgid.") "
+                        . $aclServicegroups
+                        . $aclServices
+                        . $range;
         
         $DBRESULT = $this->pearDB->query($queryContact);
 
