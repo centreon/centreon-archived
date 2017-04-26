@@ -208,6 +208,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , "
+        . "`temp_file` , "
         . "`check_result_path`, `max_check_result_file_age`, "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
         . "`enable_notifications` , `execute_service_checks` , "
