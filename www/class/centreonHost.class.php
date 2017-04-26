@@ -999,6 +999,8 @@ class CentreonHost
 
         /* Direct macros */
         $macroArray = $this->getCustomMacro(null, 'realKeys');
+        $this->purgeOldMacroToForm($macroArray, $form, 'fromTpl');
+        $this->purgeOldMacroToForm($macroArray, $form, 'fromCommand');
         foreach ($macroArray as $key => $directMacro) {
             $directMacro['macroOldValue_#index#'] = $directMacro["macroValue_#index#"];
             $directMacro['macroFrom_#index#'] = $form['macroFrom'][$key];
@@ -1095,8 +1097,6 @@ class CentreonHost
             }
         }
 
-        $this->purgeOldMacroToForm($macros, $form, 'fromTpl');
-        $this->purgeOldMacroToForm($macros, $form, 'fromCommand');
         $macros = $this->macroUnique($macros);
         //var_dump($macros);
         return $macros;
