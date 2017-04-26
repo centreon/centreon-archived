@@ -69,11 +69,12 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
         
         $queryTimezone = "SELECT SQL_CALC_FOUND_ROWS DISTINCT timezone_id, timezone_name "
             . " FROM timezone "
-            . " WHERE timezone_name LIKE '%$q%' "
+            . " WHERE timezone_name LIKE ? "
             . " ORDER BY timezone_name "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryTimezone);
+        $stmt = $this->pearDB->prepare($queryTimezone);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         
