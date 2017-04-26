@@ -44,11 +44,6 @@ if (defined("E_DEPRECATED")) {
  * Purge Values
  */
 if (function_exists('filter_var')){
-    foreach ($_POST as $key => $value){
-        if (!is_array($value)){
-            $_POST[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-        }
-    }
     foreach ($_GET as $key => $value){
         if (!is_array($value)){
             $_GET[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
