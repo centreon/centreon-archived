@@ -45,13 +45,14 @@ class CentreonConfigurationGraphtemplate extends CentreonConfigurationObjects
     {
         parent::__construct();
     }
-    
+
     /**
      *
      * @return array
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -61,29 +62,31 @@ class CentreonConfigurationGraphtemplate extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
+                $this->pearDB->escape($this->arguments['page_limit']);
         } else {
             $range = '';
         }
-        
-        $queryGraphtemplate = "SELECT SQL_CALC_FOUND_ROWS DISTINCT graph_id, name "
-            . "FROM giv_graphs_template "
-            . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryGraphtemplate);
+
+        $queryGraphtemplate = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT graph_id, name ' .
+            'FROM giv_graphs_template ' .
+            'WHERE name LIKE ? ' .
+            'ORDER BY name ' . $range;
+        $queryValues[] = '%' . $q . '%';
+
+        $stmt = $this->pearDB->prepare($queryGraphtemplate);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
-        
+
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array(
                 'id' => $data['graph_id'],
                 'text' => $data['name']
             );
         }
-        
+
         return array(
             'items' => $serviceList,
             'total' => $total
