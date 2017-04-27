@@ -40,13 +40,8 @@ require_once dirname(__FILE__) . "/webService.class.php";
 class CentreonWiki extends CentreonWebService
 {
     /**
-     * Constructor
+     * @return array
      */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function postCheckConnection()
     {
         $sql_host = explode(':', $this->arguments['host']);
@@ -71,6 +66,9 @@ class CentreonWiki extends CentreonWebService
         );
     }
 
+    /**
+     * @return array
+     */
     public function postDeletePage()
     {
         $wikiApi = new WikiApi();
