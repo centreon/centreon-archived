@@ -405,28 +405,31 @@ class CentreonHost
      */
     public function getHostByAddress($address, $params = array())
     {
-
-        /************************************************************************/
-        /*************************** ICI ***********************************/
-        /************************************************************************/
-        $paramslist = '';
-        $hostlist = array();
+        $paramsList = '';
+        $hostList = array();
+        $queryValues = array();
 
         if (count($params) > 0) {
-            $paramslist .= implode(',', $params);
+            for ($i = 1; $i <= count($params); $i++) {
+                $paramsList .= '?,';
+            }
+            $paramsList = substr($paramsList, 0, -1);
+            $queryValues = array_merge($queryValues, $params);
+
         } else {
-            $paramslist .= '*';
+            $paramsList .= '*';
         }
+        $query = 'SELECT ' . $paramsList . ' FROM host WHERE host_address = ?';
+        $queryValues[] = $address;
 
-        $rq = "SELECT $paramslist FROM host WHERE host_address = '" . $this->db->escape($address) . "'";
-
-        $res = $this->db->query($rq);
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, $queryValues);
 
         while ($row = $res->fetchRow()) {
-            $hostlist[] = $row;
+            $hostList[] = $row;
         }
 
-        return $hostlist;
+        return $hostList;
     }
 
 
@@ -436,21 +439,21 @@ class CentreonHost
      * @param string $host_name
      * @return int
      */
-    public
-    function getHostId(
-        $host_name
-    ) {
+    public function getHostId($host_name)
+    {
         static $ids = array();
 
         if (!isset($host_name) || !$host_name) {
             return null;
         }
         if (!isset($ids[$host_name])) {
-            $rq = "SELECT host_id
-     	    	   FROM host
-     	    	   WHERE host_name = '" . $this->db->escape($host_name) . "'
-     	    	   LIMIT 1";
-            $res = $this->db->query($rq);
+            $query = 'SELECT host_id ' .
+                'FROM host ' .
+                'WHERE host_name = ?' .
+                'LIMIT 1';
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, array($host_name));
+
             if ($res->numRows()) {
                 $row = $res->fetchRow();
                 $ids[$host_name] = $row['host_id'];
@@ -469,19 +472,14 @@ class CentreonHost
      * @param int $poller_id
      * @return string
      */
-    public
-    function checkIllegalChar(
-        $host_name,
-        $poller_id = null
-    ) {
+    public function checkIllegalChar($host_name, $poller_id = null)
+    {
         if ($poller_id) {
-            $res = $this->db->query(
-                "SELECT illegal_object_name_chars
-                    FROM cfg_nagios
-                    WHERE nagios_server_id = " . $this->db->escape($poller_id)
-            );
+            $query = 'SELECT illegal_object_name_chars FROM cfg_nagios WHERE nagios_server_id = ?';
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, array($poller_id));
         } else {
-            $res = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios ");
+            $res = $this->db->query('SELECT illegal_object_name_chars FROM cfg_nagios ');
         }
 
         while ($data = $res->fetchRow()) {
@@ -500,28 +498,24 @@ class CentreonHost
      * @param int $host_id
      * @return int
      */
-    public
-    function getHostPollerId(
-        $host_id
-    ) {
+    public function getHostPollerId($host_id)
+    {
         $pollerId = null;
+        $query = 'SELECT nagios_server_id FROM ns_host_relation WHERE host_host_id = ? LIMIT 1';
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, array($host_id));
 
-        $rq = "SELECT nagios_server_id
- 		       FROM ns_host_relation
- 		       WHERE host_host_id = " . $this->db->escape($host_id) . "
- 		       LIMIT 1";
-        $res = $this->db->query($rq);
         if ($res->numRows()) {
             $row = $res->fetchRow();
             $pollerId = $row['nagios_server_id'];
         } else {
             $hostName = $this->getHostName($host_id);
             if (preg_match('/^_Module_Meta/', $hostName)) {
-                $rq = "SELECT id "
-                    . "FROM nagios_server "
-                    . "WHERE localhost = '1' "
-                    . "LIMIT 1 ";
-                $res = $this->db->query($rq);
+                $query = 'SELECT id ' .
+                    'FROM nagios_server ' .
+                    'WHERE localhost = "1" ' .
+                    'LIMIT 1 ';
+                $res = $this->db->query($query);
                 if ($res->numRows()) {
                     $row = $res->fetchRow();
                     $pollerId = $row['id'];
@@ -540,12 +534,8 @@ class CentreonHost
      * @param int $antiLoop
      * @return string
      */
-    public
-    function replaceMacroInString(
-        $hostParam,
-        $string,
-        $antiLoop = null
-    ) {
+    public function replaceMacroInString($hostParam, $string, $antiLoop = null)
+    {
         if (is_numeric($hostParam)) {
             $host_id = $hostParam;
         } elseif (is_string($hostParam)) {
@@ -553,8 +543,9 @@ class CentreonHost
         } else {
             return $string;
         }
-        $rq = "SELECT host_register FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
-        $res = $this->db->query($rq);
+        $query = 'SELECT host_register FROM host WHERE host_id = ? LIMIT 1';
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, array($host_id));
         if (!$res->numRows()) {
             return $string;
         }
@@ -595,19 +586,26 @@ class CentreonHost
         preg_match_all($pattern, $string, $matches);
         $i = 0;
         while (isset($matches[1][$i])) {
-            $rq = "SELECT host_macro_value FROM on_demand_macro_host
-                WHERE host_host_id = '" . $host_id . "' AND host_macro_name LIKE '" . $matches[1][$i] . "'";
-            $DBRES = $this->db->query($rq);
-            while ($row = $DBRES->fetchRow()) {
+            $queryValues = array();
+            $query = 'SELECT host_macro_value ' .
+                'FROM on_demand_macro_host ' .
+                'WHERE host_host_id = ? ' .
+                'AND host_macro_name LIKE ?';
+            $queryValues[] = $host_id;
+            $queryValues[] = $matches[1][$i];
+
+            $stmt = $this->db->prepare($query);
+            $dbResult = $this->db->execute($stmt, $queryValues);
+            while ($row = $dbResult->fetchRow()) {
                 $string = str_replace($matches[1][$i], $row['host_macro_value'], $string);
             }
             $i++;
         }
         if ($i) {
-            $rq2 = "SELECT host_tpl_id FROM host_template_relation
-                WHERE host_host_id = '" . $host_id . "' ORDER BY `order`";
-            $DBRES2 = $this->db->query($rq2);
-            while ($row2 = $DBRES2->fetchRow()) {
+            $query2 = 'SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = ? ORDER BY `order`';
+            $stmt = $this->db->prepare($query2);
+            $dbResult2 = $this->db->execute($stmt, array($host_id));
+            while ($row2 = $dbResult2->fetchRow()) {
                 if (!isset($antiLoop) || !$antiLoop) {
                     $string = $this->replaceMacroInString($row2['host_tpl_id'], $string, $row2['host_tpl_id']);
                 } elseif ($row2['host_tpl_id'] != $antiLoop) {
@@ -630,8 +628,7 @@ class CentreonHost
      *
      * @return void
      */
-    public
-    function insertMacro(
+    public function insertMacro(
         $hostId,
         $macroInput = array(),
         $macroValue = array(),
@@ -642,16 +639,24 @@ class CentreonHost
     ) {
 
         if (false === $isMassiveChange) {
-            $this->db->query("DELETE FROM on_demand_macro_host WHERE host_host_id = " . $this->db->escape($hostId));
+            $query = 'DELETE FROM on_demand_macro_host WHERE host_host_id = ?';
+            $stmt = $this->db->prepare($query);
+            $this->db->execute($stmt, array($hostId));
         } else {
             $macroList = "";
+            $queryValues = array();
+            $queryValues[] = $hostId;
             foreach ($macroInput as $v) {
-                $macroList .= "'\$_HOST" . strtoupper($this->db->escape($v)) . "\$',";
+                $macroList .= ' ?,';
+                $queryValues[] = '$_HOST' . strtoupper($v) . '$';
             }
             if ($macroList) {
                 $macroList = rtrim($macroList, ",");
-                $this->db->query("DELETE FROM on_demand_macro_host
-                    WHERE host_host_id = " . $this->db->escape($hostId) . " AND host_macro_name IN ({$macroList})");
+                $query = 'DELETE FROM on_demand_macro_host ' .
+                    'WHERE host_host_id = ? ' .
+                    'AND host_macro_name IN (' . $macroList . ')';
+                $stmt = $this->db->prepare($query);
+                $this->db->execute($stmt, $queryValues);
             }
         }
 
@@ -662,37 +667,46 @@ class CentreonHost
         $macrovalues = $macroValue;
         $this->hasMacroFromHostChanged($hostId, $macros, $macrovalues, $macroPassword, $cmdId);
         foreach ($macros as $key => $value) {
-            if ($value != "" &&
-                !isset($stored[strtolower($value)])
-            ) {
-                $this->db->query("INSERT INTO on_demand_macro_host
-                    (`host_macro_name`, `host_macro_value`, `is_password`, `description`,
-                        `host_host_id`, `macro_order`)
-                    VALUES ('\$_HOST" . strtoupper($this->db->escape($value)) . "\$', '" .
-                    $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') .
-                    ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($hostId) . ", " .
-                    $cnt . ")");
+            if ($value != "" && !isset($stored[strtolower($value)])) {
+                $queryValues = array();
+                $query = 'INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, ' .
+                    '`description`, `host_host_id`, `macro_order`) ' .
+                    'VALUES (?, ?, ';
+                $queryValues[] = '$_HOST' . strtoupper($value) . '$';
+                $queryValues[] = $macrovalues[$key];
+                if (isset($macroPassword[$key])) {
+                    $query .= '?, ';
+                    $queryValues[] = 1;
+                } else {
+                    $query .= 'NULL, ';
+                }
+                $query .= '?, ?, ?)';
+                $queryValues[] = $macroDescription[$key];
+                $queryValues[] = $hostId;
+                $queryValues[] = $cnt;
+                $stmt = $this->db->prepare($query);
+                $dbResult = $this->db->execute($stmt, $queryValues);
+                if (PEAR::isError($dbResult)) {
+                    throw new \Exception("An error occured");
+                }
                 $cnt++;
                 $stored[strtolower($value)] = true;
             }
         }
     }
 
-    public
-    function getCustomMacroInDb(
-        $hostId = null,
-        $template = null
-    ) {
+    public function getCustomMacroInDb($hostId = null, $template = null)
+    {
         $arr = array();
         $i = 0;
 
         if ($hostId) {
-            $sSql = "SELECT host_macro_name, host_macro_value, is_password, description
-                                FROM on_demand_macro_host
-                                WHERE host_host_id = " . intval($hostId) . " ORDER BY macro_order ASC";
-
-            $res = $this->db->query($sSql);
-
+            $sSql = 'SELECT host_macro_name, host_macro_value, is_password, description ' .
+                'FROM on_demand_macro_host ' .
+                'WHERE host_host_id = ? ' .
+                'ORDER BY macro_order ASC';
+            $stmt = $this->db->prepare($sSql);
+            $res = $this->db->execute($stmt, array($hostId));
             while ($row = $res->fetchRow()) {
                 if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
@@ -703,8 +717,6 @@ class CentreonHost
                     if (!is_null($template)) {
                         $arr[$i]['macroTpl_#index#'] = "Host template : " . $template['host_name'];
                     }
-
-
                     $i++;
                 }
             }
@@ -719,21 +731,18 @@ class CentreonHost
      * @param int $hostId
      * @return array
      */
-    public
-    function getCustomMacro(
-        $hostId = null,
-        $realKeys = false
-    ) {
+    public function getCustomMacro($hostId = null, $realKeys = false)
+    {
         $arr = array();
         $i = 0;
 
         if (!isset($_REQUEST['macroInput']) && $hostId) {
-            $sSql = "SELECT host_macro_name, host_macro_value, is_password, description
-                                FROM on_demand_macro_host
-                                WHERE host_host_id = " . intval($hostId) . " ORDER BY macro_order ASC";
-
-            $res = $this->db->query($sSql);
-
+            $sSql = 'SELECT host_macro_name, host_macro_value, is_password, description ' .
+                'FROM on_demand_macro_host ' .
+                'WHERE host_host_id = ? ' .
+                'ORDER BY macro_order ASC';
+            $stmt = $this->db->prepare($sSql);
+            $res = $this->db->execute($stmt, array($hostId));
             while ($row = $res->fetchRow()) {
                 if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
@@ -769,18 +778,14 @@ class CentreonHost
      * @param int $hostId
      * @return array
      */
-    public
-    function getTemplates(
-        $hostId = null
-    ) {
+    public function getTemplates($hostId = null)
+    {
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['tpSelect']) && $hostId) {
-            $res = $this->db->query("SELECT host_tpl_id
-                                FROM host_template_relation
-                                WHERE host_host_id = " .
-                $this->db->escape($hostId) . "
-                                ORDER BY `order`");
+            $query = 'SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = ? ORDER BY `order`';
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, array($hostId));
             while ($row = $res->fetchRow()) {
                 $arr[$i]['tpSelect_#index#'] = $row['host_tpl_id'];
                 $i++;
@@ -803,38 +808,51 @@ class CentreonHost
      * @param array $templates
      * @return void
      */
-    public
-    function setTemplates(
-        $hostId,
-        $templates = array(),
-        $remaining = array()
-    ) {
-        $sql = "DELETE FROM host_template_relation 
-                WHERE host_host_id = " . $this->db->escape($hostId);
+    public function setTemplates($hostId, $templates = array(), $remaining = array())
+    {
+        $queryValues = array();
+        $explodedValues = '';
+        $query = 'DELETE FROM host_template_relation WHERE host_host_id = ?';
+        $queryValues[] = $hostId;
+
         $stored = array();
         if (count($remaining)) {
-            $sql .= " AND host_tpl_id NOT IN (" . implode(',', $remaining) . ") ";
+
+            for ($i = 1; $i <= count($remaining); $i++) {
+                $explodedValues .= '?,';
+            }
+            $explodedValues = substr($explodedValues, 0, -1);
+            $queryValues = array_merge($queryValues, $remaining);
+            $query .= ' AND host_tpl_id NOT IN (' . $explodedValues . ') ';
             $stored = $remaining;
         }
-        $this->db->query($sql);
-
+        $stmt = $this->db->prepare($query);
+        $this->db->execute($stmt, $queryValues);
         $str = "";
         $i = 1;
+        $queryValues = array();
         foreach ($templates as $templateId) {
-            if (!isset($templateId) || !$templateId || isset($stored[$templateId]) ||
-                !$this->hasNoInfiniteLoop($hostId, $templateId)
+            if (!isset($templateId)
+                || !$templateId
+                || isset($stored[$templateId])
+                || !$this->hasNoInfiniteLoop($hostId, $templateId)
             ) {
                 continue;
             }
             if ($str != "") {
                 $str .= ", ";
             }
-            $str .= "({$this->db->escape($hostId)}, {$this->db->escape($templateId)}, {$i})";
+            $str .= "(?, ?, ?)";
+            $queryValues[] = $hostId;
+            $queryValues[] = $templateId;
+            $queryValues[] = $i;
             $stored[$templateId] = true;
             $i++;
         }
         if ($str) {
-            $this->db->query("INSERT INTO host_template_relation (host_host_id, host_tpl_id, `order`) VALUES $str");
+            $query = 'INSERT INTO host_template_relation (host_host_id, host_tpl_id, `order`) VALUES ' . $str;
+            $stmt = $this->db->prepare($query);
+            $this->db->execute($stmt, $queryValues);
         }
     }
 
@@ -843,18 +861,14 @@ class CentreonHost
      *
      * @return bool
      */
-    public
-    function hasNoInfiniteLoop(
-        $hostId,
-        $templateId,
-        $antiTplLoop = array()
-    ) {
+    public function hasNoInfiniteLoop($hostId, $templateId, $antiTplLoop = array())
+    {
         if ($hostId === $templateId) {
             return false;
         }
 
         if (!count($antiTplLoop)) {
-            $query = "SELECT host_host_id, host_tpl_id FROM host_template_relation";
+            $query = 'SELECT host_host_id, host_tpl_id FROM host_template_relation';
             $res = $this->db->query($query);
             while ($row = $res->fetchRow()) {
                 if (!isset($antiTplLoop[$row['host_tpl_id']])) {
@@ -874,52 +888,10 @@ class CentreonHost
                 }
             }
         }
-
         return true;
     }
 
-    /**
-     * Get Host contactgroup list
-     *
-     * @param int $host_id
-     * @param array $cg
-     * @return void
-     */
-    public
-    function getContactGroupList(
-        $host_id,
-        $cg
-    ) {
-        $request = "SELECT * FROM host";
-        $res = $this->db->query($sql);
-        while ($data = $res->fetchRow()) {
-
-        }
-        return $cg;
-
-        $rq = "SELECT host_tpl_id " .
-            "FROM host_template_relation " .
-            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
-            "ORDER BY `order`";
-        $DBRESULT = $pearDB->query($rq);
-        while ($row = $DBRESULT->fetchRow()) {
-            $rq2 = "SELECT $field " .
-                "FROM host " .
-                "WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
-            $DBRESULT2 = $pearDB->query($rq2);
-            $row2 = $DBRESULT2->fetchRow();
-            if (isset($row2[$field]) && $row2[$field]) {
-                return $row2[$field];
-            } else {
-                if ($result_field = getMyHostFieldFromMultiTemplates($row['host_tpl_id'], $field)) {
-                    return $result_field;
-                }
-            }
-        }
-    }
-
-    public
-    function hasMacroFromHostChanged(
+    public function hasMacroFromHostChanged(
         $host_id,
         &$macroInput,
         &$macroValue,
@@ -945,12 +917,8 @@ class CentreonHost
         }
     }
 
-    public
-    function getMacroFromForm(
-        $form,
-        $fromKey
-    ) {
-
+    public function getMacroFromForm($form, $fromKey)
+    {
         $Macros = array();
         if (!empty($form['macroInput'])) {
             foreach ($form['macroInput'] as $key => $macroInput) {
@@ -959,10 +927,12 @@ class CentreonHost
                     $macroTmp['macroInput_#index#'] = $macroInput;
                     $macroTmp['macroValue_#index#'] = $form['macroValue'][$key];
                     $macroTmp['macroPassword_#index#'] = isset($form['is_password'][$key]) ? 1 : null;
-                    $macroTmp['macroDescription_#index#'] = isset($form['description'][$key]) ?
-                        $form['description'][$key] : null;
-                    $macroTmp['macroDescription'] = isset($form['description'][$key]) ?
-                        $form['description'][$key] : null;
+                    $macroTmp['macroDescription_#index#'] = isset($form['description'][$key])
+                        ? $form['description'][$key]
+                        : null;
+                    $macroTmp['macroDescription'] = isset($form['description'][$key])
+                        ? $form['description'][$key]
+                        : null;
                     $Macros[] = $macroTmp;
                 }
             }
@@ -979,15 +949,8 @@ class CentreonHost
      * @param int $iIdCommande
      * @return array
      */
-    public
-    function getMacros(
-        $iHostId,
-        $bIsTemplate,
-        $aListTemplate,
-        $iIdCommande,
-        $form = array()
-    ) {
-
+    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande, $form = array())
+    {
         $macroArray = $this->getMacroFromForm($form, "direct");
         $aMacroTemplate[] = $this->getMacroFromForm($form, "fromTpl");
         $aMacroInCommande = $this->getMacroFromForm($form, "fromCommand");
@@ -1016,7 +979,6 @@ class CentreonHost
                 }
             }
         }
-
 
         //Get macro attached to the command
         $oCommand = new CentreonCommand($this->db);
@@ -1077,15 +1039,12 @@ class CentreonHost
             }
         }
         $aFinalMacro = $this->macroUnique($aTempMacro);
-
         return $aFinalMacro;
     }
 
 
-    public
-    function ajaxMacroControl(
-        $form
-    ) {
+    public function ajaxMacroControl($form)
+    {
         $macroArray = $this->getCustomMacro(null, 'realKeys');
         $this->purgeOldMacroToForm($macroArray, $form, 'fromTpl');
         $aListTemplate = array();
@@ -1190,10 +1149,8 @@ class CentreonHost
                 $aTempMacro[] = $macroCommande[$i];
             }
         }
-
         $aFinalMacro = $this->macroUnique($aTempMacro);
         return $aFinalMacro;
-
     }
 
 
@@ -1205,8 +1162,7 @@ class CentreonHost
      * @param int $depth The depth to search
      * @return array
      */
-    public
-    function getTemplateChain(
+    public function getTemplateChain(
         $hostId,
         $alreadyProcessed = array(),
         $depth = -1,
@@ -1223,7 +1179,6 @@ class CentreonHost
                 return $templates;
             } else {
                 $alreadyProcessed[] = $hostId;
-
                 if (empty($fields)) {
                     if (!$allFields) {
                         $fields = "h.host_id, h.host_name";
@@ -1232,17 +1187,17 @@ class CentreonHost
                     }
                 }
 
-                $sql = "SELECT " . $fields . " "
-                    . " FROM host h, host_template_relation htr"
-                    . " WHERE h.host_id = htr.host_tpl_id"
-                    . " AND htr.host_host_id = '" . CentreonDB::escape($hostId) . "'"
-                    . " AND host_activate = '1'"
-                    . " AND host_register = '0'"
-                    . " ORDER BY `order` ASC";
+                $query = 'SELECT ' . $fields . ' ' .
+                    'FROM host h, host_template_relation htr ' .
+                    'WHERE h.host_id = htr.host_tpl_id ' .
+                    'AND htr.host_host_id = ? ' .
+                    'AND host_activate = "1" ' .
+                    'AND host_register = "0" ' .
+                    'ORDER BY `order` ASC';
+                $stmt = $this->db->prepare($query);
+                $dbResult = $this->db->execute($stmt, array($hostId));
 
-                $DBRESULT = $this->db->query($sql);
-
-                while ($row = $DBRESULT->fetchRow()) {
+                while ($row = $dbResult->fetchRow()) {
                     if (!$allFields) {
                         $templates[] = array(
                             "id" => $row['host_id'],
@@ -1270,22 +1225,19 @@ class CentreonHost
      * @param int $hostId The host or host template Id
      * @return array
      */
-    public
-    function getHostTemplateIds(
-        $hostId
-    ) {
+    public function getHostTemplateIds($hostId)
+    {
         $hostTemplateIds = array();
+        $query = 'SELECT htr.host_tpl_id ' .
+            'FROM host_template_relation htr, host ht ' .
+            'WHERE htr.host_host_id = ?' .
+            'AND htr.host_tpl_id = ht.host_id ' .
+            'AND ht.host_activate = "1" ' .
+            'ORDER BY `order` ASC ';
+        $stmt = $this->db->prepare($query);
+        $dbResult = $this->db->execute($stmt, array($hostId));
 
-        $sql = "SELECT htr.host_tpl_id "
-            . "FROM host_template_relation htr, host ht "
-            . "WHERE htr.host_host_id = '" . CentreonDB::escape($hostId) . "' "
-            . "AND htr.host_tpl_id = ht.host_id "
-            . "AND ht.host_activate = '1' "
-            . "ORDER BY `order` ASC ";
-
-        $DBRESULT = $this->db->query($sql);
-
-        while ($row = $DBRESULT->fetchRow()) {
+        while ($row = $dbResult->fetchRow()) {
             $hostTemplateIds[] = $row['host_tpl_id'];
         }
 
@@ -1302,8 +1254,7 @@ class CentreonHost
      * @param array $values found values
      * @return array
      */
-    public
-    function getInheritedValues(
+    public function getInheritedValues(
         $hostId,
         $alreadyProcessed = array(),
         $depth = -1,
@@ -1313,34 +1264,40 @@ class CentreonHost
 
         if ($depth != 0) {
             $depth--;
-
             if (in_array($hostId, $alreadyProcessed)) {
                 return $values;
             } else {
-                $queryFields = $fields;
                 if (count($alreadyProcessed) && !count($fields)) {
                     return $values;
                 } else {
-                    if (!count($fields)) {
-                        $queryFields = " * ";
+                    $queryValues = array();
+                    $queryFields = '';
+                    if (count($fields) > 0) {
+                        for ($i = 1; $i <= count($fields); $i++) {
+                            $queryFields .= '?,';
+                        }
+                        $queryFields = substr($queryFields, 0, -1);
+                        $queryValues = array_merge($queryValues, $fields);
+
                     } else {
-                        $queryFields = implode(',', $fields);
+                        $queryFields .= '*';
                     }
                 }
 
-                $sql = "SELECT " . $queryFields . " "
-                    . "FROM host h "
-                    . "WHERE host_id =" . CentreonDB::escape($hostId);
+                $query = 'SELECT ' . $queryFields . ' ' .
+                    'FROM host h ' .
+                    'WHERE host_id = ?';
+                $queryValues[] = $hostId;
 
-                $DBRESULT = $this->db->query($sql);
+                $stmt = $this->db->prepare($query);
+                $dbResult = $this->db->execute($stmt, $queryValues);
 
-                while ($row = $DBRESULT->fetchRow()) {
+                while ($row = $dbResult->fetchRow()) {
                     if (!count($alreadyProcessed)) {
                         $fields = array_keys($row);
                     }
 
                     foreach ($row as $field => $value) {
-
                         if (!isset($values[$field]) && !is_null($value) && $value != '') {
                             unset($fields[$field]);
                             $values[$field] = $value;
@@ -1349,7 +1306,6 @@ class CentreonHost
                 }
 
                 $alreadyProcessed[] = $hostId;
-
                 $hostTemplateIds = $this->getHostTemplateIds($hostId);
                 foreach ($hostTemplateIds as $hostTemplateId) {
                     $values = $this->getInheritedValues($hostTemplateId, $alreadyProcessed, $depth, $fields, $values);
@@ -1364,8 +1320,7 @@ class CentreonHost
      *
      * @return array
      */
-    public
-    function getLockedHostTemplates()
+    public function getLockedHostTemplates()
     {
         static $arr = null;
 
@@ -1379,17 +1334,15 @@ class CentreonHost
         return $arr;
     }
 
-    public
-    function getServicesTemplates(
-        $hostId
-    ) {
-        $query = "SELECT s.service_id,s.command_command_id,s.service_description from host_service_relation hsr "
-            . " INNER JOIN service s on hsr.service_service_id = s.service_id and s.service_register = '0' "
-            . " WHERE hsr.host_host_id = " . $hostId;
-        //echo $query;
-        $DBRESULT = $this->db->query($query);
+    public function getServicesTemplates($hostId)
+    {
+        $query = 'SELECT s.service_id,s.command_command_id,s.service_description from host_service_relation hsr ' .
+            'INNER JOIN service s on hsr.service_service_id = s.service_id and s.service_register = "0" ' .
+            'WHERE hsr.host_host_id = ?';
+        $stmt = $this->db->prepare($query);
+        $dbResult = $this->db->execute($stmt, array($hostId));
         $arrayTemplate = array();
-        while ($row = $DBRESULT->fetchRow()) {
+        while ($row = $dbResult->fetchRow()) {
             $aListTemplate = getListTemplates($this->db, $row['service_id']);
             $aListTemplate = array_reverse($aListTemplate);
             foreach ($aListTemplate as $tpl) {
@@ -1404,14 +1357,12 @@ class CentreonHost
     }
 
 
-    public
-    function purgeOldMacroToForm(
+    public function purgeOldMacroToForm(
         &$macroArray,
         &$form,
         $fromKey,
         $macrosArrayToCompare = null
     ) {
-
 
         if (isset($form["macroInput"]["#index#"])) {
             unset($form["macroInput"]["#index#"]);
@@ -1419,7 +1370,6 @@ class CentreonHost
         if (isset($form["macroValue"]["#index#"])) {
             unset($form["macroValue"]["#index#"]);
         }
-
 
         foreach ($macroArray as $key => $macro) {
             if ($macro["macroInput_#index#"] == "") {
@@ -1451,13 +1401,8 @@ class CentreonHost
 
     }
 
-    private
-    function comparaPriority(
-        $macroA,
-        $macroB,
-        $getFirst = true
-    ) {
-
+    private function comparaPriority($macroA, $macroB, $getFirst = true)
+    {
         $arrayPrio = array('direct' => 3, 'fromTpl' => 2, 'fromCommand' => 1);
         if ($getFirst) {
             if ($arrayPrio[$macroA['source']] > $arrayPrio[$macroB['source']]) {
@@ -1474,11 +1419,8 @@ class CentreonHost
         }
     }
 
-    public
-    function macroUnique(
-        $aTempMacro
-    ) {
-
+    public function macroUnique($aTempMacro)
+    {
         $storedMacros = array();
         foreach ($aTempMacro as $TempMacro) {
             $sInput = $TempMacro['macroInput_#index#'];
@@ -1503,12 +1445,8 @@ class CentreonHost
         return $finalMacros;
     }
 
-    private
-    function addInfosToMacro(
-        $storedMacros,
-        &$finalMacros
-    ) {
-
+    private function addInfosToMacro($storedMacros, &$finalMacros)
+    {
         foreach ($finalMacros as &$finalMacro) {
             $sInput = $finalMacro['macroInput_#index#'];
             $this->setInheritedDescription(
@@ -1527,15 +1465,11 @@ class CentreonHost
                 default:
                     break;
             }
-
         }
     }
 
-    private
-    function getInheritedDescription(
-        $storedMacros,
-        $finalMacro
-    ) {
+    private function getInheritedDescription($storedMacros, $finalMacro)
+    {
         $description = "";
         if (empty($finalMacro['macroDescription'])) {
             $choosedMacro = array();
@@ -1546,7 +1480,6 @@ class CentreonHost
                     } else {
                         $choosedMacro = $this->comparaPriority($storedMacro, $choosedMacro);
                     }
-
                     $description = $choosedMacro['macroDescription'];
                 }
             }
@@ -1556,21 +1489,14 @@ class CentreonHost
         return $description;
     }
 
-    private
-    function setInheritedDescription(
-        &$finalMacro,
-        $description
-    ) {
+    private function setInheritedDescription(&$finalMacro, $description)
+    {
         $finalMacro['macroDescription_#index#'] = $description;
         $finalMacro['macroDescription'] = $description;
     }
 
-    private
-    function setTplValue(
-        $tplValue,
-        &$finalMacro
-    ) {
-
+    private function setTplValue($tplValue, &$finalMacro)
+    {
         if ($tplValue !== false) {
             $finalMacro['macroTplValue_#index#'] = $tplValue;
             $finalMacro['macroTplValToDisplay_#index#'] = 1;
@@ -1580,11 +1506,8 @@ class CentreonHost
         }
     }
 
-    private
-    function findTplValue(
-        $storedMacro,
-        $getFirst = true
-    ) {
+    private function findTplValue($storedMacro, $getFirst = true)
+    {
         if ($getFirst) {
             foreach ($storedMacro as $macros) {
                 if ($macros['source'] == 'fromTpl') {
@@ -1608,10 +1531,8 @@ class CentreonHost
      * @param integer $field
      * @return array
      */
-    public
-    static function getDefaultValuesParameters(
-        $field
-    ) {
+    public static function getDefaultValuesParameters($field)
+    {
         $parameters = array();
         $parameters['currentObject']['table'] = 'host';
         $parameters['currentObject']['id'] = 'host_id';
@@ -1719,7 +1640,6 @@ class CentreonHost
                 $parameters['externalObject']['comparator'] = 'timezone_id';
                 break;
         }
-
         return $parameters;
     }
 
@@ -1729,25 +1649,22 @@ class CentreonHost
      * @param int $hostTplId The host template id
      * @return array
      */
-    public
-    function getServicesTplInHostTpl(
-        $hostTplId
-    ) {
-        /*
-         * Get service for a host
-         */
-        $queryGetServices = 'SELECT s.service_id, s.service_description, s.service_alias
- 	    	FROM service s, host_service_relation hsr, host h
- 	    	WHERE s.service_id = hsr.service_service_id
- 	    		AND s.service_register = "0"
- 	    		AND s.service_activate = "1"
- 	    		AND h.host_id = hsr.host_host_id
- 	    		AND h.host_register = "0"
- 	    		AND h.host_activate = "1"
- 	    		AND hsr.host_host_id = ' . CentreonDB::escape($hostTplId);
+    public function getServicesTplInHostTpl($hostTplId)
+    {
+        // Get service for a host
+        $queryGetServices = 'SELECT s.service_id, s.service_description, s.service_alias ' .
+            'FROM service s, host_service_relation hsr, host h ' .
+            'WHERE s.service_id = hsr.service_service_id ' .
+            'AND s.service_register = "0" ' .
+            'AND s.service_activate = "1" ' .
+            'AND h.host_id = hsr.host_host_id ' .
+            'AND h.host_register = "0" ' .
+            'AND h.host_activate = "1" ' .
+            'AND hsr.host_host_id = ?';
 
+        $stmt = $this->db->prepare($queryGetServices);
+        $res = $this->db->execute($stmt, array($hostTplId));
 
-        $res = $this->db->query($queryGetServices);
         if (PEAR::isError($res)) {
             return array();
         }
@@ -1758,7 +1675,6 @@ class CentreonHost
                 "service_alias" => $row['service_alias']
             );
         }
-
         return $listServices;
     }
 
@@ -1771,11 +1687,8 @@ class CentreonHost
      * @param mixed $hostTemplateId
      * @return void
      */
-    public
-    function deployServices(
-        $hostId,
-        $hostTemplateId = null
-    ) {
+    public function deployServices($hostId, $hostTemplateId = null)
+    {
         if (!isset($hostTemplateId)) {
             $id = $hostId;
         } else {
@@ -1787,22 +1700,28 @@ class CentreonHost
             $serviceTemplates = $this->getServicesTplInHostTpl($templateId['id']);
 
             foreach ($serviceTemplates as $serviceTemplateId => $service) {
-                $sql = "SELECT service_id
-                		FROM service s, host_service_relation hsr
-                		WHERE s.service_id = hsr.service_service_id
-                		AND s.service_description = '" . CentreonDB::escape($service['service_alias']) . "'
-                		AND hsr.host_host_id = '" . intval($hostId) . "'
-                		UNION
-                		SELECT service_id
-                		FROM service s, host_service_relation hsr
-                		WHERE s.service_id = hsr.service_service_id
-                		AND s.service_description = '" . CentreonDB::escape($service['service_alias']) . "'
-                		AND hsr.hostgroup_hg_id IN (
-                            SELECT hostgroup_hg_id
-                                FROM hostgroup_relation WHERE host_host_id = '" . intval($hostId) . "'
-                        )";
+                $queryValues = array();
+                $query = 'SELECT service_id ' .
+                    'FROM service s, host_service_relation hsr ' .
+                    'WHERE s.service_id = hsr.service_service_id ' .
+                    'AND s.service_description = ? ' .
+                    'AND hsr.host_host_id = ? ' .
+                    'UNION ' .
+                    'SELECT service_id ' .
+                    'FROM service s, host_service_relation hsr ' .
+                    'WHERE s.service_id = hsr.service_service_id ' .
+                    'AND s.service_description = ? ' .
+                    'AND hsr.hostgroup_hg_id IN ( ' .
+                    'SELECT hostgroup_hg_id ' .
+                    'FROM hostgroup_relation ' .
+                    'WHERE host_host_id = ?  )';
 
-                $res = $this->db->query($sql);
+                $queryValues[] = $service['service_alias'];
+                $queryValues[] = $hostId;
+                $queryValues[] = $service['service_alias'];
+                $queryValues[] = $hostId;
+                $stmt = $this->db->prepare($query);
+                $res = $this->db->execute($stmt, $queryValues);
 
                 if (!$res->numRows()) {
                     $svcId = $this->serviceObj->insert(
@@ -1827,10 +1746,8 @@ class CentreonHost
      * Insert host in DB
      *
      */
-    public
-    function insert(
-        $ret
-    ) {
+    public function insert($ret)
+    {
         $ret["host_name"] = $this->checkIllegalChar($ret["host_name"]);
 
         if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null) {
@@ -1844,17 +1761,19 @@ class CentreonHost
             $ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
         }
 
-        $rq = "INSERT INTO host " .
-            "(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id,
-            timeperiod_tp_id2, command_command_id2, command_command_id_arg2, host_name, host_alias, host_address,
-            host_max_check_attempts, host_check_interval, host_retry_check_interval, host_active_checks_enabled,
-            host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness,
-            host_freshness_threshold, host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold,
-            host_flap_detection_enabled, host_process_perf_data, host_retain_status_information,
-            host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay,
-            host_notification_options, host_notifications_enabled, contact_additive_inheritance,
-            cg_additive_inheritance, host_stalking_options, host_snmp_community, host_snmp_version, host_location,
-            host_comment, host_locked, host_register, host_activate, host_acknowledgement_timeout) VALUES ( ";
+        $rq = 'INSERT INTO host ' .
+            '(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id, ' .
+            ' timeperiod_tp_id2, command_command_id2, command_command_id_arg2, host_name, host_alias, host_address, ' .
+            'host_max_check_attempts, host_check_interval, host_retry_check_interval, host_active_checks_enabled, ' .
+            'host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, ' .
+            'host_freshness_threshold, host_event_handler_enabled, host_low_flap_threshold, ' .
+            'host_high_flap_threshold, host_flap_detection_enabled, host_process_perf_data, ' .
+            'host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, ' .
+            'host_first_notification_delay, host_notification_options, host_notifications_enabled, ' .
+            'contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community, ' .
+            'host_snmp_version, host_location, host_comment, host_locked, host_register, host_activate, ' .
+            'host_acknowledgement_timeout) ' .
+            'VALUES ( ';
         isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != null ?
             $rq .= "'" . $ret["host_template_model_htm_id"] . "', " : $rq .= "NULL, ";
         isset($ret["command_command_id"]) && $ret["command_command_id"] != null ?
@@ -1970,10 +1889,8 @@ class CentreonHost
      * Insert host extended informations in DB
      *
      */
-    public
-    function insertExtendedInfos(
-        $ret
-    ) {
+    public function insertExtendedInfos($ret)
+    {
         if (empty($ret['host_id'])) {
             return;
         }
@@ -2015,21 +1932,14 @@ class CentreonHost
      * @param type $iServiceId
      * @return type
      */
-    public
-    function insertRelHostService(
-        $iHostId,
-        $iServiceId
-    ) {
-
+    public function insertRelHostService($iHostId, $iServiceId)
+    {
         if (empty($iHostId) || empty($iServiceId)) {
             return;
         }
-        $rq = "INSERT INTO host_service_relation ";
-        $rq .= "(host_host_id, service_service_id) ";
-        $rq .= "VALUES ";
-        $rq .= "('" . $iHostId . "', '" . $iServiceId . "')";
-
-        $DBRESULT = $this->db->query($rq);
+        $query = 'INSERT INTO host_service_relation (host_host_id, service_service_id) VALUES (?, ?)';
+        $stmt = $this->db->prepare($query);
+        $this->db->execute($stmt, array($iHostId, $iServiceId));
     }
 
     /**
@@ -2037,11 +1947,8 @@ class CentreonHost
      * @param int $hostId
      * @param array $parameters
      */
-    public
-    function update(
-        $host_id,
-        $ret
-    ) {
+    public function update($host_id, $ret)
+    {
 
         if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null) {
             $ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
@@ -2184,11 +2091,8 @@ class CentreonHost
      * Insert host extended informations in DB
      *
      */
-    public
-    function updateExtendedInfos(
-        $host_id,
-        $ret
-    ) {
+    public function updateExtendedInfos($host_id, $ret)
+    {
         $fields = array(
             'ehi_notes' => 'ehi_notes',
             'ehi_notes_url' => 'ehi_notes_url',
@@ -2201,19 +2105,23 @@ class CentreonHost
             'ehi_3d_coords' => 'ehi_3d_coords'
         );
 
-        $query = "UPDATE extended_host_information SET ";
+        $query = 'UPDATE extended_host_information SET ';
         $updateFields = array();
+        $queryValues = array();
         foreach ($ret as $key => $value) {
             if (isset($fields[$key])) {
-                $updateFields[] = '`' . $fields[$key] . '` = "' . CentreonDB::escape($value) . '" ';
+                $updateFields[] = '`' . $fields[$key] . '` = ? ';
+                $queryValues[] = $value;
             }
         }
 
         if (count($updateFields)) {
-            $query .= implode(',', $updateFields)
-                . 'WHERE host_host_id = "' . $host_id . '" ';
-            $result = $this->db->query($query);
-            if (\PEAR::isError($result)) {
+            $query .= implode(',', $updateFields) . 'WHERE host_host_id = ? ';
+            $queryValues[] = $host_id;
+            $stmt = $this->db->prepare($query);
+            $dbResult = $this->db->execute($stmt, $queryValues);
+
+            if (\PEAR::isError($dbResult)) {
                 throw new \Exception('Error while updating extendeded infos of host ' . $host_id);
             }
         }
@@ -2225,12 +2133,11 @@ class CentreonHost
      * @param int host_id
      * @param int poller_id
      */
-    public
-    function setPollerInstance(
-        $host_id,
-        $poller_id
-    ) {
-        $this->db->query("INSERT INTO ns_host_relation (host_host_id, nagios_server_id) VALUES ($host_id, $poller_id)");
+    public function setPollerInstance($host_id, $poller_id)
+    {
+        $query = 'INSERT INTO ns_host_relation (host_host_id, nagios_server_id) VALUES (?,?)';
+        $stmt = $this->db->prepare($query);
+        $this->db->execute($stmt, array($host_id, $poller_id));
     }
 
     /**
@@ -2238,12 +2145,8 @@ class CentreonHost
      * @param array $values
      * @return array
      */
-    public
-    function getObjectForSelect2(
-        $values = array(),
-        $options = array(),
-        $register = '1'
-    ) {
+    public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
+    {
         global $centreon;
         $items = array();
         $useAcl = false;
@@ -2272,19 +2175,26 @@ class CentreonHost
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        $queryValues[] = $register;
+        if (!empty($values)) {
+            for ($i = 1; $i <= count($values); $i++) {
+                $explodedValues .= '?,';
+            }
+            $explodedValues = substr($explodedValues, 0, -1);
+            $queryValues = array_merge($queryValues, $values);
         }
 
         # get list of selected hosts
-        $query = "SELECT host_id, host_name "
-            . "FROM host "
-            . "WHERE host_register = '" . $register . "' "
-            . "AND host_id IN (" . $explodedValues . ") "
-            . "ORDER BY host_name ";
+        $query = 'SELECT host_id, host_name ' .
+            'FROM host ' .
+            'WHERE host_register = ? ' .
+            'AND host_id IN (' . $explodedValues . ') ' .
+            'ORDER BY host_name ';
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
 
-        $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized hosts
             $hide = false;
@@ -2308,14 +2218,11 @@ class CentreonHost
      * @param string $host_name Hostname
      * @throws Exception
      */
-    public
-    function deleteHostByName(
-        $host_name
-    ) {
-        $sQuery = 'DELETE FROM host '
-            . 'WHERE host_name = "' . $this->db->escape($host_name) . '"';
-
-        $res = $this->db->query($sQuery);
+    public function deleteHostByName($host_name)
+    {
+        $query = 'DELETE FROM host WHERE host_name = ?';
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, array($host_name));
 
         if (\PEAR::isError($res)) {
             throw new \Exception('Error while delete host ' . $host_name);
