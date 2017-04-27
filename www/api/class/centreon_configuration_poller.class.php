@@ -84,7 +84,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         
         $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
             . "FROM nagios_server "
-            . "WHERE name LIKE '%$q%' "
+            . "WHERE name LIKE ? "
             . "AND ns_activate = '1' ";
         if (!$isAdmin) {
             $queryPoller .= $acl->queryBuilder('AND', 'id', $acl->getPollerString('ID', $this->pearDB));
@@ -92,7 +92,8 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         $queryPoller .= "ORDER BY name "
             . $range;
         
-        $DBRESULT = $this->pearDB->query($queryPoller);
+        $stmt = $this->pearDB->prepare($queryPoller);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         

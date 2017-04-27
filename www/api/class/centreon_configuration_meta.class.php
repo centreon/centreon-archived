@@ -81,12 +81,13 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
 
         $queryMeta = "SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name "
             . "FROM meta_service "
-            . "WHERE meta_name LIKE '%$q%' "
+            . "WHERE meta_name LIKE ? "
             . $aclMetaservices
             . "ORDER BY meta_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryMeta);
+
+        $stmt = $this->pearDB->prepare($queryMeta);
+        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
 
         $total = $this->pearDB->numberRows();
         
