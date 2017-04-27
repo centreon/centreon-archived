@@ -38,32 +38,27 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 class CentreonWebService
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB|null
      */
     protected $pearDB = null;
-    
+
     /**
-     *
      * @var array
      */
     protected $arguments= array();
-    
+
     /**
-     *
-     * @var string
+     * @var null
      */
     protected $token = null;
-    
+
     /**
-     *
-     * @var type
+     * @var
      */
     protected static $webServicePaths;
 
     /**
-     * Constructor
-     * @global type $pearDB
+     * CentreonWebService constructor.
      */
     public function __construct()
     {
@@ -75,7 +70,7 @@ class CentreonWebService
         $this->loadArguments();
         $this->loadToken();
     }
-    
+
     /**
      * Load arguments compared http method
      */

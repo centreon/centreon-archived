@@ -95,10 +95,11 @@ class CentreonMetric extends CentreonWebService
 
     /**
      * @return array
-     * @throws Exception
      */
     protected function getListByService()
     {
+        $queryArguments = array();
+
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
@@ -106,8 +107,10 @@ class CentreonMetric extends CentreonWebService
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryArguments[] = $offset;
+            $queryArguments[] = $this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -123,7 +126,7 @@ class CentreonMetric extends CentreonWebService
             .$range;
 
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . $q . '%'));
+        $DBRESULT = $this->pearDBMonitoring->execute($stmt, $queryArguments);
 
         $total = $this->pearDB->numberRows();
         $metrics = array();

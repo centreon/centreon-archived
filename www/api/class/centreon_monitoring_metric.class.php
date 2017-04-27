@@ -40,13 +40,12 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonMonitoringMetric extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
-    
+
     /**
-     * Constructor
+     * CentreonMonitoringMetric constructor.
      */
     public function __construct()
     {

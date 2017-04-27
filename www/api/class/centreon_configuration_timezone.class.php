@@ -40,19 +40,20 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationTimezone extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationTimezone constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
      */
     public function getList()
     {
+        $queryArguments = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -61,8 +62,10 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryArguments[] = intval($offset);
+            $queryArguments[] = intval($this->arguments['page_limit']);
         } else {
             $range = '';
         }
@@ -74,7 +77,7 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
             . $range;
         
         $stmt = $this->pearDB->prepare($queryTimezone);
-        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
+        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
 
         $total = $this->pearDB->numberRows();
         

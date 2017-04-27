@@ -42,13 +42,12 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
 {
 
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationHost constructor.
      */
     public function __construct()
     {

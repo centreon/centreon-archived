@@ -40,13 +40,12 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationService extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationService constructor.
      */
     public function __construct()
     {
@@ -55,10 +54,8 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         $pearDBO = $this->pearDBMonitoring;
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
      */
     public function getList()
@@ -70,6 +67,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $isAdmin = $centreon->user->admin;
         $aclServices = '';
         $aclMetaServices = '';
+        $queryArguments = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -119,8 +117,11 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            // $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryArguments[] = $offset;
+            $queryArguments[] = $this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -138,11 +139,16 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
         return $serviceList;
     }
-    
+
     /**
-     *
-     * @param type $q
-     * @param type $aclServices
+     * @param $q
+     * @param $aclServices
+     * @param string $range
+     * @param bool $hasGraph
+     * @param $aclMetaServices
+     * @param $s
+     * @param $e
+     * @return array
      */
     private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false, $aclMetaServices, $s, $e)
     {
@@ -249,11 +255,12 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             'total' => $total
         );
     }
-    
+
     /**
-     *
-     * @param type $q
-     * @param type $aclServices
+     * @param $q
+     * @param $aclServices
+     * @param string $range
+     * @return array
      */
     private function getServicesByHostgroup($q, $aclServices, $range = '')
     {
@@ -288,9 +295,8 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
     }
 
     /**
-     *
-     * @param type $args
      * @return array
+     * @throws RestBadRequestException
      */
     public function getDefaultEscalationValues()
     {

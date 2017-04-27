@@ -39,25 +39,26 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonMonitoringPoller extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
+
     /**
-     * Constructor
+     * CentreonMonitoringPoller constructor.
      */
     public function __construct()
     {
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
      */
     public function getList()
     {
+        $queryArguments = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -66,8 +67,10 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryArguments[] = $offset;
+            $queryArguments[] = $this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -79,7 +82,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
             . $range;
 
         $stmt = $this->pearDBMonitoring->prepare($queryPoller);
-        $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . $q . '%'));
+        $DBRESULT = $this->pearDBMonitoring->execute($stmt, $queryArguments);
 
         $total = $this->pearDBMonitoring->numberRows();
         

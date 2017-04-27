@@ -39,15 +39,16 @@ require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 class CentreonHomeCustomview extends CentreonWebService
 {
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonHomeCustomview constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
 
+    /**
+     * @return array
+     */
     public function getListSharedViews()
     {
         global $centreon;

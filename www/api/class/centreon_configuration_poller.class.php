@@ -39,21 +39,20 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationPoller extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDB;
+
     /**
-     * Constructor
+     * CentreonConfigurationPoller constructor.
      */
     public function __construct()
     {
         $this->pearDB = new CentreonDB('centreon');
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
      */
     public function getList()
@@ -62,6 +61,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
+        $queryArguments = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -76,8 +76,10 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryArguments[] = $offset;
+            $queryArguments[] = $this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -93,7 +95,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
             . $range;
         
         $stmt = $this->pearDB->prepare($queryPoller);
-        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%'));
+        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
 
         $total = $this->pearDB->numberRows();
         

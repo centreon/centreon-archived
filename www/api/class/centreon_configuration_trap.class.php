@@ -40,28 +40,26 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationTrap extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationTrap constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
      */
     public function getList()
     {
         global $centreon;
+        $queryArguments = array();
         
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
@@ -74,8 +72,10 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryArguments[] = $offset;
+            $queryArguments[] = $this->arguments['page_limit'];
         } else {
             $range = '';
         }

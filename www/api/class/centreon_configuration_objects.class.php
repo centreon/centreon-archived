@@ -39,7 +39,7 @@ require_once dirname(__FILE__) . "/webService.class.php";
 class CentreonConfigurationObjects extends CentreonWebService
 {
     /**
-     * Constructor
+     * CentreonConfigurationObjects constructor.
      */
     public function __construct()
     {
@@ -47,8 +47,7 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @global type _CENTREON_PATH_
+     * @return array
      * @throws RestBadRequestException
      */
     public function getDefaultValues()
@@ -172,9 +171,9 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @param integer $id
-     * @param string $field
+     * @param $currentObject
+     * @param $id
+     * @param $field
      * @return array
      */
     protected function retrieveSimpleValues($currentObject, $id, $field)
@@ -209,9 +208,8 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @param array $relationObject
-     * @param integer $id
+     * @param $relationObject
+     * @param $id
      * @return array
      */
     protected function retrieveRelatedValues($relationObject, $id)

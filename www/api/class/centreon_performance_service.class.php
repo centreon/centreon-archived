@@ -41,13 +41,12 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonPerformanceService extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonPerformanceService constructor.
      */
     public function __construct()
     {
@@ -55,10 +54,8 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
      */
     public function getList()
@@ -123,12 +120,15 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             . ') '
             . $virtualServicesCondition
             . ') as t_union '
-            . 'WHERE fullname LIKE "%' . $q . '%" '
+            . 'WHERE fullname LIKE ? '
             . 'GROUP BY host_id, service_id '
             . 'ORDER BY fullname '
             . $range;
 
-        $DBRESULT = $this->pearDBMonitoring->query($query);
+        // $DBRESULT = $this->pearDBMonitoring->query($query);
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $DBRESULT = $this->pearDBMonitoring->execute($stmt, $query);
+
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $serviceCompleteName = $data['fullname'];
@@ -141,6 +141,12 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         );
     }
 
+    /**
+     * @param $additionnalTables
+     * @param $additionnalCondition
+     * @param null $aclObj
+     * @return string
+     */
     private function getVirtualServicesCondition($additionnalTables, $additionnalCondition, $aclObj = null)
     {
         /* First, get virtual services for metaservices */

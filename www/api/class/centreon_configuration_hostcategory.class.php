@@ -39,10 +39,9 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 {
-    
+
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
