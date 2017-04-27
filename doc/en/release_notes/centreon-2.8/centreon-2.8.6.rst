@@ -2,11 +2,12 @@
 Centreon 2.8.6
 ##############
 
+Released April 25th, 2017
+
+The 2.8.6 release for Centreon Web is now available for download. Here are its release notes.
+
 Bug Fixes
 =========
-
-KB
---
 
 * Downtimes - Display real BA name instead of _Module_ - #5014, PR #5094
 * InfluxDB broker output config: metric columns not stored properly - #5058, PR #5089
@@ -41,3 +42,10 @@ If you already used a knowledge base, please execute following script :
 ::
 
 	php /usr/share/centreon/bin/migrateWikiPages.php
+
+
+Known bugs or issues
+====================
+
+* There's an issue in the ldap configuration form. A fix is available and will be package with the next bugfix version. Until then you can apply the patch available `here <https://github.com/centreon/centreon/commit/8aef6dfa4e3af27f16277b4211655889cf91fb71>`_
+* There's an issue on all listing pages. A fix is available and will be package with the next bugfix version. Until then you can apply the patch available `here <https://github.com/centreon/centreon/commit/d9b58f203f1af377575328d6f955ac1e9c8fb804>`_

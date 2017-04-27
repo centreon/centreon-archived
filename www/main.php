@@ -44,11 +44,6 @@ if (defined("E_DEPRECATED")) {
  * Purge Values
  */
 if (function_exists('filter_var')){
-    foreach ($_POST as $key => $value){
-        if (!is_array($value)){
-            $_POST[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-        }
-    }
     foreach ($_GET as $key => $value){
         if (!is_array($value)){
             $_GET[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -276,13 +271,51 @@ $inputPost = filter_input_array(
     INPUT_POST,
     $inputArguments
 );
+
 if (isset($url) && $url) {
     foreach ($inputArguments as $argumentName => $argumentFlag) {
-        if (!is_null($inputGet[$argumentName])) {
-            $centreon->historyPage[$url] = $inputGet[$argumentName];
-        } elseif (!is_null($inputPost[$argumentName])) {
-            $centreon->historyPage[$url] = $inputPost[$argumentName];
+        switch ($argumentName) {
+            case 'limit':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyLimit[$url] = 30;
+                }
+                break;
+            case 'num':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyPage[$url] = 0;
+                }
+                break;
+            case 'search':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearch[$url] = '';
+                }
+                break;
+            case 'search_service':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearchService[$url] = '';
+                }
+                break;
+            default:
+                continue;
+                break;
         }
+
     }
 }
 
