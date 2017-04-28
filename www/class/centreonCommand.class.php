@@ -77,7 +77,7 @@ class CentreonCommand
             'WHERE command_type = ? ' .
             'ORDER BY command_name';
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array($commandType));
+        $res = $this->db->execute($stmt, array((int)$commandType));
         $arr = array();
         while ($row = $res->fetchRow()) {
             $arr[$row['command_id']] = $row['command_name'];
@@ -156,8 +156,8 @@ class CentreonCommand
             'AND command_id = ? ' .
             'AND command_line like ? ' .
             'ORDER BY command_name';
-        $queryValues[] = $iIdCommand;
-        $queryValues[] = '%' . $this->aTypeCommand[$sType]['key'] . '%';
+        $queryValues[] = (int)$iIdCommand;
+        $queryValues[] = (string)'%' . $this->aTypeCommand[$sType]['key'] . '%';
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, $queryValues);
         $arr = array();
@@ -200,7 +200,7 @@ class CentreonCommand
         $aReturn = array();
         $query = 'SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = ?';
         $stmt = $this->db->prepare($query);
-        $dbResult = $this->db->execute($stmt, array($iIdCmd));
+        $dbResult = $this->db->execute($stmt, array((int)$iIdCmd));
         while ($row = $dbResult->fetchRow()) {
             $arr['id'] = $row['command_macro_id'];
             $arr['name'] = $row['command_macro_name'];
@@ -235,14 +235,14 @@ class CentreonCommand
                 'AND command_macro_type = ? ' .
                 'AND command_macro_name IN (';
 
-            $queryValues[] = $iIdCommande;
-            $queryValues[] = $sType;
+            $queryValues[] = (int)$iIdCommande;
+            $queryValues[] = (string)$sType;
             if (!empty($aMacro)) {
-                for ($i = 1; $i <= count($aMacro); $i++) {
+                foreach ($aMacro as $k => $v) {
                     $explodedValues .= '?,';
+                    $queryValues[] = (string)$v;
                 }
-                $explodedValues = substr($explodedValues, 0, -1);
-                $queryValues = array_merge($queryValues, $aMacro);
+                $explodedValues = rtrim($explodedValues, ',');
             }
             $query .= $explodedValues . ')';
             $stmt = $this->db->prepare($query);
@@ -312,11 +312,13 @@ class CentreonCommand
     {
         $items = array();
         $explodedValues = '';
+        $queryValues = array();
         if (!empty($values)) {
-            for ($i = 1; $i <= count($values); $i++) {
+            foreach ($values as $k => $v) {
                 $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
             }
-            $explodedValues = substr($explodedValues, 0, -1);
+            $explodedValues = rtrim($explodedValues, ',');
         }
 
         # get list of selected connectors
@@ -325,7 +327,7 @@ class CentreonCommand
             'WHERE command_id IN (' . $explodedValues . ') ' .
             'ORDER BY command_name ';
         $stmt = $this->db->prepare($query);
-        $resRetrieval = $this->db->execute($stmt, $values);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
 
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
@@ -353,14 +355,14 @@ class CentreonCommand
             return array();
         }
         if (count($parameters) > 0) {
-            for ($i = 1; $i <= count($sElement); $i++) {
+            foreach ($parameters as $k => $v) {
                 $explodedValues .= '?,';
+                $queryValues[] = (string)$v;
             }
-            $sElement = substr($explodedValues, 0, -1);
-            $queryValues = array_merge($queryValues, $parameters);
+            $explodedValues = rtrim($explodedValues, ',');
         }
-        $query = 'SELECT ' . $sElement . ' FROM command WHERE command_id = ?';
-        $queryValues[] = $id;
+        $query = 'SELECT ' . $explodedValues . ' FROM command WHERE command_id = ?';
+        $queryValues[] = (int)$id;
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, $queryValues);
 
@@ -382,7 +384,7 @@ class CentreonCommand
         $arr = array();
         $query = 'SELECT * FROM command WHERE command_name = ?';
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array($name));
+        $res = $this->db->execute($stmt, array((string)$name));
         if ($res->numRows()) {
             $arr = $res->fetchRow();
         }
@@ -398,7 +400,7 @@ class CentreonCommand
     {
         $query = 'SELECT command_id FROM command WHERE command_name = ?';
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array($name));
+        $res = $this->db->execute($stmt, array((string)$name));
         if (!$res->numRows()) {
             return null;
         }
@@ -421,21 +423,21 @@ class CentreonCommand
 
         if (isset($parameters['command_name']) && $parameters['command_name'] != "") {
             $sQuery .= '?, ';
-            $queryValues[] = $parameters['command_name'];
+            $queryValues[] = (string)$parameters['command_name'];
         } else {
             $sQuery .= '"", ';
         }
         if (isset($parameters['command_line']) && $parameters['command_line'] != "") {
             $sQuery .= '?, ';
-            $queryValues[] = $parameters['command_line'];
+            $queryValues[] = (string)$parameters['command_line'];
         } else {
             $sQuery .= '"", ';
         }
         if (isset($parameters['command_type']) && $parameters['command_type'] != "") {
             $sQuery .= '?, ';
-            $queryValues[] = $parameters['command_type'];
+            $queryValues[] = (int)$parameters['command_type'];
         } else {
-            $sQuery .= "'2', ";
+            $sQuery .= "2, ";
         }
 
         if ($locked === true) {
@@ -463,9 +465,9 @@ class CentreonCommand
     {
         $queryValues = array();
         $sQuery = 'UPDATE `command` SET `command_line` = ?, `command_type` = ? WHERE `command_id` = ?';
-        $queryValues[] = $command['command_line'];
-        $queryValues[] = $command['command_type'];
-        $queryValues[] = $command_id;
+        $queryValues[] = (string)$command['command_line'];
+        $queryValues[] = (int)$command['command_type'];
+        $queryValues[] = (int)$command_id;
 
         $stmt = $this->db->prepare($sQuery);
         $res = $this->db->execute($stmt, $queryValues);
@@ -484,7 +486,7 @@ class CentreonCommand
     {
         $sQuery = 'DELETE FROM command WHERE command_name = ?';
         $stmt = $this->db->prepare($sQuery);
-        $res = $this->db->execute($stmt, array($command_name));
+        $res = $this->db->execute($stmt, array((string)$command_name));
         if (\PEAR::isError($res)) {
             throw new \Exception('Error while delete command ' . $command_name);
         }
@@ -510,7 +512,7 @@ class CentreonCommand
             'AND s.service_register = ? ' .
             'AND c.command_name = ? ';
         $stmt = $this->db->prepare($query);
-        $result = $this->db->execute($stmt, array($register, $commandName));
+        $result = $this->db->execute($stmt, array((string)$register, (string)$commandName));
 
         if (PEAR::isError($result)) {
             throw new \Exception('Error while getting linked services of ' . $commandName);
@@ -541,7 +543,7 @@ class CentreonCommand
             'AND h.host_register = ? ' .
             'AND c.command_name = ? ';
         $stmt = $this->db->prepare($query);
-        $result = $this->db->execute($stmt, array($register, $commandName));
+        $result = $this->db->execute($stmt, array((string)$register, (string)$commandName));
 
         if (PEAR::isError($result)) {
             throw new \Exception('Error while getting linked hosts of ' . $commandName);
