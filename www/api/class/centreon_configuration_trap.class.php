@@ -61,9 +61,6 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         global $centreon;
         $queryArguments = array();
         
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-        
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -73,9 +70,10 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $limit = $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryArguments[] = intval($offset);
+            $queryArguments[] = intval($limit);
         } else {
             $range = '';
         }
