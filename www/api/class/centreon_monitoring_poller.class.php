@@ -57,7 +57,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        $queryArguments = array();
+        $queryValues = array();
 
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
@@ -65,32 +65,30 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = intval($offset);
-            $queryArguments[] = intval($this->arguments['page_limit']);
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name "
-            . "FROM instances "
-            . "WHERE name LIKE ? "
-            . "ORDER BY name "
-            . $range;
+
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name ' .
+            'FROM instances ' .
+            'WHERE name LIKE ? ' .
+            'ORDER BY name ' . $range;
 
         $stmt = $this->pearDBMonitoring->prepare($queryPoller);
-        $DBRESULT = $this->pearDBMonitoring->execute($stmt, $queryArguments);
-
+        $dbResult = $this->pearDBMonitoring->execute($stmt, $queryValues);
         $total = $this->pearDBMonitoring->numberRows();
-        
         $pollerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $pollerList[] = array('id' => $data['instance_id'], 'text' => $data['name']);
         }
-        
+
         return array(
             'items' => $pollerList,
             'total' => $total
