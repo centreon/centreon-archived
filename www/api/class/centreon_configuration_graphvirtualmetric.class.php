@@ -57,18 +57,16 @@ class CentreonConfigurationGraphvirtualmetric extends CentreonConfigurationObjec
         $tmpValues = array();
 
         # Getting Current Values
-        $queryValuesRetrieval = "SELECT id.host_id, id.service_id " .
+        $query = "SELECT id.host_id, id.service_id " .
             "FROM " . dbcstg . ".index_data id, virtual_metrics vm " .
             "WHERE id.id = vm.index_id " .
             "AND vm.vmetric_id = ? ";
-
-        $stmt = $this->pearDB->prepare($queryValuesRetrieval);
-        $resRetrieval = $this->pearDB->execute($stmt, array($id));
+        $stmt = $this->pearDB->prepare($query);
+        $resRetrieval = $this->pearDB->execute($stmt, array((int)$id));
 
         while ($row = $resRetrieval->fetchRow()) {
             $tmpValues[] = $row['host_id'] . '-' . $row['service_id'];
         }
-
         return $tmpValues;
     }
 }
