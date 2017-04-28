@@ -60,34 +60,31 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-
         if (false === isset($this->arguments['t'])) {
             $t = '';
         } else {
             $t = $this->arguments['t'];
         }
 
+        $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .
+            "FROM command " .
+            "WHERE command_name LIKE ? AND command_activate = '1' ";
+        $queryValues[] = (string)'%' . $q . '%';
+
+        if (!empty($t)) {
+            $queryCommand .= "AND command_type = ? ";
+            $queryValues[] = (int)$t;
+        }
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
-                $this->pearDB->escape($this->arguments['page_limit']);
+            $range = 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
 
-        $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .
-            "FROM command " .
-            "WHERE command_name LIKE ? AND command_activate = '1' ";
-        $queryValues[] = '%' . $q .'%';
-
-        if (!empty($t)) {
-            $queryCommand .= "AND command_type = ? ";
-            $queryValues[] = $t;
-        }
-
-        $queryCommand .= "ORDER BY command_name "
-            . $range;
-
+        $queryCommand .= "ORDER BY command_name " . $range;
         $stmt = $this->pearDB->prepare($queryCommand);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
@@ -96,7 +93,6 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
         }
 
         $total = $this->pearDB->numberRows();
-
         $commandList = array();
         while ($data = $dbResult->fetchRow()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
