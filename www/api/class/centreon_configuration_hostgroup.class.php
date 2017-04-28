@@ -60,7 +60,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
     public function getList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
@@ -71,14 +71,14 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHostgroups .= 'AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
         }
-        
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-        $queryValues[] = (string)'%' . $q .'%';
+        $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
@@ -88,14 +88,14 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $range = '';
         }
-        
+
         $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id "
             . "FROM hostgroup hg "
             . "WHERE hg.hg_name LIKE ? "
             . $aclHostgroups
             . "ORDER BY hg.hg_name "
             . $range;
-        
+
         $stmt = $this->pearDB->prepare($queryHostgroup);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
@@ -104,32 +104,32 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         while ($data = $dbResult->fetchRow()) {
             $hostgroupList[] = array('id' => htmlentities($data['hg_id']), 'text' => $data['hg_name']);
         }
-        
+
         return array(
             'items' => $hostgroupList,
             'total' => $total
         );
     }
-    
+
     public function getHostList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
         $aclHosts = '';
         $queryValues = array();
-        
+
         /* Get ACL if user is not admin */
-        
+
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHostgroups .= ' AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
             $aclHosts .= ' AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-        
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['hgid'])) {
             $hgid = '';
@@ -146,7 +146,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $range = '';
         }
-        
+
         $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name , h.host_id "
             . "FROM hostgroup hg "
             . "INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id "
@@ -169,7 +169,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
                 'text' => $data['host_name']
             );
         }
- 
+
         return array(
             'items' => $hostList,
             'total' => $total
