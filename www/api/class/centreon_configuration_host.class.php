@@ -73,15 +73,8 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         $additionalCondition = '';
         $explodedValues = '';
         $queryValues = array();
-        $queryHost = '';
+        $query = '';
 
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
-                $this->pearDB->escape($this->arguments['page_limit']);
-        } else {
-            $range = '';
-        }
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -89,30 +82,29 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
 
-        $queryHost .= 'SELECT SQL_CALC_FOUND_ROWS DISTINCT host_name, host_id ' .
+        $query .= 'SELECT SQL_CALC_FOUND_ROWS DISTINCT host_name, host_id ' .
             'FROM ( ' .
             '( SELECT DISTINCT h.host_name, h.host_id ' .
             'FROM host h ';
         if (isset($this->arguments['hostgroup'])) {
             $additionalTables .= ',hostgroup_relation hg ';
             $additionalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (';
-            for ($i = 1; $i <= count($this->arguments['hostgroup']); $i++) {
+            foreach ($this->arguments['hostgroup'] as $k => $v) {
                 $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
             }
-            $explodedValues = substr($explodedValues, 0, -1);
-            $queryValues = array_merge($queryValues, $this->arguments['hostgroup']);
+            $explodedValues = rtrim($explodedValues, ',');
             $additionalCondition .= $explodedValues . ') ';
         }
-
-        $queryHost .= $additionalTables . 'WHERE h.host_register = "1" ';
+        $query .= $additionalTables . 'WHERE h.host_register = "1" ';
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHosts .= 'AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
         }
-        $queryHost .= $aclHosts;
-        $queryHost .= $additionalCondition . ') ';
+        $query .= $aclHosts;
+        $query .= $additionalCondition . ') ';
 
         // Check for virtual hosts
         $virtualHostCondition = '';
@@ -121,21 +113,29 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             foreach ($allVirtualHosts as $virtualHosts) {
                 foreach ($virtualHosts as $virtualHostId => $virtualHostName) {
                     $virtualHostCondition .= 'UNION ALL (SELECT ? as host_name, ? as host_id ) ';
-                    $queryValues[] = $virtualHostName;
-                    $queryValues[] = $virtualHostId;
+                    $queryValues[] = (string)$virtualHostName;
+                    $queryValues[] = (string)$virtualHostId;
                 }
             }
         }
 
-        $queryHost .= $virtualHostCondition .
+        $query .= $virtualHostCondition .
             ') t_union ' .
-            'WHERE host_name LIKE ? ' .
-            'ORDER BY host_name ' . $range;
-        $queryValues[] = '%' . $q . '%';
+            'WHERE host_name LIKE ? ';
+        $queryValues[] = (string)'%' . $q . '%';
 
-        $stmt = $this->pearDB->prepare($queryHost);
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
+        $query .= 'ORDER BY host_name ' . $range;
+
+        $stmt = $this->pearDB->prepare($query);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
-
         $total = $this->pearDB->numberRows();
 
         $hostList = array();
