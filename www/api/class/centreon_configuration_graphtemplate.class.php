@@ -60,25 +60,23 @@ class CentreonConfigurationGraphtemplate extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
 
+        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT graph_id, name ' .
+            'FROM giv_graphs_template ' .
+            'WHERE name LIKE ? ';
+        $queryValues[] = (string)'%' . $q . '%';
+
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
-                $this->pearDB->escape($this->arguments['page_limit']);
+            $range = 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-
-        $queryGraphtemplate = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT graph_id, name ' .
-            'FROM giv_graphs_template ' .
-            'WHERE name LIKE ? ' .
-            'ORDER BY name ' . $range;
-        $queryValues[] = '%' . $q . '%';
-
-        $stmt = $this->pearDB->prepare($queryGraphtemplate);
+        $query .= 'ORDER BY name ' . $range;
+        $stmt = $this->pearDB->prepare($query);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
-
         $total = $this->pearDB->numberRows();
-
         $serviceList = array();
         while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array(
