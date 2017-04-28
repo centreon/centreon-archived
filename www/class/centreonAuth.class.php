@@ -279,13 +279,12 @@ class CentreonAuth
                         $_SERVER["REMOTE_ADDR"]
                     );
                 } else {
-                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
-                    $this->error = _('Your credentials are incorrect.');
+                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password - IP : " . $_SERVER["REMOTE_ADDR"]);
+                    $this->error = _("Your credentials are incorrect - IP : " . $_SERVER["REMOTE_ADDR"]);
                 }
             } else {
-                    $this->CentreonLog->insertLog(1,
-                        "[".$this->source."] Contact '" . $username . "' is not enable for reaching centreon");
-                $this->error = _('Your credentials are incorrect.');
+                $this->CentreonLog->insertLog(1,"[".$this->source."] Contact '" . $username . "' is not enable for reaching centreon - IP : " . $_SERVER["REMOTE_ADDR"]);
+                $this->error = _("Your credentials are incorrect - IP : " . $_SERVER["REMOTE_ADDR"])
             }
         } elseif (count($this->ldap_auto_import)) {
             /*
@@ -309,9 +308,9 @@ class CentreonAuth
             }
         } else {
             if ($this->debug) {
-                $this->CentreonLog->insertLog(1, "[".$this->source."] No contact found with this login : '$username'");
+                $this->CentreonLog->insertLog(1, "[".$this->source."] No contact found with this login : '$username' - IP : " . $_SERVER["REMOTE_ADDR"]);
             }
-            $this->error = _('Your credentials are incorrect.');
+            $this->error = _("Your credentials are incorrect - IP : " . $_SERVER["REMOTE_ADDR"]);
         }
     }
 
