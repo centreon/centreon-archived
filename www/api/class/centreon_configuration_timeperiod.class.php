@@ -52,37 +52,35 @@ class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        $queryArguments = array();
-
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryTimeperiod = "SELECT SQL_CALC_FOUND_ROWS DISTINCT tp_id, tp_name "
-            . "FROM timeperiod "
-            . "WHERE tp_name LIKE ? "
-            . "ORDER BY tp_name "
-            . $range;
+
+        $queryTimeperiod = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT tp_id, tp_name ' .
+            'FROM timeperiod ' .
+            'WHERE tp_name LIKE ? ' .
+            'ORDER BY tp_name ' . $range;
 
         $stmt = $this->pearDB->prepare($queryTimeperiod);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
-
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
+
         $timeperiodList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $timeperiodList[] = array(
                 'id' => $data['tp_id'],
                 'text' => $data['tp_name']
