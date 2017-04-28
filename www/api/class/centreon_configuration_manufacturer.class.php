@@ -51,7 +51,7 @@ class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        $queryArguments = array();
+        $queryValues = array();
 
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
@@ -59,32 +59,31 @@ class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryTimeperiod = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
-            . "FROM traps_vendor "
-            . "WHERE name LIKE ? "
-            . "ORDER BY name "
-            . $range;
-        
-        $stmt = $this->pearDB->prepare($queryTimeperiod);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
 
+        $queryTimeperiod = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name ' .
+            'FROM traps_vendor ' .
+            'WHERE name LIKE ? ' .
+            'ORDER BY name ' . $range;
+
+        $stmt = $this->pearDB->prepare($queryTimeperiod);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
+
         $manufacturerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $manufacturerList[] = array('id' => $data['id'], 'text' => $data['name']);
         }
-        
+
         return array(
             'items' => $manufacturerList,
             'total' => $total
