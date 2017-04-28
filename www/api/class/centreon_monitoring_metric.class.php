@@ -85,11 +85,14 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
             'total' => $total
         );
     }
-    
+
     /**
      * Get metrics datas for a service
      *
      * @return array
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
      */
     public function getMetricsDataByService()
     {
@@ -158,8 +161,6 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
                 }
             }
 
-            $data = array();
-
             /* Prepare graph */
             try {
                 /* Get index data */
@@ -174,8 +175,7 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
             $graph->createLegend();
 
             $serviceData = $graph->getData($rows);
-            
-            
+
             /* Replace NaN */
             for ($i = 0; $i < count($serviceData); $i++) {
                 if (isset($serviceData[$i]['data'])) {
