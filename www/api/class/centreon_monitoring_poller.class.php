@@ -69,8 +69,8 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryArguments[] = intval($offset);
+            $queryArguments[] = intval($this->arguments['page_limit']);
         } else {
             $range = '';
         }

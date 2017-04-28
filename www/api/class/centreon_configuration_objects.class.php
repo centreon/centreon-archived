@@ -73,7 +73,6 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters target");
         }
 
-        //
         $defaultValuesParameters = array();
         $targetedFile = _CENTREON_PATH_ . "/www/class/centreon$target.class.php";
         if (file_exists($targetedFile)) {
@@ -82,7 +81,6 @@ class CentreonConfigurationObjects extends CentreonWebService
             $defaultValuesParameters = $calledClass::getDefaultValuesParameters($field);
         }
 
-        //
         if (count($defaultValuesParameters) == 0) {
             throw new RestBadRequestException("Bad parameters count");
         }

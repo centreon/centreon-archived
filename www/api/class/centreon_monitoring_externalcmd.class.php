@@ -52,10 +52,11 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
         parent::__construct();
         $this->centcore_file = _CENTREON_VARLIB_.'/centcore.cmd';
     }
-    
+
     /**
-     *
      * @return array
+     * @throws RestBadRequestException
+     * @throws RestException
      */
     public function postSend()
     {
