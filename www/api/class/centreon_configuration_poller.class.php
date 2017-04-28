@@ -61,7 +61,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        $queryArguments = array();
+        $queryValues = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -75,38 +75,36 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
 
+        $queryValues[] = (string)'%' . $q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
-            . "FROM nagios_server "
-            . "WHERE name LIKE ? "
-            . "AND ns_activate = '1' ";
+
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name ' .
+            'FROM nagios_server ' .
+            'WHERE name LIKE ? ' .
+            'AND ns_activate = "1" ';
         if (!$isAdmin) {
             $queryPoller .= $acl->queryBuilder('AND', 'id', $acl->getPollerString('ID', $this->pearDB));
         }
-        $queryPoller .= "ORDER BY name "
-            . $range;
-        
+        $queryPoller .= 'ORDER BY name ' . $range;
         $stmt = $this->pearDB->prepare($queryPoller);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
-
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
+
         $pollerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $pollerList[] = array(
                 'id' => $data['id'],
                 'text' => $data['name']
             );
         }
-        
+
         return array(
             'items' => $pollerList,
             'total' => $total
