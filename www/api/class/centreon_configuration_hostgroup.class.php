@@ -64,7 +64,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
-        $queryArguments = array();
+        $queryValues = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -78,12 +78,13 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = (string)'%' . $q .'%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -96,12 +97,11 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             . $range;
         
         $stmt = $this->pearDB->prepare($queryHostgroup);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
-        
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
 
         $hostgroupList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $hostgroupList[] = array('id' => htmlentities($data['hg_id']), 'text' => $data['hg_name']);
         }
         
@@ -119,7 +119,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
         $aclHosts = '';
-        $queryArguments = array();
+        $queryValues = array();
         
         /* Get ACL if user is not admin */
         
@@ -136,13 +136,13 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $hgid = $this->arguments['hgid'];
         }
-        $queryArguments[] = $hgid;
+        $queryValues[] = (string)$hgid;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -151,13 +151,13 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             . "FROM hostgroup hg "
             . "INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id "
             . "INNER JOIN host h ON  h.host_id = hgr.host_host_id "
-            . "WHERE hg.hg_id IN ? "
+            . "WHERE hg.hg_id IN (?) "
             . $aclHostgroups
             . $aclHosts
             . $range;
 
         $stmt = $this->pearDB->prepare($queryHostgroup);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
+        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
 
 
         $total = $this->pearDB->numberRows();
