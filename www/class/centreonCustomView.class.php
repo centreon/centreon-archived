@@ -56,12 +56,10 @@ class CentreonCustomView
     protected $defaultView;
 
     /**
-     * Constructor
-     *
-     * @param Centreon $centreon
-     * @param CentreonDB $db
-     * @param int $userId
-     * @return void
+     * CentreonCustomView constructor.
+     * @param $centreon
+     * @param $db
+     * @param null $userId
      */
     public function __construct($centreon, $db, $userId = null)
     {
@@ -72,9 +70,9 @@ class CentreonCustomView
         }
         $this->db = $db;
         $this->userGroups = array();
-        $query = "SELECT contactgroup_cg_id
-        		  FROM contactgroup_contact_relation
-        		  WHERE contact_contact_id = " . $this->db->escape($this->userId);
+        $query = 'SELECT contactgroup_cg_id' .
+                 'FROM contactgroup_contact_relation' .
+                 'WHERE contact_contact_id = ' . $this->db->escape($this->userId);
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $this->userGroups[$row['contactgroup_cg_id']] = $row['contactgroup_cg_id'];
@@ -644,10 +642,13 @@ class CentreonCustomView
             $query = "SELECT contact_name, user_id, locked
             		  FROM contact c, custom_view_user_relation cvur
             		  WHERE c.contact_id = cvur.user_id
-            		  AND cvur.custom_view_id  = " . $this->db->escape($viewId) . "
+            		  AND cvur.custom_view_id  = ?
             		  AND cvur.is_share = 1
                       ORDER BY contact_name";
-            $res = $this->db->query($query);
+
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, array((int)$viewId));
+
             while ($row = $res->fetchRow()) {
                 $userList[$row['user_id']]['contact_name'] = $row['contact_name'];
                 $userList[$row['user_id']]['user_id'] = $row['user_id'];
@@ -672,10 +673,13 @@ class CentreonCustomView
             $query = "SELECT cg_name, usergroup_id, locked
             		  FROM contactgroup cg, custom_view_user_relation cvur
             		  WHERE cg.cg_id = cvur.usergroup_id
-            		  AND cvur.custom_view_id  = " . $this->db->escape($viewId) . "
+            		  AND cvur.custom_view_id  = ?
             		  AND cvur.is_share = 1
                       ORDER BY cg_name";
-            $res = $this->db->query($query);
+
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, array((int)$viewId));
+
             while ($row = $res->fetchRow()) {
                 $usergroupList[$row['usergroup_id']]['cg_name'] = $row['cg_name'];
                 $usergroupList[$row['usergroup_id']]['usergroup_id'] = $row['usergroup_id'];
