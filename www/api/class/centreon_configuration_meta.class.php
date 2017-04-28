@@ -57,7 +57,7 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclMetaservices = '';
-        $queryArguments = array();
+        $queryValues = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -71,12 +71,13 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -89,18 +90,17 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
             . $range;
 
         $stmt = $this->pearDB->prepare($queryMeta);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
-
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
+
         $metaList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $metaList[] = array(
                 'id' => $data['meta_id'],
                 'text' => $data['meta_name']
             );
         }
-        
+
         return array(
             'items' => $metaList,
             'total' => $total
