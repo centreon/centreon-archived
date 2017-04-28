@@ -74,12 +74,12 @@ class CentreonMetric extends CentreonWebService
         } else {
             $q = $this->arguments['q'];
         }
-        $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\"
-                  FROM `metrics`
-                  WHERE metric_name LIKE ? ORDER BY `metric_name` COLLATE utf8_general_ci ";
-
+        $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" ' .
+            'FROM `metrics` ' .
+            'WHERE metric_name LIKE ? ' .
+            'ORDER BY `metric_name` COLLATE utf8_general_ci ';
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . $q . '%'));
+        $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . (string)$q . '%'));
 
         $metrics = array();
         while ($row = $DBRESULT->fetchRow()) {
@@ -98,39 +98,41 @@ class CentreonMetric extends CentreonWebService
      */
     protected function getListByService()
     {
-        $queryArguments = array();
+        $queryValues = array();
 
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-
+        $queryValues[] = '%' . (string)$q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = intval($offset);
-            $queryArguments[] = intval($this->arguments['page_limit']);
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        $query = "SELECT SQL_CALC_FOUND_ROWS m.metric_id, CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) AS fullname
-                  FROM metrics m, hosts h, services s, index_data i
-                  WHERE m.index_id = i.id
-                  AND   h.host_id = i.host_id
-                  AND   s.service_id = i.service_id
-                  AND   h.enabled = 1
-                  AND   s.enabled = 1
-                  AND   CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) LIKE ?
-                  ORDER BY CONCAT(h.name,' - ', s.description, ' - ',  m.metric_name) COLLATE utf8_general_ci "
-            .$range;
+
+        $query = 'SELECT SQL_CALC_FOUND_ROWS m.metric_id, ' .
+            'CONCAT(h.name," - ", s.description, " - ",  m.metric_name) AS fullname ' .
+            'FROM metrics m, hosts h, services s, index_data i ' .
+            'WHERE m.index_id = i.id ' .
+            'AND h.host_id = i.host_id ' .
+            'AND s.service_id = i.service_id ' .
+            'AND h.enabled = 1 ' .
+            'AND s.enabled = 1 ' .
+            'AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE ? ' .
+            'ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ' .
+            $range;
 
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $DBRESULT = $this->pearDBMonitoring->execute($stmt, $queryArguments);
-
+        $dbResult = $this->pearDBMonitoring->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
+
         $metrics = array();
-        while ($row = $DBRESULT->fetchRow()) {
+        while ($row = $dbResult->fetchRow()) {
             $metrics[] = array(
                 'id' => $row['metric_id'],
                 'text' => $row['fullname']
@@ -210,7 +212,8 @@ class CentreonMetric extends CentreonWebService
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])) {
+            false === is_numeric($this->arguments['end'])
+        ) {
             throw new RestBadRequestException("Bad parameters");
         }
 
@@ -240,20 +243,21 @@ class CentreonMetric extends CentreonWebService
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
             if (false === is_numeric($hostId) ||
-                false === is_numeric($serviceId)) {
+                false === is_numeric($serviceId)
+            ) {
                 throw new RestBadRequestException("Bad parameters");
             }
 
             /* Check ACL is not admin */
             if (!$isAdmin) {
-                $query = "SELECT service_id
-                          FROM centreon_acl
-                          WHERE host_id = ?
-                          AND service_id = ?
-                          AND group_id IN (" . $aclGroups . ")";
+                $query = 'SELECT service_id ' .
+                    'FROM centreon_acl ' .
+                    'WHERE host_id = ? ' .
+                    'AND service_id = ? ' .
+                    'AND group_id IN (' . $aclGroups . ')';
 
                 $stmt = $this->pearDBMonitoring->prepare($query);
-                $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId));
+                $res = $this->pearDBMonitoring->execute($stmt, array((int)$hostId, (int)$serviceId));
 
                 if (0 == $res->numRows()) {
                     throw new RestForbiddenException("Access denied");
@@ -280,14 +284,21 @@ class CentreonMetric extends CentreonWebService
             if (false === PEAR::isError($res)) {
                 $row = $res->fetchRow();
                 if (false === is_null($row) && $row['value'] === '1') {
-                    $queryComment = 'SELECT entry_time, author, data
-                        FROM comments
-                        WHERE host_id = ? AND service_id = ?
-                            AND entry_type = 1 AND deletion_time IS NULL AND ? < entry_time
-                            AND ? > entry_time';
-
+                    $queryComment = 'SELECT `entry_time`, `author`, `data` ' .
+                        'FROM comments ' .
+                        'WHERE host_id = ? ' .
+                        'AND service_id = ? ' .
+                        'AND entry_type = 1 ' .
+                        'AND deletion_time IS NULL ' .
+                        'AND ? < entry_time ' .
+                        'AND ? > entry_time';
                     $stmt = $this->pearDBMonitoring->prepare($queryComment);
-                    $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId, $start, $end));
+                    $res = $this->pearDBMonitoring->execute($stmt, array(
+                        (int)$hostId,
+                        (int)$serviceId,
+                        (int)$start,
+                        (int)$end
+                    ));
 
                     if (false === PEAR::isError($res)) {
                         while ($row = $res->fetchRow()) {
@@ -337,7 +348,8 @@ class CentreonMetric extends CentreonWebService
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])) {
+            false === is_numeric($this->arguments['end'])
+        ) {
             throw new RestBadRequestException("Bad parameters");
         }
 
@@ -358,20 +370,21 @@ class CentreonMetric extends CentreonWebService
 
         list($hostId, $serviceId) = explode('_', $id);
         if (false === is_numeric($hostId) ||
-            false === is_numeric($serviceId)) {
+            false === is_numeric($serviceId)
+        ) {
             throw new RestBadRequestException("Bad parameters");
         }
 
         /* Check ACL is not admin */
         if (!$isAdmin) {
-            $query = "SELECT service_id
-                FROM centreon_acl
-                WHERE host_id = ?
-                    AND service_id = ?
-                    AND group_id IN (" . $aclGroups . ")";
+            $query = 'SELECT service_id ' .
+                'FROM centreon_acl ' .
+                'WHERE host_id = ? ' .
+                'AND service_id = ? ' .
+                'AND group_id IN (' . $aclGroups . ')';
 
             $stmt = $this->pearDBMonitoring->prepare($query);
-            $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId));
+            $res = $this->pearDBMonitoring->execute($stmt, array((int)$hostId, (int)$serviceId));
 
             if (0 == $res->numRows()) {
                 throw new RestForbiddenException("Access denied");
@@ -475,7 +488,8 @@ class CentreonMetric extends CentreonWebService
             false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])) {
+            false === is_numeric($this->arguments['end'])
+        ) {
             throw new RestBadRequestException("Bad parameters");
         }
 
@@ -501,9 +515,16 @@ class CentreonMetric extends CentreonWebService
 
         // Init graph object
         try {
-            $graphPollerObject = new CentreonGraphPoller($this->pearDB, $this->pearDBMonitoring, $id, $userId, $start, $end);
+            $graphPollerObject = new CentreonGraphPoller(
+                $this->pearDB,
+                $this->pearDBMonitoring,
+                $id,
+                $userId,
+                $start,
+                $end
+            );
             $graphPollerObject->setGraphName($graphName);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new RestNotFoundException("Graph not found");
         }
         $pollerDatas = $graphPollerObject->getData($rows);
@@ -561,46 +582,73 @@ class CentreonMetric extends CentreonWebService
      */
     protected function getAcknowlegePeriods($hostId, $serviceId, $start, $end)
     {
-        $query = 'SELECT entry_time as start, deletion_time as end
-            FROM acknowledgements
-            WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . ' AND
-                (
-                    (entry_time <= ' . $end . ' AND ' . $end . ' <= deletion_time) OR
-                    (entry_time <= ' . $start . ' AND ' . $start . ' <= deletion_time) OR
-                    (entry_time >= ' . $start . ' AND ' . $end . ' >= deletion_time) OR
-                    (deletion_time IS NULL)
-                )';
-        return $this->executeQueryPeriods($query, $start, $end);
+        $queryValues = array();
+
+        $query = 'SELECT entry_time as start, deletion_time as end ' .
+            'FROM acknowledgements ' .
+            'WHERE host_id = ? ' .
+            'AND service_id = ? ' .
+            'AND ( ' .
+            '(entry_time <= ? AND ? <= deletion_time) ' .
+            'OR (entry_time <= ? AND ? <= deletion_time) ' .
+            'OR (entry_time >= ? AND ? >= deletion_time) ' .
+            'OR(deletion_time IS NULL) ' .
+            ')';
+
+        $queryValues[] = (int)$hostId;
+        $queryValues[] = (int)$serviceId;
+        $queryValues[] = (int)$end;
+        $queryValues[] = (int)$end;
+        $queryValues[] = (int)$start;
+        $queryValues[] = (int)$start;
+        $queryValues[] = (int)$start;
+        $queryValues[] = (int)$end;
+        return $this->executeQueryPeriods($query, $start, $end, $queryValues);
     }
 
     /**
-     * Get the list of a downtime for a service during a period
-     *
-     * @return array The list of downtimes
+     * @param $hostId
+     * @param $serviceId
+     * @param $start
+     * @param $end
+     * @return array
      */
     protected function getDowntimePeriods($hostId, $serviceId, $start, $end)
     {
-        $query = 'SELECT actual_start_time as start, actual_end_time as end
-            FROM downtimes
-            WHERE host_id = ' . $hostId . ' AND service_id = ' . $serviceId . ' AND
-                (
-                    (actual_start_time <= ' . $end . ' AND ' . $end . ' <= actual_end_time) OR
-                    (actual_start_time <= ' . $start . ' AND ' . $start . ' <= actual_end_time) OR
-                    (actual_start_time >= ' . $start . ' AND ' . $end . ' >= actual_end_time) OR
-                    (actual_start_time IS NOT NULL AND actual_end_time IS NULL)
-                )';
-        return $this->executeQueryPeriods($query, $start, $end);
+        $query = 'SELECT actual_start_time as start, actual_end_time as end ' .
+            'FROM downtimes ' .
+            'WHERE host_id = ? AND service_id = ? ' .
+            'AND (' .
+            '(actual_start_time <= ? AND ? <= actual_end_time) ' .
+            'OR (actual_start_time <= ? AND ? <= actual_end_time) ' .
+            'OR (actual_start_time >= ? AND ? >= actual_end_time) ' .
+            'OR (actual_start_time IS NOT NULL AND actual_end_time IS NULL) ' .
+            ')';
+
+        $queryValues[] = (int)$hostId;
+        $queryValues[] = (int)$serviceId;
+        $queryValues[] = (int)$end;
+        $queryValues[] = (int)$end;
+        $queryValues[] = (int)$start;
+        $queryValues[] = (int)$start;
+        $queryValues[] = (int)$start;
+        $queryValues[] = (int)$end;
+        return $this->executeQueryPeriods($query, $start, $end, $queryValues);
     }
 
     /**
-     * Execute a query for a period
-     *
-     * @return array The list of periods
+     * @param $query
+     * @param $start
+     * @param $end
+     * @param $queryValues
+     * @return array
      */
-    protected function executeQueryPeriods($query, $start, $end)
+    protected function executeQueryPeriods($query, $start, $end, $queryValues)
     {
         $periods = array();
-        $res = $this->pearDBMonitoring->query($query);
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $res = $this->pearDBMonitoring->execute($stmt, $queryValues);
+
         while ($row = $res->fetchRow()) {
             $period = array(
                 'start' => $row['start'],
@@ -608,12 +656,14 @@ class CentreonMetric extends CentreonWebService
             );
             if ($start > $row['start']
                 || is_null($row['start'])
-                || $row['start'] === '') {
+                || $row['start'] === ''
+            ) {
                 $period['start'] = $start;
             }
             if ($end < $row['end']
                 || is_null($row['end'])
-                || $row['end'] === '') {
+                || $row['end'] === ''
+            ) {
                 $period['end'] = $end;
             }
             $periods[] = $period;
