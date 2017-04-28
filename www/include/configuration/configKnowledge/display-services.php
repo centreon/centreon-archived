@@ -89,213 +89,214 @@ require_once "HTML/QuickForm/Renderer/ArraySmarty.php";
 require_once $centreon_path . "/www/class/centreon-knowledge/procedures_DB_Connector.class.php";
 require_once $centreon_path . "/www/class/centreon-knowledge/procedures.class.php";
 
-$conf = getWikiConfig($pearDB);
-$WikiURL = $conf['kb_wiki_url'];
-
 /*
  * Smarty template Init
  */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($modules_path, $tpl);
 
-$currentPage = "services";
-require_once $modules_path . 'search.php';
+try {
+    $conf = getWikiConfig($pearDB);
+    $WikiURL = $conf['kb_wiki_url'];
 
-/*
- * Init Status Template
- */
-$status = array(
-    0 => "<font color='orange'> " . _("No wiki page defined") . " </font>",
-    1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
-);
-$line = array(0 => "list_one", 1 => "list_two");
+    $currentPage = "services";
+    require_once $modules_path . 'search.php';
 
-$proc = new procedures(
-    3,
-    $conf['kb_db_name'],
-    $conf['kb_db_user'],
-    $conf['kb_db_host'],
-    $conf['kb_db_password'],
-    $pearDB,
-    $conf['kb_db_prefix']
-);
-$proc->setHostInformations();
-$proc->setServiceInformations();
+    /*
+     * Init Status Template
+     */
+    $status = array(
+        0 => "<font color='orange'> " . _("No wiki page defined") . " </font>",
+        1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
+    );
+    $line = array(0 => "list_one", 1 => "list_two");
 
-$query = " SELECT SQL_CALC_FOUND_ROWS t1.* FROM (";
-$query .= " SELECT s.service_id, s.service_description, h.host_name, h.host_id ";
-$query .= " FROM service s ";
-$query .= " LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id ";
-$query .= " RIGHT JOIN host h ON h.host_id = hsr.host_host_id ";
-$query .= " WHERE s.service_register = '1' ";
-if (isset($_REQUEST['searchHost']) && $_REQUEST['searchHost']) {
-    $query .= " AND h.host_name LIKE '%" . $pearDB->escape($_REQUEST['searchHost']) . "%' ";
-}
-if (isset($_REQUEST['searchHostgroup']) && $_REQUEST['searchHostgroup']) {
-    $query .= " AND hsr.host_host_id IN ";
-    $query .= " (SELECT host_host_id FROM hostgroup_relation hgr
-        				 WHERE hgr.hostgroup_hg_id = " . $pearDB->escape($_REQUEST['searchHostgroup']) . ") ";
-}
-if (isset($_REQUEST['searchServicegroup']) && $_REQUEST['searchServicegroup']) {
-    $query .= " AND s.service_id IN ";
-    $query .= " (SELECT service_service_id FROM servicegroup_relation
-                     WHERE servicegroup_sg_id = " . $pearDB->escape($_REQUEST['searchServicegroup']) . ") ";
-}
-if (isset($_REQUEST['searchPoller']) && $_REQUEST['searchPoller']) {
-    $query .= " AND hsr.host_host_id IN ";
-    $query .= " (SELECT host_host_id FROM ns_host_relation
-        			WHERE nagios_server_id = " . $pearDB->escape($_REQUEST['searchPoller']) . ") ";
-}
-if (isset($_REQUEST['searchService']) && $_REQUEST['searchService']) {
-    $query .= "AND s.service_description LIKE '%" . $_REQUEST['searchService'] . "%' ";
-}
+    $proc = new procedures(
+        3,
+        $conf['kb_db_name'],
+        $conf['kb_db_user'],
+        $conf['kb_db_host'],
+        $conf['kb_db_password'],
+        $pearDB,
+        $conf['kb_db_prefix']
+    );
+    $proc->setHostInformations();
+    $proc->setServiceInformations();
 
-$query .= " UNION ";
-$query .= " SELECT s2.service_id, s2.service_description, h2.host_name, h2.host_id ";
-$query .= " FROM service s2 ";
-$query .= " LEFT JOIN host_service_relation hsr2 ON hsr2.service_service_id = s2.service_id ";
-$query .= " RIGHT JOIN hostgroup_relation hgr ON hgr.hostgroup_hg_id = hsr2.hostgroup_hg_id ";
-$query .= " LEFT JOIN host h2 ON h2.host_id = hgr.host_host_id ";
-$query .= " WHERE s2.service_register = '1' ";
-if (isset($_REQUEST['searchHostgroup']) && $_REQUEST['searchHostgroup']) {
-    $query .= " AND (h2.host_id IN ";
-    $query .= " (SELECT host_host_id FROM hostgroup_relation hgr
-        				 WHERE hgr.hostgroup_hg_id = " . $pearDB->escape($_REQUEST['searchHostgroup']) . ") ";
-    $query .= " OR hgr.hostgroup_hg_id = " . $pearDB->escape($_REQUEST['searchHostgroup']) . ")";
-}
-if (isset($_REQUEST['searchHost']) && $_REQUEST['searchHost']) {
-    $query .= " AND h2.host_name LIKE '%" . $pearDB->escape($_REQUEST['searchHost']) . "%' ";
-}
-if (isset($_REQUEST['searchServicegroup']) && $_REQUEST['searchServicegroup']) {
-    $query .= " AND s2.service_id IN ";
-    $query .= " (SELECT service_service_id FROM servicegroup_relation
-                     WHERE servicegroup_sg_id = " . $pearDB->escape($_REQUEST['searchServicegroup']) . ") ";
-}
-if (isset($_REQUEST['searchPoller']) && $_REQUEST['searchPoller']) {
-    $query .= " AND h2.host_id IN ";
-    $query .= " (SELECT host_host_id FROM ns_host_relation
-        			WHERE nagios_server_id = " . $pearDB->escape($_REQUEST['searchPoller']) . ") ";
-}
-if (isset($_REQUEST['searchService']) && $_REQUEST['searchService']) {
-    $query .= "AND s2.service_description LIKE '%" . $_REQUEST['searchService'] . "%' ";
-}
-$query .= " ) as t1 ";
-$query .= " ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
-
-$res = $pearDB->query($query);
-
-$serviceList = array();
-while ($row = $res->fetchRow()) {
-    $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-    $row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
-    if (isset($row['host_id']) && $row['host_id']) {
-        $serviceList[$row['host_name'] . '_/_' . $row['service_description']] = array(
-            "id" => $row['service_id'],
-            "svc" => $row['service_description'],
-            "h" => $row['host_name']
-        );
+    $query = " SELECT SQL_CALC_FOUND_ROWS t1.* FROM (";
+    $query .= " SELECT s.service_id, s.service_description, h.host_name, h.host_id ";
+    $query .= " FROM service s ";
+    $query .= " LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id ";
+    $query .= " RIGHT JOIN host h ON h.host_id = hsr.host_host_id ";
+    $query .= " WHERE s.service_register = '1' ";
+    if (isset($_REQUEST['searchHost']) && $_REQUEST['searchHost']) {
+        $query .= " AND h.host_name LIKE '%" . $pearDB->escape($_REQUEST['searchHost']) . "%' ";
     }
-}
-
-$res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
-$row = $res->fetchRow();
-$rows = $row['numrows'];
-
-/*
- * Create Diff
- */
-$tpl->assign("host_name", _("Hosts"));
-$tpl->assign("p", 61002);
-$tpl->assign("service_description", _("Services"));
-$selection = $proc->serviceList;
-
-$diff = array();
-$templateHostArray = array();
-
-foreach ($serviceList as $key => $value) {
-    $tplStr = "";
-    $tplArr = $proc->getMyServiceTemplateModels($value['id']);
-    $key_nospace = str_replace(" ", "_", $key);
-    if ($proc->serviceHasProcedure($key_nospace, $tplArr) == true) {
-        $diff[$key] = 1;
-    } else {
-        $diff[$key] = 0;
+    if (isset($_REQUEST['searchHostgroup']) && $_REQUEST['searchHostgroup']) {
+        $query .= " AND hsr.host_host_id IN ";
+        $query .= " (SELECT host_host_id FROM hostgroup_relation hgr
+        				 WHERE hgr.hostgroup_hg_id = " . $pearDB->escape($_REQUEST['searchHostgroup']) . ") ";
+    }
+    if (isset($_REQUEST['searchServicegroup']) && $_REQUEST['searchServicegroup']) {
+        $query .= " AND s.service_id IN ";
+        $query .= " (SELECT service_service_id FROM servicegroup_relation
+                     WHERE servicegroup_sg_id = " . $pearDB->escape($_REQUEST['searchServicegroup']) . ") ";
+    }
+    if (isset($_REQUEST['searchPoller']) && $_REQUEST['searchPoller']) {
+        $query .= " AND hsr.host_host_id IN ";
+        $query .= " (SELECT host_host_id FROM ns_host_relation
+        			WHERE nagios_server_id = " . $pearDB->escape($_REQUEST['searchPoller']) . ") ";
+    }
+    if (isset($_REQUEST['searchService']) && $_REQUEST['searchService']) {
+        $query .= "AND s.service_description LIKE '%" . $_REQUEST['searchService'] . "%' ";
     }
 
-    if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
-        if ($diff[$key] == 1 || $proc->serviceHasProcedure($key_nospace, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
-            $rows--;
-            unset($diff[$key]);
-            unset($serviceList[$key]);
-            continue;
-        }
-    } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
-        if ($diff[$key] == 1) {
-            $rows--;
-            unset($diff[$key]);
-            unset($serviceList[$key]);
-            continue;
+    $query .= " UNION ";
+    $query .= " SELECT s2.service_id, s2.service_description, h2.host_name, h2.host_id ";
+    $query .= " FROM service s2 ";
+    $query .= " LEFT JOIN host_service_relation hsr2 ON hsr2.service_service_id = s2.service_id ";
+    $query .= " RIGHT JOIN hostgroup_relation hgr ON hgr.hostgroup_hg_id = hsr2.hostgroup_hg_id ";
+    $query .= " LEFT JOIN host h2 ON h2.host_id = hgr.host_host_id ";
+    $query .= " WHERE s2.service_register = '1' ";
+    if (isset($_REQUEST['searchHostgroup']) && $_REQUEST['searchHostgroup']) {
+        $query .= " AND (h2.host_id IN ";
+        $query .= " (SELECT host_host_id FROM hostgroup_relation hgr
+        				 WHERE hgr.hostgroup_hg_id = " . $pearDB->escape($_REQUEST['searchHostgroup']) . ") ";
+        $query .= " OR hgr.hostgroup_hg_id = " . $pearDB->escape($_REQUEST['searchHostgroup']) . ")";
+    }
+    if (isset($_REQUEST['searchHost']) && $_REQUEST['searchHost']) {
+        $query .= " AND h2.host_name LIKE '%" . $pearDB->escape($_REQUEST['searchHost']) . "%' ";
+    }
+    if (isset($_REQUEST['searchServicegroup']) && $_REQUEST['searchServicegroup']) {
+        $query .= " AND s2.service_id IN ";
+        $query .= " (SELECT service_service_id FROM servicegroup_relation
+                     WHERE servicegroup_sg_id = " . $pearDB->escape($_REQUEST['searchServicegroup']) . ") ";
+    }
+    if (isset($_REQUEST['searchPoller']) && $_REQUEST['searchPoller']) {
+        $query .= " AND h2.host_id IN ";
+        $query .= " (SELECT host_host_id FROM ns_host_relation
+        			WHERE nagios_server_id = " . $pearDB->escape($_REQUEST['searchPoller']) . ") ";
+    }
+    if (isset($_REQUEST['searchService']) && $_REQUEST['searchService']) {
+        $query .= "AND s2.service_description LIKE '%" . $_REQUEST['searchService'] . "%' ";
+    }
+    $query .= " ) as t1 ";
+    $query .= " ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
+
+    $res = $pearDB->query($query);
+
+    $serviceList = array();
+    while ($row = $res->fetchRow()) {
+        $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+        $row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
+        if (isset($row['host_id']) && $row['host_id']) {
+            $serviceList[$row['host_name'] . '_/_' . $row['service_description']] = array(
+                "id" => $row['service_id'],
+                "svc" => $row['service_description'],
+                "h" => $row['host_name']
+            );
         }
     }
 
-    if (count($tplArr)) {
-        $firstTpl = 1;
-        foreach ($tplArr as $key1 => $value1) {
-            if ($firstTpl) {
-                $firstTpl = 0;
-            } else {
-                $tplStr .= "&nbsp;|&nbsp;";
+    $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
+    $row = $res->fetchRow();
+    $rows = $row['numrows'];
+
+    /*
+     * Create Diff
+     */
+    $tpl->assign("host_name", _("Hosts"));
+    $tpl->assign("p", 61002);
+    $tpl->assign("service_description", _("Services"));
+    $selection = $proc->serviceList;
+
+    $diff = array();
+    $templateHostArray = array();
+
+    foreach ($serviceList as $key => $value) {
+        $tplStr = "";
+        $tplArr = $proc->getMyServiceTemplateModels($value['id']);
+        $key_nospace = str_replace(" ", "_", $key);
+        if ($proc->serviceHasProcedure($key_nospace, $tplArr) == true) {
+            $diff[$key] = 1;
+        } else {
+            $diff[$key] = 0;
+        }
+
+        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+            if ($diff[$key] == 1 || $proc->serviceHasProcedure($key_nospace, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
+                $rows--;
+                unset($diff[$key]);
+                unset($serviceList[$key]);
+                continue;
             }
-            $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Service_:_$value1' target='_blank'>" . $value1 . "</a>";
+        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+            if ($diff[$key] == 1) {
+                $rows--;
+                unset($diff[$key]);
+                unset($serviceList[$key]);
+                continue;
+            }
         }
+
+        if (count($tplArr)) {
+            $firstTpl = 1;
+            foreach ($tplArr as $key1 => $value1) {
+                if ($firstTpl) {
+                    $firstTpl = 0;
+                } else {
+                    $tplStr .= "&nbsp;|&nbsp;";
+                }
+                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Service_:_$value1' target='_blank'>" . $value1 . "</a>";
+            }
+        }
+        $templateHostArray[$key] = $tplStr;
+        unset($tplStr);
+        $i++;
     }
-    $templateHostArray[$key] = $tplStr;
-    unset($tplStr);
-    $i++;
-}
 
-include("./include/common/checkPagination.php");
+    include("./include/common/checkPagination.php");
 
-if (isset($templateHostArray)) {
-    $tpl->assign("templateHostArray", $templateHostArray);
-}
+    if (isset($templateHostArray)) {
+        $tpl->assign("templateHostArray", $templateHostArray);
+    }
 
-$WikiVersion = getWikiVersion($WikiURL . '/api.php');
-$tpl->assign("WikiVersion", $WikiVersion);
-$tpl->assign("WikiURL", $WikiURL);
-$tpl->assign("content", $diff);
-$tpl->assign("services", $serviceList);
-$tpl->assign("status", $status);
-$tpl->assign("selection", 1);
-$tpl->assign("icone", $proc->getIconeList());
+    $WikiVersion = getWikiVersion($WikiURL . '/api.php');
+    $tpl->assign("WikiVersion", $WikiVersion);
+    $tpl->assign("WikiURL", $WikiURL);
+    $tpl->assign("content", $diff);
+    $tpl->assign("services", $serviceList);
+    $tpl->assign("status", $status);
+    $tpl->assign("selection", 1);
+    $tpl->assign("icone", $proc->getIconeList());
 
-/*
- * Send template in order to open
- */
+    /*
+     * Send template in order to open
+     */
 
-/*
- * translations
- */
-$tpl->assign("status_trans", _("Status"));
-$tpl->assign("actions_trans", _("Actions"));
-$tpl->assign("template_trans", _("Template"));
+    /*
+     * translations
+     */
+    $tpl->assign("status_trans", _("Status"));
+    $tpl->assign("actions_trans", _("Actions"));
+    $tpl->assign("template_trans", _("Template"));
 
-/*
- * Template
- */
-$tpl->assign("lineTemplate", $line);
-$tpl->assign('limit', $limit);
+    /*
+     * Template
+     */
+    $tpl->assign("lineTemplate", $line);
+    $tpl->assign('limit', $limit);
 
-$tpl->assign('order', $order);
-$tpl->assign('orderby', $orderby);
-$tpl->assign('defaultOrderby', 'host_name');
+    $tpl->assign('order', $order);
+    $tpl->assign('orderby', $orderby);
+    $tpl->assign('defaultOrderby', 'host_name');
 
-/*
- * Apply a template definition
- */
+    /*
+     * Apply a template definition
+     */
 
-if (Mediawikiconfigexist($WikiURL)) {
     $tpl->display($modules_path . "templates/display.ihtml");
-} else {
-    $tpl->display($modules_path . "templates/NoWiki.ihtml");
+} catch (\Exception $e) {
+    $tpl->assign('errorMsg', $e->getMessage());
+    $tpl->display($modules_path . "templates/NoWiki.tpl");
 }
