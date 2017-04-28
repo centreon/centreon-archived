@@ -64,7 +64,6 @@ if (($o == "c" || $o == "w") && $hg_id) {
 /*
  * Create formulary
  */
-
 $tabLabel = array("a" => _("Add a Host Group"), "c" => _("Modify a Host Group"), "w" => _("View a Host Group"));
 $obj->addHeader('title', $tabLabel[$o]);
 

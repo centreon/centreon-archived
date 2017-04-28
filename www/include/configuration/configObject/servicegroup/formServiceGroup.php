@@ -47,6 +47,11 @@ if (!$centreon->user->admin) {
     }
 }
 
+/* 
+ * Initiate Objets
+ */
+$obj = new CentreonForm($path, $p, $o);
+
 $initialValues = array('sg_hServices' => array(), 'sg_hgServices' => array());
 
 /*
@@ -61,170 +66,95 @@ if (($o == "c" || $o == "w") && $sg_id) {
     $sg = array_map("myDecode", $DBRESULT->fetchRow());
 }
 
-$attrsText      = array("size"=>"30");
-$attrsAdvSelect = array("style" => "width: 400px; height: 250px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+/*
+ * Create formulary
+ */
+$tabLabel = array("a" => _("Add a Host Group"), "c" => _("Modify a Host Group"), "w" => _("View a Host Group"));
+$obj->addHeader('title', $tabLabel[$o]);
 
-$attrServices = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-    'multiple' => true,
-    'linkedObject' => 'centreonService'
-);
-$attrServicetemplates = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list&l=1',
-    'multiple' => true,
-    'linkedObject' => 'centreonServicetemplates',
-    'defaultDatasetOptions' => array('withHosttemplate' => true)
-);
-$attrHostgroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&t=hostgroup',
-    'multiple' => true,
-    'linkedObject' => 'centreonHostgroups'
-);
+$obj->addHeader('information', _("General Information"));
 
-#
-## Form begin
-#
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a") {
-    $form->addElement('header', 'title', _("Add a Service Group"));
-} elseif ($o == "c") {
-    $form->addElement('header', 'title', _("Modify a Service Group"));
-} elseif ($o == "w") {
-    $form->addElement('header', 'title', _("View a Service Group"));
-}
+$obj->addInputText('sg_name', _("Service Group Name"));
+$obj->addInputText('sg_alias', _("Description"));
+$obj->addInputText('geo_coords', _("Geo coordinates"));
 
-#
-## Contact basic information
-#
-$form->addElement('header', 'information', _("General Information"));
-$form->addElement('text', 'sg_name', _("Name"), $attrsText);
-$form->addElement('text', 'sg_alias', _("Description"), $attrsText);
-$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$obj->addHeader('relation', _("Relations"));
 
-$form->addElement('header', 'relation', _("Relations"));
-
-$attrService1 = array_merge(
-    $attrServices,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=sg_hServices&id=' . $sg_id)
-);
-$form->addElement('select2', 'sg_hServices', _("Linked Host Services"), array(), $attrService1);
-
-$attrHostgroup1 = array_merge(
-    $attrHostgroups,
-    array(
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id
-    )
-);
-$form->addElement('select2', 'sg_hgServices', _("Linked Host Group Services"), array(), $attrHostgroup1);
-
-$attrServicetemplate1 = array_merge(
-    $attrServicetemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicegroups&field=sg_tServices&id=' . $sg_id)
-);
-$form->addElement('select2', 'sg_tServices', _("Linked Service Templates"), array(), $attrServicetemplate1);
+/*
+ * Hosts Selection
+ */
+$obj->addSelect2('sg_hServices', _("Linked to Services by Hosts"), 'service', array('object' => 'centreon_configuration_service', 'action' => 'defaultValues', 'target' => 'servicegroups', 'field' => 'sg_hServices', 'id' => $sg_id));
+$obj->addSelect2('sg_hgServices', _("Linked to Service by Hostgroups"), 'service', array('object' => 'centreon_configuration_service', 'action' => 'defaultValues', 'target' => 'servicegroups', 'field' => 'sg_hgServices', 'id' => $sg_id));
+$obj->addSelect2('sg_tServices', _("Linked Service Templates"), 'servicetemplate', array('object' => 'centreon_configuration_servicetemplate', 'action' => 'defaultValues', 'target' => 'servicegroups', 'field' => 'sg_tServices', 'id' => $sg_id));
 
 /*
  * Further informations
  */
-$form->addElement('header', 'furtherInfos', _("Additional Information"));
-$sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Enabled"), '1');
-$sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Disabled"), '0');
-$form->addGroup($sgActivation, 'sg_activate', _("Status"), '&nbsp;');
-$form->setDefaults(array('sg_activate' => '1'));
+$obj->addHeader('furtherInfos', _("Additional Information"));
+$obj->addRadioButton('sg_activate', _("Status"), array(0 => _("Disabled"), 1 => _("Enabled")), 1);
+$obj->addInputTextarea('sg_comment', _("Comments"));
+$obj->addHidden('hg_id');
 
-$form->addElement('textarea', 'sg_comment', _("Comments"), $attrsTextarea);
-
-$form->addElement('hidden', 'sg_id');
-$redirect = $form->addElement('hidden', 'o');
-$redirect->setValue($o);
-
+/*
 $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
+*/
 
 /*
  * Form Rules
  */
-function myReplace()
-{
-    global $form;
-    $ret = $form->getSubmitValues();
-    return (str_replace(" ", "_", $ret["sg_name"]));
+$obj->registerRule('exist', 'callback', 'testServiceGroupExistence');
+
+$obj->addRule('sg_name', _("Compulsory Name"), 'required');
+$obj->addRule('sg_alias', _("Compulsory Alias"), 'required');
+
+if ($o ==  "a") {
+    $obj->addRule('sg_name', _("Name is already in use"), 'exist');
 }
-$form->applyFilter('__ALL__', 'myTrim');
-$form->applyFilter('sg_name', 'myReplace');
-$form->addRule('sg_name', _("Compulsory Name"), 'required');
-$form->addRule('sg_alias', _("Compulsory Description"), 'required');
-$form->registerRule('exist', 'callback', 'testServiceGroupExistence');
-$form->addRule('sg_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-#
-##End of form definition
-#
-
-# Smarty template Init
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
-# Just watch a Service Group information
 if ($o == "w") {
+    /*
+     * Just watch information
+     */
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
+        $obj->addSubmitButton("change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
     }
-    $form->setDefaults($sg);
-    $form->freeze();
-} # Modify a Service Group information
-elseif ($o == "c") {
-    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-    $form->setDefaults($sg);
-} # Add a Service Group information
-elseif ($o == "a") {
-    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $obj->setDefaults($sg);
+    $obj->freeze();
+} elseif ($o == "c") {
+    /*
+     * Modify  information
+     */
+    $obj->addSubmitButton('submitC', _("Save"));
+    $obj->addResetButton('reset', _("Reset"));
+    $obj->setDefaults($hg);
+} elseif ($o == "a") {
+    /*
+     * Add a HostGroup information
+     */
+    $obj->addSubmitButton('submitA', _("Save"));
+    $obj->addResetButton('reset', _("Reset"));
 }
-
-$tpl->assign('nagios', $oreon->user->get_version());
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
-
-# prepare help texts
-$helptext = "";
-include_once("help.php");
-foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
-}
-$tpl->assign("helptext", $helptext);
 
 $valid = false;
-if ($form->validate()) {
-    $sgObj = $form->getElement('sg_id');
-    if ($form->getSubmitValue("submitA")) {
-        $sgObj->setValue(insertServiceGroupInDB());
-    } elseif ($form->getSubmitValue("submitC")) {
-        updateServiceGroupInDB($sgObj->getValue());
+if ($obj->validate()) {
+    $form = $obj->getForm();
+    if ($obj->getSubmitValue("submitA")) {
+        insertServiceGroupInDB();
+    } elseif ($obj->getSubmitValue("submitC")) {
+        $sg_id = $obj->getElement('sg_id')->getValue();
+        updateHostGroupInDB($sg_id, $obj->getSubmitValues());
     }
     $o = null;
     $valid = true;
 }
-$action = $form->getSubmitValue("action");
 
 if ($valid) {
-    require_once($path."listServiceGroup.php");
+    require_once $path."listServiceGroup.php";
 } else {
-    // Apply a template definition
-    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-    $form->accept($renderer);
-    $tpl->assign('form', $renderer->toArray());
-    $tpl->assign('o', $o);
-    $tpl->display("formServiceGroup.ihtml");
+    $obj->display("formServiceGroup.ihtml");
 }
+
 ?>
 <script type='text/javascript'>
 function hostFilterSelect(elem)

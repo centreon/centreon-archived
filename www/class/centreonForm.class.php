@@ -56,7 +56,7 @@ class CentreonForm
         $this->helpData = array();
         $this->path = $path;
         $this->o = $o;
-        //$this->applyFilter('__ALL__', array('this', 'myTrim'));
+        $this->applyFilter('__ALL__', array('this', 'myTrim'));
         $this->setRequiredNote();
         $this->setFormAttributes();
         $this->s2Config = new CentreonFormSelect2();
@@ -84,7 +84,7 @@ class CentreonForm
 
     private function getHelpData()
     {
-        include_once($this->path."/help.php");
+        include_once $this->path."/help.php";
 
         $this->tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
