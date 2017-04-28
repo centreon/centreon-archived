@@ -52,7 +52,7 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        $queryArguments = array();
+        $queryValues = array();
 
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
@@ -60,27 +60,27 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = intval($offset);
-            $queryArguments[] = intval($this->arguments['page_limit']);
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryTimezone = "SELECT SQL_CALC_FOUND_ROWS DISTINCT timezone_id, timezone_name "
-            . " FROM timezone "
-            . " WHERE timezone_name LIKE ? "
-            . " ORDER BY timezone_name "
-            . $range;
-        
+
+        $queryTimezone = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT timezone_id, timezone_name ' .
+            'FROM timezone ' .
+            'WHERE timezone_name LIKE ? ' .
+            'ORDER BY timezone_name ' . $range;
+
         $stmt = $this->pearDB->prepare($queryTimezone);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryArguments);
+        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
-        
+
         $timezoneList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $timezoneList[] = array(
