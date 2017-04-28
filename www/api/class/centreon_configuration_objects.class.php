@@ -164,7 +164,6 @@ class CentreonConfigurationObjects extends CentreonWebService
                 );
             }
         }
-
         return $tmpValues;
     }
 
@@ -190,7 +189,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             . "WHERE " . $currentObject['id'] . " = ?";
 
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
-        $resRetrieval = $this->pearDB->execute($stmt, array($id));
+        $resRetrieval = $this->pearDB->execute($stmt, array((int)$id));
         if (PEAR::isError($resRetrieval)) {
             die("An error occured");
         }
@@ -224,7 +223,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             "FROM " . $relationObject['table'] . " " .
             "WHERE " . $relationObject['comparator'] . " = ?";
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
-        $resRetrieval = $this->pearDB->execute($stmt, array($id));
+        $resRetrieval = $this->pearDB->execute($stmt, array((int)$id));
         if (PEAR::isError($resRetrieval)) {
             die("An error occured");
         }
