@@ -52,14 +52,15 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        $queryArguments = array();
-
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = (string)'%' . $q . '%';
+
         /*
 		 * Check for select2 't' argument
 		 * 'a' or empty = category and severitiy
@@ -75,34 +76,33 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = $offset;
-            $queryArguments[] = $this->arguments['page_limit'];
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name '
-            . 'FROM service_categories '
-            . 'WHERE sc_name LIKE ? ';
+
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name ' .
+            'FROM service_categories ' .
+            'WHERE sc_name LIKE ? ';
         if (!empty($t) && $t == 'c') {
             $queryContact .= "AND level IS NULL ";
         }
         if (!empty($t) && $t == 's') {
             $queryContact .= "AND level IS NOT NULL ";
         }
-        $queryContact .= "ORDER BY sc_name "
-            . $range;
-        
+        $queryContact .= 'ORDER BY sc_name ' . $range;
+
         $stmt = $this->pearDB->prepare($queryContact);
-        $dbResult = $this->pearDB->execute($stmt, $queryArguments);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
-        
+
         $serviceList = array();
         while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);
         }
-        
+
         return array(
             'items' => $serviceList,
             'total' => $total
