@@ -381,15 +381,17 @@ class WikiApi
      */
     public function updateLinkForHost($hostName)
     {
-        $querySelect = "SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "'";
-        $resHost = $this->db->query($querySelect);
+        $querySelect = 'SELECT host_id FROM host WHERE host_name LIKE ?';
+        $stmt = $this->db->prepare($querySelect);
+        $resHost = $this->db->execute($stmt, array((string)$hostName));
         $tuple = $resHost->fetchRow();
 
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
         $queryUpdate = "UPDATE extended_host_information "
             . "SET ehi_notes_url = '" . $valueToAdd . "' "
-            . "WHERE host_host_id = '" . $tuple['host_id'] . "'";
-        $this->db->query($queryUpdate);
+            . "WHERE host_host_id = ?";
+        $stmt = $this->db->prepare($queryUpdate);
+        $this->db->execute($stmt, array((int)$tuple['host_id']));
     }
 
     /**
@@ -400,19 +402,23 @@ class WikiApi
     {
         $query = "SELECT service_id " .
             "FROM service, host, host_service_relation " .
-            "WHERE host.host_name LIKE '" . $hostName . "' " .
-            "AND service.service_description LIKE '" . $serviceDescription . "' " .
+            "WHERE host.host_name LIKE ? " .
+            "AND service.service_description LIKE ? " .
             "AND host_service_relation.host_host_id = host.host_id " .
             "AND host_service_relation.service_service_id = service.service_id ";
-        $resService = $this->db->query($query);
+
+
+        $stmt = $this->db->prepare($query);
+        $resService =$this->db->execute($stmt, array((string)$hostName, (string)$serviceDescription));
         $tuple = $resService->fetchRow();
 
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
             'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
         $queryUpdate = "UPDATE extended_service_information " .
             "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' ";
-        $this->db->query($queryUpdate);
+            "WHERE service_service_id = ? ";
+        $stmt = $this->db->prepare($queryUpdate);
+        $this->db->execute($stmt, array((int)$tuple['service_id']));
     }
 
     /**
@@ -420,15 +426,18 @@ class WikiApi
      */
     public function updateLinkForServiceTemplate($serviceName)
     {
-        $query = "SELECT service_id FROM service WHERE service_description LIKE '" . $serviceName . "' ";
-        $resService = $this->db->query($query);
+        $query = "SELECT service_id FROM service WHERE service_description LIKE ? ";
+        $stmt = $this->db->prepare($query);
+        $resService = $this->db->execute($stmt, array((string)$serviceName));
         $tuple = $resService->fetchRow();
 
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
             'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
         $queryUpdate = "UPDATE extended_service_information " .
             "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' ";
-        $this->db->query($queryUpdate);
+            "WHERE service_service_id = ? ";
+        $stmt = $this->db->prepare($queryUpdate);
+        $this->db->execute($stmt, array((int)$tuple['service_id']));
+
     }
 }
