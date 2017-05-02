@@ -516,7 +516,7 @@ class CentreonCustomView
                 'FROM widget_preferences wp, widget_views wv ' .
                 'WHERE wv.custom_view_id = ? ' .
                 'AND wv.widget_view_id = wp.widget_view_id ' .
-                'AND wp.user_id = ?';
+                'AND wp.user_id = ?)';
 
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$userId, (int)$viewId, (int)$this->userId));
