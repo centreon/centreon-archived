@@ -43,14 +43,14 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        $queryArguments = array();
+        $queryValues = array();
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $limit = $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = intval($offset);
-            $queryArguments[] = intval($limit);
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$limit;
         } else {
             $range = '';
         }
@@ -58,8 +58,8 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
         $filterAclgroup = '';
         if (isset($this->arguments['q'])) {
             $filterAclgroup = "WHERE acl_group_name LIKE ? OR acl_group_alias LIKE ? ";
-            $queryArguments[] = '%' . $this->arguments['q'] . '%';
-            $queryArguments[] = '%' . $this->arguments['q'] . '%';
+            $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
+            $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
         }
 
         $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT acl_group_id, acl_group_name " .
@@ -68,7 +68,7 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
             "ORDER BY acl_group_name " .
             $range;
         $stmt = $this->pearDB->prepare($query);
-        $dbResult = $this->pearDB->execute($stmt, $queryArguments);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $aclgroupList = array();
         while ($data = $dbResult->fetchRow()) {
