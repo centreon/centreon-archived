@@ -319,7 +319,12 @@ class CentreonCustomView
                 }
                 $query .= ' OR cvur.usergroup_id IN ('.rtrim($cglist, ', ');
             }
-            $query .= ') AND is_consumed = 1 ORDER BY user_id, name';
+            $query .= ') AND is_consumed = 1) ORDER BY user_id, name';
+
+
+            var_dump($query);
+            var_dump($queryValue);
+
             $this->customViews = array();
 
             $stmt = $this->db->prepare($query);
