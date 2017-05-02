@@ -729,9 +729,9 @@ class CentreonCustomView
     public function removeUsergroupFromView($params)
     {
         $query = "DELETE FROM custom_view_user_relation
-        		  WHERE usergroup_id = " . $this->db->escape($params['usergroup_id']) . "
+        		  WHERE usergroup_id = " . $this->db->escape((int)$params['usergroup_id']) . "
         		  AND is_public != 1
-        		  AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
+        		  AND custom_view_id = " . $this->db->escape((int)$params['custom_view_id']);
         $this->db->query($query);
     }
 
@@ -771,8 +771,8 @@ class CentreonCustomView
             GROUP BY custom_view_id";
         $stmt = $db->query($sql);
         while ($row = $stmt->fetchRow()) {
-            $customView = new CentreonCustomView($centreon, $db, $row['owner_id']);
-            $customView->syncCustomView($row['custom_view_id'], $contactId);
+            $customView = new CentreonCustomView($centreon, $db, (int)$row['owner_id']);
+            $customView->syncCustomView((int)$row['custom_view_id'], $contactId);
             unset($customView);
         }
     }
