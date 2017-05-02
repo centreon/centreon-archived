@@ -65,10 +65,10 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-        $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" 
-                  FROM `metrics` 
-                  WHERE metric_name LIKE ? 
-                  ORDER BY `metric_name` COLLATE utf8_general_ci ";
+        $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" ' .
+                  'FROM `metrics` ' .
+                  'WHERE metric_name LIKE ? ' .
+                  'ORDER BY `metric_name` COLLATE utf8_general_ci "';
 
         $stmt = $this->pearDBMonitoring->prepare($query);
         $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . $q . '%'));
@@ -147,11 +147,11 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
 
             /* Check ACL is not admin */
             if (!$isAdmin) {
-                $query = "SELECT service_id
-                          FROM centreon_acl
-                          WHERE host_id = ?
-                          AND service_id = ?
-                          AND group_id IN (" . $aclGroups . ")";
+                $query = 'SELECT service_id ' .
+                         'FROM centreon_acl ' .
+                         'WHERE host_id = ? ' .
+                         'AND service_id = ? ' .
+                         'AND group_id IN (" . $aclGroups . ")"';
 
                 $stmt = $this->pearDBMonitoring->prepare($query);
                 $res = $this->pearDBMonitoring->execute($stmt, array($hostId, $serviceId));
