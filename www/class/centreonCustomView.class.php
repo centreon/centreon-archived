@@ -771,8 +771,8 @@ class CentreonCustomView
             GROUP BY custom_view_id";
         $stmt = $db->query($sql);
         while ($row = $stmt->fetchRow()) {
-            $customView = new CentreonCustomView($centreon, $db, $row['owner_id']);
-            $customView->syncCustomView($row['custom_view_id'], $contactId);
+            $customView = new CentreonCustomView($centreon, $db, (int)$row['owner_id']);
+            $customView->syncCustomView((int)$row['custom_view_id'], $contactId);
             unset($customView);
         }
     }

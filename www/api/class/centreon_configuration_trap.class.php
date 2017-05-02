@@ -59,42 +59,38 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
     public function getList()
     {
         global $centreon;
-        $queryArguments = array();
-        
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-
+        $queryValues[] = '%' . (string)$q . '%';
+        $queryValues[] = '%' . (string)$q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $limit = $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
-            $queryArguments[] = intval($offset);
-            $queryArguments[] = intval($limit);
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryTraps = "SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name "
-            . "FROM traps t, traps_vendor m "
-            . 'WHERE t.manufacturer_id = m.id '
-            . "AND (t.traps_name LIKE ? OR m.name LIKE ?) "
-            . "ORDER BY m.name, t.traps_name "
-            . $range;
-        
-        $stmt = $this->pearDB->prepare($queryTraps);
-        $DBRESULT = $this->pearDB->execute($stmt, array('%' . $q . '%', '%' . $q . '%'));
 
+        $queryTraps = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name ' .
+            'FROM traps t, traps_vendor m ' .
+            'AND (t.traps_name LIKE ? OR m.name LIKE ?) ' .
+            'ORDER BY m.name, t.traps_name ' . $range;
+
+        $stmt = $this->pearDB->prepare($queryTraps);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
         $trapList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+
+        while ($data = $dbResult->fetchRow()) {
             $trapCompleteName = $data['name'] . ' - ' . $data['traps_name'];
             $trapCompleteId = $data['traps_id'];
-            
             $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => $trapCompleteName);
         }
 

@@ -128,7 +128,8 @@ class CentreonGraphService extends CentreonGraph
                         $extraLegend = true;
                         if (($name == "min" || $name == "max") &&
                             (isset($metric['ds_minmax_int']) &&
-                            $metric['ds_minmax_int'])) {
+                                $metric['ds_minmax_int'])
+                        ) {
                             $displayformat = "%7.0lf";
                         } else {
                             $displayformat = "%7.2lf";
@@ -140,8 +141,9 @@ class CentreonGraphService extends CentreonGraph
                 }
 
                 if (isset($metric['ds_color_area']) &&
-                  isset($metric['ds_filled']) &&
-                  $metric['ds_filled'] === '1') {
+                    isset($metric['ds_filled']) &&
+                    $metric['ds_filled'] === '1'
+                ) {
                     $info['graph_type'] = "area";
                 }
                 if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
@@ -331,9 +333,12 @@ class CentreonGraphService extends CentreonGraph
      */
     public static function getIndexId($hostId, $serviceId, $dbc)
     {
-        $query = "SELECT id FROM index_data
-            WHERE host_id = " . $hostId . " AND service_id = " . $serviceId;
-        $res = $dbc->query($query);
+        $query = 'SELECT id FROM index_data ' .
+            'WHERE host_id = ? ' .
+            'AND service_id = ?';
+
+        $stmt = $dbc->prepare($query);
+        $res = $dbc->execute($stmt, array((int)$hostId, (int)$serviceId));
         $row = $res->fetchRow();
 
         if (false == $row) {

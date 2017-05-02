@@ -116,13 +116,10 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             $s = 'all';
         }
 
-
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range[] = (int)$offset;
             $range[] = (int)$this->arguments['page_limit'];
-        } else {
-            $range = '';
         }
 
         switch ($t) {
