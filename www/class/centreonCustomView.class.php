@@ -519,7 +519,7 @@ class CentreonCustomView
                 'AND wp.user_id = ?';
 
             $stmt = $this->db->prepare($query);
-            $res = $this->db->execute($stmt, array((int)$userId, (int)$viewId), (int)$this->userId);
+            $res = $this->db->execute($stmt, array((int)$userId, (int)$viewId, (int)$this->userId));
             if (PEAR::isError($res)) {
                 throw new Exception('Bad Request');
             }
