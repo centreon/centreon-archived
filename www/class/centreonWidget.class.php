@@ -241,9 +241,11 @@ class CentreonWidget
         $queryValues[] = (int)$params['widget_model_id'];
 
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, $queryValues);
+        $res = $this->db->execute($stmt, $queryValues);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
-        $lastId = $this->getLastInsertedWidgetId($params['widget_title']);
         /* Get view layout */
         $query = 'SELECT layout ' .
             'FROM custom_views ' .
@@ -251,6 +253,9 @@ class CentreonWidget
 
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((int)$params['custom_view_id']));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
         if (PEAR::isError($res)) {
             throw new CentreonWidgetException('No view found');
@@ -270,6 +275,9 @@ class CentreonWidget
 
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((int)$params['custom_view_id']));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
         if (PEAR::isError($res)) {
             throw new CentreonWidgetException('No view found');
@@ -305,13 +313,19 @@ class CentreonWidget
             $newPosition = '0_' . $rowNb;
         }
 
+        $lastId = $this->getLastInsertedWidgetId($params['widget_title']);
         $queryValues = array();
+
         $query = 'INSERT INTO widget_views (custom_view_id, widget_id, widget_order) VALUES (?, ?, ?)';
         $queryValues[] = (int)$params['custom_view_id'];
         $queryValues[] = (int)$lastId;
         $queryValues[] = (string)$newPosition;
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, $queryValues);
+        $res = $this->db->execute($stmt, $queryValues);
+        var_dump($res);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
     }
 
@@ -350,6 +364,10 @@ class CentreonWidget
             'AND w.widget_id = ?';
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((int)$widgetId));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         if ($res->numRows()) {
             $row = $res->fetchRow();
             return $row['url'];
@@ -371,6 +389,10 @@ class CentreonWidget
             'AND w.widget_id = ?';
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((int)$widgetId));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         if ($res->numRows()) {
             $row = $res->fetchRow();
             return $row['autoRefresh'];
@@ -399,6 +421,9 @@ class CentreonWidget
                       CAST(SUBSTRING_INDEX(widget_order, '_', -1) AS SIGNED INTEGER)";
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$viewId));
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
 
             while ($row = $res->fetchRow()) {
                 $this->widgets[$viewId][$row['widget_id']]['title'] = $row['title'];
@@ -433,6 +458,10 @@ class CentreonWidget
 
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, $queryValues);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         $total = $this->db->numberRows();
         $widgets = array();
         while ($data = $res->fetchRow()) {
@@ -455,7 +484,10 @@ class CentreonWidget
     {
         $query = 'DELETE FROM widget_views WHERE custom_view_id = ?';
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, array((int)$viewId));
+        $res = $this->db->execute($stmt, array((int)$viewId));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
         $str = '';
         $queryValues = array();
@@ -470,7 +502,10 @@ class CentreonWidget
         if ($str != '') {
             $query = 'INSERT INTO widget_views (custom_view_id, widget_id) VALUES ' . $str;
             $stmt = $this->db->prepare($query);
-            $this->db->execute($stmt, $queryValues);
+            $res = $this->db->execute($stmt, $queryValues);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         }
     }
 
@@ -495,6 +530,10 @@ class CentreonWidget
                 'ORDER BY parameter_order ASC';
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$widgetId));
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
+
             while ($row = $res->fetchRow()) {
                 if ($row['require_permission'] && $hasPermission == false) {
                     continue;
@@ -543,6 +582,9 @@ class CentreonWidget
 
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, $queryValues);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
         if ($res->numRows()) {
             $row = $res->fetchRow();
@@ -561,7 +603,10 @@ class CentreonWidget
             $deleteQueryValues[] = (int)$widgetViewId;
             $deleteQueryValues[] = (int)$this->userId;
             $stmt = $this->db->prepare($query);
-            $this->db->execute($stmt, $deleteQueryValues);
+            $res = $this->db->execute($stmt, $deleteQueryValues);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         } else {
             $query = 'DELETE FROM widget_preferences ' .
                 'WHERE widget_view_id = ? ' .
@@ -569,7 +614,10 @@ class CentreonWidget
             $deleteQueryValues[] = (int)$widgetViewId;
             $deleteQueryValues[] = (int)$this->userId;
             $stmt = $this->db->prepare($query);
-            $this->db->execute($stmt, $deleteQueryValues);
+            $res = $this->db->execute($stmt, $deleteQueryValues);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         }
 
         $queryValues = array();
@@ -601,7 +649,10 @@ class CentreonWidget
             $query = 'INSERT INTO widget_preferences (widget_view_id, parameter_id, preference_value, user_id) ' .
                 'VALUES ' . $str;
             $stmt = $this->db->prepare($query);
-            $this->db->execute($stmt, $queryValues);
+            $res = $this->db->execute($stmt, $queryValues);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         }
         $this->customView->syncCustomView($params['custom_view_id']);
     }
@@ -622,7 +673,10 @@ class CentreonWidget
         $queryValues[] = (int)$params['widget_id'];
 
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, $queryValues);
+        $res = $this->db->execute($stmt, $queryValues);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
     }
 
     /**
@@ -656,7 +710,10 @@ class CentreonWidget
                 $queryValues[] = (int)$widgetId;
 
                 $stmt = $this->db->prepare($query);
-                $this->db->execute($stmt, $queryValues);
+                $res = $this->db->execute($stmt, $queryValues);
+                if (PEAR::isError($res)) {
+                    throw new Exception('Bad Request');
+                }
             }
         }
     }
@@ -685,6 +742,10 @@ class CentreonWidget
         $query = 'SELECT MAX(widget_id) as lastId FROM widgets WHERE title = ?';
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((string)$title));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         $row = $res->fetchRow();
         return $row['lastId'];
     }
@@ -702,6 +763,10 @@ class CentreonWidget
             'WHERE directory = ?';
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((string)$directory));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         $row = $res->fetchRow();
         return $row['lastId'];
     }
@@ -719,6 +784,10 @@ class CentreonWidget
             'WHERE parameter_name = ?';
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((string)$label));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         $row = $res->fetchRow();
         return $row['lastId'];
     }
@@ -792,7 +861,10 @@ class CentreonWidget
                         'parameter_order, require_permission, header_title) ' .
                         'VALUES ' . $str;
                     $stmt = $this->db->prepare($query);
-                    $this->db->execute($stmt, $queryValues);
+                    $res = $this->db->execute($stmt, $queryValues);
+                    if (PEAR::isError($res)) {
+                        throw new Exception('Bad Request');
+                    }
 
                     $lastParamId = $this->getLastInsertedParameterId($attr['label']);
                     $this->insertParameterOptions($lastParamId, $attr, $pref);
@@ -832,7 +904,11 @@ class CentreonWidget
                             'default_value, parameter_order, require_permission, header_title) ' .
                             'VALUES ' . $str;
                         $stmt = $this->db->prepare($query);
-                        $this->db->execute($stmt, $queryValues);
+                        $res = $this->db->execute($stmt, $queryValues);
+                        if (PEAR::isError($res)) {
+                            throw new Exception('Bad Request');
+                        }
+
                         $lastParamId = $this->getLastInsertedParameterId($attr['label']);
                         $this->insertParameterOptions($lastParamId, $attr, $pref);
                         $order++;
@@ -872,7 +948,11 @@ class CentreonWidget
         $queryValues[] = (int)$config['autoRefresh'];
 
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, $queryValues);
+        $res = $this->db->execute($stmt, $queryValues);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         $lastId = $this->getLastInsertedWidgetModelId($directory);
         $this->insertWidgetPreferences($lastId, $config);
     }
@@ -911,7 +991,10 @@ class CentreonWidget
                         '(parameter_id, option_name, option_value) ' .
                         'VALUES ' . $str2;
                     $stmt = $this->db->prepare($query2);
-                    $this->db->execute($stmt, $queryValues2);
+                    $res = $this->db->execute($stmt, $queryValues2);
+                    if (PEAR::isError($res)) {
+                        throw new Exception('Bad Request');
+                    }
                 }
             }
         } elseif ($attr['type'] == "range") {
@@ -1114,7 +1197,10 @@ class CentreonWidget
                 'AND widget_model_id = ?';
             $deleteQueryValues[] = (int)$widgetModelId;
             $stmt = $this->db->prepare($query);
-            $this->db->execute($stmt, $deleteQueryValues);
+            $res = $this->db->execute($stmt, $deleteQueryValues);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         }
     }
 
@@ -1159,7 +1245,10 @@ class CentreonWidget
         $queryValues[] = (string)$directory;
 
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, $queryValues);
+        $res = $this->db->execute($stmt, $queryValues);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
         $info = $this->getWidgetInfoByDirectory($directory);
         $this->upgradePreferences($info['widget_model_id'], $config);
     }
@@ -1173,7 +1262,10 @@ class CentreonWidget
     {
         $query = 'DELETE FROM widget_models WHERE directory = ?';
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, array((string)$directory));
+        $res = $this->db->execute($stmt, array((string)$directory));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
     }
 
     /**
@@ -1192,6 +1284,9 @@ class CentreonWidget
         // Prevent SQL injection with widget id
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((int)$widgetId));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
         $tab = array();
         while ($row = $res->fetchRow()) {
@@ -1207,6 +1302,9 @@ class CentreonWidget
         // Prevent SQL injection with widget id
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((int)$widgetId));
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
 
         while ($row = $res->fetchRow()) {
             $tab[$row['parameter_code_name']] = $row['preference_value'];
@@ -1241,7 +1339,10 @@ class CentreonWidget
         $queryValues[] = (int)$widgetId;
 
         $stmt = $this->db->prepare($query);
-        $this->db->execute($stmt, $queryValues);
+        $res = $this->db->execute($stmt, $queryValues);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
         return $params['newName'];
     }
 }
