@@ -131,11 +131,13 @@ class CentreonCustomView
             'FROM custom_view_user_relation ' .
             'WHERE locked = 0 ' .
             'AND is_consumed = 1 ' .
-            'AND user_id != ? ' .
+            'AND user_id <> ? ' .
             'AND custom_view_id = ?';
-
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array((int)$userId, (int)$viewId));
+
+
+
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
@@ -662,7 +664,7 @@ class CentreonCustomView
             $query = 'SELECT user_id ' .
                 'FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = ? ' .
-                'AND user_id != ? ' .
+                'AND user_id <> ? ' .
                 'AND usergroup_id IS NULL ';
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$params['custom_view_id'], (int)$userId));
@@ -945,7 +947,7 @@ class CentreonCustomView
     {
         $query = 'DELETE FROM custom_view_user_relation ' .
             'WHERE usergroup_id = ? ' .
-            'AND is_public != 1 ' .
+            'AND is_public <> 1 ' .
             'AND custom_view_id = ?';
 
         $stmt = $this->db->prepare($query);
