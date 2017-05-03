@@ -910,16 +910,22 @@ class CentreonCustomView
         if (!count($contactgroups)) {
             return null;
         }
-        $cgString = implode(',', array_keys($contactgroups));
+        $queryValue = array();
+        foreach ($contactgroups AS $k => $v){
+            $cgString = '?,';
+            $queryValue[] = (int)$v;
+        }
+        $cgString = rtrim($cgString, ',');
+        $query = 'SELECT c1.custom_view_id, c1.user_id as owner_id, c2.usergroup_id ' .
+            'FROM custom_view_user_relation c1, custom_view_user_relation c2 ' .
+            'WHERE c1.custom_view_id = c2.custom_view_id ' .
+            'AND c1.is_owner = 1 ' .
+            'AND c2.usergroup_id in (' . $cgString . ') ' .
+            'GROUP BY custom_view_id';
+        $stmt = $db->prepare($query);
+        $res = $db->execute($stmt, $queryValue);
 
-        $sql = "SELECT c1.custom_view_id, c1.user_id as owner_id, c2.usergroup_id 
-            FROM custom_view_user_relation c1, custom_view_user_relation c2  
-            WHERE c1.custom_view_id = c2.custom_view_id 
-            AND c1.is_owner = 1 
-            AND c2.usergroup_id in ($cgString) 
-            GROUP BY custom_view_id";
-        $stmt = $db->query($sql);
-        while ($row = $stmt->fetchRow()) {
+        while ($row = $res->fetchRow()) {
             $customView = new CentreonCustomView($centreon, $db, (int)$row['owner_id']);
             $customView->syncCustomView((int)$row['custom_view_id'], $contactId);
             unset($customView);
