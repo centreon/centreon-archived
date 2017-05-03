@@ -237,9 +237,8 @@ class CentreonWidget
         }
         $queryValues = array();
         $query = 'INSERT INTO widgets (title, widget_model_id) VALUES (?, ?)';
-        $queryValues[] = (int)$params['widget_title'];
+        $queryValues[] = (string)$params['widget_title'];
         $queryValues[] = (int)$params['widget_model_id'];
-
         $stmt = $this->db->prepare($query);
         $this->db->execute($stmt, $queryValues);
 
