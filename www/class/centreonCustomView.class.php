@@ -135,7 +135,7 @@ class CentreonCustomView
             'AND custom_view_id = ?';
 
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array((int)$userId), (int)$viewId);
+        $res = $this->db->execute($stmt, array((int)$userId, (int)$viewId));
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
@@ -448,7 +448,7 @@ class CentreonCustomView
                     'WHERE custom_view_id = ? AND user_id = ? ';
 
                 $stmt = $this->db->prepare($query);
-                $res = $this->db->execute($stmt, array((int)$viewId), (int)$this->userId);
+                $res = $this->db->execute($stmt, array((int)$viewId, (int)$this->userId));
                 if (PEAR::isError($res)) {
                     throw new Exception('Bad Request');
                 }
@@ -664,14 +664,12 @@ class CentreonCustomView
                 'WHERE custom_view_id = ? ' .
                 'AND user_id != ? ' .
                 'AND usergroup_id IS NULL ';
-
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$params['custom_view_id'], (int)$userId));
 
             if (PEAR::isError($res)) {
                 throw new Exception('Bad Request');
             }
-
             $oldSharedUsers = array();
             while ($row = $res->fetchRow()) {
                 $oldSharedUsers[$row['user_id']] = 1;
