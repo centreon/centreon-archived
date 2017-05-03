@@ -135,7 +135,7 @@ class CentreonCustomView
             'AND custom_view_id = ?';
 
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array((int)$userId), (int)$viewId);
+        $res = $this->db->execute($stmt, array((int)$userId, (int)$viewId));
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
@@ -397,7 +397,7 @@ class CentreonCustomView
         //owner
         if ($this->checkOwnership($viewId)) {
             //if not shared view consumed
-            if (!$this->checkOtherShareViewUnlocked($viewId, $this->userId)) {
+            if (!$this->checkOtherShareViewUnlocked($this->userId, $viewId)) {
                 $query = 'DELETE FROM custom_views WHERE custom_view_id = ?';
 
                 $stmt = $this->db->prepare($query);
