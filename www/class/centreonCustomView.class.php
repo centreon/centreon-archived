@@ -674,6 +674,7 @@ class CentreonCustomView
 
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, (int)$params['custom_view_id'], (int)$userId);
+
             if (PEAR::isError($res)) {
                 throw new Exception('Bad Request');
             }
@@ -685,28 +686,38 @@ class CentreonCustomView
 
             foreach ($sharedUsers as $sharedUserId => $locked) {
                 if (isset($oldSharedUsers[$sharedUserId])) {
-                    $query = "UPDATE custom_view_user_relation "
-                        . "SET is_share = 1, locked = " . $locked . " "
-                        . "WHERE user_id = " . $this->db->escape($sharedUserId) . " "
-                        . "AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
-                    $this->db->query($query);
+                    $query = 'UPDATE custom_view_user_relation '.
+                        'SET is_share = 1, locked = ? '.
+                        'WHERE user_id = ? '.
+                        'AND custom_view_id = ?';
+
+                    $stmt = $this->db->prepare($query);
+                    $res = $this->db->execute($stmt, (int)$locked, (int)$sharedUserId, (int)$params['custom_view_id']);
+                    if (PEAR::isError($res)) {
+                        throw new Exception('Bad Request');
+                    }
+
                     unset($oldSharedUsers[$sharedUserId]);
                 } else {
-                    $query = "INSERT INTO custom_view_user_relation "
-                        . "(custom_view_id, user_id, locked, is_consumed, is_share ) "
-                        . "VALUES (" . $this->db->escape($params['custom_view_id']) . ", "
-                        . $this->db->escape($sharedUserId) . ", " . $locked . ", 0, 1) ";
-                    $this->db->query($query);
+                    $query = 'INSERT INTO custom_view_user_relation '.
+                        '(custom_view_id, user_id, locked, is_consumed, is_share ) '.
+                        'VALUES ?, ?, ?, 0, 1) ';
+
+                    $stmt = $this->db->prepare($query);
+                    $res = $this->db->execute($stmt, (int)$params['custom_view_id'], (int)$sharedUserId, (int)$locked);
+                    if (PEAR::isError($res)) {
+                        throw new Exception('Bad Request');
+                    }
                 }
                 $this->copyPreferences($params['custom_view_id'], $sharedUserId);
             }
 
+////////////// je mongolise...
             $query = 'DELETE FROM custom_view_user_relation '
                 .'WHERE custom_view_id = ? '
                 .'AND user_id IN ?';
 
             $queryValue[] = (int)$oldSharedUsers;
-//////////////
 
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, (int)$params['custom_view_id'], (int)$oldSharedUsers);
@@ -714,6 +725,7 @@ class CentreonCustomView
                 throw new Exception('Bad Request');
             }
 
+////////////
             // share with user groups
             $sharedUsergroups = array();
             $params['lockedUsergroups'] = isset($params['lockedUsergroups']) ? $params['lockedUsergroups'] : array();
@@ -726,11 +738,18 @@ class CentreonCustomView
                 $sharedUsergroups[$unlockedUsergroup] = 0;
             }
 
-            $sql = "SELECT usergroup_id "
-                . "FROM custom_view_user_relation "
-                . "WHERE custom_view_id = " . $this->db->escape($params['custom_view_id']) . " "
-                . "AND user_id IS NULL ";
-            $res = $this->db->query($sql);
+            $query = 'SELECT usergroup_id '.
+                'FROM custom_view_user_relation '.
+                'WHERE custom_view_id = ? '.
+                'AND user_id IS NULL ';
+            // $res = $this->db->query($sql);
+
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, (int)$params['custom_view_id']);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
+
             $oldSharedUsergroups = array();
             while ($row = $res->fetchRow()) {
                 $oldSharedUsergroups[$row['usergroup_id']] = 1;
@@ -738,28 +757,45 @@ class CentreonCustomView
 
             foreach ($sharedUsergroups as $sharedUsergroupId => $locked) {
                 if (isset($oldSharedUsergroups[$sharedUsergroupId])) {
-                    $query = "UPDATE custom_view_user_relation "
-                        . "SET is_share = 1, locked = " . $locked . " "
-                        . "WHERE usergroup_id = " . $this->db->escape($sharedUsergroupId) . " "
-                        . "AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
-                    $this->db->query($query);
+                    $query = 'UPDATE custom_view_user_relation '.
+                        'SET is_share = 1, locked = ? '.
+                        'WHERE usergroup_id = ? '.
+                        'AND custom_view_id = ?';
+
+                    $stmt = $this->db->prepare($query);
+                    $res = $this->db->execute($stmt, (int)$locked, (int)$sharedUsergroupId, (int)$params['custom_view_id']);
+                    if (PEAR::isError($res)) {
+                        throw new Exception('Bad Request');
+                    }
+
                     unset($oldSharedUsergroups[$sharedUsergroupId]);
                 } else {
                     $query = "INSERT INTO custom_view_user_relation "
                         . "(custom_view_id, usergroup_id, locked, is_consumed, is_share ) "
-                        . "VALUES (" . $this->db->escape($params['custom_view_id']) . ", "
-                        . $this->db->escape($sharedUsergroupId) . ", " . $locked . ", 0, 1) ";
-                    $this->db->query($query);
+                        . "VALUES ?, ?, ?, 0, 1) ";
+
+                    $stmt = $this->db->prepare($query);
+                    $res = $this->db->execute($stmt, $params['custom_view_id'], (int)$sharedUsergroupId, $locked);
+                    if (PEAR::isError($res)) {
+                        throw new Exception('Bad Request');
+                    }
                 }
                 $this->copyPreferences($params['custom_view_id'], null, $sharedUsergroupId);
             }
-
+//////////// je mongolise aussi
             $query = 'DELETE FROM custom_view_user_relation '
                 . 'WHERE custom_view_id = ' . $this->db->escape(
                     $params['custom_view_id'] . ' '
                     . 'AND usergroup_id IN (' . implode(',', array_keys($oldSharedUsergroups))
                 ) . ') ';
-            $this->db->query($query);
+            // $this->db->query($query);
+
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, $params['custom_view_id'], (int)$sharedUsergroupId, $locked);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
+//////////////
         }
     }
 
@@ -792,15 +828,18 @@ class CentreonCustomView
 
         if (!isset($userList)) {
             $userList = array();
-            $query = "SELECT contact_name, user_id, locked
-            		  FROM contact c, custom_view_user_relation cvur
-            		  WHERE c.contact_id = cvur.user_id
-            		  AND cvur.custom_view_id  = ?
-            		  AND cvur.is_share = 1
-                      ORDER BY contact_name";
+            $query = 'SELECT contact_name, user_id, locked '.
+                'FROM contact c, custom_view_user_relation cvur '.
+                'WHERE c.contact_id = cvur.user_id '.
+                'AND cvur.custom_view_id = ? '.
+                'AND cvur.is_share = 1 '.
+                'ORDER BY contact_name';
 
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$viewId));
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
 
             while ($row = $res->fetchRow()) {
                 $userList[$row['user_id']]['contact_name'] = $row['contact_name'];
@@ -824,15 +863,18 @@ class CentreonCustomView
 
         if (!isset($usergroupList)) {
             $usergroupList = array();
-            $query = "SELECT cg_name, usergroup_id, locked
-            		  FROM contactgroup cg, custom_view_user_relation cvur
-            		  WHERE cg.cg_id = cvur.usergroup_id
-            		  AND cvur.custom_view_id  = ?
-            		  AND cvur.is_share = 1
-                      ORDER BY cg_name";
+            $query = 'SELECT cg_name, usergroup_id, locked '.
+                'FROM contactgroup cg, custom_view_user_relation cvur '.
+                'WHERE cg.cg_id = cvur.usergroup_id '.
+                'AND cvur.custom_view_id = ? '.
+                'AND cvur.is_share = 1 '.
+                ' ORDER BY cg_name';
 
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$viewId));
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
 
             while ($row = $res->fetchRow()) {
                 $usergroupList[$row['usergroup_id']]['cg_name'] = $row['cg_name'];
@@ -853,25 +895,42 @@ class CentreonCustomView
     public function removeUserFromView($params)
     {
 
-        $query = "SELECT is_public
-                  FROM custom_view_user_relation
-        		  WHERE user_id = " . (int)$params['user_id'] . "
-        		  AND custom_view_id = " . (int)$params['custom_view_id'];
-        $res = $this->db->query($query);
+        $query = 'SELECT is_public '.
+            'FROM custom_view_user_relation '.
+            'WHERE user_id = ? '.
+            'AND custom_view_id = ?';
+
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, (int)$params['user_id'], (int)$params['custom_view_id']);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         while ($row = $res->fetchRow()) {
             $public = $row['is_public'];
         }
 
         if ($public == 0) {
-            $query = "DELETE FROM custom_view_user_relation
-        		  WHERE user_id = " . (int)$params['user_id'] . "
-        		  AND custom_view_id = " . (int)$params['custom_view_id'];
-            $this->db->query($query);
+            $query = 'DELETE FROM custom_view_user_relation '.
+                'WHERE user_id = ? '.
+                'AND custom_view_id = ?';
+
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, (int)$params['user_id'], (int)$params['custom_view_id']);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
+
         } else {
-            $query = "UPDATE custom_view_user_relation SET is_share = 0, locked = 1
-                      WHERE user_id = " . (int)$params['user_id'] . "
-        		      AND custom_view_id = " . (int)$params['custom_view_id'];
-            $this->db->query($query);
+            $query = 'UPDATE custom_view_user_relation SET is_share = 0, locked = 1 '.
+                'WHERE user_id = ? '.
+                'AND custom_view_id = ?';
+
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, (int)$params['user_id'], (int)$params['custom_view_id']);
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         }
     }
 
@@ -883,11 +942,16 @@ class CentreonCustomView
      */
     public function removeUsergroupFromView($params)
     {
-        $query = "DELETE FROM custom_view_user_relation
-        		  WHERE usergroup_id = " . $this->db->escape((int)$params['usergroup_id']) . "
-        		  AND is_public != 1
-        		  AND custom_view_id = " . $this->db->escape((int)$params['custom_view_id']);
-        $this->db->query($query);
+        $query = 'DELETE FROM custom_view_user_relation '.
+            'WHERE usergroup_id = ? '.
+            'AND is_public != 1 '.
+            'AND custom_view_id = ?';
+
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute($stmt, (int)$params['usergroup_id'], (int)$params['custom_view_id']);
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
     }
 
     /**
@@ -898,10 +962,21 @@ class CentreonCustomView
      */
     public function updateCustomViewUserRelation($params)
     {
-        $query = "UPDATE custom_view_user_relation SET is_public = " . $params['public'] . "
-        		  WHERE user_id <> " . (int)$params['user_id'] . "
-                  AND custom_view_id = " . (int)$params['custom_view_id'];
-        $this->db->query($query);
+        $query = 'UPDATE custom_view_user_relation SET is_public = ? '.
+            'WHERE user_id <> ? '.
+            'AND custom_view_id = ?';
+
+        $stmt = $this->db->prepare($query);
+        $res = $this->db->execute(
+            $stmt,
+            (int)$params['public'],
+            (int)$params['user_id'],
+            (int)$params['custom_view_id']
+        );
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
     }
 
     /**
