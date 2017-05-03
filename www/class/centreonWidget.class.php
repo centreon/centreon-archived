@@ -524,7 +524,7 @@ class CentreonWidget
                 'FROM widget_parameters_field_type ft, widget_parameters p, widgets w ' .
                 'WHERE ft.field_type_id = p.field_type_id ' .
                 'AND p.widget_model_id = w.widget_model_id ' .
-                'AND w.widget_id = ?' .
+                'AND w.widget_id = ? ' .
                 'ORDER BY parameter_order ASC';
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$widgetId));
