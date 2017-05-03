@@ -696,7 +696,7 @@ class CentreonCustomView
                 } else {
                     $query = 'INSERT INTO custom_view_user_relation ' .
                         '(custom_view_id, user_id, locked, is_consumed, is_share ) ' .
-                        'VALUES ?, ?, ?, 0, 1) ';
+                        'VALUES ( ?, ?, ?, 0, 1) ';
 
                     $stmt = $this->db->prepare($query);
                     $res = $this->db->execute(
