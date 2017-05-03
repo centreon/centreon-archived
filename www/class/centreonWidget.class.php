@@ -321,7 +321,6 @@ class CentreonWidget
         $queryValues[] = (string)$newPosition;
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, $queryValues);
-        var_dump($res);
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
