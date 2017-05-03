@@ -763,7 +763,7 @@ class CentreonCustomView
                     $stmt = $this->db->prepare($query);
                     $res = $this->db->execute(
                         $stmt,
-                        array((int)$locked,(int)$sharedUsergroupId,(int)$params['custom_view_id'])
+                        array((int)$locked, (int)$sharedUsergroupId, (int)$params['custom_view_id'])
                     );
                     if (PEAR::isError($res)) {
                         throw new Exception('Bad Request');
@@ -777,7 +777,7 @@ class CentreonCustomView
                     $stmt = $this->db->prepare($query);
                     $res = $this->db->execute(
                         $stmt,
-                        array((int)$params['custom_view_id'],(int)$sharedUsergroupId,(int)$locked));
+                        array((int)$params['custom_view_id'], (int)$sharedUsergroupId, (int)$locked));
                     if (PEAR::isError($res)) {
                         throw new Exception('Bad Request');
                     }
@@ -971,7 +971,7 @@ class CentreonCustomView
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute(
             $stmt,
-            array((int)$params['public'],(int)$params['user_id'],(int)$params['custom_view_id'])
+            array((int)$params['public'], (int)$params['user_id'], (int)$params['custom_view_id'])
         );
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
