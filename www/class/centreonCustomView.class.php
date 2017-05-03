@@ -529,15 +529,13 @@ class CentreonCustomView
             if (PEAR::isError($res)) {
                 throw new Exception('Bad Request');
             }
-
             while ($row = $res->fetchRow()) {
                 $query2 = 'REPLACE INTO widget_preferences (widget_view_id, parameter_id, preference_value, user_id) ' .
                     '(SELECT wp.widget_view_id, wp.parameter_id, wp.preference_value, ? ' .
                     'FROM widget_preferences wp, widget_views wv ' .
-                    'WHERE wv.custom_view_id = ?' .
+                    'WHERE wv.custom_view_id = ? ' .
                     'AND wv.widget_view_id = wp.widget_view_id ' .
                     'AND wp.user_id = ?)';
-
                 $stmt2 = $this->db->prepare($query2);
                 $res2 = $this->db->execute(
                     $stmt2,
@@ -712,11 +710,16 @@ class CentreonCustomView
 
             $queryValue[] = (int)$params['custom_view_id'];
             $userIdKey = '';
-            foreach ($oldSharedUsers as $k => $v) {
-                $userIdKey .= '?,';
-                $queryValue[] = (int)$k;
+
+            if(!empty($oldSharedUsers)){
+                foreach ($oldSharedUsers as $k => $v) {
+                    $userIdKey .= '?,';
+                    $queryValue[] = (int)$k;
+                }
+                $userIdKey = rtrim($userIdKey, ',');
+            } else {
+                $userIdKey .= '""';
             }
-            $userIdKey = rtrim($userIdKey, ',');
             $query = 'DELETE FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = ? ' .
                 'AND user_id IN (' . $userIdKey . ') ';
@@ -789,11 +792,16 @@ class CentreonCustomView
             $queryValue2 = array();
             $queryValue2[] = (int)$params['custom_view_id'];
             $userGroupIdKey = '';
-            foreach ($oldSharedUsergroups as $k => $v) {
-                $userGroupIdKey .= '?,';
-                $queryValue2[] = (int)$k;
+            if(!empty($oldSharedUsergroups)){
+                foreach ($oldSharedUsergroups as $k => $v) {
+                    $userGroupIdKey .= '?,';
+                    $queryValue2[] = (int)$k;
+                }
+                $userGroupIdKey = rtrim($userGroupIdKey, ',');
+            } else {
+                $userGroupIdKey .= '""';
             }
-            $userGroupIdKey = rtrim($userGroupIdKey, ',');
+
             $query = 'DELETE FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = ? ' .
                 'AND usergroup_id IN (' . $userGroupIdKey . ') ';
@@ -938,10 +946,8 @@ class CentreonCustomView
     }
 
     /**
-     * Remove Usergroup From View
-     *
-     * @param array $params
-     * @return void
+     * @param $params
+     * @throws Exception
      */
     public function removeUsergroupFromView($params)
     {
@@ -958,33 +964,10 @@ class CentreonCustomView
     }
 
     /**
-     * Remove User From View
-     *
-     * @param array $params
-     * @return void
-     */
-    public function updateCustomViewUserRelation($params)
-    {
-        $query = 'UPDATE custom_view_user_relation SET is_public = ? ' .
-            'WHERE user_id <> ? ' .
-            'AND custom_view_id = ?';
-
-        $stmt = $this->db->prepare($query);
-        $res = $this->db->execute(
-            $stmt,
-            array((int)$params['public'], (int)$params['user_id'], (int)$params['custom_view_id'])
-        );
-        if (PEAR::isError($res)) {
-            throw new Exception('Bad Request');
-        }
-
-    }
-
-    /**
-     * This is called when a contact is added into a contact group
-     *
-     * @param CentreonDB $db
-     * @param int $contactId
+     * @param $centreon
+     * @param $db
+     * @param $contactId
+     * @return null
      */
     public static function syncContactGroupCustomView($centreon, $db, $contactId)
     {
