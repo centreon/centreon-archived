@@ -777,7 +777,8 @@ class CentreonCustomView
                     $stmt = $this->db->prepare($query);
                     $res = $this->db->execute(
                         $stmt,
-                        array((int)$params['custom_view_id'], (int)$sharedUsergroupId, (int)$locked));
+                        array((int)$params['custom_view_id'], (int)$sharedUsergroupId, (int)$locked)
+                    );
                     if (PEAR::isError($res)) {
                         throw new Exception('Bad Request');
                     }
