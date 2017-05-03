@@ -2241,6 +2241,7 @@ class CentreonHost
             );
         }
 
+
         $explodedValues = '';
         $queryValues = array();
         $queryValues[] = (string)$register;
@@ -2250,6 +2251,8 @@ class CentreonHost
                 $queryValues[] = (int)$v;
             }
             $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= "''";
         }
 
         # get list of selected hosts
@@ -2258,6 +2261,7 @@ class CentreonHost
             'WHERE host_register = ? ' .
             'AND host_id IN (' . $explodedValues . ') ' .
             'ORDER BY host_name ';
+
         $stmt = $this->db->prepare($query);
         $resRetrieval = $this->db->execute($stmt, $queryValues);
 
