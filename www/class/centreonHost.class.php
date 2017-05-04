@@ -364,24 +364,24 @@ class CentreonHost
      * @param int $host_id
      * @return string
      */
-    public function getHostAlias($host_id)
+    public function getHostAlias($hostId)
     {
         static $aliasTab = array();
 
-        if (!isset($host_id) || !$host_id) {
+        if (!isset($hostId) || !$hostId) {
             return null;
         }
-        if (!isset($aliasTab[$host_id])) {
+        if (!isset($aliasTab[$hostId])) {
             $query = 'SELECT host_alias FROM host WHERE host_id = ? LIMIT 1';
             $stmt = $this->db->prepare($query);
-            $res = $this->db->execute($stmt, array($host_id));
+            $res = $this->db->execute($stmt, array((int)$hostId));
             if ($res->numRows()) {
                 $row = $res->fetchRow();
-                $aliasTab[$host_id] = $row['host_alias'];
+                $aliasTab[$hostId] = $row['host_alias'];
             }
         }
-        if (isset($aliasTab[$host_id])) {
-            return $aliasTab[$host_id];
+        if (isset($aliasTab[$hostId])) {
+            return $aliasTab[$hostId];
         }
         return null;
     }
