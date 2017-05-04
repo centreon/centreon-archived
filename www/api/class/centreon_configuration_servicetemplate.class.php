@@ -136,11 +136,10 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             'AND s.service_description LIKE ? ' .
             'ORDER BY h.host_name ';
         if (isset($range)) {
-            $queryRange = 'LIMIT ?, ?';
+            $queryService .= 'LIMIT ?, ?';
             $queryValues[] = (int)$range[0];
             $queryValues[] = (int)$range[1];
         }
-        $queryService .= $queryRange;
         $stmt = $this->pearDB->prepare($queryService);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
