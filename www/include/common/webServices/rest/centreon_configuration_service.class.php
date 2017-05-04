@@ -41,12 +41,12 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -55,33 +55,34 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         $pearDBO = $this->pearDBMonitoring;
     }
-    
+
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
     public function getList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclServices = '';
-        
+        $range = array();
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServices .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
         }
-        
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-        
+
         // Check for service type
         if (false === isset($this->arguments['t'])) {
             $t = 'host';
@@ -99,13 +100,12 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range[] = (int)$offset;
+            $range[] = (int)$this->arguments['page_limit'];
         }
-        
-        
+
+
         switch ($t) {
             default:
             case 'host':
@@ -115,33 +115,42 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 $serviceList = $this->getServicesByHostgroup($q, $aclServices, $range);
                 break;
         }
-        
+
         return $serviceList;
     }
-    
+
     /**
-     * 
+     *
      * @param type $q
      * @param type $aclServices
      */
     private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false)
     {
+        $queryValues = array();
         $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '1' AND s.service_register = '1' "
-            . "AND (s.service_description LIKE '%$q%' OR h.host_name LIKE '%$q%') "
-            . $aclServices
-            . "ORDER BY h.host_name, s.service_description "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
-        
-        $total = $this->pearDB->numberRows();
+            . "AND (s.service_description LIKE ? OR h.host_name LIKE ?) ";
+        $queryValues[] = '%' . (string)$q . '%';
+        $queryValues[] = '%' . (string)$q . '%';
 
+        if (isset($range)) {
+            $queryRange = 'LIMIT ?,?';
+            $queryValues[] = (int)$range[0];
+            $queryValues[] = (int)$range[1];
+        } else {
+            $queryRange = '';
+        }
+        $queryService .= $aclServices
+            . "ORDER BY h.host_name, s.service_description "
+            . $queryRange;
+        $stmt = $this->pearDB->prepare($queryService);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
+        $total = $this->pearDB->numberRows();
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             if ($hasGraph) {
                 if (service_has_graph($data['host_id'], $data['service_id'], $this->pearDBMonitoring)) {
                     $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
@@ -154,39 +163,48 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
             }
         }
-        
+
         return array(
             'items' => $serviceList,
             'total' => $total
         );
     }
-    
+
     /**
-     * 
+     *
      * @param type $q
      * @param type $aclServices
      */
     private function getServicesByHostgroup($q, $aclServices, $range = '')
     {
+        $queryValues = array();
         $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, hg.hg_name, hg.hg_id "
             . "FROM hostgroup hg, service s, host_service_relation hsr "
             . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND s.service_register = '1' "
-            . "AND (s.service_description LIKE '%$q%' OR hg.hg_name LIKE '%$q%') "
-            . $aclServices
+            . "AND (s.service_description LIKE '%$q%' OR hg.hg_name LIKE '%$q%') ";
+        $queryValues[] = '%' . (string)$q . '%';
+        $queryValues[] = '%' . (string)$q . '%';
+        if (isset($range)) {
+            $queryRange = 'LIMIT ?,?';
+            $queryValues[] = (int)$range[0];
+            $queryValues[] = (int)$range[1];
+        } else {
+            $queryRange = '';
+        }
+        $queryService .= $aclServices
             . "ORDER BY hg.hg_name, s.service_description "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
+            . $queryRange;
 
+        $stmt = $this->pearDB->prepare($queryService);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
-            
+
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
 
@@ -198,7 +216,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
 
     /**
-     * 
+     *
      * @param type $args
      * @return array
      */
@@ -213,21 +231,22 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             throw new RestBadRequestException("Bad parameters id");
         }
 
-        $queryService = "SELECT distinct host_host_id, host_name, service_service_id, service_description
-            FROM service s, escalation_service_relation esr, host h
-            WHERE s.service_id = esr.service_service_id
-            AND esr.host_host_id = h.host_id
-            AND h.host_register = '1'
-            AND esr.escalation_esc_id = " . $id;
-        $DBRESULT = $this->pearDB->query($queryService);
-        
-        while ($data = $DBRESULT->fetchRow()) {
+        $queryService = 'SELECT distinct host_host_id, host_name, service_service_id, service_description ' .
+            'FROM service s, escalation_service_relation esr, host h ' .
+            'WHERE s.service_id = esr.service_service_id ' .
+            'AND esr.host_host_id = h.host_id ' .
+            'AND h.host_register = "1" ' .
+            'AND esr.escalation_esc_id = ?';
+        $stmt = $this->db->prepare($queryService);
+        $dbResult = $this->db->execute($stmt, array((int)$id));
+
+        while ($data = $dbResult->fetchRow()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_host_id'] . '-' . $data['service_service_id'];
-            
+
             $defaultValues[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
-        
+
         return $defaultValues;
     }
 }

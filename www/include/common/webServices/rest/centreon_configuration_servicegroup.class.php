@@ -62,16 +62,21 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         global $centreon;
         $isAdmin = $centreon->user->admin;
         $userId = $centreon->user->user_id;
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -84,16 +89,16 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         
         $queryContact = " SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name "
             . " FROM servicegroup "
-            . " WHERE sg_name LIKE '%$q%' ".$aclServicegroups 
-            . " ORDER BY sg_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+            . " WHERE sg_name LIKE ? ".$aclServicegroups
+            . " ORDER BY sg_name " . $range;
+
+        $stmt = $this->pearDB->prepare($queryContact);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
         
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array('id' => $data['sg_id'], 'text' => $data['sg_name']);
         }
 
@@ -106,16 +111,21 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
     public function getServiceList()
     {
         global $centreon;
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['sgid'])) {
             $sgid = '';
         } else {
             $sgid = $this->arguments['sgid'];
         }
+        $queryValues[] = (string)$sgid;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -143,17 +153,16 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
             . "INNER JOIN service s ON s.service_id = sgr.service_service_id "
             . "INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id "
             . "INNER JOIN host h ON h.host_id = hsr.host_host_id "
-            . "WHERE sg.sg_id IN (".$sgid.") "
-            . $aclServicegroups
-            . $aclServices
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+            . "WHERE sg.sg_id IN (?) "
+            . $aclServicegroups . $aclServices . $range;
+
+        $stmt = $this->pearDB->prepare($queryContact);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
 
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array(
                 'id' => $data['host_id'] . '_' . $data['service_id'],
                 'text' => $data['host_name'] . ' - ' . $data['service_description']

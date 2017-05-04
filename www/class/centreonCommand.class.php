@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,75 +37,83 @@
 class CentreonCommand
 {
     protected $_db;
-    
+
     public $aTypeMacro = array(
         '1' => 'HOST',
         '2' => 'SERVICE'
     );
-    
+
     public $aTypeCommand = array(
-            'host'    => array(
-                'key' => '$_HOST', 
-                'preg' => '/\$_HOST([\w_-]+)\$/'
-            ),
-            'service' => array(
-                'key' => '$_SERVICE', 
-                'preg' => '/\$_SERVICE([\w_-]+)\$/'
-            ),
-        );
-    
+        'host' => array(
+            'key' => '$_HOST',
+            'preg' => '/\$_HOST([\w_-]+)\$/'
+        ),
+        'service' => array(
+            'key' => '$_SERVICE',
+            'preg' => '/\$_SERVICE([\w_-]+)\$/'
+        ),
+    );
+
     /**
      * Constructor
-     * 
+     *
      * @param CentreonDB $db
      */
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->_db = $db;
     }
-    
+
     /**
      * Get command list
-     * 
+     *
      * @parma int $commandType
      * @return array
      */
-    protected function getCommandList($commandType) {
-        $sql = "SELECT command_id, command_name
-            FROM command
-            WHERE command_type = ?
-            ORDER BY command_name";
-        $res = $this->_db->query($sql, array($commandType));
+    protected function getCommandList($commandType)
+    {
+
+        $query = 'SELECT command_id, command_name ' .
+            'FROM command ' .
+            'WHERE command_type = ? ' .
+            'ORDER BY command_name';
+        $stmt = $this->_db->prepare($query);
+        $res = $this->_db->execute($stmt, array((int)$commandType));
+
         $arr = array();
         while ($row = $res->fetchRow()) {
             $arr[$row['command_id']] = $row['command_name'];
         }
         return $arr;
     }
-    
+
     /**
      * Get list of check commands
-     * 
+     *
      * @return array
      */
-    public function getCheckCommands() {
+    public function getCheckCommands()
+    {
         return $this->getCommandList(2);
     }
-    
+
     /**
      * Get list of notification commands
-     * 
+     *
      * @return array
      */
-    public function getNotificationCommands() {
+    public function getNotificationCommands()
+    {
         return $this->getCommandList(1);
     }
-    
+
     /**
      * Get list of misc commands
-     * 
+     *
      * @return array
      */
-    public function getMiscCommands() {
+    public function getMiscCommands()
+    {
         return $this->getCommandList(3);
     }
 
@@ -113,63 +122,65 @@ class CentreonCommand
      *
      * @return array
      */
-    public function getLockedCommands() {
+    public function getLockedCommands()
+    {
         static $arr = null;
 
         if (is_null($arr)) {
             $arr = array();
-            $res = $this->_db->query("SELECT command_id
-               FROM command
-               WHERE command_locked = 1");
+            $res = $this->_db->query("SELECT command_id FROM command WHERE command_locked = 1");
             while ($row = $res->fetchRow()) {
                 $arr[$row['command_id']] = true;
             }
         }
         return $arr;
     }
-    
+
     /**
-     * This method gat the list of command containt a specific macro 
+     * This method gat the list of command containt a specific macro
      * @param int $iIdCommand
      * @param string $sType
      * @param int $iWithFormatData
-     * 
+     *
      * @return array
      */
     public function getMacroByIdAndType($iIdCommand, $sType, $iWithFormatData = 1)
     {
-        
-        $macroToFilter = array("SNMPVERSION","SNMPCOMMUNITY");
-         
+
+        $macroToFilter = array("SNMPVERSION", "SNMPCOMMUNITY");
+
         if (empty($iIdCommand) || !array_key_exists($sType, $this->aTypeCommand)) {
             return array();
         }
-        
+
         $aDescription = $this->getMacroDescription($iIdCommand);
 
-        $sql = "SELECT command_id, command_name, command_line
-            FROM command
-            WHERE command_type = 2
-            AND command_id = ?
-            AND command_line like '%".$this->aTypeCommand[$sType]['key']."%'
-            ORDER BY command_name";       
-        
-        $res = $this->_db->query($sql, array($iIdCommand));
+        $query = 'SELECT command_id, command_name, command_line ' .
+            'FROM command ' .
+            'WHERE command_type = 2 ' .
+            'AND command_id = ? ' .
+            'AND command_line like ? ' .
+            'ORDER BY command_name';
+        $queryValues[] = (int)$iIdCommand;
+        $queryValues[] = (string)'%' . $this->aTypeCommand[$sType]['key'] . '%';
+        $stmt = $this->_db->prepare($query);
+        $res = $this->_db->execute($stmt, $queryValues);
+
         $arr = array();
         $i = 0;
-        
+
         if ($iWithFormatData == 1) {
-             while ($row = $res->fetchRow()) {
-                 
+            while ($row = $res->fetchRow()) {
+
                 preg_match_all($this->aTypeCommand[$sType]['preg'], $row['command_line'], $matches, PREG_SET_ORDER);
-                
+
                 foreach ($matches as $match) {
-                    if(!in_array($match[1], $macroToFilter)){
+                    if (!in_array($match[1], $macroToFilter)) {
                         $sName = $match[1];
                         $sDesc = isset($aDescription[$sName]['description']) ? $aDescription[$sName]['description'] : "";
                         $arr[$i]['macroInput_#index#'] = $sName;
                         $arr[$i]['macroValue_#index#'] = "";
-                        $arr[$i]['macroPassword_#index#'] = NULL;
+                        $arr[$i]['macroPassword_#index#'] = null;
                         $arr[$i]['macroDescription_#index#'] = $sDesc;
                         $arr[$i]['macroDescription'] = $sDesc;
                         $arr[$i]['macroCommandFrom'] = $row['command_name'];
@@ -184,76 +195,92 @@ class CentreonCommand
         }
 
         return $arr;
-        
-    }
-    
-    /**
-     * 
-     * @param type $iIdCmd
 
+    }
+
+    /**
+     *
+     * @param type $iIdCmd
      * @return string
      */
     public function getMacroDescription($iIdCmd)
     {
         $aReturn = array();
-        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = ".intval($iIdCmd);
-        
-        $DBRESULT = $this->_db->query($sSql);
-        while ($row = $DBRESULT->fetchRow()){ 
-            $arr['id']   = $row['command_macro_id'];
+        $query = 'SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = ?';
+        $stmt = $this->_db->prepare($query);
+        $dbResult = $this->_db->execute($stmt, array((int)$iIdCmd));
+
+        while ($row = $dbResult->fetchRow()) {
+            $arr['id'] = $row['command_macro_id'];
             $arr['name'] = $row['command_macro_name'];
             $arr['description'] = $row['command_macro_desciption'];
-            $arr['type']        = $row['command_macro_type'];
-            
+            $arr['type'] = $row['command_macro_type'];
+
             $aReturn[$row['command_macro_name']] = $arr;
         }
-        $DBRESULT->free();
-        
+        $dbResult->free();
+
         return $aReturn;
     }
-    
-   /**
-    * This method search macro in commande by name and type 
-    * 
-    * @param int $iIdCommande
-    * @param array $aMacro
-    * @param string $sType
-    * 
-    * @return array $aReturn
-    */
-   function getMacrosCommand($iIdCommande, $aMacro, $sType)
-   {
-       $aReturn = array();
 
-       if (count($aMacro) > 0 && array_key_exists($sType, $this->aTypeMacro)) {
-            $sRq = "SELECT * FROM `on_demand_macro_command` WHERE "
-                    ." command_command_id = " . intval($iIdCommande)
-                    . " AND command_macro_type = '".$sType."' "
-                    . " AND command_macro_name IN ('".  implode("', '", $aMacro)."') "; 
+    /**
+     * This method search macro in commande by name and type
+     *
+     * @param int $iIdCommande
+     * @param array $aMacro
+     * @param string $sType
+     *
+     * @return array $aReturn
+     */
+    function getMacrosCommand($iIdCommande, $aMacro, $sType)
+    {
+        $aReturn = array();
 
-            $DBRESULT = $this->_db->query($sRq);
-            while ($row = $DBRESULT->fetchRow()){
+        if (count($aMacro) > 0 && array_key_exists($sType, $this->aTypeMacro)) {
 
-                $arr['id']   = $row['command_macro_id'];
+            $queryValues = array();
+            $explodedValues = '';
+            $query = 'SELECT * FROM `on_demand_macro_command` ' .
+                'WHERE command_command_id = ? ' .
+                'AND command_macro_type = ? ' .
+                'AND command_macro_name IN (';
+            $queryValues[] = (int)$iIdCommande;
+            $queryValues[] = (string)$sType;
+            if (!empty($aMacro)) {
+                foreach ($aMacro as $k => $v) {
+                    $explodedValues .= '?,';
+                    $queryValues[] = (string)$v;
+                }
+                $explodedValues = rtrim($explodedValues, ',');
+            } else {
+                $explodedValues .= '""';
+            }
+            $query .= $explodedValues . ')';
+            $stmt = $this->_db->prepare($query);
+            $dbResult = $this->_db->execute($stmt, $queryValues);
+
+            while ($row = $dbResult->fetchRow()) {
+
+                $arr['id'] = $row['command_macro_id'];
                 $arr['name'] = $row['command_macro_name'];
                 $arr['description'] = $row['command_macro_desciption'];
-                $arr['type']        = $sType;
+                $arr['type'] = $sType;
                 $aReturn[] = $arr;
             }
-            $DBRESULT->free();
-       }
+            $dbResult->free();
+        }
 
-       return $aReturn;
-   }
-   
-   /**
-    * 
-    * @param int $iIdCommande
-    * @param string $sStr
-    * @param string $sType
-    * 
-    * @return array
-    */
+        return $aReturn;
+    }
+
+    /**
+     *
+     * @param int $iIdCommande
+     * @param string $sStr
+     * @param string $sType
+     *
+     * @return array
+     */
     function match_object($iIdCommande, $sStr, $sType)
     {
         $macros = array();
@@ -261,10 +288,11 @@ class CentreonCommand
 
         if (array_key_exists($sType, $this->aTypeMacro)) {
 
-            preg_match_all($this->aTypeCommand[strtolower($this->aTypeMacro[$sType])]['preg'], $sStr, $matches1, PREG_SET_ORDER);   
+            preg_match_all($this->aTypeCommand[strtolower($this->aTypeMacro[$sType])]['preg'], $sStr, $matches1,
+                PREG_SET_ORDER);
 
             foreach ($matches1 as $match) {
-              $macros[] = $match[1];
+                $macros[] = $match[1];
             }
 
             if (count($macros) > 0) {
@@ -274,32 +302,40 @@ class CentreonCommand
 
                 foreach ($macros as $detail) {
                     if (!in_array($detail, $aNames) && !empty($detail)) {
-                        $arr['id']          = "";
-                        $arr['name']        = $detail;
+                        $arr['id'] = "";
+                        $arr['name'] = $detail;
                         $arr['description'] = "";
-                        $arr['type']        = $sType;
+                        $arr['type'] = $sType;
 
                         $macrosDesc[] = $arr;
                     }
                 }
             }
         }
-        
+
         return $macrosDesc;
     }
-    
+
     /**
-     * 
+     *
      * @param array $values
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+
+
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues = '""';
         }
 
         # get list of selected connectors
@@ -307,8 +343,9 @@ class CentreonCommand
             . "FROM command "
             . "WHERE command_id IN (" . $explodedValues . ") "
             . "ORDER BY command_name ";
-        
-        $resRetrieval = $this->_db->query($query);
+
+        $stmt = $this->_db->prepare($query);
+        $resRetrieval = $this->_db->execute($stmt, $queryValues);
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['command_id'],

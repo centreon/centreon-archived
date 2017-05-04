@@ -147,11 +147,11 @@ class CentreonConfigurationObjects extends CentreonWebService
                 }
                 $explodedValues = substr($explodedValues, 0, -1);
             }
-            $query = "SELECT $externalObject[id], $externalObject[name] "
-                . "FROM $externalObject[table] "
-                . "WHERE $externalObject[comparator] "
-                . "IN ($explodedValues)";
 
+            $query = "SELECT $externalObject[id], $externalObject[name] " .
+                "FROM $externalObject[table] " .
+                "WHERE $externalObject[comparator] " .
+                "IN ($explodedValues)";
             $stmt = $this->pearDB->prepare($query);
             $resRetrieval = $this->pearDB->execute($stmt, $values);
 
@@ -176,12 +176,8 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param string $field
      * @return array
      */
-    protected
-    function retrieveSimpleValues(
-        $currentObject,
-        $id,
-        $field
-    ) {
+    protected function retrieveSimpleValues($currentObject, $id, $field)
+    {
         $tmpValues = array();
 
         $fields = array();
@@ -196,7 +192,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             . "WHERE " . $currentObject['id'] . " = ?";
 
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
-        $resRetrieval = $this->pearDB->execute($stmt, array($id));
+        $resRetrieval = $this->pearDB->execute($stmt, array((int)$id));
         if (PEAR::isError($resRetrieval)) {
             die("An error occured");
         }
@@ -218,11 +214,8 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param integer $id
      * @return array
      */
-    protected
-    function retrieveRelatedValues(
-        $relationObject,
-        $id
-    ) {
+    protected function retrieveRelatedValues($relationObject, $id)
+    {
         $tmpValues = array();
 
         $fields = array();
@@ -236,7 +229,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             . "WHERE " . $relationObject['comparator'] . " = ?";
 
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
-        $resRetrieval = $this->pearDB->execute($stmt, array($id));
+        $resRetrieval = $this->pearDB->execute($stmt, array((int)$id));
         if (PEAR::isError($resRetrieval)) {
             die("An error occured");
         }

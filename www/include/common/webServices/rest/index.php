@@ -45,26 +45,29 @@ $pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTER
 
 /* Test if the call is for authenticate */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_GET['action']) && $_GET['action'] == 'authenticate') {
+    isset($_GET['action']) && $_GET['action'] == 'authenticate'
+) {
     if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
         CentreonWebService::sendJson("Bad parameters", 400);
     }
-    
+
     /* @todo Check if user already have valid token */
-    
+
     require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
     require_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
-    
+
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);
     $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log);
-    
+
     if (0 === $auth->passwdOk) {
         CentreonWebService::sendJson("Bad credentials", 403);
     }
     $token = base64_encode(uniqid('', true));
-    $pearDB->query("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (" . $auth->userInfos['contact_id'] . ", '" . $token . "', NOW())");
-    
+    $query = "INSERT INTO ws_token (contact_id, token, generate_date) VALUES (?, ?, NOW())";
+    $stmt = $pearDB->prepare($query);
+    $res = $pearDB->execute($stmt, array((int)$auth->userInfos['contact_id'], (string)$token));
+
     CentreonWebService::sendJson(array('authToken' => $token));
 }
 
@@ -74,7 +77,10 @@ if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
 }
 
 /* Create the default object */
-$res = $pearDB->query("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = '" . $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) . "'");
+$query = 'SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?';
+$stmt = $pearDB->prepare($query);
+$res = $pearDB->execute($stmt, array((string)$_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
+
 if (PEAR::isError($res)) {
     CentreonWebService::sendJson("Database error", 500);
 }

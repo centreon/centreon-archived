@@ -87,15 +87,15 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
             . "FROM downtime dt "
             . "WHERE dt.dt_name LIKE ? "
             . "ORDER BY dt.dt_name";
-        $queryValues[] = '%' . $q .'%';
+        $queryValues[] = '%' . (string)$q .'%';
 
         $stmt = $this->pearDB->prepare($queryDowntime);
-        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
         
         $downtimeList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $downtimeList[] = array(
                 'id' => htmlentities($data['dt_id']),
                 'text' => $data['dt_name']

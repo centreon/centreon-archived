@@ -53,6 +53,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      */
     public function getList()
     {
+        $range = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -67,10 +68,9 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range[] = (int)$offset;
+            $range[] = (int)$this->arguments['page_limit'];
         }
         
         if ($l == '1') {
@@ -88,18 +88,28 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      */
     private function listClassic($q, $range = '')
     {
+        $queryValues = array();
+        $queryRange = '';
+        $queryValues[] = '%' . (string)$q . '%';
+        if (isset($range)) {
+            $queryRange = 'LIMIT ?, ?';
+            $queryValues[] = (int)$range[0];
+            $queryValues[] = (int)$range[1];
+        }
+
         $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
             . "FROM service "
-            . "WHERE service_description LIKE '%$q%' "
+            . "WHERE service_description LIKE ? "
             . "AND service_register = '0' "
             . "ORDER BY service_description "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+            . $queryRange;
+
+        $stmt = $this->pearDB->prepare($queryContact);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
 
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
         }
 
@@ -116,21 +126,31 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      */
     private function listWithHostTemplate($q = '', $range = '')
     {
+        $queryValues = array();
+        $queryRange = '';
+        $queryValues[] = '%' . (string)$q . '%';
+        if (isset($range)) {
+            $queryRange = 'LIMIT ?, ?';
+            $queryValues[] = (int)$range[0];
+            $queryValues[] = (int)$range[1];
+        }
+
         $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
             . "FROM host h, service s, host_service_relation hsr "
             . 'WHERE hsr.host_host_id = h.host_id '
             . "AND hsr.service_service_id = s.service_id "
             . "AND h.host_register = '0' AND s.service_register = '0' "
-            . "AND s.service_description LIKE '%$q%' "
+            . "AND s.service_description LIKE ? "
             . "ORDER BY h.host_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
+            . $queryRange;
+
+        $stmt = $this->pearDB->prepare($queryService);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
         
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             
