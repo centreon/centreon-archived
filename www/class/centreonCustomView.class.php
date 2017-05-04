@@ -978,10 +978,9 @@ class CentreonCustomView
         $cgString = '';
         foreach ($contactgroups as $k => $v) {
             $cgString .= '?,';
-            $queryValue[] = (int)$v;
+            $queryValue[] = (int)$k;
         }
         $cgString = rtrim($cgString, ',');
-
         $query = 'SELECT c1.custom_view_id, c1.user_id as owner_id, c2.usergroup_id ' .
             'FROM custom_view_user_relation c1, custom_view_user_relation c2 ' .
             'WHERE c1.custom_view_id = c2.custom_view_id ' .
