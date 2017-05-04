@@ -243,6 +243,8 @@ class CentreonCommand
                     $queryValues[] = (string)$v;
                 }
                 $explodedValues = rtrim($explodedValues, ',');
+            } else {
+                $explodedValues .= '""';
             }
             $query .= $explodedValues . ')';
             $stmt = $this->db->prepare($query);
@@ -319,6 +321,8 @@ class CentreonCommand
                 $queryValues[] = (int)$v;
             }
             $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected connectors
