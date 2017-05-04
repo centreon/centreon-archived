@@ -137,7 +137,6 @@ class CentreonCustomView
         $res = $this->db->execute($stmt, array((int)$userId, (int)$viewId));
 
 
-
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
@@ -711,7 +710,7 @@ class CentreonCustomView
             $queryValue[] = (int)$params['custom_view_id'];
             $userIdKey = '';
 
-            if(!empty($oldSharedUsers)){
+            if (!empty($oldSharedUsers)) {
                 foreach ($oldSharedUsers as $k => $v) {
                     $userIdKey .= '?,';
                     $queryValue[] = (int)$k;
@@ -792,7 +791,7 @@ class CentreonCustomView
             $queryValue2 = array();
             $queryValue2[] = (int)$params['custom_view_id'];
             $userGroupIdKey = '';
-            if(!empty($oldSharedUsergroups)){
+            if (!empty($oldSharedUsergroups)) {
                 foreach ($oldSharedUsergroups as $k => $v) {
                     $userGroupIdKey .= '?,';
                     $queryValue2[] = (int)$k;
