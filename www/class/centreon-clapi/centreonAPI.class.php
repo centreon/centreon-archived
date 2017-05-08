@@ -473,18 +473,19 @@ class CentreonAPI
                  AND contact_oreon = '1'");
         if ($DBRESULT->numRows()) {
             $row = $DBRESULT->fetchRow();
-            if ($row['contact_passwd'] == $pass) {
-                if ($row['contact_admin'] == 1) {
+            if ($row['contact_admin'] == 1) {
+                if ($row['contact_passwd'] == $pass) {
                     return 1;
+                } elseif ($row['contact_auth_type'] == 'ldap') {
+                    $CentreonLog = new CentreonUserLog(-1, $this->DB);
+                    $centreonAuth = new CentreonAuthLDAP($this->DB, $CentreonLog, $this->login, $this->password, $row, $row['ar_id']);
+                    if ($centreonAuth->checkPassword() == 1) {
+                        return 1;
+                    }
                 }
+            } else {
                 print "Centreon CLAPI is for admin users only.\n";
                 exit(1);
-            } elseif ($row['contact_auth_type'] == 'ldap') {
-                $CentreonLog = new CentreonUserLog(-1, $this->DB);
-                $centreonAuth = new CentreonAuthLDAP($this->DB, $CentreonLog, $this->login, $this->password, $row, $row['ar_id']);
-                if ($centreonAuth->checkPassword() == 1) {
-                    return 1;
-                }
             }
         }
         print "Invalid credentials.\n";
