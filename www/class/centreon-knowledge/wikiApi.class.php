@@ -98,7 +98,11 @@ class WikiApi
 
         $version = $result['query']['general']['generator'];
         $version = explode(' ', $version);
-        return (float)$version[1];
+        if (isset($version[1])) {
+            return (float)$version[1];
+        } else {
+            throw new \Exception("An error occured, please check your Knowledge base configuration");
+        }
     }
 
     public function login()
