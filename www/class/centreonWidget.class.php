@@ -700,7 +700,7 @@ class CentreonWidget
                 $row = $tmp[1];
                 $widgetId = $tmp[2];
                 $queryValues = array();
-                $query = 'UPDATE widget_views SET widget_order = ?' .
+                $query = 'UPDATE widget_views SET widget_order = ? ' .
                     'WHERE custom_view_id =? ' .
                     'AND widget_id = ?';
                 $queryValues[] = (string)$column . "_" . $row;
