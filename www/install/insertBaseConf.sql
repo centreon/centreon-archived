@@ -66,7 +66,7 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 --
 -- Contenu de la table `options`
 --
-INSERT INTO `options` (`key`, `value`) VALUES 
+INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_dns_use_ssl', '0'),
 ('ldap_dns_use_tls', '0'),
 ('ldap_auth_enable', '0'),
@@ -133,8 +133,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('monitoring_dwt_svc', '1'),
 ('tactical_host_limit', '100'),
 ('tactical_service_limit', '100'),
-('tactical_refresh_interval', '20'), 
-('index_data', '1'), 
+('tactical_refresh_interval', '20'),
+('index_data', '1'),
 ('interval_length', '60'),
 ('nagios_path_img','@centreon_dir@/www/img/media/'),
 ('selectPaginationSize', 60),
@@ -473,7 +473,7 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 -- Contenu de la table `cb_field`
 --
 
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES 
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
 (1, 'port', 'Connection port', 'Port to listen on (empty host) or to connect to (with host filled).', 'int', NULL),
 (2, 'host', 'Host to connect to', 'IP address or hostname of the host to connect to (leave blank for listening mode).', 'text', NULL),
 (3, 'ca_certificate', 'Trusted CA''s certificate', 'Trusted CA''s certificate.', 'text', NULL),
@@ -599,7 +599,7 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (3, 'Sysbase', 'tds'),
 (4, 'Base', 'low'),
 (4, 'Detailed', 'medium'),
-(4, 'Very detailed', 'high'), 
+(4, 'Very detailed', 'high'),
 (5, 'No', 'no'),
 (5, 'Yes', 'yes'),
 (5, 'Auto', 'auto'),
@@ -786,7 +786,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 --
 -- Contenu de la table `widget_parameters_field_type`
 --
-INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES 
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES
                                            ('text', 0),
                                            ('boolean', 0),
                                            ('hidden', 0),
@@ -802,10 +802,10 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('hostgroup', 1),
                                            ('servicegroup', 1),
                                            ('service', 1),
-                                           ('poller', 1), 
-                                           ('hostCategories',1), 
+                                           ('poller', 1),
+                                           ('hostCategories',1),
                                            ('serviceCategories',1),
-                                           ('metric',1), 
+                                           ('metric',1),
                                            ('ba', 1),
                                            ('bv', 1),
                                            ('hostCategoriesMulti', 1),
@@ -819,7 +819,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceGroupMulti', 1),
                                            ('integer', 0);
 
-INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
+INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES
                         ('Africa/Abidjan', '-00:00', '-00:00'),
                         ('Africa/Accra', '-00:00', '-00:00'),
                         ('Africa/Addis_Ababa', '+03:00', '+03:00'),
@@ -1235,7 +1235,7 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Pacific/Tarawa', '+12:00', '+12:00'),
                         ('Pacific/Tongatapu', '+13:00', '+13:00'),
                         ('Pacific/Wake', '+12:00', '+12:00'),
-                        ('Pacific/Wallis', '+12:00', '+12:00'), 
+                        ('Pacific/Wallis', '+12:00', '+12:00'),
                         ('GMT', '-00:00', '-00:00'),
                         ('UTC', '-00:00', '-00:00');
 
