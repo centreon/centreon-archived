@@ -78,7 +78,10 @@ $inputArguments = array(
     'o' => FILTER_SANITIZE_STRING,
     'o1' => FILTER_SANITIZE_STRING,
     'o2' => FILTER_SANITIZE_STRING,
-    'select' => FILTER_SANITIZE_STRING,
+    'select' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'flags'  => FILTER_REQUIRE_ARRAY
+    ),
     'id' => FILTER_SANITIZE_STRING
 );
 $inputGet = filter_input_array(
