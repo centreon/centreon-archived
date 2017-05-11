@@ -84,152 +84,156 @@ require_once "HTML/QuickForm/Renderer/ArraySmarty.php";
 require_once $centreon_path . "/www/class/centreon-knowledge/procedures_DB_Connector.class.php";
 require_once $centreon_path . "/www/class/centreon-knowledge/procedures.class.php";
 
-$conf = getWikiConfig($pearDB);
-$WikiURL = $conf['kb_wiki_url'];
-
 /*
  * Smarty template Init
  */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$currentPage = "serviceTemplates";
-require_once $modules_path . 'search.php';
+try {
+    $conf = getWikiConfig($pearDB);
+    $WikiURL = $conf['kb_wiki_url'];
 
-/*
- * Init Status Template
- */
-$status = array(
-    0 => "<font color='orange'> " . _("No wiki page defined") . " </font>",
-    1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
-);
-$line = array(0 => "list_one", 1 => "list_two");
+    $currentPage = "serviceTemplates";
+    require_once $modules_path . 'search.php';
 
-$proc = new procedures(
-    3,
-    $conf['kb_db_name'],
-    $conf['kb_db_user'],
-    $conf['kb_db_host'],
-    $conf['kb_db_password'],
-    $pearDB,
-    $conf['kb_db_prefix']
-);
-$proc->setHostInformations();
-$proc->setServiceInformations();
+    /*
+     * Init Status Template
+     */
+    $status = array(
+        0 => "<font color='orange'> " . _("No wiki page defined") . " </font>",
+        1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
+    );
+    $line = array(0 => "list_one", 1 => "list_two");
 
-/*
- * Get Services Template Informations
- */
-$query = "SELECT SQL_CALC_FOUND_ROWS service_description, service_id " .
-    "FROM service " .
-    "WHERE service_register = '0' " .
-    "AND service_locked = '0' ";
-if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplate']) {
-    $query .= " AND service_description LIKE ' % " . $_REQUEST['searchServiceTemplate'] . " % ' ";
-}
-$query .= "ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
-$selection = array();
-while ($data = $DBRESULT->fetchRow()) {
-    $data["service_description"] = str_replace("#S#", "/", $data["service_description"]);
-    $data["service_description"] = str_replace("#BS#", "\\", $data["service_description"]);
-    $selection[$data["service_description"]] = $data["service_id"];
-}
-$DBRESULT->free();
-unset($data);
+    $proc = new procedures(
+        3,
+        $conf['kb_db_name'],
+        $conf['kb_db_user'],
+        $conf['kb_db_host'],
+        $conf['kb_db_password'],
+        $pearDB,
+        $conf['kb_db_prefix']
+    );
+    $proc->setHostInformations();
+    $proc->setServiceInformations();
 
-$res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
-$row = $res->fetchRow();
-$rows = $row['numrows'];
-
-/*
- * Create Diff
- */
-$tpl->assign("host_name", _("Services Templates"));
-
-$diff = array();
-$templateHostArray = array();
-foreach ($selection as $key => $value) {
-    $tplStr = "";
-    $tplArr = $proc->getMyServiceTemplateModels($value);
-    if ($proc->serviceTemplateHasProcedure($key, $tplArr) == true) {
-        $diff[$key] = 1;
-    } else {
-        $diff[$key] = 0;
+    /*
+     * Get Services Template Informations
+     */
+    $query = "SELECT SQL_CALC_FOUND_ROWS service_description, service_id " .
+        "FROM service " .
+        "WHERE service_register = '0' " .
+        "AND service_locked = '0' ";
+    if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplate']) {
+        $query .= " AND service_description LIKE ' % " . $_REQUEST['searchServiceTemplate'] . " % ' ";
     }
-
-    if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
-        if ($diff[$key] == 1 || $proc->serviceTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
-            $rows--;
-            unset($diff[$key]);
-            continue;
-        }
-    } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
-        if ($diff[$key] == 1) {
-            $rows--;
-            unset($diff[$key]);
-            continue;
-        }
+    $query .= "ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
+    $DBRESULT = $pearDB->query($query);
+    $selection = array();
+    while ($data = $DBRESULT->fetchRow()) {
+        $data["service_description"] = str_replace("#S#", "/", $data["service_description"]);
+        $data["service_description"] = str_replace("#BS#", "\\", $data["service_description"]);
+        $selection[$data["service_description"]] = $data["service_id"];
     }
+    $DBRESULT->free();
+    unset($data);
 
-    if (count($tplArr)) {
-        $firstTpl = 1;
-        foreach ($tplArr as $key1 => $value1) {
-            if ($firstTpl) {
-                $tplStr .= "<a href='" . $WikiURL .
-                    "/index.php?title=Service-Template_:_$value1' target='_blank'>" . $value1 . "</a>";
-                $firstTpl = 0;
-            } else {
-                $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
-                    "/index.php?title=Service-Template_:_$value1' target='_blank'>" . $value1 . "</a>";
+    $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
+    $row = $res->fetchRow();
+    $rows = $row['numrows'];
+
+    /*
+     * Create Diff
+     */
+    $tpl->assign("host_name", _("Services Templates"));
+
+    $diff = array();
+    $templateHostArray = array();
+    foreach ($selection as $key => $value) {
+        $tplStr = "";
+        $tplArr = $proc->getMyServiceTemplateModels($value);
+        if ($proc->serviceTemplateHasProcedure($key, $tplArr) == true) {
+            $diff[$key] = 1;
+        } else {
+            $diff[$key] = 0;
+        }
+
+        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+            if (
+                $diff[$key] == 1 ||
+                $proc->serviceTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
+            ) {
+                $rows--;
+                unset($diff[$key]);
+                continue;
+            }
+        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+            if ($diff[$key] == 1) {
+                $rows--;
+                unset($diff[$key]);
+                continue;
             }
         }
+
+        if (count($tplArr)) {
+            $firstTpl = 1;
+            foreach ($tplArr as $key1 => $value1) {
+                if ($firstTpl) {
+                    $tplStr .= "<a href='" . $WikiURL .
+                        " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
+                    $firstTpl = 0;
+                } else {
+                    $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
+                        " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
+                }
+            }
+        }
+        $templateHostArray[$key] = $tplStr;
+        unset($tplStr);
     }
-    $templateHostArray[$key] = $tplStr;
-    unset($tplStr);
-}
 
-include("./include/common/checkPagination.php");
+    include("./include/common/checkPagination.php");
 
-if (isset($templateHostArray)) {
-    $tpl->assign("templateHostArray", $templateHostArray);
-}
+    if (isset($templateHostArray)) {
+        $tpl->assign("templateHostArray", $templateHostArray);
+    }
 
-$WikiVersion = getWikiVersion($WikiURL . '/api.php');
-$tpl->assign("WikiVersion", $WikiVersion);
-$tpl->assign("WikiURL", $WikiURL);
-$tpl->assign("content", $diff);
-$tpl->assign("status", $status);
-$tpl->assign("selection", 3);
-$tpl->assign("icone", $proc->getIconeList());
+    $WikiVersion = getWikiVersion($WikiURL . ' / api . php');
+    $tpl->assign("WikiVersion", $WikiVersion);
+    $tpl->assign("WikiURL", $WikiURL);
+    $tpl->assign("content", $diff);
+    $tpl->assign("status", $status);
+    $tpl->assign("selection", 3);
+    $tpl->assign("icone", $proc->getIconeList());
 
-/*
- * Send template in order to open
- */
+    /*
+     * Send template in order to open
+     */
 
-/*
- * translations
- */
-$tpl->assign("status_trans", _("Status"));
-$tpl->assign("actions_trans", _("Actions"));
-$tpl->assign("template_trans", _("Template"));
+    /*
+     * translations
+     */
+    $tpl->assign("status_trans", _("Status"));
+    $tpl->assign("actions_trans", _("Actions"));
+    $tpl->assign("template_trans", _("Template"));
 
-/*
- * Template
- */
-$tpl->assign("lineTemplate", $line);
-$tpl->assign('limit', $limit);
+    /*
+     * Template
+     */
+    $tpl->assign("lineTemplate", $line);
+    $tpl->assign('limit', $limit);
 
-$tpl->assign('order', $order);
-$tpl->assign('orderby', $orderby);
-$tpl->assign('defaultOrderby', 'service_description');
+    $tpl->assign('order', $order);
+    $tpl->assign('orderby', $orderby);
+    $tpl->assign('defaultOrderby', 'service_description');
 
-/*
- * Apply a template definition
- */
+    /*
+     * Apply a template definition
+     */
 
-if (Mediawikiconfigexist($WikiURL)) {
     $tpl->display($modules_path . "templates/display.ihtml");
-} else {
-    $tpl->display($modules_path . "templates/NoWiki.ihtml");
+} catch (\Exception $e) {
+    $tpl->assign('errorMsg', $e->getMessage());
+    $tpl->display($modules_path . "templates/NoWiki.tpl");
 }
