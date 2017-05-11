@@ -36,7 +36,7 @@
 
 /* Update Wiki url  */
 if (isset($pearDB)) {
-    $res = $pearDB->query('SELECT `kb_wiki_url` FROM `options`');
+    $res = $pearDB->query('SELECT * FROM `options` WHERE `key` = "kb_wiki_url"');
     if ($res->numRows() == 0) {
         $query = 'UPDATE `options` SET `key` = "kb_wiki_url" WHERE `key` = "kb_WikiURL"';
         $pearDB->query($query);
