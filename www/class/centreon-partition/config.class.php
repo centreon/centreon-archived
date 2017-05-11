@@ -44,8 +44,9 @@
  */
 class Config
 {
-    
+
     public $XMLfile;
+    private $defaultConfiguration;
     public $tables;
     public $db;
 
@@ -61,6 +62,28 @@ class Config
         $this->db = $db;
         $this->tables = array();
         $this->parseXML($this->XMLFile);
+    }
+
+    /**
+     *
+     */
+    public function loadCentreonDefaultConfiguration()
+    {
+        $queryOptions = 'SELECT `opt`.`key`, `opt`.`value`' .
+            'FROM `options` opt' .
+            'WHERE `opt`.`key` IN (' .
+            '`partitioning_backup_directory`, `partitioning_backup_format`, ' .
+            '`partitioning_retention`, `partitioning_retention_forward`' .
+            ')';
+        $res = $this->db->query($queryOptions);
+        
+        if (\PEAR::isError($res)) {
+        
+        }
+        
+        while ($row = $res->fetchRow()) {
+            $this->defaultConfiguration[$row['key']] = $row['value'];
+        }
     }
     
     /**
@@ -88,10 +111,31 @@ class Config
                 $table->setType((string) $table_config->type);
                 $table->setDuration((string) $table_config->duration);
                 $table->setTimezone((string) $table_config->timezone);
-                $table->setRetention((string) $table_config->retention);
-                $table->setRetentionForward((string) $table_config->retentionforward); // Only for 'date' type
-                $table->setBackupFolder((string) $table_config->backup->folder);
-                $table->setBackupFormat((string) $table_config->backup->format);
+                
+                if (isset($this->defaultConfiguration['partitioning_retention'])) {
+                    $table->setRetention((string) $this->defaultConfiguration['partitioning_retention']);
+                } else {
+                    $table->setRetention('365');
+                }
+    
+                if (isset($this->defaultConfiguration['partitioning_retention_forward'])) {
+                    $table->setRetentionForward((string) $this->defaultConfiguration['partitioning_retention_forward']);
+                } else {
+                    $table->setRetentionForward('10');
+                }
+    
+                if (isset($this->defaultConfiguration['partitioning_backup_directory'])) {
+                    $table->setBackupFolder((string) $this->defaultConfiguration['partitioning_backup_directory']);
+                } else {
+                    $table->setBackupFolder('/var/backups/');
+                }
+    
+                if (isset($this->defaultConfiguration['partitioning_backup_format'])) {
+                    $table->setBackupFormat((string) $this->defaultConfiguration['partitioning_backup_format']);
+                } else {
+                    $table->setBackupFormat('%Y-%m-%d');
+                }
+                
                 $table->setCreateStmt((string) $table_config->createstmt);
                 $this->tables[$table->getName()] = $table;
             }
