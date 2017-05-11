@@ -390,12 +390,13 @@ class WikiApi
         $resHost = $this->db->execute($stmt, array((string)$hostName));
         $tuple = $resHost->fetchRow();
 
+
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
         $queryUpdate = "UPDATE extended_host_information "
-            . "SET ehi_notes_url = '" . $valueToAdd . "' "
+            . "SET ehi_notes_url = ? "
             . "WHERE host_host_id = ?";
         $stmt = $this->db->prepare($queryUpdate);
-        $this->db->execute($stmt, array((int)$tuple['host_id']));
+        $this->db->execute($stmt, array((string)$valueToAdd, (int)$tuple['host_id']));
     }
 
     /**
@@ -413,16 +414,17 @@ class WikiApi
 
 
         $stmt = $this->db->prepare($query);
-        $resService =$this->db->execute($stmt, array((string)$hostName, (string)$serviceDescription));
+        $resService = $this->db->execute($stmt, array((string)$hostName, (string)$serviceDescription));
         $tuple = $resService->fetchRow();
 
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
             'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
         $queryUpdate = "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
+            "SET esi_notes_url = ? " .
             "WHERE service_service_id = ? ";
         $stmt = $this->db->prepare($queryUpdate);
-        $this->db->execute($stmt, array((int)$tuple['service_id']));
+        $this->db->execute($stmt, array((string)$valueToAdd, (int)$tuple['service_id']));
+
     }
 
     /**
@@ -438,10 +440,10 @@ class WikiApi
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
             'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
         $queryUpdate = "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
+            "SET esi_notes_url = ? " .
             "WHERE service_service_id = ? ";
         $stmt = $this->db->prepare($queryUpdate);
-        $this->db->execute($stmt, array((int)$tuple['service_id']));
+        $this->db->execute($stmt, array((string)$valueToAdd, (int)$tuple['service_id']));
 
     }
 }

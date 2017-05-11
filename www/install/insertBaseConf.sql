@@ -1280,4 +1280,4 @@ VALUES ('kb_db_name', ''),
 ('kb_db_password', ''),
 ('kb_db_host', ''),
 ('kb_db_prefix', ''),
-('kb_WikiURL', '');
+('kb_wiki_url', '');

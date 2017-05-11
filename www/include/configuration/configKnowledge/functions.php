@@ -29,10 +29,11 @@ function versionCentreon($pearDB)
 
 function getWikiConfig($pearDB)
 {
-    $errorMsg = 'MediaWiki is not installed or configured. Please refer to the
-            <a href="https://documentation-fr.centreon.com/docs/centreon-knowledge-base/en/latest/" target="_blank" >documentation.</a>';
+    $errorMsg = 'MediaWiki is not installed or configured. Please refer to the ' .
+        '<a href="https://documentation-fr.centreon.com/docs/centreon-knowledge-base/en/latest/" target="_blank" >' .
+        'documentation.</a>';
 
-    $mandatoryConfigKey = array('kb_db_name', 'kb_db_host', 'kb_WikiURL');
+    $mandatoryConfigKey = array('kb_db_name', 'kb_db_host', 'kb_wiki_url');
     if (is_null($pearDB)) {
         throw new \Exception($errorMsg);
     }
@@ -45,6 +46,7 @@ function getWikiConfig($pearDB)
 
     $gopt = array();
     while ($opt = $res->fetchRow()) {
+
         if (!empty($opt["value"])) {
             $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
         } else {
