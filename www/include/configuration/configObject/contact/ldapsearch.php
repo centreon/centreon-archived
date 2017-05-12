@@ -89,6 +89,7 @@ $queryGetLdap = 'SELECT contact_alias
                  WHERE contact_register = 1';
 $res = $pearDB->query($queryGetLdap);
 $listLdapUsers = array();
+
 if (!PEAR::isError($res)) {
     while ($row = $res->fetchRow()) {
         $listLdapUsers[] = $row['contact_alias'];
@@ -101,7 +102,10 @@ $buffer->startElement("reponse");
 
 $ids = explode(",", $confList);
 foreach ($ids as $arId) {
+
+
     $ldap = new CentreonLDAP($pearDB, null, $arId);
+
     $connect = false;
     if ($ldap->connect()) {
         $connect = true;
@@ -116,7 +120,7 @@ foreach ($ids as $arId) {
                   FROM auth_ressource_info
     	    	  WHERE ar_id = ?";
         $stmt = $pearDB->prepare($query);
-        $res = $pearDB->execute($stmt, array($arId));
+        $res = $pearDB->execute($stmt, array((int)$arId));
 
         while ($row = $res->fetchRow()) {
             switch ($row['ari_name']) {
@@ -140,9 +144,10 @@ foreach ($ids as $arId) {
         if (isset($ldap_search_filters[$arId]) && $ldap_search_filters[$arId]) {
             $ldap_search_filter = $ldap_search_filters[$arId];
         }
-        
+
         $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
         $number_returned = count($searchResult);
+
         if ($number_returned) {
             $buffer->writeElement("entries", $number_returned);
             for ($i = 0; $i < $number_returned; $i++) {
@@ -217,6 +222,7 @@ foreach ($ids as $arId) {
         }
     }
 }
+
 if (isset($error)) {
     $buffer->writeElement("error", $error);
 }

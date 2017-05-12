@@ -192,6 +192,7 @@ class CentreonLDAP {
      */
     public function connect()
     {
+
         foreach ($this->_ldapHosts as $ldap) {
             $port = "";
             $testingPort = 389;
@@ -204,8 +205,9 @@ class CentreonLDAP {
             } else {
                 $url = 'ldap://' . $ldap['host'] . $port . '/';
             }
-            $this->debug("LDAP Connect : trying url : " . $url);
-            $this->setErrorHandler();
+
+            $this->_debug("LDAP Connect : trying url : " . $url);
+            $this->_setErrorHandler();
 
             if ($this->isLdapServerAvailable($ldap['host'], $testingPort, $ldap['search_timeout'])) {
                 $this->_ds = ldap_connect($url);
@@ -216,7 +218,7 @@ class CentreonLDAP {
                 }
                 ldap_set_option($this->_ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
                 if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
-                    $this->debug("LDAP Connect : use tls");
+                    $this->_debug("LDAP Connect : use tls");
                     @ldap_start_tls($this->_ds);
                 }
                 restore_error_handler();
@@ -226,7 +228,7 @@ class CentreonLDAP {
                     return true;
                 }
             }
-            $this->debug("LDAP Connect : connection error");
+            $this->_debug("LDAP Connect : connection error");
         }
         return false;
     }
@@ -321,8 +323,10 @@ class CentreonLDAP {
         if (trim($this->_userSearchInfo['filter']) == '') {
             return false;
         }
-        $this->_setErrorHandler();
+      //  $this->_setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($username), $this->_userSearchInfo['filter']);
+
+
         $result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
         $entries = ldap_get_entries($this->_ds, $result);
         restore_error_handler();
@@ -342,6 +346,9 @@ class CentreonLDAP {
         if (trim($this->_groupSearchInfo['filter']) == '') {
             return false;
         }
+
+        var_dump($this->_groupSearchInfo['filter']);
+
         $this->_setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($group), $this->_groupSearchInfo['filter']);
         $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
