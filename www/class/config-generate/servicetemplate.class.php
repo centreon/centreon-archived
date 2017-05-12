@@ -123,8 +123,8 @@ class ServiceTemplate extends AbstractService {
     );
     
     private function getServiceGroups($service_id) {        
-        $host = Host::getInstance();
-        $servicegroup = Servicegroup::getInstance();
+        $host = Host::getInstance($this->dependencyInjector);
+        $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
         $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForStpl($service_id);        
         foreach ($this->service_cache[$service_id]['sg'] as &$sg) {
             if ($host->isHostTemplate($this->current_host_id, $sg['host_host_id'])) {
@@ -154,8 +154,8 @@ class ServiceTemplate extends AbstractService {
             return 0;
         }
         
-        $this->service_cache[$service_id]['severity_id'] = Severity::getInstance()->getServiceSeverityByServiceId($service_id);
-        $severity = Severity::getInstance()->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
+        $this->service_cache[$service_id]['severity_id'] = Severity::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
+        $severity = Severity::getInstance($this->dependencyInjector)->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
         if (!is_null($severity)) {
             $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];

@@ -49,21 +49,20 @@ function parse_zend_license_file($file)
     
 /* Load conf */
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/www/autoloader.php';
+require_once _CENTREON_PATH_ . '/bootstrap.php';
 
 /* Modules access */
 $modulesPath = _CENTREON_PATH_ . 'www/modules/';
-$modulesDirResource = opendir($modulesPath);
 
-$XmlObj = new CentreonXML(true);
-$XmlObj->startElement("validation");
+$response = array();
 $message = array();
 
-while (false !== ($filename = readdir($modulesDirResource))) {
-    if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".svn" && $filename != ".CSV") {
-        $XmlObj->startElement("module");
-        $XmlObj->writeAttribute('name', $filename);
-        $checklistDir = $modulesPath.$filename . '/checklist/';
+$modules = scandir($modulesPath);
+foreach ($modules as $module) {
+    $filename = $module;
+    if (preg_match('/^(?!\.)/', $module) && is_dir($modulesPath . $module)) {
+        $response[$module] = array();
+        $checklistDir = $modulesPath . $module . '/checklist/';
         $warning = false;
         $critical = false;
         
@@ -71,31 +70,29 @@ while (false !== ($filename = readdir($modulesDirResource))) {
             require_once $checklistDir.'requirements.php';
             if ($critical || $warning) {
                 if ($critical) {
-                    $XmlObj->writeAttribute('status', 'critical');
+                    $response[$module]['status'] = 'critical';
                 } elseif ($warning) {
-                    $XmlObj->writeAttribute('status', 'warning');
+                    $response[$module]['status'] = 'warning';
                 }
 
                 foreach ($message as $errorMessage) {
-                    $XmlObj->startElement('message');
-                    $XmlObj->writeElement('ErrorMessage', $errorMessage['ErrorMessage']);
-                    $XmlObj->writeElement('Solution', $errorMessage['Solution']);
-                    $XmlObj->endElement();
+                    $response[$module]['message'] = array(
+                        'ErrorMessage' => $errorMessage['ErrorMessage'],
+                        'Solution' => $errorMessage['Solution']
+                    );
                 }
             } else {
-                $XmlObj->writeAttribute('status', 'ok');
+                $response[$module]['status'] = 'ok';
                 if (isset($customAction) && is_array($customAction)) {
-                    $XmlObj->writeAttribute('customAction', $customAction['action']);
-                    $XmlObj->writeAttribute('customActionName', $customAction['name']);
+                    $response[$module]['customAction'] = $customAction['action'];
+                    $response[$module]['customActionName'] = $customAction['name'];
                 }
             }
         } else {
-            $XmlObj->writeAttribute('status', 'notfound');
+            $response[$module]['status'] = 'notfound';
         }
-        $XmlObj->endElement();
     }
 }
 
-$XmlObj->endElement();
-
-echo $XmlObj->output();
+header('Content-Type: application/json');
+echo json_encode($response);

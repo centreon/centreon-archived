@@ -50,7 +50,7 @@ class Service extends AbstractService {
     }
     
     private function getServiceGroups($service_id, $host_id, $host_name) {        
-        $servicegroup = Servicegroup::getInstance();
+        $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
         $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForService($host_id, $service_id);
         foreach ($this->service_cache[$service_id]['sg'] as &$value) {
             if (is_null($value['host_host_id']) || $host_id == $value['host_host_id']) {
@@ -106,7 +106,7 @@ class Service extends AbstractService {
     }
     
     private function browseContactsInStpl($service_id) {
-        $services_tpl = &ServiceTemplate::getInstance()->service_cache;
+        $services_tpl = &ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
         $service_tpl_id = isset($this->service_cache[$service_id]['service_template_model_stm_id']) ? $this->service_cache[$service_id]['service_template_model_stm_id'] : null;        
         if (isset($this->service_cache[$service_id]['has_tpl_contacts'])) {
             return 0;
@@ -162,7 +162,7 @@ class Service extends AbstractService {
     
     private function getContactsFromHost($host_id, $service_id, $sOnlyContactHost) {
         if ($sOnlyContactHost == 1) {
-            $host = Host::getInstance();
+            $host = Host::getInstance($this->dependencyInjector);
             $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
             $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
             $this->service_cache[$service_id]['contact_from_host'] = 1;
@@ -174,7 +174,7 @@ class Service extends AbstractService {
             if ($this->isServiceHasContacts($service_id)) {
                 return 0;
             }
-            $host = Host::getInstance();
+            $host = Host::getInstance($this->dependencyInjector);
             $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
             $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
             $this->service_cache[$service_id]['contact_from_host'] = 1;
@@ -186,8 +186,9 @@ class Service extends AbstractService {
             return 0;
         }
         
-        $this->service_cache[$service_id_arg]['severity_id'] = Severity::getInstance()->getServiceSeverityByServiceId($service_id_arg);
-        $severity = Severity::getInstance()->getServiceSeverityById($this->service_cache[$service_id_arg]['severity_id']);
+        $this->service_cache[$service_id_arg]['severity_id'] = Severity::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id_arg);
+        $severity = Severity::getInstance($this->dependencyInjector)
+            ->getServiceSeverityById($this->service_cache[$service_id_arg]['severity_id']);
         if (!is_null($severity)) {
             $this->service_cache[$service_id_arg]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->service_cache[$service_id_arg]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
@@ -196,7 +197,7 @@ class Service extends AbstractService {
         
         # Check from service templates
         $loop = array();        
-        $services_tpl = &ServiceTemplate::getInstance()->service_cache;
+        $services_tpl = &ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
         $services_top_tpl = isset($this->service_cache[$service_id_arg]['service_template_model_stm_id']) ? $this->service_cache[$service_id_arg]['service_template_model_stm_id'] : null;
         $service_id = $services_top_tpl;
         $severity_id = null;
@@ -226,9 +227,9 @@ class Service extends AbstractService {
         # Get from the hosts
         if (is_null($this->service_cache[$service_id]['severity_id'])) {
             $this->service_cache[$service_id]['severity_from_host'] = 1;
-            $severity = Host::getInstance()->getSeverityForService($host_id);
+            $severity = Host::getInstance($this->dependencyInjector)->getSeverityForService($host_id);
             if (!is_null($severity)) {
-                $service_severity = Severity::getInstance()->getServiceSeverityMappingHostSeverityByName($severity['hc_name']);
+                $service_severity = Severity::getInstance($this->dependencyInjector)->getServiceSeverityMappingHostSeverityByName($severity['hc_name']);
                 if (!is_null($service_severity)) {
                     $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $service_severity['level'];
                     $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $service_severity['sc_id'];
@@ -299,7 +300,7 @@ class Service extends AbstractService {
         $this->getMacros($this->service_cache[$service_id]);
         $this->service_cache[$service_id]['macros']['_SERVICE_ID'] = $service_id;        
         # useful for servicegroup on servicetemplate
-        $service_template = ServiceTemplate::getInstance();
+        $service_template = ServiceTemplate::getInstance($this->dependencyInjector);
         $service_template->resetLoop();
         $service_template->current_host_id = $host_id;
         $service_template->current_host_name = $host_name;

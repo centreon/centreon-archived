@@ -840,7 +840,6 @@ function getLocalhostId()
 function getListIndexData()
 {
     global $pearDB, $pearDBO;
-
     $queryGetRelation = "SELECT id, host_id, service_id
 	    	                 FROM index_data
                              ORDER BY host_id";

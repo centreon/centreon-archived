@@ -10,13 +10,13 @@ use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
  */
 class InfluxdbContext extends CentreonContext
 {
-    private $hostName = 'InfluxdbTestHost';
+    private $hostName = 'Centreon-Server';
     private $serviceName = 'InfluxdbTestService';
 
     /**
-     *  @Given I am logged in a Centreon server with Influxdb
+     *  @Given I am logged in a Centreon server with InfluxDB
      */
-    public function aCentreonServerWithInfluxdb()
+    public function aCentreonServerWithInfluxDB()
     {
         $this->launchCentreonWebContainer('web_influxdb');
         $this->iAmLoggedIn();
@@ -24,7 +24,7 @@ class InfluxdbContext extends CentreonContext
     }
 
     /**
-     * @Given an Influxdb output is properly configured
+     *  @Given Centreon Broker is configured to send data to an InfluxDB server
      */
     public function anInfluxdbOutputIsProperlyConfigured()
     {
@@ -40,7 +40,6 @@ class InfluxdbContext extends CentreonContext
       $this->assertFind('named', array('id', 'output[4][db_name]'))->setValue('metrics');
       $this->assertFind('named', array('id', 'output[4][metrics_timeseries]'))->setValue('metric.$HOST$.$SERVICE$');
       $this->assertFind('named', array('id', 'output[4][status_timeseries]'))->setValue('status.$HOST$.$SERVICE$');
-
 
       // Metrics columns
       $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)')->setValue('true');
@@ -72,51 +71,46 @@ class InfluxdbContext extends CentreonContext
     }
 
     /**
-     *  @Given a passive service is configured
+     *  @Given a service is monitored by the Centreon platform
      */
-    public function aPassiveServiceIsConfigured() {
-      $hostConfig = new HostConfigurationPage($this);
-      $hostProperties = array(
-        'name' => $this->hostName,
-        'alias' => $this->hostName,
-        'address' => 'localhost',
-        'max_check_attempts' => 1,
-        'normal_check_interval' => 1,
-        'retry_check_interval' => 1,
-        'active_checks_enabled' => "0",
-        'passive_checks_enabled' => "1"
-      );
-      $hostConfig->setProperties($hostProperties);
-      $hostConfig->save();
-
-      $serviceConfig = new ServiceConfigurationPage($this);
-      $serviceProperties = array(
-        'description' => $this->serviceName,
-        'hosts' => $this->hostName,
-        'templates' => 'generic-service',
-        'check_command' => 'check_centreon_dummy',
-        'check_period' => '24x7',
-        'active_checks_enabled' => "0",
-        'passive_checks_enabled' => "1"
-      );
-      $serviceConfig->setProperties($serviceProperties);
-      $serviceConfig->save();
-    }
-
-    /**
-     * @Given I restart all pollers
-     */
-    public function iRestartAllPollers()
+    public function aServiceIsMonitoredByTheCentreonPlatform()
     {
+        // Create service.
+        $serviceConfig = new ServiceConfigurationPage($this);
+        $serviceProperties = array(
+            'description' => $this->serviceName,
+            'hosts' => $this->hostName,
+            'templates' => 'generic-service',
+            'check_command' => 'check_centreon_dummy',
+            'check_period' => '24x7',
+            'active_checks_enabled' => "0",
+            'passive_checks_enabled' => "1"
+        );
+        $serviceConfig->setProperties($serviceProperties);
+        $serviceConfig->save();
+
+        // Restart pollers.
         $this->restartAllPollers();
+
+        // Wait for service monitoring data.
+        $this->spin(
+            function ($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    $context->hostName,
+                    $context->serviceName
+                );
+                $properties = $page->getProperties();
+                return !empty($properties['state']);
+            }
+        );
     }
 
     /**
-     * @When new metric data is discovered by the engine for the service
+     *  @When new metric data is retrieved for the service
      */
-    public function newMetricDataIsDiscoveredByTheEngine()
+    public function newMetricDataIsRetrievedForTheService()
     {
-        sleep(5);
         $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', 'test=1s;5;10;0;10');
 
         $self = $this;
@@ -133,11 +127,10 @@ class InfluxdbContext extends CentreonContext
         );
     }
 
-
     /**
-     * @Then it is saved in Influxdb
+     *  @Then it is saved in InfluxDB
      */
-    public function thenItIsSavedInInfluxdb()
+    public function thenItIsSavedInInfluxDB()
     {
         $self = $this;
         $this->spin(
@@ -145,7 +138,7 @@ class InfluxdbContext extends CentreonContext
                 $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
                 return preg_match('/status\.' . $self->hostName . '\.' . $self->serviceName . '/m', $return['output']);
             },
-            "Cannot get metrics from influxdb."
+            "Cannot get metrics from InfluxDB."
         );
     }
 }

@@ -8,7 +8,7 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.9.0');
 -- Contenu de la table `contact`
 --
 
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', MD5('@ADMIN_PASSWORD@'), 'en_US', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', MD5('@admin_password@'), 'en_US', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', NULL, 'en_US', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', NULL, 'en_US', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 
@@ -66,7 +66,7 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 --
 -- Contenu de la table `options`
 --
-INSERT INTO `options` (`key`, `value`) VALUES 
+INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_dns_use_ssl', '0'),
 ('ldap_dns_use_tls', '0'),
 ('ldap_auth_enable', '0'),
@@ -78,7 +78,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
 ('broker','broker'),
-('oreon_path','@INSTALL_DIR_CENTREON@/'),
+('oreon_path','@centreon_dir@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
 ('maxViewMonitoring','30'),
@@ -104,20 +104,17 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('global_sort_order','ASC'),
 ('problem_sort_type','last_state_change'),
 ('problem_sort_order','ASC'),
-('nagios_path','@INSTALL_DIR_NAGIOS@'),
-('nagios_path_bin','@NAGIOS_BINARY@'),
-('nagios_init_script','@NAGIOS_INIT_SCRIPT@'),
-('nagios_path_plugins','@MONITORINGENGINE_PLUGIN@/'),
+('nagios_path_plugins','@plugin_dir@/'),
 ('nagios_version','3'),
-('mailer_path_bin','@BIN_MAIL@'),
+('mailer_path_bin','@mail@'),
 ('snmp_community','public'),
 ('snmp_version','1'),
 ('snmptt_unknowntrap_log_file','snmpttunknown.log'),
-('snmpttconvertmib_path_bin','@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib'),
+('snmpttconvertmib_path_bin','@centreon_dir@/bin/snmpttconvertmib'),
 ('perl_library_path','/usr/local/lib'),
-('rrdtool_path_bin','@BIN_RRDTOOL@'),
+('rrdtool_path_bin','@rrdtool_dir@'),
 ('rrdtool_version','1.2'),
-('debug_path','@CENTREON_LOG@/'),
+('debug_path','@centreon_log@/'),
 ('debug_auth','0'),
 ('debug_nagios_import','0'),
 ('debug_rrdtool','0'),
@@ -136,10 +133,10 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('monitoring_dwt_svc', '1'),
 ('tactical_host_limit', '100'),
 ('tactical_service_limit', '100'),
-('tactical_refresh_interval', '20'), 
-('index_data', '1'), 
+('tactical_refresh_interval', '20'),
+('index_data', '1'),
 ('interval_length', '60'),
-('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/'),
+('nagios_path_img','@centreon_dir@/www/img/media/'),
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0');
@@ -476,7 +473,7 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 -- Contenu de la table `cb_field`
 --
 
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES 
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
 (1, 'port', 'Connection port', 'Port to listen on (empty host) or to connect to (with host filled).', 'int', NULL),
 (2, 'host', 'Host to connect to', 'IP address or hostname of the host to connect to (leave blank for listening mode).', 'text', NULL),
 (3, 'ca_certificate', 'Trusted CA''s certificate', 'Trusted CA''s certificate.', 'text', NULL),
@@ -602,7 +599,7 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (3, 'Sysbase', 'tds'),
 (4, 'Base', 'low'),
 (4, 'Detailed', 'medium'),
-(4, 'Very detailed', 'high'), 
+(4, 'Very detailed', 'high'),
 (5, 'No', 'no'),
 (5, 'Yes', 'yes'),
 (5, 'Auto', 'auto'),
@@ -789,7 +786,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 --
 -- Contenu de la table `widget_parameters_field_type`
 --
-INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES 
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES
                                            ('text', 0),
                                            ('boolean', 0),
                                            ('hidden', 0),
@@ -805,10 +802,10 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('hostgroup', 1),
                                            ('servicegroup', 1),
                                            ('service', 1),
-                                           ('poller', 1), 
-                                           ('hostCategories',1), 
+                                           ('poller', 1),
+                                           ('hostCategories',1),
                                            ('serviceCategories',1),
-                                           ('metric',1), 
+                                           ('metric',1),
                                            ('ba', 1),
                                            ('bv', 1),
                                            ('hostCategoriesMulti', 1),
@@ -822,7 +819,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceGroupMulti', 1),
                                            ('integer', 0);
 
-INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
+INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES
                         ('Africa/Abidjan', '-00:00', '-00:00'),
                         ('Africa/Accra', '-00:00', '-00:00'),
                         ('Africa/Addis_Ababa', '+03:00', '+03:00'),
@@ -1238,7 +1235,7 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Pacific/Tarawa', '+12:00', '+12:00'),
                         ('Pacific/Tongatapu', '+13:00', '+13:00'),
                         ('Pacific/Wake', '+12:00', '+12:00'),
-                        ('Pacific/Wallis', '+12:00', '+12:00'), 
+                        ('Pacific/Wallis', '+12:00', '+12:00'),
                         ('GMT', '-00:00', '-00:00'),
                         ('UTC', '-00:00', '-00:00');
 
@@ -1269,4 +1266,4 @@ VALUES ('kb_db_name', ''),
 ('kb_db_password', ''),
 ('kb_db_host', ''),
 ('kb_db_prefix', ''),
-('kb_WikiURL', '');
+('kb_wiki_url', '');

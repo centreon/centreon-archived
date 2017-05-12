@@ -51,12 +51,16 @@ require_once _CLAPI_LIB_ . "/Centreon/Db/Manager/Manager.php";
  */
 class CentreonClapi extends CentreonWebService
 {
+
+    private $dependencyInjector;
+
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct();
+        $this->dependencyInjector = $dependencyInjector;
     }
     
     public function postAction()
@@ -111,7 +115,14 @@ class CentreonClapi extends CentreonWebService
         
         /* Load and execute clapi option */
         try {
-            $clapi = new \CentreonClapi\CentreonAPI($username, '', $action, _CENTREON_PATH_, $options);
+            $clapi = new \CentreonClapi\CentreonAPI(
+                $username,
+                '',
+                $action,
+                _CENTREON_PATH_,
+                $options,
+                $this->dependencyInjector
+            );
             ob_start();
             $retCode = $clapi->launchAction(false);
             $contents = ob_get_contents();

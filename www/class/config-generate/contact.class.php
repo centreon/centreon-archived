@@ -177,7 +177,7 @@ class Contact extends AbstractObject {
             $this->contacts[$contact_id][$label . '_commands_cache'] = $this->stmt_commands[$label]->fetchAll(PDO::FETCH_COLUMN);
         }
                 
-        $command = Command::getInstance();
+        $command = Command::getInstance($this->dependencyInjector);
         $this->contacts[$contact_id][$label . '_notification_commands'] = array();
         foreach ($this->contacts[$contact_id][$label . '_commands_cache'] as $command_id) {
             $this->contacts[$contact_id][$label . '_notification_commands'][] = $command->generateFromCommandId($command_id);
@@ -226,12 +226,12 @@ class Contact extends AbstractObject {
         $this->contacts[$contact_id]['use'][] = $this->generateFromContactId($this->contacts[$contact_id]['contact_template_id']);
         $this->getContactNotificationCommands($contact_id, 'host');
         $this->getContactNotificationCommands($contact_id, 'service');        
-        $period = Timeperiod::getInstance();
+        $period = Timeperiod::getInstance($this->dependencyInjector);
         $this->contacts[$contact_id]['host_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['host_notification_period_id']);
         $this->contacts[$contact_id]['service_notification_period'] = $period->generateFromTimeperiodId($this->contacts[$contact_id]['service_notification_period_id']);
         $this->contacts[$contact_id]['host_notifications_enabled'] = $this->contacts[$contact_id]['enable_notifications'];
         $this->contacts[$contact_id]['service_notifications_enabled'] = $this->contacts[$contact_id]['enable_notifications'];
-        $oTimezone = Timezone::getInstance();
+        $oTimezone = Timezone::getInstance($this->dependencyInjector);
         $sTimezone = $oTimezone->getTimezoneFromId($this->contacts[$contact_id]['contact_location']);
         if (!is_null($sTimezone)) {
             $this->contacts[$contact_id]['timezone'] = ":". $sTimezone;

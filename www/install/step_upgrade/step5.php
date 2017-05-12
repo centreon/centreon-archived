@@ -39,7 +39,7 @@ define('STEP_NUMBER', 5);
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once '../steps/functions.php';
-$template = getTemplate('../steps/templates');
+$template = getTemplate('templates');
 
 $title = _('Upgrade finished');
 $contents = sprintf(

@@ -41,7 +41,7 @@ define('STEP_NUMBER', 1);
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once '../steps/functions.php';
-$template = getTemplate('../steps/templates');
+$template = getTemplate('templates');
 
 $title = _('Centreon Upgrade');
 

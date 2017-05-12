@@ -37,6 +37,8 @@ ini_set("display_errors", "Off");
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
+require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
+
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
@@ -46,7 +48,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 
-$pearDB = new CentreonDB();
+$pearDB = $dependencyInjector["configuration_db"];
 
 /* Check Session */
 CentreonSession::start(1);
@@ -77,7 +79,7 @@ if (isset($centreon->user->name)) {
     $username = $centreon->user->name;
 }
 $xml = new CentreonXML();
-$config_generate = new Generate();
+$config_generate = new Generate($dependencyInjector);
 
 $pollers = explode(',', $_POST['poller']);
 $debug = ($_POST['debug'] == "true") ? 1 : 0;
@@ -97,7 +99,6 @@ $xml->startElement("response");
 try {
     $tabs = array();
     if ($generate) {
-        $pearDBO = new CentreonDB('centstorage');
         $tabs = $centreon->user->access->getPollerAclConf(array(
             'fields' => array('id', 'name', 'localhost', 'monitoring_engine'),
             'order' => array('name'),

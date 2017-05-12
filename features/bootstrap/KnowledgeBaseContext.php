@@ -105,9 +105,13 @@ class KnowledgeBaseContext extends CentreonContext
         $this->getSession()->switchToWindow($windowNames[1]);
 
         /* Add wiki page */
-        $checkurl = 'Host:' . $this->hostName;
-        if (!strstr($this->getSession()->getCurrentUrl(), $checkurl)) {
-            throw new Exception('Bad url');
+        $checkurl = 'Host_:_' . $this->hostName;
+        $currenturl = urldecode($this->getSession()->getCurrentUrl());
+        if (!strstr($currenturl, $checkurl)) {
+            throw new Exception(
+                'Redirected to wrong page: ' . $currenturl .
+                ', should have contain ' . $checkurl . '.'
+            );
         }
 
         $this->assertFind('css', '#wpTextbox1')->setValue('add wiki host page');
@@ -141,7 +145,7 @@ class KnowledgeBaseContext extends CentreonContext
         $this->getSession()->switchToWindow($windowNames[1]);
 
         // Check that wiki page is valid.
-        $checkurl = 'Service:' . $this->serviceHostName . '_' . $this->serviceName;
+        $checkurl = 'Service_:_' . $this->serviceHostName . '_/_' . $this->serviceName;
         $currenturl = urldecode($this->getSession()->getCurrentUrl());
         if (!strstr($currenturl, $checkurl)) {
             throw new Exception(

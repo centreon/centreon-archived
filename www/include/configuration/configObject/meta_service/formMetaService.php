@@ -42,11 +42,13 @@ require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 /* Get the list of contact */
 /* notification contacts */
-$notifCs = $acl->getContactAclConf(array('fields'     => array('contact_id', 'contact_name'),
-                                         'get_row'    => 'contact_name',
-                                         'keys'       => array('contact_id'),
-                                         'conditions' => array('contact_register' => '1'),
-                                         'order'      => array('contact_name')));
+$notifCs = $acl->getContactAclConf(array(
+    'fields' => array('contact_id', 'contact_name'),
+    'get_row' => 'contact_name',
+    'keys' => array('contact_id'),
+    'conditions' => array('contact_register' => '1'),
+    'order' => array('contact_name')
+));
 
 /* notification contact groups */
 $notifCgs = array();
@@ -54,9 +56,12 @@ $cg = new CentreonContactgroup($pearDB);
 if ($oreon->user->admin) {
     $notifCgs = $cg->getListContactgroup(true);
 } else {
-    $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
-                                                                   'get_row' => 'cg_name',
-                                                                   'keys'    => array('cg_id'),                                                                                                                                                        'order'   => array('cg_name')));
+    $cgAcl = $acl->getContactGroupAclConf(array(
+        'fields' => array('cg_id', 'cg_name'),
+        'get_row' => 'cg_name',
+        'keys' => array('cg_id'),
+        'order' => array('cg_name')
+    ));
     $cgLdap = $cg->getListContactgroup(true, true);
     $notifCgs = array_intersect_key($cgLdap, $cgAcl);
 }
@@ -64,7 +69,7 @@ if ($oreon->user->admin) {
 $initialValues = array();
 $ms = array();
 if (($o == "c" || $o == "w") && $meta_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '" . $meta_id . "' LIMIT 1");
     // Set base value
     $ms = array_map("myDecode", $DBRESULT->fetchRow());
 
@@ -73,87 +78,15 @@ if (($o == "c" || $o == "w") && $meta_id) {
     foreach ($tmp as $key => $value) {
         $ms["ms_notifOpts"][trim($value)] = 1;
     }
-    
-    /*
-	 * Set Contacts
-	 */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = " . $meta_id);
-    for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
-        if (!isset($notifCs[$notifC['contact_id']])) {
-            $initialValues['ms_cs'][] = $notifC['contact_id'];
-        } else {
-            $ms["ms_cs"][$i] = $notifC["contact_id"];
-        }
-    }
-    $DBRESULT->free();
-
-    /*
-	 * Set Contact Group
-	 */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
-    for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-        if (!$oreon->user->admin && !isset($notifCgs[$notifCg['cg_cg_id']])) {
-            $initialValues['ms_cgs'][] = $notifCg["cg_cg_id"];
-        } else {
-            $ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
-        }
-    }
-    $DBRESULT->free();
 }
 
 require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
-$metrics = array(null=>null);
-$DBRESULT = $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
-while ($metric = $DBRESULT->fetchRow()) {
-    $metrics[$metric["metric_name"]] = $metric["metric_name"];
-}
-$DBRESULT->free();
-
-/*
- * Timeperiods comes from DB -> Store in $tps Array
- */
-$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($tp = $DBRESULT->fetchRow()) {
-    $tps[$tp["tp_id"]] = $tp["tp_name"];
-}
-$DBRESULT->free();
-
-/*
- * Check commands comes from DB -> Store in $checkCmds Array
- */
-$checkCmds = array(null=>null);
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-while ($checkCmd = $DBRESULT->fetchRow()) {
-    $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-}
-$DBRESULT->free();
-
-/*
- * Escalations comes from DB -> Store in $escs Array
- */
-$escs = array();
-$DBRESULT = $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
-while ($esc = $DBRESULT->fetchRow()) {
-    $escs[$esc["esc_id"]] = $esc["esc_name"];
-}
-$DBRESULT->free();
-
-/*
- * Meta Service Dependencies comes from DB -> Store in $deps Array
- */
-$deps = array();
-$DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
-while ($dep = $DBRESULT->fetchRow()) {
-    $deps[$dep["meta_id"]] = $dep["meta_name"];
-}
-$DBRESULT->free();
-
 /*
  * Calc Type
  */
-$calType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
+$calType = array("AVE" => _("Average"), "SOM" => _("Sum"), "MIN" => _("Min"), "MAX" => _("Max"));
 
 /*
  * Data source type
@@ -163,7 +96,7 @@ $dsType = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
 /*
  * Graphs Template comes from DB -> Store in $graphTpls Array
  */
-$graphTpls = array(null=>null);
+$graphTpls = array(null => null);
 $DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 while ($graphTpl = $DBRESULT->fetchRow()) {
     $graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
@@ -173,26 +106,31 @@ $DBRESULT->free();
 /*
  * Init Styles
  */
-$attrsText      = array("size"=>"30");
-$attrsText2         = array("size"=>"6");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "6");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "5", "cols" => "40");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
+    . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$timeAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list';
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'availableDatasetRoute' => $timeAvRoute,
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
+$contactAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list';
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
+    'availableDatasetRoute' => $contactAvRoute,
     'multiple' => true,
     'linkedObject' => 'centreonContact'
 );
+$contactGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+    . '&action=list';
 $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list',
+    'availableDatasetRoute' => $contactGrAvRoute,
     'multiple' => true,
     'linkedObject' => 'centreonContactgroup'
 );
@@ -200,7 +138,7 @@ $attrContactgroups = array(
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Meta Service"));
 } elseif ($o == "c") {
@@ -225,7 +163,7 @@ $tab = array();
 $tab[] = HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("Service List"), '1');
 $tab[] = HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("SQL matching"), '2');
 $form->addGroup($tab, 'meta_select_mode', _("Selection Mode"), '<br />');
-$form->setDefaults(array('meta_select_mode' => array('meta_select_mode'=>'1')));
+$form->setDefaults(array('meta_select_mode' => array('meta_select_mode' => '1')));
 
 $form->addElement('text', 'regexp_str', _("SQL LIKE-clause expression"), $attrsText);
 $form->addElement('select', 'metric', _("Metric"), $metrics);
@@ -235,9 +173,11 @@ $form->addElement('select', 'metric', _("Metric"), $metrics);
  */
 $form->addElement('header', 'check', _("Meta Service State"));
 
+$timeDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
+    . '&action=defaultValues&target=meta&field=check_period&id=' . $meta_id;
 $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=meta&field=check_period&id=' . $meta_id)
+    array('defaultDatasetRoute' => $timeDeRoute)
 );
 $form->addElement('select2', 'check_period', _("Check Period"), array(), $attrTimeperiod1);
 
@@ -259,23 +199,29 @@ $form->setDefaults(array('notifications_enabled' => '2'));
 /*
  *  Contacts
  */
+$contactDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact'
+    . '&action=defaultValues&target=meta&field=ms_cs&id=' . $meta_id;
 $attrContact1 = array_merge(
     $attrContacts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=defaultValues&target=meta&field=ms_cs&id=' . $meta_id)
+    array('defaultDatasetRoute' => $contactDeRoute)
 );
 $form->addElement('select2', 'ms_cs', _("Implied Contacts"), array(), $attrContact1);
 
+$contactGrDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+    . '&action=defaultValues&target=meta&field=ms_cgs&id=' . $meta_id;
 $attrContactgroup1 = array_merge(
     $attrContactgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=defaultValues&target=meta&field=ms_cgs&id=' . $meta_id)
+    array('defaultDatasetRoute' => $contactGrDeRoute)
 );
 $form->addElement('select2', 'ms_cgs', _("Linked Contact Groups"), array(), $attrContactgroup1);
 
 $form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
 
+$timeDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
+    . '&action=defaultValues&target=meta&field=notification_period&id=' . $meta_id;
 $attrTimeperiod2 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=meta&field=notification_period&id=' . $meta_id)
+    array('defaultDatasetRoute' => $timeDeRoute)
 );
 $form->addElement('select2', 'notification_period', _("Notification Period"), array(), $attrTimeperiod2);
 
@@ -315,6 +261,7 @@ function myReplace()
     global $form;
     return (str_replace(" ", "_", $form->getSubmitValue("meta_name")));
 }
+
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('meta_name', 'myReplace');
 $form->addRule('meta_name', _("Compulsory Name"), 'required');
@@ -323,7 +270,7 @@ $form->addRule('calcul_type', _("Required Field"), 'required');
 $form->addRule('meta_select_mode', _("Required Field"), 'required');
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('meta_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -331,12 +278,17 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR,'
+    . ' "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"],'
+    . ' WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -345,7 +297,12 @@ if ($o == "w") {
 	 * Just watch a host information
 	 */
     if (!$min && $centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$meta_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&meta_id=" . $meta_id . "'")
+        );
     }
     $form->setDefaults($ms);
     $form->freeze();
@@ -364,8 +321,8 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
-$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
+$tpl->assign('msg', array("nagios" => $oreon->user->get_version()));
+$tpl->assign('time_unit', " * " . $oreon->optGen["interval_length"] . " " . _("seconds"));
 
 $valid = false;
 if ($form->validate()) {
@@ -380,7 +337,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path."listMetaService.php");
+    require_once($path . "listMetaService.php");
 } else {
     /*
 	 * Apply a template definition

@@ -34,33 +34,48 @@
  */
 
 session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../functions.php';
-define('PROCESS_ID', 'createuser');
+
+$return = array(
+    'id' => 'createuser',
+    'result' => 1,
+    'msg' => ''
+);
+
+$step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
+$parameters = $step->getDatabaseConfiguration();
 
 try {
-    $link = myConnect();
+    $link = new \PDO(
+        'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
+        'root',
+        $parameters['root_password']
+    );
 } catch (\PDOException $e) {
-    exitProcess(PROCESS_ID, 1, $e->getMessage());
+    $return['msg'] = $e->getMessage();
+    echo json_encode($return);
+    exit;
 }
 
-if (!isset($_SESSION['DB_USER'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find database user. Session probably expired.'));
-}
-
-$dbUser = $_SESSION['DB_USER'];
-$dbPass = $_SESSION['DB_PASS'];
+$dbUser = $parameters['db_user'];
+$dbPass = $parameters['db_password'];
 $host = "localhost";
 // if database server is not on localhost...
-if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] && 
-    $_SESSION['ADDRESS'] != "127.0.0.1" && $_SESSION['ADDRESS'] != "localhost") {
-        $host = $_SERVER['SERVER_ADDR'];
+if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhost") {
+    $host = $_SERVER['SERVER_ADDR'];
 }
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
+$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host .
+    "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
 try {
-    $link->exec(sprintf($query, $_SESSION['CONFIGURATION_DB']));
-    $link->exec(sprintf($query, $_SESSION['STORAGE_DB']));
+    $link->exec(sprintf($query, $parameters['db_configuration']));
+    $link->exec(sprintf($query, $parameters['db_storage']));
 } catch (\PDOException $e) {
-    exitProcess(PROCESS_ID, 1, $e->getMessage());
+    $return['msg'] = $e->getMessage();
+    echo json_encode($return);
+    exit;
 }
 
-exitProcess(PROCESS_ID, 0, "OK");
+$return['result'] = 0;
+echo json_encode($return);
+exit;

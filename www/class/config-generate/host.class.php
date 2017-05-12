@@ -67,7 +67,7 @@ class Host extends AbstractHost {
             $host['hg'] = $this->stmt_hg->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $hostgroup = Hostgroup::getInstance();
+        $hostgroup = Hostgroup::getInstance($this->dependencyInjector);
         foreach ($host['hg'] as $hg_id) {
             $hostgroup->addHostInHg($hg_id, $host['host_id'], $host['host_name']);
         }
@@ -90,7 +90,7 @@ class Host extends AbstractHost {
             if (isset($this->hosts[$parent_id])) {
                 $host['parents'][] = $this->hosts[$parent_id]['host_name'];
 
-                $correlation_instance = Correlation::getInstance();
+                $correlation_instance = Correlation::getInstance($this->dependencyInjector);
                 if ($correlation_instance->hasCorrelation()) {
                     $this->generated_parentship[] = array(
                         '@attributes' => array(
@@ -116,7 +116,7 @@ class Host extends AbstractHost {
         $this->stmt_service->execute();
         $host['services_cache'] = $this->stmt_service->fetchAll(PDO::FETCH_COLUMN);
 
-        $service = Service::getInstance();
+        $service = Service::getInstance($this->dependencyInjector);
         foreach ($host['services_cache'] as $service_id) {
             $service->generateFromServiceId($host['host_id'], $host['host_name'], $service_id);
         }
@@ -138,7 +138,7 @@ class Host extends AbstractHost {
         $this->stmt_service_sg->execute();
         $host['services_hg_cache'] = $this->stmt_service_sg->fetchAll(PDO::FETCH_COLUMN);
 
-        $service = Service::getInstance();
+        $service = Service::getInstance($this->dependencyInjector);
         foreach ($host['services_hg_cache'] as $service_id) {
             $service->generateFromServiceId($host['host_id'], $host['host_name'], $service_id, 1);
         }
@@ -154,7 +154,7 @@ class Host extends AbstractHost {
         $stack = array();
         $stack2 = array();
 
-        $severity_instance = Severity::getInstance();
+        $severity_instance = Severity::getInstance($this->dependencyInjector);
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
         $this->hosts[$host_id_arg]['severity'] = $severity_instance->getHostSeverityById($severity_id);
         if (!is_null($this->hosts[$host_id_arg]['severity']) ) {
@@ -162,7 +162,7 @@ class Host extends AbstractHost {
             $this->hosts[$host_id_arg]['macros']['_CRITICALITY_ID'] = $this->hosts[$host_id_arg]['severity']['hc_id'];
         }
 
-        $hosts_tpl = &HostTemplate::getInstance()->hosts;
+        $hosts_tpl = &HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $stack = $this->hosts[$host_id_arg]['htpl'];
         while ((is_null($severity_id) && ($host_id = array_shift($stack)))) {
             if (isset($loop[$host_id])) {
@@ -225,11 +225,10 @@ class Host extends AbstractHost {
         $this->getMacros($host);
         $host['macros']['_HOST_ID'] = $host['host_id'];
 
-        $pearDB = new CentreonDB();
-        $hostObj = new CentreonHost($pearDB);
+        $hostObj = new CentreonHost($this->backend_instance->db);
         $template = $hostObj->getInheritedValues($host['host_id'], array(), -1, array('host_location'));
 
-        $oTimezone = Timezone::getInstance();
+        $oTimezone = Timezone::getInstance($this->dependencyInjector);
         $sTimezone = $oTimezone->getTimezoneFromId($template['host_location']);
         if (!is_null($sTimezone)) {
             $host['timezone'] = ":". $sTimezone;
@@ -255,7 +254,7 @@ class Host extends AbstractHost {
             $this->getHosts($poller_id);
         }
 
-        Service::getInstance()->set_poller($poller_id);
+        Service::getInstance($this->dependencyInjector)->set_poller($poller_id);
 
         foreach ($this->hosts as $host_id => &$host) {
             $this->hosts_by_name[$host['host_name']] = $host_id;
@@ -264,13 +263,13 @@ class Host extends AbstractHost {
         }
 
         if ($localhost == 1) {
-            MetaService::getInstance()->generateObjects();
+            MetaService::getInstance($this->dependencyInjector)->generateObjects();
         }
 
-        Hostgroup::getInstance()->generateObjects();
-        Servicegroup::getInstance()->generateObjects();
-        Escalation::getInstance()->generateObjects();
-        Dependency::getInstance()->generateObjects();
+        Hostgroup::getInstance($this->dependencyInjector)->generateObjects();
+        Servicegroup::getInstance($this->dependencyInjector)->generateObjects();
+        Escalation::getInstance($this->dependencyInjector)->generateObjects();
+        Dependency::getInstance($this->dependencyInjector)->generateObjects();
     }
 
     public function getHostIdByHostName($host_name) {

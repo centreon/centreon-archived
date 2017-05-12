@@ -39,46 +39,52 @@ if (defined("E_DEPRECATED")) {
 } else {
     ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
 }
-    
-/*
- * Define Local Functions
- *   - remove SQL Injection : Thanks to Julien CAYSSOL
- */
-
-function getParameters($str)
-{
-    $var = null;
-    if (isset($_GET[$str])) {
-        $var = $_GET[$str];
-    }
-    if (isset($_POST[$str])) {
-        $var = $_POST[$str];
-    }
-    if ($var == "") {
-        $var = null;
-    }
-    return htmlentities($var, ENT_QUOTES, "UTF-8");
-}
 
 /*
  * Purge Values
  */
-if (function_exists('filter_var')) {
-    foreach ($_GET as $key => $value) {
-        if (!is_array($value)) {
-            $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-            $_GET[$key] = $value;
+if (function_exists('filter_var')){
+    foreach ($_GET as $key => $value){
+        if (!is_array($value)){
+            $_GET[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         }
     }
 }
 
-$p = getParameters("p");
-$o = getParameters("o");
-$min = getParameters("min");
-$type = getParameters("type");
-$search = getParameters("search");
-$limit = getParameters("limit");
-$num = getParameters("num");
+$inputArguments = array(
+    'p' => FILTER_SANITIZE_NUMBER_INT,
+    'o' => FILTER_SANITIZE_STRING,
+    'min' => FILTER_SANITIZE_STRING,
+    'type' => FILTER_SANITIZE_STRING,
+    'search' => FILTER_SANITIZE_STRING,
+    'limit' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_NUMBER_INT
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
+$inputs = array();
+foreach ($inputArguments as $argumentName => $argumentValue) {
+    if (!is_null($inputGet[$argumentName])) {
+        $inputs[$argumentName] = $inputGet[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputPost[$argumentName];
+    }
+}
+
+$p = $inputs["p"];
+$o = $inputs["o"];
+$min = $inputs["min"];
+$type = $inputs["type"];
+$search = $inputs["search"];
+$limit = $inputs["limit"];
+$num = $inputs["num"];
 
 /*
  * Include all func
@@ -86,7 +92,7 @@ $num = getParameters("num");
 include_once("./include/common/common-Func.php");
 include_once("./include/core/header/header.php");
 
-require_once _CENTREON_PATH_ . "www/autoloader.php";
+require_once _CENTREON_PATH_ . "/bootstrap.php";
 
 /*
  * LCA Init Common Var
@@ -251,30 +257,65 @@ if (!isset($centreon->historyPage)) {
 /*
  * Keep in memory all informations about pagination, keyword for search...
  */
+$inputArguments = array(
+    'num' => FILTER_SANITIZE_NUMBER_INT,
+    'search' => FILTER_SANITIZE_STRING,
+    'search_service' => FILTER_SANITIZE_STRING,
+    'limit' => FILTER_SANITIZE_NUMBER_INT
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
 if (isset($url) && $url) {
-    if (isset($_GET["num"])) {
-        $centreon->historyPage[$url] = $_GET["num"];
-    }
-    if (isset($_POST["num"])) {
-        $centreon->historyPage[$url] = $_POST["num"];
-    }
-    if (isset($_GET["search"])) {
-        $centreon->historySearch[$url] = $_GET["search"];
-    }
-    if (isset($_POST["search"])) {
-        $centreon->historySearch[$url] = $_POST["search"];
-    }
-    if (isset($_GET["search_service"])) {
-        $centreon->historySearchService[$url] = $_GET["search_service"];
-    }
-    if (isset($_POST["search_service"])) {
-        $centreon->historySearchService[$url] = $_POST["search_service"];
-    }
-    if (isset($_GET["limit"])) {
-        $centreon->historyLimit[$url] = $_GET["limit"];
-    }
-    if (isset($_POST["limit"])) {
-        $centreon->historyLimit[$url] = $_POST["limit"];
+    foreach ($inputArguments as $argumentName => $argumentFlag) {
+        switch ($argumentName) {
+            case 'limit':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyLimit[$url] = 30;
+                }
+                break;
+            case 'num':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyPage[$url] = 0;
+                }
+                break;
+            case 'search':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearch[$url] = '';
+                }
+                break;
+            case 'search_service':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearchService[$url] = '';
+                }
+                break;
+            default:
+                continue;
+                break;
+        }
+
     }
 }
 

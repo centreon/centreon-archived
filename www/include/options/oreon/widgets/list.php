@@ -37,51 +37,22 @@ if (!isset($centreon)) {
     exit;
 }
 
-require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
+$factoryUtils = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+$utils = $factoryUtils->newUtils();
+
+$factory = new \CentreonLegacy\Core\Widget\Factory($dependencyInjector, $utils);
+$widgetInfoObj = $factory->newInformation();
+$widgets = $widgetInfoObj->getList();
 
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$widgetObj = new CentreonWidget($centreon, $pearDB);
 $labels = array();
 $labels['title'] = _("Title");
 $labels['description'] = _("Description");
 $labels['version'] = _("Version");
 $labels['author'] = _("Author");
 $labels['actions'] = _("Actions");
-
-$handle = opendir(_CENTREON_PATH_ . 'www/widgets/');
-$widgets = array();
-
-# Retrive widget directories
-$widgetDirs = array();
-while (($currentDir = readdir($handle)) != false) {
-    if ($currentDir != "." && $currentDir != ".." && $currentDir != ".SVN" && $currentDir != ".svn" && $currentDir != ".CSV") {
-        $widgetDirs[] = $currentDir;
-    }
-}
-sort($widgetDirs);
-
-foreach ($widgetDirs as $currentDir) {
-    $configFile = _CENTREON_PATH_ . 'www/widgets/' . $currentDir . '/configs.xml';
-    if (is_file($configFile)) {
-        $tab = $widgetObj->readConfigFile($configFile);
-        $dbTab = $widgetObj->getWidgetInfoByDirectory($currentDir);
-        if (isset($dbTab)) {
-            $dbTab['is_installed'] = 1;
-            if ($dbTab['version'] != $tab['version']) {
-                $dbTab['upgrade'] = 1;
-            }
-            $widgets[] = $dbTab;
-        } else {
-            $tab['is_installed'] = 0;
-            $tab['install'] = 1;
-            $tab['directory'] = $currentDir;
-            $widgets[] = $tab;
-        }
-    }
-}
 
 $tpl->assign('widgets', $widgets);
 $tpl->assign('labels', $labels);
@@ -114,19 +85,19 @@ function forwardAction(confirmMsg, action, data)
         var directory = tab[1];
         if (confirm(confirmMsg)) {
             jQuery.ajax({
-                type    :   "POST",
-                dataType:   "xml",
-                url     :   "./include/options/oreon/widgets/action.php",
-                data    :   {
-                                action      :   action,
-                                directory   :   directory
-                            },
-                success :   function(response) {
-                                var result = response.getElementsByTagName('result');
-                                if (typeof(result) != 'undefined') {
-                                    window.location = './main.php?p='+p;
-                                }
-                            }
+                type: "POST",
+                dataType: "xml",
+                url: "./include/options/oreon/widgets/action.php",
+                data: {
+                    action: action,
+                    directory: directory
+                },
+                success: function(response) {
+                    var result = response.getElementsByTagName('result');
+                    if (typeof(result) != 'undefined') {
+                        window.location = './main.php?p='+p;
+                    }
+                }
             });
         }
     }

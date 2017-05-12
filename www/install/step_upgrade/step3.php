@@ -41,7 +41,7 @@ DEFINE('STEP_NUMBER', 3);
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once '../steps/functions.php';
-$template = getTemplate('../steps/templates');
+$template = getTemplate('templates');
 
 $title = _('Release notes');
 

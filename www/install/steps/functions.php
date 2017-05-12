@@ -19,11 +19,12 @@ function isSqlComment($str) {
  * @return Smarty
  */
 function getTemplate($dir) {
-    require_once '../../../GPL_LIB/Smarty/libs/Smarty.class.php';
+    $libDir = __DIR__ . '/../../../GPL_LIB';
+    require_once $libDir . '/Smarty/libs/Smarty.class.php';
     $template = new \Smarty();
-    $template->compile_dir = "../../../GPL_LIB/SmartyCache/compile";
-    $template->config_dir = "../../../GPL_LIB/SmartyCache/config";
-    $template->cache_dir = "../../../GPL_LIB/SmartyCache/cache";
+    $template->compile_dir = $libDir . '/SmartyCache/compile';
+    $template->config_dir = $libDir . '/SmartyCache/config';
+    $template->cache_dir = $libDir . '/SmartyCache/cache';
     $template->template_dir = $dir;
     $template->caching = 0;
     $template->compile_check = true;
@@ -97,8 +98,7 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
     }
     if (is_file($file) === true) {
         $file = fopen($file, 'r');
-        if (is_resource($file) === true)
-        {
+        if (is_resource($file) === true) {
             $query = array();
             $line = 0;
             while (feof($file) === false) {
@@ -113,8 +113,11 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                     $count++;
                     if ($count > $start) {
                         try {
-                            $connector->query($query);
-                        } catch (Exception $e) {
+                            $result = $connector->query($query);
+                            if (!$result) {
+                                throw new \Exception('Cannot execute query : ' . $query);
+                            }
+                        } catch (\Exception $e) {
                             return "$fileName Line $line:".$e->getMessage();
                         }
                         while (ob_get_level() > 0) {
