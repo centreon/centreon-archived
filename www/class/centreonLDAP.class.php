@@ -192,7 +192,7 @@ class CentreonLDAP {
      */
     public function connect()
     {
-        foreach ($this->ldapHosts as $ldap) {
+        foreach ($this->_ldapHosts as $ldap) {
             $port = "";
             $testingPort = 389;
             if (isset($ldap['info']['port'])) {
@@ -208,19 +208,19 @@ class CentreonLDAP {
             $this->setErrorHandler();
 
             if ($this->isLdapServerAvailable($ldap['host'], $testingPort, $ldap['search_timeout'])) {
-                $this->ds = ldap_connect($url);
-                ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
+                $this->_ds = ldap_connect($url);
+                ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
                 $protocol_version = 3;
                 if (isset($ldap['info']['protocol_version'])) {
                     $protocol_version = $ldap['info']['protocol_version'];
                 }
-                ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
+                ldap_set_option($this->_ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
                 if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
                     $this->debug("LDAP Connect : use tls");
-                    @ldap_start_tls($this->ds);
+                    @ldap_start_tls($this->_ds);
                 }
                 restore_error_handler();
-                $this->ldap = $ldap;
+                $this->_ldap = $ldap;
                 $bindResult = $this->rebind();
                 if ($bindResult) {
                     return true;
