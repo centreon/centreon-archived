@@ -170,9 +170,12 @@ class CentreonGraphService extends CentreonGraph
      */
     public static function getIndexId($hostId, $serviceId, $dbc)
     {
-        $query = "SELECT id FROM index_data
-            WHERE host_id = " . $hostId . " AND service_id = " . $serviceId;
-        $res = $dbc->query($query);
+
+        $query = 'SELECT id FROM index_data ' .
+            'WHERE host_id = ? ' .
+            'AND service_id = ?';
+        $stmt = $dbc->prepare($query);
+        $res = $dbc->execute($stmt, array((int)$hostId, (int)$serviceId));
         $row = $res->fetchRow();
 
         if (false == $row) {

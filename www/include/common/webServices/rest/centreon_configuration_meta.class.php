@@ -58,6 +58,7 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclMetaservices = '';
+        $queryValues = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -71,27 +72,30 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
 
         $queryMeta = "SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name "
             . "FROM meta_service "
-            . "WHERE meta_name LIKE '%$q%' "
+            . "WHERE meta_name LIKE ? "
             . $aclMetaservices
             . "ORDER BY meta_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryMeta);
 
+        $stmt = $this->pearDB->prepare($queryMeta);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
         
         $metaList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $metaList[] = array(
                 'id' => $data['meta_id'],
                 'text' => $data['meta_name']

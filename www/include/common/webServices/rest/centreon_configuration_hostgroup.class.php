@@ -47,7 +47,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
     protected $pearDBMonitoring;
 
     /**
-     * 
+     * CentreonConfigurationHostgroup constructor.
      */
     public function __construct()
     {
@@ -67,6 +67,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
+        $queryValues = array();
         
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -80,27 +81,30 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
+
         $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id "
             . "FROM hostgroup hg "
-            . "WHERE hg.hg_name LIKE '%$q%' "
+            . "WHERE hg.hg_name LIKE ? "
             . $aclHostgroups
             . "ORDER BY hg.hg_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHostgroup);
-        
+
+        $stmt = $this->pearDB->prepare($queryHostgroup);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
 
         $hostgroupList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $hostgroupList[] = array('id' => htmlentities($data['hg_id']), 'text' => $data['hg_name']);
         }
         
@@ -117,7 +121,8 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
         $aclHosts = '';
-        
+        $queryValues = array();
+
         /* Get ACL if user is not admin */
         
         if (!$isAdmin) {
@@ -133,10 +138,13 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         } else {
             $hgid = $this->arguments['hgid'];
         }
+        $queryValues[] = (string)$hgid;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -145,12 +153,13 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             . "FROM hostgroup hg "
             . "INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id "
             . "INNER JOIN host h ON  h.host_id = hgr.host_host_id "
-            . "WHERE hg.hg_id IN (".$hgid.") "
+            . "WHERE hg.hg_id IN (?) "
             . $aclHostgroups
             . $aclHosts
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHostgroup);
+
+        $stmt = $this->pearDB->prepare($queryHostgroup);
+        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
 

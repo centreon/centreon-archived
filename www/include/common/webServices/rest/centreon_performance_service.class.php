@@ -41,12 +41,12 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $pearDBMonitoring;
 
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -54,62 +54,69 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     * 
+     *
      * @param array $args
      * @return array
      */
     public function getList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclServices = '';
-        
+        $queryValues = array();
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
         }
-        
+
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
+        $queryValues[] = '%' . (string)$q . '%';
+
+        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.service_description, i.service_id, i.host_name, i.host_id, m.index_id "
+            . "FROM index_data i, metrics m " . (!$isAdmin ? ', centreon_acl acl ' : '')
+            . 'WHERE i.id = m.index_id '
+            . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ' : '')
+            . "AND (i.service_description LIKE ? OR i.host_name LIKE ?) "
+            . "AND i.host_name NOT LIKE '%_Module%' ";
+
+        if (isset($this->arguments['host'])) {
+            $query .= 'AND i.host_id = ? ';
+            $queryValues[] = (int)$this->arguments['host'];
+        }
+        $query .= $aclServices . "ORDER BY i.host_name, i.service_description ";
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }        
-        
-        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.service_description, i.service_id, i.host_name, i.host_id, m.index_id "
-            . "FROM index_data i, metrics m ".(!$isAdmin ? ', centreon_acl acl ' : '')
-            . 'WHERE i.id = m.index_id '
-            . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN ('.$acl->getAccessGroupsString().') ' : '')
-            . "AND (i.service_description LIKE '%$q%' OR i.host_name LIKE '%$q%') "
-            . "AND i.host_name NOT LIKE '%_Module%' "
-            . (isset($this->arguments['host']) ? 'AND i.host_id = ' . $this->arguments['host'] . ' ' : '')
-            . $aclServices
-            . "ORDER BY i.host_name, i.service_description "
-            . $range;
-        $DBRESULT = $this->pearDBMonitoring->query($query);
+            $query .= 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
+        }
+
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $dbResult = $this->pearDBMonitoring->execute($stmt, $queryValues);
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceCompleteName = $data['host_name'].' - '.$data['service_description'];
-            $serviceCompleteId = $data['host_id'].'-'.$data['service_id'];
+        while ($data = $dbResult->fetchRow()) {
+            $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
-        
+
         return array(
             'items' => $serviceList,
             'total' => $this->pearDB->numberRows()
         );
     }
-    
+
     /**
      *
      * @param array $args
@@ -118,18 +125,18 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
     public function getList28()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $additionnalTables = '';
         $additionnalCondition = '';
-        
+
         /* Get ACL if user is not admin */
         $acl = null;
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
         }
-        
+
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
@@ -142,7 +149,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         } else {
             $range = '';
         }
-        
+
         if (isset($this->arguments['hostgroup'])) {
             $additionnalTables .= ',hosts_hostgroups hg ';
             $additionnalCondition .= 'AND (hg.host_id = i.host_id AND hg.hostgroup_id IN (' .
@@ -158,14 +165,14 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         }
 
         $virtualServicesCondition = $this->getVirtualServicesCondition($additionnalCondition, $acl);
-        
+
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id '
             . 'FROM ( '
             . '( SELECT CONCAT(i.host_name, " - ", i.service_description) as fullname, i.host_id, i.service_id, m.index_id '
             . 'FROM index_data i, metrics m ' . (!$isAdmin ? ', centreon_acl acl ' : '')
             . 'WHERE i.id = m.index_id '
             . 'AND i.host_name NOT LIKE "_Module_%" '
-            . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN ('.$acl->getAccessGroupsString().') ' : '')
+            . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ' : '')
             . $additionnalCondition
             . ') '
             . $virtualServicesCondition
@@ -180,10 +187,10 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $serviceList = array();
         while ($data = $DBRESULT->fetchRow()) {
             $serviceCompleteName = $data['fullname'];
-            $serviceCompleteId = $data['host_id'].'-'.$data['service_id'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
-        
+
         return array(
             'items' => $serviceList,
             'total' => $this->pearDB->numberRows()

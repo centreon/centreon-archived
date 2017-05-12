@@ -37,7 +37,8 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
 require_once dirname(__FILE__) . "/webService.class.php";
 
-class CentreonMetric extends CentreonWebService {
+class CentreonMetric extends CentreonWebService
+{
     protected $pearDBMonitoring;
 
     /**
@@ -64,8 +65,9 @@ class CentreonMetric extends CentreonWebService {
         } else {
             $q = $this->arguments['q'];
         }
-        $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" FROM `metrics` WHERE metric_name LIKE '%$q%' ORDER BY `metric_name` COLLATE utf8_general_ci ";
-        $DBRESULT = $this->pearDBMonitoring->query($query);
+        $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" FROM `metrics` WHERE metric_name LIKE ? ORDER BY `metric_name` COLLATE utf8_general_ci ";
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . (string)$q . '%'));
         $metrics = array();
         while ($row = $DBRESULT->fetchRow()) {
             $metrics[] = array(
@@ -76,7 +78,7 @@ class CentreonMetric extends CentreonWebService {
 
         return $metrics;
     }
-    
+
     /**
      * Get metrics datas for a service
      *
@@ -85,27 +87,28 @@ class CentreonMetric extends CentreonWebService {
     public function getMetricsDataByService()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclGroups = $acl->getAccessGroupsString();
         }
-        
+
         /* Validate options */
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])) {
+            false === is_numeric($this->arguments['end'])
+        ) {
             throw new RestBadRequestException("Bad parameters");
         }
 
         $start = $this->arguments['start'];
         $end = $this->arguments['end'];
-        
+
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
@@ -117,30 +120,33 @@ class CentreonMetric extends CentreonWebService {
         if ($rows < 10) {
             throw new RestBadRequestException("The rows must be greater as 10");
         }
-        
+
         if (false === isset($this->arguments['ids'])) {
             self::sendJson(array());
         }
-        
+
         /* Get the list of service ID */
         $ids = explode(',', $this->arguments['ids']);
         $result = array();
-        
+
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
             if (false === is_numeric($hostId) ||
-                false === is_numeric($serviceId)) {
+                false === is_numeric($serviceId)
+            ) {
                 throw new RestBadRequestException("Bad parameters");
             }
 
             /* Check ACL is not admin */
             if (!$isAdmin) {
-                $query = "SELECT service_id
-                    FROM centreon_acl
-                    WHERE host_id = " . $hostId . "
-                        AND service_id = " . $serviceId . "
-                        AND group_id IN (" . $aclGroups . ")";
-                $res = $this->pearDBMonitoring->query($query);
+                $query = "SELECT service_id " .
+                    " FROM centreon_acl " .
+                    "WHERE host_id = ? " .
+                    "AND service_id = ? " .
+                    "AND group_id IN (" . $aclGroups . ")";
+                $stmt = $this->pearDBMonitoring->prepare($query);
+                $res = $this->pearDBMonitoring->execute($stmt, array((int)$hostId, (int)$serviceId));
+
                 if (0 == $res->numRows()) {
                     throw new RestForbiddenException("Access denied");
                 }
@@ -162,8 +168,8 @@ class CentreonMetric extends CentreonWebService {
             $graph->createLegend();
 
             $serviceData = $graph->getData($rows);
-            
-            
+
+
             /* Replace NaN */
             for ($i = 0; $i < count($serviceData); $i++) {
                 if (isset($serviceData[$i]['data'])) {
@@ -185,11 +191,11 @@ class CentreonMetric extends CentreonWebService {
                 'size' => $rows
             );
         }
-        
+
         return $result;
     }
-    
-    
+
+
     /**
      * Function for test is a value is NaN
      *
@@ -204,4 +210,5 @@ class CentreonMetric extends CentreonWebService {
         return $element;
     }
 }
+
 ?>

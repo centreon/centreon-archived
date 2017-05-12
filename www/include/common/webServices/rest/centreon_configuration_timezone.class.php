@@ -53,27 +53,32 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
+
         $queryTimezone = "SELECT SQL_CALC_FOUND_ROWS DISTINCT timezone_id, timezone_name "
             . " FROM timezone "
-            . " WHERE timezone_name LIKE '%$q%' "
+            . " WHERE timezone_name LIKE ? "
             . " ORDER BY timezone_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryTimezone);
+
+        $stmt = $this->pearDB->prepare($queryTimezone);
+        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
         

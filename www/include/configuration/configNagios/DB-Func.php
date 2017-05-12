@@ -194,7 +194,9 @@
 				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cfg_file`, `log_pid`, `use_check_result_path`) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
-        isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL
+            ? $rq .= "'".$pearDB->escape($ret["nagios_name"])."', "
+            : $rq .= "NULL, ";
         isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != NULL ? $rq .= "'".htmlentities($ret["nagios_server_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["log_file"]) && $ret["log_file"] != NULL ? $rq .= "'".htmlentities($ret["log_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "'".htmlentities($ret["cfg_dir"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
@@ -298,8 +300,12 @@
         isset($ret["check_host_freshness"]["check_host_freshness"]) && $ret["check_host_freshness"]["check_host_freshness"] != 2 ? $rq .= "'".$ret["check_host_freshness"]["check_host_freshness"]."',  " : $rq .= "'2', ";
         isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["date_format"]) && $ret["date_format"] != NULL ? $rq .= "'".htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-        isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != NULL ? $rq .= "'".htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-        isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != NULL ? $rq .= "'".htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != NULL
+            ? $rq .= "'".$pearDB->escape($ret["illegal_object_name_chars"])."',  "
+            : $rq .= "NULL, ";
+        isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != NULL
+            ? $rq .= "'".$pearDB->escape($ret["illegal_macro_output_chars"])."',  "
+            : $rq .= "NULL, ";
         isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]) && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ? $rq .= "'".$ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]."',  " : $rq .= "'2', ";
         isset($ret["free_child_process_memory"]["free_child_process_memory"]) && $ret["free_child_process_memory"]["free_child_process_memory"] != 2 ? $rq .= "'".$ret["free_child_process_memory"]["free_child_process_memory"]."',  " : $rq .= "'2', ";
         isset($ret["child_processes_fork_twice"]["child_processes_fork_twice"]) && $ret["child_processes_fork_twice"]["child_processes_fork_twice"] != 2 ? $rq .= "'".$ret["child_processes_fork_twice"]["child_processes_fork_twice"]."',  " : $rq .= "'2', ";
@@ -470,8 +476,12 @@
         isset($ret["check_host_freshness"]["check_host_freshness"]) && $ret["check_host_freshness"]["check_host_freshness"] != 2 ? $rq .= "check_host_freshness = '".$ret["check_host_freshness"]["check_host_freshness"]."',  " : $rq .= "check_host_freshness = '2', ";
         isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != NULL ? $rq .= "host_freshness_check_interval = '".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "host_freshness_check_interval = NULL, ";
         isset($ret["date_format"]) && $ret["date_format"] != NULL ? $rq .= "date_format = '".htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "date_format = NULL, ";
-        isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != NULL ? $rq .= "illegal_object_name_chars  = '".htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "illegal_object_name_chars  = NULL, ";
-        isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != NULL ? $rq .= "illegal_macro_output_chars  = '".htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "illegal_macro_output_chars  = NULL, ";
+        isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != NULL
+            ? $rq .= "illegal_object_name_chars  = '".$pearDB->escape($ret["illegal_object_name_chars"])."',  "
+            : $rq .= "illegal_object_name_chars  = NULL, ";
+        isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != NULL
+            ? $rq .= "illegal_macro_output_chars  = '".$pearDB->escape($ret["illegal_macro_output_chars"])."',  "
+            : $rq .= "illegal_macro_output_chars  = NULL, ";
         isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]) && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ? $rq .= "use_large_installation_tweaks = '".$ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]."',  " : $rq .= "use_large_installation_tweaks = '2', ";
         isset($ret["free_child_process_memory"]["free_child_process_memory"]) && $ret["free_child_process_memory"]["free_child_process_memory"] != 2 ? $rq .= "free_child_process_memory = '".$ret["free_child_process_memory"]["free_child_process_memory"]."',  " : $rq .= "free_child_process_memory = '2', ";
         isset($ret["child_processes_fork_twice"]["child_processes_fork_twice"]) && $ret["child_processes_fork_twice"]["child_processes_fork_twice"] != 2 ? $rq .= "child_processes_fork_twice = '".$ret["child_processes_fork_twice"]["child_processes_fork_twice"]."',  " : $rq .= "child_processes_fork_twice = '2', ";

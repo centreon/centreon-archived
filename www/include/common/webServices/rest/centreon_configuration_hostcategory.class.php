@@ -63,7 +63,8 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
     public function getList()
     {
         global $centreon;
-        
+
+        $queryValues = array();
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostcategories = '';
@@ -92,32 +93,35 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
 
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-        
-        $queryHostcategory = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id "
-            . "FROM hostcategories hc "
-            . "WHERE hc.hc_name LIKE '%$q%' "
+        $queryHostcategory = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id '
+            . 'FROM hostcategories hc '
+            . 'WHERE hc.hc_name LIKE ? '
             . $aclHostcategories;
+
 		if (!empty($t) && $t == 'c') {
 			$queryHostcategory .= "AND level IS NULL ";
 		}
 		if (!empty($t) && $t == 's') {
 			$queryHostcategory .= "AND level IS NOT NULL ";
 		}
-		$queryHostcategory .= "ORDER BY hc.hc_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHostcategory);
+        $queryValues[] = '%' . (string)$q . '%';
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
+        } else {
+            $range = '';
+        }
+		$queryHostcategory .= "ORDER BY hc.hc_name " . $range;
+        $stmt = $this->pearDB->prepare($queryHostcategory);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
         
         $hostcategoryList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $hostcategoryList[] = array(
                 'id' => htmlentities($data['hc_id']),
                 'text' => $data['hc_name']
