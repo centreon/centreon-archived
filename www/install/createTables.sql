@@ -1380,6 +1380,7 @@ CREATE TABLE `giv_components_template` (
   `ds_stack` enum('0','1') DEFAULT NULL,
   `default_tpl1` enum('0','1') DEFAULT NULL,
   `comment` text,
+  `ds_cdef` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`compo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

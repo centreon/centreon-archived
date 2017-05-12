@@ -143,6 +143,10 @@ $form->addElement('select2', 'host_id', _("Linked Host Services"), array(), $att
 $form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 $form->addElement('select', 'datasources', null, $datasources);
 
+// RPN Function
+$form->addElement('textarea', 'ds_cdef', _("CDEF: RPN (Reverse Polish Notation) Function"), $attrsTextarea);
+$form->addElement('static', 'rpn_text', _("<br><i><b><font color=\"#B22222\">Notes </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- DS name = value"));
+
 $l_dsColorList = array(
     "ds_color_line" => array( "label" => _("Line color"), "color" => "#0000FF"),
     "ds_color_area" => array( "label" => _("Area color"), "color" => "#FFFFFF"),

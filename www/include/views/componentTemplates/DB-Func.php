@@ -178,7 +178,7 @@ function insertComponentTemplate()
 
     $rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
             " `ds_color_line` , `ds_color_line_mode`, `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_minmax_int`, `ds_average` , `ds_last` , `ds_total`, `ds_tickness` , `ds_transparency`, `ds_invert`," .
-            " `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
+            " `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment`, `ds_cdef` ) ";
     $rq .= "VALUES ( NULL, ";
     if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
         list($host_id, $service_id) = explode('-', $ret["host_id"]);
@@ -210,7 +210,8 @@ function insertComponentTemplate()
     isset($ret["ds_jumpline"]) && $ret["ds_jumpline"] != null ? $rq .= "'".htmlentities($ret["ds_jumpline"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
     isset($ret["ds_stack"]) && $ret["ds_stack"] != null ? $rq .= "'".htmlentities($ret["ds_stack"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
     isset($ret["default_tpl1"]) && $ret["default_tpl1"] != null ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
+    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["ds_cdef"]) && $ret["ds_cdef"] != null ? $rq .= "'".htmlentities($ret["ds_cdef"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
     $rq .= ");";
     $DBRESULT = $pearDB->query($rq);
     defaultOreonGraph();
@@ -298,7 +299,9 @@ function updateComponentTemplate($compo_id = null)
     $rq .= "default_tpl1 = ";
     isset($ret["default_tpl1"]) && $ret["default_tpl1"] != null ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
     $rq .= "comment = ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
+    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    $rq .= "ds_cdef = ";
+    isset($ret["ds_cdef"]) && $ret["ds_cdef"] != null ? $rq .= "'".htmlentities($ret["ds_cdef"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
     $rq .= "WHERE compo_id = '".$compo_id."'";
     $DBRESULT = $pearDB->query($rq);
     defaultOreonGraph();

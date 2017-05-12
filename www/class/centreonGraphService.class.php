@@ -108,8 +108,17 @@ class CentreonGraphService extends CentreonGraph
                 }
                 $commandLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
                 $commandLegendLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
-                $commandLine .= " XPORT:v" . $i . ":v" . $i;
-                $vname[$metric['metric']] = 'v' . $i;
+                if ($metric['ds_cdef'] != '') {
+                    $cdef = str_replace('value', 'v'.$i, $metric['ds_cdef']);
+                    $commandLine .= " CDEF:cdefv".$i."=".$cdef." ";
+                    $commandLine .= " XPORT:cdefv" . $i . ":v" . $i;
+                    $vname[$metric['metric']] = 'cdefv' . $i;
+                    $commandLegendLine .= " CDEF:cdefv".$i."=".$cdef." ";
+                }
+                else {
+                    $commandLine .= " XPORT:v" . $i . ":v" . $i;
+                    $vname[$metric['metric']] = 'v' . $i;
+                }
                 $info = array(
                     "data" => array(),
                     "legend" => $metric["metric_legend"],
@@ -133,7 +142,10 @@ class CentreonGraphService extends CentreonGraph
                         } else {
                             $displayformat = "%7.2lf";
                         }
-                        $commandLegendLine .= ' VDEF:l' . $i . $key . '=v' . $i . ',' . $key;
+                        if ($metric['ds_cdef'] != '')
+                            $commandLegendLine .= ' VDEF:l' . $i . $key . '=cdefv' . $i . ',' . $key;
+                        else
+                            $commandLegendLine .= ' VDEF:l' . $i . $key . '=v' . $i . ',' . $key;
                         $commandLegendLine .= ' PRINT:l' . $i . $key . ':"' . $metric["metric_legend"] .
                             '|' . ucfirst($name) . '|' . $displayformat . '"';
                     }
