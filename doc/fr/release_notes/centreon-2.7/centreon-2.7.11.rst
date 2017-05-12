@@ -1,5 +1,5 @@
 ###############
-Centreon 2.7.10
+Centreon 2.7.11
 ###############
 
 The 2.7.11 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.10 follow.
