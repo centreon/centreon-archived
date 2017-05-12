@@ -168,13 +168,13 @@ class CentreonLDAP {
     public function getLdapHostParameters($arId, $filter = '')
     {
         // ldap_search_timeout
-        $queryLdapHostParemeters = "SELECT * FROM auth_ressource_info WHERE ar_id = " . $this->db->escape($arId);
+        $queryLdapHostParemeters = "SELECT * FROM auth_ressource_info WHERE ar_id = " . $this->_db->escape($arId);
         
         if (!empty($filter)) {
             $queryLdapHostParemeters .= " AND `ari_name` = '$filter'";
         }
         
-        $resLdapHostParameters = $this->db->query($queryLdapHostParemeters);
+        $resLdapHostParameters = $this->_db->query($queryLdapHostParemeters);
         
         $finalLdapHostParameters = array();
         
