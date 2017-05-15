@@ -20,3 +20,5 @@ Please find here the releases notes of the last major versions :
 It is very important when you update your system to refer to this section in order to learn about behavior changes or major changes that have been made on this version. This will let you know the impact of the installation of these versions on the features you use or the specific developments that you have built on your platform (modules, widgets, plugins).
 
 If you have any questions relating to the content of the notes, you can ask your questions on our `github <https://github.com/centreon/centreon>`_.
+
+To resolve viewing issues for all widgets, you must clear your cache.
