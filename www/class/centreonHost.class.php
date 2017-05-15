@@ -1242,9 +1242,6 @@ class CentreonHost
      */
     public function getHostTemplateIds($hostId)
     {
-
-
-
         $hostTemplateIds = array();
         $query = 'SELECT htr.host_tpl_id ' .
             'FROM host_template_relation htr, host ht ' .
@@ -1254,13 +1251,12 @@ class CentreonHost
             'ORDER BY `order` ASC ';
         $stmt = $this->db->prepare($query);
         $dbResult = $this->db->execute($stmt, array((int)$hostId));
-        if(PEAR::isError()){
+        if (PEAR::isError($dbResult)) {
             throw new \Exception('Bad request');
         }
         while ($row = $dbResult->fetchRow()) {
             $hostTemplateIds[] = $row['host_tpl_id'];
         }
-
         return $hostTemplateIds;
     }
 
