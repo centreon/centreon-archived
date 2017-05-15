@@ -323,7 +323,7 @@ class CentreonLDAP {
         if (trim($this->_userSearchInfo['filter']) == '') {
             return false;
         }
-      //  $this->_setErrorHandler();
+        $this->_setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($username), $this->_userSearchInfo['filter']);
 
 
@@ -346,8 +346,6 @@ class CentreonLDAP {
         if (trim($this->_groupSearchInfo['filter']) == '') {
             return false;
         }
-
-        var_dump($this->_groupSearchInfo['filter']);
 
         $this->_setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($group), $this->_groupSearchInfo['filter']);
