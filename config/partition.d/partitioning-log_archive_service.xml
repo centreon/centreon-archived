@@ -4,13 +4,6 @@
         <activate>1</activate>
         <column>date_end</column>
         <type>date</type>
-        <duration>daily</duration>
-        <retention>365</retention>
-        <retentionforward>10</retentionforward>        
-        <backup>
-            <folder>/var/backups/</folder>
-            <format>%Y-%m-%d</format>
-        </backup>
         <createstmt>
 CREATE TABLE `log_archive_service` (
   `log_id` int(11) NOT NULL AUTO_INCREMENT,

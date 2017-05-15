@@ -69,8 +69,8 @@ class Config
      */
     public function loadCentreonDefaultConfiguration()
     {
-        $queryOptions = 'SELECT `opt`.`key`, `opt`.`value`' .
-            'FROM `options` opt' .
+        $queryOptions = 'SELECT `opt`.`key`, `opt`.`value` ' .
+            'FROM `options` opt ' .
             'WHERE `opt`.`key` IN (' .
             '`partitioning_backup_directory`, `partitioning_backup_format`, ' .
             '`partitioning_retention`, `partitioning_retention_forward`' .
@@ -78,7 +78,7 @@ class Config
         $res = $this->db->query($queryOptions);
         
         if (\PEAR::isError($res)) {
-        
+            throw new \Exception("Can't load default configuration for Centreon Partitioning");
         }
         
         while ($row = $res->fetchRow()) {
@@ -103,13 +103,13 @@ class Config
             $table = new MysqlTable(
                 $this->db,
                 (string) $table_config["name"],
-                (string) $table_config["schema"]
+                (string) hostCentstorage
             );
             if (!is_null($table->getName()) && !is_null($table->getSchema())) {
                 $table->setActivate((string) $table_config->activate);
                 $table->setColumn((string) $table_config->column);
                 $table->setType((string) $table_config->type);
-                $table->setDuration((string) $table_config->duration);
+                $table->setDuration('daily');
                 $table->setTimezone((string) $table_config->timezone);
                 
                 if (isset($this->defaultConfiguration['partitioning_retention'])) {
@@ -129,12 +129,8 @@ class Config
                 } else {
                     $table->setBackupFolder('/var/backups/');
                 }
-    
-                if (isset($this->defaultConfiguration['partitioning_backup_format'])) {
-                    $table->setBackupFormat((string) $this->defaultConfiguration['partitioning_backup_format']);
-                } else {
-                    $table->setBackupFormat('%Y-%m-%d');
-                }
+                
+                $table->setBackupFormat('%Y-%m-%d');
                 
                 $table->setCreateStmt((string) $table_config->createstmt);
                 $this->tables[$table->getName()] = $table;

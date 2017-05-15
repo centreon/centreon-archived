@@ -76,6 +76,14 @@ while ($data = $DBRESULT2->fetchRow()) {
 }
 
 /*
+ * Partitioning options
+ */
+$DBRESULT3 = $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'partitioning%'");
+while ($data = $DBRESULT3->fetchRow()) {
+    $gopt[$data['key']] = $data['value'];
+}
+
+/*
  * Format of text input
  */
 $attrsText        = array("size"=>"40");
@@ -128,8 +136,7 @@ $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs")
 // Parameters for Partitioning
 $form->addElement('text', 'partitioning_retention', _("Retention Duration for partitioning (in days)"), $attrsText2);
 $form->addElement('text', 'partitioning_retention_forward', _("Provisioning partitions (in days)"), $attrsText2);
-$form->addElement('text', 'partitioning_backup_directory', _("Backup directory for partitioning"), $attrsText2);
-$form->addElement('text', 'partitioning_backup_format', _("Backup file format for partitioning"), $attrsText2);
+$form->addElement('text', 'partitioning_backup_directory', _("Backup directory for partitioning"), $attrsText);
 
 
 $redirect = $form->addElement('hidden', 'o');
@@ -159,6 +166,7 @@ if ($form->validate()) {
      * Update in DB
      */
     updateODSConfigData();
+    updatePartitioningConfigData($pearDB, $form, $centreon);
 
     $centreon->initOptGen($pearDB);
 
