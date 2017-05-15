@@ -1267,3 +1267,11 @@ VALUES ('kb_db_name', ''),
 ('kb_db_host', ''),
 ('kb_db_prefix', ''),
 ('kb_wiki_url', '');
+
+
+-- Insert Centreon Partitioning base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+  ('partitioning_retention', 365),
+  ('partitioning_retention_forward', 10),
+  ('partitioning_backup_directory', '/var/cache/centreon/backup');

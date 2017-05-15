@@ -37,7 +37,6 @@
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_partitioning_retention">{$form.partitioning_retention.label}</td><td class="FormRowValue">{$form.partitioning_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_partitioning_retention_forward">{$form.partitioning_retention_forward.label}</td><td class="FormRowValue">{$form.partitioning_retention_forward.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_partitioning_backup_directory">{$form.partitioning_backup_directory.label}</td><td class="FormRowValue">{$form.partitioning_backup_directory.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_partitioning_backup_format">{$form.partitioning_backup_format.label}</td><td class="FormRowValue">{$form.partitioning_backup_format.html}</td></tr>
 
 
         <tr class="list_lvl_1">
