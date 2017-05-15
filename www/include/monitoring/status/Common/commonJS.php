@@ -388,21 +388,20 @@ function construct_ServiceGroupSelectList(id) {
         _select.appendChild(k);
         var i = 1;
 <?php
-        $sgNdo = array();
-        $sgBrk = array();
-        $acldb = $pearDBO;
+
+$sgBrk = array();
+$acldb = $pearDBO;
 if (!$centreon->user->access->admin) {
     $query = "SELECT DISTINCT sg.sg_alias, sg.sg_name AS name
-                  FROM servicegroup sg, acl_resources_sg_relations arsr
-                  WHERE sg.sg_id = arsr.sg_id
-                                  AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
-                                  AND sg.sg_activate = '1'
-                      AND sg.sg_id in (SELECT servicegroup_sg_id
-                                   FROM servicegroup_relation
-                                   WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
+                FROM servicegroup sg, acl_resources_sg_relations arsr
+                WHERE sg.sg_id = arsr.sg_id
+                    AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
+                    AND sg.sg_activate = '1'
+                    AND sg.sg_id in (SELECT servicegroup_sg_id
+                FROM servicegroup_relation
+                WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
     $DBRESULT = $pearDB->query($query);
     while ($data = $DBRESULT->fetchRow()) {
-        $sgNdo[$data["name"]] = 1;
         $sgBrk[$data["name"]] = 1;
     }
     $DBRESULT->free();
