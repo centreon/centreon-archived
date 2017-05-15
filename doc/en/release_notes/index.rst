@@ -20,3 +20,4 @@ It is very important when you update your system to refer to this section in ord
 
 If you have any questions relating to the content of the notes, you can ask your questions on our `github <https://github.com/centreon/centreon>`_.
 
+To resolve viewing issues for all widgets, you must clear your cache.
