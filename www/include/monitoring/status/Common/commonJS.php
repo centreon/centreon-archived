@@ -411,7 +411,7 @@ if (!$centreon->user->access->admin) {
 
         $DBRESULT = $pearDBO->query("SELECT DISTINCT sg.name, sg.servicegroup_id FROM servicegroups sg, services_servicegroups ssg WHERE sg.servicegroup_id = ssg.servicegroup_id AND sg.name NOT LIKE 'meta\_%' ORDER BY sg.name");
 while ($servicegroups = $DBRESULT->fetchRow()) {
-    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$servicegroups["name"]]))) {
+    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($sgBrk[$servicegroups["name"]]))) {
         if (!isset($tabSG)) {
             $tabSG = array();
         }
