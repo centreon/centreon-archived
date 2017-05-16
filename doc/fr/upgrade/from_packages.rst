@@ -60,6 +60,7 @@ The following table describes the dependent software:
 **********
 Sauvegarde
 **********
+
 Avant toute chose, il est préfèrable de s'assurer de l'état et de la consistance des sauvegarde de l'ensemble des serveurs centraux de votre plate-forme :
  * Serveur(s) Centreon central(aux) ;
  * Serveur(s) de gestion de base de données ;
