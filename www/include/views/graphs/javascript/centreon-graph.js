@@ -756,25 +756,26 @@
       }
       /* Append actions button */
       actionDiv = jQuery('<div>').addClass('chart-legend-action');
-      toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
-        .on('click', function () {
-          if (self.toggleAction === 'hide') {
-            self.toggleAction = 'show';
-            self.legendDiv.find('.chart-legend').addClass('hidden');
-            self.chart.hide();
-          } else {
-            self.toggleAction = 'hide';
-            self.legendDiv.find('.chart-legend').removeClass('hidden');
-            self.chart.show();
-          }
-        }).appendTo(actionDiv);
-      if (self.settings.extraLegend) {
-        expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
+      if (this.settings.buttonToggleCurves) {
+        toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
           .on('click', function () {
-            self.legendDiv.toggleClass('extend');
+            if (self.toggleAction === 'hide') {
+              self.toggleAction = 'show';
+              self.legendDiv.find('.chart-legend').addClass('hidden');
+              self.chart.hide();
+            } else {
+              self.toggleAction = 'hide';
+              self.legendDiv.find('.chart-legend').removeClass('hidden');
+              self.chart.show();
+            }
           }).appendTo(actionDiv);
       }
-
+        if (self.settings.extraLegend) {
+            expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
+                .on('click', function () {
+                    self.legendDiv.toggleClass('extend');
+                }).appendTo(actionDiv);
+        }
       actionDiv.appendTo(self.legendDiv);
     },
     /**
@@ -785,9 +786,6 @@
     buildExtraLegend: function (legends) {
       var self = this;
       var i;
-      if (!this.settings.extraLegend) {
-        return;
-      }
       jQuery('.chart-legend').each(function (idx, el) {
         var legendName = jQuery(el).data('legend');
         jQuery(el).find('.extra').remove();

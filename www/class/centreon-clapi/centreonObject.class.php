@@ -343,10 +343,10 @@ abstract class CentreonObject
     /**
      * Export data
      *
-     * @param string $parameters
+     * @param string $filters
      * @return void
      */
-    public function export($filters=null)
+    public function export($filters = null)
     {
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {

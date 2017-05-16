@@ -219,8 +219,8 @@ class CentreonContactGroup extends CentreonObject
     public function export($filter_id=null, $filter_name=null)
     {
         $filters = null;
-        if (!is_null($filter)) {
-            $filters['cg_id'] = $filter_id;
+        if (!is_null($filter_id)) {
+            $filters = array('cg_id' => $filter_id);
         }
         parent::export($filters);
         $obj = new \Centreon_Object_Relation_Contact_Group_Contact();
