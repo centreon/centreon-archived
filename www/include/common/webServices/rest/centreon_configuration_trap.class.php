@@ -62,7 +62,8 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
     public function getList()
     {
         global $centreon;
-        
+        $queryValues = array();
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         
@@ -72,10 +73,14 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
@@ -83,16 +88,16 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         $queryTraps = "SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name "
             . "FROM traps t, traps_vendor m "
             . 'WHERE t.manufacturer_id = m.id '
-            . "AND (t.traps_name LIKE '%$q%' OR m.name LIKE '%$q%') "
+            . "AND (t.traps_name LIKE ? OR m.name LIKE ?) "
             . "ORDER BY m.name, t.traps_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryTraps);
 
+        $stmt = $this->pearDB->prepare($queryTraps);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
         
         $trapList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $trapCompleteName = $data['name'] . ' - ' . $data['traps_name'];
             $trapCompleteId = $data['traps_id'];
             

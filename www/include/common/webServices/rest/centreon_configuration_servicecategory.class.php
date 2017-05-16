@@ -46,59 +46,63 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
     {
         parent::__construct();
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-		/*
-		 * Check for select2 't' argument
-		 * 'a' or empty = category and severitiy
-		 * 'c' = catagory only
-		 * 's' = severity only
-		 */
-		 if (false === isset($this->arguments['t'])) {
-			 $t = '';
-		 } else {
-			 $t = $this->arguments['t'];
-		}
+        $queryValues[] = '%' . (string)$q . '%';
+        /*
+         * Check for select2 't' argument
+         * 'a' or empty = category and severitiy
+         * 'c' = catagory only
+         * 's' = severity only
+         */
+        if (false === isset($this->arguments['t'])) {
+            $t = '';
+        } else {
+            $t = $this->arguments['t'];
+        }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name "
-            . "FROM service_categories "
-            . "WHERE sc_name LIKE '%$q%' ";
-        if (!empty($t) && $t == 'c') {
-			$queryContact .= "AND level IS NULL ";
-		}
-		if (!empty($t) && $t == 's') {
-			$queryContact .= "AND level IS NOT NULL ";
-		}
-		$queryContact .= "ORDER BY sc_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
 
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name ' .
+            'FROM service_categories ' .
+            'WHERE sc_name LIKE ? ';
+        if (!empty($t) && $t == 'c') {
+            $queryContact .= "AND level IS NULL ";
+        }
+        if (!empty($t) && $t == 's') {
+            $queryContact .= "AND level IS NOT NULL ";
+        }
+        $queryContact .= "ORDER BY sc_name " . $range;
+
+
+        $stmt = $this->pearDB->prepare($queryContact);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
+
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);
         }
-        
+
         return array(
             'items' => $serviceList,
             'total' => $total

@@ -12,7 +12,7 @@ Show
 
 In order to list available instances, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a show 
+  $ ./centreon -u admin -p centreon -o INSTANCE -a show 
   id;name;localhost;ip address;activate;status;init script;monitoring engine;bin;stats bin;perfdata;ssh port
   1;Central;1;127.0.0.1;1;0;/etc/init.d/nagios;NAGIOS;/usr/local/nagios/bin/nagios;/usr/local/nagios/bin/nagiostats;/usr/local/nagios/var/service-perfdata;22
   [...]
@@ -54,7 +54,7 @@ Add
 
 In order to add an instance you use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;22;NAGIOS" 
+  $ ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;22;NAGIOS" 
 
 Required fields are:
 
@@ -75,7 +75,7 @@ Del
 
 If you want to remove an instance, use the **DEL** action. The Name is used for identifying the instance to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a del -v "Poller test" 
+  $ ./centreon -u admin -p centreon -o INSTANCE -a del -v "Poller test" 
 
 
 Setparam
@@ -83,7 +83,7 @@ Setparam
 
 If you want to change a specific parameter of an instance, use the **SETPARAM** command. The Name is used for identifying the instance to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a setparam -v "Poller test;ns_ip_address;10.30.2.99" 
+  $ ./centreon -u admin -p centreon -o INSTANCE -a setparam -v "Poller test;ns_ip_address;10.30.2.99" 
 
 
 Arguments are composed of the following columns:
@@ -136,7 +136,7 @@ Gethosts
 
 If you want to list all hosts that are monitored by a poller, use the **GETHOSTS** action. The Name is used for identifying the instance to query::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a GETHOSTS -v "Poller test"
+  $ ./centreon -u admin -p centreon -o INSTANCE -a GETHOSTS -v "Poller test"
   14;Centreon-Server;127.0.0.1
   17;srv-website;10.30.2.1
 
