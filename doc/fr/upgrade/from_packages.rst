@@ -97,7 +97,7 @@ CentOS 7
    $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
 
 .. warning::
-   Dans le cas où vous disposez des modules Centreon BAM, Centreon MAP4 ou Centreon MBI, Centreon EPP merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
+   Dans le cas où vous disposez des modules Centreon BAM, Centreon MAP4, Centreon MBI ou Centreon EPP merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
 
 ***********
 Mise à jour
