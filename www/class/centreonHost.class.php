@@ -1221,15 +1221,14 @@ class CentreonHost
             if (in_array($hostId, $alreadyProcessed)) {
                 return $values;
             } else {
-                $queryFields = $fields;
                 if (count($alreadyProcessed) && !count($fields)) {
                     return $values;
+                }
+
+                if (count($fields) > 0) {
+                    $queryFields = implode(',', $fields);
                 } else {
-                    if (!count($fields)) {
-                        $queryFields = " * ";
-                    } else {
-                        $queryFields = implode(',', $fields);
-                    }
+                    $queryFields = '*';
                 }
 
                 $sql = "SELECT " . $queryFields . " "
@@ -1249,7 +1248,6 @@ class CentreonHost
                         }
                     }
                 }
-
                 $alreadyProcessed[] = $hostId;
 
                 $hostTemplateIds = $this->getHostTemplateIds($hostId);
@@ -1258,6 +1256,7 @@ class CentreonHost
                 }
             }
         }
+
         return $values;
     }
 
