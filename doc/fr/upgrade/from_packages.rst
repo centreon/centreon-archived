@@ -228,6 +228,7 @@ de EMS/EPP.
 .. warning::
    Dans ce cas merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
    Il est impératif d'avoir la dernière version de Centreon BAM pour que la mise à jour fonctionne correctement. L'utilisation de l'option suivante est à proscrire :
+   
    # --skip-broken
    
 Mise à jour du dépôt
