@@ -103,7 +103,7 @@ class Config
             $table = new MysqlTable(
                 $this->db,
                 (string) $table_config["name"],
-                (string) hostCentstorage
+                (string) dbcstg
             );
             if (!is_null($table->getName()) && !is_null($table->getSchema())) {
                 $table->setActivate((string) $table_config->activate);
