@@ -344,7 +344,7 @@ class CentreonCommand
             return array();
         }
         if (count($parameters) > 0) {
-            $sElement = implode(",", $parameters);
+            $sElement = "`" . implode("`,`", $parameters) . "`";
         }
 
         $res = $this->db->query("SELECT " . $sElement . " FROM command 
