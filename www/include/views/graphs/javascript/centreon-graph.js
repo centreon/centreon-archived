@@ -756,18 +756,20 @@
       }
       /* Append actions button */
       actionDiv = jQuery('<div>').addClass('chart-legend-action');
-      toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
-        .on('click', function () {
-          if (self.toggleAction === 'hide') {
-            self.toggleAction = 'show';
-            self.legendDiv.find('.chart-legend').addClass('hidden');
-            self.chart.hide();
-          } else {
-            self.toggleAction = 'hide';
-            self.legendDiv.find('.chart-legend').removeClass('hidden');
-            self.chart.show();
-          }
-        }).appendTo(actionDiv);
+      if (this.settings.buttonToggleCurves) {
+        toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
+          .on('click', function () {
+            if (self.toggleAction === 'hide') {
+              self.toggleAction = 'show';
+              self.legendDiv.find('.chart-legend').addClass('hidden');
+              self.chart.hide();
+            } else {
+              self.toggleAction = 'hide';
+              self.legendDiv.find('.chart-legend').removeClass('hidden');
+              self.chart.show();
+            }
+          }).appendTo(actionDiv);
+      }
       expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
         .on('click', function () {
           self.legendDiv.toggleClass('extend');
@@ -845,6 +847,7 @@
     timeFormat: null,
     threshold: true,
     extraLegend: true,
+    buttonToggleCurves: true,
     url: './api/internal.php?object=centreon_metric'
   };
 })(jQuery);
