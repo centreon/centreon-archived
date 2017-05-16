@@ -12,7 +12,7 @@ Show
 
 In order to list available recurring downtimes, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a show
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a show
   id;name;description;activate
   1;mail-backup;sunday backup;1
   1;my downtime;a description;1
@@ -38,7 +38,7 @@ Add
 
 In order to add a new downtime, use the **ADD** action::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a ADD -v "my new downtime;any description"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADD -v "my new downtime;any description"
 
 
 The required parameters are the following:
@@ -59,7 +59,7 @@ Del
 In order to delete a downtime, use the **DEL** action. The downtime name is used for identifying the recurring downtime
 you would like to delete::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a DEL -v "my downtime" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a DEL -v "my downtime" 
 
 
 Setparam
@@ -67,7 +67,7 @@ Setparam
 
 In order to set a specific parameter for a downtime, use the **SETPARAM** action::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a setparam -v "my downtime;name;my new downtime name"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a setparam -v "my downtime;name;my new downtime name"
 
 You may change the following parameters:
 
@@ -86,7 +86,7 @@ Listperiods
 
 If you want to retrieve the periods set on a recurring downtime, use the **LISTPERIODS** action::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a LISTPERIODS -v "my downtime" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a LISTPERIODS -v "my downtime" 
   position;start time;end time;fixed;duration;day of week;day of month;month cycle
   1;1;23:00:00;24:00:00;1;;7;;all
   2;1;00:00:00;02:00:00;1;;;1,2;none
@@ -124,7 +124,7 @@ Addweeklyperiod
 
 In order to add a weekly period, use the **ADDWEEKLYPERIOD** action::
 
-   $ ./centreon -u admin -p centreon -o DOWNTIME -a ADDWEEKLYPERIOD \
+   [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADDWEEKLYPERIOD \
    -v "my downtime;00:00;04:00;0;7200;saturday,sunday" 
 
 The above example will set a downtime every saturday and sunday between 00:00 and 04:00.
@@ -153,7 +153,7 @@ Addmonthlyperiod
 
 In order to add a monthly period, use the **ADDMONTHLYPERIOD** action::
 
-   $ ./centreon -u admin -p centreon -o DOWNTIME -a ADDMONTHLYPERIOD \
+   [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADDMONTHLYPERIOD \
    -v "my downtime;19:00;22:00;1;;14,21" 
 
 
@@ -182,7 +182,7 @@ Addspecificperiod
 
 In order to add a specific period, use the **ADDSPECIFICPERIOD** action::
 
-   $ ./centreon -u admin -p centreon -o DOWNTIME -a ADDSPECIFICPERIOD \
+   [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADDSPECIFICPERIOD \
    -v "my downtime;19:00;22:00;1;;wednesday;first" 
 
 
@@ -216,8 +216,8 @@ Addhost, addhostgroup, addservice, addservicegroup
 If you want to associate a host, host group, service or service group to a recurring downtime, use the
 **ADDHOST**, **ADDHOSTGROUP**, **ADDSERVICE** or **ADDSERVICEGROUP** action::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a ADDHOST -v "my downtime;host_1"
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a ADDSERVICE -v "my downtime;host_1,service_1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADDHOST -v "my downtime;host_1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADDSERVICE -v "my downtime;host_1,service_1"
 
 Use the "|" delimiter in order to define multiple relationships.
 
@@ -228,8 +228,8 @@ Delhost, delhostgroup, delservice, delservicegroup
 If you want to remove a host, host group, service or service group from a recurring downtime, use the
 **DELHOST**, **DELHOSTGROUP**, **DELSERVICE** or **DELSERVICEGROUP** action::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a DELHOST -v "my downtime;host_1"
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a DELSERVICE -v "my downtime;host_1,service_1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a DELHOST -v "my downtime;host_1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a DELSERVICE -v "my downtime;host_1,service_1"
 
 
 Sethost, sethostgroup, setservice, setservicegroup
@@ -238,7 +238,7 @@ Sethost, sethostgroup, setservice, setservicegroup
 The **SETHOST**, **SETHOSTGROUP**, **SETSERVICE** AND **SETSERVICEGROUP** actions are similar to their **ADD** 
 counterparts, but they will overwrite the relationship definitions instead of appending them::
 
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a ADDHOST -v "my downtime;host_1|host_2"
-  $ ./centreon -u admin -p centreon -o DOWNTIME -a ADDSERVICE -v "my downtime;host_1,service_1|host_2,service_2"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADDHOST -v "my downtime;host_1|host_2"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a ADDSERVICE -v "my downtime;host_1,service_1|host_2,service_2"
 
 Use the "|" delimiter in order to define multiple relationships.

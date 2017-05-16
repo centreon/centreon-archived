@@ -13,7 +13,7 @@ Show
 
 In order to list available LDAP configurations, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o LDAP -a show
+  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a show
   id;name;description;status
   3;ad;my ad conf;1
   2;openldap;my openldap conf;1
@@ -39,7 +39,7 @@ Add
 
 In order to add an LDAP configuration, use the **ADD** action::
 
-  $ ./centreon -u admin -p centreon -o LDAP -a add -v "my new configuration;my description" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a add -v "my new configuration;my description" 
 
 Required fields are:
 
@@ -57,7 +57,7 @@ Del
 
 If you want to remove an LDAP configuration, use the **DEL** action. The Configuration Name is used for identifying the LDAP configuration to delete::
 
-  $ ./centreon -u admin -p centreon -o LDAP -a del -v "my new configuration" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a del -v "my new configuration" 
 
 
 
@@ -66,7 +66,7 @@ Setparam
 
 If you want to change a specific parameter of an LDAP configuration, use the **SETPARAM** action. The Configuration Name is used for identifying the LDAP configuration to update::
 
-  $ ./centreon -u admin -p centreon -o LDAP -a SETPARAM -v "my new configuration;description;my new desc" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SETPARAM -v "my new configuration;description;my new desc" 
 
 
 Parameters use the following order:
@@ -149,7 +149,7 @@ Showserver
 
 In order to show the server list of an LDAP configuration, use the **SHOWSERVER** action. The Configuration Name is used for identifying the LDAP configuration to query::
 
-   $ ./centreon -u admin -p centreon -o LDAP -a SHOWSERVER -v "openldap"
+   [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SHOWSERVER -v "openldap"
    id;address;port;ssl;tls;order
    2;10.30.2.3;389;0;0;1
 
@@ -159,7 +159,7 @@ Addserver
 
 In order to add a server to an LDAP configuration, use the **ADDSERVER** action::
 
-   $ ./centreon -u admin -p centreon -o LDAP -a ADDSERVER -v "openldap;10.30.2.15;389;0;1"
+   [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a ADDSERVER -v "openldap;10.30.2.15;389;0;1"
 
 Required parameters are the following:
 
@@ -183,7 +183,7 @@ Delserver
 
 In order to remove a server from an LDAP configuration, use the **DELSERVER** action. The server ID is used for identifying the server to delete::
 
-    $ ./centreon -u admin -p centreon -o LDAP -a DELSERVER -v 2
+    [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a DELSERVER -v 2
 
 
 Setparamserver
@@ -191,7 +191,7 @@ Setparamserver
 
 In order to update the server parameters of an LDAP configuration, use the **SETPARAMSERVER** action. The server ID is used for identifying the server to update::
 
-    $ ./centreon -u admin -p centreon -o LDAP -a SETPARAMSERVER -v "2;use_ssl;1"
+    [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SETPARAMSERVER -v "2;use_ssl;1"
 
 
 Parameters that you may update are the following:

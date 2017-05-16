@@ -12,7 +12,7 @@ Show
 
 In order to list available traps, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a show
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a show
   id;name;oid;manufacturer
   576;alertSystemUp;.1.3.6.1.4.1.674.10892.1.0.1001;Dell
   577;alertThermalShutdown;.1.3.6.1.4.1.674.10892.1.0.1004;Dell
@@ -30,7 +30,7 @@ Add
 
 In order to add a trap, use the **ADD** action::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a add -v "aNewTrap;.1.3.6.1.4.1.11.2.3.9.7.1.0.30" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a add -v "aNewTrap;.1.3.6.1.4.1.11.2.3.9.7.1.0.30" 
 
 Required fields are:
 
@@ -48,7 +48,7 @@ Del
 
 If you want to remove a Trap, use the **DEL** action. The Name is used for identifying the Trap to delete::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a del -v "aNewTrap" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a del -v "aNewTrap" 
 
 
 Setparam
@@ -56,7 +56,7 @@ Setparam
 
 If you want to change a specific parameter of a Trap, use the **SETPARAM** command. The Name is used for identifying the Trap to update::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a setparam -v "aNewTrap;vendor;3com" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a setparam -v "aNewTrap;vendor;3com" 
 
 Arguments are composed of the following columns:
 
@@ -105,7 +105,7 @@ Getmatching
 
 In order to display the list of matching rules defined for a specific trap, use the **GETMATCHING** command::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a getmatching -v "aNewTrap" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a getmatching -v "aNewTrap" 
   id;string;regexp;status;order
   8;@OUTPUT@;/test/;UNKNOWN;1
 
@@ -129,7 +129,7 @@ Addmatching
 
 In order to add a matching rule, use the **ADDMATCHING** command::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a addmatching -v "aNewTrap;@OUTPUT@;/test2/;critical" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a addmatching -v "aNewTrap;@OUTPUT@;/test2/;critical" 
 
 Required fields are:
 
@@ -151,7 +151,7 @@ Delmatching
 
 In order to delete a matching rule, use the **DELMATCHING** command::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a delmatching -v "8" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a delmatching -v "8" 
 
 Required fields are:
 
@@ -167,7 +167,7 @@ Updatematching
 
 In order to delete a matching rule, use the **UPDATEMATCHING** command::
 
-  $ ./centreon -u admin -p centreon -o TRAP -a updatematching -v "8;status;critical" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a updatematching -v "8;status;critical" 
 
 Arguments are composed of the following columns:
 
