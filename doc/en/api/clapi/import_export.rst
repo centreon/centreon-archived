@@ -7,7 +7,7 @@ Export
 At some point, you might need to export all of the object configuration parameters (with the exception of escalation) into a plain text file, either for synchronizing or backuping purpose.
 This export feature is ran like this::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -e > /tmp/clapi-export.txt 
+  $ ./centreon -u admin -p centreon -e > /tmp/clapi-export.txt 
 
 This will generate CLAPI commands and redirect them to the */tmp/clapi-export.txt* file.
 
@@ -32,21 +32,21 @@ You can choose to export only predefined hosts or services.
 
 For example, to export all services linked to "srv-mssql-01" host you have to execute following command::
 
-    [root@centreon ~]# ./centreon -u admin -p centreon -e --select='HOST;srv-mssql-01' --filter-type='^(HOST|SERVICE)$'
+    $ ./centreon -u admin -p centreon -e --select='HOST;srv-mssql-01' --filter-type='^(HOST|SERVICE)$'
 
 To export "memory" and "mssql-listener" services execute following command::
 
-    [root@centreon ~]# ./centreon -e --select='SERVICE;memory' --select='SERVICE;mssql-listener' --filter-type='^SERVICE$'
+    $ ./centreon -e --select='SERVICE;memory' --select='SERVICE;mssql-listener' --filter-type='^SERVICE$'
 
 To export all commands run::
 
-    [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a show | awk -F\; 'NR > 2 { print "--select=\"CMD;" $2 "\"" }' | xargs --verbose php ./centreon -u admin -p centreon -e
+    $ ./centreon -u admin -p centreon -o CMD -a show | awk -F\; 'NR > 2 { print "--select=\"CMD;" $2 "\"" }' | xargs --verbose php ./centreon -u admin -p centreon -e
 
 Import
 ------
 You can import configuration from the exported file */tmp/clapi-export* ::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -i /tmp/clapi-export.txt
+  $ ./centreon -u admin -p centreon -i /tmp/clapi-export.txt
 
 In case you have a very large export file, it is advised to redirect the output of the above command to a file.
 Indeed, when errors occur during the import process, CLAPI will print out an error message along with the line number of the file, you might need to store those output message for troubleshooting later on.

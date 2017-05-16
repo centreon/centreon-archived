@@ -6,6 +6,10 @@ Centreon CLAPI is a Centreon API that enables users to configure their monitorin
 
 This documentation aims to introduce all the actions you can perform with Centreon CLAPI, from adding host objects to restarting a remote monitoring poller.
 
+.. note::
+    Since Centreon Web >= 2.7.9, Centreon CLAPI must be executed with 'centreon'
+    user instead of 'root'.
+
 Contents:
 
 .. toctree::

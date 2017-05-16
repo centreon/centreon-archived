@@ -12,7 +12,7 @@ Show
 
 In order to list available Nagios conf, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a show 
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a show 
   nagios id;nagios name;instance;nagios comment
   1;Nagios CFG 1;Central;Default Nagios.cfg
   [...]
@@ -37,7 +37,7 @@ Add
 
 In order to add a Nagios conf, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a add -v "Nagios cfg for poller test;Poller test;Just a small comment" 
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a add -v "Nagios cfg for poller test;Poller test;Just a small comment" 
 
 Required fields are:
 
@@ -57,7 +57,7 @@ Del
 
 If you want to remove a Nagios conf, use the **DEL** action. The name is used for identifying the configuration to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a del -v "Nagios cfg for poller test" 
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a del -v "Nagios cfg for poller test" 
 
 
 Setparam
@@ -65,7 +65,7 @@ Setparam
 
 If you want to change a specific parameter of a Nagios conf, use the **SETPARAM** action. The name is used for identifying the configuration to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a setparam -v "Nagios cfg for poller test;cfg_dir;/usr/local/nagios/etc" 
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a setparam -v "Nagios cfg for poller test;cfg_dir;/usr/local/nagios/etc" 
 
 Arguments are composed of the following columns:
 
@@ -102,7 +102,7 @@ Addbrokermodule
 ---------------
 
 If you want to add new broker module without removing existing modules, use the **ADDBROKERMODULE**::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
 
 
 Arguments are composed of the following columns:
@@ -116,14 +116,14 @@ Order	Column description
 ======= =================================
 
 To add multiple modules in one line, it will put the separator "|" between the name of the modules
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a addbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
 
 
 Delbrokermodule
 ---------------
 
 If you want to delete broker module, use the **DELBROKERMODULE**::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so"
 
 
 Arguments are composed of the following columns:
@@ -137,4 +137,4 @@ Order	Column description
 ======= =================================
 
 To delete multiple modules in one line, it will put the separator "|" between the name of the modules
-  [root@centreon ~]# ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  $ ./centreon -u admin -p centreon -o NAGIOSCFG -a delbrokermodule -v "Nagios cfg for poller test;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"

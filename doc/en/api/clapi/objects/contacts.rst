@@ -15,7 +15,7 @@ Show
 
 In order to list available contacts, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o contact -a show
+  $ ./centreon -u admin -p centreon -o contact -a show
   id;name;alias;email;pager;gui access;admin;activate
   4;Guest;guest;guest@localhost;;0;0;0
   5;Supervisor;admin;root@localhost;;1;1;1
@@ -48,7 +48,7 @@ Add
 
 In order to add a contact, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_US;local" 
+  $ ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_US;local" 
 
 
 The required parameters are the following:
