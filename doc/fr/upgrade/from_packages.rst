@@ -150,11 +150,12 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
 =========================
 
 Executer la même procedure sur vos différent poller :
+
  * Changement des repo
  * Mise à jour des paquets
  
 .. warning::
-   Il est impératif que tout vos serveurs (Central et Poller) soient dans les mêmes versions Centreon Engine 1.7.X, Centreon Broker 3.0.X
+   Il est impératif que tout vos serveurs (Central et Poller) soient dans les mêmes versions Centreon Engine 1.7, Centreon Broker 3.0
 
 5. Réalisez la mise à jour Web de Centreon 2.8
 ==============================================
