@@ -285,9 +285,16 @@ class CentreonEngineCfg extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filter_id = null, $filter_name = null)
     {
-        $elements = $this->object->getList();
+        $filters = null;
+        if (!is_null($filter_id)) {
+            $filters = array(
+                $this->object->getPrimaryKey() => $filter_id
+            );
+        }
+
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         $tpObj = new \Centreon_Object_Timeperiod();
         foreach ($elements as $element) {
             /* ADD action */
