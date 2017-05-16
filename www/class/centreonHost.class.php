@@ -1289,11 +1289,7 @@ class CentreonHost
                     $queryValues = array();
                     $queryFields = '';
                     if (count($fields) > 0) {
-                        foreach ($fields as $k => $v) {
-                            $queryFields .= '?,';
-                            $queryValues[] = (string)$v;
-                        }
-                        $queryFields = rtrim($queryFields, ',');
+                        $queryFields = implode(',', $fields);
                     } else {
                         $queryFields .= '*';
                     }
@@ -1308,6 +1304,7 @@ class CentreonHost
                 $dbResult = $this->db->execute($stmt, $queryValues);
 
                 while ($row = $dbResult->fetchRow()) {
+
                     if (!count($alreadyProcessed)) {
                         $fields = array_keys($row);
                     }
@@ -1319,14 +1316,15 @@ class CentreonHost
                         }
                     }
                 }
-
                 $alreadyProcessed[] = $hostId;
+
                 $hostTemplateIds = $this->getHostTemplateIds($hostId);
                 foreach ($hostTemplateIds as $hostTemplateId) {
                     $values = $this->getInheritedValues($hostTemplateId, $alreadyProcessed, $depth, $fields, $values);
                 }
             }
         }
+
         return $values;
     }
 
