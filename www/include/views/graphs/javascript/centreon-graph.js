@@ -279,8 +279,15 @@
      */
     buildMetricData: function (dataRaw) {
       var convertType = {
-        line: 'spline',
-        area: 'area-spline'
+        /* 
+         * line: 'spline',
+         * area: 'area-spline'
+         */
+        /*
+         * No more artifacts on curves
+         */
+        line: 'line',
+        area: 'area'
       };
       var i = 0;
       var data = {
@@ -756,23 +763,26 @@
       }
       /* Append actions button */
       actionDiv = jQuery('<div>').addClass('chart-legend-action');
-      toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
-        .on('click', function () {
-          if (self.toggleAction === 'hide') {
-            self.toggleAction = 'show';
-            self.legendDiv.find('.chart-legend').addClass('hidden');
-            self.chart.hide();
-          } else {
-            self.toggleAction = 'hide';
-            self.legendDiv.find('.chart-legend').removeClass('hidden');
-            self.chart.show();
-          }
-        }).appendTo(actionDiv);
-      expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
-        .on('click', function () {
-          self.legendDiv.toggleClass('extend');
-        }).appendTo(actionDiv);
-
+      if (this.settings.buttonToggleCurves) {
+        toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
+          .on('click', function () {
+            if (self.toggleAction === 'hide') {
+              self.toggleAction = 'show';
+              self.legendDiv.find('.chart-legend').addClass('hidden');
+              self.chart.hide();
+            } else {
+              self.toggleAction = 'hide';
+              self.legendDiv.find('.chart-legend').removeClass('hidden');
+              self.chart.show();
+            }
+          }).appendTo(actionDiv);
+      }
+        if (self.settings.extraLegend) {
+            expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
+                .on('click', function () {
+                    self.legendDiv.toggleClass('extend');
+                }).appendTo(actionDiv);
+        }
       actionDiv.appendTo(self.legendDiv);
     },
     /**
