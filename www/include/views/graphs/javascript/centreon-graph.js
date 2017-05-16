@@ -153,7 +153,7 @@
         },
         y: {
           tick: {
-            format: this.roundTick
+            format: this.getAxisTickFormat(this.getBase())
           }
         }
       };
@@ -170,7 +170,7 @@
       axis = jQuery.extend({}, axis, parsedData.axis);
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
-          format: this.roundTick
+          format: this.getAxisTickFormat(this.getBase())
         };
       }
 
@@ -182,6 +182,7 @@
             types: {},
             colors: {},
             regions: {},
+            order: null,
             empty: { label: { text: "Too much metrics, the chart can't be displayed" } }
           }
       } else {
@@ -202,10 +203,11 @@
             },
             value: function (value, ratio, id) {
               /* Test if the curve is inversed */
-              if (self.isInversed(id)) {
-                return self.inverseRoundTick(value);
-              }
-              return self.roundTick(value);
+              var fct = self.getAxisTickFormat(
+                self.getBase(),
+                self.isInversed(id)
+              );
+              return fct(value);
             }
           }
         },
@@ -287,6 +289,7 @@
         types: {},
         colors: {},
         regions: {},
+        order: null,
         empty: { label: { text: "There's no data" } }
       };
 
@@ -603,22 +606,63 @@
       }
     },
     /**
+     * Get function for humanreadable tick
+     *
+     * @param {Integer} base - The value to transform
+     * @return {Function} - The function for round the axes tick
+     */
+    getAxisTickFormat: function (base, inversed) {
+      console.log(base);
+      if (base === 1024 || base === '1024') {
+        if (inversed) {
+          return this.inverseRoundTickByte;
+        }
+        return this.roundTickByte;
+      }
+      if (inversed) {
+        return this.inverseRoundTick;
+      }
+      return this.roundTick;
+    },
+    /**
      * Round the value of a point and transform to humanreadable
      *
      * @param {Float} value - The value to transform
-     * @return {Float} - The value transformed
+     * @return {String} - The value transformed
      */
     roundTick: function (value) {
-      return d3.format('.3s')(value);
+      return numeral(value).format('0.000a');
+    },
+    /**
+     * Round the value of a point and transform to humanreadable for bytes
+     *
+     * @param {Float} value - The value to transform
+     * @return {String} - The value transformed
+     */
+    roundTickByte: function (value) {
+      if (value < 0) {
+        return '-' + numeral(Math.abs(value)).format('0.00b')
+      }
+      return numeral(value).format('0.000b');
     },
     /**
      * Round the value of a point and transform to humanreadable
      * and inverse the value if the curve is inversed
      *
      * @param {Float} value - The value to transform
-     * @return {Float} - The value transformed
+     * @return {String} - The value transformed
      */
     inverseRoundTick: function (value) {
+      return this.roundTick(value * -1);
+    },
+    /**
+     * Round the value of a point and transform to humanreadable for bytes
+     * and inverse the value if the curve is inversed
+     *
+     * @param {Float} value - The value to transform
+     * @return {String} - The value transformed
+     */
+    inverseRoundTickByte: function (value) {
       return this.roundTick(value * -1);
     },
     /**
@@ -633,6 +677,18 @@
         return false;
       }
       return this.chartData.data[pos].negative;
+    },
+    /**
+     * Get base for 1000 or 1024 for a curve
+     *
+     * @param {String} id - The curve id
+     * @return {Integer} - 1000 or 1024
+     */
+    getBase: function () {
+      if (this.chartData.base) {
+        return this.chartData.base;
+      }
+      return 1000;
     },
     /**
      * Build for display the legends

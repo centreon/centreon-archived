@@ -233,8 +233,7 @@ Puis installez Centreon Plugin Pack Manager.
 .. image:: /_static/images/installation/ppm_3.png
    :align: center
 
-Vous pouvez maintenant vous rendre à la page Administration -> Extensions
--> Plugin packs -> Setup. Vous y trouverez vos six premiers Plugin Packs
+Vous pouvez maintenant vous rendre à la page Configuration > Plugin packs > Setup. Vous y trouverez vos six premiers Plugin Packs
 gratuits pour vous aider à démarrer. Cinq Plugin Packs supplémentaires
 sont débloqués après vous être inscrit et plus de 150 sont disponibles
 si vous souscrivez à l'offre IMP (plus d'informations sur

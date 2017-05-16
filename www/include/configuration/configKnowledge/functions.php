@@ -14,7 +14,7 @@
 function versionCentreon($pearDB)
 {
     if (is_null($pearDB)) {
-        return;
+        throw new \Exception('No Database connect available');
     }
 
     $query = 'SELECT `value` FROM `informations` WHERE `key` = "version"';
@@ -27,25 +27,33 @@ function versionCentreon($pearDB)
     return $row['value'];
 }
 
-function Mediawikiconfigexist($url)
-{
-    $file_headers = @get_headers($url);
-    if ($file_headers[0] == 'HTTP/1.1 404 Not Found') {
-        return false;
-    }
-
-    return true;
-}
-
 function getWikiConfig($pearDB)
 {
+    $errorMsg = 'MediaWiki is not installed or configured. Please refer to the ' .
+        '<a href="https://documentation-fr.centreon.com/docs/centreon-knowledge-base/en/latest/" target="_blank" >' .
+        'documentation.</a>';
+
+    $mandatoryConfigKey = array('kb_db_name', 'kb_db_host', 'kb_wiki_url');
     if (is_null($pearDB)) {
-        return;
+        throw new \Exception($errorMsg);
     }
 
     $res = $pearDB->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_%'");
+
+    if ($res->numRows() == 0) {
+        throw new \Exception($errorMsg);
+    }
+
+    $gopt = array();
     while ($opt = $res->fetchRow()) {
-        $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
+
+        if (!empty($opt["value"])) {
+            $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
+        } else {
+            if (in_array($opt["key"], $mandatoryConfigKey)) {
+                throw new \Exception($errorMsg);
+            }
+        }
     }
 
     $pattern = '#^http://|https://#';
