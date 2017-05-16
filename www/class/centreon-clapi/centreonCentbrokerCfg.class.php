@@ -529,9 +529,16 @@ class CentreonCentbrokerCfg extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filter_id = null, $filter_name = null)
     {
-        $elements = $this->object->getList("*", -1, 0);
+        $filters = null;
+        if (!is_null($filter_id)) {
+            $filters = array(
+                $this->object->getPrimaryKey() => $filter_id
+            );
+        }
+
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD".
                       $this->delim.$element['config_name'].
