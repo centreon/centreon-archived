@@ -4,48 +4,42 @@
 Using packages
 ==============
 
-Centreon supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
+Centreon supplies RPM for its products via the Centreon Open Sources version available free of charge on our repository (ex CES).
 
-These packages have been successfully tested on CentOS and Red Hat environments in 6.x version.
+These packages have been successfully tested on CentOS and Red Hat environments in 6.x and 7.x versions.
 
 *************
 Prerequisites
 *************
 
-To install Centreon software from the CES repository, you should first install the file linked to the repository.
+To install Centreon software from the repository, you should first install the file linked to the repository.
 
-Perform the following command from a user with sufficient rights:
+Perform the following command from a user with sufficient rights.
 
- ::
+Centreon Repository
+--------------
 
-  $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+For CentOS 6.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
+
+
+For CentOS 7.
+
+::
+
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
+
 
 The repository is now installed.
-
-Any operating system
---------------------
-
-SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
-
- ::
-    
-  SELINUX=disabled
-
-PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line : 
-
- ::
-	   
-  date.timezone = Europe/Paris
-
-After saving the file, please don't forget to restart apache server. 
-
-The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
 *********************
 Centreon installation
 *********************
-
-You should choose between one of the two configuration processes of your monitoring platform. Centreon recommends the first choice based on the “Centreon Engine” scheduler and the “Centreon Broker” stream multiplexer.
 
 Install a central server
 ------------------------
@@ -73,6 +67,42 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
+Add GPG key for CentOS 6
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+You also have to recover the GPG key and place it in the rpm-gpg file.
+
+Perform the command:
+
+ ::
+
+   $ cd /etc/pki/rpm-gpg/
+   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES
+
+Add GPG key for CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+You also have to recover the GPG key and place it in the rpm-gpg file.
+
+Perform the command:
+
+ ::
+
+   $ cd /etc/pki/rpm-gpg/
+   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
+
+Install mysql on the same server
+--------------------------------
+
+Ce chapitre décrit l'installation de mysql sur un serveur comprenant Centreon.
+This chapter describes the installation of mysql on a server including Centreon.
+
+Perform the command:
+
+  ::
+
+   $ yum install mariadb-server
+   $ service mysql restart
 
 Base configuration of a poller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -89,7 +119,7 @@ If you don’t have any private SSH keys on the central server for the Centreon 
  $ ssh-keygen -t rsa
 
 Copy this key on the collector:
- 
+
  ::
 
  $ ssh-copy-id centreon@your_poller_ip
@@ -97,81 +127,250 @@ Copy this key on the collector:
 
 .. _installation_web:
 
-Web Installation
-================
+Any operating system
+--------------------
 
-.. note::
+Disable SELinux
+^^^^^^^^^^^^^^^
 
-Make sure that your Apache and MySQL servers are up and running before continuing.
-
-Open your favorite web browser and go to the address:
+SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
 
 ::
 
- http://SERVER_ADDRESS/centreon
+    SELINUX=disabled
 
-You should see the following page:
+After saving the file, please reboot your operating system to apply the changes.
 
-.. image:: /_static/images/installation/setup_1.png
-    :align: center
+PHP timezone
+^^^^^^^^^^^^
 
-Click on the **Next** button:
+PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
 
-.. image:: /_static/images/installation/setup_2.png
-    :align: center
+::
 
-If a package is missing install it and click on the **Refresh** button. Click on the **Next** button as soon as everything is **OK**:
+    date.timezone = Europe/Paris
 
-.. image:: /_static/images/installation/setup_3_1.png
-    :align: center
+After saving the file, please don't forget to restart apache server.
 
-Select your monitoring engine. Depending on the selection, the settings are different.
+Firewall
+^^^^^^^^
 
-For Centreon Engine:
+Add firewall rules or disable it. To disable it execute following commands:
 
-.. image:: /_static/images/installation/setup_3_2.png
-    :align: center
+* **iptables** (CentOS v6) ::
 
-Click on the **Next** button as soon as all the fields are filled.
+    # /etc/init.d/iptables save
+    # /etc/init.d/iptables stop
+    # chkconfig iptables off
 
-.. image:: /_static/images/installation/setup_4.png
-    :align: center
+* **firewalld** (CentOS v7) ::
 
-Select your Stream Multiplexer. Depending on the selection, the settings are different.
+    # systemctl stop firewalld
+    # systemctl disable firewalld
+    # systemctl status firewalld
 
-For Centreon Broker:
+DataBase Management System
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: /_static/images/installation/setup_4_2.png
-    :align: center
+The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
-Click on the **Next** button when all parameters are filled.
+For CentOS / RHEL in version 7, it is necessary to modify **LimitNOFILE** limitation.
+Edit **/etc/systemd/system/mysqld.service** file and change ::
 
-.. image:: /_static/images/installation/setup_5.png
-    :align: center
+    LimitNOFILE=32000
 
-Fill the form with your data. Be sure to remember your password. Click on the **next** button.
+Save the file and execute the folowwing commands::
 
-.. image:: /_static/images/installation/setup_6.png
-    :align: center
+    # systemctl daemon-reload
+    # service mysqld restart
 
-Fill the form with information about your database. Click on the **Next** button.
+Web Installation
+================
 
-.. image:: /_static/images/installation/setup_7.png
-    :align: center
+The End of installation wizard of Centreon is displayed, click on **Next**.
 
-The database structure will be installed during this process. All must be validated by **OK**.
+.. image :: /images/user/acentreonwelcome.png
+   :align: center
+   :scale: 85%
 
-.. note::
-    The installation process may ask you to change the settings of the MySQL server to **add innodb_file_per_table=1** in the configuration file.
+The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
 
-Click on the **Next** button.
+.. image :: /images/user/acentreoncheckmodules.png
+   :align: center
+   :scale: 85%
 
-.. image:: /_static/images/installation/setup_8.png
-    :align: center
+Click on **Next**.
 
-The installation is now finished, click on the ``Finish`` button, you will be redirected to the login screen:
+.. image :: /images/user/amonitoringengine2.png
+   :align: center
+   :scale: 85%
 
-.. image:: /images/user/aconnection.png
-    :align: center
+Click on **Next**.
 
-Enter your credentials to log in.
+.. image :: /images/user/abrokerinfo2.png
+   :align: center
+   :scale: 85%
+
+Define the data concerning the admin user, click on **Next**.
+
+.. image :: /images/user/aadmininfo.png
+   :align: center
+   :scale: 85%
+
+By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
+
+.. image :: /images/user/adbinfo.png
+   :align: center
+   :scale: 85%
+
+If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
+
+1.  Log-on to the ‘root’ user on your server
+
+2.  Modify this file 
+
+::
+
+  /etc/my.cnf
+
+3.  Add these lines to the file
+
+.. raw:: latex 
+
+::
+
+  [mysqld] 
+  innodb_file_per_table=1
+
+4.  Restart mysql service
+
+::
+
+  service mysql restart
+
+5.  Click on **Refresh**
+
+The End of installation wizard configures the databases, click on **Next**.
+
+.. image :: /images/user/adbconf.png
+   :align: center
+   :scale: 85%
+
+The installation is finished, click on Finish.
+
+At this stage a publicity allows to know the latest Centreon . If your platform is connected to the Internet you have the latest information , if the information present in this version will be offered.
+
+.. image :: /images/user/aendinstall.png
+   :align: center
+   :scale: 85%
+
+You can now log in.
+
+.. image :: /images/user/aconnection.png
+   :align: center
+   :scale: 85%
+
+Start monitoring
+================
+
+To start monitoring engine :
+ 
+ 1.   On web interface, go to **Configuration** ==> **Monitoring engines**
+ 2.   Leave the default options and click on **Export**
+ 3.   Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 4.   Check **Move Export Files** and **Restart Monitoring Engine**
+ 5.   Click on **Export** again
+ 6.   Log into the ‘root’ user on your server
+ 7.   Start Centreon Broker
+
+::
+ 
+  service cbd start
+8.   Start Centreon Engine
+
+::
+ 
+   service centengine start
+
+ 8.   Start centcore
+
+::
+ 
+   service centcore start
+
+Monitoring is now working. You can start to monitor your IT !
+
+Introduction to the web interface
+=================================
+
+
+Centreon web interface is made up of several menus, each menu has a specific function:
+
+.. image :: /images/user/amenu.png
+   :align: center
+
+|
+
+*       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
+*       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
+*       The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
+*       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
+
+
+.. _installation_ppm:
+
+*****************************
+Easy monitoring configuration
+*****************************
+
+Centreon is great in itself, highly versatile  and can be configured to
+fit the very specifics of your monitored infrastructure. However you
+might find useful to use Centreon IMP to get you started in minutes.
+Centreon IMP provides you Plugin Packs which are bundled configuration
+templates that highly reduce the time needed to properly monitor the
+most common services of your network.
+
+Centreon IMP needs the technical components Centreon License Manager
+and Centreon Plugin Pack Manager to work.
+
+Install packages
+----------------
+
+When using Centreon ISO, installation of Centreon Plugin Pack Manager is very
+easy. You'll see that Centreon License Manager will be installed too
+as a dependency.
+
+::
+
+   $ yum install centreon-pp-manager
+
+Web install
+-----------
+
+Once the packages installed, you need to enable the module in Centreon.
+So get to the Administration -> Extensions -> Modules page.
+
+.. image:: /_static/images/installation/ppm_1.png
+   :align: center
+
+Install Centreon License Manager (dependency of Centreon Plugin Pack Manager) first.
+
+.. image:: /_static/images/installation/ppm_2.png
+   :align: center
+
+Then install Centreon Plugin Pack Manager itself.
+
+.. image:: /_static/images/installation/ppm_3.png
+   :align: center
+
+You're now ready to got to Configuration > Plugin packs > Setup.
+You'll find there 6 free Plugin Packs to get you started. 5 more are
+available after free registration and 150+ if you subscribe to the IMP
+offer (more information on `our website <https://www.centreon.com>`_).
+
+.. image:: /_static/images/installation/ppm_4.png
+   :align: center
+
+You can continue to configure your monitoring with Centreon IMP by
+following :ref:`this guide <impconfiguration>`.

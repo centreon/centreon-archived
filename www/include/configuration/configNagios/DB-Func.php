@@ -162,8 +162,8 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "nagios_name" ? ($nagios_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL")
-                    : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=null?(", '". $pearDB->escape($value2) ."'"):", NULL")
+                    : $val .= ($value2!=null?("'". $pearDB->escape($value2) ."'"):"NULL");
             }
             if (testExistence($nagios_name)) {
                 $val ? $rq = "INSERT INTO cfg_nagios VALUES (".$val.")" : $rq = null;
@@ -208,7 +208,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , "
-        . "`precached_object_file`, `object_cache_file` , `temp_file` , "
+        . "`temp_file` , "
         . "`check_result_path`, `max_check_result_file_age`, "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
         . "`enable_notifications` , `execute_service_checks` , "
@@ -264,10 +264,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'".htmlentities($ret["log_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["cfg_dir"]) && $ret["cfg_dir"] != null ?
         $rq .= "'".htmlentities($ret["cfg_dir"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-    isset($ret["precached_object_file"]) && $ret["precached_object_file"] != null ?
-        $rq .= "'".htmlentities($ret["precached_object_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-    isset($ret["object_cache_file"]) && $ret["object_cache_file"] != null ?
-        $rq .= "'".htmlentities($ret["object_cache_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["temp_file"]) && $ret["temp_file"] != null ?
         $rq .= "'".htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["check_result_path"]) && $ret["check_result_path"] != null ?
@@ -400,8 +396,8 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != null ?
         $rq .= "'".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
-        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2 ?
-        $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'2', ";
+        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 0 ?
+        $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'0', ";
     isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"])
         && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ?
         $rq .= "'".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  "
@@ -508,9 +504,9 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["date_format"]) && $ret["date_format"] != null ?
         $rq .= "'".htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null ?
-        $rq .= "'".htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        $rq .= "'". $pearDB->escape($ret["illegal_object_name_chars"]) ."',  " : $rq .= "NULL, ";
     isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null ?
-        $rq .= "'".htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        $rq .= "'". $pearDB->escape($ret["illegal_macro_output_chars"])."',  " : $rq .= "NULL, ";
     isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ?
         $rq .= "'".$ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]."',  " : $rq .= "'2', ";
@@ -637,12 +633,6 @@ function updateNagios($nagios_id = null)
     isset($ret["cfg_dir"]) && $ret["cfg_dir"] != null ?
         $rq .= "cfg_dir = '".htmlentities($ret["cfg_dir"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "cfg_dir = NULL, ";
-    isset($ret["object_cache_file"]) && $ret["object_cache_file"] != null ?
-        $rq .= "object_cache_file = '".htmlentities($ret["object_cache_file"], ENT_QUOTES, "UTF-8")."',  "
-        : $rq .= "object_cache_file = NULL, ";
-    isset($ret["precached_object_file"]) && $ret["precached_object_file"] != null ?
-        $rq .= "precached_object_file = '".htmlentities($ret["precached_object_file"], ENT_QUOTES, "UTF-8")."',  "
-        : $rq .= "precached_object_file = NULL, ";
     isset($ret["temp_file"]) && $ret["temp_file"] != null ?
         $rq .= "temp_file = '".htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "temp_file = NULL, ";
@@ -1046,12 +1036,10 @@ function updateNagios($nagios_id = null)
         . htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "date_format = NULL, ";
     isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null ?
-        $rq .= "illegal_object_name_chars  = '"
-        . htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  "
+        $rq .= "illegal_object_name_chars  = '" . $pearDB->escape($ret["illegal_object_name_chars"]) . "',  "
         : $rq .= "illegal_object_name_chars  = NULL, ";
     isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null ?
-        $rq .= "illegal_macro_output_chars  = '"
-        . htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  "
+        $rq .= "illegal_macro_output_chars  = '" . $pearDB->escape($ret["illegal_macro_output_chars"]) . "',  "
         : $rq .= "illegal_macro_output_chars  = NULL, ";
     isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ?

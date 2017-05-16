@@ -70,7 +70,7 @@ Using POST methode and the URL below:  ::
 +---------------------+---------------------------------+
 | Content-Type        | application/json                |
 +---------------------+---------------------------------+
-| centreon_auth_token | the value of authToken you got  |
+| centreon-auth-token | the value of authToken you got  |
 |                     | on the authentification response|
 +---------------------+---------------------------------+
 
@@ -386,8 +386,6 @@ snmp_version                         Snmp version
 stalking_options                     Comma separated options: 'o' for OK, 'd' for Down, 'u' for Unreachable
 
 statusmap_image                      Status map image (used by statusmap
-
-vrml_image                           VRML image
 
 host_notification_options            Notification options (d,u,r,f,s)
 

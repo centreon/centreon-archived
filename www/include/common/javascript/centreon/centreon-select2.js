@@ -34,13 +34,13 @@
      */
     init: function () {
       var self = this;
-      var select2Options = this.settings.select2;
+      this.select2Options = this.settings.select2;
 
       this.initLocale();
       this.initAjax();
 
       /* Template for result display */
-      select2Options.templateResult = function (item) {
+      this.select2Options.templateResult = function (item) {
         var text = item.text;
         var $result;
         if (self.settings.templateResult !== null) {
@@ -58,7 +58,7 @@
         return text;
       };
       /* Template for selection */
-      select2Options.templateSelection = function (data, container) {
+      this.select2Options.templateSelection = function (data, container) {
         if (data.hasOwnProperty('element') && data.element.hidden) {
           $(container).hide();
         }
@@ -69,10 +69,10 @@
       };
 
       if (this.remoteData) {
-        select2Options.ajax = this.ajaxOptions;
+        this.select2Options.ajax = this.ajaxOptions;
       }
 
-      this.$elem.select2(select2Options);
+      this.$elem.select2(this.select2Options);
 
       this.initNiceScroll();
       this.initSaveSearch();
@@ -84,6 +84,18 @@
       if (this.settings.multiple) {
         this.initMultiple();
       }
+
+      this.resizeSelect2();
+    },
+
+    resizeSelect2: function() {
+      var formSpan = jQuery(".formTable span.select2-container");
+      formSpan.css({
+        'min-width': '360px',
+      });
+      formSpan.find('.select2-selection--multiple .select2-selection__rendered').css({
+        'resize': 'vertical'
+      });
     },
     /**
      * Load the locale, if not defined in settings use the browser locale
@@ -125,7 +137,7 @@
         self.$elem.trigger('change', currentValues);
       });
 
-      $(this.parent).prepend(this.clearButton);
+      $(this.parent).append(this.clearButton);
     },
     /**
      * Initialize the multiple
@@ -552,7 +564,7 @@
           return object.id;
         });
         self.$elem.find('option').each(function (idx, element) {
-          if (tmpIds.indexOf($(element).val()) < 0) {
+          if (tmpIds.indexOf($(element).val()) >= 0) {
             $(element).remove();
           }
         });
@@ -563,7 +575,7 @@
           return object.id;
         });
         selectedElements = currentValues.filter(function (id) {
-          if (tmpIds.indexOf(id) < 0) {
+          if (tmpIds.indexOf(id) >= 0) {
             return true;
           }
           return false;
@@ -694,10 +706,32 @@
      */
     removeNiceScroll: function () {
       this.internal.niceScroll.remove();
+    },
+    /**
+     * Destroy the element
+     */
+    destroy: function () {
+      this.internal.$elem.select2('destroy');
+      this.internal.$elem.removeData('centreonSelect2');
+    },
+    /**
+     * Update select2 settings
+     *
+     * @param {Object} settings - New settings, only differentials
+     */
+    updateSettings: function (settings) {
+      this.internal.select2Options = $.extend(
+        {},
+        this.internal.select2Options,
+        settings
+      );
+      this.internal.$elem.select2('destroy');
+      this.internal.$elem.select2(this.internal.select2Options);
     }
   };
 
   $.fn.centreonSelect2 = function (options) {
+
     var args = Array.prototype.slice.call(arguments, 1);
     var settings = $.extend({}, $.fn.centreonSelect2.defaults, options);
     var methodReturn;
@@ -707,12 +741,14 @@
 
       if (!data) {
         $this.data("centreonSelect2", ( data = new CentreonSelect2(settings, $this)));
+        data.addNiceScroll();
       }
 
       if (typeof options === "string") {
         methodReturn = data[options].apply(data, args);
       }
     });
+
     return (methodReturn === undefined) ? $set : methodReturn;
   };
 

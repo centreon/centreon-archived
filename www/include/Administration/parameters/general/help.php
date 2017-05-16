@@ -83,9 +83,21 @@ $help['sso_trusted_clients'] = dgettext(
     'help',
     'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
 );
+$help['sso_blacklist_clients'] = dgettext(
+    'help',
+    'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
+);
 $help['sso_header_username'] = dgettext(
     'help',
     'The header variable that will be used as login. i.e: $_SERVER[\'HTTP_AUTH_USER\']'
+);
+$help['sso_username_pattern'] = dgettext(
+    'help',
+    'The pattern to search for in the username. If i want to remove the domain of the email: /@.*/'
+);
+$help['sso_username_replace'] = dgettext(
+    'help',
+    'The string to replace.'
 );
 
 /**
@@ -107,4 +119,38 @@ $help['tip_centreon_support_email'] = dgettext(
     'help',
     'Centreon Support email: this email is uses in the Centreon footer in order to have a quick'
     . ' link in order to open an issue to your help desk.'
+);
+
+/*
+ * Proxy options
+ */
+$help['tip_proxy_url'] = dgettext(
+    'help',
+    'URL of the proxy.'
+);
+$help['tip_proxy_port'] = dgettext(
+    'help',
+    'Port of the proxy.'
+);
+$help['tip_proxy_user'] = dgettext(
+    'help',
+    'User of the proxy (Only if you use basic authentication).'
+);
+$help['tip_proxy_password'] = dgettext(
+    'help',
+    'Password of the proxy (Only if you use basic authentication).'
+);
+
+/*
+ * Chart options
+ */
+$help['tip_display_downtime_chart'] = dgettext(
+    'help',
+    'If this option is enable, the downtimes and acknowledgments will be displayed on metric chart.<br>' .
+    '<b>Warning</b> : This option can slow down the display of chart.'
+);
+$help['tip_display_comment_chart'] = dgettext(
+    'help',
+    'If this option is enable, the comments will be displayed on status chart.<br>' .
+    '<b>Warning</b> : This option can slow down the display of chart.'
 );

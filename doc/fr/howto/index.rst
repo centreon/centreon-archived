@@ -7,7 +7,7 @@ Avec Centreon vous avez la possibilité de superviser des environnements relativ
 .. toctree::
    :maxdepth: 1
    
-   selenium-scenario/index
+   sso
    
 Si vous avez des expériences que vous souhaitez partager avec la communauté Centreon, n'hésitez pas à vous en faire part sur le github de Centreon. Votre guide pourrait faire partie de la documentation officielle de Centreon.
 

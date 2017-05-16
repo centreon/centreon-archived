@@ -107,7 +107,7 @@ class CentreonXMLBGRequest {
      * $compress	bool 	compress enable.
      */
 
-    public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null) {
+    public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null, $fullVersion = 1) {
         if (!isset($debug)) {
             $this->debug = 0;
         }
@@ -139,12 +139,14 @@ class CentreonXMLBGRequest {
          */
         $this->monObj = new CentreonMonitoring($this->DB);
 
-        /*
-         * Timezone management
-         */
-        $this->GMT = new CentreonGMT($this->DB);
-        $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
-
+        if ($fullVersion) {
+            /*
+             * Timezone management
+             */
+            $this->GMT = new CentreonGMT($this->DB);
+            $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
+        }
+        
         /*
          * XML class
          */
@@ -309,7 +311,8 @@ class CentreonXMLBGRequest {
                 if ($name == 'num' && $tab[$name] < 0) {
                     $tab[$name] = 0;
                 }
-                return CentreonDB::escape($tab[$name]);
+                $value = htmlspecialchars($tab[$name], ENT_QUOTES, 'utf-8');
+                return CentreonDB::escape($value);
             } else {
                 return CentreonDB::escape($defaultValue);
             }

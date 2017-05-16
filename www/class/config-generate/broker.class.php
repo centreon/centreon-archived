@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Broker extends AbstractObjectXML {
+class Broker extends AbstractObjectXML
+{
     protected $engine = null;
     protected $broker = null;
     protected $generate_filename = null;
@@ -45,11 +47,12 @@ class Broker extends AbstractObjectXML {
         config_write_timestamp,
         config_write_thread_id,
         ns_nagios_server,
+        event_queue_max_size,
+        command_file,
+        cache_directory,
         stats_activate,
         correlation_activate,
-        event_queue_max_size,
-        retention_path,
-        command_file
+        daemon
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -65,7 +68,8 @@ class Broker extends AbstractObjectXML {
     protected $attributes_engine_parameters = '
         id,
         name,
-        centreonbroker_module_path
+        centreonbroker_module_path,
+        centreonbroker_cfg_path
     ';
     protected $exclude_parameters = array(
         'blockId'
@@ -77,13 +81,15 @@ class Broker extends AbstractObjectXML {
     protected $stmt_broker = null;
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
-    
-    private function generate($poller_id) {
+
+    private function generate($poller_id, $localhost)
+    {
         if (is_null($this->stmt_broker)) {
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM cfg_centreonbroker
-            WHERE ns_nagios_server = :poller_id AND config_activate = '1'
+            WHERE ns_nagios_server = :poller_id
+            AND config_activate = '1'
             ");
         }
         $this->stmt_broker->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
@@ -100,6 +106,8 @@ class Broker extends AbstractObjectXML {
             ");
         }
 
+        $watchdog = array();
+
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $this->generate_filename = $row['config_filename'];
@@ -107,7 +115,7 @@ class Broker extends AbstractObjectXML {
             $flow_count = 0;
 
             $config_name = $row['config_name'];
-            $retention_path = $row['retention_path'];
+            $cache_directory = $row['cache_directory'];
             $stats_activate = $row['stats_activate'];
             $correlation_activate = $row['correlation_activate'];
 
@@ -121,82 +129,83 @@ class Broker extends AbstractObjectXML {
             $object['log_thread_id'] = $row['config_write_thread_id'];
             $object['event_queue_max_size'] = $row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
-            
-            
+            $object['cache_directory'] = $cache_directory;
+
+            if ($row['daemon'] == '1') {
+                $watchdog[] = array(
+                    'cbd' => array(
+                        'name' => $row['config_name'],
+                        'configuration_file' => $this->engine['broker_cfg_path'] . '/' . $row['config_filename'],
+                        'run' => 1,
+                        'reload' => 1
+                    )
+                );
+            }
+
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
-            $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+            $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
             # Flow parameters
             foreach ($resultParameters as $key => $value) {
                 foreach ($value as $subvalue) {
-                    
-                    if(!isset($subvalue['fieldIndex']) || $subvalue['fieldIndex'] == "" || is_null($subvalue['fieldIndex'])){
+                    if (!isset($subvalue['fieldIndex']) ||
+                        $subvalue['fieldIndex'] == "" ||
+                        is_null($subvalue['fieldIndex'])
+                    ) {
                         if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
                             continue;
-                        } else if(trim($subvalue['config_value']) == '' && !in_array($subvalue['config_key'], $this->authorized_empty_field)) {
+                        } elseif (trim($subvalue['config_value']) == '' &&
+                            !in_array(
+                                $subvalue['config_key'],
+                                $this->authorized_empty_field
+                            )
+                        ) {
                             continue;
                         } else if ($subvalue['config_key'] == 'category') {
-                            $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] = $subvalue['config_value'];
+                            $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
+                                $subvalue['config_value'];
                         } else {
-                            $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] = $subvalue['config_value'];
+                            $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                                $subvalue['config_value'];
+                            // Let broker insert in index data in pollers
+                            if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
+                                && !$localhost) {
+                                $object[$subvalue['config_group_id']][$key]['insert_in_index_data'] = 'yes';
+                            }
                         }
-                    }else{
+                    } else {
                         $res = explode('__', $subvalue['config_key'], 3);
-                        $object[$subvalue['config_group_id']][$key][$subvalue['fieldIndex']][$res[0]][$res[1]] = $subvalue['config_value'];
+                        $object[$subvalue['config_group_id']][$key][$subvalue['fieldIndex']][$res[0]][$res[1]] =
+                            $subvalue['config_value'];
                     }
                     $flow_count++;
                 }
             }
-            # Failover parameters
-            foreach ($object as &$subvalue) {
-                if (is_array($subvalue)) {
-                    foreach ($subvalue as $config_type => &$flow) {
-                        if ($config_type == 'output' && isset($flow['name']) && !isset($flow['failover']) && isset($flow['type']) && $flow['type'] != 'file') {
-                            $flow['failover'] = $flow['name'] . '-' . $config_type . '-failover';
-                            $object[$flow_count][$config_type] = array(
-                                'type' => 'file',
-                                'name' => $flow['name'] . '-' . $config_type . '-failover',
-                                'path' => $retention_path . '/' . $config_name . '_' . $flow['name'] . '.retention',
-                                'protocol' => 'bbdo',
-                                'compression' => 'auto',
-                                'max_size' => '524288000'
-                            );
-                            $flow_count++;
-                        }
-                    }
-                }
-            }
-
-            # Temporary parameters
-            $object[$flow_count]['temporary'] = array(
-                'type' => 'file',
-                'name' => $config_name . '-temporary',
-                'path' => $retention_path . '/' . $config_name . '.temporary',
-                'protocol' => 'bbdo',
-                'compression' => 'auto',
-                'max_size' => '524288000'
-            );
-            $flow_count++;
 
             # Stats parameters
             if ($stats_activate == '1') {
                 $object[$flow_count]['stats'] = array(
                     'type' => 'stats',
                     'name' => $config_name . '-stats',
-                    'fifo' => $retention_path . '/' . $config_name . '.stats',
+                    'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
                 );
-                $flow_count++;
             }
-        
+
             # Generate file
             $this->generateFile($object, true, 'centreonBroker');
             $this->writeFile($this->backend_instance->getPath());
         }
-
+        $watchdog[] = array(
+            'log' => '/var/log/centreon-broker/watchdog.log'
+        );
+        $this->generate_filename = 'watchdog.xml';
+        $this->generateFile($watchdog, true, 'centreonbroker');
+        $this->writeFile($this->backend_instance->getPath());
     }
 
-    private function getEngineParameters($poller_id) {
+    private function getEngineParameters($poller_id)
+    {
         if (is_null($this->stmt_engine_parameters)) {
             $this->stmt_engine_parameters = $this->backend_instance->db->prepare("SELECT
               $this->attributes_engine_parameters
@@ -211,12 +220,14 @@ class Broker extends AbstractObjectXML {
             $this->engine['id'] = $row['id'];
             $this->engine['name'] = $row['name'];
             $this->engine['broker_modules_path'] = $row['centreonbroker_module_path'];
+            $this->engine['broker_cfg_path'] = $row['centreonbroker_cfg_path'];
         } catch (Exception $e) {
-            throw new Exception('Exception received : ' .  $e->getMessage() . "\n");
+            throw new Exception('Exception received : ' . $e->getMessage() . "\n");
         }
     }
 
-    public function generateFromPoller($poller) {
-        $this->generate($poller['id']);
+    public function generateFromPoller($poller)
+    {
+        $this->generate($poller['id'], $poller['localhost']);
     }
 }

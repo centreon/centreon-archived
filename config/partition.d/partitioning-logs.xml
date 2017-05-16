@@ -4,13 +4,6 @@
         <activate>1</activate>
         <column>ctime</column>
         <type>date</type>
-        <duration>daily</duration>
-        <retention>31</retention>
-        <retentionforward>10</retentionforward>        
-        <backup>
-            <folder>/var/backups/</folder>
-            <format>%Y-%m-%d</format>
-        </backup>
         <createstmt>
 CREATE TABLE `logs` (
   `log_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -36,7 +29,7 @@ CREATE TABLE `logs` (
   KEY `ctime` (`ctime`),
   KEY `rq1` (`host_id`,`service_id`,`msg_type`,`status`,`ctime`),
   KEY `rq2` (`host_id`,`msg_type`,`status`,`ctime`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </createstmt>
     </table>
 </centreon-partitioning>

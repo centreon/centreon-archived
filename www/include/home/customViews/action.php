@@ -78,23 +78,21 @@ try {
         }
     } elseif ($action == "edit" && $customViewId) {
         $viewObj->updateCustomView($_POST);
+
         if (isset($_POST['widget_id'])) {
             $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
         }
+
         //update share
-        $public = 0;
-        if (isset($_POST['public'])) {
-            $public = $_POST['public'];
+        if (!isset($_POST['public'])) {
+            $_POST['public'] = 0;
         }
-        
-        if ($public == 0) {
-            if (!isset($_POST['user_id'])) {
-                $_POST['user_id'] = $centreon->user->user_id;
-            }
-            $viewObj->removeViewForAllUser($_POST);
+
+        if (!isset($_POST['user_id'])) {
+            $_POST['user_id'] = $centreon->user->user_id;
         }
     } elseif ($action == "share") {
-        $viewObj->shareCustomView($_POST);
+        $viewObj->shareCustomView($_POST, $centreon->user->user_id);
     } elseif ($action == "remove") {
         $viewObj->removeUserFromView($_POST);
         $xml->writeElement('contact_name', $centreon->user->getContactName($db, $_POST['user_id']));
@@ -115,7 +113,7 @@ try {
     } elseif ($action == "setDefault") {
         $viewObj->setDefault($customViewId);
     } elseif ($action == "setRotate" && isset($_POST['timer'])) {
-        $_SESSION['rotation_timer'] = $_POST['timer'];
+        $centreon->user->setContactParameters($db, array('widget_view_rotation' => $_POST['timer']));
     } elseif ($action == "defaultEditMode") {
         $_SESSION['customview_edit_mode'] = $_POST['editMode'];
     } elseif ($action == "get_share_info") {

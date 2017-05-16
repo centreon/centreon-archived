@@ -42,7 +42,6 @@ locate_rrdtool
 locate_mail
 locate_cron_d
 locate_logrotate_d
-locate_init_d
 locate_php_bin
 locate_pear
 locate_perl
@@ -65,6 +64,7 @@ check_broker_user
 ## Ask for plugins directory
 locate_monitoringengine_log
 locate_plugindir
+locate_centreon_plugins
 
 ## Add default value for centreon engine connector
 if [ -z "$CENTREON_ENGINE_CONNECTORS" ]; then
@@ -324,7 +324,7 @@ check_result $? "$(gettext "Change right for install directory")"
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
         $INSTALL_DIR_CENTREON/config >> "$LOG_FILE" 2>&1
-cp -f $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
+cp -Rf $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
 
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/config
 

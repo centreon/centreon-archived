@@ -1,6 +1,7 @@
 <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
 <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
 <table class="table"> <!-- Global Table -->
     <tr>
         <td style="width: 70%;vertical-align:top; padding-right:8px;">
@@ -9,14 +10,14 @@
                     <td class="ListColHeaderLeft {$service_data.status_class}" style="padding-bottom: 4px !important;" >
                         <h3 style="color: #fff;">
                             <img src='./img/icons/service.png' style="vertical-align: middle;" class="ico-16"{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}> |
-                            {$m_mon_services} {$svc_description}
-                            {if !$is_meta}
+                            {$m_mon_services} {$svc_display_name}
+                            {if $is_meta == 'false'}
                             <p style="padding-left: 28px; font-size: 12px;float:right;">
                                 {$h.host_alias} | {$h.host_address}
                             </p>
                             {/if}
                         </h3>
-                        {if !$is_meta}
+                        {if $is_meta == 'false'}
                         <p style="margin-left: 30px;">{$h.host_name}</p>
                         {/if}
                         {if $sv_ext_notes_url}
@@ -50,7 +51,7 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" valign="top">{$m_mon_performance_data}</td>
                                 <td class="ListColNoWrap">
-                                    <pre>{$service_data.performance_data}</pre>
+                                    <pre class="wrap">{$service_data.performance_data}</pre>
                                 </td>
                             </tr>
                             <tr class='list_two'>
@@ -115,9 +116,14 @@
                             </tr>
                             {if $service_data.command_line}
                             <tr class='list_one'>
-                                <td class="ListColLeft ColPopup" valign="top">{$m_mon_service_command_line}</td>
+                                <td class="ListColLeft ColPopup" valign="top">
+                                    {$m_mon_service_command_line}
+                                    <button class="btn-copy" data-clipboard-target="#command_line">
+                                        <img src="./img/icons/clipboard.png" style="vertical-align: middle;" class="ico-14" alt="Copy to clipboard"/>
+                                    </button>
+                                </td>
                                 <td class="ListColLeft ColPopup">
-                                    <pre>{$service_data.command_line}</pre>
+                                    <pre id='command_line' style="overflow-x: auto">{$service_data.command_line}</pre>
                                 </td>
                             </tr>
                             {/if}
@@ -156,7 +162,7 @@
                             <tr class='list_lvl_1'>
                               <td class="FormHeader" colspan="2">
                                 <h4>
-                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
+                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$url_svc_id}">
                                     <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
                                   </a>
                                 </h4>
@@ -164,7 +170,11 @@
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColCenter" colspan="2">
-                                  <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service"></div>
+                                    <div id="chart-detailed-wrapper" class="content">
+                                        <button id="display-graph-{$h.host_id}_{$service_id}" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service" class="btc bt_info detail_button">{t}Display Chart{/t}</button>
+                                        <div class="chart" id="chart-detailed" data-graph-id="{$h.host_id}_{$service_id}" data-graph-type="service">
+                                    </div>
+                                  </div>
                                 </td>
                             </tr>
                         </table>
@@ -195,7 +205,7 @@
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
                         <table class="table ListTable linkList">
-                            {if !$is_meta}
+                            {if $is_meta == 'false'}
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;">
                                     <h4>{$host_shortcut}</h4>
@@ -204,14 +214,16 @@
                                     <h4>{$serv_shortcut}</h4>
                                 </td>
                             </tr>
+                            {if $lcaTopo.201 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.201 || $admin == 1}
                                         <a href='./main.php?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
-                                    {/if}
+
                                 </td>
                                 <td></td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.6 || $lcaTopo.602 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
                                     {if $lcaTopo.6 || $admin == 1}
@@ -224,18 +236,18 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.20301 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.20301 || $admin == 1}
                                         <a href='./main.php?p=20301&h={$h.host_id}'>{$lnk_host_logs}</a>
-                                    {/if}
                                 </td>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.20301 || $admin == 1}
                                         <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
-                                    {/if}
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.307 || $lcaTopo.30702 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
                                     {if $lcaTopo.307 || $admin == 1}
@@ -249,39 +261,42 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.4 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.4 || $admin == 1}
                                         <a href='./main.php?p=20401&mode=0&svc_id={$h.host_name}'>{$lnk_host_graphs}</a>
-                                    {/if}
                                 </td>
                                 <td></td>
                             </tr>
+                            {/if}
                             {else}
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader" style="border-bottom:1px solid #d1d2d4;">
                                     <h4>{$serv_shortcut}</h4>
                                 </td>
                             </tr>
+                            {if $lcaTopo.60204 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.60204 || $admin == 1}
                                         <a href='./main.php?p=60204&o=c&meta_id={$meta_id}&o=c'>{$lnk_serv_config}</a>
-                                    {/if}
+
                                 </td>
                             </tr>
+                            {/if}
+                            {if $lcaTopo.20301 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                    {if $lcaTopo.20301 || $admin == 1}
                                         <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
-                                    {/if}
+
                                 </td>
                             </tr>
+                            {/if}
                             {/if}
                         </table>
                     </td>
                 </tr>
-                {if !$is_meta && ($lcaTopo.20201 || $admin == 1)}
+                {if $is_meta == 'false' && ($lcaTopo.20201 || $admin == 1)}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;" nowrap="nowrap">
                         <table class="table linkList">
@@ -338,7 +353,7 @@
                                 {if ($aclAct.service_submit_result || $admin == true) && $service_data.passive_checks_enabled}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_submit_passive}</a></b>
+                                            <b><a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}&is_meta={$is_meta}'>{$m_mon_submit_passive}</a></b>
                                         </td>
                                     </tr>
                                 {/if}
@@ -479,7 +494,7 @@
                     </td>
                 </tr>
 
-                {if !$is_meta}
+                {if $is_meta == 'false'}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;">
                         <table class="ListTable table linkList">
@@ -633,6 +648,13 @@ jQuery(function () {
     interval: '24h'
   };
   jQuery('.chart').centreonGraph(times);
+});
+var clipboard = new Clipboard('.btn-copy', {
+  text: function() {
+    var command = document.querySelector('#command_line').textContent;
+    re = /\n\t/g;
+    return command.replace(re,' ');
+  }
 });
 </script>
 {/literal}

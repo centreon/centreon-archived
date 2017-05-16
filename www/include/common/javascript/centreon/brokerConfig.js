@@ -1,6 +1,5 @@
 // For the multiple type of groups, we have to group fields together in order to clone them.
 function clonifyTableFields(attributeName,displayName){
-
     // First, find the fields and group them in one array for each multiple group
     var GroupArray = {};
     var GroupDisplayName = {};
@@ -19,6 +18,8 @@ function clonifyTableFields(attributeName,displayName){
     // </table2> </td> </tr clone_template> <tr control> <td> </td> </tr> </table1 clonable> </td1> </tr newdiv> .... </oldTable>
     for(var obj in GroupArray) {
         var td1 = jQuery('<td>').attr('colspan','2').css({'padding': '2px'});
+//        var newdiv = jQuery('<tr>').addClass('elem-toCollapse').attr('style', 'display:table-row').append(td1);
+//        var newdiv = jQuery('<tr>').addClass('elem-toCollapse').attr('style', 'display:table-row').append(td1);
         var newdiv = jQuery('<tr>').addClass('elem-toCollapse').append(td1);
         var control = jQuery('<th>').append(jQuery('<span>').attr('id',obj+'_add').html('+ Add a new entry').css({
             'cursor': 'pointer',
@@ -43,7 +44,7 @@ function clonifyTableFields(attributeName,displayName){
         table2.append(jQuery('<tr>').addClass('elem-toCollapse').append(jQuery('<td>').css({'text-align': 'right', 'height': '1px'}).attr('rowspan','5').attr('colspan','2').append(remove)));
 
         if(GroupArray.hasOwnProperty(obj)){
-            var firsPostition = false;
+            var firstPosition = false;
             GroupArray[obj].each(function(element){
                 tdSize = jQuery(element).parents("tr").first().children('.FormRowField').first().width();
                 // since the element is in a subTab and because of the auto-sizing of each <td>,
@@ -52,14 +53,14 @@ function clonifyTableFields(attributeName,displayName){
                 jQuery(element).attr('alreadyProcessed','1');
 
                 var parent = jQuery(element).parents("tr").first().removeClass("elem-toCollapse");
-                if(!firsPostition){
-                    firsPostition = parent.prev();
+                if(!firstPosition){
+                    firstPosition = parent.prev();
                 }
                 parent.detach();
                 table2.prepend(parent);
             });
             //table1.prepend(control);
-            firsPostition.after(newdiv);
+            firstPosition.after(newdiv);
         }
 
     }
@@ -82,39 +83,58 @@ function clonifyTableFields(attributeName,displayName){
     });
 }
 
-function centreonCollapse() {
+function addCollapse() {
     var tbody = jQuery(".collapse-wrapper");
-    var tab = jQuery(".tab");
 
     tbody.find(".list_one").addClass("elem-toCollapse");
     tbody.find(".list_two").addClass("elem-toCollapse");
+}
+
+function initCollapsebyTab(tab) {
+    var tbody = jQuery("#" + tab + " .collapse-wrapper");
+    var othertBodyInput = tbody.not(tbody.eq(0)).find(".elem-toCollapse input.v_required");
+    othertBodyInput.qtip('destroy');
 
     tbody.eq(0).find(".elem-toCollapse").show();
     tbody.eq(0).find(".list_lvl_1").addClass("open");
-    tbody.find(".list_lvl_1").slice(1).addClass("close");
+    tbody.eq(0).find(".list_lvl_1 .expand").addClass("expand");
+    tbody.find(".list_lvl_1 .expand").slice(1).addClass("expand-icon");
+}
 
-        tbody.each(function() {
+function openNewElem(id_name) {
+    var newtBody = jQuery("#" + id_name);
+    var othertBodyElem = newtBody.siblings().find(".elem-toCollapse");
+    if(othertBodyElem.is(':visible')) {
+        othertBodyElem.hide();
+    }
+        newtBody.find(".elem-toCollapse").show();
+}
 
-            var elem = jQuery(this).find('.list_lvl_1');
-            elem.addClass("header-collapse");
+jQuery(function () {
+    addCollapse();
 
-            elem.on('click', function() {
+   jQuery('body').delegate('.collapse-wrapper .list_lvl_1', 'click', function (e) {
+       var elem = jQuery(e.currentTarget);
+       var tbody = elem.parent('.collapse-wrapper');
 
-                var nextElemChildren = elem.parent().siblings().find('tr.elem-toCollapse');
+       var nextElemChildren = tbody.parents('.tab').find('tr.elem-toCollapse').filter(function (idx, elem) {
+           return !tbody.is(jQuery(elem).parent('.collapse-wrapper'));
+       });
 
-                var elemChildren = jQuery(this).siblings('.elem-toCollapse');
+       var elemChildren = tbody.find('.elem-toCollapse');
 
-                if(elemChildren.is(':visible')) {
-                    elemChildren.hide();
-                    elem.removeClass('open').addClass('close');
-                }
-                else {
-                    elemChildren.show();
-                    jQuery(this).addClass('open').removeClass('close');
-                    tbody.eq(0).find(".list_lvl_1").removeClass("open").addClass('close');
-                    nextElemChildren.hide();
-                    nextElemChildren.siblings(".list_lvl_1").removeClass("open").addClass('close');
-                }
-            });
-        });
-};
+       if(elemChildren.is(':visible')) {
+           elemChildren.hide();
+           elem.removeClass('open').addClass('close');
+           elem.find('.expand').addClass("expand-icon");
+       }
+       else {
+           elemChildren.show();
+           elem.addClass('open').removeClass('close');
+           elem.find('.expand').removeClass("expand-icon");
+           nextElemChildren.hide();
+           console.log(nextElemChildren.siblings(".list_lvl_1"));
+           nextElemChildren.siblings(".list_lvl_1").find('.expand').addClass("expand-icon");
+       }
+   });
+});

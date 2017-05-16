@@ -73,7 +73,8 @@ $release = $DBRESULT->fetchRow();
                         <p>Kevin Duret</p>
                         <p>Toufik Mechouet</p>
                         <p>Rabaa Ridene</p>
-                        <p>Benoït Sauveton</p>
+                        <p>Loïc Laurent</p>
+                        <p>Benoît Sauveton</p>
                         <p>Romain Bertholon</p>
                         <p>Christophe Coraboeuf</p>
                         <p>Nicolas Cordier</p>

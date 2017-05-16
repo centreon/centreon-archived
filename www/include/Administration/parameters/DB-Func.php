@@ -160,12 +160,6 @@ function updateNagiosConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "broker_socket_path",
-        isset($ret["broker_socket_path"]) && $ret["broker_socket_path"] != null
-            ? $pearDB->escape($ret["broker_socket_path"]) : "NULL"
-    );
-    updateOption(
-        $pearDB,
         "interval_length",
         isset($ret["interval_length"]) && $ret["interval_length"] != null
             ? $pearDB->escape($ret["interval_length"]) : "NULL"
@@ -573,6 +567,42 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        'proxy_url',
+        isset($ret["proxy_url"]) && $ret["proxy_url"] != null
+            ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'proxy_port',
+        isset($ret["proxy_port"]) && $ret["proxy_port"] != null
+            ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'proxy_user',
+        isset($ret["proxy_user"]) && $ret["proxy_user"] != null
+            ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'proxy_password',
+        isset($ret["proxy_password"]) && $ret["proxy_password"] != null
+            ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'display_downtime_chart',
+        isset($ret["display_downtime_chart"]["yes"]) && $ret["display_downtime_chart"]["yes"] != null
+            ? htmlentities($ret["display_downtime_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+    updateOption(
+        $pearDB,
+        'display_comment_chart',
+        isset($ret["display_comment_chart"]["yes"]) && $ret["display_comment_chart"]["yes"] != null
+            ? htmlentities($ret["display_comment_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+    updateOption(
+        $pearDB,
         "enable_autologin",
         isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != null
             ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0"
@@ -602,9 +632,27 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "sso_blacklist_clients",
+        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != NULL
+            ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
+    );
+    updateOption(
+        $pearDB,
         "sso_header_username",
         isset($ret["sso_header_username"]) && $ret["sso_header_username"] != null
             ? $pearDB->escape($ret["sso_header_username"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "sso_username_pattern",
+        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != NULL
+            ? $pearDB->escape($ret["sso_username_pattern"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "sso_username_replace",
+        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != NULL
+            ? $pearDB->escape($ret["sso_username_replace"]) : ""
     );
     updateOption(
         $pearDB,
@@ -712,6 +760,19 @@ function updateRRDToolConfigData($gopt_id = null)
     );
 
     $centreon->initOptGen($pearDB);
+}
+
+function updatePartitioningConfigData($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+    
+    foreach ($ret as $key => $value) {
+        if (preg_match('/^partitioning_/', $key)) {
+            updateOption($db, $key, $value);
+        }
+    }
+    
+    $centreon->initOptGen($db);
 }
 
 function updateODSConfigData()

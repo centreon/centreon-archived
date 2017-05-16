@@ -176,7 +176,7 @@
         {/if}            
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
-                <h4>{t}Notification options{/t}}</h4>
+                <h4>{t}Notification options{/t}</h4>
             </td>
         </tr>
         {if $o == "mc"}

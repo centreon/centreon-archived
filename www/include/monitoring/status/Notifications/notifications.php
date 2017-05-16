@@ -47,10 +47,6 @@ $refresh_rate += ($refresh_rate / 2);
 
 $obj = new CentreonXMLBGRequest($sid, 1, 1, 0, 1);
 
-
-if (!isset($_SESSION['centreon'])) {
-    exit;
-}
 $centreon = $_SESSION['centreon'];
 if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     exit;
@@ -64,8 +60,10 @@ $host_class_label = array(0 => "success", 1 => "error", 2 => "alert");
 $sql = "SELECT name, description, s.state
         FROM services s, hosts h %s
         WHERE h.host_id = s.host_id
-        AND (description NOT LIKE 'meta_%%' OR description NOT LIKE 'ba_%%')
+        AND (description NOT LIKE 'meta_%%' AND description NOT LIKE 'ba_%%')
         AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND s.scheduled_downtime_depth=0
+        AND s.acknowledged=0
         %s
         UNION
         SELECT 'Meta Service', s.display_name, s.state
@@ -73,6 +71,8 @@ $sql = "SELECT name, description, s.state
         WHERE h.host_id = s.host_id
         AND description LIKE 'meta_%%'
         AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND s.scheduled_downtime_depth=0
+        AND s.acknowledged=0
         %s
         UNION
         SELECT 'Business Activity', s.display_name, s.state
@@ -80,13 +80,17 @@ $sql = "SELECT name, description, s.state
         WHERE h.host_id = s.host_id
         AND description LIKE 'ba_%%'
         AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND s.scheduled_downtime_depth=0
+        AND s.acknowledged=0
         %s
         UNION
         SELECT name, NULL, h.state
         FROM hosts h %s
-        WHERE h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
-        %s
-        AND name != '_Module_Meta'";
+        WHERE name NOT LIKE '_Module_%%'
+        AND h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND h.scheduled_downtime_depth=0
+        AND h.acknowledged=0
+        %s";
 if ($obj->is_admin) {
     $sql = sprintf($sql, "", "", "", "", "", "", "", "");
 } else {
@@ -157,5 +161,6 @@ while ($row = $res->fetchRow()) {
     $obj->XML->endElement();
 }
 $obj->XML->endElement();
+
 $obj->header();
 $obj->XML->output();

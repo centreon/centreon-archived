@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -45,7 +41,7 @@ require_once(_CENTREON_PATH_ . "www/class/centreonXML.class.php");
 require_once(_CENTREON_PATH_ . "www/class/centreonDB.class.php");
 require_once(_CENTREON_PATH_ . "www/class/centreonLDAP.class.php");
 
-CentreonSession::start();
+CentreonSession::start(1);
 
 if (!isset($_SESSION["centreon"])) {
     exit();
@@ -114,8 +110,10 @@ foreach ($ids as $arId) {
 
         $query = "SELECT ari_name, ari_value
                   FROM auth_ressource_info
-    	    	  WHERE ar_id = " . $pearDB->escape($arId);
-        $res = $pearDB->query($query);
+    	    	  WHERE ar_id = ?";
+        $stmt = $pearDB->prepare($query);
+        $res = $pearDB->execute($stmt, array($arId));
+
         while ($row = $res->fetchRow()) {
             switch ($row['ari_name']) {
                 case "user_filter":

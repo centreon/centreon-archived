@@ -19,6 +19,7 @@ check_tmp_disk_space
 
 ## Where is nagios_pluginsdir
 locate_plugindir
+locate_centreon_plugins
 
 ## Locale for sed
 locate_centplugins_tmpdir

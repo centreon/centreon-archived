@@ -83,6 +83,7 @@ In order to delete one host, use the **DEL** action. You have to list the availa
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
+.. _clapi-hosts-setparam:
 
 Setparam
 --------
@@ -150,8 +151,6 @@ max_check_attempts                   Maximum number of attempt before a HARD sta
 
 name	                             Host name
 
-normal_check_interval                value in minutes
-
 notes	                             Notes
 
 notes_url	                     Notes URL
@@ -185,8 +184,6 @@ snmp_version                         Snmp version
 stalking_options	             Comma separated options: 'o' for OK, 'd' for Down, 'u' for Unreachable
 
 statusmap_image	                     Status map image (used by statusmap
-
-vrml_image	                     VRML image
 
 host_notification_options            Notification options (d,u,r,f,s)
 

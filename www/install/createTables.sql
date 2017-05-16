@@ -117,6 +117,7 @@ CREATE TABLE `acl_resources` (
   `acl_res_comment` text,
   `acl_res_status` enum('0','1') DEFAULT NULL,
   `changed` int(11) DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`acl_res_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -443,11 +444,12 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_write_thread_id` enum('0','1') DEFAULT '1',
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
-  `event_queue_max_size` int(11) DEFAULT '50000',
+  `event_queue_max_size` int(11) DEFAULT '100000',
   `command_file` varchar(255),
-  `retention_path` varchar(255),
+  `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
   `correlation_activate` enum('0','1') DEFAULT '0',
+  `daemon` TINYINT(1),
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -475,8 +477,6 @@ CREATE TABLE `cfg_nagios` (
   `nagios_name` varchar(255) DEFAULT NULL,
   `log_file` varchar(255) DEFAULT NULL,
   `cfg_dir` varchar(255) DEFAULT NULL,
-  `object_cache_file` varchar(255) DEFAULT NULL,
-  `precached_object_file` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
   `check_result_path` varchar(255) DEFAULT NULL,
@@ -961,6 +961,7 @@ CREATE TABLE `custom_view_user_relation` (
   `usergroup_id` int(11) DEFAULT NULL,
   `locked` tinyint(6) DEFAULT '0',
   `is_owner` tinyint(6) DEFAULT '0',
+  `is_share` tinyint(6) DEFAULT '0',
   `is_consumed` int(1) NOT NULL DEFAULT 1,
   UNIQUE KEY `view_user_unique_index` (`custom_view_id`,`user_id`,`usergroup_id`),
   KEY `fk_custom_views_user_id` (`user_id`),
@@ -1170,7 +1171,7 @@ CREATE TABLE `downtime_period` (
   `dtp_start_time` time NOT NULL,
   `dtp_end_time` time NOT NULL,
   `dtp_day_of_week` varchar(15) DEFAULT NULL,
-  `dtp_month_cycle` enum('first','last','all','none') DEFAULT 'all',
+  `dtp_month_cycle` varchar(100) DEFAULT 'all',
   `dtp_day_of_month` varchar(100) DEFAULT NULL,
   `dtp_fixed` enum('0','1') DEFAULT '1',
   `dtp_duration` int(11) DEFAULT NULL,
@@ -1714,6 +1715,7 @@ CREATE TABLE `nagios_server` (
   `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
   `engine_name` varchar(255) DEFAULT NULL,
   `engine_version` varchar(255) DEFAULT NULL,
+  `centreonbroker_logs_path` VARCHAR(255),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1738,7 +1740,8 @@ CREATE TABLE `ods_view_details` (
   `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
   `all_user` enum('0','1') DEFAULT NULL,
-  PRIMARY KEY (`dv_id`)
+  PRIMARY KEY (`dv_id`),
+  KEY `contact_index` (`contact_id`, `index_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1938,7 +1941,7 @@ CREATE TABLE `session` (
 CREATE TABLE `timeperiod` (
   `tp_id` int(11) NOT NULL AUTO_INCREMENT,
   `tp_name` varchar(200) DEFAULT NULL,
-  `tp_alias` varchar(20) DEFAULT NULL,
+  `tp_alias` varchar(200) DEFAULT NULL,
   `tp_sunday` varchar(2048) DEFAULT NULL,
   `tp_monday` varchar(2048) DEFAULT NULL,
   `tp_tuesday` varchar(2048) DEFAULT NULL,
@@ -2329,6 +2332,22 @@ CREATE TABLE IF NOT EXISTS `locale` (
   `locale_short_name` varchar(3) NOT NULL,
   `locale_long_name` varchar(255) NOT NULL,
   `locale_img` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create downtime cache table for recurrent downtimes
+CREATE TABLE IF NOT EXISTS `downtime_cache` (
+  `downtime_cache_id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`downtime_cache_id`),
+  `downtime_id` int(11) NOT NULL,
+  `host_id` int(11) NOT NULL,
+  `service_id` int(11),
+  `start_timestamp` int(11) NOT NULL,
+  `end_timestamp` int(11) NOT NULL,
+  `start_hour` varchar(255) NOT NULL,
+  `end_hour` varchar(255) NOT NULL,
+  CONSTRAINT `downtime_cache_ibfk_1` FOREIGN KEY (`downtime_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE,
+  CONSTRAINT `downtime_cache_ibfk_2` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
+  CONSTRAINT `downtime_cache_ibfk_3` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -19,3 +19,5 @@ Guide d'administration
    02i
    02j
    02k
+   backup
+   partitioning/index

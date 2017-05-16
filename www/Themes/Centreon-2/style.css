@@ -2,32 +2,32 @@
  * Copyright 2005-2011 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
  *
  */
@@ -116,6 +116,15 @@ iframe {
 
 label {
     vertical-align: middle;
+}
+
+
+pre.wrap {
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .margin_right {
@@ -207,13 +216,16 @@ p.description a, p.description a:visited {
    width: 213px !important;
 }
 
+.select2-selection {
+    cursor: initial !important;
+}
+
 .select2-container .select2-selection--multiple {
     min-height: auto !important;
 }
 
 .select2-container .select2-search--inline .select2-search__field {
     margin-top: 0 !important;
-    width: 200px !important;
 }
 
 .select2-container--default .select2-selection--single {
@@ -267,10 +279,17 @@ p.description a, p.description a:visited {
     background-color: #bfecff !important;
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+.formTable .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    min-height: 28px;
+}
+
+.ajaxOption .select2-container--default .select2-selection--multiple .select2-selection__rendered {
     max-height: 80px;
 }
 
+.formTable .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    min-height: 28px;
+}
 
 /* Selected elements  */
 .select2-results-header {
@@ -303,7 +322,7 @@ p.description a, p.description a:visited {
 }
 
 .clearAllSelect2 {
-     margin-right: 4px;
+     margin-left: 4px;
  }
 
 .clearAllSelect2 img {
@@ -358,7 +377,7 @@ p.description a, p.description a:visited {
 
 /* ------------ Badge -----------*/
 
-.badge  {   
+.badge  {
     display: inline-block;
     border-radius: 18px;
     color: #fff;
@@ -465,6 +484,7 @@ a.btc {
     margin : 0px 4px;
     cursor: pointer;
 }
+
 .bt_default {
     background: #a7a9ac !important;
 }
@@ -606,7 +626,7 @@ form#AjaxBankBasic {
 #Tcontener {
     height: 100%;
     position: relative;
-    margin-bottom: 36px;
+    margin-bottom: 35px;
 }
 
 .GlobalContainer tr {
@@ -670,6 +690,7 @@ vertical-align: middle;
 
 .Resume_light_table th span {
     background-color: #00a499;
+    margin-right: 5px;
 }
 
 .Resume_light_table td span img{
@@ -1023,10 +1044,6 @@ div.menuLeft {
 /* ------ END : Tabs -----*/
 
 /* ------ START : Forms ------ */
-.formTable {
-
-}
-
 .formTable .ListHeader,
 .table .ListHeader{
     background: #fff;
@@ -1129,7 +1146,7 @@ a.infobulle:hover   {z-index:25;}
     right: 30px;
 }
 
-/* Widget css */ 
+/* Widget css */
 .manageMoreViews {
    display: block;
    height: 16px;
@@ -1182,6 +1199,26 @@ a.infobulle:hover   {z-index:25;}
     border-radius: 4px;
     width: 30%;
 }
+
+.msg strong {
+    display: block;
+    font-size: 18px;
+}
+
+.msg-field {
+    display: inline-block;
+    padding:6px 0;
+    text-align: center;
+}
+
+.msg-field.error {
+    color: #e00b3d;
+}
+
+.msg-field.success2 {
+    color: #597f00;
+}
+
 #centreonMsg    {
     top:50px;
     height:20px;
@@ -1357,6 +1394,7 @@ table.ListTableSmallArg td {
 .list_lvl_1, .list_lvl_2 {
     vertical-align:middle;
 }
+
 .list_lvl_3 {
     text-align: left;
     vertical-align: middle;
@@ -1514,7 +1552,6 @@ td, a.infobulle:hover td {
     width: 600px;
     padding: 3px;
     border-radius: 4px;
-    box-shadow: 5px 5px 2px #d1d2d4;
     border: 1px solid #d1d2d4;
 }
 
@@ -1716,7 +1753,7 @@ span.state_badge {
     background: none !important;
 }
 
-/* Fullscreen icon */ 
+/* Fullscreen icon */
 .fullscreen-icon {
   position: fixed;
   right: 10px;
@@ -2105,7 +2142,7 @@ textarea.default-textarea {
 
 /* -- Views Performance page -- */
 .graph-options {
-  display: flex; 
+  display: flex;
   justify-content: flex-end;
   margin-bottom: 2px;
 }
@@ -2135,22 +2172,25 @@ textarea.default-textarea {
 
 .graph .title {
   background-color: #cfedf9;
-  height: 20px;
+  height: 30px;
   display: inline-block;
-  line-height: 20px;
+  line-height: 30px;
   font-weight: bold;
   width: calc(100% - 4px);
   padding: 0 2px;
   cursor: move;
 }
+.graph .title .btc {
+    vertical-align: top;
+}
 
 .graph .title .actions {
   float: right;
-  margin-top: 2px;
+  margin-top: 6px;
 }
 
 .graph .title .remove {
-  margin-top: 2px;
+  margin-top: 6px;
   cursor: pointer;
 }
 
@@ -2207,6 +2247,7 @@ textarea.default-textarea {
 .graph .chart-status {
   margin-top: 10px;
   margin-left: 40px;
+  overflow: visible;
 }
 
 .graph .c3-region.region-downtime {
@@ -2215,6 +2256,78 @@ textarea.default-textarea {
 
 .graph .c3-region.region-ack {
   fill: #ae9500;
+}
+
+.chart-legends {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  position: relative;
+  padding: 0 32px;
+}
+
+.chart-legends .chart-legend-action {
+  display: block;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+}
+
+.chart-legends .chart-legend-action > img {
+  height: 14px;
+  cursor: pointer;
+}
+
+.chart-legends .chart-legend {
+  padding: 0 4px;
+  font-size: 12px;
+  color: #555;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.chart-legends .chart-legend > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  cursor: pointer;
+}
+
+.chart-legends .chart-legend .chart-legend-color {
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+}
+
+.chart-legends .chart-legend.hidden .chart-legend-color {
+  opacity: 0.3;
+}
+
+.chart-legends .chart-legend span {
+  line-height: 16px;
+}
+
+.chart-legends .chart-legend .extra {
+  display: none;
+  margin-left: 6px;
+}
+
+.chart-legends .chart-legend .extra span {
+  margin-left: 4px;
+}
+
+.chart-legends.extend {
+  flex-direction: column;
+}
+
+.chart-legends.extend .chart-legend .extra {
+  display: block;
 }
 
 .ico-col.active {
@@ -2250,13 +2363,6 @@ textarea.default-textarea {
 .ico-col.ico-col-3.active {
   background-image: url('../../img/icons/3-col-blue.png');
   background-size: cover;
-}
-
-.filter-select {
-  background-image: url('../../img/icons/filter.png');
-  background-size: 18px;
-  background-position: right;
-  background-repeat: no-repeat;
 }
 
 /* Refresh component for chart */
@@ -2314,3 +2420,139 @@ textarea.default-textarea {
   display: block;
 }
 
+/* broker_stat */
+
+.broker_stats {
+    position: relative;
+}
+
+.broker_stats_lastmodif {
+    position: relative;
+    float: right;
+}
+
+ul.module_list {
+    min-width: 122px;
+}
+
+.broker_stats .informations_header {
+    position: relative;
+    height: auto;
+    width: 100%;
+}
+
+.broker_stats .informations {
+    overflow: hidden;
+    display: block;
+    padding: 4px;
+    position: relative;
+}
+
+.broker_stats {
+    margin-bottom: 5px;
+}
+
+.broker_stats.stats_lv2 {
+    margin: 5px 36px;
+}
+
+.broker_stats.stats_lv2 p.title {
+    background-color: #e7e7e8;
+}
+
+.broker_stats.stats_lv2  p.title:hover {
+    background-color: #d1d2d4;
+}
+
+.broker_stats p.title {
+    cursor: pointer;
+    padding: 6px;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #e7e7e8;
+    border-top: 1px solid #e7e7e8;
+}
+
+.broker_stats  p.title:hover {
+    background-color: #e7e7e8;
+}
+
+.expand {
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 6px 6px;
+    border-color: transparent transparent #a7a9ac transparent;
+    transition: transform 0.2s;
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+.expand-icon {
+    transform: rotate(-45deg);
+}
+
+.broker_stats ul.module_list {
+    margin: 3px;
+}
+
+.broker_stats ul.peers {
+    margin-left: 153px;
+}
+
+.broker_stats ul.filters {
+    margin-left: 153px;
+}
+
+.broker_stats ul li {
+    list-style: none;
+}
+
+.broker_stats .info_name {
+    float: left;
+    color: #09225c;
+    font-weight: 600;
+}
+
+.broker_stats .info_value {
+    float: right;
+    width: 80%;
+}
+
+.broker_stats .module_status {
+    float: right;
+    padding: 0 6px;
+}
+
+.broker_stats .loaded {
+    color: #88b917;
+}
+
+/* Tour plugin */
+.tourbus-content {
+    margin-bottom: 10px;
+}
+
+.tourbus-action {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.tourbus-overlay {
+  display: none;
+  background: #666;
+  opacity: 0.5;
+  z-index: 9997;
+  min-height: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+}
+.tourbus-highlight {
+  background: white;
+  position: relative;
+  box-shadow: inset 0 0 2px rgba( 0, 0, 0, 0.2 );
+  z-index: 9998;
+}

@@ -1,12 +1,10 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ContactListPage;
-use Centreon\Test\Behat\ContactConfigurationPage;
-use Centreon\Test\Behat\CommandConfigurationPage;
-use Centreon\Test\Behat\ConfigurationPollersPage;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\CommandConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 class RecoveryNotificationDelayContext extends CentreonContext
 {
@@ -34,7 +32,8 @@ class RecoveryNotificationDelayContext extends CentreonContext
         // Create host.
         $this->createHostWithRecoveryDelay();
 
-        (new ConfigurationPollersPage($this))->restartEngine();
+        // Restart all pollers.
+        $this->restartAllPollers();
     }
 
     /**
@@ -52,7 +51,8 @@ class RecoveryNotificationDelayContext extends CentreonContext
         $this->createHostWithRecoveryDelay();
         $this->createServiceWithRecoveryDelay();
 
-        (new ConfigurationPollersPage($this))->restartEngine();
+        // Restart all pollers.
+        $this->restartAllPollers();
     }
 
     /**
@@ -152,8 +152,8 @@ class RecoveryNotificationDelayContext extends CentreonContext
 
     private function updateContactNotification()
     {
-        $page = new ContactListPage($this);
-        $contact = $page->edit('admin');
+        $page = new ContactConfigurationListingPage($this);
+        $contact = $page->inspect('admin');
         $contact->setProperties(array(
             'notifications_enabled' => 1,
             'host_notify_on_recovery' => 1,
@@ -210,5 +210,3 @@ class RecoveryNotificationDelayContext extends CentreonContext
         $page->save();
     }
 }
-
-?>

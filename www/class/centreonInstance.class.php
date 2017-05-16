@@ -88,12 +88,12 @@ class CentreonInstance
     {
         $pollers = array();
         if (!empty($poller_id)) {
-            $query = "SELECT instance_id, instance_name
-                FROM instance
-                WHERE instance_id IN (".$this->dbo->escape(implode(",", $poller_id)).") ";
+            $query = "SELECT i.instance_id, i.name
+                FROM instances i
+                WHERE i.instance_id IN (".$this->dbo->escape(implode(",", $poller_id)).") ";
             $res = $this->dbo->query($query);
             while ($row = $res->fetchRow()) {
-                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['instance_name']);
+                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['name']);
             }
         }
         
@@ -214,31 +214,32 @@ class CentreonInstance
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
-    {
-        $selectedInstances = '';
-        $aInstanceList = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
-        } else {
-            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
-        }
-        
-        $queryInstance = "SELECT DISTINCT p.name as name, p.id  as id"
-            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
-            . " WHERE r.resource_id = rel.resource_id "
-            . " AND p.id = rel.instance_id "
-            . $selectedInstances
-            . " ORDER BY p.name";
-        $DBRESULT = $this->db->query($queryInstance);
-        while ($data = $DBRESULT->fetchRow()) {
-            $aInstanceList[] = array(
-                'id' => $data['id'],
-                'text' => $data['name']
-            );
-        }
-        
-        return $aInstanceList;
-    }
+     {
+         $selectedInstances = '';
+         $items= array();
+
+         $explodedValues = implode(',', $values);
+         if (empty($explodedValues)) {
+             $explodedValues = "''";
+         }else {
+                 $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+         }
+
+         $query = "SELECT DISTINCT p.name as name, p.id  as id"
+             . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
+             . " WHERE r.resource_id = rel.resource_id"
+             . " AND p.id = rel.instance_id "
+             . " AND p.id IN (" . $explodedValues . ")"
+             . $selectedInstances
+             . " ORDER BY p.name";
+         $DBRESULT = $this->db->query($query);
+         while ($data = $DBRESULT->fetchRow()) {
+                 $items[] = array(
+                         'id' => $data['id'],
+                 'text' => $data['name']
+             );
+         }
+
+         return $items;
+     }
 }

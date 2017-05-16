@@ -1,13 +1,16 @@
-################
-How to Monitor ?
-################
+======
+How to
+======
 
-With Centreon, you can monitor many environments of your IT systems. Serveurs, applications, UPS, website, network equipments: all this systems have their specificities. That's why the Centreon Company provides Plugin packs based on Centreon Plugins. In order to help you to implement you monitoring easily, this documentation section will give you keys to setup them into you Centreon.
+With Centreon, you can monitor many environments of your IT systems. Servers, applications, UPS, website, network equipments: all this systems have their specificities.
+That's why the Centreon Company provides Plugin packs based on Centreon Plugins.
+In order to help you to implement you monitoring easily, this documentation section will give you keys to setup them into you Centreon.
 
 .. toctree::
    :maxdepth: 1
    
-   selenium-scenario/index
+   sso
    
 
-If you have experiences that you want to share to the Centreon community, please don't hesitate to push it on Github. Your howto will be integrated into official Centreon Documentation.
+If you have experiences that you want to share to the Centreon community, please don't hesitate to push it on Github.
+Your howto will be integrated into official Centreon Documentation.

@@ -50,6 +50,10 @@ class CentreonAuth
     protected $cryptPossibilities;
     protected $pearDB;
     protected $debug;
+
+    // Web UI or API
+    protected $source;
+
     /*
      * Flags
      */
@@ -81,7 +85,7 @@ class CentreonAuth
      * @param string $token | for autologin
      * @return void
      */
-    public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "")
+    public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "", $source = "WEB")
     {
         global $centreon_crypt;
 
@@ -96,6 +100,7 @@ class CentreonAuth
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
         $this->default_page = 1;
+        $this->source = $source;
 
         $query = "SELECT ar.ar_id, ari.ari_value, ari.ari_name
                   FROM auth_ressource_info ari, auth_ressource ar
@@ -206,9 +211,10 @@ class CentreonAuth
             if ($this->autologin && $this->userInfos["contact_autologin_key"]
                 && $this->userInfos["contact_autologin_key"] == $token) {
                 $this->passwdOk = 1;
-            } elseif ($this->userInfos["contact_passwd"] == $password && $this->autologin) {
+            } elseif (!empty($password) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
                 $this->passwdOk = 1;
-            } elseif ($this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
+            } elseif (!empty($password)
+                    && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -222,10 +228,10 @@ class CentreonAuth
             if ($this->autologin && $this->userInfos["contact_autologin_key"]
                 && $this->userInfos["contact_autologin_key"] == $token) {
                 $this->passwdOk = 1;
-            } elseif (isset($this->userInfos["contact_passwd"])
+            } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
                 && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
                 $this->passwdOk = 1;
-            } elseif (isset($this->userInfos["contact_passwd"])
+            } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
                 && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
@@ -244,7 +250,7 @@ class CentreonAuth
      */
     protected function checkUser($username, $password, $token)
     {
-        
+
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
             $DBRESULT = $this->pearDB->query("SELECT * FROM `contact`
                 WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'
@@ -257,7 +263,8 @@ class CentreonAuth
         if ($DBRESULT->numRows()) {
             $this->userInfos = $DBRESULT->fetchRow();
 
-            if ($this->userInfos["contact_oreon"]) {
+            if ($this->userInfos["contact_oreon"]
+                || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')) {
                 /*
                  * Check password matching
                  */
@@ -266,22 +273,18 @@ class CentreonAuth
 
                 if ($this->passwdOk == 1) {
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
-                    if ($this->debug) {
-                        $this->CentreonLog->insertLog(
-                            1,
-                            "Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]
-                        );
-                    }
+                    $this->CentreonLog->insertLog(
+                        1,
+                        "[".$this->source."] Contact '" . $username . "' logged in - IP : " .
+                        $_SERVER["REMOTE_ADDR"]
+                    );
                 } else {
-                    if ($this->debug) {
-                        $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
-                    }
+                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
                     $this->error = _('Your credentials are incorrect.');
                 }
             } else {
-                if ($this->debug) {
-                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' is not enable for reaching centreon");
-                }
+                    $this->CentreonLog->insertLog(1,
+                        "[".$this->source."] Contact '" . $username . "' is not enable for reaching centreon");
                 $this->error = _('Your credentials are incorrect.');
             }
         } elseif (count($this->ldap_auto_import)) {
@@ -290,13 +293,15 @@ class CentreonAuth
              */
             $this->userInfos['contact_alias'] = $username;
             $this->userInfos['contact_auth_type'] = "ldap";
+            $this->userInfos['contact_email'] = '';
+            $this->userInfos['contact_pager'] = '';
             $this->checkPassword($password, "", true);
             /*
              * Reset userInfos with imported informations
              */
             $DBRESULT = $this->pearDB->query(
                 "SELECT * FROM `contact`
-                    WHERE `contact_alias` = '" . $usernameForQuery . "'
+                    WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'
                         AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
             );
             if ($DBRESULT->numRows()) {
@@ -304,7 +309,7 @@ class CentreonAuth
             }
         } else {
             if ($this->debug) {
-                $this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
+                $this->CentreonLog->insertLog(1, "[".$this->source."] No contact found with this login : '$username'");
             }
             $this->error = _('Your credentials are incorrect.');
         }

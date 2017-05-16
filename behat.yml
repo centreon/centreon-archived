@@ -6,7 +6,13 @@ default:
         default:
           selenium2: ~
     Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
   suites:
+    configuration_warnings:
+      paths: [ %paths.base%/features/ConfigurationWarnings.feature ]
+      contexts:
+        - ConfigurationWarningsContext
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
       contexts:
@@ -38,6 +44,10 @@ default:
       contexts:
         - RestartCentreonEngineContext
 
+    acknowledgement:
+      paths: [ %paths.base%/features/Acknowledgement.feature ]
+      contexts:
+        - AcknowledgementContext
     acknowledgement_timeout:
       paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
       contexts:
@@ -53,10 +63,10 @@ default:
       contexts:
         - PartitioningContext
 
-    centreon_knowledge_base:
-      paths: [ %paths.base%/features/CentreonWithKnowledge.feature ]
+    knowledge_base:
+      paths: [ %paths.base%/features/KnowledgeBase.feature ]
       contexts:
-        - CentreonWithKnowledgeContext
+        - KnowledgeBaseContext
 
     disable_fields_on_blocked_objects:
       paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
@@ -67,3 +77,74 @@ default:
           paths: [ %paths.base%/features/Backup.feature ]
           contexts:
             - BackupContext
+
+    meta_services_api:
+          paths: [ %paths.base%/features/MetaServicesApi.feature ]
+          contexts:
+            - MetaServicesApiContext
+
+    influxdb:
+      paths: [ %paths.base%/features/Influxdb.feature ]
+      contexts:
+        - InfluxdbContext
+
+    meta_services_downtime:
+      paths: [ %paths.base%/features/DowntimeService.feature ]
+      contexts:
+        - DowntimeServiceContext
+
+    limit_metric_in_chart:
+      paths: [ %paths.base%/features/LimitMetricInChart.feature ]
+      contexts:
+        - LimitMetricInChartContext
+
+
+    show_disabled_hosts_services:
+      paths: [ %paths.base%/features/ShowDisabledHostsServices.feature ]
+      contexts:
+        - ShowDisabledHostsServicesContext
+
+    save_search_filter:
+      paths: [ %paths.base%/features/SaveSearchFilter.feature ]
+      contexts:
+        - SaveSearchFilterContext
+
+    timezone_display_host_monitoring:
+      paths: [ %paths.base%/features/TimezoneInMonitoring.feature ]
+      contexts:
+        - TimezoneInMonitoringContext
+
+    downtime_start_and_stop:
+      paths: [ %paths.base%/features/DowntimeStartAndStop.feature ]
+      contexts:
+       - DowntimeStartAndStopContext
+
+    command_arguments:
+      paths: [ %paths.base%/features/CommandArguments.feature ]
+      contexts:
+       - CommandArgumentsContext
+
+    autologin:
+      paths: [ %paths.base%/features/Autologin.feature ]
+      contexts:
+       - AutologinContext
+
+    broker:
+      paths: [ %paths.base%/features/Broker.feature ]
+      contexts:
+       - BrokerContext
+
+    ldap:
+      paths: [ %paths.base%/features/Ldap.feature ]
+      contexts:
+      - LdapContext
+
+    custom_views:
+      paths: [ %paths.base%/features/CustomViews.feature ]
+      contexts:
+      - CustomViewsContext
+
+    host_template_configuration:
+      paths: [ %paths.base%/features/HostTemplateConfiguration.feature ]
+      contexts:
+      - HostTemplateConfigurationContext

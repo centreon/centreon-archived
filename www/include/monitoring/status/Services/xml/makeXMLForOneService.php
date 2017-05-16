@@ -49,7 +49,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 /*
  * Create XML Request Objects
  */
-    CentreonSession::start();
+CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 /**
@@ -204,11 +204,11 @@ if ($data = $DBRESULT->fetchRow()) {
     }
 
     $tab_perf = preg_split("/\ /", $data["perfdata"]);
-    $perf_data = array();
+    $perf_data = array_slice($tab_perf,0,4);
     if(count($tab_perf) > 5) {
-    	$perf_data = array_slice($tab_perf,0,4);
-    	$perf_data[5] = "...";
+        $perf_data[5] = "...";
     }
+
     foreach ($perf_data as $val) {
         $obj->XML->startElement("performance_data");
         $obj->XML->writeElement("perf_data", CentreonUtils::escapeSecure($val));

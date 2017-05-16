@@ -1,7 +1,7 @@
 <table width='100%'>
     <tr>
         <td id='database_partitioning' width='60%' style='vertical-align:top;'>
-            <h2>Database partitioning</h2>
+            <h2>{t}Database partitioning{/t}</h2>
             <hr>
 
             <div  class="headerTabContainer">
@@ -48,7 +48,7 @@
                    {/foreach}
                 </table>
                 {else}
-                <H3> Table is not partitioned </H3>
+                <H3>{t} Table is not partitioned {/t}</H3>
                 {/if}
             </div>
             {assign var=val value=$val+1}

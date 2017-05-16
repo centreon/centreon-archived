@@ -113,6 +113,7 @@ class CentreonCommand extends CentreonObject
         $elements = $this->object->getList($params, -1, 0, null, null, $filters);
         foreach ($elements as $tab) {
             $tab['command_line'] = CentreonUtils::convertSpecialPattern(html_entity_decode($tab['command_line']));
+            $tab['command_line'] = CentreonUtils::convertLineBreak($tab['command_line']);
             $tab['command_type'] = $this->typeConversion[$tab['command_type']];
             echo implode($this->delim, $tab) . "\n";
         }
@@ -213,9 +214,15 @@ class CentreonCommand extends CentreonObject
      * @return void
      */
 
-    public function export()
+    public function export($filter_id=null, $filter_name=null)
     {
-        $elements = $this->object->getList("*", -1, 0);
+        $filters = null;
+        if (!is_null($filter_id)) {
+            $filters = array('command_id' => $filter_id);
+        } 
+
+        parent::export($filters);
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters);
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";
             foreach ($this->insertParams as $param) {

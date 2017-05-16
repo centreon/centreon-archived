@@ -277,7 +277,7 @@ class CentreonAuthLDAP
 					contact_name = '" . $this->pearDB->escape($userDisplay, false) . "',
 					contact_email = " . $userEmail . ",
 					contact_pager = " . $userPager . ",
-                                        ar_id = ".$this->arId."
+                    ar_id = ".$this->arId."
 					WHERE contact_id = " . $this->contactInfos['contact_id'];
 
                 $ret = $this->pearDB->query($queryUpdateExtInfos);

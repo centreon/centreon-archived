@@ -157,7 +157,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_allowClear = true;
         $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
-        $this->_defaultDataset = array();
+        $this->_defaultDataset = null;
         $this->_defaultDatasetOptions = array();
         $this->_jsCallback = '';
         $this->parseCustomAttributes($attributes);
@@ -199,7 +199,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $this->_allowClear = true;
         }
 
-        if (isset($attributes['defaultDataset'])) {
+        if (isset($attributes['defaultDataset']) && !is_null($attributes['defaultDataset'])) {
             $this->_defaultDataset = $attributes['defaultDataset'];
         }
 
@@ -315,14 +315,17 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 url: "' . $this->_availableDatasetRoute . '"
             },';
 
-            if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
+            if ($this->_defaultDatasetRoute && is_null($this->_defaultDataset)) {
                 $additionnalJs = $this->setDefaultAjaxDatas();
             } else {
                 $this->setDefaultFixedDatas();
             }
         } else {
             $defaultData = $this->setFixedDatas() . ',';
+            $this->setDefaultFixedDatas();
         }
+        
+        $additionnalJs .= ' ' . $this->_jsCallback;
 
         $javascriptString = '<script>
             jQuery(function () {
@@ -359,8 +362,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             if (empty($option["attr"]["value"])) {
                 $option["attr"]["value"] = -1;
             }
-            $datas .= '{id: ' . $option["attr"]["value"] . ', text: "' . $option['text'] . '"},';
 
+            if (!is_numeric($option["attr"]["value"])) {
+                $option["attr"]["value"] = '"' . $option["attr"]["value"] .'"';
+            }
+
+            $datas .= '{id: ' . $option["attr"]["value"] . ', text: "' . $option['text'] . '"},';
             if (!empty($strValues) && in_array($option['attr']['value'], $strValues, true)) {
                 $option['attr']['selected'] = 'selected';
                 $this->_defaultSelectedOptions .= "<option" . $this->_getAttrString($option['attr']) . '>' .
@@ -401,8 +408,9 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $this->_defaultSelectedOptions .= $currentOption;
                 }
             }
-        } else {
+        } else if (!is_null($this->_defaultDataset)) {
             foreach ($this->_defaultDataset as $elementName => $elementValue) {
+
                 $currentOption = '<option selected="selected" value="'
                     . $elementValue . '">'
                     . $elementName . "</option>";
@@ -485,14 +493,21 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     {
         if ('updateValue' == $event) {
             $value = $this->_findValue($caller->_constantValues);
+
             if (null === $value) {
-                $value = $this->_findValue($caller->_submitValues);
+                if (is_null($this->_defaultDataset)) {
+                    $value = $this->_findValue($caller->_submitValues);
+                } else {
+                    $value = $this->_defaultDataset;
+                }
+
                 // Fix for bug #4465 & #5269
                 // XXX: should we push this to element::onQuickFormEvent()?
                 if (null === $value && (!$caller->isSubmitted() || !$this->getMultiple())) {
                     $value = $this->_findValue($caller->_defaultValues);
                 }
             }
+
             if (null !== $value) {
                 if (!is_array($value)) {
                     $value = array($value);

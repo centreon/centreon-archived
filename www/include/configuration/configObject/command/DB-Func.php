@@ -187,6 +187,7 @@ function updateCommand($cmd_id = null, $params = array())
     $DBRESULT = $pearDB->query($rq);
 
     insertArgDesc($cmd_id, $ret);
+
     insertMacrosDesc($cmd_id, $ret);
 
     /* Prepare value for changelog */
@@ -242,7 +243,7 @@ function insertCommand($ret = array())
     
     insertArgDesc($max_id, $ret);
     insertMacrosDesc($max_id, $ret);
-    
+
     return ($max_id);
 }
 
@@ -417,7 +418,11 @@ function insertMacrosDesc($cmd, $ret)
 
     if (isset($ret['listOfMacros']) && $ret['listOfMacros']) {
         $tab1 = preg_split("/\\n/", $ret['listOfMacros']);
-        
+
+        $query = "DELETE FROM `on_demand_macro_command`
+                  WHERE `command_command_id` = ".intval($cmd);
+        $pearDB->query($query);
+
         foreach ($tab1 as $key => $value) {
             $tab2 = preg_split("/\ \:\ /", $value, 2);
             $str = trim(substr($tab2[0], 6));
@@ -432,10 +437,6 @@ function insertMacrosDesc($cmd, $ret)
             }
             
             if (!empty($sName)) {
-                $query = "DELETE FROM `on_demand_macro_command` 
-                            WHERE command_macro_name = '".$pearDB->escape($sName)."' 
-                            AND `command_command_id` = ".intval($cmd);
-                $pearDB->query($query);
 
                 $sQueryInsert = "INSERT INTO `on_demand_macro_command` 
                     (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) 
@@ -445,6 +446,7 @@ function insertMacrosDesc($cmd, $ret)
                         '".$arr[$sType]."')";
                 $pearDB->query($sQueryInsert);
             }
+
         }
     }
 }

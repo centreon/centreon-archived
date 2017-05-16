@@ -53,7 +53,6 @@ class CentreonMonitoring
     public function __construct($DB)
     {
         $this->DB = $DB;
-        $this->objBroker = new CentreonBroker($DB);
     }
 
     /**
@@ -134,9 +133,9 @@ class CentreonMonitoring
             return array();
         }
 
-            $rq = "SELECT h.name, s.description as service_name, s.state, s.service_id, "
-                . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2  when 3 then 2 else s.state END) as tri "
-                . "FROM hosts h, services s ";
+        $rq = "SELECT h.name, s.description as service_name, s.state, s.service_id, "
+            . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2  when 3 then 2 else s.state END) as tri "
+            . "FROM hosts h, services s ";
 
         if (!$objXMLBG->is_admin) {
             $rq .= ", centreon_acl ";
@@ -154,32 +153,32 @@ class CentreonMonitoring
             $rq .= "AND s.acknowledged = 1 ";
         }
 
-            $rq .= "AND h.name IN (" . $hostList . ") ";
+        $rq .= "AND h.name IN (" . $hostList . ") ";
 
-            # Instance filter
+        # Instance filter
         if ($instance != -1) {
             $rq .=  "AND h.instance_id = " . $instance . " ";
         }
 
-            $grouplistStr = $objXMLBG->access->getAccessGroupsString();
+        $grouplistStr = $objXMLBG->access->getAccessGroupsString();
         if (!$objXMLBG->is_admin) {
             $rq .= "AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id "
                 . $objXMLBG->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr)
                 . " ";
         }
 
-            $rq .= " order by tri asc";
-            
-            $tab = array();
-            $DBRESULT = $objXMLBG->DBC->query($rq);
+        $rq .= " order by tri asc";
+        
+        $tab = array();
+        $DBRESULT = $objXMLBG->DBC->query($rq);
         while ($svc = $DBRESULT->fetchRow()) {
             if (!isset($tab[$svc["name"]])) {
                 $tab[$svc["name"]] = array();
             }
             $tab[$svc["name"]][$svc["service_name"]] = $svc["state"];
         }
-            $DBRESULT->free();
+        $DBRESULT->free();
 
-            return $tab;
+        return $tab;
     }
 }

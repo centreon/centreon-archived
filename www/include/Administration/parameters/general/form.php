@@ -43,7 +43,9 @@ $transcoKey = array(
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
     "enable_gmt" => "yes",
-    "strict_hostParent_poller_management" => "yes"
+    "strict_hostParent_poller_management" => "yes",
+    'display_downtime_chart' => 'yes',
+    'display_comment_chart' => 'yes'
 );
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
@@ -142,6 +144,33 @@ $form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nb
 $options2[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
 
+
+/*
+ * Proxy options
+ */
+$form->addElement('text', 'proxy_url', _("Proxy URL"), $attrsText);
+$form->addElement('text', 'proxy_port', _("Proxy port"), $attrsText2);
+$form->addElement('text', 'proxy_user', _("Proxy user"), $attrsText);
+$form->addElement('password', 'proxy_password', _("Proxy password"), $attrsText);
+
+/**
+ * Charts options
+ */
+$displayDowntimeOnChart[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup(
+    $displayDowntimeOnChart,
+    'display_downtime_chart',
+    _("Display downtime and acknowledgment on chart"),
+    '&nbsp;&nbsp;'
+);
+$displayCommentOnChart[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup(
+    $displayCommentOnChart,
+    'display_comment_chart',
+    _("Display comment on chart"),
+    '&nbsp;&nbsp;'
+);
+
 /*
  * SSO
  */
@@ -163,7 +192,9 @@ $form->addGroup($sso_mode, 'sso_mode', _("SSO mode"), '&nbsp;');
 $form->setDefaults(array('sso_mode'=>'1'));
 
 $form->addElement('text', 'sso_trusted_clients', _('SSO trusted client addresses'), array('size' => 50));
-
+$form->addElement('text', 'sso_blacklist_clients', _('SSO blacklist client addresses'), array('size' => 50));
+$form->addElement('text', 'sso_username_pattern', _('SSO pattern matching login'), array('size' => 50));
+$form->addElement('text', 'sso_username_replace', _('SSO pattern replace login'), array('size' => 50));
 $form->addElement('text', 'sso_header_username', _('SSO login header'), array('size' => 30));
 $form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
 

@@ -108,6 +108,7 @@ if ($operationType === 'install') {
              */
             $oreon->creatModuleList($pearDB);
             $oreon->user->access->updateTopologyStr();
+            $oreon->initHooks();
         } else {
             $tpl->assign("output4", _("Unable to install module"));
         }
@@ -130,7 +131,7 @@ if ($operationType === 'install') {
     $moduleinfo = getModuleInfoInDB(null, $id);
     $elemArr = array();
     $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-    $form->addElement('submit', 'list', _("Back"));
+    $form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
     if (is_dir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE")) {
         $handle = opendir(_CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE");
         $i = 0;
@@ -146,6 +147,12 @@ if ($operationType === 'install') {
                         $upgrade_ok = upgradeModuleInDB($id, $upgrade_conf[$moduleinfo["name"]]);
                         if ($upgrade_ok) {
                             $tpl->assign("output1", _("Module installed and registered"));
+                            # PHP update if need
+                            $php_file = "upgrade.pre.php";
+                            $php_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
+                            if ($upgrade_conf[$moduleinfo["name"]]["php_files"] && file_exists($php_file_path)) {
+                                include_once($php_file_path);
+                            }
                             # SQL update if need
                             $sql_file = "upgrade.sql";
                             $sql_file_path = _CENTREON_PATH_ . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
@@ -162,6 +169,7 @@ if ($operationType === 'install') {
                             }
                             $oreon->creatModuleList($pearDB);
                             $oreon->user->access->updateTopologyStr();
+                            $oreon->initHooks();
                         } else {
                             $tpl->assign("output4", _("Unable to install module"));
                         }

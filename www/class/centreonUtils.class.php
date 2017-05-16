@@ -40,6 +40,35 @@ require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
 class CentreonUtils
 {
 
+
+    /**
+     * Converts Object into Array
+     *
+     * @param int $idPage
+     * @param boolean $redirect
+     * @return mixed
+     */
+    public function visit($idPage, $redirect = true)
+    {
+        global $centreon;
+        $http = '';
+
+        if ($_SERVER['HTTPS']) {
+            $http .= 'https://';
+        } else {
+            $http .= 'http://';
+        }
+
+        $newUrl = $http . $_SERVER['HTTP_HOST'] . $centreon->optGen["oreon_web_path"] . 'main.php?p=' . $idPage;
+
+        if ($redirect) {
+            header("Location: " . $newUrl);
+            exit;
+        } else {
+            return stripslashes($newUrl);
+        }
+    }
+
     /**
      * Converts Object into Array
      *
@@ -92,7 +121,7 @@ class CentreonUtils
         } else {
             $query .= " WHERE ";
         }
-        $query .= $condition  . " ";
+        $query .= $condition . " ";
         return $query;
     }
 
@@ -143,49 +172,69 @@ class CentreonUtils
     {
         $result = "";
         switch ($str) {
-            case "gt": $result = ">"; break;
-            case "lt": $result = "<"; break;
-            case "gte": $result = ">="; break;
-            case "lte": $result = "<="; break;
-            case "eq": $result = "="; break;
-            case "ne": $result = "!="; break;
-            case "like": $result = "LIKE"; break;
-            case "notlike": $result = "NOT LIKE"; break;
-            default: $result = ""; break;
+            case "gt":
+                $result = ">";
+                break;
+            case "lt":
+                $result = "<";
+                break;
+            case "gte":
+                $result = ">=";
+                break;
+            case "lte":
+                $result = "<=";
+                break;
+            case "eq":
+                $result = "=";
+                break;
+            case "ne":
+                $result = "!=";
+                break;
+            case "like":
+                $result = "LIKE";
+                break;
+            case "notlike":
+                $result = "NOT LIKE";
+                break;
+            default:
+                $result = "";
+                break;
         }
         return $result;
     }
-    
+
     /**
      * Merge with initial values
-     * 
+     *
      * @param Quickform $form
-     * @param string $key 
+     * @param string $key
      * @return array
      */
-    public function mergeWithInitialValues($form, $key) {
+    public function mergeWithInitialValues($form, $key)
+    {
         $init = array();
         $initForm = $form->getElement('initialValues');
         $c = get_class($initForm);
         if (!is_null($form) && $c != "HTML_QuickForm_Error") {
             $initialValues = unserialize($initForm->getValue());
             if (count($initialValues) && isset($initialValues[$key])) {
-               $init = $initialValues[$key];
+                $init = $initialValues[$key];
             }
         }
         return array_merge((array)$form->getSubmitValue($key), $init);
     }
-    
+
     /**
      * Transforms an array into a string with the following format
      * '1','2','3' or '' if the array is empty
-     * 
+     *
      * @param array $arr
      * @param bool $transformKey | string will be formed with keys when true,
      *                             otherwise values will be used
      * @return string
      */
-    public function toStringWithQuotes($arr = array(), $transformKey = true) {
+    public function toStringWithQuotes($arr = array(), $transformKey = true)
+    {
         $string = "";
         $first = true;
         foreach ($arr as $key => $value) {
@@ -194,16 +243,16 @@ class CentreonUtils
             } else {
                 $string .= ", ";
             }
-            $string .= $transformKey ? "'".$key."'" : "'".$value."'";
+            $string .= $transformKey ? "'" . $key . "'" : "'" . $value . "'";
         }
         if ($string == "") {
             $string = "''";
         }
         return $string;
     }
-    
+
     /**
-     * 
+     *
      * @param string $currentVersion Original version
      * @param string $targetVersion Version to compare
      * @param string $delimiter Indicates the delimiter parameter for version
@@ -215,16 +264,15 @@ class CentreonUtils
         $targetVersionExplode = explode($delimiter, $targetVersion);
         $isCurrentSuperior = false;
         $isCurrentEqual = false;
-        
-        
+
+
         if ($depth == 0) {
             $maxRecursion = count($currentVersionExplode);
         } else {
             $maxRecursion = $depth;
         }
-        
-        for ($i=0; $i<$maxRecursion; $i++)
-        {
+
+        for ($i = 0; $i < $maxRecursion; $i++) {
             if ($currentVersionExplode[$i] > $targetVersionExplode[$i]) {
                 $isCurrentSuperior = true;
                 $isCurrentEqual = false;
@@ -237,8 +285,8 @@ class CentreonUtils
                 $isCurrentEqual = true;
             }
         }
-        
-        
+
+
         if ($isCurrentSuperior) {
             return 1;
         } elseif (($isCurrentSuperior === false) && $isCurrentEqual) {

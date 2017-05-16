@@ -42,6 +42,8 @@ if (!$centreon->user->admin && isset($nagios_id)
     return null;
 }
 
+require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
+$objMain = new CentreonMainCfg();
 
 /*
  * Database retrieve information for Nagios
@@ -65,11 +67,12 @@ if (($o == "c" || $o == "w") && $nagios_id) {
  */
 $mainCfg = new CentreonConfigEngine($pearDB);
 $cdata = CentreonData::getInstance();
-$dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
-if (is_null($nagios_id)) {
+if ($o != "a") {
+    $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+} else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
+    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml";
 }
-
 $cdata->addJsData(
     'clone-values-broker',
     htmlspecialchars(
@@ -161,8 +164,6 @@ $form->addElement('text', 'status_update_interval', _("Status File Update Interv
 $form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 $form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 $form->addElement('text', 'cfg_file', _("Object Configuration File"), $attrsText2);
-$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
-$form->addElement('text', 'precached_object_file', _("Precached Object File"), $attrsText2);
 $form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
 $form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
 $form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
@@ -728,7 +729,7 @@ foreach ($debugLevel as $key => $val) {
 $form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 $form->setDefaults($nagios_d);
 
-$form->setDefaults($aInstanceDefaultValues);
+$form->setDefaults($objMain->getDefaultMainCfg());
 
 $form->setDefaults(array('action' => '1'));
 
@@ -893,6 +894,8 @@ if ($valid) {
     $tpl->assign('ServiceCheckSchedulingOptions', _("Service Check Scheduling Options"));
     $tpl->assign('AutoRescheduling', _("Auto Rescheduling"));
     $tpl->assign('Optimization', _("Optimization"));
+    $tpl->assign('Advanced', _("Advanced"));
+    $tpl->assign('AdminInfo', _("Admin information"));
     $tpl->assign('DebugConfiguration', _("Debug Configuration"));
     $tpl->assign('Debug', _("Debug"));
     $tpl->assign("Seconds", _("seconds"));
@@ -903,7 +906,7 @@ if ($valid) {
         _("Warning: this value can be dangerous, use -1 if you have any doubt.")
     );
     $tpl->assign('cloneSet', $cloneSet);
-    $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('centreon_path', _CENTREON_PATH_);
     $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
     $tpl->assign("aggressive_host_warning", _("This option must be disable in order to avoid latency problem."));
     $tpl->display("formNagios.ihtml");

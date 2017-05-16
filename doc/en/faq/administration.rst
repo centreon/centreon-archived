@@ -47,26 +47,9 @@ Does your plugin return the correct output? Refer to the
 :ref:`Plugin API documentation<centreon-engine:centengine_plugin_api>` 
 for more information
 
-If you are using NDOUtils
--------------------------
 
-Make sure that ``centstorage`` is running::
-
-  $ /etc/init.d/centstorage status
-  centstorage (pid  30276) is running...
-
-
-The ``service-perfdata`` path of your poller must be correctly set in 
-``Configuration`` > ``Centreon``
-
-Also this path must match with the one in the *process-service-perfdata* plugin::
-
-  $ head -43 plugin_path/process-service-perfdata | tail -1
-  PERFFILE="/var/log/centreon-engine/service-perfdata"
-
-
-If you are using Centreon Broker
---------------------------------
+Centreon Broker
+---------------
 
 Centreon Broker must be configured properly, refer to this 
 :ref:`documentation <centreon_broker_wizards>` for more information.

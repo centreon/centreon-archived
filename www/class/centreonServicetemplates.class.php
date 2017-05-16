@@ -185,4 +185,36 @@ class CentreonServicetemplates extends CentreonService
 
         return $serviceIds;
     }
+
+    /**
+     *
+     * @param string $q
+     * @return array
+     */
+    public function getList($enable = false)
+    {
+        $serviceTemplates = array();
+
+        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
+            . "FROM service "
+            . "WHERE service_register = '0' ";
+
+        if ($enable) {
+            $query .= "AND service_activate = '1' ";
+        }
+
+        $query .= "ORDER BY service_description ";
+
+        $res = $this->db->query($query);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+
+        $serviceTemplates = array();
+        while ($row = $res->fetchRow()) {
+            $serviceTemplates[$row['service_id']] = $row['service_description'];
+        }
+
+        return $serviceTemplates;
+    }
 }

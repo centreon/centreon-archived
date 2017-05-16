@@ -44,61 +44,25 @@ require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-require_once $centreon_path."/www/include/eventLogs/common-Func.php";
-
-$user_params = get_user_param($oreon->user->user_id, $pearDB);
-
-if (!isset($user_params["log_filter_host"])) {
-    $user_params["log_filter_host"] = true;
-}
-if (!isset($user_params["log_filter_svc"])) {
-    $user_params["log_filter_svc"] = true;
-}
-if (!isset($user_params["log_filter_host_down"])) {
-    $user_params["log_filter_host_down"] = true;
-}
-if (!isset($user_params["log_filter_host_up"])) {
-    $user_params["log_filter_host_up"] = true;
-}
-if (!isset($user_params["log_filter_host_unreachable"])) {
-    $user_params["log_filter_host_unreachable"] = true;
-}
-if (!isset($user_params["log_filter_svc_ok"])) {
-    $user_params["log_filter_svc_ok"] = true;
-}
-if (!isset($user_params["log_filter_svc_warning"])) {
-    $user_params["log_filter_svc_warning"] = true;
-}
-if (!isset($user_params["log_filter_svc_critical"])) {
-    $user_params["log_filter_svc_critical"] = true;
-}
-if (!isset($user_params["log_filter_svc_unknown"])) {
-    $user_params["log_filter_svc_unknown"] = true;
-}
-if (!isset($user_params["log_filter_notif"])) {
-    $user_params["log_filter_notif"] = false;
-}
-if (!isset($user_params["log_filter_error"])) {
-    $user_params["log_filter_error"] = true;
-}
-if (!isset($user_params["log_filter_alert"])) {
-    $user_params["log_filter_alert"] = true;
-}
-if (!isset($user_params["log_filter_oh"])) {
-    $user_params["log_filter_oh"] = false;
-}
-if (!isset($user_params["search_H"])) {
-    $user_params["search_H"] = "";
-}
-if (!isset($user_params["search_S"])) {
-    $user_params["search_S"] = "";
-}
-if (!isset($user_params['log_filter_period'])) {
-    $user_params['log_filter_period'] = "10800";
-}
-if (!isset($user_params['output'])) {
-    $user_params['output'] = "";
-}
+$user_params = array(
+    "log_filter_host" => true,
+    "log_filter_svc" => true,
+    "log_filter_host_down" => true,
+    "log_filter_host_up" => true,
+    "log_filter_host_unreachable" => true,
+    "log_filter_svc_ok" => true,
+    "log_filter_svc_warning" => true,
+    "log_filter_svc_critical" => true,
+    "log_filter_svc_unknown" => true,
+    "log_filter_notif" => false,
+    "log_filter_error" => true,
+    "log_filter_alert" => true,
+    "log_filter_oh" => false,
+    "search_H" => "",
+    "search_S" => "",
+    'log_filter_period' => "",
+    'output' => ""
+);
 
 /*
  * Add QuickSearch ToolBar
@@ -111,14 +75,9 @@ $FlagSearchService = 1;
 $tpl = new Smarty();
 $tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
 
-if (isset($_GET["engine"])) {
-    if ($_GET["engine"] == "true") {
-        $engine = 'true';
-    } else {
-        $engine = 'false';
-    }
-} else {
-    $engine = 'false';
+$engine = 'false';
+if (isset($_GET["engine"]) && $_GET["engine"] == 'true') {
+    $engine = 'true';
 }
 
 $output = "";
@@ -141,152 +100,185 @@ if (isset($_POST["id"])) {
     $id = $_POST["id"];
 }
 
-$hostArray = array();
-$hostGrpArray = array();
-$serviceArray = array();
 $serviceGrpArray = array();
 $pollerArray = array();
+
+$defaultHosts = array();
 if (isset($_GET['h'])) {
     $h = explode(",", $_GET['h']);
     $hostObj = new CentreonHost($pearDB);
     $hostArray = $hostObj->getHostsNames($h);
+    foreach ($hostArray as $defaultHost) {
+        $defaultHosts[$defaultHost['name']] = $defaultHost['id'];
+    }
 }
+
+$defaultHostgroups = array();
 if (isset($_GET['hg'])) {
     $hg = explode(",", $_GET['hg']);
     $hostGrpObj = new CentreonHostgroups($pearDB);
     $hostGrpArray = $hostGrpObj->getHostsgroups($hg);
+    foreach ($hostGrpArray as $defaultHostgroup) {
+        $defaultHostgroups[$defaultHostgroup['name']] = $defaultHostgroup['id'];
+    }
 }
+
+$defaultServices = array();
 if (isset($_GET['svc'])) {
     $svc = explode(",", $_GET['svc']);
     $serviceObj = new CentreonService($pearDB);
     $serviceArray = $serviceObj->getServicesDescr($svc);
+    foreach ($serviceArray as $defaultService) {
+        if ($defaultService['host_name'] == '_Module_Meta'
+            && preg_match('/^meta_(\d+)/', $defaultService['description'], $matches)
+        ) {
+            $defaultService['host_name'] = 'Meta';
+            $serviceParameters = $serviceObj->getParameters($defaultService['service_id'], array('display_name'));
+            $defaultService['description'] = $serviceParameters['display_name'];
+        }
+        $defaultServices[$defaultService['host_name'] . ' - '
+        . $defaultService['description']] = $defaultService['host_id'] . '_' . $defaultService['service_id'];
+    }
 }
+
+$defaultServicegroups = array();
 if (isset($_GET['svcg'])) {
     $svcg = explode(",", $_GET['svcg']);
     $serviceGrpObj = new CentreonServicegroups($pearDB);
     $serviceGrpArray = $serviceGrpObj->getServicesGroups($svcg);
+    foreach ($serviceGrpArray as $defaultServicegroup) {
+        $defaultServicegroups[$defaultServicegroup['name']] = $defaultServicegroup['id'];
+    }
 }
+
+$defaultPollers = array();
 if (isset($_GET['poller'])) {
     $poller = explode(",", $_GET['poller']);
     $pollerObj = new CentreonInstance($pearDB, $pearDBO);
     $pollerArray = $pollerObj->getInstancesMonitoring($poller);
+    foreach ($pollerArray as $defaultPoller) {
+        $defaultPollers[$defaultPoller['name']] = $defaultPoller['id'];
+    }
 }
 
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
+$form = new HTML_QuickForm('FormPeriod', 'get', "?p=" . $p);
 $form->addElement('header', 'title', _("Choose the source"));
 
-$periods = array(   ""=>"",
-                    "10800"=>_("Last 3 Hours"),
-                    "21600"=>_("Last 6 Hours"),
-                    "43200"=>_("Last 12 Hours"),
-                    "86400"=>_("Last 24 Hours"),
-                    "172800"=>_("Last 2 Days"),
-                    "302400"=>_("Last 4 Days"),
-                    "604800"=>_("Last 7 Days"),
-                    "1209600"=>_("Last 14 Days"),
-                    "2419200"=>_("Last 28 Days"),
-                    "2592000"=>_("Last 30 Days"),
-                    "2678400"=>_("Last 31 Days"),
-                    "5184000"=>_("Last 2 Months"),
-                    "10368000"=>_("Last 4 Months"),
-                    "15552000"=>_("Last 6 Months"),
-                    "31104000"=>_("Last Year"));
-
-$lang = array("ty" => _("Message Type"),
-              "n" => _("Notifications"),
-              "a" => _("Alerts"),
-              "e" => _("Errors"),
-              "s" => _("Status"),
-              "do" => _("Down"),
-              "up" => _("Up"),
-              "un" => _("Unreachable"),
-              "w" => _("Warning"),
-              "ok" => _("Ok"),
-              "cr" => _("Critical"),
-              "uk" => _("Unknown"),
-              "oh" => _("Hard Only"),
-              "sch" => _("Search")
-            );
-
-$form->addElement('select', 'period', _("Log Period"), $periods);
-$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "datepicker", "size"=>8));
-$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
-$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
-$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
-$form->addElement('text', 'output', _("Output"), array("id"=>"output", "style"=>"width: 203px;", "size"=>15, "value" => $user_params['output']));
-
-if ($engine == "false") {
-    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
-} else {
-    $form->addElement('button', 'graph', _("Apply period"), array("onclick"=>"apply_period_engine()", "class"=>"btc bt_success"));
-}
-
-$attrHosts = array(
-    'datasourceOrigin' => 'ajax',
-    'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-    'multiple' => true
+$periods = array(
+    "" => "",
+    "10800" => _("Last 3 Hours"),
+    "21600" => _("Last 6 Hours"),
+    "43200" => _("Last 12 Hours"),
+    "86400" => _("Last 24 Hours"),
+    "172800" => _("Last 2 Days"),
+    "302400" => _("Last 4 Days"),
+    "604800" => _("Last 7 Days"),
+    "1209600" => _("Last 14 Days"),
+    "2419200" => _("Last 28 Days"),
+    "2592000" => _("Last 30 Days"),
+    "2678400" => _("Last 31 Days"),
+    "5184000" => _("Last 2 Months"),
+    "10368000" => _("Last 4 Months"),
+    "15552000" => _("Last 6 Months"),
+    "31104000" => _("Last Year")
 );
 
-/* Host Parents */
-$attrHost1 = array_merge(
-    $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_parents&id=')
+$lang = array(
+    "ty" => _("Message Type"),
+    "n" => _("Notifications"),
+    "a" => _("Alerts"),
+    "e" => _("Errors"),
+    "s" => _("Status"),
+    "do" => _("Down"),
+    "up" => _("Up"),
+    "un" => _("Unreachable"),
+    "w" => _("Warning"),
+    "ok" => _("Ok"),
+    "cr" => _("Critical"),
+    "uk" => _("Unknown"),
+    "oh" => _("Hard Only"),
+    "sch" => _("Search")
+);
+
+$form->addElement('select', 'period', _("Log Period"), $periods);
+$form->addElement('text', 'StartDate', '', array("id" => "StartDate", "class" => "datepicker", "size" => 8));
+$form->addElement('text', 'StartTime', '', array("id" => "StartTime", "class" => "timepicker", "size" => 5));
+$form->addElement('text', 'EndDate', '', array("id" => "EndDate", "class" => "datepicker", "size" => 8));
+$form->addElement('text', 'EndTime', '', array("id" => "EndTime", "class" => "timepicker", "size" => 5));
+$form->addElement(
+    'text',
+    'output',
+    _("Output"),
+    array("id" => "output", "style" => "width: 203px;", "size" => 15, "value" => $user_params['output'])
+);
+
+if ($engine == "false") {
+    $form->addElement(
+        'button',
+        'graph',
+        _("Apply period"),
+        array("onclick" => "apply_period()", "class" => "btc bt_success")
+    );
+} else {
+    $form->addElement(
+        'button',
+        'graph',
+        _("Apply period"),
+        array("onclick" => "apply_period_engine()", "class" => "btc bt_success")
+    );
+}
+
+$hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list';
+$attrHost1 = array(
+    'datasourceOrigin' => 'ajax',
+    'allowClear' => false,
+    'availableDatasetRoute' => $hostRoute,
+    'multiple' => true,
+    'defaultDataset' => $defaultHosts
 );
 $form->addElement('select2', 'host_filter', _("Hosts"), array(), $attrHost1);
 
-$attrServicegroups = array(
+$serviceGroupRoute = './include/common/webServices/rest/'
+    .'internal.php?object=centreon_configuration_servicegroup&action=list';
+$attrServicegroup1 = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list',
-    'multiple' => true
-);
-
-$attrServicegroup1 = array_merge(
-    $attrServicegroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=service&field=service_sgs&id=')
+    'availableDatasetRoute' => $serviceGroupRoute,
+    'multiple' => true,
+    'defaultDataset' => $defaultServicegroups
 );
 $form->addElement('select2', 'service_group_filter', _("Services Groups"), array(), $attrServicegroup1);
 
-$attrService = array(
+$serviceRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
+$attrService1 = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-    'multiple' => true
-);
-
-$attrService1 = array_merge(
-    $attrService,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=service&field=service_sgs&id=')
+    'availableDatasetRoute' => $serviceRoute,
+    'multiple' => true,
+    'defaultDataset' => $defaultServices
 );
 $form->addElement('select2', 'service_filter', _("Services"), array(), $attrService1);
 
-$attrHostGroup = array(
+$hostGroupRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
+$attrHostGroup1 = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
-    'multiple' => true
-);
-/* Host Parents */
-$attrHostGroup1 = array_merge(
-    $attrHostGroup,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=host&field=host_parents&id=')
+    'availableDatasetRoute' => $hostGroupRoute,
+    'multiple' => true,
+    'defaultDataset' => $defaultHostgroups
 );
 $form->addElement('select2', 'host_group_filter', _("Hosts Groups"), array(), $attrHostGroup1);
 
-$attrPoller = array(
+$pollerRoute = './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list';
+$attrPoller1 = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list',
-    'multiple' => true
-);
-/* Host Parents */
-$attrPoller1 = array_merge(
-    $attrPoller,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=defaultValues&target=host&field=host_parents&id=')
+    'availableDatasetRoute' => $pollerRoute,
+    'multiple' => true,
+    'defaultDataset' => $defaultPollers
 );
 $form->addElement('select2', 'poller_filter', _("Pollers"), array(), $attrPoller1);
 
@@ -309,12 +301,11 @@ if ($engine == 'false') {
 <script>
 
 function apply_period() {
-    var openid = document.getElementById('openid').innerHTML;
-    logs(openid,'','');
+    var openid = getArgsForHost();
+    logs(openid[0],'','');
 }
 
 function apply_period_engine() {
-    var openid = document.getElementById('openid').innerHTML;
     logsEngine();
 }
 
@@ -334,31 +325,40 @@ function log_4_engine_page(id,formu,num) {
     logsEngine();
 }
 
-var _host 		= <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"]: 'false'; ?>;
-var _service 	= <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"]: 'false'; ?>;
-var _engine     = <?php echo $engine; ?>;
+var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
+var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
+var _engine = <?php echo $engine; ?>;
 
-var _down 		= <?php echo $user_params["log_filter_host_down"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
-var _up 		= <?php echo $user_params["log_filter_host_up"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
-var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _down = <?php echo $user_params["log_filter_host_down"]; ?>;
+<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+var _up = <?php echo $user_params["log_filter_host_up"]; ?>;
+<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>;
+<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
 
-var _ok 		= <?php echo $user_params["log_filter_svc_ok"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
-var _warning 	= <?php echo $user_params["log_filter_svc_warning"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
-var _critical 	= <?php echo $user_params["log_filter_svc_critical"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
-var _unknown 	= <?php echo $user_params["log_filter_svc_unknown"]; ?>; <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
+var _ok = <?php echo $user_params["log_filter_svc_ok"]; ?>;
+<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+var _warning = <?php echo $user_params["log_filter_svc_warning"]; ?>;
+<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+var _critical = <?php echo $user_params["log_filter_svc_critical"]; ?>;
+<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
 
-var _notification = <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"]: 'false'; ?>;
-var _error 		= <?php echo !empty($user_params["log_filter_error"]) ? $user_params["log_filter_error"]: 'false'; ?>;
-var _alert 		= <?php echo !empty($user_params["log_filter_alert"]) ? $user_params["log_filter_alert"]: 'false'; ?>;
+var _unknown = <?php echo $user_params["log_filter_svc_unknown"]; ?>;
+<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
 
-var _oh 		= <?php echo !empty($user_params["log_filter_oh"]) ? $user_params["log_filter_oh"]: 'false'; ?>;
+<?php $filterNotif = $user_params["log_filter_notif"];?>
+var _notification = <?php echo !empty($filterNotif) ? $user_params["log_filter_notif"] : 'false';?>;
+var _error = <?php echo !empty($user_params["log_filter_error"]) ? $user_params["log_filter_error"] : 'false'; ?>;
+var _alert = <?php echo !empty($user_params["log_filter_alert"]) ? $user_params["log_filter_alert"] : 'false'; ?>;
 
-var _search_H	= "<?php echo $user_params["search_H"]; ?>";
-var _search_S	= "<?php echo $user_params["search_S"]; ?>";
-var _output     = "<?php $output; ?>";
+var _oh = <?php echo !empty($user_params["log_filter_oh"]) ? $user_params["log_filter_oh"] : 'false'; ?>;
+
+var _search_H = "<?php echo $user_params["search_H"]; ?>";
+var _search_S = "<?php echo $user_params["search_S"]; ?>";
+var _output = "<?php $output; ?>";
 // Period
 var currentTime = new Date();
-var period ='';
+var period = '';
 
 var _zero_hour = '';
 var _zero_min = '';
@@ -412,20 +412,27 @@ function logsEngine(type) {
     var _addrXSL = "./include/eventLogs/xsl/logEngine.xsl";
     
     if (!type) {
-        var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
-                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args;
+        var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
+            '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
+            '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
+            '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
+            '&limit=' + _limit + '&id=' + args;
         proc.setXml(_addr)
         proc.setXslt(_addrXSL)
         proc.transform("logView4xml");
     } else {
         if (type == 'CSV') {
-            var _addr = './include/eventLogs/export/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
-                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
-
+            var _addr = './include/eventLogs/export/data.php?engine=true&output=' + _output +
+                '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
+                '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
+                '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
+                '&limit=' + _limit + '&id=' + args + '&export=1';
         } else if (type == 'XML') {
-            var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
-                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
-
+            var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
+                '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
+                '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
+                '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
+                '&limit=' + _limit + '&id=' + args + '&export=1';
         }
         document.location.href = _addr;
     }
@@ -481,11 +488,18 @@ function logs(id, formu, type) {
     var _addrXSL = "./include/eventLogs/xsl/log.xsl";
 
     if (!type) {
-        var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&limit='+_limit+'&id='+id+'<?php if (isset($search) && $search) {
-            print "&search_host=".$search;
-} if (isset($search_service) && $search_service) {
-    print "&search_service=".$search_service;
-} ?>';
+        var _addr = './include/eventLogs/xml/data.php?output=' + _output + '&oh=' + _oh + '&warning=' + _warning +
+            '&unknown=' + _unknown + '&critical=' + _critical + '&ok=' + _ok + '&unreachable=' + _unreachable +
+            '&down=' + _down + '&up=' + _up + '&num=' + _num + '&error=' + _error + '&alert=' + _alert +
+            '&notification=' + _notification + '&search_H=' + _search_H + '&search_S=' + _search_S +
+            '&period=' + period + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
+            '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id +
+            '<?php
+            if (isset($search) && $search) {
+                print "&search_host=" . $search;
+            } if (isset($search_service) && $search_service) {
+                print "&search_service=" . $search_service;
+            } ?>';
         proc.setXml(_addr)
         proc.setXslt(_addrXSL)
         proc.transform("logView4xml");
@@ -493,17 +507,34 @@ function logs(id, formu, type) {
         var openid = document.getElementById('openid').innerHTML;
         if (_engine == 0) {
             if (type == 'CSV') {
-                var _addr = './include/eventLogs/export/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+
-                '&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+
-                '&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='
-                +EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) { print "&search_host=".$search;} if (isset($search_service) && $search_service) {
-                print "&search_service=".$search_service;} ?>&export=1';
+                var _addr = './include/eventLogs/export/data.php?output=' + _output + '&oh=' + _oh +
+                    '&warning=' + _warning + '&unknown=' + _unknown + '&critical=' + _critical +
+                    '&ok=' + _ok + '&unreachable=' + _unreachable + '&down=' + _down + '&up=' + _up + '&num=' + _num +
+                    '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
+                    '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
+                    '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
+                    '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                    '<?php
+                    if (isset($search) && $search) {
+                        print "&search_host=" . $search;
+                    } if (isset($search_service) && $search_service) {
+                        print "&search_service=" . $search_service;
+                    } ?>&export=1';
             } else if (type == 'XML') {
-                var _addr = './include/eventLogs/xml/data.php?output='+_output+'&oh='+_oh+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+
-                '&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+
-                '&search_H='+_search_H+'&search_S='+_search_S+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='
-                +EndTime+'&limit='+_limit+'&id='+openid+'<?php if (isset($search) && $search) { print "&search_host=".$search; print "&search_host=".$search;
-                } if (isset($search_service) && $search_service) { print "&search_service=".$search_service; } ?>&export=1';
+                var _addr = './include/eventLogs/xml/data.php?output=' + _output + '&oh=' + _oh +
+                    '&warning=' + _warning + '&unknown=' + _unknown + '&critical=' + _critical +
+                    '&ok=' + _ok + '&unreachable=' + _unreachable + '&down=' + _down + '&up=' + _up +
+                    '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
+                    '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
+                    '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
+                    '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                    '<?php
+                    if (isset($search) && $search) {
+                            print "&search_host=" . $search;
+                            print "&search_host=" . $search;
+                    } if (isset($search_service) && $search_service) {
+                        print "&search_service=" . $search_service;
+                    }?>&export=1';
             }
         } else {
             var poller_value = jQuery("#poller_filter").val();
@@ -520,13 +551,17 @@ function logs(id, formu, type) {
             }
 
             if (type == 'CSV') {
-                var _addr = './include/eventLogs/export/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
-                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
-                '&num='+_num+'&limit='+_limit+'&id='+args+'&export=1'
+                var _addr = './include/eventLogs/export/data.php?engine=true&output=' + _output +
+                    '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
+                    '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
+                    '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime +
+                    '&num=' + _num + '&limit=' + _limit + '&id=' + args + '&export=1'
             } else if (type == 'XML') {
-                var _addr = './include/eventLogs/xml/data.php?engine=true&output='+_output+'&error=true&alert=false&ok=false&unreachable=false&down=false&up=false'+
-                '&unknown=false&critical=false&warning=false&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+
-                '&num='+_num+'&limit='+_limit+'&id='+args+'&export=1';
+                var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
+                    '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
+                    '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
+                    '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime +
+                    '&num=' + _num + '&limit=' + _limit + '&id=' + args + '&export=1';
             }
         }
         document.location.href = _addr;
@@ -640,70 +675,33 @@ function getArgsForHost() {
                      flagfirst = false;
                  }
                  urlargs += val;
-                 args += "ST_" + val;
+                 args += "SG_" + val;
              }
          });
      }
-
     return new Array(args,urlargs);
 }
 
 jQuery(function () {
     if (_engine == 0) {
-        // Initialise selection with Get params
-        arrayHostValues = new Array();
-        <?php
-        foreach ($hostArray as $host) {
-            ?>
-            arrayHostValues.push(<?php echo $host['id']; ?>);
-            jQuery("#host_filter").append(jQuery('<option>').val(<?php echo $host['id']; ?> ).html('<?php echo $host['name']; ?>'));
-            <?php
-        }
-        ?>
-        arrayServicesValues = new Array();
-        <?php
-        foreach ($serviceArray as $service) {
-            ?>
-            arrayServicesValues.push('<?php echo $service['host_id'].'_'.$service['service_id']; ?>');
-            jQuery("#service_filter").append(jQuery('<option>').val('<?php echo $service['host_id'].'_'.$service['service_id']; ?>').html('<?php echo $service['host_name']. ' - ' .$service['description']; ?>'));        
-
-            <?php
-        }
-        ?>
-        arrayServicesGrpValues = new Array();
-        <?php
-        foreach ($serviceGrpArray as $serviceGrp) {
-            ?>
-            arrayServicesGrpValues.push('<?php echo $serviceGrp['id']; ?>');
-            jQuery("#service_group_filter").append(jQuery('<option>').val('<?php echo $serviceGrp['id']; ?>').html('<?php echo $serviceGrp['name']; ?>'));        
-            <?php
-        }
-        ?>
-        arrayHostsGrpValues = new Array();
-        <?php
-        foreach ($hostGrpArray as $hostGrp) {
-            ?>
-            arrayHostsGrpValues.push('<?php echo $hostGrp['id']; ?>');
-            jQuery("#host_group_filter").append(jQuery('<option>').val('<?php echo $hostGrp['id']; ?>').html('<?php echo $hostGrp['name']; ?>'));        
-            <?php
-        }
-        ?>
         // Here is your precious function
         // You can call as many functions as you want here;
-        jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(function(event,infos) {
-           var argArray = getArgsForHost();
-           args = argArray[0];
-           urlargs = argArray[1];
-           if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
-            return false;
-           }
 
-           if (window.history.pushState) {
-               window.history.pushState("", "", "main.php?p=20301"+urlargs);
-           }
-           document.getElementById('openid').innerHTML = args;
-           logs(args, '', false);
-        });
+        jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(
+            function (event, infos) {
+                var argArray = getArgsForHost();
+                args = argArray[0];
+                urlargs = argArray[1];
+                if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
+                    return false;
+                }
+                if (window.history.pushState) {
+                    window.history.pushState("", "", "main.php?p=20301" + urlargs);
+                }
+                document.getElementById('openid').innerHTML = args;
+                logs(args, '', false);
+            });
+
         //setServiceGroup
         jQuery("#setHostGroup").click(function() {
             var hg_value = jQuery("#host_group_filter").val();
@@ -776,11 +774,6 @@ jQuery(function () {
             });    
         });
 
-        jQuery("#host_filter").val(arrayHostValues).trigger("change",[{origin:"select2defaultinit"}]);
-        jQuery("#service_filter").val(arrayServicesValues).trigger("change",[{origin:"select2defaultinit"}]);
-        jQuery("#service_group_filter").val(arrayServicesGrpValues).trigger("change",[{origin:"select2defaultinit"}]);
-        jQuery("#host_group_filter").val(arrayHostsGrpValues).trigger("change");
-        
         jQuery( "#output" ).keypress(function(  event ) {
             if ( event.which == 13 ) {
                 var argArray = getArgsForHost();
@@ -792,22 +785,12 @@ jQuery(function () {
         });
         
     } else {
-        arrayPollerValues = new Array();
-        <?php
-        foreach ($pollerArray as $pollers) {
-            ?>
-            arrayPollerValues.push('<?php echo $pollers['id']; ?>');
-            jQuery("#poller_filter").append(jQuery('<option>').val('<?php echo $pollers['id']; ?>').html('<?php echo $pollers['name']; ?>'));        
-            <?php
-        }
-        ?>         
         jQuery("#poller_filter").change(function(event,infos) {
             if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
                 return false;
             }
             logsEngine();
         });
-        jQuery("#poller_filter").val(arrayPollerValues).trigger("change");
         jQuery( "#output" ).keypress(function(  event ) {
             if ( event.which == 13 ) {
                 logsEngine();

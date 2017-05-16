@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 
+require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
+require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 /**
  * Utils class for call HTTP JSON REST
  *
  * @author Centreon
  * @version 1.0.0
- * @package centreon-license-manager
+ * @package centreon
  */
 class CentreonRestHttp
 {
@@ -30,17 +33,47 @@ class CentreonRestHttp
      * @var The content type : default application/json
      */
     private $contentType = 'application/json';
-    
+
+    /**
+     * @var using a proxy
+     */
+    private $proxy = null;
+
+    /**
+     * @var proxy authentication information
+     */
+    private $proxyAuthentication = null;
+
+    /**
+     * @var logFileThe The log file for call errors
+     */
+    private $logObj = null;
+
     /**
      * Constructor
      *
      * @param string $contentType The content type
      */
-    public function __contruct($contentType = 'application/json')
+    public function __construct($contentType = 'application/json', $logFile = null)
     {
+        $this->getProxy();
         $this->contentType = $contentType;
+        if (!is_null($logFile)) {
+            $this->logObj = new CentreonLog(array(4 => $logFile));
+        }
     }
-    
+
+    private function insertLog($output, $url, $type = 'RestInternalServerErrorException')
+    {
+        if (is_null($this->logObj)) {
+            return;
+        }
+
+        $logOutput = '[' . $type . '] ' . $url . ' : ' . $output;
+
+        $this->logObj->insertLog(4, $logOutput);
+    }
+
     /**
      * Call the http rest endpoint
      *
@@ -55,38 +88,59 @@ class CentreonRestHttp
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
         $headers[] = 'Connection: close';
-        /* Create stream context */
-        $httpOpts = array(
-            'http' => array(
-                'ignore_errors' => true,
-                'protocol_version' => '1.1',
-                'method' => $method,
-                'header' => join("\r\n", $headers)
-            )
-        );
-        /* Add body json data */
-        if (false === is_null($data)) {
-            $httpOpts['http']['content'] = json_encode($data);
-        }
-        /* Create context */
-        $httpContext = stream_context_create($httpOpts);
 
-        /* Get contents */
-        $content = @file_get_contents($url, false, $httpContext);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        if (!$content) {
-            $headers = array(
-                'code' => 404
-            );
-        } else {
-            $decodedContent = json_decode($content, true);
-            /* Get headers */
-            $headers = $this->parseHttpMeta($http_response_header);
+        if (!is_null($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+            if (!is_null($this->proxyAuthentication)) {
+                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
+            }
         }
-        
+
+        switch ($method) {
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, true);
+                break;
+            case 'GET':
+                curl_setopt($ch, CURLOPT_HTTPGET, true);
+                break;
+            default:
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+                break;
+        }
+
+        if (!is_null($data)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        }
+
+        $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
+
+        curl_close($ch);
+
+        $decodedContent = '';
+        if ($result) {
+            $decodedContent = json_decode($result, true);
+        }
+
         /* Manage HTTP status code */
         $exceptionClass = null;
-        switch ($headers['code']) {
+        $logMessage = 'Unknown HTTP error';
+        switch ($http_code) {
+            case 200:
+            case 201:
+                break;
             case 400:
                 $exceptionClass = 'RestBadRequestException';
                 break;
@@ -98,6 +152,7 @@ class CentreonRestHttp
                 break;
             case 404:
                 $exceptionClass = 'RestNotFoundException';
+                $logMessage = 'Page not found';
                 break;
             case 405:
                 $exceptionClass = 'RestMethodNotAllowedException';
@@ -106,56 +161,50 @@ class CentreonRestHttp
                 $exceptionClass = 'RestConflictException';
                 break;
             case 500:
+            default:
                 $exceptionClass = 'RestInternalServerErrorException';
                 break;
         }
+
         if (!is_null($exceptionClass)) {
-            if (isset($decodedContent['message'])) {
-                throw new $exceptionClass($decodedContent['message']);
-            }
-            throw new $exceptionClass();
+            $message = isset($decodedContent['message']) ? $decodedContent['message'] : $logMessage;
+            $this->insertLog($message, $url, $exceptionClass);
+            throw new $exceptionClass($message);
         }
-        if ($headers['code'] != 200 && $headers['code'] != 201) {
-            throw new RestInternalServerErrorException('Unknown HTTP error');
-        }
-        
+
         /* Return the content */
         return $decodedContent;
     }
-    
-    /**
-     * Parse stream meta to convert to http headers
-     *
-     * @param array $metas The stream metas
-     * @return array The http headers
-     */
-    private function parseHttpMeta($metas)
-    {
-        $headers = array(
-            'code' => 404
-        );
 
-        foreach ($metas as $meta) {
-            /* Parse HTTP Code */
-            if (preg_match('!^HTTP/1.1 (\d+) (.+)!', $meta, $matches)) {
-                $headers['code'] = $matches[1];
-                $headers['status'] = $matches[2];
-            /* Parse content type return */
-            } elseif (preg_match('/Content-Type: (.*)/', $meta, $matches)) {
-                $infos = explode(';', $matches[1]);
-                $headers['content-type'] = $infos[0];
-                /* Get extra information of content-type */
-                if (count($infos) > 0) {
-                    foreach ($infos as $info) {
-                        $line = explode('=', trim($info));
-                        if ($line[0] == 'charset') {
-                            $headers['charset'] = $line[1];
-                        }
-                    }
-                }
-            }
+    /**
+     * get proxy data
+     *
+     */
+    private function getProxy()
+    {
+        $db = new CentreonDB();
+        $query = 'SELECT `key`, `value` '
+            . 'FROM `options` '
+            . 'WHERE `key` IN ( '
+            . '"proxy_url", "proxy_port", "proxy_user", "proxy_password" '
+            . ') ';
+        $res = $db->query($query);
+        while ($row = $res->fetchRow()) {
+            $dataProxy[$row['key']] = $row['value'];
         }
 
-        return $headers;
+        if (isset($dataProxy['proxy_url']) && !empty($dataProxy['proxy_url'])) {
+            $this->proxy = 'tcp://' . $dataProxy['proxy_url'];
+
+            if ($dataProxy['proxy_port']) {
+                $this->proxy .= ':' . $dataProxy['proxy_port'];
+            }
+
+            /* Proxy basic authentication */
+            if (isset($dataProxy['proxy_user']) && !empty($dataProxy['proxy_user']) &&
+                isset($dataProxy['proxy_password']) && !empty($dataProxy['proxy_password'])) {
+                $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
+            }
+        }
     }
 }

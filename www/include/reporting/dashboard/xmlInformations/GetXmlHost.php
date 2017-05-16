@@ -36,19 +36,40 @@
 $stateType = 'host';
 require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
+if (isset($_SESSION['centreon'])) {
+    $centreon = $_SESSION['centreon'];
+} else {
+    exit;
+}
+
 if (isset($_GET["id"]) && isset($_GET["color"])) {
     $color = array();
     foreach ($_GET["color"] as $key => $value) {
         $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
     }
-    
-    $DBRESULT = $pearDBO->query(
-        "SELECT  * FROM `log_archive_host` WHERE host_id = "
-        . $pearDBO->escape($_GET["id"])
-        . " order by date_start desc"
-    );
-    while ($row = $DBRESULT->fetchRow()) {
-        fillBuffer($statesTab, $row, $color);
+
+    /* Get ACL if user is not admin */
+    $isAdmin = $centreon->user->admin;
+    $accessHost = true;
+    if (!$isAdmin) {
+        $userId = $centreon->user->user_id;
+        $acl = new CentreonACL($userId, $isAdmin);
+        if (!$acl->checkHost($_GET["id"])) {
+            $accessHost = false;
+        }
+    }
+
+    if ($accessHost) {
+        $DBRESULT = $pearDBO->query(
+            "SELECT  * FROM `log_archive_host` WHERE host_id = "
+            . $pearDBO->escape($_GET["id"])
+            . " order by date_start desc"
+        );
+        while ($row = $DBRESULT->fetchRow()) {
+            fillBuffer($statesTab, $row, $color);
+        }
+    } else {
+        $buffer->writeElement("error", "Cannot access to host information");
     }
 } else {
     $buffer->writeElement("error", "error");
