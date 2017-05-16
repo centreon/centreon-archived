@@ -230,8 +230,6 @@ de EMS/EPP.
    Il est impératif d'avoir la dernière version de Centreon BAM pour que la mise à jour fonctionne correctement. L'utilisation de l'option suivante est à proscrire :
    # --skip-broken
    
-   
-
 Mise à jour du dépôt
 ====================
 
