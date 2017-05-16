@@ -452,9 +452,9 @@ class CentreonConfigPoller {
             chown($file, $apacheUser);
             chgrp($file, $grp['name']);
             if (is_dir($file)) {
-                chmod($file, 02775);
+                chmod($file, 02770);
             } else {
-                chmod($file, 664);
+                chmod($file, 0775);
             }
         }
     }

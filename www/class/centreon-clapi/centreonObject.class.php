@@ -336,14 +336,14 @@ abstract class CentreonObject
         $this->activate($objectName, '0');
     }
 
-	/**
-	 * Export data
-	 *
-	 * @param string $parameters
-	 * @return void
-	 */
-	public function export($filters=null)
-	{
+    /**
+     * Export data
+     *
+     * @param string $filters
+     * @return void
+     */
+    public function export($filters = null)
+    {
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";
