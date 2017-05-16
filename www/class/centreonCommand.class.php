@@ -360,8 +360,7 @@ class CentreonCommand
         }
         if (count($parameters) > 0) {
             foreach ($parameters as $k => $v) {
-                $explodedValues .= '?,';
-                $queryValues[] = (string)$v;
+                $explodedValues .= "`$v`,";
             }
             $explodedValues = rtrim($explodedValues, ',');
         }

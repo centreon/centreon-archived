@@ -429,8 +429,7 @@ class CentreonHost
 
         if (count($params) > 0) {
             foreach ($params as $k => $v) {
-                $paramsList .= '?,';
-                $queryValues[] = (string)$v;
+                $paramsList .= "`$v`,";
             }
             $paramsList = rtrim($paramsList, ',');
         } else {
@@ -1289,12 +1288,14 @@ class CentreonHost
                     $queryValues = array();
                     $queryFields = '';
                     if (count($fields) > 0) {
-                        $queryFields = implode(',', $fields);
+                        foreach ($fields as $k => $v) {
+                            $queryFields .= "`$v`,";
+                        }
+                        $queryFields = rtrim($queryFields, ',');
                     } else {
                         $queryFields .= '*';
                     }
                 }
-
                 $query = 'SELECT ' . $queryFields . ' ' .
                     'FROM host h ' .
                     'WHERE host_id = ?';
@@ -1302,7 +1303,6 @@ class CentreonHost
 
                 $stmt = $this->db->prepare($query);
                 $dbResult = $this->db->execute($stmt, $queryValues);
-
                 while ($row = $dbResult->fetchRow()) {
 
                     if (!count($alreadyProcessed)) {
