@@ -770,11 +770,12 @@
             }
           }).appendTo(actionDiv);
       }
-      expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
-        .on('click', function () {
-          self.legendDiv.toggleClass('extend');
-        }).appendTo(actionDiv);
-
+        if (self.settings.extraLegend) {
+            expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
+                .on('click', function () {
+                    self.legendDiv.toggleClass('extend');
+                }).appendTo(actionDiv);
+        }
       actionDiv.appendTo(self.legendDiv);
     },
     /**
@@ -847,7 +848,6 @@
     timeFormat: null,
     threshold: true,
     extraLegend: true,
-    buttonToggleCurves: true,
     url: './api/internal.php?object=centreon_metric'
   };
 })(jQuery);
