@@ -578,7 +578,7 @@ class CentreonGraph
                         */
                         $DBRESULT3 = $this->DB->query(
                             "SELECT ds_min, ds_max, ds_minmax_int, ds_last, ds_average, ds_total, ds_tickness,
-                                ds_color_line_mode, ds_color_line
+                                ds_color_line_mode, ds_color_line, ds_cdef
                                 FROM giv_components_template
                                 WHERE default_tpl1 = '1' LIMIT 1"
                         );

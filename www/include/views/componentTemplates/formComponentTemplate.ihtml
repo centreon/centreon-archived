@@ -38,6 +38,15 @@
 			{/if}
 		</tr></table></td>
 	</tr>
+	<tr class="list_two">
+		<td class="FormRowField">
+			<div><img class="helpTooltip" name="tip_ds_cdef">{$form.ds_cdef.label}</div>
+            {$form.rpn_text.label}
+		</td>
+		<td id="td_rpn_fct" class="FormRowValue" style="padding: 0px; border-width: 0px;">
+			{$form.ds_cdef.html}
+		</td>
+	</tr>
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.options}</h4>
