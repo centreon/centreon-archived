@@ -57,9 +57,9 @@ class ConfigurationWarningsContext extends CentreonContext
             'css',
             '#debug_1 font[color="orange"]'
         ));
-        if ($warningCount != 1) {
+        if ($warningCount != 2) {
             throw new \Exception(
-                'Invalid warning count: got ' . $warningCount . ', expected 1.'
+                'Invalid warning count: got ' . $warningCount . ', expected 2.'
             );
         }
     }
