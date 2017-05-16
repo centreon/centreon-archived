@@ -14,7 +14,7 @@ Show
 
 In order to list available hosts, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a show
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a show
   id;name;alias;address;activate
   82;sri-dev1;dev1;192.168.2.1;1
   83;sri-dev2;dev2;192.168.2.2;1
@@ -47,7 +47,7 @@ Add
 
 In order to add a host, use the **ADD** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a ADD -v "test;Test host;127.0.0.1;generic-host;central;Linux" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a ADD -v "test;Test host;127.0.0.1;generic-host;central;Linux" 
 
 Required parameters:
 
@@ -78,7 +78,7 @@ Del
 
 In order to delete one host, use the **DEL** action. You have to list the available hosts in order to identify the one you want to delete::
 
-  $ ./centreon -u admin -p centreon -o HOST -a DEL -v "test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a DEL -v "test" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -89,10 +89,9 @@ Setparam
 
 In order to change parameters on a host configuration, use the **SETPARAM** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a setparam -v "test;alias;Development test " 
-  $ ./centreon -u admin -p centreon -o HOST -a setparam -v "test;address;192.168.1.68" 
-  $ ./centreon -u admin -p centreon -o HOST -a setparam -v "test;check_period;24x7" 
-  $ ./centreon -u admin -p centreon -o HOST -a setparam -v "test;timezone;Europe/Berlin"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;alias;Development test " 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;address;192.168.1.68" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;check_period;24x7" 
 
 
 You may edit the following parameters:
@@ -187,8 +186,6 @@ statusmap_image	                     Status map image (used by statusmap
 vrml_image	                     VRML image
 
 host_notification_options            Notification options (d,u,r,f,s)
-
-timezone                             Timezone
 ==================================== =================================================================================
 
 
@@ -201,7 +198,7 @@ Setinstance
 
 In order to set the instance from which a host will be monitored, use the **SETINSTANCE** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a setinstance -v "Centreon-Server;Poller 1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setinstance -v "Centreon-Server;Poller 1" 
 
 
 Getmacro
@@ -209,7 +206,7 @@ Getmacro
 
 In order to view the custom macro list of a host, use the **GETMACRO** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a getmacro -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getmacro -v "Centreon-Server" 
   macro name;macro value;is_password;description
   $_HOSTMACADDRESS$;00:08:C7:1B:8C:02;0;description of macro
   
@@ -218,8 +215,8 @@ Setmacro
 
 In order to set a custom host macro, use the **SETMACRO** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a setmacro -v "Centreon-Server;warning;80;0;description of macro" 
-  $ ./centreon -u admin -p centreon -o HOST -a setmacro -v "Centreon-Server;critical;90;0;description of macro" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setmacro -v "Centreon-Server;warning;80;0;description of macro" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setmacro -v "Centreon-Server;critical;90;0;description of macro" 
 
 .. note::
   If the macro already exists, this action will only update the macro value. Otherwise, macro will be created.
@@ -229,15 +226,15 @@ Delmacro
 
 In order to delete a macro host, use the **DELMACRO** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a delmacro -v "Centreon-Server;warning" 
-  $ ./centreon -u admin -p centreon -o HOST -a delmacro -v "Centreon-Server;critical" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delmacro -v "Centreon-Server;warning" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delmacro -v "Centreon-Server;critical" 
 
 Gettemplate
 -----------
 
 In order to view the template list of a host, use the **GETTEMPLATE** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a gettemplate -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a gettemplate -v "Centreon-Server" 
   id;name
   2;generic-host
   12;Linux-Servers
@@ -248,8 +245,8 @@ Addtemplate and Settemplate
 
 In order to add a host template to an existing host, use the **ADDTEMPLATE** or the **SETTEMPLATE** action, where *add* will append and *set* will overwrite previous definitions::
 
-  $ ./centreon -u admin -p centreon -o HOST -a addtemplate -v "Centreon-Server;srv-Linux" 
-  $ ./centreon -u admin -p centreon -o HOST -a settemplate -v "Centreon-Server;hardware-Dell" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addtemplate -v "Centreon-Server;srv-Linux" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a settemplate -v "Centreon-Server;hardware-Dell" 
 
 .. note::  
   All service templates linked to the new host template will be automatically deployed on the existing host. (no longer the case with version later than 1.3.0, use the 'applytpl' action manually)
@@ -263,7 +260,7 @@ Deltemplate
 
 In order to remove a host template to an existing host, use the **DELTEMPLATE** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a deltemplate -v "test;srv-Linux|hardware-Dell" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a deltemplate -v "test;srv-Linux|hardware-Dell" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -274,7 +271,7 @@ Applytpl
 
 When a template host undergoes modified link-level service template, the change is not automatically reflected in hosts belonging to that template. For the change to take effect, it must then re-apply the template on this host. For this, use the **APPLYTPL** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a applytpl -v "test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a applytpl -v "test" 
   All new services are now created.
 
 .. note::
@@ -284,7 +281,7 @@ Getparent
 ---------
 In order to view the parents of a host, use the **GETPARENT** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a getparent -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparent -v "Centreon-Server" 
   id;name
   43;server-parent1
   44;server-parent2
@@ -294,8 +291,8 @@ Addparent and Setparent
 
 In order to add a host parent to an host, use the **ADDPARENT** or **SETPARENT** actions where *add* will append and *set* will overwrite the previous definitions::
 
-  $ ./centreon -u admin -p centreon -o HOST -a addparent -v "host;hostParent1" 
-  $ ./centreon -u admin -p centreon -o HOST -a setparent -v "host;hostParent1|hostParent2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addparent -v "host;hostParent1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparent -v "host;hostParent1|hostParent2" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -305,7 +302,7 @@ Delparent
 
 In order to remove a parent, use the **DELPARENT** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a delparent -v "Centreon-Server;server-parent1|server-parent2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delparent -v "Centreon-Server;server-parent1|server-parent2" 
 
 
 Getcontactgroup
@@ -313,7 +310,7 @@ Getcontactgroup
 
 In order to view the notification contact groups of a host, use the **GETCONTACTGROUP** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a getcontactgroup -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getcontactgroup -v "Centreon-Server" 
   id;name
   17;Administrators
 
@@ -323,8 +320,8 @@ Addcontactgroup and Setcontactgroup
 
 If you want to add notification contactgroups to a host, use the **ADDCONTACTGROUP** or **SETCONTACTGROUP** actions where *add* will append and *set* will overwrite previous definitions::
 
-  $ ./centreon -u admin -p centreon -o HOST -a addcontactgroup -v "Centreon-Server;Contactgroup1" 
-  $ ./centreon -u admin -p centreon -o HOST -a setcontactgroup -v "Centreon-Server;Contactgroup1|Contactgroup2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addcontactgroup -v "Centreon-Server;Contactgroup1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setcontactgroup -v "Centreon-Server;Contactgroup1|Contactgroup2" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -335,7 +332,7 @@ Delcontactgroup
 
 If you want to remove notification contactgroups from a host, use the **DELCONTACTGROUP** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a delcontactgroup -v "Centreon-Server;Contactgroup2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delcontactgroup -v "Centreon-Server;Contactgroup2" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -346,7 +343,7 @@ Getcontact
 
 In order to view the notification contacts of a host, use the **GETCONTACT** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a getcontact -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getcontact -v "Centreon-Server" 
   id;name
   11;guest
 
@@ -356,8 +353,8 @@ Addcontact and Setcontact
 
 If you want to add notification contacts to a host, use the **ADDCONTACT** or **SETCONTACT** actions where *add* will append and *set* will overwrite previous definitions::
 
-  $ ./centreon -u admin -p centreon -o HOST -a addcontact -v "Centreon-Server;Contact1" 
-  $ ./centreon -u admin -p centreon -o HOST -a setcontact -v "Centreon-Server;Contact1|Contact2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addcontact -v "Centreon-Server;Contact1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setcontact -v "Centreon-Server;Contact1|Contact2" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -367,7 +364,7 @@ Delcontact
 
 If you want to remove a notification contacts from a host, use the **DELCONTACT** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a delcontact -v "Centreon-Server;Contact2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delcontact -v "Centreon-Server;Contact2" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -377,7 +374,7 @@ Gethostgroup
 ------------
 In order to view the hostgroups that are tied to a host, use the **GETHOSTGROUP** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a gethostgroup -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a gethostgroup -v "Centreon-Server" 
   id;name
   9;Linux-Servers
 
@@ -387,8 +384,8 @@ Addhostgroup and Sethostgroup
 
 If you want to tie hostgroups to a host, use the **ADDHOSTGROUP** or **SETHOSTGROUP** actions where *add* will append and *set* will overwrite previous definitions::
 
-  $ ./centreon -u admin -p centreon -o HOST -a addhostgroup -v "Centreon-Server;Hostgroup1"
-  $ ./centreon -u admin -p centreon -o HOST -a sethostgroup -v "Centreon-Server;Hostgroup1|Hostgroup2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a addhostgroup -v "Centreon-Server;Hostgroup1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a sethostgroup -v "Centreon-Server;Hostgroup1|Hostgroup2" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -399,7 +396,7 @@ Delhostgroup
 
 If you want to remove hostgroups from a host, use the **DELHOSTGROUP** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a delhostgroup -v "Centreon-Server;Hostgroup2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a delhostgroup -v "Centreon-Server;Hostgroup2" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -410,7 +407,7 @@ Setseverity
 
 In order to associate a severity to a host, use the **SETSEVERITY** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a setseverity -v "Centreon-Server;Critical" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setseverity -v "Centreon-Server;Critical" 
 
 
 Required parameters:
@@ -429,7 +426,7 @@ Unsetseverity
 
 In order to remove the severity from a host, use the **UNSETSEVERITY** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a unsetseverity -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a unsetseverity -v "Centreon-Server" 
 
 
 Required parameters:
@@ -446,7 +443,7 @@ Enable
 
 In order to enable an host, use the **ENABLE** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a enable -v "test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a enable -v "test" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -457,7 +454,7 @@ Disable
 
 In order to disable a host, use the **DISABLE** action::
 
-  $ ./centreon -u admin -p centreon -o HOST -a disable -v "test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a disable -v "test" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.

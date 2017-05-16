@@ -12,7 +12,7 @@ Show
 
 In order to list editable settings, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o SETTINGS -a show
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SETTINGS -a show
   parameter;value
   broker;ndo
   broker_correlator_script;
@@ -41,7 +41,7 @@ Setparam
 
 If you want to change a specific parameter of a Vendor, use the **SETPARAM** action::
 
-  $ ./centreon -u admin -p centreon -o SETTINGS -a setparam -v ";" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SETTINGS -a setparam -v ";" 
 
 Arguments are composed of the following columns:
 

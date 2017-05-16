@@ -12,7 +12,7 @@ Show
 
 In order to list available Resource variables, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o RESOURCECFG -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RESOURCECFG -a show 
   id;name;value;comment;activate;instance
   1;$USER1$;/usr/local/nagios/libexec;path to the plugins;1;Central
   [...]
@@ -42,7 +42,7 @@ Add
 
 In order to add a resource macro, use the **ADD** action::
 
-  $ ./centreon -u admin -p centreon -o RESOURCECFG -a add -v "USER2;public;Poller test;my comment" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RESOURCECFG -a add -v "USER2;public;Poller test;my comment" 
 
 
 Required fields are:
@@ -65,7 +65,7 @@ Del
 
 If you want to remove a Resource variable, use the **DEL** action. The ID is used for identifying the variable to delete::
 
-  $ ./centreon -u admin -p centreon -o RESOURCECFG -a del -v "1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RESOURCECFG -a del -v "1" 
 
 
 Setparam
@@ -73,7 +73,7 @@ Setparam
 
 If you want to change a specific parameter of a Resource macro, use the **SETPARAM** action. The ID is used for identifying the macro to update::
 
-  $ ./centreon -u admin -p centreon -o RESOURCECFG -a setparam -v "1;instance;Poller test|AnotherPoller" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RESOURCECFG -a setparam -v "1;instance;Poller test|AnotherPoller" 
 
 Arguments are composed of the following columns:
 

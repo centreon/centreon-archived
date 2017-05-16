@@ -13,7 +13,7 @@ Show
 
 In order to list available Centreon Broker CFG, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a show 
   config id;config name;instance
   1;Central CFG;Central
   2;Sattelite CFG;Sattelite
@@ -37,7 +37,7 @@ Add
 
 In order to add a Centreon Broker CFG, use the **ADD** action::
 
-  $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a add -v "broker cfg for poller test;Poller test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a add -v "broker cfg for poller test;Poller test" 
 
 
 Required fields are:
@@ -56,7 +56,7 @@ Del
 
 If you want to remove a Centreon Broker CFG, use the **DEL** action. The Name is used for identifying the configuration to delete::
 
-  $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a del -v "broker cfg for poller test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a del -v "broker cfg for poller test" 
 
 
 Setparam
@@ -64,7 +64,7 @@ Setparam
 
 If you want to change a specific parameter of a Centreon Broker configuration, use the **SETPARAM** action. The configuration name is used for identifying the configuration to update::
 
-  $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a setparam -v "broker cfg for poller test;name;new broker cfg name" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setparam -v "broker cfg for poller test;name;new broker cfg name" 
 
 Arguments are composed of the following columns:
 
@@ -112,7 +112,7 @@ liststats
 
 Example::
 
-   $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a listoutput -v "broker cfg for poller test" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a listoutput -v "broker cfg for poller test" 
    id;name
    1;Storage
    2;RRD
@@ -139,7 +139,7 @@ In order to get parameters of a specific I/O object, use one of the following co
 
 Example::
 
-   $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a getoutput -v "broker cfg for poller test;3" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getoutput -v "broker cfg for poller test;3" 
    parameter key;parameter value
    db_host;localhost
    db_name;centreon_storage
@@ -179,8 +179,8 @@ In order to add a new I/O object, use one of the following commands:
 
 Example::
 
-   $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a addlogger -v "broker cfg for poller test;/var/log/centreon-broker/central-module.log;file" 
-   $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a listlogger -v "broker cfg for poller test" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a addlogger -v "broker cfg for poller test;/var/log/centreon-broker/central-module.log;file" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a listlogger -v "broker cfg for poller test" 
    id;name
    1;/var/log/centreon-broker/central-module.log
 
@@ -211,7 +211,7 @@ In order to remove an I/O object from the Centreon Broker configuration, use one
 
 Example::
 
-   $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a dellogger -v "broker cfg for poller test;1" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a dellogger -v "broker cfg for poller test;1" 
 
 The I/O ID is used for identifying the object to delete.
 
@@ -229,7 +229,7 @@ In order to set parameters of an I/O object, use one of the following commands:
 
 Example::
 
-   $ ./centreon -u admin -p centreon -o CENTBROKERCFG -a setcorrelation -v "broker cfg for poller test;1;file;/etc/centreon-broker/correlation.xml" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setcorrelation -v "broker cfg for poller test;1;file;/etc/centreon-broker/correlation.xml" 
 
 Arguments are composed of the following columns:
 

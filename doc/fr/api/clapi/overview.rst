@@ -18,16 +18,12 @@ Features
 Basic usage
 -----------
 
-.. note::
-    Since Centreon Web >= 2.7.9, Centreon CLAPI must be executed with 'centreon'
-    user instead of 'root'.
-
 All actions in Centreon CLAPI will require authentication, so your commands will always start like this::
 
-  $ cd /usr/share/centreon/bin
-  $ ./centreon -u admin -p centreon [...]
+  # cd /usr/share/centreon/bin
+  # ./centreon -u admin -p centreon [...]
 
 Obviously, the **-u** option is for the username and the **-p** option is for the password. If your passwords 
 are encoded with SHA1 in database, use the **-s** option::
 
-  $ ./centreon -u admin -p centreon -s [...]
+  # ./centreon -u admin -p centreon -s [...]

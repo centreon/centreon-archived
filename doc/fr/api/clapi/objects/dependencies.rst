@@ -12,7 +12,7 @@ Show
 
 In order to list available dependencies, use the **SHOW** action::
 
-  $ ./centreon -u admin -p centreon -o DEP -a show
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a show
   id;name;description;inherits_parent;execution_failure_criteria;notification_failure_criteria
   62;my dependency;a description;1;n;n
 
@@ -40,7 +40,7 @@ Add
 
 In order to add a new dependency, use the **ADD** action::
 
-  $ ./centreon -u admin -p centreon -o DEP -a ADD \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADD \
   -v "my new dependency;any description;HOST;dummy-host" 
 
 
@@ -67,7 +67,7 @@ Del
 
 In order to delete a dependency, use the **DEL** action. The dependency name is used for identifying the dependency you would like to delete::
 
-  $ ./centreon -u admin -p centreon -o DEP -a DEL -v "my dependency" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DEL -v "my dependency" 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -78,7 +78,7 @@ Setparam
 
 In order to set a specific parameter for a dependency, use the **SETPARAM** action::
 
-  $ ./centreon -u admin -p centreon -o DEP -a setparam \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a setparam \
   -v "my dependency;name;my new dependency name" 
 
 You may change the following parameters:
@@ -107,7 +107,7 @@ Listdep
 
 If you want to retrieve the dependency definition of a dependency object, use the **LISTDEP** action::
 
-  $ ./centreon -u admin -p centreon -o DEP -a LISTDEP -v "my dependency" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a LISTDEP -v "my dependency" 
   parents;children
   HostParent1|HostParent2;HostChild1|HostChild2,ServiceChild2
 
@@ -117,11 +117,11 @@ Addparent and Addchild
 
 If you want to add a new parent or a new child in a dependency definition, use the **ADDPARENT** or **ADDCHILD** action::
 
-  $ ./centreon -u admin -p centreon -o DEP -a ADDPARENT \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADDPARENT \
   -v "my dependency;my_parent_host" 
-  $ ./centreon -u admin -p centreon -o DEP -a ADDCHILD \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADDCHILD \
   -v "my dependency;my_child_host" 
-  $ ./centreon -u admin -p centreon -o DEP -a ADDCHILD \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADDCHILD \
   -v "my dependency;my_child_host2,my_child_service2" 
 
 .. note::
@@ -133,11 +133,11 @@ Delparent and Delchild
 
 If you want to add a new parent or a new child in a dependency definition, use the **DELPARENT** or **DELCHILD** action::
 
-  $ ./centreon -u admin -p centreon -o DEP -a DELPARENT \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DELPARENT \
   -v "my dependency;my_parent_host" 
-  $ ./centreon -u admin -p centreon -o DEP -a DELCHILD \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DELCHILD \
   -v "my dependency;my_child_host" 
-  $ ./centreon -u admin -p centreon -o DEP -a DELCHILD \
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DELCHILD \
   -v "my dependency;my_child_host2,my_child_service2" 
 
 .. note::
