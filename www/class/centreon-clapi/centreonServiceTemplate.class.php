@@ -764,7 +764,7 @@ class CentreonServiceTemplate extends CentreonObject {
         }
         $telements = $trapRel->getMergedParameters(array("traps_name", "traps_id"), array('service_description'), -1, 0, null, null, $filters_trapRel, "AND");
         foreach ($telements as $telement) {
-            $this->api->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
+            $this->api->export_filter('TRAP', $telement['traps_id'], $telement['traps_name']);
             echo $this->action . $this->delim . "addtrap" . $this->delim . $telement['service_description'] . $this->delim . $telement['traps_name'] . "\n";
         }
 
@@ -776,7 +776,7 @@ class CentreonServiceTemplate extends CentreonObject {
         }
         $helements = $hostRel->getMergedParameters(array("host_name", "host_id"), array('service_description'), -1, 0, null, null, $filters_hostRel, "AND");
         foreach ($helements as $helement) {
-            $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
+            $this->api->export_filter('HOST', $helement['host_id'], $helement['host_name']);
             echo $this->action . $this->delim . "addhosttemplate" . $this->delim . $helement['service_description'] . $this->delim . $helement['host_name'] . "\n";
         }
     }
