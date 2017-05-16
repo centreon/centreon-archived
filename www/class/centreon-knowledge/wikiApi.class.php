@@ -49,6 +49,7 @@ class WikiApi
     private $curl;
     private $loggedIn;
     private $tokens;
+    private $cookies;
 
     /**
      * WikiApi constructor.
@@ -63,6 +64,7 @@ class WikiApi
         $this->password = $config['kb_wiki_password'];
         $this->curl = $this->getCurl();
         $this->version = $this->getWikiVersion();
+        $this->cookies = array();
     }
 
     private function getCurl()
@@ -99,26 +101,42 @@ class WikiApi
             return $this->loggedIn;
         }
 
+        curl_setopt($this->curl, CURLOPT_HEADER, true);
+
         // Get Connection Cookie/Token
         $postfields = array(
             'action' => 'login',
             'format' => 'json',
-            'lgname' => $this->username,
-            'lgpassword' => $this->password
+            'lgname' => $this->username
         );
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
-        $result = json_decode($result, true);
-        $token = $result['login']['lgtoken'];
+        $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
+        $header = substr($result, 0, $header_size);
+        $body = substr($result, $header_size);
+
+        // Get cookies
+        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
+        $this->cookies = array_merge($this->cookies, $matches[1]);
+        $cookies = implode('; ', $this->cookies);
+        curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
+
+        $result = json_decode($body, true);
+
+        $token = '';
+        if (isset($result['login']['lgtoken'])) {
+            $token = $result['login']['lgtoken'];
+        } elseif (isset($result['login']['token'])) {
+            $token = $result['login']['token'];
+        }
 
         // Launch Connection
+        $postfields['lgpassword'] = $this->password;
         $postfields['lgtoken'] = $token;
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
-        curl_setopt($this->curl, CURLOPT_HEADER, true);
         $result = curl_exec($this->curl);
-        curl_setopt($this->curl, CURLOPT_HEADER, false);
 
         $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
         $header = substr($result, 0, $header_size);
@@ -126,7 +144,8 @@ class WikiApi
 
         // Get cookies
         preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
-        $cookies = implode('; ', $matches[1]);
+        $this->cookies = array_merge($this->cookies, $matches[1]);
+        $cookies = implode('; ', $this->cookies);
         curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
 
         $result = json_decode($body, true);
@@ -136,6 +155,8 @@ class WikiApi
         if ($resultLogin == 'Success') {
             $this->loggedIn = true;
         }
+
+        curl_setopt($this->curl, CURLOPT_HEADER, false);
 
         return $this->loggedIn;
     }
@@ -178,7 +199,6 @@ class WikiApi
                 'titles' => $title
             );
         }
-
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
         $result = json_decode($result, true);
