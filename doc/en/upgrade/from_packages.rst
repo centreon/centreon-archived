@@ -219,7 +219,7 @@ particularly true for EMS/EPP users.
 
 .. warning::
    In this case you need to contact our Support that will give you the link to set up the new repo for each module.
-   If you're using Centreon BAM, you must the great repo to upgrade your Centreon.
+   If you're using Centreon BAM, you must have the great repo to upgrade your Centreon.
    The following option should not be used :
    # --skip-broken
 
