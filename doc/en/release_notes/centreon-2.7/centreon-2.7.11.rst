@@ -17,4 +17,6 @@ Bug Fixes
 
 - Fix ldap authentication
 - Fix CLAPI export using filters
-- Fix CLAPI poller generate (generate, test, move, restart/reload/ applycfg)
+- Fix CLAPI poller generate (generate, test, move, restart/reload/ applycfg) #5224 #5221
+- Fix Incorrect style for "Scheduled downtime" in dashboard #5240
+- Fix Contact - import LDAP apply new CSS style #5235
