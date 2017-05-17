@@ -42,14 +42,10 @@ class CentreonAuthSSO extends CentreonAuth {
 
     public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "", $generalOptions) {
         $this->options_sso = $generalOptions;
-        # var
-        #$this->options_sso['sso_enable'] = 1;
-        #$this->options_sso['sso_mode'] = 1;
-        #$this->options_sso['sso_trusted_clients'] = '10.30.3.53';
-        #$this->options_sso['sso_header_username'] = 'HTTP_AUTH_USER';
 
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
-            isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '') {
+            isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '' &&
+            isset($_SERVER[$this->options_sso['sso_header_username']])) {
             $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
             if ($this->check_sso_client()) {
                 $this->sso_mandatory = 1;
@@ -74,7 +70,7 @@ class CentreonAuthSSO extends CentreonAuth {
             $blacklist = explode(',', $this->options_sso['sso_blacklist_clients']);
             foreach ($blacklist as $value) {
                 $value = trim($value);
-                if (preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                if ($value != '' && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
                     return 0;
                 }
             }
@@ -82,7 +78,7 @@ class CentreonAuthSSO extends CentreonAuth {
             $whitelist = explode(',', $this->options_sso['sso_trusted_clients']);
             foreach ($whitelist as $value) {
                 $value = trim($value);
-                if (preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                if ($value != '' && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
                     return 1;
                 }
             }
