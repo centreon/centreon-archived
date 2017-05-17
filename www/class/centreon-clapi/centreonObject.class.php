@@ -421,9 +421,7 @@ abstract class CentreonObject
             $userId
         ));
 
-        $query = 'SELECT MAX(action_log_id) as action_log_id
-            FROM log_action
-            WHERE action_log_date = ?';
+        $query = 'SELECT LAST_INSERT_ID() as action_log_id';
         $stmt = $dbstorage->query($query, array($time));
         $row = $stmt->fetch();
         if (false === $row) {
