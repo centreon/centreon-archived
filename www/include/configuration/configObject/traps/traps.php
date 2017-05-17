@@ -32,14 +32,17 @@
  * For more information : contact@centreon.com
  * 
  */
- 
+
 if (!isset($centreon)) {
-	exit ();
+    exit ();
 }
 
 $inputArguments = array(
     'traps_id' => FILTER_SANITIZE_STRING,
-    'select' => FILTER_SANITIZE_STRING,
+    'select' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'flags' => FILTER_REQUIRE_ARRAY
+    ),
     'dupNbr' => FILTER_SANITIZE_STRING
 );
 $inputGet = filter_input_array(
@@ -51,6 +54,8 @@ $inputPost = filter_input_array(
     $inputArguments
 );
 
+
+
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
     if (!is_null($inputGet[$argumentName])) {
@@ -59,6 +64,7 @@ foreach ($inputArguments as $argumentName => $argumentValue) {
         $inputs[$argumentName] = $inputPost[$argumentName];
     }
 }
+
 
 $traps_id = $inputs["traps_id"];
 $select = $inputs["select"];
@@ -85,14 +91,29 @@ $sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
 $severityObj = new CentreonCriticality($pearDB);
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-switch ($o)	{
-	case "a" : require_once($path."formTraps.php"); break; #Add a Trap
-	case "w" : require_once($path."formTraps.php"); break; #Watch a Trap
-	case "c" : require_once($path."formTraps.php"); break; #Modify a Trap
-	case "m" : $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listTraps.php"); break; #Duplicate n Traps
-	case "d" : $trapObj->delete(isset($select) ? $select : array()); require_once($path."listTraps.php"); break; #Delete n Traps
-	default : require_once($path."listTraps.php"); break;
+switch ($o) {
+    case "a" :
+        require_once($path . "formTraps.php");
+        break; #Add a Trap
+    case "w" :
+        require_once($path . "formTraps.php");
+        break; #Watch a Trap
+    case "c" :
+        require_once($path . "formTraps.php");
+        break; #Modify a Trap
+    case "m" :
+        $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr);
+        require_once($path . "listTraps.php");
+        break; #Duplicate n Traps
+    case "d" :
+        $trapObj->delete(isset($select) ? $select : array());
+        require_once($path . "listTraps.php");
+        break; #Delete n Traps
+    default :
+        require_once($path . "listTraps.php");
+        break;
 }
