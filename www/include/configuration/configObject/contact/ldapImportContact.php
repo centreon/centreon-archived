@@ -64,7 +64,7 @@
 	$form->addElement('header', 'ldap_search_result_output', _("Result"));
 
 	$link = "LdapSearch()";
-	$form->addElement("button", "ldap_search_button", _("Search"), array("onClick"=>$link));
+	$form->addElement("button", "ldap_search_button", _("Search"), array("class"=>"btc bt_success", "onClick"=>$link));
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
@@ -105,7 +105,7 @@
 	 * Just watch a contact information
 	 */
 	if ($o == "li")	{
-            $subA = $form->addElement('submit', 'submitA', _("Import"));
+            $subA = $form->addElement('submit', 'submitA', _("Import"), array("class"=>"btc bt_success"));
 	}
 
 	$valid = false;

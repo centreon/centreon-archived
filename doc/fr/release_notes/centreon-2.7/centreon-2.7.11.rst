@@ -2,7 +2,8 @@
 Centreon 2.7.11
 ###############
 
-The 2.7.11 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.10 follow.
+The 2.7.11 release for Centreon Web is now available for `download <https://download.centreon.com>`_.
+The full release notes for 2.7.11 follow.
 
 ******
 Notice
@@ -15,3 +16,7 @@ Bug Fixes
 =========
 
 - Fix ldap authentication
+- Fix CLAPI export using filters
+- Fix CLAPI poller generate (generate, test, move, restart/reload/ applycfg) #5224 #5221
+- Fix Incorrect style for "Scheduled downtime" in dashboard #5240
+- Fix Contact - import LDAP apply new CSS style #5235
