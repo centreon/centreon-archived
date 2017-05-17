@@ -115,7 +115,7 @@ if ($obj->is_admin) {
             "GROUP BY hg.name, h.state";
 } else {
     $rq1 = "SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
-            "FROM centreon_acl acl, hosts_hostgroups hhg, hosts h, hostgroups hg " .
+            "FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
             "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
             "AND hhg.host_id = h.host_id " .
             "AND h.enabled = 1 ";
@@ -124,8 +124,7 @@ if ($obj->is_admin) {
     }
     $rq1 .= $searchStr .
             $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
-            "AND h.host_id = acl.host_id " .
-            "AND acl.group_id in ($groupStr) " .
+            "AND h.host_id IN (SELECT DISTINCT host_id FROM centreon_acl WHERE group_id in ($groupStr)) " .
             "GROUP BY hg.name, h.state";
 }
 $DBRESULT = $obj->DBC->query($rq1);
