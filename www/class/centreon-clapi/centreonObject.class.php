@@ -422,7 +422,7 @@ abstract class CentreonObject
         ));
 
         $query = 'SELECT LAST_INSERT_ID() as action_log_id';
-        $stmt = $dbstorage->query($query, array($time));
+        $stmt = $dbstorage->query($query);
         $row = $stmt->fetch();
         if (false === $row) {
             throw new CentreonClapiException("Error while inserting log action");
