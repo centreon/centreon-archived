@@ -48,8 +48,8 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
     }
 
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
@@ -70,7 +70,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .
             "FROM command " .
-            "WHERE command_name LIKE ? AND command_activate = '1' ";
+            "WHERE command_name LIKE ? ";
         $queryValues[] = '%' . (string)$q . '%';
         if (!empty($t)) {
             $queryCommand .= "AND command_type = ? ";
