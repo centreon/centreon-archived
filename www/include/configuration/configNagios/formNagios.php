@@ -350,10 +350,6 @@ $nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _
 $form->addGroup($nagTab, 'log_event_handlers', _("Event Handler Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_initial_states', null, _("Yes"), '1');
-$form->addGroup($nagTab, 'log_initial_states', _("Initial State Logging Option"), '&nbsp;');
-
-$nagTab = array();
 $nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("Yes"), '1');
 $nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("No"), '0');
 $nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("Default"), '2');
