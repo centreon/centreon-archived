@@ -98,7 +98,9 @@ class CentreonSession
      */
     public function updateSession($pearDB)
     {
-        session_start();
+	if (session_id() === '') {
+            session_start();
+	}
 
         /* Update last_reload parameter */
         $query = 'UPDATE `session` '
