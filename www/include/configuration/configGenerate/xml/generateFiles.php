@@ -55,6 +55,7 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();
 }
 $centreon = $_SESSION['centreon'];
+$oreon = $centreon;
 
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit;
