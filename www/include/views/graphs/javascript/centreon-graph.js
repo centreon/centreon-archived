@@ -167,7 +167,7 @@
 
       var parsedData = this.buildMetricData(data);
 
-      axis = jQuery.extend({}, axis, parsedData.axis);
+      axis = jQuery.extend(true, {}, axis, parsedData.axis);
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
           format: this.getAxisTickFormat(this.getBase())
@@ -315,31 +315,33 @@
       });
       times.unshift('times');
 
-        data.columns.push(times);
-        for (i = 0; i < dataRaw.data.length; i++) {
-          name = 'data' + (i + 1);
-          this.ids[dataRaw.data[i].label] = name;
-          column = dataRaw.data[i].data;
-          column.unshift(name);
-          data.columns.push(column);
-          legend = dataRaw.data[i].label;
-          if (dataRaw.data[i].unit) {
-            legend += '(' + dataRaw.data[i].unit + ')';
-            if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-              units[dataRaw.data[i].unit] = name;
-            }
+      data.columns.push(times);
+      for (i = 0; i < dataRaw.data.length; i++) {
+        name = 'data' + (i + 1);
+        this.ids[dataRaw.data[i].label] = name;
+        column = dataRaw.data[i].data;
+        column.unshift(name);
+        data.columns.push(column);
+        legend = dataRaw.data[i].label;
+        if (dataRaw.data[i].unit) {
+          legend += '(' + dataRaw.data[i].unit + ')';
+          if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
+            units[dataRaw.data[i].unit] = [];
           }
-          data.names[name] = legend;
-          data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
-            convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
-          data.colors[name] = dataRaw.data[i].color;
+          units[dataRaw.data[i].unit].push(name);
         }
+        data.names[name] = legend;
+        data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
+          convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
+        data.colors[name] = dataRaw.data[i].color;
+      }
 
       if (Object.keys(units).length === 2) {
         axesName = 'y';
+        data.axes = {};
         for (unit in units) {
           if (units.hasOwnProperty(unit)) {
-            for (i = 0; i < units[unit][i]; i++) {
+            for (i = 0; i < units[unit].length; i++) {
               data.axes[units[unit][i]] = axesName;
             }
           }
@@ -751,9 +753,9 @@
               self.chart.focus(curveId);
             })
             .on('mouseout', 'div', function () { self.chart.revert(); })
-            .on('click', 'div', function (e) {
-              var curveId = jQuery(e.currentTarget).parent().data('curveid');
-              jQuery(e.currentTarget).parent().toggleClass('hidden');
+            .on('click', function (e) {
+              var curveId = jQuery(e.currentTarget).data('curveid');
+              jQuery(e.currentTarget).toggleClass('hidden');
               self.chart.toggle(curveId);
             });
 
