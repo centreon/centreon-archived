@@ -15,8 +15,14 @@ If you are upgrading from a version prior to 2.7.0, make sure to go through all 
 Bug Fixes
 =========
 
-- Fix ldap authentication
-- Fix CLAPI export using filters
+- Fix ldap authentication #5216
+- Fix CLAPI export using filters #5084
 - Fix CLAPI poller generate (generate, test, move, restart/reload/ applycfg) #5224 #5221
 - Fix Incorrect style for "Scheduled downtime" in dashboard #5240
 - Fix Contact - import LDAP apply new CSS style #5235
+- Fix HTML export with filters  #4868
+- Fix brokercfg export with filter
+- Fix get command list query #5229
+- Apply sso fixes from 2.8.x
+- Improve performances #5157
+- Convert string in UTF-8 #5118 #5244
