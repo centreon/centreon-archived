@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -50,6 +47,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 
 session_start();
+session_write_close();
 
 /*
  * Check Sessions

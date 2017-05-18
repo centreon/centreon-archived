@@ -98,6 +98,8 @@
 	 * Check Session activity
 	 */
     session_start();
+    session_write_close();
+
     $sid = session_id();
     $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
 	if (!$session->numRows()){

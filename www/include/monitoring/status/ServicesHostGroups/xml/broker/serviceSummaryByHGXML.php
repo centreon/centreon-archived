@@ -32,15 +32,10 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/ServicesHostGroups/xml/serviceSummaryByHGXML.php $
- * SVN : $Id: serviceSummaryByHGXML.php 11683 2011-02-14 16:10:44Z jmathis $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../../config/centreon.config.php");
-
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
@@ -48,7 +43,7 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 /*
  * Create XML Request Objects
  */
-CentreonSession::start();
+CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 

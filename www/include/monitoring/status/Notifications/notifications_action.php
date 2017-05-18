@@ -34,6 +34,7 @@
  */
 
 session_start();
+
 $action = "start";
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -44,3 +45,5 @@ if ($action == "start" && isset($_SESSION['disable_sound'])) {
 if ($action == "stop") {
     $_SESSION['disable_sound'] = true;
 }
+
+session_write_close();
