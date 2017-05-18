@@ -619,7 +619,6 @@
      * @return {Function} - The function for round the axes tick
      */
     getAxisTickFormat: function (base, inversed) {
-      console.log(base);
       if (base === 1024 || base === '1024') {
         if (inversed) {
           return this.inverseRoundTickByte;
