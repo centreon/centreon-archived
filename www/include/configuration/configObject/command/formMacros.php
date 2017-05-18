@@ -94,8 +94,12 @@ $form->addElement('header', 'title', _("Macro Descriptions"));
 $form->addElement('header', 'information', _("Macros"));
 
 
-$subS = $form->addElement('button', 'submitSaveAdd', _("Save"), array("onClick" => "setMacrosDescriptions();"));
-$subS = $form->addElement('button', 'close', _("Close"), array("onClick" => "closeBox();"));
+$subS = $form->addElement(
+    'button', 'submitSaveAdd', _("Save"), array("onClick" => "setMacrosDescriptions();", "class" => "btc bt_success")
+);
+$subS = $form->addElement(
+    'button', 'close', _("Close"), array("onClick" => "closeBox();", "class" => "btc bt_default")
+);
 
 /*
  *  Smarty template
