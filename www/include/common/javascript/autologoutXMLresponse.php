@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
     ini_set("display_errors", "Off");
@@ -50,6 +47,8 @@
 	$buffer->startElement("entry");
 
 	session_start();
+        session_write_close();
+
     $sid = session_id();
 	if (isset($_SESSION['centreon'])) {
 	    $oreon = $_SESSION['centreon'];

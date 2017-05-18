@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL
- * SVN : $Id$
- *
  */
 
 	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -47,6 +44,7 @@
 	$pearDB = new CentreonDB();
 
 	session_start();
+        session_write_close();
 	$oreon = $_SESSION['centreon'];
     
 

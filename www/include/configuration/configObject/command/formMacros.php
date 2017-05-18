@@ -35,14 +35,13 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
 require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonCommand.class.php";
 
-
 session_start();
+session_write_close();
 
 $centreon = $_SESSION['centreon'];
 if (!isset($centreon))

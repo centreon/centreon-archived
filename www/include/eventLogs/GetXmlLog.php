@@ -53,7 +53,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 
-CentreonSession::start();
+CentreonSession::start(1);
 $centreon = $_SESSION["centreon"];
 
 /**
