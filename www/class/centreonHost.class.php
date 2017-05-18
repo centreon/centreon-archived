@@ -1671,7 +1671,7 @@ class CentreonHost
                     $svcId = $this->serviceObj->insert(
                         array(
                             'service_description' => $service['service_alias'],
-                            'service_activate' => '1',
+                            'service_activate' => array('service_activate' => '1'),
                             'service_register' => '1',
                             'service_template_model_stm_id' => $serviceTemplateId
                         )
