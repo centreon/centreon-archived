@@ -83,7 +83,7 @@ class CentreonAPI {
     private $relationObject;
     private $objectTable;
     private $aExport = array();
-    
+
     public function CentreonAPI($user, $password, $action, $centreon_path, $options) {
         global $version;
 
@@ -316,7 +316,7 @@ class CentreonAPI {
             'export' => false
         );
 
-         
+
         /* Get objects from modules */
         $objectsPath = array();
         $DBRESULT = $this->DB->query("SELECT name FROM modules_informations");
@@ -326,7 +326,7 @@ class CentreonAPI {
 
         foreach ($objectsPath as $objectPath) {
             if (preg_match('/([\w-]+)\/centreon-clapi\/class\/centreon(\w+).class.php/', $objectPath, $matches)) {
-               
+
                 if (isset($matches[1]) && isset($matches[2])) {
                     $this->relationObject[strtoupper($matches[2])] = array(
                         'module' => $matches[1],
@@ -336,7 +336,7 @@ class CentreonAPI {
                 }
             }
         }
-  
+
         /*
          * Manage version
          */
@@ -461,11 +461,11 @@ class CentreonAPI {
         } else {
             $pass = md5($this->password);
         }
-        $DBRESULT = $this->DB->query("SELECT contact_id, contact_admin 
-                 FROM contact 
-                 WHERE contact_alias = '" . $this->login . "' 
-                 AND contact_passwd = '" . $pass . "' 
-                 AND contact_activate = '1' 
+        $DBRESULT = $this->DB->query("SELECT contact_id, contact_admin
+                 FROM contact
+                 WHERE contact_alias = '" . $this->login . "'
+                 AND contact_passwd = '" . $pass . "'
+                 AND contact_activate = '1'
                  AND contact_oreon = '1'");
         if ($DBRESULT->numRows()) {
             $row = $DBRESULT->fetchRow();
@@ -577,7 +577,7 @@ class CentreonAPI {
      */
     public function launchAction() {
         $action = strtoupper($this->action);
-        
+
         /**
          * Debug
          */
@@ -593,7 +593,7 @@ class CentreonAPI {
              * Require needed class
              */
             $this->requireLibs($this->object);
-            
+
             /**
              * Check class declaration
              */
@@ -747,14 +747,17 @@ class CentreonAPI {
      * Export All configuration
      */
     public function export()
-    {    
+    {
         $this->requireLibs("");
 
         $this->sortClassExport();
-        
+
         $this->initAllObjects();
 
         if (isset($this->options['select'])) {
+            if (false === isset($this->options['filter-type'])) {
+                $this->options['filter-type'] = '^(HOST|SERVICE|HTPL|STPL|CMD)$';
+            }
             CentreonExported::getInstance()->set_filter(1);
             CentreonExported::getInstance()->set_options($this->options);
             $selected = $this->options['select'];
@@ -966,7 +969,7 @@ class CentreonAPI {
                 if (isset($oObjet[$key]['class']) && $oObjet[$key]['export'] === true && !in_array($key, $this->aExport)) {
                     $objName = "centreon" . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
-                   
+
                     if (isset($objVars['aDepends'])) {
                         $bInsert = true;
                         foreach ($objVars['aDepends'] as $oDependence) {
