@@ -159,10 +159,10 @@
       };
       /* Add Y axis range */
       if (data.limits.min) {
-        axis.y.min = data.limits.min;
+        axis.y.min = numeral(data.limits.min).value();
       }
       if (data.limits.max) {
-        axis.y.max = data.limits.max;
+        axis.y.max = numeral(data.limits.max).value();
       }
 
       var parsedData = this.buildMetricData(data);
