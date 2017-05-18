@@ -98,9 +98,10 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         . 'AND ar.locked = 0 '
         . 'AND argr.acl_group_id = "' . $acl_group_id . '" ';
     $DBRESULT = $pearDB->query($query);
-    while($data = $DBRESULT->fetchRow()) {
+    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["resourceAccess"][$i] = $data["acl_res_id"];
     }
+
     $DBRESULT->free();
     
     /*
