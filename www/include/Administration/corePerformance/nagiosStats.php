@@ -77,7 +77,7 @@ if (!isset($oreon)) {
 
     $attrPollers = array(
         'datasourceOrigin' => 'ajax',
-        'allowClear' => true,
+        'allowClear' => false,
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list',
         'multiple' => false,
         'defaultDataset' => $defaultPoller,
