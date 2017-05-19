@@ -39,65 +39,68 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationHosttemplate constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
      */
     public function getList()
     {
-        global $centreon;
-        
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['hostName'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['hostName'] = '%' . (string)$this->arguments['q'] . '%';
         }
+
+        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id ' .
+            'FROM host h ' .
+            'WHERE h.host_register = "0" ' .
+            'AND h.host_name LIKE :hostName ' .
+            'ORDER BY h.host_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $query .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
-        
-        $queryHost = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id "
-            . "FROM host h "
-            . "WHERE h.host_register = '0' "
-            . "AND h.host_name LIKE '%$q%' "
-            . "ORDER BY h.host_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHost);
 
-        $total = $this->pearDB->numberRows();
-        
+        $stmt = $this->pearDB->prepare($query);
+        $stmt->bindParam(':hostName', $queryValues["hostName"], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $hostList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $hostList[] = array(
                 'id' => htmlentities($data['host_id']),
                 'text' => $data['host_name']
             );
         }
-        
+
         return array(
             'items' => $hostList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

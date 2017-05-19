@@ -40,7 +40,7 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationCommand extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationCommand constructor.
      */
     public function __construct()
     {
@@ -48,62 +48,62 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
     }
 
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
         $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['commandName'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['commandName'] = '%' . (string)$this->arguments['q'] . '%';
         }
 
         if (false === isset($this->arguments['t'])) {
-            $t = '';
+            $queryCommandType = '';
         } else {
-            $t = $this->arguments['t'];
+            $queryCommandType = 'AND command_type = :commandType ';
+            $queryValues['commandType'] = (int)$this->arguments['t'];
         }
+
+        $queryCommand = 'SELECT SQL_CALC_FOUND_ROWS command_id, command_name ' .
+            'FROM command ' .
+            'WHERE command_name LIKE :commandName AND command_activate = "1" ' .
+            $queryCommandType .
+            'ORDER BY command_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $this->pearDB->escape($limit) . ',' .
-                $this->pearDB->escape($this->arguments['page_limit']);
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryCommand .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
-
-        $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .
-            "FROM command " .
-            "WHERE command_name LIKE :commandName AND command_activate = '1' ";
-        $queryValues[':commandName'] = '%' . $q . '%';
-
-        if (!empty($t)) {
-            $queryCommand .= "AND command_type = :type ";
-            $queryValues[':type'] = $t;
-        }
-
-        $queryCommand .= "ORDER BY command_name " . $range;
 
         $stmt = $this->pearDB->prepare($queryCommand);
-        $dbResult = $this->pearDB->execute($stmt, $queryValues);
+        $stmt->bindParam(':commandName', $queryValues["commandName"], PDO::PARAM_STR);
+        if(isset($queryValues['commandType'])){
+            $stmt->bindParam(':commandType', $queryValues["commandType"], PDO::PARAM_INT);
+        }
+        if (isset($queryValues["offset"])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+
+        $dbResult = $stmt->execute();
 
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
-
-        $total = $stmt->rowCount();
         $commandList = array();
-
         while ($data = $stmt->fetch()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
         }
 
         return array(
             'items' => $commandList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

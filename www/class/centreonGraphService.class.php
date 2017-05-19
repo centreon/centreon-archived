@@ -128,7 +128,8 @@ class CentreonGraphService extends CentreonGraph
                         $extraLegend = true;
                         if (($name == "min" || $name == "max") &&
                             (isset($metric['ds_minmax_int']) &&
-                            $metric['ds_minmax_int'])) {
+                                $metric['ds_minmax_int'])
+                        ) {
                             $displayformat = "%7.0lf";
                         } else {
                             $displayformat = "%7.2lf";
@@ -140,8 +141,9 @@ class CentreonGraphService extends CentreonGraph
                 }
 
                 if (isset($metric['ds_color_area']) &&
-                  isset($metric['ds_filled']) &&
-                  $metric['ds_filled'] === '1') {
+                    isset($metric['ds_filled']) &&
+                    $metric['ds_filled'] === '1'
+                ) {
                     $info['graph_type'] = "area";
                 }
                 if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
@@ -335,20 +337,27 @@ class CentreonGraphService extends CentreonGraph
     }
 
     /**
-     * Get the index data id for a service
-     *
-     * @param int $hostId The host id
-     * @param int $serviceId The service id
-     * @param CentreonDB $dbc The database connection to centreon_storage
-     * @return int
+     * @param $hostId
+     * @param $serviceId
+     * @param $dbc
+     * @return mixed
+     * @throws Exception
      */
     public static function getIndexId($hostId, $serviceId, $dbc)
     {
-        $query = "SELECT id FROM index_data
-            WHERE host_id = " . $hostId . " AND service_id = " . $serviceId;
-        $res = $dbc->query($query);
-        $row = $res->fetchRow();
+        $query = 'SELECT id FROM index_data ' .
+            'WHERE host_id = :host ' .
+            'AND service_id = :service';
 
+        $stmt = $dbc->prepare($query);
+        $stmt->bindParam(':host', $hostId, PDO::PARAM_INT);
+        $stmt->bindParam(':service', $serviceId, PDO::PARAM_INT);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
+        $row = $stmt->fetch();
         if (false == $row) {
             throw new OutOfRangeException();
         }

@@ -39,133 +39,156 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 {
-    
+
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationHostgroup constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        $aclHostgroups = '';
-        
+        $aclHostGroups = '';
+        $queryValues = array();
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclHostgroups .= 'AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
+            $aclHostGroups .= 'AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
         }
-        
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['hgName'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['hgName'] = '%' . (string)$this->arguments['q'] . '%';
         }
+
+        $queryHostGroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id "
+            . "FROM hostgroup hg "
+            . "WHERE hg.hg_name LIKE :hgName "
+            . $aclHostGroups
+            . "ORDER BY hg.hg_name ";
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryHostGroup .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
-        
-        $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id "
-            . "FROM hostgroup hg "
-            . "WHERE hg.hg_name LIKE '%$q%' "
-            . $aclHostgroups
-            . "ORDER BY hg.hg_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHostgroup);
-        
-        $total = $this->pearDB->numberRows();
+        $stmt = $this->pearDB->prepare($queryHostGroup);
+        $stmt->bindParam(':hgName', $queryValues["hgName"], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
 
-        $hostgroupList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $hostgroupList[] = array('id' => htmlentities($data['hg_id']), 'text' => $data['hg_name']);
+        $hostGroupList = array();
+        while ($data = $stmt->fetch()) {
+            $hostGroupList[] = array('id' => htmlentities($data['hg_id']), 'text' => $data['hg_name']);
         }
-        
+
         return array(
-            'items' => $hostgroupList,
-            'total' => $total
+            'items' => $hostGroupList,
+            'total' => $stmt->rowCount()
         );
     }
-    
+
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function getHostList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        $aclHostgroups = '';
+        $aclHostGroups = '';
         $aclHosts = '';
-        
+        $queryValues = array();
+        $hgIdList = '';
+
         /* Get ACL if user is not admin */
-        
+
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclHostgroups .= ' AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
+            $aclHostGroups .= ' AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
             $aclHosts .= ' AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-        
         // Check for select2 'q' argument
         if (false === isset($this->arguments['hgid'])) {
-            $hgid = '';
+            $queryValues['hgid'][0] = '""';
+            $hgIdList .= ':hgid0';
         } else {
-            $hgid = $this->arguments['hgid'];
+            $listId = explode(',', $this->arguments['hgid']);
+            foreach ($listId as $key => $idHg) {
+                $hgIdList .= ':hgid' . $idHg . ',';
+                $queryValues['hgid'][$idHg] = (int)$idHg;
+            }
+            $hgIdList = rtrim($hgIdList, ',');
         }
+
+        $queryHostGroup = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name , h.host_id ' .
+            'FROM hostgroup hg ' .
+            'INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id ' .
+            'INNER JOIN host h ON  h.host_id = hgr.host_host_id ' .
+            'WHERE hg.hg_id IN (' . $hgIdList . ') ' .
+            $aclHostGroups .
+            $aclHosts;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryHostGroup .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
-        
-        $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name , h.host_id "
-            . "FROM hostgroup hg "
-            . "INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id "
-            . "INNER JOIN host h ON  h.host_id = hgr.host_host_id "
-            . "WHERE hg.hg_id IN (".$hgid.") "
-            . $aclHostgroups
-            . $aclHosts
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHostgroup);
+        $stmt = $this->pearDB->prepare($queryHostGroup);
 
-        $total = $this->pearDB->numberRows();
+        foreach ($queryValues["hgid"] as $k => $v) {
+            $stmt->bindParam(':hgid' . $k, $v, PDO::PARAM_INT);
+        }
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
 
         $hostList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $hostList[] = array(
                 'id' => htmlentities($data['host_id']),
                 'text' => $data['host_name']
             );
         }
- 
+
         return array(
             'items' => $hostList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

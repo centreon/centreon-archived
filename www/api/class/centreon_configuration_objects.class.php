@@ -39,7 +39,7 @@ require_once dirname(__FILE__) . "/webService.class.php";
 class CentreonConfigurationObjects extends CentreonWebService
 {
     /**
-     * Constructor
+     * CentreonConfigurationObjects constructor.
      */
     public function __construct()
     {
@@ -47,13 +47,11 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @global type _CENTREON_PATH_
+     * @return array
      * @throws RestBadRequestException
      */
     public function getDefaultValues()
     {
-
         // Get Object targeted
         if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
             $id = $this->arguments['id'];
@@ -75,7 +73,6 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters target");
         }
 
-        //
         $defaultValuesParameters = array();
         $targetedFile = _CENTREON_PATH_ . "/www/class/centreon$target.class.php";
         if (file_exists($targetedFile)) {
@@ -84,7 +81,6 @@ class CentreonConfigurationObjects extends CentreonWebService
             $defaultValuesParameters = $calledClass::getDefaultValuesParameters($field);
         }
 
-        //
         if (count($defaultValuesParameters) == 0) {
             throw new RestBadRequestException("Bad parameters count");
         }
@@ -121,13 +117,15 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @param array $externalObject
-     * @param array $values
+     * @param $externalObject
+     * @param $values
+     * @return array
+     * @throws Exception
      */
     protected function retrieveExternalObjectDatas($externalObject, $values)
     {
         $tmpValues = array();
+
         if (isset($externalObject['object'])) {
             $classFile = $externalObject['object'] . '.class.php';
             include_once _CENTREON_PATH_ . "/www/class/$classFile";
@@ -142,39 +140,41 @@ class CentreonConfigurationObjects extends CentreonWebService
             $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
         } else {
             $explodedValues = '';
+
             if (!empty($values)) {
                 for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';
                 }
                 $explodedValues = substr($explodedValues, 0, -1);
             }
+
             $query = "SELECT $externalObject[id], $externalObject[name] " .
                 "FROM $externalObject[table] " .
                 "WHERE $externalObject[comparator] " .
                 "IN ($explodedValues)";
-
             $stmt = $this->pearDB->prepare($query);
-            $resRetrieval = $this->pearDB->execute($stmt, $values);
+            $dbResult = $this->pearDB->execute($stmt, $values);
 
-            if (!$resRetrieval) {
+            if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-            while ($row = $stmt->fetch()) {
+
+            while ($row = $dbResult->fetch()) {
                 $tmpValues[] = array(
                     'id' => $row[$externalObject['id']],
                     'text' => $row[$externalObject['name']]
                 );
             }
         }
-
         return $tmpValues;
     }
 
     /**
-     *
-     * @param integer $id
-     * @param string $field
+     * @param $currentObject
+     * @param $id
+     * @param $field
      * @return array
+     * @throws Exception
      */
     protected function retrieveSimpleValues($currentObject, $id, $field)
     {
@@ -187,15 +187,17 @@ class CentreonConfigurationObjects extends CentreonWebService
         }
 
         // Getting Current Values
-        $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " "
-            . "FROM " . $currentObject['table'] . " "
-            . "WHERE " . $currentObject['id'] . " = ?";
+        $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " " .
+            "FROM " . $currentObject['table'] . " " .
+            "WHERE " . $currentObject['id'] . " = :id";
 
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
-        $resRetrieval = $this->pearDB->execute($stmt, array($id));
-        if (!$resRetrieval) {
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
             throw new \Exception("An error occured");
         }
+
         while ($row = $stmt->fetch()) {
             $tmpValue = $row[$field];
             if (isset($currentObject['additionalField'])) {
@@ -208,10 +210,10 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @param array $relationObject
-     * @param integer $id
+     * @param $relationObject
+     * @param $id
      * @return array
+     * @throws Exception
      */
     protected function retrieveRelatedValues($relationObject, $id)
     {
@@ -225,10 +227,11 @@ class CentreonConfigurationObjects extends CentreonWebService
 
         $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " " .
             "FROM " . $relationObject['table'] . " " .
-            "WHERE " . $relationObject['comparator'] . " = ?";
+            "WHERE " . $relationObject['comparator'] . " = :id";
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
-        $resRetrieval = $this->pearDB->execute($stmt, array($id));
-        if (!$resRetrieval) {
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
             throw new \Exception("An error occured");
         }
         while ($row = $stmt->fetch()) {
