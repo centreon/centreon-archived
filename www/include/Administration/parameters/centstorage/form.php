@@ -76,6 +76,14 @@ while ($data = $DBRESULT2->fetchRow()) {
 }
 
 /*
+ * Partitioning options
+ */
+$DBRESULT3 = $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'partitioning%'");
+while ($data = $DBRESULT3->fetchRow()) {
+    $gopt[$data['key']] = $data['value'];
+}
+
+/*
  * Format of text input
  */
 $attrsText        = array("size"=>"40");
@@ -101,6 +109,7 @@ $form->addElement('header', 'enable', _("Engine Status"));
 $form->addElement('header', 'insert', _("Resources storage"));
 $form->addElement('header', 'folder', _("Storage folders"));
 $form->addElement('header', 'retention', _("Retention durations"));
+$form->addElement('header', 'partitioning', _("Partitioning retention options"));
 $form->addElement('header', 'Input', _("Input treatment options"));
 $form->addElement('header', 'reporting', _("Dashboard Integration Properties"));
 $form->addElement('header', 'audit', _("Audit log activation"));
@@ -123,6 +132,12 @@ $form->addElement('text', 'len_storage_comments', _("Retention Duration for Comm
 $form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 $form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
+
+// Parameters for Partitioning
+$form->addElement('text', 'partitioning_retention', _("Retention Duration for partitioning (in days)"), $attrsText2);
+$form->addElement('text', 'partitioning_retention_forward', _("Provisioning partitions (in days)"), $attrsText2);
+$form->addElement('text', 'partitioning_backup_directory', _("Backup directory for partitioning"), $attrsText);
+
 
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -151,6 +166,7 @@ if ($form->validate()) {
      * Update in DB
      */
     updateODSConfigData();
+    updatePartitioningConfigData($pearDB, $form, $centreon);
 
     $centreon->initOptGen($pearDB);
 

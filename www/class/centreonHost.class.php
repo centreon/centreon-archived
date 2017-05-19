@@ -1221,15 +1221,14 @@ class CentreonHost
             if (in_array($hostId, $alreadyProcessed)) {
                 return $values;
             } else {
-                $queryFields = $fields;
                 if (count($alreadyProcessed) && !count($fields)) {
                     return $values;
+                }
+
+                if (count($fields) > 0) {
+                    $queryFields = implode(',', $fields);
                 } else {
-                    if (!count($fields)) {
-                        $queryFields = " * ";
-                    } else {
-                        $queryFields = implode(',', $fields);
-                    }
+                    $queryFields = '*';
                 }
 
                 $sql = "SELECT " . $queryFields . " "
@@ -1249,7 +1248,6 @@ class CentreonHost
                         }
                     }
                 }
-
                 $alreadyProcessed[] = $hostId;
 
                 $hostTemplateIds = $this->getHostTemplateIds($hostId);
@@ -1258,6 +1256,7 @@ class CentreonHost
                 }
             }
         }
+
         return $values;
     }
 
@@ -1672,7 +1671,7 @@ class CentreonHost
                     $svcId = $this->serviceObj->insert(
                         array(
                             'service_description' => $service['service_alias'],
-                            'service_activate' => '1',
+                            'service_activate' => array('service_activate' => '1'),
                             'service_register' => '1',
                             'service_template_model_stm_id' => $serviceTemplateId
                         )

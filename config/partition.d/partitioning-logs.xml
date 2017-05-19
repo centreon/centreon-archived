@@ -4,13 +4,6 @@
         <activate>1</activate>
         <column>ctime</column>
         <type>date</type>
-        <duration>daily</duration>
-        <retention>31</retention>
-        <retentionforward>10</retentionforward>        
-        <backup>
-            <folder>/var/backups/</folder>
-            <format>%Y-%m-%d</format>
-        </backup>
         <createstmt>
 CREATE TABLE `logs` (
   `log_id` int(11) NOT NULL AUTO_INCREMENT,
