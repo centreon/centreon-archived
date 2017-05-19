@@ -71,7 +71,7 @@
 
     $inputs = array();
     foreach ($inputArguments as $argumentName => $argumentValue) {
-        if (!is_null($inputGet[$argumentName])) {
+        if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
             $inputs[$argumentName] = $inputGet[$argumentName];
         } else {
             $inputs[$argumentName] = $inputPost[$argumentName];
