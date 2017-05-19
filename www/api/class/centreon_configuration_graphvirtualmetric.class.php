@@ -45,28 +45,32 @@ class CentreonConfigurationGraphvirtualmetric extends CentreonConfigurationObjec
     {
         parent::__construct();
     }
-    
+
     /**
-     *
-     * @param integer $id
+     * @param $currentObject
+     * @param int $id
      * @param string $field
      * @return array
+     * @throws Exception
      */
     protected function retrieveSimpleValues($currentObject, $id, $field)
     {
         $tmpValues = array();
-
         # Getting Current Values
-        $queryValuesRetrieval = "SELECT id.host_id, id.service_id "
-            . "FROM " . dbcstg . ".index_data id, virtual_metrics vm "
-            . "WHERE id.id = vm.index_id "
-            . "AND vm.vmetric_id = " . $id . " ";
+        $query = "SELECT id.host_id, id.service_id " .
+            "FROM " . dbcstg . ".index_data id, virtual_metrics vm " .
+            "WHERE id.id = vm.index_id " .
+            "AND vm.vmetric_id = :metricId ";
 
-        $resRetrieval = $this->pearDB->query($queryValuesRetrieval);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->pearDB->prepare($query);
+        $stmt->bindParam(':metricId', $id, PDO::PARAM_INT);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+        while ($row = $stmt->fetch()) {
             $tmpValues[] = $row['host_id'] . '-' . $row['service_id'];
         }
-
         return $tmpValues;
     }
 }

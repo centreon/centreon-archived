@@ -40,16 +40,16 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationMeta extends CentreonConfigurationObjects
 {
     /**
-     *
+     * CentreonConfigurationMeta constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
@@ -57,50 +57,58 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
 
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        $aclMetaservices = '';
+        $aclMetaServices = '';
+        $queryValues = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclMetaservices .= 'AND meta_id IN (' . $acl->getMetaServiceString() . ') ';
+            $aclMetaServices .= 'AND meta_id IN (' . $acl->getMetaServiceString() . ') ';
         }
 
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         }
+
+        $queryMeta = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name ' .
+            'FROM meta_service ' .
+            'WHERE meta_name LIKE :name ' .
+            $aclMetaServices .
+            'ORDER BY meta_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryMeta .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
 
-        $queryMeta = "SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name "
-            . "FROM meta_service "
-            . "WHERE meta_name LIKE '%$q%' "
-            . $aclMetaservices
-            . "ORDER BY meta_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryMeta);
+        $stmt = $this->pearDB->prepare($queryMeta);
+        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
 
-        $total = $this->pearDB->numberRows();
-        
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $metaList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data =  $stmt->fetch()) {
             $metaList[] = array(
                 'id' => $data['meta_id'],
                 'text' => $data['meta_name']
             );
         }
-        
+
         return array(
             'items' => $metaList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

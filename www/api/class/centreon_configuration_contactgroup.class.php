@@ -41,15 +41,14 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationContactgroup constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
      */
     public function getList()
@@ -77,7 +76,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
 
         $aclCgs = $acl->getContactGroupAclConf(
             array(
-                'fields'  => array('cg_id', 'cg_name', 'cg_type', 'ar_name'),
+                'fields' => array('cg_id', 'cg_name', 'cg_type', 'ar_name'),
                 'get_row' => null,
                 'keys' => array('cg_id'),
                 'conditions' => $filterContactgroup,
@@ -87,13 +86,13 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             ),
             false
         );
-       
+
 
         $contactgroupList = array();
         foreach ($aclCgs['items'] as $id => $contactgroup) {
             $sText = $contactgroup['cg_name'];
             if ($contactgroup['cg_type'] == 'ldap') {
-                $sText .= " (LDAP : ".$contactgroup['ar_name'].")";
+                $sText .= " (LDAP : " . $contactgroup['ar_name'] . ")";
             }
             $id = $contactgroup['cg_id'];
             $contactgroupList[] = array(
@@ -112,7 +111,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         } else {
             $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
         }
- 
+
         foreach ($ldapCgs as $key => $value) {
             $sTemp = $value;
             if (!$this->unique_key($sTemp, $contactgroupList)) {
@@ -128,7 +127,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             'total' => $aclCgs['total']
         );
     }
-    
+
     protected function unique_key($val, &$array)
     {
 

@@ -45,6 +45,10 @@ class CentreonAdministrationModule extends CentreonWebService
         parent::__construct();
     }
 
+    /**
+     * @return int
+     * @throws Exception
+     */
     public function postInstall()
     {
         if (!isset($this->arguments['name'])) {
@@ -59,6 +63,10 @@ class CentreonAdministrationModule extends CentreonWebService
         return $moduleInstaller->install();
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function postUpgrade()
     {
         if (!isset($this->arguments['name'])) {
@@ -73,6 +81,10 @@ class CentreonAdministrationModule extends CentreonWebService
         return $moduleUpgrader->upgrade();
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function postRemove()
     {
         if (!isset($this->arguments['name'])) {

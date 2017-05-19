@@ -39,48 +39,45 @@ require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 class CentreonHomeCustomview extends CentreonWebService
 {
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonHomeCustomview constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
 
+    /**
+     * @return array
+     */
     public function getListSharedViews()
     {
         global $centreon;
-
         $views = array();
+        $query = 'SELECT custom_view_id, name FROM (' .
+            'SELECT cv.custom_view_id, cv.name FROM custom_views cv ' .
+            'INNER JOIN custom_view_user_relation cvur ON cv.custom_view_id = cvur.custom_view_id ' .
+            'WHERE (cvur.user_id = ' . $centreon->user->user_id . ' ' .
+            'OR cvur.usergroup_id IN ( ' .
+            'SELECT contactgroup_cg_id ' .
+            'FROM contactgroup_contact_relation ' .
+            'WHERE contact_contact_id = ' . $centreon->user->user_id . ' ' .
+            ') ' .
+            ') ' .
+            'UNION ' .
+            'SELECT cv2.custom_view_id, cv2.name FROM custom_views cv2 ' .
+            'WHERE cv2.public = 1 ) as d ' .
+            'WHERE d.custom_view_id NOT IN (' .
+            'SELECT cvur2.custom_view_id FROM custom_view_user_relation cvur2 ' .
+            'WHERE cvur2.user_id = ' . $centreon->user->user_id . ' ' .
+            'AND cvur2.is_consumed = 1) ';
 
-        $query = "SELECT custom_view_id, name FROM ("
-            . "SELECT cv.custom_view_id, cv.name FROM custom_views cv "
-            . "INNER JOIN custom_view_user_relation cvur ON cv.custom_view_id = cvur.custom_view_id "
-            . "WHERE (cvur.user_id = " . $centreon->user->user_id . " "
-            . "OR cvur.usergroup_id IN ( "
-                . "SELECT contactgroup_cg_id "
-                . "FROM contactgroup_contact_relation "
-                . "WHERE contact_contact_id = " . $centreon->user->user_id . " "
-                . ") "
-            . ") "
-            . "UNION "
-            . "SELECT cv2.custom_view_id, cv2.name FROM custom_views cv2 "
-            . "WHERE cv2.public = 1 ) as d "
-            . "WHERE d.custom_view_id NOT IN ("
-            . "SELECT cvur2.custom_view_id FROM custom_view_user_relation cvur2 "
-            . "WHERE cvur2.user_id = " . $centreon->user->user_id . " "
-            . "AND cvur2.is_consumed = 1) ";
-
-        $DBRES = $this->pearDB->query($query);
-
-        while ($row = $DBRES->fetchRow()) {
+        $dbResult = $this->pearDB->query($query);
+        while ($row = $dbResult->fetch()) {
             $views[] = array(
                 'id' => $row['custom_view_id'],
                 'text' => $row['name']
             );
         }
-
         return array(
             'items' => $views,
             'total' => count($views)
@@ -144,7 +141,6 @@ class CentreonHomeCustomview extends CentreonWebService
                 'nbCols' => $tab['layout']
             );
         }
-
         return array(
             'current' => $viewObj->getCurrentView(),
             'tabs' => $tabs

@@ -39,15 +39,14 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationContact extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationContact constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
      */
     public function getList()
@@ -69,7 +68,7 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
         }
 
         $acl = new CentreonACL($centreon->user->user_id);
-        
+
         $contacts = $acl->getContactAclConf(
             array(
                 'fields' => array('contact_id', 'contact_name'),
@@ -89,7 +88,7 @@ class CentreonConfigurationContact extends CentreonConfigurationObjects
                 'text' => $contactName
             );
         }
-        
+
         return array(
             'items' => $contactList,
             'total' => $contacts['total']

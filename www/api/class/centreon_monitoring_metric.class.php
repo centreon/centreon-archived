@@ -40,77 +40,85 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonMonitoringMetric extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
-    
+
     /**
-     * Constructor
+     * CentreonMonitoringMetric constructor.
      */
     public function __construct()
     {
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         parent::__construct();
     }
-    
+
     /**
-     * Get metric list
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
+        $queryValues = array();
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         }
-        $query = "SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as \"metric_name\" FROM `metrics` WHERE metric_name LIKE '%$q%' ORDER BY `metric_name` COLLATE utf8_general_ci ";
-        $DBRESULT = $this->pearDBMonitoring->query($query);
 
-        $total = $this->pearDBMonitoring->numberRows();
-        
+        $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" ' .
+            'FROM `metrics` ' .
+            'WHERE metric_name LIKE :name ' .
+            'ORDER BY `metric_name` COLLATE utf8_general_ci ';
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $metricList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $metricList[] = array('id' => $data['metric_name'], 'text' => $data['metric_name']);
         }
-        
         return array(
             'items' => $metricList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
-    
+
     /**
-     * Get metrics datas for a service
-     *
      * @return array
+     * @throws Exception
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
      */
     public function getMetricsDataByService()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclGroups = $acl->getAccessGroupsString();
         }
-        
+
         /* Validate options */
         if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])) {
+            false === is_numeric($this->arguments['end'])
+        ) {
             throw new RestBadRequestException("Bad parameters");
         }
 
         $start = $this->arguments['start'];
         $end = $this->arguments['end'];
-        
+
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
@@ -122,36 +130,39 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
         if ($rows < 10) {
             throw new RestBadRequestException("The rows must be greater as 10");
         }
-        
+
         if (false === isset($this->arguments['ids'])) {
             self::sendJson(array());
         }
-        
+
         /* Get the list of service ID */
         $ids = explode(',', $this->arguments['ids']);
         $result = array();
-        
+
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
-            if (false === is_numeric($hostId) ||
-                false === is_numeric($serviceId)) {
+            if (false === is_numeric($hostId) || false === is_numeric($serviceId)) {
                 throw new RestBadRequestException("Bad parameters");
             }
 
             /* Check ACL is not admin */
             if (!$isAdmin) {
-                $query = "SELECT service_id
-                    FROM centreon_acl
-                    WHERE host_id = " . $hostId . "
-                        AND service_id = " . $serviceId . "
-                        AND group_id IN (" . $aclGroups . ")";
-                $res = $this->pearDBMonitoring->query($query);
-                if (0 == $res->numRows()) {
+                $query = 'SELECT service_id ' .
+                    'FROM centreon_acl ' .
+                    'WHERE host_id = :hostId ' .
+                    'AND service_id = :serviceId ' .
+                    'AND group_id IN (' . $aclGroups . ')';
+                $stmt = $this->pearDBMonitoring->prepare($query);
+                $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+                $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+                $dbResult = $stmt->execute();
+                if (!$dbResult) {
+                    throw new \Exception("An error occured");
+                }
+                if (0 == $stmt->rowCount()) {
                     throw new RestForbiddenException("Access denied");
                 }
             }
-
-            $data = array();
 
             /* Prepare graph */
             try {
@@ -167,8 +178,7 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
             $graph->createLegend();
 
             $serviceData = $graph->getData($rows);
-            
-            
+
             /* Replace NaN */
             for ($i = 0; $i < count($serviceData); $i++) {
                 if (isset($serviceData[$i]['data'])) {
@@ -191,11 +201,10 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
                 'size' => $rows
             );
         }
-        
         return $result;
     }
-    
-    
+
+
     /**
      * Function for test is a value is NaN
      *

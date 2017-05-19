@@ -59,42 +59,53 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
     public function __construct()
     {
         parent::__construct();
-        $this->centcore_file = _CENTREON_VARLIB_.'/centcore.cmd';
+        $this->centcore_file = _CENTREON_VARLIB_ . '/centcore.cmd';
         $this->pearDBC = new CentreonDB('centstorage');
         $this->getPollers();
         $this->pipeOpened = 0;
     }
 
     /*
-     * Get poller Listing 
+     * Get poller Listing
      */
     private function getPollers()
     {
         if (!isset($this->hostServices)) {
-            $query = "SELECT h.host_id, h.host_name, ns.nagios_server_id AS poller_id FROM host h, ns_host_relation ns WHERE host_host_id = host_id AND h.host_activate = '1' AND h.host_register = '1'";
-            $DBRESULT = $this->pearDB->query($query);
+            $query = 'SELECT h.host_id, h.host_name, ns.nagios_server_id AS poller_id ' .
+                'FROM host h, ns_host_relation ns ' .
+                'WHERE host_host_id = host_id ' .
+                'AND h.host_activate = "1" ' .
+                'AND h.host_register = "1"';
+            $dbResult = $this->pearDB->query($query);
             $this->pollerHosts = array('name' => array(), 'id' => array());
-            while ($row = $DBRESULT->fetchRow()) {
+            while ($row = $dbResult->fetch()) {
                 $this->pollerHosts['id'][$row['host_id']] = $row['poller_id'];
                 $this->pollerHosts['name'][$row['host_name']] = $row['poller_id'];
             }
-            $DBRESULT->free();
+            $dbResult->closeCursor();
         }
     }
 
     private function getHostServiceInfo()
     {
         if (!isset($this->hostServices)) {
-            $query = "SELECT host_name, service_description FROM host h, service s, host_service_relation hs WHERE h.host_id = hs.host_host_id AND s.service_id = hs.service_service_id AND s.service_activate = '1' AND s.service_activate = '1' AND h.host_activate = '1' AND h.host_register = '1'";
-            $DBRESULT = $this->pearDB->query($query);
+            $query = 'SELECT host_name, service_description ' .
+                'FROM host h, service s, host_service_relation hs ' .
+                'WHERE h.host_id = hs.host_host_id ' .
+                'AND s.service_id = hs.service_service_id ' .
+                'AND s.service_activate = "1" ' .
+                'AND s.service_activate = "1" ' .
+                'AND h.host_activate = "1" ' .
+                'AND h.host_register = "1" ';
+            $dbResult = $this->pearDB->query($query);
             $this->hostServices = array();
-            while ($row = $DBRESULT->fetchRow()) {
+            while ($row = $dbResult->fetch()) {
                 if (!isset($this->hostServices[$row['host_name']])) {
                     $this->hostServices[$row['host_name']] = array();
                 }
                 $this->hostServices[$row['host_name']][$row['service_description']] = 1;
             }
-            $DBRESULT->free();
+            $dbResult->closeCursor();
         }
     }
 
@@ -120,23 +131,26 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
         }
 
         if ($string != '') {
-            fwrite($this->fh, $string."\n");
+            fwrite($this->fh, $string . "\n");
         }
     }
 
     private function sendResults($data)
     {
         if (!isset($this->pollerHosts['name'][$data["host"]])) {
-            throw new RestBadRequestException("Can't find poller_id for host: ".$data["host"]);
+            throw new RestBadRequestException("Can't find poller_id for host: " . $data["host"]);
         }
         if (isset($data['service']) && $data['service'] == '') {
             /* Services update */
-            $command = $data["host"].";".$data["service"].";".$data["status"].";".$data["output"]."|".$data["perfdata"];
-            $this->writeInPipe("EXTERNALCMD:".$this->pollerHosts['name'][$data["host"]].":[".$data['updatetime']."] PROCESS_HOST_CHECK_RESULT;".$command);
+            $command = $data["host"] . ";" . $data["service"] . ";" . $data["status"] . ";" .
+                $data["output"] . "|" . $data["perfdata"];
+            $this->writeInPipe("EXTERNALCMD:" . $this->pollerHosts['name'][$data["host"]] .
+                ":[" . $data['updatetime'] . "] PROCESS_HOST_CHECK_RESULT;" . $command);
         } else {
             /* Host Update */
-            $command = $data["host"].";".$data["status"].";".$data["output"]."|".$data["perfdata"];
-            $this->writeInPipe("EXTERNALCMD:".$this->pollerHosts['name'][$data["host"]].":[".$data['updatetime']."] PROCESS_SERVICE_CHECK_RESULT;".$command);
+            $command = $data["host"] . ";" . $data["status"] . ";" . $data["output"] . "|" . $data["perfdata"];
+            $this->writeInPipe("EXTERNALCMD:" . $this->pollerHosts['name'][$data["host"]] .
+                ":[" . $data['updatetime'] . "] PROCESS_SERVICE_CHECK_RESULT;" . $command);
         }
     }
 
@@ -156,20 +170,24 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                     $this->openPipe();
                 }
                 foreach ($this->arguments['results'] as $data) {
-                    if (!isset($this->hostServices[$data['host']]) || !isset($this->hostServices[$data['host']][$data["service"]])) {
+                    if (
+                        !isset($this->hostServices[$data['host']])
+                        || !isset($this->hostServices[$data['host']][$data["service"]])
+                    ) {
                         if (!isset($this->pollerHosts['name'][$data['host']])) {
                             $host = new CentreonHost($this->pearDB);
-                            $ret = array(   'host_name' => $data['host'],
-                                            'host_alias' => "Passif host - ".$data['host'],
-                                            'host_address' => $data['host'],
-                                            'host_active_checks_enabled' => array('host_active_checks_enabled', 0),
-                                            'host_passive_checks_enabled' => array('host_passive_checks_enabled' => 1),
-                                            'host_retry_check_interval' => 1,
-                                            'host_max_check_attempts' => 3,
-                                            'host_register' => 1,
-                                            'host_activate' => array('host_activate' => 1),
-                                            'host_comment' => "Host imported by rest API at ". date("Y/m/d") . ""
-                                        );
+                            $ret = array(
+                                'host_name' => $data['host'],
+                                'host_alias' => "Passif host - " . $data['host'],
+                                'host_address' => $data['host'],
+                                'host_active_checks_enabled' => array('host_active_checks_enabled', 0),
+                                'host_passive_checks_enabled' => array('host_passive_checks_enabled' => 1),
+                                'host_retry_check_interval' => 1,
+                                'host_max_check_attempts' => 3,
+                                'host_register' => 1,
+                                'host_activate' => array('host_activate' => 1),
+                                'host_comment' => "Host imported by rest API at " . date("Y/m/d") . ""
+                            );
                             $host_id = $host->insert($ret);
                             $host->insertExtendedInfos(array('host_id' => $host_id));
                             $host->setPollerInstance($host_id, 1);
@@ -182,16 +200,17 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                                 $host = new CentreonHost($this->pearDB);
                             }
                             $service = new CentreonService($this->pearDB);
-                            $ret = array(   'service_description' => $data["service"],
-                                            'service_max_check_attempts' => 3,
-                                            'service_template_model_stm_id' => 1,
-                                            'service_normal_check_interval' => $data['interval'],
-                                            'service_retry_check_interval' => $data['interval'],
-                                            'service_active_checks_enabled' => array('service_active_checks_enabled' => 0),
-                                            'service_passive_checks_enabled' => array('service_passive_checks_enabled' => 1),
-                                            'service_register' => 1,
-                                            'service_activate' => array('service_activate' => 1),
-                                            'service_comment' => "Service imported by Rest API at ". date("Y/m/d") . ""
+                            $ret = array(
+                                'service_description' => $data["service"],
+                                'service_max_check_attempts' => 3,
+                                'service_template_model_stm_id' => 1,
+                                'service_normal_check_interval' => $data['interval'],
+                                'service_retry_check_interval' => $data['interval'],
+                                'service_active_checks_enabled' => array('service_active_checks_enabled' => 0),
+                                'service_passive_checks_enabled' => array('service_passive_checks_enabled' => 1),
+                                'service_register' => 1,
+                                'service_activate' => array('service_activate' => 1),
+                                'service_comment' => "Service imported by Rest API at " . date("Y/m/d") . ""
                             );
                             $service_id = $service->insert($ret);
                             if (!isset($host_id)) {
@@ -204,7 +223,10 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                     if (isset($this->pollerHosts['name'][$data['host']])) {
                         $this->sendResults($data);
                     } else {
-                        throw new RestException("Can't find the pushed resource (".$data['host']." / ".$data['service'].")... Try again later");
+                        throw new RestException(
+                            "Can't find the pushed resource (" . $data['host'] . " / " . $data['service'] .
+                            ")... Try again later"
+                        );
                     }
                 }
                 $this->closePipe();

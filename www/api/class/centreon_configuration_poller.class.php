@@ -39,22 +39,22 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationPoller extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDB;
+
     /**
-     * Constructor
+     * CentreonConfigurationPoller constructor.
      */
     public function __construct()
     {
         $this->pearDB = new CentreonDB('centreon');
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
@@ -62,6 +62,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
+        $queryValues = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -70,43 +71,47 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         }
 
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-        
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
-            . "FROM nagios_server "
-            . "WHERE name LIKE '%$q%' "
-            . "AND ns_activate = '1' ";
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name ' .
+            'FROM nagios_server ' .
+            'WHERE name LIKE :name ' .
+            'AND ns_activate = "1" ';
         if (!$isAdmin) {
             $queryPoller .= $acl->queryBuilder('AND', 'id', $acl->getPollerString('ID', $this->pearDB));
         }
-        $queryPoller .= "ORDER BY name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryPoller);
+        $queryPoller .= 'ORDER BY name ';
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryPoller .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
+        }
 
-        $total = $this->pearDB->numberRows();
-        
+        $stmt = $this->pearDB->prepare($queryPoller);
+        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $pollerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $pollerList[] = array(
                 'id' => $data['id'],
                 'text' => $data['name']
             );
         }
-        
         return array(
             'items' => $pollerList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }
