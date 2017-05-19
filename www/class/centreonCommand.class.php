@@ -351,7 +351,6 @@ class CentreonCommand
      */
     public function getParameters($id, $parameters = array())
     {
-        $sElement = "*";
         $queryValues = array();
         $explodedValues = '';
         $arr = array();
@@ -363,7 +362,10 @@ class CentreonCommand
                 $explodedValues .= "`$v`,";
             }
             $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '*';
         }
+
         $query = 'SELECT ' . $explodedValues . ' FROM command WHERE command_id = ?';
         $queryValues[] = (int)$id;
         $stmt = $this->db->prepare($query);
