@@ -113,7 +113,7 @@ Your account is now available. You can link your Centreon platform.
 
 .. image:: /_static/images/configuration/website/create_account_05.png
     :width: 1000 px
-	:align: center
+    :align: center
 
 2. Link your Centreon platform
 ------------------------------

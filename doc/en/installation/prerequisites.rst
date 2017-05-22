@@ -63,6 +63,7 @@ The following table describes the dependent software:
 +----------+------------------+
 | zlib     | 1.2.3            |
 +----------+------------------+
+
 ***************************
 Select type of architecture
 ***************************

@@ -1,4 +1,5 @@
 .. _centreon_parameters:
+
 ===============================================
 Administration options of the Centreon platform
 ===============================================
