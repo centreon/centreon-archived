@@ -17,7 +17,7 @@ To install Centreon software from the repository, you should first install the f
 Perform the following command from a user with sufficient rights.
 
 Centreon Repository
---------------
+-------------------
 
 For CentOS 6.
 
@@ -189,41 +189,43 @@ Web Installation
 
 The End of installation wizard of Centreon is displayed, click on **Next**.
 
-.. image :: /images/user/acentreonwelcome.png
+.. image:: /images/user/acentreonwelcome.png
    :align: center
    :scale: 85%
 
 The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
 
-.. image :: /images/user/acentreoncheckmodules.png
+.. image:: /images/user/acentreoncheckmodules.png
    :align: center
    :scale: 85%
 
 Click on **Next**.
 
-.. image :: /images/user/amonitoringengine2.png
+.. image:: /images/user/amonitoringengine2.png
    :align: center
    :scale: 85%
 
 Click on **Next**.
 
-.. image :: /images/user/abrokerinfo2.png
+.. image:: /images/user/abrokerinfo2.png
    :align: center
    :scale: 85%
 
 Define the data concerning the admin user, click on **Next**.
 
-.. image :: /images/user/aadmininfo.png
+.. image:: /images/user/aadmininfo.png
    :align: center
    :scale: 85%
 
 By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
 
-.. image :: /images/user/adbinfo.png
+.. image:: /images/user/adbinfo.png
    :align: center
    :scale: 85%
 
-If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
+If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.**
+
+Perform the following operation:
 
 1.  Log-on to the ‘root’ user on your server
 
@@ -234,8 +236,6 @@ If the following error message appears: **Add innodb_file_per_table=1 in my.cnf 
   /etc/my.cnf
 
 3.  Add these lines to the file
-
-.. raw:: latex 
 
 ::
 
@@ -252,7 +252,7 @@ If the following error message appears: **Add innodb_file_per_table=1 in my.cnf 
 
 The End of installation wizard configures the databases, click on **Next**.
 
-.. image :: /images/user/adbconf.png
+.. image:: /images/user/adbconf.png
    :align: center
    :scale: 85%
 
@@ -260,13 +260,13 @@ The installation is finished, click on Finish.
 
 At this stage a publicity allows to know the latest Centreon . If your platform is connected to the Internet you have the latest information , if the information present in this version will be offered.
 
-.. image :: /images/user/aendinstall.png
+.. image:: /images/user/aendinstall.png
    :align: center
    :scale: 85%
 
 You can now log in.
 
-.. image :: /images/user/aconnection.png
+.. image:: /images/user/aconnection.png
    :align: center
    :scale: 85%
 
@@ -286,6 +286,7 @@ To start monitoring engine :
 ::
  
   service cbd start
+
 8.   Start Centreon Engine
 
 ::
@@ -306,7 +307,7 @@ Introduction to the web interface
 
 Centreon web interface is made up of several menus, each menu has a specific function:
 
-.. image :: /images/user/amenu.png
+.. image:: /images/user/amenu.png
    :align: center
 
 |

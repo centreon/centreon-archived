@@ -7,4 +7,3 @@ Developer
 
    writemodule
    writewidget
-   develop-a-plugin.rst

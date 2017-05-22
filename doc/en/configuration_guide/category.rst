@@ -28,6 +28,8 @@ To add a category of hosts:
 * The **Level** and **Icon** fields define a criticality level and an associated icon respectively.
 * The **Status** and **Comment** fields allow us to enable or disable the category of host and to comment on it.
 
+.. _servicecategory:
+
 **********************
 Categories of services
 **********************
