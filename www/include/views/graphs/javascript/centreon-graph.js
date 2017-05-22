@@ -661,7 +661,7 @@
      * @return {String} - The value transformed
      */
     inverseRoundTick: function (value) {
-      return this.roundTick(value * -1);
+      return numeral(value).format('0.000a') * -1;
     },
     /**
      * Round the value of a point and transform to humanreadable for bytes
