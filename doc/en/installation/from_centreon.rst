@@ -287,7 +287,7 @@ Centreon IMP needs the technical components Centreon License Manager
 and Centreon Plugin Pack Manager to work.
 
 Install packages
-----------------
+================
 
 When using Centreon ISO, installation of Centreon Plugin Pack Manager is very
 easy. You'll see that Centreon License Manager will be installed too
@@ -298,7 +298,7 @@ as a dependency.
    $ yum install centreon-pp-manager
 
 Web install
------------
+===========
 
 Once the packages installed, you need to enable the module in Centreon.
 So get to the Administration -> Extensions -> Modules page.

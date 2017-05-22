@@ -150,7 +150,7 @@ first_notification_delay           First notification delay in seconds
 
 recovery_notification_delay        Recovery notification delay
 
-parallelize_checks	           1 when parallelize checks are enabled, 0 otherwise
+parallelize_check	           1 when parallelize checks are enabled, 0 otherwise
 
 obsess_over_service	           1 when obsess over service is enabled, 0 otherwise
 
@@ -194,7 +194,7 @@ service_notification_options       Notification options (w,u,c,r,f,s)
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
-.. _addhosttemplate-and-sethosttemplate
+.. _addhosttemplate-and-sethosttemplate:
 
 Addhosttemplate and Sethosttemplate
 -----------------------------------

@@ -29,6 +29,9 @@ To install Centreon software from the repository, you should first install the f
 
 Perform the following command from a user with sufficient rights.
 
+Centreon Repository
+-------------------
+
 For CentOS 6.
 
 ::
@@ -153,7 +156,7 @@ Setting this option into /etc/my.cnf will NOT work.
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # service mysql restart
- 
+
 Launch services during the system startup
 -----------------------------------------
 
@@ -172,7 +175,7 @@ Execute these commands on central server.
     # systemctl enable httpd.service
     # systemctl enable snmpd.service
     # systemctl enable mysql.service
-    
+
 .. note::
     If MySQL database is on a dedicated server, execute the enable command of mysql on DB server.
 
@@ -209,4 +212,3 @@ Copy this key on the collector:
 ::
 
     $ ssh-copy-id centreon@your_poller_ip
-

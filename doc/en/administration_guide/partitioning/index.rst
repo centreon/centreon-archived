@@ -68,6 +68,5 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   prerequisite/index
    user/index
 

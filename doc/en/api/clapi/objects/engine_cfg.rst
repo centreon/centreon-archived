@@ -29,8 +29,7 @@ Order	Description
 3	Instance that is linked to centreon-engine.cfg
 
 4	Comments regarding the configuration file
-======= ==============================================
-
+======= ===============================================
 
 Add
 ---
