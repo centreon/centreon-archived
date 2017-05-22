@@ -61,7 +61,12 @@ if (!isset($oreon)) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `name`");
 
     while ($data = $DBRESULT->fetchRow()) {
-        if ($data['localhost']) {
+        if (isset($_POST['pollers']) && $_POST['pollers'] != "") {
+            if ($_POST['pollers'] == $data['id']) {
+                $defaultPoller[$data['name']] = $data['id'];
+                $pollerId = $data['id'];
+            }
+        } elseif ($data['localhost']) {
             $defaultPoller[$data['name']] = $data['id'];
             $pollerId = $data['id'];
         }

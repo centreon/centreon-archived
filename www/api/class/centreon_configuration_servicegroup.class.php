@@ -40,128 +40,149 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
+
     /**
-     * Constructor
+     * CentreonConfigurationServicegroup constructor.
      */
     public function __construct()
     {
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
         global $centreon;
         $isAdmin = $centreon->user->admin;
         $userId = $centreon->user->user_id;
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         }
-
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-        
         $aclServicegroups = "";
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServicegroups .= ' AND sg_id IN (' . $acl->getServiceGroupsString('ID') . ') ';
         }
-        
-        $queryContact = " SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name "
-            . " FROM servicegroup "
-            . " WHERE sg_name LIKE '%$q%' ".$aclServicegroups
-            . " ORDER BY sg_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name ' .
+            'FROM servicegroup ' .
+            'WHERE sg_name LIKE :name ' .
+            $aclServicegroups .
+            'ORDER BY sg_name ';
 
-        $total = $this->pearDB->numberRows();
-        
-        $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['sg_id'], 'text' => $data['sg_name']);
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryContact .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
 
+        $stmt = $this->pearDB->prepare($queryContact);
+        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
+        $serviceList = array();
+        while ($data = $stmt->fetch()) {
+            $serviceList[] = array('id' => $data['sg_id'], 'text' => $data['sg_name']);
+        }
         return array(
             'items' => $serviceList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
-    
+
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function getServiceList()
     {
         global $centreon;
         // Check for select2 'q' argument
+        $queryValues = array();
+        $sgIdList = '';
+
+        // Check for select2 'q' argument
         if (false === isset($this->arguments['sgid'])) {
-            $sgid = '';
+            $queryValues['sgid'][0] = '""';
+            $sgIdList .= ':sgid0';
         } else {
-            $sgid = $this->arguments['sgid'];
+            $listId = explode(',', $this->arguments['sgid']);
+            foreach ($listId as $key => $idSg) {
+                $sgIdList .= ':sgid' . $idSg . ',';
+                $queryValues['sgid'][$idSg] = (int)$idSg;
+            }
+            $sgIdList = rtrim($sgIdList, ',');
         }
-
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-
         $isAdmin = $centreon->user->admin;
         $userId = $centreon->user->user_id;
-        
         $aclServicegroups = "";
         $aclServices = "";
+
+        /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServicegroups .= ' AND sg.sg_id IN (' . $acl->getServiceGroupsString('ID') . ') ';
             $aclServices .= ' AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
         }
-        
-        /* Get ACL if user is not admin */
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-        }
-        
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_id, s.service_description, h.host_name, h.host_id "
-            . "FROM servicegroup sg "
-            . "INNER JOIN servicegroup_relation sgr ON sgr.servicegroup_sg_id = sg.sg_id "
-            . "INNER JOIN service s ON s.service_id = sgr.service_service_id "
-            . "INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id "
-            . "INNER JOIN host h ON h.host_id = hsr.host_host_id "
-            . "WHERE sg.sg_id IN (".$sgid.") "
-            . $aclServicegroups
-            . $aclServices
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
 
-        $total = $this->pearDB->numberRows();
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_id, s.service_description, h.host_name, ' .
+            'h.host_id ' .
+            'FROM servicegroup sg ' .
+            'INNER JOIN servicegroup_relation sgr ON sgr.servicegroup_sg_id = sg.sg_id ' .
+            'INNER JOIN service s ON s.service_id = sgr.service_service_id ' .
+            'INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id ' .
+            'INNER JOIN host h ON h.host_id = hsr.host_host_id ' .
+            'WHERE sg.sg_id IN (' . $sgIdList . ') ' .
+            $aclServicegroups . $aclServices;
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryContact .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
+        }
+        $stmt = $this->pearDB->prepare($queryContact);
+        foreach ($queryValues["sgid"] as $k => $v) {
+            $stmt->bindParam(':sgid' . $k, $v, PDO::PARAM_INT);
+        }
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
 
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $serviceList[] = array(
                 'id' => $data['host_id'] . '_' . $data['service_id'],
                 'text' => $data['host_name'] . ' - ' . $data['service_description']
             );
         }
-
         return array(
             'items' => $serviceList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

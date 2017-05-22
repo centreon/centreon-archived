@@ -42,15 +42,13 @@ require_once dirname(__FILE__) . "/webService.class.php";
 class CentreonKeepalive extends CentreonWebService
 {
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonKeepalive constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
      * Keep alive
      */

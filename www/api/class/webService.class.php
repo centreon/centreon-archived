@@ -38,32 +38,27 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 class CentreonWebService
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB|null
      */
     protected $pearDB = null;
-    
+
     /**
-     *
      * @var array
      */
-    protected $arguments= array();
-    
+    protected $arguments = array();
+
     /**
-     *
-     * @var string
+     * @var null
      */
     protected $token = null;
-    
+
     /**
-     *
-     * @var type
+     * @var
      */
     protected static $webServicePaths;
 
     /**
-     * Constructor
-     * @global type $pearDB
+     * CentreonWebService constructor.
      */
     public function __construct()
     {
@@ -75,7 +70,7 @@ class CentreonWebService
         $this->loadArguments();
         $this->loadToken();
     }
-    
+
     /**
      * Load arguments compared http method
      */
@@ -100,7 +95,7 @@ class CentreonWebService
                 break;
         }
     }
-    
+
     /**
      * Parse the body for get arguments
      * The body must be JSON format
@@ -115,7 +110,7 @@ class CentreonWebService
         }
         return $httpParams;
     }
-    
+
     /**
      * Load the token for class if exists
      */
@@ -151,14 +146,14 @@ class CentreonWebService
                 }
             }
         }
-        
+
         if (count($webServiceClass) === 0) {
             static::sendJson("Method not found", 404);
         }
 
         return $webServiceClass;
     }
-    
+
     /**
      * Send json return
      *
@@ -203,7 +198,7 @@ class CentreonWebService
         print json_encode($data);
         exit();
     }
-    
+
     /**
      * Update the ttl for a token if the authentication is by token
      */
@@ -211,10 +206,11 @@ class CentreonWebService
     {
         global $pearDB;
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-            $query = "UPDATE ws_token SET generate_date = NOW() WHERE token = '" .
-                $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
+            $query = 'UPDATE ws_token SET generate_date = NOW() WHERE token = :token';
             try {
-                $pearDB->query($query);
+                $stmt = $pearDB->prepare($query);
+                $stmt->bindParam(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], PDO::PARAM_STR);
+                $stmt->execute();
             } catch (Exception $e) {
                 static::sendJson("Internal error", 500);
             }
@@ -229,35 +225,41 @@ class CentreonWebService
     public static function router()
     {
         global $pearDB;
-        
+
         /* Test if route is defined */
         if (false === isset($_GET['object']) || false === isset($_GET['action'])) {
             static::sendJson("Bad parameters", 400);
         }
-        
+
         $methodPrefix = strtolower($_SERVER['REQUEST_METHOD']);
         $object = $_GET['object'];
         $action = $methodPrefix . ucfirst($_GET['action']);
-        
+
         /* Generate path for WebService */
         self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/api/class/*.class.php');
-        $res = $pearDB->query("SELECT name FROM modules_informations");
+        $res = $pearDB->query('SELECT name FROM modules_informations');
         while ($row = $res->fetch()) {
-            self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
+            self::$webServicePaths = array_merge(
+                self::$webServicePaths,
+                glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php')
+            );
         }
-        self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php'));
-        
+        self::$webServicePaths = array_merge(
+            self::$webServicePaths,
+            glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php')
+        );
+
         $webService = self::webservicePath($object);
-        
+
         /* Initialize the webservice */
         require_once($webService['path']);
 
         $wsObj = new $webService['class']();
-        
+
         if (false === method_exists($wsObj, $action)) {
             static::sendJson("Method not found", 404);
         }
-        
+
         /* Execute the action */
         try {
             static::updateTokenTtl();

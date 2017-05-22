@@ -41,13 +41,12 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonPerformanceService extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonPerformanceService constructor.
      */
     public function __construct()
     {
@@ -55,96 +54,176 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
-        $additionnalTables = '';
-        $additionnalCondition = '';
-        
+        $additionalTables = '';
+        $additionalValues = array();
+        $additionalCondition = '';
+        $queryValues = array();
+
         /* Get ACL if user is not admin */
         $acl = null;
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
         }
-        
+
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['fullName'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['fullName'] = '%' . (string)$this->arguments['q'] . '%';
         }
 
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-        
+        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id ' .
+            'FROM ( ' .
+            '( SELECT CONCAT(i.host_name, " - ", i.service_description) as fullname, i.host_id, ' .
+            'i.service_id, m.index_id ' .
+            'FROM index_data i, metrics m, services s ' . (!$isAdmin ? ', centreon_acl acl ' : '');
         if (isset($this->arguments['hostgroup'])) {
-            $additionnalTables .= ',hosts_hostgroups hg ';
-            $additionnalCondition .= 'AND (hg.host_id = i.host_id AND hg.hostgroup_id IN (' .
-                join(',', $this->arguments['hostgroup']) . ')) ';
+            $additionalTables .= ',hosts_hostgroups hg ';
         }
         if (isset($this->arguments['servicegroup'])) {
-            $additionnalTables .= ',services_servicegroups sg ';
-            $additionnalCondition .= 'AND (sg.host_id = i.host_id AND sg.service_id = i.service_id '
-                . 'AND sg.servicegroup_id IN (' . join(',', $this->arguments['servicegroup']) . ')) ';
+            $additionalTables .= ',services_servicegroups sg ';
         }
+
+        $query .= $additionalTables .
+            'WHERE i.id = m.index_id ' .
+            'AND s.enabled = 1 ' .
+            'AND i.service_id = s.service_id ' .
+            'AND i.host_name NOT LIKE "_Module_%" ';
+
+        if (!$isAdmin) {
+            $query .= 'AND acl.host_id = i.host_id ' .
+                'AND acl.service_id = i.service_id ' .
+                'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
+        }
+
+        if (isset($this->arguments['hostgroup'])) {
+            $additionalCondition .= 'AND (hg.host_id = i.host_id ' .
+                'AND hg.hostgroup_id IN (';
+            $explodedValues = '';
+            foreach ($this->arguments['hostgroup'] as $k => $v) {
+                $explodedValues .= 'hgId' . $v . ',';
+                $queryValues['hostGroupId']['hgId' . $v] = (int)$v;
+                $additionalValues['hgId' . $v] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $additionalCondition .= $explodedValues . '))';
+        }
+
+        if (isset($this->arguments['servicegroup'])) {
+            $additionalCondition .= 'AND (sg.host_id = i.host_id AND sg.service_id = i.service_id ' .
+                'AND sg.servicegroup_id IN (';
+            $explodedValues = '';
+            foreach ($this->arguments['servicegroup'] as $k => $v) {
+                $explodedValues .= 'sgId' . $v . ',';
+                $queryValues['serviceGroupId']['sgId' . $v] = (int)$v;
+                $additionalValues['sgId' . $v] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $additionalCondition .= $explodedValues . '))';
+        }
+
         if (isset($this->arguments['host'])) {
-            $additionnalCondition .= 'AND i.host_id IN (' . join(',', $this->arguments['host']) . ') ';
+            $additionalCondition .= 'AND i.host_id IN (';
+            $explodedValues = '';
+            foreach ($this->arguments['host'] as $k => $v) {
+                $explodedValues .= 'hostId' . $v . ',';
+                $queryValues['hostId']['hostId' . $v] = (int)$v;
+                $additionalValues['hostId' . $v] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $additionalCondition .= $explodedValues . ')';
         }
-
+        $query .= $additionalCondition . ') ';
         if (isset($acl)) {
-            $virtualServicesCondition = $this->getVirtualServicesCondition($additionnalTables, $additionnalCondition, $acl);
+            $virtualObject = $this->getVirtualServicesCondition(
+                $additionalTables,
+                $additionalCondition,
+                $additionalValues,
+                $acl
+            );
+            $virtualServicesCondition = $virtualObject['query'];
+            $virtualValues = $virtualObject['value'];
         } else {
-            $virtualServicesCondition = $this->getVirtualServicesCondition($additionnalTables, $additionnalCondition);
+            $virtualObject = $this->getVirtualServicesCondition(
+                $additionalTables,
+                $additionalCondition,
+                $additionalValues
+            );
+            $virtualServicesCondition = $virtualObject['query'];
+            $virtualValues = $virtualObject['value'];
         }
-        
-        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id '
-            . 'FROM ( '
-            . '( SELECT CONCAT(i.host_name, " - ", i.service_description) as fullname, i.host_id, i.service_id, m.index_id '
-            . 'FROM index_data i, metrics m, services s ' . (!$isAdmin ? ', centreon_acl acl ' : '')
-            . $additionnalTables
-            . 'WHERE i.id = m.index_id '
-            . 'AND s.enabled = 1 '
-            . 'AND i.service_id = s.service_id '
-            . 'AND i.host_name NOT LIKE "_Module_%" '
-            . (!$isAdmin ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN ('.$acl->getAccessGroupsString().') ' : '')
-            . $additionnalCondition
-            . ') '
-            . $virtualServicesCondition
-            . ') as t_union '
-            . 'WHERE fullname LIKE "%' . $q . '%" '
-            . 'GROUP BY host_id, service_id '
-            . 'ORDER BY fullname '
-            . $range;
+        $query .= $virtualServicesCondition . ') as t_union ' .
+            'WHERE fullname LIKE :fullName ' .
+            'GROUP BY host_id, service_id ' .
+            'ORDER BY fullname ';
 
-        $DBRESULT = $this->pearDBMonitoring->query($query);
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $query .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
+        }
+
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $stmt->bindParam(':fullName', $queryValues['fullName'], PDO::PARAM_STR);
+
+        if (isset($virtualValues['metaService'])) {
+            foreach ($virtualValues['metaService'] as $k => $v) {
+                $stmt->bindParam(':' . $k, $v, PDO::PARAM_INT);
+            }
+        }
+        if (isset($virtualValues['virtualService'])) {
+            foreach ($virtualValues['virtualService'] as $k => $v) {
+                $stmt->bindParam(':' . $k, $v, PDO::PARAM_INT);
+            }
+        }
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $serviceCompleteName = $data['fullname'];
-            $serviceCompleteId = $data['host_id'].'-'.$data['service_id'];
+            $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
         return array(
             'items' => $serviceList,
-            'total' => $this->pearDB->numberRows()
+            'total' => $stmt->rowCount()
         );
     }
 
-    private function getVirtualServicesCondition($additionnalTables, $additionnalCondition, $aclObj = null)
-    {
+    /**
+     * @param $additionalTables
+     * @param $additionalCondition
+     * @param $additionalValues
+     * @param null $aclObj
+     * @return string
+     */
+    private function getVirtualServicesCondition(
+        $additionalTables,
+        $additionalCondition,
+        $additionalValues,
+        $aclObj = null
+    ) {
         /* First, get virtual services for metaservices */
         $metaServiceCondition = '';
+        $metaValues = $additionalValues;
         if (isset($aclObj) && !is_null($aclObj)) {
             $metaServices = $aclObj->getMetaServices();
             $virtualServices = array();
@@ -152,41 +231,58 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 $virtualServices[] = '"meta_' . $metaServiceId . '"';
             }
             if (count($virtualServices)) {
-                $metaServiceCondition = 'AND s.description IN (' . implode(',', $virtualServices) . ') ';
+                $metaServiceCondition = 'AND s.description IN (';
+                $explodedValues = '';
+                foreach ($virtualServices as $k => $v) {
+                    $explodedValues .= ':meta' . $v . ',';
+                    $metaValues['metaService']['meta' . $v] = (string)$v;
+                }
+                $explodedValues = rtrim($explodedValues, ',');
+                $metaServiceCondition .= $explodedValues . ') ';
             }
         } else {
             $metaServiceCondition = 'AND s.description LIKE "meta_%" ';
         }
 
-        $virtualServicesCondition = 'UNION ALL ('
-            . 'SELECT CONCAT("Meta - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id '
-            . 'FROM index_data i, metrics m, services s '
-            . $additionnalTables
-            . 'WHERE i.id = m.index_id '
-            . 'AND s.enabled = 1 '
-            . $additionnalCondition
-            . $metaServiceCondition
-            . 'AND i.service_id = s.service_id '
-            . ') ';
+        $virtualServicesCondition = 'UNION ALL (' .
+            'SELECT CONCAT("Meta - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id ' .
+            'FROM index_data i, metrics m, services s ' .
+            $additionalTables .
+            'WHERE i.id = m.index_id ' .
+            'AND s.enabled = 1 ' .
+            $additionalCondition .
+            $metaServiceCondition .
+            'AND i.service_id = s.service_id ' .
+            ') ';
 
         /* Then, get virtual services for modules */
         $allVirtualServiceIds = CentreonHook::execute('Service', 'getVirtualServiceIds');
         foreach ($allVirtualServiceIds as $moduleVirtualServiceIds) {
             foreach ($moduleVirtualServiceIds as $hostname => $virtualServiceIds) {
                 if (count($virtualServiceIds)) {
-                    $virtualServicesCondition .= 'UNION ALL ('
-                        . 'SELECT CONCAT("' . $hostname . ' - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id '
-                        . 'FROM index_data i, metrics m, services s '
-                        . $additionnalTables
-                        . 'WHERE i.id = m.index_id '
-                        . 'AND s.enabled = 1 '
-                        . $additionnalCondition
-                        . 'AND s.service_id IN (' . implode(',', $virtualServiceIds) . ') '
-                        . 'AND i.service_id = s.service_id '
-                        . ') ';
+                    $virtualServicesCondition .= 'UNION ALL (' .
+                        'SELECT CONCAT("' . $hostname . ' - ", s.display_name) as fullname, ' .
+                        'i.host_id, i.service_id, m.index_id ' .
+                        'FROM index_data i, metrics m, services s ' .
+                        $additionalTables .
+                        'WHERE i.id = m.index_id ' .
+                        'AND s.enabled = 1 ' .
+                        $additionalCondition .
+                        'AND s.service_id IN (';
+
+                    $explodedValues = '';
+                    foreach ($virtualServiceIds as $k => $v) {
+                        $explodedValues .= ':vService' . $v . ',';
+                        $metaValues['virtualService']['vService' . $v] = (int)$v;
+                    }
+                    $explodedValues = rtrim($explodedValues, ',');
+
+                    $virtualServicesCondition .= $explodedValues . ') ' .
+                        'AND i.service_id = s.service_id ' .
+                        ') ';
                 }
             }
         }
-        return $virtualServicesCondition;
+        return array('query' => $virtualServicesCondition, 'value' => $metaValues);
     }
 }

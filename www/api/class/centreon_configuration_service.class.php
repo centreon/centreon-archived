@@ -40,13 +40,12 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationService extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationService constructor.
      */
     public function __construct()
     {
@@ -55,34 +54,34 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         $pearDBO = $this->pearDBMonitoring;
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
      */
     public function getList()
     {
 
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclServices = '';
         $aclMetaServices = '';
+        $range = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServices .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
-            $aclMetaServices .= 'AND ms.service_id IN (' . $acl->getMetaServiceString('ID', $this->pearDBMonitoring) . ') ';
+            $aclMetaServices .= 'AND ms.service_id IN (' . $acl->getMetaServiceString('ID',
+                    $this->pearDBMonitoring) . ') ';
         }
-        
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
-            $q = $this->arguments['q'];
+            $q = (string)$this->arguments['q'];
         }
 
         // Check for service enable
@@ -117,12 +116,10 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             $s = 'all';
         }
 
-
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range[] = (int)$offset;
+            $range[] = (int)$this->arguments['page_limit'];
         }
 
         switch ($t) {
@@ -134,23 +131,27 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 $serviceList = $this->getServicesByHostgroup($q, $aclServices, $range);
                 break;
         }
-
-
         return $serviceList;
     }
-    
-    /**
-     *
-     * @param type $q
-     * @param type $aclServices
-     */
-    private function getServicesByHost($q, $aclServices, $range = '', $hasGraph = false, $aclMetaServices, $s, $e)
-    {
 
-        if( $e == 'enable'):
+    /**
+     * @param $q
+     * @param $aclServices
+     * @param array $range
+     * @param bool $hasGraph
+     * @param $aclMetaServices
+     * @param $s
+     * @param $e
+     * @return array
+     * @throws Exception
+     */
+    private function getServicesByHost($q, $aclServices, $range = array(), $hasGraph = false, $aclMetaServices, $s, $e)
+    {
+        $queryValues = array();
+        if ($e == 'enable'):
             $enableQuery = 'AND s.service_activate = \'1\' AND h.host_activate = \'1\' ';
             $enableQueryMeta = 'AND ms.service_activate = \'1\' AND mh.host_activate = \'1\' ';
-        elseif( $e == 'disable'):
+        elseif ($e == 'disable'):
             $enableQuery = 'AND ( s.service_activate = \'0\' OR h.host_activate = \'0\' ) ';
             $enableQueryMeta = 'AND ( ms.service_activate = \'0\' OR mh.host_activate = \'0\') ';
         else:
@@ -160,63 +161,100 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
         switch ($s) {
             case 'all':
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id
-                FROM ( "
-                    . "( SELECT DISTINCT CONCAT(h.host_name, ' - ', s.service_description) as fullname, s.service_id, h.host_id "
-                    . "FROM host h, service s, host_service_relation hsr "
-                    . "WHERE hsr.host_host_id = h.host_id "
-                    . "AND hsr.service_service_id = s.service_id "
-                    . "AND h.host_register = '1' "
-                    . "AND s.service_register = '1' "
-                    . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE '%$q%' "
-                    . $enableQuery
-                    . $aclServices
-                    . ") 
-                UNION ALL ( "
-                    . "SELECT DISTINCT CONCAT('Meta - ', ms.display_name) as fullname, ms.service_id, mh.host_id "
-                    . "FROM host mh, service ms "
-                    . "WHERE mh.host_name = '_Module_Meta' "
-                    . "AND mh.host_register = '2' "
-                    . "AND ms.service_register = '2' "
-                    . "AND CONCAT('Meta - ', ms.display_name) LIKE '%$q%' "
-                    . $enableQueryMeta
-                    . $aclMetaServices
-                    .") 
-                 )  as t_union "
-                . "ORDER BY fullname "
-                . $range;
+                $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id ' .
+                    'FROM ( ' .
+                    '( SELECT DISTINCT CONCAT(h.host_name, " - ", s.service_description) ' .
+                    'as fullname, s.service_id, h.host_id ' .
+                    'FROM host h, service s, host_service_relation hsr ' .
+                    'WHERE hsr.host_host_id = h.host_id ' .
+                    'AND hsr.service_service_id = s.service_id ' .
+                    'AND h.host_register = "1" ' .
+                    'AND s.service_register = "1" ' .
+                    'AND CONCAT(h.host_name, " - ", s.service_description) LIKE :description ' .
+                    $enableQuery . $aclServices . ') ' .
+                    'UNION ALL ( ' .
+                    'SELECT DISTINCT CONCAT("Meta - ", ms.display_name) as fullname, ms.service_id, mh.host_id ' .
+                    'FROM host mh, service ms ' .
+                    'WHERE mh.host_name = "_Module_Meta" ' .
+                    'AND mh.host_register = "2" ' .
+                    'AND ms.service_register = "2" ' .
+                    'AND CONCAT("Meta - ", ms.display_name) LIKE :description ' .
+                    $enableQueryMeta . $aclMetaServices . ') ' .
+                    ')  as t_union ' .
+                    'ORDER BY fullname ';
+
+                if (isset($range)) {
+                    $queryService .= 'LIMIT :offset, :limit';
+                    $queryValues['offset'] = $range[0];
+                    $queryValues['limit'] = $range[1];
+                }
+                $queryValues['description'] = '%' . $q . '%';
+                $stmt = $this->pearDB->prepare($queryService);
+                $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+                if (isset($queryValues['offset'])) {
+                    $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+                    $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+                }
+                $dbResult = $stmt->execute();
                 break;
             case 's':
-                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(h.host_name, ' - ', s.service_description) as fullname, s.service_id, h.host_id "
-                    . "FROM host h, service s, host_service_relation hsr "
-                    . 'WHERE hsr.host_host_id = h.host_id '
-                    . "AND hsr.service_service_id = s.service_id "
-                    . "AND h.host_register = '1' "
-                    . "AND s.service_register = '1' "
-                    . "AND CONCAT(h.host_name, ' - ', s.service_description) LIKE '%$q%' "
-                    . $enableQuery
-                    . $aclServices
-                    . "ORDER BY fullname "
-                    . $range;
+                $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(h.host_name, " - ", ' .
+                    's.service_description) as fullname, s.service_id, h.host_id ' .
+                    'FROM host h, service s, host_service_relation hsr ' .
+                    'WHERE hsr.host_host_id = h.host_id ' .
+                    'AND hsr.service_service_id = s.service_id ' .
+                    'AND h.host_register = "1" ' .
+                    'AND s.service_register = "1" ' .
+                    'AND CONCAT(h.host_name, " - ", s.service_description) LIKE :description ' .
+                    $enableQuery . $aclServices .
+                    'ORDER BY fullname ';
+
+                if (isset($range)) {
+                    $queryService .= 'LIMIT :offset, :limit';
+                    $queryValues['offset'] = $range[0];
+                    $queryValues['limit'] = $range[1];
+                }
+                $queryValues['description'] = '%' . $q . '%';
+                $stmt = $this->pearDB->prepare($queryService);
+                $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+                if (isset($queryValues['offset'])) {
+                    $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+                    $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+                }
+                $dbResult = $stmt->execute();
                 break;
             case 'm':
-                $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT('Meta - ', ms.display_name) as fullname, ms.service_id, mh.host_id "
-                    . "FROM host mh, service ms "
-                    . "WHERE mh.host_name = '_Module_Meta' "
-                    . "AND mh.host_register = '2' "
-                    . "AND ms.service_register = '2' "
-                    . "AND CONCAT('Meta - ', ms.display_name) LIKE '%$q%' "
-                    . $enableQueryMeta
-                    . $aclMetaServices
-                    . "ORDER BY fullname "
-                    . $range;
+                $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT("Meta - ", ms.display_name) ' .
+                    'as fullname, ms.service_id, mh.host_id ' .
+                    'FROM host mh, service ms ' .
+                    'WHERE mh.host_name = "_Module_Meta" ' .
+                    'AND mh.host_register = "2" ' .
+                    'AND ms.service_register = "2" ' .
+                    'AND CONCAT("Meta - ", ms.display_name) LIKE :description ' .
+                    $enableQueryMeta . $aclMetaServices .
+                    'ORDER BY fullname ';
+                if (isset($range)) {
+                    $queryService .= 'LIMIT :offset, :limit';
+                    $queryValues['offset'] = $range[0];
+                    $queryValues['limit'] = $range[1];
+                }
+                $queryValues['description'] = '%' . $q . '%';
+                $stmt = $this->pearDB->prepare($queryService);
+                $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+                if (isset($queryValues['offset'])) {
+                    $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+                    $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+                }
+                $dbResult = $stmt->execute();
+
                 break;
         }
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
 
-        $DBRESULT = $this->pearDB->query($queryService);
-        $total = $this->pearDB->numberRows();
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             if ($hasGraph) {
                 if (service_has_graph($data['host_id'], $data['service_id'], $this->pearDBMonitoring)) {
                     $serviceCompleteName = $data['fullname'];
@@ -229,57 +267,69 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
             }
         }
-        
+
         return array(
             'items' => $serviceList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
-    
-    /**
-     *
-     * @param type $q
-     * @param type $aclServices
-     */
-    private function getServicesByHostgroup($q, $aclServices, $range = '')
-    {
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(hg.hg_name, ' - ', s.service_description) as fullname, s.service_id, hg.hg_id "
-            . "FROM hostgroup hg, service s, host_service_relation hsr "
-            . 'WHERE hsr.hostgroup_hg_id = hg.hg_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND s.service_register = '1' "
-            . "AND CONCAT(hg.hg_name, ' - ', s.service_description) LIKE '%$q%' "
-            . $aclServices
-            . "ORDER BY fullname "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
 
-        $total = $this->pearDB->numberRows();
-        
+    /**
+     * @param $q
+     * @param $aclServices
+     * @param array $range
+     * @return array
+     * @throws Exception
+     */
+    private function getServicesByHostgroup($q, $aclServices, $range = array())
+    {
+        $queryValues = array();
+        $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(hg.hg_name, " - ", s.service_description) ' .
+            'as fullname, s.service_id, hg.hg_id ' .
+            'FROM hostgroup hg, service s, host_service_relation hsr ' .
+            'WHERE hsr.hostgroup_hg_id = hg.hg_id ' .
+            'AND hsr.service_service_id = s.service_id ' .
+            'AND s.service_register = "1" ' .
+            'AND CONCAT(hg.hg_name, " - ", s.service_description) LIKE :description ' .
+            $aclServices . 'ORDER BY fullname ';
+        if (isset($range)) {
+            $queryService .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = $range[0];
+            $queryValues['limit'] = $range[1];
+        }
+        $queryValues['description'] = '%' . $q . '%';
+
+        $stmt = $this->pearDB->prepare($queryService);
+        $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $serviceCompleteName = $data['fullname'];
             $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
-            
             $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
 
         return array(
             'items' => $serviceList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 
     /**
-     *
-     * @param type $args
      * @return array
+     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getDefaultEscalationValues()
     {
         $defaultValues = array();
-
         // Get Object targeted
         if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
             $id = $this->arguments['id'];
@@ -287,21 +337,23 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             throw new RestBadRequestException("Bad parameters id");
         }
 
-        $queryService = "SELECT distinct host_host_id, host_name, service_service_id, service_description
-            FROM service s, escalation_service_relation esr, host h
-            WHERE s.service_id = esr.service_service_id
-            AND esr.host_host_id = h.host_id
-            AND h.host_register = '1'
-            AND esr.escalation_esc_id = " . $id;
-        $DBRESULT = $this->pearDB->query($queryService);
-        
-        while ($data = $DBRESULT->fetchRow()) {
+        $queryService = 'SELECT distinct host_host_id, host_name, service_service_id, service_description ' .
+            'FROM service s, escalation_service_relation esr, host h ' .
+            'WHERE s.service_id = esr.service_service_id ' .
+            'AND esr.host_host_id = h.host_id ' .
+            'AND h.host_register = "1" ' .
+            'AND esr.escalation_esc_id = :id';
+        $stmt = $this->db->prepare($queryService);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+        while ($data = $stmt->fetch()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_host_id'] . '-' . $data['service_service_id'];
-            
             $defaultValues[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
         }
-        
         return $defaultValues;
     }
 }

@@ -34,13 +34,12 @@
  */
 
 require_once dirname(__FILE__) . "/webService.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 
-class CentreonCustomview extends CentreonWebService
+class CentreonHomeCustomview extends CentreonWebService
 {
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonHomeCustomview constructor.
      */
     public function __construct()
     {
@@ -48,131 +47,106 @@ class CentreonCustomview extends CentreonWebService
     }
 
     /**
-     * Get the list of views
+     * @return array
      */
-    public function getListPublic()
+    public function getListSharedViews()
     {
         global $centreon;
 
-        $arrayViewUse = array();
+        $views = array();
 
-        $query = "SELECT cv.* FROM custom_views cv "
-            . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE (cvur.user_id = " . $centreon->user->user_id
-            . "        OR cvur.usergroup_id IN ( "
-            . "           SELECT contactgroup_cg_id "
-            . "           FROM contactgroup_contact_relation "
-            . "           WHERE contact_contact_id = " . $centreon->user->user_id
-            . "           ) "
-            . " ) AND cvur.is_consumed = 1 "
-            . " AND (cvur.is_public = 1 OR  cvur.is_share = 1 OR  cv.public = 1)";
+        $query = 'SELECT custom_view_id, name FROM (' .
+            'SELECT cv.custom_view_id, cv.name FROM custom_views cv ' .
+            'INNER JOIN custom_view_user_relation cvur ON cv.custom_view_id = cvur.custom_view_id ' .
+            'WHERE (cvur.user_id = ' . $centreon->user->user_id . ' ' .
+            'OR cvur.usergroup_id IN ( ' .
+            'SELECT contactgroup_cg_id ' .
+            'FROM contactgroup_contact_relation ' .
+            'WHERE contact_contact_id = ' . $centreon->user->user_id . ' ' .
+            ') ' .
+            ') ' .
+            'UNION ' .
+            'SELECT cv2.custom_view_id, cv2.name FROM custom_views cv2 ' .
+            'WHERE cv2.public = 1 ) as d ' .
+            'WHERE d.custom_view_id NOT IN (' .
+            'SELECT cvur2.custom_view_id FROM custom_view_user_relation cvur2 ' .
+            'WHERE cvur2.user_id = ' . $centreon->user->user_id . ' ' .
+            'AND cvur2.is_consumed = 1) ';
 
-        $DBRES = $this->pearDB->query($query);
-
-        while ($row = $DBRES->fetchRow()) {
-            $arrayViewUse[$row['custom_view_id']] = $row['name'];
-        }
-        $query = "SELECT cv.*, '1' as from_public FROM custom_views cv where public = 1 "
-            . " UNION "
-            . " SELECT cv.*, '0' as from_public FROM custom_views cv "
-            . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE (cvur.user_id = " . $centreon->user->user_id
-            . "        OR cvur.usergroup_id IN ( "
-            . "           SELECT contactgroup_cg_id "
-            . "           FROM contactgroup_contact_relation "
-            . "           WHERE contact_contact_id = " . $centreon->user->user_id
-            . "           ) "
-            . " ) AND cvur.is_consumed = 0  AND cvur.is_share = 1 ";
-
-        $DBRES = $this->pearDB->query($query);
-        $arrayView = array();
-        $arrayViewShared = array();
-
-        while ($row = $DBRES->fetchRow()) {
-            if ($row['from_public'] == '1') {
-                $arrayView[$row['custom_view_id']] = $row['name'];
-            } else {
-                $arrayViewShared[$row['custom_view_id']] = $row['name'];
-            }
-        }
-
-        $arrayViewShared = array_diff($arrayViewShared, $arrayViewUse);
-        $arrayView = array_diff($arrayView, $arrayViewUse);
-
-        $arrayView = array_diff($arrayView, $arrayViewShared);
-
-        asort($arrayView);
-
-        $list = array();
-        foreach ($arrayView as $id => $view) {
-            $list[] = array(
-                'id' => $id,
-                'text' => $view
+        $dbResult = $this->pearDB->query($query);
+        while ($row = $dbResult->fetch()) {
+            $views[] = array(
+                'id' => $row['custom_view_id'],
+                'text' => $row['name']
             );
         }
-
         return array(
-            'items' => $list,
-            'total' => count($arrayView)
+            'items' => $views,
+            'total' => count($views)
         );
     }
 
-    public function getListShare()
+    /**
+     * @return array
+     */
+    public function getLinkedUsers()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $customViewId = 0;
+        } else {
+            $customViewId = $this->arguments['q'];
+        }
+
+        global $centreon;
+        $viewObj = new CentreonCustomView($centreon, $this->pearDB);
+
+        return $viewObj->getUsersFromViewId($customViewId);
+    }
+
+    /**
+     * @return array
+     */
+    public function getLinkedUsergroups()
+    {
+        // Check for select2 'q' argument
+        if (false === isset($this->arguments['q'])) {
+            $customViewId = 0;
+        } else {
+            $customViewId = $this->arguments['q'];
+        }
+
+        global $centreon;
+        $viewObj = new CentreonCustomView($centreon, $this->pearDB);
+
+        return $viewObj->getUsergroupsFromViewId($customViewId);
+    }
+
+    /**
+     * Get the list of views
+     *
+     * @return array
+     */
+    public function getListViews()
     {
         global $centreon;
+        $viewObj = new CentreonCustomView($centreon, $this->pearDB);
 
-        $arrayViewUse = array();
-
-        $query = "SELECT cv.* FROM custom_views cv "
-            . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE (cvur.user_id = " . $centreon->user->user_id
-            . "        OR cvur.usergroup_id IN ( "
-            . "           SELECT contactgroup_cg_id "
-            . "           FROM contactgroup_contact_relation "
-            . "           WHERE contact_contact_id = " . $centreon->user->user_id
-            . "           ) "
-            . " ) AND cvur.is_consumed = 1 "
-            . " AND (cvur.is_public = 1 OR  cvur.is_share = 1 OR  cv.public = 1)";
-
-        $DBRES = $this->pearDB->query($query);
-
-        while ($row = $DBRES->fetchRow()) {
-            $arrayViewUse[$row['custom_view_id']] = $row['name'];
-        }
-
-        $query = "SELECT cv.*, '0' as from_public FROM custom_views cv "
-            . " INNER JOIN custom_view_user_relation cvur on cv.custom_view_id = cvur.custom_view_id "
-            . " WHERE (cvur.user_id = " . $centreon->user->user_id
-            . "        OR cvur.usergroup_id IN ( "
-            . "           SELECT contactgroup_cg_id "
-            . "           FROM contactgroup_contact_relation "
-            . "           WHERE contact_contact_id = " . $centreon->user->user_id
-            . "           ) "
-            . " ) AND cvur.is_consumed = 0  AND cvur.is_share = 1  ";
-
-
-        $DBRES = $this->pearDB->query($query);
-        $arrayViewShared = array();
-
-        while ($row = $DBRES->fetchRow()) {
-            $arrayViewShared[$row['custom_view_id']] = $row['name'];
-        }
-
-        $arrayViewShared = array_diff($arrayViewShared, $arrayViewUse);
-
-        asort($arrayViewShared);
-
-        $list = array();
-        foreach ($arrayViewShared as $id => $view) {
-            $list[] = array(
-                'id' => $id,
-                'text' => $view
+        $tabs = array();
+        $tabsDb = $viewObj->getCustomViews();
+        foreach ($tabsDb as $key => $tab) {
+            $tabs[] = array(
+                'default' => false,
+                'name' => $tab['name'],
+                'custom_view_id' => $tab['custom_view_id'],
+                'public' => $tab['public'],
+                'nbCols' => $tab['layout']
             );
         }
 
         return array(
-            'items' => $list,
-            'total' => count($arrayViewShared)
+            'current' => $viewObj->getCurrentView(),
+            'tabs' => $tabs
         );
     }
 }

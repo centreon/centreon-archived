@@ -39,7 +39,7 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationGraphcurve extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationGraphcurve constructor.
      */
     public function __construct()
     {
@@ -47,47 +47,52 @@ class CentreonConfigurationGraphcurve extends CentreonConfigurationObjects
     }
 
     /**
-     *
-     * @param array $args
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         }
+
+        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT compo_id, name ' .
+            'FROM giv_components_template ' .
+            'WHERE name LIKE :name ' .
+            'ORDER BY name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $query .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
 
-        $queryGraphCurve = "SELECT SQL_CALC_FOUND_ROWS DISTINCT compo_id, name "
-            . "FROM giv_components_template "
-            . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
-            . $range;
-
-        $DBRESULT = $this->pearDB->query($queryGraphCurve);
-
-        $total = $this->pearDB->numberRows();
+        $stmt = $this->pearDB->prepare($query);
+        $stmt->bindParam(':name', $queryValues["name"], PDO::PARAM_STR);
+        if (isset($queryValues["offset"])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
 
         $graphCurveList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $graphCurveList[] = array(
                 'id' => $data['compo_id'],
                 'text' => $data['name']
             );
         }
-
         return array(
             'items' => $graphCurveList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }
