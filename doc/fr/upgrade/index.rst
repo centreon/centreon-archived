@@ -1,17 +1,15 @@
 .. _upgrade:
 
-###########
-Mise à jour
-###########
+#######
+Upgrade
+#######
 
-Ce chapitre décrit es procédures de mise à jour d'une plate-forme de supervision Centreon.
+This chapter describes how to upgradel your Centreon monitoring platform.
 
-La procédure à suivre dépend de votre installation initial. Si vous avez utilisé Centreon ISO lors de l'installation, vous devrez alors utiliser les RPMs. Si vous avez installé par les sources, la mise à jour se fera alors de cette maniére.
-
-Pensez à réaliser une sauvegarde compléte avant de mettre à jour.
+This procedure is linked to your initial version of centreon. You will have to use package if you installed using Centreon ISO and sources files if you installed from sources. Before upgrading Centreon, please don't forget to make a backup.
 
 .. toctree::
     :maxdepth: 2
 
-   from_packages
-   from_sources
+    from_packages
+    from_sources

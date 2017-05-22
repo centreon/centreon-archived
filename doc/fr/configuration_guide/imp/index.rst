@@ -68,10 +68,8 @@ Centreon.
 
 En créant votre compte Centreon IMP sur le site web de Centreon, vous pouvez :
 
-- soit accéder à 5 Plugin Packs additionnels gratuitement (essai gratuit de
-Centreon IMP)
-- soit souscrire à l’offre Centreon IMP et accéder à son catalogue de Plugin
-Packs prêts à l’emploi couvrant à ce jour plus de 170 domaines IT.
+* soit accéder à 5 Plugin Packs additionnels gratuitement (essai gratuit de Centreon IMP)
+* soit souscrire à l’offre Centreon IMP et accéder à son catalogue de Plugin Packs prêts à l’emploi couvrant à ce jour plus de 170 domaines IT.
 
 +--------------------------------+-----------------------+---------------------+---------------------+
 |                                | Centreon open source  | Centreon IMP Free   | Centreon IMP 1/6/12 |
@@ -161,7 +159,7 @@ compte Centreon IMP dans Centreon.
 
 .. image:: /_static/images/configuration/website/create_account_05.png
     :width: 1000 px
-	:align: center
+    :align: center
 
 2. Activer son compte Centreon IMP dans Centreon
 ------------------------------------------------
