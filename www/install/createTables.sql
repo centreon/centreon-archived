@@ -516,7 +516,6 @@ CREATE TABLE `cfg_nagios` (
   `log_service_retries` enum('0','1','2') DEFAULT NULL,
   `log_host_retries` enum('0','1','2') DEFAULT NULL,
   `log_event_handlers` enum('0','1','2') DEFAULT NULL,
-  `log_initial_states` enum('0','1','2') DEFAULT NULL,
   `log_external_commands` enum('0','1','2') DEFAULT NULL,
   `log_passive_checks` enum('0','1','2') DEFAULT NULL,
   `global_host_event_handler` int(11) DEFAULT NULL,

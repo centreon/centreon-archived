@@ -40,25 +40,27 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationServicecategory constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         }
+
         /*
 		 * Check for select2 't' argument
 		 * 'a' or empty = category and severitiy
@@ -71,37 +73,41 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
             $t = $this->arguments['t'];
         }
 
-        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
-        }
-        
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name "
-            . "FROM service_categories "
-            . "WHERE sc_name LIKE '%$q%' ";
-        if (!empty($t) && $t == 'c') {
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name ' .
+            'FROM service_categories ' .
+            'WHERE sc_name LIKE :name ';
+        if ($t == 'c') {
             $queryContact .= "AND level IS NULL ";
         }
-        if (!empty($t) && $t == 's') {
+        if ($t == 's') {
             $queryContact .= "AND level IS NOT NULL ";
         }
-        $queryContact .= "ORDER BY sc_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $queryContact .= 'ORDER BY sc_name ';
 
-        $total = $this->pearDB->numberRows();
-        
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryContact .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
+        }
+        $stmt = $this->pearDB->prepare($queryContact);
+        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);
         }
-        
         return array(
             'items' => $serviceList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

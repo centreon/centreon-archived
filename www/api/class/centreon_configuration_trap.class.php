@@ -40,68 +40,64 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationTrap extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationTrap constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
-        global $centreon;
-        
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-        
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         }
-
+        $queryTraps = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name ' .
+            'FROM traps t, traps_vendor m ' .
+            'WHERE t.manufacturer_id = m.id ' .
+            'AND (t.traps_name LIKE :name OR m.name LIKE :name) ' .
+            'ORDER BY m.name, t.traps_name ';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryTraps .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
-        
-        $queryTraps = "SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name "
-            . "FROM traps t, traps_vendor m "
-            . 'WHERE t.manufacturer_id = m.id '
-            . "AND (t.traps_name LIKE '%$q%' OR m.name LIKE '%$q%') "
-            . "ORDER BY m.name, t.traps_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryTraps);
+        $stmt = $this->pearDB->prepare($queryTraps);
+        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
 
-        $total = $this->pearDB->numberRows();
-        
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $trapList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $trapCompleteName = $data['name'] . ' - ' . $data['traps_name'];
             $trapCompleteId = $data['traps_id'];
-            
             $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => $trapCompleteName);
         }
-
         return array(
             'items' => $trapList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

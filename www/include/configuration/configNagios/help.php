@@ -341,16 +341,6 @@ $help["log_event_handlers"] = dgettext(
     . "changes state. Logging event handlers is most useful when debugging Monitoring "
     . "Engine or first trying out your event handler scripts."
 );
-$help["log_initial_states"] = dgettext(
-    "help",
-    "This option determines whether or not Monitoring Engine will force all initial "
-    . "host and service states to be logged, even if they result in an OK state. "
-    . "Initial service and host states are normally only logged when there is a "
-    . "problem on the first check. This option is disabled by default. Enabling "
-    . "it is useful if you are using an application that scans the log file to "
-    . "determine long-term state statistics for services and hosts. This option "
-    . "must be enabled to use reporting with Centreon."
-);
 $help["log_external_commands"] = dgettext(
     "help",
     "This option determines whether or not Monitoring Engine will log external "

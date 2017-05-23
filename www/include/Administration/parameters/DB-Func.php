@@ -762,6 +762,19 @@ function updateRRDToolConfigData($gopt_id = null)
     $centreon->initOptGen($pearDB);
 }
 
+function updatePartitioningConfigData($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+    
+    foreach ($ret as $key => $value) {
+        if (preg_match('/^partitioning_/', $key)) {
+            updateOption($db, $key, $value);
+        }
+    }
+    
+    $centreon->initOptGen($db);
+}
+
 function updateODSConfigData()
 {
     global $form, $pearDBO, $pearDB;

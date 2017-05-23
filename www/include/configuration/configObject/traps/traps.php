@@ -39,7 +39,10 @@ if (!isset($centreon)) {
 
 $inputArguments = array(
     'traps_id' => FILTER_SANITIZE_STRING,
-    'select' => FILTER_SANITIZE_STRING,
+    'select' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'flags' => FILTER_REQUIRE_ARRAY
+    ),
     'dupNbr' => FILTER_SANITIZE_STRING
 );
 $inputGet = filter_input_array(

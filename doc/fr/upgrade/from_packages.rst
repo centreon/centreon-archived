@@ -57,6 +57,17 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
+**********
+Sauvegarde
+**********
+
+Avant toute chose, il est préfèrable de s'assurer de l'état et de la consistance des sauvegarde de l'ensemble des serveurs centraux de votre plate-forme :
+
+ * Serveur(s) Centreon central(aux) ;
+ * Serveur(s) de gestion de base de données ;
+ * Serveur déporté de reporting Centreon MBI ;
+ 
+
 **************
 Dépôt Centreon
 **************
@@ -85,6 +96,8 @@ CentOS 7
    $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
    $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
 
+.. warning::
+   Dans le cas où vous disposez des modules Centreon BAM, Centreon MAP4, Centreon MBI ou Centreon EPP merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
 
 ***********
 Mise à jour
@@ -132,8 +145,19 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
    ::
 
    # service httpd restart
+   
+4. Mise à jour des poller
+=========================
 
-4. Réalisez la mise à jour Web de Centreon 2.8
+Executer la même procedure sur vos différent poller :
+
+ * Changement des repo
+ * Mise à jour des paquets
+ 
+.. warning::
+   Il est impératif que tout vos serveurs (Central et Poller) soient dans les mêmes versions Centreon Engine 1.7, Centreon Broker 3.0
+
+5. Réalisez la mise à jour Web de Centreon 2.8
 ==============================================
 
 Suivez le wizard de mise à jour Web afin de terminer les mises à jours pour les modifications au niveau de la base SQL soient appliquées. Durant cette phase, un nouveau fichier de configuration va être également créé.
@@ -172,12 +196,12 @@ Finalisation
 .. image:: /_static/images/upgrade/step05.png
    :align: center
 
-5. Exportez la configuration vers l’ensemble des pollers
+6. Exportez la configuration vers l’ensemble des pollers
 ========================================================
 
 Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération.
 
-6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
+7. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
 =======================================================================================
 
 Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes :
@@ -204,6 +228,11 @@ Si vous utilisez des modules Centreon, vous devrez les mettre à jour
 satisfaisante. Cela est particulièrement vrai pour les utilisateurs
 de EMS/EPP.
 
+.. warning::
+   Dans ce cas merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
+   Il est impératif d'avoir la dernière version de Centreon BAM pour que la mise à jour fonctionne correctement. L'utilisation de l'option suivante est à proscrire :
+   # --skip-broken
+   
 Mise à jour du dépôt
 ====================
 
@@ -252,7 +281,7 @@ Bien, votre module fonctionne de nouveau.
 Les risques identifiés lors de la mise à jour
 *********************************************
 
-Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.8 de Centreon couplée à la version 1.6 de Engine et 3.0 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
+Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.8 de Centreon couplée à la version 1.7 de Engine et 3.0 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
 
 Les risques sont les suivants :
 ===============================

@@ -39,57 +39,63 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonMonitoringPoller extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
+
     /**
-     * Constructor
+     * CentreonMonitoringPoller constructor.
      */
     public function __construct()
     {
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['name'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';;
         }
 
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name ' .
+            'FROM instances ' .
+            'WHERE name LIKE :name ' .
+            'ORDER BY name ';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $queryPoller .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
-        
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name "
-            . "FROM instances "
-            . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
-            . $range;
-        
-        $DBRESULT = $this->pearDBMonitoring->query($queryPoller);
 
-        $total = $this->pearDBMonitoring->numberRows();
-        
+        $stmt = $this->pearDBMonitoring->prepare($queryPoller);
+        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $pollerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $pollerList[] = array('id' => $data['instance_id'], 'text' => $data['name']);
         }
-        
         return array(
             'items' => $pollerList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

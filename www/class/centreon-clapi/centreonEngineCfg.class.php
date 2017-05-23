@@ -91,7 +91,6 @@ class CentreonEngineCfg extends CentreonObject
             'log_service_retries'                     => '1',
             'log_host_retries'                        => '1',
             'log_event_handlers'                      => '1',
-            'log_initial_states'                      => '1',
             'log_external_commands'                   => '1',
             'log_passive_checks'                      => '2',
             'sleep_time'                              => '0.2',

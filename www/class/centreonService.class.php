@@ -1385,7 +1385,7 @@ class CentreonService
         isset($ret["service_locked"]) && $ret["service_locked"] != null ?
             $rq .= "'".$ret["service_locked"]."', " : $rq .= "0, ";
         isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != null ?
-            $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
+            $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "'1'";
         $rq .= ")";
 
         try {

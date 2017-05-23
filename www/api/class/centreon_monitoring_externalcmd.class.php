@@ -44,27 +44,29 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
      */
     protected $pearDBMonitoring;
     protected $centcore_file;
+
     /**
      * Constructor
      */
     public function __construct()
     {
         parent::__construct();
-        $this->centcore_file = _CENTREON_VARLIB_.'/centcore.cmd';
+        $this->centcore_file = _CENTREON_VARLIB_ . '/centcore.cmd';
     }
-    
+
     /**
-     *
      * @return array
+     * @throws RestBadRequestException
+     * @throws RestException
      */
     public function postSend()
     {
         if (isset($this->arguments['commands']) && is_array($this->arguments['commands'])) {
             /* Get poller Listing */
-            $query = "SELECT id FROM nagios_server WHERE ns_activate = '1'";
-            $DBRESULT = $this->pearDB->query($query);
+            $query = 'SELECT id FROM nagios_server WHERE ns_activate = "1"';
+            $dbResult = $this->pearDB->query($query);
             $pollers = array();
-            while ($row = $DBRESULT->fetchRow()) {
+            while ($row = $dbResult->fetch()) {
                 $pollers[$row['id']] = 1;
             }
 
@@ -72,7 +74,10 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
                 if ($fh = @fopen($this->centcore_file, 'a+')) {
                     foreach ($this->arguments['commands'] as $command) {
                         if (isset($pollers[$command['poller_id']])) {
-                            fwrite($fh, "EXTERNALCMD:".$command["poller_id"].":[".$command['timestamp']."] ".$command['command']."\n");
+                            fwrite($fh,
+                                "EXTERNALCMD:" . $command["poller_id"] . ":[" .
+                                $command['timestamp'] . "] " . $command['command'] . "\n"
+                            );
                         } else {
                             throw new RestException('Cannot open Centcore file');
                         }

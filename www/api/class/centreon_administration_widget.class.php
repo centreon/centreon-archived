@@ -33,16 +33,14 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDBInstance.class.php";
-require_once _CENTREON_PATH_ . '/www/class/centreonWidget.class.php';
+
+require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
 require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonAdministrationWidget extends CentreonWebService
 {
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonAdministrationWidget constructor.
      */
     public function __construct()
     {
@@ -50,32 +48,10 @@ class CentreonAdministrationWidget extends CentreonWebService
     }
 
     /**
-     * Get the list of installed widgets
+     * Get the list of views
+     * @return array
      */
-    public function getListAvailable()
-    {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
-        $widgetInfo = $factory->newInformation();
-        $widgets = $widgetInfo->getAvailableList($q);
-
-        foreach ($widgets as &$widget) {
-            unset($widget['preferences']);
-        }
-
-        return $widgets;
-    }
-
-    /**
-     * Get the list of installed widgets
-     */
-    public function getListInstalled()
+    public function getList()
     {
         global $centreon;
 
@@ -85,58 +61,13 @@ class CentreonAdministrationWidget extends CentreonWebService
         } else {
             $q = $this->arguments['q'];
         }
-
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = array($limit,$this->arguments['page_limit']);
         } else {
-            $range = '';
+            $range = array();
         }
-
         $widgetObj = new CentreonWidget($centreon, $this->pearDB);
-
         return $widgetObj->getWidgetModels($q, $range);
-    }
-
-    public function postInstall()
-    {
-        if (!isset($this->arguments['name'])) {
-            throw new \Exception('Missing argument : name');
-        } else {
-            $name = $this->arguments['name'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
-        $widgetInstaller = $factory->newInstaller($name);
-
-        return $widgetInstaller->install();
-    }
-
-    public function postUpgrade()
-    {
-        if (!isset($this->arguments['name'])) {
-            throw new \Exception('Missing argument : name');
-        } else {
-            $name = $this->arguments['name'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
-        $widgetUpgrader = $factory->newUpgrader($name);
-
-        return $widgetUpgrader->upgrade();
-    }
-
-    public function postRemove()
-    {
-        if (!isset($this->arguments['name'])) {
-            throw new \Exception('Missing argument : name');
-        } else {
-            $name = $this->arguments['name'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
-        $widgetInstaller = $factory->newRemover($name);
-
-        return $widgetInstaller->remove();
     }
 }

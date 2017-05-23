@@ -131,7 +131,7 @@ You can execute using the poller name::
   [root@centreon core]# ./centreon -u admin -p centreon -a APPLYCFG -v "Remote Poller"
  
 
-This will execute **POLLERGENERATE**, **POLLERTEST**, **CFGMOVE** and **POLLERRESTART**.
+This will execute **POLLERGENERATE**, **POLLERTEST**, **CFGMOVE** and **POLLERRELOAD**.
 
 
 Reload monitoring engine of a poller

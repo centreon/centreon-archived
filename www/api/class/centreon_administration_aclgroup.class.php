@@ -33,65 +33,60 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-    
-    /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
-        global $centreon;
+        $queryValues = array();
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $offset = $this->arguments['page_limit'];
-            $range = $limit . ',' . $offset;
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $limit = $this->arguments['page_limit'];
+            $range = 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$limit;
         } else {
             $range = '';
         }
 
-        $filterAclgroup = array();
+        $filterAclgroup = '';
         if (isset($this->arguments['q'])) {
-            $filterAclgroup['acl_group_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
-            $filterAclgroup['acl_group_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+            $filterAclgroup = "WHERE acl_group_name LIKE :aclGroup OR acl_group_alias LIKE :aclGroup ";
+            $queryValues['aclGroup'] = '%' .(string)$this->arguments['q'] . '%';
         }
-        
-        $acl = new CentreonACL($centreon->user->user_id);
-        $aclgs = $acl->getAclGroupAclConf(
-            array(
-                'fields'  => array('acl_group_id', 'acl_group_name'),
-                'get_row' => 'acl_group_name',
-                'keys' => array('acl_group_id'),
-                'conditions' => $filterAclgroup,
-                'order' => array('acl_group_name'),
-                'pages' => $range,
-                'total' => true
-            )
-        );
-        
-        $aclgroupList = array();
-        foreach ($aclgs['items'] as $id => $aclgroup) {
-            $aclgroupList['items'][] = array(
-                'id' => $id,
-                'text' => $aclgroup
+
+        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT acl_group_id, acl_group_name " .
+            "FROM acl_groups " .
+            $filterAclgroup .
+            "ORDER BY acl_group_name " .
+            $range;
+        $stmt = $this->pearDB->prepare($query);
+        $stmt->bindParam(':aclGroup', $queryValues["aclGroup"], PDO::PARAM_STR);
+        if (isset($queryValues["offset"])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+        $aclGroupList = array();
+        while ($data = $stmt->fetch()) {
+            $aclGroupList[] = array(
+                'id' => $data['acl_group_id'],
+                'text' => $data['acl_group_name']
             );
         }
-        $aclgroupList['total'] = $aclgs['total'];
-        
-        return $aclgroupList;
+
+        return array(
+            'items' => $aclGroupList,
+            'total' => $stmt->rowCount()
+        );
     }
 }

@@ -46,20 +46,20 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
      */
     public function getList()
     {
+        $range = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
-            $q = $this->arguments['q'];
+            $q = (string)$this->arguments['q'];
         }
-        
+
         if (false === isset($this->arguments['l'])) {
             $l = '0';
         } else {
@@ -67,12 +67,11 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range[] = (int)$offset;
+            $range[] = (int)$this->arguments['page_limit'];
         }
-        
+
         if ($l == '1') {
             $serviceTemplateList = $this->listWithHostTemplate($q, $range);
         } else {
@@ -80,71 +79,97 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         }
         return $serviceTemplateList;
     }
-    
+
     /**
-     *
-     * @param string $q
+     * @param $q
+     * @param array $range
      * @return array
+     * @throws Exception
      */
-    private function listClassic($q, $range = '')
+    private function listClassic($q, $range = array())
     {
         $serviceList = array();
-        
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
-            . "FROM service "
-            . "WHERE service_description LIKE '%$q%' "
-            . "AND service_register = '0' "
-            . "ORDER BY service_description "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $queryValues = array();
 
-        $total = $this->pearDB->numberRows();
-
-        while ($data = $DBRESULT->fetchRow()) {
-            $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description ' .
+            'FROM service ' .
+            'WHERE service_description LIKE :description ' .
+            'AND service_register = "0" ' .
+            'ORDER BY service_description ';
+        if (isset($range)) {
+            $queryContact .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$range[0];
+            $queryValues['limit'] = (int)$range[1];
+        }
+        $queryValues['description'] = '%' . (string)$q . '%';
+        $stmt = $this->pearDB->prepare($queryContact);
+        $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
         }
 
+        while ($data = $stmt->fetch()) {
+            $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
+        }
         return array(
             'items' => $serviceList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
-    
-    /**
-     *
-     * @param string $q
-     * @return array
-     */
-    private function listWithHostTemplate($q = '', $range = '')
-    {
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '0' AND s.service_register = '0' "
-            . "AND s.service_description LIKE '%$q%' "
-            . "ORDER BY h.host_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
 
-        $total = $this->pearDB->numberRows();
-        
+    /**
+     * @param string $q
+     * @param array $range
+     * @return array
+     * @throws Exception
+     */
+    private function listWithHostTemplate($q = '', $range = array())
+    {
+        $queryValues = array();
+        $queryValues['description'] = '%' . (string)$q . '%';
+        $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, ' .
+            'h.host_name, h.host_id ' .
+            'FROM host h, service s, host_service_relation hsr ' .
+            'WHERE hsr.host_host_id = h.host_id ' .
+            'AND hsr.service_service_id = s.service_id ' .
+            'AND h.host_register = "0" ' .
+            'AND s.service_register = "0" ' .
+            'AND s.service_description LIKE :description ' .
+            'ORDER BY h.host_name ';
+        if (isset($range)) {
+            $queryService .= 'LIMIT :offset, :limit';
+            $queryValues['offset'] = (int)$range[0];
+            $queryValues['limit'] = (int)$range[1];
+        }
+        $stmt = $this->pearDB->prepare($queryService);
+        $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-            
+
             $serviceList[] = array(
                 'id' => htmlentities($serviceCompleteId),
                 'text' => $serviceCompleteName
             );
         }
-
         return array(
             'items' => $serviceList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

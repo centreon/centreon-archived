@@ -71,14 +71,17 @@ include("./include/common/autoNumLimit.php");
 $inputArguments = array(
     'search' => FILTER_SANITIZE_STRING,
     'searchH' => FILTER_SANITIZE_STRING,
-    'num' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_NUMBER_INT,
     'searchS' => FILTER_SANITIZE_STRING,
     'search' => FILTER_SANITIZE_STRING,
     'searchP' => FILTER_SANITIZE_STRING,
     'o' => FILTER_SANITIZE_STRING,
     'o1' => FILTER_SANITIZE_STRING,
     'o2' => FILTER_SANITIZE_STRING,
-    'select' => FILTER_SANITIZE_STRING,
+    'select' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'flags'  => FILTER_REQUIRE_ARRAY
+    ),
     'id' => FILTER_SANITIZE_STRING
 );
 $inputGet = filter_input_array(
@@ -92,7 +95,7 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputGet[$argumentName])) {
+    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
     } else {
         $inputs[$argumentName] = $inputPost[$argumentName];

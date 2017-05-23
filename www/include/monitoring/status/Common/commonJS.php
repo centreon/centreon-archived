@@ -390,21 +390,20 @@ function construct_ServiceGroupSelectList(id) {
         _select.appendChild(k);
         var i = 1;
 <?php
-        $sgNdo = array();
-        $sgBrk = array();
-        $acldb = $pearDBO;
+
+$sgBrk = array();
+$acldb = $pearDBO;
 if (!$centreon->user->access->admin) {
     $query = "SELECT DISTINCT sg.sg_alias, sg.sg_name AS name
-                  FROM servicegroup sg, acl_resources_sg_relations arsr
-                  WHERE sg.sg_id = arsr.sg_id
-                                  AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
-                                  AND sg.sg_activate = '1'
-                      AND sg.sg_id in (SELECT servicegroup_sg_id
-                                   FROM servicegroup_relation
-                                   WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
+                FROM servicegroup sg, acl_resources_sg_relations arsr
+                WHERE sg.sg_id = arsr.sg_id
+                    AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
+                    AND sg.sg_activate = '1'
+                    AND sg.sg_id in (SELECT servicegroup_sg_id
+                FROM servicegroup_relation
+                WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
     $DBRESULT = $pearDB->query($query);
     while ($data = $DBRESULT->fetchRow()) {
-        $sgNdo[$data["name"]] = 1;
         $sgBrk[$data["name"]] = 1;
     }
     $DBRESULT->free();
@@ -413,7 +412,7 @@ if (!$centreon->user->access->admin) {
 
         $DBRESULT = $pearDBO->query("SELECT DISTINCT sg.name, sg.servicegroup_id FROM servicegroups sg, services_servicegroups ssg WHERE sg.servicegroup_id = ssg.servicegroup_id AND sg.name NOT LIKE 'meta\_%' ORDER BY sg.name");
 while ($servicegroups = $DBRESULT->fetchRow()) {
-    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$servicegroups["name"]]))) {
+    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($sgBrk[$servicegroups["name"]]))) {
         if (!isset($tabSG)) {
             $tabSG = array();
         }
