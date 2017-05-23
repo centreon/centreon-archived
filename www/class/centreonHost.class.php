@@ -310,8 +310,7 @@ class CentreonHost
         if (isset($hostId) && is_numeric($hostId)) {
             $query = 'SELECT host_id, host_name FROM host where host_id = ?';
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':commandName', $hostId, PDO::PARAM_INT);
-            $dbResult = $stmt->execute();
+            $dbResult = $stmt->execute(array((int)$hostId));
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
