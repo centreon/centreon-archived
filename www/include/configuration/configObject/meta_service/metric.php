@@ -41,7 +41,7 @@ require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
 $metric = array();
-if (($o == "cs" || $o == "ws") && $msr_id) {
+if (($o == "cs") && $msr_id) {
     # Set base value
     $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
 
@@ -113,8 +113,6 @@ if ($o == "as") {
     $form->addElement('header', 'title', _("Add a Meta Service indicator"));
 } elseif ($o == "cs") {
     $form->addElement('header', 'title', _("Modify a Meta Service indicator"));
-} elseif ($o == "ws") {
-    $form->addElement('header', 'title', _("View a Meta Service indicator"));
 }
 
 /* 
@@ -165,16 +163,11 @@ $form->addRule('metric_sel', _("Compulsory Field"), 'checkMetric');
 /*
  * Just watch
  */
-if ($o == "ws") {
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msr_id."'"));
-    $form->setDefaults($metric);
-    $form->freeze();
-} elseif ($o == "cs") {
+
+if ($o == "cs") {
     $subC = $form->addElement('submit', 'submitC', _("Save"));
     $res = $form->addElement('reset', 'reset', _("Reset"));
     $form->setDefaults($metric);
-    $hn->freeze();
-    $sel->freeze();
 } elseif ($o == "as") {
     $subA = $form->addElement('submit', 'submitA', _("Save"));
     $res = $form->addElement('reset', 'reset', _("Reset"));
@@ -188,9 +181,6 @@ if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]
     } elseif ($form->getSubmitValue("submitC")) {
         updateMetric($msrObj->getValue());
     }
-    $o = "ws";
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msrObj->getValue()."'"));
-    $form->freeze();
     $valid = true;
 }
 
