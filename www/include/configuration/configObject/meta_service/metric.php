@@ -41,18 +41,20 @@ require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
 $metric = array();
-if (($o == "cs") && $msr_id) {
+if (($o == 'cs') && $msr_id) {
     # Set base value
     $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
 
     # Set base value
     $metric1 = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT = $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id = index_data.id");
-    $metric2 = array_map("myDecode", $DBRESULT->fetchRow());
-    $metric = array_merge($metric1, $metric2);
-    $host_id = $metric1["host_id"];
-    $metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
-    $metric["metric_sel"][1] = $metric["metric_id"];
+    if (!isset($host_id) || $metric1['host_id'] == $host_id) {
+        $DBRESULT = $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '" . $metric1["metric_id"] . "' and metrics.index_id = index_data.id");
+        $metric2 = array_map("myDecode", $DBRESULT->fetchRow());
+        $metric = array_merge($metric1, $metric2);
+        $host_id = $metric1["host_id"];
+        $metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
+        $metric["metric_sel"][1] = $metric["metric_id"];
+    }
 }
 
 #
@@ -65,10 +67,12 @@ if (($o == "cs") && $msr_id) {
 $hosts = array(null => null) + $acl->getHostAclConf(
     null,
     'broker',
-    array('fields'  => array('host.host_id', 'host.host_name'),
-                                                          'keys'    => array('host_id'),
-                                                          'get_row' => 'host_name',
-                                                          'order'   => array('host.host_name')),
+    array(
+        'fields'  => array('host.host_id', 'host.host_name'),
+        'keys'    => array('host_id'),
+        'get_row' => 'host_name',
+        'order'   => array('host.host_name')
+    ),
     true
 );
 
