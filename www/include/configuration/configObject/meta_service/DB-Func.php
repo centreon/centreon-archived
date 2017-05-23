@@ -415,9 +415,6 @@ function insertMetric($ret = array())
             isset($ret["activate"]["activate"]) && $ret["activate"]["activate"] != null ? $rq .= "'".$ret["activate"]["activate"]."'" : $rq .= "NULL";
             $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
-
-    // var_dump($rq);
-
     $DBRESULT = $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");
     $msr_id = $DBRESULT->fetchRow();
     return ($msr_id["MAX(msr_id)"]);
