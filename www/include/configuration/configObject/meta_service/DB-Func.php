@@ -430,24 +430,17 @@ function updateMetric($msr_id = null)
     global $form;
     global $pearDB;
     $ret = $form->getSubmitValues();
-    // echo '<pre>';
-    // var_dump($ret);
-    // echo '</pre>';
     $rq = "UPDATE meta_service_relation SET " ;
     $rq .= "meta_id = ";
     $ret["meta_id"] != null ? $rq .= "'".$ret["meta_id"]."', ": $rq .= "NULL, ";
     $rq .= "host_id = ";
     $ret["host_id"] != null ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
-
     $rq .= "metric_id = ";
     $ret["metric_sel"][1] != null ? $rq .= "'".$ret["metric_sel"][1]."', ": $rq .= "NULL, ";
-
     $rq .= "msr_comment = ";
     $ret["msr_comment"] != null ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "activate = ";
     $ret["activate"]["activate"] != null ? $rq .= "'".$ret["activate"]["activate"]."' " : $rq .= "NULL ";
     $rq .= " WHERE msr_id = '".$msr_id."'";
     $DBRESULT = $pearDB->query($rq);
-
-     var_dump($rq);
 }
