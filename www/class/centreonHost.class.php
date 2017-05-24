@@ -2015,7 +2015,7 @@ class CentreonHost
         $rq = "INSERT INTO `extended_host_information` " .
             "( `ehi_id` , `host_host_id` , `ehi_notes` , `ehi_notes_url` , " .
             "`ehi_action_url` , `ehi_icon_image` , `ehi_icon_image_alt` , " .
-            "`ehi_vrml_image` , `ehi_statusmap_image` , `ehi_2d_coords` , " .
+            "`ehi_statusmap_image` , `ehi_2d_coords` , " .
             "`ehi_3d_coords` )" .
             "VALUES (NULL, " . $ret['host_id'] . ", ";
         isset($ret["ehi_notes"]) && $ret["ehi_notes"] != null ?
@@ -2028,8 +2028,6 @@ class CentreonHost
             $rq .= "'" . CentreonDB::escape($ret["ehi_icon_image"]) . "', " : $rq .= "NULL, ";
         isset($ret["ehi_icon_image_alt"]) && $ret["ehi_icon_image_alt"] != null ?
             $rq .= "'" . CentreonDB::escape($ret["ehi_icon_image_alt"]) . "', " : $rq .= "NULL, ";
-        isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != null ?
-            $rq .= "'" . CentreonDB::escape($ret["ehi_vrml_image"]) . "', " : $rq .= "NULL, ";
         isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != null ?
             $rq .= "'" . CentreonDB::escape($ret["ehi_statusmap_image"]) . "', " : $rq .= "NULL, ";
         isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != null ?
@@ -2228,7 +2226,6 @@ class CentreonHost
 
         $integerFields = array(
             'ehi_icon_image' => 'ehi_icon_image',
-            'ehi_vrml_image' => 'ehi_vrml_image',
             'ehi_statusmap_image' => 'ehi_statusmap_image',
         );
 
