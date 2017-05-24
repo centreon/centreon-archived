@@ -92,8 +92,6 @@ try {
         if (!isset($_POST['user_id'])) {
             $_POST['user_id'] = $centreon->user->user_id;
         }
-
-        $viewObj->updateCustomViewUserRelation($_POST);
     } elseif ($action == "share") {
         $viewObj->shareCustomView($_POST, $centreon->user->user_id);
     } elseif ($action == "remove") {
