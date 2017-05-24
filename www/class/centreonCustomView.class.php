@@ -968,10 +968,33 @@ class CentreonCustomView
     }
 
     /**
+     * Update user relations from view
+     *
+     * @param $params
+     * @throws Exception
+     */
+    public function updateCustomViewUserRelation($params)
+    {
+        $query = "UPDATE custom_view_user_relation " .
+            "SET is_public = :public " .
+            "WHERE user_id <> :user_id " .
+            "AND custom_view_id = :custom_view_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':public', $params['public'], PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', (int)$params['user_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':custom_view_id', (int)$params['custom_view_id'], PDO::PARAM_INT);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("Cannot update custom view user relations");
+        }
+    }
+
+    /**
      * @param $centreon
      * @param $db
      * @param $contactId
      * @return null
+     * @throws Exception
      */
     public static function syncContactGroupCustomView($centreon, $db, $contactId)
     {
