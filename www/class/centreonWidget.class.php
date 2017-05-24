@@ -648,6 +648,7 @@ class CentreonWidget
                     } else {
                         $val = implode(',', $val);
                     }
+                    $val = trim($val);
                 }
                 if ($str != "") {
                     $str .= ", ";
