@@ -46,13 +46,10 @@ function getWikiConfig($pearDB)
 
     $gopt = array();
     while ($opt = $res->fetchRow()) {
-
-        if (!empty($opt["value"])) {
-            $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
+        if (empty($opt["value"]) && in_array($opt["key"], $mandatoryConfigKey)) {
+            throw new \Exception($errorMsg);
         } else {
-            if (in_array($opt["key"], $mandatoryConfigKey)) {
-                throw new \Exception($errorMsg);
-            }
+            $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
         }
     }
 
