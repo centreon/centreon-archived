@@ -72,7 +72,11 @@ class procedures_DB_Connector {
      */
     public function connect($db_name, $db_user, $db_host, $db_password){
 
-    	$dsn = $this->db_type . ':dbname=' . $db_name . ';host=' . $db_host;
+        $separator = explode(':', $db_host);
+        $host = $separator[0];
+        $port = isset ($separator[1]) ? $separator[1] : 3306;
+
+        $dsn = $this->db_type . ':dbname=' . $db_name . ';host=' . $host . ';port=' . $port;
 
         try {
             $this->privatePearDB = new PDO($dsn, $db_user, $db_password);
