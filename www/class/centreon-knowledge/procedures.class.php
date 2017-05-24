@@ -80,10 +80,10 @@ class procedures
     private function setProcedures()
     {
         $DBRESULT = $this->DB->query("SELECT page_title, page_id FROM " . $this->db_prefix . "page");
-        while ($page = $DBRESULT->fetchRow()) {
+        while ($page = $DBRESULT->fetch()) {
             $this->procList[$page["page_title"]] = $page["page_id"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
