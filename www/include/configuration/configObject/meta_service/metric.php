@@ -169,12 +169,12 @@ $form->addRule('metric_sel', _("Compulsory Field"), 'checkMetric');
  */
 
 if ($o == "cs") {
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($metric);
 } elseif ($o == "as") {
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
