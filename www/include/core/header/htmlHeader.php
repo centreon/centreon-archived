@@ -63,6 +63,9 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/wizard/css/style.css" />
     <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
+    <!-- graph css -->
+    <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+    <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
     <?php
 
     // == Declare CSS for modules
@@ -98,6 +101,14 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
     <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
+    <!-- graph js -->
+    <script src="./include/common/javascript/charts/d3.min.js"></script>
+    <script src="./include/common/javascript/charts/c3.min.js"></script>
+    <script src="./include/common/javascript/charts/d3-timeline.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+    <script src="./include/common/javascript/numeral.min.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
     <?php
 
     /*
