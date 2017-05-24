@@ -87,7 +87,7 @@ class Centreon_Object_Host_Extended extends Centreon_Object
     public function getParameters($objectId, $parameterNames)
     {
         $params = parent::getParameters($objectId, $parameterNames);
-        $params_image = array("ehi_icon_image", "ehi_vrml_image", "ehi_statusmap_image");
+        $params_image = array("ehi_icon_image", "ehi_statusmap_image");
         foreach ($params_image as $image) {
             if (array_key_exists($image, $params)) {
                 $sql = "SELECT dir_name,img_path 
