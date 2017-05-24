@@ -576,7 +576,7 @@ class CentreonWidget
         $explodedValues = '';
         if (count($this->userGroups)) {
             foreach ($this->userGroups as $k => $v) {
-                $explodedValues .= 'userGroupId' . $v . ',';
+                $explodedValues .= ':userGroupId' . $v . ',';
                 $queryValues['userGroupId' . $v] = $v;
             }
             $explodedValues = rtrim($explodedValues, ',');
@@ -586,6 +586,7 @@ class CentreonWidget
         $query .= ") AND wv.custom_view_id = :viewId";
 
         $stmt = $this->db->prepare($query);
+
         $stmt->bindParam(':widgetId', $params['widget_id'], PDO::PARAM_INT);
         $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
         $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
@@ -651,25 +652,25 @@ class CentreonWidget
                 if ($str != "") {
                     $str .= ", ";
                 }
-                $str .= '(:widgetViewId, :parameter' . $matches[1] . ', :preference' . $val . ', :userId)';
-                $queryValues['parameter']['parameter' . $matches[1]] = $matches[1];
-                $queryValues['preference']['preference' . $val] = $val;
+                $str .= '(:widgetViewId, :parameter' . $matches[1] . ', :preference' . $matches[1] . ', :userId)';
+                $queryValues['parameter'][':parameter' . $matches[1]] = $matches[1];
+                $queryValues['preference'][':preference' . $matches[1]] = $val;
             }
         }
         if ($str != "") {
             $query = 'INSERT INTO widget_preferences (widget_view_id, parameter_id, preference_value, user_id) ' .
                 'VALUES ' . $str;
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':widgetViewId', $widgetViewId, PDO::PARAM_INT);
-            $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+            $stmt->bindValue(':widgetViewId', $widgetViewId, PDO::PARAM_INT);
+            $stmt->bindValue(':userId', $this->userId, PDO::PARAM_INT);
             if (isset($queryValues['parameter'])) {
                 foreach ($queryValues['parameter'] as $k => $v) {
-                    $stmt->bindParam(':' . $k, $v, PDO::PARAM_INT);
+                    $stmt->bindValue($k, $v, PDO::PARAM_INT);
                 }
             }
             if (isset($queryValues['preference'])) {
                 foreach ($queryValues['preference'] as $k => $v) {
-                    $stmt->bindParam(':' . $k, $v, PDO::PARAM_STR);
+                    $stmt->bindValue($k, $v, PDO::PARAM_STR);
                 }
             }
             $dbResult = $stmt->execute();
