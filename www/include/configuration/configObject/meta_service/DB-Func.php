@@ -419,7 +419,6 @@ function insertMetric($ret = array())
     $msr_id = $DBRESULT->fetchRow();
     return ($msr_id["MAX(msr_id)"]);
 }
-
 function updateMetric($msr_id = null)
 {
     if (!$msr_id) {
@@ -427,8 +426,6 @@ function updateMetric($msr_id = null)
     }
     global $form;
     global $pearDB;
-    global $centreon;
-    $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "UPDATE meta_service_relation SET " ;
     $rq .= "meta_id = ";
@@ -436,7 +433,7 @@ function updateMetric($msr_id = null)
     $rq .= "host_id = ";
     $ret["host_id"] != null ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
     $rq .= "metric_id = ";
-    $ret["metric_id"] != null ? $rq .= "'".$ret["metric_id"]."', ": $rq .= "NULL, ";
+    $ret["metric_sel"][1] != null ? $rq .= "'".$ret["metric_sel"][1]."', ": $rq .= "NULL, ";
     $rq .= "msr_comment = ";
     $ret["msr_comment"] != null ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "activate = ";
