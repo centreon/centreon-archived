@@ -457,7 +457,9 @@ class CentreonWidget
             $queryValues['limit'] = (int)$range[1];
         }
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':search', $queryValues['search'], PDO::PARAM_STR);
+        if (isset($queryValues['search'])) {
+            $stmt->bindParam(':search', $queryValues['search'], PDO::PARAM_STR);
+        }
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
@@ -720,7 +722,7 @@ class CentreonWidget
                 $queryValues = array();
                 $query = 'UPDATE widget_views SET widget_order = :widgetOrder ' .
                     'WHERE custom_view_id = :viewId ' .
-                    'AND widget_id = widgetId';
+                    'AND widget_id = :widgetId';
                 $queryValues[] = (string)$column . "_" . $row;
                 $queryValues[] = (int)$viewId;
                 $queryValues[] = (int)$widgetId;
