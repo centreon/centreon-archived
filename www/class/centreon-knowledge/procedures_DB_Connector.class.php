@@ -74,7 +74,7 @@ class procedures_DB_Connector {
 
         $separator = explode(':', $db_host);
         $host = $separator[0];
-        $port = isset ($separator[1]) ? $separator[1] : 3306;
+        $port = isset($separator[1]) ? $separator[1] : 3306;
 
         $dsn = $this->db_type . ':dbname=' . $db_name . ';host=' . $host . ';port=' . $port;
 
