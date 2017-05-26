@@ -75,4 +75,10 @@ class CentreonDBStatement extends \PDOStatement
         }
         return count($this->fetchAll);
     }
+
+    public function execute($parameters = null)
+    {
+        $this->fetchAll = null;
+        return parent::execute($parameters);
+    }
 }
