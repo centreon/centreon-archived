@@ -84,14 +84,26 @@ try {
         throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
     }
 
-    $result = splitQueries('../../createTablesCentstorage.sql', ';', $link, '../../tmp/createTablesCentstorage');
+    $result = splitQueries(
+        '../../createTablesCentstorage.sql',
+        ';',
+        $link,
+        '../../tmp/createTablesCentstorage',
+        $macros
+    );
     if ("0" != $result) {
         $return['msg'] = $result;
         echo json_encode($return);
         exit;
     }
 
-    $result = splitQueries('../../installBroker.sql', ';', $link, '../../tmp/installBroker');
+    $result = splitQueries(
+        '../../installBroker.sql',
+        ';',
+        $link,
+        '../../tmp/installBroker',
+        $macros
+    );
     if ("0" != $result) {
         $return['msg'] = $result;
         echo json_encode($return);
