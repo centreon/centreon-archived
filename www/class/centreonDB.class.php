@@ -135,7 +135,6 @@ class CentreonDB extends \PDO
                 $this->dsn['password'],
                 $this->options
             );
-
         } catch (Exception $e) {
             if (false === $silent && php_sapi_name() != "cli") {
                 $this->displayConnectionErrorPage($e->getMessage());
@@ -151,7 +150,7 @@ class CentreonDB extends \PDO
     }
 
     /**
-     * 
+     *
      * @param type $stmt
      * @param type $arrayValues
      * @return type

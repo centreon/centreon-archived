@@ -147,8 +147,11 @@ class HostTemplate extends AbstractHost
             return 0;
         }
 
-        $this->hosts[$host_id]['severity_id'] = Severity::getInstance($this->dependencyInjector)->getHostSeverityByHostId($host_id);
-        $severity = Severity::getInstance($this->dependencyInjector)->getHostSeverityById($this->hosts[$host_id]['severity_id']);
+        $this->hosts[$host_id]['severity_id'] =
+            Severity::getInstance($this->dependencyInjector)->getHostSeverityByHostId($host_id);
+        $severity =
+            Severity::getInstance($this->dependencyInjector)
+                ->getHostSeverityById($this->hosts[$host_id]['severity_id']);
         if (!is_null($severity)) {
             $this->hosts[$host_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->hosts[$host_id]['macros']['_CRITICALITY_ID'] = $severity['hc_id'];

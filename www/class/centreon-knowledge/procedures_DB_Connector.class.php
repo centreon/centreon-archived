@@ -49,17 +49,21 @@ class procedures_DB_Connector {
      * @param $db_host
      * @param $db_password
      */
-    public function __construct($retry = 3, $db_name, $db_user, $db_host, $db_password)
-	{
-		$this->retry = $retry;
+    public function __construct($retry = 3, $db_name = '', $db_user = '', $db_host = '', $db_password = '')
+    {
+        $this->retry = $retry;
 		$this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 		$this->log = new CentreonLog();
 		$this->connect($db_name, $db_user, $db_host, $db_password);
 		$this->debug = 0;
     }
 
-	private function displayConnectionErrorPage() {
-		echo "<center><b>" . _("Connection to Wiki database failed, please contact your administrator or read the Centreon online documentation to configure wiki access") . "</b></center>";
+    private function displayConnectionErrorPage()
+    {
+		echo "<center><b>" .
+            _("Connection to Wiki database failed, please contact your administrator " .
+            "or read the Centreon online documentation to configure wiki access") .
+            "</b></center>";
 		exit;
 	}
 
@@ -70,8 +74,8 @@ class procedures_DB_Connector {
      * @param $db_password
      * @return array
      */
-    public function connect($db_name, $db_user, $db_host, $db_password){
-
+    public function connect($db_name, $db_user, $db_host, $db_password)
+    {
         $separator = explode(':', $db_host);
         $host = $separator[0];
         $port = isset($separator[1]) ? $separator[1] : 3306;
@@ -94,33 +98,38 @@ class procedures_DB_Connector {
 	}
 
     /**
-     * Déconnexion
+     * Disconnection
      */
-    public function disconnect() {
-    	$this->privatePearDB->disconnect();
+    public function disconnect()
+    {
+        $this->privatePearDB->disconnect();
     }
 
-    public function toString() {
-    	return $this->privatePearDB->toString();
+    public function toString()
+    {
+        return $this->privatePearDB->toString();
     }
 
     /**
      * @param null $query_string
      * @return mixed
      */
-    public function query($query_string = NULL) {
-
+    public function query($query_string = NULL)
+    {
     	if ($this->debug) {
-    		$query = str_replace("`", "", $query_string);
-    		$query = str_replace("'", "\'", $query);
-    		$query = str_replace("*", "\*", $query);
-    		exec("echo '$query' >> $log_centreon/procedure.log");
-    	}
+            $query = str_replace("`", "", $query_string);
+            $query = str_replace("'", "\'", $query);
+            $query = str_replace("*", "\*", $query);
+            exec("echo '$query' >> " . _CENTREON_LOG_ . "/procedure.log");
+        }
+
+        $DBRES = null;
     	try {
             $DBRES = $this->privatePearDB->query($query_string);
         } catch (\PDOException $e) {
             $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
         }
+
     	return $DBRES;
     }
 }

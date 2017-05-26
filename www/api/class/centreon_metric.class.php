@@ -317,7 +317,6 @@ class CentreonMetric extends CentreonWebService
                         'time' => $row['entry_time']
                     );
                 }
-
             }
             $result[] = array(
                 'service_id' => $id,

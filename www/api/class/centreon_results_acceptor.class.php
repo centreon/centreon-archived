@@ -170,9 +170,8 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
                     $this->openPipe();
                 }
                 foreach ($this->arguments['results'] as $data) {
-                    if (
-                        !isset($this->hostServices[$data['host']])
-                        || !isset($this->hostServices[$data['host']][$data["service"]])
+                    if (!isset($this->hostServices[$data['host']]) ||
+                        !isset($this->hostServices[$data['host']][$data["service"]])
                     ) {
                         if (!isset($this->pollerHosts['name'][$data['host']])) {
                             $host = new CentreonHost($this->pearDB);

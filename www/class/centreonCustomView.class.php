@@ -244,7 +244,6 @@ class CentreonCustomView
         if (!$dbResult2) {
             throw new \Exception("An error occured");
         }
-
     }
 
     /**
@@ -513,7 +512,6 @@ class CentreonCustomView
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-
         } elseif (isset($userGroupId) && $userGroupId) {
             if (!is_numeric($userGroupId)) {
                 $userGroupId = $this->cg->insertLdapGroup($userGroupId);
@@ -932,7 +930,6 @@ class CentreonCustomView
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-
         } else {
             $query = 'UPDATE custom_view_user_relation SET is_share = 0, locked = 1 ' .
                 'WHERE user_id = :userId ' .

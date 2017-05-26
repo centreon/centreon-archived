@@ -74,7 +74,8 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
                 if ($fh = @fopen($this->centcore_file, 'a+')) {
                     foreach ($this->arguments['commands'] as $command) {
                         if (isset($pollers[$command['poller_id']])) {
-                            fwrite($fh,
+                            fwrite(
+                                $fh,
                                 "EXTERNALCMD:" . $command["poller_id"] . ":[" .
                                 $command['timestamp'] . "] " . $command['command'] . "\n"
                             );

@@ -43,8 +43,6 @@ class CentreonWidgetException extends Exception
 {
 }
 
-;
-
 /**
  * Class for managing widgets
  */
@@ -205,7 +203,7 @@ class CentreonWidget
      * @param $param
      * @return null
      */
-    public function getWidgetInfo($type = "id", $param)
+    public function getWidgetInfo($type = "id", $param = '')
     {
         static $tabDir;
         static $tabId;
@@ -619,7 +617,6 @@ class CentreonWidget
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-
         } else {
             $query = 'DELETE FROM widget_preferences ' .
                 'WHERE widget_view_id = :widgetViewId ' .
@@ -678,7 +675,6 @@ class CentreonWidget
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-
         }
         $this->customView->syncCustomView($params['custom_view_id']);
     }
@@ -1076,7 +1072,6 @@ class CentreonWidget
                         $query = 'INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, ' .
                             'parameter_code_name, default_value, parameter_order, require_permission, header_title) ' .
                             'VALUES ' . $str;
-
                     } else {
                         $queryValues = array();
                         $str = ' field_type_id = ?, parameter_name = ?,  default_value = ?, parameter_order = ?, ';

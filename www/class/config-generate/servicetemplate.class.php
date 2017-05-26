@@ -124,26 +124,35 @@ class ServiceTemplate extends AbstractService {
         'acknowledgement_timeout'
     );
     
-    private function getServiceGroups($service_id) {        
+    private function getServiceGroups($service_id)
+    {
         $host = Host::getInstance($this->dependencyInjector);
         $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
-        $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForStpl($service_id);        
+        $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForStpl($service_id);
         foreach ($this->service_cache[$service_id]['sg'] as &$sg) {
             if ($host->isHostTemplate($this->current_host_id, $sg['host_host_id'])) {
-                $servicegroup->addServiceInSg($sg['servicegroup_sg_id'], $this->current_service_id, $this->current_service_description, $this->current_host_id, $this->current_host_name);
+                $servicegroup->addServiceInSg(
+                    $sg['servicegroup_sg_id'],
+                    $this->current_service_id,
+                    $this->current_service_description,
+                    $this->current_host_id,
+                    $this->current_host_name
+                );
                 break;
             }
         }
     }
     
-    private function getServiceFromId($service_id) {
+    private function getServiceFromId($service_id)
+    {
         if (is_null($this->stmt_service)) {
-            $this->stmt_service = $this->backend_instance->db->prepare("SELECT 
-                    $this->attributes_select
-                FROM service
-                    LEFT JOIN extended_service_information ON extended_service_information.service_service_id = service.service_id 
-                WHERE service_id = :service_id AND service_activate = '1'
-            ");
+            $this->stmt_service = $this->backend_instance->db->prepare(
+                "SELECT " . $this->attributes_select . " " .
+                "FROM service " .
+                "LEFT JOIN extended_service_information " .
+                "ON extended_service_information.service_service_id = service.service_id " .
+                "WHERE service_id = :service_id AND service_activate = '1' "
+            );
         }
         $this->stmt_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_service->execute();
@@ -151,7 +160,8 @@ class ServiceTemplate extends AbstractService {
         $this->service_cache[$service_id] = array_pop($results);
     }
     
-    private function getSeverity($service_id) {
+    private function getSeverity($service_id)
+    {
         if (isset($this->service_cache[$service_id]['severity_id'])) {
             return 0;
         }
@@ -164,7 +174,8 @@ class ServiceTemplate extends AbstractService {
         }
     }
     
-    public function generateFromServiceId($service_id) {
+    public function generateFromServiceId($service_id)
+    {
         if (is_null($service_id)) {
             return null;
         }
@@ -206,11 +217,13 @@ class ServiceTemplate extends AbstractService {
         return $this->service_cache[$service_id]['name'];
     }
     
-    public function resetLoop() {
+    public function resetLoop()
+    {
         $this->loop_tpl = array();
     }
     
-    public function reset() {
+    public function reset()
+    {
         $this->current_host_id = null;
         $this->current_host_name = null;
         $this->current_service_description = null;

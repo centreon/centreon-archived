@@ -169,7 +169,6 @@ class CentreonCommand
         $i = 0;
         if ($iWithFormatData == 1) {
             while ($row = $stmt->fetch()) {
-
                 preg_match_all($this->aTypeCommand[$sType]['preg'], $row['command_line'], $matches, PREG_SET_ORDER);
 
                 foreach ($matches as $match) {

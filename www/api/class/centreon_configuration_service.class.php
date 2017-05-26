@@ -73,8 +73,8 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServices .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
-            $aclMetaServices .= 'AND ms.service_id IN (' . $acl->getMetaServiceString('ID',
-                    $this->pearDBMonitoring) . ') ';
+            $aclMetaServices .= 'AND ms.service_id IN (' .
+                $acl->getMetaServiceString('ID', $this->pearDBMonitoring) . ') ';
         }
 
         // Check for select2 'q' argument
@@ -145,19 +145,27 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
      * @return array
      * @throws Exception
      */
-    private function getServicesByHost($q, $aclServices, $range = array(), $hasGraph = false, $aclMetaServices, $s, $e)
+    private function getServicesByHost(
+        $q,
+        $aclServices,
+        $range = array(),
+        $hasGraph = false,
+        $aclMetaServices = '',
+        $s = 'all',
+        $e = 'enable'
+    )
     {
         $queryValues = array();
-        if ($e == 'enable'):
+        if ($e == 'enable') {
             $enableQuery = 'AND s.service_activate = \'1\' AND h.host_activate = \'1\' ';
             $enableQueryMeta = 'AND ms.service_activate = \'1\' AND mh.host_activate = \'1\' ';
-        elseif ($e == 'disable'):
+        } elseif ($e == 'disable') {
             $enableQuery = 'AND ( s.service_activate = \'0\' OR h.host_activate = \'0\' ) ';
             $enableQueryMeta = 'AND ( ms.service_activate = \'0\' OR mh.host_activate = \'0\') ';
-        else:
+        } else {
             $enableQuery = '';
             $enableQueryMeta = '';
-        endif;
+        }
 
         switch ($s) {
             case 'all':

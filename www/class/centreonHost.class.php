@@ -1072,7 +1072,6 @@ class CentreonHost
                     $aMacroInCommande[] = $macroscmd;
                 }
             }
-
         }
 
         foreach ($serviceTemplates as $svctpl) {
@@ -1201,7 +1200,8 @@ class CentreonHost
                 $macrosCommande = $oCommand->getMacroByIdAndType($iIdCommande, 'host');
                 if (!empty($macrosCommande)) {
                     foreach ($macrosCommande as $macroscmd) {
-                        $macroscmd['macroTpl_#index#'] = $templateName . ' Commande : ' . $macroscmd['macroCommandFrom'];
+                        $macroscmd['macroTpl_#index#'] =
+                            $templateName . ' Commande : ' . $macroscmd['macroCommandFrom'];
                         $aMacroInCommande[] = $macroscmd;
                     }
                 }
@@ -1492,7 +1492,6 @@ class CentreonHost
                 }
             }
         }
-
     }
 
     /**
@@ -2269,7 +2268,6 @@ class CentreonHost
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
-
     }
 
     /**
