@@ -62,18 +62,15 @@ function myConnect() {
 function replaceInstallationMacros($query, $macros = array()) {
     while (preg_match('/@([a-zA-Z0-9_]+)@/', $query, $matches)) {
         $macroValue = "";
-        if (isset($_SESSION[$matches[1]])) {
-            $macroValue = $_SESSION[$matches[1]];
-        }
-        // Exception
         if ($matches[1] == 'MAILER') {
             $macroValue = '-MAILER-';
+        } elseif (isset($macros[$matches[1]])) {
+            $macroValue = $macros[$matches[1]];
+        } elseif (isset($_SESSION[$matches[1]])) {
+            $macroValue = $_SESSION[$matches[1]];
         }
-        $query = preg_replace('/@'.$matches[1].'@/', $macroValue, $query);
-    }
 
-    foreach ($macros as $name => $value) {
-        $query = str_replace('@' . $name . '@', $value, $query);
+        $query = preg_replace('/@'.$matches[1].'@/', $macroValue, $query);
     }
 
     $query = str_replace('-MAILER-', '@MAILER@', $query);
