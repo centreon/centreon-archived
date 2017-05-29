@@ -648,9 +648,6 @@
      * @return {String} - The value transformed
      */
     roundTickByte: function (value) {
-      if (value < 0) {
-        return '-' + numeral(Math.abs(value)).format('0.00b')
-      }
       return numeral(value).format('0.000b');
     },
     /**
@@ -661,7 +658,7 @@
      * @return {String} - The value transformed
      */
     inverseRoundTick: function (value) {
-      return numeral(value).format('0.000a') * -1;
+        return numeral(value * -1).format('0.000a');
     },
     /**
      * Round the value of a point and transform to humanreadable for bytes
@@ -671,7 +668,7 @@
      * @return {String} - The value transformed
      */
     inverseRoundTickByte: function (value) {
-      return this.roundTick(value * -1);
+      return numeral(value * -1).format('0.000b');
     },
     /**
      * Return is the curve is inversed / negative
@@ -714,6 +711,10 @@
       for (legend in legends) {
         if (legends.hasOwnProperty(legend) && self.ids.hasOwnProperty(legend)) {
           curveId = self.ids[legend];
+          var fct = self.getAxisTickFormat(
+              self.getBase(),
+              self.isInversed(curveId)
+          );
           legendDiv = jQuery('<div>').addClass('chart-legend')
             .data('curveid', curveId)
             .data('legend', legend);
@@ -742,7 +743,7 @@
               )
               .append(
                 jQuery('<span>')
-                  .text(legends[legend].extras[i].value)
+                  .text(fct(legends[legend].extras[i].value))
               )
             legendExtra.appendTo(legendDiv);
           }
@@ -794,8 +795,14 @@
     buildExtraLegend: function (legends) {
       var self = this;
       var i;
+
       jQuery('.chart-legend').each(function (idx, el) {
         var legendName = jQuery(el).data('legend');
+        var curveId = self.ids[legendName];
+        var fct = self.getAxisTickFormat(
+          self.getBase(),
+          self.isInversed(curveId)
+        );
         jQuery(el).find('.extra').remove();
         if (legends.hasOwnProperty(legendName)) {
           for (i = 0; i < legends[legendName].extras.length; i++) {
@@ -806,7 +813,7 @@
               )
               .append(
                 jQuery('<span>')
-                  .text(legends[legendName].extras[i].value)
+                  .text(fct(legends[legendName].extras[i].value))
               )
             legendExtra.appendTo(el);
           }
