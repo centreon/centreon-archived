@@ -129,8 +129,8 @@ class Utils
     public function replaceMacros($content, $customMacros = array())
     {
         $macros = array(
-            '@DB_CENTREON@' => $this->dependencyInjector['configuration']->get('hostCentreon'),
-            '@DB_CENTSTORAGE@' => $this->dependencyInjector['configuration']->get('hostCentstorage')
+            '@DB_CENTREON@' => $this->dependencyInjector['configuration']->get('db'),
+            '@DB_CENTSTORAGE@' => $this->dependencyInjector['configuration']->get('dbcstg')
         );
 
         if (count($customMacros)) {
