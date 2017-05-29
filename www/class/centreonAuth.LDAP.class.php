@@ -108,7 +108,6 @@ class CentreonAuthLDAP
      */
     public function checkPassword()
     {
-
         /*
          * Check if it's a new user
          */
@@ -313,8 +312,8 @@ class CentreonAuthLDAP
                     contact_email, contact_pager, contact_oreon, contact_activate, contact_register,
                     contact_enable_notifications)
 		        	VALUES (" . $tmplId . ", '" .
-                    htmlentities($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8') . "', '" .
-                    htmlentities($userDisplay, ENT_QUOTES, 'UTF-8') . "', 'ldap', '" . $userDn . "', " . $this->arId .
+                    $this->contactInfos['contact_alias'] . "', '" .
+                    $userDisplay . "', 'ldap', '" . $userDn . "', " . $this->arId .
                     ", " . $userEmail . ", " . $userPager . ", '1', '1', '1', '2')";
                 try {
                     $this->pearDB->query($query);
