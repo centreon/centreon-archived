@@ -153,8 +153,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $aclMetaServices = '',
         $s = 'all',
         $e = 'enable'
-    )
-    {
+    ) {
         $queryValues = array();
         if ($e == 'enable') {
             $enableQuery = 'AND s.service_activate = \'1\' AND h.host_activate = \'1\' ';

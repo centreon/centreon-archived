@@ -52,7 +52,7 @@ class procedures_DB_Connector {
     public function __construct($retry = 3, $db_name = '', $db_user = '', $db_host = '', $db_password = '')
     {
         $this->retry = $retry;
-		$this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
+        $this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 		$this->log = new CentreonLog();
 		$this->connect($db_name, $db_user, $db_host, $db_password);
 		$this->debug = 0;
@@ -60,12 +60,14 @@ class procedures_DB_Connector {
 
     private function displayConnectionErrorPage()
     {
-		echo "<center><b>" .
-            _("Connection to Wiki database failed, please contact your administrator " .
-            "or read the Centreon online documentation to configure wiki access") .
+        echo "<center><b>" .
+            _(
+                "Connection to Wiki database failed, please contact your administrator " .
+                "or read the Centreon online documentation to configure wiki access"
+            ) .
             "</b></center>";
-		exit;
-	}
+        exit;
+    }
 
     /**
      * @param $db_name
@@ -114,9 +116,9 @@ class procedures_DB_Connector {
      * @param null $query_string
      * @return mixed
      */
-    public function query($query_string = NULL)
+    public function query($query_string = null)
     {
-    	if ($this->debug) {
+        if ($this->debug) {
             $query = str_replace("`", "", $query_string);
             $query = str_replace("'", "\'", $query);
             $query = str_replace("*", "\*", $query);
@@ -124,12 +126,12 @@ class procedures_DB_Connector {
         }
 
         $DBRES = null;
-    	try {
+        try {
             $DBRES = $this->privatePearDB->query($query_string);
         } catch (\PDOException $e) {
             $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
         }
 
-    	return $DBRES;
+        return $DBRES;
     }
 }

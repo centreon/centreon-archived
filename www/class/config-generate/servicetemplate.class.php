@@ -166,8 +166,10 @@ class ServiceTemplate extends AbstractService {
             return 0;
         }
         
-        $this->service_cache[$service_id]['severity_id'] = Severity::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
-        $severity = Severity::getInstance($this->dependencyInjector)->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
+        $this->service_cache[$service_id]['severity_id'] =
+            Severity::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
+        $severity = Severity::getInstance($this->dependencyInjector)
+            ->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
         if (!is_null($severity)) {
             $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
