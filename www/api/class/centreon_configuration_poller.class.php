@@ -39,21 +39,20 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationPoller extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDB;
+
     /**
-     * Constructor
+     * CentreonConfigurationPoller constructor.
      */
     public function __construct()
     {
         $this->pearDB = new CentreonDB('centreon');
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
      */
     public function getList()
@@ -62,6 +61,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
+        $queryValues = array();
 
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
@@ -75,35 +75,36 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
 
+        $queryValues[] = (string)'%' . $q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name "
-            . "FROM nagios_server "
-            . "WHERE name LIKE '%$q%' "
-            . "AND ns_activate = '1' ";
+
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name ' .
+            'FROM nagios_server ' .
+            'WHERE name LIKE ? ' .
+            'AND ns_activate = "1" ';
         if (!$isAdmin) {
             $queryPoller .= $acl->queryBuilder('AND', 'id', $acl->getPollerString('ID', $this->pearDB));
         }
-        $queryPoller .= "ORDER BY name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryPoller);
-
+        $queryPoller .= 'ORDER BY name ' . $range;
+        $stmt = $this->pearDB->prepare($queryPoller);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
+
         $pollerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $pollerList[] = array(
                 'id' => $data['id'],
                 'text' => $data['name']
             );
         }
-        
+
         return array(
             'items' => $pollerList,
             'total' => $total

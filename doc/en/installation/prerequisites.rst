@@ -63,6 +63,7 @@ The following table describes the dependent software:
 +----------+------------------+
 | zlib     | 1.2.3            |
 +----------+------------------+
+
 ***************************
 Select type of architecture
 ***************************
@@ -70,7 +71,7 @@ Select type of architecture
 The table below gives the prerequisites for the installation of CES 3.x:
 
 +----------------------+-----------------------------+--------------------------+----------------+---------------+
-|  Number of Services  |  Estimated number of hosts  |  Number of pollers       |  Cenral        |  Poller       |
+|  Number of Services  |  Estimated number of hosts  |  Number of pollers       |  Central       |  Poller       |
 +======================+=============================+==========================+================+===============+
 |           < 500      |             50              |        1 central         |  1 vCPU / 1 GB |               |
 +----------------------+-----------------------------+--------------------------+----------------+---------------+

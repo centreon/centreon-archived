@@ -86,8 +86,12 @@ $form = new HTML_QuickForm('Form', 'post');
 $form->addElement('header', 'title', _("Argument Descriptions"));
 $form->addElement('header', 'information', _("Arguments"));
 
-$subS = $form->addElement('button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();"));
-$subS = $form->addElement('button', 'close', _("Close"), array("onClick"=>"closeBox();"));
+$subS = $form->addElement(
+    'button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();", "class" => "btc bt_success")
+);
+$subS = $form->addElement(
+    'button', 'close', _("Close"), array("onClick"=>"closeBox();", "class" => "btc bt_default")
+);
 
 /*
  *  Smarty template

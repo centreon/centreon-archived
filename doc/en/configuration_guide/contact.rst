@@ -34,6 +34,8 @@ General information
 * The **Host / Service Notification Period** field serves to choose the time period in which notifications are sent.
 * The **Host / Service Notification Command** field serves to choose the notification command to a host or a service.
 
+.. _autologin:
+
 ***********************
 Centreon authentication
 ***********************

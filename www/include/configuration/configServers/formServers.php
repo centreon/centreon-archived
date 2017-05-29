@@ -202,7 +202,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
             "centreonbroker_cfg_path" => "/etc/centreon-broker",
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker/watchdog.log",
-            "init_script_centreontrapd" => "/etc/init.d/centreontrapd",
+            "init_script_centreontrapd" => "centreontrapd",
             "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
         )
     );

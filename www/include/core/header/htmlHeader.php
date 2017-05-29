@@ -52,6 +52,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/responsive-style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" />
     <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="./Themes/Centreon-2/Modalbox/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" media="screen"/>
@@ -62,6 +63,10 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/wizard/css/style.css" />
     <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
+    <!-- graph css -->
+    <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+    <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
+
     <?php
 
     // == Declare CSS for modules
@@ -97,8 +102,16 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
     <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
-    <?php
+    <!-- graph js -->
+    <script src="./include/common/javascript/charts/d3.min.js"></script>
+    <script src="./include/common/javascript/charts/c3.min.js"></script>
+    <script src="./include/common/javascript/charts/d3-timeline.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+    <script src="./include/common/javascript/numeral.min.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 
+    <?php
     /*
      * Add Javascript for NDO status Counter
      */

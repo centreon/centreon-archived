@@ -79,9 +79,7 @@ La fenêtre suivante est affichée:
 * **Remote directory** Répertoire distant pour l'export SCP
 
 .. warning::
-
     **Temporary directory** ne peut pas être un sous répertoire de **Backup directory**. 
-
 
 ******************************************
 Restauration d'un serveur central Centreon
@@ -120,13 +118,14 @@ Une fois le serveur Centreon réinstallé (**même version de Centreon**), il su
     # gzip -d AAAA-MM-JJ-centreon_storage.sql.gz
     # mysql centreon_storage < AAAA-MM-JJ-centreon_storage.sql
 
-.. note::
-Le mot de passe (**password** ci-dessus), est stocké dans les fichiers de configuration restaurés précédemment. Par exemple le champ **$mysql_passwd** dans le fichier "/etc/centreon/conf.pm".
-
 Ces opérations peuvent prendre un certain temps du fait de la taille de la base "centreon_storage".
 
 .. note::
-Par défaut, il n'y a pas de mot de passe pour le compte root de mysql lors de l'installation d'un serveur via Centreon ISO.
+    Le mot de passe (**password** ci-dessus), est stocké dans les fichiers de configuration restaurés précédemment. Par exemple le champ **$mysql_passwd** dans le fichier "/etc/centreon/conf.pm".
+
+
+.. note::
+    Par défaut, il n'y a pas de mot de passe pour le compte root de mysql lors de l'installation d'un serveur via Centreon ISO.
 
 La manipulation ci-dessus est valide pour des versions identiques de Centreon.
 
@@ -154,7 +153,7 @@ Test de connexion du central central vers les satellites::
 Répondre "Oui" à la question.
 
 .. note::
-Cette opération est à effectuer si et seulement si votre plate-forme est en mode distribuée.
+    Cette opération est à effectuer si et seulement si votre plate-forme est en mode distribuée.
 
 Restauration des plugins
 ========================
@@ -196,7 +195,7 @@ Si vous utilisez les agents NRPE, ou NSCA il faudra les réinstaller puis restau
     # cp  nsca.cfg /etc/centreon-engine/
 
 .. note::
-Cette manipulation est à utiliser si et seulement si vous utilisez les agents NRPE ou NSCA. Si vous utiliser NSCA le fichier de configuration à copier n'est pas nrpe.cfg mais nsca.cfg.
+    Cette manipulation est à utiliser si et seulement si vous utilisez les agents NRPE ou NSCA. Si vous utiliser NSCA le fichier de configuration à copier n'est pas nrpe.cfg mais nsca.cfg.
 
 Génération de la configuration du central
 =========================================

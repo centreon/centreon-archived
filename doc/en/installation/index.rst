@@ -16,7 +16,6 @@ Finally, you can install the platform.
 
     prerequisites
     architecture/index
-    installation/index
     downloads
     from_centreon
     from_packages

@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.5');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.8');
 
 --
 -- Contenu de la table `contact`
@@ -1280,4 +1280,12 @@ VALUES ('kb_db_name', ''),
 ('kb_db_password', ''),
 ('kb_db_host', ''),
 ('kb_db_prefix', ''),
-('kb_WikiURL', '');
+('kb_wiki_url', '');
+
+
+-- Insert Centreon Partitioning base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+  ('partitioning_retention', 365),
+  ('partitioning_retention_forward', 10),
+  ('partitioning_backup_directory', '/var/cache/centreon/backup');

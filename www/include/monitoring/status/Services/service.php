@@ -484,7 +484,8 @@ $tpl->display("service.ihtml");
 
     jQuery(function () {
         preInit();
-        updateSelect();
+        /* Disable to prevent double Ajax call*/
+        //updateSelect();
     });
     function preInit()
     {

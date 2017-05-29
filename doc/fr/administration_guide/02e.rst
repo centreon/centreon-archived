@@ -1,4 +1,5 @@
 .. _centreon_parameters:
+
 ===================================================
 Options d'administration de la plate-forme Centreon
 ===================================================

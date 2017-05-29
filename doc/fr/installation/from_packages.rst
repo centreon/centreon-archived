@@ -25,14 +25,16 @@ Pour CentOS 6.
 
 ::
 
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
 
 
 Pour CentOS 7.
 
 ::
 
-   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
 
 
 Le dépôt est maintenant installé.
@@ -136,6 +138,8 @@ SELinux doit être désactivé. Pour cela vous devez modifier le fichier "/etc/s
 
     SELINUX=disabled
 
+Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
+
 Fuseau horaire PHP
 ^^^^^^^^^^^^^^^^^^
 
@@ -229,8 +233,7 @@ Puis installez Centreon Plugin Pack Manager.
 .. image:: /_static/images/installation/ppm_3.png
    :align: center
 
-Vous pouvez maintenant vous rendre à la page Administration -> Extensions
--> Plugin packs -> Setup. Vous y trouverez vos six premiers Plugin Packs
+Vous pouvez maintenant vous rendre à la page Configuration > Plugin packs > Setup. Vous y trouverez vos six premiers Plugin Packs
 gratuits pour vous aider à démarrer. Cinq Plugin Packs supplémentaires
 sont débloqués après vous être inscrit et plus de 150 sont disponibles
 si vous souscrivez à l'offre IMP (plus d'informations sur

@@ -94,13 +94,14 @@ $form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
 /*
 * Construct request
 */
-$in_statement = "";
-$in_statement_append = "";
+
+$metrics = array();
+
 while ($row = $results->fetchRow()) {
     $ar_relations[$row['metric_id']][] = array("activate" => $row['activate'], "msr_id" => $row['msr_id']);
-    $in_statement .= $in_statement_append . $row['metric_id'];
-    $in_statement_append = ",";
+    $metrics[] = $row['metric_id'];
 }
+$in_statement= implode(",", $metrics);
 
 if ($in_statement != "") {
     $DBRESULTO = $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id IN ($in_statement) and m.index_id=i.id ORDER BY i.host_name, i.service_description, m.metric_name");
@@ -127,7 +128,7 @@ if ($in_statement != "") {
                 $elemArr1[$i] = array(  "MenuClass"=>"list_".$style,
                                                         "RowMenu_select"=>$selectedElements->toHtml(),
                                                         "RowMenu_host"=>htmlentities($metric["host_name"], ENT_QUOTES, "UTF-8"),
-                                                        "RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$relation['msr_id'],
+                                                        "RowMenu_link"=>"?p=".$p."&o=cs&msr_id=".$relation['msr_id'],
                                                         "RowMenu_service"=>htmlentities($metric["service_description"], ENT_QUOTES, "UTF-8"),
                                                         "RowMenu_metric"=>CentreonUtils::escapeSecure($metric["metric_name"]." (".$metric["unit_name"].")"),
                                                         "RowMenu_status"=>$relation["activate"] ? _("Enabled") : _("Disabled"),

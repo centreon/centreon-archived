@@ -53,7 +53,8 @@ $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 $hObj = new CentreonHost($pearDB);
 $serviceObj = new CentreonService($pearDB);
 
-if (!$centreon->user->access->checkAction("schedule_downtime")) {
+if (!$centreon->user->access->checkAction("host_schedule_downtime")
+    && !$centreon->user->access->checkAction("service_schedule_downtime")) {
     require_once(_CENTREON_PATH_ . "www/include/core/errors/alt_error.php");
 } else {
     /*

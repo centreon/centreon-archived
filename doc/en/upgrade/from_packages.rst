@@ -54,6 +54,15 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
+Backup
+======
+
+Be sure that you have fully backup of your environment for all the following server :
+
+ * Central server
+ * Database server
+ * Reporting Centreon MBI server
+
 Centreon repository upgrade
 ===========================
 
@@ -66,8 +75,9 @@ CentOS 6
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
 
 
 CentOS 7
@@ -75,10 +85,13 @@ CentOS 7
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
-
-
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
+   
+.. warning::
+   If you're using Centreon modules Centreon BAM, Centreon MAP4, CentreonMBI or Centreon EPP please contact our Support to have the new repo of each module.
+   
 Core components upgrade
 =======================
 
@@ -122,6 +135,17 @@ to load new extension.
  ::
 
    # service httpd restart
+   
+Update poller
+*************
+
+Repeat this procedure on all your poller :
+
+ * Update repo
+ * Update packets
+ 
+.. warning::
+   You must have on all your environment (Central and Poller) the same version of Centreon Engine 1.7 and Centreon Broker 3.0.
 
 Conclude update via Centreon web interface
 ******************************************
@@ -192,6 +216,12 @@ EMS/EPP upgrade
 If you use additional Centreon modules you might need to update them too,
 for them to work properly with your new Centreon version. This is
 particularly true for EMS/EPP users.
+
+.. warning::
+   In this case you need to contact our Support that will give you the link to set up the new repo for each module.
+   If you're using Centreon BAM, you must have the great repo to upgrade your Centreon.
+   The following option should not be used :
+   # --skip-broken
 
 Repository update
 *****************

@@ -42,15 +42,18 @@ include("./include/common/autoNumLimit.php");
 
 $tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
 
+$searchT = filter_input(
+    INPUT_POST,
+    'searchT',
+    FILTER_SANITIZE_STRING
+);
 
 $search = '';
-if (isset($_POST['searchT'])) {
-    $search = $_POST['searchT'];
-    $_SESSION['searchT'] = $_POST['searchT'];
-} else {
-    if (isset($_SESSION['searchT']) && $_SESSION['searchT'] != "") {
-        $search = $_SESSION['searchT'];
-    }
+if (isset($searchT)) {
+    $search = $searchT;
+    $_SESSION['searchT'] = $searchT;
+} elseif (isset($_SESSION['searchT']) && $_SESSION['searchT'] != "") {
+    $search = $_SESSION['searchT'];
 }
 
 

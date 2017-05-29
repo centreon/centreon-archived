@@ -11,20 +11,22 @@
                         <img src="./img/icones/16x16/note.gif">&nbsp;&nbsp;{$form.header.information}
                     </td>
 	 	</tr>
-		
-                {foreach  item=args key=key from=$macros}
-                    <tr class="{cycle values="list_one,list_two"}">
-                        <td class="FormRowField">
-                            {$args.name}
-                        </td>
-                        <td class="FormRowValue">
-                            <input type="text" id="desc_{$key}" size="90" value="{$args.description}">
-                            <input type="hidden" id="macro_{$key}" value="{$args.name}"> 
-                            <input type="hidden" id="type_{$key}" value="{$args.type}"> 
-                        </td>
-                    </tr>
-                {/foreach}
-
+        {if $nb_arg}
+        {foreach  item=args key=key from=$macros}
+        <tr class="{cycle values="list_one,list_two"}">
+            <td class="FormRowField">
+                {$args.name}
+            </td>
+            <td class="FormRowValue">
+                <input type="text" id="desc_{$key}" size="90" value="{$args.description}">
+                <input type="hidden" id="macro_{$key}" value="{$args.name}">
+                <input type="hidden" id="type_{$key}" value="{$args.type}">
+            </td>
+        </tr>
+        {/foreach}
+        {else}
+        <tr class="list_one"><td>{$noArgMsg}</td></tr>
+        {/if}
 	</table>
         <div id="validForm">
 		{$form.hidden}		
