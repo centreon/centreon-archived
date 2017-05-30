@@ -1913,45 +1913,6 @@ function copyInTempFile()
 		log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $TMP_DIR/src/"
 		cp -Rf $BASE_DIR/$folder $TMP_DIR/src/ 
 	done
-}	
-
-#----
-## use php script to check pear module
-## @param	list of pear modules
-## @return	return code of php script
-## @Globals	PHP_BIN, INSTALL_DIR
-#----
-function check_pear_module() {
-	local module_list=$1
-	echo -e "$(gettext "Check PEAR modules")"
-	$PHP_BIN $INSTALL_DIR/check_pear.php check $module_list
-	return "$?"
-}
-
-#----
-## use php script to install missed pear module
-## @param	list of pear modules
-## @return	return code of php script
-## @Globals	PHP_BIN, INSTALL_DIR
-#----
-function install_pear_module() {
-	local module_list=$1
-	echo -e "$(gettext "Installing PEAR modules")"
-	$PHP_BIN $INSTALL_DIR/check_pear.php install $module_list
-	return "$?"
-}
-
-#----
-## use php script to upgrade pear module
-## @param	list of pear modules
-## @return	return code of php script
-## @Globals	PHP_BIN, INSTALL_DIR
-#----
-function upgrade_pear_module() {
-	local module_list=$1
-	echo -e "$(gettext "Upgrading PEAR modules")"
-	$PHP_BIN $INSTALL_DIR/check_pear.php upgrade $module_list
-	return "$?"
 }
 
 #----
