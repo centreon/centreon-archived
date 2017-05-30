@@ -39,6 +39,30 @@ Pour CentOS 7.
 
 Le dépôt est maintenant installé.
 
+Ajouter clef GPG pour CentOS 6
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Vous devez également récupérer la clef GPG et la placer dans le dossier rpm-gpg.
+
+Exécutez la commande :
+
+ ::
+
+   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES -O /etc/pki/rpm-gpg/RPM-GPG-KEY-CES
+
+
+Ajouter clef GPG pour CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Vous devez également récupérer la clef GPG et la placer dans le dossier rpm-gpg.
+
+Exécutez la commande :
+
+ ::
+
+   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES -O /etc/pki/rpm-gpg/RPM-GPG-KEY-CES
+
+
 ************************
 Installation de Centreon
 ************************
@@ -67,30 +91,6 @@ Exécutez la commande :
 
   $ yum install centreon-poller-centreon-engine
 
-Ajouter clef GPG pour CentOS 6
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Vous devez également récupérer la clef GPG et la placer dans le dossier rpm-gpg.
-
-Exécutez la commande :
-
-  ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES
-
-Ajouter clef GPG pour CentOS 7
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Vous devez également récupérer la clef GPG et la placer dans le dossier rpm-gpg.
-
-Exécutez la commande :
-
-  ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
-
 Installer mysql sur le même serveur
 -----------------------------------
 
@@ -102,6 +102,20 @@ Exécutez la commande :
 
    $ yum install mariadb-server
    $ service mysql restart
+
+Configuration pour CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pour le bon fonctionnement de Centreon  il est nécessaire de parametrer l'option open-files-limit de mariadb.
+Pour ce faire il est nécéssaire de modifier la configuration du service. Changer cette option dans /etc/my.cnf
+ne sera pas prise en compte.
+
+ ::
+
+   $ mkdir -p  /etc/systemd/system/mariadb.service.d/
+   $ echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+   $ service mysql restart
+
 
 Configuration basique d'un collecteur
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

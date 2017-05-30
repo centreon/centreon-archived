@@ -37,6 +37,28 @@ For CentOS 7.
 
 The repository is now installed.
 
+Add GPG key for CentOS 6
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+You also have to recover the GPG key and place it in the rpm-gpg file.
+
+Perform the command:
+
+ ::
+
+   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES -O /etc/pki/rpm-gpg/RPM-GPG-KEY-CES
+
+Add GPG key for CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+You also have to recover the GPG key and place it in the rpm-gpg file.
+
+Perform the command:
+
+ ::
+
+   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES -O /etc/pki/rpm-gpg/RPM-GPG-KEY-CES
+
 *********************
 Centreon installation
 *********************
@@ -67,30 +89,6 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
-Add GPG key for CentOS 6
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-You also have to recover the GPG key and place it in the rpm-gpg file.
-
-Perform the command:
-
- ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES
-
-Add GPG key for CentOS 7
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-You also have to recover the GPG key and place it in the rpm-gpg file.
-
-Perform the command:
-
- ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
-
 Install mysql on the same server
 --------------------------------
 
@@ -103,6 +101,24 @@ Perform the command:
 
    $ yum install mariadb-server
    $ service mysql restart
+
+Configuration for CentOS 7
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pour le bon fonctionnement de Centreon  il est nécessaire de parametrer l'option open-files-limit de mariadb. 
+Pour ce faire il est nécéssaire de modifier la configuration du service. Changer cette option dans /etc/my.cnf
+ne sera pas prise en compte. 
+
+To ensure proper functionning of Centeron it is mendatory to set the mariadb open-files-limit option. 
+Setting this option into /etc/my.cnf will NOT work. This change need to be done into the service configuration. 
+
+
+ ::
+
+   $ mkdir -p  /etc/systemd/system/mariadb.service.d/
+   $ echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+   $ service mysql restart
+
 
 Base configuration of a poller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
