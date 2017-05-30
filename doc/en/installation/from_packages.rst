@@ -67,30 +67,6 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
-Add GPG key for CentOS 6
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-You also have to recover the GPG key and place it in the rpm-gpg file.
-
-Perform the command:
-
- ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES
-
-Add GPG key for CentOS 7
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-You also have to recover the GPG key and place it in the rpm-gpg file.
-
-Perform the command:
-
- ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
-
 Install mysql on the same server
 --------------------------------
 
