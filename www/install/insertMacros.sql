@@ -111,3 +111,4 @@ INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_LEVEL$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_LEVEL$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_ID$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_ID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$HOSTTIMEZONE$');
