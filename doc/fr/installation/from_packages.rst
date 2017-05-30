@@ -151,18 +151,13 @@ La base de données MySQL doit être disponible pour pouvoir continuer l'install
 
 Pour les système CentOS / RHEL en verison 7, il est nécessaire de modifidier la limitation **LimitNOFILE**.
 Changer cette option dans /etc/my.cnf NE fonctionnera PAS.
-Pour cela, modifier le fichier **/etc/systemd/system/mysqld.service** et modifier la valeur pour avoir
 
 ::
 
-    LimitNOFILE=32000
-
-Sauvegarder le fichier et exécuter les commandes suivantes
-
-::
-
-    # systemctl daemon-reload
-    # service mysqld restart
+   # mkdir -p  /etc/systemd/system/mariadb.service.d/
+   # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+   # systemctl daemon-reload
+   # service mysqld restart
 
 ***************************************
 Configurez votre supervision facilement

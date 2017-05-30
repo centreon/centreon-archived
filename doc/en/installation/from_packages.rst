@@ -151,14 +151,13 @@ The MySQL database server should be available to complete installation (locally 
 
 For CentOS / RHEL in version 7, it is necessary to modify **LimitNOFILE** limitation.
 Setting this option into /etc/my.cnf will NOT work.
-Edit **/etc/systemd/system/mysqld.service** file and change ::
 
-    LimitNOFILE=32000
+::
 
-Save the file and execute the folowwing commands::
-
-    # systemctl daemon-reload
-    # service mysqld restart
+   # mkdir -p  /etc/systemd/system/mariadb.service.d/
+   # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+   # systemctl daemon-reload
+   # service mysql restart
 
 Web Installation
 ================
