@@ -391,7 +391,7 @@ sub databasesBackup() {
     	# Make archives from databases dump
     	if ($BACKUP_DATABASE_CENTREON == '1') {
     	    $file = $TEMP_DB_DIR."/".$today."-centreon.sql.gz";
-    	    `mysqldump -u $mysql_user -h $mysql_host -p$mysql_passwd $mysql_database_oreon | $BIN_GZIP  > $file`;
+    	    `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_oreon | $BIN_GZIP  > $file`;
     	    if ($? ne 0) {
     	        print STDERR "Unable to dump database: " . $mysql_database_oreon . "\n";
     	    } else {
@@ -408,7 +408,7 @@ sub databasesBackup() {
 
             if ($process_number == 0) {
                 $file = $TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz";
-                `mysqldump -u $mysql_user -h $mysql_host -p$mysql_passwd $mysql_database_ods | $BIN_GZIP  > $file`;
+                `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_ods | $BIN_GZIP  > $file`;
                 if ($? ne 0) {
                     print STDERR "Unable to dump database: " . $mysql_database_ods . "\n";
                 } else {
