@@ -145,6 +145,7 @@
       var self = this;
       var axis = {
         x: {
+          padding: {left: 0},
           type: 'timeseries',
           tick: {
             fit: false,
@@ -152,6 +153,7 @@
           }
         },
         y: {
+          padding: {bottom: 0},
           tick: {
             format: this.getAxisTickFormat(this.getBase())
           }
@@ -194,6 +196,7 @@
         size: {
           height: this.settings.height
         },
+        //padding: this.settings.padding,
         data: datasToAppend,
         axis: axis,
         tooltip: {
@@ -639,7 +642,7 @@
      * @return {String} - The value transformed
      */
     roundTick: function (value) {
-      return numeral(value).format('0.000a');
+      return numeral(value).format('0.0[0]0b').replace(/B/, '');
     },
     /**
      * Round the value of a point and transform to humanreadable for bytes
@@ -648,7 +651,7 @@
      * @return {String} - The value transformed
      */
     roundTickByte: function (value) {
-      return numeral(value).format('0.000b');
+      return numeral(value).format('0.0[0]0ib').replace(/iB/, 'B');
     },
     /**
      * Round the value of a point and transform to humanreadable
@@ -658,7 +661,7 @@
      * @return {String} - The value transformed
      */
     inverseRoundTick: function (value) {
-        return numeral(value * -1).format('0.000a');
+        return numeral(value * -1).format('0.0[0]0b').replace(/B/, '');
     },
     /**
      * Round the value of a point and transform to humanreadable for bytes
@@ -668,7 +671,7 @@
      * @return {String} - The value transformed
      */
     inverseRoundTickByte: function (value) {
-      return numeral(value * -1).format('0.000b');
+        return numeral(value * -1).format('0.0[0]0ib').replace(/iB/, 'B');
     },
     /**
      * Return is the curve is inversed / negative
