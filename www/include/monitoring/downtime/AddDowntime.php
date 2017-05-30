@@ -48,7 +48,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
-$host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
+$host_acl_id = preg_split('/,/', str_replace(array("'", " "), array("", ""), $hostStr));
 
 $hObj = new CentreonHost($pearDB);
 $serviceObj = new CentreonService($pearDB);
@@ -382,7 +382,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
             foreach ($_POST["service_id"] as $value) {
                 $info = split('-', $value);
-                if ($centreon->user->access->admin || isset($host_acl_id[$info[0]])) {
+                if ($centreon->user->access->admin || in_array($info[0], $host_acl_id)) {
                     $ecObj->addSvcDowntime(
                         $info[0],
                         $info[1],
