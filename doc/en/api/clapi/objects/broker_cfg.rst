@@ -94,7 +94,7 @@ event_queue_max_size     Event queue max size (when number is reached,
 
 cache_directory          Path for cache files
 
-daemon                   Module or Daemon (0 or 1)
+daemon                   Link this configuration to cbd service (0 or 1)
 
 stats_activate           Enable statistics (0 or 1)
 
