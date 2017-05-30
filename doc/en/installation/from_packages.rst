@@ -67,11 +67,10 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
-Install mysql on the same server
+Install MySQL on the same server
 --------------------------------
 
-Ce chapitre décrit l'installation de mysql sur un serveur comprenant Centreon.
-This chapter describes the installation of mysql on a server including Centreon.
+This chapter describes the installation of MySQL on a server including Centreon.
 
 Perform the command:
 
@@ -148,9 +147,10 @@ Add firewall rules or disable it. To disable it execute following commands:
 DataBase Management System
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
+The MySQL database server should be available to complete installation (locally or not). MariaDB is recommended.
 
 For CentOS / RHEL in version 7, it is necessary to modify **LimitNOFILE** limitation.
+Setting this option into /etc/my.cnf will NOT work.
 Edit **/etc/systemd/system/mysqld.service** file and change ::
 
     LimitNOFILE=32000
