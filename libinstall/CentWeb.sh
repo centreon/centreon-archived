@@ -113,6 +113,8 @@ log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 cp -Rf $TMP_DIR/src/config $TMP_DIR/final
+cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
+cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 
 ## Create temporary directory
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
@@ -320,6 +322,12 @@ check_result $? "$(gettext "Change right for install directory")"
     $INSTALL_DIR/cinstall $cinstall_opts \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
         $INSTALL_DIR_CENTREON/www/img/media >> "$LOG_FILE" 2>&1
+
+cp -f $TMP_DIR/final/bootstrap.php $INSTALL_DIR_CENTREON/bootstrap.php >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
+
+cp -f $TMP_DIR/final/composer.json $INSTALL_DIR_CENTREON/composer.json >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/composer.json
 
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \

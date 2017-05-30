@@ -1898,7 +1898,7 @@ function check_broker_user()
 #----
 function copyInTempFile()
 {
-	local srclistcp="bin cron config logrotate doc GPL_LIB lib snmptrapd www plugins libinstall dbschema"
+	local srclistcp="composer.json bootstrap.php bin cron config logrotate doc GPL_LIB lib snmptrapd www plugins libinstall dbschema"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then
