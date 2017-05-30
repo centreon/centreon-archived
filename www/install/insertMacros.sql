@@ -105,8 +105,8 @@ INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 101, '$PROCESSSTA
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 102, '$ADMINEMAIL$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 103, '$ADMINPAGER$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 104, '$USERn$');
-INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTHOST_ID$');
-INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICESERVICE_ID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$HOSTID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$SERVICEID$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_LEVEL$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_LEVEL$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_ID$');
