@@ -39,5 +39,5 @@ try {
     $wikiApi = new WikiApi();
     $wikiApi->synchronize();
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e->getMessage() . "\n";
 }
