@@ -798,6 +798,9 @@
 
       jQuery('.chart-legend').each(function (idx, el) {
         var legendName = jQuery(el).data('legend');
+        if (!self.ids.hasOwnProperty(legendName)) {
+          return true;
+        }
         var curveId = self.ids[legendName];
         var fct = self.getAxisTickFormat(
           self.getBase(),
