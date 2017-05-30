@@ -5,7 +5,6 @@
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 1, '$HOSTNAME$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 2, '$_HOSTSNMPCOMMUNITY$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 3, '$_HOSTSNMPVERSION$');
-INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 4, '$_HOSTLOCATION$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 5, '$ARGn$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 6, '$HOSTALIAS$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 7, '$HOSTADDRESS$');
