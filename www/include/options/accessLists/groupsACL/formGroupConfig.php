@@ -98,7 +98,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
  */
 # Contacts comes from DB -> Store in $contacts Array
 $contacts = array();
-$query = "SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' AND contact_register = 1 ORDER BY contact_name";
+$query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = 1 ORDER BY contact_name";
 $DBRESULT = $pearDB->query($query);
 while ($contact = $DBRESULT->fetchRow()) {
     $contacts[$contact["contact_id"]] = $contact["contact_name"];

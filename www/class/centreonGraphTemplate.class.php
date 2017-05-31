@@ -54,6 +54,7 @@ class centreonGraphTemplate
             $explodedValues = "''";
         }
         
+        $items = array();
         $query = "SELECT graph_id, name FROM giv_graphs_template WHERE graph_id IN (" . $explodedValues . ") ORDER BY name";
         $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
