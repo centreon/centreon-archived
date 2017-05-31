@@ -145,7 +145,7 @@
       var self = this;
       var axis = {
         x: {
-          padding: {left: 0},
+          padding: {left: 0, right: 0},
           type: 'timeseries',
           tick: {
             fit: false,
@@ -153,7 +153,7 @@
           }
         },
         y: {
-          padding: {bottom: 0},
+          padding: {bottom: 0, top: 0},
           tick: {
             format: this.getAxisTickFormat(this.getBase())
           }
