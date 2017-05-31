@@ -197,7 +197,7 @@ function checkTypeValidity(selectType) {
 }
 
 function loadedConfiguration() {
-    $$('table.ListTable').each(function(el) {
+    jQuery('table.ListTable').each(function(el) {
         if (el.id != undefined && el.id != '') {
             checkTypeValidity("block_" + el.id);
         }
