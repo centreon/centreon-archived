@@ -193,7 +193,20 @@ function displayNav(end) {
 
 jQuery(function () {
   initRefresh();
-  jQuery('.chart').centreonGraph();
+
+  var start = jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val();
+  var end = jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val();
+  if (start.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) && end.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)) {
+    jQuery('.chart').centreonGraph({
+      period: {
+        startTime: start,
+        endTime: end
+      }
+    });
+  } else {
+    jQuery('.chart').centreonGraph();
+  }
+
 
   /* Add events on click on action download image/CSV */
   jQuery('.graphZone').delegate('a.actions', 'click', function (e) {

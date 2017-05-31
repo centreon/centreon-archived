@@ -263,6 +263,8 @@ $tpl->assign('to', _("to"));
 $tpl->assign('displayStatus', _("Display Status"));
 $tpl->assign('Apply', _("Apply"));
 $tpl->assign('defaultCharts', json_encode($defaultGraphs));
+$tpl->assign("admin", $centreon->user->admin);
+$tpl->assign("topologyAccess", $centreon->user->access->topology);
 $tpl->display("graphs.html");
 
 $multi = 1;

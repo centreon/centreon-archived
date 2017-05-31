@@ -67,35 +67,10 @@ Perform the command:
 
  $ yum install centreon-poller-centreon-engine
 
-Add GPG key for CentOS 6
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-You also have to recover the GPG key and place it in the rpm-gpg file.
-
-Perform the command:
-
- ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el6/stable/RPM-GPG-KEY-CES
-
-Add GPG key for CentOS 7
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-You also have to recover the GPG key and place it in the rpm-gpg file.
-
-Perform the command:
-
- ::
-
-   $ cd /etc/pki/rpm-gpg/
-   $ wget http://yum-1.centreon.com/standard/3.4/el7/stable/RPM-GPG-KEY-CES
-
-Install mysql on the same server
+Install MySQL on the same server
 --------------------------------
 
-Ce chapitre décrit l'installation de mysql sur un serveur comprenant Centreon.
-This chapter describes the installation of mysql on a server including Centreon.
+This chapter describes the installation of MySQL on a server including Centreon.
 
 Perform the command:
 
@@ -172,17 +147,17 @@ Add firewall rules or disable it. To disable it execute following commands:
 DataBase Management System
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
+The MySQL database server should be available to complete installation (locally or not). MariaDB is recommended.
 
 For CentOS / RHEL in version 7, it is necessary to modify **LimitNOFILE** limitation.
-Edit **/etc/systemd/system/mysqld.service** file and change ::
+Setting this option into /etc/my.cnf will NOT work.
 
-    LimitNOFILE=32000
+::
 
-Save the file and execute the folowwing commands::
-
-    # systemctl daemon-reload
-    # service mysqld restart
+   # mkdir -p  /etc/systemd/system/mariadb.service.d/
+   # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+   # systemctl daemon-reload
+   # service mysql restart
 
 Web Installation
 ================
