@@ -65,7 +65,7 @@ try {
         $partEngine->createParts($mysqlTable, $database);
     }
 } catch (\Exception $e) {
-    exitProcess(PROCESS_ID, 1, $e->getMessage());
+    exitProcess(PROCESS_ID, 1, preg_replace('/\n/', "", $e->getMessage()));
 }
 
 exitProcess(PROCESS_ID, 0, "OK");
