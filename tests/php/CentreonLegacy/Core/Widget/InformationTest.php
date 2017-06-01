@@ -134,7 +134,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
     {
         $query = 'SELECT parameter_id ' .
             'FROM widget_parameters ' .
-            'WHERE parameter_code_name = :name';
+            'WHERE parameter_code_name = :name ';
         $this->db->addResultSet(
             $query,
             array(
