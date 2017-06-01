@@ -76,11 +76,10 @@ try {
         $partEngine->createParts($mysqlTable, $database);
     }
 } catch (\Exception $e) {
-    $return['msg'] = $e->getMessage();
+    $return['msg'] = preg_replace('/\n/', "", $e->getMessage());
     echo json_encode($return);
     exit;
 }
-
 
 $return['result'] = 0;
 echo json_encode($return);
