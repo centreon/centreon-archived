@@ -15,13 +15,13 @@ stage('Unit tests') {
   parallel 'centos6': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-unittest.sh centos6'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-unittest.sh centos6'
     }
   },
   'centos7': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-unittest.sh centos7'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-unittest.sh centos7'
       step([
         $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
         pattern: '**/codestyle.xml',
@@ -40,13 +40,13 @@ stage('Package') {
   parallel 'centos6': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-package.sh centos6'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-package.sh centos6'
     }
   },
   'centos7': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-package.sh centos7'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-package.sh centos7'
     }
   }
   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
