@@ -648,6 +648,9 @@
      * @return {String} - The value transformed
      */
     roundTick: function (value) {
+      if (value < 0) {
+        return '-' + numeral(Math.abs(value)).format('0.0[0]0b').replace(/B/, '');
+      }
       return numeral(value).format('0.0[0]0b').replace(/B/, '');
     },
     /**
@@ -657,6 +660,9 @@
      * @return {String} - The value transformed
      */
     roundTickByte: function (value) {
+      if (value < 0) {
+          return '-' + numeral(Math.abs(value)).format('0.0[0]0ib').replace(/iB/, 'B');
+      }
       return numeral(value).format('0.0[0]0ib').replace(/iB/, 'B');
     },
     /**
@@ -667,7 +673,7 @@
      * @return {String} - The value transformed
      */
     inverseRoundTick: function (value) {
-        return numeral(value * -1).format('0.0[0]0b').replace(/B/, '');
+      return '-' + numeral(Math.abs(value)).format('0.0[0]0b').replace(/B/, '');
     },
     /**
      * Round the value of a point and transform to humanreadable for bytes
@@ -677,7 +683,7 @@
      * @return {String} - The value transformed
      */
     inverseRoundTickByte: function (value) {
-        return numeral(value * -1).format('0.0[0]0ib').replace(/iB/, 'B');
+      return '-' +  numeral(Math.abs(value)).format('0.0[0]0ib').replace(/iB/, 'B');
     },
     /**
      * Return is the curve is inversed / negative
