@@ -4,7 +4,7 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    sh '/opt/centreon-build/jobs/web/current/mon-web-source.sh'
+    sh '/opt/centreon-build/jobs/web/2.8/mon-web-source.sh'
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
