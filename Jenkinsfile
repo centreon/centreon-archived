@@ -58,13 +58,13 @@ stage('Bundle') {
   parallel 'centos6': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-bundle.sh centos6'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-bundle.sh centos6'
     }
   },
   'centos7': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-bundle.sh centos7'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-bundle.sh centos7'
     }
   }
   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -76,7 +76,7 @@ stage('Acceptance tests') {
   parallel 'centos6': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-acceptance.sh centos6'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-acceptance.sh centos6'
       step([
         $class: 'XUnitBuilder',
         thresholds: [
@@ -91,7 +91,7 @@ stage('Acceptance tests') {
   'centos7': {
     node {
       sh 'cd /opt/centreon-build && git pull && cd -'
-      sh '/opt/centreon-build/jobs/web/current/mon-web-acceptance.sh centos7'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-acceptance.sh centos7'
       step([
         $class: 'XUnitBuilder',
         thresholds: [
