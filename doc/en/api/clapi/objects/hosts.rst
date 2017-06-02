@@ -121,7 +121,7 @@ check_command_arguments	             Check command arguments
 
 check_interval	                     Normal check interval
 
-check_freshness	                     Check freshness (in seconds)
+check_freshness	                     Enables check freshness
 
 check_period	                     Check period
 
