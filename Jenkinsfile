@@ -107,3 +107,15 @@ stage('Acceptance tests') {
     error('Acceptance tests stage failure.');
   }
 }
+
+if (env.BRANCH_NAME == '2.8.x') {
+  stage('Delivery') {
+    node {
+      sh 'cd /opt/centreon-build && git pull && cd -'
+      sh '/opt/centreon-build/jobs/web/2.8/mon-web-delivery.sh'
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Delivery stage failure.');
+    }
+  }
+}
