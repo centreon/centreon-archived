@@ -62,9 +62,10 @@
                     <h4>{$tab.name}</h4>
                   </td>
                 </tr>
-				<tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}" onchange="checkTypeValidity(this)">{foreach from=$tab.blocks item=block}
+				<tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}"
+				onchange='checkTypeValidity("block_{$tab.id}")'>{foreach from=$tab.blocks item=block}
 				<option value="{$block.id}">{$block.name}</option>
-				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" href="javascript:addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
+				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" onClick="addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
 			</tbody>
 			{foreach from=$tab.forms item=formBlock name=formForeach}
 				{assign var="posAbs" value=$smarty.foreach.formForeach.index}
@@ -144,32 +145,31 @@ function addInfo(type) {
     var prev_id = infos.getPos(type);
     var id = prev_id + 1;
     var id_name = type + '_' + id;
-    var blockId = $('block_' + type).getValue();
+    var blockId = jQuery('#block_' + type).val();
     var params;
-    var tbody = new Element('tbody');
-    tbody.writeAttribute('id', id_name);
-    tbody.writeAttribute('class', 'collapse-wrapper');
-    Element.insert($(type), {bottom: tbody});
+
+    var tbody = jQuery('<tbody>');
+    tbody.attr('id', id_name);
+    tbody.attr('class', 'collapse-wrapper');
+    jQuery('#' + type).append(tbody);
     params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
-    new Ajax.Updater(
-        tbody,
-        'main.php' + params,
-        {
-            evalScripts: true,
-            onComplete: function(response) {
-                if (response.status == 200) {
+
+            jQuery.ajax({
+                type: "GET",
+                dataType: "html",
+                url: 'main.php' + params,
+                complete: function(response) {
                     infos.incrementPos(type);
                     checkTypeValidity('block_' + type);
-                    jQuery("#"+id_name).centreonValidate();
-                    clonifyTableFields('parentGroup','displaynamegroup');
-                    addCollapse();
-                    openNewElem(id_name);
+                 jQuery("#"+id_name).centreonValidate();
+                 clonifyTableFields('parentGroup','displaynamegroup');
+                addCollapse();
+              openNewElem(id_name);
                 }
-            }
-        }
-    );
+            });
 
 }
+
 
 function deleteRow(type, id) {
     var row_name = type + '_' + id;
@@ -181,20 +181,21 @@ function deleteRow(type, id) {
 }
 
 function checkTypeValidity(selectType) {
-    var typeId = $(selectType).getValue();
-    var tagName = $(selectType).id.replace('block_', '');
+    var typeId = jQuery('#' + selectType).val();
+    var tagName = selectType.replace('block_', '');
     if (typeId in uniqueType && uniqueType[typeId] == true) {
-        var blockNameArray = $$('input[value="' + typeId + '"]');
+        var blockNameArray = jQuery('input[value="' + typeId + '"]');
         if (blockNameArray.length > 0) {
-            $('add_' + tagName).hide();
+            jQuery('add_' + tagName).hide();
         } else {
-            $('add_' + tagName).show();
+            jQuery('add_' + tagName).show();
         }
     } else {
-        $('add_' + tagName).show();
+        jQuery('add_' + tagName).show();
     }
 
 }
+
 
 function loadedConfiguration() {
     jQuery('table.ListTable').each(function(el) {
