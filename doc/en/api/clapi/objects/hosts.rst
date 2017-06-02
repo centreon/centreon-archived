@@ -187,7 +187,7 @@ statusmap_image	                     Status map image (used by statusmap
 
 host_notification_options            Notification options (d,u,r,f,s)
 
-timezone                   Timezone
+timezone                             Timezone
 ==================================== =================================================================================
 
 
