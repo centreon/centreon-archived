@@ -478,7 +478,8 @@ class CentreonAPI
                     return 1;
                 } elseif ($row['contact_auth_type'] == 'ldap') {
                     $CentreonLog = new CentreonUserLog(-1, $this->DB);
-                    $centreonAuth = new CentreonAuthLDAP($this->DB, $CentreonLog, $this->login, $this->password, $row, $row['ar_id']);
+                    $centreonAuth = new CentreonAuthLDAP($this->DB, $CentreonLog, $this->login, $this->password, $row, 
+                    $row['ar_id']);
                     if ($centreonAuth->checkPassword() == 1) {
                         return 1;
                     }
