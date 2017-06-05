@@ -94,7 +94,7 @@ class CentreonAuthLDAP
     {
         global $pearDB;
 
-        $res = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
+        $res = $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
         $data = $res->fetchRow();
         if (isset($data["value"])) {
             return $data["value"];
