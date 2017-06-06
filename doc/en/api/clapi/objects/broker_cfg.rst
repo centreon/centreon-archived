@@ -628,6 +628,8 @@ write_metrics                  Enable write_metrics                             
 
 write_status                   Enable write_status                                          Enable or not write_status.                                  -                                                          
 
+store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance date in date_bin.                    -                                                          
+
 ============================== ============================================================ ============================================================ ===========================================================
 
 
