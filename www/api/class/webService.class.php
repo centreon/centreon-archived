@@ -91,7 +91,7 @@ class CentreonWebService
             case 'DELETE':
                 break;
             default:
-                static::sendJson("Bad request", 400);
+                static::sendResult("Bad request", 400);
                 break;
         }
     }
@@ -106,7 +106,7 @@ class CentreonWebService
         try {
             $httpParams = json_decode(file_get_contents('php://input'), true);
         } catch (Exception $e) {
-            static::sendJson("Bad parameters", 400);
+            static::sendResult("Bad parameters", 400);
         }
         return $httpParams;
     }
@@ -148,7 +148,7 @@ class CentreonWebService
         }
 
         if (count($webServiceClass) === 0) {
-            static::sendJson("Method not found", 404);
+            static::sendResult("Method not found", 404);
         }
 
         return $webServiceClass;
@@ -160,7 +160,7 @@ class CentreonWebService
      * @param mixed $data The values
      * @param integer $code The HTTP code
      */
-    public static function sendJson($data, $code = 200)
+    public static function sendResult($data, $code = 200, $format = 'json')
     {
         switch ($code) {
             case 500:
@@ -194,8 +194,18 @@ class CentreonWebService
                 header("HTTP/1.1 409 Conflict");
                 break;
         }
-        header('Content-type: application/json');
-        print json_encode($data);
+
+        switch ($format) {
+            case 'html':
+                header('Content-type: text/html');
+                print $data;
+                break;
+            case 'json':
+                header('Content-type: application/json');
+                print json_encode($data);
+                break;
+        }
+
         exit();
     }
 
@@ -212,7 +222,7 @@ class CentreonWebService
                 $stmt->bindParam(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], PDO::PARAM_STR);
                 $stmt->execute();
             } catch (Exception $e) {
-                static::sendJson("Internal error", 500);
+                static::sendResult("Internal error", 500);
             }
         }
     }
@@ -228,7 +238,12 @@ class CentreonWebService
 
         /* Test if route is defined */
         if (false === isset($_GET['object']) || false === isset($_GET['action'])) {
-            static::sendJson("Bad parameters", 400);
+            static::sendResult("Bad parameters", 400);
+        }
+
+        $resultFormat = 'json';
+        if (isset($_GET['resultFormat'])) {
+            $resultFormat = $_GET['resultFormat'];
         }
 
         $methodPrefix = strtolower($_SERVER['REQUEST_METHOD']);
@@ -257,18 +272,18 @@ class CentreonWebService
         $wsObj = new $webService['class']();
 
         if (false === method_exists($wsObj, $action)) {
-            static::sendJson("Method not found", 404);
+            static::sendResult("Method not found", 404);
         }
 
         /* Execute the action */
         try {
             static::updateTokenTtl();
             $data = $wsObj->$action();
-            $wsObj::sendJson($data);
+            $wsObj::sendResult($data, 200, $resultFormat);
         } catch (RestException $e) {
-            $wsObj::sendJson($e->getMessage(), $e->getCode());
+            $wsObj::sendResult($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
-            $wsObj::sendJson($e->getMessage(), 500);
+            $wsObj::sendResult($e->getMessage(), 500);
         }
     }
 }

@@ -1190,7 +1190,7 @@ class CentreonConfigCentreonBroker
                     $res = $this->db->query($query);
                     break;
                 case 'centreon_storage':
-                    $res = $pearDBO->query($query);
+                    $res = $monitoringDb->query($query);
                     break;
             }
         } catch (\PDOException $e) {

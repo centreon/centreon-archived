@@ -49,6 +49,6 @@ class CentreonWs extends CentreonWebService
      */
     public function getKeepAlive()
     {
-        self::sendJson(true);
+        self::sendResult(true);
     }
 }

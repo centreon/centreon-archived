@@ -48,7 +48,7 @@ ini_set("session.gc_maxlifetime", "31536000");
 CentreonSession::start(1);
 
 if (false === isset($_SESSION["centreon"])) {
-    CentreonWebService::sendJson("Unauthorized", 401);
+    CentreonWebService::sendResult("Unauthorized", 401);
 }
 
 $pearDB = new CentreonDB();
@@ -62,7 +62,7 @@ if (isset($_SESSION["centreon"])) {
 }
 
 if (false === isset($centreon) || false === is_object($centreon)) {
-    CentreonWebService::sendJson("Unauthorized", 401);
+    CentreonWebService::sendResult("Unauthorized", 401);
 }
 
 CentreonWebService::router();

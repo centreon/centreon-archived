@@ -48,7 +48,7 @@ $pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTER
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_GET['action']) && $_GET['action'] == 'authenticate') {
     if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
-        CentreonWebService::sendJson("Bad parameters", 400);
+        CentreonWebService::sendResult("Bad parameters", 400);
     }
     
     /* @todo Check if user already have valid token */
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     $log = new CentreonUserLog(0, $pearDB);
     $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log, 1, "", "API");
     if ($auth->passwdOk == 0) {
-        CentreonWebService::sendJson("Bad credentials", 403);
+        CentreonWebService::sendResult("Bad credentials", 403);
         exit();
     }
     
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
 
     /* Sorry no access for this user */
     if ($reachAPI == 0) {
-        CentreonWebService::sendJson("Unauthorized - Account not enabled", 401);
+        CentreonWebService::sendResult("Unauthorized - Account not enabled", 401);
         exit();
     }
 
@@ -89,12 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     $res->execute(array($auth->userInfos['contact_id'], $token));
 
     /* Send Data in Json */
-    CentreonWebService::sendJson(array('authToken' => $token));
+    CentreonWebService::sendResult(array('authToken' => $token));
 }
 
 /* Test authentication */
 if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-    CentreonWebService::sendJson("Unauthorized", 401);
+    CentreonWebService::sendResult("Unauthorized", 401);
 }
 
 /* Create the default object */
@@ -102,11 +102,11 @@ try {
     $res = $pearDB->prepare("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?");
     $res->execute(array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
 } catch (\PDOException $e) {
-    CentreonWebService::sendJson("Database error", 500);
+    CentreonWebService::sendResult("Database error", 500);
 }
 $userInfos = $res->fetch();
 if (is_null($userInfos)) {
-    CentreonWebService::sendJson("Unauthorized", 401);
+    CentreonWebService::sendResult("Unauthorized", 401);
 }
 
 $centreon = new Centreon($userInfos);
