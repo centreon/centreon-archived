@@ -217,7 +217,7 @@ In order to set parameters of an I/O object, use one of the following commands:
 
 Example::
 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setlogger -v "broker cfg for poller test;1;file;/etc/centreon-broker/logger.xml" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setlogger -v "broker cfg for poller test;1;debug;no" 
 
 Arguments are composed of the following columns:
 
