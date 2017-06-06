@@ -102,7 +102,7 @@ correlation_activate     Enable correlation (0 or 1)
 ======================== ==================================================
 
 
-Listinput, Listoutput, Listlogger, Listcorrelation and Liststats
+Listinput, Listoutput, Listlogger and Listcorrelation
 ----------------------------------------------------------------------------------
 
 If you want to list specific input output types of Centreon Broker, use one of the following commands:
@@ -825,4 +825,3 @@ queries_per_transaction        Maximum queries per transaction                  
 read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -                                                          
 
 ============================== ============================================================ ============================================================ ===========================================================
-
