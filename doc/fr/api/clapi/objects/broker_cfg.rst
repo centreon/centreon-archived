@@ -96,13 +96,14 @@ cache_directory          Path for cache files
 
 daemon                   Link this configuration to cbd service (0 or 1)
 
-stats_activate           Enable statistics (0 or 1)
+
+_activate           Enable statistics (0 or 1)
 
 correlation_activate     Enable correlation (0 or 1)
 ======================== ==================================================
 
 
-Listinput, Listoutput, Listlogger, Listcorrelation and Liststats
+Listinput, Listoutput, Listlogger and Listcorrelation
 ----------------------------------------------------------------------------------
 
 If you want to list specific input output types of Centreon Broker, use one of the following commands:
@@ -110,7 +111,6 @@ listinput
 listoutput
 listlogger
 listcorrelation
-liststats
 
 Example::
 
@@ -129,7 +129,7 @@ ID	    I/O ID
 Name	I/O Name
 ======= ============
 
-Getinput, Getoutput, Getlogger, Getcorrelation and Getstats
+Getinput, Getoutput, Getlogger and Getcorrelation
 -----------------------------------------------------------
 
 In order to get parameters of a specific I/O object, use one of the following commands:
@@ -166,7 +166,7 @@ Order	 Description
 ======== ===========================
 
 
-Addinput, Addoutput, Addlogger, Addcorrelation and Addstats
+Addinput, Addoutput, Addlogger and Addcorrelation
 -----------------------------------------------------------
 
 In order to add a new I/O object, use one of the following commands:
@@ -174,7 +174,6 @@ In order to add a new I/O object, use one of the following commands:
  - **ADDOUTPUT**
  - **ADDLOGGER**
  - **ADDCORRELATION**
- - **ADDSTATS**
 
 Example::
 
@@ -197,7 +196,7 @@ Order	 Column description
 ======== ============================
 
 
-Delinput, Deloutput, Dellogger, Delcorrelation and Delstats
+Delinput, Deloutput, Dellogger and Delcorrelation
 -----------------------------------------------------------
 
 In order to remove an I/O object from the Centreon Broker configuration, use one of the following commands:
@@ -206,7 +205,6 @@ In order to remove an I/O object from the Centreon Broker configuration, use one
  - **DELLOGGER**
  - **DELCORRELATION**
  - **DELTEMPORARY**
- - **DELSTATS**
 
 Example::
 
@@ -215,7 +213,7 @@ Example::
 The I/O ID is used for identifying the object to delete.
 
 
-Setintput, Setoutput, Setlogger, Setcorrelation and Setstats
+Setintput, Setoutput, Setlogger and Setcorrelation
 ------------------------------------------------------------
 
 In order to set parameters of an I/O object, use one of the following commands:
@@ -223,7 +221,6 @@ In order to set parameters of an I/O object, use one of the following commands:
  - **SETOUTPUT**
  - **SETLOGGER**
  - **SETCORRELATION**
- - **SETSTATS**
 
 Example::
 
@@ -827,20 +824,6 @@ db_user                        DB user                                          
 queries_per_transaction        Maximum queries per transaction                              The maximum queries per transaction before commit.           -                                                          
 
 read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -                                                          
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-
-stats
-~~~~~
-
-stats:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-fifo                           File for Centreon Broker statistics                          File where Centreon Broker statistics will be stored         -                                                          
 
 ============================== ============================================================ ============================================================ ===========================================================
 
