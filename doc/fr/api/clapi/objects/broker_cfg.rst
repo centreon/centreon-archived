@@ -611,6 +611,8 @@ failover                       Failover name                                    
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
+category                       Filter category                                              Category filter for flux in output.                                 -                                                          
+
 metrics_path                   RRD file directory for metrics                               RRD file directory, for example /var/lib/centreon/metrics    -                                                          
 
 path                           Unix socket                                                  The Unix socket used to communicate with rrdcached. 
