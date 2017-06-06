@@ -390,57 +390,6 @@ protocol                       Serialization protocol                           
 ============================== ============================================================ ============================================================ ===========================================================
 
 
-local_server:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-local_client:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-
 logger
 ~~~~~~
 
@@ -648,33 +597,6 @@ protocol                       Serialization protocol                           
 ============================== ============================================================ ============================================================ ===========================================================
 
 
-local_server:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -
-
-failover                       Failover name                                                Name of the output which will act as failover                -
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
 rrd:
 
 ============================== ============================================================ ============================================================ ===========================================================
@@ -738,33 +660,6 @@ read_timeout                   Transaction commit timeout                       
 
 rebuild_check_interval         Rebuild check interval in seconds                            The interval between check if some metrics must be rebuild. 
                                                                                             The default value is 300s                                    -                                                          
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-local_client:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency.
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -
-
-failover                       Failover name                                                Name of the output which will act as failover                -
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
 
 ============================== ============================================================ ============================================================ ===========================================================
 
