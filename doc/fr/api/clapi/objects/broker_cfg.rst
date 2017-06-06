@@ -589,6 +589,8 @@ failover                       Failover name                                    
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
+category                       Filter category                                              Category filter for flux in output.                         -
+
 max_size                       Maximum size of file                                         Maximum size in bytes.                                       -                                                          
 
 path                           File path                                                    Path to the file.                                            -                                                          
