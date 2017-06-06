@@ -483,7 +483,7 @@ class CentreonAPI
                         $CentreonLog,
                         $this->login,
                         $this->password,
-                        $row, 
+                        $row,
                         $row['ar_id']
                     );
                     if ($centreonAuth->checkPassword() == 1) {
