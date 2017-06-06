@@ -709,6 +709,4 @@ queries_per_transaction        Maximum queries per transaction                  
 
 read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -                                                          
 
-cleanup_check_interval         Cleanup check interval in seconds                            The interval between cleanup checks.                          -                                                          
-
 ============================== ============================================================ ============================================================ ===========================================================
