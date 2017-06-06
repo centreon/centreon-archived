@@ -229,7 +229,7 @@ function insertMetaService($ret = array())
             "graph_id, meta_comment, geo_coords, meta_activate) " .
             "VALUES ( ";
     isset($ret["meta_name"]) && $ret["meta_name"] != null ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["meta_display"]) && $ret["meta_display"] != null ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["meta_display"]) && $ret["meta_display"] != null ? $rq .= "'".$ret["meta_display"]."', ": $rq .= "NULL, ";
     isset($ret["check_period"]) && $ret["check_period"] != null ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
     isset($ret["max_check_attempts"]) && $ret["max_check_attempts"] != null ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
     isset($ret["normal_check_interval"]) && $ret["normal_check_interval"] != null ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
