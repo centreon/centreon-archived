@@ -145,6 +145,8 @@ flap_detection_options	             Flap detection options 'o' for Up, 'd' for D
 
 host_high_flap_threshold             High flap threshold
 
+host_low_flap_threshold              Low flap threshold
+
 icon_image	                     Icon image
 
 icon_image_alt	                     Icon image text
