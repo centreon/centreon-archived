@@ -141,7 +141,7 @@ first_notification_delay	     First notification delay (in seconds)
 
 flap_detection_enabled	             Whether or not flap detection is enabled
 
-flap_detection_options	             Flap detection options
+flap_detection_options	             Flap detection options: 'o' for Up, 'd' for Down, 'u' for Unreachable
 
 icon_image	                     Icon image
 
