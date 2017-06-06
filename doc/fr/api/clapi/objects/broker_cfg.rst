@@ -627,7 +627,7 @@ status_path                    RRD file directory for statuses                  
 
 write_metrics                  Enable write_metrics                                         Enable or not write_metrics.                                 -                                                          
 
-write_status                   Enable write_metrics                                         Enable or not write_metrics.                                 -                                                          
+write_status                   Enable write_metrics                                         Enable or not write_status.                                 -                                                          
 
 ============================== ============================================================ ============================================================ ===========================================================
 
