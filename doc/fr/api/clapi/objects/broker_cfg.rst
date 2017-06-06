@@ -97,7 +97,7 @@ cache_directory          Path for cache files
 daemon                   Link this configuration to cbd service (0 or 1)
 
 
-_activate           Enable statistics (0 or 1)
+stats_activate           Enable statistics (0 or 1)
 
 correlation_activate     Enable correlation (0 or 1)
 ======================== ==================================================
