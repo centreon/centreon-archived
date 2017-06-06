@@ -143,6 +143,8 @@ flap_detection_enabled	             Whether or not flap detection is enabled
 
 flap_detection_options	             Flap detection options 'o' for Up, 'd' for Down, 'u' for Unreachable
 
+host_high_flap_threshold             High flap threshold
+
 icon_image	                     Icon image
 
 icon_image_alt	                     Icon image text
