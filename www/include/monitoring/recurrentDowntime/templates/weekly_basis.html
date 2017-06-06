@@ -40,22 +40,24 @@ var period_id = {$period_tab};
 jQuery(function() {
 	if (listPeriod != 'undefined' && listPeriod[{/literal}{$period_info}{literal}] != undefined) {
 		var infos_{/literal}{$period_info}{literal} = listPeriod[{/literal}{$period_info}{literal}];
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][start_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.start_time;
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][end_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.end_time;
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][duration]"]')[0].value = infos_{/literal}{$period_info}{literal}.duration;
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][fixed]"]').each(function(item, index) {
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][start_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.start_time;
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][end_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.end_time;
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][duration]"]')[0].value = infos_{/literal}{$period_info}{literal}.duration;
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][fixed]"]').each(function (index, item) {
 			if (item.value == infos_{/literal}{$period_info}{literal}.fixed) {
 				item.checked = true;
 			}
 		});
-		infos_{/literal}{$period_info}{literal}.day_of_week.each(function(item, index) {
-			var day_nb = item;
-			$$('input[name="periods[{/literal}{$period_tab}{literal}][days][]"]').each(function(item_form, index_form){
-				if (item_form.value == day_nb) {
-					item_form.checked = true;
-				}
-			});
-		});
+
+        jQuery.each(infos_{/literal}{$period_info}{literal}.day_of_week, function (index, value) {
+            jQuery('input[name="periods[{/literal}{$period_tab}{literal}][days][]"]').each(function (index_form, item_form) {
+                if (item_form.value == value) {
+                    item_form.checked = true;
+                }
+            });
+
+        });
+
 	}
 
         jQuery(".timepicker").timepicker();
