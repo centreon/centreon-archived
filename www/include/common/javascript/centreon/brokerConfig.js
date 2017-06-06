@@ -45,7 +45,7 @@ function clonifyTableFields(attributeName,displayName){
 
         if(GroupArray.hasOwnProperty(obj)){
             var firstPosition = false;
-            GroupArray[obj].each(function(element){
+            GroupArray[obj].forEach(function(element){
                 tdSize = jQuery(element).parents("tr").first().children('.FormRowField').first().width();
                 // since the element is in a subTab and because of the auto-sizing of each <td>,
                 // we have to set the width of the <td> to the old value, this break responsive design for thoose fields
