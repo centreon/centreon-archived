@@ -672,6 +672,8 @@ read_timeout                   Transaction commit timeout                       
 rebuild_check_interval         Rebuild check interval in seconds                            The interval between check if some metrics must be rebuild. 
                                                                                             The default value is 300s                                    -                                                          
 
+store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance data in data_bin.                    -                                                          
+
 ============================== ============================================================ ============================================================ ===========================================================
 
 
