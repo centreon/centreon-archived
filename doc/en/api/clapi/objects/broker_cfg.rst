@@ -203,7 +203,6 @@ In order to remove an I/O object from the Centreon Broker configuration, use one
  - **DELOUTPUT**
  - **DELLOGGER**
  - **DELCORRELATION**
- - **DELTEMPORARY**
 
 Example::
 
