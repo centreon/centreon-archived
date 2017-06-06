@@ -141,97 +141,108 @@ uniqueType["{$block.id}"] = false;
 {/foreach}
 {/foreach}{literal}
 
-function addInfo(type) {
-    var prev_id = infos.getPos(type);
-    var id = prev_id + 1;
-    var id_name = type + '_' + id;
-    var blockId = jQuery('#block_' + type).val();
-    var params;
+    function addInfo(type) {
+        var prev_id = infos.getPos(type);
+        var id = prev_id + 1;
+        var id_name = type + '_' + id;
+        var blockId = jQuery('#block_' + type).val();
+        var params;
 
-    var tbody = jQuery('<tbody>');
-    tbody.attr('id', id_name);
-    tbody.attr('class', 'collapse-wrapper');
-    jQuery('#' + type).append(tbody);
-    params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
+        var tbody = jQuery('<tbody>');
+        tbody.attr('id', id_name);
+        tbody.attr('class', 'collapse-wrapper');
+        jQuery('#' + type).append(tbody);
+        params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
 
-            jQuery.ajax({
-                type: "GET",
-                dataType: "html",
-                url: 'main.php' + params,
-                complete: function(response) {
-                    infos.incrementPos(type);
-                    checkTypeValidity('block_' + type);
-                 jQuery("#"+id_name).centreonValidate();
-                 clonifyTableFields('parentGroup','displaynamegroup');
+
+        jQuery.ajax({
+            type: "GET",
+            dataType: "html",
+            cache: false,
+            url: 'main.php' + params,
+            complete: function (data) {
+
+                infos.incrementPos(type);
+                checkTypeValidity('block_' + type);
+
+                jQuery('#' + id_name).html('<tr>' + data.responseText + '</tr>').centreonValidate();
+
+
+                //jQuery('#' + id_name).centreonValidate();
+
+                clonifyTableFields('parentGroup', 'displaynamegroup');
                 addCollapse();
-              openNewElem(id_name);
-                }
-            });
+                openNewElem(id_name);
 
-}
+                //      jQuery("#" + id_name).append($(data).find("html-to-insert").eq(0));
+                //       eval($(data).find("script").text());
+
+            }
+        });
+    }
 
 
-function deleteRow(type, id) {
-    var row_name = type + '_' + id;
-    var parent = document.getElementById(type);
-    var delEl = document.getElementById(row_name);
-    jQuery("#"+row_name).find('input').qtip('destroy');
-    parent.removeChild(delEl);
-    checkTypeValidity("block_" + type);
-}
 
-function checkTypeValidity(selectType) {
-    var typeId = jQuery('#' + selectType).val();
-    var tagName = selectType.replace('block_', '');
-    if (typeId in uniqueType && uniqueType[typeId] == true) {
-        var blockNameArray = jQuery('input[value="' + typeId + '"]');
-        if (blockNameArray.length > 0) {
-            jQuery('add_' + tagName).hide();
+    function deleteRow(type, id) {
+        var row_name = type + '_' + id;
+        var parent = document.getElementById(type);
+        var delEl = document.getElementById(row_name);
+        //  jQuery("#"+row_name).find('input').qtip('destroy');
+        parent.removeChild(delEl);
+        checkTypeValidity("block_" + type);
+    }
+
+    function checkTypeValidity(selectType) {
+        var typeId = jQuery('#' + selectType).val();
+        var tagName = selectType.replace('block_', '');
+        if (typeId in uniqueType && uniqueType[typeId] == true) {
+            var blockNameArray = jQuery('input[value="' + typeId + '"]');
+            if (blockNameArray.length > 0) {
+                jQuery('add_' + tagName).hide();
+            } else {
+                jQuery('add_' + tagName).show();
+            }
         } else {
             jQuery('add_' + tagName).show();
         }
-    } else {
-        jQuery('add_' + tagName).show();
+
     }
 
-}
+    function loadedConfiguration() {
+        jQuery('table.ListTable').each(function(el) {
+            if (el.id != undefined && el.id != '') {
+                checkTypeValidity("block_" + el.id);
+            }
+        });
+    }
 
-
-function loadedConfiguration() {
-    jQuery('table.ListTable').each(function(el) {
-        if (el.id != undefined && el.id != '') {
-            checkTypeValidity("block_" + el.id);
+    function changeTab(tab) {
+        jQuery('#Form').centreonValidate('validate');
+        purgeHideInput(tab);
+        initCollapsebyTab(tab);
+        if(tab == "tab4"){
+            clonifyTableFields('parentGroup','displaynamegroup');
         }
-    });
-}
-
-function changeTab(tab) {
-    jQuery('#Form').centreonValidate('validate');
-    purgeHideInput(tab);
-    initCollapsebyTab(tab);
-    if(tab == "tab4"){
-        clonifyTableFields('parentGroup','displaynamegroup');
     }
-}
 
-function purgeHideInput(tab) {
-    jQuery('.tab').each(function(idx, el){
-        if (el.id != tab) {
-            jQuery(el).find(':input').each(function(idx, input){
-                jQuery(input).qtip('destroy');
-            });
+    function purgeHideInput(tab) {
+        jQuery('.tab').each(function(idx, el){
+            if (el.id != tab) {
+                jQuery(el).find(':input').each(function(idx, input){
+                    jQuery(input).qtip('destroy');
+                });
+            }
+        });
+    }
+
+    function formValidate() {
+        jQuery('#Form').centreonValidate('validate');
+        if (jQuery('#Form').centreonValidate('hasError')) {
+            var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
+            purgeHideInput(activeTab.id);
+            return false;
         }
-    });
-}
-
-function formValidate() {
-    jQuery('#Form').centreonValidate('validate');
-    if (jQuery('#Form').centreonValidate('hasError')) {
-        var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
-        purgeHideInput(activeTab.id);
-        return false;
+        return true;
     }
-    return true;
-}
 </script>
 {/literal}

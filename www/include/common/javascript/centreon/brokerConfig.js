@@ -133,7 +133,6 @@ jQuery(function () {
            elem.addClass('open').removeClass('close');
            elem.find('.expand').removeClass("expand-icon");
            nextElemChildren.hide();
-           console.log(nextElemChildren.siblings(".list_lvl_1"));
            nextElemChildren.siblings(".list_lvl_1").find('.expand').addClass("expand-icon");
        }
    });
