@@ -644,6 +644,8 @@ failover                       Failover name                                    
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
+category                       Filter category                                              Category filter for flux in output.                                 -                                                          
+
 check_replication              Replication enabled                                          When enabled, the broker engine will check whether or not 
                                                                                             the replication is up to date before attempting to 
                                                                                             update data.                                                 -                                                          
