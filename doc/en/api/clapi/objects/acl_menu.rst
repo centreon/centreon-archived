@@ -94,6 +94,8 @@ name	  Name
 alias	  Alias
 
 activate  1 when ACL Menu is enabled, 0 otherwise
+
+comment   Comment
 ========= =======================================
 
 
