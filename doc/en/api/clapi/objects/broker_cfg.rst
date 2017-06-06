@@ -102,14 +102,13 @@ correlation_activate     Enable correlation (0 or 1)
 ======================== ==================================================
 
 
-Listinput, Listoutput, Listlogger and Listcorrelation
+Listinput, Listoutput and Listlogger
 ----------------------------------------------------------------------------------
 
 If you want to list specific input output types of Centreon Broker, use one of the following commands:
 listinput
 listoutput
 listlogger
-listcorrelation
 
 Example::
 
@@ -128,14 +127,13 @@ ID	    I/O ID
 Name	I/O Name
 ======= ============
 
-Getinput, Getoutput, Getlogger and Getcorrelation
+Getinput, Getoutput and Getlogger
 -----------------------------------------------------------
 
 In order to get parameters of a specific I/O object, use one of the following commands:
  - getinput
  - getoutput
  - getlogger
- - getcorrelation
 
 Example::
 
@@ -165,14 +163,13 @@ Order	 Description
 ======== ===========================
 
 
-Addinput, Addoutput, Addlogger, Addcorrelation and Addstats
+Addinput, Addoutput and Addlogger
 -----------------------------------------------------------
 
 In order to add a new I/O object, use one of the following commands:
  - **ADDINPUT**
  - **ADDOUTPUT**
  - **ADDLOGGER**
- - **ADDCORRELATION**
 
 Example::
 
@@ -195,14 +192,13 @@ Order	 Column description
 ======== ============================
 
 
-Delinput, Deloutput, Dellogger and Delcorrelation
+Delinput, Deloutput and Dellogger
 -----------------------------------------------------------
 
 In order to remove an I/O object from the Centreon Broker configuration, use one of the following commands:
  - **DELINPUT**
  - **DELOUTPUT**
  - **DELLOGGER**
- - **DELCORRELATION**
 
 Example::
 
@@ -211,14 +207,13 @@ Example::
 The I/O ID is used for identifying the object to delete.
 
 
-Setintput, Setoutput, Setlogger and Setcorrelation
+Setintput, Setoutput and Setlogger
 ------------------------------------------------------------
 
 In order to set parameters of an I/O object, use one of the following commands:
  - **SETINPUT**
  - **SETOUTPUT**
  - **SETLOGGER**
- - **SETCORRELATION**
 
 Example::
 
@@ -279,24 +274,6 @@ This is how you get the list of possible values of a given field::
 
 
 The following chapters describes the parameters of each Object type
-
-
-correlation
-~~~~~~~~~~~
-
-correlation:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-file                           Correlation file                                             Path to the correlation file which holds host, services, 
-                                                                                            dependencies and parenting definitions.                      -                                                          
-
-retention                      Retention file                                               File where correlation state will be stored during 
-                                                                                            correlation engine restart                                   -                                                          
-
-============================== ============================================================ ============================================================ ===========================================================
-
 
 
 input
