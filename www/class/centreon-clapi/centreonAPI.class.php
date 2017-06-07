@@ -60,7 +60,7 @@ require_once "centreon.Config.Poller.class.php";
  */
 class CentreonAPI
 {
-    private static $_instance = null;
+    private static $instance = null;
 
     public $dateStart;
     public $login;
@@ -352,8 +352,8 @@ class CentreonAPI
         $options = null,
         $dependencyInjector = null
     ) {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new CentreonAPI(
+        if (is_null(self::$instance)) {
+            self::$instance = new CentreonAPI(
                 $user,
                 $password,
                 $action,
@@ -363,7 +363,7 @@ class CentreonAPI
             );
         }
 
-        return self::$_instance;
+        return self::$instance;
     }
 
     /**
@@ -503,7 +503,14 @@ class CentreonAPI
                     return 1;
                 } elseif ($row['contact_auth_type'] == 'ldap') {
                     $CentreonLog = new CentreonUserLog(-1, $this->DB);
-                    $centreonAuth = new CentreonAuthLDAP($this->DB, $CentreonLog, $this->login, $this->password, $row, $row['ar_id']);
+                    $centreonAuth = new CentreonAuthLDAP(
+                        $this->DB,
+                        $CentreonLog,
+                        $this->login,
+                        $this->password,
+                        $row,
+                        $row['ar_id']
+                    );
                     if ($centreonAuth->checkPassword() == 1) {
                         return 1;
                     }
@@ -561,7 +568,8 @@ class CentreonAPI
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a POLLERGENERATE -v 1 \n";
         print "       - POLLERTEST: Test nagios configuration for a poller (poller id in -v parameters)\n";
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a POLLERTEST -v 1 \n";
-        print "       - CFGMOVE: move nagios configuration for a poller to final directory (poller id in -v parameters)\n";
+        print "       - CFGMOVE: move nagios configuration for a poller to final directory\n";
+        print "         (poller id in -v parameters)\n";
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a CFGMOVE -v 1 \n";
         print "       - POLLERRESTART: Restart a poller (poller id in -v parameters)\n";
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a POLLERRESTART -v 1 \n";
