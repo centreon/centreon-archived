@@ -40,6 +40,8 @@ require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
 
 if (file_exists(realpath(dirname(__FILE__) . "/../centreonSession.class.php"))) {
     require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
@@ -489,23 +491,30 @@ class CentreonAPI
         } else {
             $pass = md5($this->password);
         }
-        $DBRESULT = $this->DB->query("SELECT contact_id, contact_admin
+        $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
-                 WHERE contact_alias = '" . $this->login . "'
-                 AND contact_passwd = '" . $pass . "'
+                 WHERE contact_alias = '".$this->login."'
                  AND contact_activate = '1'
                  AND contact_oreon = '1'");
         if ($DBRESULT->numRows()) {
             $row = $DBRESULT->fetchRow();
             if ($row['contact_admin'] == 1) {
-                return 1;
+                if ($row['contact_passwd'] == $pass) {
+                    return 1;
+                } elseif ($row['contact_auth_type'] == 'ldap') {
+                    $CentreonLog = new CentreonUserLog(-1, $this->DB);
+                    $centreonAuth = new CentreonAuthLDAP($this->DB, $CentreonLog, $this->login, $this->password, $row, $row['ar_id']);
+                    if ($centreonAuth->checkPassword() == 1) {
+                        return 1;
+                    }
+                }
+            } else {
+                print "Centreon CLAPI is for admin users only.\n";
+                exit(1);
             }
-            print "Centreon CLAPI is for admin users only.\n";
-            exit(1);
-        } else {
-            print "Invalid credentials.\n";
-            exit(1);
         }
+        print "Invalid credentials.\n";
+        exit(1);
     }
 
     /**
