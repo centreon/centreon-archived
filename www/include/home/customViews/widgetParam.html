@@ -42,3 +42,72 @@
 	</p>
 </div>
 </form>
+{literal}
+<script type="text/javascript">
+    var viewId = '{/literal}{$viewId}{literal}';
+    var widgetId = '{/literal}{$widgetId}{literal}';
+    var widgetUrl = '{/literal}{$url}{literal}';
+
+    jQuery(function () {
+        jQuery("input[type=text]").keypress(function (e) {
+            var code = null;
+            code = (e.keyCode ? e.keyCode : e.which);
+            return (code == 13) ? false : true;
+        });
+        setDatePicker();
+    });
+
+    function submitData() {
+        jQuery.ajax({
+            type: "POST",
+            dataType: "xml",
+            url: "./include/home/customViews/action.php",
+            data: jQuery("#Form").serialize(),
+            success: function (response) {
+                var view = response.getElementsByTagName('custom_view_id');
+                var error = response.getElementsByTagName('error');
+                if (typeof(view) != 'undefined') {
+                    var viewId = view.item(0).firstChild.data;
+                    parent.jQuery(
+                        "[name=widget_" + viewId + "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId=' + widgetId
+					);
+                    jQuery('#config-popin').centreonPopin('close');
+                } else if (typeof(error) != 'undefined') {
+                    error.item(0).firstChild.data;
+                }
+            }
+        });
+    }
+
+    function setDatePicker() {
+        jQuery(".datepicker").datepicker({
+            defaultDate: "+1w",
+            changeMonth: true
+        });
+    }
+
+	/**
+	 * Load target select box with values that will be retrieved by trigger source
+	 *
+	 * @param string triggerSource
+	 * @param string targetId
+	 * @param string triggerValue
+	 * @return void
+	 */
+    function loadFromTrigger(triggerSource, targetId, triggerValue) {
+        jQuery.ajax({
+            type: "POST",
+            dataType: "xml",
+            url: triggerSource,
+            data: {data: triggerValue},
+            success: function (response) {
+                jQuery("[name=param_" + targetId + "]").find('option').remove().end();
+                jQuery(response).find('option').each(function () {
+                    jQuery("[name=param_" + targetId + "]").append(new Option(jQuery(this).find('label').text(),
+                        triggerValue + '-' + jQuery(this).find('id').text(), true, true));
+                });
+            }
+        });
+    }
+</script>
+{/literal}

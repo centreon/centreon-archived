@@ -146,4 +146,162 @@ class CentreonHomeCustomview extends CentreonWebService
             'tabs' => $tabs
         );
     }
+
+    /**
+     * Get the list of preferences
+     * @return array
+     * @throws Exception
+     */
+    public function getPreferences()
+    {
+        if (!isset($this->arguments['widgetId']) || !isset($this->arguments['viewId'])) {
+            throw new \Exception('Missing argument');
+        }
+
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Boolean.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Hidden.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/List.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Password.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Range.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Text.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Compare.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Sort.class.php";
+        require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Date.class.php";
+        require_once __DIR__ . "/../../../GPL_LIB/Smarty/libs/Smarty.class.php";
+        require_once __DIR__ . "/../../lib/HTML/QuickForm.php";
+        require_once __DIR__ . "/../../lib/HTML/QuickForm/advmultiselect.php";
+        require_once __DIR__ . "/../../lib/HTML/QuickForm/Renderer/ArraySmarty.php";
+
+        global $centreon;
+
+        $viewId = $this->arguments['viewId'];
+        $widgetId = $this->arguments['widgetId'];
+        $action = "setPreferences";
+
+        $viewObj = new CentreonCustomView($centreon, $this->pearDB);
+        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
+        $title = "";
+        $defaultTab = array();
+
+        $widgetTitle = $widgetObj->getWidgetTitle($widgetId);
+        if ($widgetTitle != '') {
+            $title = sprintf(_("Widget Preferences for %s"), $widgetTitle);
+        } else {
+            $title = _("Widget Preferences");
+        }
+
+        $info = $widgetObj->getWidgetDirectory($widgetObj->getWidgetType($widgetId));
+        $title .= " [" . $info . "]";
+
+        $defaultTab['custom_view_id'] = $viewId;
+        $defaultTab['widget_id'] = $widgetId;
+        $defaultTab['action'] = $action;
+        $url = $widgetObj->getUrl($widgetId);
+
+        /*
+         * Smarty template Init
+         */
+        $libDir = __DIR__ . "/../../../GPL_LIB";
+        $tpl = new \Smarty();
+        $tpl->compile_dir = $libDir . '/SmartyCache/compile';
+        $tpl->config_dir = $libDir . '/SmartyCache/config';
+        $tpl->cache_dir = $libDir . '/SmartyCache/cache';
+        $tpl->template_dir =  _CENTREON_PATH_ . '/www/include/home/customViews/';
+        $tpl->caching = 0;
+        $tpl->compile_check = true;
+        $tpl->force_compile = true;
+
+        $form = new HTML_QuickForm('Form', 'post', "?p=103");
+        $form->addElement('header', 'title', $title);
+        $form->addElement('header', 'information', _("General Information"));
+
+        /* Prepare list of installed modules and have widget connectors */
+        $loadConnectorPaths = array();
+        /* Add core path */
+        $loadConnectorPaths[] = _CENTREON_PATH_ . "www/class/centreonWidget/Params/Connector";
+        $query = 'SELECT name FROM modules_informations ORDER BY name';
+        $res = $this->pearDB->query($query);
+        while ($module = $res->fetchRow()) {
+            $dirPath = _CENTREON_PATH_ . 'www/modules/' . $module['name'] . '/widgets/Params/Connector';
+            if (is_dir($dirPath)) {
+                $loadConnectorPaths[] = $dirPath;
+            }
+        }
+
+        try {
+            $permission = $viewObj->checkPermission($viewId);
+            $params = $widgetObj->getParamsFromWidgetId($widgetId, $permission);
+            foreach ($params as $paramId => $param) {
+                if ($param['is_connector']) {
+                    $paramClassFound = false;
+                    foreach ($loadConnectorPaths as $path) {
+                        $filename = $path . '/' . ucfirst($param['ft_typename'] . ".class.php");
+                        if (is_file($filename)) {
+                            require_once $filename;
+                            $paramClassFound = true;
+                            break;
+                        }
+                    }
+                    if (false === $paramClassFound) {
+                        throw new Exception('No connector found for ' . $param['ft_typename']);
+                    }
+                    $className = "CentreonWidgetParamsConnector" . ucfirst($param['ft_typename']);
+                } else {
+                    $className = "CentreonWidgetParams" . ucfirst($param['ft_typename']);
+                }
+                if (class_exists($className)) {
+                    $currentParam = call_user_func(
+                        array($className, 'factory'),
+                        $this->pearDB,
+                        $form,
+                        $className,
+                        $centreon->user->user_id
+                    );
+                    $param['custom_view_id'] = $viewId;
+                    $param['widget_id'] = $widgetId;
+                    $currentParam->init($param);
+                    $currentParam->setValue($param);
+                    $params[$paramId]['trigger'] = $currentParam->getTrigger();
+                    $element = $currentParam->getElement();
+                } else {
+                    throw new Exception('No class name found');
+                }
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage() . "<br/>";
+        }
+
+        $tpl->assign('params', $params);
+
+        /**
+         * Submit button
+         */
+        $form->addElement(
+            'button',
+            'submit',
+            _("Apply"),
+            array("class" => "btc bt_success", "onClick" => "submitData();")
+        );
+        $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+        $form->addElement('hidden', 'custom_view_id');
+        $form->addElement('hidden', 'widget_id');
+        $form->addElement('hidden', 'action');
+        $form->setDefaults($defaultTab);
+
+
+        /*
+         * Apply a template definition
+         */
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($template, true);
+        $renderer->setRequiredTemplate('{$label}&nbsp;<i class="red">*</i>');
+        $renderer->setErrorTemplate('<i class="red">{$error}</i><br />{$html}');
+        $form->accept($renderer);
+        $tpl->assign('form', $renderer->toArray());
+        $tpl->assign('viewId', $viewId);
+        $tpl->assign('widgetId', $widgetId);
+        $tpl->assign('url', $url);
+
+        return $tpl->fetch("widgetParam.html");
+    }
 }

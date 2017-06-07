@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/Interface.class.php";
+require_once __DIR__ . "/Params/Interface.class.php";
 
 class CentreonWidgetParamsException extends Exception {}
 

@@ -191,9 +191,12 @@ jQuery(function() {
 
         jQuery(element).on('click', function () {
             var popin = jQuery('<div id="config-popin">');
+            var url = './api/internal.php?object=centreon_home_customview&resultFormat=html&action=preferences' +
+                '&viewId=' + viewId + '&widgetId=' + widgetId;
             popin.centreonPopin({
-                url: "./main.php?p=10303&min=1&view_id=" + viewId + "&widget_id=" + widgetId,
+                url: url,
                 open: true,
+                ajaxType : 'GET',
                 ajaxDataType: 'html'
             });
         });
