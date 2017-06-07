@@ -150,7 +150,7 @@ $tpl->display("formGenerateFiles.ihtml");
 
         $('#progress_bar').progressbar({
             value: 0
-        });
+        }).removeClass('ui-corner-all');
 
         var pollers = JSON.parse(initPollers);
         for (var i = 0; i < pollers.length; i++) {
