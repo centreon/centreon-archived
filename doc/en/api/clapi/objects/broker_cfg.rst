@@ -240,14 +240,19 @@ Example::
 
   [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a gettypelist -v "output" 
   type id;short name;name
+  27;bam_bi;BI engine (BAM)
   16;sql;Broker SQL Database
+  32;correlation;Correlation
+  28;db_cfg_reader;Database configuration reader
+  29;db_cfg_writer;Database configuration writer
   11;file;File
   3;ipv4;IPv4
   10;ipv6;IPv6
-  15;local_client;Local Client Socket
-  12;local_server;Local Server Socket
+  26;bam;Monitoring engine (BAM)
   14;storage;Perfdata Generator (Centreon Storage)
   13;rrd;RRD File Generator
+  30;graphite;Storage - Graphite
+  31;influxdb;Storage - InfluxDB
 
   [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getfieldlist -v "ipv4" 
   field id;short name;name
