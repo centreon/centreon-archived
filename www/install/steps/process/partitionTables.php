@@ -50,7 +50,7 @@ $return = array(
 );
 
 /* Create partitioned tables */
-$database = new CentreonDB('centstorage', 3, false);
+$database = new CentreonDB('centstorage');
 $partEngine = new PartEngine();
 
 if (!$partEngine->isCompatible($database)) {
