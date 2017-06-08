@@ -216,7 +216,13 @@
         },
         zoom_select: self.settings.zoom,
         point: {
-          show: false
+          show: true,
+          r: 0,
+          focus: {
+            expand: {
+              r: 4
+            }
+          }
         },
         regions: self.buildRegions(data),
         legend: {
