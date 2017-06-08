@@ -76,7 +76,7 @@ Perform the command:
 
   ::
 
-   $ yum install mariadb-server
+   $ yum install MariaDB-server
    $ service mysql restart
 
 Base configuration of a poller

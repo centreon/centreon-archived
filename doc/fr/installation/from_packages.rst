@@ -76,7 +76,7 @@ Exécutez la commande :
 
   ::
 
-   $ yum install mariadb-server
+   $ yum install MariaDB-server 
    $ service mysql restart
 
 Configuration basique d'un collecteur
