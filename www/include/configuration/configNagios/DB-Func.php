@@ -221,7 +221,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`retained_process_host_attribute_mask`, `retained_process_service_attribute_mask` , "
         . "`retained_host_attribute_mask`, `retained_service_attribute_mask`, "
         . "`use_syslog` , `log_notifications` , "
-        . "`log_service_retries` , `log_host_retries` , `log_event_handlers` , `log_initial_states` , "
+        . "`log_service_retries` , `log_host_retries` , `log_event_handlers` , "
         . "`log_external_commands` , `log_passive_checks` , `global_host_event_handler` , "
         . "`global_service_event_handler` , `sleep_time` , `service_inter_check_delay_method` , "
         . "`host_inter_check_delay_method` , `service_interleave_factor` ,"
@@ -356,9 +356,6 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["log_event_handlers"]["log_event_handlers"])
         && $ret["log_event_handlers"]["log_event_handlers"] != 2 ?
         $rq .= "'".$ret["log_event_handlers"]["log_event_handlers"]."',  " : $rq .= "'2', ";
-    isset($ret["log_initial_states"]["log_initial_states"])
-        && $ret["log_initial_states"]["log_initial_states"] != 2 ?
-        $rq .= "'".$ret["log_initial_states"]["log_initial_states"]."',  " : $rq .= "'2', ";
     isset($ret["log_external_commands"]["log_external_commands"])
         && $ret["log_external_commands"]["log_external_commands"] != 2 ?
         $rq .= "'".$ret["log_external_commands"]["log_external_commands"]."',  " : $rq .= "'2', ";
@@ -786,10 +783,6 @@ function updateNagios($nagios_id = null)
         && $ret["log_event_handlers"]["log_event_handlers"] != 2 ?
         $rq .= "log_event_handlers = '".$ret["log_event_handlers"]["log_event_handlers"]."',  "
         : $rq .= "log_event_handlers = '2', ";
-    isset($ret["log_initial_states"]["log_initial_states"])
-        && $ret["log_initial_states"]["log_initial_states"] != 2 ?
-        $rq .= "log_initial_states = '".$ret["log_initial_states"]["log_initial_states"]."',  "
-        : $rq .= "log_initial_states = '2', ";
     isset($ret["log_external_commands"]["log_external_commands"])
         && $ret["log_external_commands"]["log_external_commands"] != 2 ?
         $rq .= "log_external_commands = '".$ret["log_external_commands"]["log_external_commands"]."',  "
