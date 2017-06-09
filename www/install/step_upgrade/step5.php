@@ -69,5 +69,3 @@ if ($moveable) {
 }
 
 session_destroy();
-
-
