@@ -5,3 +5,5 @@ DELETE FROM nagios_macro WHERE macro_name IN ('$_HOSTLOCATION$', '$_HOSTHOST_ID$
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$HOSTID$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$SERVICEID$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$HOSTTIMEZONE$');
+
+ALTER TABLE `cfg_nagios` DROP COLUMN `log_initial_states`;
