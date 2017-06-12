@@ -232,7 +232,7 @@ class CentreonWebService
      * @global string _CENTREON_PATH_
      * @global type $pearDB3
      */
-    public static function router()
+    public static function router($dependencyInjector)
     {
         global $pearDB;
 
@@ -269,7 +269,13 @@ class CentreonWebService
         /* Initialize the webservice */
         require_once($webService['path']);
 
+
         $wsObj = new $webService['class']();
+
+
+        if (method_exists($wsObj, 'finalConstruct')) {
+            $wsObj->finalConstruct($dependencyInjector);
+        }
 
         if (false === method_exists($wsObj, $action)) {
             static::sendResult("Method not found", 404);

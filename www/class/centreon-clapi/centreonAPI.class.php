@@ -353,6 +353,11 @@ class CentreonAPI
         $dependencyInjector = null
     ) {
         if (is_null(self::$instance)) {
+
+            if (is_null($dependencyInjector)) {
+                $dependencyInjector = loadDependencyInjector();
+            }
+
             self::$instance = new CentreonAPI(
                 $user,
                 $password,
@@ -493,7 +498,7 @@ class CentreonAPI
         }
         $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
-                 WHERE contact_alias = '".$this->login."'
+                 WHERE contact_alias = '" . $this->login . "'
                  AND contact_activate = '1'
                  AND contact_oreon = '1'");
         if ($DBRESULT->numRows()) {

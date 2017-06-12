@@ -65,4 +65,4 @@ if (false === isset($centreon) || false === is_object($centreon)) {
     CentreonWebService::sendResult("Unauthorized", 401);
 }
 
-CentreonWebService::router();
+CentreonWebService::router($dependencyInjector);

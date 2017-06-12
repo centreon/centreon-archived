@@ -56,6 +56,12 @@ spl_autoload_register(function ($sClass) {
     }
 });
 
+function loadDependencyInjector()
+{
+    global $dependencyInjector;
+    return $dependencyInjector;
+}
+
 // require composer file
 require __DIR__ . '/vendor/autoload.php';
 
