@@ -53,6 +53,10 @@ if (isset($_POST["centreon_token"])
     if (isset($_POST['p'])) {
         $_GET["p"] = $_POST["p"];
     }
+        
+    if (isset($_POST['min'])) {
+        $_GET["min"] = $_POST["min"];
+    }
 
     /*
      * Check first for Autologin or Get Authentication
@@ -103,10 +107,14 @@ if (isset($_POST["centreon_token"])
             array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"])
         );
         if (!isset($_POST["submit"])) {
-            if (isset($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: main.php?p=' . $_GET["p"]);
-            } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                header('Location: main.php?p=' . $centreon->user->default_page);
+            $minimize = '';
+            if (isset ($_GET["min"]) && $_GET["min"] == '1') {
+                $minimize = '&min=1';
+            }
+            if (isset ($_GET["p"]) && $_GET["p"] != '') {
+                header('Location: main.php?p='.$_GET["p"].$minimize);
+            } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+                header('Location: main.php?p='.$centreon->user->default_page.$minimize);
             } else {
                 header('Location: main.php');
             }
