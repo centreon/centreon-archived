@@ -265,7 +265,7 @@ Example::
   field id;short name;name
   3;ca_certificate;Trusted CA's certificate;text
   2;host;Host to connect to;text
-  46;negociation;Enable negociation;radio
+  46;negotiation;Enable negotiation;radio
   48;one_peer_retention_mode;One peer retention;radio
   1;port;Connection port;int
   4;private_key;Private key file.;text
