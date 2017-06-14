@@ -500,10 +500,12 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["date_format"]) && $ret["date_format"] != null ?
         $rq .= "'".htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-    isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null ?
-        $rq .= "'".htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-    isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null ?
-        $rq .= "'".htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+    isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null
+        ? $rq .= "'".$pearDB->quote($ret["illegal_object_name_chars"])."',  "
+        : $rq .= "NULL, ";
+    isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null
+        ? $rq .= "'".$pearDB->quote($ret["illegal_macro_output_chars"])."',  "
+        : $rq .= "NULL, ";
     isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ?
         $rq .= "'".$ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]."',  " : $rq .= "'2', ";
@@ -566,7 +568,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret['use_check_result_path']['use_check_result_path'])
         && $ret['use_check_result_path']['use_check_result_path'] ?
         $rq .= "'1')" : $rq .= "'0')";
-    
+
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
     $nagios_id = $DBRESULT->fetchRow();
@@ -1028,11 +1030,11 @@ function updateNagios($nagios_id = null)
         $rq .= "date_format = '"
         . htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "date_format = NULL, ";
-    isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null ?
-        $rq .= "illegal_object_name_chars  = '" . $ret["illegal_object_name_chars"] . "',  "
+    isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null
+        ? $rq .= "illegal_object_name_chars  = " . $pearDB->quote($ret["illegal_object_name_chars"]) . ",  "
         : $rq .= "illegal_object_name_chars  = NULL, ";
-    isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null ?
-        $rq .= "illegal_macro_output_chars  = '" . $ret["illegal_macro_output_chars"] . "',  "
+    isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null
+        ? $rq .= "illegal_macro_output_chars  = " . $pearDB->quote($ret["illegal_macro_output_chars"]) . ",  "
         : $rq .= "illegal_macro_output_chars  = NULL, ";
     isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ?
