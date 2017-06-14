@@ -184,7 +184,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     ')  as t_union ' .
                     'ORDER BY fullname ';
 
-                if (isset($range)) {
+                if (!empty($range)) {
                     $queryRange = 'LIMIT ?,?';
                     $queryValues[] = (int)$range[0];
                     $queryValues[] = (int)$range[1];
@@ -209,7 +209,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     'AND CONCAT(h.host_name, " - ", s.service_description) LIKE ? ';
                 $queryValues[] = (string)'%' . $q . '%';
                 $queryService .= $enableQuery . $aclServices . 'ORDER BY fullname ';
-                if (isset($range)) {
+                if (!empty($range)) {
                     $queryRange = 'LIMIT ?,?';
                     $queryValues[] = (int)$range[0];
                     $queryValues[] = (int)$range[1];
@@ -230,7 +230,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     'AND CONCAT("Meta - ", ms.display_name) LIKE ? ';
                 $queryValues[] = (string)'%' . $q . '%';
                 $queryService .= $enableQueryMeta . $aclMetaServices . 'ORDER BY fullname ';
-                if (isset($range)) {
+                if (!empty($range)) {
                     $queryRange = 'LIMIT ?,?';
                     $queryValues[] = (int)$range[0];
                     $queryValues[] = (int)$range[1];
@@ -285,7 +285,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $queryValues[] = (string)'%' . $q . '%';
         $queryService .= $aclServices . 'ORDER BY fullname ';
 
-        if (isset($range)) {
+        if (!empty($range)) {
             $queryRange = 'LIMIT ?,?';
             $queryValues[] = (int)$range[0];
             $queryValues[] = (int)$range[1];
