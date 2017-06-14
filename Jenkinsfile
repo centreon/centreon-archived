@@ -140,8 +140,7 @@ try {
         error('Delivery stage failure.');
       }
     }
-    build job: 'mon-automation-bundle-centos6', wait: false
-    build job: 'mon-automation-bundle-centos7', wait: false
+    build job: 'centreon-automation-web/master', wait: false
     build job: 'centreon-license-manager/master', wait: false
     build job: 'mon-ppe-bundle-centos6', wait: false
     build job: 'mon-ppe-bundle-centos7', wait: false

@@ -441,6 +441,7 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (9, 'Core', NULL, NULL, 1, 1),
 (10, 'Centreon Storage', NULL, NULL, 1, 1),
 (11, 'Compression', 'compression.so', 60, 0, 1),
+(12, 'Failover', NULL, NULL, 0, 1),
 (17, 'Dumper', 'dumper.so', 20, 0, 1),
 (18, 'Graphite', 'graphite.so', 21, 0, 1),
 (19, 'InfluxDB', 'influxdb.so', 22, 0, 1),
@@ -462,6 +463,7 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (18, 'Standard', 'standard', 9),
 (19, 'Syslog', 'syslog', 9),
 (20, 'Compressor', 'compressor', 11),
+(21, 'Failover', 'failover', 12),
 (24, 'Monitoring', 'monitoring', 9),
 (28, 'Database configuration reader', 'db_cfg_reader', 17),
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
@@ -623,11 +625,16 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_config`) VALUES
 (1, 6, 0),
 (1, 8, 0),
+(1, 12, 1),
 (2, 11, 1),
+(2, 12, 1),
 (3, 11, 1),
+(3, 12, 1),
 (5, 6, 0),
 (7, 8, 0),
-(8, 6, 0);
+(7, 12, 1),
+(8, 6, 0),
+(8, 12, 1);
 
 --
 -- Contenu de la table `cb_tag_type_relation`
@@ -745,6 +752,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (10, 48, 0, 16),
 (16, 49, 0, 18),
 (16, 50, 0, 19),
+(21, 31, 0, 2),
+(21, 32, 0, 2),
 (28, 15, 1, 1),
 (28, 7, 1, 2),
 (28, 18, 1, 3),
