@@ -17,33 +17,12 @@ try {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.4/mon-web-unittest.sh centos6'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
-        ])
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.4/mon-web-unittest.sh centos7'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
-        ])
-        step([
-          $class: 'CloverPublisher',
-          cloverReportDir: '.',
-          cloverReportFileName: 'coverage.xml'
-        ])
         step([
           $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
           pattern: 'codestyle.xml',
