@@ -148,3 +148,8 @@ default:
       paths: [ %paths.base%/features/HostTemplateConfiguration.feature ]
       contexts:
       - HostTemplateConfigurationContext
+
+    rest_api:
+      paths: [ %paths.base%/features/RestApi.feature ]
+      contexts:
+      - RestApiContext
