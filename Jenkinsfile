@@ -143,10 +143,8 @@ try {
     build job: 'centreon-license-manager/master', wait: false
     build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
-    build job: 'des-bam-bundle-centos6', wait: false
-    build job: 'des-bam-bundle-centos7', wait: false
-    build job: 'des-map-bundle-centos6', wait: false
-    build job: 'des-map-bundle-centos7', wait: false
+    build job: 'centreon-bam/master', wait: false
+    build job: 'centreon-map-web', wait: false
     build job: 'des-mbi-bundle-centos6', wait: false
     build job: 'des-mbi-bundle-centos7', wait: false
   }
