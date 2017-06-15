@@ -158,3 +158,8 @@ default:
       paths: [ %paths.base%/features/Widget.feature ]
       contexts:
       - WidgetContext
+
+    rest_api:
+      paths: [ %paths.base%/features/RestApi.feature ]
+      contexts:
+      - RestApiContext

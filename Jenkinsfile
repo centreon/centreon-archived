@@ -140,16 +140,11 @@ try {
         error('Delivery stage failure.');
       }
     }
-    build job: 'centreon-automation-web/master', wait: false
     build job: 'centreon-license-manager/master', wait: false
-    build job: 'mon-ppe-bundle-centos6', wait: false
-    build job: 'mon-ppe-bundle-centos7', wait: false
     build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
-    build job: 'des-bam-bundle-centos6', wait: false
-    build job: 'des-bam-bundle-centos7', wait: false
-    build job: 'des-map-bundle-centos6', wait: false
-    build job: 'des-map-bundle-centos7', wait: false
+    build job: 'centreon-bam/master', wait: false
+    build job: 'centreon-map-web', wait: false
     build job: 'des-mbi-bundle-centos6', wait: false
     build job: 'des-mbi-bundle-centos7', wait: false
   }
@@ -157,6 +152,6 @@ try {
 finally {
   buildStatus = currentBuild.result ?: 'SUCCESS';
   if ((buildStatus != 'SUCCESS') && (env.BRANCH_NAME == 'master')) {
-    slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
+    slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} of branch ${env.BRANCH_NAME} was broken by ${source.COMMITTER}. Please fix it ASAP."
   }
 }
