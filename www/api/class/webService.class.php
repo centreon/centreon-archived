@@ -232,7 +232,7 @@ class CentreonWebService
      * @global string _CENTREON_PATH_
      * @global type $pearDB3
      */
-    public static function router($dependencyInjector)
+    public static function router(\Pimple\Container $dependencyInjector)
     {
         global $pearDB;
 
