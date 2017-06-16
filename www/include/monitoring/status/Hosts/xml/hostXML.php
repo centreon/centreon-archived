@@ -402,7 +402,7 @@ while ($data = $DBRESULT->fetchRow()) {
 
     $obj->XML->endElement();
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 if (!$ct) {
     $obj->XML->writeElement("infos", "none");

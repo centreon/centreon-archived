@@ -126,7 +126,7 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(sg_id)"])) {
                                             $sgAcl[$maxId["MAX(sg_id)"]] = $key;
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
                     $fields["sg_hgServices"] = "";
                     while ($service = $DBRESULT->fetchRow()) {
@@ -190,7 +190,7 @@ function insertServiceGroup($ret = array())
 
     $DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
     $sg_id = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);

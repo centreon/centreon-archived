@@ -287,7 +287,7 @@ class CentreonService
                 $name = str_replace($char, "", $name);
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $name;
     }
 

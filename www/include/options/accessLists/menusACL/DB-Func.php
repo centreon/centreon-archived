@@ -100,7 +100,7 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
                 $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_topo_id) FROM acl_topology");
                 $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
                 if (isset($maxId["MAX(acl_topo_id)"])) {
                     $maxTopoId = $maxId['MAX(acl_topo_id)'];
                     $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right)

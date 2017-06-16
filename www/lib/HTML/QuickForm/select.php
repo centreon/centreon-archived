@@ -417,7 +417,7 @@ class HTML_QuickForm_select extends HTML_QuickForm_element {
             return $result;
         }
         $this->loadDbResult($result, $textCol, $valueCol, $values);
-        $result->free();
+        $result->closeCursor();
         if (is_string($conn)) {
             $dbConn->disconnect();
         }

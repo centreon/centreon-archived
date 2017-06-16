@@ -82,7 +82,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     foreach ($tmp as $key => $value) {
         $service["service_stalOpts"][trim($value)] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set criticality

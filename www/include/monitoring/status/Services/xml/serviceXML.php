@@ -679,7 +679,7 @@ if (!$sqlError) {
         );
         $obj->XML->endElement();
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 unset($data);

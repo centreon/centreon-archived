@@ -71,7 +71,7 @@ if ($o == "w" && $command_id) {
 while ($notifCmd = $DBRESULT->fetchRow()) {
     $notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     
     /*
 	 * Check commands comes from DB -> Store in $checkCmds Array
@@ -82,7 +82,7 @@ while ($notifCmd = $DBRESULT->fetchRow()) {
 while ($checkCmd = $DBRESULT->fetchRow()) {
     $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 
 $attrsText  = array("size"=>"35");

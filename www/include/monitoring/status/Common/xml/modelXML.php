@@ -94,7 +94,7 @@ $rq_pagination = $rq1;
  */
 $DBRESULT = $obj->DBNdo->query($rq_pagination);
 $numRows = $DBRESULT->rowCount();
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
@@ -119,7 +119,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
 	 */
     $obj->XML->endElement();
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 if (!$ct) {
     $obj->XML->writeElement("infos", "none");

@@ -172,7 +172,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $hg = "";
 $count = 0;

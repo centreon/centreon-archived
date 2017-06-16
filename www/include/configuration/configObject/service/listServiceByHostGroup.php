@@ -97,7 +97,7 @@ while ($tpl = $DBRESULT->fetchRow()) {
     $tplService[$tpl["service_id"]] = $tpl["service_alias"];
     $templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Status Filter

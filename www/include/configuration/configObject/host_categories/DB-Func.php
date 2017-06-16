@@ -278,7 +278,7 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
     while ($host = $DBRESULT->fetchRow()) {
         $hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
 	 * Update Host HG relations

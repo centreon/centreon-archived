@@ -82,7 +82,7 @@ class CentreonContactgroup
                 );
             }
         }
-        $res->free();
+        $res->closeCursor();
 
         # Get ldap contactgroups
         if ($withLdap && $dbOnly === false) {

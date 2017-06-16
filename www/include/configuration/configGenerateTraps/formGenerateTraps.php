@@ -65,7 +65,7 @@ if ($n > 1) {
 for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
     $tab_nagios_server[$nagios['id']] = $nagios['name'];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 
 /*

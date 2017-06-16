@@ -54,7 +54,7 @@ if (($o == "c" || $o == "w") && $nagios_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
     # Set base value
     $nagios = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
@@ -98,7 +98,7 @@ $checkCmds = array(null => null);
 while ($checkCmd = $DBRESULT->fetchRow()) {
     $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Get all nagios servers
@@ -123,7 +123,7 @@ while ($lineBk = $DBRESULT->fetchRow()) {
     $aBk[$nBk] = $lineBk;
     $nBk++;
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 unset($lineBk);
 
 $attrsText        = array("size"=>"30");

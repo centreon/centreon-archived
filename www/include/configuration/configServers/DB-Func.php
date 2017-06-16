@@ -142,7 +142,7 @@ function multipleServerInDB($server = array(), $nbrDup = array())
         $rowServer["ns_activate"] = '0';
         $rowServer["is_default"] = '0';
         $rowServer["localhost"] = '0';
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         
         $rowBks = $obj->getBrokerModules($key);
 
@@ -248,7 +248,7 @@ function insertServer($ret = array())
     $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
     $poller = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);

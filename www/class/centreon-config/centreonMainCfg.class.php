@@ -361,7 +361,7 @@ class CentreonMainCfg
         while ($row = $DBRESULT->fetchRow()) {
             $entries[] = $row;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $entries;
     }
 }

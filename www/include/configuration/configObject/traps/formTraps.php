@@ -70,7 +70,7 @@ if (($o == "c" || $o == "w") && $traps_id) {
     # Set base value
     $trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
             $trap['severity'] = $trap['severity_id'];
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
             
     $cdata = CentreonData::getInstance();
     
@@ -99,7 +99,7 @@ $DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
 while ($rmnftr = $DBRESULT->fetchRow()) {
     $mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $attrsText      = array("size"=>"50");
 $attrsLongText  = array("size"=>"120");

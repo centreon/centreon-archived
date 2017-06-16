@@ -60,7 +60,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM nagios_server $serverAcl ORDER BY name
 while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Var information to format the element

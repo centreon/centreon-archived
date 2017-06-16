@@ -80,7 +80,7 @@ while ($d = $DBRESULT->fetchRow()) {
     $pollerList .= "'".$d["name"]."'";
 }
 
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /* *********************************************
  * Get Host stats
@@ -105,7 +105,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $host_stat[$data["state"]] = $data["count(DISTINCT name)"];
     $hostCounter += $host_stat[$data["state"]];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /* *********************************************
  * Get Service stats
@@ -141,7 +141,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $svc_stat[$data["state"]] = $data["number"];
     $serviceCounter += $svc_stat[$data["state"]];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /* ********************************************
  *  Get Real non-ok Status
@@ -179,7 +179,7 @@ $DBRESULT = $obj->DBC->query($rq3);
 while ($data = $DBRESULT->fetchRow()) {
     $svc_stat[$data["state"] + 5] = $data["number"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 unset($data);
 
 /* ********************************************
@@ -243,7 +243,7 @@ if ($pollerList != "") {
         }
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 if ($pollerListInError != '') {
     $error = "$pollerListInError not running";
 }
@@ -267,7 +267,7 @@ if ($pollerList != "") {
             $pollersWithLatency[$data['instance_id']] = $data['name'];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 }
 

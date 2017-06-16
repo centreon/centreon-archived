@@ -123,7 +123,7 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                         $fields["dep_hostParents"] .= $host["host_host_id"] . ",";
                     }
                     $fields["dep_hostParents"] = trim($fields["dep_hostParents"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$key."'");
                     $fields["dep_hostChilds"] = "";
                     while ($host = $DBRESULT->fetchRow()) {
@@ -131,7 +131,7 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                         $fields["dep_hostChilds"] .= $host["host_host_id"] . ",";
                     }
                     $fields["dep_hostChilds"] = trim($fields["dep_hostChilds"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $centreon->CentreonLogAction->insertLog("host dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
                 }
             }

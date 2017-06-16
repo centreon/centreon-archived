@@ -63,7 +63,7 @@ if (($o == "c") && $acl_action_id) {
         $selected_actions[$act["acl_action_name"]] = 1;
     }
 
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 // Database retrieve information for differents elements list we need on the page
@@ -74,7 +74,7 @@ $DBRESULT = $pearDB->query("SELECT acl_group_id,acl_group_name FROM acl_groups O
 while ($group = $DBRESULT->fetchRow()) {
     $groups[$group["acl_group_id"]] = $group["acl_group_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 // Var information to format the element
 $attrsText      = array("size"=>"30");

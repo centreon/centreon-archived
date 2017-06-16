@@ -63,7 +63,7 @@ class CentreonExternalCommand
         while ($row = $DBRES->fetchRow()) {
             $this->localhostTab[$row['id']] = "1";
         }
-        $DBRES->free();
+        $DBRES->closeCursor();
 
         $this->setExternalCommandList();
 

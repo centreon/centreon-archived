@@ -175,7 +175,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
             . "WHERE config_id = " . $id . " ";
         $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         # Prepare values
         $values = array();
@@ -203,7 +203,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
                     $rowOpt['config_value'];
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         # Convert values radio button
         foreach ($values as $group => $groups) {

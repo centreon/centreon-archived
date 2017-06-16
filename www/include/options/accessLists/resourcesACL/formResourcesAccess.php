@@ -54,7 +54,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $pollers_list = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_pollers"][$i] = $pollers_list["poller_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Hosts relations
@@ -65,7 +65,7 @@ if ($o == "c" || $o == "w") {
         $acl["acl_hosts"][$i] = $hosts_list["host_host_id"];
         $hostnotexludes[$hosts_list["host_host_id"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Hosts exludes relations
@@ -74,7 +74,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_hostexclude"][$i] = $hosts_list["host_host_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Hosts Groups relations
@@ -83,7 +83,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $hg_list = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Groups relations
@@ -92,7 +92,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_groups"][$i] = $groups["acl_group_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Service Categories relations
@@ -103,7 +103,7 @@ if ($o == "c" || $o == "w") {
             $acl["acl_sc"][$i] = $sc["sc_id"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Host Categories
@@ -114,7 +114,7 @@ if ($o == "c" || $o == "w") {
             $acl["acl_hc"][$i] = $hc["hc_id"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Service Groups relations
@@ -125,7 +125,7 @@ if ($o == "c" || $o == "w") {
             $acl["acl_sg"][$i] = $sg["sg_id"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Meta Services relations
@@ -136,7 +136,7 @@ if ($o == "c" || $o == "w") {
             $acl["acl_meta"][$i] = $ms["meta_id"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 $groups = array();
@@ -144,63 +144,63 @@ $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups 
 while ($group = $DBRESULT->fetchRow()) {
     $groups[$group["acl_group_id"]] = $group["acl_group_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $pollers = array();
 $DBRESULT = $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
 while ($poller = $DBRESULT->fetchRow()) {
     $pollers[$poller["id"]] = $poller["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $hosts = array();
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 while ($host = $DBRESULT->fetchRow()) {
     $hosts[$host["host_id"]] = $host["host_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $hosttoexcludes = array();
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 while ($host = $DBRESULT->fetchRow()) {
     $hosttoexcludes[$host["host_id"]] = $host["host_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $hostgroups = array();
 $DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 while ($hg = $DBRESULT->fetchRow()) {
     $hostgroups[$hg["hg_id"]] = $hg["hg_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $service_categories = array();
 $DBRESULT = $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
 while ($sc = $DBRESULT->fetchRow()) {
     $service_categories[$sc["sc_id"]] = $sc["sc_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $host_categories = array();
 $DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories ORDER BY hc_name");
 while ($hc = $DBRESULT->fetchRow()) {
     $host_categories[$hc["hc_id"]] = $hc["hc_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $service_groups = array();
 $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 while ($sg = $DBRESULT->fetchRow()) {
     $service_groups[$sg["sg_id"]] = $sg["sg_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $meta_services = array();
 $DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
 while ($ms = $DBRESULT->fetchRow()) {
     $meta_services[$ms["meta_id"]] = $ms["meta_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Var information to format the element

@@ -130,7 +130,7 @@ function multipleActionInDB($Actions = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_action_id) FROM acl_actions");
                 $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
                 if (isset($maxId["MAX(acl_action_id)"])) {
                     $DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id,acl_action_id FROM acl_group_actions_relations WHERE acl_action_id = '".$key."'");
                     while ($cct = $DBRESULT->fetchRow()) {
@@ -143,7 +143,7 @@ function multipleActionInDB($Actions = array(), $nbrDup = array())
                         $DBRESULT2 = $pearDB->query("INSERT INTO acl_actions_rules VALUES ('', '".$maxId["MAX(acl_action_id)"]."', '".$acl["acl_action_name"]."')");
                     }
 
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                 }
             }
         }

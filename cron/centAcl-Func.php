@@ -157,7 +157,7 @@ function getAuthorizedCategories($groupstr, $res_id)
     while ($res = $DBRESULT->fetchRow()) {
         $tab_categories[$res["sc_id"]] = $res["sc_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($res);
     unset($DBRESULT);
     return $tab_categories;
@@ -244,9 +244,9 @@ function getACLSGForHost($pearDB, $host_id, $groupstr)
         while ($service = $DBRESULT2->fetchRow()) {
             $svc[$service["service_service_id"]] = $service["service_service_id"];
         }
-        $DBRESULT2->free();
+        $DBRESULT2->closeCursor();
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $svc;
 }
 

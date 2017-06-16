@@ -116,7 +116,7 @@ class CentreonLogAction
         while ($data = $DBRESULT->fetchRow()) {
             $name = $data["contact_name"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $name;
     }
 
@@ -150,7 +150,7 @@ class CentreonLogAction
             }
             $i++;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($data);
         return $list_actions;
     }

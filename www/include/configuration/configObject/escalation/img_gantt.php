@@ -84,7 +84,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     $max_notif == 0
         ? $max_notif = (($max_min_notif < 42) ? 42 : $max_min_notif + 42)
         : $max_notif = $max_notif;
-    $res_max->free();
+    $res_max->closeCursor();
 
     # retrieve all escalation correspond to service
     $cmd = "SELECT esc.esc_id, esc.esc_name, esc.first_notification, ".
@@ -154,7 +154,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     $max_notif == 0
         ? $max_notif = (($max_min_notif < 42) ? 42 : $max_min_notif + 42)
         : $max_notif = $max_notif;
-    $res_max->free();
+    $res_max->closeCursor();
 
     # retrieve all escalation correspond to host
     $cmd = "SELECT esc.esc_id, esc.esc_name, esc.first_notification, ".
@@ -224,7 +224,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     $max_notif == 0
         ? $max_notif = (($max_min_notif < 42) ? 42 : $max_min_notif + 42)
         : $max_notif = $max_notif;
-    $res_max->free();
+    $res_max->closeCursor();
 
     # retrieve all escalation correspond to hostgroup
     $cmd = "SELECT esc.esc_id, esc.esc_name, esc.first_notification, ".
@@ -407,7 +407,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             );
         }
     }
-    $res_cg_service->free();
+    $res_cg_service->closeCursor();
     ImageLine(
         $image,
         $largeur - 10,
@@ -459,7 +459,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
                 );
             }
         }
-        $res_cg->free();
+        $res_cg->closeCursor();
         #graduation Axe X
         ImageLine(
             $image,
@@ -496,7 +496,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             );
         }
     }
-    $res_esc_svc->free();
+    $res_esc_svc->closeCursor();
 # GRAPH HOSTS ESCALATION
 } elseif (isset($_GET["host_id"]) && $_GET["host_id"] != null) {
     #show contactgroup link with the host
@@ -539,7 +539,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             );
         }
     }
-    $res_cg_host->free();
+    $res_cg_host->closeCursor();
     ImageLine(
         $image,
         $largeur - 10,
@@ -591,7 +591,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
                 );
             }
         }
-        $res_cg->free();
+        $res_cg->closeCursor();
         #graduation Axe X
         ImageLine(
             $image,
@@ -628,7 +628,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             );
         }
     }
-    $res_esc_host->free();
+    $res_esc_host->closeCursor();
 } elseif (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != null) {
     ImageLine(
         $image,
@@ -688,7 +688,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
                 );
             }
         }
-        $res_cg->free();
+        $res_cg->closeCursor();
         #graduation Axe X
         ImageLine(
             $image,
@@ -725,7 +725,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             );
         }
     }
-    $res_esc_hostgroup->free();
+    $res_esc_hostgroup->closeCursor();
 }
 //imagecolortransparent($image, $blanc);
 imagepng($image);

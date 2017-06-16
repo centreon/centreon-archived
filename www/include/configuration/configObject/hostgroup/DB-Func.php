@@ -47,7 +47,7 @@ function getHGParents($hg_id, $parentList, $pearDB)
         $parentList[$hgs["hg_parent_id"]] = $hgs["hg_parent_id"];
         $parentList = getHGParents($hgs["hg_parent_id"], $parentList, $pearDB);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($hgs);
     return $parentList;
 }
@@ -325,7 +325,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     while ($host = $DBRESULT->fetchRow()) {
         $hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
 	 * Get service lists linked to hostgroup

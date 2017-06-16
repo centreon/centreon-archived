@@ -148,4 +148,4 @@ while ($row = $DBRESULT->fetchRow()) {
         . $row["CRITICALTimeScheduled"]."s;".$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";"
         . date("Y-m-d H:i:s", $row["date_start"]).";\n";
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();

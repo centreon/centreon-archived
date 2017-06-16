@@ -104,7 +104,7 @@ if (!$session->rowCount()) {
  * Get Values
  */
     $session_value = $session->fetchRow();
-    $session->free();
+    $session->closeCursor();
 
     /*
  * Connect to ods
@@ -138,7 +138,7 @@ if (!$session->rowCount()) {
     } else {
         $template_id = $_GET["template_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
  * Create command line

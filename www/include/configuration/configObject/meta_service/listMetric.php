@@ -62,7 +62,7 @@ $meta = $DBRESULT->fetchRow();
 $tpl->assign("meta", array(     "meta" => _("Meta Service"),
                             "name" => $meta["meta_name"],
                             "calc_type" => $calcType[$meta["calcul_type"]]));
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * start header menu

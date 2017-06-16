@@ -174,7 +174,7 @@ class procedures
                                                 WHERE service_id = '" . $service_id . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         if (isset($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] != "") {
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             $service_id = $row["service_template_model_stm_id"];
             if ($row["service_description"]) {
                 $tplArr[$service_id] = html_entity_decode($row["service_description"], ENT_QUOTES);
@@ -184,7 +184,7 @@ class procedures
                                                         FROM service
                                                         WHERE service_id = '" . $service_id . "' LIMIT 1");
                 $row = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
                 if ($row["service_description"]) {
                     $tplArr[$service_id] = html_entity_decode($row["service_description"], ENT_QUOTES);
                 } else {
@@ -252,7 +252,7 @@ class procedures
             $this->hostIconeList["Host_:_" . $data["host_name"]] =
                 "./img/media/" . $this->getImageFilePath($data["ehi_icon_image"]);
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($data);
     }
 
@@ -274,7 +274,7 @@ class procedures
             if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"]) {
                 return $row2["dir_alias"] . "/" . $row2["img_path"];
             }
-            $DBRESULT2->free();
+            $DBRESULT2->closeCursor();
             unset($row2);
         } else {
             return "../icones/16x16/server_network.gif";
@@ -294,7 +294,7 @@ class procedures
         while ($data = $DBRESULT->fetchRow()) {
             $this->serviceTplList["Service_:_" . $data["service_description"]] = $data["service_id"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($data);
     }
 
@@ -324,7 +324,7 @@ class procedures
                 "SELECT * FROM " . $this->db_prefix . "page WHERE page_title LIKE '$template'"
             );
             $data = $DBRESULT->fetchRow();
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             if ($debug) {
                 print "SELECT * FROM " . $this->db_prefix . "revision WHERE rev_page LIKE '" .
@@ -335,7 +335,7 @@ class procedures
                 "rev_page LIKE '" . $data['page_id'] . "' ORDER BY rev_text_id DESC LIMIT 1"
             );
             $revision = $DBRESULT->fetchRow();
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             if ($debug) {
                 print "SELECT * FROM " . $this->db_prefix . "text WHERE old_id = '" .
@@ -346,7 +346,7 @@ class procedures
                 $data['page_id'] . "' ORDER BY old_id DESC LIMIT 1"
             );
             $text = $DBRESULT->fetchRow();
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             switch ($type) {
                 case 0:

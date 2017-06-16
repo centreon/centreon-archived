@@ -124,7 +124,7 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
                         $fields["dep_hgParents"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgParents"] = trim($fields["dep_hgParents"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$key."'");
                     $fields["dep_hgChilds"] = "";
                     while ($hg = $DBRESULT->fetchRow()) {
@@ -132,7 +132,7 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
                         $fields["dep_hgChilds"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgChilds"] = trim($fields["dep_hgChilds"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $centreon->CentreonLogAction->insertLog("hostgroup dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
                 }
             }

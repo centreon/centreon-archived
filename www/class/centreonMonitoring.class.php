@@ -113,7 +113,7 @@ class CentreonMonitoring
             $row = $DBRESULT->fetchRow();
             $cpt = $row['count'];
         }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             return $cpt;
     }
@@ -177,7 +177,7 @@ class CentreonMonitoring
             }
             $tab[$svc["name"]][$svc["service_name"]] = $svc["state"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         return $tab;
     }

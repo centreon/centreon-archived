@@ -321,7 +321,7 @@ if (!$centreon->user->access->admin) {
         $hgNdo[$data["name"]] = 1;
         $hgBrk[$data["name"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 }
 
@@ -406,7 +406,7 @@ if (!$centreon->user->access->admin) {
     while ($data = $DBRESULT->fetchRow()) {
         $sgBrk[$data["name"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 }
 

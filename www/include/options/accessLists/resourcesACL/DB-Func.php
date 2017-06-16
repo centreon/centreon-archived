@@ -132,7 +132,7 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
                 $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
 
                 if (isset($maxId["MAX(acl_res_id)"])) {
                     duplicateGroups($key, $maxId["MAX(acl_res_id)"], $pearDB);

@@ -52,7 +52,7 @@ if (($o == "c" || $o == "w") && $vmetric_id) {
     $p_qy = $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
     // Set base value
     $vmetric = array_map("myDecode", $p_qy->fetchRow());
-    $p_qy->free();
+    $p_qy->closeCursor();
 }
 /*
  * Database retrieve information for differents elements list we need on the page
@@ -74,7 +74,7 @@ while ($indd = $dbindd->fetchRow()) {
         $mx_l = $hn_l;
     }
 }
-$dbindd->free();
+$dbindd->closeCursor();
 
 /*
  * End of "database-retrieved" information

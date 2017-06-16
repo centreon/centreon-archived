@@ -179,4 +179,4 @@ while ($row = $DBRESULT->fetchRow()) {
         $row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";".
         date("Y-m-d H:i:s", $row["date_start"]).";\n";
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();

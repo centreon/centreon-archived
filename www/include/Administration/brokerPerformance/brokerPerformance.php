@@ -205,7 +205,7 @@ while ($data = $DBRESULT->fetchRow()) {
     }
     $pollerList[$data["id"]] = $data["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Get poller ID

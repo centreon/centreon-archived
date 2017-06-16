@@ -68,7 +68,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         foreach ($tmp as $key => $value) {
             $host["host_stalOpts"][trim($value)] = 1;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /*
          * Set criticality

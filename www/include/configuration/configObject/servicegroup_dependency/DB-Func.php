@@ -127,7 +127,7 @@ function multipleServiceGroupDependencyInDB($dependencies = array(), $nbrDup = a
                         $fields["dep_sgParents"] .= $sg["servicegroup_sg_id"] . ",";
                     }
                     $fields["dep_sgParents"] = trim($fields["dep_sgParents"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$key."'");
                     $fields["dep_sgChilds"] = "";
                     while ($sg = $DBRESULT->fetchRow()) {
@@ -136,7 +136,7 @@ function multipleServiceGroupDependencyInDB($dependencies = array(), $nbrDup = a
                     }
                     $fields["dep_sgChilds"] = trim($fields["dep_sgChilds"], ",");
                     $oreon->CentreonLogAction->insertLog("servicegroup dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                 }
             }
         }

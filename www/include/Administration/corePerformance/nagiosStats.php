@@ -71,7 +71,7 @@ while ($data = $DBRESULT->fetchRow()) {
         $pollerId = $data['id'];
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 isset($_POST['pollers']) && $_POST['pollers'] != "" ?
     $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;

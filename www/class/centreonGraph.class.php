@@ -195,13 +195,13 @@ class CentreonGraph
         $this->dbPath = $config["RRDdatabase_path"];
         $this->dbStatusPath = $config['RRDdatabase_status_path'];
         unset($config);
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         $DBRESULT = $this->DB->query("SELECT * FROM options");
         while ($opt = $DBRESULT->fetchRow()) {
             $this->generalOpt[$opt['key']] = $opt['value'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($opt);
 
         if (isset($index)) {
@@ -215,7 +215,7 @@ class CentreonGraph
                     $metrics_cache[$tmp_metrics['metric_id']] = 1;
                 }
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             $DBRESULT = $this->DBC->query("SELECT metric_id
                                            FROM metrics
                                            WHERE index_id = '" . $this->index . "'
@@ -231,7 +231,7 @@ class CentreonGraph
             if ($count === 1) {
                 $this->onecurve = true;
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             $DBRESULT = $this->DB->query("SELECT vmetric_id metric_id
                                           FROM virtual_metrics
                                           WHERE index_id = '" . $this->index . "'
@@ -242,7 +242,7 @@ class CentreonGraph
                 $vmilist = "v" . $milist["metric_id"];
                 $odsm[$vmilist] = 1;
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             foreach ($odsm as $mid => $val) {
                 if (!isset($metrics_cache[$mid])) {
@@ -481,7 +481,7 @@ class CentreonGraph
                 $this->mlist[$rmetric["metric_id"]] = $this->mpointer[0]++;
                 $this->rmetrics[] = $rmetric;
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
 
         /* Manage virtuals metrics */
@@ -493,12 +493,12 @@ class CentreonGraph
             while ($vmetric = $DBRESULT->fetchRow()) {
                 $this->manageVMetric($vmetric["vmetric_id"], null, null);
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
 
         /* Merge all metrics */
         $mmetrics = array_merge($this->rmetrics, $this->vmetrics);
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         $this->listMetricsId = array();
         $components_ds_cache = null;
 
@@ -587,7 +587,7 @@ class CentreonGraph
                                 $ds[$key] = $ds_val;
                             }
                         }
-                        $DBRESULT3->free();
+                        $DBRESULT3->closeCursor();
                         $ds_data = $ds;
                     }
 
@@ -704,7 +704,7 @@ class CentreonGraph
                 }
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /*
          * Sort by ds_order,then legend
@@ -1048,7 +1048,7 @@ class CentreonGraph
                     return;
                 }
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             unset($command_id);
         }
         $DBRESULT = $this->DB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
@@ -1056,7 +1056,7 @@ class CentreonGraph
             $data = $DBRESULT->fetchRow();
             $this->templateId = $data["graph_id"];
             unset($data);
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             return;
         }
     }
@@ -1100,7 +1100,7 @@ class CentreonGraph
                 WHERE graph_id = '" . $this->templateId . "' LIMIT 1"
         );
         $this->templateInformations = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
     }
 
@@ -1165,10 +1165,10 @@ class CentreonGraph
                 $meta = $DBRESULT_meta->fetchRow();
                 $this->indexData["service_description"] = $meta["meta_name"];
                 unset($meta);
-                $DBRESULT_meta->free();
+                $DBRESULT_meta->closeCursor();
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         if (isset($this->metricsEnabled)) {
             $metrictitle = " metric ".$this->metrics[$this->metricsEnabled]["metric_name"];
@@ -1464,7 +1464,7 @@ class CentreonGraph
         );
         if ($DBRESULT->rowCount()) {
             $l_ovd = $DBRESULT->fetchRow();
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             if (isset($l_ovd["rnd_color"]) &&
                 !empty($l_ovd["rnd_color"]) &&
                 preg_match("/^\#[a-f0-9]{6,6}/i", $l_ovd["rnd_color"])) {
@@ -1628,7 +1628,7 @@ class CentreonGraph
          */
         if ($lPqy->rowCount() == 1) {
             $lVmetric = $lPqy->fetchRow();
-            $lPqy->free();
+            $lPqy->closeCursor();
             if (!isset($this->mlist["v".$lVmetric["metric_id"]])) {
                 if (is_null($vId)) {
                     $lVmetric["need"] = 1; /* 1 : Need this virtual metric : Hidden */
@@ -1640,7 +1640,7 @@ class CentreonGraph
                     "SELECT host_id, service_id FROM index_data WHERE id = '" . $lVmetric["index_id"] . "'"
                 );
                 $l_indd = $l_poqy->fetchRow();
-                $l_poqy->free();
+                $l_poqy->closeCursor();
                 /* Check for real or virtual metric(s) in the RPN function */
                 $l_mlist = preg_split("/\,/", $lVmetric["rpn_function"]);
                 foreach ($l_mlist as $l_mnane) {
@@ -1657,7 +1657,7 @@ class CentreonGraph
                     if ($l_poqy->rowCount() == 1) {
                         /* Find a real metric in the RPN function */
                         $l_rmetric = $l_poqy->fetchrow();
-                        $l_poqy->free();
+                        $l_poqy->closeCursor();
                         $l_rmetric["need"] = 1; /* 1 : Need this real metric - hidden */
                         if (!isset($this->mlist[$l_rmetric["metric_id"]])) {
                             $this->mlist[$l_rmetric["metric_id"]] = $this->mpointer[0]++;
@@ -1672,10 +1672,10 @@ class CentreonGraph
                         }
                     } elseif ($l_poqy->rowCount() == 0) {
                             /* key : id or vname and iid */
-                            $l_poqy->free();
+                            $l_poqy->closeCursor();
                             $this->manageVMetric(null, $l_mnane, $lVmetric["index_id"]);
                     } else {
-                        $l_poqy->free();
+                        $l_poqy->closeCursor();
                     }
                 }
                 $lVmetric["metric_id"] = "v".$lVmetric["metric_id"];
@@ -1700,7 +1700,7 @@ class CentreonGraph
                 }
             }
         } else {
-            $lPqy->free();
+            $lPqy->closeCursor();
         }
     }
 

@@ -123,7 +123,7 @@ if (!$session->rowCount()) {
             $rrdtoolPath = $option["value"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $title   = array(
             "active_host_check" => _("Host Check Execution Time"),

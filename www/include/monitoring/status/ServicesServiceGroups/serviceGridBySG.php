@@ -109,7 +109,7 @@ if (isset($_GET["host_search"])) {
             while ($row = $DBRESULT->fetchRow()) {
                 $servicegroups[] = $row['sg_name'];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
         foreach ($servicegroups as $servicegroup_name) {
             if (isset($sg_search) && strcmp($sg_search, $servicegroup_name) == 0) {

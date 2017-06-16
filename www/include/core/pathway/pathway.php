@@ -44,7 +44,7 @@ function getTopologyParent($p)
     $DBRESULT = $pearDB->query($rqPath);
     
     $redirectPath = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $redirectPath;
 }
 
@@ -54,7 +54,7 @@ function getTopologyDataPage($p)
     $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
     $DBRESULT = $pearDB->query($rqPath);
     $redirectPath = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $redirectPath;
 }
 
@@ -64,7 +64,7 @@ function getTopologyParentPage($p)
     $rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '".$p."'";
     $DBRESULT = $pearDB->query($rqPath);
     $redirectPath = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $redirectPath["topology_parent"];
 }
 
@@ -101,7 +101,7 @@ if (isset($tabPath[$p]) && !$tabPath[$p]["url"]) {
             break;
         }
         $new_url = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         $tabPath[$new_url["topology_page"]] = array();
         $tabPath[$new_url["topology_page"]]["name"] = _($new_url["topology_name"]);
         $tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];

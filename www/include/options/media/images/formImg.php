@@ -58,7 +58,7 @@ if ($o == "ci" || $o == "w") {
     $dir = $DBRESULT->fetchRow();
     $img_path = "./img/media/".$dir["dir_alias"]."/".$dir["img_path"];
     $img["directories"] = $dir["dir_name"];
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 

@@ -73,7 +73,7 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
     }
     $vmetric = $DBRESULT->fetchRow();
     $nR = $DBRESULT->rowCount();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $sql = "SELECT metric_id FROM metrics WHERE ";
     $sql .= "metric_name = '".($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
@@ -85,7 +85,7 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
     }
     $metric = $DBRESULT->fetchRow();
     $nR = $nR + $DBRESULT->rowCount();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     if ($nR >= 1 && $vmetric["vmetric_id"] != $gsvs["vmetric_id"] || isset($metric["metric_id"])) {
         return false;
@@ -283,7 +283,7 @@ function &disableVirtualMetric($v_id = null, $force = 0)
     $l_pqy = $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='$v_id'$l_where;");
     if ($l_pqy->rowCount() == 1) {
         $vmetric = $l_pqy->fetchRow();
-        $l_pqy->free();
+        $l_pqy->closeCursor();
         $l_pqy = $pearDB->query("SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='".$vmetric["index_id"]."' AND `vmetric_activate` = '1' AND `rpn_function` REGEXP '(^|,)".str_replace($repA, $repB, $vmetric["vmetric_name"])."(,|$)';");
         while ($d_vmetric = $l_pqy->fetchRow()) {
             $lv_dis = disableVirtualMetric($d_vmetric["vmetric_id"]);
@@ -293,7 +293,7 @@ function &disableVirtualMetric($v_id = null, $force = 0)
                 }
             }
         }
-        $l_pqy->free();
+        $l_pqy->closeCursor();
         if (!$force) {
             $v_dis[] = $v_id;
         }
@@ -348,7 +348,7 @@ function enableVirtualMetric($v_id, $v_name = null, $index_id = null)
         }
         $v_ena[] = $p_vmetric["vmetric_id"];
     }
-    $l_pqy->free();
+    $l_pqy->closeCursor();
     return $v_ena;
 }
 

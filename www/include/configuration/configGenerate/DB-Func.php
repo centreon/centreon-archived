@@ -78,7 +78,7 @@ function intCmdParam($DB, $pollerId)
     while ($data = $DBRESULT->fetchRow()) {
         $commands[$data["command_id"]] = $data["command_name"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     
     $i = 0;
     $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
@@ -114,7 +114,7 @@ function intCmdParam($DB, $pollerId)
         }
         $i++;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $cache;
 }
 
@@ -375,7 +375,7 @@ function checkDependenciesStrong()
         $cctEnb[$contact["contact_id"]] = 1;
         unset($contact);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     /*
      * Contact with template
      */
@@ -392,7 +392,7 @@ function checkDependenciesStrong()
         $cctEnb[$contact["contact_id"]] = 1;
         unset($contact);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * ContactGroup
@@ -403,7 +403,7 @@ function checkDependenciesStrong()
         $cgEnb[$contactGroup["cg_id"]] = 1;
     }
     unset($contactGroup);
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Host Template Model
@@ -413,7 +413,7 @@ function checkDependenciesStrong()
     while ($host = $DBRESULT->fetchRow()) {
         $hostEnb[$host["host_id"]] = $host["host_name"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Host
@@ -446,7 +446,7 @@ function checkDependenciesStrong()
             while ($valid = $DBRESULT2->fetchRow()) {
                 isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
             }
-            $DBRESULT2->free();
+            $DBRESULT2->closeCursor();
             unset($valid);
 
             /*
@@ -457,11 +457,11 @@ function checkDependenciesStrong()
             while ($valid = $DBRESULT2->fetchRow()) {
                 isset($cctEnb[$valid["contact_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
             }
-            $DBRESULT2->free();
+            $DBRESULT2->closeCursor();
             unset($valid);
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($host);
 
     /*
@@ -477,9 +477,9 @@ function checkDependenciesStrong()
                 break;
             }
         }
-        $DBRESULT2->free();
+        $DBRESULT2->closeCursor();
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($hostGroup);
 
     /*
@@ -490,7 +490,7 @@ function checkDependenciesStrong()
     while ($service = $DBRESULT->fetchRow()) {
         $svEnb[$service["service_id"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Service
@@ -517,7 +517,7 @@ function checkDependenciesStrong()
                 isset($hostEnb[$valid["host_host_id"]]) ? $h = true : null;
                 isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : null;
             }
-            $DBRESULT2->free();
+            $DBRESULT2->closeCursor();
             unset($valid);
 
             if ($h || $hg) {
@@ -526,7 +526,7 @@ function checkDependenciesStrong()
             unset($valid);
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
 
     /*
@@ -541,10 +541,10 @@ function checkDependenciesStrong()
                 $sgEnb[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
             }
         }
-        $DBRESULT2->free();
+        $DBRESULT2->closeCursor();
     }
     unset($serviceGroup);
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Meta Service
@@ -555,7 +555,7 @@ function checkDependenciesStrong()
         $omsEnb[$oms["meta_id"]] = 1;
     }
     unset($oms);
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     return ($gbEnb);
 }

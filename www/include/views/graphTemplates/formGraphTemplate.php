@@ -54,7 +54,7 @@ $res = $pearDB->query("SELECT compo_id, name FROM giv_components_template ORDER 
 while ($compo = $res->fetchRow()) {
     $compos[$compo["compo_id"]] = $compo["name"];
 }
-$res->free();
+$res->closeCursor();
 
 #
 # End of "database-retrieved" information

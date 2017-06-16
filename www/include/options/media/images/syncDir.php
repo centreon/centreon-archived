@@ -220,7 +220,7 @@ function DeleteOldPictures($pearDB)
             $fileRemoved++;
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $fileRemoved;
 }
 

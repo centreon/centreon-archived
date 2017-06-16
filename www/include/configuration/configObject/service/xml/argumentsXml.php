@@ -156,7 +156,7 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
     while ($row = $res->fetchRow()) {
         $argTab[$row['macro_name']] = $row['macro_description'];
     }
-    $res->free();
+    $res->closeCursor();
 
     /*
      * Write XML

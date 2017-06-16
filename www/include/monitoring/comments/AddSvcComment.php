@@ -83,7 +83,7 @@ if ($centreon->user->access->checkAction("service_comment")) {
     while ($row = $DBRESULT->fetchRow()) {
         $hosts[$row['host_id']] = $row['host_name'];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $services = array();
     if (isset($host_id)) {

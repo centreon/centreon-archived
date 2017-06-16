@@ -268,7 +268,7 @@ if ($export) {
     while ($h = $DBRESULT->fetchRow()) {
         $HostCache[$h["host_name"]] = $h["host_address"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 
@@ -749,7 +749,7 @@ if (isset($req) && $req) {
             preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
             $DBRESULT2 = $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$matches[1]."'");
             $meta = $DBRESULT2->fetchRow();
-            $DBRESULT2->free();
+            $DBRESULT2->closeCursor();
             $buffer->writeElement("host_name", "Meta", false);
             $buffer->writeElement("real_service_name", $log["service_description"], false);
             $buffer->writeElement("service_description", $meta["meta_name"], false);

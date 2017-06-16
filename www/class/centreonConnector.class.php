@@ -224,7 +224,7 @@ class CentreonConnector
             $connector['command_id'][] = $row["command_id"];
         }
         unset($row);
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         return $connector;
     }

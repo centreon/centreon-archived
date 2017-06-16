@@ -81,7 +81,7 @@ $DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS
 while ($info = $DBRESULT->fetchRow()) {
     $nagiosInfo[$info["instance_id"]] = $info;
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Get Scheduler version
@@ -92,7 +92,7 @@ while ($info = $DBRESULT->fetchRow()) {
         $nagiosInfo[$info["instance_id"]]["version"] = $info["program_name"] . " " . $info["program_version"];
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Smarty template Init

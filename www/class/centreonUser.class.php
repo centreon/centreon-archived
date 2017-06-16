@@ -137,7 +137,7 @@ class CentreonUser
             }
         }
         unset($topo);
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $lcaTopo;
     }
     
@@ -151,11 +151,11 @@ class CentreonUser
     {
 		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id AND contact.contact_register = '1'");
 		$admin = $DBRESULT->fetchRow();
-		$DBRESULT->free();
+		$DBRESULT->closeCursor();
 
 		$DBRESULT = $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
 		$admin2 = $DBRESULT->fetchRow();
-		$DBRESULT->free();
+		$DBRESULT->closeCursor();
 
 		if ($admin["contact_admin"]) {
 			unset($admin);

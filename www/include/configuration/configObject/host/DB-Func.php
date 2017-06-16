@@ -805,7 +805,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
         $DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
         $result = $DBRESULT->fetchRow();
         $ret["host_template_model_htm_id"] = $result["host_id"];
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
@@ -1142,7 +1142,7 @@ function getHostListInUse($hst_list, $hst)
         $str .= ",'" . $result['host_tpl_id'] . "'";
         $str = getHostListInUse($str, $result['host_tpl_id']);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $str;
 }
 
@@ -1211,7 +1211,7 @@ function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = 
             $DBRESULT4 = $pearDB->query($rq2);
         }
     }
-    $DBRESULT3->free();
+    $DBRESULT3->closeCursor();
 
     $rq = "SELECT host_tpl_id " .
         "FROM host_template_relation " .
@@ -1236,7 +1236,7 @@ function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = 
         $antiLoop[$scndHID] = 1;
         deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list, $antiLoop);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 function updateHost($host_id = null, $from_MC = false, $cfg = null)
@@ -1561,7 +1561,7 @@ function updateHost_MC($host_id = null)
         $DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
         $result = $DBRESULT->fetchRow();
         $ret["host_template_model_htm_id"] = $result["host_id"];
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     $rq = "UPDATE host SET ";
@@ -2481,7 +2481,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
             for ($i = 0; $sg = $DBRESULT3->fetchRow(); $i++) {
                 $service_sgs[$i] = $sg["servicegroup_sg_id"];
             }
-            $DBRESULT3->free();
+            $DBRESULT3->closeCursor();
 
             if (testServiceExistence($alias, array(0 => $hID))) {
                 $service = array(

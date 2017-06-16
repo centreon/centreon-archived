@@ -447,7 +447,7 @@ class CentreonAPI
         while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**

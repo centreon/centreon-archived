@@ -269,7 +269,7 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
         if ($DBRESULT->rowCount() >= 1 && $service["service_id"] != $id) {
             return (false == $returnId) ? false : $service['service_id'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
     foreach ($hgPars as $hostgroup) {
         $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
@@ -278,7 +278,7 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
         if ($DBRESULT->rowCount() >= 1 && $service["service_id"] != $id) {
             return (false == $returnId) ? false : $service['service_id'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
     return (false == $returnId) ? true : 0;
 }
@@ -408,7 +408,7 @@ function divideHostGroupsToHostGroup($service_id)
             setHostChangeFlag($pearDB, $host_id, null);
         }
     }
-    $DBRESULT3->free();
+    $DBRESULT3->closeCursor();
 }
 
 function divideHostGroupsToHost($service_id)
@@ -425,7 +425,7 @@ function divideHostGroupsToHost($service_id)
             setHostChangeFlag($pearDB, $host_id, null);
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 function divideHostsToHost($service_id)

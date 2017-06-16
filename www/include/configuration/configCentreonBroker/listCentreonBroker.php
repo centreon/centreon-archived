@@ -49,7 +49,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Smarty template Init

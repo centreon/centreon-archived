@@ -55,7 +55,7 @@ if (isset($_GET["id"]) && isset($_GET["color"])) {
         while ($row = $DBRESULT->fetchRow()) {
             fillBuffer($statesTab, $row, $color);
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 } else {
     $buffer->writeElement("error", "error");

@@ -96,7 +96,7 @@ class CentreonHostgroups
             $ref[$elem["host_host_id"]] = $elem["host_host_id"];
             $hosts[] = $elem["host_host_id"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($elem);
 
         if (isset($hostgroups) && count($hostgroups)) {
@@ -203,7 +203,7 @@ class CentreonHostgroups
         while ($elem = $DBRESULT->fetchRow()) {
             $hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($elem);
         return $hosts;
     }
@@ -222,7 +222,7 @@ class CentreonHostgroups
             }
             $this->relationCache[$data["hg_parent_id"]][$data["hg_child_id"]] = 1;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($data);
     }
 
@@ -238,7 +238,7 @@ class CentreonHostgroups
         while ($data = $DBRESULT->fetchRow()) {
             $this->dataTree[$data['hg_id']] = $this->getHostGroupHosts($data['hg_id'], $this->dataTree);
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $hostgroups;
     }
 

@@ -473,7 +473,7 @@ class PartEngine
             }
         }
 
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
     /**
      * list all partitions for a table
@@ -520,7 +520,7 @@ class PartEngine
         } else {
             return $partitions;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -570,7 +570,7 @@ class PartEngine
         }
         $filename .= "_".date("Ymd-hi").".dump";
 
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         $request = "SELECT * FROM " . $tableName;
         $request .= " WHERE " . $table->getColumn() . " >= " . $start;
@@ -596,7 +596,7 @@ class PartEngine
     {
         $DBRESULT = $db->query("SELECT plugin_status FROM INFORMATION_SCHEMA.PLUGINS WHERE plugin_name = 'partition'");
         $config = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         if ($config["plugin_status"] != "ACTIVE") {
             return (false);
         }

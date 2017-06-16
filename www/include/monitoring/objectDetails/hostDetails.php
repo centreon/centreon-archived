@@ -144,7 +144,7 @@ if (!$is_admin && !$haveAccess) {
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /* Get service categories */
         $hostIds = array($host_id);
@@ -161,7 +161,7 @@ if (!$is_admin && !$haveAccess) {
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /* Get notifications contacts */
         $retrievedNotificationsInfos = get_notified_infos_for_host($host_id);
@@ -255,7 +255,7 @@ if (!$is_admin && !$haveAccess) {
             // Set Data
             $services[] = $row;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /*
          * Get host informations
@@ -356,7 +356,7 @@ if (!$is_admin && !$haveAccess) {
             $tabCommentHosts[$i] = $data;
             $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($data);
 
         /* Get Graphs Listing */
@@ -655,7 +655,7 @@ if (!$is_admin && !$haveAccess) {
                 include('modules/' . $module['name'] . '/host_tools.php');
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         foreach ($tools as $key => $tab) {
             $tools[$key]['url'] = str_replace("@host_id@", $host_id, $tools[$key]['url']);

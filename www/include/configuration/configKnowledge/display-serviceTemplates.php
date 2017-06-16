@@ -136,7 +136,7 @@ try {
         $data["service_description"] = str_replace("#BS#", "\\", $data["service_description"]);
         $selection[$data["service_description"]] = $data["service_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 
     $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");

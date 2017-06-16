@@ -129,7 +129,7 @@ for ($i = 0; $DBRESULT->rowCount() && ($elem = $DBRESULT->fetchRow()); $i++) {
                             "Menu1Popup" => $elem["topology_popup"] ? true : false);
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $userUrl = "main.php?p=50104&o=c";
 
@@ -299,7 +299,7 @@ if ($is_admin) {
     $tab_user = array_merge($tab_user_admin, $tab_user_non_admin);
     unset($tab_user_admin);
     unset($tab_user_non_admin);
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     $tpl->assign("tab_user", $tab_user);
 }
 $tpl->assign('amIadmin', $centreon->user->admin);

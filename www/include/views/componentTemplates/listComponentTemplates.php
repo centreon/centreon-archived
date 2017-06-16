@@ -103,7 +103,7 @@ for ($i = 0; $compo = $DBRESULT->fetchRow(); $i++) {
     } else {
         $title = array("host_name"=>"Global");
     }
-    $titles->free();
+    $titles->closeCursor();
     $elemArr[$i] = array("MenuClass"=>"list_".$style,
                         "title"=>$title["host_name"],
                         "RowMenu_select"=>$selectedElements->toHtml(),

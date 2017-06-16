@@ -152,7 +152,7 @@ function multipleGroupInDB($Groups = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
                 $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
 
                 /*
 				 * Duplicate Links
