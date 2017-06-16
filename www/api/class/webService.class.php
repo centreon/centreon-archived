@@ -269,9 +269,7 @@ class CentreonWebService
         /* Initialize the webservice */
         require_once($webService['path']);
 
-
         $wsObj = new $webService['class']();
-
 
         if (method_exists($wsObj, 'finalConstruct')) {
             $wsObj->finalConstruct($dependencyInjector);

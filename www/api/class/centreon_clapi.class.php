@@ -38,10 +38,11 @@ require_once dirname(__FILE__) . "/webService.class.php";
 define('_CLAPI_LIB_', _CENTREON_PATH_ . '/lib');
 define('_CLAPI_CLASS_', _CENTREON_PATH_ . '/www/class/centreon-clapi');
 
-set_include_path(implode(PATH_SEPARATOR, array(_CENTREON_PATH_ . '/lib',
-                                               _CENTREON_PATH_ . '/www/class/centreon-clapi',
-                                               get_include_path()
-                                               )));
+set_include_path(implode(PATH_SEPARATOR, array(
+    _CENTREON_PATH_ . '/lib',
+    _CENTREON_PATH_ . '/www/class/centreon-clapi',
+    get_include_path()
+)));
 
 require_once _CENTREON_PATH_ . '/www/class/centreon-clapi/centreonAPI.class.php';
 require_once _CLAPI_LIB_ . "/Centreon/Db/Manager/Manager.php";
@@ -57,17 +58,22 @@ class CentreonClapi extends CentreonWebService
     /**
      * Constructor
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
+    public function __construct()
     {
         parent::__construct();
+    }
+
+
+    public function finalConstruct(\Pimple\Container $dependencyInjector)
+    {
         $this->dependencyInjector = $dependencyInjector;
     }
-    
+
     public function postAction()
     {
         global $centreon;
         global $conf_centreon;
-        
+
         $dbConfig['host'] = $conf_centreon['hostCentreon'];
         $dbConfig['username'] = $conf_centreon['user'];
         $dbConfig['password'] = $conf_centreon['password'];
@@ -88,23 +94,23 @@ class CentreonClapi extends CentreonWebService
             $db_storage->getConnection();
         } catch (Exception $e) {
         }
-        
+
         $username = $centreon->user->alias;
-        
+
         CentreonClapi\CentreonUtils::setUserName($username);
-        
+
         if (false === isset($this->arguments['action'])) {
             throw new RestBadRequestException("Bad parameters");
         }
-        
+
         /* Prepare options table */
         $action = $this->arguments['action'];
-        
+
         $options = array();
         if (isset($this->arguments['object'])) {
             $options['o'] = $this->arguments['object'];
         }
-        
+
         if (isset($this->arguments['values'])) {
             if (is_array($this->arguments['values'])) {
                 $options['v'] = join(';', $this->arguments['values']);
@@ -112,7 +118,7 @@ class CentreonClapi extends CentreonWebService
                 $options['v'] = $this->arguments['values'];
             }
         }
-        
+
         /* Load and execute clapi option */
         try {
             $clapi = new \CentreonClapi\CentreonAPI(
@@ -165,22 +171,22 @@ class CentreonClapi extends CentreonWebService
             }
             throw new RestInternalServerErrorException($contents);
         }
-        
-        
+
+
         $return = array();
         $tmpLines = explode("\n", $contents);
         $lines = array();
-        
+
         /* Get object attribute name */
         $headers = explode(';', $tmpLines[0]);
-        
+
         /* Remove empty lines and Return end line */
         for ($i = 1; $i < count($tmpLines); $i++) {
             if (trim($tmpLines[$i]) !== '' && strpos($tmpLines[$i], 'Return code end :') !== 0) {
                 $lines[] = $tmpLines[$i];
             }
         }
-        
+
         $return['result'] = array();
         for ($i = 0; $i < count($lines); $i++) {
             if (strpos($lines[$i], ';') !== false) {
