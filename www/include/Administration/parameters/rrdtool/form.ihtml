@@ -94,7 +94,7 @@ function toggleRrdcached(radio) {
 }
 
 Event.observe(window, 'load', function() {
-	var checkedEl = $$('input:checked[type="radio"][name="rrdcached_enable[rrdcached_enable]"]')[0];
+	var checkedEl = jQuery('input:checked[type="radio"][name="rrdcached_enable[rrdcached_enable]"]')[0];
 	toggleRrdcached(checkedEl);
 });
 {/literal}

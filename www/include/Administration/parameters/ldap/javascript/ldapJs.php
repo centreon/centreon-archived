@@ -221,7 +221,7 @@
      * Apply template is called from the template selectbox
      */
     function applyTemplate(templateValue) {
-        $$('input[type^=text]').each(function (el) {
+        jQuery('input[type^=text]').each(function (el) {
             key = el.getAttribute('name');
             var attr = key;
 

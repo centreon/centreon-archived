@@ -437,21 +437,21 @@ if ($form->validate()) {
 <script type='text/javascript'>
 function hideAdvancedSelect(advId)
 {
-    $$("#"+advId).each(function(e) {
+    jQuery("#"+advId).each(function(e) {
         e.up('table').setAttribute('style', 'display: none');
     });
 }
 
 function showAdvancedSelect(advId)
 {
-    $$("#"+advId).each(function(e) {
+    jQuery("#"+advId).each(function(e) {
         e.up('table').setAttribute('style', 'display: visible');
     });
 }
 
 function advancedDisplay(checkboxId, advSelectId)
 {
-    $$("#"+checkboxId).each(function(e) {
+    jQuery("#"+checkboxId).each(function(e) {
         if (e.checked) {
             hideAdvancedSelect(advSelectId);
         } else {
