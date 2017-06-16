@@ -49810,7 +49810,7 @@
 					"response": []
 				},
 				{
-					"name": "Grant Edit",
+					"name": "Grant Edit View",
 					"event": [
 						{
 							"listen": "test",
@@ -49865,14 +49865,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Edit\"\n}"
+							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Edit View\"\n}"
 						},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "Revoke Edit",
+					"name": "Revoke Edit View",
 					"event": [
 						{
 							"listen": "test",
@@ -49927,14 +49927,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Edit\"\n}"
+							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Edit View\"\n}"
 						},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "Grant Share",
+					"name": "Grant Share View",
 					"event": [
 						{
 							"listen": "test",
@@ -49989,14 +49989,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Share\"\n}"
+							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Share View\"\n}"
 						},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "Revoke Share",
+					"name": "Revoke Share View",
 					"event": [
 						{
 							"listen": "test",
@@ -50051,14 +50051,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Share\"\n}"
+							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Share View\"\n}"
 						},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "Grant Parameters",
+					"name": "Grant Widget Parameters",
 					"event": [
 						{
 							"listen": "test",
@@ -50113,14 +50113,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Parameters\"\n}"
+							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Widget Parameters\"\n}"
 						},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "Revoke Parameters",
+					"name": "Revoke Widget Parameters",
 					"event": [
 						{
 							"listen": "test",
@@ -50175,7 +50175,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Parameters\"\n}"
+							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Widget Parameters\"\n}"
 						},
 						"description": ""
 					},
@@ -55866,378 +55866,6 @@
 					"response": []
 				},
 				{
-					"name": "Grant scan",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;scan\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Revoke scan",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;scan\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Grant rules",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;rules\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Revoke rules",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;rules\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Grant overview",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;overview\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Revoke overview",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;overview\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
 					"name": "Grant users",
 					"event": [
 						{
@@ -57392,130 +57020,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;miscellaneous\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Grant categories",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;categories\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Revoke categories",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;categories\"\n}"
 						},
 						"description": ""
 					},
@@ -63553,6 +63057,122 @@
 					},
 					"response": []
 				},
+                                {
+                                        "name": "Grant visualisation",
+                                        "event": [
+                                                {
+                                                        "listen": "test",
+                                                        "script": {
+                                                                "type": "text/javascript",
+                                                                "exec": [
+                                                                        "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                                                                ]
+                                                        }
+                                                }
+                                        ],
+                                        "request": {
+                                                "url": {
+                                                        "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                                                        "protocol": "http",
+                                                        "host": [
+                                                                "{{url}}"
+                                                        ],
+                                                        "path": [
+                                                                "centreon",
+                                                                "api",
+                                                                "index.php"
+                                                        ],
+                                                        "query": [
+                                                                {
+                                                                        "key": "action",
+                                                                        "value": "action"
+                                                                },
+                                                                {
+                                                                        "key": "object",
+                                                                        "value": "centreon_clapi"
+                                                                }
+                                                        ],
+                                                        "variable": []
+                                                },
+                                                "method": "POST",
+                                                "header": [
+                                                        {
+                                                                "description": "",
+                                                                "key": "Content-Type",
+                                                                "value": "application/json"
+                                                        },
+                                                        {
+                                                                "description": "",
+                                                                "key": "centreon-auth-token",
+                                                                "value": "{{token}}"
+                                                        }
+                                                ],
+                                                "body": {
+                                                        "mode": "raw",
+                                                        "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs;visualisation\"\n}"
+                                                },
+                                                "description": ""
+                                        },
+                                        "response": []
+                                },
+                                {
+                                        "name": "Revoke visualisation",
+                                        "event": [
+                                                {
+                                                        "listen": "test",
+                                                        "script": {
+                                                                "type": "text/javascript",
+                                                                "exec": [
+                                                                        "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                                                                ]
+                                                        }
+                                                }
+                                        ],
+                                        "request": {
+                                                "url": {
+                                                        "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                                                        "protocol": "http",
+                                                        "host": [
+                                                                "{{url}}"
+                                                        ],
+                                                        "path": [
+                                                                "centreon",
+                                                                "api",
+                                                                "index.php"
+                                                        ],
+                                                        "query": [
+                                                                {
+                                                                        "key": "action",
+                                                                        "value": "action"
+                                                                },
+                                                                {
+                                                                        "key": "object",
+                                                                        "value": "centreon_clapi"
+                                                                }
+                                                        ],
+                                                        "variable": []
+                                                },
+                                                "method": "POST",
+                                                "header": [
+                                                        {
+                                                                "description": "",
+                                                                "key": "Content-Type",
+                                                                "value": "application/json"
+                                                        },
+                                                        {
+                                                                "description": "",
+                                                                "key": "centreon-auth-token",
+                                                                "value": "{{token}}"
+                                                        }
+                                                ],
+                                                "body": {
+                                                        "mode": "raw",
+                                                        "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs;visualisation\"\n}"
+                                                },
+                                                "description": ""
+                                        },
+                                        "response": []
+                                },
 				{
 					"name": "Grant sessions",
 					"event": [
@@ -64782,130 +64402,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"action\": \"revoke_servicegroup\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{sg_name}}\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Grant_metaservice",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"grant_metaservice\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{racl_metaservice}}\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Revoke_metaservice",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi",
-									"equals": true,
-									"description": ""
-								}
-							],
-							"variable": []
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke_metaservice\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{racl_metaservice}}\"\n}"
 						},
 						"description": ""
 					},
