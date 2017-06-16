@@ -218,7 +218,7 @@ Tableau de correspondance des versions Centreon
 +------------------------------+----------------+------------------------+
 | Centreon Plugin Base         | 1.16.x         | 1.18.X                 |
 +------------------------------+----------------+------------------------+
-| Centreon Plugins             | (via githug)   | (available repository) |
+| Centreon Plugins             | (via GitHub)   | (available repository) |
 +------------------------------+----------------+------------------------+
 | MySQL or MariaDB             | 5.1.x or 5.5.x | >= 5.6 or 10.x         |
 +------------------------------+----------------+------------------------+
