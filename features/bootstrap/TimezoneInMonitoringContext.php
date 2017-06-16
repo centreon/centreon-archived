@@ -13,8 +13,8 @@ class TimezoneInMonitoringContext extends CentreonContext
 {
     private $page;
     private $hostname = 'acceptancetest';
-    private $ping = 'Ping';
-    
+    private $serviceName = 'Ping';
+    private $timezone = 'Africa/Accra';
 
     /**
      *  @Given a host
@@ -27,13 +27,18 @@ class TimezoneInMonitoringContext extends CentreonContext
             'alias' => $this->hostname,
             'address' => '127.0.0.1',
             'templates' => array('generic-host'),
-            'location' => array('Africa/Accra')
+            'location' => array($this->timezone)
         ));
         $this->page->save();
         $this->reloadAllPollers();
         $this->page = new MonitoringServicesPage($this);
-        $this->page->scheduleImmediateCheckOnService($this->hostname, $this->ping);
-        
+        $this->spin(
+            function ($context) {
+                $context->page->scheduleImmediateCheckOnService($context->hostname, $context->serviceName);
+            },
+            'Could not schedule check.',
+            5
+        );
     }
 
     /**
@@ -49,20 +54,17 @@ class TimezoneInMonitoringContext extends CentreonContext
      */
     public function ThenTheTimezoneOfThisHostIsDisplayed()
     {
-        $properties = $this->page->getProperties();
-        
         $this->spin(
-            function() {
-                $properties = $this->page->getProperties();
-                
+            function($context) {
+                $properties = $context->page->getProperties();
                 if ($properties['timezone'] == 'Africa/Accra') {
- 
                     return true;
-                }          
+                }
+                new HostMonitoringDetailsPage($context, $context->hostname);
+                return false;
             },        
-            'Timezone is not displayed: got ' . $properties['timezone'] . 
-                ', expected Africa/Accra.',
-            10);
+            'Wrong timezone displayed, expected ' . $this->timezone . '.',
+            10
+        );
     }
-    
 }
