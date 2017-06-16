@@ -117,7 +117,7 @@ if (!$is_admin) {
  */
 $rq = "SELECT * FROM topology WHERE topology_parent IS NULL $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 $DBRESULT = $pearDB->query($rq);
-for ($i = 0; $DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow()); $i++) {
+for ($i = 0; $DBRESULT->rowCount() && ($elem = $DBRESULT->fetchRow()); $i++) {
     $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2")) {
         $elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
@@ -178,7 +178,7 @@ $rq = "SELECT topology_page, topology_url_opt, topology_popup, topology_url, top
 $DBRESULT = $pearDB->query($rq);
 $firstP = null;
 $sep = "&nbsp;";
-for ($i = 0; $DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow()); $i++) {
+for ($i = 0; $DBRESULT->rowCount() && ($elem = $DBRESULT->fetchRow()); $i++) {
     $firstP ? null : $firstP = $elem["topology_page"];
     
     $pageAccess = $centreon->user->access->page($elem["topology_page"]);
@@ -203,7 +203,7 @@ for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
     $DBRESULT_title = $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
     $title = "";
     $topoName = $DBRESULT_title->fetchRow();
-    if ($DBRESULT_title->numRows()) {
+    if ($DBRESULT_title->rowCount()) {
         $title = _($topoName['topology_name']);
     } else {
         $title = _("Main Menu");
