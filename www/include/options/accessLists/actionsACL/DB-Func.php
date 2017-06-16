@@ -53,10 +53,10 @@ function testActionExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions WHERE acl_action_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $cg = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $cg["acl_action_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $cg["acl_action_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $cg["acl_action_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $cg["acl_action_id"] != $id) {
         return false;
     } else {
         return true;

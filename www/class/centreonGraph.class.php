@@ -210,7 +210,7 @@ class CentreonGraph
                                           WHERE `index_id` = '" . $this->index . "'
                                           AND `contact_id` = '" . $this->user_id . "'");
             $metrics_cache = array();
-            if ($DBRESULT->numRows()) {
+            if ($DBRESULT->rowCount()) {
                 while ($tmp_metrics = $DBRESULT->fetchRow()) {
                     $metrics_cache[$tmp_metrics['metric_id']] = 1;
                 }
@@ -307,7 +307,7 @@ class CentreonGraph
             $query .= " AND metric_id = " . $this->DB->escape($metricId);
         }
         $res = $this->DBC->query($query);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             $maxlimit = $row['maxlimit'];
             if ($maxlimit != 0) {
@@ -582,7 +582,7 @@ class CentreonGraph
                                 FROM giv_components_template
                                 WHERE default_tpl1 = '1' LIMIT 1"
                         );
-                        if ($DBRESULT3->numRows()) {
+                        if ($DBRESULT3->rowCount()) {
                             foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
                                 $ds[$key] = $ds_val;
                             }
@@ -1040,7 +1040,7 @@ class CentreonGraph
         } else {
             $command_id = getMyServiceField($this->indexData["service_id"], "command_command_id");
             $DBRESULT = $this->DB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
-            if ($DBRESULT->numRows()) {
+            if ($DBRESULT->rowCount()) {
                 $data = $DBRESULT->fetchRow();
                 if ($data["graph_id"] != 0) {
                     $this->templateId = $data["graph_id"];
@@ -1052,7 +1052,7 @@ class CentreonGraph
             unset($command_id);
         }
         $DBRESULT = $this->DB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $data = $DBRESULT->fetchRow();
             $this->templateId = $data["graph_id"];
             unset($data);
@@ -1151,7 +1151,7 @@ class CentreonGraph
 
         $this->log("index_data for ".$svc_instance);
         $DBRESULT = $this->DBC->query("SELECT * FROM index_data WHERE id = '" . $svc_instance . "' LIMIT 1");
-        if (!$DBRESULT->numRows()) {
+        if (!$DBRESULT->rowCount()) {
             $this->indexData = 0;
         } else {
             $this->indexData = $DBRESULT->fetchRow();
@@ -1462,7 +1462,7 @@ class CentreonGraph
                     AND `metric_id` = '" . $l_mid . "'
                     AND `contact_id` = '" . $this->user_id . "'"
         );
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $l_ovd = $DBRESULT->fetchRow();
             $DBRESULT->free();
             if (isset($l_ovd["rnd_color"]) &&
@@ -1626,7 +1626,7 @@ class CentreonGraph
         /*
          * There is only one metric_id
          */
-        if ($lPqy->numRows() == 1) {
+        if ($lPqy->rowCount() == 1) {
             $lVmetric = $lPqy->fetchRow();
             $lPqy->free();
             if (!isset($this->mlist["v".$lVmetric["metric_id"]])) {
@@ -1654,7 +1654,7 @@ class CentreonGraph
                             WHERE index_id = id AND index_id = '" . $lVmetric["index_id"] . "'
                                 AND metric_name = '" . $l_mnane . "'"
                     );
-                    if ($l_poqy->numRows() == 1) {
+                    if ($l_poqy->rowCount() == 1) {
                         /* Find a real metric in the RPN function */
                         $l_rmetric = $l_poqy->fetchrow();
                         $l_poqy->free();
@@ -1670,7 +1670,7 @@ class CentreonGraph
                                 $this->rmetrics[$l_pointer]["need"] = 0;
                             }
                         }
-                    } elseif ($l_poqy->numRows() == 0) {
+                    } elseif ($l_poqy->rowCount() == 0) {
                             /* key : id or vname and iid */
                             $l_poqy->free();
                             $this->manageVMetric(null, $l_mnane, $lVmetric["index_id"]);
@@ -1821,7 +1821,7 @@ class CentreonGraph
             WHERE host_id = " . $this->DBC->escape($hostId) . "
                 AND service_id = " . $this->DBC->escape($serviceId);
         $res = $this->DBC->query($sql);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             return $row['id'];
         }

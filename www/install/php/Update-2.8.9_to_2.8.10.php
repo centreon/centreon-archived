@@ -41,7 +41,7 @@ if (isset($pearDB)) {
         "WHERE TABLE_NAME = 'nagios_server' " .
         "AND COLUMN_NAME = 'description' "
     );
-    if ($res->numRows() > 0) {
+    if ($res->rowCount() > 0) {
         $pearDB->query("ALTER TABLE `nagios_server` DROP COLUMN `description`");
     }
 }

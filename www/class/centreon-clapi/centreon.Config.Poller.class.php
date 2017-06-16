@@ -103,7 +103,7 @@ class CentreonConfigPoller
         }
 
         $DBRESULT = $this->_DB->query($sQuery);
-        if ($DBRESULT->numRows() != 0) {
+        if ($DBRESULT->rowCount() != 0) {
             return;
         } else {
             print "ERROR: Unknown poller...\n";
@@ -717,7 +717,7 @@ class CentreonConfigPoller
 
         $sQuery = "SELECT id FROM nagios_server WHERE `name` = '" . $this->_DB->escape($poller) . "'";
         $DBRESULT = $this->_DB->query($sQuery);
-        if ($DBRESULT->numRows() > 0) {
+        if ($DBRESULT->rowCount() > 0) {
             $row = $DBRESULT->fetchRow();
             return $row['id'];
         } else {

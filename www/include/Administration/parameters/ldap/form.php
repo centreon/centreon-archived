@@ -259,7 +259,7 @@ if ($arId) {
               FROM auth_ressource_host 
               WHERE auth_ressource_id = " . $pearDB->escape($arId);
     $res = $pearDB->query($query);
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $maxHostId = $row['cnt'];
     }

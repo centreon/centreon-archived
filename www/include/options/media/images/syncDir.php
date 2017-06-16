@@ -58,7 +58,7 @@ if (!isset($sid)) {
 
 if (isset($sid)) {
     $DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '".$pearDB->escape($sid)."'");
-    if ($DBRESULT->numRows() == 0) {
+    if ($DBRESULT->rowCount() == 0) {
         exit();
     }
 }
@@ -130,7 +130,7 @@ function checkDirectory($dir, $pearDB)
     $DBRESULT = $pearDB->query(
         "SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'"
     );
-    if (!$DBRESULT->numRows()) {
+    if (!$DBRESULT->rowCount()) {
         $DBRESULT = $pearDB->query(
             "INSERT INTO view_img_dir (`dir_name`, `dir_alias`) VALUES ('".$dir."', '".$dir."')"
         );
@@ -181,7 +181,7 @@ function checkPicture($picture, $dirpath, $dir_id, $pearDB)
     "WHERE img_path = '".$picture."' " .
     "	AND vidh.dir_dir_parent_id = '".$dir_id."'" .
     "	AND vidh.img_img_id = img_id");
-    if (!$DBRESULT->numRows()) {
+    if (!$DBRESULT->rowCount()) {
         $DBRESULT = $pearDB->query(
             "INSERT INTO view_img (`img_name`, `img_path`) VALUES ('"
             .$img_info["filename"]."', '".$picture."')"

@@ -87,7 +87,7 @@ class CentreonContact
     {
         $sql = "SELECT contact_enable_notifications FROM contact WHERE contact_id = " . $this->db->escape($contactId);
         $res = $this->db->query($sql);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             if ($row['contact_enable_notifications']) {
                 return true;

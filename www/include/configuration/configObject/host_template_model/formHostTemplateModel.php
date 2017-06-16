@@ -54,7 +54,7 @@ if (($o == "c" || $o == "w") && $host_id) {
 
 
     # Set base value
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $host = array_map("myDecode", $DBRESULT->fetchRow());
         $cmdId = $host['command_command_id'];
         # Set Host Notification Options
@@ -80,7 +80,7 @@ if (($o == "c" || $o == "w") && $host_id) {
             AND hc.level IS NOT NULL
             ORDER BY hc.level ASC
             LIMIT 1");
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $cr = $res->fetchRow();
             $host['criticality_id'] = $cr['hc_id'];
         }

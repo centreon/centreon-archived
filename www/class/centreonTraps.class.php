@@ -124,9 +124,9 @@ class CentreonTraps
         $res = $this->db->query($query);
         $trap = $res->fetchRow();
 
-        if ($res->numRows() >= 1 && $trap["traps_id"] == $id) {
+        if ($res->rowCount() >= 1 && $trap["traps_id"] == $id) {
             return true;
-        } elseif ($res->numRows() >= 1 && $trap["traps_id"] != $id) {
+        } elseif ($res->rowCount() >= 1 && $trap["traps_id"] != $id) {
             return false;
         } else {
             return true;

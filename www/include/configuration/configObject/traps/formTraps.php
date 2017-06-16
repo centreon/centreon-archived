@@ -143,7 +143,7 @@ if ($o == "a") {
  */
 $query = "SELECT MAX(tmo_order) FROM traps_matching_properties WHERE trap_id = '".$traps_id."' ";
 $res = $pearDB->query($query);
-if ($res->numRows()) {
+if ($res->rowCount()) {
     $row = $res->fetchRow();
     $nbOfInitialRows = $row['MAX(tmo_order)'];
 } else {

@@ -146,7 +146,7 @@ class CentreonACL
                 . "WHERE update_acl = '1' "
                 . "AND user_id IN (" . join(', ', $this->parentTemplates) . ") ";
             $DBRES = $pearDB->query($query);
-            if ($DBRES->numRows()) {
+            if ($DBRES->rowCount()) {
                 $pearDB->query("UPDATE session SET update_acl = '0'
                     WHERE user_id IN (" . join(', ', $this->parentTemplates) . ")");
                 $this->resetACL();
@@ -247,7 +247,7 @@ class CentreonACL
             . "AND arpr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY ns.name ASC ";
         $DBRESULT = $pearDB->query($query);
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             while ($row = $DBRESULT->fetchRow()) {
                 $this->pollers[$row['id']] = $row['name'];
             }
@@ -391,7 +391,7 @@ class CentreonACL
                     . "AND acl_group_topology_relations.acl_group_id IN (" . $this->getAccessGroupsString() . ") ";
                 $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
 
-                if (!$DBRESULT->numRows()) {
+                if (!$DBRESULT->rowCount()) {
                     $this->topology[1] = 1;
                     $this->topology[101] = 1;
                     $this->topology[10101] = 1;

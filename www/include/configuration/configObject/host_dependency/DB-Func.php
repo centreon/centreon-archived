@@ -51,9 +51,9 @@ function testHostDependencyExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".CentreonDB::escape($name)."'");
     $dep = $DBRESULT->fetchRow();
 
-    if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
         return true;

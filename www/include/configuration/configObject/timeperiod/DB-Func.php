@@ -88,10 +88,10 @@ function testTPExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
     $tp = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $tp["tp_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $tp["tp_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $tp["tp_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $tp["tp_id"] != $id) {
         return false;
     } else {
         return true;
@@ -368,7 +368,7 @@ function getTimeperiodIdByName($name)
 
     $id = 0;
     $res = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".$pearDB->escape($name)."'");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $id = $row['tp_id'];
     }

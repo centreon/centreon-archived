@@ -72,7 +72,7 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
         print "DB Error : ".$e->getMessage();
     }
     $vmetric = $DBRESULT->fetchRow();
-    $nR = $DBRESULT->numRows();
+    $nR = $DBRESULT->rowCount();
     $DBRESULT->free();
 
     $sql = "SELECT metric_id FROM metrics WHERE ";
@@ -84,7 +84,7 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
         print "DB Error : ".$e->getMessage();
     }
     $metric = $DBRESULT->fetchRow();
-    $nR = $nR + $DBRESULT->numRows();
+    $nR = $nR + $DBRESULT->rowCount();
     $DBRESULT->free();
 
     if ($nR >= 1 && $vmetric["vmetric_id"] != $gsvs["vmetric_id"] || isset($metric["metric_id"])) {
@@ -281,7 +281,7 @@ function &disableVirtualMetric($v_id = null, $force = 0)
     $repB = array("\\\\*", "\\\\+", "\\\\-", "\\\\?", "\\\\^", "\\\\$");
     $l_where = ($force == 0) ? " AND `vmetric_activate` = '1'" : "";
     $l_pqy = $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='$v_id'$l_where;");
-    if ($l_pqy->numRows() == 1) {
+    if ($l_pqy->rowCount() == 1) {
         $vmetric = $l_pqy->fetchRow();
         $l_pqy->free();
         $l_pqy = $pearDB->query("SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='".$vmetric["index_id"]."' AND `vmetric_activate` = '1' AND `rpn_function` REGEXP '(^|,)".str_replace($repA, $repB, $vmetric["vmetric_name"])."(,|$)';");
@@ -335,7 +335,7 @@ function enableVirtualMetric($v_id, $v_name = null, $index_id = null)
     }
 
     $l_pqy = $pearDB->query("SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics WHERE $l_where AND (vmetric_activate = '0' OR vmetric_activate IS NULL);");
-    if ($l_pqy->numRows() == 1) {
+    if ($l_pqy->rowCount() == 1) {
         $p_vmetric = $l_pqy->fetchRow();
         $l_mlist = preg_split("/\,/", $p_vmetric["rpn_function"]);
         foreach ($l_mlist as $l_mnane) {
@@ -361,7 +361,7 @@ function checkRRDGraphData($v_id = null, $force = 0)
 
     /* Check if already Valid */
     $l_pqy = $pearDB->query("SELECT vmetric_id, def_type FROM virtual_metrics WHERE vmetric_id = '$v_id' AND ( ck_state <> '1' OR ck_state IS NULL );");
-    if ($l_pqy->numRows() == 1) {
+    if ($l_pqy->rowCount() == 1) {
         /**
          * Create XML Request Objects
          */

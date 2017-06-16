@@ -52,7 +52,7 @@ function getModuleInfoInDB($name = null, $id = null)
         $rq = "SELECT * FROM modules_informations WHERE name='".$name."' LIMIT 1";
     }
     $DBRESULT = $pearDB->query($rq);
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         return ($DBRESULT->fetchRow());
     } else {
         return array();
@@ -71,7 +71,7 @@ function testModuleExistence($id = null, $name = null)
         $rq = "SELECT id FROM modules_informations WHERE name = '".$name."'  LIMIT 1";
     }
     $DBRESULT = $pearDB->query($rq);
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         return true;
     } else {
         return false;

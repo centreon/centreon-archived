@@ -125,7 +125,7 @@ class CentreonHostgroups
         if (!isset($names[$hg_id])) {
             $query = "SELECT hg_name FROM hostgroup WHERE hg_id = " . $this->DB->escape($hg_id);
             $res = $this->DB->query($query);
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 $names[$hg_id] = $row['hg_name'];
             }
@@ -172,7 +172,7 @@ class CentreonHostgroups
         if (!isset($ids[$hg_name])) {
             $query = "SELECT hg_id FROM hostgroup WHERE hg_name = '" . $this->DB->escape($hg_name) . "'";
             $res = $this->DB->query($query);
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 $ids[$hg_name] = $row['hg_id'];
             }

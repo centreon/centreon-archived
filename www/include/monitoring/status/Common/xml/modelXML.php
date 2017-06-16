@@ -93,7 +93,7 @@ $rq_pagination = $rq1;
  * Get Pagination Rows 
  */
 $DBRESULT = $obj->DBNdo->query($rq_pagination);
-$numRows = $DBRESULT->numRows();
+$numRows = $DBRESULT->rowCount();
 $DBRESULT->free();
 
 $rq1 .= " LIMIT ".($num * $limit).",".$limit;

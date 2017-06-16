@@ -397,7 +397,7 @@ function testDirectoryExistence($name)
         "SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '"
         . htmlentities($name, ENT_QUOTES, "UTF-8") . "'"
     );
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         $dir = $DBRESULT->fetchRow();
         $dir_id = $dir["dir_id"];
     }
@@ -414,7 +414,7 @@ function testDirectoryIsEmpty($dir_id)
     $rq = "SELECT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'";
     $DBRESULT = $pearDB->query($rq);
     $empty = true;
-    if ($DBRESULT && $DBRESULT->numRows() >= 1) {
+    if ($DBRESULT && $DBRESULT->rowCount() >= 1) {
         $empty = false;
     }
     $DBRESULT->free();

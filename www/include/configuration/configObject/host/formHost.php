@@ -117,7 +117,7 @@ function allInSameInstance($hosts, $instanceId)
             WHERE nagios_server_id != ' . $instanceId . '
             AND host_host_id IN (' . join(', ', $hosts) . ')';
     $res = $pearDB->query($query);
-    if ($res->numRows() > 0) {
+    if ($res->rowCount() > 0) {
         return false;
     }
     return true;
@@ -198,7 +198,7 @@ if (($o == "c" || $o == "w") && $host_id) {
                             AND hc.level IS NOT NULL
                             ORDER BY hc.level ASC
                             LIMIT 1");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $cr = $res->fetchRow();
         $host['criticality_id'] = $cr['hc_id'];
     }

@@ -94,7 +94,7 @@ if (($o == "c" || $o == "w") && $service_id) {
                             AND sc.level IS NOT NULL
                             ORDER BY sc.level ASC
                             LIMIT 1");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $cr = $res->fetchRow();
         $service['criticality_id'] = $cr['sc_id'];
     }

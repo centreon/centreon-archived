@@ -165,7 +165,7 @@ class CentreonContactgroup
         $queryCheck = "SELECT cg_id FROM contactgroup
             WHERE cg_name = '" . $this->db->escape($cg_name) . "'";
         $res = $this->db->query($queryCheck);
-        if ($res->numRows() == 1) {
+        if ($res->rowCount() == 1) {
             $row = $res->fetchRow();
             return $row['cg_id'];
         }
@@ -303,7 +303,7 @@ class CentreonContactgroup
     {
         $query = "SELECT cg_name FROM contactgroup WHERE cg_id = " . CentreonDB::escape($cgId) . " LIMIT 1";
         $res = $this->db->query($query);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             return $row['cg_name'];
         } else {

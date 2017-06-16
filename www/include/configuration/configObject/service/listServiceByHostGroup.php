@@ -183,7 +183,7 @@ if ($searchS != "" || $searchHG != "") {
     $DBRESULT = $pearDB->query("SELECT $distinct sv.service_description
                                 FROM service sv, host_service_relation hsr $aclfrom
                                 WHERE service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL $aclcond");
-    $rows = $DBRESULT->numRows();
+    $rows = $DBRESULT->rowCount();
 }
 
 /*

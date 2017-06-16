@@ -574,7 +574,7 @@ class CentreonDowntime
         } catch (\PDOException $e) {
             $error = true;
         }
-        if ($error || $res->numRows() == 0) {
+        if ($error || $res->rowCount() == 0) {
             return false;
         }
         $row = $res->fetchRow();

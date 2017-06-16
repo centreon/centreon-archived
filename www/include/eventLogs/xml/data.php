@@ -598,7 +598,7 @@ if (isset($req) && $req) {
     $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
     
-    if (!($DBRESULT->numRows()) && ($num != 0)) {
+    if (!($DBRESULT->rowCount()) && ($num != 0)) {
         if ($export !== "1") {
             $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
         }

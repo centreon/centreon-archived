@@ -288,7 +288,7 @@ class PartEngine
         } catch (\PDOException $e) {
             $error = true;
         }
-        if ($error || !$DBRESULT->numRows()) {
+        if ($error || !$DBRESULT->rowCount()) {
             throw new Exception(
                 "Error: cannot get table " . $table->getSchema() . "." . $table->getName()
                 . " last partition range \n"
@@ -418,7 +418,7 @@ class PartEngine
         } catch (\PDOException $e) {
             throw new Exception("Error: cannot get table ".$tableName." status, ".$e->getMessage()."\n");
         }
-        if (!$DBRESULT->numRows()) {
+        if (!$DBRESULT->rowCount()) {
             throw new Exception("Error: cannot get table ".$tableName." status\n");
         }
         $row = $DBRESULT->fetchRow();

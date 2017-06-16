@@ -63,10 +63,10 @@ function testHostGroupExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
     $hg = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $hg["hg_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $hg["hg_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $hg["hg_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $hg["hg_id"] != $id) {
         return false;
     } else {
         return true;
@@ -354,7 +354,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     $rq = "INSERT INTO hostgroup_relation (hostgroup_hg_id, host_host_id) VALUES ";
     for ($i = 0; $i < count($ret); $i++) {
         $resTest = $pearDB->query("SELECT hostgroup_hg_id FROM hostgroup_relation WHERE hostgroup_hg_id = ".$hg_id." AND host_host_id = ".$ret[$i]);
-        if (!$resTest->numRows()) {
+        if (!$resTest->rowCount()) {
             if ($i != 0) {
                 $rq .= ", ";
             }
@@ -379,7 +379,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     $rq = "INSERT INTO hostgroup_hg_relation (hg_parent_id, hg_child_id) VALUES ";
     for ($i = 0; $i < count($ret); $i++) {
         $resTest = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_parent_id = ".$hg_id." AND hg_child_id = ".$ret[$i]);
-        if (!$resTest->numRows()) {
+        if (!$resTest->rowCount()) {
             if ($i != 0) {
                 $rq .= ", ";
             }

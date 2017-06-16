@@ -47,9 +47,9 @@ function testExistence($name = null)
         . htmlentities($name, ENT_QUOTES, "UTF-8") . "'"
     );
     $nagios = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $nagios["nagios_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $nagios["nagios_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $nagios["nagios_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $nagios["nagios_id"] != $id) {
         return false;
     } else {
         return true;
@@ -127,7 +127,7 @@ function deleteNagiosInDB($nagios = array())
     $DBRESULT = $pearDB->query(
         "SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'"
     );
-    if (!$DBRESULT->numRows()) {
+    if (!$DBRESULT->rowCount()) {
         $DBRESULT2 = $pearDB->query(
             "SELECT MAX(nagios_id) FROM cfg_nagios"
         );

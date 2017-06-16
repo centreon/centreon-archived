@@ -43,7 +43,7 @@ if (isset($pearDB)) {
             'no'        
         ) AS init_trap;"
     );
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         if ($row['init_trap'] == 'no') {
             $pearDB->query("ALTER TABLE `nagios_server` CHANGE `init_script_snmptt` `init_script_centreontrapd` VARCHAR(255)");

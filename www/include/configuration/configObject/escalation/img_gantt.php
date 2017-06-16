@@ -94,7 +94,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification desc ";
     $res_esc_svc = $pearDB->query($cmd);
-    $nb_esc = $res_esc_svc->numRows();
+    $nb_esc = $res_esc_svc->rowCount();
     $nb_esc_default = $nb_esc;
     $nb_esc != null ? $nb_esc = $nb_esc : $nb_esc = 1;
 
@@ -110,7 +110,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "AND ecr.contactgroup_cg_id = cg.cg_id ".
         "ORDER BY esc.first_notification desc ";
     $nb_svc = $pearDB->query($cmd);
-    $nb_esc_tot = $nb_svc->numRows();
+    $nb_esc_tot = $nb_svc->rowCount();
     $nb_esc_tot != null ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
     # retrieve all contactgroup correspond to service
@@ -119,7 +119,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     "WHERE csr.service_service_id = ".$_GET["service_id"]." ".
     "AND csr.contactgroup_cg_id = cg.cg_id";
     $res_cg_service = $pearDB->query($cg_host);
-    $max_contact_service = $res_cg_service->numRows();
+    $max_contact_service = $res_cg_service->rowCount();
 
     # retrieve max length contactgroup of service
     $cg_svc_length = "SELECT max(length(cg.cg_name)) max_length ".
@@ -164,7 +164,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification desc ";
     $res_esc_host = $pearDB->query($cmd);
-    $nb_esc = $res_esc_host->numRows();
+    $nb_esc = $res_esc_host->rowCount();
     $nb_esc_default = $nb_esc;
     $nb_esc != null ? $nb_esc = $nb_esc : $nb_esc = 1;
 
@@ -180,7 +180,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "AND ecr.contactgroup_cg_id = cg.cg_id ".
         "ORDER BY esc.first_notification desc ";
     $nb_host = $pearDB->query($cmd);
-    $nb_esc_tot = $nb_host->numRows();
+    $nb_esc_tot = $nb_host->rowCount();
     $nb_esc_tot != null ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
     # retrieve all contactgroup correspond to host
@@ -189,7 +189,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     "WHERE chr.host_host_id = ".$_GET["host_id"]." ".
     "AND chr.contactgroup_cg_id = cg.cg_id";
     $res_cg_host = $pearDB->query($cg_host);
-    $max_contact_service = $res_cg_host->numRows();
+    $max_contact_service = $res_cg_host->rowCount();
 
     # retrieve the max length contactgroup
     $cg_max_length = "SELECT max(length(cg.cg_name)) max_length ".
@@ -234,7 +234,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification desc ";
     $res_esc_hostgroup = $pearDB->query($cmd);
-    $nb_esc = $res_esc_hostgroup->numRows();
+    $nb_esc = $res_esc_hostgroup->rowCount();
     $nb_esc_default = $nb_esc;
     $nb_esc != null ? $nb_esc = $nb_esc : $nb_esc = 1;
 
@@ -250,7 +250,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "AND ecr.contactgroup_cg_id = cg.cg_id ".
         "ORDER BY esc.first_notification desc ";
     $nb_hostgroup = $pearDB->query($cmd);
-    $nb_esc_tot = $nb_hostgroup->numRows();
+    $nb_esc_tot = $nb_hostgroup->rowCount();
     $nb_esc_tot != null ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
     # retrieve all contactgroup correspond to hostgroup
@@ -259,7 +259,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     "WHERE chr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
     "AND chr.contactgroup_cg_id = cg.cg_id";
     $res_cg_hostgroup = $pearDB->query($cg_host);
-    $max_contact_service = $res_cg_hostgroup->numRows();
+    $max_contact_service = $res_cg_hostgroup->rowCount();
 
     # retrieve max length contactgroup of hostgroup
     $cg_svc_length = "SELECT max(length(cg.cg_name)) max_length ".
@@ -424,7 +424,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             "WHERE ecr.escalation_esc_id = ".$esc_svc_data["esc_id"]." ".
             "AND ecr.contactgroup_cg_id = cg.cg_id";
         $res_cg = $pearDB->query($cmd_contactgroup);
-        $max_contact = $res_cg->numRows();
+        $max_contact = $res_cg->rowCount();
         $pas_tmp =
             ($max_contact * 20 > $pas_graduation_y
             ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1)
@@ -556,7 +556,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "WHERE ecr.escalation_esc_id = ".$esc_host_data["esc_id"]." ".
         "AND ecr.contactgroup_cg_id = cg.cg_id";
         $res_cg = $pearDB->query($cmd_contactgroup);
-        $max_contact = $res_cg->numRows();
+        $max_contact = $res_cg->rowCount();
         $pas_tmp =
             ($max_contact * 20 > $pas_graduation_y
             ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1)
@@ -646,7 +646,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             "WHERE ecr.escalation_esc_id = ".$esc_hostgroup_data["esc_id"]." ".
             "AND ecr.contactgroup_cg_id = cg.cg_id";
         $res_cg = $pearDB->query($cmd_contactgroup);
-        $max_contact = $res_cg->numRows();
+        $max_contact = $res_cg->rowCount();
         $pas_tmp =
             ($max_contact * 20 > $pas_graduation_y
             ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1)

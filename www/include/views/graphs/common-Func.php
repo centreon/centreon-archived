@@ -108,7 +108,7 @@ function checkIfServiceSgIsEn($host_id = null, $service_id = null)
         . "AND index_data.`hidden` = '0' "
         . "AND `trashed` = '0'"
     );
-    $num_row = $DBRESULT->numRows();
+    $num_row = $DBRESULT->rowCount();
     $DBRESULT->free();
     return $num_row;
 }

@@ -501,7 +501,7 @@ class CentreonAPI
                  WHERE contact_alias = '" . $this->login . "'
                  AND contact_activate = '1'
                  AND contact_oreon = '1'");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
             if ($row['contact_admin'] == 1) {
                 if ($row['contact_passwd'] == $pass) {
@@ -922,7 +922,7 @@ class CentreonAPI
         print "Centreon version " . $data["value"] . "\n";
         $res = $this->DB->query("SELECT mod_release FROM modules_informations WHERE name = 'centreon-clapi'");
         $clapiVersion = 'undefined';
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $data = $res->fetchRow();
             $clapiVersion = $data['mod_release'];
         }

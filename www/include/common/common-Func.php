@@ -105,7 +105,7 @@ function table_not_exists($table_name)
 
     $DBRESULT = $pearDBndo->query("SHOW TABLES LIKE '" . $table_name . "'");
 
-    if ($DBRESULT->numRows() > 0) {
+    if ($DBRESULT->rowCount() > 0) {
         return 0;
     }
 }
@@ -496,7 +496,7 @@ function getMyServiceCategories($service_id = null)
     $tab = array();
     while (1) {
         $DBRESULT = $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '" . CentreonDB::escape($service_id) . "' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $tabSC = array();
             while ($row = $DBRESULT->fetchRow()) {
                 $tabSC[$row["sc_id"]] = $row["sc_id"];
@@ -1459,7 +1459,7 @@ function getMyHostID($host_name = null)
     
     $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "' 
 			OR host_name = '" . $pearDB->escape(utf8_encode($host_name)) . "'LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["host_id"];
     }
@@ -1474,7 +1474,7 @@ function getMyHostGroupID($hostgroup_name = null)
     global $pearDB;
     
     $DBRESULT = $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '" . htmlentities(str2db($hostgroup_name), ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["hg_id"];
     }
@@ -1488,7 +1488,7 @@ function getMyServiceGroupID($servicegroup_name = null)
     }
     global $pearDB;
     $DBRESULT = $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '" . htmlentities(str2db($servicegroup_name), ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["sg_id"];
     }
@@ -1509,7 +1509,7 @@ function getMyContactID($contact_name = null)
     global $pearDB;
     
     $DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_alias = '" . $pearDB->escape($contact_name) . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["contact_id"];
     }
@@ -1523,7 +1523,7 @@ function getMyContactGroupID($cg_name = null)
     }
     global $pearDB;
     $DBRESULT = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '" . htmlentities($cg_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["cg_id"];
     }
@@ -1537,7 +1537,7 @@ function getMyCommandID($command_name = null)
     }
     global $pearDB;
     $DBRESULT = $pearDB->query("SELECT command_id FROM command WHERE command_name = '" . htmlentities($command_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["command_id"];
     }
@@ -1551,7 +1551,7 @@ function getMyTPID($tp_name = null)
     }
     global $pearDB;
     $DBRESULT = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '" . htmlentities($tp_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["tp_id"];
     }
@@ -1573,13 +1573,13 @@ function getDefaultMetaGraph($meta_id = null)
         return $gt["graph_id"];
     } else {
         $DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $gt = $DBRESULT->fetchRow();
             return $gt["graph_id"];
         }
     }
     $DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $gt = $DBRESULT->fetchRow();
         return $gt["graph_id"];
     }
@@ -1596,7 +1596,7 @@ function getDefaultGraph($service_id = null, $rrdType = null)
     } else {
         $command_id = getMyServiceField($service_id, "command_command_id");
         $DBRESULT = $pearDB->query("SELECT graph_id FROM command WHERE `command_id` = '" . $command_id . "'");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $gt = $DBRESULT->fetchRow();
             if ($gt["graph_id"] != null) {
                 return $gt["graph_id"];
@@ -1604,7 +1604,7 @@ function getDefaultGraph($service_id = null, $rrdType = null)
         }
     }
     $DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $gt = $DBRESULT->fetchRow();
         return $gt["graph_id"];
     }
@@ -1679,14 +1679,14 @@ function service_has_graph($host, $service, $dbo = null)
     }
     if (is_numeric($host) && is_numeric($service)) {
         $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_id = '" . CentreonDB::escape($host) . "' AND i.service_id = '" . CentreonDB::escape($service) . "'");
-        if ($DBRESULT->numRows() > 0) {
+        if ($DBRESULT->rowCount() > 0) {
             return true;
         }
     }
     if (!is_numeric($host) && !is_numeric($service)) {
         $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_name = '" . CentreonDB::escape($host) . "' AND i.service_description = '" . CentreonDB::escape($service) . "'");
 
-        if ($DBRESULT->numRows() > 0) {
+        if ($DBRESULT->rowCount() > 0) {
             return true;
         }
     }
@@ -1760,7 +1760,7 @@ function getMyHostServiceID($service_id = null)
     }
     global $pearDB;
     $DBRESULT = $pearDB->query("SELECT host_id FROM host h,host_service_relation hsr WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["host_id"];
     }
@@ -1843,7 +1843,7 @@ function GetMyHostPoller($pearDB, $host_name = null)
     }
     $sql = "SELECT id FROM nagios_server WHERE localhost = '1' LIMIT 1";
     $res = $pearDB->query($sql);
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         return $row['id'];
     }
@@ -1950,7 +1950,7 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
 
         $query = "SELECT * FROM service WHERE service_id = ".  intval($svcId);
         $stmt = $pearDB->query($query);
-        if ($stmt->numRows()) {
+        if ($stmt->rowCount()) {
             $row = $stmt->fetchRow();
             if ($row['service_template_model_stm_id'] !== null) {
                 $svcTmpl = array_merge($svcTmpl, getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed));
@@ -2021,7 +2021,7 @@ function get_my_first_allowed_root_menu($lcaTStr)
     }
     $DBRESULT = $pearDB->query($rq);
     $root_menu = array();
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $root_menu = $DBRESULT->fetchRow();
     }
     return $root_menu;

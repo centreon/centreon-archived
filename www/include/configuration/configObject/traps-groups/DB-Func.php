@@ -45,10 +45,10 @@ function testTrapGroupExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT traps_group_id as id FROM traps_group WHERE traps_group_name = '". $pearDB->escape(htmlentities($name, ENT_QUOTES, "UTF-8")) ."'");
     $trap_group = $DBRESULT->fetchRow();
     # Modif case
-    if ($DBRESULT->numRows() >= 1 && $trap_group["id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $trap_group["id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $trap_group["id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $trap_group["id"] != $id) {
         return false;
     } else {
         return true;

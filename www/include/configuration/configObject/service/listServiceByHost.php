@@ -232,7 +232,7 @@ $rq_body =  "esi.esi_icon_image, sv.service_id, sv.service_description, sv.servi
 $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS " . $distinct . $rq_body . " LIMIT " . $num * $limit . ", " . $limit);
 $rows = $pearDB->numberRows();
 
-if (!($DBRESULT->numRows())) {
+if (!($DBRESULT->rowCount())) {
     $DBRESULT = $pearDB->query("SELECT " . $distinct . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
 }
 

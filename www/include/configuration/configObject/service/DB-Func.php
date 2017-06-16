@@ -167,7 +167,7 @@ function getHostServiceCombo($service_id = null, $service_description = null)
         "AND hsr.service_service_id = '".$service_id."' LIMIT 1";
     $DBRES = $pearDB->query($query);
 
-    if (!$DBRES->numRows()) {
+    if (!$DBRES->rowCount()) {
         $combo = "- / " . $service_description;
     } else {
         $row = $DBRES->fetchRow();
@@ -182,7 +182,7 @@ function serviceExists($name = null)
     global $pearDB, $centreon;
 
     $DBRESULT = $pearDB->query("SELECT service_description FROM service WHERE service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         return true;
     }
     return false;
@@ -208,7 +208,7 @@ function testServiceTemplateExistence($name = null, $returnId = false)
                                     WHERE service_register = '0'
                                     AND service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
     $service = $DBRESULT->fetchRow();
-    $nbRows = $DBRESULT->numRows();
+    $nbRows = $DBRESULT->rowCount();
     //Modif case
     if (isset($id)) {
         if ($nbRows >= 1 && $service["service_id"] == $id) {
@@ -266,7 +266,7 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
         $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
         $service = $DBRESULT->fetchRow();
         #Duplicate entry
-        if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
+        if ($DBRESULT->rowCount() >= 1 && $service["service_id"] != $id) {
             return (false == $returnId) ? false : $service['service_id'];
         }
         $DBRESULT->free();
@@ -275,7 +275,7 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
         $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
         $service = $DBRESULT->fetchRow();
         #Duplicate entry
-        if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
+        if ($DBRESULT->rowCount() >= 1 && $service["service_id"] != $id) {
             return (false == $returnId) ? false : $service['service_id'];
         }
         $DBRESULT->free();
@@ -626,7 +626,7 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
                          */
                         $query = "SELECT service_description FROM service WHERE service_id = '".$maxId["MAX(service_id)"]."' LIMIT 1";
                         $DBRES = $pearDB->query($query);
-                        if ($DBRES->numRows()) {
+                        if ($DBRES->rowCount()) {
                             $row2 = $DBRES->fetchRow();
                             $description = $row2['service_description'];
                             $centreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], $description, "a", $fields);

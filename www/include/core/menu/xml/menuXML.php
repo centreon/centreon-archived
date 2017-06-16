@@ -64,7 +64,7 @@ global $pearDB;
  * Check Session existence
  */
 $session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
-if (!$session->numRows()) {
+if (!$session->rowCount()) {
     $buffer = new CentreonXML();
     $buffer->startElement("root");
     $buffer->endElement();

@@ -255,7 +255,7 @@ $queryStatName = "SELECT config_name, cache_directory "
 try {
     $res = $pearDB->query($queryStatName);
 
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         $tpl->assign('msg_err', _('No statistics file defined for this poller'));
     }
     $perf_info = array();

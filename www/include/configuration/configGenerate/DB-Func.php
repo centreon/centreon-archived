@@ -325,7 +325,7 @@ function isHostOnThisInstance($host_id, $instance_id)
     global $pearDB;
 
     $DBRESULT_relation = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."' AND nagios_server_id = '".$instance_id."'");
-    if ($DBRESULT_relation->numRows()) {
+    if ($DBRESULT_relation->rowCount()) {
         return 1;
     } else {
         return 0;
@@ -824,7 +824,7 @@ function getLocalhostId()
     } catch (\PDOException $e) {
         $error = true;
     }
-    if ($error || $res->numRows() == 0) {
+    if ($error || $res->rowCount() == 0) {
         return false;
     }
     $row = $res->fetchRow();

@@ -71,9 +71,9 @@ function testGroupExistence($name = null)
         . "WHERE acl_group_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8")."' ";
     $DBRESULT = $pearDB->query($query);
     $cg = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $cg["acl_group_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $cg["acl_group_id"] != $id) {
         # Duplicate entry
         return false;
     } else {

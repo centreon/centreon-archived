@@ -524,7 +524,7 @@ try {
                 $DBRESULT3 = $pearDB->query($sgReq);
                 $sgElem = array();
                 $tmpH = array();
-                if ($DBRESULT3->numRows()) {
+                if ($DBRESULT3->rowCount()) {
                     while ($h = $DBRESULT3->fetchRow()) {
                         if (!isset($sgElem[$h["host_id"]])) {
                             $sgElem[$h["host_id"]] = array();

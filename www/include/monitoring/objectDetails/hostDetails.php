@@ -109,7 +109,7 @@ if (!$is_admin) {
                                 WHERE host_id = '" . getMyHostId($host_name) . "' 
                                 AND group_id 
                                 IN (" . $centreon->user->access->getAccessGroupsString() . ")");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $haveAccess = 1;
     }
 }

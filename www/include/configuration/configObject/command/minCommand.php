@@ -58,7 +58,7 @@ if ($o == "w" && $command_id) {
     }
 
     $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
     }
 }

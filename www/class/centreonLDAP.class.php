@@ -1057,7 +1057,7 @@ class CentreonLdapAdmin
         if ($id == 0) {
             $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
             $res = $this->db->query($queryTemplate);
-            if ($res->numRows() == 0) {
+            if ($res->rowCount() == 0) {
                 return array();
             }
             $row = $res->fetchRow();

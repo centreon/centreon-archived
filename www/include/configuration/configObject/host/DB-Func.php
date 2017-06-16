@@ -112,7 +112,7 @@ function hostExists($name = null)
     $DBRESULT = $pearDB->query("SELECT host_host_id 
                               FROM ns_host_relation 
                               WHERE host_host_id = '" . getMyHostID(trim($centreon->checkIllegalChar($name))) . "'");
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         return true;
     }
     return false;
@@ -125,7 +125,7 @@ function hostTemplateExists($name = null)
     $DBRESULT = $pearDB->query("SELECT host_id 
                                 FROM `host`
                                 WHERE host_name = '" . $centreon->checkIllegalChar($name) . "'");
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         return true;
     }
     return false;
@@ -149,9 +149,9 @@ function testHostExistence($name = null)
      * Modif case
      */
 
-    if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $host["host_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $host["host_id"] != $id) {
         return false;
     } else {
         return true;
@@ -184,12 +184,12 @@ function testHostTplExistence($name = null)
      * Modif case
      */
 
-    if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $host["host_id"] == $id) {
         return true;
     } /*
      * Duplicate entry
      */
-    elseif ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $host["host_id"] != $id) {
         return false;
     } else {
         return true;
@@ -1179,7 +1179,7 @@ function serviceIsInUse($svc_id, $host_list)
         "AND hsr.service_service_id = '" . $svc_id . "' " .
         "AND hsr.host_host_id IN (" . $hst_list . ")";
     $DBRESULT = $pearDB->query($rq);
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         return true;
     }
     return false;

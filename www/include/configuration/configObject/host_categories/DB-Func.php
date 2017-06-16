@@ -65,10 +65,10 @@ function testHostCategorieExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT hc_name, hc_id FROM hostcategories WHERE hc_name = '".CentreonDB::escape($name)."'");
     $hc = $DBRESULT->fetchRow();
     # Modif case
-    if ($DBRESULT->numRows() >= 1 && $hc["hc_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $hc["hc_id"] == $id) {
         return true;
     } # Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $hc["hc_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $hc["hc_id"] != $id) {
         return false;
     } else {
         return true;

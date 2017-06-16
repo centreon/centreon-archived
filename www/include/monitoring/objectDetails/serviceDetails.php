@@ -435,7 +435,7 @@ if (!is_null($host_id)) {
 
         $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '" . $pearDBO->escape($host_name) . "' AND service_description LIKE '" . $pearDBO->escape($svc_description) . "' LIMIT 1");
         $index_data = 0;
-        if ($DBRES->numRows()) {
+        if ($DBRES->rowCount()) {
             $row = $DBRES->fetchRow();
             $index_data = $row['id'];
         }

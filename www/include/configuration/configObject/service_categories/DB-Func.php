@@ -64,9 +64,9 @@ function testServiceCategorieExistence($name = null)
     }
     $DBRESULT = $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $sc = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $sc["sc_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $sc["sc_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $sc["sc_id"] != $id) {
         return false;
     } else {
         return true;

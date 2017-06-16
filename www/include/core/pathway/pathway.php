@@ -97,7 +97,7 @@ $page = $p;
 if (isset($tabPath[$p]) && !$tabPath[$p]["url"]) {
     while (1) {
         $DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
-        if (!$DBRESULT->numRows()) {
+        if (!$DBRESULT->rowCount()) {
             break;
         }
         $new_url = $DBRESULT->fetchRow();

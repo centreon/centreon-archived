@@ -328,7 +328,7 @@ $critRes = $obj->DBC->query(
 );
 $criticalityUsed = 0;
 $critCache = array();
-if ($critRes->numRows()) {
+if ($critRes->rowCount()) {
     $criticalityUsed = 1;
     while ($critRow = $critRes->fetchRow()) {
         $critCache[$critRow['service_id']] = $critRow['value'];

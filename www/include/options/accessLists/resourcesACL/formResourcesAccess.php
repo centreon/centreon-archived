@@ -98,7 +98,7 @@ if ($o == "c" || $o == "w") {
      * Set Service Categories relations
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_sc"][$i] = $sc["sc_id"];
         }
@@ -109,7 +109,7 @@ if ($o == "c" || $o == "w") {
      * Set Host Categories
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT hc_id FROM acl_resources_hc_relations WHERE acl_res_id = '".$acl_id."'");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_hc"][$i] = $hc["hc_id"];
         }
@@ -120,7 +120,7 @@ if ($o == "c" || $o == "w") {
      * Set Service Groups relations
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_sg"][$i] = $sg["sg_id"];
         }
@@ -131,7 +131,7 @@ if ($o == "c" || $o == "w") {
      * Set Meta Services relations
      */
     $DBRESULT = $pearDB->query("SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_meta"][$i] = $ms["meta_id"];
         }

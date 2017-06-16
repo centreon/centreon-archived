@@ -97,7 +97,7 @@ class CentreonTimeperiod
 
         $res = $this->db->query($query);
 
-        if (!$res->numRows()) {
+        if (!$res->rowCount()) {
             return null;
         }
         $row = $res->fetchRow();
@@ -115,7 +115,7 @@ class CentreonTimeperiod
         $query = "SELECT `exception_id` FROM `timeperiod_exceptions`
                 WHERE `timeperiod_id` = " . (int)$tpId;
         $res = $this->db->query($query);
-        if (!$res->numRows()) {
+        if (!$res->rowCount()) {
             return null;
         }
 

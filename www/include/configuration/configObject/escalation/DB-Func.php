@@ -51,10 +51,10 @@ function testExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT esc_name, esc_id FROM escalation WHERE esc_name = '".$name."'");
     $esc = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $esc["esc_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $esc["esc_id"] == $id) {
         return true;
     #Duplicate entry
-    } elseif ($DBRESULT->numRows() >= 1 && $esc["esc_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $esc["esc_id"] != $id) {
         return false;
     } else {
         return true;
