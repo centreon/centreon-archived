@@ -35,12 +35,12 @@ first.
 ## Coding Style Guide
 
 **backend** 
-* [PHP](https://github.com/centreon/centreon/tree/style/doc/coding-style/php)
+* [PHP](https://github.com/centreon/centreon/tree/2.8.x/doc/coding-style/php)
 
 **frontend** 
-* [CSS](https://github.com/centreon/centreon/tree/style/doc/coding-style/css)
-* [HTML](https://github.com/centreon/centreon/tree/style/doc/coding-style/html)
-* [JS](https://github.com/centreon/centreon/tree/style/doc/coding-style/js)
+* [CSS](https://github.com/centreon/centreon/tree/2.8.x/doc/coding-style/css)
+* [HTML](https://github.com/centreon/centreon/tree/2.8.x/doc/coding-style/html)
+* [JS](https://github.com/centreon/centreon/tree/2.8.x/doc/coding-style/js)
 
 ## Authors
 
