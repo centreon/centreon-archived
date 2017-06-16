@@ -87,22 +87,22 @@
      */
     function toggleParams(checkValue, isInit) {
         if (checkValue == true) {
-            Effect.Fade('ldap_dns_use_ssl', {duration: 0});
-            Effect.Fade('ldap_dns_use_tls', {duration: 0});
-            Effect.Fade('ldap_dns_use_domain', {duration: 0});
-            Effect.Appear('ldap_header_tr', {duration: 0});
-            Effect.Appear('ldap_tr', {duration: 0});
+            jQuery('#ldap_dns_use_ssl').fadeOut({duration: 0});
+            jQuery('#ldap_dns_use_tls').fadeOut({duration: 0});
+            jQuery('#ldap_dns_use_domain').fadeOut({duration: 0});
+            jQuery('#ldap_header_tr').fadeIn({duration: 0});
+            jQuery('#ldap_tr').fadeIn({duration: 0});
         } else {
-            Effect.Fade('ldap_header_tr', {duration: 0});
-            Effect.Fade('ldap_tr', {duration: 0});
+            jQuery('#ldap_header_tr').fadeOut({duration: 0});
+            jQuery('#ldap_tr').fadeOut({duration: 0});
             if (document.getElementById('ldap_dns_use_ssl')) {
-                Effect.Appear('ldap_dns_use_ssl', {duration: 0});
+                jQuery('#ldap_dns_use_ssl').fadeIn({duration: 0});
             }
             if (document.getElementById('ldap_dns_use_tls')) {
-                Effect.Appear('ldap_dns_use_tls', {duration: 0});
+                jQuery('#ldap_dns_use_tls').fadeIn({duration: 0});
             }
             if (document.getElementById('ldap_dns_use_domain')) {
-                Effect.Appear('ldap_dns_use_domain', {duration: 0});
+                jQuery('#ldap_dns_use_domain').fadeIn({duration: 0});
             }
         }
     }
@@ -116,29 +116,29 @@
         }
         value = select.options[select.selectedIndex].value;
         if (value == 0) {
-            Effect.Appear('ldap_user_filter', {duration: 0});
-            Effect.Appear('ldap_user_uid_attr', {duration: 0});
-            Effect.Appear('ldap_user_group', {duration: 0});
-            Effect.Appear('ldap_user_name', {duration: 0});
-            Effect.Appear('ldap_user_firstname', {duration: 0});
-            Effect.Appear('ldap_user_lastname', {duration: 0});
-            Effect.Appear('ldap_user_email', {duration: 0});
-            Effect.Appear('ldap_user_pager', {duration: 0});
-            Effect.Appear('ldap_group_filter', {duration: 0});
-            Effect.Appear('ldap_group_gid_attr', {duration: 0});
-            Effect.Appear('ldap_group_member', {duration: 0});
+            jQuery('#ldap_user_filter').fadeIn({duration: 0});
+            jQuery('#ldap_user_uid_attr').fadeIn({duration: 0});
+            jQuery('#ldap_user_group').fadeIn({duration: 0});
+            jQuery('#ldap_user_name').fadeIn({duration: 0});
+            jQuery('#ldap_user_firstname').fadeIn({duration: 0});
+            jQuery('#ldap_user_lastname').fadeIn({duration: 0});
+            jQuery('#ldap_user_email').fadeIn({duration: 0});
+            jQuery('#ldap_user_pager').fadeIn({duration: 0});
+            jQuery('#ldap_group_filter').fadeIn({duration: 0});
+            jQuery('#ldap_group_gid_attr').fadeIn({duration: 0});
+            jQuery('#ldap_group_member').fadeIn({duration: 0});
         } else {
-            Effect.Fade('ldap_user_filter', {duration: 0});
-            Effect.Fade('ldap_user_uid_attr', {duration: 0});
-            Effect.Fade('ldap_user_group', {duration: 0});
-            Effect.Fade('ldap_user_name', {duration: 0});
-            Effect.Fade('ldap_user_firstname', {duration: 0});
-            Effect.Fade('ldap_user_lastname', {duration: 0});
-            Effect.Fade('ldap_user_email', {duration: 0});
-            Effect.Fade('ldap_user_pager', {duration: 0});
-            Effect.Fade('ldap_group_filter', {duration: 0});
-            Effect.Fade('ldap_group_gid_attr', {duration: 0});
-            Effect.Fade('ldap_group_member', {duration: 0});
+            jQuery('#ldap_user_filter').fadeOut({duration: 0});
+            jQuery('#ldap_user_uid_attr').fadeOut({duration: 0});
+            jQuery('#ldap_user_group').fadeOut({duration: 0});
+            jQuery('#ldap_user_name').fadeOut({duration: 0});
+            jQuery('#ldap_user_firstname').fadeOut({duration: 0});
+            jQuery('#ldap_user_lastname').fadeOut({duration: 0});
+            jQuery('#ldap_user_email').fadeOut({duration: 0});
+            jQuery('#ldap_user_pager').fadeOut({duration: 0});
+            jQuery('#ldap_group_filter').fadeOut({duration: 0});
+            jQuery('#ldap_group_gid_attr').fadeOut({duration: 0});
+            jQuery('#ldap_group_member').fadeOut({duration: 0});
         }
     }
 
@@ -178,7 +178,7 @@
             } else {
                 document.getElementById(trId).innerHTML = "";
             }
-            Effect.Fade(trId, {duration: 0});
+            jQuery('#'+trId).fadeOut({duration: 0});
         }
     }
 
@@ -221,18 +221,18 @@
      * Apply template is called from the template selectbox
      */
     function applyTemplate(templateValue) {
-        jQuery('input[type^=text]').each(function (el) {
+
+        jQuery('input[type^=text]').each(function (index, el) {
             key = el.getAttribute('name');
             var attr = key;
-
             if (typeof(ldapTemplates[templateValue]) != 'undefined') {
                 if (typeof(ldapTemplates[templateValue][attr]) != 'undefined') {
-                    el.setValue(ldapTemplates[templateValue][attr]);
+                    el.value = ldapTemplates[templateValue][attr];
                 }
             }
         });
     }
-    Event.observe(window, "load", function () {
+    jQuery(document).ready(function () {
         initParams();
     });
 </script>
