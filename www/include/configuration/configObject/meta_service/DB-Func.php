@@ -52,10 +52,10 @@ function testExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $meta = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $meta["meta_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $meta["meta_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $meta["meta_id"] != $id) {
         return false;
     } else {
         return true;
@@ -206,7 +206,7 @@ function checkMetaHost()
 
     $query = "SELECT host_id FROM host WHERE host_register = '2'  AND host_name = '_Module_Meta' ";
     $res = $pearDB->query($query);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         $query = "INSERT INTO host (host_name, host_register) "
             . "VALUES ('_Module_Meta', '2') ";
         $pearDB->query($query);

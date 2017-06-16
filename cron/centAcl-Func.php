@@ -66,7 +66,7 @@ function getFilteredPollers($host, $acl_group_id, $res_id)
         "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
 
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $host = array();
         while ($row = $DBRESULT->fetchRow()) {
             if (isset($hostTmp[$row['host_host_id']])) {
@@ -99,7 +99,7 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
             "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
 
-    if (!$DBRESULT->numRows()) {
+    if (!$DBRESULT->rowCount()) {
         return $host;
     }
 
@@ -157,7 +157,7 @@ function getAuthorizedCategories($groupstr, $res_id)
     while ($res = $DBRESULT->fetchRow()) {
         $tab_categories[$res["sc_id"]] = $res["sc_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($res);
     unset($DBRESULT);
     return $tab_categories;
@@ -244,9 +244,9 @@ function getACLSGForHost($pearDB, $host_id, $groupstr)
         while ($service = $DBRESULT2->fetchRow()) {
             $svc[$service["service_service_id"]] = $service["service_service_id"];
         }
-        $DBRESULT2->free();
+        $DBRESULT2->closeCursor();
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $svc;
 }
 
@@ -377,7 +377,7 @@ function hostIsAuthorized($host_id, $group_id)
             "AND rhr.host_host_id = '" . $host_id . "' " .
             "AND res.acl_res_activate = '1'";
     $DBRES = $pearDB->query($query);
-    if ($DBRES->numRows()) {
+    if ($DBRES->rowCount()) {
         return true;
     }
 
@@ -396,7 +396,7 @@ function hostIsAuthorized($host_id, $group_id)
     } catch (\PDOException $e) {
         print "DB Error : " . $e->getMessage() . "<br />";
     }
-    if ($DBRES2->numRows()) {
+    if ($DBRES2->rowCount()) {
         return true;
     }
 
@@ -442,7 +442,7 @@ function getMetaServices($resId, $db, $metaObj)
                 WHERE acl_res_id = {$db->escape($resId)}";
     $res = $db->query($sql);
     $arr = array();
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $hostId = $metaObj->getRealHostId();
         while ($row = $res->fetchRow()) {
             $svcId = $metaObj->getRealServiceId($row['meta_id']);

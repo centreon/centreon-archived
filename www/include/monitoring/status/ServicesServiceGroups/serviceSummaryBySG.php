@@ -116,7 +116,7 @@ if (isset($_GET["host_search"])) {
             while ($row = $DBRESULT->fetchRow()) {
                 $servicegroups[] = $row['sg_name'];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
         foreach ($servicegroups as $servicegroup_name) {
             $sgSearchSelect .= '<option value="' . $servicegroup_name . '">' . $servicegroup_name .'</option>';

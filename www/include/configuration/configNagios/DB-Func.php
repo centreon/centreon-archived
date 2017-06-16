@@ -47,9 +47,9 @@ function testExistence($name = null)
         . htmlentities($name, ENT_QUOTES, "UTF-8") . "'"
     );
     $nagios = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $nagios["nagios_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $nagios["nagios_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $nagios["nagios_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $nagios["nagios_id"] != $id) {
         return false;
     } else {
         return true;
@@ -108,7 +108,7 @@ function disableNagiosInDB($nagios_id = null)
             "SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1"
         );
         $centreon->Nagioscfg = $DBRESULT->fetchRow();
-        $DBRESULT2->free();
+        $DBRESULT2->closeCursor();
     }
 }
 
@@ -127,7 +127,7 @@ function deleteNagiosInDB($nagios = array())
     $DBRESULT = $pearDB->query(
         "SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'"
     );
-    if (!$DBRESULT->numRows()) {
+    if (!$DBRESULT->rowCount()) {
         $DBRESULT2 = $pearDB->query(
             "SELECT MAX(nagios_id) FROM cfg_nagios"
         );
@@ -136,7 +136,7 @@ function deleteNagiosInDB($nagios = array())
             "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id["MAX(nagios_id)"]."'"
         );
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 function multipleNagiosInDB($nagios = array(), $nbrDup = array())
@@ -149,7 +149,7 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
         $row = $DBRESULT->fetchRow();
         $row["nagios_id"] = '';
         $row["nagios_activate"] = '0';
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         $rowBks = array();
         $DBRESULT = $pearDB->query(
             "SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$key."'"
@@ -157,7 +157,7 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
         while ($rowBk = $DBRESULT->fetchRow()) {
             $rowBks[] = $rowBk;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
@@ -171,7 +171,7 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
                 /* Find the new last nagios_id once */
                 $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
                 $nagios_id = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
                 foreach ($rowBks as $keyBk => $valBk) {
                     if ($valBk["broker_module"]) {
                         $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('"
@@ -572,7 +572,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
     $nagios_id = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     if (isset($_REQUEST['in_broker'])) {
         $mainCfg = new CentreonConfigEngine($pearDB);
@@ -589,7 +589,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         $centreon->Nagioscfg = array();
         $DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
         $centreon->Nagioscfg = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /* Prepare value for changelog */

@@ -202,7 +202,7 @@ function printDebug($xml, $tabs)
                                         WHERE `localhost` = '1' 
                                         ORDER BY ns_activate DESC LIMIT 1");
     $nagios_bin = $DBRESULT_Servers->fetchRow();
-    $DBRESULT_Servers->free();
+    $DBRESULT_Servers->closeCursor();
     $msg_debug = array();
 
     $tab_server = array();

@@ -139,7 +139,7 @@ function get_notified_infos_for_host($host_id)
                     );
                 }
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
     }
 
@@ -174,7 +174,7 @@ function get_contactgroups_for_hosts($host_list, &$contactGroups, $withTpl = fal
             $contactGroups[] = $cg["cg_name"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 function get_contacts_for_hosts($host_list, &$contacts, $withTpl = false)
@@ -207,7 +207,7 @@ function get_contacts_for_hosts($host_list, &$contacts, $withTpl = false)
             $contacts[] = $c["contact_name"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 function get_notified_infos_for_service($service_id, $host_id)
@@ -272,7 +272,7 @@ function get_notified_infos_for_service($service_id, $host_id)
                 }
             }
             $additive = false;
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
     }
 
@@ -313,7 +313,7 @@ function get_contactgroups_for_services($service_list, &$contactGroups, $withTpl
             $contactGroups[] = $cg["cg_name"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 function get_contacts_for_services($service_list, &$contacts, $withTpl = false)
@@ -345,5 +345,5 @@ function get_contacts_for_services($service_list, &$contacts, $withTpl = false)
             $contacts[] = $c["contact_name"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }

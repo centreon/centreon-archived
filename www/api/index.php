@@ -34,12 +34,12 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . 'bootstrap.php';
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . '/class/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
 
-$pearDB = new CentreonDB();
+$pearDB = $dependencyInjector['configuration_db'];
 
 /* Purge old token */
 $pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
@@ -112,4 +112,4 @@ if (is_null($userInfos)) {
 $centreon = new Centreon($userInfos);
 $oreon = $centreon;
 
-CentreonWebService::router();
+CentreonWebService::router($dependencyInjector);

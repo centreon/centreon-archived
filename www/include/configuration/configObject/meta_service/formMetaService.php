@@ -101,7 +101,7 @@ $DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER
 while ($graphTpl = $DBRESULT->fetchRow()) {
     $graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Init Styles

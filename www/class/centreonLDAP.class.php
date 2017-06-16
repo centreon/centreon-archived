@@ -86,7 +86,7 @@ class CentreonLDAP
             "AND ar_id = " . $this->db->escape($arId)
         );
         $row = $dbresult->fetchRow();
-        $dbresult->free();
+        $dbresult->closeCursor();
         if (isset($row['ari_value'])) {
             $use_dns_srv = $row['ari_value'];
         }
@@ -103,7 +103,7 @@ class CentreonLDAP
                 $this->debugPath = trim($row['value']);
             }
         }
-        $dbresult->free();
+        $dbresult->closeCursor();
         if ($this->debugPath == '') {
             $this->debugImport = false;
         }
@@ -128,7 +128,7 @@ class CentreonLDAP
                                            AND ar_id = " . $this->db->escape($arId)
             );
             $row = $dbresult->fetchRow();
-            $dbresult->free();
+            $dbresult->closeCursor();
             if ($row && trim($row['ari_value']) != '') {
                 $dns_query .= "." . $row['ari_value'];
             }
@@ -159,7 +159,7 @@ class CentreonLDAP
                 $ldap['info'] = array_merge($ldap['info'], $this->getBindInfo($arId));
                 $this->ldapHosts[] = $ldap;
             }
-            $dbresult->free();
+            $dbresult->closeCursor();
         }
     }
     
@@ -723,7 +723,7 @@ class CentreonLDAP
                 $infos['use_tls'] = $row['value'];
             }
         }
-        $dbresult->free();
+        $dbresult->closeCursor();
     }
 
     /**
@@ -746,7 +746,7 @@ class CentreonLDAP
         while ($row = $dbresult->fetchRow()) {
             $infos[$row['ari_name']] = $row['ari_value'];
         }
-        $dbresult->free();
+        $dbresult->closeCursor();
         $this->constuctCache[$id] = $infos;
         return $infos;
     }
@@ -1057,7 +1057,7 @@ class CentreonLdapAdmin
         if ($id == 0) {
             $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
             $res = $this->db->query($queryTemplate);
-            if ($res->numRows() == 0) {
+            if ($res->rowCount() == 0) {
                 return array();
             }
             $row = $res->fetchRow();

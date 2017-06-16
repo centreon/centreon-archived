@@ -54,7 +54,7 @@ function LdapSearch(){
     
 	var confList = '';
     var ldap_search_filters = '';
-	$$('input[name^=ldapConf]').each(function(el) {
+	jQuery('input[name^=ldapConf]').each(function(el) {
 		if (el.checked) {
 			key = el.getAttribute('name');
 			key.sub(/ldapConf\[(\d+)\]/, function(match) {
@@ -62,7 +62,7 @@ function LdapSearch(){
                     confList += ',';
 				}
 				confList += match[1];                                
-                var filterVal = $$('input[name^=ldap_search_filter\['+match[1]+'\]]').first().value;
+                var filterVal = jQuery('input[name^=ldap_search_filter\['+match[1]+'\]]').first().value;
                 if (filterVal) {
                     ldap_search_filters += '&ldap_search_filter['+match[1]+']=';
                     filterVal = encodeURIComponent(filterVal);

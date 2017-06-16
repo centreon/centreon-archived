@@ -225,7 +225,7 @@ if ($data = $DBRESULT->fetchRow()) {
 } else {
     $obj->XML->writeElement("infos", "none");
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Translations

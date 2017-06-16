@@ -75,12 +75,12 @@ function testCmdExistence($name = null)
 
     $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '" . $pearDB->escape($centreon->checkIllegalChar($name)) . "'");
     $command = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $command["command_id"] == $id) {
         /*
          * Mofication case
          */
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $command["command_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $command["command_id"] != $id) {
         /*
          * Duplicate case
          */
@@ -408,7 +408,7 @@ function getCommandIdByName($name)
 
     $id = 0;
     $res = $pearDB->query("SELECT command_id FROM command WHERE command_name = '" . $pearDB->escape($name) . "'");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $id = $row['command_id'];
     }

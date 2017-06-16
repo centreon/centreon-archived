@@ -55,7 +55,7 @@ if (($o == "c" || $o == "w") && $resource_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '" . $pearDB->escape($resource_id) . "' LIMIT 1");
     // Set base value
     $rs = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 /**

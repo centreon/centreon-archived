@@ -442,7 +442,7 @@ class MysqlTable
             return(false);
         }
 
-        if (!$DBRESULT->numRows()) {
+        if (!$DBRESULT->rowCount()) {
             return(false);
         }
 

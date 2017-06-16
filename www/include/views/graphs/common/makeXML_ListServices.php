@@ -80,7 +80,7 @@ if (isset($_GET["host_id"]) && $_GET["host_id"] != 0) {
             $mx_l = $sd_l;
         }
     }
-    $pq_sql->free();
+    $pq_sql->closeCursor();
 }
 for ($i = strlen($s_datas[""]); $i != $mx_l; $i++) {
     $s_datas[""] .= "&nbsp;";

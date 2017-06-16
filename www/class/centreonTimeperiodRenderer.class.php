@@ -84,7 +84,7 @@ class CentreonTimeperiodRenderer
             FROM timeperiod
             WHERE tp_id = '" . $tpid . "'";
         $res = $this->db->query($query);
-        if (!$res->numRows()) {
+        if (!$res->rowCount()) {
             throw new Exception("Timeperiod not found");
         }
         $row = $res->fetchRow();

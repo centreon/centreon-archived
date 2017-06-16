@@ -57,7 +57,7 @@ if (($o == "c" || $o == "w") && $sc_id) {
      * Set base value
      */
     $sc = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     $sc['sc_severity_level'] = $sc['level'];
     $sc['sc_severity_icon'] = $sc['icon_id'];
 

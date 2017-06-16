@@ -130,7 +130,7 @@ function getHostsTemplates($host_id) {
     $query = "SELECT host_tpl_id FROM host_template_relation "
         . "WHERE host_host_id = '" . $host_id . "'";
     $res = $pearDBCentreon->query($query);
-    if($res->numRows() == 0) {
+    if($res->rowCount() == 0) {
         return array($host_id);
     } else {
         $arrHostTpl = array();

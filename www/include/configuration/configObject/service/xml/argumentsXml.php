@@ -135,7 +135,7 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
         "FROM service " .
         "WHERE service_id = '" . $svcId . "' LIMIT 1";
     $res3 = $db->query($query3);
-    if ($res3->numRows()) {
+    if ($res3->rowCount()) {
         $row3 = $res3->fetchRow();
         $valueTab = preg_split('/(?<!\\\)\!/', $row3['command_command_id_arg']);
         if (is_array($valueTab)) {
@@ -156,7 +156,7 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
     while ($row = $res->fetchRow()) {
         $argTab[$row['macro_name']] = $row['macro_description'];
     }
-    $res->free();
+    $res->closeCursor();
 
     /*
      * Write XML

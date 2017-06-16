@@ -80,7 +80,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($contact_id) . "' LIMIT 1");
     $cct = array_map("myDecode", $DBRESULT->fetchRow());
     $cct["contact_passwd"] = null;
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /**
      * Set Host Notification Options
@@ -97,7 +97,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
     foreach ($tmp as $key => $value) {
         $cct["contact_svNotifOpts"][trim($value)] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /**
      * Get DLAP auth informations
@@ -106,7 +106,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
     while ($ldap_auths = $DBRESULT->fetchRow()) {
         $ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /**
      * Get ACL informations for this user
@@ -121,7 +121,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
             $cct["contact_acl_groups"][$i] = $data["acl_group_id"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 /**
@@ -166,7 +166,7 @@ $DBRESULT = $pearDB->query("SELECT contact_id, contact_name
 while ($contacts = $DBRESULT->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /**
  * Template / Style for Quickform input

@@ -95,7 +95,7 @@ if (!isset($oreon)) {
     $res = $pearDB->query($query);
     $ldapConfList = "";
 while ($row = $res->fetchRow()) {
-	if ($res->numRows() == 1) {
+	if ($res->rowCount() == 1) {
         $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/ checked='true'> " . $row['ar_name'];
     } else {
         $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/> " . $row['ar_name'];

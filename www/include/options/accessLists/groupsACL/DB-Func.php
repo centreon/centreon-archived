@@ -71,9 +71,9 @@ function testGroupExistence($name = null)
         . "WHERE acl_group_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8")."' ";
     $DBRESULT = $pearDB->query($query);
     $cg = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $cg["acl_group_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $cg["acl_group_id"] != $id) {
         # Duplicate entry
         return false;
     } else {
@@ -152,7 +152,7 @@ function multipleGroupInDB($Groups = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
                 $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
 
                 /*
 				 * Duplicate Links

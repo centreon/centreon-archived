@@ -101,7 +101,7 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
         $query .= ") AND cvur.custom_view_id = ". $this->db->escape($params['custom_view_id']) . "
                                   LIMIT 1";
         $res = $this->db->query($query);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             return $row['preference_value'];
         }

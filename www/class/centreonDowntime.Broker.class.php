@@ -422,7 +422,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         $query .= ($downtime['service_id'] != '') ? 'AND service_id = ' . $downtime['service_id'] . ' ' : 'AND service_id IS NULL';
 
         $res = $this->db->query($query);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $isScheduled = true;
         }
 

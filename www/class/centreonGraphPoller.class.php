@@ -215,12 +215,12 @@ class centreonGraphPoller
                 $this->rrdtoolOptions[$option["key"]] = $option["value"];
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         $DBRESULT2 = $this->dbMonitoring->query("SELECT RRDdatabase_nagios_stats_path FROM config");
         $nagiosStats = $DBRESULT2->fetchRow();
         $this->nagiosStatsPath = $nagiosStats['RRDdatabase_nagios_stats_path'];
-        $DBRESULT2->free();
+        $DBRESULT2->closeCursor();
     }
 
     /**

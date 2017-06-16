@@ -50,12 +50,12 @@ function testExistence($name = null)
     /*
 	 * Modif case
 	 */
-    if ($res->numRows() >= 1 && $graph["graph_id"] == $id) {
+    if ($res->rowCount() >= 1 && $graph["graph_id"] == $id) {
         return true;
     } /*
 	 * Duplicate entry
 	 */
-    elseif ($res->numRows() >= 1 && $graph["graph_id"] != $id) {
+    elseif ($res->rowCount() >= 1 && $graph["graph_id"] != $id) {
         return false;
     } else {
         return true;
@@ -99,7 +99,7 @@ function defaultOreonGraph()
     global $pearDB;
     $rq = "SELECT DISTINCT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'";
     $res = $pearDB->query($rq);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         $rq = "UPDATE giv_graphs_template SET default_tpl1 = '1' WHERE graph_id = (SELECT MIN(graph_id) FROM giv_graphs_template)";
         $pearDB->query($rq);
     }

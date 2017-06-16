@@ -54,9 +54,9 @@ function testContactExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '" . htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8") . "'");
     $contact = $DBRESULT->fetchRow();
    
-    if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $id) {
         return false;
     } else {
         return true;
@@ -79,9 +79,9 @@ function testAliasExistence($alias = null)
     $DBRESULT = $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'");
     $contact = $DBRESULT->fetchRow();
     
-    if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $id) {
         return false;
     } else {
         return true;
@@ -982,7 +982,7 @@ function getContactIdByName($name)
 
     $id = 0;
     $res = $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '" . $pearDB->escape($name) . "'");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $id = $row['contact_id'];
     }

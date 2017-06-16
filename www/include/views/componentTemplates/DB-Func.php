@@ -55,10 +55,10 @@ function NameHsrTestExistence($name = null)
     $DBRESULT = $pearDB->query($sql);
     $compo = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
+    if ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
         return true;
     #Duplicate entry
-    } elseif ($DBRESULT->numRows() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
         return false;
     } else {
         return true;
@@ -83,10 +83,10 @@ function DsHsrTestExistence($name = null)
     $DBRESULT = $pearDB->query($sql);
     $compo = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
+    if ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
+    elseif ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
         return false;
     } else {
         return true;
@@ -115,7 +115,7 @@ function defaultOreonGraph()
 {
     global $pearDB;
     $DBRESULT = $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'");
-    if (!$DBRESULT->numRows()) {
+    if (!$DBRESULT->rowCount()) {
         $DBRESULT2 = $pearDB->query("UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1");
     }
 }

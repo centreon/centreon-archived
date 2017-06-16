@@ -75,7 +75,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($generalOption = $DBRESULT->fetchRow()) {
     $generalOptions[$generalOption["key"]] = $generalOption["value"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * detect installation dir

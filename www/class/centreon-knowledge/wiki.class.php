@@ -62,7 +62,7 @@ class Wiki
         while ($opt = $res->fetchRow()) {
             $options[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
         }
-        $res->free();
+        $res->closeCursor();
 
         if (!isset($options['kb_wiki_url']) || $options['kb_wiki_url'] == '') {
             throw new \Exception(

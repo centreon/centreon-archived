@@ -189,7 +189,7 @@ class CentreonMainCfg
         }
 
         $DBRESULT = $this->DB->query("SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '" . $iId . "'");
-        if ($DBRESULT->numRows() == 0) {
+        if ($DBRESULT->rowCount() == 0) {
             $sQuery = "INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) VALUES ('" . $this->aDefaultBrokerDirective[$source] . "', " . $iId . ")";
             try {
                 $res = $this->DB->query($sQuery);
@@ -215,7 +215,7 @@ class CentreonMainCfg
         }
 
         $res = $this->DB->query("SELECT * FROM cfg_nagios WHERE  nagios_server_id = " . $source . "");
-        if ($res->numRows() == 0) {
+        if ($res->rowCount() == 0) {
             $baseValues = $this->aInstanceDefaultValues;
         } else {
             $baseValues = $res->fetchRow();
@@ -361,7 +361,7 @@ class CentreonMainCfg
         while ($row = $DBRESULT->fetchRow()) {
             $entries[] = $row;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $entries;
     }
 }

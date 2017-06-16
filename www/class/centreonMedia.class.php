@@ -86,7 +86,7 @@ class CentreonMedia
             }
 
 
-            if ($result->numRows()) {
+            if ($result->rowCount()) {
                 $row = $result->fetchRow();
                 $mediaDirectory = $row['value'];
             }
@@ -123,7 +123,7 @@ class CentreonMedia
         $query = "SELECT dir_id FROM view_img_dir WHERE dir_name = '" . $dirname . "' LIMIT 1";
         $RES = $this->db->query($query);
         $dir_id = null;
-        if ($RES->numRows()) {
+        if ($RES->rowCount()) {
             $row = $RES->fetchRow();
             $dir_id = $row['dir_id'];
         }
@@ -142,7 +142,7 @@ class CentreonMedia
         $result = $this->db->query($query);
 
         $directoryName = null;
-        if ($result->numRows()) {
+        if ($result->rowCount()) {
             $row = $result->fetchRow();
             $directoryName = $row['dir_name'];
         }
@@ -220,7 +220,7 @@ class CentreonMedia
             "LIMIT 1";
         $RES = $this->db->query($query);
         $img_id = null;
-        if ($RES->numRows()) {
+        if ($RES->rowCount()) {
             $row = $RES->fetchRow();
             $img_id = $row['img_id'];
         }
@@ -366,7 +366,7 @@ class CentreonMedia
 
         $result = $this->db->query($query);
 
-        if (!$result->numRows()) {
+        if (!$result->rowCount()) {
             // Insert image in database
             $query = 'INSERT INTO view_img '
                 . '(img_name, img_path, img_comment) '
@@ -393,7 +393,7 @@ class CentreonMedia
             } catch (\PDOException $e) {
                 $error = true;
             }
-            if ($error || !$result->numRows()) {
+            if ($error || !$result->rowCount()) {
                 throw new \Exception('Error while creating image ' . $imageName);
             }
             $row = $result->fetchRow();

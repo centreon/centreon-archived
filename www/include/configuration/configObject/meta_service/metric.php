@@ -101,7 +101,7 @@ if ($host_id) {
             $services2[$key][$metricSV["metric_id"]] = $metricSV["metric_name"]."  (".$metricSV["unit_name"].")";
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 $debug = 0;

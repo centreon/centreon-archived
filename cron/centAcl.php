@@ -180,7 +180,7 @@ try {
                 $insert_query = "INSERT INTO acl_resources_host_relations (host_host_id, acl_res_id) VALUES ('" . $rowData['host_id'] . "', '" . $row['acl_res_id'] . "')";
                 $pearDB->query($insert_query);
             }
-            $res1->free();
+            $res1->closeCursor();
         }
 
         /**
@@ -193,7 +193,7 @@ try {
                 $insert_query = "INSERT INTO acl_resources_hg_relations (hg_hg_id, acl_res_id) VALUES ('" . $rowData['hg_id'] . "', '" . $row['acl_res_id'] . "')";
                 $pearDB->query($insert_query);
             }
-            $res1->free();
+            $res1->closeCursor();
         }
 
         /**
@@ -206,14 +206,14 @@ try {
                 $insert_query = "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id) VALUES ('" . $rowData['sg_id'] . "', '" . $row['acl_res_id'] . "')";
                 $pearDB->query($insert_query);
             }
-            $res1->free();
+            $res1->closeCursor();
         }
 
         if ($i != 0) {
             $pearDB->query("UPDATE acl_resources SET changed = '1' WHERE acl_res_id = '" . $row['acl_res_id'] . "'");
         }
     }
-    $res->free();
+    $res->closeCursor();
 
     /*
      * Check that resources ACL have been changed
@@ -239,7 +239,7 @@ try {
         }
         $groupStr = $result["acl_group_id"];
     }
-    $DBRESULT1->free();
+    $DBRESULT1->closeCursor();
     unset($result);
 
     if (count($tabGroups)) {
@@ -257,7 +257,7 @@ try {
             }
             $hostTemplateCache[$row['host_tpl_id']][$row['host_host_id']] = $row['host_host_id'];
         }
-        $res->free();
+        $res->closeCursor();
         
         /** ***********************************************
          * Cache for host poller relation
@@ -289,7 +289,7 @@ try {
             }
             $hostIncCache[$h["acl_res_id"]][$h["host_id"]] = 1;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         
         /** ***********************************************
          * Get all excluded Hosts
@@ -307,7 +307,7 @@ try {
             }
             $hostExclCache[$h["acl_res_id"]][$h["host_id"]] = 1;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         
         /** ***********************************************
          * Service Cache
@@ -319,7 +319,7 @@ try {
         while ($s = $DBRESULT->fetchRow()) {
             $svcCache[$s["service_id"]] = $s["service_description"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         
         /** ***********************************************
          * Host Host relation
@@ -332,7 +332,7 @@ try {
             }
             $hostHGRelation[$hg["hostgroup_hg_id"]][$hg["host_host_id"]] = $hg["host_host_id"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($hg);
         
         
@@ -361,7 +361,7 @@ try {
                 }
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         
         /** ***********************************************
          * Create Service template model Cache
@@ -371,7 +371,7 @@ try {
         while ($tpl = $DBRESULT->fetchRow()) {
             $svcTplCache[$tpl["service_id"]] = $tpl["service_template_model_stm_id"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($tpl);
         
         $svcCatCache = array();
@@ -382,7 +382,7 @@ try {
             }
             $svcCatCache[$res["service_service_id"]][$res["sc_id"]] = 1;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($res);
         
         $sgCache = array();
@@ -394,7 +394,7 @@ try {
         while ($row = $res->fetchRow()) {
             $sgCache[$row['acl_group_id']][$row['acl_res_id']] = array();
         }
-        $res->free();
+        $res->closeCursor();
         unset($row);
         
         $query = "SELECT service_service_id, sgr.host_host_id, acl_res_id " .
@@ -417,7 +417,7 @@ try {
                 }
             }
         }
-        $res->free();
+        $res->closeCursor();
         unset($row);
         
         $query = "SELECT acl_res_id, hg_id FROM hostgroup, acl_resources_hg_relations " .
@@ -524,7 +524,7 @@ try {
                 $DBRESULT3 = $pearDB->query($sgReq);
                 $sgElem = array();
                 $tmpH = array();
-                if ($DBRESULT3->numRows()) {
+                if ($DBRESULT3->rowCount()) {
                     while ($h = $DBRESULT3->fetchRow()) {
                         if (!isset($sgElem[$h["host_id"]])) {
                             $sgElem[$h["host_id"]] = array();
@@ -533,7 +533,7 @@ try {
                         $sgElem[$h["host_id"]][$h["service_id"]] = $h["host_id"] . "," . $h["service_id"];
                     }
                 }
-                $DBRESULT3->free();
+                $DBRESULT3->closeCursor();
                 
                 foreach ($tmpH as $host_id => $flag) {
                     $tab = getAuthorizedServicesHost($host_id, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
@@ -594,7 +594,7 @@ try {
                     "UPDATE `acl_resources` SET `changed` = '0' WHERE acl_res_id = '" . $res2["acl_res_id"] . "'"
                 );
             }
-            $DBRESULT2->free();
+            $DBRESULT2->closeCursor();
             
             if ($debug) {
                 $time_end = microtime_float2();
