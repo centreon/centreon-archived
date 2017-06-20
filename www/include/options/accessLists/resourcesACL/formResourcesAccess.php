@@ -241,13 +241,13 @@ $form->setDefaults(array('acl_res_activate' => '1'));
 /*
  * All ressources
  */
-$allHosts[] = HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "", array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id, "hostAdvancedSelect")'));
+$allHosts[] = HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "", array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id)'));
 $form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;');
 
-$allHostgroups[] = HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "", array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id, "hostgroupAdvancedSelect")'));
+$allHostgroups[] = HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "", array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id)'));
 $form->addGroup($allHostgroups, 'all_hostgroups', _("Include all hostgroups"), '&nbsp;&nbsp;');
 
-$allServiceGroups[] = HTML_QuickForm::createElement('checkbox', 'all_servicegroups', '&nbsp;', "", array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id, "servicegroupAdvancedSelect")'));
+$allServiceGroups[] = HTML_QuickForm::createElement('checkbox', 'all_servicegroups', '&nbsp;', "", array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id)'));
 $form->addGroup($allServiceGroups, 'all_servicegroups', _("Include all servicegroups"), '&nbsp;&nbsp;');
 
 /*
@@ -435,33 +435,29 @@ if ($form->validate()) {
 }
 ?>
 <script type='text/javascript'>
-function hideAdvancedSelect(advId)
-{
-    jQuery("#"+advId).each(function(e) {
-        e.up('table').setAttribute('style', 'display: none');
-    });
-}
+    function hideAdvancedSelect(advId)
+    {
+        advId.parentNode.getElementsByTagName('table')[0].setAttribute('style', 'display: none');
+    }
 
-function showAdvancedSelect(advId)
-{
-    jQuery("#"+advId).each(function(e) {
-        e.up('table').setAttribute('style', 'display: visible');
-    });
-}
+    function showAdvancedSelect(advId)
+    {
+        advId.parentNode.getElementsByTagName('table')[0].setAttribute('style', 'display: visible');
+    }
 
-function advancedDisplay(checkboxId, advSelectId)
-{
-    jQuery("#"+checkboxId).each(function(e) {
-        if (e.checked) {
-            hideAdvancedSelect(advSelectId);
-        } else {
-            showAdvancedSelect(advSelectId);
-        }
-    });
-}
+    function advancedDisplay(checkboxId)
+    {
+        jQuery("#"+checkboxId).each(function(index, e) {
+            if (e.checked) {
+                hideAdvancedSelect(e);
+            } else {
+                showAdvancedSelect(e);
+            }
+        });
+    }
 
-advancedDisplay('all_hosts', 'hostAdvancedSelect');
-advancedDisplay('all_hostgroups', 'hostgroupAdvancedSelect');
-advancedDisplay('all_servicegroups', 'servicegroupAdvancedSelect');
+advancedDisplay('all_hosts');
+advancedDisplay('all_hostgroups');
+advancedDisplay('all_servicegroups');
 
 </script>
