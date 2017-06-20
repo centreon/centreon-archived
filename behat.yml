@@ -168,3 +168,8 @@ default:
       paths: [ %paths.base%/features/SpecialCharactersInContact.feature ]
       contexts:
       - SpecialCharactersInContactContext
+      
+    ldap_configuration:
+      paths: [ %paths.base%/features/LdapConfiguration.feature ]
+      contexts:
+      - LdapConfigurationContext
