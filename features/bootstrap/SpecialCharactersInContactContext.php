@@ -39,6 +39,8 @@ class SpecialCharactersInContactContext extends CentreonContext
     {
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->nonAdminAlias);
+        $toto = $this->page->getProperty('alias');
+        var_dump($toto);
         $this->page->setProperties(array('alias' => $this->accentedAndSpeacialCharsAlias));
         $this->page->save();
     }
