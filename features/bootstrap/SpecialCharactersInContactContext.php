@@ -50,7 +50,7 @@ class SpecialCharactersInContactContext extends CentreonContext
     public function theNewRecordIsDisplayedInTheUsersListWithTheNewAliasValue()
     {
         $this->page = new ContactConfigurationListingPage($this);
-        $this->page->inspect($this->accentedAndSpeacialCharsAlias);
+        $this->page->getEntry($this->accentedAndSpeacialCharsAlias);  
     }
 
     /**
