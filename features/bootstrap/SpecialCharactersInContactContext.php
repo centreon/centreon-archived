@@ -5,18 +5,14 @@ use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\External\LoginPage;
 
-
-
 class SpecialCharactersInContactContext extends CentreonContext
 {
-    private $nonAdminName = 'nonAdminName';
-    private $nonAdminPassword = 'nonAdminPassword';
-    private $nonAdminAlias = 'nonAdminalias';
-    private $nonAdminEmail= 'test@localhost.com';
-    private $page;
+    protected $nonAdminName = 'nonAdminName';
+    protected $nonAdminPassword = 'nonAdminPassword';
+    protected $nonAdminAlias = 'nonAdminalias';
+    protected $nonAdminEmail= 'test@localhost.com';
+    protected $page;
     protected $accentedAndSpeacialCharsAlias = 'guést@';
-
-
     
    
     /**
@@ -80,9 +76,7 @@ class SpecialCharactersInContactContext extends CentreonContext
      */
     public function theContactIsLoggedToCentreonWeb()
     {
-        // Login.
         $this->page = new LoginPage($this);
-    
         $this->page->login($this->accentedAndSpeacialCharsAlias,$this->nonAdminPassword);
     }
 }
