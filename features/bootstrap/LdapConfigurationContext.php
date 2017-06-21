@@ -5,69 +5,32 @@ use Centreon\Test\Behat\Administration\LdapConfigurationListingPage;
 use Centreon\Test\Behat\Administration\LdapConfigurationPage;
 
 class LdapConfigurationContext extends CentreonContext
-{
+{   
+    protected $page;
+    protected $configuration_name ='ldapacceptancetest';
     
-    private $page;
-
-        
-
-    /**
+   /**
      * @When I add a new LDAP configuration
      */
     public function iAddANewLdapConfiguration()
     {
-       $this->page = new LdapConfigurationListingPage($this);
-       $this->assertFind('css', 'a[class="btc bt_success"]')->click();
        $this->page = new LdapConfigurationPage($this);
        $this->page->setProperties(array(
-           'configuration_name' => 'ldap_acceptance_test',
+           'configuration_name' => $this->configuration_name,
            'description' => 'an ldap configuration test',
+           'enable_authentification' => 1,
            'template' => 'Posix'
        ));
-       $this->page->save();
-       throw new Exception('not found');
-       
+      
     }
-
+    
+    
     /**
      * @Then the LDAP configuration is saved with its properties
      */
     public function theLdapConfigurationIsSavedWithItsProperties()
     {
-       //$this->page->save();
-       //throw new Exception('not found');
-    }
-
-    /**
-     * @Given an existing LDAP configuration
-     */
-    public function anExistingLdapConfiguration()
-    {
-        
-    }
-
-    /**
-     * @When I duplicate the LDAP configuration
-     */
-    public function iDuplicateTheLdapConfiguration()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then name is automatically incremented
-     */
-    public function nameIsAutomaticallyIncremented()
-    {
-        
-    }
-
-    /**
-     * @Then other properties are the same than in the model
-     */
-    public function otherPropertiesAreTheSameThanInTheModel()
-    {
-        
+         $this->page->save();
     }
 
     /**
@@ -75,7 +38,14 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function iModifySomePropertiesOfAnExistingLdapConfiguration()
     {
-        
+        //$this->page->iAddANewLdapConfiguration();
+        // new Exception('not found');
+        //$this->page = $this->page->getEntries();
+       // var_dump($this->page);
+        //$this->page->setProperties(array('description' => 'A new description'));
+        //throw new Exception('not found');
+        //$this->page->save();
+        //throw new Exception('not found');*/
     }
 
     /**
@@ -101,4 +71,5 @@ class LdapConfigurationContext extends CentreonContext
     {
         
     }
+
 }
