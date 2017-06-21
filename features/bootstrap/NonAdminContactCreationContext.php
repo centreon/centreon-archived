@@ -138,7 +138,7 @@ class NonAdminContactCreationContext extends CentreonContext
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                return $this->currentPage->getEntry($this->nonAdminAlias);
+                return $this->currentPage->getEntry($this->nonAdminAlias . '_1');
             },
             "The duplicated contact was not found.",
             30
