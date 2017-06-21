@@ -158,3 +158,8 @@ default:
       paths: [ %paths.base%/features/SpecialCharactersInContact.feature ]
       contexts:
       - SpecialCharactersInContactContext
+
+    host_creation_duplication:
+      paths: [ %paths.base%/features/HostCreationDuplication.feature ]
+      contexts:
+      - HostCreationDuplicationContext
