@@ -18,7 +18,15 @@ class LdapConfigurationContext extends CentreonContext
     {
        $this->page = new LdapConfigurationListingPage($this);
        $this->assertFind('css', 'a[class="btc bt_success"]')->click();
+       $this->page = new LdapConfigurationPage($this);
+       $this->page->setProperties(array(
+           'configuration_name' => 'ldap_acceptance_test',
+           'description' => 'an ldap configuration test',
+           'template' => 'Posix'
+       ));
+       $this->page->save();
        throw new Exception('not found');
+       
     }
 
     /**
@@ -26,7 +34,8 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function theLdapConfigurationIsSavedWithItsProperties()
     {
-       
+       //$this->page->save();
+       //throw new Exception('not found');
     }
 
     /**
