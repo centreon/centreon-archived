@@ -159,6 +159,11 @@ default:
       contexts:
       - SpecialCharactersInContactContext
 
+    non_admin_contact_creation:
+      paths: [ %paths.base%/features/NonAdminContactCreation.feature ]
+      contexts:
+      - NonAdminContactCreationContext
+
     contact_configuration:
       paths: [ %paths.base%/features/ContactConfiguration.feature ]
       contexts:
