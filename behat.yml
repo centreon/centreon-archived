@@ -163,3 +163,8 @@ default:
       paths: [ %paths.base%/features/RestApi.feature ]
       contexts:
       - RestApiContext
+      
+    special_characters_in_contact:
+      paths: [ %paths.base%/features/SpecialCharactersInContact.feature ]
+      contexts:
+      - SpecialCharactersInContactContext
