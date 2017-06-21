@@ -12,11 +12,6 @@ class NonAdminContactCreationContext extends CentreonContext
     private $nonAdminPassword;
     private $nonAdminAlias;
     private $nonAdminAddress;
-    private $nonAdminDN;
-    private $nonAdminServiceNotifCommand;
-    private $changedName;
-    private $changedAlias;
-    private $changedAddress;
     private $currentPage;
 
     public function __construct()
@@ -26,11 +21,6 @@ class NonAdminContactCreationContext extends CentreonContext
         $this->nonAdminPassword ='nonAdminPassword';
         $this->nonAdminAlias = 'nonAdminAlias';
         $this->nonAdminAddress = 'nonadmin@localhost';
-        $this->nonAdminDN = 'nonAdminDN';
-        $this->nonAdminServiceNotifCommand = 'host-notify-by-email';
-        $this->changedName = 'changedName';
-        $this->changedAlias = 'changedAlias';
-        $this->changedAddress = 'contact@localhost';
     }
 
     /**
