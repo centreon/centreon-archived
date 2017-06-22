@@ -10,10 +10,10 @@ Feature: LDAP_configuration
         When I add a new LDAP configuration
         Then the LDAP configuration is saved with its properties
         
-    #Scenario: Modify LDAP configuration
-        #When I modify some properties of an existing LDAP configuration
-        #Then all changes are saved
+    Scenario: Modify LDAP configuration
+        When I modify some properties of an existing LDAP configuration
+        Then all changes are saved
 
-    #Scenario: Delete LDAP configuration
-        #When I have deleted one existing LDAP configuration
-        #Then this configuration has disappeared from the LDAP configuration list
+    Scenario: Delete LDAP configuration
+        When I have deleted one existing LDAP configuration
+        Then this configuration has disappeared from the LDAP configuration list
