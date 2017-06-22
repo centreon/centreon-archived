@@ -21,7 +21,7 @@ class LdapConfigurationContext extends CentreonContext
            'enable_authentification' => 1,
            'template' => 'Posix'
        ));
-      
+       
     }
     
     
@@ -30,7 +30,7 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function theLdapConfigurationIsSavedWithItsProperties()
     {
-         $this->page->save();
+        $this->page->save();
     }
 
     /**
@@ -38,14 +38,12 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function iModifySomePropertiesOfAnExistingLdapConfiguration()
     {
-        //$this->page->iAddANewLdapConfiguration();
-        // new Exception('not found');
-        //$this->page = $this->page->getEntries();
-       // var_dump($this->page);
-        //$this->page->setProperties(array('description' => 'A new description'));
-        //throw new Exception('not found');
-        //$this->page->save();
-        //throw new Exception('not found');*/
+        $this->iAddANewLdapConfiguration();
+        $this->page->save();
+        $this->page = new LdapConfigurationListingPage($this);
+        $this->page = $this->page->inspect($this->configuration_name);
+        $this->page->setProperties(array('description' => 'a modified description configuration test'));
+        
     }
 
     /**
@@ -53,6 +51,7 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function allChangesAreSaved()
     {
+        $this->page->save();
         
     }
 
@@ -61,6 +60,13 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function iHaveDeletedOneExistingLdapConfiguration()
     {
+        $this->iAddANewLdapConfiguration();
+        $this->page->save();
+        $this->page = new LdapConfigurationListingPage($this);
+        $object = $this->page->getEntry($this->configuration_name);
+        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $this->setConfirmBox(true);
+        $this->selectInList('select[name="o1"]', 'Delete');
         
     }
 
@@ -69,6 +75,7 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function thisConfigurationHasDisappearedFromTheLdapConfigurationList()
     {
+        $this->page = new LdapConfigurationListingPage($this);
         
     }
 
