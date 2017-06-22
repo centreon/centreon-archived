@@ -10,10 +10,10 @@ class ContactGroupConfigurationContext extends CentreonContext
     protected $contactGroupName;
     protected $contactGroupAlias;
     protected $contactGroupContact;
-    protected $contactGroupACL;
     protected $contactGroupComment;
     protected $changedName;
     protected $changedAlias;
+    protected $changedComment;
 
     public function __construct()
     {
@@ -21,10 +21,10 @@ class ContactGroupConfigurationContext extends CentreonContext
         $this->contactGroupName = 'contactGroupName';
         $this->contactGroupAlias = 'contactGroupAlias';
         $this->contactGroupContact = 'Guest';
-        $this->contactGroupACL = 'ALL';
         $this->contactGroupComment = 'contactGroupComment';
         $this->changedName = 'contactGroupNameChanged';
         $this->changedAlias = 'contactGroupAliasChanged';
+        $this->changedComment = 'contactGroupCommentChanged';
     }
 
     /**
@@ -36,7 +36,8 @@ class ContactGroupConfigurationContext extends CentreonContext
         $this->currentPage->setProperties(array(
             'name' => $this->contactGroupName,
             'alias' => $this->contactGroupAlias,
-            'status' => 0
+            'status' => 0,
+            'comments' => $this->contactGroupComment
         ));
         $this->currentPage->save();
     }
@@ -59,8 +60,14 @@ class ContactGroupConfigurationContext extends CentreonContext
      */
     public function theNameHasChangedOnTheContactGroupsPage()
     {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->changedName);
+        $this->spin(
+            function($context){
+                $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                return $this->currentPage->inspect($this->changedName);
+            },
+            "The name has not changed.",
+            30
+        );
     }
 
     /**
@@ -69,7 +76,7 @@ class ContactGroupConfigurationContext extends CentreonContext
     public function iConfigureTheAliasOnAContactGroup()
     {
         $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->contactGroupName);
+        $this->currentPage = $this->currentPage->inspect($this->changedName);
         $this->currentPage->setProperties(array(
             'alias' => $this->changedAlias
         ));
@@ -81,12 +88,16 @@ class ContactGroupConfigurationContext extends CentreonContext
      */
     public function theAliasHasChangedOnTheContactGroupsPage()
     {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->contactGroupName);
-        $object = $this->currentPage->getProperties();
-        if ($object['alias'] != $this->changedAlias){
-            throw new \Exception("The alias has not changed.");
-        }
+        $this->spin(
+            function($context){
+                $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                $this->currentPage = $this->currentPage->inspect($this->changedName);
+                $object = $this->currentPage->getProperties();
+                return $object['alias'] == $this->changedAlias;
+            },
+            "The alias has not changed.",
+            30
+        );
     }
 
     /**
@@ -95,7 +106,7 @@ class ContactGroupConfigurationContext extends CentreonContext
     public function iConfigureTheStatusOfAContactGroup()
     {
         $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->contactGroupName);
+        $this->currentPage = $this->currentPage->inspect($this->changedName);
         $this->currentPage->setProperties(array(
             'status' => 1
         ));
@@ -107,12 +118,16 @@ class ContactGroupConfigurationContext extends CentreonContext
      */
     public function theStatusHasChangedOnTheContactGroupsPage()
     {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->contactGroupName);
-        $object = $this->currentPage->getProperties();
-        if ($object['status'] != 1){
-            throw new \Exception("The status has not changed.");
-        }
+        $this->spin(
+            function($context){
+                $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                $this->currentPage = $this->currentPage->inspect($this->changedName);
+                $object = $this->currentPage->getProperties();
+                return $object['status'] == 1;
+            },
+            "The status has not changed.",
+            30
+        );
     }
 
     /**
@@ -121,9 +136,9 @@ class ContactGroupConfigurationContext extends CentreonContext
     public function iConfigureTheCommentOfAContactGroup()
     {
         $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->contactGroupName);
+        $this->currentPage = $this->currentPage->inspect($this->changedName);
         $this->currentPage->setProperties(array(
-            'comments' => $this->contactGroupComment
+            'comments' => $this->changedComment
         ));
         $this->currentPage->save();
     }
@@ -133,11 +148,15 @@ class ContactGroupConfigurationContext extends CentreonContext
      */
     public function theCommentHasChangedOnTheContactGroupsPage()
     {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->contactGroupName);
-        $object = $this->currentPage->getProperties();
-        if ($object['comments'] != $this->contactGroupComment){
-            throw new \Exception("The comment has not changed.");
-        }
+        $this->spin(
+            function($context){
+                $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                $this->currentPage = $this->currentPage->inspect($this->changedName);
+                $object = $this->currentPage->getProperties();
+                return $object['comments'] == $this->changedComment;
+            },
+            "The comment has not changed.",
+            30
+        );
     }
 }
