@@ -70,7 +70,7 @@ class ContactConfigurationContext extends CentreonContext
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                $object = $this->currentPage->getEntry($this->nonAdminAlias);
+                $object = $this->currentPage->getEntry($this->changedAlias);
                 return $object['name'] == $this->changedName;
             },
             "The contact has not changed.",
@@ -96,9 +96,9 @@ class ContactConfigurationContext extends CentreonContext
      */
     public function theAliasHasChangedOnTheContactPage()
     {
-        $this->currentPage = new ContactConfigurationListingPage($this);
         $this->spin(
             function($context){
+                $this->currentPage = new ContactConfigurationListingPage($this);
                 return $this->currentPage->getEntry($this->changedAlias);
             },
             "The alias has not changed.",
@@ -113,7 +113,7 @@ class ContactConfigurationContext extends CentreonContext
     public function iConfigureTheAddressOfAContact()
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
+        $this->currentPage = $this->currentPage->inspect($this->changedAlias);
         $this->currentPage->setProperties(array(
             'email' => $this->changedAddress
         ));
@@ -128,7 +128,7 @@ class ContactConfigurationContext extends CentreonContext
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                $object = $this->currentPage->getEntry($this->nonAdminAlias);
+                $object = $this->currentPage->getEntry($this->changedAlias);
                 return $object['email'] == $this->changedAddress;
             },
             "The address has not changed.",
@@ -143,7 +143,7 @@ class ContactConfigurationContext extends CentreonContext
     public function iMakeAContactBeAnAdmin()
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
+        $this->currentPage = $this->currentPage->inspect($this->changedAlias);
         $this->currentPage->setProperties(array(
             'admin' => 1
         ));
@@ -158,7 +158,7 @@ class ContactConfigurationContext extends CentreonContext
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                $object = $this->currentPage->getEntry($this->nonAdminAlias);
+                $object = $this->currentPage->getEntry($this->changedAlias);
                 return $object['admin'] == 'Enabled';
             },
             "The contact is not an admin.",
@@ -173,7 +173,7 @@ class ContactConfigurationContext extends CentreonContext
     public function iConfigureTheDNOfAContact()
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
+        $this->currentPage = $this->currentPage->inspect($this->changedAlias);
         $this->currentPage->setProperties(array(
             'dn' => $this->nonAdminDN
         ));
@@ -188,8 +188,8 @@ class ContactConfigurationContext extends CentreonContext
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
-                $object = $this->currentPage->getProperties($this->nonAdminAlias);
+                $this->currentPage = $this->currentPage->inspect($this->changedAlias);
+                $object = $this->currentPage->getProperties($this->changedAlias);
                 return $object['dn'] == $this->nonAdminDN;
             },
             "The DN has not changed.",
