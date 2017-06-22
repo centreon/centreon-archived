@@ -185,7 +185,7 @@ Sauvegarder le fichier et exécuter les commandes suivantes
 ::
 
     # systemctl daemon-reload
-    # service mysqld restart
+    # service mysql restart
 
 ***************************************
 Configurez votre supervision facilement
