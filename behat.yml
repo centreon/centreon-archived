@@ -169,6 +169,11 @@ default:
       contexts:
       - SpecialCharactersInContactContext
 
+    host_creation_duplication:
+      paths: [ %paths.base%/features/HostCreationDuplication.feature ]
+      contexts:
+      - HostCreationDuplicationContext
+
     host_configuration:
       paths: [ %paths.base%/features/HostConfiguration.feature ]
       contexts:
@@ -183,4 +188,3 @@ default:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
       - LdapConfigurationContext
-
