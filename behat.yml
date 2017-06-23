@@ -178,3 +178,8 @@ default:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
       - LdapConfigurationContext
+      
+    ldap_manual_import:
+      paths: [ %paths.base%/features/LdapManualImport.feature ]
+      contexts:
+      - LdapManualImportContext
