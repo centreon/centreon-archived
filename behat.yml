@@ -173,8 +173,14 @@ default:
       paths: [ %paths.base%/features/HostConfiguration.feature ]
       contexts:
       - HostConfigurationContext
+
+    contact_group_creation_duplication:
+      paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
+      contexts:
+      - ContactGroupCreationDuplicationContext
       
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
       - LdapConfigurationContext
+
