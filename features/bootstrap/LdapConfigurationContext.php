@@ -8,8 +8,10 @@ class LdapConfigurationContext extends CentreonContext
 {   
     protected $page;
     protected $configuration_name ='ldapacceptancetest';
-    
-   /**
+    protected $newConfigurationName = 'the configuration name has been changed';
+
+
+    /**
      * @When I add a new LDAP configuration
      */
     public function iAddANewLdapConfiguration()
@@ -42,16 +44,24 @@ class LdapConfigurationContext extends CentreonContext
         $this->page->save();
         $this->page = new LdapConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->configuration_name);
-        $this->page->setProperties(array('description' => 'a modified description configuration test'));
-        
+        $this->page->setProperties(array('configuration_name' => $this->newConfigurationName));
+        $this->page->save();
+    
     }
 
     /**
      * @Then all changes are saved
      */
     public function allChangesAreSaved()
-    {
-        $this->page->save();
+    {   
+        
+        $this->page = new LdapConfigurationListingPage($this);
+        $object = $this->page->getEntry($this->newConfigurationName);
+        
+        if ($object['configuration_name'] != $this->newConfigurationName) {
+            
+            throw new \Exception('the Configuration has not changed.');
+        }
         
     }
 
@@ -76,7 +86,11 @@ class LdapConfigurationContext extends CentreonContext
     public function thisConfigurationHasDisappearedFromTheLdapConfigurationList()
     {
         $this->page = new LdapConfigurationListingPage($this);
-        
+        $object = $this->page->getEntries();
+  
+        if (isset($object[$this->configuration_name])) {
+            
+            throw new \Exception('the Configuration is not deleted.');
+        }
     }
-
 }
