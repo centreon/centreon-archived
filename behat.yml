@@ -168,3 +168,9 @@ default:
       paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
       contexts:
       - ContactGroupCreationDuplicationContext
+      
+    ldap_configuration:
+      paths: [ %paths.base%/features/LdapConfiguration.feature ]
+      contexts:
+      - LdapConfigurationContext
+
