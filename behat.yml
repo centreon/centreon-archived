@@ -173,3 +173,8 @@ default:
       paths: [ %paths.base%/features/HostConfiguration.feature ]
       contexts:
       - HostConfigurationContext
+      
+    ldap_configuration:
+      paths: [ %paths.base%/features/LdapConfiguration.feature ]
+      contexts:
+      - LdapConfigurationContext
