@@ -3,148 +3,85 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
-use Centreon\Test\Behat\External\LoginPage;
 use Centreon\Test\Behat\External\ListingPage;
 
 class NonAdminContactCreationContext extends CentreonContext
 {
-    private $nonAdminName;
-    private $nonAdminPassword;
-    private $nonAdminAlias;
-    private $nonAdminAddress;
+    private $duplicatedAlias;
     private $currentPage;
 
+    private $initialProperties = (array(
+        'name' => 'contactName',
+        'alias' => 'contactAlias',
+        'email' => 'contact@localhost',
+        'password' => 'contactpwd',
+        'password2' => 'contactpwd',
+        'admin' => 1
+    ));
+
     public function __construct()
-    {	
+    {
         parent::__construct();
-        $this->nonAdminName = 'nonAdminName';
-        $this->nonAdminPassword ='nonAdminPassword';
-        $this->nonAdminAlias = 'nonAdminAlias';
-        $this->nonAdminAddress = 'nonadmin@localhost';
-    }
-
-    /**
-     * @When I have filled the contact form
-     */
-    public function iHaveFilledTtheContactForm()
-    {
-        $this->currentPage = new ContactConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->nonAdminName,
-            'alias' => $this->nonAdminAlias,
-            'email' => $this->nonAdminAddress,
-            'password' => $this->nonAdminPassword,
-            'password2' => $this->nonAdminPassword,
-            'admin' => 0
-        ));
-    }
-
-    /**
-     * @When clicked on the save button
-     */
-    public function clickedOnSaveButton()
-    {
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the new record is displayed in the users list
-    */
-    public function theNewRecordIsDisplayedInTheUserList()
-    {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage->getEntry($this->nonAdminAlias);
-    }
-
-    /**
-     * @Given the new non admin user is created
-     */
-    public function theNewNonAdminUserIsCreated()
-    {
-        $this->currentPage = new ContactConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->nonAdminName,
-            'alias' => $this->nonAdminAlias,
-            'email' => $this->nonAdminAddress,
-            'password' => $this->nonAdminPassword,
-            'password2' => $this->nonAdminPassword,
-            'admin' => 0
-        ));
-        $this->currentPage->save();
-    }
-
-    /**
-     * @When I fill login field and Password
-     */
-    public function iFillFieldAndPassword()
-    {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->nonAdminAlias;
-        $this->parameters['centreon_password'] = $this->nonAdminPassword;
-    }
-
-    /**
-     * @Then the contact is logged to Centreon Web
-     */
-    public function theContactIsLoggedToCentreonWeb()
-    {
-        $this->iAmLoggedIn();
-    }
-
-    /**
-     * @Given a contact is configured
-     */
-    public function aContactIsConfigured()
-    {
-        $this->currentPage = new ContactConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->nonAdminName,
-            'alias' => $this->nonAdminAlias,
-            'email' => $this->nonAdminAddress,
-            'password' => $this->nonAdminPassword,
-            'password2' => $this->nonAdminPassword,
-            'admin' => 0
-        ));
-        $this->currentPage->save();
+        $this->duplicatedAlias = 'contactAlias_1';
     }
 
    /**
-     * @When I duplicate a contact
+     * @When I create a contact
      */
-    public function iDuplicateAContact()
+    public function iCreateAContact()
+    {
+        $this->currentPage = new ContactConfigurationPage($this);
+        $this->currentPage->setProperties($this->initialProperties);
+        $this->currentPage->save();
+    }
+
+    /**
+     * @When I duplicate it
+     */
+    public function iDuplicateIt()
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
-        $object = $this->currentPage->getEntry($this->nonAdminAlias);
+        $object = $this->currentPage->getEntry($this->initialProperties['alias']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
 
     /**
-     * @Then the new contact is displayed in the user list
+     * @When I delete it
      */
-    public function theNewContactIsDisplayedInTheUserList()
+    public function iDeleteIt()
+    {
+        $this->currentPage = new ContactConfigurationListingPage($this);
+        $object = $this->currentPage->getEntry($this->initialProperties['alias']);
+        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $this->setConfirmBox(true);
+        $this->selectInList('select[name="o1"]', 'Delete');
+    }
+    /**
+     * @Then the duplicated contact is displayed in the user list
+     */
+    public function theDuplicatedContactIsDisplayedInTheUserList()
     {
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                return $this->currentPage->getEntry($this->nonAdminAlias . '_1');
+                return $this->currentPage->getEntry($this->duplicatedAlias);
             },
             "The duplicated contact was not found.",
-            30
+            5
         );
     }
 
     /**
-     * @When I delete a contact
+     * @Then I can logg in Centreon Web with the duplicated contact
      */
-    public function iDeleteAContact()
+    public function iCanLoggInCentreonWebWithTheDuplicatedContact()
     {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $object = $this->currentPage->getEntry($this->nonAdminAlias);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
-        $this->setConfirmBox(true);
-        $this->selectInList('select[name="o1"]', 'Delete');
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->duplicatedAlias;
+        $this->parameters['centreon_password'] = $this->initialProperties['password'];
+        $this->iAmLoggedIn();
     }
 
     /**
@@ -158,7 +95,7 @@ class NonAdminContactCreationContext extends CentreonContext
                 $object = $this->currentPage->getEntries();
                 $bool = true;
                 foreach($object as $value){
-                    $bool = $bool && $value['alias'] != $this->nonAdminAlias;
+                    $bool = $bool && $value['alias'] != $this->initialProperties['alias'];
                 }
                 return $bool;
             },
