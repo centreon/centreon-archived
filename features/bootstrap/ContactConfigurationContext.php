@@ -26,8 +26,8 @@ class ContactConfigurationContext extends CentreonContext
         'email' => 'modified@localhost',
         'admin' => 1,
         'dn' => 'modifiedDn',
-        'host_notification_period' => '4',
-        'service_notification_period' => '3' 
+        'host_notification_period' => 'workhours',
+        'service_notification_period' => 'nonworkhours' 
     ));
 
     /**
