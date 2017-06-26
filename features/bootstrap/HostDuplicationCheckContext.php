@@ -51,7 +51,6 @@ class HostDuplicationCheckContext extends CentreonContext
     public function theHostPropertiesAreUpdated()
     {
         $this->currentPage = new HostConfigurationListingPage($this);
-        $entry = $this->currentPage->getEntry($this->updatedProperties['name']);
         $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
         $object = $this->currentPage->getProperties();
         $tableau = array();
