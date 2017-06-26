@@ -169,6 +169,11 @@ default:
       contexts:
       - SpecialCharactersInContactContext
 
+    contact_configuration:
+      paths: [ %paths.base%/features/ContactConfiguration.feature ]
+      contexts:
+      - ContactConfigurationContext
+
     host_creation_duplication:
       paths: [ %paths.base%/features/HostCreationDuplication.feature ]
       contexts:
