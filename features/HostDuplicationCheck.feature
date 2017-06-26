@@ -9,7 +9,4 @@ Feature: HostDuplicationCheck
 
     Scenario: Duplicate a host and check the properties
         When I duplicate a host
-        Then the host was correctly duplicated
-        And their alias are the same
-        And their address are the same
-        And their status are the same
+        Then the host properties are updated
