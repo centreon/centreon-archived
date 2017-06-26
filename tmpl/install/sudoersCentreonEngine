@@ -22,7 +22,6 @@ CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine start
 CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine stop
 CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine restart
 CENTREON   ALL = NOPASSWD: /usr/sbin/service centengine reload
-CENTREON   ALL = NOPASSWD: /usr/sbin/centengine -v *
 
 # Centreon Broker
 CENTREON   ALL = NOPASSWD: /sbin/service cbd start
