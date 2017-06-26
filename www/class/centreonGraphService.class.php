@@ -178,7 +178,10 @@ class CentreonGraphService extends CentreonGraph
                     "color" => $metric["ds_color_line"],
                     "negative" => false
                 );
-                if (isset($metric['ds_color_area'])) {
+                if (isset($metric['ds_color_area']) &&
+                    isset($metric['ds_filled']) &&
+                    $metric['ds_filled'] === '1'
+                ) {
                     $info['graph_type'] = "area";
                 }
                 if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
