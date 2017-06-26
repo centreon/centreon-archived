@@ -184,6 +184,11 @@ default:
       contexts:
       - HostConfigurationContext
 
+    host_duplication_check:
+      paths: [ %paths.base%/features/HostDuplicationCheck.feature ]
+      contexts:
+      - HostDuplicationCheckContext
+
     contact_group_creation_duplication:
       paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
       contexts:
