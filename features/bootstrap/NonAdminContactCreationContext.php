@@ -100,7 +100,7 @@ class NonAdminContactCreationContext extends CentreonContext
                 return $bool;
             },
             "The contact was not deleted.",
-            30
+            5
         );
     }
 }
