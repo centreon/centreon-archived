@@ -7,192 +7,99 @@ use Centreon\Test\Behat\External\ListingPage;
 
 class ContactConfigurationContext extends CentreonContext
 {
-    private $nonAdminName;
-    private $nonAdminPassword;
-    private $nonAdminAlias;
-    private $nonAdminAddress;
-    private $nonAdminDN;
-    private $nonAdminServiceNotifCommand;
-    private $changedName;
-    private $changedAlias;
-    private $changedAddress;
+    private $duplicatedAlias;
     private $currentPage;
+
+    private $initialProperties = (array(
+        'name' => 'contactName',
+        'alias' => 'contactAlias',
+        'email' => 'contact@localhost',
+        'password' => 'contactpwd',
+        'password2' => 'contactpwd',
+        'admin' => 1
+    ));
 
     public function __construct()
     {
         parent::__construct();
-        $this->nonAdminName = 'nonAdminName';
-        $this->nonAdminPassword ='nonAdminPassword';
-        $this->nonAdminAlias = 'nonAdminAlias';
-        $this->nonAdminAddress = 'nonadmin@localhost';
-        $this->nonAdminDN = 'nonAdminDN';
-        $this->nonAdminServiceNotifCommand = 'host-notify-by-email';
-        $this->changedName = 'changedName';
-        $this->changedAlias = 'changedAlias';
-        $this->changedAddress = 'contact@localhost';
+        $this->duplicatedAlias = 'contactAlias_1';
     }
 
-    /**
-     * @Given a contact is configured
+   /**
+     * @When I create a contact
      */
-    public function aContactIsConfigured()
+    public function iCreateAContact()
     {
         $this->currentPage = new ContactConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->nonAdminName,
-            'alias' => $this->nonAdminAlias,
-            'email' => $this->nonAdminAddress,
-            'password' => $this->nonAdminPassword,
-            'password2' => $this->nonAdminPassword,
-            'admin' => 0
-        ));
+        $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
     }
 
     /**
-     * @When I configure the name of a contact
+     * @When I duplicate it
      */
-    public function iConfigureTheNameOfAContact()
+    public function iDuplicateIt()
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
-        $this->currentPage->setProperties(array(
-            'name' => $this->changedName
-        ));
-        $this->currentPage->save();
+        $object = $this->currentPage->getEntry($this->initialProperties['alias']);
+        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $this->setConfirmBox(true);
+        $this->selectInList('select[name="o1"]', 'Duplicate');
     }
 
     /**
-     * @Then the name has changed on the contact page
+     * @When I delete it
      */
-    public function theNameHasChangedOnTheContactPage()
+    public function iDeleteIt()
+    {
+        $this->currentPage = new ContactConfigurationListingPage($this);
+        $object = $this->currentPage->getEntry($this->initialProperties['alias']);
+        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $this->setConfirmBox(true);
+        $this->selectInList('select[name="o1"]', 'Delete');
+    }
+    /**
+     * @Then the duplicated contact is displayed in the user list
+     */
+    public function theDuplicatedContactIsDisplayedInTheUserList()
     {
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                $object = $this->currentPage->getEntry($this->nonAdminAlias);
-                return $object['name'] == $this->changedName;
+                return $this->currentPage->getEntry($this->duplicatedAlias);
             },
-            "The contact has not changed.",
-            30
+            "The duplicated contact was not found.",
+            5
         );
     }
 
-   /**
-     * @When I configure the alias of a contact
+    /**
+     * @Then I can logg in Centreon Web with the duplicated contact
      */
-    public function iConfigureTheAliasOfAContact()
+    public function iCanLoggInCentreonWebWithTheDuplicatedContact()
     {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
-        $this->currentPage->setProperties(array(
-            'alias' => $this->changedAlias
-        ));
-        $this->currentPage->save();
+        $this->iAmLoggedOut();
+        $this->parameters['centreon_user'] = $this->duplicatedAlias;
+        $this->parameters['centreon_password'] = $this->initialProperties['password'];
+        $this->iAmLoggedIn();
     }
 
     /**
-     * @Then the alias has changed on the contact page
+     * @Then the deleted contact is not displayed in the user list
      */
-    public function theAliasHasChangedOnTheContactPage()
-    {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->spin(
-            function($context){
-                return $this->currentPage->getEntry($this->changedAlias);
-            },
-            "The alias has not changed.",
-            30
-        );
-
-    }
-
-    /**
-     * @When I configure the email of a contact
-     */
-    public function iConfigureTheAddressOfAContact()
-    {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
-        $this->currentPage->setProperties(array(
-            'email' => $this->changedAddress
-        ));
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the email has changed on the contact page
-     */
-    public function theAddressHasChangedOnTheContactPage()
+    public function theDeletedContactIsNotDisplayedInTheUserList()
     {
         $this->spin(
             function($context){
                 $this->currentPage = new ContactConfigurationListingPage($this);
-                $object = $this->currentPage->getEntry($this->nonAdminAlias);
-                return $object['email'] == $this->changedAddress;
+                $object = $this->currentPage->getEntries();
+                $bool = true;
+                foreach($object as $value){
+                    $bool = $bool && $value['alias'] != $this->initialProperties['alias'];
+                }
+                return $bool;
             },
-            "The address has not changed.",
-            30
-        );
-
-    }
-
-   /**
-     * @When I make a contact be an admin
-     */
-    public function iMakeAContactBeAnAdmin()
-    {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
-        $this->currentPage->setProperties(array(
-            'admin' => 1
-        ));
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the contact is now an admin
-     */
-    public function theContactIsNowAnAdmin()
-    {
-        $this->spin(
-            function($context){
-                $this->currentPage = new ContactConfigurationListingPage($this);
-                $object = $this->currentPage->getEntry($this->nonAdminAlias);
-                return $object['admin'] == 'Enabled';
-            },
-            "The contact is not an admin.",
-            30
-        );
-
-    }
-
-    /**
-     * @When I configure the DN of a contact
-     */
-    public function iConfigureTheDNOfAContact()
-    {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
-        $this->currentPage->setProperties(array(
-            'dn' => $this->nonAdminDN
-        ));
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the DN has changed
-     */
-    public function theDNHasChanged()
-    {
-        $this->spin(
-            function($context){
-                $this->currentPage = new ContactConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->nonAdminAlias);
-                $object = $this->currentPage->getProperties($this->nonAdminAlias);
-                return $object['dn'] == $this->nonAdminDN;
-            },
-            "The DN has not changed.",
+            "The contact was not deleted.",
             30
         );
     }
