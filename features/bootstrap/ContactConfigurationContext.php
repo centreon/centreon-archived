@@ -1,106 +1,66 @@
 <?php
-
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\External\ListingPage;
-
 class ContactConfigurationContext extends CentreonContext
 {
-    private $duplicatedAlias;
     private $currentPage;
-
     private $initialProperties = (array(
         'name' => 'contactName',
         'alias' => 'contactAlias',
         'email' => 'contact@localhost',
         'password' => 'contactpwd',
         'password2' => 'contactpwd',
-        'admin' => 1
+        'admin' => 0,
+        'dn' => 'contactDN',
+        'host_notification_period' => 'workhours',
+        'service_notification_period' => 'nonworkhours'
     ));
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->duplicatedAlias = 'contactAlias_1';
-    }
-
-   /**
-     * @When I create a contact
+    private $updatedProperties = (array(
+        'name' => 'modifiedName',
+        'alias' => 'modifiedAlias',
+        'email' => 'modified@localhost',
+        'admin' => 1,
+        'dn' => 'modifiedDn',
+        'host_notification_period' => 'workhours',
+        'service_notification_period' => 'nonworkhours' 
+    ));
+    /**
+     * @Given a contact is configured
      */
-    public function iCreateAContact()
+    public function aContactIsConfigured()
     {
         $this->currentPage = new ContactConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
     }
-
     /**
-     * @When I duplicate it
+     * @When I update contact properties
      */
-    public function iDuplicateIt()
+    public function iUpdateContactProperties()
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
-        $object = $this->currentPage->getEntry($this->initialProperties['alias']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
-        $this->setConfirmBox(true);
-        $this->selectInList('select[name="o1"]', 'Duplicate');
-    }
-
-    /**
-     * @When I delete it
-     */
-    public function iDeleteIt()
-    {
-        $this->currentPage = new ContactConfigurationListingPage($this);
-        $object = $this->currentPage->getEntry($this->initialProperties['alias']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
-        $this->setConfirmBox(true);
-        $this->selectInList('select[name="o1"]', 'Delete');
+        $this->currentPage = $this->currentPage->inspect($this->initialProperties['alias']);
+        $this->currentPage->setProperties($this->updatedProperties);
+        $this->currentPage->save();
     }
     /**
-     * @Then the duplicated contact is displayed in the user list
-     */
-    public function theDuplicatedContactIsDisplayedInTheUserList()
+     * @Then the contact properties are updated
+     */ 
+    public function theContactPropertiesAreUpdated()
     {
-        $this->spin(
-            function($context){
-                $this->currentPage = new ContactConfigurationListingPage($this);
-                return $this->currentPage->getEntry($this->duplicatedAlias);
-            },
-            "The duplicated contact was not found.",
-            5
-        );
-    }
-
-    /**
-     * @Then I can logg in Centreon Web with the duplicated contact
-     */
-    public function iCanLoggInCentreonWebWithTheDuplicatedContact()
-    {
-        $this->iAmLoggedOut();
-        $this->parameters['centreon_user'] = $this->duplicatedAlias;
-        $this->parameters['centreon_password'] = $this->initialProperties['password'];
-        $this->iAmLoggedIn();
-    }
-
-    /**
-     * @Then the deleted contact is not displayed in the user list
-     */
-    public function theDeletedContactIsNotDisplayedInTheUserList()
-    {
-        $this->spin(
-            function($context){
-                $this->currentPage = new ContactConfigurationListingPage($this);
-                $object = $this->currentPage->getEntries();
-                $bool = true;
-                foreach($object as $value){
-                    $bool = $bool && $value['alias'] != $this->initialProperties['alias'];
-                }
-                return $bool;
-            },
-            "The contact was not deleted.",
-            30
-        );
+	    $this->currentPage = new ContactConfigurationListingPage($this);
+	    $this->currentPage = $this->currentPage->inspect($this->updatedProperties['alias']);
+	    $object = $this->currentPage->getProperties();
+	    $tableau = array();
+	    foreach($this->updatedProperties as $key => $value) {
+	        if ($value != $object[$key]) {
+		        $tableau[] = $key;
+	        }
+	    }
+	    if (count($tableau) > 0) {
+	        throw new \Exception("Some properties are not being updated : " . implode(',', $tableau));
+	    }
     }
 }
