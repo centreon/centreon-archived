@@ -7,13 +7,6 @@ use Centreon\Test\Behat\External\ListingPage;
 
 class ContactConfigurationContext extends CentreonContext
 {
-    private $contactName;
-    private $contactPassword;
-    private $contactAlias;
-    private $contactAddress;
-    private $contactDN;
-    private $contactHostNotifPeriod;
-    private $contactServiceNotifPeriod;
     private $currentPage;
 
     private $initialProperties = (array(
