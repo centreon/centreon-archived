@@ -5,8 +5,8 @@ Feature: HostDuplicationCheck
 
     Background:
         Given I am logged in a Centreon server
-        And a host is created
 
     Scenario: Duplicate a host and check the properties
+        Given a host is created
         When I duplicate a host
         Then the host properties are updated
