@@ -219,14 +219,23 @@ class Host extends AbstractHost {
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
     }
 
+    private function getLocation($poller_id) {
+        $stmt = $this->backend_instance->db->prepare("SELECT host_id, host_location
+            FROM ns_host_relation, host
+            WHERE ns_host_relation.nagios_server_id = :server_id
+                AND ns_host_relation.host_host_id = host.host_id
+                AND host.host_activate = '1' AND host.host_register = '1'");
+        $stmt->bindParam(':server_id', $poller_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $this->locations = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
+    }
 
     public function generateFromHostId(&$host) {
         $this->getImages($host);
         $this->getMacros($host);
         $host['macros']['_HOST_ID'] = $host['host_id'];
 
-        $hostObj = new CentreonHost($this->backend_instance->db);
-        $template = $hostObj->getInheritedValues($host['host_id'], array(), -1, array('host_location'));
+        $template = $this->locations[$host['host_id']];
 
         $oTimezone = Timezone::getInstance($this->dependencyInjector);
         $sTimezone = $oTimezone->getTimezoneFromId($template['host_location']);
@@ -255,6 +264,7 @@ class Host extends AbstractHost {
         }
 
         Service::getInstance($this->dependencyInjector)->set_poller($poller_id);
+        $this->getLocation($poller_id);
 
         foreach ($this->hosts as $host_id => &$host) {
             $this->hosts_by_name[$host['host_name']] = $host_id;
