@@ -70,7 +70,7 @@ if (isset($_GET['chartId'])) {
         FROM index_data
         WHERE host_id = ' . $pearDBO->escape($hostId) .
         ' AND service_id = ' . $pearDBO->escape($serviceId));
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $index = $row['id'];     
     } else {

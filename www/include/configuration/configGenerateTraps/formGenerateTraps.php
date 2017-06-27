@@ -50,7 +50,7 @@ if (defined('_CENTREON_VARLIB_')) {
  *  Get Poller List
  */
 $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY name ASC");
-$n = $DBRESULT->numRows();
+$n = $DBRESULT->rowCount();
 
 /*
  * Display null option
@@ -65,7 +65,7 @@ if ($n > 1) {
 for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
     $tab_nagios_server[$nagios['id']] = $nagios['name'];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 
 /*

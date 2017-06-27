@@ -70,7 +70,7 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
     $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
     $res = $pearDB->query($query);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         get_error('bad session id');
     }
 } else {

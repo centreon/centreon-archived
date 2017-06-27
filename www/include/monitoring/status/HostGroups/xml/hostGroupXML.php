@@ -69,7 +69,7 @@ while ($hg = $DBRESULT->fetchRow()) {
     $convertTable[$hg["name"]] = $hg["name"];
     $convertID[$hg["name"]] = $hg["hostgroup_id"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  *  Check Arguments from GET
@@ -138,7 +138,7 @@ while ($data = $DBRESULT->fetchRow()) {
     }
     $stats[$data["alias"]]["h"][$data["state"]] = $data["nb"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Get Services request

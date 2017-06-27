@@ -127,7 +127,7 @@ if ($view_all == 1) {
 $tab_service_bam = array();
 $request = "SELECT id FROM modules_informations WHERE name = 'centreon-bam-server';";
 $DBRESULT = $pearDB->query($request);
-if ($DBRESULT->numRows()) {
+if ($DBRESULT->rowCount()) {
     $request = "SELECT CONCAT('ba_',ba_id) AS id, ba_id, name FROM mod_bam";
     $DBRESULT = $pearDB->query($request);
 

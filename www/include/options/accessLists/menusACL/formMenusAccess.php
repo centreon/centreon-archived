@@ -51,14 +51,14 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_topos"][$topo["topology_topology_id"]] = $topo["access_right"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     // Set Contact Groups relations
     $DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
     for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_groups"][$i] = $groups["acl_group_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 $groups = array();
@@ -66,7 +66,7 @@ $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups 
 while ($group = $DBRESULT->fetchRow()) {
     $groups[$group["acl_group_id"]] = $group["acl_group_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 if (!isset($acl["acl_topos"])) {
     $acl["acl_topos"] = array();
@@ -130,7 +130,7 @@ while ($group = $DBRESULT->fetchRow()) {
     }
     $groupMenus[$group["topology_group"]][$group["topology_parent"]] = $group["topology_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 unset($group);
 
 /*

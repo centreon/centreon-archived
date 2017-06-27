@@ -72,6 +72,7 @@ $inputArguments = array(
     'search' => FILTER_SANITIZE_STRING,
     'searchH' => FILTER_SANITIZE_STRING,
     'num' => FILTER_SANITIZE_NUMBER_INT,
+    'limit' => FILTER_SANITIZE_NUMBER_INT,
     'searchS' => FILTER_SANITIZE_STRING,
     'search' => FILTER_SANITIZE_STRING,
     'searchP' => FILTER_SANITIZE_STRING,
@@ -103,11 +104,12 @@ foreach ($inputArguments as $argumentName => $argumentValue) {
 }
 
 
-if (isset($inputs["search"])) {
+if (isset($inputs["searchH"])) {
     $searchH = $inputs["searchH"];
-    $num = $inputs['num'] = 0;
-    $inputs["search"] = $inputs["searchH"];
-    $oreon->historySearch[$url] = $search;
+    if (isset($oreon->historySearch[$url]) && $oreon->historySearch[$url] != $searchH) {
+        $num = 0;
+        $oreon->historySearch[$url] = $searchH;
+    }
 } elseif (isset($oreon->historySearch[$url])) {
     $searchH = $oreon->historySearch[$url];
 } else {
@@ -116,8 +118,10 @@ if (isset($inputs["search"])) {
 
 if (isset($inputs["searchS"])) {
     $searchS = $inputs["searchS"];
-    $num = $inputs['num'] = 0;
-    $oreon->historySearchService[$url] = $searchS;
+    if (isset($oreon->historySearchService[$url]) && $oreon->historySearchService[$url] != $searchS) {
+        $num = 0;
+        $oreon->historySearchService[$url] = $searchS;
+    }
 } elseif (isset($oreon->historySearchService[$url])) {
     $searchS = $oreon->historySearchService[$url];
 } else {
@@ -127,7 +131,6 @@ if (isset($inputs["searchS"])) {
 /* Search for poller */
 if (isset($inputs['searchP']) && is_numeric($inputs['searchP'])) {
     $searchP = $inputs['searchP'];
-    $num = $inputs['num'] = 0;
 } else {
     $searchP = null;
 }

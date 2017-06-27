@@ -34,7 +34,7 @@
  */
 
 class Contact extends AbstractObject {
-    private $use_cache = 1;
+    protected $use_cache = 1;
     private $done_cache = 0;
     private $contacts_service_linked_cache = array();
     protected $contacts_cache = array();

@@ -212,7 +212,7 @@ class CentreonXMLBGRequest {
     private function isUserAdmin() {
         $DBRESULT = $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '" . CentreonDB::escape($this->user_id) . "' LIMIT 1");
         $admin = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         if ($admin["contact_admin"])
             $this->is_admin = 1;
         else
@@ -249,7 +249,7 @@ class CentreonXMLBGRequest {
         while ($c = $DBRESULT->fetchRow()) {
             $this->general_opt[$c["key"]] = $this->myDecode($c["value"]);
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($c);
     }
 

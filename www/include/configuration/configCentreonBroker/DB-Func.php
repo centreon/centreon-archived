@@ -52,9 +52,9 @@ function testExistence($name = null)
                                 FROM `cfg_centreonbroker` 
                                 WHERE `config_name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'");
     $ndomod = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $ndomod["config_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $ndomod["config_id"] != $id) {
         return false;
     } else {
         return true;
@@ -175,7 +175,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
             . "WHERE config_id = " . $id . " ";
         $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         # Prepare values
         $values = array();
@@ -203,7 +203,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
                     $rowOpt['config_value'];
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         # Convert values radio button
         foreach ($values as $group => $groups) {

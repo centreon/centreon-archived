@@ -123,7 +123,7 @@ class CentreonService
                  WHERE service_description = '" . $this->db->escape($templateName) . "' 
                     AND service_register = '0'"
         );
-        if (!$res->numRows()) {
+        if (!$res->rowCount()) {
             return null;
         }
         $row = $res->fetchRow();
@@ -214,7 +214,7 @@ class CentreonService
      				  FROM service
      				  WHERE service_id = " . $this->db->escape($sid);
             $res = $this->db->query($query);
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 $svcTab[$sid] = $row['service_alias'];
             }
@@ -287,7 +287,7 @@ class CentreonService
                 $name = str_replace($char, "", $name);
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $name;
     }
 
@@ -304,7 +304,7 @@ class CentreonService
     {
         $rq = "SELECT service_register FROM service WHERE service_id = '" . $svc_id . "' LIMIT 1";
         $DBRES = $this->db->query($rq);
-        if (!$DBRES->numRows()) {
+        if (!$DBRES->rowCount()) {
             return $string;
         }
         $row = $DBRES->fetchRow();
@@ -1674,7 +1674,7 @@ class CentreonService
             . "FROM " . $table . " "
             . "WHERE service_id = " . $db->escape($id));
         
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $arr = $res->fetchRow();
         }
 
@@ -1699,7 +1699,7 @@ class CentreonService
                 "SELECT service_template_model_stm_id FROM service WHERE service_id = ".$this->db->escape($svcId)
             );
 
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 if (!empty($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] !== null) {
                     $svcTmpl = array_merge(

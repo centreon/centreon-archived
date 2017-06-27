@@ -492,7 +492,7 @@ jQuery(function() {
         url: "./include/configuration/configObject/service/refreshMacroAjax.php",
         type: "POST",
         dataType : "json",
-        data: this.form.serialize(),
+        data: $(this.form).serialize(),
         success : function(json) {
             jQuery("#clone-count-macro").data("clone-count-macro",json.count);
             jQuery("#clone-values-macro").data("clone-values-macro",json.macros);

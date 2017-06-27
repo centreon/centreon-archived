@@ -45,7 +45,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` RLIKE '^color_(war
 while ($opt = $DBRESULT->fetchRow()) {
     $l_general_opt[$opt['key']] = $opt['value'];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $compo = array();
 if (($o == "c" || $o == "w") && $compo_id) {
@@ -57,7 +57,7 @@ if (($o == "c" || $o == "w") && $compo_id) {
     $compo = array_map("myDecode", $tab);
             unset($compo['host_id']);
             unset($compo['service_id']);
-    $res->free();
+    $res->closeCursor();
 
     $hs_data = array();
     $res = $pearDBO->query("SELECT id FROM index_data WHERE host_id = '".$compo["host_id"]."' AND service_id = '".$compo["service_id"]."' LIMIT 1");
@@ -65,7 +65,7 @@ if (($o == "c" || $o == "w") && $compo_id) {
     if (is_array($tab)) {
         $hs_data = array_map("myDecode", $tab);
         $compo["index_id"] = $hs_data["id"];
-        $res->free();
+        $res->closeCursor();
     } else {
         $compo["index_id"] = 0;
     }
@@ -79,7 +79,7 @@ $res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY n
 while ($graph = $res->fetchRow()) {
     $graphs[$graph["graph_id"]] = $graph["name"];
 }
-$res->free();
+$res->closeCursor();
 
 /*
  * List of known data sources
@@ -93,7 +93,7 @@ while ($row = $DBRESULT->fetchRow()) {
     }
 }
 unset($row);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Define Styles

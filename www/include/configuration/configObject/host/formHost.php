@@ -117,7 +117,7 @@ function allInSameInstance($hosts, $instanceId)
             WHERE nagios_server_id != ' . $instanceId . '
             AND host_host_id IN (' . join(', ', $hosts) . ')';
     $res = $pearDB->query($query);
-    if ($res->numRows() > 0) {
+    if ($res->rowCount() > 0) {
         return false;
     }
     return true;
@@ -156,7 +156,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     foreach ($tmp as $key => $value) {
         $host["host_stalOpts"][trim($value)] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Host Category Parents
@@ -174,7 +174,7 @@ if (($o == "c" || $o == "w") && $host_id) {
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Set Host and Nagios Server Relation
@@ -185,7 +185,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     for (($o != "mc") ? $i = 0 : $i = 1; $ns = $DBRESULT->fetchRow(); $i++) {
         $host["nagios_server_id"][$i] = $ns["nagios_server_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($ns);
 
     /*
@@ -198,7 +198,7 @@ if (($o == "c" || $o == "w") && $host_id) {
                             AND hc.level IS NOT NULL
                             ORDER BY hc.level ASC
                             LIMIT 1");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $cr = $res->fetchRow();
         $host['criticality_id'] = $cr['hc_id'];
     }
@@ -244,7 +244,7 @@ $DBRESULT = $pearDB->query("SELECT id, name
 while ($nsServer = $DBRESULT->fetchRow()) {
     $nsServers[$nsServer["id"]] = $nsServer["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * IMG comes from DB -> Store in $extImg Array
@@ -267,7 +267,7 @@ while ($multiTp = $DBRESULT->fetchRow()) {
     $mTp[$k] = $multiTp["host_tpl_id"];
     $k++;
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 #
 # End of "database-retrieved" information
@@ -412,7 +412,7 @@ $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers)
  */
 $DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 $defaultServer = $DBRESULT->fetchRow();
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 if (isset($defaultServer) && $defaultServer && $o != "mc") {
     $form->setDefaults(array('nagios_server_id' => $defaultServer["id"]));
 }

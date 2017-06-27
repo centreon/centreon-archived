@@ -107,7 +107,7 @@ if (isset($_POST["host_id"])) {
             $buffer->writeElement("name", $service["host_name"] . " - " . $service['service_description'], false);
             $buffer->endElement();
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 } else {
     $buffer->writeElement("error", "host_id not found");

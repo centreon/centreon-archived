@@ -66,7 +66,7 @@ if (!$centreon->user->admin) {
                                         FROM $acldbname.centreon_acl
                                         WHERE service_id = " . $pearDB->escape($service_id) . "
                                         AND group_id IN (" . $acl->getAccessGroupsString() . ")");
-        if (!$checkres->numRows()) {
+        if (!$checkres->rowCount()) {
             $msg = new CentreonMsg();
             $msg->setImage("./img/icons/warning.png");
             $msg->setTextStyle("bold");
@@ -119,7 +119,7 @@ if (($o == "c" || $o == "w") && $service_id) {
                             AND sc.level IS NOT NULL
                             ORDER BY sc.level ASC
                             LIMIT 1");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $cr = $res->fetchRow();
         $service['criticality_id'] = $cr['sc_id'];
     }

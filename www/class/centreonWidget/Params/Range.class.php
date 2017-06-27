@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params.class.php";
+require_once __DIR__ . "/../Params.class.php";
 
 class CentreonWidgetParamsRange extends CentreonWidgetParams
 {

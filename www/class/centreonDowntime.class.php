@@ -122,7 +122,7 @@ class CentreonDowntime
             return 0;
         }
         $row = $res->fetchRow();
-        $res->free();
+        $res->closeCursor();
         return $row["COUNT(*)"];
     }
 
@@ -173,7 +173,7 @@ class CentreonDowntime
         while ($row = $res->fetchRow()) {
             $list[] = $row;
         }
-        $res->free();
+        $res->closeCursor();
         $this->nbRows = $this->db->numberRows();
         return $list;
     }
@@ -286,7 +286,7 @@ class CentreonDowntime
             while ($row = $res->fetchRow()) {
                 $list[$type][] = $row['obj_id'];
             }
-            $res->free();
+            $res->closeCursor();
         }
 
         return $list;
@@ -501,7 +501,7 @@ class CentreonDowntime
                         $query = "SELECT dt_id FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
                         $res = $this->db->query($query);
                         $row = $res->fetchRow();
-                        $res->free();
+                        $res->closeCursor();
                         $id_new = $row['dt_id'];
                         /* Copy the periods for new downtime */
                         $query = "INSERT INTO downtime_period (dt_id, dtp_start_time, dtp_end_time,
@@ -574,7 +574,7 @@ class CentreonDowntime
         } catch (\PDOException $e) {
             $error = true;
         }
-        if ($error || $res->numRows() == 0) {
+        if ($error || $res->rowCount() == 0) {
             return false;
         }
         $row = $res->fetchRow();

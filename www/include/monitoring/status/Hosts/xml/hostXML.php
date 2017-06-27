@@ -249,7 +249,7 @@ $critRes = $obj->DBC->query("SELECT value, host_id
                                      AND service_id IS NULL");
 $criticalityUsed = 0;
 $critCache = array();
-if ($critRes->numRows()) {
+if ($critRes->rowCount()) {
     $criticalityUsed = 1;
     while ($critRow = $critRes->fetchRow()) {
         $critCache[$critRow['host_id']] = $critRow['value'];
@@ -402,7 +402,7 @@ while ($data = $DBRESULT->fetchRow()) {
 
     $obj->XML->endElement();
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 if (!$ct) {
     $obj->XML->writeElement("infos", "none");

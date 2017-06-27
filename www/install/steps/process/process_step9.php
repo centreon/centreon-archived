@@ -41,7 +41,6 @@ $version = $step->getVersion();
 $message = '';
 
 try {
-    $finalBackupDir = $backupDir . '/install-' . $version . '-' . date('Ymd_His');
     $backupDir = realpath(__DIR__ . '/../../../../installDir/')
         . '/install-' . $version . '-' . date('Ymd_His');
     $installDir =  realpath(__DIR__ . '/../..');

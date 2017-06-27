@@ -31,7 +31,7 @@ jQuery(function() {
 			formname = 'specific_date';
 		}
 		selectPeriodType(formname, {/literal}{$period_tab}{literal});
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][period_type]"]').each(function(item, index){
+		jQuery('input[name="periods[{/literal}{$period_tab}{literal}][period_type]"]').each(function (index, item) {
 			if (item.value == formname) {
 				item.checked = true;
 			} 

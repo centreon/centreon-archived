@@ -59,19 +59,22 @@ function myConnect() {
  * @param string $query
  * @return string
  */
-function replaceInstallationMacros($query) {
+function replaceInstallationMacros($query, $macros = array()) {
     while (preg_match('/@([a-zA-Z0-9_]+)@/', $query, $matches)) {
         $macroValue = "";
-        if (isset($_SESSION[$matches[1]])) {
-            $macroValue = $_SESSION[$matches[1]];
-        }
-        // Exception
         if ($matches[1] == 'MAILER') {
             $macroValue = '-MAILER-';
+        } elseif (isset($macros[$matches[1]])) {
+            $macroValue = $macros[$matches[1]];
+        } elseif (isset($_SESSION[$matches[1]])) {
+            $macroValue = $_SESSION[$matches[1]];
         }
+
         $query = preg_replace('/@'.$matches[1].'@/', $macroValue, $query);
     }
+
     $query = str_replace('-MAILER-', '@MAILER@', $query);
+
     return $query;
 }
 
@@ -84,7 +87,7 @@ function replaceInstallationMacros($query) {
  * @param string $tmpFile | $tmpFile will store the number of executed queries sql script can be resumed from last failure
  * @return string | returns "0" if everything is ok, or returns error message
  */
-function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "") {
+function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "", $macros = array()) {
     if (is_null($connector)) {
         $connector = myConnect();
     }
@@ -109,7 +112,7 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                 }
                 if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
                     $query = trim(implode('', $query));
-                    $query = replaceInstallationMacros($query);
+                    $query = replaceInstallationMacros($query, $macros);
                     $count++;
                     if ($count > $start) {
                         try {

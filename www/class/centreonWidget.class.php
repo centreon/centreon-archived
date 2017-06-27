@@ -43,8 +43,6 @@ class CentreonWidgetException extends Exception
 {
 }
 
-;
-
 /**
  * Class for managing widgets
  */
@@ -205,7 +203,7 @@ class CentreonWidget
      * @param $param
      * @return null
      */
-    public function getWidgetInfo($type = "id", $param)
+    public function getWidgetInfo($type = "id", $param = '')
     {
         static $tabDir;
         static $tabId;
@@ -457,7 +455,9 @@ class CentreonWidget
             $queryValues['limit'] = (int)$range[1];
         }
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':search', $queryValues['search'], PDO::PARAM_STR);
+        if (isset($queryValues['search'])) {
+            $stmt->bindParam(':search', $queryValues['search'], PDO::PARAM_STR);
+        }
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
@@ -574,7 +574,7 @@ class CentreonWidget
         $explodedValues = '';
         if (count($this->userGroups)) {
             foreach ($this->userGroups as $k => $v) {
-                $explodedValues .= 'userGroupId' . $v . ',';
+                $explodedValues .= ':userGroupId' . $v . ',';
                 $queryValues['userGroupId' . $v] = $v;
             }
             $explodedValues = rtrim($explodedValues, ',');
@@ -584,6 +584,7 @@ class CentreonWidget
         $query .= ") AND wv.custom_view_id = :viewId";
 
         $stmt = $this->db->prepare($query);
+
         $stmt->bindParam(':widgetId', $params['widget_id'], PDO::PARAM_INT);
         $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
         $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
@@ -616,7 +617,6 @@ class CentreonWidget
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-
         } else {
             $query = 'DELETE FROM widget_preferences ' .
                 'WHERE widget_view_id = :widgetViewId ' .
@@ -645,36 +645,36 @@ class CentreonWidget
                     } else {
                         $val = implode(',', $val);
                     }
+                    $val = trim($val);
                 }
                 if ($str != "") {
                     $str .= ", ";
                 }
-                $str .= '(:widgetViewId, :parameter' . $matches[1] . ', :preference' . $val . ', :userId)';
-                $queryValues['parameter']['parameter' . $matches[1]] = $matches[1];
-                $queryValues['preference']['preference' . $val] = $val;
+                $str .= '(:widgetViewId, :parameter' . $matches[1] . ', :preference' . $matches[1] . ', :userId)';
+                $queryValues['parameter'][':parameter' . $matches[1]] = $matches[1];
+                $queryValues['preference'][':preference' . $matches[1]] = $val;
             }
         }
         if ($str != "") {
             $query = 'INSERT INTO widget_preferences (widget_view_id, parameter_id, preference_value, user_id) ' .
                 'VALUES ' . $str;
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':widgetViewId', $widgetViewId, PDO::PARAM_INT);
-            $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+            $stmt->bindValue(':widgetViewId', $widgetViewId, PDO::PARAM_INT);
+            $stmt->bindValue(':userId', $this->userId, PDO::PARAM_INT);
             if (isset($queryValues['parameter'])) {
                 foreach ($queryValues['parameter'] as $k => $v) {
-                    $stmt->bindParam(':' . $k, $v, PDO::PARAM_INT);
+                    $stmt->bindValue($k, $v, PDO::PARAM_INT);
                 }
             }
             if (isset($queryValues['preference'])) {
                 foreach ($queryValues['preference'] as $k => $v) {
-                    $stmt->bindParam(':' . $k, $v, PDO::PARAM_STR);
+                    $stmt->bindValue($k, $v, PDO::PARAM_STR);
                 }
             }
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-
         }
         $this->customView->syncCustomView($params['custom_view_id']);
     }
@@ -720,7 +720,7 @@ class CentreonWidget
                 $queryValues = array();
                 $query = 'UPDATE widget_views SET widget_order = :widgetOrder ' .
                     'WHERE custom_view_id = :viewId ' .
-                    'AND widget_id = widgetId';
+                    'AND widget_id = :widgetId';
                 $queryValues[] = (string)$column . "_" . $row;
                 $queryValues[] = (int)$viewId;
                 $queryValues[] = (int)$widgetId;
@@ -1072,7 +1072,6 @@ class CentreonWidget
                         $query = 'INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, ' .
                             'parameter_code_name, default_value, parameter_order, require_permission, header_title) ' .
                             'VALUES ' . $str;
-
                     } else {
                         $queryValues = array();
                         $str = ' field_type_id = ?, parameter_name = ?,  default_value = ?, parameter_order = ?, ';

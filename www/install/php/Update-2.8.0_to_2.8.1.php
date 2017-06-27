@@ -40,7 +40,7 @@ if (isset($pearDBO)) {
         . 'WHERE column_name = "host_id" '
         . 'AND Key_name = "host_id" ';
     $res = $pearDBO->query($query);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         $pearDBO->query('ALTER TABLE comments ADD KEY host_id(host_id)');
     }
 

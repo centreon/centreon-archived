@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/List.class.php";
+require_once __DIR__ . "/../List.class.php";
 
 class CentreonWidgetParamsConnectorPoller extends CentreonWidgetParamsList
 {

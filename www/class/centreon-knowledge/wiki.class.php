@@ -62,10 +62,12 @@ class Wiki
         while ($opt = $res->fetchRow()) {
             $options[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
         }
-        $res->free();
+        $res->closeCursor();
 
-        if (!count($options)) {
-            throw new \Exception('Wiki is not configured.');
+        if (!isset($options['kb_wiki_url']) || $options['kb_wiki_url'] == '') {
+            throw new \Exception(
+                'Wiki is not configured. ' .
+                'You can disable cron in /etc/crond.d/centreon for wiki synchronization.');
         }
 
         if (!preg_match('#^http://|https://#',  $options['kb_wiki_url'])) {

@@ -260,7 +260,7 @@ class CentreonAuth
                 WHERE MD5(contact_alias) = '" . $this->pearDB->escape($username, true) . "'
                     AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
         }
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $this->userInfos = $DBRESULT->fetchRow();
 
             if ($this->userInfos["contact_oreon"]
@@ -306,7 +306,7 @@ class CentreonAuth
                     WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'
                         AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
             );
-            if ($DBRESULT->numRows()) {
+            if ($DBRESULT->rowCount()) {
                 $this->userInfos = $DBRESULT->fetchRow();
             }
         } else {

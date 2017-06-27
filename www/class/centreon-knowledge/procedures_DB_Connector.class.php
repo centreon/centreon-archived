@@ -37,92 +37,101 @@ class procedures_DB_Connector {
 	private $db_type = "mysql";
 	private $retry;
 	private $privatePearDB;
-	private $dsn;
 	private $options;
 	private $log;
 	public $debug;
 
-	/*
-	 *  Constructor only accepts 1 parameter which can be :
-	 *  - centreon or NULL
-	 *  - centstorage
-	 *  - ndo
-	 */
-    function procedures_DB_Connector($retry = 3, $db_name, $db_user, $db_host, $db_password) {
-		$this->retry = $retry;
-		$this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
+    /**
+     * procedures_DB_Connector constructor.
+     * @param int $retry
+     * @param $db_name
+     * @param $db_user
+     * @param $db_host
+     * @param $db_password
+     */
+    public function __construct($retry = 3, $db_name = '', $db_user = '', $db_host = '', $db_password = '')
+    {
+        $this->retry = $retry;
+        $this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 		$this->log = new CentreonLog();
-		$this->connectToWiki($db_name, $db_user, $db_host, $db_password);
-		$this->connect();
+		$this->connect($db_name, $db_user, $db_host, $db_password);
 		$this->debug = 0;
     }
 
-	private function displayConnectionErrorPage() {
-		echo "<center><b>" . _("Connection to Wiki database failed, please contact your administrator or read the Centreon online documentation to configure wiki access") . "</b></center>";
-		exit;
+    private function displayConnectionErrorPage()
+    {
+        echo "<center><b>" .
+            _(
+                "Connection to Wiki database failed, please contact your administrator " .
+                "or read the Centreon online documentation to configure wiki access"
+            ) .
+            "</b></center>";
+        exit;
+    }
+
+    /**
+     * @param $db_name
+     * @param $db_user
+     * @param $db_host
+     * @param $db_password
+     * @return array
+     */
+    public function connect($db_name, $db_user, $db_host, $db_password)
+    {
+        $separator = explode(':', $db_host);
+        $host = $separator[0];
+        $port = isset($separator[1]) ? $separator[1] : 3306;
+
+        $dsn = $this->db_type . ':dbname=' . $db_name . ';host=' . $host . ';port=' . $port;
+
+        try {
+            $this->privatePearDB = new PDO($dsn, $db_user, $db_password);
+            $outcome = true;
+            $message = _('Connection Successful');
+        } catch (PDOException $e) {
+            $outcome = false;
+            $message = $e->getMessage();
+        }
+
+        return array(
+            'outcome' => $outcome,
+            'message' => $message
+        );
 	}
 
-    /*
-     *  Get info to connect to Centreon DB
+    /**
+     * Disconnection
      */
-    private function connectToWiki($db_name, $db_user, $db_host, $db_password) {
-		$this->dsn = array(
-	    	'phptype'  => $this->db_type,
-	    	'username' => $db_user,
-	    	'password' => $db_password,
-	    	'hostspec' => $db_host,
-	    	'database' => $db_name,
-		);
+    public function disconnect()
+    {
+        $this->privatePearDB->disconnect();
     }
 
-    /*
-     *  The connection is established here
+    public function toString()
+    {
+        return $this->privatePearDB->toString();
+    }
+
+    /**
+     * @param null $query_string
+     * @return mixed
      */
-    public function connect()
-	{
-        require_once('DB.php');
-        $this->privatePearDB =& DB::connect($this->dsn, $this->options);
-        $i = 0;
-        while (PEAR::isError($this->privatePearDB) && ($i < $this->retry)) {
-            $this->privatePearDB =& DB::connect($this->dsn, $this->options);
-            $i++;
+    public function query($query_string = null)
+    {
+        if ($this->debug) {
+            $query = str_replace("`", "", $query_string);
+            $query = str_replace("'", "\'", $query);
+            $query = str_replace("*", "\*", $query);
+            exec("echo '$query' >> " . _CENTREON_LOG_ . "/procedure.log");
         }
-        if ($i == $this->retry) {
-            $this->log->insertLog(2, $this->privatePearDB->getMessage() . " (retry : $i)");
-            $this->displayConnectionErrorPage();
-        } else {
-            $this->privatePearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-        }
-    }
 
-    /*
-     *  Disconnection
-     */
-    public function disconnect() {
-    	$this->privatePearDB->disconnect();
-    }
-
-    public function toString() {
-    	return $this->privatePearDB->toString();
-    }
-
-    /*
-     *  Query
-     */
-    public function query($query_string = NULL) {
-
-    	if ($this->debug) {
-    		$query = str_replace("`", "", $query_string);
-    		$query = str_replace("'", "\'", $query);
-    		$query = str_replace("*", "\*", $query);
-    		exec("echo '$query' >> $log_centreon/procedure.log");
-    	}
-    	try {
+        $DBRES = null;
+        try {
             $DBRES = $this->privatePearDB->query($query_string);
         } catch (\PDOException $e) {
             $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
         }
-    	return $DBRES;
+
+        return $DBRES;
     }
 }
-?>

@@ -86,7 +86,7 @@ if ($centreon->user->access->checkAction("host_comment")) {
     while ($host = $DBRESULT->fetchRow()) {
         $hosts[$host["host_id"]] = $host["host_name"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $debug = 0;
     $attrsTextI = array("size" => "3");

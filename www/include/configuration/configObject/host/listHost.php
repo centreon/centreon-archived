@@ -59,7 +59,7 @@ $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_ho
 while ($ehi = $DBRESULT->fetchRow()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 if (isset($_POST["searchH"])) {
     $search = $_POST["searchH"];
@@ -183,7 +183,7 @@ $DBRESULT = $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns " .
 while ($relation = $DBRESULT->fetchRow()) {
     $nagios_server[$relation["id"]] = $relation["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 unset($relation);
 
 $tab_relation = array();
@@ -193,7 +193,7 @@ while ($relation = $DBRESULT->fetchRow()) {
     $tab_relation[$relation["host_host_id"]] = $nagios_server[$relation["nagios_server_id"]];
     $tab_relation_id[$relation["host_host_id"]] = $relation["nagios_server_id"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Init Formulary

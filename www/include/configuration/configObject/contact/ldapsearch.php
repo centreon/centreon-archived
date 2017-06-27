@@ -74,7 +74,7 @@ while ($row = $dbresult->fetchRow()) {
         $debug_path = trim($row['value']);
     }
 }
-$dbresult->free();
+$dbresult->closeCursor();
 if ($debug_path == '') {
     $debug_ldap_import = false;
 }

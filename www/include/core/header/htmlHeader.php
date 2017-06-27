@@ -54,8 +54,6 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/responsive-style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" />
-    <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
-    <link href="./Themes/Centreon-2/Modalbox/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" media="screen"/>
     <link href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="./include/common/javascript/jquery/plugins/select2/css/select2.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="./Themes/Centreon-2/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -63,6 +61,9 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/wizard/css/style.css" />
     <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
+    <!-- graph css -->
+    <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+    <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
     <?php
 
     // == Declare CSS for modules
@@ -73,15 +74,12 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     }
 
     ?>
-    <script type="text/javascript" src="./include/common/javascript/scriptaculous/prototype.js"></script>
     <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
-        <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
-        <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/centreon-select2.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
-        <script type="text/javascript">jQuery.noConflict();</script>
+        <!--<script type="text/javascript">jQuery.noConflict();</script>-->
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
@@ -98,6 +96,14 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
     <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
+    <!-- graph js -->
+    <script src="./include/common/javascript/charts/d3.min.js"></script>
+    <script src="./include/common/javascript/charts/c3.min.js"></script>
+    <script src="./include/common/javascript/charts/d3-timeline.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+    <script src="./include/common/javascript/numeral.min.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
     <?php
 
     /*

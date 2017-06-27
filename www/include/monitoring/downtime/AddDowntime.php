@@ -190,6 +190,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         'multiple' => true,
         'linkedObject' => 'centreonInstance'
     );
+
     /* Host Parents */
     $attrPoller1 = array_merge(
         $attrPoller,

@@ -34,7 +34,7 @@
  */
 
 class Contactgroup extends AbstractObject {
-    private $use_cache = 1;
+    protected $use_cache = 1;
     private $done_cache = 0;
     private $cg_service_linked_cache = array();
     protected $cg_cache = array();

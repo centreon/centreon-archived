@@ -118,7 +118,7 @@ while ($multiTp = $DBRESULT->fetchRow()) {
     $mTp[$k] = $multiTp["exception_id"];
     $k++;
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Include javascript for dynamique entries

@@ -40,6 +40,8 @@ require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
+require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
 
 if (file_exists(realpath(dirname(__FILE__) . "/../centreonSession.class.php"))) {
     require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
@@ -58,7 +60,7 @@ require_once "centreon.Config.Poller.class.php";
  */
 class CentreonAPI
 {
-    private static $_instance = null;
+    private static $instance = null;
 
     public $dateStart;
     public $login;
@@ -350,8 +352,13 @@ class CentreonAPI
         $options = null,
         $dependencyInjector = null
     ) {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new CentreonAPI(
+        if (is_null(self::$instance)) {
+
+            if (is_null($dependencyInjector)) {
+                $dependencyInjector = loadDependencyInjector();
+            }
+
+            self::$instance = new CentreonAPI(
                 $user,
                 $password,
                 $action,
@@ -361,7 +368,7 @@ class CentreonAPI
             );
         }
 
-        return self::$_instance;
+        return self::$instance;
     }
 
     /**
@@ -440,7 +447,7 @@ class CentreonAPI
         while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -489,23 +496,37 @@ class CentreonAPI
         } else {
             $pass = md5($this->password);
         }
-        $DBRESULT = $this->DB->query("SELECT contact_id, contact_admin
+        $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
                  WHERE contact_alias = '" . $this->login . "'
-                 AND contact_passwd = '" . $pass . "'
                  AND contact_activate = '1'
                  AND contact_oreon = '1'");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
             if ($row['contact_admin'] == 1) {
-                return 1;
+                if ($row['contact_passwd'] == $pass) {
+                    return 1;
+                } elseif ($row['contact_auth_type'] == 'ldap') {
+                    $CentreonLog = new CentreonUserLog(-1, $this->DB);
+                    $centreonAuth = new CentreonAuthLDAP(
+                        $this->DB,
+                        $CentreonLog,
+                        $this->login,
+                        $this->password,
+                        $row,
+                        $row['ar_id']
+                    );
+                    if ($centreonAuth->checkPassword() == 1) {
+                        return 1;
+                    }
+                }
+            } else {
+                print "Centreon CLAPI is for admin users only.\n";
+                exit(1);
             }
-            print "Centreon CLAPI is for admin users only.\n";
-            exit(1);
-        } else {
-            print "Invalid credentials.\n";
-            exit(1);
         }
+        print "Invalid credentials.\n";
+        exit(1);
     }
 
     /**
@@ -552,7 +573,8 @@ class CentreonAPI
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a POLLERGENERATE -v 1 \n";
         print "       - POLLERTEST: Test nagios configuration for a poller (poller id in -v parameters)\n";
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a POLLERTEST -v 1 \n";
-        print "       - CFGMOVE: move nagios configuration for a poller to final directory (poller id in -v parameters)\n";
+        print "       - CFGMOVE: move nagios configuration for a poller to final directory\n";
+        print "         (poller id in -v parameters)\n";
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a CFGMOVE -v 1 \n";
         print "       - POLLERRESTART: Restart a poller (poller id in -v parameters)\n";
         print "           #> ./centreon -u <LOGIN> -p <PASSWORD> -a POLLERRESTART -v 1 \n";
@@ -900,7 +922,7 @@ class CentreonAPI
         print "Centreon version " . $data["value"] . "\n";
         $res = $this->DB->query("SELECT mod_release FROM modules_informations WHERE name = 'centreon-clapi'");
         $clapiVersion = 'undefined';
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $data = $res->fetchRow();
             $clapiVersion = $data['mod_release'];
         }

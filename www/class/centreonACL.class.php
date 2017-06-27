@@ -146,7 +146,7 @@ class CentreonACL
                 . "WHERE update_acl = '1' "
                 . "AND user_id IN (" . join(', ', $this->parentTemplates) . ") ";
             $DBRES = $pearDB->query($query);
-            if ($DBRES->numRows()) {
+            if ($DBRES->rowCount()) {
                 $pearDB->query("UPDATE session SET update_acl = '0'
                     WHERE user_id IN (" . join(', ', $this->parentTemplates) . ")");
                 $this->resetACL();
@@ -178,7 +178,7 @@ class CentreonACL
             while ($row = $DBRESULT->fetchRow()) {
                 $this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             $query = "SELECT acl.acl_group_id, acl.acl_group_name "
                 . "FROM acl_groups acl, acl_group_contactgroups_relations agcgr, contactgroup_contact_relation cgcr "
@@ -192,7 +192,7 @@ class CentreonACL
             while ($row = $DBRESULT->fetchRow()) {
                 $this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
     }
 
@@ -211,7 +211,7 @@ class CentreonACL
         while ($row = $DBRESULT->fetchRow()) {
             $this->resourceGroups[$row['acl_res_id']] = $row['acl_res_name'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -231,7 +231,7 @@ class CentreonACL
             $this->hostGroupsAlias[$row['hg_id']] = $row['hg_alias'];
             $this->hostGroupsFilter[$row['acl_res_id']][$row['hg_id']] = $row['hg_id'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -247,7 +247,7 @@ class CentreonACL
             . "AND arpr.acl_res_id IN (" . $this->getResourceGroupsString() . ") "
             . "ORDER BY ns.name ASC ";
         $DBRESULT = $pearDB->query($query);
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             while ($row = $DBRESULT->fetchRow()) {
                 $this->pollers[$row['id']] = $row['name'];
             }
@@ -261,7 +261,7 @@ class CentreonACL
                 $this->pollers[$row['id']] = $row['name'];
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -281,7 +281,7 @@ class CentreonACL
             $this->serviceGroupsAlias[$row['sg_id']] = $row['sg_alias'];
             $this->serviceGroupsFilter[$row['acl_res_id']][$row['sg_id']] = $row['sg_id'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -301,7 +301,7 @@ class CentreonACL
             $this->serviceCategories[$row['sc_id']] = $row['sc_name'];
             $this->serviceCategoriesFilter[$row['acl_res_id']][$row['sc_id']] = $row['sc_id'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -344,7 +344,7 @@ class CentreonACL
         if (!$this->metaServiceStr) {
             $this->metaServiceStr = "''";
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -363,7 +363,7 @@ class CentreonACL
         while ($row = $DBRESULT->fetchRow()) {
             $this->actions[$row['acl_action_name']] = $row['acl_action_name'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -379,7 +379,7 @@ class CentreonACL
             while ($row = $DBRES->fetchRow()) {
                 $this->topology[$row['topology_page']] = 1;
             }
-            $DBRES->free();
+            $DBRES->closeCursor();
         } else {
             if (count($this->accessGroups) > 0) {
                 # If user is in an access group
@@ -391,7 +391,7 @@ class CentreonACL
                     . "AND acl_group_topology_relations.acl_group_id IN (" . $this->getAccessGroupsString() . ") ";
                 $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
 
-                if (!$DBRESULT->numRows()) {
+                if (!$DBRESULT->rowCount()) {
                     $this->topology[1] = 1;
                     $this->topology[101] = 1;
                     $this->topology[10101] = 1;
@@ -421,9 +421,9 @@ class CentreonACL
                                 }
                             }
                         }
-                        $DBRESULT2->free();
+                        $DBRESULT2->closeCursor();
                     }
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $ACL = "";
                     if (count($topology)) {
                         $ACL = "AND topology_id IN (" . implode(', ', $topology) . ") ";
@@ -437,7 +437,7 @@ class CentreonACL
                     while ($topo_page = $DBRESULT3->fetchRow()) {
                         $this->topology[$topo_page["topology_page"]] = $tmp_topo_page[$topo_page["topology_id"]];
                     }
-                    $DBRESULT3->free();
+                    $DBRESULT3->closeCursor();
                 }
             } else {
                 # If user isn't in an access group
@@ -1381,7 +1381,7 @@ class CentreonACL
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             // Used By EventLogs page Only
             if (!is_null($get_service_description)) {
                 // Get Services attached to hostgroups
@@ -1393,7 +1393,7 @@ class CentreonACL
                 while ($elem = $DBRESULT->fetchRow()) {
                     $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];
                 }
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
             }
         } else {
             if (!is_null($get_service_description)) {
@@ -1417,7 +1417,7 @@ class CentreonACL
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
 
         return $tab;
@@ -1438,7 +1438,7 @@ class CentreonACL
             while ($row = $DBRESULT->fetchRow()) {
                 $tab[$row['service_id']] = $row['service_description'];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             # Get Services attached to hostgroups
             $query = "SELECT DISTINCT service_id, service_description "
@@ -1450,7 +1450,7 @@ class CentreonACL
             while ($elem = $DBRESULT->fetchRow()) {
                 $tab[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         } else {
             $query = "SELECT DISTINCT s.service_id, s.description "
                 . "FROM services s "
@@ -1462,7 +1462,7 @@ class CentreonACL
             while ($row = $DBRESULT->fetchRow()) {
                 $tab[$row['service_id']] = $row['description'];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
 
         return $tab;
@@ -1492,7 +1492,7 @@ class CentreonACL
         while ($row = $DBRESULT->fetchRow()) {
             $tab[$row['name']][$row['description']] = 1;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         return $tab;
     }
@@ -1523,7 +1523,7 @@ class CentreonACL
         while ($row = $DBRESULT->fetchRow()) {
             $tab[$row['service_id']] = $row['description'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         return $tab;
     }

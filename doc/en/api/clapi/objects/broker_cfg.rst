@@ -94,7 +94,7 @@ event_queue_max_size     Event queue max size (when number is reached,
 
 cache_directory          Path for cache files
 
-daemon                   Module or Daemon (0 or 1)
+daemon                   Link this configuration to cbd service (0 or 1)
 
 stats_activate           Enable statistics (0 or 1)
 
@@ -265,7 +265,7 @@ Example::
   field id;short name;name
   3;ca_certificate;Trusted CA's certificate;text
   2;host;Host to connect to;text
-  46;negociation;Enable negociation;radio
+  46;negotiation;Enable negotiation;radio
   48;one_peer_retention_mode;One peer retention;radio
   1;port;Connection port;int
   4;private_key;Private key file.;text

@@ -185,14 +185,25 @@ jQuery(function() {
     }
 
     jQuery(".ui-icon-wrench").each(function(index, element) {
-                                        var tmp = jQuery(element).parents('.portlet').attr('name')
-                                        var widgetIndex = tmp.split("portlet_");
-                                        var widgetId = widgetIndex[1];
-                                        initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id="+viewId+"&widget_id="+widgetId, "70%", "70%");
-                                   });
+        var tmp = jQuery(element).parents('.portlet').attr('name'),
+            widgetIndex = tmp.split("portlet_"),
+            widgetId = widgetIndex[1];
+
+        jQuery(element).on('click', function () {
+            var popin = jQuery('<div id="config-popin">');
+            var url = './api/internal.php?object=centreon_home_customview&resultFormat=html&action=preferences' +
+                '&viewId=' + viewId + '&widgetId=' + widgetId;
+            popin.centreonPopin({
+                url: url,
+                open: true,
+                ajaxType : 'GET',
+                ajaxDataType: 'html'
+            });
+        });
+    });
 
     jQuery(".ui-icon-refresh").each(function(index, element) {
-        var tmp = jQuery(element).parents('.portlet').attr('name')
+        var tmp = jQuery(element).parents('.portlet').attr('name');
         var widgetIndex = tmp.split("portlet_");
         var widgetId = widgetIndex[1];
         jQuery(element).click(function() {

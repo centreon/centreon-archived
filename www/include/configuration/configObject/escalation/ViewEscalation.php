@@ -58,7 +58,7 @@ $DBRESULT = $pearDB->query($cmd);
 while ($hostgroup = $DBRESULT->fetchRow()) {
     $hostgroup_ary[$hostgroup["hg_id"]] = $hostgroup["hg_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $hgs = array(null=>null);
 if (isset($_POST["hostgroup_escalation"]) && $_POST["hostgroup_escalation"] != null) {
@@ -70,13 +70,13 @@ if (isset($_POST["hostgroup_escalation"]) && $_POST["hostgroup_escalation"] != n
     while ($hg = $res->fetchRow()) {
         $hgs[$hg["host_id"]] = $hg["host_name"];
     }
-    $res->free();
+    $res->closeCursor();
 } else {
     $res = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER by host_name");
     while ($hg = $res->fetchRow()) {
         $hgs[$hg["host_id"]] = $hg["host_name"];
     }
-    $res->free();
+    $res->closeCursor();
 }
 
 $svcs = array();

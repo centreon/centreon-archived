@@ -96,7 +96,7 @@ class CentreonServicegroups
         while ($row = $res->fetchRow()) {
             $services[] = array($row['host_host_id'], $row['service_service_id']);
         }
-        $res->free();
+        $res->closeCursor();
 
         return $services;
     }

@@ -45,10 +45,10 @@ function testMnftrExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT name, id FROM traps_vendor WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $mnftr = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $mnftr["id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $mnftr["id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $mnftr["id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $mnftr["id"] != $id) {
         return false;
     } else {
         return true;

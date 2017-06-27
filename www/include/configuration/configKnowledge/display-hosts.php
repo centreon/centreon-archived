@@ -150,7 +150,7 @@ try {
         }
         $proc->hostIconeList[$data["host_name"]] = "./img/media/" . $proc->getImageFilePath($data["ehi_icon_image"]);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 
     /*

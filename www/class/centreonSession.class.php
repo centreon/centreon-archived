@@ -90,7 +90,7 @@ class CentreonSession
         $DBRESULT = $pearDB->query(
             "SELECT id FROM session WHERE `session_id` = '" . htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8") . "'"
         );
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             return 1;
         } else {
             return 0;

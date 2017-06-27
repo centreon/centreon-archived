@@ -162,7 +162,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $tabIcone[$ndo["name"]] = "none";
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Get Service status

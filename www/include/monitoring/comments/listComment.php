@@ -163,7 +163,7 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     }
 }
 unset($data);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 include("./include/common/checkPagination.php");
 

@@ -57,7 +57,7 @@ if (($o == "c" || $o == "w") && $dep_id) {
         $dep["execution_failure_criteria"][trim($value)] = 1;
     }
 
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 /*

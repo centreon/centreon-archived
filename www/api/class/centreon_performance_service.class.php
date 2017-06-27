@@ -68,7 +68,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $additionalTables = '';
         $additionalValues = array();
         $additionalCondition = '';
-        $queryValues = array();
+        $bindParams = array();
 
         /* Get ACL if user is not admin */
         $acl = null;
@@ -77,9 +77,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         }
 
         if (false === isset($this->arguments['q'])) {
-            $queryValues['fullName'] = '%%';
+            $bindParams[':fullName'] = '%%';
         } else {
-            $queryValues['fullName'] = '%' . (string)$this->arguments['q'] . '%';
+            $bindParams[':fullName'] = '%' . (string)$this->arguments['q'] . '%';
         }
 
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id ' .
@@ -109,41 +109,37 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         if (isset($this->arguments['hostgroup'])) {
             $additionalCondition .= 'AND (hg.host_id = i.host_id ' .
                 'AND hg.hostgroup_id IN (';
-            $explodedValues = '';
+            $params = array();
             foreach ($this->arguments['hostgroup'] as $k => $v) {
-                $explodedValues .= 'hgId' . $v . ',';
-                $queryValues['hostGroupId']['hgId' . $v] = (int)$v;
-                $additionalValues['hgId' . $v] = (int)$v;
+                $params[':hgId' . $v] = (int)$v;
             }
-            $explodedValues = rtrim($explodedValues, ',');
-            $additionalCondition .= $explodedValues . '))';
+            $bindParams = array_merge($bindParams, $params);
+            $additionalCondition .= implode(',', array_keys($params)) . ')) ';
         }
 
         if (isset($this->arguments['servicegroup'])) {
             $additionalCondition .= 'AND (sg.host_id = i.host_id AND sg.service_id = i.service_id ' .
                 'AND sg.servicegroup_id IN (';
-            $explodedValues = '';
+            $params = array();
             foreach ($this->arguments['servicegroup'] as $k => $v) {
-                $explodedValues .= 'sgId' . $v . ',';
-                $queryValues['serviceGroupId']['sgId' . $v] = (int)$v;
-                $additionalValues['sgId' . $v] = (int)$v;
+                $params[':sgId' . $v] = (int)$v;
             }
-            $explodedValues = rtrim($explodedValues, ',');
-            $additionalCondition .= $explodedValues . '))';
+            $bindParams = array_merge($bindParams, $params);
+            $additionalCondition .= implode(',', array_keys($params)) . ')) ';
         }
 
         if (isset($this->arguments['host'])) {
             $additionalCondition .= 'AND i.host_id IN (';
-            $explodedValues = '';
+            $params = array();
             foreach ($this->arguments['host'] as $k => $v) {
-                $explodedValues .= 'hostId' . $v . ',';
-                $queryValues['hostId']['hostId' . $v] = (int)$v;
-                $additionalValues['hostId' . $v] = (int)$v;
+                $params[':hostId' . $v] = (int)$v;
             }
-            $explodedValues = rtrim($explodedValues, ',');
-            $additionalCondition .= $explodedValues . ')';
+            $bindParams = array_merge($bindParams, $params);
+            $additionalCondition .= implode(',', array_keys($params)) . ') ';
         }
+
         $query .= $additionalCondition . ') ';
+
         if (isset($acl)) {
             $virtualObject = $this->getVirtualServicesCondition(
                 $additionalTables,
@@ -162,6 +158,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $virtualServicesCondition = $virtualObject['query'];
             $virtualValues = $virtualObject['value'];
         }
+
         $query .= $virtualServicesCondition . ') as t_union ' .
             'WHERE fullname LIKE :fullName ' .
             'GROUP BY host_id, service_id ' .
@@ -170,31 +167,29 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT :offset, :limit';
-            $queryValues['offset'] = (int)$offset;
-            $queryValues['limit'] = (int)$this->arguments['page_limit'];
+            $bindParams[':offset'] = (int)$offset;
+            $bindParams[':limit'] = (int)$this->arguments['page_limit'];
         }
 
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $stmt->bindParam(':fullName', $queryValues['fullName'], PDO::PARAM_STR);
+        $stmt->bindValue(':fullName', $bindParams[':fullName'], PDO::PARAM_STR);
+        unset($bindParams[':fullName']);
+        foreach($bindParams as $k => $v) {
+            $stmt->bindValue($k, $v, PDO::PARAM_INT);
+        }
 
         if (isset($virtualValues['metaService'])) {
             foreach ($virtualValues['metaService'] as $k => $v) {
-                $stmt->bindParam(':' . $k, $v, PDO::PARAM_INT);
+                $stmt->bindValue(':' . $k, $v, PDO::PARAM_INT);
             }
         }
         if (isset($virtualValues['virtualService'])) {
             foreach ($virtualValues['virtualService'] as $k => $v) {
-                $stmt->bindParam(':' . $k, $v, PDO::PARAM_INT);
+                $stmt->bindValue(':' . $k, $v, PDO::PARAM_INT);
             }
         }
-        if (isset($queryValues['offset'])) {
-            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
-            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
-        }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
+
+        $stmt->execute();
 
         $serviceList = array();
         while ($data = $stmt->fetch()) {

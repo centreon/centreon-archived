@@ -132,7 +132,7 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
         }
 
         if (false === isset($this->arguments['ids'])) {
-            self::sendJson(array());
+            self::sendResult(array());
         }
 
         /* Get the list of service ID */

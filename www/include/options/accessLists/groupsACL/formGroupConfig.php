@@ -63,7 +63,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contacts"][$i] = $contacts["contact_contact_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     
     /*
      * Set ContactGroup Childs
@@ -75,7 +75,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     for ($i = 0; $contactgroups = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     
     /*
      * Set Menu link List
@@ -87,7 +87,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["menuAccess"][$i] = $data["acl_topology_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     
     /*
      * Set resources List
@@ -102,7 +102,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         $group["resourceAccess"][$i] = $data["acl_res_id"];
     }
 
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     
     /*
      * Set Action List
@@ -114,7 +114,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["actionAccess"][$i] = $data["acl_action_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 /*
@@ -131,7 +131,7 @@ while ($contact = $DBRESULT->fetchRow()) {
     $contacts[$contact["contact_id"]] = $contact["contact_name"];
 }
 unset($contact);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $cg = new CentreonContactgroup($pearDB);
 $contactGroups = $cg->getListContactgroup(true);
@@ -143,7 +143,7 @@ while ($topo = $DBRESULT->fetchRow()) {
     $menus[$topo["acl_topo_id"]] = $topo["acl_topo_name"];
 }
 unset($topo);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 # Action comes from DB -> Store in $contacts Array
 $action = array();
@@ -152,7 +152,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $action[$data["acl_action_id"]] = $data["acl_action_name"];
 }
 unset($data);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 # Resources comes from DB -> Store in $contacts Array
 $resources = array();
@@ -165,7 +165,7 @@ while ($res = $DBRESULT->fetchRow()) {
     $resources[$res["acl_res_id"]] = $res["acl_res_name"];
 }
 unset($res);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 ##########################################################
 # Var information to format the element

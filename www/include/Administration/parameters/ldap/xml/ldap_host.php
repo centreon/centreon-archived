@@ -91,7 +91,7 @@ $xml->writeElement('rmImg', trim('./img/icones/16x16/delete.gif'));
 $query = "SELECT COUNT(ldap_host_id) as cnt FROM auth_ressource_host WHERE auth_ressource_id = ".$db->escape($arId);
 $res = $db->query($query);
 $maxHostId = 0;
-if ($res->numRows()) {
+if ($res->rowCount()) {
     $row = $res->fetchRow();
     $maxHostId = $row['cnt'];
 }

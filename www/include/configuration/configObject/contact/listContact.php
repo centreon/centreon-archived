@@ -50,7 +50,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $tpCache[$data["tp_id"]] = $data["tp_name"];
 }
 unset($data);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $clauses = array();
 $search = '';
