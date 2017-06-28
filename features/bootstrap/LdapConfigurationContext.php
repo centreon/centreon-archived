@@ -20,7 +20,7 @@ class LdapConfigurationContext extends CentreonContext
        $this->page->setProperties(array(
            'configuration_name' => $this->configuration_name,
            'description' => 'an ldap configuration test',
-           'enable_authentification' => 1,
+           'enable_authentication' => 1,
            'template' => 'Posix'
        ));
        
