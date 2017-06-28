@@ -3,29 +3,28 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactGroupConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
+use Centreon\Test\Behat\Administration\ACLGroupConfigurationPage;
 
 class ContactGroupConfigurationContext extends CentreonContext
 {
     protected $currentPage;
-    protected $contactGroupName;
-    protected $contactGroupAlias;
-    protected $contactGroupContact;
-    protected $contactGroupComment;
-    protected $changedName;
-    protected $changedAlias;
-    protected $changedComment;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->contactGroupName = 'contactGroupName';
-        $this->contactGroupAlias = 'contactGroupAlias';
-        $this->contactGroupContact = 'Guest';
-        $this->contactGroupComment = 'contactGroupComment';
-        $this->changedName = 'contactGroupNameChanged';
-        $this->changedAlias = 'contactGroupAliasChanged';
-        $this->changedComment = 'contactGroupCommentChanged';
-    }
+    protected $initialProperties = (array(
+        'name' => 'contactGroupName',
+        'alias' => 'contactGroupAlias',
+        'status' => 0,
+        'comments' => 'contactGroupComment'
+    ));
+
+    protected $updatedProperties = (array(
+        'name' => 'contactGroupNameChanged',
+        'alias' => 'contactGroupAliasChanged',
+        'contacts' => 'contactAlias',
+        'acl' => 'ACLGroupName',
+        'status' => 1,
+        'comments' => 'contactGroupCommentChanged'
+    ));
 
     /**
      * @Given a contact group is configured
@@ -33,130 +32,61 @@ class ContactGroupConfigurationContext extends CentreonContext
     public function aContactGroupIsConfigured()
     {
         $this->currentPage = new ContactGroupsConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->contactGroupName,
-            'alias' => $this->contactGroupAlias,
-            'status' => 0,
-            'comments' => $this->contactGroupComment
-        ));
+        $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
     }
 
     /**
-     * @When I configure the name of a contact group
+     * @When I update the contact group properties
      */
-    public function iConfigureTheNameOfAContactGroup()
+    public function iConfigureTheContactGroupProperties()
     {
+        $this->currentPage = new ContactConfigurationPage($this);
+        $this->currentPage->setProperties(array(
+            'name' => $this->updatedProperties['contacts'],
+            'alias' => $this->updatedProperties['contacts'],
+            'email' => "contact@localhost",
+            'password' => 'pwd',
+            'password2' => 'pwd',
+            'admin' => 0
+        ));
+        $this->currentPage->save();
+        $this->currentPage = new ACLGroupConfigurationPage($this);
+        $this->currentPage->setProperties(array(
+            'group_name' => $this->updatedProperties['acl'],
+            'group_alias' => $this->updatedProperties['acl']
+        ));
+        $this->currentPage->save();
         $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->contactGroupName);
-        $this->currentPage->setProperties(array(
-            'name' => $this->changedName
-        ));
+        $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
+        $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
     }
 
     /**
-     * @Then the name has changed on the contact groups page
+     * @Then the contact group properties are updated
      */
-    public function theNameHasChangedOnTheContactGroupsPage()
+    public function theContactGroupPropertiesAreUpdated()
     {
+        $this->tableau = array();
+        try {
         $this->spin(
-            function($context){
+            function($context) {
                 $this->currentPage = new ContactGroupConfigurationListingPage($this);
-                return $this->currentPage->inspect($this->changedName);
-            },
-            "The name has not changed.",
-            30
-        );
-    }
-
-    /**
-     * @When I configure the alias of a contact group
-     */
-    public function iConfigureTheAliasOnAContactGroup()
-    {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->changedName);
-        $this->currentPage->setProperties(array(
-            'alias' => $this->changedAlias
-        ));
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the alias has changed on the contact groups page
-     */
-    public function theAliasHasChangedOnTheContactGroupsPage()
-    {
-        $this->spin(
-            function($context){
-                $this->currentPage = new ContactGroupConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->changedName);
+                $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                 $object = $this->currentPage->getProperties();
-                return $object['alias'] == $this->changedAlias;
+                foreach($this->updatedProperties as $key => $value) {
+                    if ($value != $object[$key]) {
+                        $this->tableau[] = $key;
+                    }
+                }
+                return count($this->tableau) == 0;
             },
-            "The alias has not changed.",
-            30
+            "Some properties are not being updated : ",
+            5
         );
-    }
-
-    /**
-     * @When I configure the status of a contact group
-     */
-    public function iConfigureTheStatusOfAContactGroup()
-    {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->changedName);
-        $this->currentPage->setProperties(array(
-            'status' => 1
-        ));
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the status has changed on the contact groups page
-     */
-    public function theStatusHasChangedOnTheContactGroupsPage()
-    {
-        $this->spin(
-            function($context){
-                $this->currentPage = new ContactGroupConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->changedName);
-                $object = $this->currentPage->getProperties();
-                return $object['status'] == 1;
-            },
-            "The status has not changed.",
-            30
-        );
-    }
-
-    /**
-     * @When I configure the comment of a contact group
-     */
-    public function iConfigureTheCommentOfAContactGroup()
-    {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
-        $this->currentPage = $this->currentPage->inspect($this->changedName);
-        $this->currentPage->setProperties(array(
-            'comments' => $this->changedComment
-        ));
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the comment has changed on the contact groups page
-     */
-    public function theCommentHasChangedOnTheContactGroupsPage()
-    {
-        $this->spin(
-            function($context){
-                $this->currentPage = new ContactGroupConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->changedName);
-                $object = $this->currentPage->getProperties();
-                return $object['comments'] == $this->changedComment;
-            },
-            "The comment has not changed.",
-            30
-        );
+        } catch (\Exception $e) {
+            throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
+        }
     }
 }
