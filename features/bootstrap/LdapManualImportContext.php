@@ -4,7 +4,6 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Administration\LdapConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\External\LoginPage;
-use Centreon\Test\Behat\UtilsContext;
 
 class LdapManualImportContext extends CentreonContext
 {   
