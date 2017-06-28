@@ -625,7 +625,9 @@ function goM(_time_reload,_sid,_o){
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	_var = "hg_name="+_hg_name+"&host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileCentreonConf="+_fileCentreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&time="+parseInt(_form.time.value);
-	xhrM.send(_var);
+	if (handleVisibilityChange()){
+        xhrM.send(_var);
+    }
 //	document.getElementById('header').innerHTML = "-->"+_var;
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrM.onreadystatechange = function()
@@ -663,7 +665,7 @@ function goM(_time_reload,_sid,_o){
 			viewDebugInfo('readyState=' + xhrM.readyState + ' -- status=' + xhrM.status);
 	}
 
-	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+	_timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
 }
