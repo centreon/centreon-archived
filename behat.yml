@@ -169,10 +169,30 @@ default:
       contexts:
       - SpecialCharactersInContactContext
 
+    contact_configuration:
+      paths: [ %paths.base%/features/ContactConfiguration.feature ]
+      contexts:
+      - ContactConfigurationContext
+
+    host_creation_duplication:
+      paths: [ %paths.base%/features/HostCreationDuplication.feature ]
+      contexts:
+      - HostCreationDuplicationContext
+
     host_configuration:
       paths: [ %paths.base%/features/HostConfiguration.feature ]
       contexts:
       - HostConfigurationContext
+
+    host_duplication_check:
+      paths: [ %paths.base%/features/HostDuplicationCheck.feature ]
+      contexts:
+      - HostDuplicationCheckContext
+
+    contact_group_creation_duplication:
+      paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
+      contexts:
+      - ContactGroupCreationDuplicationContext
       
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
