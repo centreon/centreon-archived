@@ -86,7 +86,7 @@ try {
           ],
           tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
         ])
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.html'
       }
     },
     'centos7': {
@@ -101,7 +101,7 @@ try {
           ],
           tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
         ])
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.html'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
