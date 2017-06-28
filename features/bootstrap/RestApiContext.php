@@ -51,9 +51,9 @@ class RestApiContext extends CentreonContext
         $this->logfile = tempnam('/tmp', 'rest_api_log');
         exec(
             'newman run' .
-            ' --reporters html --reporter-html-export ' . $this->logfile .
             ' --environment ' . $this->envfile .
-            ' tests/rest_api/rest_api.postman_collection.json',
+            ' tests/rest_api/rest_api.postman_collection.json' .
+            ' > ' . $this->logfile,
             $output,
             $retval
         );
@@ -69,7 +69,7 @@ class RestApiContext extends CentreonContext
         if (!($this->retval == 0)) {
             copy(
                 $this->logfile,
-                $this->composeFiles['log_directory'] . '/' . basename($this->logfile) . '.html'
+                $this->composeFiles['log_directory'] . '/' . basename($this->logfile) . '.txt'
             );
             unlink($this->logfile);
             throw new \Exception(
