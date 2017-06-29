@@ -41,7 +41,7 @@ include_once("./class/centreonUtils.class.php");
 
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
-include_once "./class/centreonConfigEngine.class.php";
+include_once "./class/centreonConfigEngine.php";
 
 
 /*
