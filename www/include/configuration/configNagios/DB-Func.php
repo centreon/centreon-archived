@@ -207,7 +207,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     }
     
     $rq = "INSERT INTO cfg_nagios ("
-        . "`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , "
+        . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
         . "`check_result_path`, `max_check_result_file_age`, "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
@@ -258,6 +258,8 @@ function insertNagios($ret = array(), $brokerTab = array())
     $rq .= "NULL, ";
     isset($ret["nagios_name"]) && $ret["nagios_name"] != null ?
         $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["use_timezone"]) && $ret["use_timezone"] != null ?
+        $rq .= "'".htmlentities($ret["use_timezone"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != null ?
         $rq .= "'".htmlentities($ret["nagios_server_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["log_file"]) && $ret["log_file"] != null ?
@@ -626,6 +628,9 @@ function updateNagios($nagios_id = null)
     isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != null ?
         $rq .= "nagios_server_id = '".htmlentities($ret["nagios_server_id"], ENT_QUOTES, "UTF-8")."', "
         : $rq .= "nagios_server_id = NULL, ";
+    isset($ret["use_timezone"]) && $ret["use_timezone"] != null ?
+        $rq .= "use_timezone = '".htmlentities($ret["use_timezone"], ENT_QUOTES, "UTF-8")."', "
+        : $rq .= "use_timezone = NULL, ";
     isset($ret["log_file"]) && $ret["log_file"] != null ?
         $rq .= "log_file = '".htmlentities($ret["log_file"], ENT_QUOTES, "UTF-8")."', "
         : $rq .= "log_file = NULL, ";

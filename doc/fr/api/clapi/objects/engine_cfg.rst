@@ -84,14 +84,14 @@ Parameters that you may change are:
 ================ =============================================================================================================================
 Column	         Description
 ================ =============================================================================================================================
-engine_name	      Name
+nagios_name	      Name
 
 instance	 Instance that is linked to engine.cfg
 
 broker_module	 example: [...] -v "Engine CFG 1;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
                  you can use a | delimiter for defining multiple broker modules
 
-engine_activate	 *1* if activated, *0* otherwise
+nagios_activate	 *1* if activated, *0* otherwise
 
 *	         Centreon CLAPI handles pretty much all the options available in a Engine configuration file. 
                  Because the list is quite long, it is best to refer to the official documentation of Engine

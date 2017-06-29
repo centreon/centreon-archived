@@ -98,4 +98,27 @@ class CentreonConfigEngine
         }
         return $arr;
     }
+
+    public function getTimezone($engineId)
+    {
+        $timezone = null;
+
+        $query = "SELECT timezone FROM (" .
+            "SELECT timezone_name as timezone " .
+            "FROM cfg_nagios, timezone " .
+            "WHERE nagios_id = " . $this->db->escape($engineId) . " " .
+            "AND use_timezone = timezone_id " .
+            "UNION " .
+            "SELECT timezone_name as timezone " .
+            "FROM options, timezone " .
+            "WHERE options.key = 'gmt' " .
+            "AND options.value = timezone_id " .
+            ") as t LIMIT 1";
+        $result = $this->db->query($query);
+        if ($row = $result->fetchRow()) {
+            $timezone = $row['timezone'];
+        }
+
+        return $timezone;
+    }
 }
