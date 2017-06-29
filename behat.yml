@@ -198,3 +198,8 @@ default:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
       - LdapConfigurationContext
+
+    control_login:
+      paths: [ %paths.base%/features/ControlLogin.feature ]
+      contexts:
+      - ControlLoginContext
