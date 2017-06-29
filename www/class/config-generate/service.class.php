@@ -168,9 +168,6 @@ class Service extends AbstractService {
             $this->service_cache[$service_id]['contact_from_host'] = 1;
         } else {
             $this->service_cache[$service_id]['contact_from_host'] = 0;
-            if (is_null($this->service_cache[$service_id]['service_inherit_contacts_from_host']) || $this->service_cache[$service_id]['service_inherit_contacts_from_host'] == 0) {
-                return 0;
-            }
             if ($this->isServiceHasContacts($service_id)) {
                 return 0;
             }

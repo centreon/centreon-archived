@@ -76,7 +76,6 @@ abstract class AbstractService extends AbstractObject {
         service_recovery_notification_delay as recovery_notification_delay,
         service_stalking_options as stalking_options,
         service_register as register,
-        service_inherit_contacts_from_host,
         esi_notes as notes,
         esi_notes_url as notes_url,
         esi_action_url as action_url,
