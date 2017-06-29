@@ -190,6 +190,6 @@ default:
       - LdapConfigurationContext
 
     modify_default_page_connexion:
-      paths: [ %paths.base%/features/ModifyDefaultPageConnexion.feature ]
+      paths: [ %paths.base%/features/ModifyDefaultPageConnection.feature ]
       contexts:
-      - ModifyDefaultPageConnexionContext
+      - ModifyDefaultPageConnectionContext
