@@ -99,9 +99,13 @@ class CentreonConfigEngine
         return $arr;
     }
 
-    public function getTimezone($engineId)
+    public function getTimezone($engineId = null)
     {
         $timezone = null;
+
+        if (is_null($engineId) || empty($engineId)) {
+            return $timezone;
+        }
 
         $query = "SELECT timezone FROM (" .
             "SELECT timezone_name as timezone " .
