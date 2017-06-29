@@ -73560,7 +73560,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};engine_name;{{engine_name}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};nagios_name;{{engine_name}}\"\n}"
 						},
 						"description": ""
 					},
@@ -73746,7 +73746,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};engine_activate;{{instance_activate}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};nagios_activate;{{instance_activate}}\"\n}"
 						},
 						"description": ""
 					},
