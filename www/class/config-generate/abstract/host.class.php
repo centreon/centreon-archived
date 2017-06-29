@@ -316,6 +316,14 @@ abstract class AbstractHost extends AbstractObject {
         
         return null;
     }
+
+    protected function getHostTimezone(&$host) {
+        $oTimezone = Timezone::getInstance();
+        $timezone = $oTimezone->getTimezoneFromId($host['host_location']);
+        if (!is_null($timezone)) {
+            $host['timezone'] = ':' . $timezone;
+        }
+    }
     
     protected function getHostCommand(&$host, $result_name, $command_id_label, $command_arg_label) {
         $command_name = Command::getInstance()->generateFromCommandId($host[$command_id_label]);
