@@ -41,6 +41,7 @@ include_once("./class/centreonUtils.class.php");
 
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
+include_once "./class/centreonConfigEngine.class.php";
 
 
 /*
@@ -293,6 +294,7 @@ if (!$is_admin && !$haveAccess) {
             " alias, " .
             " action_url, " .
             " h.timezone, " .
+            " h.instance_id, " .
             " i.name as instance_name " .
             " FROM hosts h, instances i " .
             " WHERE h.host_id = $host_id AND h.instance_id = i.instance_id " .
@@ -301,7 +303,15 @@ if (!$is_admin && !$haveAccess) {
         $data = $DBRESULT->fetchRow();
 
         $host_status[$host_name] = $data;
-        $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+
+        // Get host timezone
+        if (empty($host_status[$host_name]["timezone"])) {
+            $instanceObj = new CentreonConfigEngine($pearDB);
+            $host_status[$host_name]["timezone"] = $instanceObj->getTimezone($host_status[$host_name]["instance_id"]);
+        } else {
+            $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+        }
+
         $host_status[$host_name]["plugin_output"] = htmlentities(
             $host_status[$host_name]["plugin_output"],
             ENT_QUOTES,
