@@ -160,7 +160,7 @@
                                 </tr>
                                 <tr class='list_one'>
                                     <td class="ListColLeft ColPopup">{t}Timezone{/t}</td>
-                                    <td class="ListColLeft ColPopup"><span>{$host_data.timezone}</span></td>
+                                    <td class="ListColLeft ListColNoWrap"><span>{$host_data.timezone}</span></td>
                                 </tr>
                                 {if $host_data.comments}
                                 <tr class='list_two'>
