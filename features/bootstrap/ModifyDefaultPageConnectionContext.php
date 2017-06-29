@@ -7,7 +7,7 @@ use Centreon\Test\Behat\Administration\ACLMenuConfigurationPage;
 use Centreon\Test\Behat\Administration\ACLGroupConfigurationPage;
 use Centreon\Test\Behat\External\ListingPage;
 
-class ModifyDefaultPageConnexionContext extends CentreonContext
+class ModifyDefaultPageConnectionContext extends CentreonContext
 {
     private $nonAdminName;
     private $nonAdminPwd;
@@ -69,9 +69,9 @@ class ModifyDefaultPageConnexionContext extends CentreonContext
     }
 
     /**
-     * @Given I have replaced the default page connexion with Administration > Parameters
+     * @Given I have replaced the default page connection with Administration > Parameters
      */
-    public function iHaveReplacedTheDefaultPageConnexionWithAdministrationParameters()
+    public function iHaveReplacedTheDefaultPageConnectionWithAdministrationParameters()
     {
         $this->visit('main.php?p=50104&o=c');
         $this->selectInList('select[name="default_page"]', '  Administration > Parameters');
@@ -90,9 +90,9 @@ class ModifyDefaultPageConnexionContext extends CentreonContext
     }
 
     /**
-     * @Given I have replaced the default page connexion with Monitoring > Status Details > Hosts
+     * @Given I have replaced the default page connection with Monitoring > Status Details > Hosts
      */
-    public function iHaveReplacedTheDefaultPageConnexionWithMonitoringStatusDetailsHosts()
+    public function iHaveReplacedTheDefaultPageConnectionWithMonitoringStatusDetailsHosts()
     {
         $this->visit('main.php?p=50104&o=c');
         $this->selectInList('select[name="default_page"]','  Monitoring > Status Details > Hosts');
