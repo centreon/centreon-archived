@@ -27,8 +27,13 @@
 
   <target name="codestyle" depends="prepare">
     <phpcodesniffer standard="PSR2">
-      <formatter type="full" usefile="false"/>
       <formatter type="checkstyle" outfile="${builddir}/checkstyle.xml"/>
+      <fileset dir="features">
+	<include name="**/*.php"/>
+      </fileset>
+      <fileset dir="tests">
+	<include name="**/*.php"/>
+      </fileset>
       <fileset dir="www">
         <include name="**/*.php"/>
 	<exclude name="lib/HTML/QuickForm.php"/>
