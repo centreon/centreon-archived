@@ -1,4 +1,4 @@
-Feature: Modify_Default_Page_Connexion
+Feature: Modify Default Page Connection
     As a Centreon Web user 
     I want to change the default connexion page
     To access directly to the one I have chosen
