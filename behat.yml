@@ -188,3 +188,8 @@ default:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
       - LdapConfigurationContext
+      
+    acl_access_groups:
+      paths: [ %paths.base%/features/AclAccessGroups.feature ]
+      contexts:
+      - AclAccessGroupsContext
