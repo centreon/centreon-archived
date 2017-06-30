@@ -7,3 +7,4 @@ INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$SERVICEID$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$HOSTTIMEZONE$');
 
 ALTER TABLE `cfg_nagios` DROP COLUMN `log_initial_states`;
+ALTER TABLE `service` DROP `service_inherit_contacts_from_host`;
