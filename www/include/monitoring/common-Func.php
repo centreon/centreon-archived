@@ -221,10 +221,10 @@ function get_notified_infos_for_service($service_id, $host_id)
 
     // Get Service Notifications options
     $additive = false;
-    $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host
+    $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance, service_use_only_contacts_from_host
             FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "'");
     $serviceParam = $DBRESULT->fetchRow();
-    $inherit_from_host = $serviceParam["service_inherit_contacts_from_host"];
+    $inherit_from_host = $serviceParam["service_use_only_contacts_from_host"];
 
     $serviceStack[] = array(
         "service_id" => $service_id,
