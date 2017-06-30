@@ -73622,7 +73622,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};instance;{{instance_name2}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_name}};instance;{{instance_name2}}\"\n}"
 						},
 						"description": ""
 					},
@@ -73684,7 +73684,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};broker_module;{{instance_broker_module}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_name}};broker_module;{{instance_broker_module}}\"\n}"
 						},
 						"description": ""
 					},
@@ -73746,7 +73746,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};nagios_activate;{{instance_activate}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_name}};nagios_activate;{{instance_activate}}\"\n}"
 						},
 						"description": ""
 					},
@@ -73890,7 +73890,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"addbrokermodule\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}};{{instance_broker_module2}}\"\n}"
+							"raw": "{\n  \"action\": \"addbrokermodule\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_name}};{{instance_broker_module2}}\"\n}"
 						},
 						"description": ""
 					},
