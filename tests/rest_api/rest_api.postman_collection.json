@@ -1240,6 +1240,84 @@
 					},
 					"response": []
 				},
+                                {
+                                        "name": "Get ressource id",
+                                        "event": [
+                                                {
+                                                        "listen": "test",
+                                                        "script": {
+                                                                "type": "text/javascript",
+                                                                "exec": [
+                                                                        "var jsonData = JSON.parse(responseBody);",
+                                                                        "var resourceData = jsonData.result;",
+                                                                        "",
+                                                                        "try {",
+                                                                        "    var i = 0;",
+                                                                        "    while (i < resourceData.length) {",
+                                                                        "        if (\"test_resourcecfg\" == resourceData[i].name) {",
+                                                                        "            postman.setEnvironmentVariable(\"resourcecfg_id\",resourceData[i].id);",
+                                                                        "            break;",
+                                                                        "        }",
+                                                                        "        i++;",
+                                                                        "    }",
+                                                                        "    if (i == resourceData.length)",
+                                                                        "        tests[\"the resourcecfg was found\"] = false;",
+                                                                        "} catch (e) {}",
+                                                                        "",
+                                                                        "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                                                                ]
+                                                        }
+                                                }
+                                        ],
+                                        "request": {
+                                                "url": {
+                                                        "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                                                        "protocol": "http",
+                                                        "host": [
+                                                                "{{url}}"
+                                                        ],
+                                                        "path": [
+                                                                "centreon",
+                                                                "api",
+                                                                "index.php"
+                                                        ],
+                                                        "query": [
+                                                                {
+                                                                        "description": "",
+                                                                        "equals": true,
+                                                                        "key": "action",
+                                                                        "value": "action"
+                                                                },
+                                                                {
+                                                                        "description": "",
+                                                                        "equals": true,
+                                                                        "key": "object",
+                                                                        "value": "centreon_clapi"
+                                                                }
+                                                        ],
+                                                        "variable": []
+                                                },
+                                                "method": "POST",
+                                                "header": [
+                                                        {
+                                                                "description": "",
+                                                                "key": "Content-Type",
+                                                                "value": "application/json"
+                                                        },
+                                                        {
+                                                                "description": "",
+                                                                "key": "centreon-auth-token",
+                                                                "value": "{{token}}"
+                                                        }
+                                                ],
+                                                "body": {
+                                                        "mode": "raw",
+                                                        "raw": "{\n  \"action\": \"show\",\n  \"object\": \"resourcecfg\"\n}"
+                                                },
+                                                "description": ""
+                                        },
+                                        "response": []
+                                },
 				{
 					"name": "Setparam name",
 					"event": [
@@ -1296,7 +1374,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"$test_resourcecfg$;name;{{rcfg_name}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};name;{{rcfg_name}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1354,7 +1432,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"${{rcfg_name}}$;value;{{rcfg_value}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};value;{{rcfg_value}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1412,7 +1490,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"${{rcfg_name}}$;activate;{{rcfg_activate}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};activate;{{rcfg_activate}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1470,7 +1548,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"${{rcfg_name}}$;comment;{{rcfg_comment}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};comment;{{rcfg_comment}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1528,7 +1606,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"${{rcfg_name}}$;instance;{{rcfg_instance}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};instance;{{rcfg_instance}}\"\n}"
 						},
 						"description": ""
 					},
