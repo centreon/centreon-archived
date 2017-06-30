@@ -1374,7 +1374,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};$test_resourcecfg$;name;{{rcfg_name}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};name;{{rcfg_name}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1432,7 +1432,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};${{rcfg_name}}$;value;{{rcfg_value}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};value;{{rcfg_value}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1490,7 +1490,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};${{rcfg_name}}$;activate;{{rcfg_activate}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};activate;{{rcfg_activate}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1548,7 +1548,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};${{rcfg_name}}$;comment;{{rcfg_comment}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};comment;{{rcfg_comment}}\"\n}"
 						},
 						"description": ""
 					},
@@ -1606,7 +1606,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};${{rcfg_name}}$;instance;{{rcfg_instance}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}};instance;{{rcfg_instance}}\"\n}"
 						},
 						"description": ""
 					},
