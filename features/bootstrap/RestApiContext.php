@@ -51,6 +51,7 @@ class RestApiContext extends CentreonContext
         $this->logfile = tempnam('/tmp', 'rest_api_log');
         exec(
             'newman run' .
+            ' --no-color --disable-unicode --reporter-cli-no-assertions' .
             ' --environment ' . $this->envfile .
             ' tests/rest_api/rest_api.postman_collection.json' .
             ' > ' . $this->logfile,
