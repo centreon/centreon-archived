@@ -790,7 +790,6 @@ function insertServiceInDB($ret = array(), $macro_on_demand = null)
     updateServiceNotifOptionTimeperiod($service_id, $ret);
     updateServiceNotifOptionFirstNotificationDelay($service_id, $ret);
     updateServiceHost($service_id, $ret);
-    updateServiceHostContactsInheritance($service_id, $ret);
     updateServiceServiceGroup($service_id, $ret);
     insertServiceExtInfos($service_id, $ret);
     updateServiceTrap($service_id, $ret);
@@ -826,7 +825,7 @@ function insertService($ret = array(), $macro_on_demand = null)
         "service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
         "service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
         "service_notification_options, service_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, " .
-        "service_inherit_contacts_from_host, service_use_only_contacts_from_host, service_stalking_options, " .
+        "service_use_only_contacts_from_host, service_stalking_options, " .
         "service_first_notification_delay, service_recovery_notification_delay," .
         "service_comment, geo_coords, command_command_id_arg, command_command_id_arg2, " .
         "service_register, service_activate, service_acknowledgement_timeout) " .
@@ -858,7 +857,6 @@ function insertService($ret = array(), $macro_on_demand = null)
     isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
     $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
     $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
-    isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "'NULL', ";
     isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ? $rq .= "'".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', " : $rq .= "'NULL', ";
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != null ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
@@ -1048,8 +1046,6 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
     $rq .= "service_recovery_notification_delay = ";
     isset($ret['service_recovery_notification_delay']) && $ret['service_recovery_notification_delay'] != null ? $rq .= $ret['service_recovery_notification_delay'] . ', ' : $rq .= 'NULL, ';
-    $rq .= "service_inherit_contacts_from_host = ";
-    isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "NULL, ";
     $rq .= "service_use_only_contacts_from_host = ";
     isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ? $rq .= "'".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', " : $rq .= "NULL, ";
   
@@ -1219,9 +1215,6 @@ function updateService_MC($service_id = null, $params = array())
     }
     if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"]) && in_array($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"], array('0', '1'))) {
         $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
-    }
-    if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
-        $rq .= "service_inherit_contacts_from_host = '".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', ";
     }
     if (isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"])) {
         $rq .= "service_use_only_contacts_from_host = '".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', ";
@@ -1743,27 +1736,6 @@ function updateServiceTrap_MC($service_id = null)
             $DBRESULT = $pearDB->query($rq);
         }
     }
-}
-
-function updateServiceHostContactsInheritance($service_id = null, $ret = array())
-{
-    global $form, $pearDB;
-
-    if (!$service_id) {
-        return;
-    }
-
-    if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
-        $ret = $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"];
-    } else {
-        $ret = $form->getSubmitValue("service_inherit_contacts_from_host");
-    }
-
-    $rq = "UPDATE service SET " ;
-    $rq .= "service_inherit_contacts_from_host = ";
-    isset($ret) && $ret != null ? $rq .= "'".$ret['service_inherit_contacts_from_host']["service_inherit_contacts_from_host"]."' " : $rq .= "NULL ";
-    $rq .= "WHERE service_id = '".$service_id."'";
-    $DBRESULT = $pearDB->query($rq);
 }
     
 function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
