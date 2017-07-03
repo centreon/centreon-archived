@@ -63,7 +63,7 @@ class ControlLoginContext extends CentreonContext
             function($context) {
                 return $context->getSession()->getPage()->has('css','input[name="useralias"]');
             },
-            'The Wrong alias did not failed to log in',
+            'Login failed (wrong alias/password)',
             10
         );
     }
