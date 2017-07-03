@@ -42,20 +42,6 @@ class ControlLoginContext extends CentreonContext
     }
 
     /**
-     * @Then I cannot access to Centreon
-     */
-    public function iCannotAccessToCentreon()
-    {
-        $this->spin(
-            function($context) {
-                return $context->getSession()->getPage()->has('css','input[name="useralias"]');
-            },        
-            'The Wrong alias did not failed to log in',
-            10
-        );
-    }
-
-    /**
      * @When I type a wrong password but a correct alias
      */
     public function iTypeAWrongPasswordButACorrectAlias()
@@ -69,15 +55,15 @@ class ControlLoginContext extends CentreonContext
     }
 
     /**
-     * @Then I am not able to access to Centreon
+     * @Then I cannot access to Centreon
      */
-    public function iAmNotAbleToAccessToCentreon()
+    public function iCannotAccessToCentreon()
     {
         $this->spin(
             function($context) {
                 return $context->getSession()->getPage()->has('css','input[name="useralias"]');
-            },        
-            'The Wrong password did not failed to log in',
+            },
+            'The Wrong alias did not failed to log in',
             10
         );
     }
