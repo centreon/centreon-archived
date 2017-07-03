@@ -72,8 +72,7 @@ $hosts = array(null => null) + $acl->getHostAclConf(
         'keys'    => array('host_id'),
         'get_row' => 'host_name',
         'order'   => array('host.host_name')
-    ),
-    true
+    )
 );
 
 $services1 = array(null => null);
@@ -82,10 +81,11 @@ if ($host_id) {
     $services = array(null => null) + $acl->getHostServiceAclConf(
         $host_id,
         'broker',
-        array('fields'  => array('service_id', 'service_description'),
-                                                                        'keys'    => array('service_id'),
-                                                                        'get_row' => 'service_description',
-        'order'   => array('service_description'))
+        array(
+            'fields'  => array('s.service_id', 'service_description'),
+            'keys'    => array('service_id'),
+            'get_row' => 'service_description',
+            'order'   => array('service_description'))
     );
     foreach ($services as $key => $value) {
         $DBRESULT = $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name
@@ -94,6 +94,7 @@ if ($host_id) {
 									 AND i.service_description = '".$pearDBO->escape($value)."'
 									 AND i.id = m.index_id
 									 ORDER BY metric_name, unit_name");
+
         while ($metricSV = $DBRESULT->fetchRow()) {
             $services1[$key] = $value;
             $metricSV["metric_name"] = str_replace("#S#", "/", $metricSV["metric_name"]);
@@ -105,9 +106,9 @@ if ($host_id) {
 }
 
 $debug = 0;
-$attrsTextI         = array("size"=>"3");
-$attrsText      = array("size"=>"30");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$attrsTextI = array("size"=>"3");
+$attrsText = array("size"=>"30");
+$attrsTextarea = array("rows"=>"5", "cols"=>"40");
 
 /*
  * Form begin

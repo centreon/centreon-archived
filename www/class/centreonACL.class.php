@@ -2069,7 +2069,7 @@ class CentreonACL
         if (is_null($options)) {
             $options = array(
                 'order' => array('LOWER(service_description)'),
-                'fields' => array('s.service_id', 's.service_description'),
+                'fields' => array('s.service_id', 'service_description'),
                 'keys' => array('service_id'),
                 'keys_separator' => '',
                 'get_row' => 'service_description'
