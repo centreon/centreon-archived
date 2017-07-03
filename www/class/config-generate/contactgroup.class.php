@@ -34,7 +34,7 @@
  */
 
 class Contactgroup extends AbstractObject {
-    private $use_cache = 1;
+    protected $use_cache = 1;
     private $done_cache = 0;
     private $cg_service_linked_cache = array();
     protected $cg_cache = array();
@@ -146,7 +146,7 @@ class Contactgroup extends AbstractObject {
             $this->cg[$cg_id]['members_cache'] = $this->stmt_contact->fetchAll(PDO::FETCH_COLUMN);
         }
         
-        $contact = Contact::getInstance();
+        $contact = Contact::getInstance($this->dependencyInjector);
         $this->cg[$cg_id]['members'] = array();
         foreach ($this->cg[$cg_id]['members_cache'] as $contact_id) {
             $member = $contact->generateFromContactId($contact_id);

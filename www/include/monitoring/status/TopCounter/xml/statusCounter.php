@@ -38,6 +38,7 @@ ini_set("display_errors", "Off");
 $debug = 0;
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 require_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
@@ -57,7 +58,7 @@ $centreonLang->bindLang();
 /*
  * Create XML Request Objects
  */
-$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, $debug, 1, 0);
+$obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, $debug, 1, 0);
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     $obj->reloadSession();
@@ -79,7 +80,7 @@ while ($d = $DBRESULT->fetchRow()) {
     $pollerList .= "'".$d["name"]."'";
 }
 
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /* *********************************************
  * Get Host stats
@@ -104,7 +105,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $host_stat[$data["state"]] = $data["count(DISTINCT name)"];
     $hostCounter += $host_stat[$data["state"]];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /* *********************************************
  * Get Service stats
@@ -140,7 +141,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $svc_stat[$data["state"]] = $data["number"];
     $serviceCounter += $svc_stat[$data["state"]];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /* ********************************************
  *  Get Real non-ok Status
@@ -178,7 +179,7 @@ $DBRESULT = $obj->DBC->query($rq3);
 while ($data = $DBRESULT->fetchRow()) {
     $svc_stat[$data["state"] + 5] = $data["number"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 unset($data);
 
 /* ********************************************
@@ -242,7 +243,7 @@ if ($pollerList != "") {
         }
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 if ($pollerListInError != '') {
     $error = "$pollerListInError not running";
 }
@@ -266,7 +267,7 @@ if ($pollerList != "") {
             $pollersWithLatency[$data['instance_id']] = $data['name'];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 }
 

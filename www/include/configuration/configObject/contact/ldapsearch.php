@@ -74,7 +74,7 @@ while ($row = $dbresult->fetchRow()) {
         $debug_path = trim($row['value']);
     }
 }
-$dbresult->free();
+$dbresult->closeCursor();
 if ($debug_path == '') {
     $debug_ldap_import = false;
 }
@@ -113,9 +113,10 @@ foreach ($ids as $arId) {
 
         $query = "SELECT ari_name, ari_value
                   FROM auth_ressource_info
-    	    	  WHERE ar_id = " . $pearDB->escape($arId);
-        $res = $pearDB->query($query);
-        while ($row = $res->fetchRow()) {
+    	    	  WHERE ar_id = ?";
+        $res = $pearDB->query($query, array($arId));
+
+        while ($row = $res->fetch()) {
             switch ($row['ari_name']) {
                 case "user_filter":
                     $ldap_search_filter = sprintf($row['ari_value'], '*');

@@ -257,8 +257,6 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (602,NU
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60901,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60901,'./include/common/javascript/centreon/doClone.js',NULL);
 
-INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60902,NULL,'./include/common/javascript/scriptaculous/jsProgressBarHandler.js',NULL);
-
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60101,'./include/common/javascript/centreon/hostResolve.js',NULL);
 
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);

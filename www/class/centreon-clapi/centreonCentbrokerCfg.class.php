@@ -739,12 +739,14 @@ class CentreonCentbrokerCfg extends CentreonObject
                         $setParamStr[$row['config_group'].'_'.$row['config_group_id']] = "";
                     }
                     $row['config_value'] = CentreonUtils::convertLineBreak($row['config_value']);
-                    $setParamStr[$row['config_group'].'_'.$row['config_group_id']] .=
-                        $this->action.$this->delim."SET".strtoupper($row['config_group']).
-                        $this->delim.$element['config_name'].
-                        $this->delim.$row['config_group_id'].
-                        $this->delim.$row['config_key'].
-                        $this->delim.$row['config_value']."\n";
+                    if ($row['config_value'] != '') {
+                        $setParamStr[$row['config_group'] . '_' . $row['config_group_id']] .=
+                            $this->action.$this->delim."SET".strtoupper($row['config_group']) .
+                            $this->delim.$element['config_name'] .
+                            $this->delim.$row['config_group_id'] .
+                            $this->delim.$row['config_key'] .
+                            $this->delim.$row['config_value'] . "\n";
+                    }
                 } elseif ($row['config_key'] == 'name') {
                     $addParamStr[$row['config_group'].'_'.$row['config_group_id']] =
                         $this->action.$this->delim."ADD".strtoupper($row['config_group']).

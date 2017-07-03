@@ -57,9 +57,9 @@ function testExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $row = $DBRESULT->fetchRow();
     
-    if ($DBRESULT->numRows() >= 1 && $row["id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $row["id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $row["id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $row["id"] != $id) {
         return false;
     } else {
         return true;
@@ -142,7 +142,7 @@ function multipleServerInDB($server = array(), $nbrDup = array())
         $rowServer["ns_activate"] = '0';
         $rowServer["is_default"] = '0';
         $rowServer["localhost"] = '0';
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         
         $rowBks = $obj->getBrokerModules($key);
 
@@ -159,7 +159,7 @@ function multipleServerInDB($server = array(), $nbrDup = array())
                 $queryGetId = 'SELECT id FROM nagios_server WHERE name = "' . $server_name . '"';
                 try {
                     $res = $pearDB->query($queryGetId);
-                    if ($res->numRows() > 0) {
+                    if ($res->rowCount() > 0) {
                         $row = $res->fetchRow();
                         $iId = $obj->insertServerInCfgNagios($key, $row['id'], $server_name);
 
@@ -248,7 +248,7 @@ function insertServer($ret = array())
     $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
     $poller = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);
@@ -382,7 +382,7 @@ function checkChangeState($poller_id, $last_restart)
                     (object_type = 'service' AND (action_type = 'd' OR object_id IN (SELECT service_service_id FROM ".$conf_centreon['db'].".ns_host_relation nhr, ".$conf_centreon['db'].".host_service_relation hsr WHERE nagios_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id)))
                     )";
     $DBRESULT = $pearDBO->query($request);
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         return 1;
     }
     return 0;

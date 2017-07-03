@@ -189,11 +189,11 @@ function initWholePage() {
  * set quick search position
  */
 function setQuickSearchPosition() {
-    if ($('QuickSearch')) {
-        if ($('header').visible()) {
-            $('QuickSearch').setStyle({ top: '86px' });
+    if (jQuery('#QuickSearch')) {
+        if (jQuery('#header').is(':visible')) {
+            jQuery('#QuickSearch').css({ top: '86px' });
         } else {
-            $('QuickSearch').setStyle({ top: '3px' });
+            jQuery('#QuickSearch').css({ top: '3px' });
         }
     }    
     jQuery(".timepicker").timepicker();
@@ -208,8 +208,8 @@ function setQuickSearchPosition() {
  * Close all DB handler
  */
 if (isset($pearDB) && is_object($pearDB)) {
-    $pearDB->disconnect();
+    $pearDB = null;
 }
 if (isset($pearDBO) && is_object($pearDBO)) {
-    $pearDBO->disconnect();
+    $pearDBO = null;
 }

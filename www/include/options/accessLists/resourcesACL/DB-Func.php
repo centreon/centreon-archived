@@ -48,9 +48,9 @@ function testExistence($name = null)
     }
     $DBRESULT = $pearDB->query("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = '".$name."'");
     $lca = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $lca["acl_res_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $lca["acl_res_id"] != $id) {
         return false;
     } else {
         return true;
@@ -132,7 +132,7 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
                 $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
 
                 if (isset($maxId["MAX(acl_res_id)"])) {
                     duplicateGroups($key, $maxId["MAX(acl_res_id)"], $pearDB);

@@ -2,14 +2,14 @@
 <script type="text/javascript">
     function toggleParams(type) {
         if (type == 'host') {
-            Effect.Fade('service_input', {duration: 0});
-            Effect.Appear('host_input', {duration: 0});
+            jQuery('#service_input').fadeOut({duration: 0});
+            jQuery('#host_input').fadeIn({duration: 0});
         } else if (type == 'service') {
-            Effect.Fade('host_input', {duration: 0});
-            Effect.Appear('service_input', {duration: 0});
+            jQuery('#host_input').fadeOut({duration: 0});
+            jQuery('#service_input').fadeIn({duration: 0});
         }
     }
-    Event.observe(window, "load", function () {
+    jQuery(document).ready(function () {
         toggleParams('{/literal}{$focus}{literal}');
     });
 

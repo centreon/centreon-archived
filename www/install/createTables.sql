@@ -475,6 +475,7 @@ CREATE TABLE `cfg_centreonbroker_info` (
 CREATE TABLE `cfg_nagios` (
   `nagios_id` int(11) NOT NULL AUTO_INCREMENT,
   `nagios_name` varchar(255) DEFAULT NULL,
+  `use_timezone` int(11) unsigned DEFAULT NULL,
   `log_file` varchar(255) DEFAULT NULL,
   `cfg_dir` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
@@ -516,7 +517,6 @@ CREATE TABLE `cfg_nagios` (
   `log_service_retries` enum('0','1','2') DEFAULT NULL,
   `log_host_retries` enum('0','1','2') DEFAULT NULL,
   `log_event_handlers` enum('0','1','2') DEFAULT NULL,
-  `log_initial_states` enum('0','1','2') DEFAULT NULL,
   `log_external_commands` enum('0','1','2') DEFAULT NULL,
   `log_passive_checks` enum('0','1','2') DEFAULT NULL,
   `global_host_event_handler` int(11) DEFAULT NULL,
@@ -620,7 +620,8 @@ CREATE TABLE `cfg_nagios` (
   CONSTRAINT `cfg_nagios_ibfk_23` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_24` FOREIGN KEY (`host_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_25` FOREIGN KEY (`service_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_26` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE
+  CONSTRAINT `cfg_nagios_ibfk_26` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cfg_nagios_ibfk_27` FOREIGN KEY (`use_timezone`) REFERENCES `timezone` (`timezone_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1317,7 +1318,6 @@ CREATE TABLE `extended_host_information` (
   `ehi_action_url` TEXT DEFAULT NULL,
   `ehi_icon_image` int(11) DEFAULT NULL,
   `ehi_icon_image_alt` varchar(200) DEFAULT NULL,
-  `ehi_vrml_image` int(11) DEFAULT NULL,
   `ehi_statusmap_image` int(11) DEFAULT NULL,
   `ehi_2d_coords` varchar(200) DEFAULT NULL,
   `ehi_3d_coords` varchar(200) DEFAULT NULL,
@@ -1325,11 +1325,9 @@ CREATE TABLE `extended_host_information` (
   UNIQUE KEY `host_host_id` (`host_host_id`),
   KEY `host_index` (`host_host_id`),
   KEY `extended_host_information_ibfk_2` (`ehi_icon_image`),
-  KEY `extended_host_information_ibfk_3` (`ehi_vrml_image`),
   KEY `extended_host_information_ibfk_4` (`ehi_statusmap_image`),
   CONSTRAINT `extended_host_information_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `extended_host_information_ibfk_2` FOREIGN KEY (`ehi_icon_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL,
-  CONSTRAINT `extended_host_information_ibfk_3` FOREIGN KEY (`ehi_vrml_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL,
   CONSTRAINT `extended_host_information_ibfk_4` FOREIGN KEY (`ehi_statusmap_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1829,7 +1827,6 @@ CREATE TABLE `service` (
   `service_notifications_enabled` enum('0','1','2') DEFAULT '2',
   `contact_additive_inheritance` boolean DEFAULT 0,
   `cg_additive_inheritance` boolean DEFAULT 0,
-  `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1',
   `service_use_only_contacts_from_host` enum('0','1') DEFAULT '0',
   `service_first_notification_delay` int(11) DEFAULT NULL,
   `service_acknowledgement_timeout` int(11) DEFAULT NULL,

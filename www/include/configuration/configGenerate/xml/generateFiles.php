@@ -37,6 +37,8 @@ ini_set("display_errors", "Off");
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
+require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
+
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
@@ -46,7 +48,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 
-$pearDB = new CentreonDB();
+$pearDB = $dependencyInjector["configuration_db"];
 
 /* Check Session */
 CentreonSession::start(1);
@@ -77,7 +79,7 @@ if (isset($centreon->user->name)) {
     $username = $centreon->user->name;
 }
 $xml = new CentreonXML();
-$config_generate = new Generate();
+$config_generate = new Generate($dependencyInjector);
 
 $pollers = explode(',', $_POST['poller']);
 $debug = ($_POST['debug'] == "true") ? 1 : 0;
@@ -97,7 +99,6 @@ $xml->startElement("response");
 try {
     $tabs = array();
     if ($generate) {
-        $pearDBO = new CentreonDB('centstorage');
         $tabs = $centreon->user->access->getPollerAclConf(array(
             'fields' => array('id', 'name', 'localhost', 'monitoring_engine'),
             'order' => array('name'),
@@ -201,7 +202,7 @@ function printDebug($xml, $tabs)
                                         WHERE `localhost` = '1' 
                                         ORDER BY ns_activate DESC LIMIT 1");
     $nagios_bin = $DBRESULT_Servers->fetchRow();
-    $DBRESULT_Servers->free();
+    $DBRESULT_Servers->closeCursor();
     $msg_debug = array();
 
     $tab_server = array();
@@ -290,7 +291,7 @@ function printDebug($xml, $tabs)
                 "' style='display: none'>[ + ]</label><label id='togglerm_" . $pollerId . "'>[ - ]</label>";
             $returnCode = 1;
         }
-        $str .= "<a href='#' onClick=\"toggleDebug('" . $pollerId . "'); return false;\"/>";
+        $str .= "<a href='#' onClick=\"toggleDebug('" . $pollerId . "'); return false;\">";
         $str .= $toggler . "</a> ";
         $str .= "<b><font color='$pollerNameColor'>" . $tab_server[$pollerId]['name'] . "</font></b><br/>";
         $str .= "<div style='display: $show;' id='debug_" . $pollerId . "'>" . htmlentities($message) . "</div><br/>";

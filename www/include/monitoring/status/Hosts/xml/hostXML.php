@@ -34,6 +34,7 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonCriticality.class.php";
@@ -45,7 +46,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
  * Create XML Request Objects
  */
 CentreonSession::start(1);
-$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+$obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
@@ -248,7 +249,7 @@ $critRes = $obj->DBC->query("SELECT value, host_id
                                      AND service_id IS NULL");
 $criticalityUsed = 0;
 $critCache = array();
-if ($critRes->numRows()) {
+if ($critRes->rowCount()) {
     $criticalityUsed = 1;
     while ($critRow = $critRes->fetchRow()) {
         $critCache[$critRow['host_id']] = $critRow['value'];
@@ -401,7 +402,7 @@ while ($data = $DBRESULT->fetchRow()) {
 
     $obj->XML->endElement();
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 if (!$ct) {
     $obj->XML->writeElement("infos", "none");

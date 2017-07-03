@@ -62,7 +62,7 @@ if (!$oreon->user->admin && $scString != "''") {
     $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service_categories $SearchTool $aclCond");
 
     $tmp = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     $rows = $tmp["COUNT(*)"];
 
     include("./include/common/checkPagination.php");

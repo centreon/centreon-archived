@@ -58,7 +58,7 @@ class CentreonUserLog
         while ($res = $DBRESULT->fetchRow()) {
             $this->ldapInfos[$res["key"]] = $res["value"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /*
          * Init log Directory

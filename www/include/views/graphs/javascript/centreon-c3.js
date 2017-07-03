@@ -50,36 +50,42 @@
     var d3 = $$.d3;
     
     if ($$.config.zoom_select.enabled) {
+      var brushing = false;
+
       /* Initialize brush */
       $$.zoom_select_brush = d3.svg.brush()
         .x($$.x)
+        .on('brushstart', function () {
+          brushing = true;
+        })
         .on('brushend', function () {
           if (typeof $$.config.zoom_select.onzoom === 'function') {
             if (!$$.zoom_select_brush.empty()) {
               $$.config.zoom_select.onzoom($$.zoom_select_brush.extent());
               $$.zoom_select_brush.clear();
-              d3.selectAll('.' + $$.CLASS.brush)
+                $$.svg.selectAll('.' + $$.CLASS.brush)
                 .call($$.zoom_select_brush);
-              
             }
           }
+          brushing = false;
         });
-      
+
       /* Attach brush to main chart */
-      $$.svg.append('g')
+      $$.svg.selectAll('.c3-chart').append('g')
         .attr('class', $$.CLASS.brush)
         .style('display', 'none')
         .call($$.zoom_select_brush)
         .selectAll('rect')
-        .attr('y', -6)
         .attr('height', $$.height);
-      
+
       /* Attach events for on click activate brush */
-      $$.svg.select('g').on('mousedown', function () {
-        $$.svg.selectAll('.' + $$.CLASS.brush).style('display', 'block');
+      $$.svg.selectAll('.c3-chart').on('mousedown', function () {
+        $$.svg.select('.' + $$.CLASS.brush).style('display', 'block');
       });
-      $$.svg.select('g').on('mouseup', function () {
-        $$.svg.selectAll('.' + $$.CLASS.brush).style('display', 'none');
+      $$.svg.selectAll('.c3-chart').on('mouseup', function () {
+        if (brushing) {
+            $$.svg.select('.' + $$.CLASS.brush).style('display', 'none');
+        }
       });
     }
   };

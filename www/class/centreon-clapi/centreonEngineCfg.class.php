@@ -91,7 +91,6 @@ class CentreonEngineCfg extends CentreonObject
             'log_service_retries'                     => '1',
             'log_host_retries'                        => '1',
             'log_event_handlers'                      => '1',
-            'log_initial_states'                      => '1',
             'log_external_commands'                   => '1',
             'log_passive_checks'                      => '2',
             'sleep_time'                              => '0.2',
@@ -374,14 +373,14 @@ class CentreonEngineCfg extends CentreonObject
     {
         $brokerModuleArray = explode("|", $brokerModule);
         foreach ($brokerModuleArray as $bkModule) {
-            $$res = $this->db->query(
-                'SELECT COUNT(*) as nbBroker FROM cfg_nagios_broker_module '
-                . 'WHERE cfg_nagios_id = ? AND broker_module = ?',
+            $res = $this->db->query(
+                'SELECT COUNT(*) as nbBroker FROM cfg_nagios_broker_module ' .
+                'WHERE cfg_nagios_id = ? AND broker_module = ?',
                 array($objectId, $bkModule)
             );
             $row = $res->fetch();
             if ($row['nbBroker'] > 0) {
-                throw new CentreonClapiException(self::OBJECTALREADYEXISTS.":".$bkModule);
+                throw new CentreonClapiException(self::OBJECTALREADYEXISTS . ":" . $bkModule);
             } else {
                 $this->db->query(
                     "INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES (?, ?)",

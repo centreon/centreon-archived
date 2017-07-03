@@ -35,6 +35,7 @@
 
 namespace CentreonClapi;
 
+
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
@@ -48,6 +49,7 @@ class CentreonConfigPoller
 {
     private $_DB;
     private $_DBC;
+    private $dependencyInjector;
     private $resultTest;
     private $optGen;
     private $nagiosCFGPath;
@@ -63,10 +65,11 @@ class CentreonConfigPoller
      * @param CentreonDB $DBC
      * @return void
      */
-    public function __construct($DB, $centreon_path, $DBC)
+    public function __construct($centreon_path, \Pimple\Container $dependencyInjector)
     {
-        $this->_DB = $DB;
-        $this->_DBC = $DBC;
+        $this->dependencyInjector = $dependencyInjector;
+        $this->_DB = $this->dependencyInjector["configuration_db"];
+        $this->_DBC = $this->dependencyInjector["realtime_db"];
         $this->resultTest = 0;
         $this->nagiosCFGPath = "$centreon_path/filesGeneration/engine/";
         $this->centreon_path = $centreon_path;
@@ -83,7 +86,7 @@ class CentreonConfigPoller
         while ($row = $DBRESULT->fetchRow()) {
             $this->optGen[$row["key"]] = $row["value"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     /**
@@ -100,7 +103,7 @@ class CentreonConfigPoller
         }
 
         $DBRESULT = $this->_DB->query($sQuery);
-        if ($DBRESULT->numRows() != 0) {
+        if ($DBRESULT->rowCount() != 0) {
             return;
         } else {
             print "ERROR: Unknown poller...\n";
@@ -171,7 +174,7 @@ class CentreonConfigPoller
         while ($data = $DBRESULT->fetchRow()) {
             print $data["id"] . ";" . $data["name"] . "\n";
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return 0;
     }
 
@@ -217,7 +220,7 @@ class CentreonConfigPoller
             "SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
         );
         $serveurs = $DBRESULT->fetchrow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         (isset($serveurs["init_script"]))
             ? $nagios_init_script = $serveurs["init_script"]
             : $nagios_init_script = "centengine";
@@ -227,7 +230,7 @@ class CentreonConfigPoller
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
         $host = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         $msg_restart = "";
         if (isset($host['localhost']) && $host['localhost'] == 1) {
@@ -308,7 +311,7 @@ class CentreonConfigPoller
             "SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
         );
         $serveurs = $DBRESULT->fetchrow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         (isset($serveurs["init_script"]))
             ? $nagios_init_script = $serveurs["init_script"]
             : $nagios_init_script = "centengine";
@@ -318,7 +321,7 @@ class CentreonConfigPoller
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
         $host = $DBRESULT->fetchRow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         $msg_restart = "";
         if (isset($host['localhost']) && $host['localhost'] == 1) {
@@ -363,7 +366,7 @@ class CentreonConfigPoller
             "SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY `ns_activate` DESC LIMIT 1"
         );
         $nagios_bin = $DBRESULT_Servers->fetchRow();
-        $DBRESULT_Servers->free();
+        $DBRESULT_Servers->closeCursor();
 
         /*
          * Launch test command
@@ -441,7 +444,8 @@ class CentreonConfigPoller
      */
     public function pollerGenerate($variables, $login, $password)
     {
-        $config_generate = new \Generate();
+
+        $config_generate = new \Generate($this->dependencyInjector);
 
         $this->testPollerId($variables);
 
@@ -531,14 +535,14 @@ class CentreonConfigPoller
             . $this->_DB->escape($poller_id) . "' LIMIT 1"
         );
         $Nagioscfg = $DBRESULT_Servers->fetchRow();
-        $DBRESULT_Servers->free();
+        $DBRESULT_Servers->closeCursor();
 
         $DBRESULT_Servers = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '"
             . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
         $host = $DBRESULT_Servers->fetchRow();
-        $DBRESULT_Servers->free();
+        $DBRESULT_Servers->closeCursor();
         if (isset($host['localhost']) && $host['localhost'] == 1) {
             $msg_copy = "";
             foreach (glob($this->nagiosCFGPath . '/' . $poller_id . "/*.cfg") as $filename) {
@@ -713,7 +717,7 @@ class CentreonConfigPoller
 
         $sQuery = "SELECT id FROM nagios_server WHERE `name` = '" . $this->_DB->escape($poller) . "'";
         $DBRESULT = $this->_DB->query($sQuery);
-        if ($DBRESULT->numRows() > 0) {
+        if ($DBRESULT->rowCount() > 0) {
             $row = $DBRESULT->fetchRow();
             return $row['id'];
         } else {
@@ -725,10 +729,10 @@ class CentreonConfigPoller
     {
         $pollerState = array();
 
-        $this->_DBC = new \CentreonDB('centstorage');
+        //   $this->_DBC = new \CentreonDB('centstorage');
 
-        $DBRESULT = $this->_DBC->query("SELECT instance_id, running, name FROM instances");
-        while ($row = $DBRESULT->fetchRow()) {
+        $dbResult = $this->_DBC->query("SELECT instance_id, running, name FROM instances");
+        while ($row = $dbResult->fetchRow()) {
             $pollerState[$row['instance_id']] = $row['running'];
         }
         return $pollerState;

@@ -51,10 +51,10 @@ function testExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $dep = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
         return true;
@@ -111,12 +111,12 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
                     while ($ms = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query("INSERT INTO dependency_metaserviceParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
                     }
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$key."'");
                     while ($ms = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query("INSERT INTO dependency_metaserviceChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
                     }
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                 }
             }
         }

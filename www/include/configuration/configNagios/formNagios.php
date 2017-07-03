@@ -54,7 +54,7 @@ if (($o == "c" || $o == "w") && $nagios_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
     # Set base value
     $nagios = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
@@ -98,7 +98,7 @@ $checkCmds = array(null => null);
 while ($checkCmd = $DBRESULT->fetchRow()) {
     $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Get all nagios servers
@@ -123,7 +123,7 @@ while ($lineBk = $DBRESULT->fetchRow()) {
     $aBk[$nBk] = $lineBk;
     $nBk++;
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 unset($lineBk);
 
 $attrsText        = array("size"=>"30");
@@ -155,6 +155,15 @@ $nagTab[] = HTML_QuickForm::createElement('radio', 'nagios_activate', null, _("D
 $form->addGroup($nagTab, 'nagios_activate', _("Status"), '&nbsp;');
 
 $form->addElement('select', 'nagios_server_id', _("Linked poller"), $nagios_server);
+
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?' .
+        'object=centreon_configuration_timezone&action=list',
+    'multiple' => false,
+    'linkedObject' => 'centreonGMT'
+);
+$form->addElement('select2', 'use_timezone', _("Timezone / Location"), array(), $attrTimezones);
 
 /* *************
  * Part 1
@@ -348,10 +357,6 @@ $nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _
 $nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _("No"), '0');
 $nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _("Default"), '2');
 $form->addGroup($nagTab, 'log_event_handlers', _("Event Handler Logging Option"), '&nbsp;');
-
-$nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_initial_states', null, _("Yes"), '1');
-$form->addGroup($nagTab, 'log_initial_states', _("Initial State Logging Option"), '&nbsp;');
 
 $nagTab = array();
 $nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("Yes"), '1');

@@ -35,6 +35,7 @@
 
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
@@ -47,7 +48,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
  * Create XML Request Objects
  */
 CentreonSession::start(1);
-$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+$obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
 
@@ -144,7 +145,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tabH[$ndo["host_name"]] = $ndo["id"];
     $tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 
 /** **************************************
@@ -193,7 +194,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tabService[$ndo["host_name"]]["tab_svc"][$ndo["description"]] = $ndo["svcs"];
     $tabHost[$ndo["host_name"]] = $ndo["service_id"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Begin XML Generation

@@ -58,7 +58,7 @@ $nagios = array();
 if (($o == "c" || $o == "w") && $server_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 /*
@@ -80,7 +80,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
 while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "50");

@@ -48,7 +48,12 @@ function goPopup() {
     tmpStr = tmpStr.replace(reg, ";;;");
     cmd_line = document.getElementById('command_line').value;
 
-    Modalbox.show('./include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line + '&textArea=' + tmpStr, {title: 'Argument description', width:800});
+    var popin = jQuery('<div id="config-popin">');
+    popin.centreonPopin({
+        url: './include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line + '&textArea=' + tmpStr,
+        open: true,
+        ajaxDataType: 'html'
+    });
 }
 
 function setDescriptions() {
@@ -66,11 +71,11 @@ function setDescriptions() {
     listArea.rows=i;
     listArea.value = tmpStr2;
     listDiv.style.visibility = "visible";
-    Modalbox.hide();
+    jQuery('#config-popin').centreonPopin('close');
 }
 
 function closeBox() {
-    Modalbox.hide();
+    jQuery('#config-popin').centreonPopin('close');
 }
 
 function clearArgs() {
@@ -83,7 +88,12 @@ function manageMacros() {
     var commandId = document.Form.command_id.value;
     var tmpStr = "";
 
-    Modalbox.show('./include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine + '&cmdId=' + commandId + '&textArea=' + tmpStr, {title: 'Macro description', width:800});
+    var popin = jQuery('<div id="config-popin">');
+    popin.centreonPopin({
+        url: './include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine + '&cmdId=' + commandId + '&textArea=' + tmpStr,
+        open: true,
+        ajaxDataType: 'html'
+    });
 }
 
 function setMacrosDescriptions() {
@@ -107,7 +117,7 @@ function setMacrosDescriptions() {
         
     listArea.value = tmpStr2;
     listDiv.style.visibility = "visible";
-    Modalbox.hide();
+    jQuery('#config-popin').centreonPopin('close');
 }
 
 function checkType(value) {

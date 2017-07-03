@@ -37,6 +37,7 @@
  * Require configuration.
  */
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
@@ -58,7 +59,7 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
  * Create XML Request Objects
  */
 CentreonSession::start();
-$obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
+$obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
 /*
  * Get session
@@ -327,7 +328,7 @@ $critRes = $obj->DBC->query(
 );
 $criticalityUsed = 0;
 $critCache = array();
-if ($critRes->numRows()) {
+if ($critRes->rowCount()) {
     $criticalityUsed = 1;
     while ($critRow = $critRes->fetchRow()) {
         $critCache[$critRow['service_id']] = $critRow['value'];
@@ -678,7 +679,7 @@ if (!$sqlError) {
         );
         $obj->XML->endElement();
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 unset($data);

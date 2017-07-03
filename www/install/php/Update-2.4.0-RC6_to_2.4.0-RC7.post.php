@@ -91,7 +91,7 @@ if (isset($pearDB)) {
      * Checks if enable_perfdata_sync exists
      */
     $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'enable_perfdata_sync'");
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('enable_perfdata_sync', '1')");
     }
     unset($res);
@@ -100,7 +100,7 @@ if (isset($pearDB)) {
      * Checks if enable_logs_sync exists
      */
     $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'enable_logs_sync'");
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('enable_logs_sync', '1')");
     }
     unset($res);

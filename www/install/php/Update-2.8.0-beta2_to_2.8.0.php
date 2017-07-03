@@ -47,7 +47,7 @@ if (isset($pearDB)) {
         . 'WHERE host_register = "2" '
         . 'AND host_name = "_Module_Meta" ';
     $res = $pearDB->query($queryHost);
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $hostId = $row['host_id'];
     } else {
@@ -55,7 +55,7 @@ if (isset($pearDB)) {
             . 'VALUES ("_Module_Meta", "2") ';
         $pearDB->query($query);
         $res = $pearDB->query($queryHost);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             $hostId = $row['host_id'];
         }

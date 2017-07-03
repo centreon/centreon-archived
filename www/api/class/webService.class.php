@@ -38,32 +38,27 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 class CentreonWebService
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB|null
      */
     protected $pearDB = null;
-    
+
     /**
-     *
      * @var array
      */
-    protected $arguments= array();
-    
+    protected $arguments = array();
+
     /**
-     *
-     * @var string
+     * @var null
      */
     protected $token = null;
-    
+
     /**
-     *
-     * @var type
+     * @var
      */
     protected static $webServicePaths;
 
     /**
-     * Constructor
-     * @global type $pearDB
+     * CentreonWebService constructor.
      */
     public function __construct()
     {
@@ -75,7 +70,7 @@ class CentreonWebService
         $this->loadArguments();
         $this->loadToken();
     }
-    
+
     /**
      * Load arguments compared http method
      */
@@ -96,11 +91,11 @@ class CentreonWebService
             case 'DELETE':
                 break;
             default:
-                static::sendJson("Bad request", 400);
+                static::sendResult("Bad request", 400);
                 break;
         }
     }
-    
+
     /**
      * Parse the body for get arguments
      * The body must be JSON format
@@ -111,11 +106,11 @@ class CentreonWebService
         try {
             $httpParams = json_decode(file_get_contents('php://input'), true);
         } catch (Exception $e) {
-            static::sendJson("Bad parameters", 400);
+            static::sendResult("Bad parameters", 400);
         }
         return $httpParams;
     }
-    
+
     /**
      * Load the token for class if exists
      */
@@ -151,21 +146,21 @@ class CentreonWebService
                 }
             }
         }
-        
+
         if (count($webServiceClass) === 0) {
-            static::sendJson("Method not found", 404);
+            static::sendResult("Method not found", 404);
         }
 
         return $webServiceClass;
     }
-    
+
     /**
      * Send json return
      *
      * @param mixed $data The values
      * @param integer $code The HTTP code
      */
-    public static function sendJson($data, $code = 200)
+    public static function sendResult($data, $code = 200, $format = 'json')
     {
         switch ($code) {
             case 500:
@@ -199,11 +194,21 @@ class CentreonWebService
                 header("HTTP/1.1 409 Conflict");
                 break;
         }
-        header('Content-type: application/json');
-        print json_encode($data);
+
+        switch ($format) {
+            case 'html':
+                header('Content-type: text/html');
+                print $data;
+                break;
+            case 'json':
+                header('Content-type: application/json');
+                print json_encode($data);
+                break;
+        }
+
         exit();
     }
-    
+
     /**
      * Update the ttl for a token if the authentication is by token
      */
@@ -211,12 +216,13 @@ class CentreonWebService
     {
         global $pearDB;
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-            $query = "UPDATE ws_token SET generate_date = NOW() WHERE token = '" .
-                $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
+            $query = 'UPDATE ws_token SET generate_date = NOW() WHERE token = :token';
             try {
-                $pearDB->query($query);
+                $stmt = $pearDB->prepare($query);
+                $stmt->bindParam(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], PDO::PARAM_STR);
+                $stmt->execute();
             } catch (Exception $e) {
-                static::sendJson("Internal error", 500);
+                static::sendResult("Internal error", 500);
             }
         }
     }
@@ -226,47 +232,62 @@ class CentreonWebService
      * @global string _CENTREON_PATH_
      * @global type $pearDB3
      */
-    public static function router()
+    public static function router(\Pimple\Container $dependencyInjector)
     {
         global $pearDB;
-        
+
         /* Test if route is defined */
         if (false === isset($_GET['object']) || false === isset($_GET['action'])) {
-            static::sendJson("Bad parameters", 400);
+            static::sendResult("Bad parameters", 400);
         }
-        
+
+        $resultFormat = 'json';
+        if (isset($_GET['resultFormat'])) {
+            $resultFormat = $_GET['resultFormat'];
+        }
+
         $methodPrefix = strtolower($_SERVER['REQUEST_METHOD']);
         $object = $_GET['object'];
         $action = $methodPrefix . ucfirst($_GET['action']);
-        
+
         /* Generate path for WebService */
         self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/api/class/*.class.php');
-        $res = $pearDB->query("SELECT name FROM modules_informations");
+        $res = $pearDB->query('SELECT name FROM modules_informations');
         while ($row = $res->fetch()) {
-            self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
+            self::$webServicePaths = array_merge(
+                self::$webServicePaths,
+                glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php')
+            );
         }
-        self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php'));
-        
+        self::$webServicePaths = array_merge(
+            self::$webServicePaths,
+            glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php')
+        );
+
         $webService = self::webservicePath($object);
-        
+
         /* Initialize the webservice */
         require_once($webService['path']);
 
         $wsObj = new $webService['class']();
-        
-        if (false === method_exists($wsObj, $action)) {
-            static::sendJson("Method not found", 404);
+
+        if (method_exists($wsObj, 'finalConstruct')) {
+            $wsObj->finalConstruct($dependencyInjector);
         }
-        
+
+        if (false === method_exists($wsObj, $action)) {
+            static::sendResult("Method not found", 404);
+        }
+
         /* Execute the action */
         try {
             static::updateTokenTtl();
             $data = $wsObj->$action();
-            $wsObj::sendJson($data);
+            $wsObj::sendResult($data, 200, $resultFormat);
         } catch (RestException $e) {
-            $wsObj::sendJson($e->getMessage(), $e->getCode());
+            $wsObj::sendResult($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
-            $wsObj::sendJson($e->getMessage(), 500);
+            $wsObj::sendResult($e->getMessage(), 500);
         }
     }
 }

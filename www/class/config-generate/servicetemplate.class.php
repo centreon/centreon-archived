@@ -80,9 +80,9 @@ class ServiceTemplate extends AbstractService {
         contact_additive_inheritance,
         cg_additive_inheritance,
         service_first_notification_delay as first_notification_delay,
+        service_recovery_notification_delay as recovery_notification_delay,
         service_stalking_options as stalking_options,
         service_register as register,
-        service_inherit_contacts_from_host,
         service_use_only_contacts_from_host,
         esi_notes as notes,
         esi_notes_url as notes_url,
@@ -112,6 +112,7 @@ class ServiceTemplate extends AbstractService {
         'notification_interval',
         'notification_options',
         'first_notification_delay',
+        'recovery_notification_delay',
         'stalking_options',
         'register',
         'notes',
@@ -122,26 +123,35 @@ class ServiceTemplate extends AbstractService {
         'acknowledgement_timeout'
     );
     
-    private function getServiceGroups($service_id) {        
-        $host = Host::getInstance();
-        $servicegroup = Servicegroup::getInstance();
-        $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForStpl($service_id);        
+    private function getServiceGroups($service_id)
+    {
+        $host = Host::getInstance($this->dependencyInjector);
+        $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
+        $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForStpl($service_id);
         foreach ($this->service_cache[$service_id]['sg'] as &$sg) {
             if ($host->isHostTemplate($this->current_host_id, $sg['host_host_id'])) {
-                $servicegroup->addServiceInSg($sg['servicegroup_sg_id'], $this->current_service_id, $this->current_service_description, $this->current_host_id, $this->current_host_name);
+                $servicegroup->addServiceInSg(
+                    $sg['servicegroup_sg_id'],
+                    $this->current_service_id,
+                    $this->current_service_description,
+                    $this->current_host_id,
+                    $this->current_host_name
+                );
                 break;
             }
         }
     }
     
-    private function getServiceFromId($service_id) {
+    private function getServiceFromId($service_id)
+    {
         if (is_null($this->stmt_service)) {
-            $this->stmt_service = $this->backend_instance->db->prepare("SELECT 
-                    $this->attributes_select
-                FROM service
-                    LEFT JOIN extended_service_information ON extended_service_information.service_service_id = service.service_id 
-                WHERE service_id = :service_id AND service_activate = '1'
-            ");
+            $this->stmt_service = $this->backend_instance->db->prepare(
+                "SELECT " . $this->attributes_select . " " .
+                "FROM service " .
+                "LEFT JOIN extended_service_information " .
+                "ON extended_service_information.service_service_id = service.service_id " .
+                "WHERE service_id = :service_id AND service_activate = '1' "
+            );
         }
         $this->stmt_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_service->execute();
@@ -149,20 +159,24 @@ class ServiceTemplate extends AbstractService {
         $this->service_cache[$service_id] = array_pop($results);
     }
     
-    private function getSeverity($service_id) {
+    private function getSeverity($service_id)
+    {
         if (isset($this->service_cache[$service_id]['severity_id'])) {
             return 0;
         }
         
-        $this->service_cache[$service_id]['severity_id'] = Severity::getInstance()->getServiceSeverityByServiceId($service_id);
-        $severity = Severity::getInstance()->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
+        $this->service_cache[$service_id]['severity_id'] =
+            Severity::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
+        $severity = Severity::getInstance($this->dependencyInjector)
+            ->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
         if (!is_null($severity)) {
             $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
         }
     }
     
-    public function generateFromServiceId($service_id) {
+    public function generateFromServiceId($service_id)
+    {
         if (is_null($service_id)) {
             return null;
         }
@@ -204,11 +218,13 @@ class ServiceTemplate extends AbstractService {
         return $this->service_cache[$service_id]['name'];
     }
     
-    public function resetLoop() {
+    public function resetLoop()
+    {
         $this->loop_tpl = array();
     }
     
-    public function reset() {
+    public function reset()
+    {
         $this->current_host_id = null;
         $this->current_host_name = null;
         $this->current_service_description = null;

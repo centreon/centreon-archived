@@ -579,7 +579,7 @@ class CentreonConfigCentreonBroker
         $queryGetType = "SELECT cb_type_id FROM cb_type WHERE type_shortname = '$typeName'";
         $res = $this->db->query($queryGetType);
 
-        if (!PEAR::isError($res)) {
+        if ($res) {
             while ($row = $res->fetchRow()) {
                 $typeId = $row['cb_type_id'];
             }
@@ -919,7 +919,7 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             $error = true;
         }
-        if ($error || $res->numRows() == 0) {
+        if ($error || $res->rowCount() == 0) {
             return false;
         }
 
@@ -934,7 +934,7 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             $error = true;
         }
-        if ($error || $res->numRows() == 0) {
+        if ($error || $res->rowCount() == 0) {
             return false;
         }
 
@@ -1104,7 +1104,7 @@ class CentreonConfigCentreonBroker
         $query = "SELECT external FROM cb_field WHERE cb_field_id = $fieldId";
         $res = $this->db->query($query);
 
-        if (PEAR::isError($res)) {
+        if (!$res) {
             $externalValue = null;
         }
 
@@ -1190,7 +1190,7 @@ class CentreonConfigCentreonBroker
                     $res = $this->db->query($query);
                     break;
                 case 'centreon_storage':
-                    $res = $pearDBO->query($query);
+                    $res = $monitoringDb->query($query);
                     break;
             }
         } catch (\PDOException $e) {
@@ -1374,7 +1374,7 @@ class CentreonConfigCentreonBroker
             } catch (\PDOException $e) {
                 $error = true;
             }
-            if ($error || $res->numRows() == 0) {
+            if ($error || $res->rowCount() == 0) {
                 return $elemStr;
             }
             $row = $res->fetchRow();

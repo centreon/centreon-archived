@@ -44,7 +44,7 @@ ini_set('display_errors', 'Off');
 
 clearstatcache(true, "$etc/centreon.conf.php");
 if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
-    header("Location: ./install/setup.php");
+    header("Location: ./install/install.php");
     return;
 } elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
     require_once("$etc/centreon.conf.php");
@@ -75,7 +75,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($generalOption = $DBRESULT->fetchRow()) {
     $generalOptions[$generalOption["key"]] = $generalOption["value"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * detect installation dir

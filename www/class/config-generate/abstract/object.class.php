@@ -47,21 +47,22 @@ abstract class AbstractObject {
 
     protected $engine = true;
     protected $broker = false;
+    protected $dependencyInjector;
 
-    public static function getInstance() {
+    public static function getInstance(\Pimple\Container $dependencyInjector) {
         static $instances = array();
-
         $calledClass = get_called_class();
 
         if (!isset($instances[$calledClass])) {
-            $instances[$calledClass] = new $calledClass();
+            $instances[$calledClass] = new $calledClass($dependencyInjector);
         }
 
         return $instances[$calledClass];
     }
     
-    protected function __construct() {
-        $this->backend_instance = Backend::getInstance();
+    protected function __construct(\Pimple\Container $dependencyInjector) {
+        $this->dependencyInjector = $dependencyInjector;
+        $this->backend_instance = Backend::getInstance($this->dependencyInjector);
     }
     
     public function close_file() {

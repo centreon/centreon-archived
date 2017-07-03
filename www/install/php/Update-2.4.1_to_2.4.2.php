@@ -35,7 +35,7 @@
  */
 if (isset($pearDBndo) && isset($pearDB)) {
     $res = $pearDB->query("SELECT db_prefix FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $prefix = $row['db_prefix'];
         $pearDBndo->query("ALTER TABLE `{$prefix}acknowledgements` ADD INDEX idx_reporting_ack (object_id, acknowledgement_id, entry_time)");

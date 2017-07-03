@@ -52,7 +52,7 @@ $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_ho
 while ($ehi = $DBRESULT->fetchRow()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /**
  * Get user list
@@ -62,7 +62,7 @@ $DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact ORDER 
 while ($ct = $DBRESULT->fetchRow()) {
     $contact[$ct["contact_id"]] = $ct["contact_alias"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Object init

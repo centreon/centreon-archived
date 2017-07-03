@@ -47,21 +47,23 @@ var period_id = {$period_tab};
 jQuery(function() {
 	if (listPeriod != 'undefined' && listPeriod[{/literal}{$period_info}{literal}] != undefined) {
 		var infos_{/literal}{$period_info}{literal} = listPeriod[{/literal}{$period_info}{literal}];
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][start_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.start_time;
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][end_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.end_time;
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][duration]"]')[0].value = infos_{/literal}{$period_info}{literal}.duration;
-		$$('input[name="periods[{/literal}{$period_tab}{literal}][fixed]"]').each(function(item, index) {
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][start_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.start_time;
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][end_period]"]')[0].value = infos_{/literal}{$period_info}{literal}.end_time;
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][duration]"]')[0].value = infos_{/literal}{$period_info}{literal}.duration;
+
+        jQuery('input[name="periods[{/literal}{$period_tab}{literal}][fixed]"]').each(function (index, item) {
 			if (item.value == infos_{/literal}{$period_info}{literal}.fixed) {
 				item.checked = true;
 			}
 		});
-		$$('select[name="periods[{/literal}{$period_tab}{literal}][days]"]  > option').each(function(item, index){
+
+        jQuery('select[name="periods[{/literal}{$period_tab}{literal}][days]"]  > option').each(function (index, item) {
 			if (item.value == infos_{/literal}{$period_info}{literal}.day_of_week) {
 				item.selected = true;
 			}
 		});
 
-		$$('select[name="periods[{/literal}{$period_tab}{literal}][month_cycle]"]  > option').each(function(item){
+        jQuery('select[name="periods[{/literal}{$period_tab}{literal}][month_cycle]"]  > option').each(function (index, item){
 	        if (item.value == infos_{/literal}{$period_info}{literal}.month_cycle) {
 		        item.selected = true;
 		    }

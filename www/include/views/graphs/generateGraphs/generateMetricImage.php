@@ -48,15 +48,43 @@ session_write_close();
 
 $sid = session_id();
 $pearDB = new CentreonDB();
+$pearDBO = new CentreonDB('centstorage');
 
 if (!CentreonSession::checkSession($sid, $pearDB)) {
     CentreonGraph::displayError();
 }
 
+if (false === isset($_GET['index']) && false === isset($_GET['svcId'])) {
+    CentreonGraph::displayError();
+}
+
+if (isset($_GET['index'])) {
+    if (false === is_numeric($_GET['index'])) {
+        CentreonGraph::displayError();
+    }
+    $index = $_GET['index'];
+} else {
+    list($hostId, $svcId) = explode('_', $_GET['svcId']);
+    if (false === is_numeric($hostId) || false === is_numeric($svcId)) {
+        CentreonGraph::displayError();
+    }
+    $query = 'SELECT id FROM index_data
+        WHERE host_id = ' . $hostId . ' AND service_id = ' . $svcId;
+    $res = $pearDBO->query($query);
+    if (PEAR::isError($res)) {
+        CentreonGraph::displayError();
+    }
+    $row = $res->fetchRow();
+    if (!$row) {
+        CentreonGraph::displayError();
+    }
+    $index = $row['id'];
+}
+
 
 require_once _CENTREON_PATH_."www/include/common/common-Func.php";
 $contactId = CentreonSession::getUser($sid, $pearDB);
-$obj = new CentreonGraph($contactId, $_GET["index"], 0, 1);
+$obj = new CentreonGraph($contactId, $index, 0, 1);
 
 /**
  * Set One curve

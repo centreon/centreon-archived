@@ -60,10 +60,10 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
                                 AND `contact_activate` = '1'
                                 AND `contact_autologin_key` = ? LIMIT 1");
     $DBRESULT = $pearDB->execute($DBRESULT, array($_GET["username"], $token));
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
-        if (!$res->numRows()) {
+        if (!$res->rowCount()) {
             $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, '', ?, ?)");
             $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"]));
         }
@@ -81,7 +81,7 @@ if (isset($_GET["hostname"]) && isset($_GET["service"])) {
                                  AND service_description = ?
                                  LIMIT 1");
     $DBRESULT = $pearDBO->execute($DBRESULT, array($_GET["hostname"], $_GET["service"]));
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $res = $DBRESULT->fetchRow();
         $index = $res["id"];
     } else {
@@ -95,7 +95,7 @@ if (isset($_GET['chartId'])) {
     }
     $res = $pearDBO->prepare('SELECT id FROM index_data WHERE host_id = ? AND service_id = ?');
     $res = $pearDBO->execute($res, array($hostId, $serviceId)); 
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $index = $row['id'];     
     } else {
@@ -109,7 +109,7 @@ $sql = "SELECT c.contact_id, c.contact_admin
         AND s.user_id = c.contact_id 
         LIMIT 1";
 $res = $pearDB->query($sql);
-if (!$res->numRows()) {
+if (!$res->rowCount()) {
     die('Unknown user');
 }
 
@@ -124,7 +124,7 @@ if (!$isAdmin) {
     $aclGroups = $acl->getAccessGroupsString();
     $sql = "SELECT host_id, service_id FROM index_data WHERE id = " .$pearDB->escape($index);
     $res = $dbstorage->query($sql);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         die('Graph not found');
     }
     $row = $res->fetchRow();
@@ -133,7 +133,7 @@ if (!$isAdmin) {
     $serviceId = $row['service_id'];
     $sql = "SELECT service_id FROM centreon_acl WHERE host_id = $hostId AND service_id = $serviceId AND group_id IN ($aclGroups)";
     $res = $pearDBO->query($sql);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         die('Access denied');
     }
 }

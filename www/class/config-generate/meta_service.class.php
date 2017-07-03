@@ -91,7 +91,7 @@ class MetaService extends AbstractObject {
         $this->stmt_contact->execute();
         $this->meta_services[$meta_id]['contacts'] = array();
         foreach ($this->stmt_contact->fetchAll(PDO::FETCH_COLUMN) as $ct_id) {
-            $this->meta_services[$meta_id]['contacts'][] = Contact::getInstance()->generateFromContactId($ct_id);
+            $this->meta_services[$meta_id]['contacts'][] = Contact::getInstance($this->dependencyInjector)->generateFromContactId($ct_id);
         }
     }
 
@@ -107,7 +107,7 @@ class MetaService extends AbstractObject {
         $this->stmt_cg->execute();
         $this->meta_services[$meta_id]['contact_groups'] = array();
         foreach ($this->stmt_cg->fetchAll(PDO::FETCH_COLUMN) as $cg_id) {
-            $this->meta_services[$meta_id]['contact_groups'][] = Contactgroup::getInstance()->generateFromCgId($cg_id);
+            $this->meta_services[$meta_id]['contact_groups'][] = Contactgroup::getInstance($this->dependencyInjector)->generateFromCgId($cg_id);
         }
     }
 
@@ -151,13 +151,13 @@ class MetaService extends AbstractObject {
             return 0;
         }
         
-        $host_id = MetaHost::getInstance()->getHostIdByHostName('_Module_Meta');
+        $host_id = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
         if (is_null($host_id)) {
             return 0;
         }
-        MetaCommand::getInstance()->generateObjects();
-        MetaTimeperiod::getInstance()->generateObjects();
-        MetaHost::getInstance()->generateObject($host_id);
+        MetaCommand::getInstance($this->dependencyInjector)->generateObjects();
+        MetaTimeperiod::getInstance($this->dependencyInjector)->generateObjects();
+        MetaHost::getInstance($this->dependencyInjector)->generateObject($host_id);
         
         $this->has_meta_services = 1;
         
@@ -165,8 +165,8 @@ class MetaService extends AbstractObject {
             $meta_service['macros'] = array('_SERVICE_ID' => $meta_service['service_id']);
             $this->getCtFromMetaId($meta_id);
             $this->getCgFromMetaId($meta_id);            
-            $meta_service['check_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['check_period_id']);
-            $meta_service['notification_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['notification_period_id']);
+            $meta_service['check_period'] = Timeperiod::getInstance($this->dependencyInjector)->generateFromTimeperiodId($meta_service['check_period_id']);
+            $meta_service['notification_period'] = Timeperiod::getInstance($this->dependencyInjector)->generateFromTimeperiodId($meta_service['notification_period_id']);
             $meta_service['register'] = 1;
             $meta_service['active_checks_enabled'] = 1;
             $meta_service['passive_checks_enabled'] = 0;

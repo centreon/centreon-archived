@@ -54,10 +54,10 @@ function testServiceGroupDependencyExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $dep = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
         return true;
@@ -127,7 +127,7 @@ function multipleServiceGroupDependencyInDB($dependencies = array(), $nbrDup = a
                         $fields["dep_sgParents"] .= $sg["servicegroup_sg_id"] . ",";
                     }
                     $fields["dep_sgParents"] = trim($fields["dep_sgParents"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$key."'");
                     $fields["dep_sgChilds"] = "";
                     while ($sg = $DBRESULT->fetchRow()) {
@@ -136,7 +136,7 @@ function multipleServiceGroupDependencyInDB($dependencies = array(), $nbrDup = a
                     }
                     $fields["dep_sgChilds"] = trim($fields["dep_sgChilds"], ",");
                     $oreon->CentreonLogAction->insertLog("servicegroup dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                 }
             }
         }

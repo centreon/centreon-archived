@@ -6,7 +6,7 @@ use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
-use Centreon\Test\Behat\Configuration\ServiceDowntimeConfigurationPage;
+use Centreon\Test\Behat\Configuration\RecurrentDowntimeConfigurationPage;
 
 /**
  * Defines application features from the specific context.
@@ -51,7 +51,7 @@ class DowntimeStartAndStopContext extends CentreonContext
             'notify_on_recovery' => 1,
             'notify_on_critical' => 1,
             'recovery_notification_delay' => 1,
-            'cs' => 'admin_admin'
+            'cs' => 'centreon_centreon'
         ));
         $page->save();
 
@@ -287,7 +287,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->dateEndTimestamp = $datetimeEndLocal->getTimestamp();
 
         //add recurent downtime
-        $this->page = new ServiceDowntimeConfigurationPage($this);
+        $this->page = new RecurrentDowntimeConfigurationPage($this);
 
         //set downtime properties
         $this->page->setProperties(array(

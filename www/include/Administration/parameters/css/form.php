@@ -37,6 +37,18 @@ if (!isset($centreon)) {
     exit();
 }
 
+$inputArguments = array(
+    'css_color_1' => FILTER_SANITIZE_STRING,
+    'css_color_2' => FILTER_SANITIZE_STRING,
+    'css_color_3' => FILTER_SANITIZE_STRING,
+    'css_color_5' => FILTER_SANITIZE_STRING,
+    'css_color_6' => FILTER_SANITIZE_STRING
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
     $data[$opt["key"]] = myDecode($opt["value"]);
@@ -59,11 +71,14 @@ $rq = "SELECT *
         WHERE id_css_color_menu IN (SELECT topology_page FROM topology WHERE topology_page < 10)";
 $DBRESULT = $pearDB->query($rq);
 $tab_css = array();
-for ($i = 0; $DBRESULT->numRows() && $elem = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $DBRESULT->rowCount() && $elem = $DBRESULT->fetchRow(); $i++) {
     $tab_css[$elem["menu_nb"]] = $elem;
-    if (isset($_GET["css_color_".$elem["id_css_color_menu"]])) {
-        $pearDB->query("UPDATE `css_color_menu` SET `css_name` = '".$_GET["css_color_".$elem["id_css_color_menu"]]."'
-                        WHERE `id_css_color_menu` = ".$elem["id_css_color_menu"]);
+    if (isset($inputGet["css_color_" . $elem["id_css_color_menu"]])) {
+        $pearDB->query(
+            "UPDATE `css_color_menu` " .
+            "SET `css_name` = '" . $inputGet["css_color_".$elem["id_css_color_menu"]] . "' " .
+            "WHERE `id_css_color_menu` = " . $elem["id_css_color_menu"]
+        );
     }
 }
 
@@ -73,7 +88,7 @@ $rq = "SELECT topology_id, topology_name, topology_page
         ORDER BY topology_order";
 $DBRESULT = $pearDB->query($rq);
 $tab_menu = array();
-while ($DBRESULT->numRows() && $elem = $DBRESULT->fetchRow()) {
+while ($DBRESULT->rowCount() && $elem = $DBRESULT->fetchRow()) {
     $tab_menu[$elem["topology_page"]] = $elem;
 }
 
@@ -101,7 +116,7 @@ $elemArr = array();
  */
 $style = "one";
 
-if ($DBRESULT->numRows()) {
+if ($DBRESULT->rowCount()) {
     for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
         $select_list =    '<select name="css_color_'. $elem["id_css_color_menu"] .'">';
         for ($j=0; isset($tab_file_css[$j]); $j++) {

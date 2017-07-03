@@ -164,17 +164,19 @@ function monitoringCallBack(t)
 
 function resetSelectedCheckboxes()
 {
-    $$('.ListColPicker,.ListColHeaderPicker input').each(function(el) {
-            if (typeof(savedChecked) != "undefined" && typeof(savedChecked[el.id]) != 'undefined') {
-                if (savedChecked[el.id] == 1) {
-                    el.checked = 1;
-                }
+    $('.ListColPicker,.ListColHeaderPicker input').each(function(index) {
+        var id = $(this).attr('id');
+        if (typeof(savedChecked) != "undefined" && typeof(savedChecked[id]) != 'undefined') {
+            if (savedChecked[id] == 1) {
+                $(this).prop('checked', true);
             }
-        });
+        }
+    });
         
-        $$('input[type="checkbox"]').each(function(el) {
-        if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(el.id)]) {
-            el.checked = true;
+    $('input[type="checkbox"]').each(function(index) {
+        var id = $(this).attr('id');
+        if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(id)]) {
+            $(this).prop('checked', true);
         }
     });
 }
@@ -319,7 +321,7 @@ if (!$centreon->user->access->admin) {
         $hgNdo[$data["name"]] = 1;
         $hgBrk[$data["name"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 }
 
@@ -388,30 +390,29 @@ function construct_ServiceGroupSelectList(id) {
         _select.appendChild(k);
         var i = 1;
 <?php
-        $sgNdo = array();
-        $sgBrk = array();
-        $acldb = $pearDBO;
+
+$sgBrk = array();
+$acldb = $pearDBO;
 if (!$centreon->user->access->admin) {
     $query = "SELECT DISTINCT sg.sg_alias, sg.sg_name AS name
-                  FROM servicegroup sg, acl_resources_sg_relations arsr
-                  WHERE sg.sg_id = arsr.sg_id
-                                  AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
-                                  AND sg.sg_activate = '1'
-                      AND sg.sg_id in (SELECT servicegroup_sg_id
-                                   FROM servicegroup_relation
-                                   WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
+                FROM servicegroup sg, acl_resources_sg_relations arsr
+                WHERE sg.sg_id = arsr.sg_id
+                    AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
+                    AND sg.sg_activate = '1'
+                    AND sg.sg_id in (SELECT servicegroup_sg_id
+                FROM servicegroup_relation
+                WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
     $DBRESULT = $pearDB->query($query);
     while ($data = $DBRESULT->fetchRow()) {
-        $sgNdo[$data["name"]] = 1;
         $sgBrk[$data["name"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
 }
 
         $DBRESULT = $pearDBO->query("SELECT DISTINCT sg.name, sg.servicegroup_id FROM servicegroups sg, services_servicegroups ssg WHERE sg.servicegroup_id = ssg.servicegroup_id AND sg.name NOT LIKE 'meta\_%' ORDER BY sg.name");
 while ($servicegroups = $DBRESULT->fetchRow()) {
-    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$servicegroups["name"]]))) {
+    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($sgBrk[$servicegroups["name"]]))) {
         if (!isset($tabSG)) {
             $tabSG = array();
         }
@@ -908,20 +909,21 @@ var func_popupXsltCallback = function(trans_obj) {
 
 var func_displayPOPUP = function(event) {
     var self = event.currentTarget,
-        position = jQuery('#' + $(self).id).offset();
+        position = $('#' + $(self).attr('id')).offset(),
+        elementId = $(self).attr('id');
 
-    if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
-            popup_counter['popup-container-display-' + $(self).id] = 1;
-            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
+    if ($('#popup-container-display-' + elementId).length == 0) {
+            popup_counter['popup-container-display-' + elementId] = 1;
+            jQuery('.popup_volante').append('<div id="popup-container-display-' + elementId + '" style="display: none"></div>');
     } else {
-            popup_counter['popup-container-display-' + $(self).id] += 1;
+            popup_counter['popup-container-display-' + elementId] += 1;
     }
     jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
-    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    jQuery('.popup_volante').css('left', position.left + $('#' + elementId).width() + 10);
+    jQuery('.popup_volante').css('top', ($(window).height() / 2) - ($('.img_volante').height() / 2));
     jQuery('.popup_volante').show();
 
-    var elements = $(self).id.split('-');
+    var elements = elementId.split('-');
     var proc_popup = new Transformation();
     proc_popup.setCallback(func_popupXsltCallback);
     if (elements[0] == "host") {
@@ -931,14 +933,15 @@ var func_displayPOPUP = function(event) {
             proc_popup.setXml(_addrXMLSpanSvc+"?"+'&svc_id=' + elements[1] + '_' + elements[2]);
             proc_popup.setXslt(_addrXSLSpanSvc);
     }
-    proc_popup.transform('popup-container-display-' + $(self).id);
+    proc_popup.transform('popup-container-display-' + elementId);
 };
 
 var func_hidePOPUP = function(event) {
-    var self = event.currentTarget;
-    popup_counter['popup-container-display-' + $(self).id] -= 1;
+    var self = event.currentTarget,
+        elementId = $(self).attr('id');
+    popup_counter['popup-container-display-' + elementId] -= 1;
     jQuery('.popup_volante .container-load').empty();
-    jQuery('#popup-container-display-' + $(self).id).hide();
+    jQuery('#popup-container-display-' + elementId).hide();
     jQuery('.popup_volante').hide();
     jQuery('.popup_volante').css('width', 'auto');
     jQuery('.popup_volante').css('height', 'auto');
@@ -948,16 +951,16 @@ var func_hidePOPUP = function(event) {
 /* Use 'name' attribute to get xml/xsl infos */
 var func_displayGenericInfo = function(event) {
     var self = event.currentTarget,
-        position = jQuery('#' + $(self).id).offset();
+        position = jQuery('#' + $(self).attr('id')).offset();
 
-    if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
-            popup_counter['popup-container-display-' + $(self).id] = 1;
-            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
+    if (jQuery('#popup-container-display-' + $(self).attr('id')).length == 0) {
+            popup_counter['popup-container-display-' + $(self).attr('id')] = 1;
+            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).attr('id') + '" style="display: none"></div>');
     } else {
-            popup_counter['popup-container-display-' + $(self).id] += 1;
+            popup_counter['popup-container-display-' + $(self).attr('id')] += 1;
     }
     jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).attr('id')).width() + 10);
     jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
     jQuery('.popup_volante').show();
 
@@ -966,7 +969,7 @@ var func_displayGenericInfo = function(event) {
     proc_popup.setCallback(func_popupXsltCallback);
     proc_popup.setXml(elements[0]);
     proc_popup.setXslt(elements[1]);
-    proc_popup.transform('popup-container-display-' + $(self).id);
+    proc_popup.transform('popup-container-display-' + $(self).attr('id'));
 };
 
 // Monitoring Refresh management Options

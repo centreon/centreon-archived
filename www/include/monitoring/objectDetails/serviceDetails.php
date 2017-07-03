@@ -114,7 +114,7 @@ if (!is_null($host_id)) {
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         if (isset($service_id) && $service_id) {
             $proc_warning = getMyServiceMacro($service_id, "PROC_WARNING");
@@ -138,7 +138,7 @@ if (!is_null($host_id)) {
             while ($row = $DBRESULT->fetchRow()) {
                 $serviceGroups[] = $row['sg_name'];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
         }
 
         /*
@@ -217,7 +217,7 @@ if (!is_null($host_id)) {
             }
             $tab_status[$tab_status_service[$data["current_state"]]]++;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
             $service_status["command_line"] = hidePasswordInCommand($service_status["check_command"], $host_id, $service_status["service_id"]);
@@ -242,7 +242,7 @@ if (!is_null($host_id)) {
         // Get Host informations
         $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_id = " . $pearDB->escape($host_id) . "");
         $host = $DBRESULT->fetchrow();
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         if ($isMetaservice == 'true') {
             $metaParameters = $metaObj->getParameters($meta_id, array('max_check_attempts'));
@@ -284,7 +284,7 @@ if (!is_null($host_id)) {
                 $tabCommentServices[$i]['comment_data'] = $data['comment_data'];
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             unset($data);
         }
 
@@ -435,7 +435,7 @@ if (!is_null($host_id)) {
 
         $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '" . $pearDBO->escape($host_name) . "' AND service_description LIKE '" . $pearDBO->escape($svc_description) . "' LIMIT 1");
         $index_data = 0;
-        if ($DBRES->numRows()) {
+        if ($DBRES->rowCount()) {
             $row = $DBRES->fetchRow();
             $index_data = $row['id'];
         }
@@ -669,7 +669,7 @@ if (!is_null($host_id)) {
                 include('modules/'.$module['name'].'/svc_tools.php');
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         foreach ($tools as $key => $tab) {
             $tools[$key]['url'] = str_replace("@host_id@", $host_id, $tools[$key]['url']);

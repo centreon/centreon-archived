@@ -75,12 +75,12 @@ function testCmdExistence($name = null)
 
     $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '" . $pearDB->escape($centreon->checkIllegalChar($name)) . "'");
     $command = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $command["command_id"] == $id) {
         /*
          * Mofication case
          */
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $command["command_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $command["command_id"] != $id) {
         /*
          * Duplicate case
          */
@@ -174,17 +174,33 @@ function updateCommand($cmd_id = null, $params = array())
         $ret['enable_shell'] = 0;
     }
 
-    $rq = "UPDATE `command` SET `command_name` = '" . $pearDB->escape($ret["command_name"]) . "', " .
-            "`command_line` = '" . $pearDB->escape($ret["command_line"]) . "', " .
-            "`enable_shell` = '" . $pearDB->escape($ret["enable_shell"]) . "', " .
-            "`command_example` = '" . $pearDB->escape($ret["command_example"]) . "', " .
-            "`command_type` = '" . $pearDB->escape($ret["command_type"]["command_type"]) . "', " .
-            "`command_comment` = '" . $pearDB->escape($ret["command_comment"]) . "', " .
-            "`graph_id` = '" . $pearDB->escape($ret["graph_id"]) . "', " .
-            "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'" . $pearDB->escape($ret['connectors']) . "'" : "NULL") . ", " .
-            "`command_activate` = " . (isset($ret["command_activate"]["command_activate"]) ? "'" . $pearDB->escape($ret['command_activate']["command_activate"]) . "'" : "NULL") . " " .
-            "WHERE `command_id` = '" . intval($cmd_id) . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $rq = "UPDATE `command` SET `command_name` = :command_name, " .
+            "`command_line` = :command_line, " .
+            "`enable_shell` = :enable_shell, " .
+            "`command_example` = :command_example, " .
+            "`command_type` = :command_type, " .
+            "`command_comment` = :command_comment, " .
+            "`graph_id` = :graph_id, " .
+            "`connector_id` = :connector_id, " .
+            "`command_activate` = :command_activate " .
+            "WHERE `command_id` = :command_id";
+
+    $ret["connectors"] = (isset($ret["connectors"]) && !empty($ret["connectors"])) ? $ret["connectors"] : null;
+    $ret["command_activate"]["command_activate"] = (isset($ret["command_activate"]["command_activate"])) ?
+        $ret["command_activate"]["command_activate"] : null;
+
+    $sth = $pearDB->prepare($rq);
+    $sth->bindParam(':command_name', $ret["command_name"], PDO::PARAM_STR);
+    $sth->bindParam(':command_line', $ret["command_line"], PDO::PARAM_STR);
+    $sth->bindParam(':enable_shell', $ret["enable_shell"], PDO::PARAM_STR);
+    $sth->bindParam(':command_example', $ret["command_example"], PDO::PARAM_STR);
+    $sth->bindParam(':command_type', $ret["command_type"]["command_type"], PDO::PARAM_STR);
+    $sth->bindParam(':command_comment', $ret["command_comment"], PDO::PARAM_STR);
+    $sth->bindParam(':graph_id', $ret["graph_id"], PDO::PARAM_STR);
+    $sth->bindParam(':connector_id', $ret["connectors"], PDO::PARAM_STR);
+    $sth->bindParam(':command_activate', $ret["command_activate"]["command_activate"], PDO::PARAM_STR);
+    $sth->bindParam(':command_id', $cmd_id, PDO::PARAM_INT);
+    $sth->execute();
 
     insertArgDesc($cmd_id, $ret);
 
@@ -392,7 +408,7 @@ function getCommandIdByName($name)
 
     $id = 0;
     $res = $pearDB->query("SELECT command_id FROM command WHERE command_name = '" . $pearDB->escape($name) . "'");
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $id = $row['command_id'];
     }

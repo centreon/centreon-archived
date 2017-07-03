@@ -51,10 +51,10 @@ function testHostGroupDependencyExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".CentreonDB::escape($name)."'");
     $dep = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
         return true;
@@ -124,7 +124,7 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
                         $fields["dep_hgParents"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgParents"] = trim($fields["dep_hgParents"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$key."'");
                     $fields["dep_hgChilds"] = "";
                     while ($hg = $DBRESULT->fetchRow()) {
@@ -132,7 +132,7 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
                         $fields["dep_hgChilds"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgChilds"] = trim($fields["dep_hgChilds"], ",");
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $centreon->CentreonLogAction->insertLog("hostgroup dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
                 }
             }

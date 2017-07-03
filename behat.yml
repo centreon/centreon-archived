@@ -148,3 +148,58 @@ default:
       paths: [ %paths.base%/features/HostTemplateConfiguration.feature ]
       contexts:
       - HostTemplateConfigurationContext
+
+    module:
+      paths: [ %paths.base%/features/Module.feature ]
+      contexts:
+      - ModuleContext
+
+    widget:
+      paths: [ %paths.base%/features/Widget.feature ]
+      contexts:
+      - WidgetContext
+
+    rest_api:
+      paths: [ %paths.base%/features/RestApi.feature ]
+      contexts:
+      - RestApiContext
+      
+    special_characters_in_contact:
+      paths: [ %paths.base%/features/SpecialCharactersInContact.feature ]
+      contexts:
+      - SpecialCharactersInContactContext
+
+    contact_configuration:
+      paths: [ %paths.base%/features/ContactConfiguration.feature ]
+      contexts:
+      - ContactConfigurationContext
+
+    host_creation_duplication:
+      paths: [ %paths.base%/features/HostCreationDuplication.feature ]
+      contexts:
+      - HostCreationDuplicationContext
+
+    host_configuration:
+      paths: [ %paths.base%/features/HostConfiguration.feature ]
+      contexts:
+      - HostConfigurationContext
+
+    host_duplication_check:
+      paths: [ %paths.base%/features/HostDuplicationCheck.feature ]
+      contexts:
+      - HostDuplicationCheckContext
+
+    contact_group_creation_duplication:
+      paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
+      contexts:
+      - ContactGroupCreationDuplicationContext
+      
+    ldap_configuration:
+      paths: [ %paths.base%/features/LdapConfiguration.feature ]
+      contexts:
+      - LdapConfigurationContext
+
+    control_login:
+      paths: [ %paths.base%/features/ControlLogin.feature ]
+      contexts:
+      - ControlLoginContext

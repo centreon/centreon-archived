@@ -122,23 +122,42 @@
     },
 
     setCenter: function () {
-      var windowH = $(window).height();
-      var windowW = $(window).width();
-      var modalH = this.$elem.height();
-      var modalW = this.$elem.width();
-      var top = (windowH - modalH) / 2;
-      top = (top < 0) ? 0 : top;
-      var left = (windowW - modalW) / 2;
+      var windowH = $(window).height(),
+          windowW = $(window).width(),
+          modalH = this.$elem.height(),
+          modalW = this.$elem.width(),
+          left = (windowW - modalW) / 2,
+          top = (windowH - modalH) / 2;
+
+      top = (top < 0) ? 15 : top;
       left = (left < 0) ? 0 : left;
+
       this.$elem.css({
         top: top + "px",
         left: left + "px"
       });
     },
+
+    setScroll: function() {
+      var windowH = $(window).height(),
+      modalH = this.$elem.height();
+
+      if (modalH > windowH) {
+        this.$elem.css({
+          height: windowH - 50 + "px"
+        });
+        this.$elem.niceScroll({
+          cursorcolor: '#818285',
+          cursoropacitymax: 0.6,
+          autohidemode: false
+        });
+      }
+    },
     open: function () {
       $('#centreonPopinOverlay').show();
       this.$elem.show();
       this.setCenter();
+      this.setScroll();
       this.opened = true;
     },
     close: function () {

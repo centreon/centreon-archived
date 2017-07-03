@@ -70,24 +70,26 @@ $path = "./include/options/oreon/modules/";
 require_once "./include/common/common-Func.php";
 require_once $path ."DB-Func.php";
 
+$factory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+$utils = $factory->newUtils();
+
+$moduleFactory = new \CentreonLegacy\Core\Module\Factory($dependencyInjector, $utils);
+$moduleInfoObj = $moduleFactory->newInformation();
+
 if ($list) {
     require_once($path."listModules.php");
 } else {
     switch ($o) {
         case "i":
-            require_once($path."formModule.php");
+        case "w":
+            require_once($path . "installForm.php");
             break;
         case "u":
-            require_once($path."formModule.php");
+            require_once($path . "upgradeForm.php");
             break;
         case "d":
-            require_once($path."listModules.php");
-            break;
-        case "w":
-            require_once($path."formModule.php");
-            break;
         default:
-            require_once($path."listModules.php");
+            require_once($path . "listModules.php");
             break;
     }
 }

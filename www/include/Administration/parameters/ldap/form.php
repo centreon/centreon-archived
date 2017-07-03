@@ -112,7 +112,7 @@ $tmplList = array();
 while ($row = $res->fetchRow()) {
     $tmplList[$row['contact_id']] = $row['contact_name'];
 }
-$res->free();
+$res->closeCursor();
 
 $form->addElement('select', 'ldap_contact_tmpl', _('Contact template'), $tmplList, array('id' => 'ldap_contact_tmpl'));
 
@@ -259,7 +259,7 @@ if ($arId) {
               FROM auth_ressource_host 
               WHERE auth_ressource_id = " . $pearDB->escape($arId);
     $res = $pearDB->query($query);
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         $maxHostId = $row['cnt'];
     }

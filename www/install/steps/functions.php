@@ -19,11 +19,12 @@ function isSqlComment($str) {
  * @return Smarty
  */
 function getTemplate($dir) {
-    require_once '../../../GPL_LIB/Smarty/libs/Smarty.class.php';
+    $libDir = __DIR__ . '/../../../GPL_LIB';
+    require_once $libDir . '/Smarty/libs/Smarty.class.php';
     $template = new \Smarty();
-    $template->compile_dir = "../../../GPL_LIB/SmartyCache/compile";
-    $template->config_dir = "../../../GPL_LIB/SmartyCache/config";
-    $template->cache_dir = "../../../GPL_LIB/SmartyCache/cache";
+    $template->compile_dir = $libDir . '/SmartyCache/compile';
+    $template->config_dir = $libDir . '/SmartyCache/config';
+    $template->cache_dir = $libDir . '/SmartyCache/cache';
     $template->template_dir = $dir;
     $template->caching = 0;
     $template->compile_check = true;
@@ -58,19 +59,22 @@ function myConnect() {
  * @param string $query
  * @return string
  */
-function replaceInstallationMacros($query) {
+function replaceInstallationMacros($query, $macros = array()) {
     while (preg_match('/@([a-zA-Z0-9_]+)@/', $query, $matches)) {
         $macroValue = "";
-        if (isset($_SESSION[$matches[1]])) {
-            $macroValue = $_SESSION[$matches[1]];
-        }
-        // Exception
         if ($matches[1] == 'MAILER') {
             $macroValue = '-MAILER-';
+        } elseif (isset($macros[$matches[1]])) {
+            $macroValue = $macros[$matches[1]];
+        } elseif (isset($_SESSION[$matches[1]])) {
+            $macroValue = $_SESSION[$matches[1]];
         }
+
         $query = preg_replace('/@'.$matches[1].'@/', $macroValue, $query);
     }
+
     $query = str_replace('-MAILER-', '@MAILER@', $query);
+
     return $query;
 }
 
@@ -83,7 +87,7 @@ function replaceInstallationMacros($query) {
  * @param string $tmpFile | $tmpFile will store the number of executed queries sql script can be resumed from last failure
  * @return string | returns "0" if everything is ok, or returns error message
  */
-function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "") {
+function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "", $macros = array()) {
     if (is_null($connector)) {
         $connector = myConnect();
     }
@@ -97,8 +101,7 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
     }
     if (is_file($file) === true) {
         $file = fopen($file, 'r');
-        if (is_resource($file) === true)
-        {
+        if (is_resource($file) === true) {
             $query = array();
             $line = 0;
             while (feof($file) === false) {
@@ -109,12 +112,15 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                 }
                 if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
                     $query = trim(implode('', $query));
-                    $query = replaceInstallationMacros($query);
+                    $query = replaceInstallationMacros($query, $macros);
                     $count++;
                     if ($count > $start) {
                         try {
-                            $connector->query($query);
-                        } catch (Exception $e) {
+                            $result = $connector->query($query);
+                            if (!$result) {
+                                throw new \Exception('Cannot execute query : ' . $query);
+                            }
+                        } catch (\Exception $e) {
                             return "$fileName Line $line:".$e->getMessage();
                         }
                         while (ob_get_level() > 0) {

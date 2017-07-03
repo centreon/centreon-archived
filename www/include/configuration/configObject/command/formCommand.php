@@ -113,7 +113,7 @@ while ($row = $DBRESULT->fetchRow()) {
     }
 }
 unset($row);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Connectors
@@ -124,7 +124,7 @@ while ($row = $DBRESULT->fetchRow()) {
     $connectors[$row["id"]] = $row["name"];
 }
 unset($row);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Graphs Template comes from DB -> Store in $graphTpls Array
@@ -135,7 +135,7 @@ while ($graphTpl = $DBRESULT->fetchRow()) {
     $graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 }
 unset($graphTpl);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Nagios Macro
@@ -146,7 +146,7 @@ while ($row = $DBRESULT->fetchRow()) {
     $macros[$row["macro_name"]] = $row["macro_name"];
 }
 unset($row);
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $attrsText      = array("size"=>"35");
 $attrsTextarea  = array("rows"=>"9", "cols"=>"80", "id"=>"command_line");

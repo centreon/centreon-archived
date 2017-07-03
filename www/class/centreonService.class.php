@@ -35,6 +35,8 @@
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonHook.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonDBInstance.class.php';
+
 
 /**
  *  Class that contains various methods for managing services
@@ -68,11 +70,14 @@ class CentreonService
     {
         $this->db = $db;
         if (is_null($dbMon)) {
-            $this->dbMon = new CentreonDB('centstorage');
+            $this->dbMon = \CentreonDBInstance::getMonInstance();
         } else {
             $this->dbMon = $dbMon;
         }
+
         $this->instanceObj = new CentreonInstance($db);
+
+
     }
 
     /**
@@ -118,7 +123,7 @@ class CentreonService
                  WHERE service_description = '" . $this->db->escape($templateName) . "' 
                     AND service_register = '0'"
         );
-        if (!$res->numRows()) {
+        if (!$res->rowCount()) {
             return null;
         }
         $row = $res->fetchRow();
@@ -209,7 +214,7 @@ class CentreonService
      				  FROM service
      				  WHERE service_id = " . $this->db->escape($sid);
             $res = $this->db->query($query);
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 $svcTab[$sid] = $row['service_alias'];
             }
@@ -282,7 +287,7 @@ class CentreonService
                 $name = str_replace($char, "", $name);
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         return $name;
     }
 
@@ -299,7 +304,7 @@ class CentreonService
     {
         $rq = "SELECT service_register FROM service WHERE service_id = '" . $svc_id . "' LIMIT 1";
         $DBRES = $this->db->query($rq);
-        if (!$DBRES->numRows()) {
+        if (!$DBRES->rowCount()) {
             return $string;
         }
         $row = $DBRES->fetchRow();
@@ -1277,7 +1282,7 @@ class CentreonService
             "service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, " .
             " service_retain_status_information, service_retain_nonstatus_information, " .
             "service_notification_interval, service_notification_options, service_notifications_enabled, " .
-            "contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, " .
+            "contact_additive_inheritance, cg_additive_inheritance, " .
             "service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay, " .
             "service_comment, command_command_id_arg, command_command_id_arg2, service_register, service_locked, " .
             "service_activate) " .
@@ -1353,9 +1358,6 @@ class CentreonService
             $rq .= "'2', ";
         $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
         $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
-        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) &&
-            $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ?
-            $rq .= "'" . $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] . "', " :
             $rq .= "'NULL', ";
         isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) &&
             $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ?
@@ -1380,7 +1382,7 @@ class CentreonService
         isset($ret["service_locked"]) && $ret["service_locked"] != null ?
             $rq .= "'".$ret["service_locked"]."', " : $rq .= "0, ";
         isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != null ?
-            $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
+            $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "'1'";
         $rq .= ")";
 
         try {
@@ -1525,12 +1527,6 @@ class CentreonService
             $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ?
             $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
 
-        $rq .= "service_inherit_contacts_from_host = ";
-        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) &&
-            $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ?
-            $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " :
-            $rq .= "NULL, ";
-
         $rq .= "service_use_only_contacts_from_host = ";
         isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) &&
             $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ?
@@ -1669,7 +1665,7 @@ class CentreonService
             . "FROM " . $table . " "
             . "WHERE service_id = " . $db->escape($id));
         
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $arr = $res->fetchRow();
         }
 
@@ -1694,7 +1690,7 @@ class CentreonService
                 "SELECT service_template_model_stm_id FROM service WHERE service_id = ".$this->db->escape($svcId)
             );
 
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 if (!empty($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] !== null) {
                     $svcTmpl = array_merge(

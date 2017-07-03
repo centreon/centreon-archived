@@ -81,7 +81,7 @@ $DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS
 while ($info = $DBRESULT->fetchRow()) {
     $nagiosInfo[$info["instance_id"]] = $info;
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Get Scheduler version
@@ -92,7 +92,7 @@ while ($info = $DBRESULT->fetchRow()) {
         $nagiosInfo[$info["instance_id"]]["version"] = $info["program_name"] . " " . $info["program_version"];
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Smarty template Init
@@ -184,7 +184,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 	 */
     $request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]." AND nagios_activate = '1'";
     $DBRESULT2 = $pearDB->query($request);
-    if ($DBRESULT2->numRows()) {
+    if ($DBRESULT2->rowCount()) {
         $cfg_id = $DBRESULT2->fetchRow();
     } else {
         $cfg_id = -1;

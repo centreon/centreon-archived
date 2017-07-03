@@ -62,9 +62,10 @@
                     <h4>{$tab.name}</h4>
                   </td>
                 </tr>
-				<tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}" onchange="checkTypeValidity(this)">{foreach from=$tab.blocks item=block}
+				<tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}"
+				onchange='checkTypeValidity("block_{$tab.id}")'>{foreach from=$tab.blocks item=block}
 				<option value="{$block.id}">{$block.name}</option>
-				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" href="javascript:addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
+				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" onClick="addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
 			</tbody>
 			{foreach from=$tab.forms item=formBlock name=formForeach}
 				{assign var="posAbs" value=$smarty.foreach.formForeach.index}
@@ -140,97 +141,106 @@ uniqueType["{$block.id}"] = false;
 {/foreach}
 {/foreach}{literal}
 
-function addInfo(type) {
-    var prev_id = infos.getPos(type);
-    var id = prev_id + 1;
-    var id_name = type + '_' + id;
-    var blockId = $('block_' + type).getValue();
-    var params;
-    var tbody = new Element('tbody');
-    tbody.writeAttribute('id', id_name);
-    tbody.writeAttribute('class', 'collapse-wrapper');
-    Element.insert($(type), {bottom: tbody});
-    params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
-    new Ajax.Updater(
-        tbody,
-        'main.php' + params,
-        {
-            evalScripts: true,
-            onComplete: function(response) {
-                if (response.status == 200) {
-                    infos.incrementPos(type);
-                    checkTypeValidity('block_' + type);
-                    jQuery("#"+id_name).centreonValidate();
-                    clonifyTableFields('parentGroup','displaynamegroup');
-                    addCollapse();
-                    openNewElem(id_name);
-                }
+    function addInfo(type) {
+        var prev_id = infos.getPos(type);
+        var id = prev_id + 1;
+        var id_name = type + '_' + id;
+        var blockId = jQuery('#block_' + type).val();
+        var params;
+
+        var tbody = jQuery('<tbody>');
+        tbody.attr('id', id_name);
+        tbody.attr('class', 'collapse-wrapper');
+        jQuery('#' + type).append(tbody);
+        params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
+        var url = './api/internal.php?object=centreon_configuration_broker&resultFormat=html&action=block' +
+		    '&page=' + {/literal}{$p}{literal} + '&position=' + id +
+            '&blockId=' + blockId + '&tag=' + type;
+
+        jQuery.ajax({
+            type: "GET",
+            dataType: "html",
+            url: url,
+            success: function (data) {
+                infos.incrementPos(type);
+                checkTypeValidity('block_' + type);
+
+                jQuery('#' + id_name).html('<tr>' + data + '</tr>');
+                jQuery('#' + id_name).find("script").each(function(i) {
+                    eval($(this).text());
+                });
+
+                clonifyTableFields('parentGroup', 'displaynamegroup');
+                addCollapse();
+                openNewElem(id_name);
+
+                jQuery('#' + id_name).centreonValidate();
             }
-        }
-    );
+        });
+    }
 
-}
 
-function deleteRow(type, id) {
-    var row_name = type + '_' + id;
-    var parent = document.getElementById(type);
-    var delEl = document.getElementById(row_name);
-    jQuery("#"+row_name).find('input').qtip('destroy');
-    parent.removeChild(delEl);
-    checkTypeValidity("block_" + type);
-}
 
-function checkTypeValidity(selectType) {
-    var typeId = $(selectType).getValue();
-    var tagName = $(selectType).id.replace('block_', '');
-    if (typeId in uniqueType && uniqueType[typeId] == true) {
-        var blockNameArray = $$('input[value="' + typeId + '"]');
-        if (blockNameArray.length > 0) {
-            $('add_' + tagName).hide();
+    function deleteRow(type, id) {
+        var row_name = type + '_' + id;
+        var parent = document.getElementById(type);
+        var delEl = document.getElementById(row_name);
+        //  jQuery("#"+row_name).find('input').qtip('destroy');
+        parent.removeChild(delEl);
+        checkTypeValidity("block_" + type);
+    }
+
+    function checkTypeValidity(selectType) {
+        var typeId = jQuery('#' + selectType).val();
+        var tagName = selectType.replace('block_', '');
+        if (typeId in uniqueType && uniqueType[typeId] == true) {
+            var blockNameArray = jQuery('input[value="' + typeId + '"]');
+            if (blockNameArray.length > 0) {
+                jQuery('add_' + tagName).hide();
+            } else {
+                jQuery('add_' + tagName).show();
+            }
         } else {
-            $('add_' + tagName).show();
+            jQuery('add_' + tagName).show();
         }
-    } else {
-        $('add_' + tagName).show();
+
     }
 
-}
-
-function loadedConfiguration() {
-    $$('table.ListTable').each(function(el) {
-        if (el.id != undefined && el.id != '') {
-            checkTypeValidity("block_" + el.id);
-        }
-    });
-}
-
-function changeTab(tab) {
-    jQuery('#Form').centreonValidate('validate');
-    purgeHideInput(tab);
-    initCollapsebyTab(tab);
-    if(tab == "tab4"){
-        clonifyTableFields('parentGroup','displaynamegroup');
+    function loadedConfiguration() {
+        jQuery('table.ListTable').each(function(el) {
+            if (el.id != undefined && el.id != '') {
+                checkTypeValidity("block_" + el.id);
+            }
+        });
     }
-}
 
-function purgeHideInput(tab) {
-    jQuery('.tab').each(function(idx, el){
-        if (el.id != tab) {
-            jQuery(el).find(':input').each(function(idx, input){
-                jQuery(input).qtip('destroy');
-            });
+    function changeTab(tab) {
+        jQuery('#Form').centreonValidate('validate');
+        purgeHideInput(tab);
+        initCollapsebyTab(tab);
+        if(tab == "tab4"){
+            clonifyTableFields('parentGroup','displaynamegroup');
         }
-    });
-}
-
-function formValidate() {
-    jQuery('#Form').centreonValidate('validate');
-    if (jQuery('#Form').centreonValidate('hasError')) {
-        var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
-        purgeHideInput(activeTab.id);
-        return false;
     }
-    return true;
-}
+
+    function purgeHideInput(tab) {
+        jQuery('.tab').each(function(idx, el){
+            if (el.id != tab) {
+                jQuery(el).find(':input').each(function(idx, input){
+                    jQuery(input).qtip('destroy');
+                });
+            }
+        });
+    }
+
+    function formValidate() {
+        jQuery('#Form').centreonValidate('validate');
+        if (jQuery('#Form').centreonValidate('hasError')) {
+            var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
+            purgeHideInput(activeTab.id);
+            return false;
+        }
+        return true;
+    }
 </script>
 {/literal}

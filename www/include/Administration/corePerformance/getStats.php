@@ -105,7 +105,7 @@ function escape_command($command)
 
     $sid = session_id();
     $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
-if (!$session->numRows()) {
+if (!$session->rowCount()) {
     ;
 } else {
     /*
@@ -123,7 +123,7 @@ if (!$session->numRows()) {
             $rrdtoolPath = $option["value"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $title   = array(
             "active_host_check" => _("Host Check Execution Time"),

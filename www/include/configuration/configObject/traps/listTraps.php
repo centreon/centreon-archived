@@ -42,15 +42,18 @@ include("./include/common/autoNumLimit.php");
 
 $tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
 
+$searchT = filter_input(
+    INPUT_POST,
+    'searchT',
+    FILTER_SANITIZE_STRING
+);
 
 $search = '';
-if (isset($_POST['searchT'])) {
-    $search = $_POST['searchT'];
-    $_SESSION['searchT'] = $_POST['searchT'];
-} else {
-    if (isset($_SESSION['searchT']) && $_SESSION['searchT'] != "") {
-        $search = $_SESSION['searchT'];
-    }
+if (isset($searchT)) {
+    $search = $searchT;
+    $_SESSION['searchT'] = $searchT;
+} elseif (isset($_SESSION['searchT']) && $_SESSION['searchT'] != "") {
+    $search = $_SESSION['searchT'];
 }
 
 
@@ -128,7 +131,7 @@ for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" . $trap['traps_id'] . "]'></input>";
     $DBRESULT2 = $pearDB->query("select alias from traps_vendor where id='" . $trap['manufacturer_id'] . "' LIMIT 1");
     $mnftr = $DBRESULT2->fetchRow();
-    $DBRESULT2->free();
+    $DBRESULT2->closeCursor();
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),

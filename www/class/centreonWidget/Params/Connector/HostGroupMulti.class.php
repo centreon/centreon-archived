@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/Select2.class.php";
+require_once __DIR__ . "/../Select2.class.php";
 
 class CentreonWidgetParamsConnectorHostGroupMulti extends CentreonWidgetParamsSelect2
 {

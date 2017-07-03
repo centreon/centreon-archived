@@ -57,7 +57,7 @@ if (($o == "c" || $o == "w") && $dep_id) {
         $dep["execution_failure_criteria"][trim($value)] = 1;
     }
 
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 #
 ## Database retrieve information for differents elements list we need on the page
@@ -71,7 +71,7 @@ $DBRESULT = $pearDB->query("SELECT meta_id, meta_name
 while ($meta = $DBRESULT->fetchRow()) {
     $metas[$meta["meta_id"]] = $meta["meta_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 #
 # End of "database-retrieved" information
 ##########################################################

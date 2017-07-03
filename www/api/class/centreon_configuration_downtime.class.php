@@ -40,59 +40,62 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationDowntime extends CentreonConfigurationObjects
 {
-    
+
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationDowntime constructor.
      */
     public function __construct()
     {
         global $pearDBO;
-        
+
         parent::__construct();
         $brk = new CentreonBroker($this->pearDB);
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         $pearDBO = $this->pearDBMonitoring;
     }
-    
+
     /**
-     *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $q = '';
+            $queryValues['dtName'] = '%%';
         } else {
-            $q = $this->arguments['q'];
+            $queryValues['dtName'] = '%' . (string)$this->arguments['q'] . '%';
         }
-        
-        $queryDowntime = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dt.dt_name, dt.dt_id "
-            . "FROM downtime dt "
-            . "WHERE dt.dt_name LIKE '%$q%' "
-            . "ORDER BY dt.dt_name";
-        
-        $DBRESULT = $this->pearDB->query($queryDowntime);
 
-        $total = $this->pearDB->numberRows();
-        
+        $queryDowntime = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT dt.dt_name, dt.dt_id ' .
+            'FROM downtime dt ' .
+            'WHERE dt.dt_name LIKE :dtName ' .
+            'ORDER BY dt.dt_name';
+
+        $stmt = $this->pearDB->prepare($queryDowntime);
+        $stmt->bindParam(':dtName', $queryValues["dtName"], PDO::PARAM_STR);
+        $dbResult = $stmt->execute();
+
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+
         $downtimeList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             $downtimeList[] = array(
                 'id' => htmlentities($data['dt_id']),
                 'text' => $data['dt_name']
             );
         }
-        
         return array(
             'items' => $downtimeList,
-            'total' => $total
+            'total' => $stmt->rowCount()
         );
     }
 }

@@ -43,7 +43,7 @@ CentreonSession::start();
 $pearDB = new CentreonDB();
 
 $session = $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".session_id()."'");
-if (!$session->numRows()) {
+if (!$session->rowCount()) {
     exit;
 }
 

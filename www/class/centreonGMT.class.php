@@ -306,7 +306,7 @@ class CentreonGMT
                 "WHERE `session`.`user_id` = `contact`.`contact_id` " .
                 "AND `session_id` = '" . CentreonDB::escape($sid) . "' LIMIT 1");
             $info = $DBRESULT->fetchRow();
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
             $this->myGMT = $info["contact_location"];
         } catch (\PDOException $e) {
             $this->myGMT = 0;
@@ -327,7 +327,7 @@ class CentreonGMT
                 $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `contact_location` FROM `contact` " .
                     "WHERE `contact`.`contact_id` = " . $userId . " LIMIT 1");
                 $info = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
                 $this->myGMT = $info["contact_location"];
             } catch (\PDOException $e) {
                 $this->myGMT = 0;

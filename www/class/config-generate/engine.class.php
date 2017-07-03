@@ -41,6 +41,8 @@ class Engine extends AbstractObject {
     protected $attributes_select = '
         nagios_id,
         
+        use_timezone,
+        
         cfg_dir,
         cfg_file as cfg_filename,
         
@@ -133,7 +135,6 @@ class Engine extends AbstractObject {
         log_service_retries,
         log_host_retries,
         log_event_handlers,
-        log_initial_states,
         log_external_commands,
         log_passive_checks,
         auto_reschedule_checks,
@@ -156,6 +157,7 @@ class Engine extends AbstractObject {
         use_setpgid
     ';
     protected $attributes_write = array(
+        'use_timezone',
         'resource_file',
         'log_file',
         'status_file',
@@ -246,7 +248,6 @@ class Engine extends AbstractObject {
         'log_service_retries',
         'log_host_retries',
         'log_event_handlers',
-        'log_initial_states',
         'log_external_commands',
         'log_passive_checks',
         'auto_reschedule_checks',
@@ -376,7 +377,15 @@ class Engine extends AbstractObject {
         if (!is_null($object['illegal_object_name_chars'])) {
             $object['illegal_object_name_chars'] = html_entity_decode($object['illegal_object_name_chars'], ENT_QUOTES);
         }
-        $command_instance = Command::getInstance();
+
+        $timezoneInstance = Timezone::getInstance($this->dependencyInjector);
+        $timezone = $timezoneInstance->getTimezoneFromId($object['use_timezone'], true);
+        $object['use_timezone'] = null;
+        if (!is_null($timezone)) {
+            $object['use_timezone'] = ':' . $timezone;
+        }
+
+        $command_instance = Command::getInstance($this->dependencyInjector);
         $object['global_host_event_handler'] = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
         $object['global_service_event_handler'] = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
         $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
@@ -402,8 +411,8 @@ class Engine extends AbstractObject {
     
     public function generateFromPoller($poller)
     {
-        Connector::getInstance()->generateObjects($poller['centreonconnector_path']);
-        Resource::getInstance()->generateFromPollerId($poller['id']);
+        Connector::getInstance($this->dependencyInjector)->generateObjects($poller['centreonconnector_path']);
+        Resource::getInstance($this->dependencyInjector)->generateFromPollerId($poller['id']);
         
         $this->generate($poller['id']);
     }

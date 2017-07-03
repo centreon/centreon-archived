@@ -49,10 +49,10 @@ function testServiceGroupExistence($name = null)
 
     $DBRESULT = $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
     $sg = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $sg["sg_id"] == $id) {
         # Modif
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $sg["sg_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $sg["sg_id"] != $id) {
         # Duplicate
         return false;
     } else {
@@ -126,7 +126,7 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(sg_id)"])) {
                                             $sgAcl[$maxId["MAX(sg_id)"]] = $key;
-                    $DBRESULT->free();
+                    $DBRESULT->closeCursor();
                     $DBRESULT = $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
                     $fields["sg_hgServices"] = "";
                     while ($service = $DBRESULT->fetchRow()) {
@@ -190,7 +190,7 @@ function insertServiceGroup($ret = array())
 
     $DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
     $sg_id = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -214,8 +214,8 @@ function updateServiceGroup($sg_id, $ret = array())
     $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
 
     $rq = "UPDATE servicegroup SET ";
-    isset($ret["sg_name"]) && $ret["sg_name"] != null ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_name = NULL,";
-    isset($ret["sg_alias"]) && $ret["sg_alias"] != null ? $rq.= "sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_alias = NULL";
+    isset($ret["sg_name"]) && $ret["sg_name"] != null ? $rq .= "sg_name = '" . $ret["sg_name"] . "', " : $rq .= "sg_name = NULL,";
+    isset($ret["sg_alias"]) && $ret["sg_alias"] != null ? $rq.= "sg_alias = '" . $ret["sg_alias"] ."', " : $rq .= "sg_alias = NULL";
     isset($ret["sg_comment"]) && $ret["sg_comment"] != null ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_comment = NULL,";
     isset($ret["geo_coords"]) && $ret["geo_coords"] != null ? $rq .= "geo_coords = '".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "geo_coords = NULL,";
     isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != null ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
@@ -246,7 +246,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
         if (isset($retTmp[$i]) && $retTmp[$i]) {
             $t = preg_split("/\-/", $retTmp[$i]);
             $resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE host_host_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
-            if (!$resTest->numRows()) {
+            if (!$resTest->rowCount()) {
                 $rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
                 $DBRESULT = $pearDB->query($rq);
             }
@@ -259,7 +259,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
         if (isset($retTmp[$i]) && $retTmp[$i]) {
             $t = preg_split("/\-/", $retTmp[$i]);
             $resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE host_host_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
-            if (!$resTest->numRows()) {
+            if (!$resTest->rowCount()) {
                 $rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
                 $DBRESULT = $pearDB->query($rq);
             }
@@ -271,7 +271,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
     for ($i = 0; $i < count($retTmp); $i++) {
         $t = preg_split("/\-/", $retTmp[$i]);
         $resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE hostgroup_hg_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
-        if (!$resTest->numRows()) {
+        if (!$resTest->rowCount()) {
             $rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
             $DBRESULT = $pearDB->query($rq);
         }

@@ -52,7 +52,7 @@ $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_ho
 while ($ehi = $DBRESULT->fetchRow()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $template = null;
 if (isset($_POST["template"])) {
@@ -113,7 +113,7 @@ while ($tpl = $DBRESULT->fetchRow()) {
     $tplService[$tpl["service_id"]] = $tpl["service_alias"];
     $templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Status Filter
@@ -232,7 +232,7 @@ $rq_body =  "esi.esi_icon_image, sv.service_id, sv.service_description, sv.servi
 $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS " . $distinct . $rq_body . " LIMIT " . $num * $limit . ", " . $limit);
 $rows = $pearDB->numberRows();
 
-if (!($DBRESULT->numRows())) {
+if (!($DBRESULT->rowCount())) {
     $DBRESULT = $pearDB->query("SELECT " . $distinct . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
 }
 
@@ -260,7 +260,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
     $BDRESULT2 = $pearDB->query($request);
     $data = $BDRESULT2->fetchRow();
     $service["nbr"] = $data["COUNT(*)"];
-    $BDRESULT2->free();
+    $BDRESULT2->closeCursor();
     unset($data);
 
     /**
