@@ -82,7 +82,7 @@ if ($host_id) {
         $host_id,
         'broker',
         array(
-            'fields'  => array('s.service_id', 'service_description'),
+            'fields'  => array('s.service_id', 's.service_description'),
             'keys'    => array('service_id'),
             'get_row' => 'service_description',
             'order'   => array('service_description'))
