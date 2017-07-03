@@ -70,6 +70,7 @@ abstract class AbstractService extends AbstractObject {
         service_notification_options as notification_options,
         service_notifications_enabled as notifications_enabled,
         contact_additive_inheritance,
+        service_use_only_contacts_from_host,
         cg_additive_inheritance,
         service_first_notification_delay as first_notification_delay,
         service_recovery_notification_delay as recovery_notification_delay,
@@ -159,6 +160,10 @@ abstract class AbstractService extends AbstractObject {
     }
     
     protected function getContacts(&$service) {
+        if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
+            $service['contacts_cache'] = array();
+            $service['contacts'] = "";
+        } else {
             $contact = Contact::getInstance();
             $service['contacts_cache'] = &$contact->getContactForService($service['service_id']);
             $contact_result = '';
@@ -176,11 +181,16 @@ abstract class AbstractService extends AbstractObject {
                 if (!is_null($service['contact_additive_inheritance']) && $service['contact_additive_inheritance'] == 1) {
                     $service['contacts'] = '+' . $service['contacts'];
                 }
+            }
         }
     }
     
     protected function getContactGroups(&$service)
     {
+        if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
+            $service['contact_groups_cache'] = array();
+            $service['contact_groups'] = "";
+        } else {
             $cg = Contactgroup::getInstance();
             $service['contact_groups_cache'] = &$cg->getCgForService($service['service_id']);
             $cg_result = '';
@@ -198,6 +208,7 @@ abstract class AbstractService extends AbstractObject {
                 if (!is_null($service['cg_additive_inheritance']) && $service['cg_additive_inheritance'] == 1) {
                     $service['contact_groups'] = '+' . $service['contact_groups'];
                 }
+            }
         }
     }
     
