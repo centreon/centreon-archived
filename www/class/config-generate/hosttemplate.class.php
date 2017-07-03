@@ -171,12 +171,6 @@ class HostTemplate extends AbstractHost
             return $this->hosts[$host_id]['name'];
         }
 
-        $oTimezone = Timezone::getInstance($this->dependencyInjector);
-        $sTimezone = $oTimezone->getTimezoneFromId($this->hosts[$host_id]['host_location']);
-        if (!is_null($sTimezone)) {
-            $this->hosts[$host_id]['timezone'] = ":" . $sTimezone;
-        }
-
         # Avoid infinite loop!
         if (isset($this->loop_htpl[$host_id])) {
             return $this->hosts[$host_id]['name'];
@@ -186,6 +180,7 @@ class HostTemplate extends AbstractHost
         $this->hosts[$host_id]['host_id'] = $host_id;
         $this->getImages($this->hosts[$host_id]);
         $this->getMacros($this->hosts[$host_id]);
+        $this->getHostTimezone($this->hosts[$host_id]);
         $this->getHostTemplates($this->hosts[$host_id]);
         $this->getHostCommands($this->hosts[$host_id]);
         $this->getHostPeriods($this->hosts[$host_id]);

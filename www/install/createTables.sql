@@ -475,6 +475,7 @@ CREATE TABLE `cfg_centreonbroker_info` (
 CREATE TABLE `cfg_nagios` (
   `nagios_id` int(11) NOT NULL AUTO_INCREMENT,
   `nagios_name` varchar(255) DEFAULT NULL,
+  `use_timezone` int(11) unsigned DEFAULT NULL,
   `log_file` varchar(255) DEFAULT NULL,
   `cfg_dir` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
@@ -619,7 +620,8 @@ CREATE TABLE `cfg_nagios` (
   CONSTRAINT `cfg_nagios_ibfk_23` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_24` FOREIGN KEY (`host_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_25` FOREIGN KEY (`service_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_26` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE
+  CONSTRAINT `cfg_nagios_ibfk_26` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cfg_nagios_ibfk_27` FOREIGN KEY (`use_timezone`) REFERENCES `timezone` (`timezone_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1825,7 +1827,6 @@ CREATE TABLE `service` (
   `service_notifications_enabled` enum('0','1','2') DEFAULT '2',
   `contact_additive_inheritance` boolean DEFAULT 0,
   `cg_additive_inheritance` boolean DEFAULT 0,
-  `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1',
   `service_use_only_contacts_from_host` enum('0','1') DEFAULT '0',
   `service_first_notification_delay` int(11) DEFAULT NULL,
   `service_acknowledgement_timeout` int(11) DEFAULT NULL,

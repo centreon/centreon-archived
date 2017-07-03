@@ -156,6 +156,15 @@ $form->addGroup($nagTab, 'nagios_activate', _("Status"), '&nbsp;');
 
 $form->addElement('select', 'nagios_server_id', _("Linked poller"), $nagios_server);
 
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?' .
+        'object=centreon_configuration_timezone&action=list',
+    'multiple' => false,
+    'linkedObject' => 'centreonGMT'
+);
+$form->addElement('select2', 'use_timezone', _("Timezone / Location"), array(), $attrTimezones);
+
 /* *************
  * Part 1
  */

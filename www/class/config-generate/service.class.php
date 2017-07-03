@@ -123,8 +123,6 @@ class Service extends AbstractService {
         }
         
         $service_tpl_top_id = $service_tpl_id;
-        $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] = 0;
-        $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] = 0;
         while (!is_null($service_tpl_id)) {
             if (isset($loop[$service_tpl_id])) {
                 break;
@@ -135,12 +133,17 @@ class Service extends AbstractService {
                 $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] = $services_tpl[$service_tpl_id]['has_tpl_contact_groups'];
                 break;
             }
-            
-            foreach (array('contact_groups', 'contacts') as $type) {
-                if (!is_null($services_tpl[$service_tpl_id][$type]) && $services_tpl[$service_tpl_id][$type] != '') {
-                    $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] = 1;
-                }
+
+            if (!is_null($services_tpl[$service_tpl_id]['contacts']) &&
+                $services_tpl[$service_tpl_id]['contacts'] != '') {
+                $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] = 1;
             }
+
+            if (!is_null($services_tpl[$service_tpl_id]['contact_groups']) &&
+                $services_tpl[$service_tpl_id]['contact_groups'] != '') {
+                $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] = 1;
+            }
+
             $service_tpl_id = isset($services_tpl[$service_tpl_id]['service_template_model_stm_id']) ? $services_tpl[$service_tpl_id]['service_template_model_stm_id'] : null;
         }
         
@@ -168,9 +171,6 @@ class Service extends AbstractService {
             $this->service_cache[$service_id]['contact_from_host'] = 1;
         } else {
             $this->service_cache[$service_id]['contact_from_host'] = 0;
-            if (is_null($this->service_cache[$service_id]['service_inherit_contacts_from_host']) || $this->service_cache[$service_id]['service_inherit_contacts_from_host'] == 0) {
-                return 0;
-            }
             if ($this->isServiceHasContacts($service_id)) {
                 return 0;
             }

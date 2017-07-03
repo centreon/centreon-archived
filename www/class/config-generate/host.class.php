@@ -35,9 +35,6 @@
 
 require_once dirname(__FILE__) . '/abstract/host.class.php';
 require_once dirname(__FILE__) . '/abstract/service.class.php';
-require_once dirname(__FILE__) . '/../centreonHost.class.php';
-require_once dirname(__FILE__) . '/../centreonDB.class.php';
-
 
 class Host extends AbstractHost {
     protected $hosts_by_name = array();
@@ -151,8 +148,6 @@ class Host extends AbstractHost {
     protected function getSeverity($host_id_arg) {
         $host_id = null;
         $loop = array();
-        $stack = array();
-        $stack2 = array();
 
         $severity_instance = Severity::getInstance($this->dependencyInjector);
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
@@ -225,15 +220,7 @@ class Host extends AbstractHost {
         $this->getMacros($host);
         $host['macros']['_HOST_ID'] = $host['host_id'];
 
-        $hostObj = new CentreonHost($this->backend_instance->db);
-        $template = $hostObj->getInheritedValues($host['host_id'], array(), -1, array('host_location'));
-
-        $oTimezone = Timezone::getInstance($this->dependencyInjector);
-        $sTimezone = $oTimezone->getTimezoneFromId($template['host_location']);
-        if (!is_null($sTimezone)) {
-            $host['timezone'] = ":". $sTimezone;
-        }
-
+        $this->getHostTimezone($host);
         $this->getHostTemplates($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);

@@ -41,6 +41,8 @@ class Engine extends AbstractObject {
     protected $attributes_select = '
         nagios_id,
         
+        use_timezone,
+        
         cfg_dir,
         cfg_file as cfg_filename,
         
@@ -155,6 +157,7 @@ class Engine extends AbstractObject {
         use_setpgid
     ';
     protected $attributes_write = array(
+        'use_timezone',
         'resource_file',
         'log_file',
         'status_file',
@@ -374,6 +377,14 @@ class Engine extends AbstractObject {
         if (!is_null($object['illegal_object_name_chars'])) {
             $object['illegal_object_name_chars'] = html_entity_decode($object['illegal_object_name_chars'], ENT_QUOTES);
         }
+
+        $timezoneInstance = Timezone::getInstance($this->dependencyInjector);
+        $timezone = $timezoneInstance->getTimezoneFromId($object['use_timezone'], true);
+        $object['use_timezone'] = null;
+        if (!is_null($timezone)) {
+            $object['use_timezone'] = ':' . $timezone;
+        }
+
         $command_instance = Command::getInstance($this->dependencyInjector);
         $object['global_host_event_handler'] = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
         $object['global_service_event_handler'] = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);

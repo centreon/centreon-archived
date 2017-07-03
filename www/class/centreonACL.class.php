@@ -2043,9 +2043,9 @@ class CentreonACL
                 . "JOIN $db_name_acl.centreon_acl "
                 . "ON $db_name_acl.centreon_acl.host_id = host.host_id "
                 . "AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") "
+                . $emptyJoin
                 . "WHERE host.host_register = '1' "
                 //. "AND host.host_activate = '1' "
-                . $emptyJoin
                 . $request['conditions']
                 . $searchCondition;
         }
@@ -2069,7 +2069,7 @@ class CentreonACL
         if (is_null($options)) {
             $options = array(
                 'order' => array('LOWER(service_description)'),
-                'fields' => array('s.service_id', 's.service_description'),
+                'fields' => array('s.service_id', 'service_description'),
                 'keys' => array('service_id'),
                 'keys_separator' => '',
                 'get_row' => 'service_description'
