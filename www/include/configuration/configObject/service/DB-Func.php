@@ -790,7 +790,6 @@ function insertServiceInDB($ret = array(), $macro_on_demand = null)
     updateServiceNotifOptionTimeperiod($service_id, $ret);
     updateServiceNotifOptionFirstNotificationDelay($service_id, $ret);
     updateServiceHost($service_id, $ret);
-    // updateServiceHostContactsInheritance($service_id, $ret);
     updateServiceServiceGroup($service_id, $ret);
     insertServiceExtInfos($service_id, $ret);
     updateServiceTrap($service_id, $ret);
