@@ -34,7 +34,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
             'string' => '@trapRule@',
             'regexp' => '/ruleRegexp/',
             'status' => 'Critical',
-            'severity' => 'serviceCategoryName (3)',
+            'severity' => 'serviceCategoryName (3)'
         )),
         'submit' => 0,
         'reschedule' => 1,
@@ -70,7 +70,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
             'string' => '@trapRule@',
             'regexp' => '/ruleRegexp/',
             'status' => 'Critical',
-            'severity' => 'serviceCategoryName (3)',
+            'severity' => 'serviceCategoryName (3)'
         )),
         'submit' => 0,
         'reschedule' => 1,
