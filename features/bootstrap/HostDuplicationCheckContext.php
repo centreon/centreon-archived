@@ -9,19 +9,19 @@ class HostDuplicationCheckContext extends CentreonContext
 {
     private $currentPage;
 
-    private $initialProperties = (array(
+    private $initialProperties = array(
         'name' => 'hostName',
         'alias' => 'hostAlias',
         'address' => 'host@localhost',
         'enabled' => 1
-    ));
+    );
 
-    private $updatedProperties = (array(
+    private $updatedProperties = array(
         'name' => 'hostName_1',
         'alias' => 'hostAlias',
         'address' => 'host@localhost',
         'enabled' => 1
-    ));
+    );
 
     /**
      * @Given a host is created

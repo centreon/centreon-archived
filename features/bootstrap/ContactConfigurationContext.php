@@ -9,7 +9,7 @@ class ContactConfigurationContext extends CentreonContext
 {
     private $currentPage;
 
-    private $initialProperties = (array(
+    private $initialProperties = array(
         'name' => 'contactName',
         'alias' => 'contactAlias',
         'email' => 'contact@localhost',
@@ -19,8 +19,8 @@ class ContactConfigurationContext extends CentreonContext
         'dn' => 'contactDN',
         'host_notification_period' => 'workhours',
         'service_notification_period' => 'nonworkhours'
-    ));
-    private $updatedProperties = (array(
+    );
+    private $updatedProperties = array(
         'name' => 'modifiedName',
         'alias' => 'modifiedAlias',
         'email' => 'modified@localhost',
@@ -28,7 +28,7 @@ class ContactConfigurationContext extends CentreonContext
         'dn' => 'modifiedDn',
         'host_notification_period' => 'workhours',
         'service_notification_period' => 'nonworkhours'
-    ));
+    );
 
     /**
      * @Given a contact
