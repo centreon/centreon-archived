@@ -193,3 +193,13 @@ default:
       paths: [ %paths.base%/features/TrapsSNMPConfiguration.feature ]
       contexts:
       - TrapsSNMPConfigurationContext
+      
+    ldap_manual_import:
+      paths: [ %paths.base%/features/LdapManualImport.feature ]
+      contexts:
+      - LdapManualImportContext
+
+    control_login:
+      paths: [ %paths.base%/features/ControlLogin.feature ]
+      contexts:
+      - ControlLoginContext
