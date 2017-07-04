@@ -2,6 +2,7 @@
 
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Administration\LdapConfigurationListingPage;
+use Centreon\Test\Behat\Administration\LdapUserImportPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\External\LoginPage;
 
@@ -33,9 +34,16 @@ class LdapManualImportContext extends CentreonContext
      */
     public function iSearchASpecificUserWhoseAliasContainsASpecialCharacterSuchAsAnAccent()
     {
-        $this->page = new LdapConfigurationListingPage($this);
-        $this->page = $this->page->inspect('openldap');
-        $this->assertFindButton('Import users manually')->click();
+        $this->page = new LdapUserImportPage($this);
+        $this->page->setProperties(
+            array(
+                'servers' => array(
+                    'openldap' => array(
+                        'checked' => true
+                    )
+                )
+            )
+        );
     }
 
     /**
@@ -53,12 +61,19 @@ class LdapManualImportContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', 'input[name="contact_select[select][3]"]');
+                return $context->getSession()->getPage()->has(
+                    'css',
+                    'input[id^="contact_alias"][value="centréon-ldap4"]'
+                );
             },
             'user to import not found.',
             10
         );
-        $this->assertFind('css', 'input[name="contact_select[select][3]"]')->click();
+        $line = $this->assertFind(
+            'css',
+            'input[id^="contact_alias"][value="centréon-ldap4"]'
+        )->getParent()->getParent();
+        $this->assertFindIn($line, 'css', 'input[type="checkbox"]')->click();
         $this->assertFindButton('submitA')->click();
     }
 
