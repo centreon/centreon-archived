@@ -1355,7 +1355,6 @@ class CentreonService
             $rq .= "'2', ";
         $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
         $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
-            $rq .= "'NULL', ";
         isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) &&
             $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ?
             $rq .= "'" . $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] . "', " :
