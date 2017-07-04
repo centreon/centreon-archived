@@ -3,6 +3,7 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactGroupConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\Administration\ACLGroupConfigurationPage;
 use Centreon\Test\Behat\Administration\ACLGroupConfigurationListingPage;
@@ -16,6 +17,8 @@ class AclAccessGroupsContext extends CentreonContext
     protected $secondContactAlias = 'secondContactAlias';
     protected $contactGroupName = 'contactGroupName';
     protected $contactGroupAlias = 'contactGroupAlias';
+    protected $accessContactName = 'accessContactName';
+    protected $accessContactAlias = 'accessContactAlias';
     protected $accessGroupsName = 'accessGroupsName';
     protected $accessGroupsAlias = 'accessGroupsAlias';
 
@@ -52,16 +55,18 @@ class AclAccessGroupsContext extends CentreonContext
         $this->assertFind('css', 'span[class="select2-selection select2-selection--multiple"]')->click();
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', 'span ul li div[title="'.$this->firstContactName.'"]');
+                return $context->getSession()->getPage()->has('css', 'span ul li div[title="' 
+                    . $this->firstContactName . '"]');
             },
-             'The user: '.$this->firstContactName. ' does not exist or has not been found',
+             'The user: ' . $this->firstContactName . ' does not exist or has not been found',
             5
         );
         $this->assertFind('css', 'span ul li div[title="'.$this->firstContactName.'"]')->click();
         $this->assertFind('css', 'span[class="select2-selection select2-selection--multiple"]')->click();
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', 'span ul li div[title="'.$this->secondContactName.'"]');
+                return $context->getSession()->getPage()->has('css', 'span ul li div[title="'
+                    . $this->secondContactName . '"]');
             },
             'The user: ' . $this->secondContactName . ' does not exist or has not been found',
             5
@@ -77,8 +82,8 @@ class AclAccessGroupsContext extends CentreonContext
     {
         $this->page = new ACLGroupConfigurationPage($this);
         $this->page->setProperties(array(
-            'group_name' => $this->accessGroupsName,
-            'group_alias' => $this->accessGroupsAlias,
+            'group_name' => $this->accessContactName,
+            'group_alias' => $this->accessContactAlias,
             'contacts' => array($this->firstContactName, $this->secondContactName)
         ));
         $this->page->save();
@@ -92,19 +97,18 @@ class AclAccessGroupsContext extends CentreonContext
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->firstContactAlias);
         $this->assertFind('css', 'li#c2 a')->click();
-        $value = $this->assertFind('css', 'span[title="'. $this->accessGroupsName.'"]')->getText();
-        if ($value != $this->accessGroupsName) {
+        $value = $this->assertFind('css', 'span[title="' . $this->accessContactName . '"]')->getText();
+        if ($value != $this->accessContactName) {
             
-            throw new \Exception($this->firstContactAlias . ' have no access groups displayed');
+            throw new \Exception($this->firstContactAlias . ' have no Access list groups displayed');
         }
         
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->secondContactAlias);
         $this->assertFind('css', 'li#c2 a')->click();
-        $value = $this->assertFind('css', 'span[title="'. $this->accessGroupsName.'"]')->getText();
-        if ($value != $this->accessGroupsName) {
-            
-            throw new \Exception($this->secondContactAlias . ' have no access groups displayed');
+        $value = $this->assertFind('css', 'span[title="' . $this->accessContactName . '"]')->getText();
+        if ($value != $this->accessContactName) {
+            throw new \Exception($this->secondContactAlias . ' have no Access list groups displayed');
         }
     }
 
@@ -113,7 +117,15 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function iAddANewAccessGroupWithLinkedContactGroup()
     {
-        throw new PendingException();
+        $this->oneContactGroupExistsIncludingTwoNonAdminContacts();
+        $this->theAccessGroupIsSavedWithItsProperties();
+        $this->page = new ACLGroupConfigurationPage($this);
+        $this->page->setProperties(array(
+            'group_name' => $this->accessGroupsName,
+            'group_alias' => $this->accessGroupsAlias,
+            'contactgroups' => $this->contactGroupName
+        ));
+        $this->page->save();
     }
 
     /**
@@ -121,7 +133,12 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function theContactGroupHasTheAccessListGroupDisplayedInRelationsInformations()
     {
-        throw new PendingException();
+        $this->page = new ContactGroupConfigurationListingPage($this);
+        $this->page = $this->page->inspect($this->contactGroupName);
+        $value = $this->assertFind('css', 'span[title="' . $this->accessGroupsName. '"]')->getText();
+        if ($value != $this->accessGroupsName) {
+            throw new \Exception($this->contactGroupName . ' have no Linked ACL groups displayed');
+        }
     }
 
     /**
@@ -129,7 +146,8 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function oneExistingAclAccessGroup()
     {
-        throw new PendingException();
+        $this->iAddANewAccessGroupWithLinkedContactGroup();
+        $this->page = new ACLGroupConfigurationListingPage($this);
     }
 
     /**
@@ -137,7 +155,12 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function iModifyItsProperties()
     {
-        throw new PendingException();
+        $this->page = $this->page->inspect($this->accessGroupsName);
+        $this->page->setProperties(array(
+            'group_name' => 'newGroupName',
+            'group_alias' => 'newGroupAlias'
+        ));
+        $this->page->save();
     }
 
     /**
@@ -145,7 +168,11 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function allModifiedPropertiesAreUpdated()
     {
-        throw new PendingException();
+        $this->page = new ACLGroupConfigurationListingPage($this);
+        $objet = $this->page->getEntries();
+        if (!$objet['newGroupName'] && $objet['newGroupName']['description'] != 'newGroupAlias') {
+            throw new \Exception('updates has not changed');
+        }
     }
 
     /**
@@ -153,7 +180,8 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function iDuplicateTheAccessGroup()
     {
-        throw new PendingException();
+        $object = $this->page->getEntry($this->accessGroupsName);
+        $this->page->selectMoreAction($object, 'Duplicate');
     }
 
     /**
@@ -161,7 +189,14 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function aNewAccessGroupAppearsWithSimilarProperties()
     {
-        throw new PendingException();
+        $objects = $this->page->getEntries();
+        if ($objects['accessGroupsName_1']) {
+            if ($objects['accessGroupsName_1']['description'] != $this->accessGroupsAlias) {
+                throw new \Exception('properties has not been duplicated');
+            }
+        } else {
+            throw new Exception('the duplication did not work');
+        }
     }
 
     /**
@@ -169,7 +204,8 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function iDeleteTheAccessGroup()
     {
-        throw new PendingException();
+        $object = $this->page->getEntry($this->accessGroupsName);
+        $this->page->selectMoreAction($object, 'Delete');
     }
 
     /**
@@ -177,7 +213,10 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function itDoesNotExistAnymore()
     {
-        throw new PendingException();
+        $objects = $this->page->getEntries();
+        if (key_exists($this->accessGroupsName, $objects)) {
+            throw new Exception($this->accessGroupsName . ' is still existing');
+        }
     }
 
     /**
@@ -185,7 +224,8 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function oneExistingEnabledAclAccessGroup()
     {
-        throw new PendingException();
+        $this->iAddANewAccessGroupWithLinkedContactGroup();
+        $this->page = new ACLGroupConfigurationListingPage($this);
     }
 
     /**
@@ -193,14 +233,20 @@ class AclAccessGroupsContext extends CentreonContext
      */
     public function iDisableIt()
     {
-        throw new PendingException();
+        $this->page = $this->page->inspect($this->accessGroupsName);
+        $this->page->setProperties(array('status' => 0));
+        $this->page->save();
     }
 
     /**
      * @Then its status is modified
      */
     public function itsStatusIsModified()
-    {
-        throw new PendingException();
+    {   
+        $this->page = new ACLGroupConfigurationListingPage($this);
+        $object = $this->page->getEntry($this->accessGroupsName);
+        if ($object['status'] != 0) {
+            throw new Exception($this->accessGroupsName . ' is still enabled');
+        }
     }
 }
