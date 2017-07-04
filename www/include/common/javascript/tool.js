@@ -188,12 +188,12 @@ function atoi(s)
 
 function setDisabledRowStyle(img)
 {
-    $( document ).ready(function() {
+    jQuery( document ).ready(function() {
 		if (!img) {
 			var img = "enabled.png";
 		}
-		$('img[src$="enabled.png"]').each(function(index) {
-			$(this).parent().parent().addClass('row_disabled');
+        jQuery('img[src$="enabled.png"]').each(function(index) {
+            jQuery(this).parent().parent().parent().className('row_disabled');
 		});
 	});
 }
