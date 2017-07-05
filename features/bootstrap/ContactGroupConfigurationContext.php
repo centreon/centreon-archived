@@ -26,6 +26,20 @@ class ContactGroupConfigurationContext extends CentreonContext
         'comments' => 'contactGroupCommentChanged'
     ));
 
+    protected $aclGroup = (array(
+        'group_name' => $this->updatedProperties['acl'],
+        'group_alias' => 'aclGroupAlias'
+    ));
+
+    protected $contact = (array(
+        'name' => 'contactName',
+        'alias' => $this->updatedProperties['contacts'],
+        'email' => 'contact@localhost',
+        'password' => 'pwd',
+        'password2' => 'pwd',
+        'admin' => 0
+    ));
+
     /**
      * @Given a contact group is configured
      */
@@ -42,20 +56,10 @@ class ContactGroupConfigurationContext extends CentreonContext
     public function iConfigureTheContactGroupProperties()
     {
         $this->currentPage = new ContactConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->updatedProperties['contacts'],
-            'alias' => $this->updatedProperties['contacts'],
-            'email' => "contact@localhost",
-            'password' => 'pwd',
-            'password2' => 'pwd',
-            'admin' => 0
-        ));
+        $this->currentPage->setProperties($this->contact);
         $this->currentPage->save();
         $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'group_name' => $this->updatedProperties['acl'],
-            'group_alias' => $this->updatedProperties['acl']
-        ));
+        $this->currentPage->setProperties($this->aclGroup);
         $this->currentPage->save();
         $this->currentPage = new ContactGroupConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
