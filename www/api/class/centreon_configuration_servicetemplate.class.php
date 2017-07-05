@@ -96,7 +96,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             'WHERE service_description LIKE :description ' .
             'AND service_register = "0" ' .
             'ORDER BY service_description ';
-        if (isset($range)) {
+        if (isset($range) && !empty($range)) {
             $queryContact .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$range[0];
             $queryValues['limit'] = (int)$range[1];
