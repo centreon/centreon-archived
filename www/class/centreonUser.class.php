@@ -33,44 +33,43 @@
  *
  */
 
-require_once ("centreonACL.class.php");
-require_once ("centreonLog.class.php");
+require_once("centreonACL.class.php");
+require_once("centreonLog.class.php");
 
 class CentreonUser
 {
-	var $user_id;
-	var $name;
-	var $alias;
-	var $passwd;
-	var $email;
-	var $lang;
-	var $charset;
-	var $version;
-	var $admin;
-	var $limit;
-    var $js_effects;
-	var $num;
-	var $gmt;
-	var $is_admin;
-	var $groupList;
-	var $groupListStr;
-	var $access;
-	var $log;
-	var $userCrypted;
+    public $user_id;
+    public $name;
+    public $alias;
+    public $passwd;
+    public $email;
+    public $lang;
+    public $charset;
+    public $version;
+    public $admin;
+    public $limit;
+    public $js_effects;
+    public $num;
+    public $gmt;
+    public $is_admin;
+    public $groupList;
+    public $groupListStr;
+    public $access;
+    public $log;
+    public $userCrypted;
     protected $token;
     public $default_page;
-        
-	# User LCA
-	# Array with elements ID for loop test
-	var $lcaTopo;
 
-	# String with elements ID separated by commas for DB requests
-	var $lcaTStr;
+    # User LCA
+    # Array with elements ID for loop test
+    public $lcaTopo;
+
+    # String with elements ID separated by commas for DB requests
+    public $lcaTStr;
 
     /**
-     * 
-     * @global type $pearDB
-     * @param type $user
+     * CentreonUser constructor.
+     * @param array $user
      */
     function CentreonUser($user = array())
     {
@@ -89,7 +88,7 @@ class CentreonUser
         $this->default_page = $user["default_page"];
         $this->gmt = $user["contact_location"];
         $this->js_effects = $user["contact_js_effects"];
-        $this->is_admin = NULL;
+        $this->is_admin = null;
         /*
          * Initiate ACL
          */
@@ -104,12 +103,12 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @global type $pearDB
      * @param type $div_name
      * @return int
      */
-    public function showDiv($div_name = NULL)
+    public function showDiv($div_name = null)
     {
         global $pearDB;
 
@@ -124,11 +123,11 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $pearDB
      * @return int
      */
-    function getAllTopology($pearDB)
+    public function getAllTopology($pearDB)
     {
         $DBRESULT = $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");
         while ($topo = $DBRESULT->fetchRow()) {
@@ -140,118 +139,123 @@ class CentreonUser
         $DBRESULT->closeCursor();
         return $lcaTopo;
     }
-    
+
     /**
      * Check if user is admin or had ACL
-     * 
+     *
      * @param type $sid
      * @param type $pearDB
      */
-  	function checkUserStatus($sid = NULL, $pearDB)
+    public function checkUserStatus($sid = null, $pearDB)
     {
-		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id AND contact.contact_register = '1'");
-		$admin = $DBRESULT->fetchRow();
-		$DBRESULT->closeCursor();
+        $query1 = "SELECT contact_admin, contact_id FROM session, contact " .
+            "WHERE session.session_id = '" . $sid .
+            "' AND contact.contact_id = session.user_id AND contact.contact_register = '1'";
+        $dbResult = $pearDB->query($query1);
+        $admin = $dbResult->fetchRow();
+        $dbResult->closeCursor();
 
-		$DBRESULT = $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
-		$admin2 = $DBRESULT->fetchRow();
-		$DBRESULT->closeCursor();
+        $query2 = "SELECT count(*) FROM `acl_group_contacts_relations` " .
+            "WHERE contact_contact_id = '" . $admin["contact_id"] . "'";
+        $dbResult = $pearDB->query($query2);
+        $admin2 = $dbResult->fetchRow();
+        $dbResult->closeCursor();
 
-		if ($admin["contact_admin"]) {
-			unset($admin);
-			$this->is_admin = 1 ;
-		} else if (!$admin2["count(*)"]) {
-			unset($admin2);
-			$this->is_admin = 1;
-		}
-		$this->is_admin = 0;
-	}
+        if ($admin["contact_admin"]) {
+            unset($admin);
+            $this->is_admin = 1;
+        } elseif (!$admin2["count(*)"]) {
+            unset($admin2);
+            $this->is_admin = 1;
+        }
+        $this->is_admin = 0;
+    }
 
-  // Get
+    // Get
 
-    function get_id()
+    public function get_id()
     {
         return $this->user_id;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function get_name()
+    public function get_name()
     {
         return $this->name;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function get_email()
+    public function get_email()
     {
         return $this->email;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function get_alias()
+    public function get_alias()
     {
         return $this->alias;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function get_version()
+    public function get_version()
     {
         return $this->version;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function get_lang()
+    public function get_lang()
     {
         return $this->lang;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function get_passwd()
+    public function get_passwd()
     {
         return $this->passwd;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function get_admin()
+    public function get_admin()
     {
         return $this->admin;
     }
 
     /**
-     * 
+     *
      * @return type
      */
-    function is_admin()
+    public function is_admin()
     {
         return $this->is_admin;
     }
 
     /**
-     * 
+     *
      * @global type $pearDB
      * @return type
      */
-    function get_js_effects()
+    public function get_js_effects()
     {
         global $pearDB;
 
@@ -264,86 +268,84 @@ class CentreonUser
 
         return $this->js_effects;
     }
-  
-  // Set
+
+    // Set
 
     /**
-     * 
+     *
      * @param type $id
      */
-    function set_id($id)
+    public function set_id($id)
     {
         $this->user_id = $id;
     }
 
     /**
-     * 
+     *
      * @param type $name
      */
-    function set_name($name)
+    public function set_name($name)
     {
         $this->name = $name;
     }
 
     /**
-     * 
+     *
      * @param type $email
      */
-    function set_email($email)
+    public function set_email($email)
     {
         $this->email = $email;
     }
 
     /**
-     * 
+     *
      * @param type $lang
      */
-    function set_lang($lang)
+    public function set_lang($lang)
     {
         $this->lang = $lang;
     }
 
     /**
-     * 
+     *
      * @param type $alias
      */
-    function set_alias($alias)
+    public function set_alias($alias)
     {
         $this->alias = $alias;
     }
 
     /**
-     * 
+     *
      * @param type $version
      */
-    function set_version($version)
+    public function set_version($version)
     {
         $this->version = $version;
     }
 
     /**
-     * 
-     * @param type $js_effects
+     * @param $js_effects
      */
-    function set_js_effects($js_effects)
+    public function set_js_effects($js_effects)
     {
         $this->js_effects = $js_effects;
     }
 
     /**
-     * 
-     * @return type
+     * @return mixed
      */
-    function getMyGMT()
+    public function getMyGMT()
     {
         return $this->gmt;
     }
 
-  /**
-   * Get User List
-   *
-   * @return array
-   */
+    /**
+     * Get User List
+     *
+     * @return array
+     */
     public function getUserList($db)
     {
         static $userList;
@@ -364,13 +366,13 @@ class CentreonUser
         return $userList;
     }
 
-  /**
-   * Get Contact Name
-   *
-   * @param int $userId
-   * @param CentreonDB $db
-   * @return string
-   */
+    /**
+     * Get Contact Name
+     *
+     * @param int $userId
+     * @param CentreonDB $db
+     * @return string
+     */
     public function getContactName($db, $userId)
     {
         static $userNames;
@@ -452,23 +454,23 @@ class CentreonUser
         }
         $db->query($insertQuery);
     }
-  
-  /**
-   * Get token
-   * 
-   * @return string
-   */
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
     public function getToken()
     {
         return $this->token;
     }
-  
-  /**
-   * Set token
-   * 
-   * @param string $token
-   * @return void
-   */
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     * @return void
+     */
     public function setToken($token)
     {
         $this->token = $token;
