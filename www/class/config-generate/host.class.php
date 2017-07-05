@@ -36,7 +36,8 @@
 require_once dirname(__FILE__) . '/abstract/host.class.php';
 require_once dirname(__FILE__) . '/abstract/service.class.php';
 
-class Host extends AbstractHost {
+class Host extends AbstractHost
+{
     protected $hosts_by_name = array();
     protected $hosts = null;
     protected $generate_filename = 'hosts.cfg';
@@ -49,8 +50,8 @@ class Host extends AbstractHost {
     protected $generatedHosts = array();
 
 
-
-    private function getHostGroups(&$host) {
+    private function getHostGroups(&$host)
+    {
         if (!isset($host['hg'])) {
             if (is_null($this->stmt_hg)) {
                 $this->stmt_hg = $this->backend_instance->db->prepare("SELECT
@@ -70,7 +71,8 @@ class Host extends AbstractHost {
         }
     }
 
-    private function getParents(&$host) {
+    private function getParents(&$host)
+    {
         if (is_null($this->stmt_parent)) {
             $this->stmt_parent = $this->backend_instance->db->prepare("SELECT
                     host_parent_hp_id
@@ -101,7 +103,8 @@ class Host extends AbstractHost {
         }
     }
 
-    private function getServices(&$host) {
+    private function getServices(&$host)
+    {
         if (is_null($this->stmt_service)) {
             $this->stmt_service = $this->backend_instance->db->prepare("SELECT
                     service_service_id
@@ -119,17 +122,16 @@ class Host extends AbstractHost {
         }
     }
 
-    private function getServicesByHg(&$host) {
+    private function getServicesByHg(&$host)
+    {
         if (count($host['hg']) == 0) {
             return 1;
         }
         if (is_null($this->stmt_service_sg)) {
-            $this->stmt_service_sg = $this->backend_instance->db->prepare("SELECT
-                    service_service_id
-                FROM host_service_relation
-                    JOIN hostgroup_relation ON (hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id)
-                WHERE hostgroup_relation.host_host_id = :host_id
-                ");
+            $query = "SELECT service_service_id FROM host_service_relation " .
+                "JOIN hostgroup_relation ON (hostgroup_relation.hostgroup_hg_id = " .
+                "host_service_relation.hostgroup_hg_id) WHERE hostgroup_relation.host_host_id = :host_id";
+            $this->stmt_service_sg = $this->backend_instance->db->prepare($query);
         }
         $this->stmt_service_sg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
         $this->stmt_service_sg->execute();
@@ -141,19 +143,22 @@ class Host extends AbstractHost {
         }
     }
 
-    public function getSeverityForService($host_id) {
+    public function getSeverityForService($host_id)
+    {
         return $this->hosts[$host_id]['severity_id_for_services'];
     }
 
-    protected function getSeverity($host_id_arg) {
+    protected function getSeverity($host_id_arg)
+    {
         $host_id = null;
         $loop = array();
 
         $severity_instance = Severity::getInstance($this->dependencyInjector);
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
         $this->hosts[$host_id_arg]['severity'] = $severity_instance->getHostSeverityById($severity_id);
-        if (!is_null($this->hosts[$host_id_arg]['severity']) ) {
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_LEVEL'] = $this->hosts[$host_id_arg]['severity']['level'];
+        if (!is_null($this->hosts[$host_id_arg]['severity'])) {
+            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_LEVEL'] =
+                $this->hosts[$host_id_arg]['severity']['level'];
             $this->hosts[$host_id_arg]['macros']['_CRITICALITY_ID'] = $this->hosts[$host_id_arg]['severity']['hc_id'];
         }
 
@@ -196,11 +201,13 @@ class Host extends AbstractHost {
         $this->hosts[$host_id_arg]['severity_id_for_services'] = $severity_instance->getHostSeverityById($severity_id);
     }
 
-    public function addHost($host_id, $attr = array()) {
+    public function addHost($host_id, $attr = array())
+    {
         $this->hosts[$host_id] = $attr;
     }
 
-    private function getHosts($poller_id) {
+    private function getHosts($poller_id)
+    {
         # We use host_register = 1 because we don't want _Module_* hosts
         $stmt = $this->backend_instance->db->prepare("SELECT
               $this->attributes_select
@@ -211,11 +218,12 @@ class Host extends AbstractHost {
                 AND host.host_activate = '1' AND host.host_register = '1'");
         $stmt->bindParam(':server_id', $poller_id, PDO::PARAM_INT);
         $stmt->execute();
-        $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
+        $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
 
-    public function generateFromHostId(&$host) {
+    public function generateFromHostId(&$host)
+    {
         $this->getImages($host);
         $this->getMacros($host);
         $host['macros']['_HOST_ID'] = $host['host_id'];
@@ -236,7 +244,8 @@ class Host extends AbstractHost {
         $this->addGeneratedHost($host['host_id']);
     }
 
-    public function generateFromPollerId($poller_id, $localhost=0) {
+    public function generateFromPollerId($poller_id, $localhost = 0)
+    {
         if (is_null($this->hosts)) {
             $this->getHosts($poller_id);
         }
@@ -259,14 +268,16 @@ class Host extends AbstractHost {
         Dependency::getInstance($this->dependencyInjector)->generateObjects();
     }
 
-    public function getHostIdByHostName($host_name) {
+    public function getHostIdByHostName($host_name)
+    {
         if (isset($this->hosts_by_name[$host_name])) {
             return $this->hosts_by_name[$host_name];
         }
         return null;
     }
 
-    public function getGeneratedParentship() {
+    public function getGeneratedParentship()
+    {
         return $this->generated_parentship;
     }
 
@@ -280,7 +291,8 @@ class Host extends AbstractHost {
         return $this->generatedHosts;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->hosts_by_name = array();
         $this->hosts = null;
         $this->generated_parentship = array();

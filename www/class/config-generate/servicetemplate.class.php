@@ -35,7 +35,8 @@
 
 require_once dirname(__FILE__) . '/abstract/service.class.php';
 
-class ServiceTemplate extends AbstractService {
+class ServiceTemplate extends AbstractService
+{
     protected $hosts = null;
     protected $generate_filename = 'serviceTemplates.cfg';
     protected $object_name = 'service';
@@ -122,7 +123,7 @@ class ServiceTemplate extends AbstractService {
         'icon_image_alt',
         'acknowledgement_timeout'
     );
-    
+
     private function getServiceGroups($service_id)
     {
         $host = Host::getInstance($this->dependencyInjector);
@@ -141,7 +142,7 @@ class ServiceTemplate extends AbstractService {
             }
         }
     }
-    
+
     private function getServiceFromId($service_id)
     {
         if (is_null($this->stmt_service)) {
@@ -158,13 +159,13 @@ class ServiceTemplate extends AbstractService {
         $results = $this->stmt_service->fetchAll(PDO::FETCH_ASSOC);
         $this->service_cache[$service_id] = array_pop($results);
     }
-    
+
     private function getSeverity($service_id)
     {
         if (isset($this->service_cache[$service_id]['severity_id'])) {
             return 0;
         }
-        
+
         $this->service_cache[$service_id]['severity_id'] =
             Severity::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
         $severity = Severity::getInstance($this->dependencyInjector)
@@ -174,17 +175,17 @@ class ServiceTemplate extends AbstractService {
             $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
         }
     }
-    
+
     public function generateFromServiceId($service_id)
     {
         if (is_null($service_id)) {
             return null;
         }
-        
+
         if (!isset($this->service_cache[$service_id])) {
             $this->getServiceFromId($service_id);
         }
-        
+
         if (is_null($this->service_cache[$service_id])) {
             return null;
         }
@@ -197,13 +198,13 @@ class ServiceTemplate extends AbstractService {
             }
             return $this->service_cache[$service_id]['name'];
         }
-        
+
         # avoid loop. we return nothing
         if (isset($this->loop_tpl[$service_id])) {
             return null;
         }
         $this->loop_tpl[$service_id] = 1;
-        
+
         $this->getImages($this->service_cache[$service_id]);
         $this->getMacros($this->service_cache[$service_id]);
         $this->getServiceTemplates($this->service_cache[$service_id]);
@@ -213,16 +214,16 @@ class ServiceTemplate extends AbstractService {
         $this->getContacts($this->service_cache[$service_id]);
         $this->getServiceGroups($service_id);
         $this->getSeverity($service_id);
-        
+
         $this->generateObjectInFile($this->service_cache[$service_id], $service_id);
         return $this->service_cache[$service_id]['name'];
     }
-    
+
     public function resetLoop()
     {
         $this->loop_tpl = array();
     }
-    
+
     public function reset()
     {
         $this->current_host_id = null;

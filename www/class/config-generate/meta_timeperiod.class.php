@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class MetaTimeperiod extends AbstractObject {
+class MetaTimeperiod extends AbstractObject
+{
     protected $generate_filename = 'meta_timeperiod.cfg';
     protected $object_name = 'timeperiod';
     protected $attributes_write = array(
@@ -47,12 +49,13 @@ class MetaTimeperiod extends AbstractObject {
         'friday',
         'saturday',
     );
-    
-    public function generateObjects() {
+
+    public function generateObjects()
+    {
         if ($this->checkGenerate(0)) {
             return 0;
         }
-        
+
         $object = array();
         $object['timeperiod_name'] = 'meta_timeperiod';
         $object['alias'] = 'meta_timeperiod';

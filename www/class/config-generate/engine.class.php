@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,11 +34,13 @@
  *
  */
 
-class Engine extends AbstractObject {
+class Engine extends AbstractObject
+{
     protected $engine = null;
     protected $generate_filename = null; # it's in 'cfg_nagios' table
     protected $object_name = null;
-    # skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path, lock_file, daemon_dumps_core
+    # skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path,
+    # lock_file, daemon_dumps_core
     protected $attributes_select = '
         nagios_id,
         
@@ -223,7 +226,7 @@ class Engine extends AbstractObject {
         'debug_verbosity',
         'max_debug_file_size',
         'log_pid', // cengine
-        
+
         'global_host_event_handler',
         'global_service_event_handler',
         'ocsp_command',
@@ -279,21 +282,22 @@ class Engine extends AbstractObject {
     protected $stmt_broker = null;
     protected $stmt_interval_length = null;
     protected $add_cfg_files = array();
-    
+
     private function buildCfgFile($poller_id)
     {
         $this->engine['cfg_dir'] = preg_replace('/\/$/', '', $this->engine['cfg_dir']);
         $this->cfg_file = array(
             'target' => array(
-                'cfg_file' => array(), 
-                'path' => $this->engine['cfg_dir'], 
+                'cfg_file' => array(),
+                'path' => $this->engine['cfg_dir'],
                 'resource_file' => $this->engine['cfg_dir'] . '/resource.cfg'
             ),
             'debug' => array(
-                'cfg_file' => array(), 
-                'path' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id, 
-                'resource_file' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id . '/resource.cfg')
-            );
+                'cfg_file' => array(),
+                'path' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id,
+                'resource_file' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id . '/resource.cfg'
+            )
+        );
         foreach ($this->cfg_file as &$value) {
             $value['cfg_file'][] = $value['path'] . '/hostTemplates.cfg';
             $value['cfg_file'][] = $value['path'] . '/hosts.cfg';
@@ -314,11 +318,11 @@ class Engine extends AbstractObject {
             $value['cfg_file'][] = $value['path'] . '/meta_services.cfg';
 
             foreach ($this->add_cfg_files as $add_cfg_file) {
-                $value['cfg_file'][] =  $value['path'] . '/' . $add_cfg_file;
+                $value['cfg_file'][] = $value['path'] . '/' . $add_cfg_file;
             }
         }
     }
-    
+
     private function getBrokerModules()
     {
         if (is_null($this->stmt_broker)) {
@@ -346,7 +350,7 @@ class Engine extends AbstractObject {
         $this->stmt_interval_length->execute();
         $this->engine['interval_length'] = $this->stmt_interval_length->fetchAll(PDO::FETCH_COLUMN);
     }
-    
+
     private function generate($poller_id)
     {
         if (is_null($this->stmt_engine)) {
@@ -358,21 +362,25 @@ class Engine extends AbstractObject {
         }
         $this->stmt_engine->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $this->stmt_engine->execute();
-        
+
         $this->engine = array_pop($this->stmt_engine->fetchAll(PDO::FETCH_ASSOC));
         if (is_null($this->engine)) {
-            throw new Exception("Cannot get engine configuration for poller id (maybe not activate) '" . $poller_id ."'");
+            throw new Exception("Cannot get engine configuration for poller id (maybe not activate) '" .
+                $poller_id . "'");
         }
-        
+
         $this->buildCfgFile($poller_id);
         $this->getBrokerModules();
         $this->getIntervalLength();
-        
+
         $object = $this->engine;
-        
+
         # Decode
         if (!is_null($object['illegal_macro_output_chars'])) {
-            $object['illegal_macro_output_chars'] = html_entity_decode($object['illegal_macro_output_chars'], ENT_QUOTES);
+            $object['illegal_macro_output_chars'] = html_entity_decode(
+                $object['illegal_macro_output_chars'],
+                ENT_QUOTES
+            );
         }
         if (!is_null($object['illegal_object_name_chars'])) {
             $object['illegal_object_name_chars'] = html_entity_decode($object['illegal_object_name_chars'], ENT_QUOTES);
@@ -386,21 +394,27 @@ class Engine extends AbstractObject {
         }
 
         $command_instance = Command::getInstance($this->dependencyInjector);
-        $object['global_host_event_handler'] = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
-        $object['global_service_event_handler'] = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
+        $object['global_host_event_handler'] =
+            $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
+        $object['global_service_event_handler'] =
+            $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
         $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
         $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-        $object['host_perfdata_command'] = $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
-        $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
-        $object['host_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
-        $object['service_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
-        
+        $object['host_perfdata_command'] =
+            $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
+        $object['service_perfdata_command'] =
+            $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
+        $object['host_perfdata_file_processing_command'] =
+            $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
+        $object['service_perfdata_file_processing_command'] =
+            $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
+
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
         $object['resource_file'] = $this->cfg_file['debug']['resource_file'];
         $this->generateFile($object);
         $this->close_file();
-        
+
         $this->generate_filename = $this->engine['cfg_filename'];
         # Need to reset to go in another file
         $object['cfg_file'] = $this->cfg_file['target']['cfg_file'];
@@ -408,12 +422,12 @@ class Engine extends AbstractObject {
         $this->generateFile($object);
         $this->close_file();
     }
-    
+
     public function generateFromPoller($poller)
     {
         Connector::getInstance($this->dependencyInjector)->generateObjects($poller['centreonconnector_path']);
         Resource::getInstance($this->dependencyInjector)->generateFromPollerId($poller['id']);
-        
+
         $this->generate($poller['id']);
     }
 
