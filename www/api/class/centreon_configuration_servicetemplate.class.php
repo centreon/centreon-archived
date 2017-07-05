@@ -98,7 +98,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             'ORDER BY service_description ';
         $queryValues[] = (string)'%' . $q . '%';
 
-        if (isset($range)) {
+        if (isset($range) && !empty($range)) {
             $queryRange = 'LIMIT ?, ?';
             $queryValues[] = (int)$range[0];
             $queryValues[] = (int)$range[1];
