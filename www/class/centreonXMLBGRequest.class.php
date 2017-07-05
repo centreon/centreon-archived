@@ -44,54 +44,55 @@ require_once realpath(__DIR__ . "/../../bootstrap.php");
  * Class for XML/Ajax request
  *
  */
-class CentreonXMLBGRequest {
+class CentreonXMLBGRequest
+{
     /*
      * Objects
      */
 
-    var $DB;
-    var $DBC;
-    var $XML;
-    var $GMT;
-    var $hostObj;
-    var $serviceObj;
-    var $monObj;
-    var $access;
-    var $session_id;
-    var $broker;
+    public $DB;
+    public $DBC;
+    public $XML;
+    public $GMT;
+    public $hostObj;
+    public $serviceObj;
+    public $monObj;
+    public $access;
+    public $session_id;
+    public $broker;
 
     /*
      * Variables
      */
-    var $buffer;
-    var $debug;
-    var $compress;
-    var $header;
-    var $is_admin;
-    var $user_id;
-    var $grouplist;
-    var $grouplistStr;
-    var $general_opt;
-    var $class;
-    var $stateType;
-    var $statusHost;
-    var $statusService;
-    var $colorHost;
-    var $colorHostInService;
-    var $colorService;
-    var $en;
-    var $stateTypeFull;
+    public $buffer;
+    public $debug;
+    public $compress;
+    public $header;
+    public $is_admin;
+    public $user_id;
+    public $grouplist;
+    public $grouplistStr;
+    public $general_opt;
+    public $class;
+    public $stateType;
+    public $statusHost;
+    public $statusService;
+    public $colorHost;
+    public $colorHostInService;
+    public $colorService;
+    public $en;
+    public $stateTypeFull;
 
-    var $backgroundHost;
-    var $backgroundService;
+    public $backgroundHost;
+    public $backgroundService;
 
     /*
      * Filters
      */
-    var $defaultPoller;
-    var $defaultHostgroups;
-    var $defaultServicegroups;
-    var $defaultCriticality = 0;
+    public $defaultPoller;
+    public $defaultHostgroups;
+    public $defaultServicegroups;
+    public $defaultCriticality = 0;
 
     /*
      * Class constructor
@@ -154,7 +155,7 @@ class CentreonXMLBGRequest {
             $this->GMT = new CentreonGMT($this->DB);
             $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
         }
-        
+
         /*
          * XML class
          */
@@ -186,13 +187,31 @@ class CentreonXMLBGRequest {
         $this->stateType = array("1" => "H", "0" => "S");
         $this->stateTypeFull = array("1" => "HARD", "0" => "SOFT");
         $this->statusHost = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", "4" => "PENDING");
-        $this->statusService = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+        $this->statusService = array(
+            "0" => "OK",
+            "1" => "WARNING",
+            "2" => "CRITICAL",
+            "3" => "UNKNOWN",
+            "4" => "PENDING"
+        );
         $this->colorHost = array(0 => 'host_up', 1 => 'host_down', 2 => 'host_unreachable', 4 => 'pending');
-        $this->colorService = array(0 => 'service_ok', 1 => 'service_warning', 2 => 'service_critical', 3 => 'service_unknown', 4 => 'pending');
-        
+        $this->colorService = array(
+            0 => 'service_ok',
+            1 => 'service_warning',
+            2 => 'service_critical',
+            3 => 'service_unknown',
+            4 => 'pending'
+        );
+
         $this->backgroundHost = array(0 => '#88b917', 1 => '#e00b3d', 2 => '#818185', 4 => '#2ad1d4');
-        $this->backgroundService = array(0 => '#88b917', 1 => '#ff9a13', 2 => '#e00b3d', 3 => '#bcbdc0', 4 => '#2ad1d4');
-        
+        $this->backgroundService = array(
+            0 => '#88b917',
+            1 => '#ff9a13',
+            2 => '#e00b3d',
+            3 => '#bcbdc0',
+            4 => '#2ad1d4'
+        );
+
         $this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal", 4 => "normal");
     }
 
@@ -201,32 +220,42 @@ class CentreonXMLBGRequest {
      * 	=> value used for logout session
      */
 
-    public function reloadSession() {
-        $DBRESULT2 = $this->DB->query("UPDATE `session` SET `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] . "' WHERE `session_id` = '" . $this->session_id . "'");
+    public function reloadSession()
+    {
+        $query = "UPDATE `session` SET `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
+            "' WHERE `session_id` = '" . $this->session_id . "'";
+        $this->DB->query($query);
     }
 
     /*
      * Check if user is admin
      */
 
-    private function isUserAdmin() {
-        $DBRESULT = $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '" . CentreonDB::escape($this->user_id) . "' LIMIT 1");
-        $admin = $DBRESULT->fetchRow();
-        $DBRESULT->closeCursor();
-        if ($admin["contact_admin"])
+    private function isUserAdmin()
+    {
+        $query = "SELECT contact_admin, contact_id FROM contact " .
+            "WHERE contact.contact_id = '" . CentreonDB::escape($this->user_id) . "' LIMIT 1";
+        $dbResult = $this->DB->query($query);
+        $admin = $dbResult->fetchRow();
+        $dbResult->closeCursor();
+        if ($admin["contact_admin"]) {
             $this->is_admin = 1;
-        else
+        } else {
             $this->is_admin = 0;
+        }
     }
 
     /*
      * Get user id from session_id
      */
 
-    protected function getUserIdFromSID() {
-        $DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '" . CentreonDB::escape($this->session_id) . "' LIMIT 1");
-        $admin = $DBRESULT->fetchRow();
-        unset($DBRESULT);
+    protected function getUserIdFromSID()
+    {
+        $query = "SELECT user_id FROM session " .
+            "WHERE session_id = '" . CentreonDB::escape($this->session_id) . "' LIMIT 1";
+        $dbResult = $this->DB->query($query);
+        $admin = $dbResult->fetchRow();
+        unset($dbResult);
         if (isset($admin["user_id"])) {
             $this->user_id = $admin["user_id"];
         }
@@ -235,7 +264,8 @@ class CentreonXMLBGRequest {
     /**
      * Decode Function
      */
-    private function myDecode($arg) {
+    private function myDecode($arg)
+    {
         return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
     }
 
@@ -243,7 +273,8 @@ class CentreonXMLBGRequest {
      * Get Status Color
      */
 
-    protected function getStatusColor() {
+    protected function getStatusColor()
+    {
         $this->general_opt = array();
         $DBRESULT = $this->DB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
         while ($c = $DBRESULT->fetchRow()) {
@@ -257,7 +288,8 @@ class CentreonXMLBGRequest {
      * Send headers information for web server
      */
 
-    public function header() {
+    public function header()
+    {
         /* Force no encoding compress */
         $encoding = false;
 
@@ -270,7 +302,8 @@ class CentreonXMLBGRequest {
         }
     }
 
-    public function getNextLineClass() {
+    public function getNextLineClass()
+    {
         if ($this->classLine == "list_one") {
             $this->classLine = "list_two";
         } else {
@@ -279,16 +312,17 @@ class CentreonXMLBGRequest {
         return $this->classLine;
     }
 
-    public function getDefaultFilters() {
+    public function getDefaultFilters()
+    {
         $this->defaultPoller = -1;
-        $this->defaultHostgroups = NULL;
-        $this->defaultServicegroups = NULL;
+        $this->defaultHostgroups = null;
+        $this->defaultServicegroups = null;
         if (isset($_SESSION['monitoring_default_hostgroups'])) {
             $this->defaultHostgroups = $_SESSION['monitoring_default_hostgroups'];
         }
         if (isset($_SESSION['monitoring_default_servicegroups'])) {
             $this->defaultServicegroups = $_SESSION['monitoring_default_servicegroups'];
-       }
+        }
         if (isset($_SESSION['monitoring_default_poller'])) {
             $this->defaultPoller = $_SESSION['monitoring_default_poller'];
         }
@@ -297,23 +331,28 @@ class CentreonXMLBGRequest {
         }
     }
 
-    public function setInstanceHistory($instance) {
+    public function setInstanceHistory($instance)
+    {
         $_SESSION['monitoring_default_poller'] = $instance;
     }
 
-    public function setHostGroupsHistory($hg) {
+    public function setHostGroupsHistory($hg)
+    {
         $_SESSION['monitoring_default_hostgroups'] = $hg;
     }
 
-	public function setServiceGroupsHistory($sg) {
+    public function setServiceGroupsHistory($sg)
+    {
         $_SESSION['monitoring_default_servicegroups'] = sg;
     }
 
-    public function setCriticality($criticality) {
+    public function setCriticality($criticality)
+    {
         $_SESSION['criticality_id'] = $criticality;
     }
 
-    public function checkArgument($name, $tab, $defaultValue) {
+    public function checkArgument($name, $tab, $defaultValue)
+    {
         if (isset($name) && isset($tab)) {
             if (isset($tab[$name])) {
                 if ($name == 'num' && $tab[$name] < 0) {
@@ -327,10 +366,10 @@ class CentreonXMLBGRequest {
         }
     }
 
-    public function prepareObjectName($name) {
+    public function prepareObjectName($name)
+    {
         $name = str_replace("/", "#S#", $name);
         $name = str_replace("\\", "#BS#", $name);
         return $name;
     }
-
 }
