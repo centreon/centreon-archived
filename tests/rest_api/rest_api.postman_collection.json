@@ -1254,7 +1254,7 @@
                   "try {",
                   "    var i = 0;",
                   "    while (i < resourceData.length) {",
-                  "        if (\"test_resourcecfg\" == resourceData[i].name) {",
+                  "        if (\"$test_resourcecfg$\" == resourceData[i].name) {",
                   "            postman.setEnvironmentVariable(\"resourcecfg_id\",resourceData[i].id);",
                   "            break;",
                   "        }",
