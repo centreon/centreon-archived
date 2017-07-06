@@ -36,8 +36,7 @@ class TimezoneInMonitoringContext extends CentreonContext
             function ($context) {
                 $context->page->scheduleImmediateCheckOnService($context->hostname, $context->serviceName);
             },
-            'Could not schedule check.',
-            5
+            'Could not schedule check.'
         );
     }
 
@@ -45,8 +44,8 @@ class TimezoneInMonitoringContext extends CentreonContext
      *  @When I open the host monitoring details page
      */
     public function iOpenTheHostMonitoringDetailsPage()
-    {     
-        $this->page = new HostMonitoringDetailsPage($this, $this->hostname);     
+    {
+        $this->page = new HostMonitoringDetailsPage($this, $this->hostname);
     }
 
     /**
@@ -62,9 +61,8 @@ class TimezoneInMonitoringContext extends CentreonContext
                 }
                 new HostMonitoringDetailsPage($context, $context->hostname);
                 return false;
-            },        
-            'Wrong timezone displayed, expected ' . $this->timezone . '.',
-            10
+            },
+            'Wrong timezone displayed, expected ' . $this->timezone . '.'
         );
     }
 }
