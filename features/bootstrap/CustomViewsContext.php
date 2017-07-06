@@ -28,7 +28,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Given I am logged in a Centreon server with some widgets
+     * @Given I am logged in a Centreon server with some widgets
      */
     public function iAmLoggedInCentreonWithWidgets()
     {
@@ -60,7 +60,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Given a publicly shared custom view
+     * @Given a publicly shared custom view
      */
     public function aPubliclySharedCustomView()
     {
@@ -72,7 +72,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Given a shared custom view
+     * @Given a shared custom view
      */
     public function aSharedCustomView()
     {
@@ -85,7 +85,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Given a shared custom view with a group
+     * @Given a shared custom view with a group
      */
     public function aSharedCustomViewWithAGroup()
     {
@@ -94,10 +94,11 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView( null, null, null, $this->cgname);
+        $page->shareView(null, null, null, $this->cgname);
     }
+
     /**
-     *  @Given a user is using the public view
+     * @Given a user is using the public view
      */
     public function aUserIsUsingThePublicView()
     {
@@ -141,12 +142,12 @@ class CustomViewsContext extends CentreonContext
         $page->createNewView($this->customViewName, 2);
         $page->addWidget('First widget', 'Host Monitoring');
         $page->addWidget('Second widget', 'Service Monitoring');
-        $page->shareView( null, null, $this->cgname);
+        $page->shareView(null, null, $this->cgname);
     }
 
     /**
-     *  @When a user wishes to add a new custom view
-     *  @When the user wishes to add a new custom view
+     * @When a user wishes to add a new custom view
+     * @When the user wishes to add a new custom view
      */
     public function anotherUserWishesToAddANewCustomView()
     {
@@ -154,7 +155,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @When he removes the shared view
+     * @When he removes the shared view
      */
     public function heRemovesTheSharedView()
     {
@@ -164,7 +165,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @When the user modifies the custom view
+     * @When the user modifies the custom view
      */
     public function theUserModifiesTheCustomView()
     {
@@ -176,14 +177,15 @@ class CustomViewsContext extends CentreonContext
 
         $this->spin(
             function ($context) use ($page) {
-                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->newCustomViewName;
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')
+                        ->getText() == $this->newCustomViewName;
             },
             'View not updated by user'
         );
     }
 
     /**
-     *  @When the owner modifies the custom view
+     * @When the owner modifies the custom view
      */
     public function theOwnerModifiesTheCustomView()
     {
@@ -197,14 +199,15 @@ class CustomViewsContext extends CentreonContext
 
         $this->spin(
             function ($context) use ($page) {
-                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() == $this->newCustomViewName;
+                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')
+                        ->getText() == $this->newCustomViewName;
             },
             'View not updated by owner'
         );
     }
 
     /**
-     *  @When the owner removes the view
+     * @When the owner removes the view
      */
     public function theOwnerRemovesTheView()
     {
@@ -218,7 +221,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then he can add the public view
+     * @Then he can add the public view
      */
     public function heCanAddThePublicView()
     {
@@ -229,7 +232,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then he can add the shared view
+     * @Then he can add the shared view
      */
     public function heCanAddTheSharedView()
     {
@@ -240,7 +243,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then he cannot modify the content of the shared view
+     * @Then he cannot modify the content of the shared view
      */
     public function heCannotModifyTheContentOfTheSharedView()
     {
@@ -257,7 +260,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then he can modify the content of the shared view
+     * @Then he can modify the content of the shared view
      */
     public function heCanModifyTheContentOfTheSharedView()
     {
@@ -274,7 +277,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the view is still visible
+     * @Then the view is still visible
      */
     public function theViewIsStillVisible()
     {
@@ -287,7 +290,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the view is not visible anymore
+     * @Then the view is not visible anymore
      */
     public function theViewIsNotVisibleAnymore()
     {
@@ -300,7 +303,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the view is not visible anymore for the user
+     * @Then the view is not visible anymore for the user
      */
     public function theViewIsNotVisibleAnymoreForTheUser()
     {
@@ -315,7 +318,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the user can use the public view again
+     * @Then the user can use the public view again
      */
     public function theUserCanUseThePublicViewAgain()
     {
@@ -323,7 +326,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the user can use the shared view again
+     * @Then the user can use the shared view again
      */
     public function theUserCanUseTheSharedViewAgain()
     {
@@ -331,7 +334,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the changes are reflected on all users displaying the custom view
+     * @Then the changes are reflected on all users displaying the custom view
      */
     public function theChangesAreReflectedOnAllUsersDisplayingTheCustomView()
     {
@@ -346,13 +349,13 @@ class CustomViewsContext extends CentreonContext
             }
         );
 
-        if($this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() != $this->newCustomViewName){
+        if ($this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() != $this->newCustomViewName) {
             throw new Exception("View not updated");
         }
     }
 
     /**
-     *  @Then the view is removed for all users displaying the custom view
+     * @Then the view is removed for all users displaying the custom view
      */
     public function theViewIsRemovedForAllUsersDisplayingTheCustomView()
     {
@@ -363,7 +366,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the view is removed for the owner
+     * @Then the view is removed for the owner
      */
     public function theViewIsRemovedForTheOwner()
     {
@@ -374,7 +377,7 @@ class CustomViewsContext extends CentreonContext
     }
 
     /**
-     *  @Then the view remains visible for all users displaying the custom view
+     * @Then the view remains visible for all users displaying the custom view
      */
     public function theViewRemainsVisibleForAllUsersDisplayingTheCustomView()
     {

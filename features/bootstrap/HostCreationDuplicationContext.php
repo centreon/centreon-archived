@@ -39,8 +39,8 @@ class HostCreationDuplicationContext extends CentreonContext
     public function theNewRecordIsDisplayedInTheHostsList()
     {
         $this->spin(
-            function($context){
-	        $this->currentPage = new HostConfigurationListingPage($this);
+            function ($context) {
+                $this->currentPage = new HostConfigurationListingPage($this);
                 return $this->currentPage->getEntry($this->hostName);
             },
             "The new host is not displayed in the hosts list.",
@@ -80,7 +80,7 @@ class HostCreationDuplicationContext extends CentreonContext
     public function theNewHostIsDisplayedInTheHostsList()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new HostConfigurationListingPage($this);
                 return $this->currentPage->getEntry($this->hostName . '_1');
             },
@@ -107,11 +107,11 @@ class HostCreationDuplicationContext extends CentreonContext
     public function theDeletedHostIsNotDisplayedInTheHostsList()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new HostConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
-                foreach($object as $value){
+                foreach ($object as $value) {
                     $bool = $bool && $value['name'] != $this->hostName;
                 }
                 return $bool;

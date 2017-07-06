@@ -4,7 +4,6 @@ use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
 
-
 class AutologinContext extends CentreonContext
 {
     private $currentPage;
@@ -16,7 +15,7 @@ class AutologinContext extends CentreonContext
     {
         $this->currentPage = new ParametersCentreonUiPage($this);
         $this->currentPage->setProperties([
-            'enable autologin'=>true
+            'enable autologin' => true
         ]);
 
         $this->currentPage->save();
@@ -29,7 +28,7 @@ class AutologinContext extends CentreonContext
     {
         $this->currentPage = new CurrentUserConfigurationPage($this);
         $this->currentPage->setProperties([
-            'autologin_key'=>'toto'
+            'autologin_key' => 'toto'
         ]);
 
         $this->currentPage->save();

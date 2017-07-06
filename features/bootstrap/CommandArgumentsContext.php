@@ -18,7 +18,7 @@ class CommandArgumentsContext extends CentreonContext
         $this->serviceHostName = 'Centreon-Server';
         $this->serviceName = 'CommandArgumentsTestService';
     }
-    
+
     /**
      * @Given a service being configured
      */
@@ -49,7 +49,7 @@ class CommandArgumentsContext extends CentreonContext
     {
         $this->argumentField = $this->assertFind('css', 'input[name="ARG1"]');
     }
-    
+
     /**
      * @Then Arguments of this command are displayed for the host
      */
@@ -71,10 +71,9 @@ class CommandArgumentsContext extends CentreonContext
      */
     public function aHostBeingConfigured()
     {
-        $this->currentPage =  new HostConfigurationPage($this);
+        $this->currentPage = new HostConfigurationPage($this);
         $this->currentPage->setProperties(array(
             'name' => $this->hostName
         ));
     }
-
 }
