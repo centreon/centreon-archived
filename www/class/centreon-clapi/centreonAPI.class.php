@@ -372,6 +372,14 @@ class CentreonAPI
     }
 
     /**
+     * @return \Pimple\Container
+     */
+    public function getDependencyInjector()
+    {
+        return $this->dependencyInjector;
+    }
+
+    /**
      * Set Return Code
      *
      * @param int $returnCode
