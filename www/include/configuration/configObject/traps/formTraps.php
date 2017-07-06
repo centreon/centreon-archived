@@ -213,13 +213,11 @@ $attrService1 = array_merge(
 );
 $form->addElement('select2', 'services', _("Linked Services"), array(), $attrService1);
     
-if ($centreon->user->admin) {
-    $attrServicetemplate1 = array_merge(
-        $attrServicetemplates,
-        array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=traps&field=service_templates&id=' . $traps_id)
-    );
-    $form->addElement('select2', 'service_templates', _("Linked Service Templates"), array(), $attrServicetemplate1);
-}
+$attrServicetemplate1 = array_merge(
+    $attrServicetemplates,
+    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=traps&field=service_templates&id=' . $traps_id)
+);
+$form->addElement('select2', 'service_templates', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
 /*
  * Routing 
