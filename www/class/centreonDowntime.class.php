@@ -151,13 +151,13 @@ class CentreonDowntime
             $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime
                 WHERE (downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation)
                     OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation)) " .
-                    ($this->search == '' ? "" : " AND ") . $this->search .
+                ($this->search == '' ? "" : " AND ") . $this->search .
                 " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
         } elseif ($type == "s") {
             $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime
                 WHERE (downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation)
                     OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation)) " .
-                    ($this->search == '' ? "" : " AND ") . $this->search .
+                ($this->search == '' ? "" : " AND ") . $this->search .
                 " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
         } else {
             $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate
@@ -302,10 +302,10 @@ class CentreonDowntime
             . 'FROM downtime_period dtp, downtime dt, '
             . 'downtime_host_relation dtr, host h '
             . 'WHERE dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id '
-            . 'AND dtr.host_host_id = h.host_id' ;
+            . 'AND dtr.host_host_id = h.host_id';
 
         try {
-        $res = $this->db->query($query);
+            $res = $this->db->query($query);
             while ($row = $res->fetchRow()) {
                 $hostDowntimes[] = $row;
             }
@@ -348,8 +348,8 @@ class CentreonDowntime
             . 'AND dtr.service_service_id = s.service_id';
 
         try {
-        $res = $this->db->query($query);
-        while ($row = $res->fetchRow()) {
+            $res = $this->db->query($query);
+            while ($row = $res->fetchRow()) {
                 $serviceDowntimes[] = $row;
             }
         } catch (\PDOException $e) {
@@ -419,8 +419,8 @@ class CentreonDowntime
             . 'AND hgr.host_host_id = h.host_id ';
 
         try {
-        $res = $this->db->query($query);
-        while ($row = $res->fetchRow()) {
+            $res = $this->db->query($query);
+            while ($row = $res->fetchRow()) {
                 $servicegroupDowntimes[] = $row;
             }
         } catch (\PDOException $e) {
@@ -635,21 +635,21 @@ class CentreonDowntime
             } else {
                 $scale = trim($infos['scale']);
             }
-            
+
             switch ($scale) {
                 default:
                 case 's':
                     $infos['duration'] = $infos['duration'];
                     break;
-                
+
                 case 'm':
                     $infos['duration'] = $infos['duration'] * 60;
                     break;
-                
+
                 case 'h':
                     $infos['duration'] = $infos['duration'] * 60 * 60;
                     break;
-                
+
                 case 'd':
                     $infos['duration'] = $infos['duration'] * 60 * 60 * 24;
                     break;
@@ -659,29 +659,29 @@ class CentreonDowntime
         if (!isset($infos['days'])) {
             $infos['days'] = array();
         }
-        
-        
+
+
         switch ($infos['period_type']) {
             case 'weekly_basis':
                 $query = "INSERT INTO downtime_period (dt_id, dtp_day_of_week, dtp_month_cycle, dtp_start_time,
                     dtp_end_time, dtp_fixed, dtp_duration)
 					VALUES (" . $id . ", '" . join(',', $infos['days']) . "', 'all', '" .
-                        $infos['start_period'] . "', '" . $infos['end_period'] . "', '" . $infos['fixed'] . "', " .
-                        $infos['duration'] . ")";
+                    $infos['start_period'] . "', '" . $infos['end_period'] . "', '" . $infos['fixed'] . "', " .
+                    $infos['duration'] . ")";
                 break;
             case 'monthly_basis':
                 $query = "INSERT INTO downtime_period (dt_id, dtp_day_of_month, dtp_month_cycle, dtp_start_time,
                     dtp_end_time, dtp_fixed, dtp_duration)
 					VALUES (" . $id . ", '" . join(',', $infos['days']) . "', 'none', '" .
-                        $infos['start_period'] . "', '" . $infos['end_period'] . "', '" . $infos['fixed'] . "', " .
-                        $infos['duration'] . ")";
+                    $infos['start_period'] . "', '" . $infos['end_period'] . "', '" . $infos['fixed'] . "', " .
+                    $infos['duration'] . ")";
                 break;
             case 'specific_date':
                 $query = "INSERT INTO downtime_period (dt_id, dtp_day_of_week, dtp_month_cycle, dtp_start_time,
                     dtp_end_time, dtp_fixed, dtp_duration)
 					VALUES (" . $id . ", '" . $infos['days'] . "', '" . $infos['month_cycle'] . "', '" .
-                        $infos['start_period'] . "', '" . $infos['end_period'] . "', '" . $infos['fixed'] . "', " .
-                        $infos['duration'] . ")";
+                    $infos['start_period'] . "', '" . $infos['end_period'] . "', '" . $infos['fixed'] . "', " .
+                    $infos['duration'] . ")";
                 break;
         }
         $res = $this->db->query($query);
@@ -694,7 +694,7 @@ class CentreonDowntime
      */
     public function deletePeriods($id)
     {
-        $query = "DELETE FROM downtime_period WHERE dt_id = " .$id;
+        $query = "DELETE FROM downtime_period WHERE dt_id = " . $id;
         $this->db->query($query);
     }
 
@@ -709,17 +709,17 @@ class CentreonDowntime
     {
         switch ($obj_type) {
             case 'host':
-                $query = "INSERT INTO downtime_host_relation (dt_id, host_host_id) VALUES (" . $id  . ", %obj_id%)";
+                $query = "INSERT INTO downtime_host_relation (dt_id, host_host_id) VALUES (" . $id . ", %obj_id%)";
                 break;
             case 'hostgrp':
-                $query = "INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id) VALUES (" . $id  . ", %obj_id%)";
+                $query = "INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id) VALUES (" . $id . ", %obj_id%)";
                 break;
             case 'svc':
                 $query = "INSERT INTO downtime_service_relation (dt_id, host_host_id, service_service_id)
-                    VALUES (" . $id  . ", %obj_id%)";
+                    VALUES (" . $id . ", %obj_id%)";
                 break;
             case 'svcgrp':
-                $query = "INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id) VALUES (" . $id  . ", %obj_id%)";
+                $query = "INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id) VALUES (" . $id . ", %obj_id%)";
                 break;
         }
         foreach ($obj_ids as $obj_id) {
@@ -738,13 +738,13 @@ class CentreonDowntime
      */
     public function deteleRelations($id)
     {
-        $query = "DELETE FROM downtime_host_relation WHERE dt_id = " .$id;
+        $query = "DELETE FROM downtime_host_relation WHERE dt_id = " . $id;
         $this->db->query($query);
-        $query = "DELETE FROM downtime_hostgroup_relation WHERE dt_id = " .$id;
+        $query = "DELETE FROM downtime_hostgroup_relation WHERE dt_id = " . $id;
         $this->db->query($query);
-        $query = "DELETE FROM downtime_service_relation WHERE dt_id = " .$id;
+        $query = "DELETE FROM downtime_service_relation WHERE dt_id = " . $id;
         $this->db->query($query);
-        $query = "DELETE FROM downtime_servicegroup_relation WHERE dt_id = " .$id;
+        $query = "DELETE FROM downtime_servicegroup_relation WHERE dt_id = " . $id;
         $this->db->query($query);
     }
 
@@ -854,7 +854,7 @@ class CentreonDowntime
         }
         return $list;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -914,7 +914,7 @@ class CentreonDowntime
                 $parameters['relationObject']['comparator'] = 'dt_id';
                 break;
         }
-        
+
         return $parameters;
     }
 }

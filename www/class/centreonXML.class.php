@@ -36,13 +36,16 @@
 /*
  *  Class that is used for writing XML in utf_8 only!
  */
-class CentreonXML {
-    var $buffer;
+
+class CentreonXML
+{
+    public $buffer;
 
     /*
      *  Constructor
      */
-    function CentreonXML($indent = false) {
+    public function CentreonXML($indent = false)
+    {
         $this->buffer = new XMLWriter();
         $this->buffer->openMemory();
         if ($indent) {
@@ -53,7 +56,7 @@ class CentreonXML {
 
     /**
      * Clean string
-     * 
+     *
      * @param string $str
      * @return string
      */
@@ -62,25 +65,28 @@ class CentreonXML {
         $str = preg_replace('/[\x00-\x09\x0B-\x0C\x0E-\x1F\x0D]/', "", $str);
         return $str;
     }
-    
+
     /*
      *  Starts an element that contains other elements
      */
-    public function startElement($element_tag) {
+    public function startElement($element_tag)
+    {
         $this->buffer->startElement($element_tag);
     }
 
     /*
      *  Ends an element (closes tag)
      */
-    public function endElement() {
+    public function endElement()
+    {
         $this->buffer->endElement();
     }
 
     /*
      *  Simply puts text
      */
-    public function text($txt, $cdata = true, $encode = 0) {
+    public function text($txt, $cdata = true, $encode = 0)
+    {
         $txt = $this->cleanStr($txt);
         $txt = html_entity_decode($txt);
         if ($encode || !$this->is_utf8($txt)) {
@@ -106,7 +112,7 @@ class CentreonXML {
             $res = $this->is_utf8(substr($string, 0, 1024));
             $res += $this->is_utf8(substr($string, 1025));
         } else {
-    		$res = 0;
+            $res = 0;
             $res += preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E] |
                                      [\xC2-\xDF][\x80-\xBF] |
                                      \xE0[\xA0-\xBF][\x80-\xBF] |
@@ -122,7 +128,8 @@ class CentreonXML {
     /*
      *  Creates a tag and writes data
      */
-    public function writeElement($element_tag, $element_value, $encode = 0) {
+    public function writeElement($element_tag, $element_value, $encode = 0)
+    {
         $this->startElement($element_tag);
         $element_value = $this->cleanStr($element_value);
         $element_value = html_entity_decode($element_value);
@@ -138,7 +145,8 @@ class CentreonXML {
     /*
      *  Writes attribute
      */
-    public function writeAttribute($att_name, $att_value, $encode = false) {
+    public function writeAttribute($att_name, $att_value, $encode = false)
+    {
         $att_value = $this->cleanStr($att_value);
         if ($encode) {
             $this->buffer->writeAttribute($att_name, utf8_encode(html_entity_decode($att_value)));
@@ -150,12 +158,14 @@ class CentreonXML {
     /*
      *  Output the whole XML buffer
      */
-    public function output() {
+    public function output()
+    {
         $this->buffer->endDocument();
         print $this->buffer->outputMemory(true);
     }
 
-    public function outputFile($filename = null) {
+    public function outputFile($filename = null)
+    {
         $this->buffer->endDocument();
         $content = $this->buffer->outputMemory(true);
         if ($handle = fopen($filename, 'w')) {
@@ -166,5 +176,4 @@ class CentreonXML {
             print "Can't open file: $filename";
         }
     }
-    
 }

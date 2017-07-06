@@ -328,10 +328,10 @@ class CentreonACL
     private function setMetaServices()
     {
         $query = "SELECT ms.meta_id, ms.meta_name, arsr.acl_res_id " .
-                "FROM meta_service ms, acl_resources_meta_relations arsr " .
-                "WHERE ms.meta_id = arsr.meta_id " .
-                "AND arsr.acl_res_id IN (" . $this->getResourceGroupsString() . ") " .
-                "ORDER BY ms.meta_name ASC";
+            "FROM meta_service ms, acl_resources_meta_relations arsr " .
+            "WHERE ms.meta_id = arsr.meta_id " .
+            "AND arsr.acl_res_id IN (" . $this->getResourceGroupsString() . ") " .
+            "ORDER BY ms.meta_name ASC";
         $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
         $this->metaServiceStr = "";
         while ($row = $DBRESULT->fetchRow()) {
@@ -1764,7 +1764,8 @@ class CentreonACL
                     }
                     $requests['conditions'] .= $clause . " " . $key . " " . $op . " ('" . $inValues . "') ";
                 } else {
-                    $requests['conditions'] .= $clause . " " . $key . " " . $op . " '" . \CentreonDBInstance::getConfInstance()->escape($value) . "' ";
+                    $requests['conditions'] .= $clause . " " . $key . " " . $op .
+                        " '" . \CentreonDBInstance::getConfInstance()->escape($value) . "' ";
                 }
             }
             if (!$first) {

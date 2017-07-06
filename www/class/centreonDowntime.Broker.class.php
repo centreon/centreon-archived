@@ -117,12 +117,12 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $query .= ", services s ";
         }
         $query .= "WHERE d.host_id = h.host_id
-        		  AND d.start_time = " .$this->dbb->escape($start_time). "
-        		  AND d.comment_data = '[Downtime cycle #".$dt_id."]'
-        		  AND h.name = '".$this->dbb->escape($oname1)."' ";
+        		  AND d.start_time = " . $this->dbb->escape($start_time) . "
+        		  AND d.comment_data = '[Downtime cycle #" . $dt_id . "]'
+        		  AND h.name = '" . $this->dbb->escape($oname1) . "' ";
         if (isset($oname2) && $oname2 != "") {
             $query .= " AND h.host_id = s.host_id ";
-            $query .= " AND s.description = '".$this->dbb->escape($oname2)."' ";
+            $query .= " AND s.description = '" . $this->dbb->escape($oname2) . "' ";
         }
         try {
             $res = $this->dbb->query($query);
@@ -202,7 +202,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
         if ($tomorrow) {
             $currentMonth = $endDelay->format('M');
-            $currentYear =  $endDelay->format('Y');
+            $currentYear = $endDelay->format('Y');
             $currentDay = $endDelay->format('Y-m-d');
         } else {
             $currentMonth = $startDelay->format('M');
@@ -235,7 +235,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
     private function isTomorrow($downtimeStartTime, $now, $delay)
     {
-        $tomorrow = false ;
+        $tomorrow = false;
 
         # startDelay must be between midnight - delay and midnight - 1 second
         $nowTimestamp = strtotime($now->format('H:i'));
@@ -261,7 +261,8 @@ class CentreonDowntimeBroker extends CentreonDowntime
         if ($downtimeStartTimeTimestamp >= $midnightTimestamp &&
             $downtimeStartTimeTimestamp <= $midnightPlusDelayTimestamp &&
             $nowTimestamp <= $midnightMoins1SecondTimestamp &&
-            $nowTimestamp >= $midnightMoinsDelayTimestamp) {
+            $nowTimestamp >= $midnightMoinsDelayTimestamp
+        ) {
             $tomorrow = true;
         }
 
@@ -309,7 +310,11 @@ class CentreonDowntimeBroker extends CentreonDowntime
         foreach ($downtimes as $downtime) {
 
             /* Convert HH::mm::ss to HH:mm */
-            $downtime['dtp_start_time'] = substr($downtime['dtp_start_time'], 0, strrpos($downtime['dtp_start_time'], ':'));
+            $downtime['dtp_start_time'] = substr(
+                $downtime['dtp_start_time'],
+                0,
+                strrpos($downtime['dtp_start_time'], ':')
+            );
             $downtime['dtp_end_time'] = substr($downtime['dtp_end_time'], 0, strrpos($downtime['dtp_end_time'], ':'));
 
             $currentHostDate = $gmtObj->getHostCurrentDatetime($downtime['host_id']);
@@ -338,21 +343,25 @@ class CentreonDowntimeBroker extends CentreonDowntime
             }
 
             $approaching = false;
-            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])) {
+            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
+                && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])
+            ) {
                 $approaching = $this->isWeeklyApproachingDowntime(
                     $startDelay,
                     $endDelay,
                     $downtime['dtp_day_of_week'],
                     $tomorrow
                 );
-            } else if (preg_match('/^\d+(,\d+)*$/', $downtime['dtp_day_of_month'])) {
+            } elseif (preg_match('/^\d+(,\d+)*$/', $downtime['dtp_day_of_month'])) {
                 $approaching = $this->isMonthlyApproachingDowntime(
                     $startDelay,
                     $endDelay,
                     $downtime['dtp_day_of_month'],
                     $tomorrow
                 );
-            } else if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && $downtime['dtp_month_cycle'] != 'none') {
+            } elseif (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
+                && $downtime['dtp_month_cycle'] != 'none'
+            ) {
                 $approaching = $this->isSpecificDateDowntime(
                     $startDelay,
                     $endDelay,
@@ -404,8 +413,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
     public function purgeCache()
     {
-        $query = 'DELETE FROM downtime_cache '
-            . 'WHERE start_timestamp < ' . time();
+        $query = 'DELETE FROM downtime_cache WHERE start_timestamp < ' . time();
         $this->db->query($query);
     }
 
@@ -419,7 +427,9 @@ class CentreonDowntimeBroker extends CentreonDowntime
             . 'AND start_timestamp = ' . $downtime['start_timestamp'] . ' '
             . 'AND end_timestamp = ' . $downtime['end_timestamp'] . ' '
             . 'AND host_id = ' . $downtime['host_id'] . ' ';
-        $query .= ($downtime['service_id'] != '') ? 'AND service_id = ' . $downtime['service_id'] . ' ' : 'AND service_id IS NULL';
+        $query .= ($downtime['service_id'] != '')
+            ? 'AND service_id = ' . $downtime['service_id'] . ' '
+            : 'AND service_id IS NULL';
 
         $res = $this->db->query($query);
         if ($res->rowCount()) {
@@ -469,7 +479,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $this->localCommands[] = $cmd;
             $this->localCmdFile = $cmdData[$host_id]['command_file'];
         } else {
-            $this->remoteCommands[] = 'EXTERNALCMD:' . $cmdData[$host_id]['id']  . ':' . $cmd;
+            $this->remoteCommands[] = 'EXTERNALCMD:' . $cmdData[$host_id]['id'] . ':' . $cmd;
         }
     }
 

@@ -71,7 +71,7 @@ class CentreonUser
      * CentreonUser constructor.
      * @param array $user
      */
-    function CentreonUser($user = array())
+    public function CentreonUser($user = array())
     {
         global $pearDB;
 
