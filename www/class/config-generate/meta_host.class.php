@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class MetaHost extends AbstractObject {
+class MetaHost extends AbstractObject
+{
     protected $generate_filename = 'meta_host.cfg';
     protected $object_name = 'host';
     protected $attributes_write = array(
@@ -55,8 +57,9 @@ class MetaHost extends AbstractObject {
     protected $attributes_hash = array(
         'macros'
     );
-    
-    public function getHostIdByHostName($host_name) {
+
+    public function getHostIdByHostName($host_name)
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT 
               host_id
             FROM host
@@ -66,12 +69,13 @@ class MetaHost extends AbstractObject {
         $stmt->execute();
         return array_pop($stmt->fetchAll(PDO::FETCH_COLUMN));
     }
-    
-    public function generateObject($host_id) {
+
+    public function generateObject($host_id)
+    {
         if ($this->checkGenerate($host_id)) {
             return 0;
         }
-        
+
         $object = array();
         $object['host_name'] = '_Module_Meta';
         $object['alias'] = 'Meta Service Calculate Module For Centreon';
@@ -89,7 +93,7 @@ class MetaHost extends AbstractObject {
         $object['notifications_enabled'] = 0;
         $object['register'] = 1;
         $object['macros'] = array('_HOST_ID' => $host_id);
-        
+
         $this->generateObjectInFile($object, $host_id);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class MetaService extends AbstractObject {
+class MetaService extends AbstractObject
+{
     private $has_meta_services = 0;
     private $meta_services = array();
     private $generated_services = array(); # for index_data build
@@ -74,12 +76,14 @@ class MetaService extends AbstractObject {
         'macros'
     );
     protected $attributes_array = array(
-        'contact_groups','contacts'
+        'contact_groups',
+        'contacts'
     );
     private $stmt_cg = null;
     private $stmt_contact = null;
 
-    private function getCtFromMetaId($meta_id) {
+    private function getCtFromMetaId($meta_id)
+    {
         if (is_null($this->stmt_contact)) {
             $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
                     contact_id
@@ -91,11 +95,13 @@ class MetaService extends AbstractObject {
         $this->stmt_contact->execute();
         $this->meta_services[$meta_id]['contacts'] = array();
         foreach ($this->stmt_contact->fetchAll(PDO::FETCH_COLUMN) as $ct_id) {
-            $this->meta_services[$meta_id]['contacts'][] = Contact::getInstance($this->dependencyInjector)->generateFromContactId($ct_id);
+            $this->meta_services[$meta_id]['contacts'][] =
+                Contact::getInstance($this->dependencyInjector)->generateFromContactId($ct_id);
         }
     }
 
-    private function getCgFromMetaId($meta_id) {
+    private function getCgFromMetaId($meta_id)
+    {
         if (is_null($this->stmt_cg)) {
             $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
                     cg_cg_id
@@ -107,19 +113,19 @@ class MetaService extends AbstractObject {
         $this->stmt_cg->execute();
         $this->meta_services[$meta_id]['contact_groups'] = array();
         foreach ($this->stmt_cg->fetchAll(PDO::FETCH_COLUMN) as $cg_id) {
-            $this->meta_services[$meta_id]['contact_groups'][] = Contactgroup::getInstance($this->dependencyInjector)->generateFromCgId($cg_id);
+            $this->meta_services[$meta_id]['contact_groups'][] =
+                Contactgroup::getInstance($this->dependencyInjector)->generateFromCgId($cg_id);
         }
     }
 
-    private function getServiceIdFromMetaId($meta_id, $meta_name) {
+    private function getServiceIdFromMetaId($meta_id, $meta_name)
+    {
         $composed_name = 'meta_' . $meta_id;
-        $stmt = $this->backend_instance->db->prepare("SELECT
-                service_id
-            FROM service
-            WHERE service_register = '2'
-            AND service_description = :meta_composed_name
-            AND display_name = :meta_name"
-        );
+        $query = "SELECT service_id FROM service " .
+            "WHERE service_register = '2' " .
+            "AND service_description = :meta_composed_name " .
+            "AND display_name = :meta_name";
+        $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':meta_composed_name', $composed_name);
         $stmt->bindParam(':meta_name', $meta_name);
         $stmt->execute();
@@ -133,24 +139,30 @@ class MetaService extends AbstractObject {
         }
 
         return $service_id;
-        
+
     }
-    
-    private function buildCacheMetaServices() {
-        $stmt = $this->backend_instance->db->prepare("SELECT $this->attributes_select FROM meta_service WHERE meta_activate = '1'");
+
+    private function buildCacheMetaServices()
+    {
+        $query = "SELECT $this->attributes_select FROM meta_service WHERE meta_activate = '1'";
+        $stmt = $this->backend_instance->db->prepare($query);
         $stmt->execute();
-        $this->meta_services = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
+        $this->meta_services = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
         foreach ($this->meta_services as $meta_id => $meta_infos) {
-            $this->meta_services[$meta_id]['service_id'] = $this->getServiceIdFromMetaId($meta_id, $meta_infos['display_name']);
+            $this->meta_services[$meta_id]['service_id'] = $this->getServiceIdFromMetaId(
+                $meta_id,
+                $meta_infos['display_name']
+            );
         }
     }
-    
-    public function generateObjects() {
+
+    public function generateObjects()
+    {
         $this->buildCacheMetaServices();
         if (count($this->meta_services) == 0) {
             return 0;
         }
-        
+
         $host_id = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
         if (is_null($host_id)) {
             return 0;
@@ -158,15 +170,17 @@ class MetaService extends AbstractObject {
         MetaCommand::getInstance($this->dependencyInjector)->generateObjects();
         MetaTimeperiod::getInstance($this->dependencyInjector)->generateObjects();
         MetaHost::getInstance($this->dependencyInjector)->generateObject($host_id);
-        
+
         $this->has_meta_services = 1;
-        
+
         foreach ($this->meta_services as $meta_id => &$meta_service) {
             $meta_service['macros'] = array('_SERVICE_ID' => $meta_service['service_id']);
             $this->getCtFromMetaId($meta_id);
-            $this->getCgFromMetaId($meta_id);            
-            $meta_service['check_period'] = Timeperiod::getInstance($this->dependencyInjector)->generateFromTimeperiodId($meta_service['check_period_id']);
-            $meta_service['notification_period'] = Timeperiod::getInstance($this->dependencyInjector)->generateFromTimeperiodId($meta_service['notification_period_id']);
+            $this->getCgFromMetaId($meta_id);
+            $meta_service['check_period'] = Timeperiod::getInstance($this->dependencyInjector)
+                ->generateFromTimeperiodId($meta_service['check_period_id']);
+            $meta_service['notification_period'] = Timeperiod::getInstance($this->dependencyInjector)
+                ->generateFromTimeperiodId($meta_service['notification_period_id']);
             $meta_service['register'] = 1;
             $meta_service['active_checks_enabled'] = 1;
             $meta_service['passive_checks_enabled'] = 0;
@@ -174,21 +188,24 @@ class MetaService extends AbstractObject {
             $meta_service['service_description'] = 'meta_' . $meta_id;
             $meta_service['display_name'] = $meta_service['display_name'];
             $meta_service['check_command'] = 'check_meta!' . $meta_id;
-            
+
             $this->generated_services[] = $meta_id;
             $this->generateObjectInFile($meta_service, $meta_id);
         }
     }
 
-    public function getMetaServices() {
+    public function getMetaServices()
+    {
         return $this->meta_services;
     }
 
-    public function hasMetaServices() {
+    public function hasMetaServices()
+    {
         return $this->has_meta_services;
     }
-    
-    public function getGeneratedServices() {
+
+    public function getGeneratedServices()
+    {
         return $this->generated_services;
     }
 }

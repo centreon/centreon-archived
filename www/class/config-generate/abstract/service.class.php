@@ -35,7 +35,8 @@
 
 require_once dirname(__FILE__) . '/object.class.php';
 
-abstract class AbstractService extends AbstractObject {
+abstract class AbstractService extends AbstractObject
+{
     # no flap_detection_options attribute
     protected $attributes_select = '
         service_id,
@@ -138,29 +139,39 @@ abstract class AbstractService extends AbstractObject {
     protected $stmt_stpl = null;
     protected $stmt_contact = null;
     protected $stmt_service = null;
-    
-    protected function getImages(&$service) {
+
+    protected function getImages(&$service)
+    {
         $media = Media::getInstance($this->dependencyInjector);
         if (!isset($service['icon_image'])) {
             $service['icon_image'] = $media->getMediaPathFromId($service['icon_image_id']);
         }
     }
-    
-    protected function getMacros(&$service) {
+
+    protected function getMacros(&$service)
+    {
         if (isset($service['macros'])) {
             return 1;
         }
-        
-        $service['macros'] = &Macro::getInstance($this->dependencyInjector)->getServiceMacroByServiceId($service['service_id']);
+
+        $service['macros'] = &Macro::getInstance($this->dependencyInjector)
+            ->getServiceMacroByServiceId($service['service_id']);
         return 0;
     }
-    
-    protected function getServiceTemplates(&$service) {        
-        $service['use'] = array(ServiceTemplate::getInstance($this->dependencyInjector)->generateFromServiceId($service['service_template_model_stm_id']));
+
+    protected function getServiceTemplates(&$service)
+    {
+        $service['use'] = array(
+            ServiceTemplate::getInstance($this->dependencyInjector)
+                ->generateFromServiceId($service['service_template_model_stm_id'])
+        );
     }
-    
-    protected function getContacts(&$service) {
-        if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
+
+    protected function getContacts(&$service)
+    {
+        if (isset($service['service_use_only_contacts_from_host']) &&
+            $service['service_use_only_contacts_from_host'] == 1
+        ) {
             $service['contacts_cache'] = array();
             $service['contacts'] = "";
         } else {
@@ -178,16 +189,20 @@ abstract class AbstractService extends AbstractObject {
 
             if ($contact_result != '') {
                 $service['contacts'] = $contact_result;
-                if (!is_null($service['contact_additive_inheritance']) && $service['contact_additive_inheritance'] == 1) {
+                if (!is_null($service['contact_additive_inheritance'])
+                    && $service['contact_additive_inheritance'] == 1
+                ) {
                     $service['contacts'] = '+' . $service['contacts'];
                 }
             }
         }
     }
-    
+
     protected function getContactGroups(&$service)
     {
-        if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
+        if (isset($service['service_use_only_contacts_from_host']) &&
+            $service['service_use_only_contacts_from_host'] == 1
+        ) {
             $service['contact_groups_cache'] = array();
             $service['contact_groups'] = "";
         } else {
@@ -211,35 +226,47 @@ abstract class AbstractService extends AbstractObject {
             }
         }
     }
-    
-    protected function findCommandName($service_id, $command_label) {
+
+    protected function findCommandName($service_id, $command_label)
+    {
         $loop = array();
-        
+
         $services_tpl = ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
-        $service_id = isset($this->service_cache[$service_id]['service_template_model_stm_id']) ? $this->service_cache[$service_id]['service_template_model_stm_id'] : null;
+        $service_id = isset($this->service_cache[$service_id]['service_template_model_stm_id'])
+            ? $this->service_cache[$service_id]['service_template_model_stm_id']
+            : null;
         while (!is_null($service_id)) {
             if (isset($loop[$service_id])) {
                 break;
             }
             $loop[$service_id] = 1;
-            if (isset($services_tpl[$service_id][$command_label]) && !is_null($services_tpl[$service_id][$command_label])) {
+            if (isset($services_tpl[$service_id][$command_label]) &&
+                !is_null($services_tpl[$service_id][$command_label])
+            ) {
                 return $services_tpl[$service_id][$command_label];
             }
-            $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id']) ? $services_tpl[$service_id]['service_template_model_stm_id'] : null;
+            $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id'])
+                ? $services_tpl[$service_id]['service_template_model_stm_id']
+                : null;
         }
-        
+
         return null;
     }
-    
-    protected function getServiceCommand(&$service, $result_name, $command_id_label, $command_arg_label) {
-        $command_name = Command::getInstance($this->dependencyInjector)->generateFromCommandId($service[$command_id_label]);
+
+    protected function getServiceCommand(&$service, $result_name, $command_id_label, $command_arg_label)
+    {
+        $command_name = Command::getInstance($this->dependencyInjector)
+            ->generateFromCommandId($service[$command_id_label]);
         $command_arg = '';
-        
+
         if (isset($service[$result_name])) {
             return 1;
         }
         $service[$result_name] = $command_name;
-        if (isset($service[$command_arg_label]) && !is_null($service[$command_arg_label]) && $service[$command_arg_label] != '') {
+        if (isset($service[$command_arg_label]) &&
+            !is_null($service[$command_arg_label]) &&
+            $service[$command_arg_label] != ''
+        ) {
             $command_arg = $service[$command_arg_label];
             if (is_null($command_name)) {
                 # Find Command Name in templates
@@ -253,22 +280,25 @@ abstract class AbstractService extends AbstractObject {
                 $service[$result_name] = $command_name . $command_arg;
             }
         }
-        
+
         return 0;
     }
-    
-    protected function getServiceCommands(&$service) {
-        $this->getServiceCommand($service, 'check_command', 'check_command_id', 'check_command_arg');        
+
+    protected function getServiceCommands(&$service)
+    {
+        $this->getServiceCommand($service, 'check_command', 'check_command_id', 'check_command_arg');
         $this->getServiceCommand($service, 'event_handler', 'event_handler_id', 'event_handler_arg');
     }
-    
-    protected function getServicePeriods(&$service) {
+
+    protected function getServicePeriods(&$service)
+    {
         $period = Timeperiod::getInstance($this->dependencyInjector);
         $service['check_period'] = $period->generateFromTimeperiodId($service['check_period_id']);
         $service['notification_period'] = $period->generateFromTimeperiodId($service['notification_period_id']);
     }
-    
-    public function getString($service_id, $attr) {
+
+    public function getString($service_id, $attr)
+    {
         if (isset($this->service_cache[$service_id][$attr])) {
             return $this->service_cache[$service_id][$attr];
         }

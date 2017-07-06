@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Timezone extends AbstractObject {
+class Timezone extends AbstractObject
+{
     private $aTimezone = null;
     private $defaultTimezone = null;
 
@@ -54,7 +56,7 @@ class Timezone extends AbstractObject {
     }
 
     private function getTimezone()
-    {   
+    {
         if (!is_null($this->aTimezone)) {
             return $this->aTimezone;
         }

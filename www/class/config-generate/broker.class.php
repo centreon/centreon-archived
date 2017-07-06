@@ -162,7 +162,7 @@ class Broker extends AbstractObjectXML
                             )
                         ) {
                             continue;
-                        } else if ($subvalue['config_key'] == 'category') {
+                        } elseif ($subvalue['config_key'] == 'category') {
                             $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
                                 $subvalue['config_value'];
                         } else {

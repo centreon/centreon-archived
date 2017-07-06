@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Hostgroup extends AbstractObject {
+class Hostgroup extends AbstractObject
+{
     private $hg = array();
     protected $generate_filename = 'hostgroups.cfg';
     protected $object_name = 'hostgroup';
@@ -57,10 +59,11 @@ class Hostgroup extends AbstractObject {
         'members'
     );
     protected $stmt_hg = null;
-    
-    private function getHostgroupFromId($hg_id) {
+
+    private function getHostgroupFromId($hg_id)
+    {
         if (is_null($this->stmt_hg)) {
-                $this->stmt_hg = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_hg = $this->backend_instance->db->prepare("SELECT 
                     $this->attributes_select
                 FROM hostgroup
                 WHERE hg_id = :hg_id AND hg_activate = '1'
@@ -75,31 +78,34 @@ class Hostgroup extends AbstractObject {
         }
         $this->hg[$hg_id]['members'] = array();
     }
-    
-    public function addHostInHg($hg_id, $host_id, $host_name) {
+
+    public function addHostInHg($hg_id, $host_id, $host_name)
+    {
         if (!isset($this->hg[$hg_id])) {
             $this->getHostgroupFromId($hg_id);
         }
         if (is_null($this->hg[$hg_id]) || isset($this->hg[$hg_id]['members'][$host_id])) {
             return 1;
         }
-        
+
         $this->hg[$hg_id]['members'][$host_id] = $host_name;
         return 0;
     }
-    
-    public function generateObjects() {
+
+    public function generateObjects()
+    {
         foreach ($this->hg as $id => &$value) {
             if (count($value['members']) == 0) {
                 continue;
             }
             $value['hostgroup_id'] = $value['hg_id'];
-            
+
             $this->generateObjectInFile($value, $id);
         }
     }
-    
-    public function getHostgroups() {
+
+    public function getHostgroups()
+    {
         $result = array();
         foreach ($this->hg as $id => &$value) {
             if (is_null($value) || count($value['members']) == 0) {
@@ -109,8 +115,9 @@ class Hostgroup extends AbstractObject {
         }
         return $result;
     }
-    
-    public function reset() {
+
+    public function reset()
+    {
         parent::reset();
         foreach ($this->hg as &$value) {
             if (!is_null($value)) {
@@ -118,8 +125,9 @@ class Hostgroup extends AbstractObject {
             }
         }
     }
-    
-    public function getString($hg_id, $attr) {
+
+    public function getString($hg_id, $attr)
+    {
         if (isset($this->hg[$hg_id][$attr])) {
             return $this->hg[$hg_id][$attr];
         }

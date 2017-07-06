@@ -64,37 +64,47 @@ require_once dirname(__FILE__) . '/broker.class.php';
 require_once dirname(__FILE__) . '/correlation.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
 
-class Generate {
+class Generate
+{
     private $poller_cache = array();
     private $backend_instance = null;
     private $current_poller = null;
     private $installed_modules = null;
     private $module_objects = null;
     protected $dependencyInjector = null;
-    
-    public function __construct(\Pimple\Container $dependencyInjector) {
+
+    public function __construct(\Pimple\Container $dependencyInjector)
+    {
         $this->dependencyInjector = $dependencyInjector;
         $this->backend_instance = Backend::getInstance($this->dependencyInjector);
     }
-    
-    private function generateIndexData($localhost = 0) {
+
+    private function generateIndexData($localhost = 0)
+    {
         $service_instance = Service::getInstance($this->dependencyInjector);
         $host_instance = Host::getInstance($this->dependencyInjector);
         $services = &$service_instance->getGeneratedServices();
-        
+
         try {
-            $stmt = $this->backend_instance->db_cs->prepare("INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES (:host_id, :service_id, :host_name, :service_description) ON DUPLICATE KEY UPDATE host_name=VALUES(host_name), service_description=VALUES(service_description)");
+            $query = "INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES " .
+                "(:host_id, :service_id, :host_name, :service_description) ON DUPLICATE KEY UPDATE " .
+                "host_name=VALUES(host_name), service_description=VALUES(service_description)";
+            $stmt = $this->backend_instance->db_cs->prepare($query);
             $this->backend_instance->db_cs->beginTransaction();
             foreach ($services as $host_id => &$values) {
                 foreach ($values as $service_id) {
                     $stmt->bindParam(':host_name', $host_instance->getString($host_id, 'host_name'), PDO::PARAM_STR);
-                    $stmt->bindParam(':service_description', $service_instance->getString($service_id, 'service_description'), PDO::PARAM_STR);
+                    $stmt->bindParam(
+                        ':service_description',
+                        $service_instance->getString($service_id, 'service_description'),
+                        PDO::PARAM_STR
+                    );
                     $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
                     $stmt->bindParam(':service_id', $service_id, PDO::PARAM_INT);
                     $stmt->execute();
                 }
             }
-            
+
             # Meta services
             if ($localhost == 1) {
                 $meta_services = &MetaService::getInstance($this->dependencyInjector)->getMetaServices();
@@ -107,36 +117,43 @@ class Generate {
                     $stmt->execute();
                 }
             }
-            
+
             $this->backend_instance->db_cs->commit();
         } catch (Exception $e) {
             $this->backend_instance->db_cs->rollback();
-            throw new Exception('Exception received : ' .  $e->getMessage() . "\n");
+            throw new Exception('Exception received : ' . $e->getMessage() . "\n");
             throw new Exception($e->getFile() . "\n");
         }
     }
 
-    private function getPollerFromId($poller_id) {
-        $stmt = $this->backend_instance->db->prepare("SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server WHERE id = :poller_id");
+    private function getPollerFromId($poller_id)
+    {
+        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server " .
+            "WHERE id = :poller_id";
+        $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $stmt->execute();
         $this->current_poller = array_pop($stmt->fetchAll(PDO::FETCH_ASSOC));
         if (is_null($this->current_poller)) {
-            throw new Exception("Cannot find poller id '" . $poller_id ."'");
+            throw new Exception("Cannot find poller id '" . $poller_id . "'");
         }
     }
-    
-    private function getPollerFromName($poller_name) {
-        $stmt = $this->backend_instance->db->prepare("SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server WHERE name = :poller_name");
+
+    private function getPollerFromName($poller_name)
+    {
+        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server " .
+            "WHERE name = :poller_name";
+        $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_name', $poller_name, PDO::PARAM_STR);
         $stmt->execute();
         $this->current_poller = array_pop($stmt->fetchAll(PDO::FETCH_ASSOC));
         if (is_null($this->current_poller)) {
-            throw new Exception("Cannot find poller name '" . $poller_name ."'");
+            throw new Exception("Cannot find poller name '" . $poller_name . "'");
         }
     }
-    
-    public function resetObjectsEngine() {
+
+    public function resetObjectsEngine()
+    {
         Host::getInstance($this->dependencyInjector)->reset();
         HostTemplate::getInstance($this->dependencyInjector)->reset();
         Service::getInstance($this->dependencyInjector)->reset();
@@ -161,13 +178,17 @@ class Generate {
         $this->resetModuleObjects();
     }
 
-    private function configPoller($username = 'unknown') {
+    private function configPoller($username = 'unknown')
+    {
         $this->backend_instance->setUserName($username);
         $this->backend_instance->initPath($this->current_poller['id']);
         $this->backend_instance->setPollerId($this->current_poller['id']);
         $this->resetObjectsEngine();
 
-        Host::getInstance($this->dependencyInjector)->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+        Host::getInstance($this->dependencyInjector)->generateFromPollerId(
+            $this->current_poller['id'],
+            $this->current_poller['localhost']
+        );
         $this->generateModuleObjects(1);
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
@@ -175,39 +196,49 @@ class Generate {
         $this->backend_instance->initPath($this->current_poller['id'], 2);
         # Correlation files are always generated on central poller
         if (Correlation::getInstance($this->dependencyInjector)->hasCorrelation()) {
-            Correlation::getInstance($this->dependencyInjector)->generateFromPollerId($this->current_poller['id'], $this->current_poller['localhost']);
+            Correlation::getInstance($this->dependencyInjector)->generateFromPollerId(
+                $this->current_poller['id'],
+                $this->current_poller['localhost']
+            );
         }
         $this->generateModuleObjects(2);
         Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
-        
+
         $this->generateIndexData($this->current_poller['localhost']);
     }
-    
-    public function configPollerFromName($poller_name) {
+
+    public function configPollerFromName($poller_name)
+    {
         try {
             $this->getPollerFromName($poller_name);
             $this->configPoller();
         } catch (Exception $e) {
-            throw new Exception('Exception received : ' .  $e->getMessage() . " [file: " . $e->getFile()  . "] [line: " . $e->getLine() . "]\n");
+            throw new Exception('Exception received : ' . $e->getMessage() . " [file: " . $e->getFile() .
+                "] [line: " . $e->getLine() . "]\n");
             $this->backend_instance->cleanPath();
         }
     }
 
-    public function configPollerFromId($poller_id, $username='unknown') {
+    public function configPollerFromId($poller_id, $username = 'unknown')
+    {
         try {
             if (is_null($this->current_poller)) {
                 $this->getPollerFromId($poller_id);
             }
             $this->configPoller($username);
         } catch (Exception $e) {
-            throw new Exception('Exception received : ' .  $e->getMessage() . " [file: " . $e->getFile()  . "] [line: " . $e->getLine() . "]\n");
+            throw new Exception('Exception received : ' . $e->getMessage() . " [file: " . $e->getFile() .
+                "] [line: " . $e->getLine() . "]\n");
             $this->backend_instance->cleanPath();
         }
     }
 
-    public function configPollers($username='unknown') {
-        $stmt = $this->backend_instance->db->prepare("SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server WHERE ns_activate = '1'");
+    public function configPollers($username = 'unknown')
+    {
+        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM " .
+            "nagios_server WHERE ns_activate = '1'";
+        $stmt = $this->backend_instance->db->prepare($query);
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $this->current_poller = $value;
@@ -215,7 +246,8 @@ class Generate {
         }
     }
 
-    public function getInstalledModules() {
+    public function getInstalledModules()
+    {
         if (!is_null($this->installed_modules)) {
             return $this->installed_modules;
         }
@@ -227,7 +259,8 @@ class Generate {
         }
     }
 
-    public function getModuleObjects() {
+    public function getModuleObjects()
+    {
         $this->getInstalledModules();
 
         foreach ($this->installed_modules as $module) {
@@ -243,22 +276,27 @@ class Generate {
         }
     }
 
-    public function generateModuleObjects($type = 1) {
+    public function generateModuleObjects($type = 1)
+    {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
                 if (($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true) ||
-                    ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)) {
-                    $module_object::getInstance($this->dependencyInjector)->generateFromPollerId($this->current_poller['id'],
-                        $this->current_poller['localhost']);
+                    ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
+                ) {
+                    $module_object::getInstance($this->dependencyInjector)->generateFromPollerId(
+                        $this->current_poller['id'],
+                        $this->current_poller['localhost']
+                    );
                 }
             }
         }
     }
 
-    public function resetModuleObjects() {
+    public function resetModuleObjects()
+    {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
@@ -268,7 +306,7 @@ class Generate {
             }
         }
     }
-    
+
     /**
      * Reset the cache and the instance
      */
