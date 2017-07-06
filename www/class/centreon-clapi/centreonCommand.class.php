@@ -55,7 +55,7 @@ class CentreonCommand extends CentreonObject
     const UNKNOWN_CMD_TYPE = "Unknown command type";
 
     public $aTypeCommand = array(
-        'host'    => array(
+        'host' => array(
             'key' => '$_HOST',
             'preg' => '/\$_HOST(\w+)\$/'
         ),
@@ -138,8 +138,8 @@ class CentreonCommand extends CentreonObject
         }
         $addParams['command_type'] =
             is_numeric($params[self::ORDER_TYPE])
-            ? $params[self::ORDER_TYPE]
-            : $this->typeConversion[$params[self::ORDER_TYPE]];
+                ? $params[self::ORDER_TYPE]
+                : $this->typeConversion[$params[self::ORDER_TYPE]];
         $addParams['command_line'] = $params[self::ORDER_COMMAND];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
@@ -214,19 +214,19 @@ class CentreonCommand extends CentreonObject
      * @return void
      */
 
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filter_id = null, $filter_name = null)
     {
         $filters = null;
         if (!is_null($filter_id)) {
             $filters = array('command_id' => $filter_id);
-        } 
+        }
 
         parent::export($filters);
         $elements = $this->object->getList("*", -1, 0, null, null, $filters);
         foreach ($elements as $element) {
-            $addStr = $this->action.$this->delim."ADD";
+            $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim.$element[$param];
+                $addStr .= $this->delim . $element[$param];
             }
             $addStr .= "\n";
             echo $addStr;
@@ -283,7 +283,7 @@ class CentreonCommand extends CentreonObject
     }
 
 
-        /**
+    /**
      * This method gat the list of command containt a specific macro
      * @param int $iIdCommand
      * @param string $sType
@@ -297,7 +297,7 @@ class CentreonCommand extends CentreonObject
         if ($sType == "service") {
             $inputName = "svc";
         }
-        $macroToFilter = array("SNMPVERSION","SNMPCOMMUNITY");
+        $macroToFilter = array("SNMPVERSION", "SNMPCOMMUNITY");
 
         if (empty($iIdCommand) || !array_key_exists($sType, $this->aTypeCommand)) {
             return array();
@@ -309,7 +309,7 @@ class CentreonCommand extends CentreonObject
             FROM command
             WHERE command_type = 2
             AND command_id = ?
-            AND command_line like '%".$this->aTypeCommand[$sType]['key']."%'
+            AND command_line like '%" . $this->aTypeCommand[$sType]['key'] . "%'
             ORDER BY command_name";
 
         $res = $this->db->query($sql, array($iIdCommand));
@@ -325,8 +325,8 @@ class CentreonCommand extends CentreonObject
                         $sDesc = isset($aDescription[$sName]['description'])
                             ? $aDescription[$sName]['description']
                             : "";
-                        $arr[$i][$inputName.'_macro_name'] = $sName;
-                        $arr[$i][$inputName.'_macro_value'] = "";
+                        $arr[$i][$inputName . '_macro_name'] = $sName;
+                        $arr[$i][$inputName . '_macro_value'] = "";
                         $arr[$i]['is_password'] = null;
                         $arr[$i]['macroDescription'] = $sDesc;
                         $i++;
@@ -350,14 +350,14 @@ class CentreonCommand extends CentreonObject
     public function getMacroDescription($iIdCmd)
     {
         $aReturn = array();
-        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = ".intval($iIdCmd);
+        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = " . intval($iIdCmd);
 
         $DBRESULT = $this->db->query($sSql);
         while ($row = $DBRESULT->fetch()) {
-            $arr['id']   = $row['command_macro_id'];
+            $arr['id'] = $row['command_macro_id'];
             $arr['name'] = $row['command_macro_name'];
             $arr['description'] = $row['command_macro_desciption'];
-            $arr['type']        = $row['command_macro_type'];
+            $arr['type'] = $row['command_macro_type'];
 
             $aReturn[$row['command_macro_name']] = $arr;
         }

@@ -35,39 +35,47 @@
 
 namespace CentreonClapi;
 
-class CentreonExported {
+class CentreonExported
+{
 
-  private $exported = array();
-  private $ariane = array();
-  private $filter = 0;
-  private $filter_type = null;
-  private $filter_ariane = null;
+    private $exported = array();
+    private $ariane = array();
+    private $filter = 0;
+    private $filter_type = null;
+    private $filter_ariane = null;
 
-  /**
-   * @var Singleton
-   * @access private
-   * @static
-   */
-   private static $_instance = null;
+    /**
+     * @var Singleton
+     * @access private
+     * @static
+     */
+    private static $_instance = null;
 
-   /**    *
-    * @param void
-    * @return void
-    */
-    private function __construct() {
+    /**    *
+     * @param void
+     * @return void
+     */
+    private function __construct()
+    {
     }
 
-    public function ariane_push($object, $id, $name) {
+    public function ariane_push($object, $id, $name)
+    {
         array_push($this->ariane, $object . ':' . $name . ':' . $id);
     }
-    public function ariane_pop() {
+
+    public function ariane_pop()
+    {
         array_pop($this->ariane);
     }
 
-    public function set_filter($value=1) {
+    public function set_filter($value = 1)
+    {
         $this->filter = $value;
     }
-    public function set_options($options) {
+
+    public function set_options($options)
+    {
         if (isset($options['filter-type'])) {
             $this->filter_type = $options['filter-type'];
             if (!is_array($options['filter-type'])) {
@@ -83,7 +91,8 @@ class CentreonExported {
         }
     }
 
-    private function check_ariane($object, $id, $name) {
+    private function check_ariane($object, $id, $name)
+    {
         if (!is_null($this->filter_ariane)) {
             $ariane = join('#', $this->ariane);
             foreach ($this->filter_ariane as $filter) {
@@ -97,7 +106,8 @@ class CentreonExported {
         return 0;
     }
 
-    private function check_filter($object, $id, $name) {
+    private function check_filter($object, $id, $name)
+    {
         if (!is_null($this->filter_type)) {
             foreach ($this->filter_type as $filter) {
                 if (preg_match('/' . $filter . '/', $object)) {
@@ -110,7 +120,8 @@ class CentreonExported {
         return 0;
     }
 
-    public function is_exported($object, $id, $name) {
+    public function is_exported($object, $id, $name)
+    {
         if ($this->filter == 0) {
             return 1;
         }
@@ -134,13 +145,14 @@ class CentreonExported {
         return 0;
     }
 
-   /**
-    *
-    * @param void
-    * @return CentreonExported
-    */
-    public static function getInstance() {
-        if(is_null(self::$_instance)) {
+    /**
+     *
+     * @param void
+     * @return CentreonExported
+     */
+    public static function getInstance()
+    {
+        if (is_null(self::$_instance)) {
             self::$_instance = new CentreonExported();
         }
 

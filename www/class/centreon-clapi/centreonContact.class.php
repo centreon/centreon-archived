@@ -82,7 +82,7 @@ class CentreonContact extends CentreonObject
      */
     public static $aAuthorizedNotificationsOptions = array(
         'host' => array(
-            'd' =>  'Down',
+            'd' => 'Down',
             'u' => 'Unreachable',
             'r' => 'Recovery',
             'f' => 'Flapping',
@@ -123,13 +123,15 @@ class CentreonContact extends CentreonObject
         $this->tpObject = new CentreonTimePeriod();
         $this->object = new \Centreon_Object_Contact();
         $this->timezoneObject = new \Centreon_Object_Timezone();
-        $this->params = array('contact_host_notification_options' => 'n',
+        $this->params = array(
+            'contact_host_notification_options' => 'n',
             'contact_service_notification_options' => 'n',
             'contact_location' => '0',
             'contact_enable_notifications' => '0',
             'contact_type_msg' => 'txt',
             'contact_activate' => '1',
-            'contact_register' => '1');
+            'contact_register' => '1'
+        );
         $this->insertParams = array(
             'contact_name',
             'contact_alias',
@@ -141,11 +143,11 @@ class CentreonContact extends CentreonObject
             'contact_auth_type'
         );
         $this->exportExcludedParams = array_merge(
-                $this->insertParams,
-                array(
-                    $this->object->getPrimaryKey(),
-                    "contact_register"
-                )
+            $this->insertParams,
+            array(
+                $this->object->getPrimaryKey(),
+                "contact_register"
+            )
         );
         $this->action = "CONTACT";
         $this->nbOfCompulsoryParams = count($this->insertParams);
@@ -448,7 +450,7 @@ class CentreonContact extends CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filter_id = null, $filter_name = null)
     {
         $filters = array("contact_register" => $this->register);
         if (!is_null($filter_id)) {
@@ -493,7 +495,7 @@ class CentreonContact extends CentreonObject
                         $parameter = "template";
                         $tmp_id = $value;
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
-                        $value  = $result[$this->object->getUniqueLabelField()];
+                        $value = $result[$this->object->getUniqueLabelField()];
                         $this->api->export_filter('CONTACTTPL', $tmp_id, $value);
                     } elseif ($parameter == "contact_location") {
                         $parameter = self::CONTACT_LOCATION;
@@ -501,7 +503,7 @@ class CentreonContact extends CentreonObject
                             $value,
                             $this->timezoneObject->getUniqueLabelField()
                         );
-                        $value  = $result[$this->timezoneObject->getUniqueLabelField()];
+                        $value = $result[$this->timezoneObject->getUniqueLabelField()];
                     }
                     $value = CentreonUtils::convertLineBreak($value);
                     echo $this->action . $this->delim

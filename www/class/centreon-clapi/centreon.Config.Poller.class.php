@@ -35,7 +35,6 @@
 
 namespace CentreonClapi;
 
-
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';

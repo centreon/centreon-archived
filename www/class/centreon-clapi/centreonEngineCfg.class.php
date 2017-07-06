@@ -47,9 +47,9 @@ require_once "Centreon/Object/Command/Command.php";
  */
 class CentreonEngineCfg extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_INSTANCE          = 1;
-    const ORDER_COMMENT           = 2;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_INSTANCE = 1;
+    const ORDER_COMMENT = 2;
     protected $instanceObj;
 
     public static $aDepends = array(
@@ -69,77 +69,77 @@ class CentreonEngineCfg extends CentreonObject
         $this->object = new \Centreon_Object_Engine();
         $this->brokerModuleObj = new \Centreon_Object_Engine_Broker_Module();
         $this->params = array(
-            'log_file'                                => '/var/log/centreon-engine/centengine.log',
-            'cfg_dir'                                 => '/etc/centreon-engine/',
-            'enable_notifications'                    => '0',
-            'execute_service_checks'                  => '1',
-            'accept_passive_service_checks'           => '1',
-            'execute_host_checks'                     => '2',
-            'accept_passive_host_checks'              => '2',
-            'enable_event_handlers'                   => '1',
-            'log_archive_path'                        => '/var/log/centreon-engine/archives/',
-            'check_external_commands'                 => '1',
-            'command_check_interval'                  => '1s',
-            'command_file'                            => '/var/log/centreon-engine/rw/nagios.cmd',
-            'retain_state_information'                => '1',
-            'state_retention_file'                    => '/var/log/centreon-engine/status.sav',
-            'retention_update_interval'               => '60',
-            'use_retained_program_state'              => '1',
-            'use_retained_scheduling_info'            => '1',
-            'use_syslog'                              => '0',
-            'log_notifications'                       => '1',
-            'log_service_retries'                     => '1',
-            'log_host_retries'                        => '1',
-            'log_event_handlers'                      => '1',
-            'log_external_commands'                   => '1',
-            'log_passive_checks'                      => '2',
-            'sleep_time'                              => '0.2',
-            'service_inter_check_delay_method'        => 's',
-            'service_interleave_factor'               => 's',
-            'max_concurrent_checks'                   => '400',
-            'max_service_check_spread'                => '5',
-            'check_result_reaper_frequency'           => '5',
-            'interval_length'                         => '60',
-            'auto_reschedule_checks'                  => '2',
-            'enable_flap_detection'                   => '0',
-            'low_service_flap_threshold'              => '25.0',
-            'high_service_flap_threshold'             => '50.0',
-            'low_host_flap_threshold'                 => '25.0',
-            'high_host_flap_threshold'                => '50.0',
-            'soft_state_dependencies'                 => '0',
-            'service_check_timeout'                   => '60',
-            'host_check_timeout'                      => '10',
-            'event_handler_timeout'                   => '30',
-            'notification_timeout'                    => '30',
-            'ocsp_timeout'                            => '5',
-            'ochp_timeout'                            => '5',
-            'perfdata_timeout'                        => '5',
-            'obsess_over_services'                    => '0',
-            'obsess_over_hosts'                       => '2',
-            'process_performance_data'                => '0',
-            'host_perfdata_file_mode'                 => '2',
-            'service_perfdata_file_mode'              => '2',
-            'check_for_orphaned_services'             => '0',
-            'check_for_orphaned_hosts'                => '',
-            'check_service_freshness'                 => '2',
-            'check_host_freshness'                    => '2',
-            'date_format'                             => 'euro',
-            'illegal_object_name_chars'               => "~!$%^&*\"|'<>?,()=",
-            'illegal_macro_output_chars'              => "`~$^&\"|'<>",
-            'use_regexp_matching'                     => '2',
-            'use_true_regexp_matching'                => '2',
-            'admin_email'                             => 'admin@localhost',
-            'admin_pager'                             => 'admin',
-            'nagios_activate'                         => '1',
-            'event_broker_options'                    => '-1',
-            'enable_predictive_host_dependency_checks'=> '2',
-            'enable_predictive_service_dependency_checks'=> '2',
-            'use_large_installation_tweaks'           => '2',
-            'enable_environment_macros'               => '2',
-            'debug_level'                             => '0',
-            'debug_level_opt'                         => '0',
-            'debug_verbosity'                         => '2',
-            'cached_host_check_horizon'               => '60'
+            'log_file' => '/var/log/centreon-engine/centengine.log',
+            'cfg_dir' => '/etc/centreon-engine/',
+            'enable_notifications' => '0',
+            'execute_service_checks' => '1',
+            'accept_passive_service_checks' => '1',
+            'execute_host_checks' => '2',
+            'accept_passive_host_checks' => '2',
+            'enable_event_handlers' => '1',
+            'log_archive_path' => '/var/log/centreon-engine/archives/',
+            'check_external_commands' => '1',
+            'command_check_interval' => '1s',
+            'command_file' => '/var/log/centreon-engine/rw/nagios.cmd',
+            'retain_state_information' => '1',
+            'state_retention_file' => '/var/log/centreon-engine/status.sav',
+            'retention_update_interval' => '60',
+            'use_retained_program_state' => '1',
+            'use_retained_scheduling_info' => '1',
+            'use_syslog' => '0',
+            'log_notifications' => '1',
+            'log_service_retries' => '1',
+            'log_host_retries' => '1',
+            'log_event_handlers' => '1',
+            'log_external_commands' => '1',
+            'log_passive_checks' => '2',
+            'sleep_time' => '0.2',
+            'service_inter_check_delay_method' => 's',
+            'service_interleave_factor' => 's',
+            'max_concurrent_checks' => '400',
+            'max_service_check_spread' => '5',
+            'check_result_reaper_frequency' => '5',
+            'interval_length' => '60',
+            'auto_reschedule_checks' => '2',
+            'enable_flap_detection' => '0',
+            'low_service_flap_threshold' => '25.0',
+            'high_service_flap_threshold' => '50.0',
+            'low_host_flap_threshold' => '25.0',
+            'high_host_flap_threshold' => '50.0',
+            'soft_state_dependencies' => '0',
+            'service_check_timeout' => '60',
+            'host_check_timeout' => '10',
+            'event_handler_timeout' => '30',
+            'notification_timeout' => '30',
+            'ocsp_timeout' => '5',
+            'ochp_timeout' => '5',
+            'perfdata_timeout' => '5',
+            'obsess_over_services' => '0',
+            'obsess_over_hosts' => '2',
+            'process_performance_data' => '0',
+            'host_perfdata_file_mode' => '2',
+            'service_perfdata_file_mode' => '2',
+            'check_for_orphaned_services' => '0',
+            'check_for_orphaned_hosts' => '',
+            'check_service_freshness' => '2',
+            'check_host_freshness' => '2',
+            'date_format' => 'euro',
+            'illegal_object_name_chars' => "~!$%^&*\"|'<>?,()=",
+            'illegal_macro_output_chars' => "`~$^&\"|'<>",
+            'use_regexp_matching' => '2',
+            'use_true_regexp_matching' => '2',
+            'admin_email' => 'admin@localhost',
+            'admin_pager' => 'admin',
+            'nagios_activate' => '1',
+            'event_broker_options' => '-1',
+            'enable_predictive_host_dependency_checks' => '2',
+            'enable_predictive_service_dependency_checks' => '2',
+            'use_large_installation_tweaks' => '2',
+            'enable_environment_macros' => '2',
+            'debug_level' => '0',
+            'debug_level_opt' => '0',
+            'debug_verbosity' => '2',
+            'cached_host_check_horizon' => '60'
         );
         $this->nbOfCompulsoryParams = 3;
         $this->activateField = "nagios_activate";
@@ -219,7 +219,7 @@ class CentreonEngineCfg extends CentreonObject
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif ($params[1] == "broker_module") {
                 $this->setBrokerModule($objectId, $params[2]);
-            } elseif (preg_match('/('.implode('|', $commandColumns).')/', $params[1], $matches)) {
+            } elseif (preg_match('/(' . implode('|', $commandColumns) . ')/', $params[1], $matches)) {
                 $commandName = $matches[1];
                 if ($params[2]) {
                     $commandObj = new \Centreon_Object_Command();
@@ -227,7 +227,7 @@ class CentreonEngineCfg extends CentreonObject
                     if (count($res)) {
                         $params[2] = $res[0];
                     } else {
-                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[2]);
+                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
                     }
                 } else {
                     $params[2] = null;
@@ -246,7 +246,7 @@ class CentreonEngineCfg extends CentreonObject
                 parent::setparam($objectId, $updateParams);
             }
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -259,7 +259,7 @@ class CentreonEngineCfg extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array("nagios_id", "nagios_name", "nagios_server_id", "nagios_comment");
         $paramString = str_replace("_", " ", implode($this->delim, $params));
@@ -303,18 +303,20 @@ class CentreonEngineCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler' 
+                    if ($parameter == 'global_host_event_handler'
                         || $parameter == 'global_service_event_handler'
-                        || $parameter == 'host_perfdata_command' 
+                        || $parameter == 'host_perfdata_command'
                         || $parameter == 'service_perfdata_command'
                         || $parameter == 'host_perfdata_file_processing_command'
                         || $parameter == 'service_perfdata_file_processing_command'
-                        || $parameter == 'ochp_command' 
-                        || $parameter == 'ocsp_command') {
+                        || $parameter == 'ochp_command'
+                        || $parameter == 'ocsp_command'
+                    ) {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
                     } elseif ($parameter == 'illegal_object_name_chars'
-                        || $parameter == 'illegal_macro_output_chars') {
+                        || $parameter == 'illegal_macro_output_chars'
+                    ) {
                         $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML401);
                     }
 
@@ -357,7 +359,7 @@ class CentreonEngineCfg extends CentreonObject
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             $this->addBkModule($objectId, $params[1]);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -399,7 +401,7 @@ class CentreonEngineCfg extends CentreonObject
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             $this->delBkModule($objectId, $params[1]);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -424,7 +426,7 @@ class CentreonEngineCfg extends CentreonObject
                     array($objectId, $bkModule)
                 );
             } else {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$bkModule);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $bkModule);
             }
         }
     }
