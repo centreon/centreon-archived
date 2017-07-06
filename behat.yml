@@ -208,3 +208,8 @@ default:
       paths: [ %paths.base%/features/ControlLogin.feature ]
       contexts:
       - ControlLoginContext
+
+    acl_menus_access:
+      paths: [ %paths.base%/features/ACLMenusAccess.feature ]
+      contexts:
+      - ACLMenusAccessContext
