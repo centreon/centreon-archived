@@ -49,7 +49,7 @@ Depending on the type of storage required, choose the options necessary to obtai
 .. image :: /images/user/adatastore1.png
    :align: center
    :scale: 65%
-   
+
 A warning message may appear
 
 .. image :: /images/user/adatastore2.png
@@ -162,7 +162,32 @@ By default, the ‘localhost’ server is defined and the root password is empty
    :align: center
    :scale: 85%
 
-5.    Click on **Refresh**
+If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
+
+1.  Log-on to the ‘root’ user on your server
+
+2.  Modify this file
+
+::
+
+  /etc/my.cnf
+
+3.  Add these lines to the file
+
+.. raw:: latex
+
+::
+
+  [mysqld]
+  innodb_file_per_table=1
+
+4.  Restart mysql service
+
+::
+
+  service mysql restart
+
+5.  Click on **Refresh**
 
 The End of installation wizard configures the databases, click on **Next**.
 
@@ -188,7 +213,7 @@ Start monitoring
 ================
 
 To start monitoring engine :
- 
+
  1.	On web interface, go to **Configuration** ==> **Monitoring engines**
  2.	Leave the default options and click on **Export**
  3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
@@ -198,18 +223,18 @@ To start monitoring engine :
  7.	Start Centreon Broker
 
 ::
- 
+
 	service cbd start
  8.   Start Centreon Engine
 
 ::
- 
+
    service centengine start
 
  8.   Start centcore
 
 ::
- 
+
    service centcore start
 
 Monitoring is now working. You can start to monitor your IT !
@@ -301,4 +326,3 @@ offer (more information on `our website <https://www.centreon.com>`_).
 
 You can continue to configure your monitoring with Centreon IMP by
 following :ref:`this guide <impconfiguration>`.
-

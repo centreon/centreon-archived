@@ -35,6 +35,7 @@ class TimezoneInMonitoringContext extends CentreonContext
         $this->spin(
             function ($context) {
                 $context->page->scheduleImmediateCheckOnService($context->hostname, $context->serviceName);
+                return true;
             },
             'Could not schedule check.'
         );
