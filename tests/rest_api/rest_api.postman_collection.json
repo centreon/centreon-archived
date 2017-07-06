@@ -74756,7 +74756,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"del\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_nagios_config}}\"\n}"
+              "raw": "{\n  \"action\": \"del\",\n  \"object\": \"enginecfg\",\n  \"values\": \"{{engine_name}}\"\n}"
             },
             "description": ""
           },
@@ -75058,7 +75058,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"del\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{rcfg_name}}\"\n}"
+              "raw": "{\n  \"action\": \"del\",\n  \"object\": \"resourcecfg\",\n  \"values\": \"{{resourcecfg_id}}\"\n}"
             },
             "description": ""
           },
