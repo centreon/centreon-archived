@@ -97,8 +97,7 @@ class ACLMenusAccessContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                         if ($key == 'acl_groups') {
-                            $tab = explode(" ", $object[$key]);
-                            if ($tab != $value) {
+                            if ($object[$key] != $value) {
                                 $this->tableau[] = $key;
                             }
                         }
@@ -127,19 +126,19 @@ class ACLMenusAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['menu'] != $this->initialProperties['acl_name']) {
+                    if ($object['menu'][0] != $this->initialProperties['acl_name']) {
                         $this->tableau[] = $this->aclGroup1['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['menu'] != $this->initialProperties['acl_name']) {
+                    if ($object['menu'][0] != $this->initialProperties['acl_name']) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup3['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['menu'] == $this->initialProperties['acl_name']) {
+                    if (count($object['menu']) != 0) {
                         $this->tableau[] = $this->aclGroup3['group_name'];
                     }
                     return count($this->tableau) == 0;
@@ -195,19 +194,19 @@ class ACLMenusAccessContext extends CentreonContext
                     $this->currentPage = new ACLMenuConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->initialProperties['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['acl_groups'] != $this->aclGroup1['group_name']) {
+                    if ($object['acl_groups'][0] != $this->aclGroup1['group_name']) {
                         $this->tableau[] = $this->initialProperties['acl_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['menu'] != $this->initialProperties['acl_name']) {
+                    if ($object['menu'][0] != $this->initialProperties['acl_name']) {
                         $this->tableau[] = $this->aclGroup1['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['menu'] == $this->initialProperties['acl_name']) {
+                    if (count($object['menu']) != 0) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
                     return count($this->tableau) == 0;
@@ -259,35 +258,34 @@ class ACLMenusAccessContext extends CentreonContext
         try {
             $this->spin(
                 function ($context) {
-                $this->currentPage = new ACLMenuConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->updatedProperties['acl_name']);
-                $object = $this->currentPage->getProperties();
-                foreach ($this->updatedProperties as $key => $value) {
-                    if ($key != 'acl_groups' && $value != $object[$key]) {
-                        $this->tableau[] = $key;
+                    $this->currentPage = new ACLMenuConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->updatedProperties['acl_name']);
+                    $object = $this->currentPage->getProperties();
+                    foreach ($this->updatedProperties as $key => $value) {
+                        if ($key != 'acl_groups' && $value != $object[$key]) {
+                            var_dump($object[$key]);
+                            var_dump($value);
+                            $this->tableau[] = $key;
+                        }
                     }
-                }
-                $object = explode(" ", $object['acl_groups']);
-                if (count($object) != 2 || $object[0] != $this->aclGroup1['group_name']
-                    || $object[1] != $this->aclGroup2['group_name']) {
-                    $this->tableau[] = $this->updatedProperties['acl_name'];
-                }
-                $this->currentPage = new ACLGroupConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
-                $object = $this->currentPage->getProperties();
-                $object = explode(" ", $object['menu']);
-                if ($object[0] != $this->initialProperties['acl_name']
-                    || $object[1] != $this->updatedProperties['acl_name']) {
-                    $this->tableau[] = $this->aclGroup1['group_name'];
-                }
-                $this->currentPage = new ACLGroupConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
-                $object = $this->currentPage->getProperties();
-                $object = explode(" ", $object['menu']);
-                if (count($object) != 2 || $object[0] != $this->initialProperties['acl_name']
-                    || $object[1] != $this->updatedProperties['acl_name']) {
-                    $this->tableau[] = $this->aclGroup2['group_name'];
-                }
+                    if (count($object['acl_groups']) != 2 || $object['acl_groups'][0] != $this->aclGroup1['group_name']
+                        || $object['acl_groups'][1] != $this->aclGroup2['group_name']) {
+                        $this->tableau[] = $this->updatedProperties['acl_name'];
+                    }
+                    $this->currentPage = new ACLGroupConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
+                    $object = $this->currentPage->getProperties();
+                    if ($object['menu'][0] != $this->initialProperties['acl_name']
+                        || $object['menu'][1] != $this->updatedProperties['acl_name']) {
+                        $this->tableau[] = $this->aclGroup1['group_name'];
+                    }
+                    $this->currentPage = new ACLGroupConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
+                    $object = $this->currentPage->getProperties();
+                    if (count($object['menu']) != 2 || $object['menu'][0] != $this->initialProperties['acl_name']
+                        || $object['menu'][1] != $this->updatedProperties['acl_name']) {
+                        $this->tableau[] = $this->aclGroup2['group_name'];
+                    }
                     return count($this->tableau) == 0;
                 },
                 "Some objects are not being updated",
