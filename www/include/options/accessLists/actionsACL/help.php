@@ -21,6 +21,7 @@ $help['tip_linked_groups'] = dgettext('help', 'Implied ACL groups.');
 $help['tip_display_top_counter'] = dgettext('help', 'The monitoring overview will be displayed at the top of all pages.');
 $help['tip_display_top_counter_pollers_statistics'] = dgettext('help', 'The monitoring poller status overview will be displayed at the top of all pages.');
 $help['tip_display_poller_listing'] = dgettext('help', 'The poller filter will be available to users in the monitoring consoles.');
+$help['tip_display_schedule_downtime'] = dgettext('help', 'Allows users to schedule downtime on a host or a service.');
 
 /**
  * Generation of files

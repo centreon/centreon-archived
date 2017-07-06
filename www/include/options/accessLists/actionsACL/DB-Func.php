@@ -290,6 +290,7 @@ function listActions()
     $actions[] = "poller_listing";
     $actions[] = "poller_stats";
     $actions[] = "top_counter";
+    $actions[] = "schedule_downtime";
 
     # Services Actions
     $actions[] = "service_checks";

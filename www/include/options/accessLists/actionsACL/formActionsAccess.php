@@ -145,6 +145,7 @@ $form->addElement('checkbox', 'global_perf_data', _("Enable/Disable Performance 
 $form->addElement('checkbox', 'top_counter', _("Display Top Counter"));
 $form->addElement('checkbox', 'poller_stats', _("Display Top Counter pollers statistics"));
 $form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
+$form->addElement('checkbox', 'schedule_downtime', _("Schedule downtime for a host or a service"));
 
 // Configuration Actions
 $form->addElement('checkbox', 'generate_cfg', _("Generate Configuration Files"));

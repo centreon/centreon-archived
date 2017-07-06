@@ -38,6 +38,7 @@
 	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_top_counter">{$form.top_counter.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.top_counter.html}</p></td></tr>
 	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_top_counter_pollers_statistics">{$form.poller_stats.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_stats.html}</p></td></tr>
 	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_poller_listing">{$form.poller_listing.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.poller_listing.html}</p></td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_schedule_downtime">{$form.schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.schedule_downtime.html}</p></td></tr>
 
 		<!-- Config -->
 	 	<tr class="list_lvl_1">
