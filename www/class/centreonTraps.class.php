@@ -464,9 +464,6 @@ class CentreonTraps
         $this->setServiceRelations($traps_id['MAX(traps_id)']);
         $this->setServiceTemplateRelations($traps_id['MAX(traps_id)']);
         $this->setPreexec($traps_id['MAX(traps_id)']);
-        if ($this->centreon->user->admin) {
-            $this->setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
-        }
 
         $res = $this->db->query("SELECT MAX(traps_id) FROM traps");
         $traps_id = $res->fetchRow();
