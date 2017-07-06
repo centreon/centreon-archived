@@ -12,7 +12,7 @@ Etape 1 : Démarrage
 ====================
 
 Afin d'installer, démarrez votre serveur sur le support (créé à partir du fichier ISO) de Centreon Enterprise Server.
-Démarrez avec l'option **Install or upgrade an existing system** 
+Démarrez avec l'option **Install or upgrade an existing system**
 
 .. image :: /images/guide_utilisateur/abootmenu.png
    :align: center
@@ -48,7 +48,7 @@ En fonction du type de stockage désiré, choisissez les options nécessaires po
    :align: center
    :scale: 65%
 
-Un message d'avertissement peut apparaître 
+Un message d'avertissement peut apparaître
 
 .. image :: /images/guide_utilisateur/adatastore2.png
    :align: center
@@ -56,7 +56,7 @@ Un message d'avertissement peut apparaître
 
 Choisissez le nom d'hôte de votre machine et cliquez sur **Configurer le réseau** afin de pouvoir modifier les paramètres de votre carte réseau.
 
-Sélectionnez la carte réseau que vous souhaitez configurer et rendez-vous dans l'onglet "Paramètres IPv4" ou "Paramètres IPv6" (en fonction du besoin) 
+Sélectionnez la carte réseau que vous souhaitez configurer et rendez-vous dans l'onglet "Paramètres IPv4" ou "Paramètres IPv6" (en fonction du besoin)
 afin de configurer l'adresse IP des interfaces. Cliquez sur **Appliquer...** afin d'enregistrer les modifications.
 
 .. image :: /images/guide_utilisateur/anetworkconfig.png
@@ -99,7 +99,7 @@ Il est possible de choisir différentes options à la question **Which server ty
 *	Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
 *	Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
 
-Une fois toutes ces options choisies, l'installation démarre. 
+Une fois toutes ces options choisies, l'installation démarre.
 
 .. image :: /images/guide_utilisateur/arpminstall.png
    :align: center
@@ -121,7 +121,7 @@ Via l'interface web
 ===================
 
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
-L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**. 
+L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/acentreonwelcome.png
    :align: center
@@ -133,7 +133,7 @@ L'assistant de fin d'installation de Centreon contrôle la disponibilité des mo
    :align: center
    :scale: 65%
 
-Cliquez sur **Next**. 
+Cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/amonitoringengine2.png
    :align: center
@@ -162,20 +162,20 @@ Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cn
 Effectuez l'opération ci-dessous :
 
 1.	Connectez-vous avec l'utilisateur 'root' sur votre serveur
-2.	Editez le fichier suivant 
+2.	Editez le fichier suivant
 
 ::
 
 	/etc/my.cnf
 
-3.	Ajoutez la ligne suivante au fichier 
+3.	Ajoutez la ligne suivante au fichier
 
-:: 
+::
 
-	[mysqld] 
+	[mysqld]
 	innodb_file_per_table=1
 
-4.	Redémarrez le service mysql 
+4.	Redémarrez le service mysql
 
 ::
 
@@ -191,7 +191,7 @@ L'assistant de fin d'installation configure les bases de données, cliquez sur *
 
 L'installation est terminée, cliquez sur **Finish**.
 
-À cette étape une publicité permet de connaitre les dernières nouveautés de Centreon. Si votre plate-forme est connectée à Internet vous disposez des dernières informations, sinon l’information présente dans cette version sera proposée. 
+À cette étape une publicité permet de connaitre les dernières nouveautés de Centreon. Si votre plate-forme est connectée à Internet vous disposez des dernières informations, sinon l’information présente dans cette version sera proposée.
 
 .. image :: /images/guide_utilisateur/aendinstall.png
    :align: center
@@ -209,7 +209,7 @@ Configuration de base
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
 1.	Connectez-vous avec l'utilisateur 'root' sur votre serveur
-2.	Installez le paquet de traduction en langue française avec la commande suivante 
+2.	Installez le paquet de traduction en langue française avec la commande suivante
 
 ::
 
@@ -227,7 +227,7 @@ Démarrer la supervision
 =======================
 
 Pour démarrer l'ordonnanceur de supervision :
- 
+
  1.	Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
  2.	Laissez les options par défaut, et cliquez sur **Exporter**
  3.	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
@@ -235,20 +235,20 @@ Pour démarrer l'ordonnanceur de supervision :
  5.	Cliquez à nouveau sur **Exporter**
  6.   Connectez-vous avec l'utilisateur 'root' sur votre serveur
  7.	Démarrez le composant Centreon Broker::
- 
-:: 
+
+::
 
 	service cbd start
  8.   Démarrez Centreon Engine
 
 ::
- 
+
    service centengine start
 
  8.   Démarrez centcore
 
 ::
- 
+
    service centcore start
 
 La supervision est maintenant opérationnelle.
@@ -276,7 +276,7 @@ Avant d'aller plus loin
 Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur. Pour cela :
 
  #.	Connectez-vous en tant que 'root' sur le serveur central
- #.	Tapez la commande 
+ #.	Tapez la commande
 
 ::
 
@@ -285,4 +285,61 @@ Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur
 
 Laissez la mise à jour se faire puis redémarrer le serveur dans le cas d'une mise à jour du noyau.
 
-Vous pouvez commencer la configuration en cliquant :ref:`ici<configuration_start>`.
+***************************************
+Configurez votre supervision facilement
+***************************************
+
+En lui-même Centreon est un excellent outil de supervision et peut être
+configuré pour correspondre exactement à vos besoins. Cependant vous
+trouverez peut-être utile d'utiliser Centreon IMP pour vous aider à
+configurer rapidement votre supervision. Centreon IMP vous fournit des
+Plugin Packs qui sont des paquets contenant des modèles de configuration
+qui réduisent drastiquement le temps nécessaire pour superviser la
+plupart des services de votre réseau.
+
+Centreon IMP nécessite les composants techniques Centreon License
+Manager et Centreon Plugin Pack Manager pour fonctionner.
+
+Installation système
+--------------------
+
+En utilisant Centreon ISO, l'installation des paquets est très simple. Vous
+noterez que Centreon Plugin Pack Manager installe également Centreon
+License Manager en tant que dépendance.
+
+::
+
+   $ yum install centreon-pp-manager
+
+
+Installation web
+----------------
+
+Une fois les paquets installés, il est nécessaire d'activer les modules
+dans Centreon. Rendez-vous à la page Administration -> Extensions -> Modules.
+
+.. image:: /_static/images/installation/ppm_1.png
+   :align: center
+
+Installez tout d'abord Centreon License Manager.
+
+.. image:: /_static/images/installation/ppm_2.png
+   :align: center
+
+Puis installez Centreon Plugin Pack Manager.
+
+.. image:: /_static/images/installation/ppm_3.png
+   :align: center
+
+Vous pouvez maintenant vous rendre à la page Administration -> Extensions
+-> Plugin packs -> Setup. Vous y trouverez vos six premiers Plugin Packs
+gratuits pour vous aider à démarrer. Cinq Plugin Packs supplémentaires
+sont débloqués après vous être inscrit et plus de 150 sont disponibles
+si vous souscrivez à l'offre IMP (plus d'informations sur
+`notre site web <https://www.centreon.com>`_).
+
+.. image:: /_static/images/installation/ppm_4.png
+   :align: center
+
+Vous pouvez continuer à configurer votre supervision en utilisant
+Centreon IMP en suivant :ref:`ce guide <impconfiguration>`.
