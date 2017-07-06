@@ -135,7 +135,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             'AND s.service_register = "0" ' .
             'AND s.service_description LIKE ? ' .
             'ORDER BY h.host_name ';
-        if (isset($range)) {
+        if (isset($range) && !empty($range)) {
             $queryService .= 'LIMIT ?, ?';
             $queryValues[] = (int)$range[0];
             $queryValues[] = (int)$range[1];
