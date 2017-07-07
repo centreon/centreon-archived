@@ -9,7 +9,7 @@ use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
 class AcknowledgementContext extends CentreonContext
 {
     /**
-     *  @Given a non-OK service
+     * @Given a non-OK service
      */
     public function aNonOKService()
     {
@@ -37,7 +37,7 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @Given a non-OK meta-service
+     * @Given a non-OK meta-service
      */
     public function aNonOKMetaService()
     {
@@ -69,7 +69,7 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @When I acknowledge the service
+     * @When I acknowledge the service
      */
     public function iAcknowledgeTheService()
     {
@@ -86,7 +86,7 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @When I acknowledge the meta-service
+     * @When I acknowledge the meta-service
      */
     public function iAcknowledgeTheMetaService()
     {
@@ -103,7 +103,7 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @Then the service is marked as acknowledged
+     * @Then the service is marked as acknowledged
      */
     public function theServiceIsMarkedAsAcknowledged()
     {
@@ -119,7 +119,7 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @Then the meta-service is marked as acknowledged
+     * @Then the meta-service is marked as acknowledged
      */
     public function theMetaServiceIsMarkedAsAcknowledged()
     {
