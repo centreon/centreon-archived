@@ -203,3 +203,8 @@ default:
       paths: [ %paths.base%/features/ACLMenusAccess.feature ]
       contexts:
       - ACLMenusAccessContext
+
+    acl_resources_access:
+      paths: [ %paths.base%/features/ACLResourcesAccess.feature ]
+      contexts:
+      - ACLResourcesAccessContext
