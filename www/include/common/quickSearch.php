@@ -44,7 +44,7 @@ if (!isset($oreon)) {
  */
 $displayHSOptions = 0;
 
-$form_search = new HTML_QuickForm('quickSearchForm', 'POST', "?p=".$p."&o=".$o);
+$form_search = new HTML_QuickForm('quickSearchForm', 'POST', "?p=" . $p . "&o=" . $o);
 if (isset($_POST["search"])) {
     $search = $_POST["search"];
 } elseif (isset($_GET["search"])) {
@@ -68,37 +68,71 @@ if (!isset($search_service)) {
 
 if (isset($search) && $search) {
     if ($p == "4" || $p == "402" || $p == "203") {
-        $attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active_host", "style" => "padding-top:1px;padding-bottom:1px;");
+        $attrsText = array(
+            "size" => "15",
+            "id" => "input_search",
+            "class" => "search_input_active_host",
+            "style" => "padding-top:1px;padding-bottom:1px;"
+        );
     } else {
-        $attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_active", "style" => "padding-top:1px;padding-bottom:1px;");
+        $attrsText = array(
+            "size" => "15",
+            "id" => "input_search",
+            "class" => "search_input_active",
+            "style" => "padding-top:1px;padding-bottom:1px;"
+        );
     }
 } else {
     if ($p == "4" || $p == "402" || $p == "203") {
-        $attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input_host", "style" => "padding-top:1px;padding-bottom:1px;");
+        $attrsText = array(
+            "size" => "15",
+            "id" => "input_search",
+            "class" => "search_input_host",
+            "style" => "padding-top:1px;padding-bottom:1px;"
+        );
     } else {
-        $attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
+        $attrsText = array(
+            "size" => "15",
+            "id" => "input_search",
+            "class" => "search_input",
+            "style" => "padding-top:1px;padding-bottom:1px;"
+        );
     }
 }
 
 if (isset($search_service) && $search_service) {
-    $attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_active_service", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));
+    $attrsText2 = array(
+        "size" => "15",
+        "id" => "input_service",
+        "class" => "search_input_active_service",
+        "style" => "padding-top:1px;padding-bottom:1px;",
+        "title" => _("Service Description Search Key")
+    );
 } else {
-    $attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_service", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));
+    $attrsText2 = array(
+        "size" => "15",
+        "id" => "input_service",
+        "class" => "search_input_service",
+        "style" => "padding-top:1px;padding-bottom:1px;",
+        "title" => _("Service Description Search Key")
+    );
 }
 $attrsText["title"] = _("Search");
-$attrsSubmit = array("style"=>"display:none;");
+$attrsSubmit = array("style" => "display:none;");
 
 if (!isset($limit)) {
     $limit = 20;
 }
 
-$tab = array ("search"              => $searchRaw,
-              "search_service"      => $search_serviceRaw,
-              "p"                   => $p,
-              "o"                   => $o,
-              "limit"               => $limit,
-              "search_type_host"    => 1,
-              "search_type_service" => 1);
+$tab = array(
+    "search" => $searchRaw,
+    "search_service" => $search_serviceRaw,
+    "p" => $p,
+    "o" => $o,
+    "limit" => $limit,
+    "search_type_host" => 1,
+    "search_type_service" => 1
+);
 
 $form_search->addElement('text', 'search', _("Quick Search"), $attrsText);
 if (isset($FlagSearchService) && $FlagSearchService) {
@@ -120,10 +154,28 @@ if ($p == '608' || $p == '60801' || $p == '60802' || $p == '60803' || $p == '601
     }
 }
 
-$tabQuickSearch = array(602 => 1, 60201 => 1, 2020201 => 1, 2020202 => 1, 2020203 => 1, 202 => 1,
-                        2 => 1, 2020101 => 1, 20203 => 1, 2020301 => 1, 2020302 => 1, 2020303 => 1, 20208 => 1,
-                        2020801 => 1, 2020802 => 1, 2020803 => 1, 20211 => 1,
-                        2021101 => 1, 2021102 => 1, 2021103 => 1);
+$tabQuickSearch = array(
+    602 => 1,
+    60201 => 1,
+    2020201 => 1,
+    2020202 => 1,
+    2020203 => 1,
+    202 => 1,
+    2 => 1,
+    2020101 => 1,
+    20203 => 1,
+    2020301 => 1,
+    2020302 => 1,
+    2020303 => 1,
+    20208 => 1,
+    2020801 => 1,
+    2020802 => 1,
+    2020803 => 1,
+    20211 => 1,
+    2021101 => 1,
+    2021102 => 1,
+    2021103 => 1
+);
 
 
 if (isset($tabQuickSearch[$p])) {
