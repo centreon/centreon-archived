@@ -88,11 +88,11 @@ class ACLMenusAccessContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new ACLMenuConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->initialProperties['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    foreach($this->initialProperties as $key => $value) {
+                    foreach ($this->initialProperties as $key => $value) {
                         if ($key != 'acl_groups' && $value != $object[$key]) {
                             $this->tableau[] = $key;
                         }
@@ -107,8 +107,7 @@ class ACLMenusAccessContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -122,7 +121,7 @@ class ACLMenusAccessContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
@@ -146,8 +145,7 @@ class ACLMenusAccessContext extends CentreonContext
                 "Some acl_group are not being correctly updated",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some acl_groups are not being correctly updated : " . implode(',', $this->tableau));
         }
@@ -214,8 +212,7 @@ class ACLMenusAccessContext extends CentreonContext
                 "Some objects are not being updated",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some objects are not being updated : " . implode(',', $this->tableau));
         }
@@ -269,21 +266,24 @@ class ACLMenusAccessContext extends CentreonContext
                         }
                     }
                     if (count($object['acl_groups']) != 2 || $object['acl_groups'][0] != $this->aclGroup1['group_name']
-                        || $object['acl_groups'][1] != $this->aclGroup2['group_name']) {
+                        || $object['acl_groups'][1] != $this->aclGroup2['group_name']
+                    ) {
                         $this->tableau[] = $this->updatedProperties['acl_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
                     if ($object['menu'][0] != $this->initialProperties['acl_name']
-                        || $object['menu'][1] != $this->updatedProperties['acl_name']) {
+                        || $object['menu'][1] != $this->updatedProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->aclGroup1['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
                     if (count($object['menu']) != 2 || $object['menu'][0] != $this->initialProperties['acl_name']
-                        || $object['menu'][1] != $this->updatedProperties['acl_name']) {
+                        || $object['menu'][1] != $this->updatedProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
                     return count($this->tableau) == 0;
@@ -291,8 +291,7 @@ class ACLMenusAccessContext extends CentreonContext
                 "Some objects are not being updated",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some objects are not being updated : " . implode(',', $this->tableau));
         }
@@ -325,7 +324,9 @@ class ACLMenusAccessContext extends CentreonContext
             'table[class="ListTable"] tr'
         );
         foreach ($options as $element) {
-            if ($this->assertFindIn($element, 'css', 'td:nth-child(2)')->getText() == $this->initialProperties['acl_name']) {
+            if ($this->assertFindIn($element, 'css', 'td:nth-child(2)')->getText() ==
+                $this->initialProperties['acl_name']
+            ) {
                 $this->assertFindIn($element, 'css', 'img[src="img/icons/disabled.png"]')->click();
             }
         }
@@ -340,7 +341,7 @@ class ACLMenusAccessContext extends CentreonContext
             function ($context) {
                 $this->currentPage = new ACLMenuConfigurationListingPage($this);
                 $object = $this->currentPage->getEntry($this->initialProperties['acl_name']);
-                return(!$object['enabled']);
+                return (!$object['enabled']);
             },
             "The ACL Menu is not being updated.",
             5
@@ -381,11 +382,11 @@ class ACLMenusAccessContext extends CentreonContext
     public function theLinkWithAccessGroupIsBroken()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new ACLMenuConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
-                foreach ($object as $value){
+                foreach ($object as $value) {
                     $bool = $bool && $value['name'] != $this->initialProperties['acl_name'];
                 }
                 return $bool;

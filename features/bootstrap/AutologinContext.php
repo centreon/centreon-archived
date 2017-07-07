@@ -32,9 +32,7 @@ class AutologinContext extends CentreonContext
         ]);
 
         $this->currentPage->save();
-
         $this->iAmLoggedOut();
-
     }
 
     /**
