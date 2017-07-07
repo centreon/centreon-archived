@@ -524,7 +524,9 @@ function multipleServiceInDB(
                 } elseif ($key2 == "service_description") {
                     $service_description = null;
                 }
-                $val ? $val .= ($value2 != null ? (", '" . $pearDB->escape($value2) . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
+                $val ? $val .=
+                    ($value2 != null ? (", '" . $pearDB->escape($value2) . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
                 if ($key2 != "service_id") {
                     $fields[$key2] = $value2;
                 }
@@ -675,7 +677,11 @@ function multipleServiceInDB(
                             $esi["service_service_id"] = $maxId["MAX(service_id)"];
                             $esi["esi_id"] = null;
                             foreach ($esi as $key2 => $value2) {
-                                $val ? $val .= ($value2 != null ? (", '" . $pearDB->escape($value2) . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
+                                $val ? $val .=
+                                    ($value2 != null
+                                        ? (", '" . $pearDB->escape($value2) . "'")
+                                        : ", NULL"
+                                    ) : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
                             }
                             $val ? $rq = "INSERT INTO extended_service_information VALUES (" . $val . ")" : $rq = null;
                             $pearDB->query($rq);
