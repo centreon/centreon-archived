@@ -30,6 +30,13 @@ class RestApiContext extends CentreonContext
             }
         }
 
+        // Copy MIB.
+        $this->container->copyToContainer(
+            'tests/rest_api/IF-MIB.txt',
+            '/usr/share/centreon/IF-MIB.txt',
+            'web'
+        );
+
         // Synchronize images.
         $this->iAmLoggedIn();
         $page = new ImageListingPage($this);
