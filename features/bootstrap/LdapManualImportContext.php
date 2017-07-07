@@ -7,10 +7,10 @@ use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\External\LoginPage;
 
 class LdapManualImportContext extends CentreonContext
-{   
+{
     protected $page;
-    protected $alias ='centréon-ldap4';
-    
+    protected $alias = 'centréon-ldap4';
+
     /**
      * @Given a LDAP configuration with Users auto import disabled has been created
      */
@@ -84,8 +84,8 @@ class LdapManualImportContext extends CentreonContext
     {
         $this->assertFindLink('centréon-ldap4')->click();
         $this->page = new ContactConfigurationListingPage($this);
-        $object = $this->page->getEntry($this->alias); 
-        if ($object['alias'] != $this->alias) {  
+        $object = $this->page->getEntry($this->alias);
+        if ($object['alias'] != $this->alias) {
             throw new Exception(' contact not created ');
         }
     }

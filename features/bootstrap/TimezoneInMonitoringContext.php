@@ -5,7 +5,6 @@ use Centreon\Test\Behat\Monitoring\HostMonitoringDetailsPage;
 use Centreon\Test\Behat\Configuration\HostConfigurationPage;
 use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
 
-
 /**
  * Defines application features from the specific context.
  */
@@ -17,7 +16,7 @@ class TimezoneInMonitoringContext extends CentreonContext
     private $timezone = 'Africa/Accra';
 
     /**
-     *  @Given a host
+     * @Given a host
      */
     public function aHost()
     {
@@ -42,7 +41,7 @@ class TimezoneInMonitoringContext extends CentreonContext
     }
 
     /**
-     *  @When I open the host monitoring details page
+     * @When I open the host monitoring details page
      */
     public function iOpenTheHostMonitoringDetailsPage()
     {
@@ -50,12 +49,12 @@ class TimezoneInMonitoringContext extends CentreonContext
     }
 
     /**
-     *  @Then the timezone of this host is displayed
+     * @Then the timezone of this host is displayed
      */
-    public function ThenTheTimezoneOfThisHostIsDisplayed()
+    public function thenTheTimezoneOfThisHostIsDisplayed()
     {
         $this->spin(
-            function($context) {
+            function ($context) {
                 $properties = $context->page->getProperties();
                 if ($properties['timezone'] == 'Africa/Accra') {
                     return true;
