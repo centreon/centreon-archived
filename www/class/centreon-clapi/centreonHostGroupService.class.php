@@ -608,7 +608,7 @@ class CentreonHostGroupService extends CentreonObject
         }
         $hgName = $params[0];
         $serviceDescription = $params[1];
-        $relObject = new \Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Group_Service();
         $elements = $relObject->getMergedParameters(
             array('hg_id'),
             array('service_id'),
