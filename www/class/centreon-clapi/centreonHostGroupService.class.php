@@ -365,6 +365,10 @@ class CentreonHostGroupService extends CentreonObject
         $extended = false;
         $commandObject = new CentreonCommand();
         switch ($params[2]) {
+            case "contact_additive_inheritance":
+                break;
+            case "cg_additive_inheritance":
+                break;
             case "check_command":
                 $params[2] = "command_command_id";
                 $params[3] = $commandObject->getId($params[3]);
