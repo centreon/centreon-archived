@@ -156,12 +156,6 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function oneExistingACLMenuAccessLinkedWithTwoAccessGroups()
     {
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup1);
-        $this->currentPage->save();
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup2);
-        $this->currentPage->save();
         $this->currentPage = new ACLMenuConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
@@ -223,12 +217,6 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function oneExistingMenuAccess()
     {
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup1);
-        $this->currentPage->save();
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup2);
-        $this->currentPage->save();
         $this->currentPage = new ACLMenuConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
@@ -302,12 +290,6 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function oneExistingEnabledMenuAccess()
     {
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup1);
-        $this->currentPage->save();
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup2);
-        $this->currentPage->save();
         $this->currentPage = new ACLMenuConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
@@ -353,22 +335,6 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function iDeleteTheMenuAccess()
     {
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup1);
-        $this->currentPage->save();
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup2);
-        $this->currentPage->save();
-        $this->currentPage = new ACLMenuConfigurationPage($this);
-        $this->currentPage->setProperties($this->initialProperties);
-        $this->currentPage->save();
-    }
-
-    /**
-     * @Then the menu access record is not visible anymore in Menus Access Page
-     */
-    public function theMenuAccessRecordIsNotVisibleAnymoreInMenusAccessPage()
-    {
         $this->currentPage = new ACLMenuConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['acl_name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
@@ -377,9 +343,9 @@ class ACLMenusAccessContext extends CentreonContext
     }
 
     /**
-     * @Then the link with access groups is broken
+     * @Then the menu access record is not visible anymore in Menus Access Page
      */
-    public function theLinkWithAccessGroupIsBroken()
+    public function theMenuAccessRecordIsNotVisibleAnymoreInMenusAccessPage()
     {
         $this->spin(
             function ($context) {
@@ -394,5 +360,37 @@ class ACLMenusAccessContext extends CentreonContext
             "The ACL Menu is not being deleted.",
             5
         );
+    }
+
+    /**
+     * @Then the link with access groups is broken
+     */
+    public function theLinkWithAccessGroupIsBroken()
+    {
+        $this->tableau = array();
+        try {
+            $this->spin(
+                function ($context) {
+                    $this->currentPage = new ACLGroupConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
+                    $object = $this->currentPage->getProperties();
+                    if (count($object['menu']) != 0) {
+                        $this->tableau[] = $this->aclGroup1['group_name'];
+                    }
+                    $this->currentPage = new ACLGroupConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
+                    $object = $this->currentPage->getProperties();
+                    if (count($object['menu']) != 0) {
+                        $this->tableau[] = $this->aclGroup2['group_name'];
+                    }
+                    return count($this->tableau) == 0;
+            },
+            "Some links to the ACL Menu are not being deleted.",
+            5
+        );
+        } catch (\Exception $e) {
+            $this->tableau = array_unique($this->tableau);
+            throw new \Exception("Some links to the ACL Menu are not being deleted. : " . implode(',', $this->tableau));
+        }
     }
 }
