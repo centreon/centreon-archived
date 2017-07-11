@@ -30,12 +30,14 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         'severity' => 'serviceCategoryName (3)',
         'mode' => 1,
         'behavior' => 'If match, disable submit',
-        'rule' => array(array(
-            'string' => '@trapRule@',
-            'regexp' => '/ruleRegexp/',
-            'status' => 'Critical',
-            'severity' => 'serviceCategoryName (3)'
-        )),
+        'rule' => array(
+            array(
+                'string' => '@trapRule@',
+                'regexp' => '/ruleRegexp/',
+                'status' => 'Critical',
+                'severity' => 'serviceCategoryName (3)'
+            )
+        ),
         'submit' => 0,
         'reschedule' => 1,
         'execute_command' => 1,
@@ -66,12 +68,14 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         'severity' => 'serviceCategoryName (3)',
         'mode' => 1,
         'behavior' => 'If match, disable submit',
-        'rule' => array(array(
-            'string' => '@trapRule@',
-            'regexp' => '/ruleRegexp/',
-            'status' => 'Critical',
-            'severity' => 'serviceCategoryName (3)'
-        )),
+        'rule' => array(
+            array(
+                'string' => '@trapRule@',
+                'regexp' => '/ruleRegexp/',
+                'status' => 'Critical',
+                'severity' => 'serviceCategoryName (3)'
+            )
+        ),
         'submit' => 0,
         'reschedule' => 1,
         'execute_command' => 1,
@@ -146,18 +150,18 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                     $object = $this->currentPage->getProperties();
-                    foreach($this->updatedProperties as $key => $value) {
+                    foreach ($this->updatedProperties as $key => $value) {
                         if ($key != 'rule' && $value != $object[$key]) {
                             $this->tableau[] = $key;
                         }
                     }
                     $i = 0;
                     $countObject = count($object['rule']);
-                    foreach($this->updatedProperties['rule'] as $value) {
+                    foreach ($this->updatedProperties['rule'] as $value) {
                         if ($i >= $countObject || $value['string'] != $object['rule'][$i]['string']) {
                             $this->tableau[] = 'rule_string';
                         }
@@ -177,8 +181,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -241,39 +244,38 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                     $object = $this->currentPage->getProperties();
-                    foreach($this->updatedProperties as $key => $value) {
+                    foreach ($this->updatedProperties as $key => $value) {
                         if ($key != 'rule' && $value != $object[$key]) {
                             $this->tableau[] = $key;
                         }
                     }
                     $i = 0;
                     $countObject = count($object['rule']);
-                    foreach($this->updatedProperties['rule'] as $value) {
+                    foreach ($this->updatedProperties['rule'] as $value) {
                         if ($i >= $countObject || $value['string'] != $object['rule'][$i]['string']) {
                             $this->tableau[] = 'rule_string';
                         }
                         if ($i >= $countObject || $value['regexp'] != $object['rule'][$i]['regexp']) {
                             $this->tableau[] = 'rule_regexp';
-                         }
-                         if ($i >= $countObject || $value['status'] != $object['rule'][$i]['status']) {
-                             $this->tableau[] = 'rule_status';
-                         }
-                         if ($i >= $countObject || $value['severity'] != $object['rule'][$i]['severity']) {
-                             $this->tableau[] = 'rule_severity';
-                         }
-                         ++$i;
+                        }
+                        if ($i >= $countObject || $value['status'] != $object['rule'][$i]['status']) {
+                            $this->tableau[] = 'rule_status';
+                        }
+                        if ($i >= $countObject || $value['severity'] != $object['rule'][$i]['severity']) {
+                            $this->tableau[] = 'rule_severity';
+                        }
+                        ++$i;
                     }
                     return count($this->tableau) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -337,18 +339,18 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->duplicatedProperties['name']);
                     $object = $this->currentPage->getProperties();
-                    foreach($this->duplicatedProperties as $key => $value) {
+                    foreach ($this->duplicatedProperties as $key => $value) {
                         if ($key != 'rule' && $value != $object[$key]) {
                             $this->tableau[] = $key;
                         }
                     }
                     $i = 0;
                     $countObject = count($object['rule']);
-                    foreach($this->duplicatedProperties['rule'] as $value) {
+                    foreach ($this->duplicatedProperties['rule'] as $value) {
                         if ($i >= $countObject || $value['string'] != $object['rule'][$i]['string']) {
                             $this->tableau[] = 'rule_string';
                         }
@@ -368,8 +370,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -396,11 +397,11 @@ class TrapsSNMPConfigurationContext extends CentreonContext
     public function thisDefinitionDisappearsFromTheSNMPTrapList()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
-                foreach ($object as $value){
+                foreach ($object as $value) {
                     $bool = $bool && $value['name'] != $this->initialProperties['name'];
                 }
                 return $bool;
@@ -410,5 +411,3 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         );
     }
 }
-
-?>
