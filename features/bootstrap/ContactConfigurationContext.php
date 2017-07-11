@@ -3,6 +3,7 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\External\ListingPage;
+
 class ContactConfigurationContext extends CentreonContext
 {
     private $currentPage;
@@ -26,6 +27,7 @@ class ContactConfigurationContext extends CentreonContext
         'host_notification_period' => 'workhours',
         'service_notification_period' => 'nonworkhours'
     ));
+
     /**
      * @Given a contact is configured
      */
@@ -46,22 +48,23 @@ class ContactConfigurationContext extends CentreonContext
         $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
     }
+
     /**
      * @Then the contact properties are updated
      */
     public function theContactPropertiesAreUpdated()
     {
-	    $this->currentPage = new ContactConfigurationListingPage($this);
-	    $this->currentPage = $this->currentPage->inspect($this->updatedProperties['alias']);
-	    $object = $this->currentPage->getProperties();
-	    $tableau = array();
-	    foreach($this->updatedProperties as $key => $value) {
-	        if ($value != $object[$key]) {
-		        $tableau[] = $key;
-	        }
-	    }
-	    if (count($tableau) > 0) {
-	        throw new \Exception("Some properties are not being updated : " . implode(',', $tableau));
-	    }
+        $this->currentPage = new ContactConfigurationListingPage($this);
+        $this->currentPage = $this->currentPage->inspect($this->updatedProperties['alias']);
+        $object = $this->currentPage->getProperties();
+        $tableau = array();
+        foreach ($this->updatedProperties as $key => $value) {
+            if ($value != $object[$key]) {
+                $tableau[] = $key;
+            }
+        }
+        if (count($tableau) > 0) {
+            throw new \Exception("Some properties are not being updated : " . implode(',', $tableau));
+        }
     }
 }
