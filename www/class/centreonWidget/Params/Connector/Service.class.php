@@ -49,21 +49,28 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
         if (isset($this->quickform)) {
             $tab = $this->getListValues($params['parameter_id']);
             $triggerSource = './include/home/customViews/triggers/loadServiceFromHost.php';
-            $this->element = $this->quickform->addElement('select',
-            											  'param_trigger_'.$params['parameter_id'],
-                                                          'Host',
-                                                          $tab,
-                                                          array('onchange' => 'javascript:loadFromTrigger("'.$triggerSource.'", '.$params['parameter_id'].', this.value);'));
+            $this->element = $this->quickform->addElement(
+                'select',
+                'param_trigger_' . $params['parameter_id'],
+                'Host',
+                $tab,
+                array(
+                    'onchange' => 'javascript:loadFromTrigger("' . $triggerSource . '", ' .
+                        $params['parameter_id'] . ', this.value);'
+                )
+            );
             $userPref = $this->getUserPreferences($params);
             $svcTab = array();
             if (isset($userPref)) {
                 list($hostId, $serviceId) = explode('-', $userPref);
                 $svcTab = $this->getServiceIds($hostId);
             }
-            $this->quickform->addElement('select',
-                                         'param_'.$params['parameter_id'],
-                                         $params['parameter_name'],
-                                         $svcTab);
+            $this->quickform->addElement(
+                'select',
+                'param_' . $params['parameter_id'],
+                $params['parameter_name'],
+                $svcTab
+            );
         }
     }
 
@@ -75,9 +82,11 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
      */
     protected function getServiceIds($hostId)
     {
-        $aclString = $this->acl->queryBuilder('AND', 
-                                         's.service_id',
-                                         $this->acl->getServicesString('ID', $this->monitoringDb));
+        $aclString = $this->acl->queryBuilder(
+            'AND',
+            's.service_id',
+            $this->acl->getServicesString('ID', $this->monitoringDb)
+        );
         $sql = "SELECT service_id, service_description
         		FROM service s, host_service_relation hsr
         		WHERE hsr.host_host_id = " . $this->db->escape($hostId) . "
@@ -87,14 +96,14 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
         $sql .= " SELECT service_id, service_description
         		FROM service s, host_service_relation hsr, hostgroup_relation hgr
         		WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
-        		AND hgr.host_host_id = ".$this->db->escape($hostId)."
+        		AND hgr.host_host_id = " . $this->db->escape($hostId) . "
         		AND hsr.service_service_id = s.service_id ";
         $sql .= $aclString;
         $sql .= " ORDER BY service_description ";
         $res = $this->db->query($sql);
         $tab = array();
         while ($row = $res->fetchRow()) {
-            $tab[$hostId."-".$row['service_id']] = $row['service_description'];
+            $tab[$hostId . "-" . $row['service_id']] = $row['service_description'];
         }
         return $tab;
     }
@@ -108,9 +117,14 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
                       FROM host
             	      WHERE host_activate = '1'
             	      AND host_register = '1' ";
-            $query .= $this->acl->queryBuilder('AND', 
-                                               'host_id',
-                                               $this->acl->getHostsString('ID', $this->monitoringDb));
+            $query .= $this->acl->queryBuilder(
+                'AND',
+                'host_id',
+                $this->acl->getHostsString(
+                    'ID',
+                    $this->monitoringDb
+                )
+            );
             $query .= " ORDER BY host_name";
             $res = $this->db->query($query);
             $tab = array(null => null);

@@ -44,12 +44,12 @@ class CentreonWidgetParamsConnectorServiceMulti extends CentreonWidgetParamsSele
 
     public function getParameters()
     {
-        return array (
+        $path = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
+        return array(
             'datasourceOrigin' => 'ajax',
-            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+            'availableDatasetRoute' => $path,
             'multiple' => true,
             'linkedObject' => 'centreonService'
         );
     }
-
 }
