@@ -204,6 +204,11 @@ default:
       contexts:
       - LdapManualImportContext
 
+    modify_default_page_connexion:
+      paths: [ %paths.base%/features/ModifyDefaultPageConnection.feature ]
+      contexts:
+      - ModifyDefaultPageConnectionContext
+
     control_login:
       paths: [ %paths.base%/features/ControlLogin.feature ]
       contexts:
