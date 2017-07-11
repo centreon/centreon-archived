@@ -174,10 +174,6 @@ event_handler	                   Name of the event handler command
 
 event_handler_arguments	           Arguments that go along with the event handler, prepend each argument with the "!" character
 
-first_notification_delay	   First notification delay in seconds
-
-flap_detection_options	           Flap detection options
-
 notes	                           Notes
 
 notes_url	                   Notes URL
