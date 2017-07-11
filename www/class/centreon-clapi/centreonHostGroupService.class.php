@@ -709,7 +709,7 @@ class CentreonHostGroupService extends CentreonObject
     public function unsetseverity($parameters)
     {
         $params = explode($this->delim, $parameters);
-        if (count($params) < 3) {
+        if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $hgName = $params[0];
