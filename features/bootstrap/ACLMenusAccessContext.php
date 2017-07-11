@@ -384,10 +384,10 @@ class ACLMenusAccessContext extends CentreonContext
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
                     return count($this->tableau) == 0;
-            },
-            "Some links to the ACL Menu are not being deleted.",
-            5
-        );
+                },
+                "Some links to the ACL Menu are not being deleted.",
+                5
+            );
         } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some links to the ACL Menu are not being deleted. : " . implode(',', $this->tableau));
