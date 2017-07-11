@@ -7,7 +7,7 @@ use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 class ConfigurationWarningsContext extends CentreonContext
 {
     /**
-     *  @Given a service with notifications enabled
+     * @Given a service with notifications enabled
      */
     public function aServiceWithNotificationsEnabled()
     {
@@ -27,7 +27,7 @@ class ConfigurationWarningsContext extends CentreonContext
     }
 
     /**
-     *  @Given the service has no notification period
+     * @Given the service has no notification period
      */
     public function theServiceHasNoNotificationPeriod()
     {
@@ -35,7 +35,7 @@ class ConfigurationWarningsContext extends CentreonContext
     }
 
     /**
-     *  @When the configuration is exported
+     * @When the configuration is exported
      */
     public function theConfigurationIsExported()
     {
@@ -49,7 +49,7 @@ class ConfigurationWarningsContext extends CentreonContext
     }
 
     /**
-     *  @Then a warning message is printed
+     * @Then a warning message is printed
      */
     public function aWarningMessageIsPrinted()
     {

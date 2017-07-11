@@ -38,7 +38,7 @@ class HostConfigurationContext extends CentreonContext
         ));
         $this->currentPage->save();
     }
-	
+
     /**
      * @When I configure the name of an host
      */
@@ -50,7 +50,7 @@ class HostConfigurationContext extends CentreonContext
             'name' => $this->changedName
         ));
         $this->currentPage->save();
-    } 
+    }
 
     /**
      * @Then the name has changed on the Host page
@@ -58,10 +58,9 @@ class HostConfigurationContext extends CentreonContext
     public function theIPAddressHasChangedOnTheHostPage()
     {
         $this->currentPage = new HostConfigurationListingPage($this);
-        try{
+        try {
             $this->currentPage->getEntry($this->changedName);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             throw new \Exception('The name has not changed:    ' . $e->getMessage());
         }
     }
@@ -87,7 +86,7 @@ class HostConfigurationContext extends CentreonContext
         $this->currentPage = new HostConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->hostName);
         $object = $this->currentPage->getProperties();
-        if (!$object['alias'] == $this->changedAlias){
+        if (!$object['alias'] == $this->changedAlias) {
             throw new \Exception("The alias was not changed.");
         }
     }
@@ -113,7 +112,7 @@ class HostConfigurationContext extends CentreonContext
         $this->currentPage = new HostConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->hostName);
         $object = $this->currentPage->getProperties();
-        if (!$object['address'] == $this->changedAddress){
+        if (!$object['address'] == $this->changedAddress) {
             throw new \Exception("The address was not changed.");
         }
     }

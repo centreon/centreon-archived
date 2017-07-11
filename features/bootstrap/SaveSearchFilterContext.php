@@ -45,7 +45,7 @@ class SaveSearchFilterContext extends CentreonContext
      */
     public function iChangePage()
     {
-       new ServiceTemplateConfigurationListingPage($this);
+        new ServiceTemplateConfigurationListingPage($this);
     }
 
     /**

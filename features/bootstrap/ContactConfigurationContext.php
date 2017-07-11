@@ -60,7 +60,7 @@ class ContactConfigurationContext extends CentreonContext
         $this->currentPage = $this->currentPage->inspect($this->updatedProperties['alias']);
         $object = $this->currentPage->getProperties();
         $tableau = array();
-        foreach($this->updatedProperties as $key => $value) {
+        foreach ($this->updatedProperties as $key => $value) {
             if ($value != $object[$key]) {
                 $tableau[] =
                     $key . ' (got ' . $object[$key] .

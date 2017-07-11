@@ -48,7 +48,7 @@ class ShowDisabledHostsServicesContext extends CentreonContext
         $checkbox->click();
         sleep(2);
 
-        $search= $this->assertFind('named', array('id_or_name', 'Search'));
+        $search = $this->assertFind('named', array('id_or_name', 'Search'));
         $search->click();
         sleep(2);
     }
