@@ -48,7 +48,7 @@ class CentreonWidgetParamsSelect2 extends CentreonWidgetParams
         if (isset($this->quickform)) {
             $this->element = $this->quickform->addElement(
                 'select2',
-                'param_'.$params['parameter_id'],
+                'param_' . $params['parameter_id'],
                 $params['parameter_name'],
                 array(),
                 $this->getParameters()

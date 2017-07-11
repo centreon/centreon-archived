@@ -47,21 +47,30 @@ class CentreonWidgetParamsCompare extends CentreonWidgetParams
         parent::init($params);
         if (isset($this->quickform)) {
             $elems = array();
-            $operands = array(null      => null,
-            				  "gt"      => ">",
-                              "lt"      => "<",
-                              "gte"     => ">=",
-                              "lte"     => "<=",
-                              "eq"      => "=",
-                              "ne"      => "!=",
-                              "like"    => "LIKE",
-                              "notlike" => "NOT LIKE");
-            $elems[] = $this->quickform->addElement('select', 'op_'.$params['parameter_id'], '', $operands);
-            $elems[] = $this->quickform->addElement('text',
-            											  'cmp_'.$params['parameter_id'],
-                                                          $params['parameter_name'],
-                                                          array("size" => 30));
-            $this->element = $this->quickform->addGroup($elems, 'param_'.$params['parameter_id'], $params['parameter_name'], '&nbsp;');
+            $operands = array(
+                null => null,
+                "gt" => ">",
+                "lt" => "<",
+                "gte" => ">=",
+                "lte" => "<=",
+                "eq" => "=",
+                "ne" => "!=",
+                "like" => "LIKE",
+                "notlike" => "NOT LIKE"
+            );
+            $elems[] = $this->quickform->addElement('select', 'op_' . $params['parameter_id'], '', $operands);
+            $elems[] = $this->quickform->addElement(
+                'text',
+                'cmp_' . $params['parameter_id'],
+                $params['parameter_name'],
+                array("size" => 30)
+            );
+            $this->element = $this->quickform->addGroup(
+                $elems,
+                'param_' . $params['parameter_id'],
+                $params['parameter_name'],
+                '&nbsp;'
+            );
         }
     }
 
@@ -79,8 +88,10 @@ class CentreonWidgetParamsCompare extends CentreonWidgetParams
                 $val = trim($matches[2]);
             }
             if (isset($op) && isset($val)) {
-                $this->quickform->setDefaults(array('op_'.$params['parameter_id'] => $op,
-                                                    'cmp_'.$params['parameter_id']=> $val));
+                $this->quickform->setDefaults(array(
+                    'op_' . $params['parameter_id'] => $op,
+                    'cmp_' . $params['parameter_id'] => $val
+                ));
             }
         }
     }

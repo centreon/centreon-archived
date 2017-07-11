@@ -46,9 +46,11 @@ class CentreonWidgetParamsBoolean extends CentreonWidgetParams
     {
         parent::init($params);
         if (isset($this->quickform)) {
-            $this->element = $this->quickform->addElement('checkbox',
-            											  'param_'.$params['parameter_id'],
-                                                          $params['parameter_name']);
+            $this->element = $this->quickform->addElement(
+                'checkbox',
+                'param_' . $params['parameter_id'],
+                $params['parameter_name']
+            );
         }
     }
 

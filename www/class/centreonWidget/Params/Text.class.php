@@ -46,10 +46,12 @@ class CentreonWidgetParamsText extends CentreonWidgetParams
     {
         parent::init($params);
         if (isset($this->quickform)) {
-            $this->element = $this->quickform->addElement('text',
-            											  'param_'.$params['parameter_id'],
-                                                          $params['parameter_name'],
-                                                          array("size" => 30));
+            $this->element = $this->quickform->addElement(
+                'text',
+                'param_' . $params['parameter_id'],
+                $params['parameter_name'],
+                array("size" => 30)
+            );
         }
     }
 }
