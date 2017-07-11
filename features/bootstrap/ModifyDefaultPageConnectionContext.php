@@ -95,7 +95,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     public function iHaveReplacedTheDefaultPageConnectionWithMonitoringStatusDetailsHosts()
     {
         $this->visit('main.php?p=50104&o=c');
-        $this->selectInList('select[name="default_page"]','  Monitoring > Status Details > Hosts');
+        $this->selectInList('select[name="default_page"]', '  Monitoring > Status Details > Hosts');
         $this->assertFindButton('submitC')->click();
     }
 
@@ -114,7 +114,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     public function theActivePageIsAdministrationParameters()
     {
         $this->spin(
-            function($context) {
+            function ($context) {
                 return $context->getSession()->getPage()->has('css', 'input[name="oreon_path"]');
             },
             "The active page is not Administration > Parameters.",
@@ -128,7 +128,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     public function theActivePageIsMonitoringStatusDetailsHosts()
     {
         $this->spin(
-            function($context) {
+            function ($context) {
                 return $context->getSession()->getPage()->has('css', 'input[name="host_search"]');
             },
             "The active page is not Monitoring > Status > Hosts.",
