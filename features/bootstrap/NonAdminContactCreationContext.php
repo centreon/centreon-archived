@@ -25,7 +25,7 @@ class NonAdminContactCreationContext extends CentreonContext
         $this->duplicatedAlias = 'contactAlias_1';
     }
 
-   /**
+    /**
      * @When I create a contact
      */
     public function iCreateAContact()
@@ -58,13 +58,14 @@ class NonAdminContactCreationContext extends CentreonContext
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }
+
     /**
      * @Then the duplicated contact is displayed in the user list
      */
     public function theDuplicatedContactIsDisplayedInTheUserList()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new ContactConfigurationListingPage($this);
                 return $this->currentPage->getEntry($this->duplicatedAlias);
             },
@@ -90,11 +91,11 @@ class NonAdminContactCreationContext extends CentreonContext
     public function theDeletedContactIsNotDisplayedInTheUserList()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new ContactConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
-                foreach($object as $value){
+                foreach ($object as $value) {
                     $bool = $bool && $value['alias'] != $this->initialProperties['alias'];
                 }
                 return $bool;
