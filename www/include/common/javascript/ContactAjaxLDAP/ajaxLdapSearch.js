@@ -34,61 +34,60 @@
 
 var _addrSearchM = "include/configuration/configObject/contact/ldapsearch.php" //l'adresse   interroger pour trouver les suggestions
 
-function getXhrM(){
-	if (window.XMLHttpRequest) // Firefox et autres
-	   var xhrM = new XMLHttpRequest();
-	else if(window.ActiveXObject) { // Internet Explorer
-	   try {
-                var xhrM = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                var xhrM = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-	} else { // XMLHttpRequest non supporté par le navigateur
-		alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
-		var xhrM = false;
-	}
-	return xhrM;
+function getXhrM() {
+    if (window.XMLHttpRequest) // Firefox et autres
+        var xhrM = new XMLHttpRequest();
+    else if (window.ActiveXObject) { // Internet Explorer
+        try {
+            var xhrM = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            var xhrM = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+    } else { // XMLHttpRequest non supporté par le navigateur
+        alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+        var xhrM = false;
+    }
+    return xhrM;
 }
 
-function LdapSearch(){
-    
-	var confList = '';
+function LdapSearch() {
+
+    var confList = [];
     var ldap_search_filters = '';
-	jQuery('input[name^=ldapConf]').each(function(el) {
-		if (el.checked) {
-			key = el.getAttribute('name');
-			key.sub(/ldapConf\[(\d+)\]/, function(match) {
-				if (confList != '') {
-                    confList += ',';
-				}
-				confList += match[1];                                
-                var filterVal = jQuery('input[name^=ldap_search_filter\['+match[1]+'\]]').first().value;
+    jQuery('input[name^=ldapConf]:checked').each(function () {
+        var el = jQuery(this);
+        if (el.is(':checked')) {
+            key = el.attr('name');
+            var matches = key.match(/ldapConf\[(\d+)\]/);
+            if (matches[1] != undefined) {
+                confList.push(matches[1]);
+                var filterVal = jQuery('input[name^="ldap_search_filter\[' + matches[1] + '\]"]').first().val();
                 if (filterVal) {
-                    ldap_search_filters += '&ldap_search_filter['+match[1]+']=';
+                    ldap_search_filters += '&ldap_search_filter[' + matches[1] + ']=';
                     filterVal = encodeURIComponent(filterVal);
                     ldap_search_filters += filterVal;
-                }                                
-			});
-		}
-	});
-    if (confList === '') {
+                }
+            }
+        }
+    });
+    if (confList.length == 0) {
         alert("You must select a LDAP server");
     } else {
         var xhrM = getXhrM();
 
-        xhrM.open("POST",_addrSearchM ,true);
-        xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-        xhrM.send("confList="+confList+ldap_search_filters);	
+        xhrM.open("POST", _addrSearchM, true);
+        xhrM.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhrM.send("confList=" + confList + ldap_search_filters);
 
-        document.getElementById('ldap_search_result_output').innerHTML = "<img src='./img/icones/16x16/spinner_blue.gif'>" ;
+        document.getElementById('ldap_search_result_output').innerHTML = "<img src='./img/icones/16x16/spinner_blue.gif'>";
 
         // On defini ce qu'on va faire quand on aura la reponse
-        xhrM.onreadystatechange = function() {
+        xhrM.onreadystatechange = function () {
             // On ne fait quelque chose que si on a tout recu et que le serveur est ok
-            document.getElementById('ldap_search_result_output').innerHTML =  xhrM.responseText;
-            if (xhrM && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML ) {
+            document.getElementById('ldap_search_result_output').innerHTML = xhrM.responseText;
+            if (xhrM && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML) {
                 //alert(xhrM.responseText);
-                document.getElementById('ldap_search_result_output').innerHTML = '' ;
+                document.getElementById('ldap_search_result_output').innerHTML = '';
 
                 reponse = xhrM.responseXML.documentElement;
 
@@ -110,7 +109,7 @@ function LdapSearch(){
                 var _dntext = null;
                 var _tr = null;
 
-                _tr =  document.createElement('tr');
+                _tr = document.createElement('tr');
                 _tr.className = "ListHeader";
                 _td0 = document.createElement('td');
                 _td1 = document.createElement('td');
@@ -135,8 +134,10 @@ function LdapSearch(){
                 cbx.id = "checkall";
                 cbx.name = "checkall";
                 cbx.value = "checkall";
-                cbx.setAttribute("onclick","checkUncheckAll(this);");
-                cbx.onclick = function () { checkUncheckAll(this); };
+                cbx.setAttribute("onclick", "checkUncheckAll(this);");
+                cbx.onclick = function () {
+                    checkUncheckAll(this);
+                };
 
                 _td0.appendChild(cbx);
                 _td1.appendChild(document.createTextNode('DN'));
@@ -160,37 +161,37 @@ function LdapSearch(){
                 var infos = reponse.getElementsByTagName("user");
                 var serverName = '';
 
-                for (var i = 0 ; i < infos.length ; i++) {
+                for (var i = 0; i < infos.length; i++) {
 
                     var info = infos[i];
                     if (info.getAttribute('server') != serverName) {
                         var htr = document.createElement('tr');
                         htr.setAttribute('class', 'list_lvl_1');
-                        var htd = document.createElement('td');					
+                        var htd = document.createElement('td');
                         htd.appendChild(document.createTextNode(info.getAttribute('server')));
                         htd.setAttribute('colspan', '8')
-                                            htd.setAttribute('style', 'text-align:left');
+                        htd.setAttribute('style', 'text-align:left');
                         htr.appendChild(htd);
                         _tbody.appendChild(htr);
-                        serverName = info.getAttribute('server');					
+                        serverName = info.getAttribute('server');
                     }
-                
+
                     if (info.getElementsByTagName("dn")[0].getAttribute('isvalid') == 1)
                         var _dn = info.getElementsByTagName("dn")[0].firstChild.nodeValue;
                     else
                         var _dn = "-";
 
-                    if 	(info.getElementsByTagName("sn")[0].getAttribute('isvalid') == 1)
+                    if (info.getElementsByTagName("sn")[0].getAttribute('isvalid') == 1)
                         var _sn = info.getElementsByTagName("sn")[0].firstChild.nodeValue;
                     else
                         var _sn = "-";
 
-                    if 	(info.getElementsByTagName("mail")[0].getAttribute('isvalid') == 1)
+                    if (info.getElementsByTagName("mail")[0].getAttribute('isvalid') == 1)
                         var _mail = info.getElementsByTagName("mail")[0].firstChild.nodeValue;
                     else
                         var _mail = "-";
 
-                    if 	(info.getElementsByTagName("pager")[0].getAttribute('isvalid') == 1)
+                    if (info.getElementsByTagName("pager")[0].getAttribute('isvalid') == 1)
                         var _pager = info.getElementsByTagName("pager")[0].firstChild.nodeValue;
                     else
                         var _pager = "-";
@@ -210,11 +211,10 @@ function LdapSearch(){
                     else
                         var _cn = "-";
 
-                    _tr =  document.createElement('tr');
+                    _tr = document.createElement('tr');
 
                     var ClassName = "list_one";
-                    if (i%2)
-                    {
+                    if (i % 2) {
                         ClassName = "list_two";
                     }
                     _tr.className = ClassName;
@@ -240,59 +240,59 @@ function LdapSearch(){
                     if (info.getAttribute('isvalid') == 0 || info.getElementsByTagName('in_database')[0].firstChild.nodeValue == 1) {
                         cbx.disabled = "1";
                     }
-                    cbx.id = "contact_select"+i;
-                    cbx.name = "contact_select[select]["+i+"]";
+                    cbx.id = "contact_select" + i;
+                    cbx.name = "contact_select[select][" + i + "]";
                     cbx.value = i;
 
                     var arId = document.createElement("input");
                     arId.type = 'hidden';
-                    arId.name = 'contact_select[ar_id]['+i+']';
+                    arId.name = 'contact_select[ar_id][' + i + ']';
                     arId.value = info.getAttribute('ar_id');
 
                     var h_dn = document.createElement("input");
                     h_dn.type = "hidden";
-                    h_dn.id = "user_dn"+i;
-                    h_dn.name = "contact_select[dn]["+i+"]";
+                    h_dn.id = "user_dn" + i;
+                    h_dn.name = "contact_select[dn][" + i + "]";
                     h_dn.value = _dn;
 
                     var h_uid = document.createElement("input");
                     h_uid.type = "hidden";
-                    h_uid.id = "contact_alias"+i;
-                    h_uid.name = "contact_select[contact_alias]["+i+"]";
+                    h_uid.id = "contact_alias" + i;
+                    h_uid.name = "contact_select[contact_alias][" + i + "]";
                     h_uid.value = _uid;
 
                     var h_givenname = document.createElement("input");
                     h_givenname.type = "hidden";
-                    h_givenname.id = "user_givenname"+i;
-                    h_givenname.name = "contact_select[givenname]["+i+"]";
+                    h_givenname.id = "user_givenname" + i;
+                    h_givenname.name = "contact_select[givenname][" + i + "]";
                     h_givenname.value = _givenname;
 
                     var h_sn = document.createElement("input");
                     h_sn.type = "hidden";
-                    h_sn.id = "user_sn"+i;
-                    h_sn.name = "contact_select[sn]["+i+"]";
+                    h_sn.id = "user_sn" + i;
+                    h_sn.name = "contact_select[sn][" + i + "]";
                     h_sn.value = _sn;
 
                     var h_cn = document.createElement("input");
                     h_cn.type = "hidden";
-                    h_cn.id = "contact_name"+i;
-                    h_cn.name = "contact_select[contact_name]["+i+"]";
+                    h_cn.id = "contact_name" + i;
+                    h_cn.name = "contact_select[contact_name][" + i + "]";
                     h_cn.value = _cn;
 
                     var h_mail = document.createElement("input");
                     h_mail.type = "hidden";
-                    h_mail.id = "contact_email"+i;
-                    h_mail.name = "contact_select[contact_email]["+i+"]";
+                    h_mail.id = "contact_email" + i;
+                    h_mail.name = "contact_select[contact_email][" + i + "]";
                     h_mail.value = _mail;
 
                     var h_pager = document.createElement("input");
                     h_pager.type = "hidden";
-                    h_pager.id = "contact_pager"+i;
-                    h_pager.name = "contact_select[contact_pager]["+i+"]";
+                    h_pager.id = "contact_pager" + i;
+                    h_pager.name = "contact_select[contact_pager][" + i + "]";
                     h_pager.value = _pager;
 
                     _td0.appendChild(cbx);
-                                        _td0.appendChild(arId);
+                    _td0.appendChild(arId);
                     _td1.appendChild(document.createTextNode(_dn));
                     _td1.appendChild(h_dn);
                     _td2.appendChild(document.createTextNode(_uid));

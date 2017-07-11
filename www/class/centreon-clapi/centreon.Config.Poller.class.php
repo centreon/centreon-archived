@@ -35,7 +35,6 @@
 
 namespace CentreonClapi;
 
-
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
@@ -728,10 +727,8 @@ class CentreonConfigPoller
     public function getPollerState()
     {
         $pollerState = array();
-
-        //   $this->_DBC = new \CentreonDB('centstorage');
-
         $dbResult = $this->_DBC->query("SELECT instance_id, running, name FROM instances");
+
         while ($row = $dbResult->fetchRow()) {
             $pollerState[$row['instance_id']] = $row['running'];
         }

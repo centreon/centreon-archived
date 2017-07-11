@@ -47,12 +47,12 @@ class CentreonWidgetParamsConnectorPoller extends CentreonWidgetParamsList
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT id, name
-                      FROM nagios_server
-                      WHERE ns_activate = '1' ";
-            $query .= $this->acl->queryBuilder('AND', 
-                                               'id',
-                                               $this->acl->getPollerString('ID', $this->monitoringDb));
+            $query = "SELECT id, name FROM nagios_server WHERE ns_activate = '1' ";
+            $query .= $this->acl->queryBuilder(
+                'AND',
+                'id',
+                $this->acl->getPollerString('ID', $this->monitoringDb)
+            );
             $query .= " ORDER BY name";
             $res = $this->db->query($query);
             $tab = array(null => null);

@@ -1,5 +1,4 @@
 <?php
-
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
@@ -8,7 +7,6 @@ use Centreon\Test\Behat\External\ListingPage;
 class ContactConfigurationContext extends CentreonContext
 {
     private $currentPage;
-
     private $initialProperties = (array(
         'name' => 'contactName',
         'alias' => 'contactAlias',
@@ -27,7 +25,7 @@ class ContactConfigurationContext extends CentreonContext
         'admin' => 1,
         'dn' => 'modifiedDn',
         'host_notification_period' => 'workhours',
-        'service_notification_period' => 'nonworkhours' 
+        'service_notification_period' => 'nonworkhours'
     ));
 
     /**
@@ -53,20 +51,20 @@ class ContactConfigurationContext extends CentreonContext
 
     /**
      * @Then the contact properties are updated
-     */ 
+     */
     public function theContactPropertiesAreUpdated()
     {
-	$this->currentPage = new ContactConfigurationListingPage($this);
-	$this->currentPage = $this->currentPage->inspect($this->updatedProperties['alias']);
-	$object = $this->currentPage->getProperties();
-	$tableau = array();
-	foreach($this->updatedProperties as $key => $value) {
-	    if ($value != $object[$key]) {
-		$tableau[] = $key;
-	    }
-	}
-	if (count($tableau) > 0) {
-	    throw new \Exception("Some properties are not being updated : " . implode(',', $tableau));
-	}
+        $this->currentPage = new ContactConfigurationListingPage($this);
+        $this->currentPage = $this->currentPage->inspect($this->updatedProperties['alias']);
+        $object = $this->currentPage->getProperties();
+        $tableau = array();
+        foreach ($this->updatedProperties as $key => $value) {
+            if ($value != $object[$key]) {
+                $tableau[] = $key;
+            }
+        }
+        if (count($tableau) > 0) {
+            throw new \Exception("Some properties are not being updated : " . implode(',', $tableau));
+        }
     }
 }

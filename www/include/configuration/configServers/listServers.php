@@ -49,7 +49,7 @@ $LCASearch = "";
 $search = '';
 if (isset($_POST['searchP']) && $_POST['searchP']) {
     $search = $_POST['searchP'];
-    $LCASearch = " name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+    $LCASearch = " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
 
 // Get Authorized Actions
@@ -77,7 +77,9 @@ $pollerstring = implode(',', array_keys($nagios_servers));
  * Get information info RTM
  */
 $nagiosInfo = array();
-$DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances WHERE deleted = 0");
+$query = "SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, " .
+    "name AS instance_name , last_alive FROM instances WHERE deleted = 0";
+$DBRESULT = $pearDBO->query($query);
 while ($info = $DBRESULT->fetchRow()) {
     $nagiosInfo[$info["instance_id"]] = $info;
 }
@@ -86,7 +88,9 @@ $DBRESULT->closeCursor();
 /*
  * Get Scheduler version
  */
-$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 ");
+$query = "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name " .
+    "FROM instances WHERE deleted = 0 ";
+$DBRESULT = $pearDBO->query($query);
 while ($info = $DBRESULT->fetchRow()) {
     if (isset($nagiosInfo[$info["instance_id"]])) {
         $nagiosInfo[$info["instance_id"]]["version"] = $info["program_name"] . " " . $info["program_version"];
@@ -124,17 +128,18 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Poller list
  */
 $ACLString = $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring);
-$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
-       FROM `nagios_server` ".$ACLString." ".($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE " ).$LCASearch : "")." ORDER BY name
-       LIMIT ".$num * $limit.", ".$limit;
-$DBRESULT = $pearDB->query($rq);
+$query = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default " .
+    "FROM `nagios_server` " . $ACLString . " " .
+    ($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE ") . $LCASearch : "") .
+    " ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
+$DBRESULT = $pearDB->query($query);
 
 
 $rows = $pearDB->numberRows();
 
 include("./include/common/checkPagination.php");
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -147,13 +152,26 @@ $style = "one";
 $elemArr = array();
 for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     $moptions = "";
-    $selectedElements = $form->addElement('checkbox', "select[".$config['id']."]", null, '', array('id' => 'poller_' . $config['id']));
+    $selectedElements = $form->addElement(
+        'checkbox',
+        "select[" . $config['id'] . "]",
+        null,
+        '',
+        array('id' => 'poller_' . $config['id'])
+    );
     if ($config["ns_activate"]) {
-        $moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
+        $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
+        $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=s&limit=" . $limit .
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Enabled") . "'></a>";
     }
-    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
+    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
+        "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
+        "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" " .
+        "name='dupNbr[" . $config['id'] . "]' />";
 
     if (!isset($nagiosInfo[$config["id"]]["is_currently_running"])) {
         $nagiosInfo[$config["id"]]["is_currently_running"] = 0;
@@ -182,8 +200,10 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     /*
 	 * Get cfg_id
 	 */
-    $request = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id = ".$config["id"]." AND nagios_activate = '1'";
-    $DBRESULT2 = $pearDB->query($request);
+
+    $query = "SELECT nagios_id FROM cfg_nagios " .
+        "WHERE nagios_server_id = " . $config["id"] . " AND nagios_activate = '1'";
+    $DBRESULT2 = $pearDB->query($query);
     if ($DBRESULT2->rowCount()) {
         $cfg_id = $DBRESULT2->fetchRow();
     } else {
@@ -191,70 +211,104 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     }
 
     $elemArr[$i] = array(
-                 "MenuClass" => "list_".$style,
-                 "RowMenu_select" => $selectedElements->toHtml(),
-                 "RowMenu_name" => $config["name"],
-                 "RowMenu_ip_address" => $config["ns_ip_address"],
-                 "RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
-                 "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
-                 "RowMenu_is_running" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
-                 "RowMenu_is_runningFlag" => $nagiosInfo[$config["id"]]["is_currently_running"],
-                 "RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
-                 "RowMenu_hasChanged" => $confChangedMessage,
-                 "RowMenu_hasChangedFlag" => $hasChanged,
-                 "RowMenu_version" => (isset($nagiosInfo[$config["id"]]["version"]) ? $nagiosInfo[$config["id"]]["version"] : _("N/A")),
-                 "RowMenu_startTime" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["id"]]["program_start_time"]) : "-",
-                 "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["id"]]["last_alive"]) && $nagiosInfo[$config["id"]]["last_alive"]) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["id"]]["last_alive"]) : "-",
-                 "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag,
-                 "RowMenu_pid" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["id"]]["process_id"] : "-",
-                 "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
-                 "RowMenu_badge" => $config["ns_activate"] ? "service_ok" : "service_critical",
-                 "RowMenu_statusVal" => $config["ns_activate"],
-                 "RowMenu_cfg_id" => ($cfg_id == -1) ? "" : $cfg_id['nagios_id'],
-                 "RowMenu_options" => $moptions);
+        "MenuClass" => "list_" . $style,
+        "RowMenu_select" => $selectedElements->toHtml(),
+        "RowMenu_name" => $config["name"],
+        "RowMenu_ip_address" => $config["ns_ip_address"],
+        "RowMenu_link" => "?p=" . $p . "&o=c&server_id=" . $config['id'],
+        "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
+        "RowMenu_is_running" => (isset($nagiosInfo[$config["id"]]["is_currently_running"])
+            && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
+        "RowMenu_is_runningFlag" => $nagiosInfo[$config["id"]]["is_currently_running"],
+        "RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
+        "RowMenu_hasChanged" => $confChangedMessage,
+        "RowMenu_hasChangedFlag" => $hasChanged,
+        "RowMenu_version" => (isset($nagiosInfo[$config["id"]]["version"])
+            ? $nagiosInfo[$config["id"]]["version"]
+            : _("N/A")),
+        "RowMenu_startTime" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) &&
+            $nagiosInfo[$config["id"]]["is_currently_running"] == 1)
+            ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["id"]]["program_start_time"])
+            : "-",
+        "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["id"]]["last_alive"]) &&
+            $nagiosInfo[$config["id"]]["last_alive"])
+            ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["id"]]["last_alive"])
+            : "-",
+        "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag,
+        "RowMenu_pid" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) &&
+            $nagiosInfo[$config["id"]]["is_currently_running"] == 1)
+            ? $nagiosInfo[$config["id"]]["process_id"]
+            : "-",
+        "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $config["ns_activate"] ? "service_ok" : "service_critical",
+        "RowMenu_statusVal" => $config["ns_activate"],
+        "RowMenu_cfg_id" => ($cfg_id == -1) ? "" : $cfg_id['nagios_id'],
+        "RowMenu_options" => $moptions
+    );
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
-$tpl->assign("notice", _("Only services and hosts are taken in account in order to calculate this status. If you modify a template, it won't tell you the configuration had changed."));
+$tpl->assign(
+    "notice",
+    _("Only services and hosts are taken in account in order to calculate this status. " .
+        "If you modify a template, it won't tell you the configuration had changed.")
+);
 
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+$tpl->assign(
+    'msg',
+    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+);
 
 /*
  * Toolbar select
  */
 ?>
-<script type="text/javascript">
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
-</SCRIPT>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </SCRIPT>
 <?php
 
 foreach (array('o1', 'o2') as $option) {
     $attrs = array(
-        'onchange'=>"javascript: " .
-                " var bChecked = isChecked(); ".
-                " if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
-                " alert('"._("Please select one or more items")."'); return false;} " .
-                " if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "");
-    $form->addElement('select', $option, null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
+        'onchange' => "javascript: " .
+            " var bChecked = isChecked(); " .
+            " if (this.form.elements['" . $option . "'].selectedIndex != 0 && !bChecked) {" .
+            " alert('" . _("Please select one or more items") . "'); return false;} " .
+            " if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
+            _("Do you confirm the duplication ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
+            _("Do you confirm the deletion ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            ""
+    );
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete"), "i" => _("Update informations")),
+        $attrs
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
 }
 
 # Apply configuration button
-$form->addElement('button', 'apply_configuration', _("Export configuration"), array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info'));
+$form->addElement(
+    'button',
+    'apply_configuration',
+    _("Export configuration"),
+    array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info')
+);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchP', $search);

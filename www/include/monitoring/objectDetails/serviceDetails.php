@@ -42,20 +42,20 @@ include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
 include_once("./class/centreonMeta.class.php");
-include_once( $centreon_path . "www/include/monitoring/objectDetails/common-func.php");
+include_once($centreon_path . "www/include/monitoring/objectDetails/common-func.php");
 
 /*
  * Create Object env
  */
-$hostObj    = new CentreonHost($pearDB);
-$svcObj     = new CentreonService($pearDB);
+$hostObj = new CentreonHost($pearDB);
+$svcObj = new CentreonService($pearDB);
 $metaObj = new CentreonMeta($pearDB);
 
 /*
  * ACL Actions
  */
 $GroupListofUser = array();
-$GroupListofUser =  $centreon->user->access->getAccessGroups();
+$GroupListofUser = $centreon->user->access->getAccessGroups();
 
 $allActions = false;
 /*
@@ -66,7 +66,10 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = $centreon->user->access->getActions();
 }
 
-if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != "") {
+if (isset($_GET["host_name"]) &&
+    $_GET["host_name"] != "" &&
+    isset($_GET["service_description"]) && $_GET["service_description"] != ""
+) {
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
 } else {
@@ -109,8 +112,16 @@ if (!is_null($host_id)) {
         include_once("../errors/alt_error.php");
     } else {
         // Get Hostgroup List
-        $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '" . $host_id . "' " .
-            $centreon->user->access->queryBuilder("AND", "host_host_id", $centreon->user->access->getHostsString("ID", $pearDBO)));
+
+        $DBRESULT = $pearDB->query(
+            "SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation " .
+            "WHERE host_host_id = '" . $host_id . "' " .
+            $centreon->user->access->queryBuilder(
+                "AND",
+                "host_host_id",
+                $centreon->user->access->getHostsString("ID", $pearDBO)
+            )
+        );
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
@@ -130,10 +141,14 @@ if (!is_null($host_id)) {
          * Get servicegroups list
          */
         if (isset($service_id) && isset($host_id)) {
-            $query = "SELECT DISTINCT sg.sg_name
-                    FROM servicegroup sg, servicegroup_relation sgr
-                    WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id . " " .
-                $centreon->user->access->queryBuilder("AND", "sgr.host_host_id", $centreon->user->access->getHostsString("ID", $pearDBO));
+            $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg, servicegroup_relation sgr " .
+                "WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id .
+                " AND sgr.service_service_id = " . $service_id . " " .
+                $centreon->user->access->queryBuilder(
+                    "AND",
+                    "sgr.host_host_id",
+                    $centreon->user->access->getHostsString("ID", $pearDBO)
+                );
             $DBRESULT = $pearDB->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 $serviceGroups[] = $row['sg_name'];
@@ -195,16 +210,22 @@ if (!is_null($host_id)) {
             " s.action_url, " .
             " i.name as instance_name " .
             " FROM services s, hosts h, instances i " .
-            " WHERE h.host_id = s.host_id " . 
+            " WHERE h.host_id = s.host_id " .
             " AND h.host_id LIKE '" . $pearDB->escape($host_id) . "'" .
-            " AND s.service_id LIKE '" . $pearDB->escape($service_id) . "'".
+            " AND s.service_id LIKE '" . $pearDB->escape($service_id) . "'" .
             " AND h.instance_id = i.instance_id " .
             " AND h.enabled = 1 " .
             " AND s.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq);
 
         $tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-        $tab_class_service = array("ok" => 'service_ok', "warning" => 'service_warning', "critical" => 'service_critical', "unknown" => 'service_unknown', 'pending' => 'pending');
+        $tab_class_service = array(
+            "ok" => 'service_ok',
+            "warning" => 'service_warning',
+            "critical" => 'service_critical',
+            "unknown" => 'service_unknown',
+            'pending' => 'pending'
+        );
         while ($data = $DBRESULT->fetchRow()) {
             if (isset($data['performance_data'])) {
                 $data['performance_data'] = $data['performance_data'];
@@ -220,7 +241,11 @@ if (!is_null($host_id)) {
         $DBRESULT->closeCursor();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status["command_line"] = hidePasswordInCommand($service_status["check_command"], $host_id, $service_status["service_id"]);
+            $service_status["command_line"] = hidePasswordInCommand(
+                $service_status["check_command"],
+                $host_id,
+                $service_status["service_id"]
+            );
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
@@ -266,16 +291,18 @@ if (!is_null($host_id)) {
          */
         $tabCommentServices = array();
         if (isset($host_id) && isset($service_id)) {
-            $rq2 = " SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
+            $rq2 = " SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, " .
+                "cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, " .
+                "h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
-                " WHERE h.host_id = " . $pearDBO->escape($host_id) . " 
-                                      AND h.host_id = s.host_id
-                                      AND s.service_id = " . $pearDBO->escape($service_id) . " 
-                                      AND h.host_id = cmt.host_id 
-                                      AND s.service_id = cmt.service_id 
-                                      AND cmt.expires = 0 
-                                      AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
-                                      ORDER BY cmt.entry_time DESC";
+                " WHERE h.host_id = " . $pearDBO->escape($host_id) .
+                " AND h.host_id = s.host_id " .
+                "AND s.service_id = " . $pearDBO->escape($service_id) .
+                " AND h.host_id = cmt.host_id " .
+                "AND s.service_id = cmt.service_id " .
+                "AND cmt.expires = 0 " .
+                "AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0) " .
+                "ORDER BY cmt.entry_time DESC";
             $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
                 $tabCommentServices[$i] = $data;
@@ -288,7 +315,10 @@ if (!is_null($host_id)) {
             unset($data);
         }
 
-        $en_acknowledge_text = array("1" => _("Delete Problem Acknowledgement"), "0" => _("Acknowledge Service Problem"));
+        $en_acknowledge_text = array(
+            "1" => _("Delete Problem Acknowledgement"),
+            "0" => _("Acknowledge Service Problem")
+        );
         $en_acknowledge = array("1" => "0", "0" => "1");
         $en_disable = array("1" => _("Enabled"), "0" => _("Disabled"));
         $en_inv = array("1" => "1", "0" => "0");
@@ -308,19 +338,29 @@ if (!is_null($host_id)) {
         $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
 
 
-        $service_status["last_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_check"]);
-        $service_status["next_check"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_check"]);
-        !$service_status["check_latency"] ? $service_status["check_latency"] = "< 1 second" : $service_status["check_latency"] = $service_status["check_latency"] . " seconds";
-        !$service_status["check_execution_time"] ? $service_status["check_execution_time"] = "< 1 second" : $service_status["check_execution_time"] = $service_status["check_execution_time"] . " seconds";
+        $service_status["last_check"] =
+            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_check"]);
+        $service_status["next_check"] =
+            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_check"]);
+        !$service_status["check_latency"]
+            ? $service_status["check_latency"] = "< 1 second"
+            : $service_status["check_latency"] = $service_status["check_latency"] . " seconds";
+        !$service_status["check_execution_time"]
+            ? $service_status["check_execution_time"] = "< 1 second"
+            : $service_status["check_execution_time"] = $service_status["check_execution_time"] . " seconds";
 
-        !$service_status["last_notification"] ? $service_status["notification"] = "" : $service_status["last_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_notification"]);
+        !$service_status["last_notification"]
+            ? $service_status["notification"] = ""
+            : $service_status["last_notification"] =
+            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_notification"]);
 
         if (isset($service_status["next_notification"]) && !$service_status["next_notification"]) {
             $service_status["next_notification"] = "";
         } elseif (!isset($service_status["next_notification"])) {
             $service_status["next_notification"] = "N/A";
         } else {
-            $service_status["next_notification"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_notification"]);
+            $service_status["next_notification"] =
+                $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_notification"]);
         }
 
         $service_status["long_plugin_output"] = "";
@@ -332,7 +372,8 @@ if (!is_null($host_id)) {
                 if (!$i) {
                     $service_status["plugin_output"] = htmlentities($outputTmp[$i], ENT_QUOTES, 'UTF-8') . "<br />";
                 } else {
-                    $service_status["long_plugin_output"] .= htmlentities($outputTmp[$i], ENT_QUOTES, 'UTF-8') . "<br />";
+                    $service_status["long_plugin_output"] .=
+                        htmlentities($outputTmp[$i], ENT_QUOTES, 'UTF-8') . "<br />";
                 }
                 $i++;
             }
@@ -356,22 +397,62 @@ if (!is_null($host_id)) {
         }
         if (isset($service_status["notes_url"]) && $service_status["notes_url"]) {
             $service_status["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["notes_url"]);
-            $service_status["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["notes_url"]);
-            $service_status["notes_url"] = str_replace("\$SERVICESTATE\$", $service_status["current_state"], $service_status["notes_url"]);
-            $service_status["notes_url"] = str_replace("\$SERVICESTATEID\$", $service_status["current_stateid"], $service_status["notes_url"]);
+            $service_status["notes_url"] = str_replace(
+                "\$SERVICEDESC\$",
+                $svc_description,
+                $service_status["notes_url"]
+            );
+            $service_status["notes_url"] = str_replace(
+                "\$SERVICESTATE\$",
+                $service_status["current_state"],
+                $service_status["notes_url"]
+            );
+            $service_status["notes_url"] = str_replace(
+                "\$SERVICESTATEID\$",
+                $service_status["current_stateid"],
+                $service_status["notes_url"]
+            );
             if ($host_id) {
-                $service_status["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["notes_url"]);
-                $service_status["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["notes_url"]);
+                $service_status["notes_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $hostObj->getHostAlias($host_id),
+                    $service_status["notes_url"]
+                );
+                $service_status["notes_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $hostObj->getHostAddress($host_id),
+                    $service_status["notes_url"]
+                );
             }
         }
         if (isset($service_status["action_url"]) && $service_status["action_url"]) {
             $service_status["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["action_url"]);
-            $service_status["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["action_url"]);
-            $service_status["action_url"] = str_replace("\$SERVICESTATE\$", $service_status["current_state"], $service_status["action_url"]);
-            $service_status["action_url"] = str_replace("\$SERVICESTATEID\$", $service_status["current_stateid"], $service_status["action_url"]);
+            $service_status["action_url"] = str_replace(
+                "\$SERVICEDESC\$",
+                $svc_description,
+                $service_status["action_url"]
+            );
+            $service_status["action_url"] = str_replace(
+                "\$SERVICESTATE\$",
+                $service_status["current_state"],
+                $service_status["action_url"]
+            );
+            $service_status["action_url"] = str_replace(
+                "\$SERVICESTATEID\$",
+                $service_status["current_stateid"],
+                $service_status["action_url"]
+            );
             if ($host_id) {
-                $service_status["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["action_url"]);
-                $service_status["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["action_url"]);
+                $service_status["action_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $hostObj->getHostAlias($host_id),
+                    $service_status["action_url"]
+                );
+                $service_status["action_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $hostObj->getHostAddress($host_id),
+                    $service_status["action_url"]
+                );
             }
         }
 
@@ -394,27 +475,60 @@ if (!is_null($host_id)) {
         }
         if (isset($service_status["notes_url"]) && $service_status["notes_url"]) {
             $service_status["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["notes_url"]);
-            $service_status["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["notes_url"]);
+            $service_status["notes_url"] = str_replace(
+                "\$SERVICEDESC\$",
+                $svc_description,
+                $service_status["notes_url"]
+            );
             if ($host_id) {
-                $service_status["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["notes_url"]);
-                $service_status["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["notes_url"]);
+                $service_status["notes_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $hostObj->getHostAlias($host_id),
+                    $service_status["notes_url"]
+                );
+                $service_status["notes_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $hostObj->getHostAddress($host_id),
+                    $service_status["notes_url"]
+                );
             }
         }
         if (isset($service_status["action_url"]) && $service_status["action_url"]) {
             $service_status["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status["action_url"]);
-            $service_status["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status["action_url"]);
+            $service_status["action_url"] = str_replace(
+                "\$SERVICEDESC\$",
+                $svc_description,
+                $service_status["action_url"]
+            );
             if ($host_id) {
-                $service_status["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status["action_url"]);
-                $service_status["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status["action_url"]);
+                $service_status["action_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $hostObj->getHostAlias($host_id),
+                    $service_status["action_url"]
+                );
+                $service_status["action_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $hostObj->getHostAddress($host_id),
+                    $service_status["action_url"]
+                );
             }
         }
 
         if (isset($service_status["last_time_" . strtolower($service_status["current_state"])])) {
-            !$service_status["last_state_change"] ? $service_status["duration"] = CentreonDuration::toString($service_status["last_time_" . strtolower($service_status["current_state"])]) : $service_status["duration"] = centreonDuration::toString(time() - $service_status["last_state_change"]);
+            !$service_status["last_state_change"]
+                ? $service_status["duration"] =
+                CentreonDuration::toString($service_status["last_time_" . strtolower($service_status["current_state"])])
+                : $service_status["duration"] =
+                centreonDuration::toString(time() - $service_status["last_state_change"]);
         }
-        !$service_status["last_state_change"] ? $service_status["last_state_change"] = "" : $service_status["last_state_change"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_state_change"]);
+        !$service_status["last_state_change"]
+            ? $service_status["last_state_change"] = ""
+            : $service_status["last_state_change"] =
+            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_state_change"]);
         $service_status["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
-        $service_status["is_flapping"] ? $service_status["is_flapping"] = $en[$service_status["is_flapping"]] : $service_status["is_flapping"] = "N/A";
+        $service_status["is_flapping"]
+            ? $service_status["is_flapping"] = $en[$service_status["is_flapping"]]
+            : $service_status["is_flapping"] = "N/A";
 
         if ($service_status["problem_has_been_acknowledged"]) {
             $service_status["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
@@ -433,7 +547,10 @@ if (!is_null($host_id)) {
 
         $optionsURL = "host_name=" . urlencode($host_name) . "&service_description=" . urlencode($svc_description);
 
-        $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '" . $pearDBO->escape($host_name) . "' AND service_description LIKE '" . $pearDBO->escape($svc_description) . "' LIMIT 1");
+        $query = "SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id " .
+            "AND host_name LIKE '" . $pearDBO->escape($host_name) .
+            "' AND service_description LIKE '" . $pearDBO->escape($svc_description) . "' LIMIT 1";
+        $DBRES = $pearDBO->query($query);
         $index_data = 0;
         if ($DBRES->rowCount()) {
             $row = $DBRES->fetchRow();
@@ -446,10 +563,10 @@ if (!is_null($host_id)) {
          */
         if ($isMetaservice == 'false') {
             $tpl->assign("m_mon_services", _("Service"));
-        } else { 
+        } else {
             $tpl->assign("m_mon_services", _("Meta Service"));
         }
-        
+
         $tpl->assign("m_mon_status_info", _("Status Details"));
         $tpl->assign("m_mon_on_host", _("on host"));
         $tpl->assign("m_mon_services_status", _("Service Status"));
@@ -545,14 +662,14 @@ if (!is_null($host_id)) {
         $tpl->assign("total_current_attempt", $total_current_attempts);
         $tpl->assign("en_acknowledge_text", $en_acknowledge_text);
         $tpl->assign("en_acknowledge", $en_acknowledge);
-        $tpl->assign("actpass", array("0"=>_("Active"), "1"=>_("Passive")));
-        $tpl->assign("harsof", array("0"=>_("SOFT"), "1"=>_("HARD")));
+        $tpl->assign("actpass", array("0" => _("Active"), "1" => _("Passive")));
+        $tpl->assign("harsof", array("0" => _("SOFT"), "1" => _("HARD")));
         $tpl->assign("status", $status);
         $tpl->assign("h", CentreonUtils::escapeSecure($host));
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $centreon->user->access->topology);
         $tpl->assign("count_comments_svc", count($tabCommentServices));
-        $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils","escapeSecure"), $tabCommentServices));
+        $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils", "escapeSecure"), $tabCommentServices));
         $tpl->assign("host_id", $host_id);
         $tpl->assign("service_id", $service_id);
         $centreonGraph = new CentreonGraph($centreon->user->user_id, null, 0, null);
@@ -565,7 +682,11 @@ if (!is_null($host_id)) {
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
         $tpl->assign("svc_display_name", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
         $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
-        $tpl->assign("url_svc_id", urlencode(CentreonUtils::escapeSecure($host_name)).';'.urlencode(CentreonUtils::escapeSecure($svc_description)));
+        $tpl->assign(
+            "url_svc_id",
+            urlencode(CentreonUtils::escapeSecure($host_name)) . ';' .
+            urlencode(CentreonUtils::escapeSecure($svc_description))
+        );
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 
@@ -584,7 +705,7 @@ if (!is_null($host_id)) {
         if (isset($contacts)) {
             $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
-            
+
         /*
          * Hostgroups Display
          */
@@ -628,12 +749,24 @@ if (!is_null($host_id)) {
         $tpl->assign("lnk_host_config", _("Configure host"));
         $tpl->assign("lnk_serv_config", _("Configure service"));
         $tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), CentreonUtils::escapeSecure($host_name)));
-        $tpl->assign("lnk_host_reports", sprintf(_("View report for host %s"), CentreonUtils::escapeSecure($host_name)));
-        $tpl->assign("lnk_serv_reports", sprintf(_("View report for service %s"), CentreonUtils::escapeSecure($svc_description)));
+        $tpl->assign(
+            "lnk_host_reports",
+            sprintf(_("View report for host %s"), CentreonUtils::escapeSecure($host_name))
+        );
+        $tpl->assign(
+            "lnk_serv_reports",
+            sprintf(_("View report for service %s"), CentreonUtils::escapeSecure($svc_description))
+        );
         $tpl->assign("lnk_host_status", _("View host status page"));
-        $tpl->assign("lnk_serv_status", sprintf(_("View status of all services on host %s"), CentreonUtils::escapeSecure($host_name)));
+        $tpl->assign(
+            "lnk_serv_status",
+            sprintf(_("View status of all services on host %s"), CentreonUtils::escapeSecure($host_name))
+        );
         $tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), CentreonUtils::escapeSecure($host_name)));
-        $tpl->assign("lnk_serv_logs", sprintf(_("View logs for service %s"), CentreonUtils::escapeSecure($serviceDescriptionDisplay)));
+        $tpl->assign(
+            "lnk_serv_logs",
+            sprintf(_("View logs for service %s"), CentreonUtils::escapeSecure($serviceDescriptionDisplay))
+        );
 
         /*
          * Ext informations
@@ -650,7 +783,10 @@ if (!is_null($host_id)) {
             $actionurl = str_replace("\$INSTANCENAME\$", $service_status["instance_name"], $actionurl);
         }
 
-        $tpl->assign("sv_ext_notes", CentreonUtils::escapeSecure(getMyServiceExtendedInfoField($service_id, "esi_notes")));
+        $tpl->assign(
+            "sv_ext_notes",
+            CentreonUtils::escapeSecure(getMyServiceExtendedInfoField($service_id, "esi_notes"))
+        );
         $tpl->assign("sv_ext_notes_url", CentreonUtils::escapeSecure($notesurl));
         $tpl->assign("sv_ext_action_url_lang", _("Action URL"));
         $tpl->assign("sv_ext_action_url", CentreonUtils::escapeSecure($actionurl));
@@ -665,8 +801,11 @@ if (!is_null($host_id)) {
         $tools = array();
         $DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
         while ($module = $DBRESULT->fetchrow()) {
-            if (isset($module['svc_tools']) && $module['svc_tools'] == 1 && file_exists('modules/'.$module['name'].'/svc_tools.php')) {
-                include('modules/'.$module['name'].'/svc_tools.php');
+            if (isset($module['svc_tools']) &&
+                $module['svc_tools'] == 1 &&
+                file_exists('modules/' . $module['name'] . '/svc_tools.php')
+            ) {
+                include('modules/' . $module['name'] . '/svc_tools.php');
             }
         }
         $DBRESULT->closeCursor();
@@ -687,115 +826,130 @@ if (!is_null($host_id)) {
         $tpl->display("serviceDetails.ihtml");
     }
 } else {
-    echo "<div class='msg' align='center'>"._("The related host no longer exists in Centreon configuration. Please reload the configuration.")."</div>";
+    echo "<div class='msg' align='center'>" .
+        _("The related host no longer exists in Centreon configuration. Please reload the configuration.") . "</div>";
 }
 ?>
 <?php if (!is_null($host_id)) { ?>
-<script type="text/javascript">
-    var glb_confirm = "<?php  echo _("Submit command?"); ?>";
-    var command_sent = "<?php echo _("Command sent"); ?>";
-    var command_failure = "<?php echo _("Failed to execute command");?>";
-    var host_id = '<?php echo $host_id;?>';
-    var svc_id = '<?php echo $service_id;?>';
-    var labels = new Array();
+    <script type="text/javascript">
+        var glb_confirm = "<?php  echo _("Submit command?"); ?>";
+        var command_sent = "<?php echo _("Command sent"); ?>";
+        var command_failure = "<?php echo _("Failed to execute command");?>";
+        var host_id = '<?php echo $host_id;?>';
+        var svc_id = '<?php echo $service_id;?>';
+        var labels = new Array();
 
-    labels['service_checks'] = new Array(
-        "<?php echo $str_check_svc_enable;?>",
-        "<?php echo $str_check_svc_disable;?>",
-        "<?php echo $img_en[0];?>",
-        "<?php echo $img_en[1];?>"
-    );
+        labels['service_checks'] = new Array(
+            "<?php echo $str_check_svc_enable;?>",
+            "<?php echo $str_check_svc_disable;?>",
+            "<?php echo $img_en[0];?>",
+            "<?php echo $img_en[1];?>"
+        );
 
-    labels['service_notifications'] = new Array(
-        "<?php echo $str_notif_svc_enable;?>",
-        "<?php echo $str_notif_svc_disable;?>",
-        "<?php echo $img_en[0];?>",
-        "<?php echo $img_en[1];?>"
-    );
+        labels['service_notifications'] = new Array(
+            "<?php echo $str_notif_svc_enable;?>",
+            "<?php echo $str_notif_svc_disable;?>",
+            "<?php echo $img_en[0];?>",
+            "<?php echo $img_en[1];?>"
+        );
 
-    labels['service_event_handler'] = new Array(
-        "<?php echo $str_handler_svc_enable;?>",
-        "<?php echo $str_handler_svc_disable;?>",
-        "<?php echo $img_en[0];?>",
-        "<?php echo $img_en[1];?>"
-    );
+        labels['service_event_handler'] = new Array(
+            "<?php echo $str_handler_svc_enable;?>",
+            "<?php echo $str_handler_svc_disable;?>",
+            "<?php echo $img_en[0];?>",
+            "<?php echo $img_en[1];?>"
+        );
 
-    labels['service_flap_detection'] = new Array(
-        "<?php echo $str_flap_svc_enable;?>",
-        "<?php echo $str_flap_svc_disable;?>",
-        "<?php echo $img_en[0];?>",
-        "<?php echo $img_en[1];?>"
-    );
+        labels['service_flap_detection'] = new Array(
+            "<?php echo $str_flap_svc_enable;?>",
+            "<?php echo $str_flap_svc_disable;?>",
+            "<?php echo $img_en[0];?>",
+            "<?php echo $img_en[1];?>"
+        );
 
-    labels['service_passive_checks'] = new Array(
-        "<?php echo $str_passive_svc_enable;?>",
-        "<?php echo $str_passive_svc_disable;?>",
-        "<?php echo $img_en[0];?>",
-        "<?php echo $img_en[1];?>"
-    );
+        labels['service_passive_checks'] = new Array(
+            "<?php echo $str_passive_svc_enable;?>",
+            "<?php echo $str_passive_svc_disable;?>",
+            "<?php echo $img_en[0];?>",
+            "<?php echo $img_en[1];?>"
+        );
 
-    labels['service_obsess'] = new Array(
-        "<?php echo $str_obsess_svc_enable;?>",
-        "<?php echo $str_obsess_svc_disable;?>",
-        "<?php echo $img_en[0];?>",
-        "<?php echo $img_en[1];?>"
-    );
+        labels['service_obsess'] = new Array(
+            "<?php echo $str_obsess_svc_enable;?>",
+            "<?php echo $str_obsess_svc_disable;?>",
+            "<?php echo $img_en[0];?>",
+            "<?php echo $img_en[1];?>"
+        );
 
-    function send_command(cmd, actiontype) {
-        if (!confirm(glb_confirm)) {
-            return 0;
+        function send_command(cmd, actiontype) {
+            if (!confirm(glb_confirm)) {
+                return 0;
+            }
+            if (window.XMLHttpRequest) {
+                xhr_cmd = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) {
+                xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xhr_cmd.onreadystatechange = function () {
+                display_result(xhr_cmd, cmd);
+            };
+            xhr_cmd.open(
+                "GET",
+                "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd +
+                "&host_id=" + host_id + "&service_id=" + svc_id + "&actiontype=" + actiontype,
+                true
+            );
+            xhr_cmd.send(null);
         }
-        if (window.XMLHttpRequest) {
-            xhr_cmd = new XMLHttpRequest();
-        }
-        else if (window.ActiveXObject)
-        {
-            xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, cmd); };
-        xhr_cmd.open("GET", "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd + "&host_id=" + host_id + "&service_id=" + svc_id + "&actiontype=" + actiontype, true);
-        xhr_cmd.send(null);
-    }
 
-    function display_result(xhr_cmd, cmd) {
-        if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete") {
-            return(0);
-        }
-        var msg_result;
-        var docXML= xhr_cmd.responseXML;
-        var items_state = docXML.getElementsByTagName("result");
-        var received_command = docXML.getElementsByTagName("cmd");
-        var acttype = docXML.getElementsByTagName("actiontype");
-        var state = items_state.item(0).firstChild.data;
-        var actiontype = acttype.item(0).firstChild.data;
-        var executed_command = received_command.item(0).firstChild.data;
-        var commands = new Array("service_checks", "service_notifications", "service_event_handler", "service_flap_detection", "service_passive_checks", "service_obsess");
+        function display_result(xhr_cmd, cmd) {
+            if (xhr_cmd.readyState != 4 && xhr_cmd.readyState != "complete") {
+                return (0);
+            }
+            var msg_result;
+            var docXML = xhr_cmd.responseXML;
+            var items_state = docXML.getElementsByTagName("result");
+            var received_command = docXML.getElementsByTagName("cmd");
+            var acttype = docXML.getElementsByTagName("actiontype");
+            var state = items_state.item(0).firstChild.data;
+            var actiontype = acttype.item(0).firstChild.data;
+            var executed_command = received_command.item(0).firstChild.data;
+            var commands = new Array(
+                "service_checks",
+                "service_notifications",
+                "service_event_handler",
+                "service_flap_detection",
+                "service_passive_checks",
+                "service_obsess"
+            );
 
-        if (state == "0") {
-            msg_result = command_sent;
-            for (var i = 0;i < commands.length; i++)
-                mycmd = commands[i];
+            if (state == "0") {
+                msg_result = command_sent;
+                for (var i = 0; i < commands.length; i++)
+                    mycmd = commands[i];
                 if (cmd == mycmd) {
-                var tmp = atoi(actiontype) + 2;
-                img_src= labels[executed_command][tmp];
-                document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""+ actiontype +"\")'>"
-                + "<img src=" + img_src
-                + " alt=\"'" + labels[executed_command][actiontype] + "\"'"
-                + " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
-                + " onmouseout='UnTip()'>"
-                + "</img></a>";
+                    var tmp = atoi(actiontype) + 2;
+                    img_src = labels[executed_command][tmp];
+                    document.getElementById(cmd).innerHTML = "<a href='#' onClick='send_command(\"" + cmd + "\", \""
+                        + actiontype + "\")'>"
+                        + "<img src=" + img_src
+                        + " alt=\"'" + labels[executed_command][actiontype] + "\"'"
+                        + " onmouseover=\"Tip('" + labels[executed_command][actiontype] + "')\""
+                        + " onmouseout='UnTip()'>"
+                        + "</img></a>";
                 }
-        } else {
-             msg_result = command_failure;
+            } else {
+                msg_result = command_failure;
+            }
+            <?php
+            require_once "./class/centreonMsg.class.php";
+            ?>
+            _clear("centreonMsg");
+            _setTextStyle("centreonMsg", "bold");
+            _setText("centreonMsg", msg_result);
+            _nextLine("centreonMsg");
+            _setTimeout("centreonMsg", 3);
         }
-        <?php
-        require_once "./class/centreonMsg.class.php";
-        ?>
-        _clear("centreonMsg");
-        _setTextStyle("centreonMsg", "bold");
-        _setText("centreonMsg", msg_result);
-        _nextLine("centreonMsg");
-        _setTimeout("centreonMsg", 3);
-    }
-</script>
+    </script>
 <?php } ?>

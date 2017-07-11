@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,21 +34,23 @@
  *
  */
 
-abstract class AbstractObjectXML {
+abstract class AbstractObjectXML
+{
     protected $backend_instance = null;
     protected $generate_subpath = 'nagios';
     protected $generate_filename = null;
     protected $rootXML = 'centreonBroker';
     protected $exported = array();
     protected $fp = null;
-    
+
     protected $attributes_write = array();
     protected $attributes_array = array();
     protected $attributes_hash = array();
     protected $attributes_default = array();
     protected $dependencyInjector;
 
-    public static function getInstance(\Pimple\Container $dependencyInjector) {
+    public static function getInstance(\Pimple\Container $dependencyInjector)
+    {
         static $instances = array();
 
         $calledClass = get_called_class();
@@ -58,8 +61,9 @@ abstract class AbstractObjectXML {
 
         return $instances[$calledClass];
     }
-    
-    protected function __construct(\Pimple\Container $dependencyInjector) {
+
+    protected function __construct(\Pimple\Container $dependencyInjector)
+    {
         $this->dependencyInjector = $dependencyInjector;
         $this->backend_instance = Backend::getInstance($this->dependencyInjector);
 
@@ -69,11 +73,13 @@ abstract class AbstractObjectXML {
         $this->writer->startDocument('1.0', 'UTF-8');
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->exported = array();
     }
-    
-    protected function writeFile($dir) {
+
+    protected function writeFile($dir)
+    {
         $full_file = $dir . '/' . $this->generate_filename;
         $this->writer->endDocument();
         $content = $this->writer->outputMemory(true);
@@ -85,8 +91,9 @@ abstract class AbstractObjectXML {
             throw new Exception("Cannot open file " . $full_file);
         }
     }
-    
-    protected function generateFile($object, $cdata = true, $root = null) {
+
+    protected function generateFile($object, $cdata = true, $root = null)
+    {
         if (!is_null($root)) {
             $this->writer->startElement($root);
         }
@@ -95,11 +102,11 @@ abstract class AbstractObjectXML {
                 foreach ($value as $subkey => $subvalue) {
                     $this->writer->writeAttribute($subkey, $subvalue);
                 }
-            } else if (!is_numeric($key) && is_array($value)) {
+            } elseif (!is_numeric($key) && is_array($value)) {
                 $this->writer->startElement($key);
                 $this->generateFile($value);
                 $this->writer->endElement();
-            } else if (is_array($value)) {
+            } elseif (is_array($value)) {
                 $this->generateFile($value);
             } else {
                 $this->writeElement($key, $value, $cdata);
@@ -110,7 +117,8 @@ abstract class AbstractObjectXML {
         }
     }
 
-    protected function writeElement($key, $value, $cdata) {
+    protected function writeElement($key, $value, $cdata)
+    {
         $this->writer->startElement($key);
         $value = $this->cleanStr($value);
         $value = html_entity_decode($value);
@@ -122,7 +130,8 @@ abstract class AbstractObjectXML {
         $this->writer->endElement();
     }
 
-    protected function cleanStr($str) {
+    protected function cleanStr($str)
+    {
         $str = preg_replace('/[\x00-\x09\x0B-\x0C\x0E-\x1F\x0D]/', "", $str);
         return $str;
     }

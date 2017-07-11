@@ -7,8 +7,10 @@ $help = array();
  */
 
 $help["tip_template_name"] = dgettext("help", "Name of curve template.");
-$help["tip_host_service_data_source"] = dgettext("help", "It is possible to define a specific service for the data source.");
-$help["tip_data_source_name"] = dgettext("help", "Must be the display name of the metric. Refer to the check plugin for more information.");
+$help["tip_host_service_data_source"] =
+    dgettext("help", "It is possible to define a specific service for the data source.");
+$help["tip_data_source_name"] =
+    dgettext("help", "Must be the display name of the metric. Refer to the check plugin for more information.");
 
 /**
  * Display Optional Modifier
@@ -24,7 +26,11 @@ $help["tip_invert"] = dgettext("help", "Inverted curve (with negative values).")
 
 $help["tip_thickness"] = dgettext("help", "Curve thickness.");
 $help["tip_line_color"] = dgettext("help", "Curve line color.");
-$help["tip_area_color"] = dgettext("help", "When filling property is enable, the area color displayed in Centreon is the curve line color with transparency. For exported graphs, the area color is defined with those fields.");
+$help["tip_area_color"] = dgettext(
+    "help",
+    "When filling property is enable, the area color displayed in Centreon is the curve line color with transparency." .
+    "For exported graphs, the area color is defined with those fields."
+);
 $help["tip_transparency"] = dgettext("help", "Curve transparency. Used to export the chart.");
 $help["tip_filling"] = dgettext("help", "Enables area filling.");
 

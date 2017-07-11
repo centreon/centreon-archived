@@ -120,7 +120,10 @@ class DowntimeStartAndStopContext extends CentreonContext
                 $found = false;
                 $page = new DowntimeConfigurationListingPage($context);
                 foreach ($page->getEntries() as $entry) {
-                    if ($entry['host'] == $context->host && $entry['service'] == $context->service && $entry['started'] == true) {
+                    if ($entry['host'] == $context->host &&
+                        $entry['service'] == $context->service &&
+                        $entry['started'] == true
+                    ) {
                         $found = true;
                     }
                 }
@@ -269,7 +272,10 @@ class DowntimeStartAndStopContext extends CentreonContext
         //get the time of the timezone + x seconds for the start
         $datetimeStartLocal = new DateTime('now +120seconds', new DateTimeZone($this->timezone));
         $datetimeStartLocal->setTime($datetimeStartLocal->format('H'), $datetimeStartLocal->format('i'), '00');
-        $datetimeEndLocal = new DateTime('now +' . ($this->downtimeDuration + 120) . 'seconds', new DateTimeZone($this->timezone));
+        $datetimeEndLocal = new DateTime(
+            'now +' . ($this->downtimeDuration + 120) . 'seconds',
+            new DateTimeZone($this->timezone)
+        );
         $datetimeEndLocal->setTime($datetimeEndLocal->format('H'), $datetimeEndLocal->format('i'), '00');
 
 
@@ -348,15 +354,13 @@ class DowntimeStartAndStopContext extends CentreonContext
         $dateEndTimestamp = $dataTimeEnd->getTimestamp();
 
         if ($this->dateStartTimestamp != $dateStartTimestamp) {
-            throw new \Exception(
-                'Error bad timezone in start downtime configuration: ' . $this->dateStartTimestamp . ' != ' . $dateStartTimestamp
-            );
+            throw new \Exception('Error bad timezone in start downtime configuration: ' .
+                $this->dateStartTimestamp . ' != ' . $dateStartTimestamp);
         }
 
         if ($this->dateEndTimestamp != $dateEndTimestamp) {
-            throw new \Exception(
-                'Error bad timezone in end downtime configuration: ' . $this->dateEndTimestamp . ' != ' . $dateEndTimestamp
-            );
+            throw new \Exception('Error bad timezone in end downtime configuration: ' .
+                $this->dateEndTimestamp . ' != ' . $dateEndTimestamp);
         }
     }
 }

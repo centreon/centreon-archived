@@ -54,8 +54,8 @@ require_once "Centreon/Object/Relation/Host/Group/Service/Group.php";
  */
 class CentreonHostGroup extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
 
     public static $aDepends = array(
         'HOST'
@@ -88,7 +88,7 @@ class CentreonHostGroup extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array('hg_id', 'hg_name', 'hg_alias');
         $paramString = str_replace("hg_", "", implode($this->delim, $params));
@@ -153,12 +153,12 @@ class CentreonHostGroup extends CentreonObject
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             if (!preg_match("/^hg_/", $params[1])) {
-                $params[1] = "hg_".$params[1];
+                $params[1] = "hg_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -183,7 +183,7 @@ class CentreonHostGroup extends CentreonObject
             $args = explode($this->delim, $arg[0]);
             $hgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($hgIds)) {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
             $groupId = $hgIds[0];
 
@@ -196,7 +196,7 @@ class CentreonHostGroup extends CentreonObject
             }
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hgIds);
-                echo "id".$this->delim."name"."\n";
+                echo "id" . $this->delim . "name" . "\n";
                 foreach ($tab as $value) {
                     $tmp = $obj->getParameters($value, array($obj->getUniqueLabelField()));
                     echo $value . $this->delim . $tmp[$obj->getUniqueLabelField()] . "\n";
@@ -214,7 +214,7 @@ class CentreonHostGroup extends CentreonObject
                         $relationTable[] = $tab[0];
                     } else {
                         if ($rel != '') {
-                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $rel);
                         }
                     }
                 }
@@ -248,7 +248,7 @@ class CentreonHostGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filter_id = null, $filter_name = null)
     {
         $filters = null;
         if (!is_null($filter_id)) {

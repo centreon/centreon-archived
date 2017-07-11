@@ -229,10 +229,12 @@ function goM(_time_reload, _sid, _o) {
     proc.setCallback(monitoringCallBack);
     proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
     proc.setXslt(_addrXSL);
-    proc.transform("forAjax");
+    if (handleVisibilityChange()){
+        proc.transform("forAjax");
+    }
 
     _lock = 0;
-    _timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+    _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
     _time_live = _time_reload;
     _on = 1;
 

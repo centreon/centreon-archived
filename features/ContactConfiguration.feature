@@ -5,8 +5,8 @@ Feature: ContactConfiguration
 
     Background:
         Given I am logged in a Centreon server
-        Given a contact is configured
 
     Scenario: Edit a contact
+        Given a contact is configured
         When I update contact properties
         Then the contact properties are updated

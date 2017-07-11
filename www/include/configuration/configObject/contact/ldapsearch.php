@@ -138,7 +138,7 @@ foreach ($ids as $arId) {
         if (isset($ldap_search_filters[$arId]) && $ldap_search_filters[$arId]) {
             $ldap_search_filter = $ldap_search_filters[$arId];
         }
-        
+
         $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
         $number_returned = count($searchResult);
         if ($number_returned) {
@@ -223,5 +223,9 @@ $buffer->endElement();
 header('Content-Type: text/xml');
 $buffer->output();
 if (isset($debug_ldap_import) && $debug_ldap_import) {
-    error_log("[" . date("d/m/Y H:s") . "] LDAP Search : XML Output : " . $buffer->output() . "\n", 3, $debug_path . "ldapsearch.log");
+    error_log(
+        "[" . date("d/m/Y H:s") . "] LDAP Search : XML Output : " . $buffer->output() . "\n",
+        3,
+        $debug_path . "ldapsearch.log"
+    );
 }

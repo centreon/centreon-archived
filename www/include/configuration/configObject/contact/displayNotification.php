@@ -67,9 +67,9 @@ $DBRESULT->closeCursor();
 /*
  * Object init
  */
-$mediaObj       = new CentreonMedia($pearDB);
-$host_method    = new CentreonHost($pearDB);
-$contactObj     = new CentreonContact($pearDB);
+$mediaObj = new CentreonMedia($pearDB);
+$host_method = new CentreonHost($pearDB);
+$contactObj = new CentreonContact($pearDB);
 
 /*
  * Smarty template Init
@@ -103,9 +103,9 @@ $formData = array('contact' => $contact_id);
 /*
  * Create select form
  */
-$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
-$form->addElement('select', 'contact', _("Contact"), $contact, array('id'=>'contact', 'onChange'=>'submit();'));
+$form->addElement('select', 'contact', _("Contact"), $contact, array('id' => 'contact', 'onChange' => 'submit();'));
 $form->setDefaults($formData);
 
 /*
@@ -119,15 +119,21 @@ if (isset($hostEscResources)) {
     foreach ($hostEscResources as $hostId => $hostName) {
         if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
             $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-        } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+        } elseif ($icone = $host_method->replaceMacroInString(
+            $hostId,
+            getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
+        )
+        ) {
             $host_icone = "./img/media/" . $icone;
         } else {
             $host_icone = "./img/icons/host.png";
         }
         $moptions = "";
-        $elemArrHostEsc[] = array("MenuClass"    => "list_".$style,
-                                  "RowMenu_hico" => $host_icone,
-                                  "RowMenu_host" => myDecode($hostName));
+        $elemArrHostEsc[] = array(
+            "MenuClass" => "list_" . $style,
+            "RowMenu_hico" => $host_icone,
+            "RowMenu_host" => myDecode($hostName)
+        );
         $style != "two" ? $style = "two" : $style = "one";
     }
 }
@@ -146,16 +152,22 @@ if (isset($svcEscResources)) {
         foreach ($hostTab as $serviceId => $tab) {
             if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
                 $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-            } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+            } elseif ($icone = $host_method->replaceMacroInString(
+                $hostId,
+                getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
+            )
+            ) {
                 $host_icone = "./img/media/" . $icone;
             } else {
                 $host_icone = "./img/icons/host.png";
             }
             $moptions = "";
-            $elemArrSvcEsc[] = array("MenuClass"       => "list_".$style,
-                                  "RowMenu_hico"    => $host_icone,
-                                  "RowMenu_host"    => myDecode($tab['host_name']),
-                                  "RowMenu_service" => myDecode($tab['service_description']));
+            $elemArrSvcEsc[] = array(
+                "MenuClass" => "list_" . $style,
+                "RowMenu_hico" => $host_icone,
+                "RowMenu_host" => myDecode($tab['host_name']),
+                "RowMenu_service" => myDecode($tab['service_description'])
+            );
             $style != "two" ? $style = "two" : $style = "one";
         }
     }
@@ -173,15 +185,21 @@ if (isset($hostResources)) {
     foreach ($hostResources as $hostId => $hostName) {
         if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
             $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-        } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+        } elseif ($icone = $host_method->replaceMacroInString(
+            $hostId,
+            getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
+        )
+        ) {
             $host_icone = "./img/media/" . $icone;
         } else {
             $host_icone = "./img/icons/host.png";
         }
         $moptions = "";
-        $elemArrHost[] = array("MenuClass"    => "list_".$style,
-                               "RowMenu_hico" => $host_icone,
-                               "RowMenu_host" => myDecode($hostName));
+        $elemArrHost[] = array(
+            "MenuClass" => "list_" . $style,
+            "RowMenu_hico" => $host_icone,
+            "RowMenu_host" => myDecode($hostName)
+        );
         $style != "two" ? $style = "two" : $style = "one";
     }
 }
@@ -199,26 +217,34 @@ if (isset($svcResources)) {
         foreach ($hostTab as $serviceId => $tab) {
             if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
                 $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-            } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
+            } elseif ($icone = $host_method->replaceMacroInString(
+                $hostId,
+                getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
+            )
+            ) {
                 $host_icone = "./img/media/" . $icone;
             } else {
                 $host_icone = "./img/icons/host.png";
             }
             $moptions = "";
-            $elemArrSvc[] = array("MenuClass"       => "list_".$style,
-                                  "RowMenu_hico"    => $host_icone,
-                                  "RowMenu_host"    => myDecode($tab['host_name']),
-                                  "RowMenu_service" => myDecode($tab['service_description']));
+            $elemArrSvc[] = array(
+                "MenuClass" => "list_" . $style,
+                "RowMenu_hico" => $host_icone,
+                "RowMenu_host" => myDecode($tab['host_name']),
+                "RowMenu_service" => myDecode($tab['service_description'])
+            );
             $style != "two" ? $style = "two" : $style = "one";
         }
     }
 }
 $tpl->assign("elemArrSvc", $elemArrSvc);
 
-$labels = array('host_escalation'       => _('Host escalations'),
-                'service_escalation'    => _('Service escalations'),
-                'host_notifications'    => _('Host notifications'),
-                'service_notifications' => _('Service notifications'));
+$labels = array(
+    'host_escalation' => _('Host escalations'),
+    'service_escalation' => _('Service escalations'),
+    'host_notifications' => _('Host notifications'),
+    'service_notifications' => _('Service notifications')
+);
 
 /*
  * Apply a template definition

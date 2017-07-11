@@ -47,9 +47,7 @@ class CentreonWidgetParamsConnectorServiceCategories extends CentreonWidgetParam
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT sc_id, sc_name
-            		  FROM service_categories
-            		  WHERE sc_activate = '1' ";
+            $query = "SELECT sc_id, sc_name FROM service_categories WHERE sc_activate = '1' ";
             $query .= " ORDER BY sc_name ";
             $res = $this->db->query($query);
             $tab = array(null => null);

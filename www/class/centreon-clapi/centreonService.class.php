@@ -108,7 +108,8 @@ class CentreonService extends CentreonObject
     {
         parent::__construct();
         $this->object = new \Centreon_Object_Service();
-        $this->params = array('service_is_volatile' => '2',
+        $this->params = array(
+            'service_is_volatile' => '2',
             'service_active_checks_enabled' => '2',
             'service_passive_checks_enabled' => '2',
             'service_parallelize_check' => '2',
@@ -211,7 +212,8 @@ class CentreonService extends CentreonObject
             null,
             array(
                 'host_name' => $hostName,
-                'service_description' => $serviceDescription),
+                'service_description' => $serviceDescription
+            ),
             "AND"
         );
         if (count($elements)) {
@@ -234,9 +236,18 @@ class CentreonService extends CentreonObject
         }
         $commandObject = new \Centreon_Object_Command();
         $paramsHost = array('host_id', 'host_name');
-        $paramsSvc = array('service_id', 'service_description', 'command_command_id', 'command_command_id_arg',
-            'service_normal_check_interval', 'service_retry_check_interval', 'service_max_check_attempts',
-            'service_active_checks_enabled', 'service_passive_checks_enabled', 'service_activate');
+        $paramsSvc = array(
+            'service_id',
+            'service_description',
+            'command_command_id',
+            'command_command_id_arg',
+            'service_normal_check_interval',
+            'service_retry_check_interval',
+            'service_max_check_attempts',
+            'service_active_checks_enabled',
+            'service_passive_checks_enabled',
+            'service_activate'
+        );
         $relObject = new \Centreon_Object_Relation_Host_Service();
         $elements = $relObject->getMergedParameters(
             $paramsHost,
@@ -316,12 +327,14 @@ class CentreonService extends CentreonObject
         static $table;
 
         if (!isset($table)) {
-            $table = array("command_command_id" => "check_command",
+            $table = array(
+                "command_command_id" => "check_command",
                 "command_command_id2" => "event_handler",
                 "timeperiod_tp_id" => "check_period",
                 "timeperiod_tp_id2" => "notification_period",
                 "command_command_id_arg" => "check_command_arguments",
-                "command_command_id_arg2" => "event_handler_arguments");
+                "command_command_id_arg2" => "event_handler_arguments"
+            );
         }
         if (preg_match("/^esi_/", $columnName)) {
             return substr($columnName, strlen("esi_"));
@@ -739,8 +752,10 @@ class CentreonService extends CentreonObject
             0,
             null,
             null,
-            array("host_name" => $hostName,
-            "service_description" => $serviceDescription),
+            array(
+                "host_name" => $hostName,
+                "service_description" => $serviceDescription
+            ),
             "AND"
         );
         if (!count($elements)) {
@@ -753,8 +768,10 @@ class CentreonService extends CentreonObject
             0,
             null,
             null,
-            array("svc_svc_id" => $elements[0]['service_id'],
-            "svc_macro_name" => $this->wrapMacro($params[2])),
+            array(
+                "svc_svc_id" => $elements[0]['service_id'],
+                "svc_macro_name" => $this->wrapMacro($params[2])
+            ),
             "AND"
         );
         if (count($macroList)) {
@@ -905,8 +922,10 @@ class CentreonService extends CentreonObject
             0,
             null,
             null,
-            array("host_name" => $tmp[0],
-            "service_description" => $tmp[1]),
+            array(
+                "host_name" => $tmp[0],
+                "service_description" => $tmp[1]
+            ),
             "AND"
         );
         if (!count($elements)) {
@@ -966,8 +985,10 @@ class CentreonService extends CentreonObject
                     0,
                     null,
                     null,
-                    array("host_name" => $args[0],
-                    "service_description" => $args[1]),
+                    array(
+                        "host_name" => $args[0],
+                        "service_description" => $args[1]
+                    ),
                     "AND"
                 );
                 if (!count($elements)) {
@@ -1042,7 +1063,7 @@ class CentreonService extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filter_id = null, $filter_name = null)
     {
         $filters = array("service_register" => $this->register);
         if (!is_null($filter_id)) {
@@ -1104,13 +1125,13 @@ class CentreonService extends CentreonObject
                     $value = CentreonUtils::convertLineBreak($value);
                     # Host Filter
                     $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
-                    if($this->getClapiActionName($parameter) != "host_id") {
+                    if ($this->getClapiActionName($parameter) != "host_id") {
                         echo $this->action . $this->delim . "setparam" . $this->delim
                             . $element['host_name'] . $this->delim
                             . $element['service_description'] . $this->delim
                             . $this->getClapiActionName($parameter) . $this->delim
                             . $value . "\n";
-                    } 
+                    }
                 }
             }
             $params = $extendedObj->getParameters(
@@ -1150,7 +1171,7 @@ class CentreonService extends CentreonObject
                     . $this->stripMacro($macro['svc_macro_name']) . $this->delim
                     . $macro['svc_macro_value'] . $this->delim
                     . $macro['is_password'] . $this->delim
-                    . "'" .$macro['description'] ."'" . "\n";
+                    . "'" . $macro['description'] . "'" . "\n";
             }
             $cgRel = new \Centreon_Object_Relation_Contact_Group_Service();
             $cgelements = $cgRel->getMergedParameters(
@@ -1219,7 +1240,6 @@ class CentreonService extends CentreonObject
     }
 
 
-
     /**
      *
      * @param type $pearDB
@@ -1244,7 +1264,7 @@ class CentreonService extends CentreonObject
         return true;
     }
 
-        /**
+    /**
      * This method get the macro attached to the service
      *
      * @param int $iServiceId
@@ -1290,7 +1310,6 @@ class CentreonService extends CentreonObject
         }
 
 
-
         //filter a macro
         $aTempMacro = array();
         $serv = current($aMacroInService);
@@ -1324,12 +1343,10 @@ class CentreonService extends CentreonObject
         }
 
 
-
         $aFinalMacro = $this->macro_unique($aTempMacro);
 
         return $aFinalMacro;
     }
-
 
 
     /**
@@ -1346,7 +1363,7 @@ class CentreonService extends CentreonObject
             $res = $this->db->query("SELECT svc_macro_name, svc_macro_value, is_password, description
                                 FROM on_demand_macro_service
                                 WHERE svc_svc_id = " .
-                    $serviceId . "
+                $serviceId . "
                                 ORDER BY macro_order ASC");
             while ($row = $res->fetch()) {
                 if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
@@ -1472,7 +1489,7 @@ class CentreonService extends CentreonObject
     }
 
 
-        /**
+    /**
      * Return the list of template
      *
      * @param int $svcId The service ID
@@ -1486,7 +1503,7 @@ class CentreonService extends CentreonObject
         } else {
             $alreadyProcessed[] = $svcId;
 
-            $query = "SELECT * FROM service WHERE service_id = ".  intval($svcId);
+            $query = "SELECT * FROM service WHERE service_id = " . intval($svcId);
             $stmt = $pearDB->query($query);
             $row = $stmt->fetch();
             if (!empty($row)) {
@@ -1508,7 +1525,7 @@ class CentreonService extends CentreonObject
 
     private function comparaPriority($macroA, $macroB, $getFirst = true)
     {
-        $arrayPrio = array('direct' => 3,'fromTpl' => 2,'fromService' => 1);
+        $arrayPrio = array('direct' => 3, 'fromTpl' => 2, 'fromService' => 1);
         if ($getFirst) {
             if ($arrayPrio[$macroA['source']] > $arrayPrio[$macroB['source']]) {
                 return $macroA;

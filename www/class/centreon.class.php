@@ -146,15 +146,19 @@ class Centreon
     public function creatModuleList()
     {
         $this->modules = array();
-        $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
-        while ($result = $DBRESULT->fetch()) {
-            $this->modules[$result["name"]] = array("name" => $result["name"],
-                                                    "gen" => false, "restart" => false,
-                                                    "sql" => $result["sql_files"],
-                                                    "lang" => $result["lang_files"],
-                                                    "license" => false);
+        $query = "SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`";
+        $dbResult = CentreonDBInstance::getConfInstance()->query($query);
+        while ($result = $dbResult->fetch()) {
+            $this->modules[$result["name"]] = array(
+                "name" => $result["name"],
+                "gen" => false,
+                "restart" => false,
+                "sql" => $result["sql_files"],
+                "lang" => $result["lang_files"],
+                "license" => false
+            );
 
-            if (is_dir("./modules/".$result["name"]."/generate_files/")) {
+            if (is_dir("./modules/" . $result["name"] . "/generate_files/")) {
                 $this->modules[$result["name"]]["gen"] = true;
             }
             if (is_dir("./modules/" . $result["name"] . "/restart_pollers/")) {
@@ -167,7 +171,7 @@ class Centreon
                 $this->modules[$result["name"]]["license"] = true;
             }
         }
-        $DBRESULT = null;
+        $dbResult = null;
     }
 
     public function initHooks()
@@ -186,7 +190,7 @@ class Centreon
                     }
                     if (class_exists($className)) {
                         $hookName = '';
-                        for ($i = 1;$i < count($explodedClassName); $i++) {
+                        for ($i = 1; $i < count($explodedClassName); $i++) {
                             $hookName .= ucfirst(strtolower($explodedClassName[$i]));
                         }
                         $hookMethods = get_class_methods($className);

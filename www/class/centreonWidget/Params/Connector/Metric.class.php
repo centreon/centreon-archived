@@ -47,9 +47,7 @@ class CentreonWidgetParamsConnectorMetric extends CentreonWidgetParamsList
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT metric_id, metric_name
-            		  FROM metrics
-            		  WHERE to_delete = 0 ";
+            $query = "SELECT metric_id, metric_name FROM metrics WHERE to_delete = 0 ";
             $query .= " ORDER BY metric_name ";
             $res = $this->monitoringDb->query($query);
             $tab = array(null => null);

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Correlation extends AbstractObjectXML {
+class Correlation extends AbstractObjectXML
+{
     protected $engine = null;
     protected $broker = null;
     protected $generate_filename = 'correlation.xml';
@@ -46,7 +48,8 @@ class Correlation extends AbstractObjectXML {
     private $correlation_file_path = null;
     private $poller_ids = array();
 
-    public function generateFromPollerId($poller_id, $localhost) {
+    public function generateFromPollerId($poller_id, $localhost)
+    {
         if ($localhost) {
             $this->generateMainCorrelation();
             $this->generateDependency();
@@ -63,7 +66,8 @@ class Correlation extends AbstractObjectXML {
         $this->writeFile($this->backend_instance->getPath());
     }
 
-    private function generateMainCorrelation() {
+    private function generateMainCorrelation()
+    {
         $object = array();
         $this->generate_filename = basename($this->correlation_file_path);
         $dir = dirname($this->correlation_file_path);
@@ -83,7 +87,8 @@ class Correlation extends AbstractObjectXML {
         $this->writeFile($this->backend_instance->getPath());
     }
 
-    private function generateDependency() {
+    private function generateDependency()
+    {
         $this->generate_filename = 'correlation_dependency.xml';
         $dir = dirname($this->correlation_file_path);
 
@@ -97,7 +102,8 @@ class Correlation extends AbstractObjectXML {
         $this->writeFile($this->backend_instance->getPath());
     }
 
-    private function generateParentship() {
+    private function generateParentship()
+    {
         $this->generate_filename = 'correlation_parentship.xml';
         $dir = dirname($this->correlation_file_path);
 
@@ -108,7 +114,8 @@ class Correlation extends AbstractObjectXML {
         $this->writeFile($this->backend_instance->getPath());
     }
 
-    private function doHost($poller_id) {
+    private function doHost($poller_id)
+    {
         $host_instance = Host::getInstance($this->dependencyInjector);
         $hosts = $host_instance->getGeneratedHosts();
         foreach ($hosts as $hostId) {
@@ -121,7 +128,8 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    private function doService($poller_id) {
+    private function doService($poller_id)
+    {
         $service_instance = Service::getInstance($this->dependencyInjector);
         $services_exported = $service_instance->getGeneratedServices();
         foreach ($services_exported as $hostId => $services) {
@@ -137,7 +145,8 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    private function doHostHostDependency() {
+    private function doHostHostDependency()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT
               dhp.host_host_id as parent_host_id, dhc.host_host_id as child_host_id
             FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc, host h, host h2
@@ -156,7 +165,8 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    private function doServiceServiceDependency() {
+    private function doServiceServiceDependency()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT
               dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
               dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
@@ -178,7 +188,8 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    private function doServiceHostDependency() {
+    private function doServiceHostDependency()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT
               dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id,
               dhc.host_host_id as child_host_id
@@ -190,16 +201,17 @@ class Correlation extends AbstractObjectXML {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $this->correlation_dependency_object[]['dependency'] = array(
-                    '@attributes' => array(
-                        'host' => $row['parent_host_id'],
-                        'service' => $row['parent_service_id'],
-                        'dependent_host' => $row['child_host_id']
-                    )
-                );
+                '@attributes' => array(
+                    'host' => $row['parent_host_id'],
+                    'service' => $row['parent_service_id'],
+                    'dependent_host' => $row['child_host_id']
+                )
+            );
         }
     }
 
-    private function doHostServiceDependency() {
+    private function doHostServiceDependency()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT
               dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id,
               dsc.service_service_id as child_service_id
@@ -211,16 +223,17 @@ class Correlation extends AbstractObjectXML {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $this->correlation_dependency_object[]['dependency'] = array(
-                    '@attributes' => array(
-                        'host' => $row['parent_host_id'],
-                        'dependent_host' => $row['child_host_id'],
-                        'dependent_service' => $row['child_service_id']
-                    )
-                );
+                '@attributes' => array(
+                    'host' => $row['parent_host_id'],
+                    'dependent_host' => $row['child_host_id'],
+                    'dependent_service' => $row['child_service_id']
+                )
+            );
         }
     }
 
-    private function doParentship() {
+    private function doParentship()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT hp.host_host_id, hp.host_parent_hp_id
             FROM host_hostparent_relation hp, host h, host h2
             WHERE hp.host_host_id = h.host_id AND h.host_activate = '1'
@@ -238,7 +251,8 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    public function setCorrelation() {
+    public function setCorrelation()
+    {
         if (!is_null($this->has_correlation)) {
             return $this->has_correlation;
         }
@@ -266,14 +280,16 @@ class Correlation extends AbstractObjectXML {
         }
     }
 
-    public function hasCorrelation() {
+    public function hasCorrelation()
+    {
         if (is_null($this->has_correlation)) {
             $this->setCorrelation();
         }
         return $this->has_correlation;
     }
 
-    public function getPollerIds() {
+    public function getPollerIds()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT
               id
             FROM nagios_server
@@ -283,7 +299,8 @@ class Correlation extends AbstractObjectXML {
         $this->poller_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->correlation_object = array();
         $this->correlation_dependency_object = array();
         $this->correlation_parentship_object = array();

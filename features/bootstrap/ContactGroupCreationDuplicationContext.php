@@ -67,7 +67,7 @@ class ContactGroupCreationDuplicationContext extends CentreonContext
     public function theNewContactGroupIsDisplayedInTheContactGroupList()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new ContactGroupConfigurationListingPage($this);
                 return $this->currentPage->getEntry($this->contactGroupName . '_1');
             },
@@ -94,11 +94,11 @@ class ContactGroupCreationDuplicationContext extends CentreonContext
     public function theDeletedContactGroupIsNotDisplayedInTheUserList()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new ContactGroupConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
-                foreach ($object as $value){
+                foreach ($object as $value) {
                     $bool = $bool && $value['name'] != $this->contactGroupName;
                 }
                 return $bool;

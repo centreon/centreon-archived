@@ -47,11 +47,11 @@ class CentreonWidgetParamsConnectorHostTemplate extends CentreonWidgetParamsList
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT host_id, host_name
-            		  FROM host
-            		  WHERE host_activate = '1'
-            		  AND host_register = '0'
-            		  ORDER BY host_name";
+            $query = "SELECT host_id, host_name " .
+                "FROM host " .
+                "WHERE host_activate = '1' " .
+                "AND host_register = '0' " .
+                "ORDER BY host_name";
             $res = $this->db->query($query);
             $tab = array(null => null);
             while ($row = $res->fetchRow()) {

@@ -461,7 +461,6 @@ jQuery(function() {
 
     function bindInhertance() {
         if (jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']:checked").val() == "1") {
-            jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").attr('disabled', 'disabled').removeAttr('checked');
             jQuery("input[name='contact_additive_inheritance']").attr('disabled', 'disabled');
             jQuery("input[name='cg_additive_inheritance']").attr('disabled', 'disabled');
             jQuery("#service_cs").attr('disabled', 'disabled');
@@ -469,7 +468,6 @@ jQuery(function() {
             jQuery("#service_cgs").attr('disabled', 'disabled');
             jQuery("#service_cgs").select2("val", "");
         } else {
-            jQuery("input[name='service_inherit_contacts_from_host[service_inherit_contacts_from_host]']").removeAttr('disabled');
             jQuery("input[name='contact_additive_inheritance']").removeAttr('disabled');
             jQuery("input[name='cg_additive_inheritance']").removeAttr('disabled');
             jQuery("#service_cs").removeAttr('disabled');

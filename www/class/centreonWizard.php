@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2012 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -49,8 +50,8 @@ class Centreon_Wizard
     public function __construct($name, $uuid)
     {
         $this->_uuid = $uuid;
-	    $this->_name = $name;
-	    $this->_lastUpdate = time();
+        $this->_name = $name;
+        $this->_lastUpdate = time();
     }
 
     /**
@@ -62,9 +63,9 @@ class Centreon_Wizard
     public function getValues($step)
     {
         if (false === isset($this->_values[$step])) {
-	        return array();
-	    }
-	    return $this->_values[$step];
+            return array();
+        }
+        return $this->_values[$step];
     }
 
     /**
@@ -78,9 +79,9 @@ class Centreon_Wizard
     public function getValue($step, $name, $default = '')
     {
         if (false === isset($this->_values[$step]) || false === isset($this->_values[$step][$name])) {
-	        return $default;
-	    }
-	    return $this->_values[$step][$name];
+            return $default;
+        }
+        return $this->_values[$step][$name];
     }
 
     /**
@@ -91,13 +92,13 @@ class Centreon_Wizard
      */
     public function addValues($step, $post)
     {
-    	/* Reinit */
-    	$this->_values[$step] = array();
-    	foreach ($post as $key => $value) {
-                if (strncmp($key, 'step' . $step . '_', 6) === 0) {
-    	        $this->_values[$step][str_replace('step' . $step . '_', '', $key)] = $value;
-    	    }
-    	}
+        /* Reinit */
+        $this->_values[$step] = array();
+        foreach ($post as $key => $value) {
+            if (strncmp($key, 'step' . $step . '_', 6) === 0) {
+                $this->_values[$step][str_replace('step' . $step . '_', '', $key)] = $value;
+            }
+        }
         $this->_lastUpdate = time();
     }
 
@@ -109,10 +110,10 @@ class Centreon_Wizard
      */
     public function testUuid($uuid)
     {
-       if ($uuid == $this->_uuid) {
-           return true;
-       }
-       return false;
+        if ($uuid == $this->_uuid) {
+            return true;
+        }
+        return false;
     }
 
     /**

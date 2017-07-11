@@ -46,9 +46,9 @@ class CentreonWidgetParamsRange extends CentreonWidgetParams
     {
         parent::init($params);
         if (isset($this->quickform)) {
-            $query = "SELECT min_range, max_range, step
-            		  FROM widget_parameters_range
-            		  WHERE parameter_id = " . $this->db->escape($params['parameter_id']);
+            $query = "SELECT min_range, max_range, step " .
+                "FROM widget_parameters_range " .
+                "WHERE parameter_id = " . $this->db->escape($params['parameter_id']);
             $res = $this->db->query($query);
             $row = $res->fetchRow();
             $min = $row['min_range'];
@@ -58,10 +58,12 @@ class CentreonWidgetParamsRange extends CentreonWidgetParams
             for ($i = $min; $i <= $max; $i += $step) {
                 $tab[$i] = $i;
             }
-            $this->element = $this->quickform->addElement('select',
-            											  'param_'.$params['parameter_id'],
-                                                          $params['parameter_name'],
-                                                          $tab);
+            $this->element = $this->quickform->addElement(
+                'select',
+                'param_' . $params['parameter_id'],
+                $params['parameter_name'],
+                $tab
+            );
         }
     }
 }

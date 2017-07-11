@@ -14,7 +14,7 @@ class InfluxdbContext extends CentreonContext
     private $serviceName = 'InfluxdbTestService';
 
     /**
-     *  @Given I am logged in a Centreon server with InfluxDB
+     * @Given I am logged in a Centreon server with InfluxDB
      */
     public function aCentreonServerWithInfluxDB()
     {
@@ -24,54 +24,110 @@ class InfluxdbContext extends CentreonContext
     }
 
     /**
-     *  @Given Centreon Broker is configured to send data to an InfluxDB server
+     * @Given Centreon Broker is configured to send data to an InfluxDB server
      */
     public function anInfluxdbOutputIsProperlyConfigured()
     {
-      $this->visit('main.php?p=60909&o=c&id=1');
-      $this->assertFind('css', 'li#c4 > a:nth-child(1)')->click();
-      $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
-      $this->assertFind('css', 'a#add_output')->click();
-      sleep(5);
-      $this->assertFind('named', array('id', 'output[4][name]'))->setValue('TestInfluxdb');
-      $this->assertFind('named', array('id', 'output[4][db_host]'))->setValue('influxdb');
-      $this->assertFind('css', 'input[name="output[4][db_port]"]')->setValue('8086');
-      $this->assertFind('named', array('id', 'output[4][db_user]'))->setValue('root');
-      $this->assertFind('named', array('id', 'output[4][db_name]'))->setValue('metrics');
-      $this->assertFind('named', array('id', 'output[4][metrics_timeseries]'))->setValue('metric.$HOST$.$SERVICE$');
-      $this->assertFind('named', array('id', 'output[4][status_timeseries]'))->setValue('status.$HOST$.$SERVICE$');
+        $this->visit('main.php?p=60909&o=c&id=1');
+        $this->assertFind('css', 'li#c4 > a:nth-child(1)')->click();
+        $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
+        $this->assertFind('css', 'a#add_output')->click();
+        sleep(5);
+        $this->assertFind('named', array('id', 'output[4][name]'))->setValue('TestInfluxdb');
+        $this->assertFind('named', array('id', 'output[4][db_host]'))->setValue('influxdb');
+        $this->assertFind('css', 'input[name="output[4][db_port]"]')->setValue('8086');
+        $this->assertFind('named', array('id', 'output[4][db_user]'))->setValue('root');
+        $this->assertFind('named', array('id', 'output[4][db_name]'))->setValue('metrics');
+        $this->assertFind('named', array('id', 'output[4][metrics_timeseries]'))->setValue('metric.$HOST$.$SERVICE$');
+        $this->assertFind('named', array('id', 'output[4][status_timeseries]'))->setValue('status.$HOST$.$SERVICE$');
 
-      // Metrics columns
-      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)')->setValue('true');
-      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$METRICID$');
-      $this->assertFind('css', '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('metric_id');
-      $this->assertFind('named', array('id', 'metrics_column___4_add'))->click();
-      sleep(1);
-      $this->assertFind('css', '#metrics_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$TIME$');
-      $this->assertFind('css', '#metrics_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('time');
-      $this->assertFind('named', array('id', 'metrics_column___4_add'))->click();
-      sleep(1);
-      $this->assertFind('css', '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$VALUE$');
-      $this->assertFind('css', '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('value');
+        // Metrics columns
+        $this->assertFind(
+            'css',
+            '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('true');
+        $this->assertFind(
+            'css',
+            '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('$METRICID$');
+        $this->assertFind(
+            'css',
+            '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('metric_id');
+        $this->assertFind('named', array('id', 'metrics_column___4_add'))->click();
+        sleep(1);
+        $this->assertFind(
+            'css',
+            '#metrics_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('$TIME$');
+        $this->assertFind(
+            'css',
+            '#metrics_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('time');
+        $this->assertFind('named', array('id', 'metrics_column___4_add'))->click();
+        sleep(1);
+        $this->assertFind(
+            'css',
+            '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('$VALUE$');
+        $this->assertFind(
+            'css',
+            '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('value');
 
-      // Status columns
-      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)')->setValue('true');
-      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$INDEXID$');
-      $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('index_id');
-      $this->assertFind('named', array('id', 'status_column___4_add'))->click();
-      sleep(1);
-      $this->assertFind('css', '#status_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$TIME$');
-      $this->assertFind('css', '#status_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('time');
-      $this->assertFind('named', array('id', 'status_column___4_add'))->click();
-      sleep(1);
-      $this->assertFind('css', '#status_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$VALUE$');
-      $this->assertFind('css', '#status_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('value');
+        // Status columns
+        $this->assertFind(
+            'css',
+            '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('true');
+        $this->assertFind(
+            'css',
+            '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('$INDEXID$');
+        $this->assertFind(
+            'css',
+            '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('index_id');
+        $this->assertFind('named', array('id', 'status_column___4_add'))->click();
+        sleep(1);
+        $this->assertFind(
+            'css',
+            '#status_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('$TIME$');
+        $this->assertFind(
+            'css',
+            '#status_column___4_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('time');
+        $this->assertFind('named', array('id', 'status_column___4_add'))->click();
+        sleep(1);
+        $this->assertFind(
+            'css',
+            '#status_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
+            'tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('$VALUE$');
+        $this->assertFind(
+            'css',
+            '#status_column___4_template2 > td:nth-child(1) > table:nth-child(1) > ' .
+            'tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
+        )->setValue('value');
 
-      $this->assertFind('css', '#validForm > p:nth-child(1) > input:nth-child(1)')->click();
+        $this->assertFind('css', '#validForm > p:nth-child(1) > input:nth-child(1)')->click();
     }
 
     /**
-     *  @Given a service is monitored by the Centreon platform
+     * @Given a service is monitored by the Centreon platform
      */
     public function aServiceIsMonitoredByTheCentreonPlatform()
     {
@@ -107,7 +163,7 @@ class InfluxdbContext extends CentreonContext
     }
 
     /**
-     *  @When new metric data is retrieved for the service
+     * @When new metric data is retrieved for the service
      */
     public function newMetricDataIsRetrievedForTheService()
     {
@@ -115,7 +171,7 @@ class InfluxdbContext extends CentreonContext
 
         $self = $this;
         $this->spin(
-            function($context) use ($self) {
+            function ($context) use ($self) {
                 $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
                 $properties = $page->getProperties();
                 if (!count($properties['perfdata'])) {
@@ -128,13 +184,13 @@ class InfluxdbContext extends CentreonContext
     }
 
     /**
-     *  @Then it is saved in InfluxDB
+     * @Then it is saved in InfluxDB
      */
     public function thenItIsSavedInInfluxDB()
     {
         $self = $this;
         $this->spin(
-            function($context) use ($self) {
+            function ($context) use ($self) {
                 $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
                 return preg_match('/status\.' . $self->hostName . '\.' . $self->serviceName . '/m', $return['output']);
             },

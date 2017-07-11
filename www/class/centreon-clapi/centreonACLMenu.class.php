@@ -47,12 +47,12 @@ require_once "Centreon/Object/Relation/Acl/Group/Menu.php";
  */
 class CentreonACLMenu extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
-    const LEVEL_1                 = 0;
-    const LEVEL_2                 = 1;
-    const LEVEL_3                 = 2;
-    const LEVEL_4                 = 3;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
+    const LEVEL_1 = 0;
+    const LEVEL_2 = 1;
+    const LEVEL_3 = 2;
+    const LEVEL_4 = 3;
     const PARENT_MENU_NOT_DEFINED = "Parent menu must be defined";
     protected $relObject;
     protected $aclGroupObj;
@@ -111,12 +111,12 @@ class CentreonACLMenu extends CentreonObject
             if ($params[1] == "comment") {
                 $params[1] = "acl_comments";
             } else {
-                $params[1] = "acl_topo_".$params[1];
+                $params[1] = "acl_topo_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -130,7 +130,7 @@ class CentreonACLMenu extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array("acl_topo_id", "acl_topo_name", "acl_topo_alias", "acl_comments", "acl_topo_activate");
         $paramString = str_replace("acl_topo_", "", implode($this->delim, $params));
@@ -163,7 +163,7 @@ class CentreonACLMenu extends CentreonObject
         }
         $aclMenuId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($params[0]));
         if (!count($aclMenuId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[0]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
         $levels = array();
         $menus = array();
@@ -216,7 +216,7 @@ class CentreonACLMenu extends CentreonObject
                         		WHERE topology_name = ?
                         		AND LENGTH(topology_page) = ?
                         		AND topology_parent = ?";
-                        $res = $this->db->query($sql, array($menu, $length, $topologies[($level-1)]));
+                        $res = $this->db->query($sql, array($menu, $length, $topologies[($level - 1)]));
                     }
                 }
                 $row = $res->fetch();
@@ -247,7 +247,7 @@ class CentreonACLMenu extends CentreonObject
         }
         $aclMenuId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($aclMenuName));
         if (!count($aclMenuId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$aclMenuName);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $aclMenuName);
         }
         $groupIds = $this->relObject->getacl_group_idFromacl_topology_id($aclMenuId[0]);
         echo "id;name" . "\n";

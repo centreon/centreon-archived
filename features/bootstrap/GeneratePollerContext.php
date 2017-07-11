@@ -11,7 +11,7 @@ class GeneratePollerContext extends CentreonContext
     private $pollers_page;
 
     /**
-     *  @Given a Centreon platform with multiple pollers
+     * @Given a Centreon platform with multiple pollers
      */
     public function aCentreonPlatformWithMultiplePollers()
     {
@@ -23,7 +23,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @Given one poller is selected
+     * @Given one poller is selected
      */
     public function onePollerIsSelected()
     {
@@ -31,7 +31,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @Given multiple pollers are selected
+     * @Given multiple pollers are selected
      */
     public function multiplePollersAreSelected()
     {
@@ -40,7 +40,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @Given I select another poller
+     * @Given I select another poller
      */
     public function iSelectAnotherPoller()
     {
@@ -48,7 +48,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @Given no poller is selected
+     * @Given no poller is selected
      */
     public function noOnePollerIsSelected()
     {
@@ -57,7 +57,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @When I click on the configuration export button
+     * @When I click on the configuration export button
      */
     public function iClickOnTheConfigurationExportButton()
     {
@@ -65,7 +65,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @When I click on the export button
+     * @When I click on the export button
      */
     public function iClickOnTheExportButton()
     {
@@ -74,7 +74,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @When I am redirected to generate page
+     * @When I am redirected to generate page
      */
     public function iAmRedirectedToGeneratePage()
     {
@@ -82,7 +82,7 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @Then the pollers are already selected
+     * @Then the pollers are already selected
      */
     public function thePollersAreAlreadySelected()
     {
@@ -98,20 +98,21 @@ class GeneratePollerContext extends CentreonContext
     }
 
     /**
-     *  @Then poller configuration is generated
+     * @Then poller configuration is generated
      */
     public function pollerConfigurationIsGenerated()
     {
         /* Wait configuration is generated. */
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
+                return count($context->getSession()->getPage()
+                        ->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
             }
         );
     }
 
     /**
-     *  @Then an error message is displayed to inform that no poller is selected
+     * @Then an error message is displayed to inform that no poller is selected
      */
     public function noPollerErrorMessage()
     {

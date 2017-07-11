@@ -47,10 +47,12 @@ class CentreonWidgetParamsList extends CentreonWidgetParams
         parent::init($params);
         if (isset($this->quickform)) {
             $tab = $this->getListValues($params['parameter_id']);
-            $this->element = $this->quickform->addElement('select',
-	                									  'param_'.$params['parameter_id'],
-            											  $params['parameter_name'],
-                                                          $tab);
+            $this->element = $this->quickform->addElement(
+                'select',
+                'param_' . $params['parameter_id'],
+                $params['parameter_name'],
+                $tab
+            );
         }
     }
 }

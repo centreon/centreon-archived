@@ -216,7 +216,7 @@ class CentreonContactGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filter_id = null, $filter_name = null)
     {
         $filters = null;
         if (!is_null($filter)) {

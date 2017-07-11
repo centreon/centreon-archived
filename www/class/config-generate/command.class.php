@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Command extends AbstractObject {
+class Command extends AbstractObject
+{
     private $commands = null;
     private $mail_bin = null;
     protected $generate_filename = 'commands.cfg';
@@ -50,18 +52,19 @@ class Command extends AbstractObject {
         'command_line',
         'connector',
     );
-    
-    private function getCommands() {        
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-              $this->attributes_select
-            FROM command 
-                LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1' AND command.command_activate = '1'
-            ");
+
+    private function getCommands()
+    {
+        $query = "SELECT $this->attributes_select FROM command " .
+            "LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1' " .
+            "AND command.command_activate = '1'";
+        $stmt = $this->backend_instance->db->prepare($query);
         $stmt->execute();
-        $this->commands = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
+        $this->commands = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    private function getMailBin() {
+    private function getMailBin()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT
               options.value
             FROM options
@@ -74,13 +77,14 @@ class Command extends AbstractObject {
             $this->mail_bin = '';
         }
     }
-    
-    public function generateFromCommandId($command_id) {
+
+    public function generateFromCommandId($command_id)
+    {
         $name = null;
         if (is_null($this->commands)) {
             $this->getCommands();
         }
-        
+
         if (!isset($this->commands[$command_id])) {
             return null;
         }
@@ -101,11 +105,16 @@ class Command extends AbstractObject {
         $command_line = str_replace("\n", " \\\n", $command_line);
         $command_line = str_replace("\r", "", $command_line);
 
-        if (!is_null($this->commands[$command_id]['enable_shell']) && $this->commands[$command_id]['enable_shell'] == 1) {
+        if (!is_null($this->commands[$command_id]['enable_shell']) &&
+            $this->commands[$command_id]['enable_shell'] == 1
+        ) {
             $command_line = '/bin/sh -c ' . escapeshellarg($command_line);
         }
 
-        $this->generateObjectInFile(array_merge($this->commands[$command_id], array('command_line' => $command_line)), $command_id);
+        $this->generateObjectInFile(
+            array_merge($this->commands[$command_id], array('command_line' => $command_line)),
+            $command_id
+        );
         return $this->commands[$command_id]['command_name'];
     }
 }
