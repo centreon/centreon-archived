@@ -42156,6 +42156,130 @@
           "response": []
         },
         {
+          "name": "Setseverity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
+                }
+              ],
+              "variable": []
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}};{{sc_name}}\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Unsetseverity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
+                }
+              ],
+              "variable": []
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"unsetseverity\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}}\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
           "name": "Addcontactgroup",
           "event": [
             {
