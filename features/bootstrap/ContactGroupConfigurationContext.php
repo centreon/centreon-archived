@@ -10,35 +10,35 @@ class ContactGroupConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = (array(
+    protected $initialProperties = array(
         'name' => 'contactGroupName',
         'alias' => 'contactGroupAlias',
         'status' => 0,
         'comments' => 'contactGroupComment'
-    ));
+    );
 
-    protected $updatedProperties = (array(
+    protected $updatedProperties = array(
         'name' => 'contactGroupNameChanged',
         'alias' => 'contactGroupAliasChanged',
         'contacts' => 'contactAlias',
         'acl' => 'ACLGroupName',
         'status' => 1,
         'comments' => 'contactGroupCommentChanged'
-    ));
+    );
 
-    protected $aclGroup = (array(
-        'group_name' => $this->updatedProperties['acl'],
+    protected $aclGroup = array(
+        'group_name' => 'ACLGroupName',
         'group_alias' => 'aclGroupAlias'
-    ));
+    );
 
-    protected $contact = (array(
+    protected $contact = array(
         'name' => 'contactName',
-        'alias' => $this->updatedProperties['contacts'],
+        'alias' => 'contactAlias',
         'email' => 'contact@localhost',
         'password' => 'pwd',
         'password2' => 'pwd',
         'admin' => 0
-    ));
+    );
 
     /**
      * @Given a contact group is configured
@@ -74,21 +74,21 @@ class ContactGroupConfigurationContext extends CentreonContext
     {
         $this->tableau = array();
         try {
-        $this->spin(
-            function($context) {
-                $this->currentPage = new ContactGroupConfigurationListingPage($this);
-                $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
-                $object = $this->currentPage->getProperties();
-                foreach($this->updatedProperties as $key => $value) {
-                    if ($value != $object[$key]) {
-                        $this->tableau[] = $key;
+            $this->spin(
+                function ($context) {
+                    $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
+                    $object = $this->currentPage->getProperties();
+                    foreach ($this->updatedProperties as $key => $value) {
+                        if ($value != $object[$key]) {
+                            $this->tableau[] = $key;
+                        }
                     }
-                }
-                return count($this->tableau) == 0;
-            },
-            "Some properties are not being updated : ",
-            5
-        );
+                    return count($this->tableau) == 0;
+                },
+                "Some properties are not being updated : ",
+                5
+            );
         } catch (\Exception $e) {
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
