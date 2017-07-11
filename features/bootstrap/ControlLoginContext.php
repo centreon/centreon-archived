@@ -11,7 +11,7 @@ class ControlLoginContext extends CentreonContext
     protected $email = 'test@localhost.com';
     protected $password = 'userpassword';
     protected $page;
-    
+
     /**
      * @When an existing user able to connect to Centreon Web
      */
@@ -60,8 +60,8 @@ class ControlLoginContext extends CentreonContext
     public function iCannotAccessToCentreon()
     {
         $this->spin(
-            function($context) {
-                return $context->getSession()->getPage()->has('css','input[name="useralias"]');
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', 'input[name="useralias"]');
             },
             'Login failed (wrong alias/password)',
             10

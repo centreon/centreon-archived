@@ -28,6 +28,7 @@ class HostTemplateConfigurationContext extends CentreonContext
         ));
         $this->page->save();
     }
+
     /**
      * @Given an host template inheriting from an host template
      */

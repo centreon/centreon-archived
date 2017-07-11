@@ -21,8 +21,9 @@ class PaginationSelect2Context extends CentreonContext
         $fieldValue = $this->assertFind('css', 'input[name="selectPaginationSize"]');
         $originalValue = $fieldValue->getValue();
         $this->expectedValue = $originalValue + 25;
-        if ($this->expectedValue > 200)
+        if ($this->expectedValue > 200) {
             $this->expectedValue = 50;
+        }
         $fieldValue->setValue($this->expectedValue);
         $this->assertFind('css', 'input[name="submitC"]')->click();
 

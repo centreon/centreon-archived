@@ -10,7 +10,7 @@ class BrokerContext extends CentreonContext
     protected $page;
 
     /**
-     *  @Given a daemon broker configuration
+     * @Given a daemon broker configuration
      */
     public function aDaemonBrokerConfiguration()
     {
@@ -19,7 +19,7 @@ class BrokerContext extends CentreonContext
     }
 
     /**
-     *  @Given a configured passive service
+     * @Given a configured passive service
      */
     public function aConfiguredPassiveService()
     {
@@ -40,7 +40,7 @@ class BrokerContext extends CentreonContext
     }
 
     /**
-     *  @When I update broker configuration file name
+     * @When I update broker configuration file name
      */
     public function IUpdateBrokerConfigurationFileName()
     {
@@ -53,7 +53,7 @@ class BrokerContext extends CentreonContext
     }
 
     /**
-     *  @When I export configuration
+     * @When I export configuration
      */
     public function IExportConfiguration()
     {
@@ -61,7 +61,7 @@ class BrokerContext extends CentreonContext
     }
 
     /**
-     *  @Then the new configuration is applied
+     * @Then the new configuration is applied
      */
     public function theNewConfigurationIsApplied()
     {
@@ -72,7 +72,7 @@ class BrokerContext extends CentreonContext
     }
 
     /**
-     *  @Then the monitoring is still working
+     * @Then the monitoring is still working
      */
     public function theMonitoringIsStillWorking()
     {

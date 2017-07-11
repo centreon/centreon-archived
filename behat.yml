@@ -189,12 +189,22 @@ default:
       contexts:
       - LdapConfigurationContext
 
+    ldap_manual_import:
+      paths: [ %paths.base%/features/LdapManualImport.feature ]
+      contexts:
+      - LdapManualImportContext
+
     control_login:
       paths: [ %paths.base%/features/ControlLogin.feature ]
       contexts:
       - ControlLoginContext
-      
+
     acl_access_groups:
       paths: [ %paths.base%/features/AclAccessGroups.feature ]
       contexts:
       - AclAccessGroupsContext
+
+    acl_menus_access:
+      paths: [ %paths.base%/features/ACLMenusAccess.feature ]
+      contexts:
+      - ACLMenusAccessContext
