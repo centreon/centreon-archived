@@ -187,8 +187,10 @@ class KnowledgeBaseContext extends CentreonContext
         $fieldValue = $this->assertFind('css', 'input[name="ehi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
-        if (!strstr($originalValue,
-            './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$')
+        if (!strstr(
+            $originalValue,
+            './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$'
+        )
         ) {
             throw new Exception('Bad url');
         }
@@ -206,8 +208,11 @@ class KnowledgeBaseContext extends CentreonContext
         $fieldValue = $this->assertFind('css', 'input[name="esi_notes_url"]');
         $originalValue = $fieldValue->getValue();
 
-        if (!strstr($originalValue,
-            './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$&service_description=$SERVICEDESC$')
+        if (!strstr(
+            $originalValue,
+            './include/configuration/configKnowledge/proxy/proxy.php?' .
+            'host_name=$HOSTNAME$&service_description=$SERVICEDESC$'
+        )
         ) {
             throw new Exception('Bad url');
         }

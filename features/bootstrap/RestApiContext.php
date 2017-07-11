@@ -10,7 +10,7 @@ class RestApiContext extends CentreonContext
     private $retval;
 
     /**
-     *  @Given a Centreon server with REST API testing data
+     * @Given a Centreon server with REST API testing data
      */
     public function aCentreonServerWithRestApiTestingData()
     {
@@ -30,6 +30,13 @@ class RestApiContext extends CentreonContext
             }
         }
 
+        // Copy MIB.
+        $this->container->copyToContainer(
+            'tests/rest_api/IF-MIB.txt',
+            '/usr/share/centreon/IF-MIB.txt',
+            'web'
+        );
+
         // Synchronize images.
         $this->iAmLoggedIn();
         $page = new ImageListingPage($this);
@@ -37,7 +44,7 @@ class RestApiContext extends CentreonContext
     }
 
     /**
-     *  @When REST API are called
+     * @When REST API are called
      */
     public function restApiAreCalled()
     {
@@ -45,12 +52,14 @@ class RestApiContext extends CentreonContext
         $env = str_replace(
             '@IP_CENTREON@',
             $this->container->getHost() . ':' . $this->container->getPort('80', 'web'),
-            $env);
+            $env
+        );
         $this->envfile = tempnam('/tmp', 'rest_api_env');
         file_put_contents($this->envfile, $env);
         $this->logfile = tempnam('/tmp', 'rest_api_log');
         exec(
             'newman run' .
+            ' --no-color --disable-unicode --reporter-cli-no-assertions' .
             ' --environment ' . $this->envfile .
             ' tests/rest_api/rest_api.postman_collection.json' .
             ' > ' . $this->logfile,
@@ -62,7 +71,7 @@ class RestApiContext extends CentreonContext
     }
 
     /**
-     *  @Then they reply as per specifications
+     * @Then they reply as per specifications
      */
     public function theyReplyAsPerSpecifications()
     {

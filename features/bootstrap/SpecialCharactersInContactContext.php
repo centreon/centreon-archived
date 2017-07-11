@@ -10,11 +10,11 @@ class SpecialCharactersInContactContext extends CentreonContext
     protected $nonAdminName = 'nonAdminName';
     protected $nonAdminPassword = 'nonAdminPassword';
     protected $nonAdminAlias = 'nonAdminalias';
-    protected $nonAdminEmail= 'test@localhost.com';
+    protected $nonAdminEmail = 'test@localhost.com';
     protected $page;
     protected $accentedAndSpeacialCharsAlias = 'guést@';
-    
-   
+
+
     /**
      * @Given one non admin contact has been created
      */
@@ -30,12 +30,13 @@ class SpecialCharactersInContactContext extends CentreonContext
             'admin' => 0
         ));
         $this->page->save();
-         
+
     }
+
     /**
      * @When I have changed the contact alias
      */
-    public function iHaveChangedTheContactAlias()       
+    public function iHaveChangedTheContactAlias()
     {
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->nonAdminAlias);
@@ -50,7 +51,7 @@ class SpecialCharactersInContactContext extends CentreonContext
     public function theNewRecordIsDisplayedInTheUsersListWithTheNewAliasValue()
     {
         $this->page = new ContactConfigurationListingPage($this);
-        $this->page->getEntry($this->accentedAndSpeacialCharsAlias);  
+        $this->page->getEntry($this->accentedAndSpeacialCharsAlias);
     }
 
     /**
@@ -77,6 +78,6 @@ class SpecialCharactersInContactContext extends CentreonContext
     public function theContactIsLoggedToCentreonWeb()
     {
         $this->page = new LoginPage($this);
-        $this->page->login($this->accentedAndSpeacialCharsAlias,$this->nonAdminPassword);
+        $this->page->login($this->accentedAndSpeacialCharsAlias, $this->nonAdminPassword);
     }
 }

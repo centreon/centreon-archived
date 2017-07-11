@@ -42,13 +42,13 @@ include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 
-
 /*
  * Init GMT class
  */
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
+$host_acl_id = preg_split('/,/', str_replace(array("'", " "), array("", ""), $hostStr));
 
 $hObj = new CentreonHost($pearDB);
 $serviceObj = new CentreonService($pearDB);
@@ -355,9 +355,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             $hg = new CentreonHostgroups($pearDB);
             foreach ($_POST['hostgroup_id'] as $hg_id) {
                 $hostlist = $hg->getHostGroupHosts($hg_id);
-                $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
                 foreach ($hostlist as $host_id) {
-                    if ($centreon->user->access->admin || in_array($host_id, $host_acl_id)) {
+                    if ($centreon->user->access->admin || isset($host_acl_id[$host_id])) {
                         $ecObj->addHostDowntime(
                             $host_id,
                             $_POST["comment"],
@@ -421,10 +420,10 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
              * Set a downtime for poller
              */
             foreach ($_POST['poller_id'] as $poller_id) {
-                $host_id = preg_split('/,/', str_replace("'", "", $hostStr));
+                /* Get all host for a poller */
                 $DBRESULT = $pearDBO->query("SELECT host_id FROM hosts WHERE instance_id = $poller_id AND enabled = 1");
                 while ($row = $DBRESULT->fetchRow()) {
-                    if ($centreon->user->access->admin || isset($host_acl_id[$host_id])) {
+                    if ($centreon->user->access->admin || isset($host_acl_id[$row['host_id']])) {
                         $ecObj->addHostDowntime(
                             $row['host_id'],
                             $_POST["comment"],

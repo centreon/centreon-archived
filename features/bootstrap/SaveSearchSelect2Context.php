@@ -36,7 +36,8 @@ class SaveSearchSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
+                return count($context->getSession()->getPage()
+                        ->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
             }
         );
 
@@ -82,7 +83,8 @@ class SaveSearchSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 4;
+                return count($context->getSession()->getPage()
+                        ->findAll('css', '.select2-container--open li.select2-results__option')) == 4;
             }
         );
     }
