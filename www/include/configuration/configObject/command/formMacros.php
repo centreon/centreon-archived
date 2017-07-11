@@ -68,20 +68,20 @@ $nb_arg = 0;
 
 if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
     $str = $_GET['cmd_line'];
-    $iIdCmd = (int) $_GET['cmdId'];
-    
+    $iIdCmd = (int)$_GET['cmdId'];
+
     $oCommande = new CentreonCommand($pearDB);
-    
+
     $macrosHostDesc = $oCommande->matchObject($iIdCmd, $str, '1');
     $macrosServiceDesc = $oCommande->matchObject($iIdCmd, $str, '2');
-    
+
     $nb_arg = count($macrosHostDesc) + count($macrosServiceDesc);
-    
+
     $macros = array_merge($macrosServiceDesc, $macrosHostDesc);
 }
 
 /* FORM */
-$path = _CENTREON_PATH_."/www/include/configuration/configObject/command/";
+$path = _CENTREON_PATH_ . "/www/include/configuration/configObject/command/";
 
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "60");
@@ -95,29 +95,35 @@ $form->addElement('header', 'information', _("Macros"));
 
 
 $subS = $form->addElement(
-    'button', 'submitSaveAdd', _("Save"), array("onClick" => "setMacrosDescriptions();", "class" => "btc bt_success")
+    'button',
+    'submitSaveAdd',
+    _("Save"),
+    array("onClick" => "setMacrosDescriptions();", "class" => "btc bt_success")
 );
 $subS = $form->addElement(
-    'button', 'close', _("Close"), array("onClick" => "closeBox();", "class" => "btc bt_default")
+    'button',
+    'close',
+    _("Close"),
+    array("onClick" => "closeBox();", "class" => "btc bt_default")
 );
 
 /*
  *  Smarty template
  */
-define('SMARTY_DIR', _CENTREON_PATH_."/GPL_LIB/Smarty/libs/");
+define('SMARTY_DIR', _CENTREON_PATH_ . "/GPL_LIB/Smarty/libs/");
 require_once SMARTY_DIR . "Smarty.class.php";
 
 $tpl = new Smarty();
 $tpl->template_dir = $path;
-$tpl->compile_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/compile";
-$tpl->config_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/config";
-$tpl->cache_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/cache";
+$tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
+$tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
+$tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
 $tpl->caching = 0;
 $tpl->compile_check = true;
 $tpl->force_compile = true;
 
 $tpl->assign('nb_arg', $nb_arg);
- 
+
 $tpl->assign('macros', $macros);
 $tpl->assign('noArgMsg', _("Sorry, your command line does not contain any \$_SERVICE\$ macro or \$_HOST\$ macro."));
 

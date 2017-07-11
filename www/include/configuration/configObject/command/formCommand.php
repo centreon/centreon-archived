@@ -65,12 +65,12 @@ if (($o == "c" || $o == "w") && $command_id) {
     if (isset($lockedElements[$command_id])) {
         $o = "w";
     }
-    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . $command_id . "' LIMIT 1");
 
     # Set base value
     $cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 
-    $DBRESULT = $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");
+    $DBRESULT = $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '" . $command_id . "'");
     $strArgDesc = "";
     $nbRow = 0;
     while ($row = $DBRESULT->fetchRow()) {
@@ -86,17 +86,19 @@ $nbRowMacro = 0;
 
 if (count($aMacroDescription) > 0) {
     foreach ($aMacroDescription as $macro) {
-        $sStrMcro .= "MACRO (".$oCommande->aTypeMacro[$macro['type']] . ") ". $macro['name'] ." : ". $macro['description'] . "\n";
+        $sStrMcro .= "MACRO (" . $oCommande->aTypeMacro[$macro['type']] . ") " . $macro['name'] . " : " .
+            $macro['description'] . "\n";
         $nbRowMacro++;
     }
 } else {
     $macrosHostDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '1');
     $macrosServiceDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '2');
-   
+
     $aMacroDescription = array_merge($macrosServiceDesc, $macrosHostDesc);
 
     foreach ($aMacroDescription as $macro) {
-        $sStrMcro .= "MACRO (".$oCommande->aTypeMacro[$macro['type']] . ") ". $macro['name'] ." : ". $macro['description'] . "\n";
+        $sStrMcro .= "MACRO (" . $oCommande->aTypeMacro[$macro['type']] . ") " . $macro['name'] .
+            " : " . $macro['description'] . "\n";
         $nbRowMacro++;
     }
 }
@@ -105,11 +107,12 @@ if (count($aMacroDescription) > 0) {
  * Resource Macro
  */
 $resource = array();
-$DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
+$query = "SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`";
+$DBRESULT = $pearDB->query($query);
 while ($row = $DBRESULT->fetchRow()) {
     $resource[$row["resource_name"]] = $row["resource_name"];
     if (isset($row["resource_comment"]) && $row["resource_comment"] != "") {
-        $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
+        $resource[$row["resource_name"]] .= " (" . $row["resource_comment"] . ")";
     }
 }
 unset($row);
@@ -129,7 +132,7 @@ $DBRESULT->closeCursor();
 /*
  * Graphs Template comes from DB -> Store in $graphTpls Array
  */
-$graphTpls = array(null=>null);
+$graphTpls = array(null => null);
 $DBRESULT = $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
 while ($graphTpl = $DBRESULT->fetchRow()) {
     $graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
@@ -148,16 +151,16 @@ while ($row = $DBRESULT->fetchRow()) {
 unset($row);
 $DBRESULT->closeCursor();
 
-$attrsText      = array("size"=>"35");
-$attrsTextarea  = array("rows"=>"9", "cols"=>"80", "id"=>"command_line");
-$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
-$attrsTextarea3 = array("rows"=>"5", "cols"=>"50", "id"=>"command_comment");
-$attrsTextarea4 = array("rows"=>"$nbRowMacro", "cols"=>"100", "id"=>"listOfMacros");
+$attrsText = array("size" => "35");
+$attrsTextarea = array("rows" => "9", "cols" => "80", "id" => "command_line");
+$attrsTextarea2 = array("rows" => "$nbRow", "cols" => "100", "id" => "listOfArg");
+$attrsTextarea3 = array("rows" => "5", "cols" => "50", "id" => "command_comment");
+$attrsTextarea4 = array("rows" => "$nbRowMacro", "cols" => "100", "id" => "listOfMacros");
 
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p.'&type='.$type);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p . '&type=' . $type);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Command"));
 } elseif ($o == "c") {
@@ -178,7 +181,14 @@ if (isset($tabCommandType[$type])) {
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 
 foreach ($tabCommandType as $id => $name) {
-    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id, 'onChange=checkType(this.value);');
+    $cmdType[] = HTML_QuickForm::createElement(
+        'radio',
+        'command_type',
+        null,
+        $name,
+        $id,
+        'onChange=checkType(this.value);'
+    );
 }
 
 $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
@@ -203,10 +213,10 @@ $form->addElement('checkbox', 'enable_shell', _("Enable shell"), null, $attrsTex
 
 $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2)->setAttribute("readonly");
 $form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
-$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
-$form->addElement('button', 'clear_arg', _("Clear arguments"), array("onClick"=>"clearArgs();"));
+$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick" => "goPopup();"));
+$form->addElement('button', 'clear_arg', _("Clear arguments"), array("onClick" => "clearArgs();"));
 $form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
-$form->addElement('button', 'desc_macro', _("Describe macros"), array("onClick"=>"manageMacros();"));
+$form->addElement('button', 'desc_macro', _("Describe macros"), array("onClick" => "manageMacros();"));
 $form->addElement('textarea', 'listOfMacros', _("Macros Descriptions"), $attrsTextarea4)->setAttribute("readonly");
 
 $cmdActivation[] = HTML_QuickForm::createElement('radio', 'command_activate', null, _("Enabled"), '1');
@@ -241,7 +251,7 @@ $form->addRule('command_name', _("Compulsory Name"), 'required');
 $form->addRule('command_line', _("Compulsory Command Line"), 'required');
 $form->registerRule('exist', 'callback', 'testCmdExistence');
 $form->addRule('command_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -249,12 +259,17 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", ' .
+    'BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ' .
+    '["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-        $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -263,7 +278,15 @@ $tpl->assign("helptext", $helptext);
  */
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2 && !isset($lockedElements[$command_id])) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array(
+                "onClick" => "javascript:window.location.href='?p=" . $p .
+                    "&o=c&command_id=" . $command_id . "&type=" . $type . "'"
+            )
+        );
     }
     $form->setDefaults($cmd);
     $form->freeze();
@@ -282,7 +305,7 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-$tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));
+$tpl->assign('msg', array("comment" => _("Commands definitions can contain Macros but they have to be valid.")));
 $tpl->assign('cmd_help', _("Plugin Help"));
 $tpl->assign('cmd_play', _("Test the plugin"));
 
@@ -294,57 +317,61 @@ if ($form->validate()) {
     } elseif ($form->getSubmitValue("submitC")) {
         updateCommandInDB($cmdObj->getValue());
     }
-    
+
     $o = null;
     $cmdObj = $form->getElement('command_id');
     $valid = true;
 }
 
-?><script type='text/javascript'>
+?>
+    <script type='text/javascript'>
 
-function insertValueQuery(elem) {
-    var myQuery = document.Form.command_line;
-        if(elem == 1)   {
+        function insertValueQuery(elem) {
+            var myQuery = document.Form.command_line;
+            if (elem == 1) {
                 var myListBox = document.Form.resource;
-        } else if (elem == 2)   {
+            } else if (elem == 2) {
                 var myListBox = document.Form.plugins;
-        } else if (elem == 3)   {
+            } else if (elem == 3) {
                 var myListBox = document.Form.macros;
-        }
-    if (myListBox.options.length > 0) {
-        var chaineAj = '';
-        var NbSelect = 0;
-        for(var i=0; i<myListBox.options.length; i++) {
-            if (myListBox.options[i].selected){
-                NbSelect++;
-                if (NbSelect > 1)
-                    chaineAj += ', ';
-                chaineAj += myListBox.options[i].value;
+            }
+            if (myListBox.options.length > 0) {
+                var chaineAj = '';
+                var NbSelect = 0;
+                for (var i = 0; i < myListBox.options.length; i++) {
+                    if (myListBox.options[i].selected) {
+                        NbSelect++;
+                        if (NbSelect > 1)
+                            chaineAj += ', ';
+                        chaineAj += myListBox.options[i].value;
+                    }
+                }
+
+                if (document.selection) {
+                    // IE support
+                    myQuery.focus();
+                    sel = document.selection.createRange();
+                    sel.text = chaineAj;
+                    document.Form.insert.focus();
+                } else if (document.Form.command_line.selectionStart ||
+                    document.Form.command_line.selectionStart == '0') {
+                    // MOZILLA/NETSCAPE support
+                    var startPos = document.Form.command_line.selectionStart;
+                    var endPos = document.Form.command_line.selectionEnd;
+                    var chaineSql = document.Form.command_line.value;
+                    myQuery.value =
+                        chaineSql.substring(0, startPos) + chaineAj + chaineSql.substring(endPos, chaineSql.length);
+                } else {
+                    myQuery.value += chaineAj;
+                }
             }
         }
 
-        if (document.selection) {
-                // IE support
-            myQuery.focus();
-            sel = document.selection.createRange();
-            sel.text = chaineAj;
-            document.Form.insert.focus();
-        } else if (document.Form.command_line.selectionStart || document.Form.command_line.selectionStart == '0') {
-                // MOZILLA/NETSCAPE support
-            var startPos = document.Form.command_line.selectionStart;
-            var endPos = document.Form.command_line.selectionEnd;
-            var chaineSql = document.Form.command_line.value;
-            myQuery.value = chaineSql.substring(0, startPos) + chaineAj + chaineSql.substring(endPos, chaineSql.length);
-        } else {
-            myQuery.value += chaineAj;
-        }
-    }
-}
-
-</script><?php
+    </script>
+<?php
 
 if ($valid) {
-    require_once($path."listCommand.php");
+    require_once($path . "listCommand.php");
 } else {
     /*
      * Apply a template definition

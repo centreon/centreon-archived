@@ -74,12 +74,12 @@ if (isset($_GET['textArea']) && $_GET['textArea']) {
 
 /* FORM */
 
-$path = _CENTREON_PATH_."/www/include/configuration/configObject/command/";
+$path = _CENTREON_PATH_ . "/www/include/configuration/configObject/command/";
 
-$attrsText      = array("size"=>"30");
-$attrsText2     = array("size"=>"60");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "60");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$attrsTextarea = array("rows" => "5", "cols" => "40");
 
 /*Basic info */
 $form = new HTML_QuickForm('Form', 'post');
@@ -87,23 +87,35 @@ $form->addElement('header', 'title', _("Argument Descriptions"));
 $form->addElement('header', 'information', _("Arguments"));
 
 $subS = $form->addElement(
-    'button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();", "class" => "btc bt_success")
+    'button',
+    'submitSaveAdd',
+    _("Save"),
+    array(
+        "onClick" => "setDescriptions();",
+        "class" => "btc bt_success"
+    )
 );
 $subS = $form->addElement(
-    'button', 'close', _("Close"), array("onClick"=>"closeBox();", "class" => "btc bt_default")
+    'button',
+    'close',
+    _("Close"),
+    array(
+        "onClick" => "closeBox();",
+        "class" => "btc bt_default"
+    )
 );
 
 /*
  *  Smarty template
  */
-define('SMARTY_DIR', _CENTREON_PATH_."/GPL_LIB/Smarty/libs/");
-require_once SMARTY_DIR."Smarty.class.php";
+define('SMARTY_DIR', _CENTREON_PATH_ . "/GPL_LIB/Smarty/libs/");
+require_once SMARTY_DIR . "Smarty.class.php";
 
 $tpl = new Smarty();
 $tpl->template_dir = $path;
-$tpl->compile_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/compile";
-$tpl->config_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/config";
-$tpl->cache_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/cache";
+$tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
+$tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
+$tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
 $tpl->caching = 0;
 $tpl->compile_check = true;
 $tpl->force_compile = true;

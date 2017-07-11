@@ -57,7 +57,7 @@ if ($command_id != null) {
     /*
      * Get command informations
      */
-    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . $command_id . "' LIMIT 1");
     $cmd = $DBRESULT->fetchRow();
 
     $cmd_array = explode(" ", $cmd["command_line"]);
@@ -73,14 +73,16 @@ if ($command_id != null) {
         /*
          * Select Resource line
          */
-        $DBRESULT = $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER".$matches[1]."\$' LIMIT 1");
+        $query = "SELECT `resource_line` FROM `cfg_resource` " .
+            "WHERE `resource_name` = '\$USER" . $matches[1] . "\$' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
 
         $resource = $DBRESULT->fetchRow();
         unset($DBRESULT);
 
         $resource_path = $resource["resource_line"];
         unset($cmd_array[0]);
-        $command = rtrim($resource_path, "/")."#S#".implode("#S#", $cmd_array);
+        $command = rtrim($resource_path, "/") . "#S#" . implode("#S#", $cmd_array);
     } else {
         $command = $full_line;
     }
@@ -94,7 +96,11 @@ $command = str_replace("#BS#", "\\", $command);
 if (strncmp($command, "/usr/lib/nagios/", strlen("/usr/lib/nagios/"))) {
     if (is_dir("/usr/lib64/nagios/")) {
         $command = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $command);
-        $oreon->optGen["nagios_path_plugins"] = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $oreon->optGen["nagios_path_plugins"]);
+        $oreon->optGen["nagios_path_plugins"] = str_replace(
+            "/usr/lib/nagios/plugins/",
+            "/usr/lib64/nagios/plugins/",
+            $oreon->optGen["nagios_path_plugins"]
+        );
     }
 }
 
@@ -104,12 +110,12 @@ if (strncmp(realpath($tab[0]), $oreon->optGen["nagios_path_plugins"], strlen($or
     $command = realpath($tab[0]);
 } else {
     $command = realpath($tab[0]);
-    $stdout = shell_exec(realpath($tab[0])." --help");
+    $stdout = shell_exec(realpath($tab[0]) . " --help");
     $msg = str_replace("\n", "<br />", $stdout);
 }
 
-$attrsText  = array("size" => "25");
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$attrsText = array("size" => "25");
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Plugin Help"));
 
 /*
@@ -132,7 +138,7 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign('command_line', $command." --help");
+$tpl->assign('command_line', $command . " --help");
 if (isset($msg) && $msg) {
     $tpl->assign('msg', $msg);
 }
