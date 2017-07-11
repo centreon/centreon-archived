@@ -48,12 +48,12 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('esc_id');
     }
-    $DBRESULT = $pearDB->query("SELECT esc_name, esc_id FROM escalation WHERE esc_name = '".$name."'");
+    $DBRESULT = $pearDB->query("SELECT esc_name, esc_id FROM escalation WHERE esc_name = '" . $name . "'");
     $esc = $DBRESULT->fetchRow();
     #Modif case
     if ($DBRESULT->rowCount() >= 1 && $esc["esc_id"] == $id) {
         return true;
-    #Duplicate entry
+        #Duplicate entry
     } elseif ($DBRESULT->rowCount() >= 1 && $esc["esc_id"] != $id) {
         return false;
     } else {
@@ -66,10 +66,10 @@ function deleteEscalationInDB($escalations = array())
     global $pearDB, $centreon;
 
     foreach ($escalations as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT esc_name FROM `escalation` WHERE `esc_id` = '".$key."' LIMIT 1");
+        $DBRESULT2 = $pearDB->query("SELECT esc_name FROM `escalation` WHERE `esc_id` = '" . $key . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
 
-        $DBRESULT = $pearDB->query("DELETE FROM escalation WHERE esc_id = '".$key."'");
+        $DBRESULT = $pearDB->query("DELETE FROM escalation WHERE esc_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("escalation", $key, $row['esc_name'], "d");
     }
 }
@@ -78,7 +78,7 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
 {
     foreach ($escalations as $key => $value) {
         global $pearDB, $centreon;
-        $DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$key."' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["esc_id"] = '';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
@@ -95,7 +95,7 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                 }
             }
             if (isset($esc_name) && testExistence($esc_name)) {
-                $val ? $rq = "INSERT INTO escalation VALUES (".$val.")" : $rq = null;
+                $val ? $rq = "INSERT INTO escalation VALUES (" . $val . ")" : $rq = null;
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(esc_id) FROM escalation");
                 $maxId = $DBRESULT->fetchRow();
@@ -109,8 +109,8 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                     while ($cg = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query(
                             "INSERT INTO escalation_contactgroup_relation "
-                            . "VALUES ('', '" . $maxId["MAX(esc_id)"]."', '"
-                            . $cg["contactgroup_cg_id"]."')"
+                            . "VALUES ('', '" . $maxId["MAX(esc_id)"] . "', '"
+                            . $cg["contactgroup_cg_id"] . "')"
                         );
                         $fields["esc_cgs"] .= $cg["contactgroup_cg_id"] . ",";
                     }
@@ -118,14 +118,14 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query(
                         "SELECT DISTINCT host_host_id "
                         . "FROM escalation_host_relation "
-                        . "WHERE escalation_esc_id = '".$key."'"
+                        . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_hosts"] = "";
                     while ($host = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query(
                             "INSERT INTO escalation_host_relation "
-                            . "VALUES ('', '" . $maxId["MAX(esc_id)"]."', '"
-                            . $host["host_host_id"]."')"
+                            . "VALUES ('', '" . $maxId["MAX(esc_id)"] . "', '"
+                            . $host["host_host_id"] . "')"
                         );
                         $fields["esc_hosts"] .= $host["host_host_id"] . ",";
                     }
@@ -133,14 +133,14 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query(
                         "SELECT DISTINCT hostgroup_hg_id "
                         . "FROM escalation_hostgroup_relation "
-                        . "WHERE escalation_esc_id = '".$key."'"
+                        . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_hgs"] = "";
                     while ($hg = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query(
                             "INSERT INTO escalation_hostgroup_relation "
-                            . "VALUES ('', '" . $maxId["MAX(esc_id)"]."', '"
-                            . $hg["hostgroup_hg_id"]."')"
+                            . "VALUES ('', '" . $maxId["MAX(esc_id)"] . "', '"
+                            . $hg["hostgroup_hg_id"] . "')"
                         );
                         $fields["esc_hgs"] .= $hg["hostgroup_hg_id"] . ",";
                     }
@@ -170,7 +170,7 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                             "INSERT INTO escalation_service_relation "
                             . "VALUES ('', '" . $maxId["MAX(esc_id)"] . "', '"
                             . $sv["service_service_id"] . "', '"
-                            . $sv["host_host_id"]."')"
+                            . $sv["host_host_id"] . "')"
                         );
                         $fields["esc_hServices"] .= $sv["service_service_id"] . ",";
                     }
@@ -187,7 +187,7 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                             . "VALUES ('', '" . $maxId["MAX(esc_id)"] . "', '"
                             . $sv["meta_service_meta_id"] . "')"
                         );
-                        $fields["esc_metas"] .= $sv["meta_service_meta_id"]  . ",";
+                        $fields["esc_metas"] .= $sv["meta_service_meta_id"] . ",";
                     }
                     $fields["esc_metas"] = trim($fields["esc_metas"], ",");
                     $centreon->CentreonLogAction->insertLog(
@@ -377,7 +377,7 @@ function updateEscalation($esc_id = null)
     isset($ret["esc_comment"]) && $ret["esc_comment"] != null
         ? $rq .= "'" . htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8") . "' "
         : $rq .= "NULL ";
-    $rq .= "WHERE esc_id = '".$esc_id."'";
+    $rq .= "WHERE esc_id = '" . $esc_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8");
     $fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES, "UTF-8");
@@ -433,7 +433,7 @@ function updateEscalationContactGroups($esc_id = null)
     global $form;
     global $pearDB;
     $rq = "DELETE FROM escalation_contactgroup_relation ";
-    $rq .= "WHERE escalation_esc_id = '".$esc_id."'";
+    $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_cgs');
@@ -450,7 +450,7 @@ function updateEscalationContactGroups($esc_id = null)
         $rq = "INSERT INTO escalation_contactgroup_relation ";
         $rq .= "(escalation_esc_id, contactgroup_cg_id) ";
         $rq .= "VALUES ";
-        $rq .= "('".$esc_id."', '".$ret[$i]."')";
+        $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
         $DBRESULT = $pearDB->query($rq);
     }
 }
@@ -463,7 +463,7 @@ function updateEscalationHosts($esc_id = null)
     global $form;
     global $pearDB;
     $rq = "DELETE FROM escalation_host_relation ";
-    $rq .= "WHERE escalation_esc_id = '".$esc_id."'";
+    $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hosts');
@@ -471,7 +471,7 @@ function updateEscalationHosts($esc_id = null)
         $rq = "INSERT INTO escalation_host_relation ";
         $rq .= "(escalation_esc_id, host_host_id) ";
         $rq .= "VALUES ";
-        $rq .= "('".$esc_id."', '".$ret[$i]."')";
+        $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
         $DBRESULT = $pearDB->query($rq);
     }
 }
@@ -484,7 +484,7 @@ function updateEscalationHostGroups($esc_id = null)
     global $form;
     global $pearDB;
     $rq = "DELETE FROM escalation_hostgroup_relation ";
-    $rq .= "WHERE escalation_esc_id = '".$esc_id."'";
+    $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hgs');
@@ -492,7 +492,7 @@ function updateEscalationHostGroups($esc_id = null)
         $rq = "INSERT INTO escalation_hostgroup_relation ";
         $rq .= "(escalation_esc_id, hostgroup_hg_id) ";
         $rq .= "VALUES ";
-        $rq .= "('".$esc_id."', '".$ret[$i]."')";
+        $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
         $DBRESULT = $pearDB->query($rq);
     }
 }
@@ -505,7 +505,7 @@ function updateEscalationServiceGroups($esc_id = null)
     global $form;
     global $pearDB;
     $rq = "DELETE FROM escalation_servicegroup_relation ";
-    $rq .= "WHERE escalation_esc_id = '".$esc_id."'";
+    $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_sgs');
@@ -513,7 +513,7 @@ function updateEscalationServiceGroups($esc_id = null)
         $rq = "INSERT INTO escalation_servicegroup_relation ";
         $rq .= "(escalation_esc_id, servicegroup_sg_id) ";
         $rq .= "VALUES ";
-        $rq .= "('".$esc_id."', '".$ret[$i]."')";
+        $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
         $DBRESULT = $pearDB->query($rq);
     }
 }
@@ -526,7 +526,7 @@ function updateEscalationServices($esc_id = null)
     global $form;
     global $pearDB;
     $rq = "DELETE FROM escalation_service_relation ";
-    $rq .= "WHERE escalation_esc_id = '".$esc_id."'";
+    $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hServices');
@@ -536,7 +536,7 @@ function updateEscalationServices($esc_id = null)
             $rq = "INSERT INTO escalation_service_relation ";
             $rq .= "(escalation_esc_id, service_service_id, host_host_id) ";
             $rq .= "VALUES ";
-            $rq .= "('".$esc_id."', '".$exp[1]."', '".$exp[0]."')";
+            $rq .= "('" . $esc_id . "', '" . $exp[1] . "', '" . $exp[0] . "')";
             $DBRESULT = $pearDB->query($rq);
         }
     }
@@ -550,7 +550,7 @@ function updateEscalationMetaServices($esc_id = null)
     global $form;
     global $pearDB;
     $rq = "DELETE FROM escalation_meta_service_relation ";
-    $rq .= "WHERE escalation_esc_id = '".$esc_id."'";
+    $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
     $DBRESULT = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_metas');
@@ -558,7 +558,7 @@ function updateEscalationMetaServices($esc_id = null)
         $rq = "INSERT INTO escalation_meta_service_relation ";
         $rq .= "(escalation_esc_id, meta_service_meta_id) ";
         $rq .= "VALUES ";
-        $rq .= "('".$esc_id."', '".$ret[$i]."')";
+        $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
         $DBRESULT = $pearDB->query($rq);
     }
 }
