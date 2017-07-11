@@ -24,7 +24,7 @@ class ContactConfigurationContext extends CentreonContext
         'admin' => 1,
         'dn' => 'modifiedDn',
         'host_notification_period' => 'workhours',
-        'service_notification_period' => 'nonworkhours' 
+        'service_notification_period' => 'nonworkhours'
     ));
     /**
      * @Given a contact is configured
@@ -35,6 +35,7 @@ class ContactConfigurationContext extends CentreonContext
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
     }
+
     /**
      * @When I update contact properties
      */
@@ -47,7 +48,7 @@ class ContactConfigurationContext extends CentreonContext
     }
     /**
      * @Then the contact properties are updated
-     */ 
+     */
     public function theContactPropertiesAreUpdated()
     {
 	    $this->currentPage = new ContactConfigurationListingPage($this);
