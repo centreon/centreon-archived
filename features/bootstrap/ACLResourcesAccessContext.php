@@ -197,11 +197,11 @@ class ACLResourcesAccessContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new ACLResourceConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->initialProperties['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    foreach($this->initialProperties as $key => $value) {
+                    foreach ($this->initialProperties as $key => $value) {
                         if ($key != 'acl_groups' && $value != $object[$key]) {
                             if ($value != $object[$key][0]) {
                                 $this->tableau[] = $key;
@@ -209,7 +209,8 @@ class ACLResourcesAccessContext extends CentreonContext
                         }
                         if ($key == 'acl_groups') {
                             if (count($object[$key]) != 0 && $object[$key][0] != $this->aclGroup1['group_name']
-                                && $object[$key][1] != $this->aclGroup2['group_name']) {
+                                && $object[$key][1] != $this->aclGroup2['group_name']
+                            ) {
                                 $this->tableau[] = $key;
                             }
                         }
@@ -219,8 +220,7 @@ class ACLResourcesAccessContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -234,7 +234,7 @@ class ACLResourcesAccessContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
@@ -258,8 +258,7 @@ class ACLResourcesAccessContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -299,11 +298,13 @@ class ACLResourcesAccessContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new ACLResourceConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->linkedAclResource['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['acl_groups']) != 1 || $object['acl_groups'][0] != $this->aclGroup1['group_name']) {
+                    if (count($object['acl_groups']) != 1 ||
+                        $object['acl_groups'][0] != $this->aclGroup1['group_name']
+                    ) {
                         $this->tableau[] = $this->linkedAclResource['acl_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
@@ -329,8 +330,7 @@ class ACLResourcesAccessContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -387,11 +387,11 @@ class ACLResourcesAccessContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new ACLResourceConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->duplicatedProperties['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    foreach($this->duplicatedProperties as $key => $value) {
+                    foreach ($this->duplicatedProperties as $key => $value) {
                         if ($key != 'acl_groups' && $value != $object[$key]) {
                             if ($value != $object[$key][0]) {
                                 $this->tableau[] = $key;
@@ -399,7 +399,8 @@ class ACLResourcesAccessContext extends CentreonContext
                         }
                         if ($key == 'acl_groups') {
                             if (count($object[$key]) != 0 && $object[$key][0] != $this->aclGroup1['group_name']
-                                && $object[$key][1] != $this->aclGroup2['group_name']) {
+                                && $object[$key][1] != $this->aclGroup2['group_name']
+                            ) {
                                 $this->tableau[] = $key;
                             }
                         }
@@ -409,7 +410,8 @@ class ACLResourcesAccessContext extends CentreonContext
                     $object = $this->currentPage->getProperties();
                     if (count($object['resources']) == 2
                         && $object['resources'][0] != $this->initialProperties['acl_name']
-                        && $object['resources'][1] != $this->duplicatedProperties['acl_name']) {
+                        && $object['resources'][1] != $this->duplicatedProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->aclGroup1['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
@@ -417,7 +419,8 @@ class ACLResourcesAccessContext extends CentreonContext
                     $object = $this->currentPage->getProperties();
                     if (count($object['resources']) == 2
                         && $object['resources'][0] != $this->initialProperties['acl_name']
-                        && $object['resources'][1] != $this->duplicatedProperties['acl_name']) {
+                        && $object['resources'][1] != $this->duplicatedProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
@@ -431,8 +434,7 @@ class ACLResourcesAccessContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -487,11 +489,11 @@ class ACLResourcesAccessContext extends CentreonContext
         $this->tableau = array();
         try {
             $this->spin(
-                function($context) {
+                function ($context) {
                     $this->currentPage = new ACLResourceConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedProperties['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    foreach($this->updatedProperties as $key => $value) {
+                    foreach ($this->updatedProperties as $key => $value) {
                         if ($key != 'acl_groups' && $value != $object[$key]) {
                             if ($value != $object[$key][0]) {
                                 $this->tableau[] = $key;
@@ -499,7 +501,8 @@ class ACLResourcesAccessContext extends CentreonContext
                         }
                         if ($key == 'acl_groups') {
                             if (count($object[$key]) != 0 && $object[$key][0] != $this->aclGroup2['group_name']
-                                && $object[$key][1] != $this->aclGroup3['group_name']) {
+                                && $object[$key][1] != $this->aclGroup3['group_name']
+                            ) {
                                 $this->tableau[] = $key;
                             }
                         }
@@ -515,14 +518,16 @@ class ACLResourcesAccessContext extends CentreonContext
                     $object = $this->currentPage->getProperties();
                     if (count($object['resources']) == 2
                         && $object['resources'][0] != $this->initialProperties['acl_name']
-                        && $object['resources'][1] != $this->updatedProperties['acl_name']) {
+                        && $object['resources'][1] != $this->updatedProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) != 1 
-                        && $object['resources'][0] != $this->initialProperties['acl_name']) {
+                    if (count($object['resources']) != 1
+                        && $object['resources'][0] != $this->initialProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->aclGroup1['group_name'];
                     }
                     return count($this->tableau) == 0;
@@ -530,8 +535,7 @@ class ACLResourcesAccessContext extends CentreonContext
                 "Some properties are not being updated : ",
                 5
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -555,11 +559,11 @@ class ACLResourcesAccessContext extends CentreonContext
     public function theResourcesAccessRecordIsNotVisibleAnymoreInResourcesAccessPage()
     {
         $this->spin(
-            function($context){
+            function ($context) {
                 $this->currentPage = new ACLResourceConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
-                foreach ($object as $value){
+                foreach ($object as $value) {
                     $bool = $bool && $value['name'] != $this->initialProperties['acl_name'];
                 }
                 return $bool;
