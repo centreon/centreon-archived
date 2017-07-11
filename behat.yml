@@ -193,12 +193,12 @@ default:
       paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
       contexts:
       - ContactGroupCreationDuplicationContext
-      
+
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
       - LdapConfigurationContext
-      
+
     ldap_manual_import:
       paths: [ %paths.base%/features/LdapManualImport.feature ]
       contexts:
@@ -213,3 +213,8 @@ default:
       paths: [ %paths.base%/features/ACLMenusAccess.feature ]
       contexts:
       - ACLMenusAccessContext
+
+    non_admin_contact_creation:
+      paths: [ %paths.base%/features/NonAdminContactCreation.feature ]
+      contexts:
+      - NonAdminContactCreationContext
