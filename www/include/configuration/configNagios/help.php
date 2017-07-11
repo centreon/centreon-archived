@@ -34,6 +34,11 @@
  */
 
 $help = array();
+$help["use_timezone"] = dgettext(
+    "help",
+    "Define the poller timezone. If not set, default Centreon timezone is used (parameters). " .
+    "This timezone is used for hosts which have not configured timezone."
+);
 $help["status_file"] = dgettext(
     "help",
     "This is the file that Monitoring Engine uses to store the current status, "

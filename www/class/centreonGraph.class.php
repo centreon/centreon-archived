@@ -1185,7 +1185,7 @@ class CentreonGraph
             if (!mb_detect_encoding($hname, 'UTF-8', true)) {
                 $hname = utf8_encode($hname);
             }
-            $this->setRRDOption("title", $sdesc . " " . _("graph on") . " " . $hname.$metrictitle);
+            $this->setRRDOption("title",  _("Graph") . " " . $hname . '/' . $sdesc . $metrictitle);
         } else {
             $this->setRRDOption("title", _("Graph")." ".$this->indexData["service_description"].$metrictitle);
         }
