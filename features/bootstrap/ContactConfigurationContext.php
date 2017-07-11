@@ -1,5 +1,4 @@
 <?php
-
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
@@ -8,8 +7,7 @@ use Centreon\Test\Behat\External\ListingPage;
 class ContactConfigurationContext extends CentreonContext
 {
     private $currentPage;
-
-    private $initialProperties = array(
+    private $initialProperties = (array(
         'name' => 'contactName',
         'alias' => 'contactAlias',
         'email' => 'contact@localhost',
@@ -19,8 +17,8 @@ class ContactConfigurationContext extends CentreonContext
         'dn' => 'contactDN',
         'host_notification_period' => 'workhours',
         'service_notification_period' => 'nonworkhours'
-    );
-    private $updatedProperties = array(
+    ));
+    private $updatedProperties = (array(
         'name' => 'modifiedName',
         'alias' => 'modifiedAlias',
         'email' => 'modified@localhost',
@@ -28,10 +26,10 @@ class ContactConfigurationContext extends CentreonContext
         'dn' => 'modifiedDn',
         'host_notification_period' => 'workhours',
         'service_notification_period' => 'nonworkhours'
-    );
+    ));
 
     /**
-     * @Given a contact
+     * @Given a contact is configured
      */
     public function aContactIsConfigured()
     {
@@ -62,9 +60,7 @@ class ContactConfigurationContext extends CentreonContext
         $tableau = array();
         foreach ($this->updatedProperties as $key => $value) {
             if ($value != $object[$key]) {
-                $tableau[] =
-                    $key . ' (got ' . $object[$key] .
-                    ', expected ' . $value . ')';
+                $tableau[] = $key;
             }
         }
         if (count($tableau) > 0) {
