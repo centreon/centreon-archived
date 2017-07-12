@@ -224,6 +224,11 @@ default:
       contexts:
       - ACLMenusAccessContext
 
+    acl_resources_access:
+      paths: [ %paths.base%/features/ACLResourcesAccess.feature ]
+      contexts:
+      - ACLResourcesAccessContext
+
     non_admin_contact_creation:
       paths: [ %paths.base%/features/NonAdminContactCreation.feature ]
       contexts:
