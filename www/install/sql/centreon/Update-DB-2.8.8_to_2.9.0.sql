@@ -3,16 +3,15 @@ UPDATE `informations` SET `value` = '2.9.0' WHERE CONVERT( `informations`.`key` 
 
 ALTER TABLE `cfg_nagios` DROP COLUMN `log_initial_states`;
 
+-- Delete duplicate entries in custom_view_user_relation
 ALTER TABLE `custom_view_user_relation` 
     DROP FOREIGN KEY `fk_custom_views_usergroup_id`,
     DROP FOREIGN KEY `fk_custom_views_user_id`,
     DROP FOREIGN KEY `fk_custom_view_user_id`,
     DROP INDEX `view_user_unique_index`;
-
 ALTER IGNORE TABLE `custom_view_user_relation` 
     ADD UNIQUE INDEX `view_user_unique_index` (`custom_view_id`, `user_id`),
     ADD UNIQUE INDEX `view_usergroup_unique_index` (`custom_view_id`, `usergroup_id`);
-
 ALTER TABLE `custom_view_user_relation` 
     ADD CONSTRAINT `fk_custom_views_usergroup_id`
         FOREIGN KEY (`usergroup_id`)
