@@ -109,11 +109,11 @@ class CentreonMonitoring
             $DBRESULT = $objXMLBG->DBC->query($rq);
 
             $cpt = 0;
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
             $cpt = $row['count'];
         }
-            $DBRESULT->free();
+            $DBRESULT->closeCursor();
 
             return $cpt;
     }
@@ -177,7 +177,7 @@ class CentreonMonitoring
             }
             $tab[$svc["name"]][$svc["service_name"]] = $svc["state"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         return $tab;
     }

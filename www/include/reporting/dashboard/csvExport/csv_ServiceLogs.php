@@ -57,7 +57,7 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
     $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
     $res = $pearDB->query($query);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         get_error('bad session id');
     }
 } else {
@@ -148,4 +148,4 @@ while ($row = $DBRESULT->fetchRow()) {
         . $row["CRITICALTimeScheduled"]."s;".$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";"
         . date("Y-m-d H:i:s", $row["date_start"]).";\n";
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();

@@ -83,7 +83,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         $stmt = $this->pearDB->prepare($queryCommand);
         $stmt->bindParam(':commandName', $queryValues["commandName"], PDO::PARAM_STR);
-        if(isset($queryValues['commandType'])){
+        if (isset($queryValues['commandType'])) {
             $stmt->bindParam(':commandType', $queryValues["commandType"], PDO::PARAM_INT);
         }
         if (isset($queryValues["offset"])) {

@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params.class.php";
+require_once __DIR__ . "/../Params.class.php";
 
 class CentreonWidgetParamsBoolean extends CentreonWidgetParams
 {
@@ -46,9 +46,11 @@ class CentreonWidgetParamsBoolean extends CentreonWidgetParams
     {
         parent::init($params);
         if (isset($this->quickform)) {
-            $this->element = $this->quickform->addElement('checkbox',
-            											  'param_'.$params['parameter_id'],
-                                                          $params['parameter_name']);
+            $this->element = $this->quickform->addElement(
+                'checkbox',
+                'param_' . $params['parameter_id'],
+                $params['parameter_name']
+            );
         }
     }
 

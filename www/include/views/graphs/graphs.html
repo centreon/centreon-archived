@@ -1,5 +1,3 @@
-<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
-<link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
 <link href="./include/common/javascript/jquery/tourbus/jquery-tourbus.min.css" type="text/css" rel="stylesheet">
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <div id="div1" style="position:relative;">
@@ -193,13 +191,6 @@
 <script src="./include/common/javascript/moment-with-locales.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 <script src="./include/common/javascript/handlebars-v4.0.5.js"></script>
-<script src="./include/common/javascript/numeral.min.js"></script>
-<script src="./include/common/javascript/charts/d3.min.js"></script>
-<script src="./include/common/javascript/charts/c3.min.js"></script>
-<script src="./include/common/javascript/charts/d3-timeline.js"></script>
-<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
-<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
-<script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
 <script src="./include/common/javascript/jquery/tourbus/jquery-tourbus.min.js"></script>
 <script src="./include/common/javascript/jquery/jquery.cookie.js"></script>
@@ -216,12 +207,18 @@ var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}
   <div class="title">
     <img class="remove ico-18 margin_right" src="./img/icons/circle-cross.png">
     <span>{{graphTitle}}</span>
+    {/literal}
+    {if $topologyAccess.2040101 || $admin == 1}
     <a href="#" class="btc bt_info actions-simple" data-href="./main.php?p=2040101">
-      Split chart
+      {t}Split chart{/t}
     </a>
+    {/if}
+    {if $topologyAccess.2040102 || $admin == 1}
     <a href="#" class="btc bt_info actions-simple" data-href="./main.php?p=2040102">
-      Display multiple periods
+      {t}Display multiple periods{/t}
     </a>
+    {/if}
+    {literal}
     <a class="actions" href="#" data-href="./include/views/graphs/generateGraphs/generateImage.php">
       <img alt="Export graph" src="./img/icons/picture.png" class="ico-18 margin_right">
     </a>

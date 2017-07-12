@@ -55,7 +55,7 @@ $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_ho
 while ($ehi = $DBRESULT->fetchRow()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $search = '';
 if (isset($_POST['searchHT'])) {

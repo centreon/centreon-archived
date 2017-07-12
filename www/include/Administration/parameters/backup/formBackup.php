@@ -55,7 +55,7 @@ while ($opt = $DBRESULT->fetchRow()) {
         $gopt[$opt["key"]] = myDecode($opt["value"]);
     }
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $attrsText = array("size" => "40");
 $attrsText2 = array("size" => "3");

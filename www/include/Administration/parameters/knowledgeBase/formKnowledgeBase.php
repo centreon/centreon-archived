@@ -41,7 +41,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_%
 while ($opt = $DBRESULT->fetchRow()) {
     $gopt[$opt["key"]] = myDecode($opt["value"]);
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $attrsAdvSelect = null;
 

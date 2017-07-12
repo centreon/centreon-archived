@@ -69,7 +69,7 @@ class CentreonMeta
                 . 'AND host_register = "2" '
                 . 'LIMIT 1 ';
             $res = $this->db->query($queryHost);
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 $hostId = $row['host_id'];
             } else {
@@ -77,7 +77,7 @@ class CentreonMeta
                     . 'VALUES ("_Module_Meta", "2") ';
                 $this->db->query($query);
                 $res = $this->db->query($queryHost);
-                if ($res->numRows()) {
+                if ($res->rowCount()) {
                     $row = $res->fetchRow();
                     $hostId = $row['host_id'];
                 } else {
@@ -107,7 +107,7 @@ class CentreonMeta
             . 'WHERE s.service_description = "meta_' . $metaId . '" ';
 
         $res = $this->db->query($sql);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             while ($row = $res->fetchRow()) {
                  $services[$metaId] = $row['service_id'];
             }
@@ -132,7 +132,7 @@ class CentreonMeta
             . 'FROM service '
             . 'WHERE display_name = "' . $serviceDisplayName . '" ';
         $res = $this->db->query($query);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
                 $metaId = $matches[1];
@@ -268,7 +268,7 @@ class CentreonMeta
 
         $res = $this->db->query($query);
 
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $values = $res->fetchRow();
         }
 
@@ -295,7 +295,7 @@ class CentreonMeta
             . 'AND service_description = "' . $composedName . '" '
             . 'AND display_name = "' . $metaName . '" ';
         $res = $this->db->query($queryService);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             $row = $res->fetchRow();
             $serviceId = $row['service_id'];
         } else {
@@ -310,7 +310,7 @@ class CentreonMeta
                 . ')';
             $this->db->query($query);
             $res = $this->db->query($queryService);
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $row = $res->fetchRow();
                 $serviceId = $row['service_id'];
             }

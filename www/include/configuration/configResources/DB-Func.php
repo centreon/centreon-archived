@@ -59,9 +59,9 @@ function testExistence($name = null, $instanceId = null)
                                 AND crir.instance_id IN (".implode(",", $instances).")
                                 AND cr.resource_name = '".$pearDB->escape($name)."'");
     $res = $DBRESULT->fetchRow();
-    if ($DBRESULT->numRows() >= 1 && $res["resource_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $res["resource_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $res["resource_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $res["resource_id"] != $id) {
         return false;
     } else {
         return true;

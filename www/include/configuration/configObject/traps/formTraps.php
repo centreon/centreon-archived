@@ -70,7 +70,7 @@ if (($o == "c" || $o == "w") && $traps_id) {
     # Set base value
     $trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
             $trap['severity'] = $trap['severity_id'];
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
             
     $cdata = CentreonData::getInstance();
     
@@ -99,7 +99,7 @@ $DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
 while ($rmnftr = $DBRESULT->fetchRow()) {
     $mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $attrsText      = array("size"=>"50");
 $attrsLongText  = array("size"=>"120");
@@ -114,7 +114,7 @@ $attrManufacturer= array(
 );
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&s=s',
     'multiple' => true,
     'linkedObject' => 'centreonService'
 );
@@ -143,7 +143,7 @@ if ($o == "a") {
  */
 $query = "SELECT MAX(tmo_order) FROM traps_matching_properties WHERE trap_id = '".$traps_id."' ";
 $res = $pearDB->query($query);
-if ($res->numRows()) {
+if ($res->rowCount()) {
     $row = $res->fetchRow();
     $nbOfInitialRows = $row['MAX(tmo_order)'];
 } else {

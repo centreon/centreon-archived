@@ -52,10 +52,10 @@ function testExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $meta = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $meta["meta_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $meta["meta_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $meta["meta_id"] != $id) {
         return false;
     } else {
         return true;
@@ -206,7 +206,7 @@ function checkMetaHost()
 
     $query = "SELECT host_id FROM host WHERE host_register = '2'  AND host_name = '_Module_Meta' ";
     $res = $pearDB->query($query);
-    if (!$res->numRows()) {
+    if (!$res->rowCount()) {
         $query = "INSERT INTO host (host_name, host_register) "
             . "VALUES ('_Module_Meta', '2') ";
         $pearDB->query($query);
@@ -229,7 +229,7 @@ function insertMetaService($ret = array())
             "graph_id, meta_comment, geo_coords, meta_activate) " .
             "VALUES ( ";
     isset($ret["meta_name"]) && $ret["meta_name"] != null ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["meta_display"]) && $ret["meta_display"] != null ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["meta_display"]) && $ret["meta_display"] != null ? $rq .= "'".$ret["meta_display"]."', ": $rq .= "NULL, ";
     isset($ret["check_period"]) && $ret["check_period"] != null ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
     isset($ret["max_check_attempts"]) && $ret["max_check_attempts"] != null ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
     isset($ret["normal_check_interval"]) && $ret["normal_check_interval"] != null ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
@@ -419,7 +419,6 @@ function insertMetric($ret = array())
     $msr_id = $DBRESULT->fetchRow();
     return ($msr_id["MAX(msr_id)"]);
 }
-
 function updateMetric($msr_id = null)
 {
     if (!$msr_id) {
@@ -427,8 +426,6 @@ function updateMetric($msr_id = null)
     }
     global $form;
     global $pearDB;
-    global $centreon;
-    $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "UPDATE meta_service_relation SET " ;
     $rq .= "meta_id = ";
@@ -436,7 +433,7 @@ function updateMetric($msr_id = null)
     $rq .= "host_id = ";
     $ret["host_id"] != null ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
     $rq .= "metric_id = ";
-    $ret["metric_id"] != null ? $rq .= "'".$ret["metric_id"]."', ": $rq .= "NULL, ";
+    $ret["metric_sel"][1] != null ? $rq .= "'".$ret["metric_sel"][1]."', ": $rq .= "NULL, ";
     $rq .= "msr_comment = ";
     $ret["msr_comment"] != null ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "activate = ";

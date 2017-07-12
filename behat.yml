@@ -129,6 +129,11 @@ default:
       contexts:
        - AutologinContext
 
+    autologin_options:
+      paths: [ %paths.base%/features/AutologinOptions.feature ]
+      contexts:
+      - AutologinOptionsContext
+
     broker:
       paths: [ %paths.base%/features/Broker.feature ]
       contexts:
@@ -158,3 +163,73 @@ default:
       paths: [ %paths.base%/features/Widget.feature ]
       contexts:
       - WidgetContext
+
+    rest_api:
+      paths: [ %paths.base%/features/RestApi.feature ]
+      contexts:
+      - RestApiContext
+      
+    special_characters_in_contact:
+      paths: [ %paths.base%/features/SpecialCharactersInContact.feature ]
+      contexts:
+      - SpecialCharactersInContactContext
+
+    contact_configuration:
+      paths: [ %paths.base%/features/ContactConfiguration.feature ]
+      contexts:
+      - ContactConfigurationContext
+
+    host_creation_duplication:
+      paths: [ %paths.base%/features/HostCreationDuplication.feature ]
+      contexts:
+      - HostCreationDuplicationContext
+
+    host_configuration:
+      paths: [ %paths.base%/features/HostConfiguration.feature ]
+      contexts:
+      - HostConfigurationContext
+
+    host_duplication_check:
+      paths: [ %paths.base%/features/HostDuplicationCheck.feature ]
+      contexts:
+      - HostDuplicationCheckContext
+
+    contact_group_creation_duplication:
+      paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
+      contexts:
+      - ContactGroupCreationDuplicationContext
+
+    ldap_configuration:
+      paths: [ %paths.base%/features/LdapConfiguration.feature ]
+      contexts:
+      - LdapConfigurationContext
+
+    ldap_manual_import:
+      paths: [ %paths.base%/features/LdapManualImport.feature ]
+      contexts:
+      - LdapManualImportContext
+
+    modify_default_page_connexion:
+      paths: [ %paths.base%/features/ModifyDefaultPageConnection.feature ]
+      contexts:
+      - ModifyDefaultPageConnectionContext
+
+    control_login:
+      paths: [ %paths.base%/features/ControlLogin.feature ]
+      contexts:
+      - ControlLoginContext
+
+    acl_menus_access:
+      paths: [ %paths.base%/features/ACLMenusAccess.feature ]
+      contexts:
+      - ACLMenusAccessContext
+
+    non_admin_contact_creation:
+      paths: [ %paths.base%/features/NonAdminContactCreation.feature ]
+      contexts:
+      - NonAdminContactCreationContext
+
+    acl_actions_access:
+      paths: [ %paths.base%/features/ACLActionsAccess.feature ]
+      contexts:
+      - ACLActionsAccessContext

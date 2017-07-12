@@ -49,7 +49,7 @@ $rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
 $DBRESULT = $pearDB->query($rq);
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 include("./include/common/checkPagination.php");
 
@@ -103,13 +103,13 @@ for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
     $rq = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations WHERE acl_group_id = '".$group['acl_group_id']."'";
     $DBRESULT2 = $pearDB->query($rq);
     $ctNbr = $DBRESULT2->fetchRow();
-    $DBRESULT2->free();
+    $DBRESULT2->closeCursor();
     
     $cgNbr = array();
     $rq = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$group['acl_group_id']."'";
     $DBRESULT2 = $pearDB->query($rq);
     $cgNbr = $DBRESULT2->fetchRow();
-    $DBRESULT2->free();
+    $DBRESULT2->closeCursor();
     
     $elemArr[$i] = array("MenuClass" => "list_".$style,
                          "RowMenu_select" => $selectedElements->toHtml(),

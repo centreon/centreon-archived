@@ -60,7 +60,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM nagios_server $serverAcl ORDER BY name
 while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Var information to format the element
@@ -120,9 +120,9 @@ $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled
 $form->addGroup($status, 'activate', _("Status"), '&nbsp;');
 
 $centreonbroker = array();
-$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Daemon"), 1);
-$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Module"), 0);
-$form->addGroup($centreonbroker, 'activate_watchdog', _("Broker Options"), '&nbsp;');
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Yes"), 1);
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("No"), 0);
+$form->addGroup($centreonbroker, 'activate_watchdog', _("Link to cbd service"), '&nbsp;');
 
 $stats_activate = array();
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("Yes"), 1);

@@ -739,6 +739,6 @@ function getServiceGroupNameFromId($sg_id)
     if ($row = $DBRESULT->fetchRow()) {
         return ($row["sg_name"]);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return "undefined";
 }

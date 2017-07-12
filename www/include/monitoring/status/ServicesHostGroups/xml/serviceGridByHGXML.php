@@ -145,7 +145,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tabH[$ndo["host_name"]] = $ndo["id"];
     $tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 
 /** **************************************
@@ -194,7 +194,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tabService[$ndo["host_name"]]["tab_svc"][$ndo["description"]] = $ndo["svcs"];
     $tabHost[$ndo["host_name"]] = $ndo["service_id"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Begin XML Generation

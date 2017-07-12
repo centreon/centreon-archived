@@ -112,7 +112,7 @@ class CentreonIssue
             FROM issues_issues_parents
             WHERE parent_id = " . $this->dbb->escape($issueId) . " LIMIT 1";
         $res = $this->dbb->query($query);
-        if ($res->numRows()) {
+        if ($res->rowCount()) {
             return true;
         }
         return false;

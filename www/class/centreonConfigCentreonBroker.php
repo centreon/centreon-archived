@@ -919,7 +919,7 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             $error = true;
         }
-        if ($error || $res->numRows() == 0) {
+        if ($error || $res->rowCount() == 0) {
             return false;
         }
 
@@ -934,7 +934,7 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             $error = true;
         }
-        if ($error || $res->numRows() == 0) {
+        if ($error || $res->rowCount() == 0) {
             return false;
         }
 
@@ -1190,7 +1190,7 @@ class CentreonConfigCentreonBroker
                     $res = $this->db->query($query);
                     break;
                 case 'centreon_storage':
-                    $res = $pearDBO->query($query);
+                    $res = $monitoringDb->query($query);
                     break;
             }
         } catch (\PDOException $e) {
@@ -1374,7 +1374,7 @@ class CentreonConfigCentreonBroker
             } catch (\PDOException $e) {
                 $error = true;
             }
-            if ($error || $res->numRows() == 0) {
+            if ($error || $res->rowCount() == 0) {
                 return $elemStr;
             }
             $row = $res->fetchRow();

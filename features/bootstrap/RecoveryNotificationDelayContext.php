@@ -19,7 +19,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @Given a host configured with recovery notification delay
+     * @Given a host configured with recovery notification delay
      */
     public function aHostConfiguredWithRecoveryNotificationDelay()
     {
@@ -37,7 +37,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @Given a service configured with recovery notification delay
+     * @Given a service configured with recovery notification delay
      */
     public function aServiceConfiguredWithRecoveryNotificationDelay()
     {
@@ -56,7 +56,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @Given the host is UP
+     * @Given the host is UP
      */
     public function theHostIsUp()
     {
@@ -64,7 +64,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @Given the host is not UP
+     * @Given the host is not UP
      */
     public function theHostIsNotUp()
     {
@@ -74,7 +74,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @Given the service is not OK
+     * @Given the service is not OK
      */
     public function theServiceIsNotOK()
     {
@@ -84,7 +84,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @When the host recovers before the recovery notification delay
+     * @When the host recovers before the recovery notification delay
      */
     public function theHostRecoversBeforeTheRecoveryNotificationDelay()
     {
@@ -92,7 +92,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @When the service recovers before the recovery notification delay
+     * @When the service recovers before the recovery notification delay
      */
     public function theServiceRecoversBeforeTheRecoveryNotificationDelay()
     {
@@ -100,7 +100,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @When the host receives a new check result after the recovery notification delay
+     * @When the host receives a new check result after the recovery notification delay
      */
     public function theHostReceivesANewCheckResult()
     {
@@ -109,7 +109,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @When the service receives a new check result after the recovery notification delay
+     * @When the service receives a new check result after the recovery notification delay
      */
     public function theServiceReceivesANewCheckResult()
     {
@@ -118,7 +118,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @Then no recovery notification is sent
+     * @Then no recovery notification is sent
      */
     public function noRecoveryNotificationIsSent()
     {
@@ -130,7 +130,7 @@ class RecoveryNotificationDelayContext extends CentreonContext
     }
 
     /**
-     *  @Then a recovery notification is sent
+     * @Then a recovery notification is sent
      */
     public function aRecoveryNotificationIsSent()
     {
@@ -146,7 +146,8 @@ class RecoveryNotificationDelayContext extends CentreonContext
         $page = new CommandConfigurationPage($this, true, 1);
         $page->setProperties(array(
             'command_name' => 'acceptance_notification_command',
-            'command_line' => 'touch /tmp/acceptance_notification.tmp'));
+            'command_line' => 'touch /tmp/acceptance_notification.tmp'
+        ));
         $page->save();
     }
 

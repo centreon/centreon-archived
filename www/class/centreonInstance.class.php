@@ -68,8 +68,7 @@ class CentreonInstance
     {
         $this->params = array();
         $this->paramsByName = array();
-        $query = "SELECT id, name, localhost, last_restart, ns_ip_address
-        		  FROM nagios_server";
+        $query = "SELECT id, name, localhost, last_restart, ns_ip_address FROM nagios_server";
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $instanceId = $row['id'];
@@ -83,23 +82,23 @@ class CentreonInstance
             }
         }
     }
-    
+
     public function getInstancesMonitoring($poller_id = array())
     {
         $pollers = array();
         if (!empty($poller_id)) {
             $query = "SELECT i.instance_id, i.name
                 FROM instances i
-                WHERE i.instance_id IN (".$this->dbo->escape(implode(",", $poller_id)).") ";
+                WHERE i.instance_id IN (" . $this->dbo->escape(implode(",", $poller_id)) . ") ";
             $res = $this->dbo->query($query);
             while ($row = $res->fetchRow()) {
                 $pollers[] = array('id' => $row['instance_id'], 'name' => $row['name']);
             }
         }
-        
+
         return $pollers;
     }
-    
+
 
     /**
      * Get Parameter
@@ -131,7 +130,7 @@ class CentreonInstance
     {
         return $this->instances;
     }
-    
+
     /**
      * Get command data from poller id
      *
@@ -152,7 +151,7 @@ class CentreonInstance
         }
         return $arr;
     }
-    
+
     /**
      * Return list of commands used by poller
      *
@@ -181,7 +180,7 @@ class CentreonInstance
         }
         return $arr;
     }
-    
+
     /**
      * Set post-restart commands
      *
@@ -192,54 +191,55 @@ class CentreonInstance
     public function setCommands($pollerId, $commands)
     {
         $this->db->query("DELETE FROM poller_command_relations
-                WHERE poller_id = ".$this->db->escape($pollerId));
-            
+                WHERE poller_id = " . $this->db->escape($pollerId));
+
         $stored = array();
         $i = 1;
         foreach ($commands as $value) {
             if ($value != "" &&
-                !isset($stored[$value])) {
-                    $this->db->query("INSERT INTO poller_command_relations
+                !isset($stored[$value])
+            ) {
+                $this->db->query("INSERT INTO poller_command_relations
                         (`poller_id`, `command_id`, `command_order`) 
                         VALUES (" . $this->db->escape($pollerId) . ", " . $this->db->escape($value) . ", " . $i . ")");
-                    $stored[$value] = true;
-                    $i++;
+                $stored[$value] = true;
+                $i++;
             }
         }
     }
-    
+
     /**
      *
      * @param array $values
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
-     {
-         $selectedInstances = '';
-         $items= array();
+    {
+        $selectedInstances = '';
+        $items = array();
 
-         $explodedValues = implode(',', $values);
-         if (empty($explodedValues)) {
-             $explodedValues = "''";
-         }else {
-                 $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
-         }
+        $explodedValues = implode(',', $values);
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+        }
 
-         $query = "SELECT DISTINCT p.name as name, p.id  as id"
-             . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
-             . " WHERE r.resource_id = rel.resource_id"
-             . " AND p.id = rel.instance_id "
-             . " AND p.id IN (" . $explodedValues . ")"
-             . $selectedInstances
-             . " ORDER BY p.name";
-         $DBRESULT = $this->db->query($query);
-         while ($data = $DBRESULT->fetchRow()) {
-                 $items[] = array(
-                         'id' => $data['id'],
-                 'text' => $data['name']
-             );
-         }
+        $query = "SELECT DISTINCT p.name as name, p.id  as id"
+            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
+            . " WHERE r.resource_id = rel.resource_id"
+            . " AND p.id = rel.instance_id "
+            . " AND p.id IN (" . $explodedValues . ")"
+            . $selectedInstances
+            . " ORDER BY p.name";
+        $DBRESULT = $this->db->query($query);
+        while ($data = $DBRESULT->fetchRow()) {
+            $items[] = array(
+                'id' => $data['id'],
+                'text' => $data['name']
+            );
+        }
 
-         return $items;
-     }
+        return $items;
+    }
 }

@@ -50,7 +50,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
 
     $DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . $contact_id . "' LIMIT 1");
     $cct = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /**
      * Set Host Notification Options
@@ -67,7 +67,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
     foreach ($tmp as $key => $value) {
         $cct["contact_svNotifOpts"][trim($value)] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /**
      * Set Host Notification Commands
@@ -76,7 +76,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
     for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
         $cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /**
      * Set Service Notification Commands
@@ -85,7 +85,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
     for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
         $cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 /**
@@ -106,7 +106,7 @@ $DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_na
 while ($notifTp = $DBRESULT->fetchRow()) {
     $notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /**
  * Notification commands comes from DB -> Store in $notifsCmds Array
@@ -116,7 +116,7 @@ $DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE c
 while ($notifCmd = $DBRESULT->fetchRow()) {
     $notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /**
  * Contacts Templates
@@ -132,7 +132,7 @@ $DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE c
 while ($contacts = $DBRESULT->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /**
  * Template / Style for Quickform input

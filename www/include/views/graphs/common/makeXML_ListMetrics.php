@@ -120,7 +120,7 @@ if (isset($_GET["host_id"]) && $_GET["service_id"]) {
             $mx_l = $sd_l;
         }
     }
-    $pq_sql->free();
+    $pq_sql->closeCursor();
     $query = "SELECT vmetric_id, vmetric_name, def_type "
         . "FROM virtual_metrics "
         . "WHERE index_id = " .  $index_id . " "
@@ -135,7 +135,7 @@ if (isset($_GET["host_id"]) && $_GET["service_id"]) {
         if ($sd_l > $mx_l) {
             $mx_l = $sd_l;
         }
-        $pq_sql->free();
+        $pq_sql->closeCursor();
     }
 }
 

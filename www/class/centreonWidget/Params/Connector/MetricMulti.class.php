@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/Select2.class.php";
+require_once __DIR__ . "/../Select2.class.php";
 
 class CentreonWidgetParamsConnectorMetricMulti extends CentreonWidgetParamsSelect2
 {
@@ -44,9 +44,10 @@ class CentreonWidgetParamsConnectorMetricMulti extends CentreonWidgetParamsSelec
 
     public function getParameters()
     {
-        return  array (
+        $path = './include/common/webServices/rest/internal.php?object=centreon_metric&action=listByService';
+        return array(
             'datasourceOrigin' => 'ajax',
-            'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_metric&action=listByService',
+            'availableDatasetRoute' => $path,
             'multiple' => true,
             'linkedObject' => 'centreonMetrics'
         );

@@ -13,7 +13,7 @@ class LimitMetricInChartContext extends CentreonContext
     private $chartPage = null;
 
     /**
-     *  @Given a service with several metrics
+     * @Given a service with several metrics
      */
     public function aServiceWithSeveralMetrics()
     {
@@ -52,14 +52,14 @@ class LimitMetricInChartContext extends CentreonContext
 
         // Send multiple perfdata.
         $perfdata = '';
-        for ($i = 0; $i < 20 ; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $perfdata .= 'test' . $i . '=1s ';
         }
         $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
 
         // Ensure perfdata were processed.
         $this->spin(
-            function($context) {
+            function ($context) {
                 $page = new ServiceMonitoringDetailsPage(
                     $context,
                     $context->hostName,
@@ -76,7 +76,7 @@ class LimitMetricInChartContext extends CentreonContext
     }
 
     /**
-     *  @When I display the chart in performance page
+     * @When I display the chart in performance page
      */
     public function iDisplayTheChartInPerformancePage()
     {
@@ -101,7 +101,7 @@ class LimitMetricInChartContext extends CentreonContext
     }
 
     /**
-     *  @Then a message says that the chart will not be displayed
+     * @Then a message says that the chart will not be displayed
      */
     public function aMessageSaysThatTheChartWillNotBeDisplayed()
     {

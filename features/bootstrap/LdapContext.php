@@ -15,15 +15,6 @@ class LdapContext extends CentreonContext
     private $page;
 
     /**
-     * @Given I am logged in a Centreon server with a configured ldap
-     */
-    public function iAmLoggedInACentreonServerWithAConfiguredLdap()
-    {
-        $this->launchCentreonWebContainer('web_openldap');
-        $this->iAmLoggedIn();
-    }
-
-    /**
      * @Given a ldap user has been imported
      */
     public function aLdapUserHasBeenImported()

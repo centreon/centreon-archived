@@ -114,7 +114,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
 
         foreach ($ldapCgs as $key => $value) {
             $sTemp = $value;
-            if (!$this->unique_key($sTemp, $contactgroupList)) {
+            if (!$this->uniqueKey($sTemp, $contactgroupList)) {
                 $contactgroupList[] = array(
                     'id' => $key,
                     'text' => $value
@@ -128,7 +128,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         );
     }
 
-    protected function unique_key($val, &$array)
+    protected function uniqueKey($val, &$array)
     {
 
         if (!empty($val) && count($array) > 0) {

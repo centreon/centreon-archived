@@ -43,7 +43,10 @@ $inputArguments = array(
         'filter' => FILTER_SANITIZE_STRING,
         'flags' => FILTER_REQUIRE_ARRAY
     ),
-    'dupNbr' => FILTER_SANITIZE_STRING
+    'dupNbr' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'flags' => FILTER_REQUIRE_ARRAY
+    ),
 );
 $inputGet = filter_input_array(
     INPUT_GET,

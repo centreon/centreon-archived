@@ -85,7 +85,8 @@ class CentreonServiceTemplate extends CentreonObject
     {
         parent::__construct();
         $this->object = new \Centreon_Object_Service();
-        $this->params = array('service_is_volatile' => '2',
+        $this->params = array(
+            'service_is_volatile' => '2',
             'service_active_checks_enabled' => '2',
             'service_passive_checks_enabled' => '2',
             'service_parallelize_check' => '2',
@@ -199,7 +200,8 @@ class CentreonServiceTemplate extends CentreonObject
                 "timeperiod_tp_id" => "check_period",
                 "timeperiod_tp_id2" => "notification_period",
                 "command_command_id_arg" => "check_command_arguments",
-                "command_command_id_arg2" => "event_handler_arguments");
+                "command_command_id_arg2" => "event_handler_arguments"
+            );
         }
         if (preg_match("/^esi_/", $columnName)) {
             return substr($columnName, strlen("esi_"));
@@ -561,8 +563,10 @@ class CentreonServiceTemplate extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $elements = $this->object->getList("service_id", -1, 0, null, null, array('service_description' => $params[0],
-            'service_register' => 0), "AND");
+        $elements = $this->object->getList("service_id", -1, 0, null, null, array(
+            'service_description' => $params[0],
+            'service_register' => 0
+        ), "AND");
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
@@ -768,10 +772,10 @@ class CentreonServiceTemplate extends CentreonObject
                     }
                 }
             } else {
-                throw new CentreonClapiException(self::UNKNOWN_METHOD."PHP >> ".__LINE__);
+                throw new CentreonClapiException(self::UNKNOWN_METHOD . "PHP >> " . __LINE__);
             }
         } else {
-            throw new CentreonClapiException(self::UNKNOWN_METHOD."PHP >> ".__LINE__);
+            throw new CentreonClapiException(self::UNKNOWN_METHOD . "PHP >> " . __LINE__);
         }
     }
 
@@ -802,7 +806,7 @@ class CentreonServiceTemplate extends CentreonObject
      * @param array $tree
      * @param Centreon_Object_Service_Extended $extendedObj
      */
-    protected function parseTemplateTree($tree, $filter_id=null)
+    protected function parseTemplateTree($tree, $filter_id = null)
     {
         $commandObj = new \Centreon_Object_Command();
         $tpObj = new \Centreon_Object_Timeperiod();
@@ -903,7 +907,7 @@ class CentreonServiceTemplate extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filter_id = null, $filter_name = null)
     {
         $filters = array("service_register" => $this->register);
         if (!is_null($filter_id)) {

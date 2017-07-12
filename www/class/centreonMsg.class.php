@@ -37,6 +37,7 @@
  *  Class that displays any kind of information between the html header containing logo
  *  and the horizontal menu
  */
+
 class CentreonMsg
 {
     public $div;
@@ -106,7 +107,7 @@ class CentreonMsg
     public function setTimeOut($sec)
     {
         $sec *= 1000;
-        echo "<script type=\"text/javascript\">setTimeout(function(){new Effect.toggle(\"" . 
+        echo "<script type=\"text/javascript\">setTimeout(function(){new Effect.toggle(\"" .
             $this->div . "\")}, " . $sec . ")</script>";
     }
 
@@ -121,65 +122,68 @@ class CentreonMsg
         echo "<script type=\"text/javascript\">_nextLine(\"$this->div\")</script>";
     }
 }
+
 ?>
 <script type="text/javascript">
-var __image_lock = 0;
+    var __image_lock = 0;
 
-function _setBackgroundColor(div_str, color) {
-	document.getElementById(div_str).style.backgroundColor = color;
-}
+    function _setBackgroundColor(div_str, color) {
+        document.getElementById(div_str).style.backgroundColor = color;
+    }
 
-function _setText(div_str, str) {
-	var my_text = document.createTextNode(str);
-	var my_div = document.getElementById(div_str);
+    function _setText(div_str, str) {
+        var my_text = document.createTextNode(str);
+        var my_div = document.getElementById(div_str);
 
-	my_div.appendChild(my_text);
-}
+        my_div.appendChild(my_text);
+    }
 
-function _setImage(div_str, url) {
-	var _image = document.createElement("img");
-	_image.src = url;
-	_image.id = "centreonMsg_img";
-	var my_div = document.getElementById(div_str);
-	my_div.appendChild(_image);
-}
+    function _setImage(div_str, url) {
+        var _image = document.createElement("img");
+        _image.src = url;
+        _image.id = "centreonMsg_img";
+        var my_div = document.getElementById(div_str);
+        my_div.appendChild(_image);
+    }
 
-function _clear(div_str) {
-	document.getElementById(div_str).innerHTML = "";
-}
+    function _clear(div_str) {
+        document.getElementById(div_str).innerHTML = "";
+    }
 
-function _setAlign(div_str, align) {
-	var my_div = document.getElementById(div_str);
+    function _setAlign(div_str, align) {
+        var my_div = document.getElementById(div_str);
 
-	my_div.style.textAlign = align;
-}
+        my_div.style.textAlign = align;
+    }
 
-function _setValign(div_str, align) {
-	var my_div = document.getElementById(div_str);
+    function _setValign(div_str, align) {
+        var my_div = document.getElementById(div_str);
 
-	my_div.style.verticalAlign = align;
-}
+        my_div.style.verticalAlign = align;
+    }
 
-function _setTextStyle(div_str, style) {
-	var my_div = document.getElementById(div_str);
+    function _setTextStyle(div_str, style) {
+        var my_div = document.getElementById(div_str);
 
-	my_div.style.fontWeight = style;
-}
+        my_div.style.fontWeight = style;
+    }
 
-function _setTextColor(div_str, color) {
-	var my_div = document.getElementById(div_str);
+    function _setTextColor(div_str, color) {
+        var my_div = document.getElementById(div_str);
 
-	my_div.style.color = color;
-}
+        my_div.style.color = color;
+    }
 
-function _nextLine(div_str) {
-	var my_br = document.createElement("br");
-	var my_div = document.getElementById(div_str);
-	my_div.appendChild(my_br);
-}
+    function _nextLine(div_str) {
+        var my_br = document.createElement("br");
+        var my_div = document.getElementById(div_str);
+        my_div.appendChild(my_br);
+    }
 
-function _setTimeout(div_str, sec) {
-	sec *= 1000;
-	setTimeout(function(){new Effect.toggle(div_str)}, sec)
-}
+    function _setTimeout(div_str, sec) {
+        sec *= 1000;
+        setTimeout(function () {
+            new Effect.toggle(div_str)
+        }, sec)
+    }
 </script>

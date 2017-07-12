@@ -200,7 +200,7 @@ class Upgrader extends Installer
 
         $sth->execute();
 
-        $lastId = $this->informationObj->getParameterIdByName($parameters['name']);
+        $lastId = $this->informationObj->getParameterIdByName($parameters['name'], $id);
         $this->deleteParameterOptions($lastId);
 
         switch ($parameters['type']['name']) {

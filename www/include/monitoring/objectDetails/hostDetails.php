@@ -41,6 +41,7 @@ include_once("./class/centreonUtils.class.php");
 
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
+include_once "./class/centreonConfigEngine.php";
 
 
 /*
@@ -109,7 +110,7 @@ if (!$is_admin) {
                                 WHERE host_id = '" . getMyHostId($host_name) . "' 
                                 AND group_id 
                                 IN (" . $centreon->user->access->getAccessGroupsString() . ")");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $haveAccess = 1;
     }
 }
@@ -144,7 +145,7 @@ if (!$is_admin && !$haveAccess) {
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /* Get service categories */
         $hostIds = array($host_id);
@@ -161,7 +162,7 @@ if (!$is_admin && !$haveAccess) {
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /* Get notifications contacts */
         $retrievedNotificationsInfos = get_notified_infos_for_host($host_id);
@@ -255,7 +256,7 @@ if (!$is_admin && !$haveAccess) {
             // Set Data
             $services[] = $row;
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /*
          * Get host informations
@@ -293,6 +294,7 @@ if (!$is_admin && !$haveAccess) {
             " alias, " .
             " action_url, " .
             " h.timezone, " .
+            " h.instance_id, " .
             " i.name as instance_name " .
             " FROM hosts h, instances i " .
             " WHERE h.host_id = $host_id AND h.instance_id = i.instance_id " .
@@ -301,7 +303,15 @@ if (!$is_admin && !$haveAccess) {
         $data = $DBRESULT->fetchRow();
 
         $host_status[$host_name] = $data;
-        $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+
+        // Get host timezone
+        if (empty($host_status[$host_name]["timezone"])) {
+            $instanceObj = new CentreonConfigEngine($pearDB);
+            $host_status[$host_name]["timezone"] = $instanceObj->getTimezone($host_status[$host_name]["instance_id"]);
+        } else {
+            $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+        }
+
         $host_status[$host_name]["plugin_output"] = htmlentities(
             $host_status[$host_name]["plugin_output"],
             ENT_QUOTES,
@@ -356,7 +366,7 @@ if (!$is_admin && !$haveAccess) {
             $tabCommentHosts[$i] = $data;
             $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
         unset($data);
 
         /* Get Graphs Listing */
@@ -655,7 +665,7 @@ if (!$is_admin && !$haveAccess) {
                 include('modules/' . $module['name'] . '/host_tools.php');
             }
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         foreach ($tools as $key => $tab) {
             $tools[$key]['url'] = str_replace("@host_id@", $host_id, $tools[$key]['url']);

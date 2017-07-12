@@ -113,6 +113,8 @@ log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 cp -Rf $TMP_DIR/src/config $TMP_DIR/final
+cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
+cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 
 ## Create temporary directory
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
@@ -320,6 +322,12 @@ check_result $? "$(gettext "Change right for install directory")"
     $INSTALL_DIR/cinstall $cinstall_opts \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
         $INSTALL_DIR_CENTREON/www/img/media >> "$LOG_FILE" 2>&1
+
+cp -f $TMP_DIR/final/bootstrap.php $INSTALL_DIR_CENTREON/bootstrap.php >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
+
+cp -f $TMP_DIR/final/composer.json $INSTALL_DIR_CENTREON/composer.json >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/composer.json
 
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
@@ -618,37 +626,6 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
     $TMP_DIR/src/lib/Centreon/ \
     $INSTALL_DIR_CENTREON/lib/Centreon/ >> $LOG_FILE 2>&1
-
-## Prepare to install all pear modules needed.
-# use check_pear.php script
-echo -e "\n$line"
-echo -e "$(gettext "Pear Modules")"
-echo -e "$line"
-pear_module="0"
-first=1
-while [ "$pear_module" -eq 0 ] ; do 
-    check_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
-    if [ "$?" -ne 0 ] ; then
-            if [ "${PEAR_AUTOINST:-0}" -eq 0 ]; then
-                if [ "$first" -eq 0 ] ; then
-                    echo_info "$(gettext "Unable to upgrade PEAR modules. You seem to have a connection problem.")"
-                fi
-                yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
-                [ "$?" -eq 0 ] && PEAR_AUTOINST=1
-            fi
-        if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
-            upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
-                install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
-                PEAR_AUTOINST=0
-                first=0
-            else
-            pear_module="1"
-            fi
-    else 
-        echo_success "$(gettext "All PEAR modules")" "$ok"
-        pear_module="1"
-    fi
-done
 
 ## Create configfile for web install
 createConfFile

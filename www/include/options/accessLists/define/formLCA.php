@@ -55,7 +55,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
         $lca["lca_sgs"][$i] = $sg["servicegroup_sg_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     # Set Host Groups relations
     $DBRESULT = $pearDB->query(
         "SELECT DISTINCT hostgroup_hg_id "
@@ -64,7 +64,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
         $lca["lca_hgs"][$i] = $hg["hostgroup_hg_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     # Set Host relations
     $DBRESULT = $pearDB->query(
         "SELECT DISTINCT host_host_id "
@@ -73,7 +73,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $lca["lca_hosts"][$i] = $host["host_host_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     # Set Contact Groups relations
     $DBRESULT = $pearDB->query(
         "SELECT DISTINCT contactgroup_cg_id "
@@ -82,7 +82,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
         $lca["lca_cgs"][$i] = $cg["contactgroup_cg_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     # Set Topology relations
     $DBRESULT = $pearDB->query(
         "SELECT topology_topology_id "
@@ -91,7 +91,7 @@ if ($o == "c" || $o == "w") {
     for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
         $lca["lca_topos"][$topo["topology_topology_id"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 if (!isset($lca["lca_topos"])) {
@@ -126,7 +126,7 @@ if ($oreon->user->admin || !HadUserLca($pearDB)) {
 while ($hg = $DBRESULT->fetchRow()) {
     $hgs[$hg["hg_id"]] = $hg["hg_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 #
 # Service Groups comes from DB -> Store in $sgs Array
 $sgs = array();
@@ -140,7 +140,7 @@ if ($oreon->user->admin || !HadUserLca($pearDB)) {
 while ($sg = $DBRESULT->fetchRow()) {
     $sgs[$sg["sg_id"]] = $sg["sg_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 #
 # Host comes from DB -> Store in $hosts Array
 $hosts = array();
@@ -155,7 +155,7 @@ if ($oreon->user->admin || !HadUserLca($pearDB)) {
 while ($host = $DBRESULT->fetchRow()) {
     $hosts[$host["host_id"]] = $host["host_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 #
 # Contact Groups comes from DB -> Store in $cgs Array
 $cgs = array();
@@ -163,7 +163,7 @@ $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_
 while ($cg = $DBRESULT->fetchRow()) {
     $cgs[$cg["cg_id"]] = $cg["cg_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 #
 # End of "database-retrieved" information
 ##########################################################

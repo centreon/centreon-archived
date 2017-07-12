@@ -46,9 +46,9 @@ function testExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT lca_name, lca_id FROM lca_define WHERE lca_name = '".$name."'");
     $lca = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $lca["lca_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $lca["lca_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $lca["lca_id"] != $id) { #Duplicate entry
+    } elseif ($DBRESULT->rowCount() >= 1 && $lca["lca_id"] != $id) { #Duplicate entry
         return false;
     } else {
         return true;

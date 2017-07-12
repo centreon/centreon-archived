@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/List.class.php";
+require_once __DIR__ . "/../List.class.php";
 
 class CentreonWidgetParamsConnectorServiceTemplate extends CentreonWidgetParamsList
 {
@@ -47,11 +47,10 @@ class CentreonWidgetParamsConnectorServiceTemplate extends CentreonWidgetParamsL
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT service_id, service_description
-            		  FROM service
-            		  WHERE service_activate = '1'
-            		  AND service_register = '0'
-            		  ORDER BY service_description";
+            $query = "SELECT service_id, service_description FROM service " .
+                "WHERE service_activate = '1' " .
+                "AND service_register = '0' " .
+                "ORDER BY service_description";
             $res = $this->db->query($query);
             $tab = array(null => null);
             while ($row = $res->fetchRow()) {

@@ -545,12 +545,12 @@ function clonerefreshListener(el){
 }
 
 {/literal}{if $o != "mc"}{literal}    
-    function doAjaxLoad(elems){
+    function doAjaxLoad(elems) {
             jQuery.ajax({
                 url: "./include/configuration/configObject/host/refreshMacroAjax.php",
                 type: "POST",
                 dataType : "json",
-                data: elems.form.serialize(),
+                data: $(elems).parents('form:first').serialize(),
                 success : function(json){
 
                     jQuery("#clone-count-macro").data("clone-count-macro",json.count);

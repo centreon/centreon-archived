@@ -86,7 +86,7 @@ if (isset($_GET['template_id']) && false === is_numeric($_GET['template_id'])) {
     //$sid = $pearDB->escape($_GET['session_id']);
 
     $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$sid."'");
-if (!$session->numRows()) {
+if (!$session->rowCount()) {
     $image = imagecreate(250, 100);
     $fond = imagecolorallocate($image, 0xEF, 0xF2, 0xFB);
     header("Content-Type: image/gif");
@@ -104,7 +104,7 @@ if (!$session->numRows()) {
  * Get Values
  */
     $session_value = $session->fetchRow();
-    $session->free();
+    $session->closeCursor();
 
     /*
  * Connect to ods
@@ -138,7 +138,7 @@ if (!$session->numRows()) {
     } else {
         $template_id = $_GET["template_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
  * Create command line

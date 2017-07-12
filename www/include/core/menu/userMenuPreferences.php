@@ -53,7 +53,7 @@ $pearDB = new CentreonDB();
  * Check session id
  */
 $session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape(session_id())."' AND user_id = '".$pearDB->escape($_GET['uid'])."'");
-if (!$session->numRows()) {
+if (!$session->rowCount()) {
     exit;
 }
 

@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params.class.php";
+require_once __DIR__ . "/../Params.class.php";
 
 class CentreonWidgetParamsHidden extends CentreonWidgetParams
 {
@@ -46,8 +46,10 @@ class CentreonWidgetParamsHidden extends CentreonWidgetParams
     {
         parent::init($params);
         if (isset($this->quickform)) {
-            $this->element = $this->quickform->addElement('hidden',
-            											  'param_'.$params['parameter_id']);
+            $this->element = $this->quickform->addElement(
+                'hidden',
+                'param_' . $params['parameter_id']
+            );
         }
     }
 }

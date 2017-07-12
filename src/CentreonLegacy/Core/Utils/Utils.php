@@ -78,8 +78,12 @@ class Utils
      * @param array $customMacros
      * @throws \Exception
      */
-    public function executeSqlFile($fileName, $customMacros = array())
+    public function executeSqlFile($fileName, $customMacros = array(), $monitoring = false)
     {
+        $dbName = 'configuration_db';
+        if ($monitoring) {
+            $dbName = 'realtime_db';
+        }
         if (!file_exists($fileName)) {
             throw new \Exception('Cannot execute sql file "' . $fileName . '" : File does not exist.');
         }
@@ -94,7 +98,7 @@ class Utils
                 $str .= $line;
                 if ($pos !== false) {
                     $str = rtrim($this->replaceMacros($str, $customMacros));
-                    $this->dependencyInjector['configuration_db']->query($str);
+                    $this->dependencyInjector[$dbName]->query($str);
                     $str = '';
                 }
             }
@@ -125,8 +129,8 @@ class Utils
     public function replaceMacros($content, $customMacros = array())
     {
         $macros = array(
-            '@DB_CENTREON@' => $this->dependencyInjector['configuration']->get('hostCentreon'),
-            '@DB_CENTSTORAGE@' => $this->dependencyInjector['configuration']->get('hostCentstorage')
+            'DB_CENTREON' => $this->dependencyInjector['configuration']->get('db'),
+            'DB_CENTSTORAGE' => $this->dependencyInjector['configuration']->get('dbcstg')
         );
 
         if (count($customMacros)) {

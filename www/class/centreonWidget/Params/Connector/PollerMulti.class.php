@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/Select2.class.php";
+require_once __DIR__ . "/../Select2.class.php";
 
 class CentreonWidgetParamsConnectorPollerMulti extends CentreonWidgetParamsSelect2
 {
@@ -48,9 +48,10 @@ class CentreonWidgetParamsConnectorPollerMulti extends CentreonWidgetParamsSelec
 
 
         if (!isset($tab)) {
-            $attrPollers = array (
+            $path = './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list';
+            $attrPollers = array(
                 'datasourceOrigin' => 'ajax',
-                'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
+                'availableDatasetRoute' => $path,
                 'multiple' => true,
                 'linkedObject' => 'centreonInstance'
             );

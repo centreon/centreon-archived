@@ -42,9 +42,9 @@ function testExistence($name = null)
     /*
 	 * Modif case
 	 */
-    if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
+    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
 		 * Duplicate entry
 		 */
@@ -64,9 +64,9 @@ function testAliasExistence($alias = null)
     /*
 	 * Modif case
 	 */
-    if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
+    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
 		 * Duplicate entry
 		 */

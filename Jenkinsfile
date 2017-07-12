@@ -4,7 +4,7 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    sh '/opt/centreon-build/jobs/web/dev/mon-web-source.sh'
+    sh '/opt/centreon-build/jobs/web/3.5/mon-web-source.sh'
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
@@ -16,7 +16,7 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-unittest.sh centos6'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-unittest.sh centos6'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -30,7 +30,7 @@ try {
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-unittest.sh centos7'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-unittest.sh centos7'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -62,13 +62,13 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-package.sh centos6'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh centos6'
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-package.sh centos7'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -80,13 +80,13 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-bundle.sh centos6'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-bundle.sh centos6'
       }
     },
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-bundle.sh centos7'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-bundle.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -98,7 +98,7 @@ try {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-acceptance.sh centos6'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-acceptance.sh centos6'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -113,7 +113,7 @@ try {
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-acceptance.sh centos7'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-acceptance.sh centos7'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -134,23 +134,17 @@ try {
     stage('Delivery') {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/dev/mon-web-delivery.sh'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-delivery.sh'
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure.');
       }
     }
-    build job: 'mon-automation-bundle-centos6', wait: false
-    build job: 'mon-automation-bundle-centos7', wait: false
     build job: 'centreon-license-manager/master', wait: false
-    build job: 'mon-ppe-bundle-centos6', wait: false
-    build job: 'mon-ppe-bundle-centos7', wait: false
     build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
-    build job: 'des-bam-bundle-centos6', wait: false
-    build job: 'des-bam-bundle-centos7', wait: false
-    build job: 'des-map-bundle-centos6', wait: false
-    build job: 'des-map-bundle-centos7', wait: false
+    build job: 'centreon-bam/master', wait: false
+    build job: 'centreon-map-web', wait: false
     build job: 'des-mbi-bundle-centos6', wait: false
     build job: 'des-mbi-bundle-centos7', wait: false
   }
@@ -158,6 +152,6 @@ try {
 finally {
   buildStatus = currentBuild.result ?: 'SUCCESS';
   if ((buildStatus != 'SUCCESS') && (env.BRANCH_NAME == 'master')) {
-    slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} was broken by ${source.COMMITTER}. Please fix it ASAP."
+    slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} of branch ${env.BRANCH_NAME} was broken by ${source.COMMITTER}. Please fix it ASAP."
   }
 }

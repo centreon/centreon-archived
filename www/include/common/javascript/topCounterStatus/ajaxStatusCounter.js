@@ -218,6 +218,8 @@ function reloadStatusCounter(_reload_time) {
 
 	xhrC.open("POST", _adrrsearchC, true);
 	xhrC.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhrC.send("&session_expire="+(_reload_time/1000));
-	setTimeout('reloadStatusCounter("'+ _reload_time +'")', _reload_time);
+    if (handleVisibilityChange()){
+        xhrC.send("&session_expire="+(_reload_time/1000));
+    }
+	cycleVisibilityChange('reloadStatusCounter("'+ _reload_time +'")', _reload_time);
 }

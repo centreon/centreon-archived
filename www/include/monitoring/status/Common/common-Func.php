@@ -43,7 +43,7 @@ function getMyIndexGraph4Service($host_id = null, $service_id = null, $pearDBO)
                                 "AND m.hidden = '0' " .
                                 "AND i.service_id = '".$service_id."' " .
                                 "AND i.id = m.index_id");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["id"];
     }

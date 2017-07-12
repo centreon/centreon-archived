@@ -81,7 +81,7 @@ class procedures_Proxy
         while ($row = $result->fetchRow()) {
             return $row["service_id"];
         }
-        $result->free();
+        $result->closeCursor();
         /*
          * Get Services attached to hostgroups
          */
@@ -96,7 +96,7 @@ class procedures_Proxy
         while ($row = $result->fetchRow()) {
             return $row["service_id"];
         }
-        $result->free();
+        $result->closeCursor();
 
     }
 

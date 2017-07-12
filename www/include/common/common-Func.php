@@ -41,7 +41,7 @@
 function slash($elem = null)
 {
     if ($elem) {
-        return rtrim($elem, "/")."/";
+        return rtrim($elem, "/") . "/";
     }
 }
 
@@ -61,9 +61,11 @@ function isUserAdmin($sid = null)
         return;
     }
 
-    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
+
+    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact 
+WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     if ($admin["contact_admin"]) {
         return 1;
@@ -90,7 +92,8 @@ function getUserIdFromSID($sid = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
+    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact 
+WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
     unset($DBRESULT);
     if (isset($admin["contact_id"])) {
@@ -105,7 +108,7 @@ function table_not_exists($table_name)
 
     $DBRESULT = $pearDBndo->query("SHOW TABLES LIKE '" . $table_name . "'");
 
-    if ($DBRESULT->numRows() > 0) {
+    if ($DBRESULT->rowCount() > 0) {
         return 0;
     }
 }
@@ -122,7 +125,7 @@ function getStatusColor($pearDB)
     while ($c = $DBRESULT->fetchRow()) {
         $colors[$c["key"]] = myDecode($c["value"]);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $colors;
 }
 
@@ -131,7 +134,12 @@ function tidySearchKey($search, $advanced_search)
     if ($advanced_search == 1) {
         if (isset($search) && !strstr($search, "*") && !strstr($search, "%")) {
             $search = "'" . $search . "'";
-        } elseif (isset($search) && isset($search[0]) && isset($search[strlen($search) - 1]) && $search[0] == "%" && $search[strlen($search) - 1] == "%") {
+        } elseif (isset($search) &&
+            isset($search[0]) &&
+            isset($search[strlen($search) - 1]) &&
+            $search[0] == "%" &&
+            $search[strlen($search) - 1] == "%"
+        ) {
             $search = str_replace("%", "", $search);
         } elseif (strpos($search, "%")) {
             $search = str_replace("%", "*", $search);
@@ -167,9 +175,9 @@ function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centr
         return;
     }
     $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = _CENTREON_PATH_."/GPL_LIB/SmartyCache/cache";
+    $tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
+    $tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
+    $tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
 
     $tpl->caching = 0;
     $tpl->compile_check = true;
@@ -200,7 +208,9 @@ function getMyHostTemplateModel($host_id = null)
         return;
     }
 
-    $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
+    $query = "SELECT host_template_model_htm_id FROM host WHERE host_id = '" .
+        CentreonDB::escape($host_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["host_template_model_htm_id"]) {
         return $row["host_template_model_htm_id"];
@@ -216,7 +226,8 @@ function getMyHostName($host_id = null)
     if (!$host_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("SELECT host_name FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
+    $query = "SELECT host_name FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["host_name"]) {
         return $row["host_name"];
@@ -230,7 +241,8 @@ function isAHostTpl($host_id = null)
     if (!$host_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
+    $query = "SELECT host_register FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["host_register"] == 1) {
         return true;
@@ -246,7 +258,9 @@ function getMyHostAddress($host_id = null)
     }
     global $pearDB;
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
+        $query = "SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '" .
+            CentreonDB::escape($host_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["host_address"]) {
             return html_entity_decode($row["host_address"], ENT_QUOTES, "UTF-8");
@@ -265,7 +279,9 @@ function getMyHostAddressByName($host_name = null)
     }
     global $pearDB;
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '" . CentreonDB::escape($host_name) . "' LIMIT 1");
+        $query = "SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '" .
+            CentreonDB::escape($host_name) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["host_address"]) {
             return html_entity_decode($row["host_address"], ENT_QUOTES, "UTF-8");
@@ -284,8 +300,11 @@ function getMyHostIDByAddress($host_address = null)
     }
     global $pearDB;
     while (1) {
-        $DBRESULT = & $pearDB->query("SELECT host_id, host_address, host_template_model_htm_id FROM host WHERE host_name = '" . CentreonDB::escape($host_address) . "' or host_address = '" . CentreonDB::escape($host_address) . "' LIMIT 1");
-        $row = & $DBRESULT->fetchRow();
+        $query = "SELECT host_id, host_address, host_template_model_htm_id FROM host " .
+            "WHERE host_name = '" . CentreonDB::escape($host_address) . "' or host_address = '" .
+            CentreonDB::escape($host_address) . "' LIMIT 1";
+        $DBRESULT = &$pearDB->query($query);
+        $row = &$DBRESULT->fetchRow();
         if ($row["host_id"]) {
             return html_entity_decode($row["host_id"], ENT_QUOTES, "UTF-8");
         } elseif ($row["host_template_model_htm_id"]) {
@@ -303,9 +322,13 @@ function getMyHostParents($host_id = null)
     }
     global $pearDB;
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "'");
+        $query = "SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '" .
+            CentreonDB::escape($host_id) . "'";
+        $DBRESULT = $pearDB->query($query);
         $host = clone($DBRESULT->fetch());
-        $DBRESULT = $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '" . CentreonDB::escape($host_id) . "'");
+        $query = "SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr " .
+            "WHERE hpr.host_host_id = '" . CentreonDB::escape($host_id) . "'";
+        $DBRESULT = $pearDB->query($query);
         if ($DBRESULT->fetchColumn()) {
             return $DBRESULT;
         } elseif (isset($host["tpl"]) && $host["tpl"]) {
@@ -323,8 +346,10 @@ function getMyHostGroups($host_id = null)
     }
     global $pearDB;
     $hgs = array();
-    
-    $DBRESULT = $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hgr.hostgroup_hg_id = hg.hg_id");
+
+    $query = "SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr " .
+        "WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hgr.hostgroup_hg_id = hg.hg_id";
+    $DBRESULT = $pearDB->query($query);
     while ($hg = $DBRESULT->fetchRow()) {
         $hgs[$hg["hostgroup_hg_id"]] = html_entity_decode($hg["hg_name"], ENT_QUOTES, "UTF-8");
     }
@@ -338,7 +363,9 @@ function getMyHostField($host_id = null, $field)
     }
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' ORDER BY `order` ASC");
+    $query = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" .
+        CentreonDB::escape($host_id) . "' ORDER BY `order` ASC";
+    $DBRESULT = $pearDB->query($query);
     while ($row = $DBRESULT->fetchRow()) {
         $DBRESULT2 = $pearDB->query("SELECT `" . $field . "` FROM host WHERE host_id = '" . $row['host_tpl_id'] . "'");
         while ($row2 = $DBRESULT2->fetchRow()) {
@@ -361,7 +388,8 @@ function getMyHostFieldOnHost($host_id = null, $field)
         return;
     }
 
-    $DBRESULT = $pearDB->query("SELECT `" . $field . "` FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
+    $query = "SELECT `" . $field . "` FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if (isset($row[$field]) && $row[$field]) {
         return $row[$field];
@@ -378,14 +406,14 @@ function getMyHostFieldFromMultiTemplates($host_id, $field)
     }
 
     $rq = "SELECT host_tpl_id " .
-            "FROM host_template_relation " .
-            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
-            "ORDER BY `order`";
+        "FROM host_template_relation " .
+        "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
+        "ORDER BY `order`";
     $DBRESULT = $pearDB->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
         $rq2 = "SELECT $field " .
-                "FROM host " .
-                "WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
+            "FROM host " .
+            "WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
         $DBRESULT2 = $pearDB->query($rq2);
         $row2 = $DBRESULT2->fetchRow();
         if (isset($row2[$field]) && $row2[$field]) {
@@ -410,14 +438,14 @@ function getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field)
     }
     global $pearDB;
     $rq = "SELECT host_tpl_id " .
-            "FROM host_template_relation " .
-            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
-            "ORDER BY `order`";
+        "FROM host_template_relation " .
+        "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
+        "ORDER BY `order`";
     $DBRESULT = $pearDB->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
         $rq2 = "SELECT ehi.`" . $field . "` " .
-                "FROM extended_host_information ehi " .
-                "WHERE ehi.host_host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
+            "FROM extended_host_information ehi " .
+            "WHERE ehi.host_host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
         $DBRESULT2 = $pearDB->query($rq2);
         $row2 = $DBRESULT2->fetchRow();
         if (isset($row2[$field]) && $row2[$field]) {
@@ -439,14 +467,15 @@ function getMyHostMacroFromMultiTemplates($host_id, $field)
     global $pearDB;
 
     $rq = "SELECT host_tpl_id " .
-            "FROM host_template_relation " .
-            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
-            "ORDER BY `order`";
+        "FROM host_template_relation " .
+        "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
+        "ORDER BY `order`";
     $DBRESULT = $pearDB->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
         $rq2 = "SELECT macro.host_macro_value " .
-                "FROM on_demand_macro_host macro " .
-                "WHERE macro.host_host_id = '" . $row["host_tpl_id"] . "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1";
+            "FROM on_demand_macro_host macro " .
+            "WHERE macro.host_host_id = '" . $row["host_tpl_id"] .
+            "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1";
         $DBRESULT2 = $pearDB->query($rq2);
         $row2 = $DBRESULT2->fetchRow();
         if (isset($row2["host_macro_value"]) && $row2["host_macro_value"]) {
@@ -471,10 +500,11 @@ function getMyHostMacro($host_id = null, $field)
     }
     global $pearDB, $oreon;
 
-    $rq = "SELECT macro.host_macro_value " .
-            "FROM on_demand_macro_host macro " .
-            "WHERE macro.host_host_id = '" . CentreonDB::escape($host_id) . "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1";
-    $DBRESULT = $pearDB->query($rq);
+    $query = "SELECT macro.host_macro_value " .
+        "FROM on_demand_macro_host macro " .
+        "WHERE macro.host_host_id = '" . CentreonDB::escape($host_id) .
+        "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if (isset($row["host_macro_value"]) && $row["host_macro_value"]) {
         $macroValue = str_replace("#S#", "/", $row["host_macro_value"]);
@@ -495,15 +525,20 @@ function getMyServiceCategories($service_id = null)
 
     $tab = array();
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '" . CentreonDB::escape($service_id) . "' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
-        if ($DBRESULT->numRows()) {
+        $query = "SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc " .
+            "WHERE scr.service_service_id = '" . CentreonDB::escape($service_id) .
+            "' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'";
+        $DBRESULT = $pearDB->query($query);
+        if ($DBRESULT->rowCount()) {
             $tabSC = array();
             while ($row = $DBRESULT->fetchRow()) {
                 $tabSC[$row["sc_id"]] = $row["sc_id"];
             }
             return $tabSC;
         } else {
-            $DBRESULT = $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "'");
+            $query = "SELECT service_template_model_stm_id FROM service WHERE service_id = '" .
+                CentreonDB::escape($service_id) . "'";
+            $DBRESULT = $pearDB->query($query);
             $row = $DBRESULT->fetchRow();
             if ($row["service_template_model_stm_id"]) {
                 if (isset($tab[$row['service_template_model_stm_id']])) {
@@ -525,7 +560,8 @@ function getMyCategorieName($sc_id = null)
     }
     global $pearDB, $oreon;
 
-    $DBRESULT = $pearDB->query("SELECT sc_name FROM service_categories WHERE sc_id = '" . CentreonDB::escape($sc_id) . "'");
+    $query = "SELECT sc_name FROM service_categories WHERE sc_id = '" . CentreonDB::escape($sc_id) . "'";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     return $row["sc_name"];
 }
@@ -537,10 +573,11 @@ function getMyServiceMacro($service_id = null, $field)
     }
     global $pearDB, $oreon;
 
-    $rq = "SELECT macro.svc_macro_value " .
-            "FROM on_demand_macro_service macro " .
-            "WHERE macro.svc_svc_id = '" . CentreonDB::escape($service_id) . "' AND macro.svc_macro_name = '\$_SERVICE" . $field . "\$' LIMIT 1";
-    $DBRESULT = $pearDB->query($rq);
+    $query = "SELECT macro.svc_macro_value " .
+        "FROM on_demand_macro_service macro " .
+        "WHERE macro.svc_svc_id = '" . CentreonDB::escape($service_id) .
+        "' AND macro.svc_macro_name = '\$_SERVICE" . $field . "\$' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if (isset($row["svc_macro_value"]) && $row["svc_macro_value"]) {
         $macroValue = str_replace("#S#", "/", $row['svc_macro_value']);
@@ -560,8 +597,8 @@ function getMyHostExtendedInfoField($host_id = null, $field)
     global $pearDB, $oreon;
 
     $rq = "SELECT ehi.`" . $field . "` " .
-            "FROM extended_host_information ehi " .
-            "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
+        "FROM extended_host_information ehi " .
+        "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
     $DBRESULT = $pearDB->query($rq);
     $row = $DBRESULT->fetchRow();
     if (isset($row[$field]) && $row[$field]) {
@@ -581,12 +618,15 @@ function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = nul
 
     if (isset($flag1stLevel) && $flag1stLevel) {
         $rq = "SELECT ehi.`" . $field . "` " .
-                "FROM extended_host_information ehi " .
-                "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
+            "FROM extended_host_information ehi " .
+            "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
         $DBRESULT = $pearDB->query($rq);
         $row = $DBRESULT->fetchRow();
         if (isset($row[$field]) && $row[$field]) {
-            $DBRESULT2 = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '" . $row[$field] . "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+            $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
+                "WHERE vi.img_id = '" . $row[$field] .
+                "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
+            $DBRESULT2 = $pearDB->query($query);
             $row2 = $DBRESULT2->fetchRow();
             if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"]) {
                 return $row2["dir_alias"] . "/" . $row2["img_path"];
@@ -599,18 +639,21 @@ function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = nul
         return null;
     } else {
         $rq = "SELECT host_tpl_id " .
-                "FROM host_template_relation " .
-                "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
-                "ORDER BY `order`";
+            "FROM host_template_relation " .
+            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
+            "ORDER BY `order`";
         $DBRESULT = $pearDB->query($rq);
         while ($row = $DBRESULT->fetchRow()) {
             $rq2 = "SELECT ehi.`" . $field . "` " .
-                    "FROM extended_host_information ehi " .
-                    "WHERE ehi.host_host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
+                "FROM extended_host_information ehi " .
+                "WHERE ehi.host_host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
             $DBRESULT2 = $pearDB->query($rq2);
             $row2 = $DBRESULT2->fetchRow();
             if (isset($row2[$field]) && $row2[$field]) {
-                $DBRESULT3 = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '" . $row2[$field] . "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+                $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
+                    "WHERE vi.img_id = '" . $row2[$field] .
+                    "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
+                $DBRESULT3 = $pearDB->query($query);
                 $row3 = $DBRESULT3->fetchRow();
                 if (isset($row3["dir_alias"]) && isset($row3["img_path"]) && $row3["dir_alias"] && $row3["img_path"]) {
                     return $row3["dir_alias"] . "/" . $row3["img_path"];
@@ -623,7 +666,13 @@ function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = nul
                         }
                     }
                 } else {
-                    if ($result_field = getMyHostExtendedInfoImage($row['host_tpl_id'], $field, null, $row['host_tpl_id'])) {
+                    if ($result_field = getMyHostExtendedInfoImage(
+                        $row['host_tpl_id'],
+                        $field,
+                        null,
+                        $row['host_tpl_id']
+                    )
+                    ) {
                         return $result_field;
                     }
                 }
@@ -642,7 +691,10 @@ function getImageFilePath($image_id)
     }
 
     if (isset($image_id) && $image_id) {
-        $DBRESULT2 = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '" . CentreonDB::escape($image_id) . "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+        $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
+            "WHERE vi.img_id = '" . CentreonDB::escape($image_id) .
+            "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
+        $DBRESULT2 = $pearDB->query($query);
         $row2 = $DBRESULT2->fetchRow();
         if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"]) {
             return $row2["dir_alias"] . "/" . $row2["img_path"];
@@ -658,7 +710,9 @@ function getMyHostTemplateModels($host_id = null)
     global $pearDB;
     $tplArr = array();
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
+        $query = "SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '" .
+            CentreonDB::escape($host_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["host_name"]) {
             $tplArr[$host_id] = html_entity_decode($row["host_name"], ENT_QUOTES, "UTF-8");
@@ -682,7 +736,9 @@ function getMyHostMultipleTemplateModels($host_id = null)
 
     global $pearDB;
     $tplArr = array();
-    $DBRESULT = $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' ORDER BY `order`");
+    $query = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = '" .
+        CentreonDB::escape($host_id) . "' ORDER BY `order`";
+    $DBRESULT = $pearDB->query($query);
     while ($row = $DBRESULT->fetchRow()) {
         $DBRESULT2 = $pearDB->query("SELECT host_name FROM host WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1");
         $hTpl = $DBRESULT2->fetchRow();
@@ -702,8 +758,9 @@ function getMyHostGroupName($hg_id = null)
         return;
     }
     global $pearDB;
-    
-    $DBRESULT = $pearDB->query("SELECT hg_name FROM hostgroup WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' LIMIT 1");
+
+    $query = "SELECT hg_name FROM hostgroup WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["hg_name"]) {
         return html_entity_decode($row["hg_name"], ENT_QUOTES, "UTF-8");
@@ -730,19 +787,19 @@ function getMyHostGroupHosts($hg_id = null, $searchHost = null, $level = 1)
 
     $searchSTR = "";
     if (isset($searchHost) && $searchHost != "") {
-        $searchSTR = " AND h.host_name LIKE '%".CentreonDB::escape($searchHost)."%' ";
+        $searchSTR = " AND h.host_name LIKE '%" . CentreonDB::escape($searchHost) . "%' ";
     }
 
     $hosts = array();
     $DBRESULT = $pearDB->query("SELECT hgr.host_host_id " .
-            "FROM hostgroup_relation hgr, host h " .
-            "WHERE hgr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) . "' " .
-            "AND h.host_id = hgr.host_host_id $searchSTR " .
-            "ORDER by h.host_name");
+        "FROM hostgroup_relation hgr, host h " .
+        "WHERE hgr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) . "' " .
+        "AND h.host_id = hgr.host_host_id $searchSTR " .
+        "ORDER by h.host_name");
     while ($elem = $DBRESULT->fetchRow()) {
         $hosts[$elem["host_host_id"]] = $elem["host_host_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($elem);
 
     if ($level) {
@@ -772,7 +829,7 @@ function setHgHgCache($pearDB)
         }
         $hgHgCache[$data["hg_parent_id"]][$data["hg_child_id"]] = 1;
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($data);
     return $hgHgCache;
 }
@@ -786,16 +843,16 @@ function getMyHostGroupHostGroups($hg_id = null)
     }
 
     $hosts = array();
-    
+
     $DBRESULT = $pearDB->query("SELECT hg_child_id " .
-            "FROM hostgroup_hg_relation, hostgroup " .
-            "WHERE hostgroup_hg_relation.hg_parent_id = '" . CentreonDB::escape($hg_id) . "' " .
-            "AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
-            "ORDER BY hostgroup.hg_name");
+        "FROM hostgroup_hg_relation, hostgroup " .
+        "WHERE hostgroup_hg_relation.hg_parent_id = '" . CentreonDB::escape($hg_id) . "' " .
+        "AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
+        "ORDER BY hostgroup.hg_name");
     while ($elem = $DBRESULT->fetchRow()) {
         $hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     unset($elem);
     return $hosts;
 }
@@ -810,8 +867,9 @@ function getMyServiceGroupName($sg_id = null)
         return;
     }
     global $pearDB;
-    
-    $DBRESULT = $pearDB->query("SELECT sg_name FROM servicegroup WHERE sg_id = '" . CentreonDB::escape($sg_id) . "' LIMIT 1");
+
+    $query = "SELECT sg_name FROM servicegroup WHERE sg_id = '" . CentreonDB::escape($sg_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["sg_name"]) {
         return html_entity_decode($row["sg_name"], ENT_QUOTES, "UTF-8");
@@ -830,33 +888,34 @@ function getMyServiceGroupServices($sg_id = null)
      */
     $svs = array();
     $DBRESULT = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
-            "FROM servicegroup_relation, service, host " .
-            "WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' " .
-            "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-            "AND service.service_id = servicegroup_relation.service_service_id " .
-            "AND servicegroup_relation.host_host_id = host.host_id " .
-            "AND servicegroup_relation.host_host_id IS NOT NULL");
+        "FROM servicegroup_relation, service, host " .
+        "WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' " .
+        "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
+        "AND service.service_id = servicegroup_relation.service_service_id " .
+        "AND servicegroup_relation.host_host_id = host.host_id " .
+        "AND servicegroup_relation.host_host_id IS NOT NULL");
     while ($elem = $DBRESULT->fetchRow()) {
-        $svs[$elem["host_host_id"] . "_" . $elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $elem["host_name"];
+        $svs[$elem["host_host_id"] . "_" . $elem["service_id"]] =
+            db2str($elem["service_description"]) . ":::" . $elem["host_name"];
     }
 
     /*
      * ServiceGroups by hostGroups
      */
     $DBRESULT = $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
-            "FROM servicegroup_relation, service, hostgroup " .
-            "WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' " .
-            "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-            "AND service.service_id = servicegroup_relation.service_service_id " .
-            "AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
-            "AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
+        "FROM servicegroup_relation, service, hostgroup " .
+        "WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' " .
+        "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
+        "AND service.service_id = servicegroup_relation.service_service_id " .
+        "AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
+        "AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
     while ($elem = $DBRESULT->fetchRow()) {
         $hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
         foreach ($hosts as $key => $value) {
             $svs[$key . "_" . $elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $value;
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $svs;
 }
 
@@ -913,9 +972,11 @@ function getMyServiceField($service_id = null, $field)
     }
     global $pearDB;
     $tab = array();
-    
+
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT `" . $field . "`, service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT `" . $field . "`, service_template_model_stm_id FROM service WHERE service_id = '" .
+            CentreonDB::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         $field_result = $row[$field];
         if ($row[$field]) {
@@ -941,7 +1002,11 @@ function getMyServiceExtendedInfoField($service_id = null, $field)
 
     $tab = array();
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT `extended_service_information`.`" . $field . "`, `service`.`service_template_model_stm_id` FROM `service`, `extended_service_information` WHERE `extended_service_information`.`service_service_id` = '" . CentreonDb::escape($service_id) . "' AND `service`.`service_id` = '" . CentreonDb::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT `extended_service_information`.`" . $field . "`, `service`.`service_template_model_stm_id` " .
+            "FROM `service`, `extended_service_information` " .
+            "WHERE `extended_service_information`.`service_service_id` = '" . CentreonDb::escape($service_id) .
+            "' AND `service`.`service_id` = '" . CentreonDb::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         $field_result = $row[$field];
         if ($row[$field]) {
@@ -967,10 +1032,16 @@ function getMyServiceExtendedInfoImage($service_id = null, $field)
 
     $tab = array();
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT s.service_template_model_stm_id, `" . $field . "` FROM service s, extended_service_information esi WHERE s.service_id = '" . CentreonDB::escape($service_id) . "' AND esi.service_service_id = s.service_id LIMIT 1");
+        $query = "SELECT s.service_template_model_stm_id, `" . $field .
+            "` FROM service s, extended_service_information esi WHERE s.service_id = '" .
+            CentreonDB::escape($service_id) . "' AND esi.service_service_id = s.service_id LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if (isset($row[$field]) && $row[$field]) {
-            $DBRESULT = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '" . $row[$field] . "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+            $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
+                "WHERE vi.img_id = '" . $row[$field] . "' AND vidr.img_img_id = vi.img_id " .
+                "AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
+            $DBRESULT = $pearDB->query($query);
             $row = $DBRESULT->fetchRow();
             if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"]) {
                 return $row["dir_alias"] . "/" . $row["img_path"];
@@ -996,9 +1067,11 @@ function getMyServiceName($service_id = null)
     }
     global $pearDB;
     $tab = array();
-    
+
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '" .
+            CentreonDB::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["service_description"]) {
             return html_entity_decode(db2str($row["service_description"]), ENT_QUOTES, "UTF-8");
@@ -1022,9 +1095,11 @@ function getMyServiceAlias($service_id = null)
     global $pearDB;
 
     $tab = array();
-    
+
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT service_alias, service_template_model_stm_id FROM service " .
+            "WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["service_alias"]) {
             return html_entity_decode(db2str($row["service_alias"]), ENT_QUOTES, "UTF-8");
@@ -1049,7 +1124,10 @@ function getMyServiceGraphID($service_id = null)
 
     $tab = array();
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '" . CentreonDB::escape($service_id) . "' AND esi.service_service_id = service_id LIMIT 1");
+        $query = "SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi " .
+            "WHERE service_id = '" . CentreonDB::escape($service_id) .
+            "' AND esi.service_service_id = service_id LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["graph_id"]) {
             return $row["graph_id"];
@@ -1076,7 +1154,7 @@ function getMyServiceIDStorage($service_description, $host_id)
     $DBRESULT = $dbb->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["service_id"]) {
-            return $row["service_id"];
+        return $row["service_id"];
     }
 }
 
@@ -1087,29 +1165,38 @@ function getMyServiceID($service_description = null, $host_id = null, $hg_id = n
         return;
     }
     global $pearDB;
-    
+
     $service_description = str2db($service_description);
     if ($host_id) {
-        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr " .
-                "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id " .
-                "AND (service_description = '" . $pearDB->escape($service_description) . "'
-								OR service_description = '" . $pearDB->escape(utf8_encode($service_description)) . "') LIMIT 1");
+
+        $query = "SELECT service_id FROM service, host_service_relation hsr " .
+            "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id " .
+            "AND (service_description = '" . $pearDB->escape($service_description) .
+            "' OR service_description = '" . $pearDB->escape(utf8_encode($service_description)) . "') LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         # Service is directely link to a host, no problem
         if ($row["service_id"]) {
             return $row["service_id"];
         }
         # The Service might be link with a HostGroup
-        $DBRESULT = $pearDB->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-                " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-                " AND service_id = hsr.service_service_id AND service_description = '" . CentreonDb::escape($service_description) . "'");
+        $query = "SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+            " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) .
+            "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+            " AND service_id = hsr.service_service_id AND service_description = '" .
+            CentreonDb::escape($service_description) . "'";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["service_id"]) {
             return $row["service_id"];
         }
     }
     if ($hg_id) {
-        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) . "' AND hsr.service_service_id = service_id AND service_description = '" . CentreonDb::escape($service_description) . "' LIMIT 1");
+        $query = "SELECT service_id FROM service, host_service_relation hsr " .
+            "WHERE hsr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) .
+            "' AND hsr.service_service_id = service_id AND service_description = '" .
+            CentreonDb::escape($service_description) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["service_id"]) {
             return $row["service_id"];
@@ -1132,26 +1219,34 @@ function getMyHostServices($host_id = null, $search = 0)
      * Get Services attached to hosts
      */
     if ($search !== 0) {
-        $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id AND service_description LIKE '%" . CentreonDB::escape($search) . "%'");
+        $query = "SELECT service_id, service_description FROM service, host_service_relation hsr " .
+            "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) .
+            "' AND hsr.service_service_id = service_id AND service_description LIKE '%" .
+            CentreonDB::escape($search) . "%'";
+        $DBRESULT = $pearDB->query($query);
     } else {
-        $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id");
+        $query = "SELECT service_id, service_description FROM service, host_service_relation hsr " .
+            "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id";
+        $DBRESULT = $pearDB->query($query);
     }
 
     while ($elem = $DBRESULT->fetchRow()) {
         $hSvs[$elem["service_id"]] = html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Get Services attached to hostgroups
      */
-    $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-            " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-            " AND service_id = hsr.service_service_id");
+    $query = "SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+        " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) .
+        "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+        " AND service_id = hsr.service_service_id";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         $hSvs[$elem["service_id"]] = html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     asort($hSvs);
     return $hSvs;
 }
@@ -1174,22 +1269,27 @@ function getMyHostActiveServices($host_id = null, $search = null)
     /*
      * Get Services attached to hosts
      */
-    $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id AND service_activate = '1' $searchSTR");
+    $query = "SELECT service_id, service_description FROM service, host_service_relation hsr " .
+        "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) .
+        "' AND hsr.service_service_id = service_id AND service_activate = '1' $searchSTR";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         $hSvs[$elem["service_id"]] = $elem["service_description"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Get Services attached to hostgroups
      */
-    $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-            " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-            " AND service_id = hsr.service_service_id AND service_activate = '1' $searchSTR ");
+    $query = "SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+        " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) .
+        "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+        " AND service_id = hsr.service_service_id AND service_activate = '1' $searchSTR ";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         $hSvs[$elem["service_id"]] = $elem["service_description"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     asort($hSvs);
     return $hSvs;
 }
@@ -1201,19 +1301,24 @@ function getMyHostServicesByName($host_id = null)
     }
     global $pearDB;
     $hSvs = array();
-    
-    $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id");
+
+    $query = "SELECT service_id, service_description FROM service, host_service_relation hsr " .
+        "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         $hSvs[db2str($elem["service_description"])] = html_entity_decode($elem["service_id"], ENT_QUOTES, "UTF-8");
     }
-    $DBRESULT->free();
-    $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-            " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-            " AND service_id = hsr.service_service_id");
+    $DBRESULT->closeCursor();
+
+    $query = "SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+        " WHERE hgr.host_host_id = '" . CentreonDB::escape($host_id) .
+        "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+        " AND service_id = hsr.service_service_id";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         $hSvs[db2str($elem["service_description"])] = html_entity_decode($elem["service_id"], ENT_QUOTES, "UTF-8");
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $hSvs;
 }
 
@@ -1224,20 +1329,24 @@ function getAllMyServiceHosts($service_id = null)
     }
     global $pearDB;
     $hosts = array();
-    
-    $DBRESULT = $pearDB->query("SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '" . CentreonDB::escape($service_id) . "'");
+
+    $query = "SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr " .
+        "WHERE hsr.service_service_id = '" . CentreonDB::escape($service_id) . "'";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         if ($elem["host_host_id"]) {
             $hosts[$elem["host_host_id"]] = $elem["host_host_id"];
         } elseif ($elem["hostgroup_hg_id"]) {
-            $DBRESULT2 = $pearDB->query("SELECT host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '" . $elem["hostgroup_hg_id"] . "'");
+            $query = "SELECT host_host_id FROM hostgroup_relation hgr " .
+                "WHERE hgr.hostgroup_hg_id = '" . $elem["hostgroup_hg_id"] . "'";
+            $DBRESULT2 = $pearDB->query($query);
             while ($elem2 = $DBRESULT2->fetchRow()) {
                 $hosts[$elem2["host_host_id"]] = $elem2["host_host_id"];
             }
-            $DBRESULT2->free();
+            $DBRESULT2->closeCursor();
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $hosts;
 }
 
@@ -1248,14 +1357,16 @@ function getMyServiceHosts($service_id = null)
     }
     global $pearDB;
     $hosts = array();
-    
-    $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '" . CentreonDB::escape($service_id) . "'");
+
+    $query = "SELECT DISTINCT host_host_id FROM host_service_relation hsr " .
+        "WHERE hsr.service_service_id = '" . CentreonDB::escape($service_id) . "'";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         if ($elem["host_host_id"]) {
             $hosts[$elem["host_host_id"]] = $elem["host_host_id"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $hosts;
 }
 
@@ -1266,14 +1377,16 @@ function getMyServiceHostGroups($service_id = null)
     }
     global $pearDB;
     $hgs = array();
-    
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '" . CentreonDB::escape($service_id) . "'");
+
+    $query = "SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr " .
+        "WHERE hsr.service_service_id = '" . CentreonDB::escape($service_id) . "'";
+    $DBRESULT = $pearDB->query($query);
     while ($elem = $DBRESULT->fetchRow()) {
         if ($elem["hostgroup_hg_id"]) {
             $hgs[$elem["hostgroup_hg_id"]] = $elem["hostgroup_hg_id"];
         }
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $hgs;
 }
 
@@ -1283,8 +1396,9 @@ function getMyServiceTPLID($service_description = null)
         return;
     }
     global $pearDB;
-    
-    $DBRESULT = $pearDB->query("SELECT service_id FROM service WHERE service_description = '" . htmlentities(str2db($service_description), ENT_QUOTES, "UTF-8") . "' AND service_register = '0' LIMIT 1");
+    $query = "SELECT service_id FROM service WHERE service_description = '" .
+        htmlentities(str2db($service_description), ENT_QUOTES, "UTF-8") . "' AND service_register = '0' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["service_id"]) {
         return $row["service_id"];
@@ -1299,12 +1413,15 @@ function isACheckGraphService($service_id = null)
     }
     global $pearDB;
     $tab = array();
-    
+
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT command_command_id, service_template_model_stm_id FROM service " .
+            "WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["command_command_id"]) {
-            $DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1");
+            $query = "SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1";
+            $DBRESULT2 = $pearDB->query($query);
             $row2 = $DBRESULT2->fetchRow();
             if (strstr($row2["command_name"], "check_graph_")) {
                 return true;
@@ -1331,9 +1448,11 @@ function getMyServiceTemplateModels($service_id = null)
     }
     global $pearDB;
     $tplArr = array();
-    
+
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT service_description, service_template_model_stm_id FROM service " .
+            "WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["service_description"]) {
             $tplArr[$service_id] = html_entity_decode(db2str($row["service_description"]), ENT_QUOTES, "UTF-8");
@@ -1365,12 +1484,15 @@ function getMyCheckCmdName($service_id = null)
     global $pearDB;
 
     $tab = array();
-    
+
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT command_command_id, service_template_model_stm_id FROM service " .
+            "WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["command_command_id"]) {
-            $DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1");
+            $query = "SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1";
+            $DBRESULT2 = $pearDB->query($query);
             $row2 = $DBRESULT2->fetchRow();
             return ($row2["command_name"]);
         } elseif ($row["service_template_model_stm_id"]) {
@@ -1393,9 +1515,11 @@ function getMyCheckCmdArg($service_id = null)
     }
     global $pearDB;
     $tab = array();
-    
+
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+        $query = "SELECT command_command_id_arg, service_template_model_stm_id FROM service " .
+            "WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1";
+        $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["command_command_id_arg"]) {
             return (db2str($row["command_command_id_arg"]));
@@ -1426,18 +1550,22 @@ function getMyCheckCmdParam($service_id = null)
 
     $cmd = null;
     $arg = null;
-    $DBRESULT = $pearDB->query("SELECT command_command_id, command_command_id_arg FROM service WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
+    $query = "SELECT command_command_id, command_command_id_arg FROM service WHERE service_id = '" .
+        CentreonDB::escape($service_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $row = $DBRESULT->fetchRow();
     if ($row["command_command_id_arg"] && !$row["command_command_id"]) {
         $cmd = getMyCheckCmdName($service_id);
         return $cmd . db2str($row["command_command_id_arg"]);
     } elseif ($row["command_command_id"] && !$row["command_command_id_arg"]) {
-        $DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1");
+        $query = "SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1";
+        $DBRESULT2 = $pearDB->query($query);
         $row2 = $DBRESULT2->fetchRow();
         $arg = getMyCheckCmdArg($service_id);
         return $row2["command_name"] . $arg;
     } elseif ($row["command_command_id"] && $row["command_command_id_arg"]) {
-        $DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1");
+        $query = "SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1";
+        $DBRESULT2 = $pearDB->query($query);
         $row2 = $DBRESULT2->fetchRow();
         return $row2["command_name"] . db2str($row["command_command_id_arg"]);
     } else {
@@ -1456,10 +1584,10 @@ function getMyHostID($host_name = null)
         return;
     }
     global $pearDB;
-    
+
     $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "' 
 			OR host_name = '" . $pearDB->escape(utf8_encode($host_name)) . "'LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["host_id"];
     }
@@ -1472,9 +1600,11 @@ function getMyHostGroupID($hostgroup_name = null)
         return;
     }
     global $pearDB;
-    
-    $DBRESULT = $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '" . htmlentities(str2db($hostgroup_name), ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+
+    $query = "SELECT hg_id FROM hostgroup WHERE hg_name = '" .
+        htmlentities(str2db($hostgroup_name), ENT_QUOTES, "UTF-8") . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["hg_id"];
     }
@@ -1487,8 +1617,10 @@ function getMyServiceGroupID($servicegroup_name = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '" . htmlentities(str2db($servicegroup_name), ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    $query = "SELECT sg_id FROM servicegroup " .
+        "WHERE sg_name = '" . htmlentities(str2db($servicegroup_name), ENT_QUOTES, "UTF-8") . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["sg_id"];
     }
@@ -1507,9 +1639,9 @@ function getMyContactID($contact_name = null)
         return;
     }
     global $pearDB;
-    
-    $DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_alias = '" . $pearDB->escape($contact_name) . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    $query = "SELECT contact_id FROM contact WHERE contact_alias = '" . $pearDB->escape($contact_name) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["contact_id"];
     }
@@ -1522,8 +1654,10 @@ function getMyContactGroupID($cg_name = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '" . htmlentities($cg_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    $query = "SELECT cg_id FROM contactgroup WHERE cg_name = '" .
+        htmlentities($cg_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["cg_id"];
     }
@@ -1536,8 +1670,10 @@ function getMyCommandID($command_name = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT command_id FROM command WHERE command_name = '" . htmlentities($command_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    $query = "SELECT command_id FROM command WHERE command_name = '" .
+        htmlentities($command_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["command_id"];
     }
@@ -1550,8 +1686,10 @@ function getMyTPID($tp_name = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '" . htmlentities($tp_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    $query = "SELECT tp_id FROM timeperiod WHERE tp_name = '" .
+        htmlentities($tp_name, ENT_QUOTES, "UTF-8") . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["tp_id"];
     }
@@ -1566,20 +1704,21 @@ function getMyTPID($tp_name = null)
 function getDefaultMetaGraph($meta_id = null)
 {
     global $pearDB;
-    
-    $DBRESULT = $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '" . CentreonDB::escape($meta_id) . "' LIMIT 1");
+
+    $query = "SELECT graph_id FROM meta_service WHERE meta_id = '" . CentreonDB::escape($meta_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $gt = $DBRESULT->fetchRow();
     if ($gt["graph_id"]) {
         return $gt["graph_id"];
     } else {
         $DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $gt = $DBRESULT->fetchRow();
             return $gt["graph_id"];
         }
     }
     $DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $gt = $DBRESULT->fetchRow();
         return $gt["graph_id"];
     }
@@ -1596,7 +1735,7 @@ function getDefaultGraph($service_id = null, $rrdType = null)
     } else {
         $command_id = getMyServiceField($service_id, "command_command_id");
         $DBRESULT = $pearDB->query("SELECT graph_id FROM command WHERE `command_id` = '" . $command_id . "'");
-        if ($DBRESULT->numRows()) {
+        if ($DBRESULT->rowCount()) {
             $gt = $DBRESULT->fetchRow();
             if ($gt["graph_id"] != null) {
                 return $gt["graph_id"];
@@ -1604,7 +1743,7 @@ function getDefaultGraph($service_id = null, $rrdType = null)
         }
     }
     $DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $gt = $DBRESULT->fetchRow();
         return $gt["graph_id"];
     }
@@ -1630,7 +1769,9 @@ function return_image_list($mode = 0, $rep = null, $full = true, $origin_path = 
         2 => array('gif' => 'gif', 'png' => 'png', 'jpg' => 'jpg', 'gd2' => 'gd2')
     );
 
-    $DBRESULT = $pearDB->query("SELECT img_id, img_name, img_path, dir_name FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE img_id = vidr.img_img_id AND dir_id = vidr.dir_dir_parent_id ORDER BY dir_name, img_name");
+    $query = "SELECT img_id, img_name, img_path, dir_name FROM view_img_dir, view_img, view_img_dir_relation vidr " .
+        "WHERE img_id = vidr.img_img_id AND dir_id = vidr.dir_dir_parent_id ORDER BY dir_name, img_name";
+    $DBRESULT = $pearDB->query($query);
     $dir_name = null;
     $dir_name2 = null;
     $cpt = 1;
@@ -1646,7 +1787,8 @@ function return_image_list($mode = 0, $rep = null, $full = true, $origin_path = 
         if (isset($pinfo["extension"]) && isset($is_a_valid_image[$mode][$pinfo["extension"]])) {
             $ext = "&nbsp;(" . $pinfo["extension"] . ")";
         }
-        $images[$elem["img_id"]] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . html_entity_decode($elem["img_name"], ENT_NOQUOTES) . $ext;
+        $images[$elem["img_id"]] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" .
+            html_entity_decode($elem["img_name"], ENT_NOQUOTES) . $ext;
     }
     return ($images);
 }
@@ -1678,15 +1820,21 @@ function service_has_graph($host, $service, $dbo = null)
         $dbo = $pearDBO;
     }
     if (is_numeric($host) && is_numeric($service)) {
-        $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_id = '" . CentreonDB::escape($host) . "' AND i.service_id = '" . CentreonDB::escape($service) . "'");
-        if ($DBRESULT->numRows() > 0) {
+        $query = "SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id " .
+            "AND i.host_id = '" . CentreonDB::escape($host) .
+            "' AND i.service_id = '" . CentreonDB::escape($service) . "'";
+        $DBRESULT = $dbo->query($query);
+        if ($DBRESULT->rowCount() > 0) {
             return true;
         }
     }
     if (!is_numeric($host) && !is_numeric($service)) {
-        $DBRESULT = $dbo->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_name = '" . CentreonDB::escape($host) . "' AND i.service_description = '" . CentreonDB::escape($service) . "'");
+        $query = "SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id " .
+            "AND i.host_name = '" . CentreonDB::escape($host) .
+            "' AND i.service_description = '" . CentreonDB::escape($service) . "'";
+        $DBRESULT = $dbo->query($query);
 
-        if ($DBRESULT->numRows() > 0) {
+        if ($DBRESULT->rowCount() > 0) {
             return true;
         }
     }
@@ -1700,7 +1848,9 @@ function host_has_one_or_more_GraphService($host_id, $search = 0)
     $services = getMyHostServices($host_id, $search);
 
     foreach ($services as $svc_id => $svc_name) {
-        if (service_has_graph($host_id, $svc_id) && ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id])))) {
+        if (service_has_graph($host_id, $svc_id) &&
+            ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id])))
+        ) {
             return true;
         }
     }
@@ -1759,8 +1909,11 @@ function getMyHostServiceID($service_id = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT host_id FROM host h,host_service_relation hsr WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1");
-    if ($DBRESULT->numRows()) {
+    $query = "SELECT host_id FROM host h,host_service_relation hsr " .
+        "WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '" . CentreonDB::escape($service_id) .
+        "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
+    if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
         return $row["host_id"];
     }
@@ -1808,9 +1961,13 @@ function isHostLocalhost($pearDB, $host_name = null)
     if (!isset($host_name)) {
         return 0;
     }
-    $DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '".CentreonDb::escape($host_name)."' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+    $query = "SELECT `localhost` FROM nagios_server, ns_host_relation, host " .
+        "WHERE host.host_name = '" . CentreonDb::escape($host_name) .
+        "' AND host.host_id = ns_host_relation.host_host_id " .
+        "AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $nagios_server = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     if (isset($nagios_server['localhost'])) {
         return $nagios_server['localhost'];
     }
@@ -1822,9 +1979,10 @@ function isPollerLocalhost($pearDB, $id = null)
     if (!isset($id)) {
         return 0;
     }
-    $DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server WHERE nagios_server.id = '".CentreonDb::escape($id)."' LIMIT 1");
+    $query = "SELECT `localhost` FROM nagios_server WHERE nagios_server.id = '" . CentreonDb::escape($id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $nagios_server = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     if (isset($nagios_server['localhost'])) {
         return $nagios_server['localhost'];
     }
@@ -1836,14 +1994,18 @@ function GetMyHostPoller($pearDB, $host_name = null)
     if (!isset($host_name)) {
         return 0;
     }
-    $DBRESULT = $pearDB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '".CentreonDb::escape($host_name)."' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+    $query = "SELECT `id` FROM nagios_server, ns_host_relation, host " .
+        "WHERE host.host_name = '" . CentreonDb::escape($host_name) .
+        "' AND host.host_id = ns_host_relation.host_host_id " .
+        "AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     $nagios_server = $DBRESULT->fetchRow();
     if (isset($nagios_server['id'])) {
         return $nagios_server['id'];
     }
     $sql = "SELECT id FROM nagios_server WHERE localhost = '1' LIMIT 1";
     $res = $pearDB->query($sql);
-    if ($res->numRows()) {
+    if ($res->rowCount()) {
         $row = $res->fetchRow();
         return $row['id'];
     }
@@ -1900,13 +2062,14 @@ function str2db($string)
       $string = str_replace("\\", '#BS#', $string); */
     return $string;
 }
-    /**
-     * Execute a command to the Centreon Broker socket
-     *
-     * @param string $command The command to execute
-     * @param string $socket The socket file or tcp information
-     * @return bool
-     */
+
+/**
+ * Execute a command to the Centreon Broker socket
+ *
+ * @param string $command The command to execute
+ * @param string $socket The socket file or tcp information
+ * @return bool
+ */
 function sendCommandBySocket($command, $socket)
 {
     ob_start();
@@ -1933,13 +2096,13 @@ function sendCommandBySocket($command, $socket)
     }
     return $running;
 }
-    
-    /**
-     * Return the list of template
-     *
-     * @param int $svcId The service ID
-     * @return array
-     */
+
+/**
+ * Return the list of template
+ *
+ * @param int $svcId The service ID
+ * @return array
+ */
 function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
 {
     $svcTmpl = array();
@@ -1948,12 +2111,15 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
     } else {
         $alreadyProcessed[] = $svcId;
 
-        $query = "SELECT * FROM service WHERE service_id = ".  intval($svcId);
+        $query = "SELECT * FROM service WHERE service_id = " . intval($svcId);
         $stmt = $pearDB->query($query);
-        if ($stmt->numRows()) {
+        if ($stmt->rowCount()) {
             $row = $stmt->fetchRow();
             if ($row['service_template_model_stm_id'] !== null) {
-                $svcTmpl = array_merge($svcTmpl, getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed));
+                $svcTmpl = array_merge(
+                    $svcTmpl,
+                    getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed)
+                );
                 $svcTmpl[] = $row;
             }
         }
@@ -1993,11 +2159,11 @@ function cleanString($str)
     if (empty($str)) {
         return $sReturn;
     }
-    
+
     $str = utf8_decode($str);
     $str = utf8_encode($str);
     $str = str_replace(array("“", "„"), '"', $str);
-    
+
     return $str;
 }
 
@@ -2006,7 +2172,7 @@ function cleanString($str)
 function get_my_first_allowed_root_menu($lcaTStr)
 {
     global $pearDB;
-    
+
     if ($lcaTStr != "") {
         $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
                 FROM topology 
@@ -2021,7 +2187,7 @@ function get_my_first_allowed_root_menu($lcaTStr)
     }
     $DBRESULT = $pearDB->query($rq);
     $root_menu = array();
-    if ($DBRESULT->numRows()) {
+    if ($DBRESULT->rowCount()) {
         $root_menu = $DBRESULT->fetchRow();
     }
     return $root_menu;
@@ -2034,7 +2200,9 @@ function reset_search_page($url)
     if (!isset($url)) {
         return;
     }
-    if (isset($_GET["search"]) && isset($centreon->historySearch[$url]) && $_GET["search"] != $centreon->historySearch[$url]) {
+    if (isset($_GET["search"]) &&
+        isset($centreon->historySearch[$url]) && $_GET["search"] != $centreon->historySearch[$url]
+    ) {
         $_POST["num"] = 0;
         $_GET["num"] = 0;
     }
@@ -2043,20 +2211,20 @@ function reset_search_page($url)
 function get_child($id_page, $lcaTStr)
 {
     global $pearDB;
-    
+
     if ($lcaTStr != "") {
         $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
                 FROM topology 
                 WHERE  topology_page IN ($lcaTStr) 
-                AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
+                AND topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1' 
                 ORDER BY topology_order, topology_group ";
     } else {
         $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
                 FROM topology 
-                WHERE  topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
+                WHERE  topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1' 
                 ORDER BY topology_order, topology_group ";
     }
-        
+
     $DBRESULT = $pearDB->query($rq);
     $redirect = $DBRESULT->fetch();
     return $redirect;

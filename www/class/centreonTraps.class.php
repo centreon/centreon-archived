@@ -124,9 +124,9 @@ class CentreonTraps
         $res = $this->db->query($query);
         $trap = $res->fetchRow();
 
-        if ($res->numRows() >= 1 && $trap["traps_id"] == $id) {
+        if ($res->rowCount() >= 1 && $trap["traps_id"] == $id) {
             return true;
-        } elseif ($res->numRows() >= 1 && $trap["traps_id"] != $id) {
+        } elseif ($res->rowCount() >= 1 && $trap["traps_id"] != $id) {
             return false;
         } else {
             return true;
@@ -459,7 +459,10 @@ class CentreonTraps
         $rq .= "'".$this->db->escape($ret["traps_timeout"])."', ";
         $rq .= "'".$this->db->escape($ret["traps_customcode"])."') ";
         $this->db->query($rq);
-        
+
+        $res = $this->db->query("SELECT MAX(traps_id) FROM traps");
+        $traps_id = $res->fetchRow();
+
         $this->setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
         $this->setServiceRelations($traps_id['MAX(traps_id)']);
         $this->setServiceTemplateRelations($traps_id['MAX(traps_id)']);
@@ -467,9 +470,6 @@ class CentreonTraps
         if ($this->centreon->user->admin) {
             $this->setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
         }
-
-        $res = $this->db->query("SELECT MAX(traps_id) FROM traps");
-        $traps_id = $res->fetchRow();
 
         /* Prepare value for changelog */
         $fields = CentreonLogAction::prepareChanges($ret);

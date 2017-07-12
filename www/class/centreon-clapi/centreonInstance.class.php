@@ -82,6 +82,7 @@ class CentreonInstance extends CentreonObject
         $this->action = "INSTANCE";
         $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->activateField = "ns_activate";
+        $this->centreonConfigPoller = new CentreonConfigPoller(_CENTREON_PATH_, $this->api->getDependencyInjector());
     }
 
     /**
@@ -141,7 +142,7 @@ class CentreonInstance extends CentreonObject
             $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
 
-        $pollerState = CentreonConfigPoller::getPollerState();
+        $pollerState = $this->centreonConfigPoller->getPollerState();
 
         $params = array(
             'id',

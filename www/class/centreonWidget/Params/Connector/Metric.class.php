@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/List.class.php";
+require_once __DIR__ . "/../List.class.php";
 
 class CentreonWidgetParamsConnectorMetric extends CentreonWidgetParamsList
 {
@@ -47,9 +47,7 @@ class CentreonWidgetParamsConnectorMetric extends CentreonWidgetParamsList
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT metric_id, metric_name
-            		  FROM metrics
-            		  WHERE to_delete = 0 ";
+            $query = "SELECT metric_id, metric_name FROM metrics WHERE to_delete = 0 ";
             $query .= " ORDER BY metric_name ";
             $res = $this->monitoringDb->query($query);
             $tab = array(null => null);

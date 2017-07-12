@@ -48,7 +48,7 @@ if (($o == "c" || $o == "w") && $id) {
     $DBRESULT = $pearDB->query("SELECT traps_group_name as name, traps_group_id as id FROM traps_group WHERE traps_group_id = '" . $pearDB->escape($id) . "' LIMIT 1");
     # Set base value
     $group = array_map("myDecodeGroup", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 ##########################################################

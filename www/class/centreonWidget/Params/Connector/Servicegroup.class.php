@@ -33,7 +33,7 @@
  *
  */
 
-require_once "class/centreonWidget/Params/List.class.php";
+require_once __DIR__ . "/../List.class.php";
 
 class CentreonWidgetParamsConnectorServicegroup extends CentreonWidgetParamsList
 {
@@ -47,9 +47,7 @@ class CentreonWidgetParamsConnectorServicegroup extends CentreonWidgetParamsList
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT sg_id, sg_name
-            		  FROM servicegroup
-            		  WHERE sg_activate = '1' ";
+            $query = "SELECT sg_id, sg_name FROM servicegroup WHERE sg_activate = '1' ";
             $query .= $this->acl->queryBuilder('AND', 'sg_id', $this->acl->getServiceGroupsString());
             $query .= " ORDER BY sg_name";
             $res = $this->db->query($query);

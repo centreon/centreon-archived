@@ -189,11 +189,11 @@ function initWholePage() {
  * set quick search position
  */
 function setQuickSearchPosition() {
-    if ($('QuickSearch')) {
-        if ($('header').visible()) {
-            $('QuickSearch').setStyle({ top: '86px' });
+    if (jQuery('#QuickSearch')) {
+        if (jQuery('#header').is(':visible')) {
+            jQuery('#QuickSearch').css({ top: '86px' });
         } else {
-            $('QuickSearch').setStyle({ top: '3px' });
+            jQuery('#QuickSearch').css({ top: '3px' });
         }
     }    
     jQuery(".timepicker").timepicker();

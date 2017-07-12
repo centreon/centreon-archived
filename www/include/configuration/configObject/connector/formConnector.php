@@ -72,7 +72,7 @@ try {
         }
     }
     unset($row);
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     /*
      * Nagios Macro
@@ -83,7 +83,7 @@ try {
         $macros[$row["macro_name"]] = $row["macro_name"];
     }
     unset($row);
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 
     $availableConnectors_list = return_plugin($oreon->optGen["cengine_path_connectors"]);
 

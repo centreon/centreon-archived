@@ -43,7 +43,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
     $gopt[$opt["key"]] = myDecode($opt["value"]);
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 /*
  * Check value for interval_length

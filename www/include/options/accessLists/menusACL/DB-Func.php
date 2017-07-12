@@ -46,10 +46,10 @@ function testExistence($name = null)
     $DBRESULT = $pearDB->query("SELECT acl_topo_name, acl_topo_id FROM `acl_topology` WHERE acl_topo_name = '".$name."'");
     $lca = $DBRESULT->fetchRow();
     #Modif case
-    if ($DBRESULT->numRows() >= 1 && $lca["acl_topo_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $lca["acl_topo_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $lca["acl_topo_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $lca["acl_topo_id"] != $id) {
         return false;
     } else {
         return true;
@@ -100,7 +100,7 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
                 $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_topo_id) FROM acl_topology");
                 $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->free();
+                $DBRESULT->closeCursor();
                 if (isset($maxId["MAX(acl_topo_id)"])) {
                     $maxTopoId = $maxId['MAX(acl_topo_id)'];
                     $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right)

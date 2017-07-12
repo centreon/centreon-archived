@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,8 @@
  *
  */
 
-class Connector extends AbstractObject {
+class Connector extends AbstractObject
+{
     private $connectors = null;
     protected $generate_filename = 'connectors.cfg';
     protected $object_name = 'connector';
@@ -46,8 +48,9 @@ class Connector extends AbstractObject {
         'connector_name',
         'connector_line',
     );
-    
-    private function getConnectors() {        
+
+    private function getConnectors()
+    {
         $stmt = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM connector 
@@ -56,12 +59,13 @@ class Connector extends AbstractObject {
         $stmt->execute();
         $this->connectors = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    public function generateObjects($connector_path) {
+
+    public function generateObjects($connector_path)
+    {
         if (is_null($connector_path)) {
             return 0;
         }
-        
+
         $this->getConnectors();
         foreach ($this->connectors as $connector) {
             $connector['connector_line'] = $connector_path . '/' . $connector['connector_line'];

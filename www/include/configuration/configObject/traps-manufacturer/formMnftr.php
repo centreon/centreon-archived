@@ -48,7 +48,7 @@ if (($o == "c" || $o == "w") && $id) {
     $DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
     # Set base value
     $mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 ##########################################################

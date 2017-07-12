@@ -1,4 +1,3 @@
-<link rel="stylesheet" type="text/css" href="./include/common/javascript/scriptaculous/themes/test/theme.css" />
 {$form.javascript}
 <form {$form.attributes}>
 	 <input type="hidden" name="level" value="1"> 
@@ -43,11 +42,11 @@
 					{$progressLabel} (<label id='progressPct'></label>)
 				</td>
 				<td class="FormRowValue">
-					<span id="progress_bar">0%</span>
+					<div id="progress_bar"></div>
 				</td>
 			</tr>
 			<tr class="list_two">
-				<td class="FormRowField">
+				<td class="FormRowField consoleSteps">
 					<div id="consoleContent"></div>
 				</td>
 				<td class="FormRowValue">

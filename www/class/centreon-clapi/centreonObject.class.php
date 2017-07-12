@@ -36,8 +36,8 @@
 namespace CentreonClapi;
 
 require_once "centreonAPI.class.php";
-require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
-require_once _CLAPI_LIB_."/Centreon/Object/Contact/Contact.php";
+require_once _CLAPI_LIB_ . "/Centreon/Db/Manager/Manager.php";
+require_once _CLAPI_LIB_ . "/Centreon/Object/Contact/Contact.php";
 require_once "centreonClapiException.class.php";
 
 abstract class CentreonObject
@@ -250,7 +250,7 @@ abstract class CentreonObject
             $this->object->delete($ids[0]);
             $this->addAuditLog('d', $ids[0], $objectName);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$objectName);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
         }
     }
 
@@ -263,7 +263,8 @@ abstract class CentreonObject
     public function setparam($objectId, $params = array())
     {
         if (isset($params[$this->object->getUniqueLabelField()])
-            && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true) {
+            && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true
+        ) {
             throw new CentreonClapiException(self::NAMEALREADYINUSE);
         }
         $this->object->update($objectId, $params);
@@ -311,7 +312,7 @@ abstract class CentreonObject
             if (count($ids)) {
                 $this->object->update($ids[0], array($this->activateField => $value));
             } else {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$objectName);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
             }
         } else {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
@@ -346,14 +347,14 @@ abstract class CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function export($filters=null)
+    public function export($filters = null)
     {
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
-            $addStr = $this->action.$this->delim."ADD";
+            $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
-                $addStr .= $this->delim.$element[$param];
+                $addStr .= $this->delim . $element[$param];
             }
             $addStr .= "\n";
             echo $addStr;

@@ -54,7 +54,7 @@ function testDowntimeNameExistence($downtimeName = null)
     }
     $res = $pearDB->query("SELECT dt_id FROM downtime WHERE dt_name = '" . $pearDB->escape($downtimeName) . "'");
     $d = $res->fetchRow();
-    $nbRes = $res->numRows();
+    $nbRes = $res->rowCount();
     if ($nbRes && $d["dt_id"] == $id) {
         return true;
     } elseif ($nbRes && $d["dt_id"] != $id) {

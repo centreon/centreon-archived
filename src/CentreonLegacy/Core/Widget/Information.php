@@ -108,14 +108,22 @@ class Information
      * @param string $name
      * @return mixed
      */
-    public function getParameterIdByName($name)
+    public function getParameterIdByName($name, $widgetModelId = null)
     {
         $query = 'SELECT parameter_id ' .
             'FROM widget_parameters ' .
-            'WHERE parameter_code_name = :name';
+            'WHERE parameter_code_name = :name ';
+
+        if (!is_null($widgetModelId)) {
+            $query .= 'AND widget_model_id = :id ';
+        }
+
         $sth = $this->dependencyInjector['configuration_db']->prepare($query);
 
-        $sth->bindParam(':name', $name, \PDO::PARAM_STR);
+        $sth->bindValue(':name', $name, \PDO::PARAM_STR);
+        if (!is_null($widgetModelId)) {
+            $sth->bindValue(':id', $widgetModelId, \PDO::PARAM_INT);
+        }
 
         $sth->execute();
 

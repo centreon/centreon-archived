@@ -48,7 +48,7 @@ function getServiceGroupCount($search = null)
         $DBRESULT = $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
     }
     $num_row = $DBRESULT->fetchRow();
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $num_row["count(sg_id)"];
 }
 
@@ -108,7 +108,7 @@ function checkIfServiceSgIsEn($host_id = null, $service_id = null)
         . "AND index_data.`hidden` = '0' "
         . "AND `trashed` = '0'"
     );
-    $num_row = $DBRESULT->numRows();
-    $DBRESULT->free();
+    $num_row = $DBRESULT->rowCount();
+    $DBRESULT->closeCursor();
     return $num_row;
 }

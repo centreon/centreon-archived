@@ -65,7 +65,7 @@ $act_type = $_GET["actiontype"];
 $pearDB = new CentreonDB();
 
 $DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
-if (!$DBRESULT->numRows()) {
+if (!$DBRESULT->rowCount()) {
     exit();
 }
 

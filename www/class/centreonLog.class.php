@@ -56,9 +56,9 @@ class CentreonUserLog
          */
         $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'debug_path'");
         while ($res = $DBRESULT->fetchRow()) {
-            $this->ldapInfos[$res["key"]] = $res["value"];
+            $optGen[$res["key"]] = $res["value"];
         }
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
 
         /*
          * Init log Directory

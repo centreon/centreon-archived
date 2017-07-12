@@ -112,7 +112,7 @@ function hostExists($name = null)
     $DBRESULT = $pearDB->query("SELECT host_host_id 
                               FROM ns_host_relation 
                               WHERE host_host_id = '" . getMyHostID(trim($centreon->checkIllegalChar($name))) . "'");
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         return true;
     }
     return false;
@@ -125,7 +125,7 @@ function hostTemplateExists($name = null)
     $DBRESULT = $pearDB->query("SELECT host_id 
                                 FROM `host`
                                 WHERE host_name = '" . $centreon->checkIllegalChar($name) . "'");
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         return true;
     }
     return false;
@@ -149,9 +149,9 @@ function testHostExistence($name = null)
      * Modif case
      */
 
-    if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $host["host_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id) {
+    } elseif ($DBRESULT->rowCount() >= 1 && $host["host_id"] != $id) {
         return false;
     } else {
         return true;
@@ -184,12 +184,12 @@ function testHostTplExistence($name = null)
      * Modif case
      */
 
-    if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id) {
+    if ($DBRESULT->rowCount() >= 1 && $host["host_id"] == $id) {
         return true;
     } /*
      * Duplicate entry
      */
-    elseif ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id) {
+    elseif ($DBRESULT->rowCount() >= 1 && $host["host_id"] != $id) {
         return false;
     } else {
         return true;
@@ -805,7 +805,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
         $DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
         $result = $DBRESULT->fetchRow();
         $ret["host_template_model_htm_id"] = $result["host_id"];
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
@@ -1142,7 +1142,7 @@ function getHostListInUse($hst_list, $hst)
         $str .= ",'" . $result['host_tpl_id'] . "'";
         $str = getHostListInUse($str, $result['host_tpl_id']);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
     return $str;
 }
 
@@ -1179,7 +1179,7 @@ function serviceIsInUse($svc_id, $host_list)
         "AND hsr.service_service_id = '" . $svc_id . "' " .
         "AND hsr.host_host_id IN (" . $hst_list . ")";
     $DBRESULT = $pearDB->query($rq);
-    if ($DBRESULT->numRows() >= 1) {
+    if ($DBRESULT->rowCount() >= 1) {
         return true;
     }
     return false;
@@ -1211,7 +1211,7 @@ function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = 
             $DBRESULT4 = $pearDB->query($rq2);
         }
     }
-    $DBRESULT3->free();
+    $DBRESULT3->closeCursor();
 
     $rq = "SELECT host_tpl_id " .
         "FROM host_template_relation " .
@@ -1236,7 +1236,7 @@ function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = 
         $antiLoop[$scndHID] = 1;
         deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list, $antiLoop);
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 }
 
 function updateHost($host_id = null, $from_MC = false, $cfg = null)
@@ -1561,7 +1561,7 @@ function updateHost_MC($host_id = null)
         $DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_register='0' LIMIT 1");
         $result = $DBRESULT->fetchRow();
         $ret["host_template_model_htm_id"] = $result["host_id"];
-        $DBRESULT->free();
+        $DBRESULT->closeCursor();
     }
 
     $rq = "UPDATE host SET ";
@@ -2481,7 +2481,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
             for ($i = 0; $sg = $DBRESULT3->fetchRow(); $i++) {
                 $service_sgs[$i] = $sg["servicegroup_sg_id"];
             }
-            $DBRESULT3->free();
+            $DBRESULT3->closeCursor();
 
             if (testServiceExistence($alias, array(0 => $hID))) {
                 $service = array(

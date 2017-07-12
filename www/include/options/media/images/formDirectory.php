@@ -55,7 +55,7 @@ if ($o == "cd" && $dir_id) {
     for ($i = 0; $imgs = $DBRESULT->fetchRow(); $i++) {
         $dir["dir_imgs"][$i] = $imgs["img_img_id"];
     }
-    $DBRESULT->free();
+    $DBRESULT->closeCursor();
 } elseif ($o == "m") {
     $selected = array();
     if (isset($select) && $select) {
@@ -89,7 +89,7 @@ $DBRESULT = $pearDB->query($rq);
 while ($img = $DBRESULT->fetchRow()) {
     $imgs[$img["img_id"]] = $img["dir_alias"]."/".$img["img_name"];
 }
-$DBRESULT->free();
+$DBRESULT->closeCursor();
 
 $directories = array();
 $DBRESULT = $pearDB->query("SELECT dir_id, dir_name, dir_comment FROM view_img_dir ORDER BY dir_name");

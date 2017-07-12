@@ -2556,3 +2556,17 @@ ul.module_list {
   box-shadow: inset 0 0 2px rgba( 0, 0, 0, 0.2 );
   z-index: 9998;
 }
+
+/* Generation page */
+.consoleSteps {
+  width: 15%;
+}
+
+#progress_bar {
+  width: 120px;
+  height: 12px;
+}
+
+.ui-progressbar-value {
+  background-color: #88b917 !important
+}
