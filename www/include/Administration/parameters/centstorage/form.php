@@ -119,23 +119,18 @@ $form->addElement('header', 'audit', _("Audit log activation"));
  */
 $form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 $form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
-$form->addElement(
-    'text',
-    'RRDdatabase_nagios_stats_path',
-    _("Path to RRDTool Database For Monitoring Engine Statistics"),
-    $attrsText
-);
-$form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsText2);
-$form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
-$form->addElement('text', 'len_storage_downtimes', _("Retention Duration for Downtimes"), $attrsText2);
-$form->addElement('text', 'len_storage_comments', _("Retention Duration for Comments"), $attrsText2);
-$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
-$form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
+$form->addElement('text', 'RRDdatabase_nagios_stats_path',  _("Path to RRDTool Database For Monitoring Engine Statistics"), $attrsText);
+$form->addElement('text', 'len_storage_rrd', _("Retention duration for performance data in RRDTool databases"), $attrsText2);
+$form->addElement('text', 'len_storage_mysql', _("Retention duration for performance data in MySQL database"), $attrsText2);
+$form->addElement('text', 'len_storage_downtimes', _("Retention duration for downtimes"), $attrsText2);
+$form->addElement('text', 'len_storage_comments', _("Retention duration for comments"), $attrsText2);
+$form->addElement('text', 'archive_retention', _("Retention duration for logs"), $attrsText2);
+$form->addElement('text', 'reporting_retention', _("Retention duration for reporting data (Dashboard)"), $attrsText2);
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
 
 // Parameters for Partitioning
-$form->addElement('text', 'partitioning_retention', _("Retention Duration for partitioning (in days)"), $attrsText2);
-$form->addElement('text', 'partitioning_retention_forward', _("Provisioning partitions (in days)"), $attrsText2);
+$form->addElement('text', 'partitioning_retention', _("Retention duration for partitioning"), $attrsText2);
+$form->addElement('text', 'partitioning_retention_forward', _("Forward provisioning"), $attrsText2);
 $form->addElement('text', 'partitioning_backup_directory', _("Backup directory for partitioning"), $attrsText);
 
 
