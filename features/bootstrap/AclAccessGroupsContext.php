@@ -118,7 +118,13 @@ class AclAccessGroupsContext extends CentreonContext
     public function iAddANewAccessGroupWithLinkedContactGroup()
     {
         $this->oneContactGroupExistsIncludingTwoNonAdminContacts();
-        $this->theAccessGroupIsSavedWithItsProperties();
+        $this->page = new ACLGroupConfigurationPage($this);
+        $this->page->setProperties(array(
+            'group_name' => 'accessGroupLinkedContactName',
+            'group_alias' => 'accessGroupLinkedContactAlias',
+            'contacts' => array($this->firstContactName, $this->secondContactName)
+        ));
+        $this->page->save();
         $this->page = new ACLGroupConfigurationPage($this);
         $this->page->setProperties(array(
             'group_name' => $this->accessGroupsName,
