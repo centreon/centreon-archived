@@ -6,7 +6,7 @@ use Centreon\Test\Behat\CentreonContext;
 class BackupContext extends CentreonContext
 {
     /**
-     *  @Given the next backup is configured to be :backupType
+     * @Given the next backup is configured to be :backupType
      */
     public function theNextBackupIsConfiguredToBe($backupType)
     {
@@ -23,7 +23,7 @@ class BackupContext extends CentreonContext
         if ($backupType == 'full') {
             $fullBackupDays = $allDays;
             $partialBackupDays = array();
-        } else if ($backupType == 'partial') {
+        } elseif ($backupType == 'partial') {
             $fullBackupDays = array();
             $partialBackupDays = $allDays;
         } else {
@@ -44,7 +44,7 @@ class BackupContext extends CentreonContext
     }
 
     /**
-     *  @When the backup process starts
+     * @When the backup process starts
      */
     public function theBackupProcessStarts()
     {
@@ -59,7 +59,7 @@ class BackupContext extends CentreonContext
     }
 
     /**
-     *  @Then the :dataType data is backed up
+     * @Then the :dataType data is backed up
      */
     public function theDataIsBackedUp($dataType)
     {

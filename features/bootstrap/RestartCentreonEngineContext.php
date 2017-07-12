@@ -60,9 +60,10 @@ class RestartCentreonEngineContext extends CentreonContext
     public function centreonEngineIsRestarted()
     {
         $this->spin(
-            function($context) {
+            function ($context) {
                 return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
+                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))
+                        ->getText() == '100%';
             }
         );
     }
@@ -73,9 +74,10 @@ class RestartCentreonEngineContext extends CentreonContext
     public function centreonEngineIsReloaded()
     {
         $this->spin(
-            function($context) {
+            function ($context) {
                 return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
+                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))
+                        ->getText() == '100%';
             }
         );
     }

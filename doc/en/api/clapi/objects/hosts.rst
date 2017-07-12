@@ -121,7 +121,7 @@ check_command_arguments	             Check command arguments
 
 check_interval	                     Normal check interval
 
-check_freshness	                     Check freshness (in seconds)
+check_freshness	                     Enables check freshness
 
 check_period	                     Check period
 
@@ -141,7 +141,11 @@ first_notification_delay	     First notification delay (in seconds)
 
 flap_detection_enabled	             Whether or not flap detection is enabled
 
-flap_detection_options	             Flap detection options
+flap_detection_options	             Flap detection options 'o' for Up, 'd' for Down, 'u' for Unreachable
+
+host_high_flap_threshold             High flap threshold
+
+host_low_flap_threshold              Low flap threshold
 
 icon_image	                     Icon image
 
@@ -187,7 +191,7 @@ statusmap_image	                     Status map image (used by statusmap
 
 host_notification_options            Notification options (d,u,r,f,s)
 
-timezone                   Timezone
+timezone                             Timezone
 ==================================== =================================================================================
 
 

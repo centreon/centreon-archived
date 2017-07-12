@@ -16,7 +16,7 @@ class PartitioningContext extends CentreonContext
     }
 
     /**
-     *  @When I am on database informations page
+     * @When I am on database informations page
      */
     public function iAmOnDatabaseInformationsPage()
     {
@@ -30,7 +30,7 @@ class PartitioningContext extends CentreonContext
     }
 
     /**
-     *  @Then partitioning informations are displayed
+     * @Then partitioning informations are displayed
      */
     public function partitioningInformationsAreDisplayed()
     {

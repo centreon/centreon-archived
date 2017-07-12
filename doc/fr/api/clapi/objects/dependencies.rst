@@ -131,7 +131,7 @@ If you want to add a new parent or a new child in a dependency definition, use t
 Delparent and Delchild
 ----------------------
 
-If you want to add a new parent or a new child in a dependency definition, use the **DELPARENT** or **DELCHILD** action::
+In order to delete a parent or a child in a dependency definition, use the **DELPARENT** or **DELCHILD** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DELPARENT \
   -v "my dependency;my_parent_host" 
