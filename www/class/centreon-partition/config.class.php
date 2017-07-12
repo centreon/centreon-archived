@@ -61,7 +61,7 @@ class Config
     public function __construct($centstorageDb, $file, $centreonDb)
     {
         $this->XMLFile = $file;
-        $this->centstorageDb= $centstorageDb;
+        $this->centstorageDb = $centstorageDb;
         $this->centreonDb = $centreonDb;
         $this->tables = array();
         $this->loadCentreonDefaultConfiguration();
