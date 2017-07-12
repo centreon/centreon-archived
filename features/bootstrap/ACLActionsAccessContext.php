@@ -76,7 +76,6 @@ class ACLActionsAccessContext extends CentreonContext
         'action_global_host_obsess' => 0,
         'action_perf_data' => 0,
         'action_service' => 0,
-        'action_service_checks' => 1,
         'action_service_notifications' => 0,
         'action_service_acknowledgement' => 0,
         'action_service_disacknowledgement' => 1,
@@ -86,11 +85,9 @@ class ACLActionsAccessContext extends CentreonContext
         'action_service_comment' => 0,
         'action_service_event_handler' => 0,
         'action_service_flap_detection' => 1,
-        'action_service_passive_checks' => 1,
         'action_service_submit_result' => 0,
         'action_service_display_command' => 0,
         'action_host' => 0,
-        'action_host_checks' => 0,
         'action_host_notifications' => 1,
         'action_host_acknowledgement' => 1,
         'action_host_disacknowledgement' => 0,
@@ -132,7 +129,6 @@ class ACLActionsAccessContext extends CentreonContext
         'action_global_host_obsess' => 0,
         'action_perf_data' => 0,
         'action_service' => 0,
-        'action_service_checks' => 1,
         'action_service_notifications' => 0,
         'action_service_acknowledgement' => 0,
         'action_service_disacknowledgement' => 1,
@@ -142,11 +138,9 @@ class ACLActionsAccessContext extends CentreonContext
         'action_service_comment' => 0,
         'action_service_event_handler' => 0,
         'action_service_flap_detection' => 1,
-        'action_service_passive_checks' => 1,
         'action_service_submit_result' => 0,
         'action_service_display_command' => 0,
         'action_host' => 0,
-        'action_host_checks' => 0,
         'action_host_notifications' => 1,
         'action_host_acknowledgement' => 1,
         'action_host_disacknowledgement' => 0,
@@ -187,7 +181,6 @@ class ACLActionsAccessContext extends CentreonContext
         'action_global_host_obsess' => 1,
         'action_perf_data' => 1,
         'action_service' => 0,
-        'action_service_checks' => 1,
         'action_service_notifications' => 1,
         'action_service_acknowledgement' => 0,
         'action_service_disacknowledgement' => 1,
@@ -197,11 +190,9 @@ class ACLActionsAccessContext extends CentreonContext
         'action_service_comment' => 1,
         'action_service_event_handler' => 0,
         'action_service_flap_detection' => 1,
-        'action_service_passive_checks' => 0,
         'action_service_submit_result' => 0,
         'action_service_display_command' => 0,
         'action_host' => 0,
-        'action_host_checks' => 1,
         'action_host_notifications' => 1,
         'action_host_acknowledgement' => 0,
         'action_host_disacknowledgement' => 0,
@@ -243,7 +234,6 @@ class ACLActionsAccessContext extends CentreonContext
         'action_global_host_obsess' => 1,
         'action_perf_data' => 1,
         'action_service' => 0,
-        'action_service_checks' => 1,
         'action_service_notifications' => 1,
         'action_service_acknowledgement' => 1,
         'action_service_disacknowledgement' => 1,
@@ -253,11 +243,9 @@ class ACLActionsAccessContext extends CentreonContext
         'action_service_comment' => 1,
         'action_service_event_handler' => 1,
         'action_service_flap_detection' => 1,
-        'action_service_passive_checks' => 1,
         'action_service_submit_result' => 1,
         'action_service_display_command' => 1,
         'action_host' => 0,
-        'action_host_checks' => 1,
         'action_host_notifications' => 1,
         'action_host_acknowledgement' => 1,
         'action_host_disacknowledgement' => 1,
@@ -307,7 +295,6 @@ class ACLActionsAccessContext extends CentreonContext
         'action_global_host_obsess' => 1,
         'action_perf_data' => 1,
         'action_service' => 0,
-        'action_service_checks' => 0,
         'action_service_notifications' => 0,
         'action_service_acknowledgement' => 0,
         'action_service_disacknowledgement' => 0,
@@ -317,11 +304,9 @@ class ACLActionsAccessContext extends CentreonContext
         'action_service_comment' => 0,
         'action_service_event_handler' => 0,
         'action_service_flap_detection' => 0,
-        'action_service_passive_checks' => 0,
         'action_service_submit_result' => 0,
         'action_service_display_command' => 0,
         'action_host' => 0,
-        'action_host_checks' => 0,
         'action_host_notifications' => 0,
         'action_host_acknowledgement' => 0,
         'action_host_disacknowledgement' => 0,
@@ -371,7 +356,6 @@ class ACLActionsAccessContext extends CentreonContext
         'action_global_host_obsess' => 0,
         'action_perf_data' => 0,
         'action_service' => 0,
-        'action_service_checks' => 1,
         'action_service_notifications' => 1,
         'action_service_acknowledgement' => 1,
         'action_service_disacknowledgement' => 1,
@@ -381,11 +365,9 @@ class ACLActionsAccessContext extends CentreonContext
         'action_service_comment' => 1,
         'action_service_event_handler' => 1,
         'action_service_flap_detection' => 1,
-        'action_service_passive_checks' => 1,
         'action_service_submit_result' => 1,
         'action_service_display_command' => 1,
         'action_host' => 0,
-        'action_host_checks' => 0,
         'action_host_notifications' => 0,
         'action_host_acknowledgement' => 0,
         'action_host_disacknowledgement' => 0,
@@ -435,7 +417,6 @@ class ACLActionsAccessContext extends CentreonContext
         'action_global_host_obsess' => 0,
         'action_perf_data' => 0,
         'action_service' => 0,
-        'action_service_checks' => 0,
         'action_service_notifications' => 0,
         'action_service_acknowledgement' => 0,
         'action_service_disacknowledgement' => 0,
@@ -445,11 +426,9 @@ class ACLActionsAccessContext extends CentreonContext
         'action_service_comment' => 0,
         'action_service_event_handler' => 0,
         'action_service_flap_detection' => 0,
-        'action_service_passive_checks' => 0,
         'action_service_submit_result' => 0,
         'action_service_display_command' => 0,
         'action_host' => 0,
-        'action_host_checks' => 1,
         'action_host_notifications' => 1,
         'action_host_acknowledgement' => 1,
         'action_host_disacknowledgement' => 1,
@@ -549,15 +528,17 @@ class ACLActionsAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->adminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) == 1
-                        && $object['actions'][0] != $this->initialProperties['acl_name']) {
+                    if (count($object['actions']) == 1 &&
+                        $object['actions'][0] != $this->initialProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->adminAclGroup['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->nonAdminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) == 1
-                        && $object['actions'][0] != $this->initialProperties['acl_name']) {
+                    if (count($object['actions']) == 1 &&
+                        $object['actions'][0] != $this->initialProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->nonAdminAclGroup['group_name'];
                     }
                     return count($this->tableau) == 0;
@@ -588,7 +569,7 @@ class ACLActionsAccessContext extends CentreonContext
     {
         $this->tableau = array();
         try {
-            $this->spin( 
+            $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLActionConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->allSelected['acl_name']);
@@ -637,11 +618,11 @@ class ACLActionsAccessContext extends CentreonContext
     {
         $this->tableau = array();
         try {
-            $this->spin( 
+            $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLActionConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->checkActionEngine['acl_name']);
-                    $object = $this->currentPage->getProperties(); 
+                    $object = $this->currentPage->getProperties();
                     foreach ($this->checkActionEngine as $key => $value) {
                         if ($key != 'acl_group' && $value != $object[$key]) {
                             $this->tableau[] = 'test action_engine : ' . $key;
@@ -738,8 +719,9 @@ class ACLActionsAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->nonAdminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 1
-                        && $object['actions'][0] != $this->initialProperties['acl_name']) {
+                    if (count($object['actions']) != 1 &&
+                        $object['actions'][0] != $this->initialProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->nonAdminAclGroup['group_name'];
                     }
                     return count($this->tableau) == 0;
@@ -833,8 +815,9 @@ class ACLActionsAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->nonAdminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 1
-                        && $object['actions'][0] != $this->initialProperties['acl_name']) {
+                    if (count($object['actions']) != 1 &&
+                        $object['actions'][0] != $this->initialProperties['acl_name']
+                    ) {
                         $this->tableau[] = $this->nonAdminAclGroup['group_name'];
                     }
                     return count($this->tableau) == 0;
