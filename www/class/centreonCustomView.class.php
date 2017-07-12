@@ -594,7 +594,8 @@ class CentreonCustomView
     public function loadCustomView($params)
     {
         $isLocked = 1;
-        $query = 'SELECT custom_view_id, locked ' .
+        $update = false;
+        $query = 'SELECT custom_view_id, locked, user_id ' .
             'FROM custom_view_user_relation ' .
             'WHERE custom_view_id = :viewLoad ' .
             'AND ' .
@@ -616,14 +617,25 @@ class CentreonCustomView
             if ($row['locked'] == "0") {
                 $isLocked = $row['locked'];
             }
+            if (!is_null($row['user_id']) && $row['user_id'] > 0){
+                $update = true;
+            }
         }
 
-        $query = 'INSERT INTO custom_view_user_relation (custom_view_id,user_id,is_owner,locked,is_share) ' .
-            'VALUES (:viewLoad, :userId, 0, :isLocked, 1)';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
-        $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
-        $stmt->bindParam(':isLocked', $isLocked, PDO::PARAM_INT);
+        if ($update) {
+            $query = 'UPDATE custom_view_user_relation SET is_consumed=1 WHERE ' .
+                ' custom_view_id = :viewLoad AND user_id = :userId';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+        } else {
+            $query = 'INSERT INTO custom_view_user_relation (custom_view_id,user_id,is_owner,locked,is_share) ' .
+                'VALUES (:viewLoad, :userId, 0, :isLocked, 1)';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+            $stmt->bindParam(':isLocked', $isLocked, PDO::PARAM_INT);
+        }
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
