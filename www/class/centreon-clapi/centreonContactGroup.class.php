@@ -226,8 +226,8 @@ class CentreonContactGroup extends CentreonObject
             $filters['cg_name'] = $filter_name;
         }
         parent::export($filters);
-        $relObj = new Centreon_Object_Relation_Contact_Group_Contact();
-        $contactObj = new Centreon_Object_Contact();
+        $relObj = new \Centreon_Object_Relation_Contact_Group_Contact();
+        $contactObj = new \Centreon_Object_Contact();
         $cgFieldName = $this->object->getUniqueLabelField();
         $cFieldName = $contactObj->getUniqueLabelField();
         $elements = $relObj->getMergedParameters(
