@@ -8,7 +8,7 @@ use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
 use Centreon\Test\Behat\Administration\ACLGroupConfigurationPage;
 use Centreon\Test\Behat\Administration\ACLGroupConfigurationListingPage;
 
-class AclAccessGroupsContext extends CentreonContext 
+class AclAccessGroupsContext extends CentreonContext
 {
     protected $page;
     protected $firstContactName = 'firstContactName';
@@ -55,13 +55,13 @@ class AclAccessGroupsContext extends CentreonContext
         $this->assertFind('css', 'span[class="select2-selection select2-selection--multiple"]')->click();
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', 'span ul li div[title="' 
+                return $context->getSession()->getPage()->has('css', 'span ul li div[title="'
                     . $this->firstContactName . '"]');
             },
-             'The user: ' . $this->firstContactName . ' does not exist or has not been found',
+            'The user: ' . $this->firstContactName . ' does not exist or has not been found',
             5
         );
-        $this->assertFind('css', 'span ul li div[title="'.$this->firstContactName.'"]')->click();
+        $this->assertFind('css', 'span ul li div[title="' . $this->firstContactName . '"]')->click();
         $this->assertFind('css', 'span[class="select2-selection select2-selection--multiple"]')->click();
         $this->spin(
             function ($context) {
@@ -71,7 +71,7 @@ class AclAccessGroupsContext extends CentreonContext
             'The user: ' . $this->secondContactName . ' does not exist or has not been found',
             5
         );
-        $this->assertFind('css', 'span ul li div[title="'.$this->secondContactName.'"]')->click();
+        $this->assertFind('css', 'span ul li div[title="' . $this->secondContactName . '"]')->click();
         $this->page->save();
     }
 
@@ -99,10 +99,10 @@ class AclAccessGroupsContext extends CentreonContext
         $this->assertFind('css', 'li#c2 a')->click();
         $value = $this->assertFind('css', 'span[title="' . $this->accessContactName . '"]')->getText();
         if ($value != $this->accessContactName) {
-            
+
             throw new \Exception($this->firstContactAlias . ' have no Access list groups displayed');
         }
-        
+
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->secondContactAlias);
         $this->assertFind('css', 'li#c2 a')->click();
@@ -141,7 +141,7 @@ class AclAccessGroupsContext extends CentreonContext
     {
         $this->page = new ContactGroupConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->contactGroupName);
-        $value = $this->assertFind('css', 'span[title="' . $this->accessGroupsName. '"]')->getText();
+        $value = $this->assertFind('css', 'span[title="' . $this->accessGroupsName . '"]')->getText();
         if ($value != $this->accessGroupsName) {
             throw new \Exception($this->contactGroupName . ' have no Linked ACL groups displayed');
         }
@@ -248,7 +248,7 @@ class AclAccessGroupsContext extends CentreonContext
      * @Then its status is modified
      */
     public function itsStatusIsModified()
-    {   
+    {
         $this->page = new ACLGroupConfigurationListingPage($this);
         $object = $this->page->getEntry($this->accessGroupsName);
         if ($object['status'] != 0) {
