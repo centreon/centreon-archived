@@ -150,7 +150,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         /* Get the method name */
         $name = strtolower($name);
         /* Get the action and the object */
-        if (preg_match("/^(get|add|del)(service|servicetemplate)\$/", $name, $matches)) {
+        if (preg_match("/^(get|add|del|set)(service|servicetemplate)\$/", $name, $matches)) {
             /* Parse arguments */
             if (!isset($arg[0])) {
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -198,6 +198,12 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                         echo $value . $this->delim . $p['service_description'] . "\n";
                     }
                 }
+            } else if ($matches[1] == "set") {
+                if ($matches[2] == "servicetemplate") {
+                    $this->setServiceTemplate($args, $relobj, $obj, $categoryId);
+                } elseif ($matches[2] == "service") {
+                    $this->setService($args, $relobj, $obj, $categoryId);
+                }   
             } else {
                 if (!isset($args[1])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -260,6 +266,58 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             }
         } else {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
+        }
+    }
+    
+    /**
+     * 
+     * @param type $arg
+     * @throws CentreonClapiException
+     */
+    private function setService($args, $relobj, $obj, $categoryId)
+    {
+        if (!isset($args[1])) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }  
+    }
+    
+    /**
+     * 
+     * @param type $arg
+     * @throws CentreonClapiException
+     */
+    private function setServiceTemplate($args, $relobj, $obj, $categoryId)
+    {
+        if (!isset($args[1])) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $relation = $args[1];
+        $relations = explode("|", $relation);
+        $relationTable = array();
+        foreach ($relations as $rel) {
+        $tab = $obj->getList("service_id",-1,0,null,null,array(
+            'service_description' => $rel, 'service_register' => 0),
+            "AND"
+            );
+        if (!count($tab)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+        }
+        $relationTable[] = $tab[0]['service_id'];
+        }
+        $existingRelationIds = $relobj->getTargetIdFromSourceId(
+            $relobj->getSecondKey(),
+            $relobj->getFirstKey(),
+            array($categoryId)
+        );
+        
+        foreach ($existingRelationIds as $relationId) {
+            $relobj->delete($categoryId, $relationId);
+        } 
+
+        foreach ($relationTable as $relationId) {
+            /*if (!in_array($relationId, $existingRelationIds)) {*/
+                $relobj->insert($categoryId, $relationId);
+            /*} */
         }
     }
 
