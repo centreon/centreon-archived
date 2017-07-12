@@ -62,13 +62,6 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
             $range = '';
         }
 
-        $filterAclgroup = '';
-        if (isset($this->arguments['q'])) {
-            $filterAclgroup = "WHERE acl_group_name LIKE ? OR acl_group_alias LIKE ? ";
-            $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
-            $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
-        }
-
         $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT acl_group_id, acl_group_name " .
             "FROM acl_groups " .
             $filterAclgroup .
