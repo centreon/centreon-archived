@@ -121,7 +121,7 @@ $form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Me
 $form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
 $form->addElement(
     'text',
-    'RRDdatabase_nagios_stats_path', 
+    'RRDdatabase_nagios_stats_path',
     _("Path to RRDTool Database For Monitoring Engine Statistics"),
     $attrsText
 );
