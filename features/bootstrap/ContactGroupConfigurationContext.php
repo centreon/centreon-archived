@@ -20,14 +20,14 @@ class ContactGroupConfigurationContext extends CentreonContext
     protected $updatedProperties = array(
         'name' => 'contactGroupNameChanged',
         'alias' => 'contactGroupAliasChanged',
-        'contacts' => 'contactAlias',
-        'acl' => 'ACLGroupName',
+        'contacts' => 'contactName',
+        'acl' => 'aclGroupName',
         'status' => 1,
         'comments' => 'contactGroupCommentChanged'
     );
 
     protected $aclGroup = array(
-        'group_name' => 'ACLGroupName',
+        'group_name' => 'aclGroupName',
         'group_alias' => 'aclGroupAlias'
     );
 
