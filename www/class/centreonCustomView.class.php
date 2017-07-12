@@ -624,14 +624,13 @@ class CentreonCustomView
             }
         }
 
-        if ($update){
-            $query = 'UPDATE custom_view_user_relation SET is_consumed=\'1\' WHERE ' .
+        if ($update) {
+            $query = 'UPDATE custom_view_user_relation SET is_consumed=1 WHERE ' .
                 ' custom_view_id = :viewLoad AND user_id = :userId';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
             $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
-        }
-        else {
+        } else {
             $query = 'INSERT INTO custom_view_user_relation (custom_view_id,user_id,is_owner,locked,is_share) ' .
                 'VALUES (:viewLoad, :userId, 0, :isLocked, 1)';
             $stmt = $this->db->prepare($query);
