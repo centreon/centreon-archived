@@ -219,3 +219,7 @@ default:
       contexts:
       - NonAdminContactCreationContext
 
+    acl_actions_access:
+      paths: [ %paths.base%/features/ACLActionsAccess.feature ]
+      contexts:
+      - ACLActionsAccessContext
