@@ -119,7 +119,12 @@ $form->addElement('header', 'audit', _("Audit log activation"));
  */
 $form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 $form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
-$form->addElement('text', 'RRDdatabase_nagios_stats_path',  _("Path to RRDTool Database For Monitoring Engine Statistics"), $attrsText);
+$form->addElement(
+    'text',
+    'RRDdatabase_nagios_stats_path', 
+    _("Path to RRDTool Database For Monitoring Engine Statistics"),
+    $attrsText
+);
 $form->addElement('text', 'len_storage_rrd', _("Retention duration for performance data in RRDTool databases"), $attrsText2);
 $form->addElement('text', 'len_storage_mysql', _("Retention duration for performance data in MySQL database"), $attrsText2);
 $form->addElement('text', 'len_storage_downtimes', _("Retention duration for downtimes"), $attrsText2);
