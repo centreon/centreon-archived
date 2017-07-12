@@ -129,6 +129,11 @@ default:
       contexts:
        - AutologinContext
 
+    autologin_options:
+      paths: [ %paths.base%/features/AutologinOptions.feature ]
+      contexts:
+      - AutologinOptionsContext
+
     broker:
       paths: [ %paths.base%/features/Broker.feature ]
       contexts:
