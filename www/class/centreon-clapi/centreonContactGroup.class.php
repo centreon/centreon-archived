@@ -218,19 +218,33 @@ class CentreonContactGroup extends CentreonObject
      */
     public function export($filter_id = null, $filter_name = null)
     {
-        $filters = null;
-        if (!is_null($filter)) {
+        $filters = array();
+        if (!is_null($filter_id) && $filter_id !== 0) {
             $filters['cg_id'] = $filter_id;
         }
+        if (!is_null($filter_name)) {
+            $filters['cg_name'] = $filter_name;
+        }
         parent::export($filters);
-        $obj = new \Centreon_Object_Relation_Contact_Group_Contact();
-        $elements = $obj->getMergedParameters(array("cg_name"), array("contact_name", "contact_id"), -1, 0, "cg_name");
+        $relObj = new \Centreon_Object_Relation_Contact_Group_Contact();
+        $contactObj = new \Centreon_Object_Contact();
+        $cgFieldName = $this->object->getUniqueLabelField();
+        $cFieldName = $contactObj->getUniqueLabelField();
+        $elements = $relObj->getMergedParameters(
+            array($cgFieldName),
+            array($cFieldName, "contact_id"),
+            -1,
+            0,
+            $cgFieldName,
+            'ASC',
+            $filters,
+            'AND'
+        );
         foreach ($elements as $element) {
-            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
-            echo $this->action . $this->delim
-                . "addcontact" . $this->delim
-                . $element['cg_name'] . $this->delim
-                . $element['contact_name'] . "\n";
+            $this->api->export_filter('CONTACT', $element['contact_id'], $element[$cgFieldName]);
+            echo $this->action . $this->delim . "addcontact" .
+                $this->delim . $element[$cgFieldName] . $this->delim . $element[$cFieldName] .
+                $this->delim . $element['contact_alias'] . "\n";
         }
     }
 }

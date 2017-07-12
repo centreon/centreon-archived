@@ -250,9 +250,12 @@ class CentreonHostGroup extends CentreonObject
      */
     public function export($filter_id = null, $filter_name = null)
     {
-        $filters = null;
-        if (!is_null($filter_id)) {
-            $filters = array('hg_id' => $filter_id);
+        $filters = array();
+        if (!is_null($filter_id) && $filter_id !== 0) {
+            $filters['hg_id'] = $filter_id;
+        }
+        if (!is_null($filter_name)) {
+            $filters['hg_name'] = $filter_name;
         }
         parent::export($filters);
 
@@ -267,7 +270,9 @@ class CentreonHostGroup extends CentreonObject
             -1,
             0,
             $hgFieldName,
-            null
+            'ASC',
+            $filters,
+            'AND'
         );
         foreach ($elements as $element) {
             $this->api->export_filter('HOST', $element['host_id'], $element[$hFieldName]);
@@ -275,7 +280,6 @@ class CentreonHostGroup extends CentreonObject
                 . "addhost" . $this->delim
                 . $element[$hgFieldName] . $this->delim
                 . $element[$hFieldName] . "\n";
-
         }
     }
 }
