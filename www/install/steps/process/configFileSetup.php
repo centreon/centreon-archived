@@ -53,15 +53,17 @@ if ($parameters['address']) {
     $host = 'localhost';
 }
 
-$patterns = array('/--ADDRESS--/',
-                  '/--DBUSER--/',
-                  '/--DBPASS--/',
-                  '/--CONFDB--/',
-                  '/--STORAGEDB--/',
-                  '/--CENTREONDIR--/',
-                  '/--DBPORT--/', 
-                  '/--INSTANCEMODE--/', 
-                  '/--CENTREON_VARLIB--/');
+$patterns = array(
+    '/--ADDRESS--/',
+    '/--DBUSER--/',
+    '/--DBPASS--/',
+    '/--CONFDB--/',
+    '/--STORAGEDB--/',
+    '/--CENTREONDIR--/',
+    '/--DBPORT--/',
+    '/--INSTANCEMODE--/',
+    '/--CENTREON_VARLIB--/'
+);
 
 $replacements = array(
     $host,
@@ -78,7 +80,7 @@ $replacements = array(
 /**
  * centreon.conf.php
  */
-$centreonConfFile = rtrim($configuration['centreon_etc'], '/').'/centreon.conf.php';
+$centreonConfFile = rtrim($configuration['centreon_etc'], '/') . '/centreon.conf.php';
 $contents = file_get_contents('../../var/configFileTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
@@ -86,7 +88,7 @@ file_put_contents($centreonConfFile, $contents);
 /**
  * conf.pm
  */
-$centreonConfPmFile = rtrim($configuration['centreon_etc'], '/').'/conf.pm';
+$centreonConfPmFile = rtrim($configuration['centreon_etc'], '/') . '/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);

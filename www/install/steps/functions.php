@@ -5,7 +5,8 @@
  * @param string $str
  * @return bool
  */
-function isSqlComment($str) {
+function isSqlComment($str)
+{
     if (substr(trim($str), 0, 2) == "--") {
         return true;
     }
@@ -18,7 +19,8 @@ function isSqlComment($str) {
  * @param string $dir directory of templates
  * @return Smarty
  */
-function getTemplate($dir) {
+function getTemplate($dir)
+{
     $libDir = __DIR__ . '/../../../GPL_LIB';
     require_once $libDir . '/Smarty/libs/Smarty.class.php';
     $template = new \Smarty();
@@ -37,7 +39,8 @@ function getTemplate($dir) {
  *
  * @return mixed
  */
-function myConnect() {
+function myConnect()
+{
     $pass = "";
     if (isset($_SESSION['root_password']) && $_SESSION['root_password']) {
         $pass = $_SESSION['root_password'];
@@ -59,7 +62,8 @@ function myConnect() {
  * @param string $query
  * @return string
  */
-function replaceInstallationMacros($query, $macros = array()) {
+function replaceInstallationMacros($query, $macros = array())
+{
     while (preg_match('/@([a-zA-Z0-9_]+)@/', $query, $matches)) {
         $macroValue = "";
         if ($matches[1] == 'MAILER') {
@@ -70,7 +74,7 @@ function replaceInstallationMacros($query, $macros = array()) {
             $macroValue = $_SESSION[$matches[1]];
         }
 
-        $query = preg_replace('/@'.$matches[1].'@/', $macroValue, $query);
+        $query = preg_replace('/@' . $matches[1] . '@/', $macroValue, $query);
     }
 
     $query = str_replace('-MAILER-', '@MAILER@', $query);
@@ -84,10 +88,11 @@ function replaceInstallationMacros($query, $macros = array()) {
  * @param string $file
  * @param string $delimiter
  * @param CentreonDB $connector
- * @param string $tmpFile | $tmpFile will store the number of executed queries sql script can be resumed from last failure
+ * @param string $tmpFile | $tmpFile will store the number of executed queries sql script
  * @return string | returns "0" if everything is ok, or returns error message
  */
-function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "", $macros = array()) {
+function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "", $macros = array())
+{
     if (is_null($connector)) {
         $connector = myConnect();
     }
@@ -121,7 +126,7 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "",
                                 throw new \Exception('Cannot execute query : ' . $query);
                             }
                         } catch (\Exception $e) {
-                            return "$fileName Line $line:".$e->getMessage();
+                            return "$fileName Line $line:" . $e->getMessage();
                         }
                         while (ob_get_level() > 0) {
                             ob_end_flush();
@@ -149,7 +154,8 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "",
  * @param string $file
  * @return void
  */
-function importFile($db, $file) {
+function importFile($db, $file)
+{
     $db->beginTransaction();
     try {
         splitQueries($db, $file);
@@ -167,14 +173,15 @@ function importFile($db, $file) {
  * @param int $result | 0 = ok, 1 = nok
  * @param string $msg | error message
  */
-function exitProcess($id, $result, $msg) {
+function exitProcess($id, $result, $msg)
+{
     $msg = str_replace('"', '\"', $msg);
     $msg = str_replace('\\', '\\\\', $msg);
 
     echo '{
-        "id" : "'.$id.'",
-        "result" : "'.$result.'",
-        "msg" : "'.$msg.'"
+        "id" : "' . $id . '",
+        "result" : "' . $result . '",
+        "msg" : "' . $msg . '"
         }';
 
     exit;
@@ -189,14 +196,15 @@ function exitProcess($id, $result, $msg) {
  * @param string $msg | error message
  * @return void
  */
-function exitUpgradeProcess($result, $current, $next, $msg) {
+function exitUpgradeProcess($result, $current, $next, $msg)
+{
     $msg = str_replace('"', '\"', $msg);
     $msg = str_replace('\\', '\\\\', $msg);
     echo '{
-        "result" : "'.$result.'",
-        "current" : "'.$current.'",
-        "next" : "'.$next.'",
-        "msg" : "'.$msg.'"
+        "result" : "' . $result . '",
+        "current" : "' . $current . '",
+        "next" : "' . $next . '",
+        "msg" : "' . $msg . '"
         }';
     exit;
 }
@@ -208,12 +216,13 @@ function exitUpgradeProcess($result, $current, $next, $msg) {
  * @param string $objectType
  * @return array
  */
-function getParamLines($varPath, $objectType) {
+function getParamLines($varPath, $objectType)
+{
     $contents = "";
     if ($handle = opendir($varPath)) {
         while (false !== ($object = readdir($handle))) {
             if ($object == $objectType) {
-                $contents = file_get_contents($varPath.'/'.$object);
+                $contents = file_get_contents($varPath . '/' . $object);
             }
         }
         closedir($handle);
@@ -228,7 +237,8 @@ function getParamLines($varPath, $objectType) {
  * @param array $conf_centreon
  * @return void
  */
-function setSessionVariables($conf_centreon) {
+function setSessionVariables($conf_centreon)
+{
     $_SESSION['INSTALL_DIR_CENTREON'] = $conf_centreon['centreon_dir'];
     $_SESSION['CENTREON_ETC'] = $conf_centreon['centreon_etc'];
     $_SESSION['BIN_MAIL'] = $conf_centreon['mail'];
@@ -250,7 +260,8 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['CENTREONPLUGINS'] = $conf_centreon['centreon_plugins'];
 }
 
-function getDatabaseVariable($db, $variable) {
+function getDatabaseVariable($db, $variable)
+{
     $query = "SHOW VARIABLES LIKE '" . $variable . "'";
     $result = $db->query($query);
 
@@ -262,5 +273,3 @@ function getDatabaseVariable($db, $variable) {
 
     return $value;
 }
-
-?>
