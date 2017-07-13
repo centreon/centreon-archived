@@ -50,10 +50,11 @@ if (is_null($table)) {
 }
 
 /* Create partitioned tables */
-$database = new CentreonDB('centstorage', 3, false);
+$centreonDb = new CentreonDB('centreon');
+$centstorageDb = new CentreonDB('centstorage', 3, false);
 $partEngine = new PartEngine();
 
-if (!$partEngine->isCompatible($database)) {
+if (!$partEngine->isCompatible($centstorageDb)) {
     exitProcess(PROCESS_ID, 1, "[".date(DATE_RFC822)."] CRITICAL: MySQL server is not compatible with partitioning. MySQL version must be greater or equal to 5.1\n");
 }
 
@@ -61,12 +62,12 @@ echo "[" . date(DATE_RFC822) . "] PARTITIONING STARTED\n";
 
 try {
     $configFile = _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml';
-    $config = new Config($database, $configFile);
+    $config = new Config($centstorageDb, $configFile, $centreonDb);
     $mysqlTable = $config->getTable($table);
-    if ($partEngine->isPartitioned($mysqlTable, $database)) {
+    if ($partEngine->isPartitioned($mysqlTable, $centstorageDb)) {
         throw new \Exception("Table " . $table . " is already partitioned\n");
     }
-    $partEngine->migrate($mysqlTable, $database);
+    $partEngine->migrate($mysqlTable, $centstorageDb);
 } catch (\Exception $e) {
     echo "[" . date(DATE_RFC822) . "] " . $e->getMessage();
     echo "[" . date(DATE_RFC822) . "] PARTITIONING EXITED\n";
