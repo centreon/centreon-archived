@@ -80,11 +80,7 @@ class Config
             "'partitioning_retention', 'partitioning_retention_forward'" .
             ')';
         $res = $this->centreonDb->query($queryOptions);
-        
-        if (\PEAR::isError($res)) {
-            throw new \Exception("Can't load default configuration for Centreon Partitioning");
-        }
-        
+
         while ($row = $res->fetchRow()) {
             $this->defaultConfiguration[$row['key']] = $row['value'];
         }
