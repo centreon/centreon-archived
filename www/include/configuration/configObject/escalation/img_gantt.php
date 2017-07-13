@@ -274,9 +274,13 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
 $largeur = ($max_notif > 50) ? 1024 : 800;
 //$hauteur = ($nb_esc > 5) ? 768 : 400;
 $hauteur =
-    ($nb_esc_tot * 35) + (($max_contact_service == 0
+    ($nb_esc_tot * 35) + (
+        (
+            $max_contact_service == 0
             ? $nb_esc
-            : $max_contact_service) * 35) + 70;
+            : $max_contact_service
+        ) * 35
+    ) + 70;
 $marge_left = ($max_contact_length) ? $max_contact_length * 13 : 10 * 13;
 $marge_legende = 20;
 $marge_bottom = 50 + $marge_legende;
