@@ -51,6 +51,7 @@ $return = array(
 
 /* Create partitioned tables */
 $database = new CentreonDB('centstorage');
+$centreonDb = new CentreonDB('centreon');
 $partEngine = new PartEngine();
 
 if (!$partEngine->isCompatible($database)) {
@@ -70,7 +71,9 @@ $tables = array(
 try {
     foreach ($tables as $table) {
         $config = new Config(
-            $database, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml'
+            $database,
+            _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml',
+            $centreonDb
         );
         $mysqlTable = $config->getTable($table);
         $partEngine->createParts($mysqlTable, $database);
