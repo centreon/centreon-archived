@@ -93,6 +93,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type="text/javascript" src="./include/common/javascript/centreon/popin.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jquery.nicescroll.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
         <script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
