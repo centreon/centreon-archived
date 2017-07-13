@@ -129,6 +129,11 @@ default:
       contexts:
        - AutologinContext
 
+    autologin_options:
+      paths: [ %paths.base%/features/AutologinOptions.feature ]
+      contexts:
+      - AutologinOptionsContext
+
     broker:
       paths: [ %paths.base%/features/Broker.feature ]
       contexts:
@@ -213,6 +218,11 @@ default:
       paths: [ %paths.base%/features/ACLMenusAccess.feature ]
       contexts:
       - ACLMenusAccessContext
+
+    acl_resources_access:
+      paths: [ %paths.base%/features/ACLResourcesAccess.feature ]
+      contexts:
+      - ACLResourcesAccessContext
 
     non_admin_contact_creation:
       paths: [ %paths.base%/features/NonAdminContactCreation.feature ]
