@@ -78,7 +78,7 @@ class WikiApi
         return $curl;
     }
 
-    function getWikiVersion()
+    public function getWikiVersion()
     {
         $postfields = array(
             'action' => 'query',
