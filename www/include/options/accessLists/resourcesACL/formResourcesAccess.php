@@ -44,13 +44,14 @@ if ($o == "c" || $o == "w") {
     /*
      * Set base value
      */
-    $DBRESULT = $pearDB->query("SELECT * FROM acl_resources WHERE acl_res_id = '".$acl_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM acl_resources WHERE acl_res_id = '" . $acl_id . "' LIMIT 1");
     $acl = array_map("myDecode", $DBRESULT->fetchRow());
 
     /*
      * Set Poller relations
      */
-    $DBRESULT = $pearDB->query("SELECT poller_id FROM acl_resources_poller_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT poller_id FROM acl_resources_poller_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $pollers_list = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_pollers"][$i] = $pollers_list["poller_id"];
     }
@@ -60,7 +61,8 @@ if ($o == "c" || $o == "w") {
      * Set Hosts relations
      */
     $hostnotexludes = array();
-    $DBRESULT = $pearDB->query("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_hosts"][$i] = $hosts_list["host_host_id"];
         $hostnotexludes[$hosts_list["host_host_id"]] = 1;
@@ -70,7 +72,8 @@ if ($o == "c" || $o == "w") {
     /*
      * Set Hosts exludes relations
      */
-    $DBRESULT = $pearDB->query("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_hostexclude"][$i] = $hosts_list["host_host_id"];
     }
@@ -79,7 +82,7 @@ if ($o == "c" || $o == "w") {
     /*
      * Set Hosts Groups relations
      */
-    $DBRESULT = $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
+    $DBRESULT = $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '" . $acl_id . "'");
     for ($i = 0; $hg_list = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
     }
@@ -88,7 +91,8 @@ if ($o == "c" || $o == "w") {
     /*
      * Set Groups relations
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_groups"][$i] = $groups["acl_group_id"];
     }
@@ -97,7 +101,8 @@ if ($o == "c" || $o == "w") {
     /*
      * Set Service Categories relations
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     if ($DBRESULT->rowCount()) {
         for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_sc"][$i] = $sc["sc_id"];
@@ -108,7 +113,8 @@ if ($o == "c" || $o == "w") {
     /*
      * Set Host Categories
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hc_id FROM acl_resources_hc_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT DISTINCT hc_id FROM acl_resources_hc_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     if ($DBRESULT->rowCount()) {
         for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_hc"][$i] = $hc["hc_id"];
@@ -119,7 +125,8 @@ if ($o == "c" || $o == "w") {
     /*
      * Set Service Groups relations
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     if ($DBRESULT->rowCount()) {
         for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_sg"][$i] = $sg["sg_id"];
@@ -130,7 +137,8 @@ if ($o == "c" || $o == "w") {
     /*
      * Set Meta Services relations
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
+    $query = "SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = '" . $acl_id . "'";
+    $DBRESULT = $pearDB->query($query);
     if ($DBRESULT->rowCount()) {
         for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
             $acl["acl_meta"][$i] = $ms["meta_id"];
@@ -205,16 +213,17 @@ $DBRESULT->closeCursor();
 /*
  * Var information to format the element
  */
-$attrsText      = array("size"=>"30");
-$attrsText2     = array("size"=>"60");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "60");
 $attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
-$attrsTextarea  = array("rows"=>"3", "cols"=>"80");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "3", "cols" => "80");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br />' .
+'<br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add an ACL"));
 } elseif ($o == "c") {
@@ -241,13 +250,31 @@ $form->setDefaults(array('acl_res_activate' => '1'));
 /*
  * All ressources
  */
-$allHosts[] = HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "", array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id)'));
+$allHosts[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'all_hosts',
+    '&nbsp;',
+    "",
+    array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id)')
+);
 $form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;');
 
-$allHostgroups[] = HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "", array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id)'));
+$allHostgroups[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'all_hostgroups',
+    '&nbsp;',
+    "",
+    array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id)')
+);
 $form->addGroup($allHostgroups, 'all_hostgroups', _("Include all hostgroups"), '&nbsp;&nbsp;');
 
-$allServiceGroups[] = HTML_QuickForm::createElement('checkbox', 'all_servicegroups', '&nbsp;', "", array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id)'));
+$allServiceGroups[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'all_servicegroups',
+    '&nbsp;',
+    "",
+    array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id)')
+);
 $form->addGroup($allServiceGroups, 'all_servicegroups', _("Include all servicegroups"), '&nbsp;&nbsp;');
 
 /*
@@ -255,24 +282,56 @@ $form->addGroup($allServiceGroups, 'all_servicegroups', _("Include all servicegr
  */
 $form->addElement('header', 'contacts_infos', _("People linked to this Access list"));
 
-$ams1 = $form->addElement('advmultiselect', 'acl_groups', array(_("Linked Groups"), _("Available"), _("Selected")), $groups, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1 = $form->addElement(
+    'advmultiselect',
+    'acl_groups',
+    array(_("Linked Groups"), _("Available"), _("Selected")),
+    $groups,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $form->addElement('header', 'Host_infos', _("Shared Resources"));
 $form->addElement('header', 'help', _("Help"));
-$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> Select hosts and hostgroups that can be seen by associated users. You also have the possibility to exclude host(s) from selected hostgroup(s)."));
-$form->addElement('header', 'SSharedExplain', _("<b><i>Help :</i></b> Select services that can be seen by associated users."));
-$form->addElement('header', 'MSSharedExplain', _("<b><i>Help :</i></b> Select meta services that can be seen by associated users."));
-$form->addElement('header', 'FilterExplain', _("<b><i>Help :</i></b> Select the filter(s) you want to apply to the resource definition for a more restrictive view."));
+$form->addElement(
+    'header',
+    'HSharedExplain',
+    _("<b><i>Help :</i></b> Select hosts and hostgroups that can be seen by associated users. " .
+        "You also have the possibility to exclude host(s) from selected hostgroup(s).")
+);
+$form->addElement(
+    'header',
+    'SSharedExplain',
+    _("<b><i>Help :</i></b> Select services that can be seen by associated users.")
+);
+$form->addElement(
+    'header',
+    'MSSharedExplain',
+    _("<b><i>Help :</i></b> Select meta services that can be seen by associated users.")
+);
+$form->addElement(
+    'header',
+    'FilterExplain',
+    _("<b><i>Help :</i></b> Select the filter(s) you want to apply to the " .
+        "resource definition for a more restrictive view.")
+);
 
 /*
  * Pollers
  */
-$ams0 = $form->addElement('advmultiselect', 'acl_pollers', array(_("Poller Filter"), _("Available"), _("Selected")), $pollers, $attrsAdvSelect, SORT_ASC);
-$ams0->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams0 = $form->addElement(
+    'advmultiselect',
+    'acl_pollers',
+    array(_("Poller Filter"), _("Available"), _("Selected")),
+    $pollers,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams0->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams0->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams0->setElementTemplate($eTemplate);
 echo $ams0->getElementJs(false);
@@ -281,8 +340,15 @@ echo $ams0->getElementJs(false);
  * Hosts
  */
 $attrsAdvSelect['id'] = 'hostAdvancedSelect';
-$ams2 = $form->addElement('advmultiselect', 'acl_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams2 = $form->addElement(
+    'advmultiselect',
+    'acl_hosts',
+    array(_("Hosts"), _("Available"), _("Selected")),
+    $hosts,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams2->setElementTemplate($eTemplate);
 echo $ams2->getElementJs(false);
@@ -291,16 +357,30 @@ echo $ams2->getElementJs(false);
  * Host Groups
  */
 $attrsAdvSelect['id'] = 'hostgroupAdvancedSelect';
-$ams2 = $form->addElement('advmultiselect', 'acl_hostgroup', array(_("Host Groups"), _("Available"), _("Selected")), $hostgroups, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams2 = $form->addElement(
+    'advmultiselect',
+    'acl_hostgroup',
+    array(_("Host Groups"), _("Available"), _("Selected")),
+    $hostgroups,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams2->setElementTemplate($eTemplate);
 echo $ams2->getElementJs(false);
 
 unset($attrsAdvSelect['id']);
 
-$ams2 = $form->addElement('advmultiselect', 'acl_hostexclude', array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")), $hosttoexcludes, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams2 = $form->addElement(
+    'advmultiselect',
+    'acl_hostexclude',
+    array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")),
+    $hosttoexcludes,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams2->setElementTemplate($eTemplate);
 echo $ams2->getElementJs(false);
@@ -308,8 +388,15 @@ echo $ams2->getElementJs(false);
 /*
  * Service Filters
  */
-$ams2 = $form->addElement('advmultiselect', 'acl_sc', array(_("Service Category Filter"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams2 = $form->addElement(
+    'advmultiselect',
+    'acl_sc',
+    array(_("Service Category Filter"), _("Available"), _("Selected")),
+    $service_categories,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams2->setElementTemplate($eTemplate);
 echo $ams2->getElementJs(false);
@@ -317,8 +404,15 @@ echo $ams2->getElementJs(false);
 /*
  * Host Filters
  */
-$ams2 = $form->addElement('advmultiselect', 'acl_hc', array(_("Host Category Filter"), _("Available"), _("Selected")), $host_categories, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams2 = $form->addElement(
+    'advmultiselect',
+    'acl_hc',
+    array(_("Host Category Filter"), _("Available"), _("Selected")),
+    $host_categories,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams2->setElementTemplate($eTemplate);
 echo $ams2->getElementJs(false);
@@ -327,8 +421,15 @@ echo $ams2->getElementJs(false);
  * Service Groups Add
  */
 $attrsAdvSelect['id'] = 'servicegroupAdvancedSelect';
-$ams2 = $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams2 = $form->addElement(
+    'advmultiselect',
+    'acl_sg',
+    array(_("Service Groups"), _("Available"), _("Selected")),
+    $service_groups,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams2->setElementTemplate($eTemplate);
 echo $ams2->getElementJs(false);
@@ -337,8 +438,19 @@ unset($attrsAdvSelect['id']);
 /*
  * Meta Services
  */
-$ams2 = $form->addElement('advmultiselect', 'acl_meta', array(_("Meta Services"), _("Available"), _("Selected")), $meta_services, $attrsAdvSelect, SORT_ASC);
-$ams2->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams2 = $form->addElement(
+    'advmultiselect',
+    'acl_meta',
+    array(
+        _("Meta Services"),
+        _("Available"),
+        _("Selected")
+    ),
+    $meta_services,
+    $attrsAdvSelect,
+    SORT_ASC
+);
+$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams2->setElementTemplate($eTemplate);
 echo $ams2->getElementJs(false);
@@ -375,7 +487,10 @@ if ($o == "w") {
     /*
      * Just watch a LCA information
      */
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&acl_id=".$acl_id."'", "class" => "btc bt_success"));
+    $form->addElement("button", "change", _("Modify"), array(
+        "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&acl_id=" . $acl_id . "'",
+        "class" => "btc bt_success"
+    ));
     $form->setDefaults($acl);
     $form->freeze();
 } elseif ($o == "c") {
@@ -392,16 +507,16 @@ if ($o == "w") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 }
-$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&lca_id=".$acl_id, "changeT"=>_("Modify")));
-    
-    // prepare help texts
+$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&lca_id=" . $acl_id, "changeT" => _("Modify")));
+
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
-    
+
 $valid = false;
 if ($form->validate()) {
     $aclObj = $form->getElement('acl_res_id');
@@ -435,19 +550,16 @@ if ($form->validate()) {
 }
 ?>
 <script type='text/javascript'>
-    function hideAdvancedSelect(advId)
-    {
+    function hideAdvancedSelect(advId) {
         advId.parentNode.getElementsByTagName('table')[0].setAttribute('style', 'display: none');
     }
 
-    function showAdvancedSelect(advId)
-    {
+    function showAdvancedSelect(advId) {
         advId.parentNode.getElementsByTagName('table')[0].setAttribute('style', 'display: visible');
     }
 
-    function advancedDisplay(checkboxId)
-    {
-        jQuery("#"+checkboxId).each(function(index, e) {
+    function advancedDisplay(checkboxId) {
+        jQuery("#" + checkboxId).each(function (index, e) {
             if (e.checked) {
                 hideAdvancedSelect(e);
             } else {
@@ -456,8 +568,8 @@ if ($form->validate()) {
         });
     }
 
-advancedDisplay('all_hosts');
-advancedDisplay('all_hostgroups');
-advancedDisplay('all_servicegroups');
+    advancedDisplay('all_hosts');
+    advancedDisplay('all_hostgroups');
+    advancedDisplay('all_servicegroups');
 
 </script>
