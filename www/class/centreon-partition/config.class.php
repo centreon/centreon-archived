@@ -48,19 +48,23 @@ class Config
     public $XMLfile;
     private $defaultConfiguration;
     public $tables;
-    public $db;
+    public $centstorageDb;
+    private $centreonDb;
 
     /**
      * Class constructor
      *
-     * @param CentreonDB $db   the centreon database
-     * @param string     $file the xml file name
+     * @param CentreonDB $centstorageDb   the centstorage database
+     * @param string     $file            the xml file name
+     * @param CentreonDB $centreonDb      the centreon database
      */
-    public function __construct($db, $file)
+    public function __construct($centstorageDb, $file, $centreonDb)
     {
         $this->XMLFile = $file;
-        $this->db = $db;
+        $this->centstorageDb = $centstorageDb;
+        $this->centreonDb = $centreonDb;
         $this->tables = array();
+        $this->loadCentreonDefaultConfiguration();
         $this->parseXML($this->XMLFile);
     }
 
@@ -72,10 +76,10 @@ class Config
         $queryOptions = 'SELECT `opt`.`key`, `opt`.`value` ' .
             'FROM `options` opt ' .
             'WHERE `opt`.`key` IN (' .
-            '`partitioning_backup_directory`, `partitioning_backup_format`, ' .
-            '`partitioning_retention`, `partitioning_retention_forward`' .
+            "'partitioning_backup_directory', 'partitioning_backup_format', " .
+            "'partitioning_retention', 'partitioning_retention_forward'" .
             ')';
-        $res = $this->db->query($queryOptions);
+        $res = $this->centreonDb->query($queryOptions);
         
         if (\PEAR::isError($res)) {
             throw new \Exception("Can't load default configuration for Centreon Partitioning");
@@ -101,7 +105,7 @@ class Config
         $node = new SimpleXMLElement(file_get_contents($xmlfile));
         foreach ($node->table as $table_config) {
             $table = new MysqlTable(
-                $this->db,
+                $this->centstorageDb,
                 (string) $table_config["name"],
                 (string) dbcstg
             );
