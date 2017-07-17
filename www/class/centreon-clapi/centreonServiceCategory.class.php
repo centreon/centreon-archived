@@ -83,7 +83,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array('sc_id', 'sc_name', 'sc_description', 'level');
         $paramString = str_replace("sc_", "", implode($this->delim, $params));
@@ -130,27 +130,27 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             if (!preg_match("/^sc_/", $params[1])) {
-                $params[1] = "sc_".$params[1];
+                $params[1] = "sc_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
     /**
-     * Magic method for get/set/add/del relations
      *
-     * @param string $name
-     * @param array $arg
+     * @param type $name
+     * @param type $arg
+     * @throws CentreonClapiException
      */
     public function __call($name, $arg)
     {
         /* Get the method name */
         $name = strtolower($name);
         /* Get the action and the object */
-        if (preg_match("/^(get|add|del)(service|servicetemplate)\$/", $name, $matches)) {
+        if (preg_match("/^(get|add|del|set)(service|servicetemplate)\$/", $name, $matches)) {
             /* Parse arguments */
             if (!isset($arg[0])) {
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -158,7 +158,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             $args = explode($this->delim, $arg[0]);
             $hcIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($hcIds)) {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
             $categoryId = $hcIds[0];
 
@@ -168,7 +168,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hcIds);
                 if ($matches[2] == "servicetemplate") {
-                    echo "template id".$this->delim."service template description\n";
+                    echo "template id" . $this->delim . "service template description\n";
                 } elseif ($matches[2] == "service") {
                     echo "host id" . $this->delim
                         . "host name" . $this->delim
@@ -198,6 +198,12 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                         echo $value . $this->delim . $p['service_description'] . "\n";
                     }
                 }
+            } elseif ($matches[1] == "set") {
+                if ($matches[2] == "servicetemplate") {
+                    $this->setServiceTemplate($args, $relobj, $obj, $categoryId);
+                } elseif ($matches[2] == "service") {
+                    $this->setService($args, $relobj, $categoryId, $hostServiceRel, $obj);
+                }
             } else {
                 if (!isset($args[1])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -222,7 +228,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                             "AND"
                         );
                         if (!count($elements)) {
-                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":". $tmp[0]."/".$tmp[1]);
+                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $tmp[0] . "/" . $tmp[1]);
                         }
                         $relationTable[] = $elements[0]['service_id'];
                     } elseif ($matches[2] == "servicetemplate") {
@@ -236,7 +242,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                             "AND"
                         );
                         if (!count($tab)) {
-                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $rel);
                         }
                         $relationTable[] = $tab[0]['service_id'];
                     }
@@ -261,6 +267,131 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         } else {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
+    }
+
+    /**
+     *
+     * @param type $args
+     * @param type $relobj
+     * @param type $categoryId
+     * @param type $hostServiceRel
+     * @param type $obj
+     * @throws CentreonClapiException
+     */
+    private function setService($args, $relobj, $categoryId, $hostServiceRel, $obj)
+    {
+        if (!isset($args[1])) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $relation = $args[1];
+        $relations = explode("|", $relation);
+        $relationTable = array();
+        $excludedList = $obj->getList(
+            'service_id',
+            -1,
+            0,
+            null,
+            null,
+            array('service_register' => '1'),
+            'AND'
+        );
+
+        foreach ($relations as $rel) {
+            $tmp = explode(",", $rel);
+            if (count($tmp) < 2) {
+                throw new CentreonClapiException(self::MISSINGPARAMETER);
+            } elseif (count($tmp) > 2) {
+                throw new CentreonClapiException('One Service by Host Name please!');
+            }
+            $elements = $hostServiceRel->getMergedParameters(
+                array('host_id'),
+                array('service_id'),
+                -1,
+                0,
+                null,
+                null,
+                array('host_name' => $tmp[0], 'service_description' => $tmp[1], 'service_register' => '1'),
+                "AND"
+            );
+            if (!count($elements)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $tmp[0] . "/" . $tmp[1]);
+            }
+            $relationTable[] = $elements[0]['service_id'];
+        }
+        $existingRelationIds = $relobj->getTargetIdFromSourceId(
+            $relobj->getSecondKey(),
+            $relobj->getFirstKey(),
+            array($categoryId)
+        );
+
+        foreach ($excludedList as $excluded) {
+            $relobj->delete($categoryId, $excluded['service_id']);
+        }
+
+        foreach ($relationTable as $relationId) {
+            $relobj->insert($categoryId, $relationId);
+        }
+        $acl = new CentreonACL();
+        $acl->reload(true);
+    }
+
+    /**
+     *
+     * @param type $args
+     * @param type $relobj
+     * @param type $obj
+     * @param type $categoryId
+     * @throws CentreonClapiException
+     */
+    private function setServiceTemplate($args, $relobj, $obj, $categoryId)
+    {
+        if (!isset($args[1])) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $relation = $args[1];
+        $relations = explode("|", $relation);
+        $relationTable = array();
+        $excludedList = $obj->getList(
+            "service_id",
+            -1,
+            0,
+            null,
+            null,
+            array('service_register' => 0),
+            "AND"
+        );
+
+        foreach ($relations as $rel) {
+            $tab = $obj->getList(
+                "service_id",
+                -1,
+                0,
+                null,
+                null,
+                array('service_description' => $rel, 'service_register' => 0),
+                "AND"
+            );
+            if (!count($tab)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $rel);
+            }
+            $relationTable[] = $tab[0]['service_id'];
+        }
+
+        $existingRelationIds = $relobj->getTargetIdFromSourceId(
+            $relobj->getSecondKey(),
+            $relobj->getFirstKey(),
+            array($categoryId)
+        );
+
+        foreach ($excludedList as $excluded) {
+            $relobj->delete($categoryId, $excluded['service_id']);
+        }
+
+        foreach ($relationTable as $relationId) {
+            $relobj->insert($categoryId, $relationId);
+        }
+        $acl = new CentreonACL();
+        $acl->reload(true);
     }
 
     /**
