@@ -595,7 +595,7 @@ class CentreonCustomView
     {
         $isLocked = 1;
         $update = false;
-        $query = 'SELECT custom_view_id, locked, user_id ' .
+        $query = 'SELECT custom_view_id, locked, user_id, usergroup_id ' .
             'FROM custom_view_user_relation ' .
             'WHERE custom_view_id = :viewLoad ' .
             'AND ' .
@@ -617,7 +617,9 @@ class CentreonCustomView
             if ($row['locked'] == "0") {
                 $isLocked = $row['locked'];
             }
-            if (!is_null($row['user_id']) && $row['user_id'] > 0){
+            if ((!is_null($row['user_id']) && $row['user_id'] > 0) ||
+                (!is_null($row['usergroup_id']) && $row['usergroup_id'] > 0)
+            ) {
                 $update = true;
             }
         }
