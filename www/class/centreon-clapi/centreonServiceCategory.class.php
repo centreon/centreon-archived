@@ -202,7 +202,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                 if ($matches[2] == "servicetemplate") {
                     $this->setServiceTemplate($args, $relobj, $obj, $categoryId);
                 } elseif ($matches[2] == "service") {
-                    $this->setService($args, $relobj, $categoryId, $hostServiceRel);
+                    $this->setService($args, $relobj, $categoryId, $hostServiceRel, $obj);
                 }   
             } else {
                 if (!isset($args[1])) {
@@ -271,10 +271,14 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
     
     /**
      * 
-     * @param type $arg
+     * @param type $args
+     * @param type $relobj
+     * @param type $categoryId
+     * @param type $hostServiceRel
+     * @param type $obj
      * @throws CentreonClapiException
      */
-    private function setService($args, $relobj, $categoryId, $hostServiceRel)
+    private function setService($args, $relobj, $categoryId, $hostServiceRel, $obj)
     {
         if (!isset($args[1])) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -282,6 +286,16 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         $relation = $args[1];
         $relations = explode("|", $relation);
         $relationTable = array();
+        $excludedList = $obj->getList(
+            'service_id',
+                -1,
+                0,
+                null,
+                null,
+                array('service_register' => '1'),
+                'AND'
+        );
+        
         foreach ($relations as $rel) {
             $tmp = explode(",", $rel);
             if (count($tmp) < 2) {
@@ -296,7 +310,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                 0,
                 null,
                 null,
-                array("host_name" => $tmp[0], "service_description" => $tmp[1]),
+                array('host_name' => $tmp[0], 'service_description' => $tmp[1], 'service_register' => '1'),
                 "AND"
                 );
             if (!count($elements)) {
@@ -308,11 +322,12 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             $relobj->getSecondKey(),
             $relobj->getFirstKey(),
             array($categoryId)
-            );
-        foreach ($existingRelationIds as $relationId) {
-            $relobj->delete($categoryId, $relationId);
-        } 
-
+        );
+        
+        foreach ($excludedList as $excluded) {
+            $relobj->delete($categoryId, $excluded['service_id']);
+        }
+        
         foreach ($relationTable as $relationId) {
             $relobj->insert($categoryId, $relationId);
         }
@@ -322,7 +337,10 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
     
     /**
      * 
-     * @param type $arg
+     * @param type $args
+     * @param type $relobj
+     * @param type $obj
+     * @param type $categoryId
      * @throws CentreonClapiException
      */
     private function setServiceTemplate($args, $relobj, $obj, $categoryId)
@@ -333,31 +351,42 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         $relation = $args[1];
         $relations = explode("|", $relation);
         $relationTable = array();
-        foreach ($relations as $rel) {
-        $tab = $obj->getList(
+        $excludedList = $obj->getList(
             "service_id",
-            -1,
-            0,
-            null,
-            null,
-            array('service_description' => $rel, 'service_register' => 0),
-            "AND"
+                -1,
+                0,
+                null,
+                null,
+                array('service_register' => 0),
+                "AND"
+        );
+        
+        foreach ($relations as $rel) {
+            $tab = $obj->getList(
+                "service_id",
+                -1,
+                0,
+                null,
+                null,
+                array('service_description' => $rel, 'service_register' => 0),
+                "AND"
             );
-        if (!count($tab)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+            if (!count($tab)) {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+            }
+            $relationTable[] = $tab[0]['service_id'];
         }
-        $relationTable[] = $tab[0]['service_id'];
-        }
+        
         $existingRelationIds = $relobj->getTargetIdFromSourceId(
             $relobj->getSecondKey(),
             $relobj->getFirstKey(),
             array($categoryId)
         );
         
-        foreach ($existingRelationIds as $relationId) {
-            $relobj->delete($categoryId, $relationId);
-        } 
-
+        foreach ($excludedList as $excluded) {
+            $relobj->delete($categoryId, $excluded['service_id']);
+        }
+       
         foreach ($relationTable as $relationId) {
             $relobj->insert($categoryId, $relationId);
         }
