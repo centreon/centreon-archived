@@ -236,6 +236,7 @@ class CentreonWebService
 
         /* Generate path for WebService */
         self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/api/class/*.class.php');
+
         $res = $pearDB->query("SELECT name FROM modules_informations");
         while ($row = $res->fetchRow()) {
             self::$webServicePaths = array_merge(
@@ -256,6 +257,7 @@ class CentreonWebService
         $wsObj = new $webService['class']();
 
         if (false === method_exists($wsObj, $action)) {
+            print "KO2";
             static::sendJson("Method not found", 404);
         }
 
