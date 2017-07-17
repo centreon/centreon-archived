@@ -140,10 +140,10 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
     }
 
     /**
-     * Magic method for get/set/add/del relations
-     *
-     * @param string $name
-     * @param array $arg
+     * 
+     * @param type $name
+     * @param type $arg
+     * @throws CentreonClapiException
      */
     public function __call($name, $arg)
     {
