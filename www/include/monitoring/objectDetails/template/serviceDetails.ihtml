@@ -1,5 +1,3 @@
-<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
 <table class="table"> <!-- Global Table -->
     <tr>
         <td style="width: 70%;vertical-align:top; padding-right:8px;">

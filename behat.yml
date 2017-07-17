@@ -129,6 +129,11 @@ default:
       contexts:
        - AutologinContext
 
+    autologin_options:
+      paths: [ %paths.base%/features/AutologinOptions.feature ]
+      contexts:
+      - AutologinOptionsContext
+
     broker:
       paths: [ %paths.base%/features/Broker.feature ]
       contexts:
@@ -174,6 +179,11 @@ default:
       contexts:
       - HostConfigurationContext
 
+    contact_group_configuration:
+      paths: [ %paths.base%/features/ContactGroupConfiguration.feature ]
+      contexts:
+      - ContactGroupConfigurationContext
+
     host_duplication_check:
       paths: [ %paths.base%/features/HostDuplicationCheck.feature ]
       contexts:
@@ -209,12 +219,27 @@ default:
       contexts:
       - ControlLoginContext
 
+    acl_access_groups:
+      paths: [ %paths.base%/features/AclAccessGroups.feature ]
+      contexts:
+      - AclAccessGroupsContext
+
     acl_menus_access:
       paths: [ %paths.base%/features/ACLMenusAccess.feature ]
       contexts:
       - ACLMenusAccessContext
 
+    acl_resources_access:
+      paths: [ %paths.base%/features/ACLResourcesAccess.feature ]
+      contexts:
+      - ACLResourcesAccessContext
+
     non_admin_contact_creation:
       paths: [ %paths.base%/features/NonAdminContactCreation.feature ]
       contexts:
       - NonAdminContactCreationContext
+
+    acl_actions_access:
+      paths: [ %paths.base%/features/ACLActionsAccess.feature ]
+      contexts:
+      - ACLActionsAccessContext

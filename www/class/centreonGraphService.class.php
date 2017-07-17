@@ -282,7 +282,7 @@ class CentreonGraphService extends CentreonGraph
         $retLines = explode("\n", $str);
         foreach ($retLines as $retLine) {
             if (strpos($retLine, '|') !== false) {
-                $infos = explode('|', preg_replace('/\s+/', '', $retLine));
+                $infos = explode('|', $retLine);
                 if (!isset($this->legends[$infos[0]])) {
                     $this->legends[$infos[0]] = array(
                         'extras' => array()
