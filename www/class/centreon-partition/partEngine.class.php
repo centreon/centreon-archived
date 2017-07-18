@@ -426,7 +426,7 @@ class PartEngine
         if (!isset($row["Create_options"])) {
             throw new Exception("Cannot find Create_options for table ".$tableName."\n");
         }
-        if ($row["Create_options"] != "partitioned") {
+        if (!preg_match("/partitioned/", $row["Create_options"])) {
             throw new Exception("Error: cannot update non partitioned table ".$tableName."\n");
         }
 
