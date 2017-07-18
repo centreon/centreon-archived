@@ -467,9 +467,6 @@ class CentreonTraps
         $this->setServiceRelations($traps_id['MAX(traps_id)']);
         $this->setServiceTemplateRelations($traps_id['MAX(traps_id)']);
         $this->setPreexec($traps_id['MAX(traps_id)']);
-        if ($this->centreon->user->admin) {
-            $this->setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
-        }
 
         /* Prepare value for changelog */
         $fields = CentreonLogAction::prepareChanges($ret);
