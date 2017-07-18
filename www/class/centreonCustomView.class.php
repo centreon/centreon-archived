@@ -604,7 +604,7 @@ class CentreonCustomView
             'SELECT contactgroup_cg_id FROM contactgroup_contact_relation ' .
             'WHERE contact_contact_id = :userId ' .
             ') ' .
-            ') ';
+            ') ORDER BY user_id DESC';
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
@@ -617,9 +617,7 @@ class CentreonCustomView
             if ($row['locked'] == "0") {
                 $isLocked = $row['locked'];
             }
-            if ((!is_null($row['user_id']) && $row['user_id'] > 0) ||
-                (!is_null($row['usergroup_id']) && $row['usergroup_id'] > 0)
-            ) {
+            if (!is_null($row['user_id']) && $row['user_id'] > 0 && is_null($row['usergroup_id'])) {
                 $update = true;
             }
         }
