@@ -188,6 +188,18 @@ class CentreonTraps
                                 (SELECT ".$maxId['MAX(traps_id)'].", tpe_string, tpe_order
                                     FROM traps_preexec 
                                     WHERE trap_id = ".$this->db->escape($key).")");
+
+                $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$key;
+                $dbResult = $this->db->query($query);
+                while ($row = $dbResult->fetchRow()) {
+                    $query = "INSERT INTO traps_matching_properties " .
+                        "(`trap_id`,`tmo_order`,`tmo_regexp`,`tmo_string`,`tmo_status`,`severity_id`) " .
+                        "VALUES (" . $maxId['MAX(traps_id)'] . "," . $row['tmo_order'] .
+                        ",'" . $row['tmo_regexp'] . "','" . $row['tmo_string'] . "'," . $row['tmo_status'] . "," .
+                        $row['severity_id'] . ")";
+                    $this->db->query($query);
+                }
+
                 $this->centreon->CentreonLogAction->insertLog(
                     "traps",
                     $maxId["MAX(traps_id)"],
