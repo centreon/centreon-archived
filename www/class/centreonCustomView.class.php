@@ -486,7 +486,7 @@ class CentreonCustomView
             $query2 = "insert into custom_view_user_relation (custom_view_id,user_id,is_owner,locked) " .
                 "VALUES (?, ?, ?, 1)";
             $stmt2 = $this->db->prepare($query2);
-            $this->db->execute($stmt2, array((int)$params['viewLoad'], (int)$this->userId), (int)$is_owner);
+            $this->db->execute($stmt2, array((int)$params['viewLoad'], (int)$this->userId, (int)$is_owner));
 
             return $params['viewLoad'];
         } else if (isset($params['viewLoadShare']) && is_numeric($params['viewLoadShare']) && $params['viewLoadShare'] != -1) {
