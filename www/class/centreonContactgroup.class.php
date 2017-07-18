@@ -263,7 +263,7 @@ class CentreonContactgroup
                     $this->db->query($queryDeleteRelation);
                     $queryContact = "SELECT contact_id FROM contact
                         WHERE contact_ldap_dn IN ('" .
-                            join("', '", array_map('mysql_real_escape_string', $members)) . "')";
+                            join("', '", array_map('PDO::quote', $members)) . "')";
                     try {
                         $resContact = $this->db->query($queryContact);
                     } catch (\PDOException $e) {

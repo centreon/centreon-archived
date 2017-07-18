@@ -456,11 +456,11 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["service_perfdata_file"]) && $ret["service_perfdata_file"] != null ?
         $rq .= "'".htmlentities($ret["service_perfdata_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["host_perfdata_file_template"]) && $ret["host_perfdata_file_template"] != null ?
-        $rq .= "'".  mysql_real_escape_string($ret["host_perfdata_file_template"])."',  " : $rq .= "NULL, ";
+        $rq .= "'" . PDO::quote($ret["host_perfdata_file_template"]) . "',  " : $rq .= "NULL, ";
     isset($ret["service_perfdata_file_template"]) && $ret["service_perfdata_file_template"] != null ?
-        $rq .= "'".mysql_real_escape_string($ret["service_perfdata_file_template"])."',  " : $rq .= "NULL, ";
+        $rq .= "'" . PDO::quote($ret["service_perfdata_file_template"]) . "',  " : $rq .= "NULL, ";
     isset($ret["host_perfdata_file_mode"]["host_perfdata_file_mode"])
-        && $ret["host_perfdata_file_mode"]["host_perfdata_file_mode"] != null ?
+    && $ret["host_perfdata_file_mode"]["host_perfdata_file_mode"] != null ?
         $rq .= "'".$ret["host_perfdata_file_mode"]["host_perfdata_file_mode"]."',  " : $rq .= "NULL, ";
     isset($ret["service_perfdata_file_mode"]["service_perfdata_file_mode"])
         && $ret["service_perfdata_file_mode"]["service_perfdata_file_mode"] != null ?
@@ -958,11 +958,11 @@ function updateNagios($nagios_id = null)
         : $rq .= "service_perfdata_file = NULL, ";
     isset($ret["host_perfdata_file_template"]) && $ret["host_perfdata_file_template"] != null ?
         $rq .= "host_perfdata_file_template = '"
-        . mysql_real_escape_string($ret["host_perfdata_file_template"])."',  "
+        . PDO::quote($ret["host_perfdata_file_template"])."',  "
         : $rq .= "host_perfdata_file_template = NULL, ";
     isset($ret["service_perfdata_file_template"]) && $ret["service_perfdata_file_template"] != null ?
         $rq .= "service_perfdata_file_template = '"
-        . mysql_real_escape_string($ret["service_perfdata_file_template"])."',  "
+        . PDO::quote($ret["service_perfdata_file_template"])."',  "
         : $rq .= "service_perfdata_file_template = NULL, ";
     isset($ret["host_perfdata_file_mode"]["host_perfdata_file_mode"])
         && $ret["host_perfdata_file_mode"]["host_perfdata_file_mode"] != null ?

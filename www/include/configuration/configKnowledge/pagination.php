@@ -67,7 +67,7 @@ if (isset($_GET["num"])) {
     }
 }
 
-$num = mysql_real_escape_string($num);
+$num = PDO::quote($num);
 
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 
