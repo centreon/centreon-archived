@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-    
+
 /* 
  * Database retrieve information
  */
@@ -43,12 +43,14 @@ $pearDBO = new CentreonDB("centstorage");
 $metric = array();
 if (($o == 'cs') && $msr_id) {
     # Set base value
-    $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
+    $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '" . $msr_id . "'");
 
     # Set base value
     $metric1 = array_map("myDecode", $DBRESULT->fetchRow());
     if (!isset($host_id) || $metric1['host_id'] == $host_id) {
-        $DBRESULT = $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '" . $metric1["metric_id"] . "' and metrics.index_id = index_data.id");
+        $query = "SELECT * FROM metrics, index_data WHERE metric_id = '" . $metric1["metric_id"] .
+            "' and metrics.index_id = index_data.id";
+        $DBRESULT = $pearDBO->query($query);
         $metric2 = array_map("myDecode", $DBRESULT->fetchRow());
         $metric = array_merge($metric1, $metric2);
         $host_id = $metric1["host_id"];
@@ -64,34 +66,38 @@ if (($o == 'cs') && $msr_id) {
 /*
  * Host comes from DB -> Store in $hosts Array
  */
-$hosts = array(null => null) + $acl->getHostAclConf(
-    null,
-    'broker',
-    array(
-        'fields'  => array('host.host_id', 'host.host_name'),
-        'keys'    => array('host_id'),
-        'get_row' => 'host_name',
-        'order'   => array('host.host_name')
-    )
-);
+$hosts =
+    array(null => null) + $acl->getHostAclConf(
+        null,
+        'broker',
+        array(
+            'fields' => array('host.host_id', 'host.host_name'),
+            'keys' => array('host_id'),
+            'get_row' => 'host_name',
+            'order' => array('host.host_name')
+        )
+    );
 
 $services1 = array(null => null);
 $services2 = array(null => null);
 if ($host_id) {
-    $services = array(null => null) + $acl->getHostServiceAclConf(
-        $host_id,
-        'broker',
-        array(
-            'fields'  => array('s.service_id', 's.service_description'),
-            'keys'    => array('service_id'),
-            'get_row' => 'service_description',
-            'order'   => array('service_description'))
-    );
+    $services =
+        array(null => null) + $acl->getHostServiceAclConf(
+            $host_id,
+            'broker',
+            array(
+                'fields' => array('s.service_id', 's.service_description'),
+                'keys' => array('service_id'),
+                'get_row' => 'service_description',
+                'order' => array('service_description')
+            )
+        );
+
     foreach ($services as $key => $value) {
         $DBRESULT = $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name
 									 FROM metrics m, index_data i
-									 WHERE i.host_name = '".$pearDBO->escape(getMyHostName($host_id))."'
-									 AND i.service_description = '".$pearDBO->escape($value)."'
+									 WHERE i.host_name = '" . $pearDBO->escape(getMyHostName($host_id)) . "'
+									 AND i.service_description = '" . $pearDBO->escape($value) . "'
 									 AND i.id = m.index_id
 									 ORDER BY metric_name, unit_name");
 
@@ -99,21 +105,21 @@ if ($host_id) {
             $services1[$key] = $value;
             $metricSV["metric_name"] = str_replace("#S#", "/", $metricSV["metric_name"]);
             $metricSV["metric_name"] = str_replace("#BS#", "\\", $metricSV["metric_name"]);
-            $services2[$key][$metricSV["metric_id"]] = $metricSV["metric_name"]."  (".$metricSV["unit_name"].")";
+            $services2[$key][$metricSV["metric_id"]] = $metricSV["metric_name"] . "  (" . $metricSV["unit_name"] . ")";
         }
     }
     $DBRESULT->closeCursor();
 }
 
 $debug = 0;
-$attrsTextI = array("size"=>"3");
-$attrsText = array("size"=>"30");
-$attrsTextarea = array("rows"=>"5", "cols"=>"40");
+$attrsTextI = array("size" => "3");
+$attrsText = array("size" => "30");
+$attrsTextarea = array("rows" => "5", "cols" => "40");
 
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "as") {
     $form->addElement('header', 'title', _("Add a Meta Service indicator"));
 } elseif ($o == "cs") {
@@ -132,7 +138,7 @@ $formMetaId->setValue($meta_id);
 $formMetricId = $form->addElement('hidden', 'metric_id');
 $formMetricId->setValue($metric_id);
 
-$hn = $form->addElement('select', 'host_id', _("Host"), $hosts, array("onChange"=>"this.form.submit()"));
+$hn = $form->addElement('select', 'host_id', _("Host"), $hosts, array("onChange" => "this.form.submit()"));
 $sel = $form->addElement('hierselect', 'metric_sel', _("Service"));
 $sel->setOptions(array($services1, $services2));
 
@@ -147,7 +153,7 @@ $tab = array();
 $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action'=>'1'));
+$form->setDefaults(array('action' => '1'));
 
 $form->addRule('host_id', _("Compulsory Field"), 'required');
 
@@ -179,7 +185,9 @@ if ($o == "cs") {
 }
 
 $valid = false;
-if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]) && $_POST["submitC"])) && $form->validate()) {
+if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]) && $_POST["submitC"])) &&
+    $form->validate()
+) {
     $msrObj = $form->getElement('msr_id');
     if ($form->getSubmitValue("submitA")) {
         $msrObj->setValue(insertMetric($meta_id));
@@ -191,7 +199,7 @@ if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]
 
 $action = $form->getSubmitValue("action");
 if ($valid) {
-    require_once($path."listMetric.php");
+    require_once($path . "listMetric.php");
 } else {
     /*
 	 * Smarty template Init
