@@ -238,3 +238,8 @@ default:
       paths: [ %paths.base%/features/ACLActionsAccess.feature ]
       contexts:
       - ACLActionsAccessContext
+      
+    virtual_metric_handle:
+      paths: [ %paths.base%/features/VirtualMetricHandle.feature ]
+      contexts:
+      - VirtualMetricHandleContext
