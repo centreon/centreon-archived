@@ -57,16 +57,14 @@ if (isset($_REQUEST)) {
 }
 
 if (isset($_GET["num"])) {
-    $num = $_GET["num"];
+    $num = (int)$_GET["num"];
 } else {
     if (!isset($_GET["num"]) && isset($oreon->historyPage[$url]) && $oreon->historyPage[$url]) {
-        $num = $oreon->historyPage[$url];
+        $num = (int)$oreon->historyPage[$url];
     } else {
         $num = 0;
     }
 }
-
-$num = $pearDB->quote($num);
 
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 
