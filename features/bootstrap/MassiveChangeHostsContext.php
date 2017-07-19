@@ -81,7 +81,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'notify_on_downtime_scheduled' => 1,
         'notify_on_none' => 0,
         'notification_interval' => 17,
-        'update_mode_hcg' =>  1,
+        'update_mode_hcg' => 1,
         'update_mode_notif_interval' => 0,
         'update_mode_timeperiod' => 0,
         'notification_period' => 'none',
@@ -106,7 +106,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'retain_status_information' => 2,
         'retain_non_status_information' => 0,
         'stalking_option_on_up' => 1,
-        'stalking_option_on_down' =>  0,
+        'stalking_option_on_down' => 0,
         'stalking_option_on_unreachable' => 1,
         'event_handler_enabled' => 2,
         'event_handler' => 'check_https',
@@ -178,7 +178,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'retain_status_information' => 2,
         'retain_non_status_information' => 0,
         'stalking_option_on_up' => 1,
-        'stalking_option_on_down' =>  0,
+        'stalking_option_on_down' => 0,
         'stalking_option_on_unreachable' => 1,
         'event_handler_enabled' => 2,
         'event_handler' => 'check_https',
@@ -246,7 +246,7 @@ class MassiveChangeHostsContext extends CentreonContext
     {
         $this->tableau = array();
         try {
-            $this->spin( 
+            $this->spin(
                 function ($context) {
                     $this->currentPage = new HostConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedHost1['name']);
