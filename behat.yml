@@ -248,3 +248,8 @@ default:
       paths: [ %paths.base%/features/ACLActionsAccess.feature ]
       contexts:
       - ACLActionsAccessContext
+
+    time_period_configuration:
+      paths: [ %paths.base%/features/TimePeriodConfiguration.feature ]
+      contexts:
+      - TimePeriodConfigurationContext
