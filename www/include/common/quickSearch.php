@@ -33,6 +33,7 @@
  *
  */
 
+require_once realpath(dirname(__FILE__) . "/../../../bootstrap.php");
 global $search;
 
 if (!isset($oreon)) {
@@ -56,14 +57,14 @@ if (isset($_POST["search"])) {
 }
 
 $searchRaw = $search;
-$search = PDO::quote($search);
+$search = $dependencyInjector['configuration_db']->quote($search);
 
 if (!isset($search_service)) {
     $search_service = "";
     $search_serviceRaw = "";
 } else {
     $search_serviceRaw = $search_service;
-    $search_service = PDO::quote($search_service);
+    $search_service = $dependencyInjector['configuration_db']->quote($search_service);
 }
 
 if (isset($search) && $search) {

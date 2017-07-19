@@ -261,9 +261,15 @@ class CentreonContactgroup
                     $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation
                         WHERE contactgroup_cg_id = " . $row['cg_id'];
                     $this->db->query($queryDeleteRelation);
+
+                    $contact = '';
+                    foreach ($members as $member){
+                        $contact = $this->db->quote($member) .',';
+                    }
+                    $contact = rtrim($contact, ",");
+
                     $queryContact = "SELECT contact_id FROM contact
-                        WHERE contact_ldap_dn IN ('" .
-                            join("', '", array_map('PDO::quote', $members)) . "')";
+                        WHERE contact_ldap_dn IN ('" .$contact . "')";
                     try {
                         $resContact = $this->db->query($queryContact);
                     } catch (\PDOException $e) {

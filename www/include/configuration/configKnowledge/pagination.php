@@ -56,7 +56,6 @@ if (isset($_REQUEST)) {
     }
 }
 
-
 if (isset($_GET["num"])) {
     $num = $_GET["num"];
 } else {
@@ -67,7 +66,7 @@ if (isset($_GET["num"])) {
     }
 }
 
-$num = PDO::quote($num);
+$num = $pearDB->quote($num);
 
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 
@@ -94,7 +93,8 @@ if (isset($_GET["search_type_host"])) {
 }
 
 if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) &&
-    !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)) {
+    !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)
+) {
     $search_type_host = 1;
     $oreon->search_type_host = 1;
     $search_type_service = 1;
