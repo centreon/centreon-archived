@@ -113,7 +113,6 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
         $this->utils->expects($this->any())
             ->method('buildPath')
             ->willReturn('/');
-
     }
 
     public function tearDown()
