@@ -3,20 +3,37 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Monitoring\MetricsConfigurationListingPage;
 use Centreon\Test\Behat\Monitoring\MetricsConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Monitoring\MonitoringHostsPage;
+use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationListingPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
-class VirtualMetricHandleContext extends CentreonContext 
+class VirtualMetricHandleContext extends CentreonContext
 {
     protected $page;
-   
+    protected $vmName = 'vmtestname';
+    protected $host = 'MetricTestHostname';
+    protected $hostService = 'MetricTestService';
     
+
+
     /**
      * @When I add a virtual metric
      */
     public function iAddAVirtualMetric()
     {
         $this->page = new MetricsConfigurationListingPage($this);
-        throw new \Exception('...');
-    
+        $this->assertFind('css', 'a[class="btc bt_success"]')->click();
+        $this->page = new MetricsConfigurationPage($this);
+        $this->page->setProperties(array(
+            'name' => $this->vmName,
+            'linked-host_services' => $this->host . ' - ' . $this->hostService,
+            'function' => 'test1'
+        ));
+        $this->page->save();
     }
 
     /**
@@ -24,7 +41,11 @@ class VirtualMetricHandleContext extends CentreonContext
      */
     public function allPropertiesAreSaved()
     {
-        throw new PendingException();
+       $this->page = new MetricsConfigurationListingPage($this);
+       $data = $this->page->getEntry($this->vmName);
+       if ($data['name'] != $this->vmName || $data['function'] != 'test1') {
+           throw new \Exception('some properties has not been saved');
+       }
     }
 
     /**
