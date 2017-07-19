@@ -174,7 +174,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $stmt = $this->pearDBMonitoring->prepare($query);
         $stmt->bindValue(':fullName', $bindParams[':fullName'], PDO::PARAM_STR);
         unset($bindParams[':fullName']);
-        foreach($bindParams as $k => $v) {
+        foreach ($bindParams as $k => $v) {
             $stmt->bindValue($k, $v, PDO::PARAM_INT);
         }
 

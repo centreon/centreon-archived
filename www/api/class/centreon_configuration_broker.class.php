@@ -48,8 +48,7 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
      */
     public function getBlock()
     {
-        if (
-            !isset($this->arguments['page']) ||
+        if (!isset($this->arguments['page']) ||
             !isset($this->arguments['position']) ||
             !isset($this->arguments['blockId']) ||
             !isset($this->arguments['tag'])
@@ -64,7 +63,7 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
 
         $cbObj = new CentreonConfigCentreonBroker($this->pearDB);
 
-        $form = $cbObj->quickFormById($blockId, $page, $position, "new_".rand(100, 1000));
+        $form = $cbObj->quickFormById($blockId, $page, $position, "new_" . rand(100, 1000));
 
         $helps = array();
         list($tagId, $typeId) = explode('_', $blockId);
@@ -80,7 +79,10 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
                 $fieldname .= $cbObj->getParentGroups($field['group']);
             }
             $fieldname .= $field['fieldname'];
-            $helps[] = array('name' => $tag . '[' . $position . '][' . $fieldname . ']', 'desc' => _($field['description']));
+            $helps[] = array(
+                'name' => $tag . '[' . $position . '][' . $fieldname . ']',
+                'desc' => _($field['description'])
+            );
         }
         textdomain('messages');
 
@@ -92,7 +94,7 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
         $tpl->compile_dir = $libDir . '/SmartyCache/compile';
         $tpl->config_dir = $libDir . '/SmartyCache/config';
         $tpl->cache_dir = $libDir . '/SmartyCache/cache';
-        $tpl->template_dir =  _CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/';
+        $tpl->template_dir = _CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/';
         $tpl->caching = 0;
         $tpl->compile_check = true;
         $tpl->force_compile = true;
