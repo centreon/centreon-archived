@@ -8,7 +8,7 @@ class TimePeriodConfigurationContext extends CentreonContext
 {
     private $currentPage;
 
-    private $initialProperties = array (
+    private $initialProperties = array(
         'name' => 'timePeriodName',
         'alias' => 'timePeriodAlias',
         'sunday' => '14:00-16:00',
@@ -19,27 +19,27 @@ class TimePeriodConfigurationContext extends CentreonContext
         'friday' => '07:00-18:00',
         'saturday' => '10:00-16:00',
         'templates' => 'none',
-        'exceptions' => array (
-            array (
+        'exceptions' => array(
+            array(
                 'day' => 'december 25',
                 'timeRange' => '00:00-22:59,23:00-24:00'
             ),
-            array (
+            array(
                 'day' => 'january 1',
                 'timeRange' => '00:00-24:00'
             ),
-            array (
+            array(
                 'day' => 'july 14',
                 'timeRange' => '00:00-24:00'
             ),
-            array (
+            array(
                 'day' => 'may 25',
                 'timeRange' => '00:00-24:00'
             )
         )
     );
 
-    private $duplicatedProperties = array (
+    private $duplicatedProperties = array(
         'name' => 'timePeriodName_1',
         'alias' => 'timePeriodAlias',
         'sunday' => '14:00-16:00',
@@ -50,27 +50,27 @@ class TimePeriodConfigurationContext extends CentreonContext
         'friday' => '07:00-18:00',
         'saturday' => '10:00-16:00',
         'templates' => 'none',
-        'exceptions' => array (
-            array (
+        'exceptions' => array(
+            array(
                 'day' => 'december 25',
                 'timeRange' => '00:00-22:59,23:00-24:00'
             ),
-            array (
+            array(
                 'day' => 'january 1',
                 'timeRange' => '00:00-24:00'
             ),
-            array (
+            array(
                 'day' => 'july 14',
                 'timeRange' => '00:00-24:00'
             ),
-            array (
+            array(
                 'day' => 'may 25',
                 'timeRange' => '00:00-24:00'
             )
         )
     );
 
-    private $AugustHolidays = array (
+    private $AugustHolidays = array(
         'name' => 'timePeriodName',
         'alias' => 'timePeriodAlias',
         'sunday' => '14:00-16:00',
@@ -81,8 +81,8 @@ class TimePeriodConfigurationContext extends CentreonContext
         'friday' => '07:00-18:00',
         'saturday' => '10:00-16:00',
         'templates' => 'none',
-        'exceptions' => array (
-            array (
+        'exceptions' => array(
+            array(
                 'day' => 'august 1 - 31',
                 'timeRange' => '00:00-24:00'
             )
@@ -117,11 +117,11 @@ class TimePeriodConfigurationContext extends CentreonContext
                         }
                         if ($key == 'exceptions') {
                             $stringValue = '';
-                            foreach($value as $array) {
+                            foreach ($value as $array) {
                                 $stringValue = $stringValue . implode(',', $array) . ' ';
                             }
                             $stringObject = '';
-                            foreach($object[$key] as $array) {
+                            foreach ($object[$key] as $array) {
                                 $stringObject = $stringObject . implode(',', $array) . ' ';
                             }
                             if ($stringValue != $stringObject) {
@@ -168,11 +168,11 @@ class TimePeriodConfigurationContext extends CentreonContext
                         }
                         if ($key == 'exceptions') {
                             $stringValue = '';
-                            foreach($value as $array) {
+                            foreach ($value as $array) {
                                 $stringValue = $stringValue . implode(',', $array) . ' ';
                             }
                             $stringObject = '';
-                            foreach($object[$key] as $array) {
+                            foreach ($object[$key] as $array) {
                                 $stringObject = $stringObject . implode(',', $array) . ' ';
                             }
                             if (strcmp($stringValue, $stringObject) !== 0) {
@@ -231,11 +231,11 @@ class TimePeriodConfigurationContext extends CentreonContext
                         }
                         if ($key == 'exceptions') {
                             $stringValue = '';
-                            foreach($value as $array) {
+                            foreach ($value as $array) {
                                 $stringValue = $stringValue . implode(',', $array) . ' ';
                             }
                             $stringObject = '';
-                            foreach($object[$key] as $array) {
+                            foreach ($object[$key] as $array) {
                                 $stringObject = $stringObject . implode(',', $array) . ' ';
                             }
                             if (strcmp($stringValue, $stringObject) !== 0) {
