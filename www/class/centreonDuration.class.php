@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -42,42 +43,42 @@ class CentreonDuration
         }
         return CentreonDuration::array2string($duration);
     }
- 
+
     public static function int2array($seconds, $periods = null)
     {
         // Define time periods
         if (!is_array($periods)) {
-            $periods = array (
-                    'y'     => 31556926,
-                    'M' => 2629743,
-                    'w' => 604800,
-                    'd' => 86400,
-                    'h' => 3600,
-                    'm' => 60,
-                    's' => 1
-                    );
+            $periods = array(
+                'y' => 31556926,
+                'M' => 2629743,
+                'w' => 604800,
+                'd' => 86400,
+                'h' => 3600,
+                'm' => 60,
+                's' => 1
+            );
         }
- 
+
         // Loop
-        $seconds = (int) $seconds;
+        $seconds = (int)$seconds;
         foreach ($periods as $period => $value) {
             $count = floor($seconds / $value);
- 
+
             if ($count == 0) {
                 continue;
             }
- 
+
             $values[$period] = $count;
             $seconds = $seconds % $value;
         }
- 
+
         // Return
         if (empty($values)) {
             $values = null;
         }
         return $values;
     }
- 
+
     public static function array2string($duration)
     {
         if (!is_array($duration)) {
@@ -106,38 +107,38 @@ class DurationHoursMinutes
         }
         return DurationHoursMinutes::array2string($duration);
     }
- 
+
     public static function int2array($seconds, $periods = null)
     {
         // Define time periods
         if (!is_array($periods)) {
-            $periods = array (
-                    'h' => 3600,
-                    'm' => 60,
-                    's' => 1
-                    );
+            $periods = array(
+                'h' => 3600,
+                'm' => 60,
+                's' => 1
+            );
         }
- 
+
         // Loop
-        $seconds = (int) $seconds;
+        $seconds = (int)$seconds;
         foreach ($periods as $period => $value) {
             $count = floor($seconds / $value);
             if ($count == 0) {
                 continue;
             }
- 
+
             $values[$period] = $count;
             $seconds = $seconds % $value;
         }
- 
+
         // Return
         if (empty($values)) {
             $values = null;
         }
- 
+
         return $values;
     }
- 
+
     public static function array2string($duration)
     {
         if (!is_array($duration)) {
@@ -145,7 +146,7 @@ class DurationHoursMinutes
         }
 
         foreach ($duration as $key => $value) {
-            $array[] = $value."".$key;
+            $array[] = $value . "" . $key;
         }
         unset($segment);
         $str = implode(' ', $array);

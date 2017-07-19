@@ -120,7 +120,8 @@ class CentreonContactgroup
 
                 foreach ($cg_ldap as $cg_name) {
                     if (false === array_search($cg_name . " (LDAP : " . $ldaprow['ar_name'] . ")", $cgs) &&
-                        preg_match('/' . $filter . '/i', $cg_name)) {
+                        preg_match('/' . $filter . '/i', $cg_name)
+                    ) {
                         $cgs["[" . $ldaprow['ar_id'] . "]" . $cg_name] = $this->formatLdapContactgroupName(
                             $cg_name,
                             $ldaprow['ar_name']
@@ -176,7 +177,7 @@ class CentreonContactgroup
         	(cg_name, cg_alias, cg_activate, cg_type, cg_ldap_dn, ar_id)
         	VALUES
         	('" . $this->db->escape($cg_name) . "', '" . $this->db->escape($cg_name) . "', '1', 'ldap', '" .
-                $this->db->escape($ldap_dn) . "', " . CentreonDB::escape($ar_id) . ")";
+            $this->db->escape($ldap_dn) . "', " . CentreonDB::escape($ar_id) . ")";
         try {
             $res = $this->db->query($query);
         } catch (\PDOException $e) {
@@ -211,7 +212,7 @@ class CentreonContactgroup
         $ldapres = $this->db->query($query);
 
         $msg = array();
-        
+
         /*
          * Connect to LDAP Server
          */
@@ -263,13 +264,13 @@ class CentreonContactgroup
                     $this->db->query($queryDeleteRelation);
 
                     $contact = '';
-                    foreach ($members as $member){
-                        $contact = $this->db->quote($member) .',';
+                    foreach ($members as $member) {
+                        $contact = $this->db->quote($member) . ',';
                     }
                     $contact = rtrim($contact, ",");
 
                     $queryContact = "SELECT contact_id FROM contact
-                        WHERE contact_ldap_dn IN ('" .$contact . "')";
+                        WHERE contact_ldap_dn IN ('" . $contact . "')";
                     try {
                         $resContact = $this->db->query($queryContact);
                     } catch (\PDOException $e) {
@@ -283,7 +284,7 @@ class CentreonContactgroup
                         try {
                             $this->db->query($queryAddRelation);
                         } catch (\PDOException $e) {
-                            $msg[] ="Error insert relation between contactgroup " . $row['cg_id'] .
+                            $msg[] = "Error insert relation between contactgroup " . $row['cg_id'] .
                                 " and contact " . $rowContact['contact_id'];
                         }
                     }
@@ -297,7 +298,7 @@ class CentreonContactgroup
         }
         return $msg;
     }
-    
+
     /**
      * Get contact group name from contact group id
      *
@@ -316,7 +317,7 @@ class CentreonContactgroup
             throw Exception('No contact group name found');
         }
     }
-    
+
     /**
      * Verified if ldap contactgroup as not the same name of a Centreon contactgroup
      *
@@ -337,7 +338,7 @@ class CentreonContactgroup
 
                 /* Query test if exists */
                 $query = "SELECT COUNT(*) as nb FROM contactgroup
-                    WHERE cg_name = '" . $pearDB->escape($cg_name) ."' AND cg_type != 'ldap' ";
+                    WHERE cg_name = '" . $pearDB->escape($cg_name) . "' AND cg_type != 'ldap' ";
                 try {
                     $res = $pearDB->query($query);
                 } catch (\PDOException $e) {
@@ -351,7 +352,7 @@ class CentreonContactgroup
         }
         return true;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -387,7 +388,7 @@ class CentreonContactgroup
                 $parameters['relationObject']['comparator'] = 'cg_cg_id';
                 break;
         }
-        
+
         return $parameters;
     }
 
@@ -405,7 +406,7 @@ class CentreonContactgroup
         if (!$centreon->user->access->admin) {
             $cgAcl = $centreon->user->access->getContactGroupAclConf(
                 array(
-                    'fields'  => array('cg_id'),
+                    'fields' => array('cg_id'),
                     'get_row' => 'cg_id',
                     'keys' => array('cg_id'),
                     'conditions' => array(

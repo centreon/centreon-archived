@@ -107,7 +107,7 @@ class CentreonLDAP
         if ($this->debugPath == '') {
             $this->debugImport = false;
         }
-        
+
         $searchTimeout = 5;
         $tempSearchTimeout = $this->getLdapHostParameters($arId, 'ldap_search_timeout');
         if (count($tempSearchTimeout) > 0) {
@@ -162,10 +162,10 @@ class CentreonLDAP
             $dbresult->closeCursor();
         }
     }
-    
+
     /**
      *
-     * @param int    $arId
+     * @param int $arId
      * @param string $filter
      * @return array
      */
@@ -173,19 +173,19 @@ class CentreonLDAP
     {
         // ldap_search_timeout
         $queryLdapHostParemeters = "SELECT * FROM auth_ressource_info WHERE ar_id = " . $this->db->escape($arId);
-        
+
         if (!empty($filter)) {
             $queryLdapHostParemeters .= " AND `ari_name` = '$filter'";
         }
-        
+
         $resLdapHostParameters = $this->db->query($queryLdapHostParemeters);
-        
+
         $finalLdapHostParameters = array();
-        
+
         while ($rowLdapHostParameters = $resLdapHostParameters->fetchRow()) {
             $finalLdapHostParameters = $rowLdapHostParameters;
         }
-        
+
         return $finalLdapHostParameters;
     }
 
@@ -279,8 +279,8 @@ class CentreonLDAP
     {
         return $this->ds;
     }
-    
-     /**
+
+    /**
      * Transform user, group name for filter
      *
      * @param  string $name the atrribute
@@ -392,8 +392,8 @@ class CentreonLDAP
     /**
      * Get a LDAP entry
      *
-     * @param  string $dn   The DN
-     * @param  array  $attr The list of attribute
+     * @param  string $dn The DN
+     * @param  array $attr The list of attribute
      * @return array|bool The list of information, or false in error
      */
     public function getEntry($dn, $attr = array())
@@ -512,10 +512,10 @@ class CentreonLDAP
     /**
      * Search function
      *
-     * @param  string $filter        The filter string, null for use default
-     * @param  string $basedn        The basedn, null for use default
-     * @param  int    $searchLimit   The search limit, null for all
-     * @param  int    $searchTimeout The search timeout, null for default
+     * @param  string $filter The filter string, null for use default
+     * @param  string $basedn The basedn, null for use default
+     * @param  int $searchLimit The search limit, null for all
+     * @param  int $searchTimeout The search timeout, null for default
      * @return array The search result
      */
     public function search($filter, $basedn, $searchLimit, $searchTimeout)
@@ -566,24 +566,24 @@ class CentreonLDAP
             $result = array();
             $result['dn'] = (isset($info[$i]['dn']) ? $info[$i]['dn'] : "");
             $result['alias'] = (
-                isset($info[$i][$this->userSearchInfo['alias']][0]) ?$info[$i][$this->userSearchInfo['alias']][0] : ""
+            isset($info[$i][$this->userSearchInfo['alias']][0]) ? $info[$i][$this->userSearchInfo['alias']][0] : ""
             );
             $result['name'] = (
-                isset($info[$i][$this->userSearchInfo['name']][0]) ? $info[$i][$this->userSearchInfo['name']][0] : ""
+            isset($info[$i][$this->userSearchInfo['name']][0]) ? $info[$i][$this->userSearchInfo['name']][0] : ""
             );
             $result['email'] = (
-                isset($info[$i][$this->userSearchInfo['email']][0]) ? $info[$i][$this->userSearchInfo['email']][0] : ""
+            isset($info[$i][$this->userSearchInfo['email']][0]) ? $info[$i][$this->userSearchInfo['email']][0] : ""
             );
             $result['pager'] = (
-                isset($info[$i][$this->userSearchInfo['pager']][0]) ? $info[$i][$this->userSearchInfo['pager']][0] : ""
+            isset($info[$i][$this->userSearchInfo['pager']][0]) ? $info[$i][$this->userSearchInfo['pager']][0] : ""
             );
             $result['firstname'] = (
-                isset($info[$i][$this->userSearchInfo['firstname']][0]) ?
-                    $info[$i][$this->userSearchInfo['firstname']][0] : ""
+            isset($info[$i][$this->userSearchInfo['firstname']][0]) ?
+                $info[$i][$this->userSearchInfo['firstname']][0] : ""
             );
             $result['lastname'] = (
-                isset($info[$i][$this->userSearchInfo['lastname']][0]) ?
-                    $info[$i][$this->userSearchInfo['lastname']][0] : ""
+            isset($info[$i][$this->userSearchInfo['lastname']][0]) ?
+                $info[$i][$this->userSearchInfo['lastname']][0] : ""
             );
             $results[] = $result;
         }
@@ -799,13 +799,34 @@ class CentreonLdapAdmin
      */
     public function getLdapParameters()
     {
-        $tab = array('ldap_store_password', 'ldap_auto_import', 'ldap_search_limit',
-            'ldap_search_timeout', 'ldap_contact_tmpl', 'ldap_srv_dns',
-            'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain',
-            'bind_dn', 'bind_pass', 'protocol_version', 'ldap_template', 'user_base_search',
-            'group_base_search', 'user_filter', 'alias', 'user_group', 'user_name',
-            'user_firstname', 'user_lastname', 'user_email', 'user_pager', 'group_filter',
-            'group_name', 'group_member');
+        $tab = array(
+            'ldap_store_password',
+            'ldap_auto_import',
+            'ldap_search_limit',
+            'ldap_search_timeout',
+            'ldap_contact_tmpl',
+            'ldap_srv_dns',
+            'ldap_dns_use_ssl',
+            'ldap_dns_use_tls',
+            'ldap_dns_use_domain',
+            'bind_dn',
+            'bind_pass',
+            'protocol_version',
+            'ldap_template',
+            'user_base_search',
+            'group_base_search',
+            'user_filter',
+            'alias',
+            'user_group',
+            'user_name',
+            'user_firstname',
+            'user_lastname',
+            'user_email',
+            'user_pager',
+            'group_filter',
+            'group_name',
+            'group_member'
+        );
         return $tab;
     }
 
@@ -832,9 +853,9 @@ class CentreonLdapAdmin
                     $insertStr .= ", ";
                 }
                 $insertStr .= "($arId, '" . $this->db->escape($addr) . "', '" .
-                        $this->db->escape($portList[$key]) . "', " .
-                        $this->db->escape($sslList[$key] ? 1 : 0) . ", " .
-                        $this->db->escape($tlsList[$key] ? 1 : 0) . ", $i)";
+                    $this->db->escape($portList[$key]) . "', " .
+                    $this->db->escape($sslList[$key] ? 1 : 0) . ", " .
+                    $this->db->escape($tlsList[$key] ? 1 : 0) . ", $i)";
                 $i++;
             }
             if ($insertStr) {
@@ -846,14 +867,14 @@ class CentreonLdapAdmin
             }
         }
     }
-    
+
     /**
      * Set ldap options
      *
      * 'ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_search_limit', 'ldap_search_timeout'
      * and 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain' if ldap_srv_dns = 1
      *
-     * @param  int   $arId
+     * @param  int $arId
      * @param  array $options The list of options
      * @return int | auth ressource id
      */
@@ -932,7 +953,7 @@ class CentreonLdapAdmin
     /**
      * Add a Ldap server
      *
-     * @param  int   $arId
+     * @param  int $arId
      * @param  array $params
      * @return void
      */
@@ -953,7 +974,7 @@ class CentreonLdapAdmin
     /**
      * Modify a Ldap server
      *
-     * @param  int   $arId
+     * @param  int $arId
      * @param  array $params
      * @return void
      */
@@ -1015,7 +1036,7 @@ class CentreonLdapAdmin
      * Modify a template
      *
      * @param  int The id of the template
-     * @param  array                      $options A hash table with options for connections and search in ldap
+     * @param  array $options A hash table with options for connections and search in ldap
      * @return bool
      */
     public function modifyTemplate($id, $options = array())
@@ -1131,7 +1152,7 @@ class CentreonLdapAdmin
      *
      * @param  string $search
      * @param  string $offset
-     * @param  int    $limit
+     * @param  int $limit
      * @return array
      */
     public function getLdapConfigurationList($search = "", $offset = null, $limit = null)
@@ -1172,7 +1193,7 @@ class CentreonLdapAdmin
     /**
      * Enable/Disable ldap configuration
      *
-     * @param  int   $status
+     * @param  int $status
      * @param  array $configList
      * @return void
      */

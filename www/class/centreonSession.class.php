@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -119,7 +120,7 @@ class CentreonSession
         $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
         $DBRESULT = $pearDB->query(
             "SELECT user_id FROM session
-                WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'"
+                WHERE `session_id` = '" . htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8") . "'"
         );
         $row = $DBRESULT->fetchRow();
         if (!$row) {

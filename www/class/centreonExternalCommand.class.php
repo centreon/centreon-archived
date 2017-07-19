@@ -265,11 +265,13 @@ class CentreonExternalCommand
          * Check if $host is an id or a name
          */
         if (preg_match("/^[0-9]*$/", $host)) {
-            $DBRESULT = CentreonDBInstance::getMonInstance()->query("SELECT instance_id FROM hosts WHERE hosts.host_id = '" .
-                CentreonDB::escape($host) . "' AND hosts.enabled = '1'");
+            $query = "SELECT instance_id FROM hosts " .
+                "WHERE hosts.host_id = '" . CentreonDB::escape($host) . "' AND hosts.enabled = '1'";
+            $DBRESULT = CentreonDBInstance::getMonInstance()->query($query);
         } else {
-            $DBRESULT = CentreonDBInstance::getMonInstance()->query("SELECT instance_id FROM hosts WHERE hosts.name = '" .
-                CentreonDB::escape($host) . "' AND hosts.enabled = '1' LIMIT 1");
+            $query = "SELECT instance_id FROM hosts " .
+                "WHERE hosts.name = '" . CentreonDB::escape($host) . "' AND hosts.enabled = '1' LIMIT 1";
+            $DBRESULT = CentreonDBInstance::getMonInstance()->query($query);
         }
         $row = $DBRESULT->fetchRow();
         if (isset($row['instance_id'])) {
@@ -372,7 +374,7 @@ class CentreonExternalCommand
          * Get poller for this host
          */
         $poller_id = $this->getPollerID($host);
-        
+
         /*
          * Send command
          */

@@ -42,7 +42,8 @@ class CentreonDBStatement extends \PDOStatement
 
     public $fetchAll;
 
-    protected function __construct($dbh) {
+    protected function __construct($dbh)
+    {
         $this->dbh = $dbh;
         $this->fetchAll = null;
     }
@@ -51,7 +52,7 @@ class CentreonDBStatement extends \PDOStatement
     {
         if (is_null($this->fetchAll)) {
             return parent::fetch();
-        } else if (count($this->fetchAll) <= 0) {
+        } elseif (count($this->fetchAll) <= 0) {
             return false;
         } else {
             return array_shift($this->fetchAll);

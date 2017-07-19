@@ -265,7 +265,7 @@ class centreonGraphPoller
                 throw new RuntimeException();
             }
             $this->commandLine .= " DEF:v" . $i . "=" . $path . ":$metric:AVERAGE";
-            $this->commandLine .= " GPRINT:v". ($i) .":LAST:\"\:%7.2lf%s\l\"";
+            $this->commandLine .= " GPRINT:v" . ($i) . ":LAST:\"\:%7.2lf%s\l\"";
             $this->commandLine .= " XPORT:v" . $i . ":v" . $i;
 
             $info = array(
@@ -281,8 +281,9 @@ class centreonGraphPoller
             );
 
             if (isset($metric['ds_color_area']) &&
-              isset($metric['ds_filled']) &&
-              $metric['ds_filled'] === '1') {
+                isset($metric['ds_filled']) &&
+                $metric['ds_filled'] === '1'
+            ) {
                 $info['graph_type'] = "area";
             }
             if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {

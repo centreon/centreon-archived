@@ -74,13 +74,15 @@ class CentreonPurgeEngine
             'retention_field' => 'len_storage_comments',
             'retention' => 0,
             'is_partitioned' => false,
-            'custom_query' => 'DELETE FROM comments WHERE (deletion_time is not null and deletion_time < __RETENTION__) OR (expire_time < __RETENTION__ AND expire_time <> 0)'
+            'custom_query' => 'DELETE FROM comments WHERE (deletion_time is not null and deletion_time ' .
+                '< __RETENTION__) OR (expire_time < __RETENTION__ AND expire_time <> 0)'
         ),
         'downtimes' => array(
             'retention_field' => 'len_storage_downtimes',
             'retention' => 0,
             'is_partitioned' => false,
-            'custom_query' => 'DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time < __RETENTION__) OR (deletion_time is not null and deletion_time < __RETENTION__)'
+            'custom_query' => 'DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time ' .
+                '< __RETENTION__) OR (deletion_time is not null and deletion_time < __RETENTION__)'
         ),
     );
 
@@ -96,12 +98,11 @@ class CentreonPurgeEngine
 
         $this->isPartitioned();
     }
-    
+
     private function readConfig()
     {
-        $query = 'SELECT len_storage_mysql,archive_retention,reporting_retention, len_storage_downtimes, len_storage_comments '
-            . 'FROM config';
-
+        $query = 'SELECT len_storage_mysql,archive_retention,reporting_retention, ' .
+            'len_storage_downtimes, len_storage_comments FROM config';
         try {
             $DBRESULT = $this->dbCentstorage->query($query);
         } catch (\PDOException $e) {
@@ -111,8 +112,18 @@ class CentreonPurgeEngine
         $ltime = localtime();
         $row = $DBRESULT->fetchRow();
         foreach ($this->tablesToPurge as &$table) {
-            if (isset($row[$table['retention_field']]) && !is_null($row[$table['retention_field']]) && $row[$table['retention_field']] > 0) {
-                $table['retention'] = mktime(0, 0, 0, $ltime[4]+1, $ltime[3]-$row[$table['retention_field']], $ltime[5]+1900);
+            if (isset($row[$table['retention_field']]) &&
+                !is_null($row[$table['retention_field']]) &&
+                $row[$table['retention_field']] > 0
+            ) {
+                $table['retention'] = mktime(
+                    0,
+                    0,
+                    0,
+                    $ltime[4] + 1,
+                    $ltime[3] - $row[$table['retention_field']],
+                    $ltime[5] + 1900
+                );
             }
         }
     }
@@ -166,7 +177,8 @@ class CentreonPurgeEngine
         $request .= "WHERE TABLE_NAME='" . $table . "' ";
         $request .= "AND TABLE_SCHEMA='" . dbcstg . "' ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
-        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $this->tablesToPurge[$table]['retention'] . " ";
+        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " .
+            $this->tablesToPurge[$table]['retention'] . " ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) NOT LIKE 'pmax' ";
 
         try {
@@ -175,7 +187,7 @@ class CentreonPurgeEngine
             throw new Exception("Error : Cannot get partitions to purge for table "
                 . $table . ", " . $e->getMessage() . "\n");
         }
-        
+
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE " . $table . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
             try {
@@ -191,10 +203,15 @@ class CentreonPurgeEngine
     private function purgeOldData($table)
     {
         if (isset($this->tablesToPurge[$table]['custom_query'])) {
-            $request = str_replace('__RETENTION__', $this->tablesToPurge[$table]['retention'], $this->tablesToPurge[$table]['custom_query']);
+            $request = str_replace(
+                '__RETENTION__',
+                $this->tablesToPurge[$table]['retention'],
+                $this->tablesToPurge[$table]['custom_query']
+            );
         } else {
             $request = "DELETE FROM " . $table . " ";
-            $request .= "WHERE " . $this->tablesToPurge[$table]['ctime_field'] . " < " . $this->tablesToPurge[$table]['retention'];
+            $request .= "WHERE " . $this->tablesToPurge[$table]['ctime_field'] . " < " .
+                $this->tablesToPurge[$table]['retention'];
         }
 
         try {
@@ -214,8 +231,8 @@ class CentreonPurgeEngine
         $request .= "AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
 
         // Delete index_data entries for service by host
-        $request .= "AND ISNULL((SELECT 1 FROM " . db . ".host_service_relation hsr ";
-        $request .= "WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
+        $request .= "AND ISNULL((SELECT 1 FROM " . db . ".host_service_relation hsr " .
+            "WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
 
         try {
             $DBRESULT = $this->dbCentstorage->query($request);
