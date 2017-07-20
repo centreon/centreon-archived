@@ -3,23 +3,17 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Monitoring\MetricsConfigurationListingPage;
 use Centreon\Test\Behat\Monitoring\MetricsConfigurationPage;
-use Centreon\Test\Behat\Configuration\HostConfigurationPage;
-use Centreon\Test\Behat\Monitoring\MonitoringHostsPage;
-use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
-use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
-use Centreon\Test\Behat\Configuration\ServiceConfigurationListingPage;
-use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
-use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 class VirtualMetricHandleContext extends CentreonContext
 {
     protected $page;
     protected $vmName = 'vmtestname';
     protected $host = 'MetricTestHostname';
+    protected $function = 'test1';
     protected $hostService = 'MetricTestService';
+    protected $duplicatedVmName = 'vmtestname_1';
     
-
-
+    
     /**
      * @When I add a virtual metric
      */
@@ -31,7 +25,7 @@ class VirtualMetricHandleContext extends CentreonContext
         $this->page->setProperties(array(
             'name' => $this->vmName,
             'linked-host_services' => $this->host . ' - ' . $this->hostService,
-            'function' => 'test1'
+            'function' => $this->function
         ));
         $this->page->save();
     }
@@ -43,8 +37,8 @@ class VirtualMetricHandleContext extends CentreonContext
     {
        $this->page = new MetricsConfigurationListingPage($this);
        $data = $this->page->getEntry($this->vmName);
-       if ($data['name'] != $this->vmName || $data['function'] != 'test1') {
-           throw new \Exception('some properties has not been saved');
+       if ($data['name'] != $this->vmName || $data['function'] != $this->function) {
+           throw new \Exception('Some properties have not been saved');
        }
     }
 
@@ -53,23 +47,7 @@ class VirtualMetricHandleContext extends CentreonContext
      */
     public function anExistingVirtualMetric()
     {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I modify a virtual metric
-     */
-    public function iModifyAVirtualMetric()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then all modified properties are updated
-     */
-    public function allModifiedPropertiesAreUpdated()
-    {
-        throw new PendingException();
+        $this->iAddAVirtualMetric();
     }
 
     /**
@@ -77,7 +55,9 @@ class VirtualMetricHandleContext extends CentreonContext
      */
     public function iDuplicateAVirtualMetric()
     {
-        throw new PendingException();
+        $this->page = new MetricsConfigurationListingPage($this);
+        $object = $this->page->getEntry($this->vmName);
+        $this->page->selectMoreAction($object, 'Duplicate');
     }
 
     /**
@@ -85,7 +65,17 @@ class VirtualMetricHandleContext extends CentreonContext
      */
     public function allPropertiesAreCopiedExceptTheName()
     {
-        throw new PendingException();
+        $objects = $this->page->getEntries();
+        if (key_exists($this->duplicatedVmName, $objects)) {
+            if ($objects[$this->duplicatedVmName]['function'] != $objects[$this->vmName]['function']
+                || $objects[$this->duplicatedVmName]['def_type'] != $objects[$this->vmName]['def_type']) {
+                
+                throw new \Exception( 'Some properties of ' . $this->duplicatedVmName . ' virtual Metric have not '
+                    . 'been duplicated');
+            }
+        } else {
+            throw new \Exception($this->vmName . ' virtual Metric has not been duplicated');
+        }
     }
 
     /**
@@ -93,7 +83,9 @@ class VirtualMetricHandleContext extends CentreonContext
      */
     public function iDeleteAVirtualMetric()
     {
-        throw new PendingException();
+        $this->page = new MetricsConfigurationListingPage($this);
+        $object = $this->page->getEntry($this->vmName);
+        $this->page->selectMoreAction($object, 'Delete');
     }
 
     /**
@@ -101,6 +93,9 @@ class VirtualMetricHandleContext extends CentreonContext
      */
     public function theVirtualMetricDisappearsFromTheVirtualMetricsList()
     {
-        throw new PendingException();
+        $objects = $this->page->getEntries();
+        if (key_exists($this->vmName, $objects)) {
+            throw new \Exception($this->vmName . ' virtual Metric is still existing');
+        }
     }
 }

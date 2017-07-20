@@ -10,17 +10,12 @@ Feature: Virtual Metric Handle
         When I add a virtual metric
         Then all properties are saved
         
-    #Scenario: Modify a virtual metric
-        #Given an existing virtual metric
-        #When I modify a virtual metric
-        #Then all modified properties are updated
+    Scenario: Duplicate a virtual metric
+        Given an existing virtual metric
+        When I duplicate a virtual metric
+        Then all properties are copied except the name
         
-    #Scenario: Duplicate a virtual metric
-        #Given an existing virtual metric
-        #When I duplicate a virtual metric
-        #Then all properties are copied except the name
-        
-    #Scenario: Delete a virtual metric
-        #Given an existing virtual metric
-        #When I delete a virtual metric
-        #Then the virtual metric disappears from the Virtual metrics list
+    Scenario: Delete a virtual metric
+        Given an existing virtual metric
+        When I delete a virtual metric
+        Then the virtual metric disappears from the Virtual metrics list
