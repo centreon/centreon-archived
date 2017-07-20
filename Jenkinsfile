@@ -52,6 +52,20 @@ try {
           failedNewAll: '0'
         ])
       }
+    },
+    'debian9': {
+      node {
+        sh 'cd /opt/centreon-build && git pull && cd -'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-unittest.sh debian9'
+        step([
+          $class: 'XUnitBuilder',
+          thresholds: [
+            [$class: 'FailedThreshold', failureThreshold: '0'],
+            [$class: 'SkippedThreshold', failureThreshold: '0']
+          ],
+          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
+        ])
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -69,6 +83,12 @@ try {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh centos7'
+      }
+    },
+    'debian9': {
+      node {
+        sh 'cd /opt/centreon-build && git pull && cd -'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh debian9'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
