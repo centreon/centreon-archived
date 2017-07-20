@@ -209,6 +209,11 @@ default:
       contexts:
       - LdapConfigurationContext
 
+    traps_snmp_configuration:
+      paths: [ %paths.base%/features/TrapsSNMPConfiguration.feature ]
+      contexts:
+      - TrapsSNMPConfigurationContext
+
     ldap_manual_import:
       paths: [ %paths.base%/features/LdapManualImport.feature ]
       contexts:
