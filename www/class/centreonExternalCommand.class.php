@@ -47,7 +47,7 @@ require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
 class CentreonExternalCommand {
 
     var $DB;
-    var $cmd_tab;
+    var $cmd_tab = array();
     var $poller_tab;
     var $localhost_tab = array();
     var $actions = array();
@@ -94,47 +94,33 @@ class CentreonExternalCommand {
             $varlib = _CENTREON_VARLIB_;
         }
 
-        $str_local = "";
         $str_remote = "";
-        $return_local = 0;
         $return_remote = 0;
 
-        if (count($this->cmd_tab)) {
-            foreach ($this->cmd_tab as $key => $cmd) {
-                $cmd = str_replace("\"", "", $cmd);
-                $cmd = str_replace("\n", "<br>", $cmd);
-                if (isset($this->localhost_tab[$this->poller_tab[$key]])) {
-                    $str_local .= "\"[" . time() . "] " . $cmd . "\n\"";
-                } else {
-                    $str_remote .= "\"EXTERNALCMD:" . $this->poller_tab[$key] . ":[" . time() . "] " . $cmd . "\n\"";
-                }
-            }
+        foreach ($this->cmd_tab as $key => $cmd) {
+            $cmd = str_replace("\"", "", $cmd);
+            $cmd = str_replace("\n", "<br>", $cmd);
+            $cmd = "[" . time() . "] " . $cmd . "\n";
+            $str_remote .= "EXTERNALCMD:" . $this->poller_tab[$key] . ":" . $cmd;
         }
 
-        if ($str_local != "") {
-            $str_local = "echo " . $str_local . " >> " . $centreon->Nagioscfg["command_file"];
-            if ($this->debug) {
-                print "COMMAND BEFORE SEND: $str_local";
-            }
-            passthru(trim($str_local), $return_local);
-        }
         if ($str_remote != "") {
-            $str_remote = "echo " . $str_remote . " >> $varlib/centcore.cmd";
             if ($this->debug) {
                 print "COMMAND BEFORE SEND: $str_remote";
             }
-            passthru($str_remote, $return_remote);
+            $result = file_put_contents($varlib . '/centcore.cmd', $str_remote, FILE_APPEND);
+            $return_remote = ($result !== false) ? 0 : 1;
         }
         $this->cmd_tab = array();
         $this->poller_tab = array();
-        return ($return_local + $return_remote);
+        return $return_remote;
     }
 
     /*
      *  set basic process commands
      */
 
-    public function set_process_command($command, $poller) {
+    public function setProcessCommand($command, $poller) {
         if ($this->debug) {
             print "POLLER: $poller<br>";
             print "COMMAND: $command<br>";
@@ -287,9 +273,94 @@ class CentreonExternalCommand {
         return $this->actions;
     }
 
-    /**     * ****************************************************
-     * Downtime
+
+    /****************
+     * Schedule check
+     ***************/
+    /**
+     * @param $hostName
      */
+    public function scheduleForcedCheckHost($hostName)
+    {
+        $pollerId = $this->getPollerID($hostName);
+        $this->setProcessCommand(
+            "SCHEDULE_FORCED_HOST_CHECK;" . $hostName . ";" . time(),
+            $pollerId
+        );
+        $this->write();
+    }
+    /**
+     * @param $hostName
+     * @param $serviceDescription
+     */
+    public function scheduleForcedCheckService($hostName, $serviceDescription)
+    {
+        $pollerId = $this->getPollerID($hostName);
+        $this->setProcessCommand(
+            "SCHEDULE_FORCED_SVC_CHECK;" . $hostName . ";" . $serviceDescription . ";" . time(),
+            $pollerId
+        );
+        $this->write();
+    }
+    /*****************
+     * Acknowledgement
+     ****************/
+    /**
+     * @param $hostName
+     * @param $serviceDescription
+     * @param $sticky
+     * @param $notify
+     * @param $persistent
+     * @param $author
+     * @param $comment
+     */
+    public function acknowledgeHost(
+        $hostName,
+        $sticky,
+        $notify,
+        $persistent,
+        $author,
+        $comment
+    ) {
+        $pollerId = $this->getPollerID($hostName);
+        $this->setProcessCommand(
+            "ACKNOWLEDGE_HOST_PROBLEM;" . $hostName . ";" .
+            $sticky . ";" . $notify . ";" . $persistent . ";" . $author . ";" . $comment,
+            $pollerId
+        );
+        $this->write();
+    }
+    /**
+     * @param $hostName
+     * @param $serviceDescription
+     * @param $sticky
+     * @param $notify
+     * @param $persistent
+     * @param $author
+     * @param $comment
+     */
+    public function acknowledgeService(
+        $hostName,
+        $serviceDescription,
+        $sticky,
+        $notify,
+        $persistent,
+        $author,
+        $comment
+    ) {
+        $pollerId = $this->getPollerID($hostName);
+        $this->setProcessCommand(
+            "ACKNOWLEDGE_SVC_PROBLEM;" . $hostName . ";" . $serviceDescription . ";" .
+            $sticky . ";" . $notify . ";" . $persistent . ";" . $author . ";" . $comment,
+            $pollerId
+        );
+        $this->write();
+    }
+
+
+    /**********
+     * Downtime
+     *********/
 
     /**
      *
@@ -301,25 +372,9 @@ class CentreonExternalCommand {
         foreach ($hosts as $key => $value) {
             $res = preg_split("/\;/", $key);
             $poller_id = $this->getPollerID($res[0]);
-            $this->set_process_command("DEL_" . $type . "_DOWNTIME;" . $res[1], $poller_id);
+            $this->setProcessCommand("DEL_" . $type . "_DOWNTIME;" . $res[1], $poller_id);
         }
         $this->write();
-    }
-
-    /**
-     *
-     * Get date from string
-     * 
-     * date format: m/d/Y H:i
-     * @param string $string
-     */
-    private function getDate($string) {
-        $res = preg_split("/ /", $string);
-        $res3 = preg_split("/\//", $res[0]);
-        $res4 = preg_split("/:/", $res[1]);
-        $end_time = mktime($res4[0], $res4[1], "0", $res3[0], $res3[1], $res3[2]);
-        unset($res);
-        return $end_time;
     }
 
     /**
@@ -362,9 +417,9 @@ class CentreonExternalCommand {
         if (!isset($duration)) {
             $duration = $start_time - $end_time;
         }
-        $this->set_process_command("SCHEDULE_HOST_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
+        $this->setProcessCommand("SCHEDULE_HOST_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
         if ($with_services === true) {
-            $this->set_process_command("SCHEDULE_HOST_SVC_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
+            $this->setProcessCommand("SCHEDULE_HOST_SVC_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
         }
         $this->write();
     }
@@ -411,10 +466,7 @@ class CentreonExternalCommand {
         if (!isset($duration)) {
             $duration = $start_time - $end_time;
         }
-        $this->set_process_command("SCHEDULE_SVC_DOWNTIME;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
+        $this->setProcessCommand("SCHEDULE_SVC_DOWNTIME;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
         $this->write();
     }
-
 }
-
-?>
