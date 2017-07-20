@@ -760,27 +760,14 @@ class CentreonAPI
          * Check method availability before using it.
          */
         if ($this->object) {
-            /**
-             * Require needed class
-             */
-            $this->requireLibs($this->object);
+            $this->iniObject($this->object);
 
             /**
              * Check class declaration
              */
-            if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
-            } else {
-                $objName = "";
-            }
-            if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
-                print "Object $this->object not found in Centreon API.\n";
-                return 1;
-            }
-            $obj = new $objName($this->DB, $this->object);
+            $obj = $this->objectTable[$this->object];
             if (method_exists($obj, $action) || method_exists($obj, "__call")) {
                 $this->return_code = $obj->$action($this->variables);
-                //print "TEST : ".$this->return_code."\n";
             } else {
                 print "Method not implemented into Centreon API.\n";
                 return 1;
@@ -1065,9 +1052,13 @@ class CentreonAPI
                 $key = key($oObjet);
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
-                    && !in_array($key, $this->aExport)
-                ) {
-                    $objName = "CentreonClapi\Centreon" . $oObjet[$key]['class'];
+                    && !in_array($key, $this->aExport)) {
+
+                    $objName = '';
+                    if (isset($oObjet[$key]['namespace'])) {
+                        $objName = '\\' . $oObjet[$key]['namespace'];
+                    }
+                    $objName .= '\CentreonClapi\Centreon' . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
 
                     if (isset($objVars['aDepends'])) {
