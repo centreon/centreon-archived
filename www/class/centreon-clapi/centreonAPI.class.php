@@ -805,7 +805,17 @@ class CentreonAPI
             return 0;
         }
 
-        $this->objectTable[$action]->export($filter_id, $filter_name);
+        $filters = array();
+        if (!is_null($filter_id) && $filter_id !== 0) {
+            $primaryKey = $this->objectTable[$action]->getObject()->getPrimaryKey();
+            $filters[$primaryKey] = $filter_id;
+        }
+        if (!is_null($filter_name)) {
+            $labelField = $this->objectTable[$action]->getObject()->getUniqueLabelField();
+            $filters[$labelField] = $filter_name;
+        }
+
+        $this->objectTable[$action]->export($filters);
         $exported->ariane_pop();
     }
 
