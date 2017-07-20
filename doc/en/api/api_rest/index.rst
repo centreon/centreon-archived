@@ -50,9 +50,79 @@ The response is a json flow getting back the authentication token  ::
 
 This token will be used later on the other API actions.
 
+Realtime information
+====================
+
+Host Status
+-----------
+
+All monitoring information regarding hosts are available in throw the Centreon API.
+
+Using GEST method and the URL below:  ::
+
+ api.domain.tld/api/action=list&object=centreon_realtime_hosts
+
+**Header:**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
+|                     |                                 |
++---------------------+---------------------------------+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Parameters**
+
+You can pass a list of parameters in order to select the data you want.
+
+&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
+
++----------------+------------------------------------------+
+|  Parameters    |   values                                 |
+|                |                                          |
++----------------+------------------------------------------+
+| viewType       | select the predefined filter like in the |
+|                | monitoring view: all, unhandled, problems|
++----------------+------------------------------------------+
+| fields         | the value of authToken you got  |
+|                | on the authentication response  |
++----------------+---------------------------------+
+| status
+|
++----------------+---------------------------------+
+| hostgroup
+|
++----------------+---------------------------------+
+| instance
+|
++----------------+---------------------------------+
+| search
+|
++----------------+---------------------------------+
+| criticality
+|
++----------------+---------------------------------+
+| sortType
+|
++----------------+---------------------------------+
+| limit
+|
++----------------+---------------------------------+
+| number
+|
++----------------+---------------------------------+
+| order
+|
++----------------+---------------------------------+
+
+Configuration 
+-------------
 
 Getting started
-----------------
+---------------
 
 Most of the actions available (about 95%) in the command line API is available in the rest API.
 
