@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -37,6 +37,10 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 require_once dirname(__FILE__) . "/centreon_realtime_base.class.php";
 
+/**
+ * Class Centreon Realtime Host
+ *
+ */
 class CentreonRealtimeHosts extends CentreonRealtimeBase
 {
     /**
@@ -80,6 +84,10 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
     }
 
+    /**
+     * Set a list of filters send by the request
+     *
+     */
     protected function setHostFilters()
     {
         /* Pagination Elements */
@@ -149,19 +157,25 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         return $this->getHostState();
     }
 
+    /**
+     * Get selected fields by the request
+     *
+     * @return array
+     */
     protected function getFieldContent()
     {
         $tab = split(',', $this->arguments['fields']);
 
         $fieldList = array();
         foreach ($tab as $key) {
-            $fieldList[$key] = 1;
+            $fieldList[trim($key)] = 1;
         }
         return($fieldList);
     }
 
     /**
-     * @return array
+     * Set Filters
+     *
      */
     protected function setHostFieldList()
     {
@@ -282,7 +296,9 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
     }
 
     /**
-     * @return array
+     * Send hosts realtime information
+     *
+     * @return array with the results
      */
     public function getHostState()
     {
@@ -305,20 +321,32 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         $query .= " ON hph.parent_id = h.host_id ";
 
         $query .= " LEFT JOIN `customvariables` cv ";
-        $query .= " ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL') ";
+        $query .= " ON (cv.host_id = h.host_id ";
+        $query .= " AND cv.service_id IS NULL ";
+        $query .= " AND cv.name = 'CRITICALITY_LEVEL') ";
 
         $query .= " WHERE h.name NOT LIKE '_Module_%'";
         $query .= " AND h.instance_id = i.instance_id ";
 
         if ($this->criticality) {
-            $query .= " AND h.host_id = cvs.host_id AND cvs.name = 'CRITICALITY_ID' AND cvs.service_id IS NULL AND cvs.value = '".CentreonDB::escape($criticality)."' ";
+            $query .= " AND h.host_id = cvs.host_id ";
+            $query .= " AND cvs.name = 'CRITICALITY_ID' ";
+            $query .= " AND cvs.service_id IS NULL ";
+            $query .= " AND cvs.value = '".CentreonDB::escape($criticality)."' ";
         }
 
         if (!$this->admin) {
-            $query .= " AND h.host_id = centreon_acl.host_id " . $this->aclObj->queryBuilder("AND", "centreon_acl.group_id", $this->aclObj->getAccessGroupsString());
+            $query .= " AND h.host_id = centreon_acl.host_id ";
+            $query .= $this->aclObj->queryBuilder(
+                "AND",
+                "centreon_acl.group_id",
+                $this->aclObj->getAccessGroupsString()
+            );
         }
 
-        $query .= " AND (h.name LIKE '%" . CentreonDB::escape($this->search) . "%' OR h.alias LIKE '%" . CentreonDB::escape($this->search) . "%' OR h.address LIKE '%" . CentreonDB::escape($this->search) . "%') ";
+        $query .= " AND (h.name LIKE '%" . CentreonDB::escape($this->search) . "%' ";
+        $query .= " OR h.alias LIKE '%" . CentreonDB::escape($this->search) . "%' ";
+        $query .= " OR h.address LIKE '%" . CentreonDB::escape($this->search) . "%') ";
 
         if ($this->viewType == "unhandled") {
             $query .= " AND h.state = 1 ";
@@ -340,7 +368,9 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
 
         if ($this->hostgroup) {
-            $query .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id";
+            $query .= " AND h.host_id = hhg.host_id ";
+            $query .= " AND hg.hostgroup_id IN ($hostgroups) ";
+            $query .= " AND hhg.hostgroup_id = hg.hostgroup_id";
         }
 
         if ($this->instance != -1 && !empty($this->instance)) {
@@ -358,7 +388,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             case 'last_state_change':
                 $query .= " ORDER BY h.last_state_change ". $this->order.", h.name ";
                 break;
-            case 'last_hard_state_change': 
+            case 'last_hard_state_change':
                 $query .= " ORDER BY h.last_hard_state_change ". $this->order.",h.name ";
                 break;
             case 'last_check':
@@ -389,5 +419,4 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
         return $datas;
     }
-
 }
