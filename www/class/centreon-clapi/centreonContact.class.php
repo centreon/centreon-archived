@@ -322,7 +322,9 @@ class CentreonContact extends CentreonObject {
                         }
                     }
                 }
-                $params[1] = "contact_" . $params[1];
+                if ($params[1] != 'ar_id') {
+                    $params[1] = "contact_" . $params[1];
+                }
             }
 
             if ($regularParam == true) {
