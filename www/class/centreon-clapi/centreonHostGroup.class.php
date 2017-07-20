@@ -152,7 +152,7 @@ class CentreonHostGroup extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            if (!preg_match("/^hg_/", $params[1])) {
+            if (!preg_match("/^hg_/", $params[1]) && $params[1] != "geo_coords") {
                 $params[1] = "hg_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
