@@ -37,7 +37,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 require_once dirname(__FILE__) . "/centreon_realtime_base.class.php";
 
-class CentreonRealtimeStatus extends CentreonRealtimeBase
+class CentreonRealtimeServices extends CentreonRealtimeBase
 {
     /**
      * @var CentreonDB
@@ -61,6 +61,8 @@ class CentreonRealtimeStatus extends CentreonRealtimeBase
 
     protected $fieldList;
 
+    protected $criticalityList;
+
     /**
      * CentreonConfigurationService constructor.
      */
@@ -78,6 +80,9 @@ class CentreonRealtimeStatus extends CentreonRealtimeBase
         } else {
             $this->admin = 1;
         }
+
+        /* Init Values */
+        $this->getCriticality();
     }
 
     /**
@@ -178,7 +183,6 @@ class CentreonRealtimeStatus extends CentreonRealtimeBase
             $fields["h.host_id as id"] = 'host_id';
             $fields["h.name"] = 'name';
             $fields["s.service_id"] = 'service_id';
-            $fields["s.address"] = 'address';
             $fields["s.state"] = 'state';
             $fields["s.state_type"] = 'state_type';
             $fields["s.output"] = 'output';
@@ -189,164 +193,45 @@ class CentreonRealtimeStatus extends CentreonRealtimeBase
             $fields["s.last_state_change"] = 'last_state_change';
             $fields["s.last_hard_state_change"] = 'last_hard_state_change';
             $fields["s.acknowledged"] = 'acknowledged';
-            $fields["i.name as instance_name"] = 'instance';
             $fields["cv.value as criticality"] = 'criticality';
         } else {
             $tab = split(',', $this->arguments['fields']);
 
             $fieldList = array();
             foreach ($tab as $key) {
-                $fieldList[$key] = 1;
+                $fieldList[trim($key)] = 1;
             }
 
-
-/* 
-
-        h.name,
-        h.alias, 
-        h.address, 
-        h.host_id, 
-        s.description, 
-        s.service_id, 
-        s.notes, 
-        s.notes_url, 
-        s.action_url, 
-        s.max_check_attempts, 
-        s.icon_image, 
-        s.display_name, 
-        s.state, 
-        s.output as plugin_output, 
-        s.state_type, 
-        s.check_attempt as current_attempt, 
-        s.last_update as status_update_time, 
-        s.last_state_change, 
-        s.last_hard_state_change, 
-        s.last_check, 
-        s.next_check, 
-        s.notify, 
-        s.acknowledged, 
-        s.passive_checks, 
-        s.active_checks, 
-        s.event_handler_enabled, 
-        s.flapping, 
-        s.scheduled_downtime_depth, 
-        s.flap_detection, 
-        h.state as host_state, 
-        h.acknowledged AS h_acknowledged, 
-        h.scheduled_downtime_depth AS h_scheduled_downtime_depth,
-        h.icon_image AS h_icon_images, 
-        h.display_name AS h_display_name, 
-        h.action_url AS h_action_url, 
-        h.notes_url AS h_notes_url, 
-        h.notes AS h_notes, 
-        h.address, 
-        h.passive_checks AS h_passive_checks, 
-        h.active_checks AS h_active_checks,
-        i.name as instance_name, 
-        cv.value as criticality, 
-        cv.value IS NULL as isnull
-
-        */
-
-            if (isset($fieldList['id'])) {
-                $fields["h.host_id as id"] = 'host_id';
+            /* hosts informations */
+            if (isset($fieldList['host_id'])) {
+                $fields["h.host_id"] = 'host_id';
             }
-            if (isset($fieldList['name'])) {
-                $fields["h.name"] = 'name';
+            if (isset($fieldList['host_name'])) {
+                $fields["h.name as host_name"] = 'host_name';
             }
-            if (isset($fieldList['alias'])) {
-                $fields["h.alias"] = 'alias';
+            if (isset($fieldList['host_alias'])) {
+                $fields["h.alias as host_alias"] = 'host_alias';
             }
-            if (isset($fieldList['address'])) {
-                $fields["h.address"] = 'address';
+            if (isset($fieldList['host_address'])) {
+                $fields["h.address as host_address"] = 'host_address';
             }
-            if (isset($fieldList['s.description'])) {
-                $fields["s.description"] = 'description';
+            if (isset($fieldList['host_state'])) {
+                $fields["h.state as host_state"] = 'host_state';
             }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
+            if (isset($fieldList['host_state_type'])) {
+                $fields["h.state_type as host_state_type"] = 'host_state_type';
             }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
+            if (isset($fieldList['host_output'])) {
+                $fields["h.output as host_output"] = 'host_output';
             }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
+            if (isset($fieldList['host_last_check'])) {
+                $fields["h.last_check as host_last_check"] = 'host_last_check';
             }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
+            if (isset($fieldList['host_next_check'])) {
+                $fields["h.next_check as host_next_check"] = 'host_next_check';
             }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-            if (isset($fieldList[''])) {
-                $fields[""] = '';
-            }
-
-            if (isset($fieldList['id'])) {
-                $fields["h.host_id as id"] = 'host_id';
-            }
-            if (isset($fieldList['name'])) {
-                $fields["h.name"] = 'name';
-            }
-            if (isset($fieldList['alias'])) {
-                $fields["h.alias"] = 'alias';
-            }
-            if (isset($fieldList['address'])) {
-                $fields["h.address"] = 'address';
-            }
-            if (isset($fieldList['state'])) {
-                $fields["h.state"] = 'state';
-            }
-            if (isset($fieldList['state_type'])) {
-                $fields["h.state_type"] = 'state_type';
-            }
-            if (isset($fieldList['output'])) {
-                $fields["h.output"] = 'output';
-            }
-            if (isset($fieldList['max_check_attempts'])) {
-                $fields["h.max_check_attempts"] = 'max_check_attempts';
-            }
-            if (isset($fieldList['check_attempt'])) {
-                $fields["h.check_attempt"] = 'check_attempt';
-            }
-            if (isset($fieldList['last_check'])) {
-                $fields["h.last_check"] = 'last_check';
-            }
-            if (isset($fieldList['last_state_change'])) {
-                $fields["h.last_state_change"] = 'last_state_change';
-            }
-            if (isset($fieldList['last_hard_state_change'])) {
-                $fields["h.last_hard_state_change"] = 'last_hard_state_change';
-            }
-            if (isset($fieldList['acknowledged'])) {
-                $fields["h.acknowledged"] = 'acknowledged';
+            if (isset($fieldList['host_acknowledged'])) {
+                $fields["h.acknowledged as host_acknowledged"] = 'host_acknowledged';
             }
             if (isset($fieldList['instance'])) {
                 $fields["i.name as instance_name"] = 'instance';
@@ -354,41 +239,103 @@ class CentreonRealtimeStatus extends CentreonRealtimeBase
             if (isset($fieldList['instance_id'])) {
                 $fields["i.id as instance_id"] = 'instance_id';
             }
-            if (isset($fieldList['criticality'])) {
-                $fields["cv.value as criticality"] = 'criticality';
+            if (isset($fieldList['host_action_url'])) {
+                $fields["h.action_url as host_action_url"] = 'host_action_url';
             }
-            if (isset($fieldList['passive_checks'])) {
-                $fields["h.passive_checks"] = 'passive_checks';
+            if (isset($fieldList['host_notes_url'])) {
+                $fields["h.notes_url as host_notes_url"] = 'host_notes_url';
             }
-            if (isset($fieldList['active_checks'])) {
-                $fields["h.active_checks"] = 'active_checks';
+            if (isset($fieldList['host_notes'])) {
+                $fields["h.notes as host_notes"] = 'host_notes';
             }
-            if (isset($fieldList['notify'])) {
-                $fields["h.notify"] = 'notify';
+            if (isset($fieldList['host_icon_image'])) {
+                $fields["h.icon_image as host_icon_image"] = 'host_icon_image';
             }
-            if (isset($fieldList['action_url'])) {
-                $fields["h.action_url"] = 'action_url';
+
+            /* services informations */
+            if (isset($fieldList['description'])) {
+                $fields["s.description"] = 'description';
             }
-            if (isset($fieldList['notes_url'])) {
-                $fields["h.notes_url"] = 'notes_url';
+            if (isset($fieldList['state'])) {
+                $fields["s.state"] = 'state';
+            }
+            if (isset($fieldList['state_type'])) {
+                $fields["s.state_type"] = 'state_type';
+            }
+            if (isset($fieldList['id'])) {
+                $fields["s.service_id"] = 'service_id';
+            }
+            if (isset($fieldList['output'])) {
+                $fields["s.output"] = 'output';
+            }
+            if (isset($fieldList['perfdata'])) {
+                $fields["s.perfdata"] = 'perfdata';
+            }
+            if (isset($fieldList['current_attempt'])) {
+                $fields["s.check_attempt as current_attempt"] = 'current_attempt';
+            }
+            if (isset($fieldList['last_update'])) {
+                $fields["s.last_update"] = 'last_update';
+            }
+            if (isset($fieldList['last_state_change'])) {
+                $fields["s.last_state_change"] = 'last_state_change';
+            }
+            if (isset($fieldList['last_hard_state_change'])) {
+                $fields["s.last_hard_state_change"] = 'last_hard_state_change';
+            }
+            if (isset($fieldList['last_state_change'])) {
+                $fields["s.last_state_change"] = 'last_state_change';
+            }
+            if (isset($fieldList['last_check'])) {
+                $fields["s.last_check"] = 'last_check';
+            }
+            if (isset($fieldList['next_check'])) {
+                $fields["s.next_check"] = 'next_check';
+            }
+            if (isset($fieldList['max_check_attempts'])) {
+                $fields["s.max_check_attempts"] = 'max_check_attempts';
             }
             if (isset($fieldList['notes'])) {
-                $fields["h.notes"] = 'notes';
+                $fields["s.notes"] = 'notes';
+            }
+            if (isset($fieldList['notes_url'])) {
+                $fields["s.notes_url"] = 'notes_url';
+            }
+            if (isset($fieldList['action_url'])) {
+                $fields["s.action_url"] = 'action_url';
             }
             if (isset($fieldList['icon_image'])) {
-                $fields["h.icon_image"] = 'icon_image';
+                $fields["s.icon_image"] = 'icon_image';
             }
-            if (isset($fieldList['icon_image_alt'])) {
-                $fields["h.icon_image_alt"] = 'icon_image_alt';
+            if (isset($fieldList['display_name'])) {
+                $fields["s.display_name"] = 'display_name';
             }
-            if (isset($fieldList['scheduled_downtime_depth'])) {
-                $fields["h.scheduled_downtime_depth"] = 'scheduled_downtime_depth';
+            if (isset($fieldList['notify'])) {
+                $fields["s.notify"] = 'notify';
+            }
+            if (isset($fieldList['acknowledged'])) {
+                $fields["s.acknowledged"] = 'acknowledged';
+            }
+            if (isset($fieldList['passive_checks'])) {
+                $fields["s.passive_checks"] = 'passive_checks';
+            }
+            if (isset($fieldList['active_checks'])) {
+                $fields["s.active_checks"] = 'active_checks';
+            }
+            if (isset($fieldList['event_handler_enabled'])) {
+                $fields["s.event_handler_enabled"] = 'event_handler_enabled';
             }
             if (isset($fieldList['flapping'])) {
-                $fields["h.flapping"] = 'flapping';
+                $fields["s.flapping"] = 'flapping';
             }
-            if (isset($fieldList['isnull'])) {
-                $fields["cv.value IS NULL as isnull"] = 'isnull';
+            if (isset($fieldList['scheduled_downtime_depth'])) {
+                $fields["s.scheduled_downtime_depth"] = 'scheduled_downtime_depth';
+            }
+            if (isset($fieldList['flap_detection'])) {
+                $fields["s.flap_detection"] = 'flap_detection';
+            }
+            if (isset($fieldList['criticality'])) {
+                $fields["cv.value as criticality"] = 'criticality';
             }
         }
 
@@ -434,18 +381,19 @@ class CentreonRealtimeStatus extends CentreonRealtimeBase
         }
 
         $tabOrder = array();
-        $tabOrder["criticality_id"] = " ORDER BY isnull ".$this->order.", criticality ".$this->order.", h.name, s.description ";
+        $tabOrder["criticality_id"] = " ORDER BY criticality ".$this->order.", h.name, s.description ";
         $tabOrder["host_name"] = " ORDER BY h.name " . $this->order . ", s.description ";
         $tabOrder["service_description"] = " ORDER BY s.description " . $this->order . ", h.name";
         $tabOrder["current_state"] = " ORDER BY s.state " . $this->order . ", h.name, s.description";
         $tabOrder["last_state_change"] = " ORDER BY s.last_state_change " . $this->order . ", h.name, s.description";
-        $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $this->order . ", h.name, s.description";
+        $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change "
+                                                . $this->order . ", h.name, s.description";
         $tabOrder["last_check"] = " ORDER BY s.last_check " . $this->order . ", h.name, s.description";
         $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $this->order . ", h.name, s.description";
         $tabOrder["output"] = " ORDER BY s.output " . $this->order . ", h.name, s.description";
-        $tabOrder["default"] = $tabOrder['criticality_id'];
+        $tabOrder["default"] = " ORDER BY s.description " . $this->order . ", h.name";
 
-        $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ";
+        $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$this->fieldList." ";
         $request .= " FROM hosts h, instances i ";
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
             $request .= ", hosts_hostgroups hg, hostgroups hg2";
@@ -545,38 +493,35 @@ class CentreonRealtimeStatus extends CentreonRealtimeBase
                 . "AND group_id IN (" . $this->aclObj->getAccessGroupsString() . ") ";
         }
 
-        (isset($tabOrder[$sort_type])) ? $request .= $tabOrder[$sort_type] : $request .= $tabOrder["default"];
+        (isset($tabOrder[$this->sortType])) ? $request .= $tabOrder[$this->sortType] : $request .= $tabOrder["default"];
         $request .= " LIMIT " . ($this->number * $this->limit) . "," . $this->limit;
 
         /** * **************************************************
          * Get Pagination Rows
          */
-        $DBRESULT = $obj->DBC->query($request);
-        $numRows = $obj->DBC->numberRows();
+        $DBRESULT = $this->pearDBMon->query($request);
+        $numRows = $this->pearDBMon->numberRows();
 
-        /**
-         * Get criticality ids
-         */
-        $critRes = $obj->DBC->query(
-            "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
-        );
-        $criticalityUsed = 0;
-        $critCache = array();
-        if ($critRes->numRows()) {
-            $criticalityUsed = 1;
-            while ($critRow = $critRes->fetchRow()) {
-                $critCache[$critRow['service_id']] = $critRow['value'];
+        $datas = array();
+        while ($data = $DBRESULT->fetchRow()) {
+            if (isset($data['criticality']) && isset($this->criticalityList[$data['criticality']])) {
+                $data["criticality"] = $this->criticalityList[$data['criticality']];
             }
+            $datas[] = $data;
         }
+        return $datas;
+    }
 
-        if (!PEAR::isError($DBRESULT)) {
-            $datas = array();
-            while ($data = $DBRESULT->fetchRow()) {
-                $datas[] = $data;
-            }
-            return $datas;
-        } else {
-            return array("error" => "Cannot query information in the database.");
+    protected function getCriticality()
+    {
+        $this->criticalityList = array();
+        
+        $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description 
+                FROM service_categories 
+                    WHERE level IS NOT NULL ORDER BY level DESC";
+        $res = $this->pearDB->query($sql);
+        while ($row = $res->fetchRow()) {
+            $this->criticalityList[$row['sc_name']] = $row;
         }
     }
 }
