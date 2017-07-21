@@ -199,6 +199,11 @@ default:
       contexts:
       - LdapConfigurationContext
 
+    traps_snmp_configuration:
+      paths: [ %paths.base%/features/TrapsSNMPConfiguration.feature ]
+      contexts:
+      - TrapsSNMPConfigurationContext
+
     ldap_manual_import:
       paths: [ %paths.base%/features/LdapManualImport.feature ]
       contexts:
@@ -238,3 +243,8 @@ default:
       paths: [ %paths.base%/features/ACLActionsAccess.feature ]
       contexts:
       - ACLActionsAccessContext
+
+    time_period_configuration:
+      paths: [ %paths.base%/features/TimePeriodConfiguration.feature ]
+      contexts:
+      - TimePeriodConfigurationContext
