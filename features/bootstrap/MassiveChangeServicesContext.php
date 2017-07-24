@@ -10,7 +10,6 @@ use Centreon\Test\Behat\Configuration\HostConfigurationPage;
 use Centreon\Test\Behat\Configuration\ServiceCategoryConfigurationPage;
 use Centreon\Test\Behat\Configuration\ServiceGroupConfigurationPage;
 use Centreon\Test\Behat\Configuration\SnmpTrapsConfigurationPage;
-use Centreon\Test\Behat\Configuration\SnmpTrapsConfigurationListingPage; 
 
 class MassiveChangeServicesContext extends CentreonContext
 {
@@ -350,9 +349,6 @@ class MassiveChangeServicesContext extends CentreonContext
                     $object = $this->currentPage->getProperties();
                     foreach ($this->updatedService1 as $key => $value) {
                         if ($value != $object[$key]) {
-                            var_dump($key);
-                            var_dump($value);
-                            var_dump($object[$key]);
                             $this->tableau[] = $key . ' 1';
                         }
                     }
