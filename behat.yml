@@ -258,3 +258,8 @@ default:
       paths: [ %paths.base%/features/TimePeriodConfiguration.feature ]
       contexts:
       - TimePeriodConfigurationContext
+
+    massive_change_hosts:
+      paths: [ %paths.base%/features/MassiveChangeHosts.feature ]
+      contexts:
+      - MassiveChangeHostsContext

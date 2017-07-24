@@ -662,6 +662,11 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
     }
 
 
+# Function for updating first notification delay options
+    updateHostNotifOptionRecoveryNotificationDelay($host_id);
+
+
+
 # Function for updating notification timeperiod options
 # 1 - MC with deletion of existing options (Replacement)
 # 2 - MC with addition of new options (incremental)
@@ -2289,6 +2294,34 @@ function updateHostNotifOptionFirstNotificationDelay_MC($host_id = null)
         $DBRESULT = &$pearDB->query($rq);
     }
 }
+
+
+function updateHostNotifOptionRecoveryNotificationDelay($host_id = null, $ret = array())
+{
+    if (!$host_id) {
+        return;
+    }
+    global $form;
+    global $pearDB;
+
+    if (isset($ret["host_recovery_notification_delay"])) {
+        $ret = $ret["host_recovery_notification_delay"];
+    } else {
+        $ret = $form->getSubmitValue("host_recovery_notification_delay");
+    }
+
+    if ($ret == '') {
+        return;
+    }
+    $rq = "UPDATE host SET ";
+    $rq .= "host_recovery_notification_delay = ";
+    isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
+    $rq .= "WHERE host_id = '" . $host_id . "'";
+    $pearDB->query($rq);
+}
+
+
+
 
 function updateHostHostGroup($host_id, $ret = array())
 {
