@@ -1969,6 +1969,9 @@ function updateHostNotifOptionRecoveryNotificationDelay($host_id = null, $ret = 
         $ret = $form->getSubmitValue("host_recovery_notification_delay");
     }
 
+    if ($ret == '') {
+        return;
+    }
     $rq = "UPDATE host SET ";
     $rq .= "host_recovery_notification_delay = ";
     isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
