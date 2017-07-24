@@ -195,7 +195,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'enabled' => 0,
         'comments' => 'hostMassiveChangeComments'
     );
-    
+
     protected $updatedHost2 = array(
         'name' => 'host2Name',
         'alias' => 'host2Alias',
