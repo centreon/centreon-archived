@@ -875,6 +875,12 @@ class CentreonHost extends CentreonObject
                         $aclObj = new CentreonACL();
                         $aclObj->reload(true);
                     }
+                    $this->addAuditLog(
+                        'c',
+                        $hostId,
+                        $args[0],
+                        array($matches[2] => str_replace('|', ',', $args[1]))
+                    );
                 }
             } else {
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);
