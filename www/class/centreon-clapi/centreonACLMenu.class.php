@@ -284,8 +284,25 @@ class CentreonACLMenu extends CentreonObject
                     array($aclMenuId, $row['topology_id'])
                 );
             }
+            if ($action == "grantro") {
+                $query = "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right) " .
+                    "VALUES (?, ?, 2)";
+                $this->db->query($query, array($aclMenuId, $row['topology_id']));
+            }
             $this->processChildrenOf($action, $aclMenuId, $row['topology_page']);
         }
+    }
+
+
+    /**
+     * old Grant menu
+     *
+     * @param string $parameters
+     * @return void
+     */
+    public function grant($parameters)
+    {
+        $this->grantRw($parameters);
     }
 
     /**
@@ -294,7 +311,7 @@ class CentreonACLMenu extends CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function grant($parameters)
+    public function grantRw($parameters)
     {
         list($aclMenuId, $menus, $topologies) = $this->splitParams($parameters);
         foreach ($menus as $level => $menuId) {
@@ -311,6 +328,32 @@ class CentreonACLMenu extends CentreonObject
             }
         }
     }
+
+
+    /**
+     * Grant menu
+     *
+     * @param string $parameters
+     * @return void
+     */
+    public function grantRo($parameters)
+    {
+        list($aclMenuId, $menus, $topologies) = $this->splitParams($parameters);
+        foreach ($menus as $level => $menuId) {
+            $this->db->query(
+                "DELETE FROM acl_topology_relations WHERE acl_topo_id = ? AND topology_topology_id = ?",
+                array($aclMenuId, $menuId)
+            );
+            $this->db->query(
+                "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right) VALUES (?, ?, 2)",
+                array($aclMenuId, $menuId)
+            );
+            if (!isset($menus[$level + 1]) && $level != self::LEVEL_4) {
+                $this->processChildrenOf("grantro", $aclMenuId, $topologies[$level]);
+            }
+        }
+    }
+
 
     /**
      * Revoke menu
