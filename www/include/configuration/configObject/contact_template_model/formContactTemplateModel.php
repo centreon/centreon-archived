@@ -72,7 +72,9 @@ if (($o == "c" || $o == "w") && $contact_id) {
     /**
      * Set Host Notification Commands
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '" . $contact_id . "'");
+    $query = "SELECT DISTINCT command_command_id FROM contact_hostcommands_relation " .
+        "WHERE contact_contact_id = '" . $contact_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
         $cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
     }
@@ -81,7 +83,9 @@ if (($o == "c" || $o == "w") && $contact_id) {
     /**
      * Set Service Notification Commands
      */
-    $DBRESULT = $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '" . $contact_id . "'");
+    $query = "SELECT DISTINCT command_command_id FROM contact_servicecommands_relation " .
+        "WHERE contact_contact_id = '" . $contact_id . "'";
+    $DBRESULT = $pearDB->query($query);
     for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
         $cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
     }
@@ -112,7 +116,8 @@ $DBRESULT->closeCursor();
  * Notification commands comes from DB -> Store in $notifsCmds Array
  */
 $notifCmds = array();
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
+$query = "SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name";
+$DBRESULT = $pearDB->query($query);
 while ($notifCmd = $DBRESULT->fetchRow()) {
     $notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 }
@@ -128,7 +133,9 @@ if (isset($contact_id)) {
 }
 
 $contactTpl = array(null => "");
-$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '0' $strRestrinction ORDER BY contact_name");
+$query = "SELECT contact_id, contact_name FROM contact " .
+    "WHERE contact_register = '0' $strRestrinction ORDER BY contact_name";
+$DBRESULT = $pearDB->query($query);
 while ($contacts = $DBRESULT->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
 }
@@ -143,10 +150,12 @@ $attrsTextDescr = array("size" => "80");
 $attrsTextMail = array("size" => "90");
 $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 $attrsTextarea = array("rows" => "15", "cols" => "100");
-$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />' .
+    '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list';
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
+    'availableDatasetRoute' => $route,
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
@@ -215,17 +224,55 @@ if ($o != "mc") {
  * Host notifications
  */
 $form->addElement('header', 'hostNotification', _("Host"));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'hScheduled', 'onClick' => 'uncheckAllH(this);'));
-$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'd',
+    '&nbsp;',
+    _("Down"),
+    array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'u',
+    '&nbsp;',
+    _("Unreachable"),
+    array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'r',
+    '&nbsp;',
+    _("Recovery"),
+    array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'f',
+    '&nbsp;',
+    _("Flapping"),
+    array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    's',
+    '&nbsp;',
+    _("Downtime Scheduled"),
+    array('id' => 'hScheduled', 'onClick' => 'uncheckAllH(this);')
+);
+$hostNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'n',
+    '&nbsp;',
+    _("None"),
+    array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);')
+);
 $form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Host Notification Options"), '&nbsp;&nbsp;');
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod' .
+    '&action=defaultValues&target=contact&field=timeperiod_tp_id&id=' . $contact_id;
 $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=contact&field=timeperiod_tp_id&id=' . $contact_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'timeperiod_tp_id', _("Host Notification Period"), array(), $attrTimeperiod1);
 
@@ -239,11 +286,15 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_hcmds' => '0'));
 }
 
+$defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_command' .
+    '&action=defaultValues&target=contact&field=contact_hostNotifCmds&id=' . $contact_id;
+$availableRoute = './include/common/webServices/rest/internal.php' .
+    '?object=centreon_configuration_command&action=list&t=1';
 $attrCommand1 = array_merge(
     $attrCommands,
     array(
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=contact&field=contact_hostNotifCmds&id=' . $contact_id,
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=1'
+        'defaultDatasetRoute' => $defaultRoute,
+        'availableDatasetRoute' => $availableRoute
     )
 );
 $form->addElement('select2', 'contact_hostNotifCmds', _("Host Notification Commands"), array(), $attrCommand1);
@@ -252,18 +303,62 @@ $form->addElement('select2', 'contact_hostNotifCmds', _("Host Notification Comma
  * Service notifications
  */
 $form->addElement('header', 'serviceNotification', _("Service"));
-$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"), array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
-$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"), array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
-$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"), array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
-$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);'));
-$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
-$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
-$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
+$svNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'w',
+    '&nbsp;',
+    _("Warning"),
+    array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);')
+);
+$svNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'u',
+    '&nbsp;',
+    _("Unknown"),
+    array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);')
+);
+$svNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'c',
+    '&nbsp;',
+    _("Critical"),
+    array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);')
+);
+$svNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'r',
+    '&nbsp;',
+    _("Recovery"),
+    array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);')
+);
+$svNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'f',
+    '&nbsp;',
+    _("Flapping"),
+    array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);')
+);
+$svNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    's',
+    '&nbsp;',
+    _("Downtime Scheduled"),
+    array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);')
+);
+$svNotifOpt[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'n',
+    '&nbsp;',
+    _("None"),
+    array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);')
+);
 $form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Service Notification Options"), '&nbsp;&nbsp;');
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod' .
+    '&action=defaultValues&target=contact&field=timeperiod_tp_id2&id=' . $contact_id;
 $attrTimeperiod2 = array_merge(
     $attrTimeperiods,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=defaultValues&target=contact&field=timeperiod_tp_id2&id=' . $contact_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Service Notification Period"), array(), $attrTimeperiod2);
 
@@ -274,11 +369,17 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_svcmds' => '0'));
 }
+
+$defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_command' .
+    '&action=defaultValues&target=contact&field=contact_svNotifCmds&id=' . $contact_id;
+$availableRoute = './include/common/webServices/rest/internal.php' .
+    '?object=centreon_configuration_command&action=list&t=1';
+
 $attrCommand2 = array_merge(
     $attrCommands,
     array(
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=defaultValues&target=contact&field=contact_svNotifCmds&id=' . $contact_id,
-        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_command&action=list&t=1'
+        'defaultDatasetRoute' => $defaultRoute,
+        'availableDatasetRoute' => $availableRoute
     )
 );
 $form->addElement('select2', 'contact_svNotifCmds', _("Service Notification Commands"), array(), $attrCommand2);
@@ -331,7 +432,9 @@ if ($o != "mc") {
     $form->addRule('contact_name', _("Compulsory Name"), 'required');
     $form->addRule('contact_alias', _("Compulsory Alias"), 'required');
 
-    if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1) {
+    if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) &&
+        $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1
+    ) {
         if (isset($ret["contact_template_id"]) && $ret["contact_template_id"] == '') {
             $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
             $form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
@@ -344,7 +447,11 @@ if ($o != "mc") {
     $form->registerRule('exist', 'callback', 'testContactExistence');
     $form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
     $form->registerRule('existAlias', 'callback', 'testAliasExistence');
-    $form->addRule('contact_alias', "<font style='color: red;'>*</font>&nbsp;" . _("Alias already exists"), 'existAlias');
+    $form->addRule(
+        'contact_alias',
+        "<font style='color: red;'>*</font>&nbsp;" . _("Alias already exists"),
+        'existAlias'
+    );
 } elseif ($o == "mc") {
     if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
@@ -361,11 +468,16 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, ' .
+    '"orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], ' .
+    'WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 
 // prepare help texts
 $helptext = "";
-include_once(_CENTREON_PATH_."/www/include/configuration/configObject/contact/help.php");
+include_once(_CENTREON_PATH_ . "/www/include/configuration/configObject/contact/help.php");
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
@@ -374,7 +486,12 @@ $tpl->assign("helptext", $helptext);
 if ($o == "w") {
 // Just watch a contact information
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $contact_id . "'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $contact_id . "'")
+        );
     }
     $form->setDefaults($cct);
     $form->freeze();
@@ -426,8 +543,7 @@ if ($valid) {
 }
 ?>
 <script type="text/javascript">
-    function uncheckAllH(object)
-    {
+    function uncheckAllH(object) {
         if (object.id == "hNone" && object.checked) {
             document.getElementById('hDown').checked = false;
             document.getElementById('hUnreachable').checked = false;
@@ -443,8 +559,7 @@ if ($valid) {
         }
     }
 
-    function uncheckAllS(object)
-    {
+    function uncheckAllS(object) {
         if (object.id == "sNone" && object.checked) {
             document.getElementById('sWarning').checked = false;
             document.getElementById('sUnknown').checked = false;
