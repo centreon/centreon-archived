@@ -66,8 +66,12 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
             $filterAclgroup .
             "ORDER BY acl_group_name " .
             $range;
+
         $stmt = $this->pearDB->prepare($query);
-        $stmt->bindParam(':aclGroup', $queryValues["aclGroup"], PDO::PARAM_STR);
+
+        if (isset($queryValues['aclGroup'])) {
+            $stmt->bindParam(':aclGroup', $queryValues["aclGroup"], PDO::PARAM_STR);
+        }
         if (isset($queryValues["offset"])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
