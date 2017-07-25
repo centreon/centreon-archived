@@ -268,3 +268,8 @@ default:
       paths: [ %paths.base%/features/MassiveChangeHosts.feature ]
       contexts:
       - MassiveChangeHostsContext
+
+    massive_change_services:
+      paths: [ %paths.base%/features/MassiveChangeServices.feature ]
+      contexts:
+      - MassiveChangeServicesContext
