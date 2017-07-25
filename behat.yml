@@ -189,6 +189,11 @@ default:
       contexts:
       - HostConfigurationContext
 
+    host_category:
+      paths: [ %paths.base%/features/HostCategoryConfiguration.feature ]
+      contexts:
+      - HostCategoryConfigurationContext
+
     contact_group_configuration:
       paths: [ %paths.base%/features/ContactGroupConfiguration.feature ]
       contexts:
