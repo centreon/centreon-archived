@@ -316,9 +316,6 @@ class HostConfigurationContext extends CentreonContext
                     $object = $this->currentPage->getProperties();
                     foreach ($this->updatedProperties as $key => $value) {
                         if ($value != $object[$key]) {
-                            var_dump($key);
-                            var_dump($value);
-                            var_dump($object[$key]);
                             $this->tableau[] = $key;
                         }
                     }
