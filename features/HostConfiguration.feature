@@ -8,13 +8,13 @@ Feature: HostConfiguration
         And an host is configured
 
     Scenario: Edit the name of an host
-        When I configure the name of an host
-        Then the name has changed on the Host page
+        When I change the properties of a host
+        Then its properties are updated
 
-    Scenario: Edit the alias of an host
-        When I configure the alias of an host
-        Then the alias has changed on the Host page
+    Scenario: Duplicate one existing host
+        When I duplicate a host
+        Then a new host is created with identical properties
 
-    Scenario: Edit the address of an host
-        When I configure the address of an host
-        Then the address has changed on the Host page
+    Scenario: Delete one existing host
+        When I delete the host
+        Then the host is not visible anymore
