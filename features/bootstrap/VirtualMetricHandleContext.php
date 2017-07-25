@@ -9,27 +9,25 @@ class VirtualMetricHandleContext extends CentreonContext
     protected $page;
     protected $vmName = 'vmtestname';
     protected $host = 'MetricTestHostname';
-    protected $function = 'test1';
+    protected $functionRPN ='test10';
     protected $hostService = 'MetricTestService';
     protected $duplicatedVmName = 'vmtestname_1';
-    
-    
+
+
     /**
      * @When I add a virtual metric
      */
     public function iAddAVirtualMetric()
     {
         $this->page = new MetricsConfigurationListingPage($this);
-        $data = $this->getSession()->getPage()->has('css', 'input[name="searchVM"]');
-        var_dump($data);
         $this->assertFind('css', 'a[class="btc bt_success"]')->click();
         $this->page = new MetricsConfigurationPage($this);
         $this->page->setProperties(array(
             'name' => $this->vmName,
-            'linked-host_services' => $this->host . ' - ' . $this->hostService,
-            'function' => $this->function
+            'linked-host_services' => $this->host . ' - ' . $this->hostService
         ));
-        $this->page->save();
+        $this->page->setProperties(array('function' => $this->functionRPN));
+        $this->page->save();     
     }
 
     /**
@@ -39,7 +37,7 @@ class VirtualMetricHandleContext extends CentreonContext
     {
        $this->page = new MetricsConfigurationListingPage($this);
        $data = $this->page->getEntry($this->vmName);
-       if ($data['name'] != $this->vmName || $data['function'] != $this->function) {
+       if ($data['name'] != $this->vmName || $data['function'] != $this->functionRPN) {
            throw new \Exception('Some properties have not been saved');
        }
     }
