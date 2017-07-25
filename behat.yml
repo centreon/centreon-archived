@@ -179,6 +179,11 @@ default:
       contexts:
       - HostConfigurationContext
 
+    host_category:
+      paths: [ %paths.base%/features/HostCategoryConfiguration.feature ]
+      contexts:
+      - HostCategoryConfigurationContext
+
     contact_group_configuration:
       paths: [ %paths.base%/features/ContactGroupConfiguration.feature ]
       contexts:
@@ -198,6 +203,11 @@ default:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
       - LdapConfigurationContext
+
+    traps_snmp_configuration:
+      paths: [ %paths.base%/features/TrapsSNMPConfiguration.feature ]
+      contexts:
+      - TrapsSNMPConfigurationContext
 
     ldap_manual_import:
       paths: [ %paths.base%/features/LdapManualImport.feature ]
@@ -243,6 +253,11 @@ default:
       paths: [ %paths.base%/features/TimePeriodConfiguration.feature ]
       contexts:
       - TimePeriodConfigurationContext
+
+    massive_change_hosts:
+      paths: [ %paths.base%/features/MassiveChangeHosts.feature ]
+      contexts:
+      - MassiveChangeHostsContext
 
     massive_change_services:
       paths: [ %paths.base%/features/MassiveChangeServices.feature ]
