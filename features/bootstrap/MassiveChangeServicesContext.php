@@ -200,7 +200,10 @@ class MassiveChangeServicesContext extends CentreonContext
         'event_handler' => 'check_https',
         'event_handler_arguments' => 'serviceEventHandlerArgument',
         'graph_template' => 'Storage',
-        'service_categories' => 'Memory',
+        'service_categories' => array(
+            'Memory',
+            'serviceCategoryName'
+        ),
         'url' => 'serviceUrl',
         'notes' => 'serviceNotes',
         'action_url' => 'serviceActionUrl',
@@ -264,7 +267,10 @@ class MassiveChangeServicesContext extends CentreonContext
         'event_handler' => 'check_https',
         'event_handler_arguments' => 'serviceEventHandlerArgument',
         'graph_template' => 'Storage',
-        'service_categories' => 'Memory',
+        'service_categories' => array(
+            'Memory',
+            'serviceCategoryName'
+        ),
         'url' => 'serviceUrl',
         'notes' => 'serviceNotes',
         'action_url' => 'serviceActionUrl',
