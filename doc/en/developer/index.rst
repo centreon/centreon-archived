@@ -7,3 +7,4 @@ Developer
 
    writemodule
    writewidget
+   translatecentreon

@@ -120,15 +120,19 @@ Order	Column description
 Grant and Revoke
 ----------------
 
-If you want to grant or revoke menus in an ACL Menu rule definition, use the following actions: **GRANT**, **REVOKE**
+If you want to grant in Read/Write, Read Only or revoke menus in an ACL Menu rule definition, use the following actions: **GRANTRW**, **GRANTRO**, **REVOKE**
 
 Let's assume that you would like to grant full access to the [Monitoring] menu in your ACL Menu rule:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grant -v "ACL Menu test;Monitoring" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantrw -v "ACL Menu test;Monitoring"
 
 Then, you would like to grant access to the [Home] > [Poller statistics] menu:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grant -v "ACL Menu test;Home;Poller statistics" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantrw -v "ACL Menu test;Home;Poller statistics"
+
+Then, you would like to grant access in read only to the [Configuration] > [Hosts] menu:::
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantro -v "ACL Menu test;Configuration;Hosts"
 
 Then, you decide to revoke access from [Monitoring] > [Event Logs]:::
 
