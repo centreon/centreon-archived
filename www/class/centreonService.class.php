@@ -1024,6 +1024,7 @@ class CentreonService
                 $parameters['externalObject']['id'] = 'sc_id';
                 $parameters['externalObject']['name'] = 'sc_name';
                 $parameters['externalObject']['comparator'] = 'sc_id';
+                $parameters['externalObject']['additionalComparator'] = array('level' => null);
                 $parameters['relationObject']['table'] = 'service_categories_relation';
                 $parameters['relationObject']['field'] = 'sc_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';

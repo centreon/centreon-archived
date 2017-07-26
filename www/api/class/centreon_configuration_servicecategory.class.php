@@ -64,7 +64,7 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         /*
 		 * Check for select2 't' argument
 		 * 'a' or empty = category and severitiy
-		 * 'c' = catagory only
+		 * 'c' = category only
 		 * 's' = severity only
 		 */
         if (false === isset($this->arguments['t'])) {
