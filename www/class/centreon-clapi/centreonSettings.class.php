@@ -36,6 +36,8 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
+require_once _CENTREON_PATH_ . "/lib/Centreon/Object/Timezone/Timezone.php";
+require_once _CENTREON_PATH_ . "/lib/Centreon/Object/Object.php";
 
 /**
  * Centreon Settings
@@ -58,27 +60,32 @@ class CentreonSettings extends CentreonObject
     public function __construct()
     {
         parent::__construct();
-        $this->authorizedOptions = array('broker'                       => array('ndo', 'broker'),
-                                         'centstorage'                  => array('0', '1'),
-                                         'enable_perfdata_sync'         => array('0', '1'),
-                                         'enable_logs_sync'             => array('0', '1'),
-                                         'gmt'                          => ISNUM,
-                                         'mailer_path_bin'              => ISSTRING,
-                                         'snmptt_unknowntrap_log_file'  => ISSTRING,
-                                         'snmpttconvertmib_path_bin'    => ISSTRING,
-                                         'perl_library_path'            => ISSTRING,
-                                         'rrdtool_path_bin'             => ISSTRING,
-                                         'debug_path'                   => ISSTRING,
-                                         'debug_auth'                   => array('0', '1'),
-                                         'debug_nagios_import'          => array('0', '1'),
-                                         'debug_rrdtool'                => array('0', '1'),
-                                         'debug_ldap_import'            => array('0', '1'),
-                                         'enable_autologin'             => array('0', '1'),
-                                         'interval_length'              => ISNUM,
-                                         'enable_gmt'                   => array('0', '1'),
-                                         'nagios_path_img'              => ISSTRING,
-                                         'broker_correlator_script'     => ISSTRING,
-                                         );
+
+        $this->authorizedOptions = array(
+            'broker' => array('values' => array('ndo', 'broker')),
+            'centstorage' => array('values' => array('0', '1')),
+            'enable_perfdata_sync' => array('values' => array('0', '1')),
+            'enable_logs_sync' => array('values' => array('0', '1')),
+            'gmt' => array('format' => ISSTRING,
+                'getterFormatMethod' => 'getTimezonenameFromId',
+                'setterFormatMethod' => 'getTimezoneIdFromName'
+            ),
+            'mailer_path_bin' => array('format' => ISSTRING),
+            'snmptt_unknowntrap_log_file' => array('format' => ISSTRING),
+            'snmpttconvertmib_path_bin' => array('format' => ISSTRING),
+            'perl_library_path' => array('format' => ISSTRING),
+            'rrdtool_path_bin' => array('format' => ISSTRING),
+            'debug_path' => array('format' => ISSTRING),
+            'debug_auth' => array('values' => array('0', '1')),
+            'debug_nagios_import' => array('values' => array('0', '1')),
+            'debug_rrdtool' => array('values' => array('0', '1')),
+            'debug_ldap_import' => array('values' => array('0', '1')),
+            'enable_autologin' => array('values' => array('0', '1')),
+            'interval_length' => array('format' => ISNUM),
+            'enable_gmt' => array('values' => array('0', '1')),
+            'nagios_path_img'  => array('format' => ISSTRING),
+            'broker_correlator_script' => array('format' => ISSTRING),
+             );
     }
 
    /**
@@ -105,6 +112,10 @@ class CentreonSettings extends CentreonObject
         echo "parameter".$this->delim."value\n";
         foreach ($res as $row) {
             if (isset($this->authorizedOptions[$row['key']])) {
+                if (isset($this->authorizedOptions[$row['key']]['getterFormatMethod'])) {
+                    $method = $this->authorizedOptions[$row['key']]['getterFormatMethod'];
+                    $row['value'] = $this->$method($row['value']);
+                }
                 echo $row['key'].$this->delim.$row['value']."\n";
             }
         }
@@ -145,15 +156,60 @@ class CentreonSettings extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+
         list($key, $value) = $params;
         if (!isset($this->authorizedOptions[$key])) {
             throw new CentreonClapiException(self::KEYNOTALLOWED);
         }
-        if (is_array($this->authorizedOptions[$key]) && !in_array($value, $this->authorizedOptions[$key])) {
-            throw new CentreonClapiException(self::VALUENOTALLOWED);
-        } elseif ($this->authorizedOptions[$key] == ISNUM && !is_numeric($value)) {
-            throw new CentreonClapiException(self::VALUENOTALLOWED);
+
+        if (isset($this->authorizedOptions[$key]['format'])) {
+            if ($this->authorizedOptions[$key]['format'] == ISNUM && !is_numeric($value)) {
+                throw new CentreonClapiException(self::VALUENOTALLOWED);
+            } else if (is_array($this->authorizedOptions[$key]['format']) == ISSTRING && !is_string($value)) {
+                throw new CentreonClapiException(self::VALUENOTALLOWED);
+            }
         }
+
+        if (isset($this->authorizedOptions[$key]['values']) &&
+            !in_array($value, $this->authorizedOptions[$key]['values'])) {
+                throw new CentreonClapiException(self::VALUENOTALLOWED);
+        }
+
+        if (isset($this->authorizedOptions[$key]['setterFormatMethod'])) {
+            $method = $this->authorizedOptions[$key]['setterFormatMethod'];
+            $value = $this->$method($value);
+        }
+
         $this->db->query("UPDATE `options` SET `value` = ? WHERE `key` = ?", array($value, $key));
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     * @throws CentreonClapiException
+     */
+    private function getTimezoneIdFromName($value)
+    {
+        $timezone = new \Centreon_Object_Timezone();
+        $timezoneId = $timezone->getIdByParameter('timezone_name', $value);
+        if (!isset($timezoneId[0])) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+        }
+        return $timezoneId[0];
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     * @throws CentreonClapiException
+     */
+    private function getTimezonenameFromId($value)
+    {
+        $timezone = new \Centreon_Object_Timezone();
+        $timezoneName = $timezone->getParameters($value, array('timezone_name'));
+        if (!isset($timezoneName['timezone_name'])) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+        }
+        return $timezoneName['timezone_name'];
     }
 }
