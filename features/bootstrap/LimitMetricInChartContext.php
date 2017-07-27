@@ -1,79 +1,14 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\Configuration\HostConfigurationPage;
-use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
-use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
 use Centreon\Test\Behat\Monitoring\GraphMonitoringPage;
 
 class LimitMetricInChartContext extends CentreonContext
 {
-    private $hostName = 'LimitMetricInChartTestHost';
-    private $serviceName = 'LimitMetricInChartTestService';
+    private $hostName = 'MetricTestHostname';
+    private $serviceName = 'MetricTestService';
     private $chartPage = null;
 
-    /**
-     * @Given a service with several metrics
-     */
-    public function aServiceWithSeveralMetrics()
-    {
-        // Create host.
-        $hostConfig = new HostConfigurationPage($this);
-        $hostProperties = array(
-            'name' => $this->hostName,
-            'alias' => $this->hostName,
-            'address' => 'localhost',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => "0",
-            'passive_checks_enabled' => "1"
-        );
-        $hostConfig->setProperties($hostProperties);
-        $hostConfig->save();
-
-        // Create service.
-        $serviceConfig = new ServiceConfigurationPage($this);
-        $serviceProperties = array(
-            'description' => $this->serviceName,
-            'hosts' => $this->hostName,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'active_checks_enabled' => "0",
-            'passive_checks_enabled' => "1"
-        );
-        $serviceConfig->setProperties($serviceProperties);
-        $serviceConfig->save();
-
-        // Ensure service is monitored.
-        $this->restartAllPollers();
-        sleep(7);
-
-        // Send multiple perfdata.
-        $perfdata = '';
-        for ($i = 0; $i < 20; $i++) {
-            $perfdata .= 'test' . $i . '=1s ';
-        }
-        $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', $perfdata);
-
-        // Ensure perfdata were processed.
-        $this->spin(
-            function ($context) {
-                $page = new ServiceMonitoringDetailsPage(
-                    $context,
-                    $context->hostName,
-                    $context->serviceName
-                );
-                $properties = $page->getProperties();
-                if (count($properties['perfdata']) < 20) {
-                    return false;
-                }
-                return true;
-            },
-            'Cannot get performance data of ' . $this->hostName . ' / ' . $this->serviceName
-        );
-    }
 
     /**
      * @When I display the chart in performance page
