@@ -162,15 +162,12 @@ class CentreonSettings extends CentreonObject
             throw new CentreonClapiException(self::KEYNOTALLOWED);
         }
 
-        // Ce "if" me les brise, forcément le authorizedOptions est un taleau
-//        if (is_array($this->authorizedOptions[$key]) && !in_array($value, $this->authorizedOptions[$key])) {
-//            throw new CentreonClapiException(self::VALUENOTALLOWED);
-//        } else
+        if (!isset($this->authorizedOptions[$key]['format'])) {
             if ($this->authorizedOptions[$key]['format'] == ISNUM && !is_numeric($value)) {
-            throw new CentreonClapiException(self::VALUENOTALLOWED);
-        }
-        if (is_array($this->authorizedOptions[$key]) == ISSTRING && is_numeric($value)){
-            throw new CentreonClapiException(self::VALUENOTALLOWED);
+                throw new CentreonClapiException(self::VALUENOTALLOWED);
+            } else if (is_array($this->authorizedOptions[$key]['format']) == ISSTRING && !is_string($value)) {
+                throw new CentreonClapiException(self::VALUENOTALLOWED);
+            }
         }
 
         if (isset($this->authorizedOptions[$key]['setterFormatMethod'])) {
