@@ -1,4 +1,5 @@
 <?php
+
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\MassiveChangeHostConfigurationPage;
 use Centreon\Test\Behat\Configuration\HostConfigurationPage;
@@ -158,7 +159,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'notify_on_recovery' => 1,
         'notify_on_flapping' => 1,
         'notify_on_downtime_scheduled' => 1,
-        'notify_on_none' => 1,
+        'notify_on_none' => 0,
         'notification_interval' => 17,
         'notification_period' => 'none',
         'first_notification_delay' => 4,
@@ -224,12 +225,12 @@ class MassiveChangeHostsContext extends CentreonContext
         'contacts' => 'Guest',
         'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
+        'notify_on_none' => 0,
         'notify_on_down' => 1,
         'notify_on_unreachable' => 1,
         'notify_on_recovery' => 1,
         'notify_on_flapping' => 1,
         'notify_on_downtime_scheduled' => 1,
-        'notify_on_none' => 1,
         'notification_interval' => 17,
         'notification_period' => 'none',
         'first_notification_delay' => 4,
