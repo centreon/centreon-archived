@@ -162,12 +162,17 @@ class CentreonSettings extends CentreonObject
             throw new CentreonClapiException(self::KEYNOTALLOWED);
         }
 
-        if (!isset($this->authorizedOptions[$key]['format'])) {
+        if (isset($this->authorizedOptions[$key]['format'])) {
             if ($this->authorizedOptions[$key]['format'] == ISNUM && !is_numeric($value)) {
                 throw new CentreonClapiException(self::VALUENOTALLOWED);
             } else if (is_array($this->authorizedOptions[$key]['format']) == ISSTRING && !is_string($value)) {
                 throw new CentreonClapiException(self::VALUENOTALLOWED);
             }
+        }
+
+        if (isset($this->authorizedOptions[$key]['values']) &&
+            !in_array($value, $this->authorizedOptions[$key]['values'])) {
+                throw new CentreonClapiException(self::VALUENOTALLOWED);
         }
 
         if (isset($this->authorizedOptions[$key]['setterFormatMethod'])) {
