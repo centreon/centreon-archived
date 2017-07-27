@@ -4,10 +4,11 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\HostTemplateConfigurationPage;
 use Centreon\Test\Behat\Configuration\HostTemplateConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
-use Centreon\Test\Behat\Configuration\ContactGroupConfigurationPage;
+use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactCategoryConfigurationPage;
 use Centreon\Test\Behat\Configuration\HostConfigurationPage;
 use Centreon\Test\Behat\Configuration\HostCategoryConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceTemplateConfigurationPage;
 
 class HostTemplateBasicsOperationsContext extends CentreonContext
 {
@@ -67,7 +68,6 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'address' => 'hostTemplate@localhost',
         'snmp_community' => 'snmp',
         'snmp_version' => '2c',
-        'monitored_from' => 'Central',
         'location' => 'Europe/Paris',
         'templates' => array(
             'generic-host'
@@ -98,7 +98,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'notification_period' => 'none',
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
-        'service_templates' => 'serviceTemplate1Name',
+        'service_templates' => 'serviceTemplate1Description',
         'parent_host_categories' => 'hostCategory2Name',
         'obsess_over_host' => 2,
         'acknowledgement_timeout' => 2,
@@ -124,7 +124,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         '2d_coords' => '15,84',
         '3d_coords' => '15,84,76',
         'severity_level' => 'hostCategory1Name (2)',
-        'enabled' => 0,
+        'enabled' => 1,
         'comments' => 'hostTemplateChangeComments'
     );
 
@@ -134,7 +134,6 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'address' => 'hostTemplate@localhost',
         'snmp_community' => 'snmp',
         'snmp_version' => '2c',
-        'monitored_from' => 'Central',
         'location' => 'Europe/Paris',
         'templates' => array(
             'generic-host'
@@ -165,7 +164,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'notification_period' => 'none',
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
-        'service_templates' => 'serviceTemplate1Name',
+        'service_templates' => 'serviceTemplate1Description',
         'parent_host_categories' => 'hostCategory2Name',
         'obsess_over_host' => 2,
         'acknowledgement_timeout' => 2,
@@ -191,7 +190,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         '2d_coords' => '15,84',
         '3d_coords' => '15,84,76',
         'severity_level' => 'hostCategory1Name (2)',
-        'enabled' => 0,
+        'enabled' => 1,
         'comments' => 'hostTemplateChangeComments'
     );
 
@@ -201,16 +200,15 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'address' => 'hostTemplate@localhostChanged',
         'snmp_community' => 'snmpChanged',
         'snmp_version' => '3',
-        'monitored_from' => 'hostName',
         'location' => 'Europe/Paris',
         'templates' => array(
-            'Central'
+            'hostTemplate2Name'
         ),
         'check_command' => 'check_https',
         'command_arguments' => 'hostTemplateCommandArgumentChanged',
-        'macros' => array(
+        /*'macros' => array(
             'HOSTTEMPLATEMACRONAMECHANGED' => '11'
-        ),
+        ),*/
         'check_period' => 'nonworkhours',
         'max_check_attempts' => 34,
         'normal_check_interval' => 9,
@@ -232,7 +230,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'notification_period' => 'workhours',
         'first_notification_delay' => 7,
         'recovery_notification_delay' => 8,
-        'service_templates' => 'serviceTemplate2Name',
+        'service_templates' => 'serviceTemplate2Description',
         'parent_host_categories' => 'hostCategory1Name',
         'obsess_over_host' => 1,
         'acknowledgement_timeout' => 0,
@@ -270,7 +268,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         $this->currentPage = new ContactConfigurationPage($this);
         $this->currentPage->setProperties($this->contact);
         $this->currentPage->save();
-        $this->currentPage = new ContactGroupConfigurationPage($this);
+        $this->currentPage = new ContactGroupsConfigurationPage($this);
         $this->currentPage->setProperties($this->contactGroup);
         $this->currentPage->save();
         $this->currentPage = new HostCategoryConfigurationPage($this);
@@ -313,11 +311,14 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         try {
             $this->spin(
                 function ($context) {
-                    $this->currentPage = new HostCategoryConfigurationListingPage($this);
+                    $this->currentPage = new HostTemplateConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                     $object = $this->currentPage->getProperties();
                     foreach ($this->updatedProperties as $key => $value) {
                         if ($value != $object[$key]) {
+                            var_dump($key);
+                            var_dump($value);
+                            var_dump($object[$key]);
                             $this->tableau[] = $key;
                         }
                     }
@@ -337,6 +338,11 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
      */
     public function iDuplicateAHostTemplate()
     {
+        $this->currentPage = new HostTemplateConfigurationListingPage($this);
+        $object = $this->currentPage->getEntry($this->initialProperties['name']);
+        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $this->setConfirmBox(true);
+        $this->selectInList('select[name="o1"]', 'Duplicate');
     }
 
     /**
@@ -344,6 +350,30 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
      */
     public function theNewHostTemplateHasTheSameProperties()
     {
+        $this->tableau = array();
+        try {
+            $this->spin(
+                function ($context) {
+                    $this->currentPage = new HostTemplateConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->duplicatedProperties['name']);
+                    $object = $this->currentPage->getProperties();
+                    foreach ($this->duplicatedProperties as $key => $value) {
+                        if ($value != $object[$key]) {
+                            var_dump($key);
+                            var_dump($value);
+                            var_dump($object[$key]);
+                            $this->tableau[] = $key;
+                        }
+                    }
+                    return count($this->tableau) == 0;
+                },
+                "Some properties are not being updated : ",
+                5
+            );
+        } catch (\Exception $e) {
+            $this->tableau = array_unique($this->tableau);
+            throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
+        }
     }
 
     /**
@@ -351,6 +381,11 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
      */
     public function iDeleteAHostTemplate()
     {
+        $this->currentPage = new HostTemplateConfigurationListingPage($this);
+        $object = $this->currentPage->getEntry($this->initialProperties['name']);
+        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $this->setConfirmBox(true);
+        $this->selectInList('select[name="o1"]', 'Delete');
     }
 
     /**
@@ -358,5 +393,18 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
      */
     public function theDeletedHostIsNotDisplayedInTheHostList()
     {
+        $this->spin(
+            function ($context) {
+                $this->currentPage = new HostTemplateConfigurationListingPage($this);
+                $object = $this->currentPage->getEntries();
+                $bool = true;
+                foreach ($object as $value) {
+                    $bool = $bool && $value['name'] != $this->initialProperties['name'];
+                }
+                return $bool;
+            },
+            "The host category is not being deleted.",
+            5
+        );
     }
 }
