@@ -221,7 +221,6 @@ class CentreonCommand extends CentreonObject
             $filters = array('command_id' => $filter_id);
         }
 
-        parent::export($filters);
         $elements = $this->object->getList("*", -1, 0, null, null, $filters);
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
