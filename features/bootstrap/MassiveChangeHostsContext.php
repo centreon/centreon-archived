@@ -1,4 +1,5 @@
 <?php
+
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\MassiveChangeHostConfigurationPage;
 use Centreon\Test\Behat\Configuration\HostConfigurationPage;
