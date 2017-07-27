@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  */
- 
+
 if (!isset($centreon)) {
     exit();
 }
@@ -65,7 +65,7 @@ $path = "./include/configuration/configObject/hostgroup_dependency/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -76,26 +76,26 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 $acl = $oreon->user->access;
 $hgs = $acl->getHostGroupAclConf(null, 'broker');
 $hgstring = CentreonUtils::toStringWithQuotes($hgs);
-    
+
 switch ($o) {
     case "a":
-        require_once($path."formHostGroupDependency.php");
+        require_once($path . "formHostGroupDependency.php");
         break; #Add a Dependency
     case "w":
-        require_once($path."formHostGroupDependency.php");
+        require_once($path . "formHostGroupDependency.php");
         break; #Watch a Dependency
     case "c":
-        require_once($path."formHostGroupDependency.php");
+        require_once($path . "formHostGroupDependency.php");
         break; #Modify a Dependency
     case "m":
         multipleHostGroupDependencyInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listHostGroupDependency.php");
+        require_once($path . "listHostGroupDependency.php");
         break; #Duplicate n Dependencys
     case "d":
         deleteHostGroupDependencyInDB(isset($select) ? $select : array());
-        require_once($path."listHostGroupDependency.php");
+        require_once($path . "listHostGroupDependency.php");
         break; #Delete n Dependency
     default:
-        require_once($path."listHostGroupDependency.php");
+        require_once($path . "listHostGroupDependency.php");
         break;
 }

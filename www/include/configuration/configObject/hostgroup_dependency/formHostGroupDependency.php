@@ -36,14 +36,14 @@
 if (!isset($centreon)) {
     exit();
 }
-    
+
 #
 ## Database retrieve information for Dependency
 #
 $dep = array();
-    $initialValues = array();
+$initialValues = array();
 if (($o == "c" || $o == "w") && $dep_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
 
     # Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -66,24 +66,26 @@ if (($o == "c" || $o == "w") && $dep_id) {
 /*
  * Var information to format the element
  */
-$attrsText      = array("size"=>"30");
-$attrsText2     = array("size"=>"10");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "10");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
-$attrsTextarea  = array("rows"=>"3", "cols"=>"30");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "3", "cols" => "30");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />' .
+    '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'availableDatasetRoute' => $route,
     'multiple' => true,
     'linkedObject' => 'centreonHostgroups'
 );
 
 
-
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Dependency"));
 } elseif ($o == "c") {
@@ -103,14 +105,44 @@ $tab = array();
 $tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
 $tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
 $form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
-$form->setDefaults(array('inherits_parent'=>'1'));
+$form->setDefaults(array('inherits_parent' => '1'));
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'o',
+    '&nbsp;',
+    _("Ok/Up"),
+    array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'd',
+    '&nbsp;',
+    _("Down"),
+    array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'u',
+    '&nbsp;',
+    _("Unreachable"),
+    array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'p',
+    '&nbsp;',
+    _("Pending"),
+    array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'n',
+    '&nbsp;',
+    _("None"),
+    array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);')
+);
 $form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 
 $tab = array();
@@ -121,15 +153,19 @@ $tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
 $form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup' .
+    '&action=defaultValues&target=dependency&field=dep_hgParents&id=' . $dep_id;
 $attrHostgroup1 = array_merge(
     $attrHostgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=dependency&field=dep_hgParents&id=' . $dep_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'dep_hgParents', _("Host Groups Name"), array(), $attrHostgroup1);
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup' .
+    '&action=defaultValues&target=dependency&field=dep_hgChilds&id=' . $dep_id;
 $attrHostgroup2 = array_merge(
     $attrHostgroups,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=defaultValues&target=dependency&field=dep_hgChilds&id=' . $dep_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'dep_hgChilds', _("Dependent Host Groups Name"), array(), $attrHostgroup2);
 
@@ -141,7 +177,7 @@ $redirect->setValue($o);
 
 $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
-    
+
 /*
  * Form Rules
  */
@@ -157,7 +193,7 @@ $form->registerRule('cycle', 'callback', 'testHostGroupDependencyCycle');
 $form->addRule('dep_hgChilds', _("Circular Definition"), 'cycle');
 $form->registerRule('exist', 'callback', 'testHostGroupDependencyExistence');
 $form->addRule('dep_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -168,7 +204,12 @@ $tpl = initSmartyTpl($path, $tpl);
 # Just watch a Dependency information
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&dep_id=" . $dep_id . "'")
+        );
     }
     $form->setDefaults($dep);
     $form->freeze();
@@ -184,12 +225,17 @@ elseif ($o == "a") {
     $form->setDefaults(array('inherits_parent', '0'));
 }
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", ' .
+    'TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, ' .
+    'SHADOW, true, TEXTALIGN, "justify"'
+);
 # prepare help texts
 $helptext = "";
 include_once("include/configuration/configObject/host_dependency/help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -221,18 +267,18 @@ if ($valid) {
 }
 ?>
 <script type="text/javascript">
-function uncheckAllH(object) {
-    if (object.id == "hNone" && object.checked) {
-        document.getElementById('hUp').checked = false;
-        document.getElementById('hDown').checked = false;
-        document.getElementById('hUnreachable').checked = false;
-        document.getElementById('hPending').checked = false;
-        if (document.getElementById('hFlapping')) {
-            document.getElementById('hFlapping').checked = false;
+    function uncheckAllH(object) {
+        if (object.id == "hNone" && object.checked) {
+            document.getElementById('hUp').checked = false;
+            document.getElementById('hDown').checked = false;
+            document.getElementById('hUnreachable').checked = false;
+            document.getElementById('hPending').checked = false;
+            if (document.getElementById('hFlapping')) {
+                document.getElementById('hFlapping').checked = false;
+            }
+        }
+        else {
+            document.getElementById('hNone').checked = false;
         }
     }
-    else {
-        document.getElementById('hNone').checked = false;
-    }
-}
 </script>
