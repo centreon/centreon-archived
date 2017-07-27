@@ -4,7 +4,7 @@ Feature: Limit metrics in chart
     So that i will not crash my browser
 
     Background:
-        Given I am logged in a Centreon server with a configured metrics
+        Given I am logged in a Centreon server with configured metrics
 
     Scenario: Display message and button in performance page
         When I display the chart in performance page
