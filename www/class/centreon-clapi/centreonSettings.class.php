@@ -165,7 +165,7 @@ class CentreonSettings extends CentreonObject
         if (isset($this->authorizedOptions[$key]['format'])) {
             if ($this->authorizedOptions[$key]['format'] == ISNUM && !is_numeric($value)) {
                 throw new CentreonClapiException(self::VALUENOTALLOWED);
-            } else if (is_array($this->authorizedOptions[$key]['format']) == ISSTRING && !is_string($value)) {
+            } elseif (is_array($this->authorizedOptions[$key]['format']) == ISSTRING && !is_string($value)) {
                 throw new CentreonClapiException(self::VALUENOTALLOWED);
             }
         }
