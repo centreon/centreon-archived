@@ -42,7 +42,7 @@ function getHGParents($hg_id, $parentList, $pearDB)
     /*
 	 * Get Parent Groups
 	 */
-    $DBRESULT = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = '".$hg_id."'");
+    $DBRESULT = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = '" . $hg_id . "'");
     while ($hgs = $DBRESULT->fetchRow()) {
         $parentList[$hgs["hg_parent_id"]] = $hgs["hg_parent_id"];
         $parentList = getHGParents($hgs["hg_parent_id"], $parentList, $pearDB);
@@ -60,7 +60,9 @@ function testHostGroupExistence($name = null)
         $id = $form->getSubmitValue('hg_id');
     }
 
-    $DBRESULT = $pearDB->query("SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
+    $query = "SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '" .
+        CentreonDB::escape($centreon->checkIllegalChar($name)) . "'";
+    $DBRESULT = $pearDB->query($query);
     $hg = $DBRESULT->fetchRow();
     #Modif case
     if ($DBRESULT->rowCount() >= 1 && $hg["hg_id"] == $id) {
@@ -86,8 +88,8 @@ function enableHostGroupInDB($hg_id = null, $hg_arr = array())
     }
 
     foreach ($hg_arr as $key => $value) {
-        $pearDB->query("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = '".$key."'");
-        $DBRESULT2 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+        $pearDB->query("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = '" . $key . "'");
+        $DBRESULT2 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '" . $key . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
         $centreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "enable");
     }
@@ -101,12 +103,12 @@ function disableHostGroupInDB($hg_id = null, $hg_arr = array())
         return;
     }
     if ($hg_id) {
-        $hg_arr = array($hg_id=>"1");
+        $hg_arr = array($hg_id => "1");
     }
 
     foreach ($hg_arr as $key => $value) {
-        $pearDB->query("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = '".$key."'");
-        $DBRESULT2 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+        $pearDB->query("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = '" . $key . "'");
+        $DBRESULT2 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '" . $key . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
         $centreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "disable");
     }
@@ -117,18 +119,20 @@ function deleteHostGroupInDB($hostGroups = array())
     global $pearDB, $centreon;
 
     foreach ($hostGroups as $key => $value) {
-        $rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$key."'";
+        $rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = " .
+            "hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM " .
+            "host_service_relation hsr WHERE hsr.hostgroup_hg_id = '" . $key . "'";
         $DBRESULT = $pearDB->query($rq);
 
         while ($row = $DBRESULT->fetchRow()) {
             if ($row["nbr"] == 1) {
-                $DBRESULT2 = $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
+                $pearDB->query("DELETE FROM service WHERE service_id = '" . $row["service_service_id"] . "'");
             }
         }
-        $DBRESULT3 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+        $DBRESULT3 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '" . $key . "' LIMIT 1");
         $row = $DBRESULT3->fetchRow();
 
-        $DBRESULT = $pearDB->query("DELETE FROM hostgroup WHERE hg_id = '".$key."'");
+        $pearDB->query("DELETE FROM hostgroup WHERE hg_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "d");
     }
     $centreon->user->access->updateACL();
@@ -140,15 +144,17 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
 
     $hgAcl = array();
     foreach ($hostGroups as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["hg_id"] = '';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             $rq = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "hg_name" ? ($hg_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'") : ", NULL") : $val .= ($value2 != null ? ("'".$pearDB->escape($value2)."'") : "NULL");
+                $key2 == "hg_name" ? ($hg_name = $value2 = $value2 . "_" . $i) : null;
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $pearDB->escape($value2) . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
                 if ($key2 != "hg_id") {
                     $fields[$key2] = $value2;
                 }
@@ -157,8 +163,8 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
                 }
             }
             if (testHostGroupExistence($hg_name)) {
-                $val ? $rq = "INSERT INTO hostgroup VALUES (".$val.")" : $rq = null;
-                $DBRESULT = $pearDB->query($rq);
+                $val ? $rq = "INSERT INTO hostgroup VALUES (" . $val . ")" : $rq = null;
+                $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(hg_id)"])) {
@@ -167,22 +173,32 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
                         $resource_list = $centreon->user->access->getResourceGroups();
                         if (count($resource_list)) {
                             foreach ($resource_list as $res_id => $res_name) {
-                                $DBRESULT3 = $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$maxId["MAX(hg_id)"]."')");
+                                $query = "INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('" .
+                                    $res_id . "', '" . $maxId["MAX(hg_id)"] . "')";
+                                $pearDB->query($query);
                             }
                             unset($resource_list);
                         }
                     }
-                    #
-                    $DBRESULT = $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
+
+                    $query = "SELECT DISTINCT hgr.host_host_id FROM hostgroup_relation hgr " .
+                        "WHERE hgr.hostgroup_hg_id = '" . $key . "'";
+                    $DBRESULT = $pearDB->query($query);
                     $fields["hg_hosts"] = "";
                     while ($host = $DBRESULT->fetchRow()) {
-                        $DBRESULT2 = $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$maxId["MAX(hg_id)"]."', '".$host["host_host_id"]."')");
+                        $query = "INSERT INTO hostgroup_relation VALUES ('', '" .
+                            $maxId["MAX(hg_id)"] . "', '" . $host["host_host_id"] . "')";
+                        $pearDB->query($query);
                         $fields["hg_hosts"] .= $host["host_host_id"] . ",";
                     }
                     $fields["hg_hosts"] = trim($fields["hg_hosts"], ",");
-                    $DBRESULT = $pearDB->query("SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr WHERE cghgr.hostgroup_hg_id = '".$key."'");
+                    $query = "SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr " .
+                        "WHERE cghgr.hostgroup_hg_id = '" . $key . "'";
+                    $DBRESULT = $pearDB->query($query);
                     while ($cg = $DBRESULT->fetchRow()) {
-                        $DBRESULT2 = $pearDB->query("INSERT INTO contactgroup_hostgroup_relation VALUES ('', '".$cg["contactgroup_cg_id"]."', '".$maxId["MAX(hg_id)"]."')");
+                        $query = "INSERT INTO contactgroup_hostgroup_relation VALUES ('', '" .
+                            $cg["contactgroup_cg_id"] . "', '" . $maxId["MAX(hg_id)"] . "')";
+                        $pearDB->query($query);
                     }
                     $centreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
                 }
@@ -225,38 +241,69 @@ function insertHostGroup($ret = array())
     $ret["hg_name"] = $centreon->checkIllegalChar($ret["hg_name"]);
 
     $rq = "INSERT INTO hostgroup ";
-    $rq .= "(hg_name, hg_alias, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image, hg_rrd_retention, hg_comment, geo_coords, hg_activate) ";
+    $rq .= "(hg_name, hg_alias, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image, " .
+        "hg_rrd_retention, hg_comment, geo_coords, hg_activate) ";
     $rq .= "VALUES (";
-    isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "'".$pearDB->escape($ret["hg_name"])."', " : $rq .= "NULL,";
-    isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".$pearDB->escape($ret["hg_alias"])."', " : $rq .= "NULL,";
-    isset($ret["hg_notes"]) && $ret["hg_notes"] ? $rq .= "'".$pearDB->escape($ret["hg_notes"])."', " : $rq .= "NULL,";
-    isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] ? $rq .= "'".$pearDB->escape($ret["hg_notes_url"])."', " : $rq .= "NULL,";
-    isset($ret["hg_action_url"]) && $ret["hg_action_url"] ? $rq .= "'".$pearDB->escape($ret["hg_action_url"])."', " : $rq .= "NULL,";
-    isset($ret["hg_icon_image"]) && $ret["hg_icon_image"] ? $rq .= "'".$pearDB->escape($ret["hg_icon_image"])."', " : $rq .= "NULL,";
-    isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] ? $rq .= "'".$pearDB->escape($ret["hg_map_icon_image"])."', " : $rq .= "NULL,";
-    isset($ret["hg_rrd_retention"]) && $ret["hg_rrd_retention"] ? $rq .= "'".$pearDB->escape($ret["hg_rrd_retention"])."', " : $rq .= "NULL,";
-    isset($ret["hg_comment"]) && $ret["hg_comment"] ? $rq .= "'".$pearDB->escape($ret["hg_comment"])."', " : $rq .= "NULL, ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] ? $rq .= "'".$pearDB->escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
-    isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "'0'";
+    isset($ret["hg_name"]) && $ret["hg_name"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_name"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_alias"]) && $ret["hg_alias"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_alias"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_notes"]) && $ret["hg_notes"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_notes"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_notes_url"]) && $ret["hg_notes_url"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_notes_url"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_action_url"]) && $ret["hg_action_url"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_action_url"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_icon_image"]) && $ret["hg_icon_image"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_icon_image"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_map_icon_image"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_rrd_retention"]) && $ret["hg_rrd_retention"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_rrd_retention"]) . "', "
+        : $rq .= "NULL,";
+    isset($ret["hg_comment"]) && $ret["hg_comment"]
+        ? $rq .= "'" . $pearDB->escape($ret["hg_comment"]) . "', "
+        : $rq .= "NULL, ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"]
+        ? $rq .= "'" . $pearDB->escape($ret["geo_coords"]) . "', "
+        : $rq .= "NULL, ";
+    isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"]
+        ? $rq .= "'" . $ret["hg_activate"]["hg_activate"] . "'"
+        : $rq .= "'0'";
     $rq .= ")";
 
     $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
     $hg_id = $DBRESULT->fetchRow();
-    
+
     if (!$centreon->user->admin) {
         $resource_list = $centreon->user->access->getResourceGroups();
         if (count($resource_list)) {
             foreach ($resource_list as $res_id => $res_name) {
-                $DBRESULT3 = $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
+                $query = "INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) " .
+                    "VALUES ('" . $res_id . "', '" . $hg_id["MAX(hg_id)"] . "')";
+                $pearDB->query($query);
             }
             unset($resource_list);
         }
     }
-    
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("hostgroup", $hg_id["MAX(hg_id)"], CentreonDB::escape($ret["hg_name"]), "a", $fields);
+    $centreon->CentreonLogAction->insertLog(
+        "hostgroup",
+        $hg_id["MAX(hg_id)"],
+        CentreonDB::escape($ret["hg_name"]),
+        "a",
+        $fields
+    );
 
     return ($hg_id["MAX(hg_id)"]);
 }
@@ -277,28 +324,50 @@ function updateHostGroup($hg_id, $ret = array())
 
     $rq = "UPDATE hostgroup SET ";
     $rq .= "hg_name = ";
-    isset($ret["hg_name"]) && $ret["hg_name"] != null ? $rq .= "'".$pearDB->escape($ret["hg_name"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_name"]) && $ret["hg_name"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_name"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_alias = ";
-    isset($ret["hg_alias"]) && $ret["hg_alias"] != null ? $rq .= "'".$pearDB->escape($ret["hg_alias"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_alias"]) && $ret["hg_alias"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_alias"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_notes = ";
-    isset($ret["hg_notes"]) && $ret["hg_notes"] != null ? $rq .= "'".$pearDB->escape($ret["hg_notes"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_notes"]) && $ret["hg_notes"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_notes"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_notes_url = ";
-    isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] != null ? $rq .= "'".$pearDB->escape($ret["hg_notes_url"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_notes_url"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_action_url = ";
-    isset($ret["hg_action_url"]) && $ret["hg_action_url"] != null ? $rq .= "'".$pearDB->escape($ret["hg_action_url"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_action_url"]) && $ret["hg_action_url"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_action_url"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_icon_image = ";
-    isset($ret["hg_icon_image"]) && $ret["hg_icon_image"] != null ? $rq .= "'".$pearDB->escape($ret["hg_icon_image"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_icon_image"]) && $ret["hg_icon_image"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_icon_image"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_map_icon_image = ";
-    isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] != null ? $rq .= "'".$pearDB->escape($ret["hg_map_icon_image"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_map_icon_image"]) && $ret["hg_map_icon_image"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_map_icon_image"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_rrd_retention = ";
-    $rq .= isset($ret["hg_rrd_retention"]) && $ret["hg_rrd_retention"] ? "'".$pearDB->escape($ret["hg_rrd_retention"])."', " : "NULL, ";
+    $rq .= isset($ret["hg_rrd_retention"]) && $ret["hg_rrd_retention"]
+        ? "'" . $pearDB->escape($ret["hg_rrd_retention"]) . "', "
+        : "NULL, ";
     $rq .= "geo_coords = ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != null ? $rq .= "'".$pearDB->escape($ret["geo_coords"])."', " : $rq .= "NULL, ";
+    isset($ret["geo_coords"]) && $ret["geo_coords"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["geo_coords"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_comment = ";
-    isset($ret["hg_comment"]) && $ret["hg_comment"] != null ? $rq .= "'".$pearDB->escape($ret["hg_comment"])."', " : $rq .= "NULL, ";
+    isset($ret["hg_comment"]) && $ret["hg_comment"] != null
+        ? $rq .= "'" . $pearDB->escape($ret["hg_comment"]) . "', "
+        : $rq .= "NULL, ";
     $rq .= "hg_activate = ";
-    isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] != null ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "NULL ";
-    $rq .= " WHERE hg_id = '".$hg_id."'";
+    isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] != null
+        ? $rq .= "'" . $ret["hg_activate"]["hg_activate"] . "'"
+        : $rq .= "NULL ";
+    $rq .= " WHERE hg_id = '" . $hg_id . "'";
     $DBRESULT = $pearDB->query($rq);
 
     /* Prepare value for changelog */
@@ -321,7 +390,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
 	 * Get initial Host list to make a diff after deletion
 	 */
     $hostsOLD = array();
-    $DBRESULT = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+    $DBRESULT = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '" . $hg_id . "'");
     while ($host = $DBRESULT->fetchRow()) {
         $hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
     }
@@ -331,7 +400,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
 	 * Get service lists linked to hostgroup
 	 */
     $rq = "SELECT service_service_id FROM host_service_relation ";
-    $rq .= "WHERE hostgroup_hg_id = '".$hg_id."' AND host_host_id IS NULL";
+    $rq .= "WHERE hostgroup_hg_id = '" . $hg_id . "' AND host_host_id IS NULL";
     $DBRESULT = $pearDB->query($rq);
     $hgSVS = array();
     while ($sv = $DBRESULT->fetchRow()) {
@@ -342,8 +411,8 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
 	 * Update Host HG relations
 	 */
     if ($increment == false) {
-        $rq  =  "DELETE FROM hostgroup_relation ";
-        $rq .=  "WHERE hostgroup_hg_id = '".$hg_id."'";
+        $rq = "DELETE FROM hostgroup_relation ";
+        $rq .= "WHERE hostgroup_hg_id = '" . $hg_id . "'";
         $pearDB->query($rq);
     }
 
@@ -353,12 +422,14 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
 
     $rq = "INSERT INTO hostgroup_relation (hostgroup_hg_id, host_host_id) VALUES ";
     for ($i = 0; $i < count($ret); $i++) {
-        $resTest = $pearDB->query("SELECT hostgroup_hg_id FROM hostgroup_relation WHERE hostgroup_hg_id = ".$hg_id." AND host_host_id = ".$ret[$i]);
+        $query = "SELECT hostgroup_hg_id FROM hostgroup_relation WHERE hostgroup_hg_id = " . $hg_id .
+            " AND host_host_id = " . $ret[$i];
+        $resTest = $pearDB->query($query);
         if (!$resTest->rowCount()) {
             if ($i != 0) {
                 $rq .= ", ";
             }
-            $rq .= " ('".$hg_id."', '".$ret[$i]."')";
+            $rq .= " ('" . $hg_id . "', '" . $ret[$i] . "')";
             $hostsNEW[$ret[$i]] = $ret[$i];
         }
     }
@@ -371,24 +442,26 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
 	 * Update HG HG relations
 	 */
     if ($increment == false) {
-        $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '".$hg_id."'");
+        $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '" . $hg_id . "'");
     }
     isset($ret["hg_hg"]) ? $ret = $ret["hg_hg"] : $ret = $form->getSubmitValue("hg_hg");
     $hgNEW = array();
 
     $rq = "INSERT INTO hostgroup_hg_relation (hg_parent_id, hg_child_id) VALUES ";
     for ($i = 0; $i < count($ret); $i++) {
-        $resTest = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_parent_id = ".$hg_id." AND hg_child_id = ".$ret[$i]);
+        $query = "SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_parent_id = " . $hg_id .
+            " AND hg_child_id = " . $ret[$i];
+        $resTest = $pearDB->query($query);
         if (!$resTest->rowCount()) {
             if ($i != 0) {
                 $rq .= ", ";
             }
-            $rq .= " ('".$hg_id."', '".$ret[$i]."')";
+            $rq .= " ('" . $hg_id . "', '" . $ret[$i] . "')";
             $hostsNEW[$ret[$i]] = $ret[$i];
         }
     }
     if ($i != 0) {
-        $DBRESULT = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 
     /*
