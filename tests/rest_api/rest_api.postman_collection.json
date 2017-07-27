@@ -19176,34 +19176,13 @@
           "response": []
         },
         {
-          "name": "List contact copy",
+          "name": "Set contact non admin",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "var jsonData = JSON.parse(responseBody);",
-                  "var contactData = jsonData.result;",
-                  "",
-                  "try {",
-                  "    tests[\"Body contains list of contacts\"] = contactData;",
-                  "    var i = 0;",
-                  "    while (i < contactData.length) {",
-                  "        if (postman.getEnvironmentVariable(\"contact_name\") == contactData[i].name) {",
-                  "            tests[\"Body contains added contact_name\"] = postman.getEnvironmentVariable(\"contact_name\") == contactData[i].name;",
-                  "            tests[\"Body contains added contact_alias\"] = postman.getEnvironmentVariable(\"contact_alias\") == contactData[i].alias;",
-                  "            tests[\"Body contains added contact_email\"] = postman.getEnvironmentVariable(\"contact_mail\") == contactData[i].email;",
-                  "            tests[\"Body contains added contact_GUI_access\"] = postman.getEnvironmentVariable(\"contact_GUI_access\") == contactData[i]['gui access'];",
-                  "            tests[\"Body contains added contact_admin\"] = postman.getEnvironmentVariable(\"contact_admin\") == contactData[i].admin;",
-                  "            break;",
-                  "        }",
-                  "        i++;",
-                  "    }",
-                  "    if (i == contactData.length)",
-                  "        tests[\"contact_name was found\"] = false;",
-                  "} catch (e) {}",
-                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;"
                 ]
               }
@@ -19252,7 +19231,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"contact\"\n}"
+              "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};admin;0\"\n}"
             },
             "description": ""
           },
