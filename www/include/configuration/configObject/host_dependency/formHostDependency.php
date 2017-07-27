@@ -37,7 +37,7 @@ $dep = array();
 $childServices = array();
 $initialValues = array();
 if (($o == "c" || $o == "w") && $dep_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
 
     # Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -56,20 +56,25 @@ if (($o == "c" || $o == "w") && $dep_id) {
 }
 
 # Var information to format the element
-$attrsText      = array("size"=>"30");
-$attrsText2     = array("size"=>"10");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "10");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
-$attrsTextarea  = array("rows"=>"3", "cols"=>"30");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "3", "cols" => "30");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />' .
+    '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'availableDatasetRoute' => $route,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
+
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+    'availableDatasetRoute' => $route,
     'multiple' => true,
     'linkedObject' => 'centreonService'
 );
@@ -77,7 +82,7 @@ $attrServices = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Dependency"));
 } elseif ($o == "c") {
@@ -97,14 +102,44 @@ $tab = array();
 $tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
 $tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
 $form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
-$form->setDefaults(array('inherits_parent'=>'1'));
+$form->setDefaults(array('inherits_parent' => '1'));
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'o',
+    '&nbsp;',
+    _("Ok/Up"),
+    array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'd',
+    '&nbsp;',
+    _("Down"),
+    array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'u',
+    '&nbsp;',
+    _("Unreachable"),
+    array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'p',
+    '&nbsp;',
+    _("Pending"),
+    array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);')
+);
+$tab[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'n',
+    '&nbsp;',
+    _("None"),
+    array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);')
+);
 $form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 
 $tab = array();
@@ -115,21 +150,27 @@ $tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
 $tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
 $form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_host' .
+    '&action=defaultValues&target=dependency&field=dep_hostParents&id=' . $dep_id;
 $attrHost1 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostParents&id=' . $dep_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'dep_hostParents', _("Host Names"), array(), $attrHost1);
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_host' .
+    '&action=defaultValues&target=dependency&field=dep_hostChilds&id=' . $dep_id;
 $attrHost2 = array_merge(
     $attrHosts,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=dependency&field=dep_hostChilds&id=' . $dep_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'dep_hostChilds', _("Dependent Host Names"), array(), $attrHost2);
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_service' .
+    '&action=defaultValues&target=dependency&field=dep_hSvChi&id=' . $dep_id;
 $attrService1 = array_merge(
     $attrServices,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=dependency&field=dep_hSvChi&id=' . $dep_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'dep_hSvChi', _("Dependent Services"), array(), $attrService1);
 
@@ -139,9 +180,9 @@ $form->addElement('hidden', 'dep_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-    $init = $form->addElement('hidden', 'initialValues');
-    $init->setValue(serialize($initialValues));
-    
+$init = $form->addElement('hidden', 'initialValues');
+$init->setValue(serialize($initialValues));
+
 /*
  * Form Rules
  */
@@ -154,7 +195,7 @@ $form->registerRule('cycle', 'callback', 'testHostDependencyCycle');
 $form->addRule('dep_hostChilds', _("Circular Definition"), 'cycle');
 $form->registerRule('exist', 'callback', 'testHostDependencyExistence');
 $form->addRule('dep_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -162,19 +203,29 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, ' .
+    '"orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], ' .
+    'WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
 # Just watch a Dependency information
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&dep_id=" . $dep_id . "'")
+        );
     }
     $form->setDefaults($dep);
     $form->freeze();
@@ -220,85 +271,83 @@ if ($valid) {
 
 ?>
 <script type="text/javascript">
-function uncheckAllH(object)
-{
-    if (object.id == "hNone" && object.checked) {
-        document.getElementById('hUp').checked = false;
-        document.getElementById('hDown').checked = false;
-        document.getElementById('hUnreachable').checked = false;
-        document.getElementById('hPending').checked = false;
-        if (document.getElementById('hFlapping')) {
-            document.getElementById('hFlapping').checked = false;
+    function uncheckAllH(object) {
+        if (object.id == "hNone" && object.checked) {
+            document.getElementById('hUp').checked = false;
+            document.getElementById('hDown').checked = false;
+            document.getElementById('hUnreachable').checked = false;
+            document.getElementById('hPending').checked = false;
+            if (document.getElementById('hFlapping')) {
+                document.getElementById('hFlapping').checked = false;
+            }
+        }
+        else {
+            document.getElementById('hNone').checked = false;
         }
     }
-    else {
-        document.getElementById('hNone').checked = false;
-    }
-}
 
-function hostFilterSelect(elem)
-{
-    var arg = 'host_id='+elem.value;
+    function hostFilterSelect(elem) {
+        var arg = 'host_id=' + elem.value;
 
-    if (window.XMLHttpRequest) {
-        var xhr = new XMLHttpRequest();
-    } else if(window.ActiveXObject){r
-        try {
-            var xhr = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        if (window.XMLHttpRequest) {
+            var xhr = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            r
+            try {
+                var xhr = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+        } else {
+            var xhr = false;
         }
-    } else {
-       var xhr = false;
-    }
 
-    xhr.open("POST","./include/configuration/configObject/service_dependency/getServiceXml.php", true);
-    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    xhr.send(arg);
+        xhr.open("POST", "./include/configuration/configObject/service_dependency/getServiceXml.php", true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(arg);
 
-    xhr.onreadystatechange = function()
-    {
-        if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
-            var response = xhr.responseXML.documentElement;
-            var _services = response.getElementsByTagName("services");
-            var _selbox;
+        xhr.onreadystatechange = function () {
+            if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML) {
+                var response = xhr.responseXML.documentElement;
+                var _services = response.getElementsByTagName("services");
+                var _selbox;
 
-            if (document.getElementById("dep_hSvChi-f")) {
-                _selbox = document.getElementById("dep_hSvChi-f");
-                _selected = document.getElementById("dep_hSvChi-t");
-            } else if (document.getElementById("__dep_hSvChi")) {
-                _selbox = document.getElementById("__dep_hSvChi");
-                _selected = document.getElementById("_dep_hSvChi");
-            }
+                if (document.getElementById("dep_hSvChi-f")) {
+                    _selbox = document.getElementById("dep_hSvChi-f");
+                    _selected = document.getElementById("dep_hSvChi-t");
+                } else if (document.getElementById("__dep_hSvChi")) {
+                    _selbox = document.getElementById("__dep_hSvChi");
+                    _selected = document.getElementById("_dep_hSvChi");
+                }
 
-            while ( _selbox.options.length > 0 ){
-                _selbox.options[0] = null;
-            }
+                while (_selbox.options.length > 0) {
+                    _selbox.options[0] = null;
+                }
 
-            if (_services.length == 0) {
-                _selbox.setAttribute('disabled', 'disabled');
-            } else {
-                _selbox.removeAttribute('disabled');
-            }
+                if (_services.length == 0) {
+                    _selbox.setAttribute('disabled', 'disabled');
+                } else {
+                    _selbox.removeAttribute('disabled');
+                }
 
-            for (var i = 0 ; i < _services.length ; i++) {
-                var _svc         = _services[i];
-                var _id          = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
-                var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
-                var validFlag = true;
+                for (var i = 0; i < _services.length; i++) {
+                    var _svc = _services[i];
+                    var _id = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+                    var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+                    var validFlag = true;
 
-                for (var j = 0; j < _selected.length; j++) {
-                    if (_id == _selected.options[j].value) {
-                        validFlag = false;
+                    for (var j = 0; j < _selected.length; j++) {
+                        if (_id == _selected.options[j].value) {
+                            validFlag = false;
+                        }
+                    }
+
+                    if (validFlag == true) {
+                        new_elem = new Option(_description, _id);
+                        _selbox.options[_selbox.length] = new_elem;
                     }
                 }
-
-                if (validFlag == true) {
-                    new_elem = new Option(_description,_id);
-                    _selbox.options[_selbox.length] = new_elem;
-                }
             }
         }
     }
-}
 </script>
