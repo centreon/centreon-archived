@@ -4,7 +4,7 @@ Feature: Virtual Metric Handle
     To calculate specific values I need to check
 
     Background:
-        Given I am logged in a Centreon server with a configured metrics
+        Given I am logged in a Centreon server with configured metrics
    
     Scenario: Create a virtual metric
         When I add a virtual metric
