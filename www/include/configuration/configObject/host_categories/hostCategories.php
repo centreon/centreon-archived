@@ -65,7 +65,7 @@ $path = "./include/configuration/configObject/host_categories/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -81,39 +81,39 @@ $hoststring = $acl->getHostsString('ID', $dbmon);
 
 switch ($o) {
     case "a":
-        require_once($path."formHostCategories.php");
+        require_once($path . "formHostCategories.php");
         break;
     case "w":
-        require_once($path."formHostCategories.php");
+        require_once($path . "formHostCategories.php");
         break;
     case "c":
-        require_once($path."formHostCategories.php");
+        require_once($path . "formHostCategories.php");
         break;
     case "s":
         enableHostCategoriesInDB($hc_id);
-        require_once($path."listHostCategories.php");
+        require_once($path . "listHostCategories.php");
         break;
     case "ms":
         enableHostCategoriesInDB(null, isset($select) ? $select : array());
-        require_once($path."listHostCategories.php");
+        require_once($path . "listHostCategories.php");
         break;
     case "u":
         disableHostCategoriesInDB($hc_id);
-        require_once($path."listHostCategories.php");
+        require_once($path . "listHostCategories.php");
         break;
     case "mu":
         disableHostCategoriesInDB(null, isset($select) ? $select : array());
-        require_once($path."listHostCategories.php");
+        require_once($path . "listHostCategories.php");
         break;
     case "m":
         multipleHostCategoriesInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listHostCategories.php");
+        require_once($path . "listHostCategories.php");
         break;
     case "d":
         deleteHostCategoriesInDB(isset($select) ? $select : array());
-        require_once($path."listHostCategories.php");
+        require_once($path . "listHostCategories.php");
         break;
     default:
-        require_once($path."listHostCategories.php");
+        require_once($path . "listHostCategories.php");
         break;
 }
