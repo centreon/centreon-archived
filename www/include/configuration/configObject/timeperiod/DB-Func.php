@@ -48,12 +48,12 @@ function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = a
         $str = "";
         foreach ($includeTab as $tpIncludeId) {
             if ($str != "") {
-                $str.= ", ";
+                $str .= ", ";
             }
-            $str .= "('".$tpId."', '".$tpIncludeId."')";
+            $str .= "('" . $tpId . "', '" . $tpIncludeId . "')";
         }
         if (strlen($str)) {
-            $query = "INSERT INTO timeperiod_include_relations (timeperiod_id, timeperiod_include_id ) VALUES ".$str;
+            $query = "INSERT INTO timeperiod_include_relations (timeperiod_id, timeperiod_include_id ) VALUES " . $str;
             $pearDB->query($query);
         }
     }
@@ -65,12 +65,12 @@ function includeExcludeTimeperiods($tpId, $includeTab = array(), $excludeTab = a
         $str = "";
         foreach ($excludeTab as $tpExcludeId) {
             if ($str != "") {
-                $str.= ", ";
+                $str .= ", ";
             }
-            $str .= "('".$tpId."', '".$tpExcludeId."')";
+            $str .= "('" . $tpId . "', '" . $tpExcludeId . "')";
         }
         if (strlen($str)) {
-            $query = "INSERT INTO timeperiod_exclude_relations (timeperiod_id, timeperiod_exclude_id ) VALUES ".$str;
+            $query = "INSERT INTO timeperiod_exclude_relations (timeperiod_id, timeperiod_exclude_id ) VALUES " . $str;
             $pearDB->query($query);
         }
     }
@@ -85,7 +85,9 @@ function testTPExistence($name = null)
         $id = $form->getSubmitValue('tp_id');
     }
 
-    $DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+    $query = "SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '" .
+        htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8") . "'";
+    $DBRESULT = $pearDB->query($query);
     $tp = $DBRESULT->fetchRow();
     #Modif case
     if ($DBRESULT->rowCount() >= 1 && $tp["tp_id"] == $id) {
@@ -102,9 +104,9 @@ function deleteTimeperiodInDB($timeperiods = array())
 {
     global $pearDB, $centreon;
     foreach ($timeperiods as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT tp_name FROM `timeperiod` WHERE `tp_id` = '".$key."' LIMIT 1");
+        $DBRESULT2 = $pearDB->query("SELECT tp_name FROM `timeperiod` WHERE `tp_id` = '" . $key . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
-        $DBRESULT = $pearDB->query("DELETE FROM timeperiod WHERE tp_id = '".$key."'");
+        $DBRESULT = $pearDB->query("DELETE FROM timeperiod WHERE tp_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("timeperiod", $key, $row['tp_name'], "d");
     }
 }
@@ -117,9 +119,9 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
         global $pearDB;
 
         $fields = array();
-        $DBRESULT = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$key."' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '" . $key . "' LIMIT 1");
 
-        $query = "SELECT days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '".$key."'";
+        $query = "SELECT days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '" . $key . "'";
         $res = $pearDB->query($query);
         while ($row = $res->fetchRow()) {
             foreach ($row as $keyz => $valz) {
@@ -136,7 +138,9 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
                     $value2 .= "_" . $i;
                 }
                 $key2 == "tp_name" ? ($tp_name = $value2) : "";
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "tp_id") {
                     $fields[$key2] = $value2;
                 }
@@ -145,7 +149,7 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
                 }
             }
             if (isset($tp_name) && testTPExistence($tp_name)) {
-                $DBRESULT = $pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
+                $pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (" . $val . ")" : $rq = null);
 
                 /*
                  * Get Max ID
@@ -153,16 +157,19 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(tp_id) FROM `timeperiod`");
                 $tp_id = $DBRESULT->fetchRow();
 
-                $query = "INSERT INTO timeperiod_exceptions (timeperiod_id, days, timerange)
-                        SELECT ".$tp_id['MAX(tp_id)'].", days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '".$key."'";
+                $query = "INSERT INTO timeperiod_exceptions (timeperiod_id, days, timerange) " .
+                    "SELECT " . $tp_id['MAX(tp_id)'] . ", days, timerange FROM timeperiod_exceptions " .
+                    "WHERE timeperiod_id = '" . $key . "'";
                 $pearDB->query($query);
 
-                $query = "INSERT INTO timeperiod_include_relations (timeperiod_id, timeperiod_include_id)
-                        SELECT ".$tp_id['MAX(tp_id)'].", timeperiod_include_id FROM timeperiod_include_relations WHERE timeperiod_id = '".$key."'";
+                $query = "INSERT INTO timeperiod_include_relations (timeperiod_id, timeperiod_include_id) " .
+                    "SELECT " . $tp_id['MAX(tp_id)'] . ", timeperiod_include_id FROM timeperiod_include_relations " .
+                    "WHERE timeperiod_id = '" . $key . "'";
                 $pearDB->query($query);
 
-                $query = "INSERT INTO timeperiod_exclude_relations (timeperiod_id, timeperiod_exclude_id)
-                        SELECT ".$tp_id['MAX(tp_id)'].", timeperiod_exclude_id FROM timeperiod_exclude_relations WHERE timeperiod_id = '".$key."'";
+                $query = "INSERT INTO timeperiod_exclude_relations (timeperiod_id, timeperiod_exclude_id) " .
+                    "SELECT " . $tp_id['MAX(tp_id)'] . ", timeperiod_exclude_id FROM timeperiod_exclude_relations " .
+                    "WHERE timeperiod_id = '" . $key . "'";
                 $pearDB->query($query);
 
                 $centreon->CentreonLogAction->insertLog("timeperiod", $tp_id["MAX(tp_id)"], $tp_name, "a", $fields);
@@ -196,20 +203,20 @@ function updateTimeperiod($tp_id, $params = array())
     $ret["tp_name"] = $centreon->checkIllegalChar($ret["tp_name"]);
 
     $rq = "UPDATE timeperiod ";
-    $rq .= "SET tp_name = '".htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_alias = '".htmlentities($ret["tp_alias"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_sunday = '".htmlentities($ret["tp_sunday"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_monday = '".htmlentities($ret["tp_monday"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_tuesday = '".htmlentities($ret["tp_tuesday"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_wednesday = '".htmlentities($ret["tp_wednesday"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_thursday = '".htmlentities($ret["tp_thursday"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_friday = '".htmlentities($ret["tp_friday"], ENT_QUOTES, "UTF-8")."', " .
-            "tp_saturday = '".htmlentities($ret["tp_saturday"], ENT_QUOTES, "UTF-8")."' " .
-            "WHERE tp_id = '".$tp_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    $rq .= "SET tp_name = '" . htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_alias = '" . htmlentities($ret["tp_alias"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_sunday = '" . htmlentities($ret["tp_sunday"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_monday = '" . htmlentities($ret["tp_monday"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_tuesday = '" . htmlentities($ret["tp_tuesday"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_wednesday = '" . htmlentities($ret["tp_wednesday"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_thursday = '" . htmlentities($ret["tp_thursday"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_friday = '" . htmlentities($ret["tp_friday"], ENT_QUOTES, "UTF-8") . "', " .
+        "tp_saturday = '" . htmlentities($ret["tp_saturday"], ENT_QUOTES, "UTF-8") . "' " .
+        "WHERE tp_id = '" . $tp_id . "'";
+    $pearDB->query($rq);
 
-    $pearDB->query("DELETE FROM timeperiod_include_relations WHERE timeperiod_id = '".$tp_id."'");
-    $pearDB->query("DELETE FROM timeperiod_exclude_relations WHERE timeperiod_id = '".$tp_id."'");
+    $pearDB->query("DELETE FROM timeperiod_include_relations WHERE timeperiod_id = '" . $tp_id . "'");
+    $pearDB->query("DELETE FROM timeperiod_exclude_relations WHERE timeperiod_id = '" . $tp_id . "'");
 
     if (!isset($ret['tp_include'])) {
         $ret['tp_include'] = array();
@@ -223,14 +230,18 @@ function updateTimeperiod($tp_id, $params = array())
     if (isset($_POST['nbOfExceptions'])) {
         $my_tab = $_POST;
         $already_stored = array();
-        $res = $pearDB->query("DELETE FROM `timeperiod_exceptions` WHERE `timeperiod_id`='".$tp_id."'");
-        for ($i=0; $i <= $my_tab['nbOfExceptions']; $i++) {
+        $pearDB->query("DELETE FROM `timeperiod_exceptions` WHERE `timeperiod_id`='" . $tp_id . "'");
+        for ($i = 0; $i <= $my_tab['nbOfExceptions']; $i++) {
             $exInput = "exceptionInput_" . $i;
             $exValue = "exceptionTimerange_" . $i;
-            if (isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) && $my_tab[$exInput]) {
-                $rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`)
-                       VALUES ('". $tp_id ."', LOWER('". $pearDB->escape($my_tab[$exInput]) ."'), '". $pearDB->escape($my_tab[$exValue]) ."')";
-                $DBRESULT = $pearDB->query($rq);
+            if (isset($my_tab[$exInput]) &&
+                !isset($already_stored[strtolower($my_tab[$exInput])]) &&
+                $my_tab[$exInput]
+            ) {
+                $query = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`) " .
+                    "VALUES ('" . $tp_id . "', LOWER('" . $pearDB->escape($my_tab[$exInput]) . "'), '" .
+                    $pearDB->escape($my_tab[$exValue]) . "')";
+                $pearDB->query($query);
                 $fields[$my_tab[$exInput]] = $my_tab[$exValue];
                 $already_stored[strtolower($my_tab[$exInput])] = 1;
             }
@@ -239,7 +250,13 @@ function updateTimeperiod($tp_id, $params = array())
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("timeperiod", $tp_id, htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
+    $centreon->CentreonLogAction->insertLog(
+        "timeperiod",
+        $tp_id,
+        htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8"),
+        "c",
+        $fields
+    );
 }
 
 function insertTimeperiodInDB($ret = array())
@@ -261,17 +278,35 @@ function insertTimeperiod($ret = array(), $exceptions = null)
     $rq = "INSERT INTO timeperiod ";
     $rq .= "(tp_name, tp_alias, tp_sunday, tp_monday, tp_tuesday, tp_wednesday, tp_thursday, tp_friday, tp_saturday) ";
     $rq .= "VALUES (";
-    isset($ret["tp_name"]) && $ret["tp_name"] != null ? $rq .= "'".htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_alias"]) && $ret["tp_alias"] != null ? $rq .= "'".htmlentities($ret["tp_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_sunday"]) && $ret["tp_sunday"] != null ? $rq .= "'".htmlentities($ret["tp_sunday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_monday"]) && $ret["tp_monday"] != null ? $rq .= "'".htmlentities($ret["tp_monday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_tuesday"]) && $ret["tp_tuesday"] != null ? $rq .= "'".htmlentities($ret["tp_tuesday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_wednesday"]) && $ret["tp_wednesday"] != null ? $rq .= "'".htmlentities($ret["tp_wednesday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_thursday"]) && $ret["tp_thursday"] != null ? $rq .= "'".htmlentities($ret["tp_thursday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_friday"]) && $ret["tp_friday"] != null ? $rq .= "'".htmlentities($ret["tp_friday"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["tp_saturday"]) && $ret["tp_saturday"] != null ? $rq .= "'".htmlentities($ret["tp_saturday"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
+    isset($ret["tp_name"]) && $ret["tp_name"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_alias"]) && $ret["tp_alias"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_alias"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_sunday"]) && $ret["tp_sunday"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_sunday"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_monday"]) && $ret["tp_monday"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_monday"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_tuesday"]) && $ret["tp_tuesday"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_tuesday"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_wednesday"]) && $ret["tp_wednesday"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_wednesday"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_thursday"]) && $ret["tp_thursday"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_thursday"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_friday"]) && $ret["tp_friday"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_friday"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["tp_saturday"]) && $ret["tp_saturday"] != null
+        ? $rq .= "'" . htmlentities($ret["tp_saturday"], ENT_QUOTES, "UTF-8") . "'"
+        : $rq .= "NULL";
     $rq .= ")";
-    $DBRESULT = $pearDB->query($rq);
+    $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
     $tp_id = $DBRESULT->fetchRow();
 
@@ -294,22 +329,32 @@ function insertTimeperiod($ret = array(), $exceptions = null)
     }
     if (isset($my_tab['nbOfExceptions'])) {
         $already_stored = array();
-        for ($i=0; $i <= $my_tab['nbOfExceptions']; $i++) {
+        for ($i = 0; $i <= $my_tab['nbOfExceptions']; $i++) {
             $exInput = "exceptionInput_" . $i;
             $exValue = "exceptionTimerange_" . $i;
-            if (isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) && $my_tab[$exInput]) {
-                $rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`)
-                       VALUES ('". $tp_id['MAX(tp_id)'] ."', LOWER('". $pearDB->escape($my_tab[$exInput]) ."'), '". $pearDB->escape($my_tab[$exValue]) ."')";
-                $DBRESULT = $pearDB->query($rq);
+            if (isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) &&
+                $my_tab[$exInput]
+            ) {
+                $query = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`) " .
+                    "VALUES ('" . $tp_id['MAX(tp_id)'] . "', LOWER('" . $pearDB->escape($my_tab[$exInput]) . "'), '" .
+                    $pearDB->escape($my_tab[$exValue]) . "')";
+                $pearDB->query($query);
                 $fields[$my_tab[$exInput]] = $my_tab[$exValue];
                 $already_stored[strtolower($my_tab[$exInput])] = 1;
             }
+
         }
     }
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("timeperiod", $tp_id["MAX(tp_id)"], htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
+    $centreon->CentreonLogAction->insertLog(
+        "timeperiod",
+        $tp_id["MAX(tp_id)"],
+        htmlentities($ret["tp_name"], ENT_QUOTES, "UTF-8"),
+        "a",
+        $fields
+    );
 
     return ($tp_id["MAX(tp_id)"]);
 }
@@ -367,7 +412,7 @@ function getTimeperiodIdByName($name)
     global $pearDB;
 
     $id = 0;
-    $res = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".$pearDB->escape($name)."'");
+    $res = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '" . $pearDB->escape($name) . "'");
     if ($res->rowCount()) {
         $row = $res->fetchRow();
         $id = $row['tp_id'];
