@@ -36,12 +36,12 @@
 if (!isset($centreon)) {
     exit();
 }
-    
+
 /*
  * Debug Flag
  */
 $debug = 0;
-    $max_characters = 20000;
+$max_characters = 20000;
 
 /*
  * Database retrieve information for Manufacturer
@@ -50,27 +50,31 @@ $debug = 0;
 function myDecodeMib($arg)
 {
     $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
-    return($arg);
+    return ($arg);
 }
 
 /*
  * Init Formulary
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Import SNMP traps from MIB file"));
 
 /*
  * Manufacturer information
  */
-$attrManufacturer= array(
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=list';
+$attrManufacturer = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=list',
+    'availableDatasetRoute' => $route,
     'multiple' => false,
     'linkedObject' => 'centreonManufacturer'
 );
+
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer' .
+    '&action=defaultValues&target=traps&field=manufacturer_id&id=';
 $attrManufacturer1 = array_merge(
     $attrManufacturer,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=defaultValues&target=traps&field=manufacturer_id&id=')
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'mnftr', _("Vendor Name"), array(), $attrManufacturer1);
 
@@ -82,7 +86,7 @@ $form->addElement('file', 'filename', _("File (.mib)"));
 $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('mnftr', _("Compulsory Name"), 'required');
 $form->addRule('filename', _("Compulsory Name"), 'required');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -91,13 +95,17 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 
-
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", ' .
+    'TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, ' .
+    'SHADOW, true, TEXTALIGN, "justify"'
+);
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -123,16 +131,21 @@ if ($form->validate()) {
         $msg .= "<br />Moving traps in DataBase...";
 
         if ($debug) {
-            print("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
+            print("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"] . "' -m " .
+                htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8") . " --severity=info 2>&1");
         }
 
-        $stdout = shell_exec("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
+        $stdout = shell_exec(
+            "@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"] .
+            "' -m " . htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8") . " --severity=info 2>&1"
+        );
         unlink($values['tmp_name']);
-        $msg .= "<br />".str_replace("\n", "<br />", $stdout);
+        $msg .= "<br />" . str_replace("\n", "<br />", $stdout);
         $msg .= "<br />Generate Traps configuration files from Monitoring Engine configuration form!";
         if ($msg) {
             if (strlen($msg) > $max_characters) {
-                $msg = substr($msg, 0, $max_characters)."...".sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
+                $msg = substr($msg, 0, $max_characters) . "..." .
+                    sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
             }
             $tpl->assign('msg', $msg);
         }
