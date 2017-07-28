@@ -64,6 +64,10 @@ class ServiceSubmitResultContext extends CentreonContext
     public function theValuesAreSetAsWantedInMonitoringStatusDetailsPage()
     {
         $this->page = new MonitoringServicesPage($this);
+        $value = $this->page->getPropertiesByService($this->hostname, $this->hostservice, 'Lionel');
+        var_dump($value);
+        throw new \Exception('..');
+        $this->page->setFilterByAllService();
         throw new \Exception('..');
     }
 }
