@@ -48,7 +48,7 @@ $SearchTool = null;
 $search = '';
 if (isset($_POST['searchR']) && $_POST['searchR']) {
     $search = $_POST['searchR'];
-    $SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+    $SearchTool = " WHERE resource_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
 
 $aclCond = "";
@@ -58,7 +58,7 @@ if (!$oreon->user->admin && count($allowedResourceConf)) {
     } else {
         $aclCond = " WHERE ";
     }
-    $aclCond .= "resource_id IN (".implode(',', array_keys($allowedResourceConf)).") ";
+    $aclCond .= "resource_id IN (" . implode(',', array_keys($allowedResourceConf)) . ") ";
 }
 
 
@@ -96,10 +96,10 @@ $tpl->assign("headerMenu_options", _("Options"));
 $rq = "SELECT *
        FROM cfg_resource $SearchTool $aclCond
        ORDER BY resource_name
-       LIMIT ".$num * $limit.", ".$limit;
+       LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -112,25 +112,38 @@ $style = "one";
 $elemArr = array();
 for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
     preg_match("\$USER([0-9]*)\$", $resource["resource_name"], $tabResources);
-    $selectedElements = $form->addElement('checkbox', "select[".$resource['resource_id']."]");
-    $moptions  = "";
+    $selectedElements = $form->addElement('checkbox', "select[" . $resource['resource_id'] . "]");
+    $moptions = "";
     if ($resource["resource_activate"]) {
-        $moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>";
+        $moptions .= "<a href='main.php?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=u&limit=" .
+            $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
+            "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>";
+        $moptions .= "<a href='main.php?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=s&limit=" .
+            $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+            "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }
-    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$resource['resource_id']."]'></input>";
-    $elemArr[$i] = array(   "order" => $tabResources[1],
-                            "MenuClass"=>"list_".$style,
-                            "RowMenu_select"=>$selectedElements->toHtml(),
-                            "RowMenu_name"=>CentreonUtils::escapeSecure($resource["resource_name"]),
-                            "RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
-                            "RowMenu_values"=>substr($resource["resource_line"], 0, 40),
-                            "RowMenu_comment"=>CentreonUtils::escapeSecure(substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40)),
-                            "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
-                            "RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
-                            "RowMenu_badge" => $resource["resource_activate"] ? "service_ok" : "service_critical",
-                            "RowMenu_options"=>$moptions);
+    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
+        "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" " .
+        "maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
+        $resource['resource_id'] . "]' />";
+    $elemArr[$i] = array(
+        "order" => $tabResources[1],
+        "MenuClass" => "list_" . $style,
+        "RowMenu_select" => $selectedElements->toHtml(),
+        "RowMenu_name" => CentreonUtils::escapeSecure($resource["resource_name"]),
+        "RowMenu_link" => "?p=" . $p . "&o=c&resource_id=" . $resource['resource_id'],
+        "RowMenu_values" => substr($resource["resource_line"], 0, 40),
+        "RowMenu_comment" => CentreonUtils::escapeSecure(substr(html_entity_decode(
+            $resource["resource_comment"],
+            ENT_QUOTES,
+            "UTF-8"
+        ), 0, 40)),
+        "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
+        "RowMenu_status" => $resource["resource_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $resource["resource_activate"] ? "service_ok" : "service_critical",
+        "RowMenu_options" => $moptions
+    );
     $style != "two" ? $style = "two" : $style = "one";
 }
 
@@ -138,16 +151,16 @@ $flag = 1;
 while ($flag) {
     $flag = 0;
     foreach ($elemArr as $key => $value) {
-        $key1 = $key+1;
-        if (isset($elemArr[$key+1]) && $value["order"] > $elemArr[$key+1]["order"]) {
-            $swmapTab = $elemArr[$key+1];
-            $elemArr[$key+1] = $elemArr[$key];
+        $key1 = $key + 1;
+        if (isset($elemArr[$key + 1]) && $value["order"] > $elemArr[$key + 1]["order"]) {
+            $swmapTab = $elemArr[$key + 1];
+            $elemArr[$key + 1] = $elemArr[$key];
             $elemArr[$key] = $swmapTab;
             $flag = 1;
-        } elseif (!isset($elemArr[$key+1]) && isset($elemArr[$key-1]["order"])) {
-            if ($value["order"] < $elemArr[$key-1]["order"]) {
-                $swmapTab = $elemArr[$key-1];
-                $elemArr[$key-1] = $elemArr[$key];
+        } elseif (!isset($elemArr[$key + 1]) && isset($elemArr[$key - 1]["order"])) {
+            if ($value["order"] < $elemArr[$key - 1]["order"]) {
+                $swmapTab = $elemArr[$key - 1];
+                $elemArr[$key - 1] = $elemArr[$key];
                 $elemArr[$key] = $swmapTab;
                 $flag = 1;
             }
@@ -159,29 +172,41 @@ $tpl->assign("elemArr", $elemArr);
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+$tpl->assign(
+    'msg',
+    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+);
 
 /*
  * Toolbar select
  */
 ?>
-<script type="text/javascript">
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
-</SCRIPT>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </SCRIPT>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
-        'onchange'=>"javascript: " .
-                "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "");
-    $form->addElement('select', $option, null, array(null=>_("More actions"), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+        'onchange' => "javascript: " .
+            "if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
+            _("Do you confirm the duplication ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
+            _("Do you confirm the deletion ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            ""
+    );
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(null => _("More actions"), "m" => _("Duplicate"), "d" => _("Delete")),
+        $attrs1
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);

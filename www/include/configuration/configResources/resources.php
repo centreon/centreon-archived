@@ -40,50 +40,50 @@ if (!isset($oreon)) {
     exit();
 }
 
-    isset($_GET["resource_id"]) ? $resourceG = $_GET["resource_id"] : $resourceG = null;
-    isset($_POST["resource_id"]) ? $resourceP = $_POST["resource_id"] : $resourceP = null;
-    $resourceG ? $resource_id = $resourceG : $resource_id = $resourceP;
+isset($_GET["resource_id"]) ? $resourceG = $_GET["resource_id"] : $resourceG = null;
+isset($_POST["resource_id"]) ? $resourceP = $_POST["resource_id"] : $resourceP = null;
+$resourceG ? $resource_id = $resourceG : $resource_id = $resourceP;
 
-    isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-    isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-    $cG ? $select = $cG : $select = $cP;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
+$cG ? $select = $cG : $select = $cP;
 
-    isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-    isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-    $cG ? $dupNbr = $cG : $dupNbr = $cP;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
+$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 
-    /*
-	 * Pear library
-	 */
-    require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/advmultiselect.php';
-    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-    /*
-	 * Path to the configuration dir
-	 */
-    $path = "./include/configuration/configResources/";
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/configuration/configResources/";
 
-    /*
-	 * PHP functions
-	 */
-    require_once $path."DB-Func.php";
-    require_once "./include/common/common-Func.php";
+/*
+ * PHP functions
+ */
+require_once $path . "DB-Func.php";
+require_once "./include/common/common-Func.php";
 
-    /* Set the real page */
+/* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
-    $acl = $oreon->user->access;
-    $serverString = $acl->getPollerString();
-    $allowedResourceConf = array();
+$acl = $oreon->user->access;
+$serverString = $acl->getPollerString();
+$allowedResourceConf = array();
 if ($serverString != "''" && !empty($serverString)) {
     $sql = "SELECT resource_id
                 FROM cfg_resource_instance_relations
-                WHERE instance_id IN (".$serverString.")";
-        $res = $pearDB->query($sql);
+                WHERE instance_id IN (" . $serverString . ")";
+    $res = $pearDB->query($sql);
     while ($row = $res->fetchRow()) {
         $allowedResourceConf[$row['resource_id']] = true;
     }
@@ -94,49 +94,49 @@ switch ($o) {
         /*
          * Add a Resource
          */
-        require_once($path."formResources.php");
+        require_once($path . "formResources.php");
         break;
     case "w":
         /*
          * Watch a Resource
          */
-        require_once($path."formResources.php");
+        require_once($path . "formResources.php");
         break;
     case "c":
         /*
          * Modify a Resource
          */
-        require_once($path."formResources.php");
+        require_once($path . "formResources.php");
         break;
     case "s":
         /*
          * Activate a Resource
          */
         enableResourceInDB($resource_id);
-        require_once($path."listResources.php");
+        require_once($path . "listResources.php");
         break;
     case "u":
         /*
          * Desactivate a Resource
          */
         disableResourceInDB($resource_id);
-        require_once($path."listResources.php");
+        require_once($path . "listResources.php");
         break;
     case "m":
         /*
          * Duplicate n Resources
          */
         multipleResourceInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listResources.php");
+        require_once($path . "listResources.php");
         break;
     case "d":
         /*
          * Delete n Resources
          */
         deleteResourceInDB(isset($select) ? $select : array());
-        require_once($path."listResources.php");
+        require_once($path . "listResources.php");
         break;
     default:
-        require_once($path."listResources.php");
+        require_once($path . "listResources.php");
         break;
 }
