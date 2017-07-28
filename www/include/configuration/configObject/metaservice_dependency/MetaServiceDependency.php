@@ -58,7 +58,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 $path = "./include/configuration/configObject/metaservice_dependency/";
 
 #PHP functions
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -71,23 +71,23 @@ $metastr = $acl->getMetaServiceString();
 
 switch ($o) {
     case "a":
-        require_once($path."formMetaServiceDependency.php");
+        require_once($path . "formMetaServiceDependency.php");
         break; #Add a Meta Service
     case "w":
-        require_once($path."formMetaServiceDependency.php");
+        require_once($path . "formMetaServiceDependency.php");
         break; #Watch a Meta Service
     case "c":
-        require_once($path."formMetaServiceDependency.php");
+        require_once($path . "formMetaServiceDependency.php");
         break; #Modify a Meta Service
     case "m":
         multipleMetaServiceDependencyInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listMetaServiceDependency.php");
+        require_once($path . "listMetaServiceDependency.php");
         break; #Duplicate n Meta Services
     case "d":
         deleteMetaServiceDependencyInDB(isset($select) ? $select : array());
-        require_once($path."listMetaServiceDependency.php");
+        require_once($path . "listMetaServiceDependency.php");
         break; #Delete n Meta Service
     default:
-        require_once($path."listMetaServiceDependency.php");
+        require_once($path . "listMetaServiceDependency.php");
         break;
 }
