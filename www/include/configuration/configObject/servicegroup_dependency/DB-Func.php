@@ -51,7 +51,9 @@ function testServiceGroupDependencyExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('dep_id');
     }
-    $DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+    $query = "SELECT dep_name, dep_id FROM dependency WHERE dep_name = '" .
+        htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
+    $DBRESULT = $pearDB->query($query);
     $dep = $DBRESULT->fetchRow();
     #Modif case
     if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
@@ -87,10 +89,10 @@ function deleteServiceGroupDependencyInDB($dependencies = array())
 {
     global $pearDB, $oreon;
     foreach ($dependencies as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
+        $DBRESULT2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '" . $key . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
 
-        $DBRESULT = $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = '" . $key . "'");
         $oreon->CentreonLogAction->insertLog("servicegroup dependency", $key, $row['dep_name'], "d");
     }
 }
@@ -99,14 +101,16 @@ function multipleServiceGroupDependencyInDB($dependencies = array(), $nbrDup = a
 {
     foreach ($dependencies as $key => $value) {
         global $pearDB, $oreon;
-        $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["dep_id"] = '';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "dep_name" ? ($dep_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                $key2 == "dep_name" ? ($dep_name = $value2 = $value2 . "_" . $i) : null;
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "dep_id") {
                     $fields[$key2] = $value2;
                 }
@@ -115,27 +119,41 @@ function multipleServiceGroupDependencyInDB($dependencies = array(), $nbrDup = a
                 }
             }
             if (isset($dep_name) && testServiceGroupDependencyExistence($dep_name)) {
-                $val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
-                $DBRESULT = $pearDB->query($rq);
+                $val ? $rq = "INSERT INTO dependency VALUES (" . $val . ")" : $rq = null;
+                $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(dep_id)"])) {
-                    $DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$key."'");
+                    $query = "SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation " .
+                        "WHERE dependency_dep_id = '" . $key . "'";
+                    $DBRESULT = $pearDB->query($query);
                     $fields["dep_sgParents"] = "";
                     while ($sg = $DBRESULT->fetchRow()) {
-                        $DBRESULT2 = $pearDB->query("INSERT INTO dependency_servicegroupParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
+                        $query = "INSERT INTO dependency_servicegroupParent_relation " .
+                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $sg["servicegroup_sg_id"] . "')";
+                        $pearDB->query($query);
                         $fields["dep_sgParents"] .= $sg["servicegroup_sg_id"] . ",";
                     }
                     $fields["dep_sgParents"] = trim($fields["dep_sgParents"], ",");
                     $DBRESULT->closeCursor();
-                    $DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$key."'");
+                    $query = "SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation " .
+                        "WHERE dependency_dep_id = '" . $key . "'";
+                    $DBRESULT = $pearDB->query($query);
                     $fields["dep_sgChilds"] = "";
                     while ($sg = $DBRESULT->fetchRow()) {
-                        $DBRESULT2 = $pearDB->query("INSERT INTO dependency_servicegroupChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
+                        $query = "INSERT INTO dependency_servicegroupChild_relation " .
+                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $sg["servicegroup_sg_id"] . "')";
+                        $pearDB->query($query);
                         $fields["dep_sgChilds"] .= $sg["servicegroup_sg_id"] . ",";
                     }
                     $fields["dep_sgChilds"] = trim($fields["dep_sgChilds"], ",");
-                    $oreon->CentreonLogAction->insertLog("servicegroup dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
+                    $oreon->CentreonLogAction->insertLog(
+                        "servicegroup dependency",
+                        $maxId["MAX(dep_id)"],
+                        $dep_name,
+                        "a",
+                        $fields
+                    );
                     $DBRESULT->closeCursor();
                 }
             }
@@ -169,16 +187,29 @@ function insertServiceGroupDependency($ret = array())
         $ret = $form->getSubmitValues();
     }
     $rq = "INSERT INTO dependency ";
-    $rq .= "(dep_name, dep_description, inherits_parent, execution_failure_criteria, notification_failure_criteria, dep_comment) ";
+    $rq .= "(dep_name, dep_description, inherits_parent, execution_failure_criteria, " .
+        "notification_failure_criteria, dep_comment) ";
     $rq .= "VALUES (";
-    isset($ret["dep_name"]) && $ret["dep_name"] != null ? $rq .= "'".htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-    isset($ret["dep_description"]) && $ret["dep_description"] != null ? $rq .= "'".htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-    isset($ret["inherits_parent"]["inherits_parent"]) && $ret["inherits_parent"]["inherits_parent"] != null ? $rq .= "'".$ret["inherits_parent"]["inherits_parent"]."', " : $rq .= "NULL, ";
-    isset($ret["execution_failure_criteria"]) && $ret["execution_failure_criteria"] != null ? $rq .= "'".implode(",", array_keys($ret["execution_failure_criteria"]))."', " : $rq .= "NULL, ";
-    isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != null ? $rq .= "'".implode(",", array_keys($ret["notification_failure_criteria"]))."', " : $rq .= "NULL, ";
-    isset($ret["dep_comment"]) && $ret["dep_comment"] != null ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
+    isset($ret["dep_name"]) && $ret["dep_name"] != null
+        ? $rq .= "'" . htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["dep_description"]) && $ret["dep_description"] != null
+        ? $rq .= "'" . htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["inherits_parent"]["inherits_parent"]) && $ret["inherits_parent"]["inherits_parent"] != null
+        ? $rq .= "'" . $ret["inherits_parent"]["inherits_parent"] . "', "
+        : $rq .= "NULL, ";
+    isset($ret["execution_failure_criteria"]) && $ret["execution_failure_criteria"] != null
+        ? $rq .= "'" . implode(",", array_keys($ret["execution_failure_criteria"])) . "', "
+        : $rq .= "NULL, ";
+    isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != null
+        ? $rq .= "'" . implode(",", array_keys($ret["notification_failure_criteria"])) . "', "
+        : $rq .= "NULL, ";
+    isset($ret["dep_comment"]) && $ret["dep_comment"] != null
+        ? $rq .= "'" . htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8") . "' "
+        : $rq .= "NULL ";
     $rq .= ")";
-    $DBRESULT = $pearDB->query($rq);
+    $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
     $dep_id = $DBRESULT->fetchRow();
 
@@ -196,7 +227,13 @@ function insertServiceGroupDependency($ret = array())
     if (isset($ret["dep_sgChilds"])) {
         $fields["dep_sgChilds"] = implode(",", $ret["dep_sgChilds"]);
     }
-    $oreon->CentreonLogAction->insertLog("servicegroup dependency", $dep_id["MAX(dep_id)"], htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
+    $oreon->CentreonLogAction->insertLog(
+        "servicegroup dependency",
+        $dep_id["MAX(dep_id)"],
+        htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"),
+        "a",
+        $fields
+    );
 
     return ($dep_id["MAX(dep_id)"]);
 }
@@ -212,19 +249,31 @@ function updateServiceGroupDependency($dep_id = null)
     $ret = $form->getSubmitValues();
     $rq = "UPDATE dependency SET ";
     $rq .= "dep_name = ";
-    isset($ret["dep_name"]) && $ret["dep_name"] != null ? $rq .= "'".htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["dep_name"]) && $ret["dep_name"] != null
+        ? $rq .= "'" . htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
     $rq .= "dep_description = ";
-    isset($ret["dep_description"]) && $ret["dep_description"] != null ? $rq .= "'".htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["dep_description"]) && $ret["dep_description"] != null
+        ? $rq .= "'" . htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
     $rq .= "inherits_parent = ";
-    isset($ret["inherits_parent"]["inherits_parent"]) && $ret["inherits_parent"]["inherits_parent"] != null ? $rq .= "'".$ret["inherits_parent"]["inherits_parent"]."', " : $rq .= "NULL, ";
+    isset($ret["inherits_parent"]["inherits_parent"]) && $ret["inherits_parent"]["inherits_parent"] != null
+        ? $rq .= "'" . $ret["inherits_parent"]["inherits_parent"] . "', "
+        : $rq .= "NULL, ";
     $rq .= "execution_failure_criteria = ";
-    isset($ret["execution_failure_criteria"]) && $ret["execution_failure_criteria"] != null ? $rq .= "'".implode(",", array_keys($ret["execution_failure_criteria"]))."', " : $rq .= "NULL, ";
+    isset($ret["execution_failure_criteria"]) && $ret["execution_failure_criteria"] != null
+        ? $rq .= "'" . implode(",", array_keys($ret["execution_failure_criteria"])) . "', "
+        : $rq .= "NULL, ";
     $rq .= "notification_failure_criteria = ";
-    isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != null ? $rq .= "'".implode(",", array_keys($ret["notification_failure_criteria"]))."', " : $rq .= "NULL, ";
+    isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != null
+        ? $rq .= "'" . implode(",", array_keys($ret["notification_failure_criteria"])) . "', "
+        : $rq .= "NULL, ";
     $rq .= "dep_comment = ";
-    isset($ret["dep_comment"]) && $ret["dep_comment"] != null ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
-    $rq .= "WHERE dep_id = '".$dep_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    isset($ret["dep_comment"]) && $ret["dep_comment"] != null
+        ? $rq .= "'" . htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8") . "' "
+        : $rq .= "NULL ";
+    $rq .= "WHERE dep_id = '" . $dep_id . "'";
+    $pearDB->query($rq);
 
     $fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
     $fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
@@ -240,7 +289,13 @@ function updateServiceGroupDependency($dep_id = null)
     if (isset($ret["dep_sgChilds"])) {
         $fields["dep_sgChilds"] = implode(",", $ret["dep_sgChilds"]);
     }
-    $oreon->CentreonLogAction->insertLog("servicegroup dependency", $dep_id, htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
+    $oreon->CentreonLogAction->insertLog(
+        "servicegroup dependency",
+        $dep_id,
+        htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"),
+        "c",
+        $fields
+    );
 }
 
 function updateServiceGroupDependencyServiceGroupParents($dep_id = null, $ret = array())
@@ -251,7 +306,7 @@ function updateServiceGroupDependencyServiceGroupParents($dep_id = null, $ret = 
     global $form;
     global $pearDB;
     $rq = "DELETE FROM dependency_servicegroupParent_relation ";
-    $rq .= "WHERE dependency_dep_id = '".$dep_id."'";
+    $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);
     if (isset($ret["dep_sgParents"])) {
         $ret = $ret["dep_sgParents"];
@@ -262,7 +317,7 @@ function updateServiceGroupDependencyServiceGroupParents($dep_id = null, $ret = 
         $rq = "INSERT INTO dependency_servicegroupParent_relation ";
         $rq .= "(dependency_dep_id, servicegroup_sg_id) ";
         $rq .= "VALUES ";
-        $rq .= "('".$dep_id."', '".$ret[$i]."')";
+        $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
         $DBRESULT = $pearDB->query($rq);
     }
 }
@@ -275,7 +330,7 @@ function updateServiceGroupDependencyServiceGroupChilds($dep_id = null, $ret = a
     global $form;
     global $pearDB;
     $rq = "DELETE FROM dependency_servicegroupChild_relation ";
-    $rq .= "WHERE dependency_dep_id = '".$dep_id."'";
+    $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);
     if (isset($ret["dep_sgChilds"])) {
         $ret = $ret["dep_sgChilds"];
@@ -286,7 +341,7 @@ function updateServiceGroupDependencyServiceGroupChilds($dep_id = null, $ret = a
         $rq = "INSERT INTO dependency_servicegroupChild_relation ";
         $rq .= "(dependency_dep_id, servicegroup_sg_id) ";
         $rq .= "VALUES ";
-        $rq .= "('".$dep_id."', '".$ret[$i]."')";
+        $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
         $DBRESULT = $pearDB->query($rq);
     }
 }

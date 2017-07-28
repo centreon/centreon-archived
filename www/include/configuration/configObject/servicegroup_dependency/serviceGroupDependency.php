@@ -36,7 +36,7 @@
 if (!isset($centreon)) {
     exit();
 }
-    
+
 isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = null;
 isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = null;
 $cG ? $dep_id = $cG : $dep_id = $cP;
@@ -64,7 +64,7 @@ $path = "./include/configuration/configObject/servicegroup_dependency/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -75,26 +75,26 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 $acl = $oreon->user->access;
 $sgs = $acl->getServiceGroupAclConf(null, 'broker');
 $sgstring = CentreonUtils::toStringWithQuotes($sgs);
-    
+
 switch ($o) {
     case "a":
-        require_once($path."formServiceGroupDependency.php");
+        require_once($path . "formServiceGroupDependency.php");
         break; #Add a Dependency
     case "w":
-        require_once($path."formServiceGroupDependency.php");
+        require_once($path . "formServiceGroupDependency.php");
         break; #Watch a Dependency
     case "c":
-        require_once($path."formServiceGroupDependency.php");
+        require_once($path . "formServiceGroupDependency.php");
         break; #Modify a Dependency
     case "m":
         multipleServiceGroupDependencyInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listServiceGroupDependency.php");
+        require_once($path . "listServiceGroupDependency.php");
         break; #Duplicate n Dependencys
     case "d":
         deleteServiceGroupDependencyInDB(isset($select) ? $select : array());
-        require_once($path."listServiceGroupDependency.php");
+        require_once($path . "listServiceGroupDependency.php");
         break; #Delete n Dependency
     default:
-        require_once($path."listServiceGroupDependency.php");
+        require_once($path . "listServiceGroupDependency.php");
         break;
 }
