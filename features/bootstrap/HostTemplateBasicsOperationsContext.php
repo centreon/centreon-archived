@@ -3,33 +3,11 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\HostTemplateConfigurationPage;
 use Centreon\Test\Behat\Configuration\HostTemplateConfigurationListingPage;
-use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
-use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
-use Centreon\Test\Behat\Configuration\ContactCategoryConfigurationPage;
-use Centreon\Test\Behat\Configuration\HostConfigurationPage;
 use Centreon\Test\Behat\Configuration\HostCategoryConfigurationPage;
-use Centreon\Test\Behat\Configuration\ServiceTemplateConfigurationPage;
 
 class HostTemplateBasicsOperationsContext extends CentreonContext
 {
     protected $currentPage;
-
-    protected $contact = array(
-        'name' => 'contactName',
-        'alias' => 'contactAlias',
-        'email' => 'contac@localhost'
-    );
-
-    protected $contactGroup = array(
-        'name' => 'contactGroupName',
-        'alias' => 'contactGroupAlias'
-    );
-
-    protected $host = array(
-        'name' => 'hostName',
-        'alias' => 'hostAlias',
-        'address' => 'host@localhost'
-    );
 
     protected $hostCategory1 = array(
         'name' => 'hostCategory1Name',
@@ -45,21 +23,6 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'severity' => 1,
         'severity_level' => 13,
         'severity_icon' => '       centreon (png)'
-    );
-
-    protected $hostTemplate2 = array(
-        'name' => 'hostTemplate2Name',
-        'alias' => 'hostTemplate2Alias'
-    );
-
-    protected $serviceTemplate1 = array(
-        'description' => 'serviceTemplate1Description',
-        'alias' => 'serviceTemplate1Alias'
-    );
-
-    protected $serviceTemplate2 = array(
-        'description' => 'serviceTemplate2Description',
-        'alias' => 'serviceTemplate2Alias'
     );
 
     protected $initialProperties = array(
@@ -98,7 +61,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'notification_period' => 'none',
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
-        'service_templates' => 'serviceTemplate1Description',
+        'service_templates' => 'generic-service',
         'parent_host_categories' => 'hostCategory2Name',
         'obsess_over_host' => 2,
         'acknowledgement_timeout' => 2,
@@ -164,7 +127,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'notification_period' => 'none',
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
-        'service_templates' => 'serviceTemplate1Description',
+        'service_templates' => 'generic-service',
         'parent_host_categories' => array(
             'hostCategory1Name',
             'hostCategory2Name'
@@ -205,7 +168,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'snmp_version' => '3',
         'location' => 'Europe/Paris',
         'templates' => array(
-            'hostTemplate2Name'
+            'Printers'
         ),
         'check_command' => 'check_https',
         'command_arguments' => 'hostTemplateCommandArgumentChanged',
@@ -220,9 +183,9 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'passive_checks_enabled' => 1,
         'notifications_enabled' => 0,
         'contact_additive_inheritance' => 0,
-        'contacts' => 'contactName',
+        'contacts' => 'User',
         'contact_group_additive_inheritance' => 1,
-        'contact_groups' => 'contactGroupName',
+        'contact_groups' => 'Guest',
         'notify_on_down' => 0,
         'notify_on_unreachable' => 0,
         'notify_on_recovery' => 0,
@@ -233,7 +196,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'notification_period' => 'workhours',
         'first_notification_delay' => 7,
         'recovery_notification_delay' => 8,
-        'service_templates' => 'serviceTemplate2Description',
+        'service_templates' => 'Ping-LAN',
         'parent_host_categories' => 'hostCategory1Name',
         'obsess_over_host' => 1,
         'acknowledgement_timeout' => 0,
@@ -271,7 +234,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'snmp_version' => '3',
         'location' => 'Europe/Paris',
         'templates' => array(
-            'hostTemplate2Name'
+            'Printers'
         ),
         'check_command' => 'check_https',
         'command_arguments' => 'hostTemplateCommandArgumentChanged',
@@ -287,9 +250,9 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'passive_checks_enabled' => 1,
         'notifications_enabled' => 0,
         'contact_additive_inheritance' => 0,
-        'contacts' => 'contactName',
+        'contacts' => 'User',
         'contact_group_additive_inheritance' => 1,
-        'contact_groups' => 'contactGroupName',
+        'contact_groups' => 'Guest',
         'notify_on_down' => 0,
         'notify_on_unreachable' => 0,
         'notify_on_recovery' => 0,
@@ -300,7 +263,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'notification_period' => 'workhours',
         'first_notification_delay' => 7,
         'recovery_notification_delay' => 8,
-        'service_templates' => 'serviceTemplate2Description',
+        'service_templates' => 'Ping-LAN',
         'parent_host_categories' => array(
             'hostCategory1Name',
             'hostCategory2Name'
@@ -338,12 +301,6 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
      */
     public function aHostTemplateIsConfigured()
     {
-        $this->currentPage = new ContactConfigurationPage($this);
-        $this->currentPage->setProperties($this->contact);
-        $this->currentPage->save();
-        $this->currentPage = new ContactGroupsConfigurationPage($this);
-        $this->currentPage->setProperties($this->contactGroup);
-        $this->currentPage->save();
         $this->currentPage = new HostCategoryConfigurationPage($this);
         $this->currentPage->setProperties($this->hostCategory1);
         $this->currentPage->save();
@@ -352,12 +309,6 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         $this->currentPage->save();
         $this->currentPage = new HostTemplateConfigurationPage($this);
         $this->currentPage->setProperties($this->hostTemplate2);
-        $this->currentPage->save();
-        $this->currentPage = new ServiceTemplateConfigurationPage($this);
-        $this->currentPage->setProperties($this->serviceTemplate1);
-        $this->currentPage->save();
-        $this->currentPage = new ServiceTemplateConfigurationPage($this);
-        $this->currentPage->setProperties($this->serviceTemplate2);
         $this->currentPage->save();
         $this->currentPage = new HostTemplateConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
