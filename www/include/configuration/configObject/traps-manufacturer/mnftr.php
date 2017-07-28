@@ -57,7 +57,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 $path = "./include/configuration/configObject/traps-manufacturer/";
 
 #PHP functions
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -67,23 +67,23 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 
 switch ($o) {
     case "a":
-        require_once($path."formMnftr.php");
+        require_once($path . "formMnftr.php");
         break; #Add a Trap
     case "w":
-        require_once($path."formMnftr.php");
+        require_once($path . "formMnftr.php");
         break; #Watch a Trap
     case "c":
-        require_once($path."formMnftr.php");
+        require_once($path . "formMnftr.php");
         break; #Modify a Trap
     case "m":
         multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listMnftr.php");
+        require_once($path . "listMnftr.php");
         break; #Duplicate n Traps
     case "d":
         deleteMnftrInDB(isset($select) ? $select : array());
-        require_once($path."listMnftr.php");
+        require_once($path . "listMnftr.php");
         break; #Delete n Traps
     default:
-        require_once($path."listMnftr.php");
+        require_once($path . "listMnftr.php");
         break;
 }
