@@ -3,39 +3,48 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 use Centreon\Test\Behat\Configuration\ServiceConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceCategoryConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceGroupConfigurationPage;
 
 class ServiceConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $contact1;
+    protected $host = array(
+        'name' => 'hostName',
+        'alias' => 'hostAlias'
+    );
 
-    protected $contact2;
+    protected $serviceCategory1 = array(
+        'name' => 'serviceCategory1Name',
+        'description' => 'serviceCategory1Description',
+        'severity' => 1,
+        'level' => 3,
+        'icon' => '       centreon (png)'
+    );
 
-    protected $contactGroup1;
+    protected $serviceCategory2 = array(
+        'name' => 'serviceCategory2Name',
+        'description' => 'serviceCategory2Description',
+        'severity' => 1,
+        'level' => 2,
+        'icon' => '       centreon (png)'
+    );
 
-    protected $contactGroup2;
+    protected $serviceGroup1 = array(
+        'name' => 'serviceGroup1Name',
+        'description' => 'serviceGroup1Description'
+    );
 
-    protected $host1;
-
-    protected $host2;
-
-    protected $serviceCategory1;
-
-    protected $serviceCategory2;
-
-    protected $serviceGroup1;
-
-    protected $serviceGroup2;
-
-    protected $serviceTemplate1;
-
-    protected $serviceTemplate2;
+    protected $serviceGroup2 = array(
+        'name' => 'serviceGroup2Name',
+        'description' => 'serviceGroup2Description'
+    );
 
     protected $initialProperties = array(
-        // General tab
-        'hosts' => 'host1Name',
-        'descritpion' => 'serviceDescription',
+        'hosts' => 'Centreon-Server',
+        'description' => 'serviceDescription',
         'templates' => 'serviceTemplate1Name',
         'check_command' => 'check_http',
         'macros' => array(
@@ -48,12 +57,11 @@ class ServiceConfigurationContext extends CentreonContext
         'active_check_interval' => 2,
         'passive_check_interval' => 1,
         'is_volatile' => 0,
-        // Notifications tab
         'notifications_enabled' => 2,
         'inherits_contact_groups' => 0,
-        'contacts' => 'contact2Name',
+        'contacts' => 'Guest',
         'contact_additive_inheritance' => 1,
-        'contact_groups' => 'contactGroup1Name',
+        'contact_groups' => 'Supervisors',
         'contact_group_additive_inheritance' => 0,
         'notification_interval' => 23,
         'notify_on_none' => 1,
@@ -65,12 +73,10 @@ class ServiceConfigurationContext extends CentreonContext
         'notify_on_downtime_scheduled' => 0,
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
-        // Relations tab
         'service_groups' => 'serviceGroup1Name',
         'trap_relations' => array(
             'Generic' => 'Generic - trapName'
         ),
-        // Data tab
         'obsess_over_service' => 2,
         'acknowledgement_timeout' => 34,
         'check_freshness' => 1,
@@ -87,9 +93,81 @@ class ServiceConfigurationContext extends CentreonContext
         'event_handler_enabled' => 0,
         'event_handler' => 'check_https',
         'event_handler_arguments' => 'eventHandlerArgument',
-        // Extended graph
         'graph_template' => 'CPU',
-        'service_categories' 
+        'service_categories' => 'Disk',
+        'url' => 'serviceUrl',
+        'notes' => 'serviceNotes',
+        'action_url' => 'serviceActionUrl',
+        'icon' => '       centreon (png)',
+        'alt_icon' => 'serviceAltIcon',
+        'severity' => 'serviceCategory2Name (2)',
+        'geo_coordinates' => 'Paris',
+        'status' => 1,
+        'comments' => 'serviceComments' 
+    );
+
+    protected $updatedProperties = array(
+        'hosts' => 'hostName',
+        'description' => 'serviceDescriptionChanged',
+        'templates' => 'serviceTemplate2Name',
+        'check_command' => 'check_https',
+        'macros' => array( 
+            'MACRONAMECHANGED' => 11
+        ),
+        'check_period' => 'none',
+        'max_check_attempts' => 32,
+        'normal_check_interval' => 81,
+        'retry_check_interval' => 12,
+        'active_check_interval' => 0,
+        'passive_check_interval' => 2,
+        'is_volatile' => 1,
+        'notifications_enabled' => 0,
+        'inherits_contact_groups' => 1,
+        'contacts' => 'User',
+        'contact_additive_inheritance' => 0,
+        'contact_groups' => 'Guest',
+        'contact_group_additive_inheritance' => 1,
+        'notification_interval' => 14,
+        'notify_on_none' => 0,
+        'notify_on_warning' => 1,
+        'notify_on_unknown' => 1,
+        'notify_on_critical' => 1,
+        'notify_on_recovery' => 1,
+        'notify_on_flapping' => 1,
+        'notify_on_downtime_scheduled' => 1,
+        'first_notification_delay' => 8,
+        'recovery_notification_delay' => 9,
+        'service_groups' => 'serviceGroup2Name',
+        'trap_relations' => array(
+            'HP Networks' => 'snTrapL4GslbRemoteControllerUp'
+        ),
+        'obsess_over_service' => 0,
+        'acknowledgement_timeout' => 28,
+        'check_freshness' => 2,
+        'freshness_threshold' => 31,
+        'flap_detection_enabled' => 1,
+        'low_flap_threshold' => 42,
+        'high_flap_threshold' => 79,
+        'retain_status_information' => 1,
+        'retain_non_status_information' => 0,
+        'stalking_on_ok' => 0,
+        'stalking_on_warning' => 0,
+        'stalking_on_unknown' => 1,
+        'stalking_on_critical' => 1,
+        'event_handler_enabled' => 1,
+        'event_handler' => 'check_http',
+        'event_handler_arguments' => 'eventHandlerArgumentChanged',
+        'graph_template' => 'Storage',
+        'service_categories' => 'Memory',
+        'url' => 'serviceUrlChanged',
+        'notes' => 'serviceNotesChanged',
+        'action_url' => 'serviceActionUrlChanged',
+        'icon' => '',
+        'alt_icon' => 'Empty',
+        'severity' => 'serviceCategory1Name (3)',
+        'geo_coordinates' => '1.2.3.4',
+        'status' => 1,
+        'comments' => 'serviceCommentsChanged'
     );
 
     /**
@@ -97,6 +175,24 @@ class ServiceConfigurationContext extends CentreonContext
      */
     public function aServiceIsConfigured()
     {
+        $this->currentPage = new HostConfigurationPage($this);
+        $this->currentPage->setProperties($this->host);
+        $this->currentPage->save();
+        $this->currentPage = new ServiceCategoryConfigurationPage($this);
+        $this->currentPage->setProperties($this->serviceCategory1);
+        $this->currentPage->save();
+        $this->currentPage = new ServiceCategoryConfigurationPage($this);
+        $this->currentPage->setProperties($this->serviceCategory2);
+        $this->currentPage->save();
+        $this->currentPage = new ServiceGroupConfigurationPage($this);
+        $this->currentPage->setProperties($this->serviceGroup1);
+        $this->currentPage->save();
+        $this->currentPage = new ServiceGroupConfigurationPage($this);
+        $this->currentPage->setProperties($this->serviceGroup2);
+        $this->currentPage->save();
+        $this->currentPage = new ServiceConfigurationPage($this);
+        $this->currentPage->setProperties($this->initialProperties);
+        $this->currentPage->save();
     }
 
     /**
@@ -104,6 +200,10 @@ class ServiceConfigurationContext extends CentreonContext
      */
     public function iChangeThePropertiesOfAService()
     {
+        $this->currentPage = new ServiceConfigurationListingPage($this);
+        $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
+        $this->currentPage->setProperties($this->updatedProperties);
+        $this->currentPage->save();
     }
 
     /**
@@ -111,6 +211,27 @@ class ServiceConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
+        $this->tableau = array();
+        try {
+            $this->spin(
+                function ($context) {
+                    $this->currentPage = new ServiceConfigurationListingPage($this);
+                    $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
+                    $object = $this->currentPage->getProperties();
+                    foreach ($this->updatedProperties as $key => $value) {
+                        if ($value != $object[$key]) {
+                            $this->tableau[] = $key;
+                        }
+                    }
+                    return count($this->tableau) == 0;
+                },
+                "Some properties are not being updated : ",
+                5
+            );
+        } catch (\Exception $e) {
+            $this->tableau = array_unique($this->tableau);
+            throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
+        }
     }
 
     /**
