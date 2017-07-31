@@ -11,10 +11,10 @@ Feature: Edit a service
         When I change the properties of a service
         Then the properties are updated
 
-#    Scenario: Duplicate one existing service
-#        When I duplicate a service
-#        Then the new service has the same properties
+    Scenario: Duplicate one existing service
+        When I duplicate a service
+        Then the new service has the same properties
 
-#    Scenario: Delete one existing service
-#        When I delete a service
-#        Then the deleted service is not displayed in the service list
+    Scenario: Delete one existing service
+        When I delete a service
+        Then the deleted service is not displayed in the service list
