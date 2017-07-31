@@ -82,6 +82,10 @@ output_log() {
 ###
 if [ -n "$process" ] ; then
 	datadir=$(echo "$process" | awk '{ for (i = 1; i < NF; i++) { if (match($i, "--datadir")) { print $i } } }' | awk -F\= '{ print $2 }')
+	### New version CentOS7/MariaDB : datadir not present in ps
+	if [ -z "$datadir" ] ; then
+                datadir=$(mysqld --verbose --help 2> /dev/null | egrep "^datadir" | awk -F' ' '{print $2}')
+        fi
 	started=1
 fi
 if [ -z "$datadir" ] ; then
