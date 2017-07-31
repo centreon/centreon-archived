@@ -66,25 +66,25 @@ class CentreonSettings extends CentreonObject
             'centstorage' => array('values' => array('0', '1')),
             'enable_perfdata_sync' => array('values' => array('0', '1')),
             'enable_logs_sync' => array('values' => array('0', '1')),
-            'gmt' => array('format' => ISSTRING,
+            'gmt' => array('format' => self::ISSTRING,
                 'getterFormatMethod' => 'getTimezonenameFromId',
                 'setterFormatMethod' => 'getTimezoneIdFromName'
             ),
-            'mailer_path_bin' => array('format' => ISSTRING),
-            'snmptt_unknowntrap_log_file' => array('format' => ISSTRING),
-            'snmpttconvertmib_path_bin' => array('format' => ISSTRING),
-            'perl_library_path' => array('format' => ISSTRING),
-            'rrdtool_path_bin' => array('format' => ISSTRING),
-            'debug_path' => array('format' => ISSTRING),
+            'mailer_path_bin' => array('format' => self::ISSTRING),
+            'snmptt_unknowntrap_log_file' => array('format' => self::ISSTRING),
+            'snmpttconvertmib_path_bin' => array('format' => self::ISSTRING),
+            'perl_library_path' => array('format' => self::ISSTRING),
+            'rrdtool_path_bin' => array('format' => self::ISSTRING),
+            'debug_path' => array('format' => self::ISSTRING),
             'debug_auth' => array('values' => array('0', '1')),
             'debug_nagios_import' => array('values' => array('0', '1')),
             'debug_rrdtool' => array('values' => array('0', '1')),
             'debug_ldap_import' => array('values' => array('0', '1')),
             'enable_autologin' => array('values' => array('0', '1')),
-            'interval_length' => array('format' => ISNUM),
+            'interval_length' => array('format' => self::ISNUM),
             'enable_gmt' => array('values' => array('0', '1')),
-            'nagios_path_img'  => array('format' => ISSTRING),
-            'broker_correlator_script' => array('format' => ISSTRING),
+            'nagios_path_img'  => array('format' => self::ISSTRING),
+            'broker_correlator_script' => array('format' => self::ISSTRING),
              );
     }
 
@@ -163,9 +163,9 @@ class CentreonSettings extends CentreonObject
         }
 
         if (isset($this->authorizedOptions[$key]['format'])) {
-            if ($this->authorizedOptions[$key]['format'] == ISNUM && !is_numeric($value)) {
+            if ($this->authorizedOptions[$key]['format'] == self::ISNUM && !is_numeric($value)) {
                 throw new CentreonClapiException(self::VALUENOTALLOWED);
-            } elseif (is_array($this->authorizedOptions[$key]['format']) == ISSTRING && !is_string($value)) {
+            } elseif (is_array($this->authorizedOptions[$key]['format']) == self::ISSTRING && !is_string($value)) {
                 throw new CentreonClapiException(self::VALUENOTALLOWED);
             }
         }
