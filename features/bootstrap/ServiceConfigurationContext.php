@@ -196,9 +196,7 @@ class ServiceConfigurationContext extends CentreonContext
         'first_notification_delay' => 8,
         'recovery_notification_delay' => 9,
         'service_groups' => 'serviceGroup2Name',
-        'trap_relations' => array(
-            'HP - snTrapL4GslbRemoteControllerUp'
-        ),
+        'trap_relations' => 'HP - snTrapL4GslbRemoteControllerUp',
         'obsess_over_service' => 0,
         'acknowledgement_timeout' => 28,
         'check_freshness' => 2,
