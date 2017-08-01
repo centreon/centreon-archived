@@ -10,14 +10,14 @@ class NonAdminContactCreationContext extends CentreonContext
     private $duplicatedAlias;
     private $currentPage;
 
-    private $initialProperties = (array(
+    private $initialProperties = array(
         'name' => 'contactName',
         'alias' => 'contactAlias',
         'email' => 'contact@localhost',
         'password' => 'contactpwd',
         'password2' => 'contactpwd',
         'admin' => 1
-    ));
+    );
 
     public function __construct()
     {
