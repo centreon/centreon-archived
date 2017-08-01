@@ -11,7 +11,7 @@ class ServiceSubmitResultContext extends CentreonContext
     protected $page;
     protected $hostname = 'passiveHost';
     protected $hostservice = 'PassiveService';
-    protected $checkout = 'Centreon test result';
+    protected $checkoutput = 'Centreon test result';
 
     /**
      * @Given one passive service has been configured using arguments status and output exists
@@ -56,7 +56,7 @@ class ServiceSubmitResultContext extends CentreonContext
      */
     public function iSubmitSomeResultToThisService()
     {
-        $this->submitServiceResult($this->hostname, $this->hostservice, 2, $this->checkout);
+        $this->submitServiceResult($this->hostname, $this->hostservice, 2, $this->checkoutput);
     }
 
     /**
@@ -65,8 +65,8 @@ class ServiceSubmitResultContext extends CentreonContext
     public function theValuesAreSetAsWantedInMonitoringStatusDetailsPage()
     {
         $this->page = new MonitoringServicesPage($this);
-        $result = $this->page->getOnePropertyByHostAndService($this->hostname, $this->hostservice, 'status_information');
-        if ($result != $this->checkout) {
+        $result = $this->page->getPropertyFromAHostAndService($this->hostname, $this->hostservice, 'status_information');
+        if ($result != $this->checkoutput) {
             throw new Exception('The result submitted is not set as wanted');
         }
     }
