@@ -263,3 +263,8 @@ default:
       paths: [ %paths.base%/features/VirtualMetricHandle.feature ]
       contexts:
       - VirtualMetricHandleContext
+
+    service_category_configuration:
+      paths: [ %paths.base%/features/ServiceCategoryConfiguration.feature ]
+      contexts:
+      - ServiceCategoryConfigurationContext
