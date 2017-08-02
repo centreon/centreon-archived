@@ -278,15 +278,8 @@ class CentreonHostGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id = null, $filter_name = null)
+    public function export($filters = null)
     {
-        $filters = array();
-        if (!is_null($filter_id) && $filter_id !== 0) {
-            $filters['hg_id'] = $filter_id;
-        }
-        if (!is_null($filter_name)) {
-            $filters['hg_name'] = $filter_name;
-        }
         parent::export($filters);
 
         $relObj = new \Centreon_Object_Relation_Host_Group_Host();

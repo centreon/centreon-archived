@@ -320,12 +320,8 @@ class CentreonTrap extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id = null, $filter_name = null)
+    public function export($filters = null)
     {
-        $filters = null;
-        if (!is_null($filter_id)) {
-            $filters['traps_id'] = $filter_id;
-        }
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";

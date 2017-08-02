@@ -920,12 +920,10 @@ class CentreonHostGroupService extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id = null, $filter_name = null)
+    public function export($filters=null)
     {
-        $filters = array("service_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters['hg_id'] = $filter_id;
-        }
+        $filters["service_register"] = $this->register;
+
         $hostRel = new \Centreon_Object_Relation_Host_Group_Service();
         $elements = $hostRel->getMergedParameters(
             array("hg_name"),

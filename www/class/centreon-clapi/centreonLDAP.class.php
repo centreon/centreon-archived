@@ -375,16 +375,6 @@ class CentreonLDAP extends CentreonObject
                 . 'enable' . $this->delim
                 . $ldap['ar_enable'] . $this->delim . "\n";
 
-            $filters = array('`ar_id`' => $ldap['ar_id']);
-            $ldapConfigurationList = $configurationLdapObj->getList('*', -1, 0, null, null, $filters);
-
-            foreach ($ldapConfigurationList as $configuration) {
-                echo $this->action . $this->delim . "SETPARAM" . $this->delim
-                    . $ldap['ar_name'] . $this->delim
-                    . $configuration['ari_name'] . $this->delim
-                    . $configuration['ari_value'] . $this->delim . "\n";
-
-            }
 
             $filters = array('`auth_ressource_id`' => $ldap['ar_id']);
             $ldapServerList = $serverLdapObj->getList('*', -1, 0, null, null, $filters);
@@ -396,6 +386,27 @@ class CentreonLDAP extends CentreonObject
                     . $server['host_port'] . $this->delim
                     . $server['use_ssl'] . $this->delim
                     . $server['use_tls'] . $this->delim . "\n";
+            }
+
+
+            $filters = array('`ar_id`' => $ldap['ar_id']);
+            $ldapConfigurationList = $configurationLdapObj->getList('*', -1, 0, null, null, $filters);
+
+            foreach ($ldapConfigurationList as $configuration) {
+                if ($configuration['ari_name'] != 'ldap_dns_use_ssl' &&
+                    $configuration['ari_name'] != 'ldap_dns_use_tls'
+                ) {
+                    if ($configuration['ari_name'] == 'ldap_contact_tmpl') {
+                        $contactObj = new \Centreon_Object_Contact();
+                        $contactName = $contactObj->getParameters($configuration['ari_value'], 'contact_name');
+                        $configuration['ari_value'] = $contactName['contact_name'];
+                    }
+
+                    echo $this->action . $this->delim . "SETPARAM" . $this->delim
+                        . $ldap['ar_name'] . $this->delim
+                        . $configuration['ari_name'] . $this->delim
+                        . $configuration['ari_value'] . $this->delim . "\n";
+                }
             }
         }
     }

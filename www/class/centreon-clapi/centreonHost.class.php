@@ -895,12 +895,9 @@ class CentreonHost extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id = null, $filter_name = null)
+    public function export($filters = null)
     {
-        $filters = array("host_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters['host_id'] = $filter_id;
-        }
+        $filters["host_register"] = $this->register;
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         $extendedObj = new \Centreon_Object_Host_Extended();
         $commandObj = new \Centreon_Object_Command();
@@ -955,7 +952,7 @@ class CentreonHost extends CentreonObject
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            if (!is_null($filter_id) && !is_null($action_tmp)) {
+                            if (!is_null($filters['host_id']) && !is_null($action_tmp)) {
                                 $this->api->export_filter($action_tmp, $tmp_id, $value);
                             }
                         }
@@ -1015,8 +1012,8 @@ class CentreonHost extends CentreonObject
         }
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Host();
         $filters_cgRel = array("host_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters_cgRel['host_id'] = $filter_id;
+        if (!is_null($filters['host_id'])) {
+            $filters_cgRel['host_id'] = $filters['host_id'];
         }
         $elements = $cgRel->getMergedParameters(
             array("cg_name", "cg_id"),
@@ -1037,8 +1034,8 @@ class CentreonHost extends CentreonObject
         }
         $contactRel = new \Centreon_Object_Relation_Contact_Host();
         $filters_contactRel = array("host_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters_contactRel['host_id'] = $filter_id;
+        if (!is_null($filters['host_id'])) {
+            $filters_contactRel['host_id'] = $filters['host_id'];
         }
         $elements = $contactRel->getMergedParameters(
             array("contact_alias", "contact_id"),
@@ -1059,8 +1056,8 @@ class CentreonHost extends CentreonObject
         }
         $htplRel = new \Centreon_Object_Relation_Host_Template_Host();
         $filters_htplRel = array("h.host_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters_htplRel['h.host_id'] = $filter_id;
+        if (!is_null($filters['host_id'])) {
+            $filters_htplRel['h.host_id'] = $filters['host_id'];
         }
         $elements = $htplRel->getMergedParameters(
             array("host_name as host"),
@@ -1081,7 +1078,7 @@ class CentreonHost extends CentreonObject
         }
 
         // Filter only
-        if (!is_null($filter_id)) {
+        if (!is_null($filters['host_id'])) {
             # service templates linked
             $hostRel = new \Centreon_Object_Relation_Host_Service();
             $helements = $hostRel->getMergedParameters(
@@ -1091,7 +1088,7 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("service_register" => 0, "host_id" => $filter_id),
+                array("service_register" => 0, "host_id" => $filters['host_id']),
                 "AND"
             );
             foreach ($helements as $helement) {
@@ -1107,7 +1104,7 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("service_register" => 1, "host_id" => $filter_id),
+                array("service_register" => 1, "host_id" => $filters['host_id']),
                 "AND"
             );
             foreach ($helements as $helement) {
@@ -1123,7 +1120,7 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("host_id" => $filter_id),
+                array("host_id" => $filters['host_id']),
                 "AND"
             );
             foreach ($helements as $helement) {
