@@ -147,6 +147,9 @@ class TrapsSNMPConfigurationContext extends CentreonContext
      */
     public function theTrapDefinitionIsSavedWithItsPropertiesEspeciallyTheContentOfRegexpField()
     {
+
+
+
         $this->tableau = array();
         try {
             $this->spin(
@@ -324,6 +327,10 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->currentPage = new SnmpTrapsConfigurationPage($this);
         $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
+
+        var_dump('toto');
+        sleep(9999999);
+
         $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->updatedProperties['name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
@@ -337,6 +344,9 @@ class TrapsSNMPConfigurationContext extends CentreonContext
     public function allSNMPTrapPropertiesAreUpdated()
     {
         $this->tableau = array();
+
+        sleep(9999999);
+
         try {
             $this->spin(
                 function ($context) {
