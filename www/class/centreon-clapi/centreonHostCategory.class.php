@@ -238,9 +238,9 @@ class CentreonHostCategory extends CentreonSeverityAbstract
      *
      * @return void
      */
-    public function export()
+    public function export($filters = null)
     {
-        parent::export();
+        parent::export($filters);
         $relobj = new \Centreon_Object_Relation_Host_Category_Host();
         $elements = $relobj->getMergedParameters(
             array($this->object->getUniqueLabelField()),
