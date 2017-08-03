@@ -263,3 +263,8 @@ default:
       paths: [ %paths.base%/features/VirtualMetricHandle.feature ]
       contexts:
       - VirtualMetricHandleContext
+
+    connector_configuration:
+      paths: [ %paths.base%/features/ConnectorConfiguration.feature ]
+      contexts:
+      - ConnectorConfigurationContext
