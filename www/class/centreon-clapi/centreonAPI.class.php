@@ -850,7 +850,6 @@ class CentreonAPI
             exit($this->return_code);
         } else {
             // header
-            echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
             if (count($this->aExport) > 0) {
                 foreach ($this->aExport as $oObjet) {
                     if (method_exists($this->objectTable[$oObjet], 'export')) {
