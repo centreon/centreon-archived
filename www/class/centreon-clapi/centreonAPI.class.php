@@ -194,6 +194,11 @@ class CentreonAPI
             'class' => 'ServiceCategory',
             'export' => true
         );
+        $this->relationObject["LDAP"] = array(
+            'module' => 'core',
+            'class' => 'LDAP',
+            'export' => true
+        );
         $this->relationObject["CONTACT"] = array(
             'module' => 'core',
             'class' => 'Contact',
@@ -284,11 +289,6 @@ class CentreonAPI
             'module' => 'core',
             'class' => 'ACLResource',
             'export' => false
-        );
-        $this->relationObject["LDAP"] = array(
-            'module' => 'core',
-            'class' => 'LDAP',
-            'export' => true
         );
         $this->relationObject["SETTINGS"] = array(
             'module' => 'core',
@@ -420,7 +420,7 @@ class CentreonAPI
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
                 if (isset($oObjet['class'])
                     && isset($oObjet['module'])
-                    && !class_exists("Centreon" . $oObjet['class'])
+                    && !class_exists("\CentreonClapi\Centreon" . $oObjet['class'])
                 ) {
                     if ($oObjet['module'] == 'core') {
                         require_once _CENTREON_PATH_
