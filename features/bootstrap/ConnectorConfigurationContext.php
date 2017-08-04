@@ -9,7 +9,7 @@ class ConnectorConfigurationContext extends CentreonContext
     protected $currentPage;
 
     protected $initialProperties = array(
-        //'name' => 'connectorName',
+        'name' => 'connectorName',
         'description' => 'connectorDescription',
         'command_line' => 'connectorCommandLine',
         'command' => 'service-notify-by-email',
@@ -100,7 +100,7 @@ class ConnectorConfigurationContext extends CentreonContext
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ConnectorConfigurationListingPage($this);
-                    $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . '-1');
+                    $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . '_1');
                     $object = $this->currentPage->getProperties();
                     foreach ($this->initialProperties as $key => $value) {
                         if ($key != 'name' && $value != $object[$key]) {
@@ -110,9 +110,6 @@ class ConnectorConfigurationContext extends CentreonContext
                             if ($value != $object[$key]) {
                                 $this->tableau[] = $key;
                             }
-                        }
-                        if ($key == 'name' && $value . '_1' != $object[$key]) {
-                            $this->tableau[] = $key;
                         }
                     }
                     return count($this->tableau) == 0;
