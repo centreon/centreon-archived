@@ -84,7 +84,7 @@ class ConnectorConfigurationContext extends CentreonContext
     public function iDuplicateAConnector()
     {
         $this->currentPage = new ConnectorConfigurationListingPage($this);
-        $object = $this->currentPage->getEntry($this->initialProperties['name'] . '_1');
+        $object = $this->currentPage->getEntry($this->initialProperties['name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
