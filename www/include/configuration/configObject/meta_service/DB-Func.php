@@ -386,6 +386,10 @@ function updateMetaService($meta_id = null)
     $ret["meta_comment"] != null
         ? $rq .= "'" . htmlentities($ret["meta_comment"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
+    $rq .= "geo_coords = ";
+    $ret["geo_coords"] != null
+        ? $rq .= "'".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', "
+        : $rq .= "NULL, ";
     $rq .= "meta_activate = ";
     $ret["meta_activate"]["meta_activate"] != null
         ? $rq .= "'" . $ret["meta_activate"]["meta_activate"] . "' "
