@@ -14,14 +14,14 @@ class TrapsSNMPConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = (array(
+    protected $initialProperties = array(
         'name' => 'atrapName',
         'oid' => '1.2.3',
         'vendor' => 'Cisco',
         'output' => 'trapOutputMessage'
-    ));
+    );
 
-    protected $updatedProperties = (array(
+    protected $updatedProperties = array(
         'name' => 'atrapNameChanged',
         'oid' => '.1.2.3.4',
         'vendor' => 'HP',
@@ -57,9 +57,9 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         'check_downtime' => 2,
         'output_transform' => 'trapOutputTransform',
         'custom_code' => 'trapCustomCode'
-    ));
+    );
 
-    protected $duplicatedProperties = (array(
+    protected $duplicatedProperties = array(
         'name' => 'atrapNameChanged_1',
         'oid' => '.1.2.3.4',
         'vendor' => 'HP',
@@ -95,7 +95,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         'check_downtime' => 2,
         'output_transform' => 'trapOutputTransform',
         'custom_code' => 'trapCustomCode'
-    ));
+    );
 
     /**
      * @When I add a new SNMP trap definition with an advanced matching rule
@@ -147,6 +147,9 @@ class TrapsSNMPConfigurationContext extends CentreonContext
      */
     public function theTrapDefinitionIsSavedWithItsPropertiesEspeciallyTheContentOfRegexpField()
     {
+
+
+
         $this->tableau = array();
         try {
             $this->spin(
@@ -324,6 +327,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->currentPage = new SnmpTrapsConfigurationPage($this);
         $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
+
         $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->updatedProperties['name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
@@ -337,6 +341,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
     public function allSNMPTrapPropertiesAreUpdated()
     {
         $this->tableau = array();
+
         try {
             $this->spin(
                 function ($context) {

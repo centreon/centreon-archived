@@ -678,10 +678,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Export
      */
-    public function export()
+    public function export($filters = null)
     {
         // generic add & setparam
-        parent::export();
+        parent::export($filters);
 
         // handle host relationships
         $this->exportHostRel();

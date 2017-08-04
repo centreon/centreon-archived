@@ -399,10 +399,9 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
      *
      * @return void
      */
-    public function export()
+    public function export($filters = null)
     {
-        parent::export();
-        $scs = $this->object->getList(array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()));
+        $scs = $this->object->getList(array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()), -1, 0, null, null, $filters);
         $relobj = new \Centreon_Object_Relation_Service_Category_Service();
         $hostServiceRel = new \Centreon_Object_Relation_Host_Service();
         $svcObj = new \Centreon_Object_Service();
