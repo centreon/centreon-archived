@@ -8,7 +8,7 @@ Partitionnement des bases de données
 Présentation
 ============
 
-Le module Centreon Partioning est maintenant intégré de base avec Centreon Web, il offre différentes fonctionnalités et avantages.
+Le module Centreon Partitioning est maintenant intégré de base avec Centreon Web, il offre différentes fonctionnalités et avantages.
 
 - Il permet de partitionner les tables MySQL en fonction de la date des lignes. Ce qui offre une optimisation du temps d'exécution de nombreuses requêtes.
 - La purge des données est améliorée, il est maintenant juste nécessaire de supprimer les partitions trop anciennes.
