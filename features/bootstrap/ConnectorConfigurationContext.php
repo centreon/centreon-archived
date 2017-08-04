@@ -31,7 +31,7 @@ class ConnectorConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ConnectorConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
-        $this->currentPage->setPage();
+        $this->currentPage->save();
     }
 
     /**
@@ -39,9 +39,9 @@ class ConnectorConfigurationContext extends CentreonContext
      */
     public function iChangeThePropertiesOfAConnector()
     {
-        $this->currentPage = new ContactConfigurationListingPage($this);
+        $this->currentPage = new ConnectorConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
-        $this->currentPage->setProperties($this->update);
+        $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
     }
 
@@ -54,7 +54,7 @@ class ConnectorConfigurationContext extends CentreonContext
         try {
             $this->spin(
                 function ($context) {
-                    $this->currentPage = new ContactConfigurationListingPage($this);
+                    $this->currentPage = new ConnectorConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                     $object = $this->currentPage->getProperties();
                     foreach ($this->updatedProperties as $key => $value) {
@@ -145,10 +145,8 @@ class ConnectorConfigurationContext extends CentreonContext
                 $this->currentPage = new ConnectorConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
-                foreach ($object as $host => $service) {
-                    foreach ($service as $value) {
-                        $bool = $bool && $value['name'] != $this->initialProperties['name'];
-                    }
+                foreach ($object as $value) {
+                    $bool = $bool && $value['name'] != $this->initialProperties['name'];
                 }
                 return $bool;
             },
