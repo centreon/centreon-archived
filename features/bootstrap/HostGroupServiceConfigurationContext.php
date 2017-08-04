@@ -37,7 +37,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
     );
 
     protected $initialProperties = array(
-        'host_groups' => 'Windows-Servers',
+        'hosts' => 'Windows-Servers',
         'description' => 'serviceDescription',
         'templates' => 'generic-service',
         'check_command' => 'check_http',
@@ -99,7 +99,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
     );
 
     protected $duplicatedProperties = array(
-        'host_groups' => 'Windows-Servers',
+        'hosts' => 'Windows-Servers',
         'description' => 'serviceDescription_1',
         'templates' => 'generic-service',
         'check_command' => 'check_http',
@@ -161,7 +161,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
     );
 
     protected $update = array(
-        'host_groups' => 'Firewall',
+        'hosts' => 'Firewall',
         'description' => 'serviceDescriptionChanged',
         'templates' => 'Ping-WAN',
         'check_command' => 'check_https',
@@ -219,7 +219,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
     );
 
     protected $updatedProperties = array(
-        'host_groups' => 'Firewall',
+        'hosts' => 'Firewall',
         'description' => 'serviceDescriptionChanged',
         'templates' => 'Ping-WAN',
         'check_command' => 'check_https',
@@ -357,7 +357,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
         $this->currentPage = new HostGroupServiceConfigurationListingPage($this);
         $object = $this->currentPage->getEntry(array(
             'service' => $this->initialProperties['description'],
-            'host_group' => $this->initialProperties['host_groups']
+            'host_group' => $this->initialProperties['hosts']
         ));
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
@@ -405,7 +405,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
         $this->currentPage = new HostGroupServiceConfigurationListingPage($this);
         $object = $this->currentPage->getEntry(array(
             'service' => $this->initialProperties['description'],
-            'host_group' => $this->initialProperties['host_groups']
+            'host_group' => $this->initialProperties['hosts']
         ));
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
