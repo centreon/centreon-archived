@@ -4,6 +4,7 @@ use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\HostConfigurationPage;
 use Centreon\Test\Behat\Configuration\KBServiceListingPage;
 use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Administration\KBParametersPage;
 
 /**
  * Defines application features from the specific context.
@@ -29,6 +30,16 @@ class KnowledgeBaseContext extends CentreonContext
             $this->container->getPort(80, 'mediawiki') . '/index.php/Main_Page'
         );
         $this->iAmLoggedIn();
+
+        $containerId = $this->container->getContainerId('mediawiki', false);
+        $page = new KBParametersPage($this);
+        $page->setProperties(
+            array(
+                'kb_db_host' => $containerId,
+                'kb_wiki_url' => 'http://' . $containerId
+            )
+        );
+        $page->save();
     }
 
     /**
