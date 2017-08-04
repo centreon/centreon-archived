@@ -424,6 +424,9 @@ function updateMetaServiceContact($meta_id)
     if (count($ret)) {
         $queryAddRelation = "INSERT INTO meta_contact (meta_id, contact_id) VALUES ";
         for ($i = 0; $i < count($ret); $i++) {
+            if ($i > 0) {
+                $queryAddRelation .= ', ';
+            }
             $queryAddRelation .= "(" . $meta_id . ", " . $ret[$i] . ")";
         }
         $pearDB->query($queryAddRelation);
