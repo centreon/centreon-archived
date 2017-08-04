@@ -52,6 +52,11 @@ class CentreonLDAP extends CentreonObject
     const NB_ADD_PARAM = 2;
     const AR_NOT_EXIST = "LDAP configuration ID not found";
 
+    public $aDepends = array(
+        'CONTACT'
+    );
+
+
     /**
      * Constructor
      *
