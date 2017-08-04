@@ -169,20 +169,20 @@ default:
       contexts:
       - ContactConfigurationContext
 
-    host_creation_duplication:
-      paths: [ %paths.base%/features/HostCreationDuplication.feature ]
-      contexts:
-      - HostCreationDuplicationContext
-
     host_configuration:
       paths: [ %paths.base%/features/HostConfiguration.feature ]
       contexts:
       - HostConfigurationContext
 
-    host_category:
+    host_category_configuration:
       paths: [ %paths.base%/features/HostCategoryConfiguration.feature ]
       contexts:
       - HostCategoryConfigurationContext
+
+    host_group_configuration:
+      paths: [ %paths.base%/features/HostGroupConfiguration.feature ]
+      contexts:
+      - HostGroupConfigurationContext
 
     contact_group_configuration:
       paths: [ %paths.base%/features/ContactGroupConfiguration.feature ]
@@ -268,3 +268,8 @@ default:
       paths: [ %paths.base%/features/MassiveChangeServices.feature ]
       contexts:
       - MassiveChangeServicesContext
+
+    virtual_metric_handle:
+      paths: [ %paths.base%/features/VirtualMetricHandle.feature ]
+      contexts:
+      - VirtualMetricHandleContext

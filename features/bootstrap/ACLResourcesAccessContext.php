@@ -16,7 +16,7 @@ class ACLResourcesAccessContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = (array(
+    protected $initialProperties = array(
         'acl_name' => 'aclResourceName',
         'acl_alias' => 'aclResourceAlias',
         'acl_groups' => array(
@@ -36,9 +36,9 @@ class ACLResourcesAccessContext extends CentreonContext
         'pollers' => 'Central',
         'host_category' => 'hostCategoryName',
         'service_category' => 'serviceCategoryName'
-    ));
+    );
 
-    protected $duplicatedProperties = (array(
+    protected $duplicatedProperties = array(
         'acl_name' => 'aclResourceName_1',
         'acl_alias' => 'aclResourceAlias',
         'acl_groups' => array(
@@ -58,9 +58,9 @@ class ACLResourcesAccessContext extends CentreonContext
         'pollers' => 'Central',
         'host_category' => 'hostCategoryName',
         'service_category' => 'serviceCategoryName'
-    ));
+    );
 
-    protected $updatedProperties = (array(
+    protected $updatedProperties = array(
         'acl_name' => 'aclResourceNameChanged',
         'acl_alias' => 'aclResourceAliasChanged',
         'acl_groups' => array(
@@ -80,67 +80,67 @@ class ACLResourcesAccessContext extends CentreonContext
         'pollers' => 'Central',
         'host_category' => 'hostCategoryName',
         'service_category' => 'serviceCategoryName'
-    ));
+    );
 
-    protected $host1 = (array(
+    protected $host1 = array(
         'name' => 'hostName1',
         'alias' => 'hostAlias1',
         'address' => 'host1@localhost'
-    ));
+    );
 
-    protected $host2 = (array(
+    protected $host2 = array(
         'name' => 'hostName2',
         'alias' => 'hostAlias2',
         'address' => 'host2@localhost'
-    ));
+    );
 
-    protected $hostGroup = (array(
+    protected $hostGroup = array(
         'name' => 'hostGroupName',
         'alias' => 'hostGroupAlias'
-    ));
+    );
 
-    protected $hostCategory = (array(
+    protected $hostCategory = array(
         'name' => 'hostCategoryName',
         'alias' => 'hostCategoryAlias'
-    ));
+    );
 
-    protected $serviceGroup = (array(
+    protected $serviceGroup = array(
         'name' => 'serviceGroupName',
         'description' => 'serviceGroupDescription'
-    ));
+    );
 
-    protected $serviceCategory = (array(
+    protected $serviceCategory = array(
         'name' => 'serviceCategoryName',
         'description' => 'serviceCategoryDescription'
-    ));
+    );
 
-    protected $metaService = (array(
+    protected $metaService = array(
         'name' => 'metaServiceName',
         'max_check_attempts' => '5'
-    ));
+    );
 
-    protected $aclGroup1 = (array(
+    protected $aclGroup1 = array(
         'group_name' => 'aclGroupName1',
         'group_alias' => 'aclGroupAlias1'
-    ));
+    );
 
-    protected $aclGroup2 = (array(
+    protected $aclGroup2 = array(
         'group_name' => 'aclGroupName2',
         'group_alias' => 'aclGroupAlias2'
-    ));
+    );
 
-    protected $aclGroup3 = (array(
+    protected $aclGroup3 = array(
         'group_name' => 'aclGroupName3',
         'group_alias' => 'aclGroupAlias3'
-    ));
+    );
 
-    protected $linkedAclResource = (array(
+    protected $linkedAclResource = array(
         'acl_name' => 'aclResourceName',
         'acl_groups' => array(
             'aclGroupName1',
             'aclGroupName2'
         )
-    ));
+    );
 
     /**
      * @Given three ACL access groups including non admin users exist
