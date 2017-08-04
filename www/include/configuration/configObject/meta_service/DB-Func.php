@@ -146,9 +146,12 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                     $metaObj = new CentreonMeta($pearDB);
                     $metaObj->insertVirtualService($maxId["MAX(meta_id)"], $meta_name);
                     /* Duplicate contacts */
-                    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '".$key."'");
+                    $query = "SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '" . $key . "'";
+                    $DBRESULT = $pearDB->query($query);
                     while ($Contact = $DBRESULT->fetchRow()) {
-                        $DBRESULT2 = $pearDB->query("INSERT INTO meta_contact VALUES ('".$maxId["MAX(meta_id)"]."', '".$Contact["contact_id"]."')");
+                        $query = "INSERT INTO meta_contact VALUES ('" .
+                            $maxId["MAX(meta_id)"] . "', '" . $Contact["contact_id"] . "')";
+                        $pearDB->query($query);
                     }
                     /* Duplicate contactgroups */
                     $query = "SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '" . $key . "'";
@@ -169,7 +172,7 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                                 ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                                 : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                         }
-                        $DBRESULT2 = $pearDB->query("INSERT INTO meta_service_relation VALUES (" . $val . ")");
+                        $pearDB->query("INSERT INTO meta_service_relation VALUES (" . $val . ")");
                     }
                 }
             }
@@ -395,7 +398,7 @@ function updateMetaService($meta_id = null)
         : $rq .= "NULL, ";
     $rq .= "geo_coords = ";
     $ret["geo_coords"] != null
-        ? $rq .= "'".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', "
+        ? $rq .= "'" . htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
     $rq .= "meta_activate = ";
     $ret["meta_activate"]["meta_activate"] != null
