@@ -149,14 +149,14 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
             $rq = null;
             $level = false;
             foreach ($row as $key2 => $value2) {
-                (isset($key2) && $key2 == "hc_name") ? ($hc_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                (isset($key2) && $key2 == "hc_name") ? ($hc_name = $value2 = $value2 . "_" . $i) : null;
+                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "hc_id") {
                     $fields[$key2] = $value2;
                 }
                 if ($key2 == "level" && $value2 != "") {
                     $level = true;
-		}
+                }
             }
             $fields["hc_name"] = $hc_name;
             if (testHostCategorieExistence($hc_name)) {
