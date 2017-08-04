@@ -9,7 +9,7 @@ Feature: TrapsSNMPConfiguration
     Scenario: Creating SNMP trap with advanced matching rule
         When I add a new SNMP trap definition with an advanced matching rule
         Then the trap definition is saved with its properties, especially the content of Regexp field
-	
+
     Scenario: Modify SNMP trap definition
         When I modify some properties of an existing SNMP trap definition
         Then all changes are saved
