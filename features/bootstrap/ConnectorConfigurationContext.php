@@ -16,6 +16,14 @@ class ConnectorConfigurationContext extends CentreonContext
         'enabled' => 1
     );
 
+    protected $duplicatedProperties = array(
+        'name' => 'connectorName_1',
+        'description' => 'connectorDescription',
+        'command_line' => 'connectorCommandLine',
+        'command' => '',
+        'enabled' => 1
+    );
+
     protected $updatedProperties = array(
         'name' => 'connectorNameChanged',
         'description' => 'connectorDescriptionChanged',
@@ -100,10 +108,10 @@ class ConnectorConfigurationContext extends CentreonContext
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ConnectorConfigurationListingPage($this);
-                    $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . '_1');
+                    $this->currentPage = $this->currentPage->inspect($this->duplicatedProperties['name']);
                     $object = $this->currentPage->getProperties();
-                    foreach ($this->initialProperties as $key => $value) {
-                        if ($key != 'name' && $value != $object[$key]) {
+                    foreach ($this->duplicatedProperties as $key => $value) {
+                        if ($value != $object[$key]) {
                             if (is_array($value)) {
                                 $value = implode(' ', $value);
                             }
