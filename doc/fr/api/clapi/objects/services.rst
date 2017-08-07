@@ -179,8 +179,6 @@ event_handler_enabled	         *1* when event handler is enabled, *0* otherwise
 
 flap_detection_enabled	         *1* when flap detection is enabled, *0* otherwise
 
-process_perf_data	         *1* when process performance data is enabled, *0* otherwise
-
 retain_status_information	 *1* when status information is retained, *0* otherwise
 
 retain_nonstatus_information	 *1* when non status information is retained, *0* otherwise
