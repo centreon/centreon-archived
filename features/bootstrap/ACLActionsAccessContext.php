@@ -22,9 +22,7 @@ class ACLActionsAccessContext extends CentreonContext
     private $adminContactGroup = array(
         'name' => 'adminContactGroupName',
         'alias' => 'adminContactGroupAlias',
-        'contacts' => array(
-            'adminUserName'
-        ),
+        'contacts' => 'adminUserName'
     );
 
     private $nonAdminUser = array(
