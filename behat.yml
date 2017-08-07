@@ -274,6 +274,11 @@ default:
       contexts:
       - VirtualMetricHandleContext
 
+    command_configuration:
+      paths: [ %paths.base%/features/CommandConfiguration.feature ]
+      contexts:
+      - CommandConfigurationContext
+
     host_group_service_configuration:
       paths: [ %paths.base%/features/HostGroupServiceConfiguration.feature ]
       contexts:
