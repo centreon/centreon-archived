@@ -169,8 +169,6 @@ notification_options             Status linked to notifications
 
 first_notification_delay           First notification delay in seconds
 
-parallelize_checks	         *1* when parallelize checks are enabled, *0* otherwise
-
 obsess_over_service	         *1* when obsess over service is enabled, *0* otherwise
 
 check_freshness	                 *1* when check freshness is enabled, *0* otherwise
