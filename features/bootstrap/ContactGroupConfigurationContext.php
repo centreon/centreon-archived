@@ -116,9 +116,6 @@ class ContactGroupConfigurationContext extends CentreonContext
                                 $this->tableau[] = $key;
                             }
                         }
-                        if ($key == 'name' && $value . '_1' != $object[$key]) {
-                            $this->tableau[] = $key;
-                        }
                     }
                     return count($this->tableau) == 0;
                 },
