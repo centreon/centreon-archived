@@ -308,9 +308,6 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         $this->currentPage->setProperties($this->hostCategory2);
         $this->currentPage->save();
         $this->currentPage = new HostTemplateConfigurationPage($this);
-        $this->currentPage->setProperties($this->hostTemplate2);
-        $this->currentPage->save();
-        $this->currentPage = new HostTemplateConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
     }

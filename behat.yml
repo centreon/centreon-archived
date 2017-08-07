@@ -189,11 +189,6 @@ default:
       contexts:
       - ContactGroupConfigurationContext
 
-    host_duplication_check:
-      paths: [ %paths.base%/features/HostDuplicationCheck.feature ]
-      contexts:
-      - HostDuplicationCheckContext
-
     host_template_basics_operations:
       paths: [ %paths.base%/features/HostTemplateBasicsOperations.feature ]
       contexts:
