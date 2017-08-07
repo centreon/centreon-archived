@@ -140,6 +140,12 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                 if (isset($maxId["MAX(meta_id)"])) {
                     $metaObj = new CentreonMeta($pearDB);
                     $metaObj->insertVirtualService($maxId["MAX(meta_id)"], $meta_name);
+                    /* Duplicate contacts */
+                    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '".$key."'");
+                    while ($Contact = $DBRESULT->fetchRow()) {
+                        $DBRESULT2 = $pearDB->query("INSERT INTO meta_contact VALUES ('".$maxId["MAX(meta_id)"]."', '".$Contact["contact_id"]."')");
+                    }
+                    /* Duplicate contactgroups */
                     $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
                     while ($Cg = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
@@ -315,6 +321,8 @@ function updateMetaService($meta_id = null)
     $ret["graph_id"] != null ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
     $rq .= "meta_comment = ";
     $ret["meta_comment"] != null ? $rq .= "'".htmlentities($ret["meta_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    $rq .= "geo_coords = ";
+    $ret["geo_coords"] != null ? $rq .= "'".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "meta_activate = ";
     $ret["meta_activate"]["meta_activate"] != null ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."' " : $rq .= "NULL ";
     $rq .= " WHERE meta_id = '".$meta_id."'";
@@ -347,6 +355,9 @@ function updateMetaServiceContact($meta_id)
     if (count($ret)) {
         $queryAddRelation = "INSERT INTO meta_contact (meta_id, contact_id) VALUES ";
         for ($i = 0; $i < count($ret); $i++) {
+            if ($i > 0) {
+                $queryAddRelation .= ', ';
+            }
             $queryAddRelation .= "(" . $meta_id . ", " . $ret[$i] . ")";
         }
         $pearDB->query($queryAddRelation);
