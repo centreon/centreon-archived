@@ -288,3 +288,8 @@ default:
       paths: [ %paths.base%/features/HostGroupServiceConfiguration.feature ]
       contexts:
       - HostGroupServiceConfigurationContext
+
+    service_template_configuration:
+      paths: [ %paths.base%/features/ServiceTemplateConfiguration.feature ]
+      contexts:
+      - ServiceTemplateConfigurationContext
