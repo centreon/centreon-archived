@@ -84,7 +84,7 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "esc_name" ? ($esc_name = $value2 = $value2 . " " . $i) : null;
+                $key2 == "esc_name" ? ($esc_name = $value2 = $value2 . "_" . $i) : null;
                 $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "esc_id") {
