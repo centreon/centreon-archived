@@ -137,6 +137,18 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
                 $maxId = $DBRESULT->fetchRow();
 
                 if (isset($maxId["MAX(cg_id)"])) {
+
+                    $query = "SELECT DISTINCT `acl_group_id` FROM `acl_group_contactgroups_relations` " .
+                        "WHERE `cg_cg_id` = " . (int)$key;
+                    $dbResult = $pearDB->query($query);
+                    $fields["cg_aclRelation"] = "";
+                    while ($cgAcl = $dbResult->fetchRow()) {
+                        $query = "INSERT INTO `acl_group_contactgroups_relations` VALUES ('', '" .
+                            $maxId["MAX(cg_id)"] . "', '" . $cgAcl['acl_group_id'] . "')";
+                        $pearDB->query($query);
+                        $fields["cg_aclRelation"] .= $cgAcl["acl_group_id"] . ",";
+                    }
+
                     $DBRESULT = $pearDB->query("SELECT DISTINCT `cgcr`.`contact_contact_id` FROM `contactgroup_contact_relation` `cgcr` WHERE `cgcr`.`contactgroup_cg_id` = '" . intval($key) . "'");
                     $fields["cg_contacts"] = "";
                     while ($cct = $DBRESULT->fetchRow()) {
