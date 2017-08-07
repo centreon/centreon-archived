@@ -187,6 +187,11 @@ class CentreonAPI
             'class' => 'ServiceCategory',
             'export' => true
         );
+        $this->relationObject["LDAP"] = array(
+            'module' => 'core',
+            'class' => 'LDAP',
+            'export' => true
+        );
         $this->relationObject["CONTACT"] = array(
             'module' => 'core',
             'class' => 'Contact',
@@ -278,11 +283,6 @@ class CentreonAPI
             'class' => 'ACLResource',
             'export' => false
         );
-        $this->relationObject["LDAP"] = array(
-            'module' => 'core',
-            'class' => 'LDAP',
-            'export' => true
-        );
         $this->relationObject["SETTINGS"] = array(
             'module' => 'core',
             'class' => 'Settings',
@@ -329,6 +329,9 @@ class CentreonAPI
         $this->optGen = $this->getOptGen();
         $version = $this->optGen["version"];
         $this->delim = ";";
+
+
+
     }
 
     /**
@@ -360,6 +363,8 @@ class CentreonAPI
      */
     protected function requireLibs($object)
     {
+
+
         if ($object != "") {
             if (isset($this->relationObject[$object]['class'])
                 && isset($this->relationObject[$object]['module'])
@@ -381,9 +386,10 @@ class CentreonAPI
             }
         } else {
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
+
                 if (isset($oObjet['class'])
                     && isset($oObjet['module'])
-                    && !class_exists("Centreon" . $oObjet['class'])) {
+                    && !class_exists("\CentreonClapi\Centreon" . $oObjet['class'])) {
                     if ($oObjet['module'] == 'core') {
                         require_once _CENTREON_PATH_
                             . "www/class/centreon-clapi/centreon"
@@ -404,6 +410,7 @@ class CentreonAPI
         /**
          * Default class needed
          */
+
         require_once _CLAPI_CLASS_."/centreonTimePeriod.class.php";
         require_once _CLAPI_CLASS_."/centreonACLResources.class.php";
     }
@@ -811,7 +818,6 @@ class CentreonAPI
             exit($this->return_code);
         } else {
             // header
-            echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
             if (count($this->aExport) > 0) {
                 foreach ($this->aExport as $oObjet) {
                     if (method_exists($this->objectTable[$oObjet], 'export')) {
@@ -1016,21 +1022,22 @@ class CentreonAPI
      */
     public function sortClassExport()
     {
+
         if (isset($this->relationObject) && is_array(($this->relationObject))) {
             $aObject = $this->relationObject;
             while ($oObjet = array_slice($aObject, -1, 1, true)) {
+
                 $key = key($oObjet);
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
                     && !in_array($key, $this->aExport)) {
-
                     $objName = '';
                     if (isset($oObjet[$key]['namespace'])) {
                         $objName = '\\' . $oObjet[$key]['namespace'];
                     }
+
                     $objName .= '\CentreonClapi\Centreon' . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
-
                     if (isset($objVars['aDepends'])) {
                         $bInsert = true;
                         foreach ($objVars['aDepends'] as $item => $oDependence) {
@@ -1054,6 +1061,7 @@ class CentreonAPI
                     array_pop($aObject);
                 }
             }
+
         }
     }
 }
