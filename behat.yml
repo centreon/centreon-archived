@@ -284,6 +284,11 @@ default:
       contexts:
       - ContactTemplateConfigurationContext
 
+    service_category_configuration:
+      paths: [ %paths.base%/features/ServiceCategoryConfiguration.feature ]
+      contexts:
+      - ServiceCategoryConfigurationContext
+
     meta_service_configuration:
       paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
       contexts:
