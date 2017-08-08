@@ -269,10 +269,20 @@ default:
       contexts:
       - CommandConfigurationContext
 
+    service_group_configuration:
+      paths: [ %paths.base%/features/ServiceGroupConfiguration.feature ]
+      contexts:
+      - ServiceGroupConfigurationContext
+
     host_group_service_configuration:
       paths: [ %paths.base%/features/HostGroupServiceConfiguration.feature ]
       contexts:
       - HostGroupServiceConfigurationContext
+
+    service_template_configuration:
+      paths: [ %paths.base%/features/ContactTemplateConfiguration.feature ]
+      contexts:
+      - ContactTemplateConfigurationContext
 
     meta_service_configuration:
       paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
