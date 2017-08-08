@@ -119,6 +119,20 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(dep_id)"])) {
+
+                    $query = "SELECT service_service_id, host_host_id FROM dependency_serviceChild_relation " .
+                        "WHERE dependency_dep_id = " . $key;
+                    $DBRESULT = $pearDB->query($query);
+                    $fields["dep_serviceChilds"] = "";
+                    while ($service = $DBRESULT->fetchRow()) {
+                        $query = "INSERT INTO dependency_serviceChild_relation VALUES ('', '" .
+                            $maxId["MAX(dep_id)"] . "', '" . $service["service_service_id"] . "', '" .
+                            $service["host_host_id"] . "')";
+                        $pearDB->query($query);
+                        $fields["dep_serviceChilds"] .= $service["host_host_id"] .
+                            '-' . $service["service_service_id"] . ",";
+                    }
+
                     $query = "SELECT DISTINCT host_host_id FROM dependency_hostParent_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
                     $DBRESULT = $pearDB->query($query);
