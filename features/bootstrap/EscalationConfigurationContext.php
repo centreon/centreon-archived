@@ -178,7 +178,7 @@ class EscalationConfigurationContext extends CentreonContext
             $this->spin(
                 function ($context) {
                     $this->currentPage = new EscalationConfigurationListingPage($this);
-                    $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . ' 1');//'_1');
+                    $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . '_1');
                     $object = $this->currentPage->getProperties();
                     foreach ($this->initialProperties as $key => $value) {
                         if ($key != 'name' && $value != $object[$key]) {
