@@ -169,6 +169,11 @@ default:
       contexts:
       - ContactConfigurationContext
 
+    contact_group_configuration:
+      paths: [ %paths.base%/features/ContactGroupConfiguration.feature ]
+      contexts:
+      - ContactGroupConfigurationContext
+
     host_configuration:
       paths: [ %paths.base%/features/HostConfiguration.feature ]
       contexts:
@@ -183,16 +188,6 @@ default:
       paths: [ %paths.base%/features/HostGroupConfiguration.feature ]
       contexts:
       - HostGroupConfigurationContext
-
-    contact_group_configuration:
-      paths: [ %paths.base%/features/ContactGroupConfiguration.feature ]
-      contexts:
-      - ContactGroupConfigurationContext
-
-    contact_group_creation_duplication:
-      paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
-      contexts:
-      - ContactGroupCreationDuplicationContext
 
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
@@ -278,3 +273,23 @@ default:
       paths: [ %paths.base%/features/HostGroupServiceConfiguration.feature ]
       contexts:
       - HostGroupServiceConfigurationContext
+
+    service_template_configuration:
+      paths: [ %paths.base%/features/ContactTemplateConfiguration.feature ]
+      contexts:
+      - ContactTemplateConfigurationContext
+
+    service_category_configuration:
+      paths: [ %paths.base%/features/ServiceCategoryConfiguration.feature ]
+      contexts:
+      - ServiceCategoryConfigurationContext
+
+    escalation_configuration:
+      paths: [ %paths.base%/features/EscalationConfiguration.feature ]
+      contexts:
+      - EscalationConfigurationContext
+
+    meta_service_configuration:
+      paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
+      contexts:
+      - MetaServiceConfigurationContext
