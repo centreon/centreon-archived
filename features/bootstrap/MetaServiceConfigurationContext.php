@@ -53,10 +53,7 @@ class MetaServiceConfigurationContext extends CentreonContext
         'normal_check_interval' => 10,
         'retry_check_interval' => 20,
         'notification_enabled' => 2,
-        'contacts' => array(
-            'Guest',
-            'User'
-        ),
+        'contacts' => 'Guest',
         'contact_groups' => 'Supervisors',
         'notification_interval' => 12,
         'notification_period' => '24x7',
