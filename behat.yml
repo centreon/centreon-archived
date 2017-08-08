@@ -289,6 +289,11 @@ default:
       contexts:
       - ServiceCategoryConfigurationContext
 
+    escalation_configuration:
+      paths: [ %paths.base%/features/EscalationConfiguration.feature ]
+      contexts:
+      - EscalationConfigurationContext
+
     meta_service_configuration:
       paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
       contexts:
