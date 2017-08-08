@@ -288,3 +288,8 @@ default:
       paths: [ %paths.base%/features/ServiceCategoryConfiguration.feature ]
       contexts:
       - ServiceCategoryConfigurationContext
+
+    host_dependency_configuration:
+      paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
+      contexts:
+      - HostDependencyConfigurationContext
