@@ -69,7 +69,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         $queryTraps = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name ' .
             'FROM traps t, traps_vendor m ' .
             'WHERE t.manufacturer_id = m.id ' .
-            'AND (t.traps_name LIKE :name OR m.name LIKE :name) ' .
+            'AND CONCAT(m.name, " -", t.traps_name) LIKE :name ' .
             'ORDER BY m.name, t.traps_name ';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
