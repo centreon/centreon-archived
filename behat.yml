@@ -199,6 +199,11 @@ default:
       contexts:
       - ContactGroupConfigurationContext
 
+    host_duplication_check:
+      paths: [ %paths.base%/features/HostDuplicationCheck.feature ]
+      contexts:
+      - HostDuplicationCheckContext
+
     contact_group_creation_duplication:
       paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
       contexts:
@@ -313,3 +318,9 @@ default:
       paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
       contexts:
       - MetaServiceConfigurationContext
+
+
+    service_submit_result:
+      paths: [ %paths.base%/features/ServiceSubmitResult.feature ]
+      contexts:
+      - ServiceSubmitResultContext
