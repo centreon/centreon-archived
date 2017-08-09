@@ -171,8 +171,6 @@ first_notification_delay         First notification delay in seconds
 
 recovery_notification_delay      Recovery notification delay
 
-parallelize_checks	         *1* when parallelize checks are enabled, *0* otherwise
-
 obsess_over_service	         *1* when obsess over service is enabled, *0* otherwise
 
 check_freshness	                 *1* when check freshness is enabled, *0* otherwise
@@ -182,8 +180,6 @@ freshness_threshold              Value in seconds
 event_handler_enabled	         *1* when event handler is enabled, *0* otherwise
 
 flap_detection_enabled	         *1* when flap detection is enabled, *0* otherwise
-
-process_perf_data	         *1* when process performance data is enabled, *0* otherwise
 
 retain_status_information	 *1* when status information is retained, *0* otherwise
 
