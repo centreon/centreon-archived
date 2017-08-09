@@ -836,10 +836,13 @@ class CentreonAPI
      */
     public function export()
     {
+        echo "This is just crazy";
         $this->requireLibs("");
 
+        echo "Hell Yeah";
         $this->sortClassExport();
 
+        echo "Out of the loop";
         $this->initAllObjects();
 
         if (isset($this->options['select'])) {
@@ -1099,6 +1102,7 @@ class CentreonAPI
                             $this->aExport[] = $key;
                             array_pop($aObject);
                         } else {
+
                             $aObject = array_merge($oObjet, $aObject);
                         }
                     } else {

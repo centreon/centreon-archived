@@ -93,15 +93,14 @@ class CentreonACLResource extends CentreonObject
      */
     protected $resourceTypeObjectRelation;
 
-    public static $aDepends = array(
+    public $aDepends = array(
         'HOST',
         'SERVICE',
-        'HOSTGROUP',
-        'SERVICEGROUP',
-        'METASERVICE',
+        'HG',
+        'SG',
         'INSTANCE',
-        'HOSTCATEGORY',
-        'SERVICECATEGORY'
+        'HC',
+        'SC'
     );
 
     /**

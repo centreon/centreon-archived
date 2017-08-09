@@ -58,12 +58,12 @@ class CentreonACLGroup extends CentreonObject
     const ORDER_UNIQUENAME        = 0;
     const ORDER_ALIAS             = 1;
 
-    public static $aDepends = array(
+    public $aDepends = array(
         'CONTACT',
-        'CONTACTGROUP',
+        'CG',
         'ACLMENU',
         'ACLACTION',
-        'ACLRESOURCE',
+        'ACLRESOURCE'
     );
 
     /**
