@@ -189,11 +189,6 @@ default:
       contexts:
       - ContactGroupConfigurationContext
 
-    contact_group_creation_duplication:
-      paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
-      contexts:
-      - ContactGroupCreationDuplicationContext
-
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
@@ -263,3 +258,53 @@ default:
       paths: [ %paths.base%/features/VirtualMetricHandle.feature ]
       contexts:
       - VirtualMetricHandleContext
+
+    command_configuration:
+      paths: [ %paths.base%/features/CommandConfiguration.feature ]
+      contexts:
+      - CommandConfigurationContext
+
+    service_group_configuration:
+      paths: [ %paths.base%/features/ServiceGroupConfiguration.feature ]
+      contexts:
+      - ServiceGroupConfigurationContext
+
+    service_configuration:
+      paths: [ %paths.base%/features/ServiceConfiguration.feature ]
+      contexts:
+      - ServiceConfigurationContext
+
+    host_group_service_configuration:
+      paths: [ %paths.base%/features/HostGroupServiceConfiguration.feature ]
+      contexts:
+      - HostGroupServiceConfigurationContext
+
+    service_template_configuration:
+      paths: [ %paths.base%/features/ContactTemplateConfiguration.feature ]
+      contexts:
+      - ContactTemplateConfigurationContext
+
+    service_category_configuration:
+      paths: [ %paths.base%/features/ServiceCategoryConfiguration.feature ]
+      contexts:
+      - ServiceCategoryConfigurationContext
+
+    escalation_configuration:
+      paths: [ %paths.base%/features/EscalationConfiguration.feature ]
+      contexts:
+      - EscalationConfigurationContext
+
+    meta_service_configuration:
+      paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
+      contexts:
+      - MetaServiceConfigurationContext
+
+
+    service_submit_result:
+      paths: [ %paths.base%/features/ServiceSubmitResult.feature ]
+      contexts:
+      - ServiceSubmitResultContext
+    host_dependency_configuration:
+      paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
+      contexts:
+      - HostDependencyConfigurationContext
