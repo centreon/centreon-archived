@@ -189,11 +189,6 @@ default:
       contexts:
       - ContactGroupConfigurationContext
 
-    contact_group_creation_duplication:
-      paths: [ %paths.base%/features/ContactGroupCreationDuplication.feature ]
-      contexts:
-      - ContactGroupCreationDuplicationContext
-
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
@@ -284,7 +279,7 @@ default:
       contexts:
       - ContactTemplateConfigurationContext
 
-    conntector_configuration:
+    connector_configuration:
       paths: [ %paths.base%/features/ConnectorConfiguration.feature ]
       contexts:
       - ConnectorConfigurationContext
