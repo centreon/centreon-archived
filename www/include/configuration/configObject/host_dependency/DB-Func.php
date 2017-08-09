@@ -94,6 +94,7 @@ function deleteHostDependencyInDB($dependencies = array())
 function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
 {
     foreach ($dependencies as $key => $value) {
+
         global $pearDB, $centreon;
         $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
         $row = $DBRESULT->fetchRow();
@@ -116,6 +117,20 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(dep_id)"])) {
+
+                    $query = "SELECT service_service_id, host_host_id FROM dependency_serviceChild_relation " .
+                        "WHERE dependency_dep_id = " . $key;
+                    $DBRESULT = $pearDB->query($query);
+                    $fields["dep_serviceChilds"] = "";
+                    while ($service = $DBRESULT->fetchRow()) {
+                        $query = "INSERT INTO dependency_serviceChild_relation VALUES ('', '" .
+                            $maxId["MAX(dep_id)"] . "', '" . $service["service_service_id"] . "', '" .
+                            $service["host_host_id"] . "')";
+                        $pearDB->query($query);
+                        $fields["dep_serviceChilds"] .= $service["host_host_id"] .
+                            '-' . $service["service_service_id"] . ",";
+                    }
+
                     $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$key."'");
                     $fields["dep_hostParents"] = "";
                     while ($host = $DBRESULT->fetchRow()) {
@@ -130,9 +145,11 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                         $DBRESULT2 = $pearDB->query("INSERT INTO dependency_hostChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$host["host_host_id"]."')");
                         $fields["dep_hostChilds"] .= $host["host_host_id"] . ",";
                     }
+
                     $fields["dep_hostChilds"] = trim($fields["dep_hostChilds"], ",");
                     $DBRESULT->free();
                     $centreon->CentreonLogAction->insertLog("host dependency", $maxId["MAX(dep_id)"], $dep_name, "a", $fields);
+
                 }
             }
         }
